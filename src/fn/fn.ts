@@ -1,3 +1,5 @@
+export * from './pipe.js'
+
 export type ExtractAsync<$Fn extends Any> = $Fn extends (...args: any[]) => infer __return__
   ? (...args: Parameters<$Fn>) => Extract<__return__, Promise<any>>
   : never
