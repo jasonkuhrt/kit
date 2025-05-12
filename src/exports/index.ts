@@ -1,5 +1,6 @@
 export * from '../arr/index.js'
 export * from '../eq/index.js'
 export * from '../fn/index.js'
+export * from '../language/index.js'
 export * from '../rec/index.js'
 export * from '../str/index.js'
