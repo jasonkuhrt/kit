@@ -7,6 +7,7 @@
   },
   "exports": {
     ".": "./build/exports/index.js",
+    "./arr": "./build/exports/arr/index.js",
     "./fn": "./build/exports/fn/index.js",
     "./str": "./build/exports/str/index.js"
   },
