@@ -1,3 +1,9 @@
+export type Any = unknown[]
+
+export const is = (value: unknown): value is Any => {
+  return Array.isArray(value)
+}
+
 export const ensure = <value>(value: value): FlattenShallow<value>[] => {
   return Array.isArray(value) ? value : [value as any]
 }

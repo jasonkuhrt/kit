@@ -1,3 +1,9 @@
-export const is = (value: unknown): value is Record<string, unknown> => {
-  return typeof value === `object` && value !== null && !Array.isArray(value)
+import { Obj } from '../obj/index.js'
+
+export type Any = {
+  [key: PropertyKey]: unknown
+}
+
+export const is = (value: unknown): value is Any => {
+  return Obj.is(value) && !Array.isArray(value)
 }
