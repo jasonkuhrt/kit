@@ -1,13 +1,14 @@
 {
   "name": "@wollybeard/kit",
-  "version": "0.0.0",
+  "version": "0.0.0-dripip",
   "author": {
     "name": "Jason Kuhrt",
     "url": "https://kuhrt.me"
   },
   "exports": {
     ".": "./build/exports/index.js",
-    "./fn": "./build/exports/fn/index.js"
+    "./fn": "./build/exports/fn/index.js",
+    "./str": "./build/exports/str/index.js"
   },
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
