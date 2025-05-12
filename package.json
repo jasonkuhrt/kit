@@ -1,0 +1,41 @@
+{
+  "name": "@wollybeard/kit",
+  "version": "0.0.0",
+  "author": {
+    "name": "Jason Kuhrt",
+    "url": "https://kuhrt.me"
+  },
+  "exports": {
+    ".": "./build/exports/index.js",
+    "./fn": "./build/exports/fn/index.js"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "build:watch:emit": "pnpm build --noCheck --watch",
+    "build:watch": "pnpm build --watch",
+    "build:emit": "pnpm build --noEmit",
+    "build:clean": "tsc --build --clean && rm -rf build",
+    "fix:format": "dprint fmt",
+    "check:format": "dprint check",
+    "check:types": "tsc --noEmit",
+    "prepack": "pnpm build"
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.1",
+    "@tsconfig/recommended": "^1.0.8",
+    "@tsconfig/strictest": "^2.0.5",
+    "typescript": "^5.8.3",
+    "tsx": "^4.19.3",
+    "dripip": "^0.10.0",
+    "dprint": "^0.49.0"
+  },
+  "packageManager": "pnpm@10.10.0",
+  "files": [
+    "build",
+    "src"
+  ],
+  "libra": {
+    "visibility": true
+  },
+  "type": "module"
+}
