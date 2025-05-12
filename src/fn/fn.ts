@@ -7,3 +7,7 @@ export type ExtractAsync<$Fn extends Any> = $Fn extends (...args: any[]) => infe
 export type Any = (...args: any[]) => any
 
 export type AnyAsync = (...args: any[]) => Promise<any>
+
+export const is = (value: unknown): value is Any => {
+  return typeof value === `function`
+}

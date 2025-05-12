@@ -1,0 +1,7 @@
+import { Obj } from '../obj/index.js'
+
+export const isIsh = Obj.isIsh<Promise<unknown>>({
+  then: `function`,
+  catch: `function`,
+  finally: `function`,
+})

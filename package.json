@@ -8,11 +8,12 @@
   "exports": {
     ".": "./build/exports/index.js",
     "./arr": "./build/exports/arr/index.js",
-    "./eq": "./build/exports/eq/index.js",
     "./fn": "./build/exports/fn/index.js",
+    "./eq": "./build/exports/eq/index.js",
     "./obj": "./build/exports/obj/index.js",
-    "./rec": "./build/exports/rec/index.js",
-    "./str": "./build/exports/str/index.js"
+    "./prom": "./build/exports/prom/index.js",
+    "./str": "./build/exports/str/index.js",
+    "./rec": "./build/exports/rec/index.js"
   },
   "scripts": {
     "r": "libra refresh && pnpm fix:format",
