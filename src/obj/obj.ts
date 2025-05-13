@@ -23,6 +23,10 @@ export const isIsh = <type>(spec: Record<PropertyKey, TypeofTypes>) => (value: u
   })
 }
 
-export const isEmpty = (obj: object): obj is {} => {
+export const isEmpty = (obj: object): boolean => {
+  return Object.keys(obj).length === 0
+}
+
+export const isEmpty$ = (obj: object): obj is {} => {
   return Object.keys(obj).length === 0
 }
