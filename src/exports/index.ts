@@ -1,8 +1,26 @@
 export * from '../arr/index.js'
+export * from '../cache/index.js'
+export * from '../codec/index.js'
 export * from '../eq/index.js'
 export * from '../fn/index.js'
+export * from '../fs-layout/index.js'
+export * from '../fs-relative/index.js'
+export * from '../fs/index.js'
 export * from '../language/index.js'
+export * from '../manifest/index.js'
 export * from '../obj/index.js'
+export * from '../package-manager/index.js'
+export * from '../path/index.js'
+export * from '../project-controller/index.js'
 export * from '../prom/index.js'
 export * from '../rec/index.js'
+export * from '../resource/index.js'
 export * from '../str/index.js'
+export * from '../url/index.js'
+export * from '../zod-aid/index.js'
+
+// To satisfy TS
+// e.g.
+// The inferred type of 'create' cannot be named without a reference to '@wollybeard/kit/node_modules/.pnpm/type-fest@4.41.0/node_modules/type-fest'. This is likely not portable. A type annotation is necessary.
+export { type PackageJson } from 'type-fest'
+export * from 'zx'

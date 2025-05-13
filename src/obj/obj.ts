@@ -1,4 +1,4 @@
-import type { Rec, Simplify, TypeofTypes } from '../exports/index.js'
+import { Language, type Rec } from '../exports/index.js'
 
 export type Any = object
 
@@ -6,7 +6,7 @@ export const is = (value: unknown): value is Any => {
   return typeof value === `object` && value !== null
 }
 
-export const entries = <obj extends Any>(obj: obj): Simplify<entries<obj>> => {
+export const entries = <obj extends Any>(obj: obj): Language.Simplify<entries<obj>> => {
   return Object.entries(obj) as any
 }
 
@@ -14,7 +14,7 @@ export type entries<obj extends Any> = {
   [__key__ in keyof obj]: [__key__, obj[__key__]]
 }[keyof obj][]
 
-export const isIsh = <type>(spec: Record<PropertyKey, TypeofTypes>) => (value: unknown): value is type => {
+export const isIsh = <type>(spec: Record<PropertyKey, Language.TypeofTypes>) => (value: unknown): value is type => {
   if (!is(value)) return false
   const obj_ = value as Rec.Any
 
@@ -30,3 +30,5 @@ export const isEmpty = (obj: object): boolean => {
 export const isEmpty$ = (obj: object): obj is {} => {
   return Object.keys(obj).length === 0
 }
+
+export * from './merge.js'

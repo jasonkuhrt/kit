@@ -78,6 +78,22 @@ export const includesUnknown = <T>(array: T[], value: unknown): value is T => {
 
 export type Maybe<$Type> = $Type | $Type[]
 
+export const sure = <T>(value: T | T[]) => Array.isArray(value) ? value : [value]
+
 export const dedupe = <arr extends unknown[]>(arr: arr): arr => {
-  return [...new Set(arr)] as arr
+  // Using filter to iterate through the array once, keeping only the first occurrence of each item
+  let i = 0
+  const seen = new Set<unknown>()
+
+  while (i < arr.length) {
+    const item = arr[i]
+    if (seen.has(item)) {
+      arr.splice(i, 1)
+    } else {
+      seen.add(item)
+      i++
+    }
+  }
+
+  return arr
 }

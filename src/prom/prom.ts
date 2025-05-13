@@ -7,3 +7,7 @@ export const isIsh = Obj.isIsh<Promise<unknown>>({
 })
 
 export type Maybe<$Type> = $Type | Promise<$Type>
+
+export type AnyAny = Promise<any>
+
+export type Any = Promise<unknown>
