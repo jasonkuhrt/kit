@@ -10,9 +10,13 @@ export const Value: z.ZodType<Value> = z.lazy(() => z.union([Primitive, z.array(
 export type Value = Primitive | { [key: string]: Value } | Value[]
 export const isValue = ZodAid.typeGuard(Value)
 
-export const Object: z.ZodType<Object> = z.record(Value)
-export type Object = { [key: string]: Value }
-export const isObject = ZodAid.typeGuard(Object)
+const Obj: z.ZodType<Obj> = z.record(Value)
+type Obj = { [key: string]: Value }
+export const isObject = ZodAid.typeGuard(Obj)
+
+// If we name this "Object" then Vitest fails with "cannot reference Object before initialization"
+// TODO: open issue with Vitest team
+export { Obj as Object }
 
 export const codec = Codec.create<Value>({
   serialize: json => JSON.stringify(json, null, 2),
