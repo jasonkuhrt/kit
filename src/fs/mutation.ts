@@ -7,8 +7,9 @@ import type { FileWriteInput, FileWriteInputMaybeJson } from './fs.js'
 import { writeJson } from './json.js'
 import { exists } from './query.js'
 
-export const makeTemporaryDirectory = async (): Promise<string> => {
-  const path = tmpdir()
+export const makeTemporaryDirectory = async (name: string = Date.now().toString()): Promise<string> => {
+  const osTmpDirPath = tmpdir()
+  const path = Path.join(osTmpDirPath, name)
   await makeDirectory(path)
   return path
 }
