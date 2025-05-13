@@ -126,7 +126,7 @@ export const create = async <scriptRunners extends ScriptRunners = {}>(
 
   // utilities
 
-  const fsr = FsRelative.create({ directory: await Fs.tmpDir() })
+  const fsr = FsRelative.create({ directory: await Fs.makeTemporaryDirectory() })
 
   debug(`created temporary directory`, { path: fsr.cwd })
 

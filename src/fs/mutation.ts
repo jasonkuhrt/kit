@@ -1,4 +1,5 @@
 import * as NodeFs from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import * as Path from 'node:path'
 import { Arr } from '../arr/index.js'
 import type { Language } from '../language/index.js'
@@ -6,8 +7,10 @@ import type { FileWriteInput, FileWriteInputMaybeJson } from './fs.js'
 import { writeJson } from './json.js'
 import { exists } from './query.js'
 
-export const tmpDir = (prefix: string = Date.now().toString() + '-') => {
-  return NodeFs.mkdtemp(prefix)
+export const makeTemporaryDirectory = async (): Promise<string> => {
+  const path = tmpdir()
+  await makeDirectory(path)
+  return path
 }
 
 export const makeDirectory = async (path: string): Language.SideEffectAsync => {
