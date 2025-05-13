@@ -5,3 +5,5 @@ export const isIsh = Obj.isIsh<Promise<unknown>>({
   catch: `function`,
   finally: `function`,
 })
+
+export type Maybe<$Type> = $Type | Promise<$Type>
