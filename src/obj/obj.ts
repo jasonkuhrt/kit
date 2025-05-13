@@ -22,3 +22,7 @@ export const isIsh = <type>(spec: Record<PropertyKey, TypeofTypes>) => (value: u
     return typeof obj_[key] === typeofType
   })
 }
+
+export const isEmpty = (obj: object): obj is {} => {
+  return Object.keys(obj).length === 0
+}
