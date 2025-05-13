@@ -15,4 +15,4 @@ export interface FileWriteOptions {
 
 export interface FileWriteInput<$Type = string> extends File<$Type>, FileWriteOptions {}
 
-export type FileWriteInputMaybeJson = FileWriteInput<string | Json.Obj>
+export type FileWriteInputMaybeJson = FileWriteInput<string | Json.Object>
