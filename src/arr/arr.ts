@@ -77,3 +77,7 @@ export const includesUnknown = <T>(array: T[], value: unknown): value is T => {
 }
 
 export type Maybe<$Type> = $Type | $Type[]
+
+export const dedupe = <arr extends unknown[]>(arr: arr): arr => {
+  return [...new Set(arr)] as arr
+}
