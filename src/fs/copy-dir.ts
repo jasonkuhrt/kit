@@ -5,6 +5,14 @@ import { Path } from '../path/index.js'
 import { Str } from '../str/index.js'
 import { makeDirectory } from './mutation.js'
 
+export const defaultCopyDirOptions: CopyDirConfig = Object.freeze({
+  ignore: [],
+})
+
+export interface CopyDirOptions {
+  ignore?: Str.Pattern
+}
+
 export const copyDirFactory = (options?: CopyDirOptions) => {
   const factoryDefaultOptions = Obj.merge(structuredClone(defaultCopyDirOptions), options ?? {})
 
@@ -19,14 +27,6 @@ export const copyDirFactory = (options?: CopyDirOptions) => {
 }
 
 export const copyDir = copyDirFactory()
-
-export interface CopyDirOptions {
-  ignore?: Str.Pattern
-}
-
-export const defaultCopyDirOptions: CopyDirConfig = Object.freeze({
-  ignore: [],
-})
 
 // --- Internal
 
