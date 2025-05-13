@@ -18,6 +18,6 @@ export const neverCase = (value: never): never => {
  * This code cannot be reached.
  * If it is reached, then that means there is a defect in our code.
  */
-export const never: (context?: object) => never = context => {
+export const never: (context?: object | string) => never = context => {
   throw new Error('Something that should be impossible happened', { cause: context })
 }

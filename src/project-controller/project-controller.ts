@@ -141,9 +141,11 @@ export const create = async <scriptRunners extends ScriptRunners = {}>(
 
   switch (config.scaffold.type) {
     case `template`: {
-      const dir = config.scaffold.dir
-      const ignore = config.scaffold.ignore
-      await Fs.copyDirFactory({ ignore })({ to: dir, from: fsr.cwd })
+      await Fs.copyDir({
+        from: config.scaffold.dir,
+        to: fsr.cwd,
+        options: { ignore: config.scaffold.ignore },
+      })
       debug(`copied template`)
       break
     }
@@ -166,7 +168,7 @@ export const create = async <scriptRunners extends ScriptRunners = {}>(
   // files
 
   const packageJson = await Manifest.resource.read(fsr.cwd)
-  if (!packageJson) Language.never()
+  if (!packageJson) Language.never(`packageJson missing in ${fsr.cwd}`)
 
   const files = {
     packageJson,
