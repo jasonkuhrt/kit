@@ -1,16 +1,14 @@
 import { FsLayout } from '../fs-layout/index.js'
 import type { FsRelative } from '../fs-relative/index.js'
 
-export namespace FileStorage {
-  export interface FileStorage {
+export namespace Layout {
+  export interface Layout {
     utilities: FsRelative.FsRelative
     cwd: string
-    set: <directoryLayout extends FsLayout.Tree>(
-      directoryLayout: directoryLayout,
-    ) => Promise<directoryLayout>
+    set: <layout extends FsLayout.Tree>(layout: layout) => Promise<layout>
   }
 
-  export const create = (parameters: { fsRelative: FsRelative.FsRelative }): FileStorage => {
+  export const create = (parameters: { fsRelative: FsRelative.FsRelative }): Layout => {
     const fsRelative = parameters.fsRelative
 
     return {

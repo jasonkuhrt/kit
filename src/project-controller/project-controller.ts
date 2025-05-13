@@ -7,7 +7,7 @@ import { Manifest } from '../manifest/index.js'
 import type { PackageManager } from '../package-manager/index.js'
 import { Path } from '../path/index.js'
 import type { Str } from '../str/index.js'
-import { FileStorage } from './file-system.js'
+import { Layout } from './layout.js'
 
 type ScriptRunner = (...args: any[]) => Promise<any>
 
@@ -23,7 +23,7 @@ export interface ProjectController<
   // eslint-disable-next-line
   $ScriptRunners extends ScriptRunners = {},
 > {
-  fileStorage: FileStorage.FileStorage
+  layout: Layout.Layout
   shell: Shell
   packageManager: Shell
   files: {
@@ -135,7 +135,7 @@ export const create = async <scriptRunners extends ScriptRunners = {}>(
 
   const pnpmShell = shell({ prefix: `pnpm ` })
 
-  const fileStorage = FileStorage.create({ fsRelative: fsr })
+  const layout = Layout.create({ fsRelative: fsr })
 
   // scaffold
 
@@ -176,7 +176,7 @@ export const create = async <scriptRunners extends ScriptRunners = {}>(
 
   const project: ProjectController<scriptRunners> = {
     shell,
-    fileStorage,
+    layout,
     files,
     packageManager: pnpmShell,
     dir: fsr.cwd,
@@ -194,7 +194,7 @@ export const create = async <scriptRunners extends ScriptRunners = {}>(
   for (const link of parameters.links ?? []) {
     const pathToLinkDirFromProject = Path.join(
       `..`,
-      Path.relative(project.fileStorage.cwd, link.dir),
+      Path.relative(project.layout.cwd, link.dir),
     )
     debug(`install link`, link)
 
@@ -227,4 +227,4 @@ export const create = async <scriptRunners extends ScriptRunners = {}>(
   return project
 }
 
-export * from './file-system.js'
+export * from './layout.js'
