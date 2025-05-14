@@ -1,4 +1,7 @@
-import { Language, type Rec } from '../exports/index.js'
+import type { Language } from '../language/index.js'
+import type { Rec } from '../rec/index.js'
+
+export * from './merge.js'
 
 export type Any = object
 
@@ -30,5 +33,3 @@ export const isEmpty = (obj: object): boolean => {
 export const isEmpty$ = (obj: object): obj is {} => {
   return Object.keys(obj).length === 0
 }
-
-export * from './merge.js'

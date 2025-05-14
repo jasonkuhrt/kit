@@ -15,6 +15,7 @@ interface State {
   isEnabled: boolean
 }
 
+/*@__NO_SIDE_EFFECTS__*/
 export const create = (namespace?: string, initialState?: State): Debug => {
   const isDebugEnabledFromEnv = calcIsEnabledFromEnv(process.env, namespace)
 
@@ -91,3 +92,7 @@ const parseNumberOr = (str: string | undefined, defaultValue: number): number =>
 // initialize root debug
 
 export const debug = create()
+
+export const dump = (value: any) => {
+  console.log(inspect(value, { depth: 20, colors: true }))
+}

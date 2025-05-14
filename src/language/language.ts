@@ -1,4 +1,3 @@
-import { inspect } from 'node:util'
 import type { Prom } from '../prom/index.js'
 
 export * from './never.js'
@@ -26,10 +25,6 @@ export type SideEffectAsync = Promise<void>
 export type SideEffect = void
 
 export type SideEffectAsyncMaybe = Prom.Maybe<void>
-
-export const dump = (value: any) => {
-  console.log(inspect(value, { depth: 20, colors: true }))
-}
 
 export const todo = (): never => {
   throw new Error(`TODO`)

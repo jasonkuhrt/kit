@@ -5,6 +5,7 @@
     "name": "Jason Kuhrt",
     "url": "https://kuhrt.me"
   },
+  "sideEffects": false,
   "exports": {
     ".": "./build/exports/index.js",
     "./cache": "./build/exports/cache/index.js",

@@ -1,8 +1,7 @@
 import { Arr } from '../arr/index.js'
 import { Language } from '../language/index.js'
 import type { Rec } from '../rec/index.js'
-import { Obj } from './index.js'
-import type { Any } from './obj.js'
+import { type Any, is } from './obj.js'
 
 interface MergeOptions {
   undefined?: boolean
@@ -10,13 +9,13 @@ interface MergeOptions {
 }
 
 // dprint-ignore
+/*@__NO_SIDE_EFFECTS__*/
 export const mergeWith =
 	(mergers?: MergeOptions) =>
-		<obj1 extends Obj.Any, obj2 extends Obj.Any>(obj1: obj1, obj2: obj2): obj1 & obj2 =>
+		<obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2): obj1 & obj2 =>
 			_mergeWith<obj1, obj2>(mergers ?? {}, obj1, obj2)
 
-export const merge: <obj1 extends Obj.Any, obj2 extends Obj.Any>(obj1: obj1, obj2: obj2) => obj1 & obj2 =
-  mergeWith() as any
+export const merge: <obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2) => obj1 & obj2 = mergeWith() as any
 
 export const mergeWithArrayPush = mergeWith({
   array: (a, b) => {
@@ -47,7 +46,7 @@ export type MergeShallow<
 
 // ---- INTERNALS ----
 
-const _mergeWith = <obj1 extends Obj.Any, obj2 extends Obj.Any>(
+const _mergeWith = <obj1 extends Any, obj2 extends Any>(
   mergers: MergeOptions,
   obj1: obj1,
   obj2: obj2,
@@ -59,7 +58,7 @@ const _mergeWith = <obj1 extends Obj.Any, obj2 extends Obj.Any>(
     const obj1Value = obj1_AS[k2]
     const obj2Value = obj2_AS[k2]
 
-    if (Obj.is(obj2Value) && Obj.is(obj1Value)) {
+    if (is(obj2Value) && is(obj1Value)) {
       obj1_AS[k2] = _mergeWith(mergers, obj1Value, obj2Value)
       continue
     }

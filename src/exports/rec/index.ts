@@ -1,1 +1,1 @@
-export * as Rec from '../../rec/rec.js'
+export * from '../../rec/rec.js'
