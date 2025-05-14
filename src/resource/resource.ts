@@ -1,7 +1,5 @@
 import type { Codec } from '../codec/index.js'
 import { Fs } from '../fs/index.js'
-import { write } from '../fs/mutation.js'
-import { exists } from '../fs/query.js'
 import { Language } from '../language/index.js'
 import { Path } from '../path/index.js'
 import { Value } from '../value/index.js'
@@ -53,7 +51,7 @@ export const create = <name extends string, type>(configInput: {
     },
     ensureInit: async (dir) => {
       const filePath = Path.absolutify(dir)(config.path)
-      const isExists = await exists(filePath)
+      const isExists = await Fs.exists(filePath)
       if (isExists) return
       await resource.write(emptyValue())
     },
@@ -80,7 +78,7 @@ export const create = <name extends string, type>(configInput: {
     write: async (contents, dir, hard) => {
       const filePath = Path.absolutify(dir)(config.path)
       const serialized = config.codec.serialize(contents)
-      await write({ path: filePath, content: serialized, hard })
+      await Fs.write({ path: filePath, content: serialized, hard })
     },
     update: async (updater, dir, hard) => {
       const value = await resource.readOrEmpty(dir)
