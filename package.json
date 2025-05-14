@@ -11,10 +11,12 @@
     "./arr": "./build/arr/arr.js",
     "./cache": "./build/cache/cache.js",
     "./codec": "./build/codec/codec.js",
+    "./debug": "./build/debug/debug.js",
+    "./eq": "./build/eq/eq.js",
+    "./err": "./build/err/err.js",
     "./fn": "./build/fn/fn.js",
     "./fs": "./build/fs/fs.js",
     "./fs-layout": "./build/fs-layout/fs-layout.js",
-    "./eq": "./build/eq/eq.js",
     "./fs-relative": "./build/fs-relative/fs-relative.js",
     "./json": "./build/json/json.js",
     "./language": "./build/language/language.js",
@@ -43,7 +45,9 @@
     "check:format": "dprint check",
     "check:types": "tsc --noEmit",
     "release": "dripip stable",
-    "prepack": "pnpm build"
+    "prepack": "pnpm build",
+    "test:unit": "vitest",
+    "test": "vitest"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.1",
@@ -61,7 +65,15 @@
     "src"
   ],
   "libra": {
-    "visibility": true
+    "visibility": true,
+    "exports": {
+      "include": {
+        "sourceCodeLayout": "/(?<module>.+)/\\1",
+        "manifestExportsEntries": {
+          "./${module}": "${libra.paths.build}/${module}/${module}.js"
+        }
+      }
+    }
   },
   "type": "module",
   "dependencies": {
