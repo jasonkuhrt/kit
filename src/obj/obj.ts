@@ -1,4 +1,4 @@
-import type { Language } from '../language/index.js'
+import { Language } from '../language/index.js'
 import type { Rec } from '../rec/index.js'
 
 export * from './merge.js'
@@ -6,7 +6,7 @@ export * from './merge.js'
 export type Any = object
 
 export const is = (value: unknown): value is Any => {
-  return typeof value === `object` && value !== null
+  return typeof value === Language.TypeofTypesEnum.object && value !== null
 }
 
 export const entries = <obj extends Any>(obj: obj): Language.Simplify<entries<obj>> => {

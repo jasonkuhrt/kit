@@ -1,6 +1,9 @@
+import { Language } from '../language/index.js'
 import type { Prom } from '../prom/index.js'
 
 export type AnyAny = (...args: any[]) => any
+
+export const is = Language.typeGuard<AnyAny>(value => typeof value === Language.TypeofTypesEnum.function)
 
 export type AnyAnyAsync = (...args: any[]) => Prom.AnyAny
 
@@ -32,7 +35,3 @@ export type ReturnExclude<$Type, $Fn extends AnyAny> =
     : never
 
 export type ReturnExcludeNull<$Fn extends AnyAny> = ReturnExclude<null, $Fn>
-
-export const is = (value: unknown): value is AnyAny => {
-  return typeof value === `function`
-}

@@ -2,8 +2,9 @@ import type { Codec } from '../codec/index.js'
 import { Fs } from '../fs/index.js'
 import { write } from '../fs/mutation.js'
 import { exists } from '../fs/query.js'
-import type { Language } from '../language/index.js'
+import { Language } from '../language/index.js'
 import { Path } from '../path/index.js'
+import { Value } from '../value/index.js'
 
 export interface Resource<$Name extends string = string, $Type = any> {
   name: $Name
@@ -18,16 +19,11 @@ export interface Resource<$Name extends string = string, $Type = any> {
   write: (contents: $Type, dir?: string, hard?: boolean) => Language.SideEffectAsync
 }
 
-export const create = <name extends string, type>({
-  name,
-  path,
-  codec,
-  emptyValue,
-}: {
+export const create = <name extends string, type>(configInput: {
   name: name
   path: string
   codec: Codec.Codec<type>
-  emptyValue: () => NoInfer<type>
+  emptyValue: Value.LazyMaybe<NoInfer<type>>
 }): Resource<name, type> => {
   const cache = <fn extends (...args: any[]) => Promise<type | undefined>>(fn: fn): fn => {
     // @ts-expect-error
@@ -40,42 +36,50 @@ export const create = <name extends string, type>({
     }
     return fn_
   }
+  const emptyValue = Value.resolveLazyFactory(configInput.emptyValue)
+
+  const config = {
+    name: configInput.name,
+    path: configInput.path,
+    codec: configInput.codec,
+    emptyValue: configInput.emptyValue,
+  }
 
   const resource: Resource<name, type> = {
-    name,
-    codec,
+    name: config.name,
+    codec: config.codec,
     cache: {
       value: undefined,
     },
     ensureInit: async (dir) => {
-      const filePath = Path.absolutify(dir)(path)
+      const filePath = Path.absolutify(dir)(config.path)
       const isExists = await exists(filePath)
       if (isExists) return
       await resource.write(emptyValue())
     },
     read: cache(async (dir) => {
-      const filePath = Path.absolutify(dir)(path)
+      const filePath = Path.absolutify(dir)(config.path)
       try {
         const content = await Fs.read(filePath)
         if (content === null) return undefined
-        const value = codec.deserialize(content)
+        const value = config.codec.deserialize(content)
         return value
       } catch {
         return undefined
       }
     }),
     readOrEmpty: cache(async (dir) => {
-      const filePath = Path.absolutify(dir)(path)
+      const filePath = Path.absolutify(dir)(config.path)
       const content = await Fs.read(filePath)
       if (content === null) {
         return emptyValue()
       }
-      const value = codec.deserialize(content)
+      const value = config.codec.deserialize(content)
       return value
     }),
     write: async (contents, dir, hard) => {
-      const filePath = Path.absolutify(dir)(path)
-      const serialized = codec.serialize(contents)
+      const filePath = Path.absolutify(dir)(config.path)
+      const serialized = config.codec.serialize(contents)
       await write({ path: filePath, content: serialized, hard })
     },
     update: async (updater, dir, hard) => {

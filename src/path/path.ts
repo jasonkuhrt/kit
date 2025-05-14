@@ -1,3 +1,4 @@
+import { tmpdir } from 'node:os'
 import * as NodePath from 'node:path'
 
 export {
@@ -56,3 +57,5 @@ export const formatImplicitRelative = (path: string) => {
 }
 
 export const explicitRelativePrefix = `./`
+
+export const tmpDirectory = tmpdir()

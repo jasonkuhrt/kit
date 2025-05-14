@@ -18,6 +18,7 @@ export * from '../rec/index.js'
 export * from '../resource/index.js'
 export * from '../str/index.js'
 export * from '../url/index.js'
+export * from '../value/index.js'
 export * from '../zod-aid/index.js'
 
 // To satisfy TS
