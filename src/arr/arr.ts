@@ -65,12 +65,35 @@ export const mapNonEmptyArray = <nonEmptyArray extends NonEmpty<any>, T2>(
   return nonEmptyArray.map(fn) as NonEmpty<T2>
 }
 
+export type AnyTuple2 = [any, any]
+export type AnyTuple3 = [any, any, any]
+export type AnyTuple4 = [any, any, any, any]
+export type AnyTuple5 = [any, any, any, any, any]
+
 export const map = <array extends any[], newType>(
   array: array,
   fn: (value: array[number], index: number) => newType,
-): array extends NonEmpty<any> ? NonEmpty<newType> : newType[] => {
+): array extends AnyTuple2 ? [newType, newType]
+  : array extends AnyTuple3 ? [newType, newType, newType]
+  : array extends AnyTuple4 ? [newType, newType, newType, newType]
+  : array extends AnyTuple5 ? [newType, newType, newType, newType, newType]
+  : array extends NonEmpty<any> ? NonEmpty<newType>
+  : newType[] =>
+{
   return array.map(fn) as any
 }
+
+export const mapWith =
+  <array extends any[], newType>(fn: (value: array[number], index: number) => newType) =>
+  (array: array): array extends AnyTuple2 ? [newType, newType]
+    : array extends AnyTuple3 ? [newType, newType, newType]
+    : array extends AnyTuple4 ? [newType, newType, newType, newType]
+    : array extends AnyTuple5 ? [newType, newType, newType, newType, newType]
+    : array extends NonEmpty<any> ? NonEmpty<newType>
+    : newType[] =>
+  {
+    return array.map(fn) as any
+  }
 
 export const includesUnknown = <T>(array: T[], value: unknown): value is T => {
   return array.includes(value as any)

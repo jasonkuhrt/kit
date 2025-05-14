@@ -1,4 +1,6 @@
 import { Arr } from '../arr/index.js'
+import type { Json } from '../json/index.js'
+import { Obj } from '../obj/index.js'
 
 export const is = (value: unknown): value is string => typeof value === `string`
 
@@ -23,4 +25,21 @@ const _match = (value: string) => (pattern: string | RegExp): boolean => {
     return value === pattern
   }
   return pattern.test(value)
+}
+
+// Template
+
+export const interpolate = (template: string) => (args: TemplateArgs) => {
+  const get = Obj.getOn(args)
+  return template.replace(templateVariablePattern, (_, parameterName: string) => {
+    return String(get(parameterName))
+  })
+}
+
+export const templateVariablePattern = /\${([^}]+)}/g
+
+export type TemplateArgs = Record<string, Json.Value>
+
+export const split = (separator: string) => (value: string): string[] => {
+  return value.split(separator)
 }
