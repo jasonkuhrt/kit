@@ -1,16 +1,8 @@
 import type { PackageJson } from 'type-fest'
-import { Json } from '../json/index.js'
-import { Language } from '../language/index.js'
-import { Resource } from '../resource/index.js'
 
 export * from './moniker.js'
 
-export const resource = Resource.create({
-  name: `manifest`,
-  path: `package.json`,
-  codec: Json.codecAs<Manifest>(),
-  emptyValue: Language.constant({}),
-})
+export * from './resource.js'
 
 export type PropertyExports = Exclude<PackageJson[`exports`], undefined>
 
