@@ -59,3 +59,13 @@ export const formatImplicitRelative = (path: string) => {
 export const explicitRelativePrefix = `./`
 
 export const tmpDirectory = tmpdir()
+
+// Protocol
+
+// export const protocolPattern = /^([a-zA-z]+):\/\//i
+
+// export const stripProtocol = Str.strip(protocolPattern)
+
+// export const fileProtocol = `file://`
+
+// export const stripFileProtocol = Str.stripLeading(fileProtocol)

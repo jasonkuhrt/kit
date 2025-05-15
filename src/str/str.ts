@@ -1,3 +1,7 @@
-export * from './base.js'
 export * from './builder.js'
 export * as Case from './case.js'
+export * from './match.js'
+export * from './replace.js'
+export * from './split.js'
+export * from './template.js'
+export * from './type.js'

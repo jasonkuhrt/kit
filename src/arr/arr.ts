@@ -1,14 +1,29 @@
 export type Any = unknown[]
 
+export type AnyAny = any[]
+
+export type AnyAny2 = [any, any]
+export type AnyAny3 = [any, any, any]
+export type AnyAny4 = [any, any, any, any]
+export type AnyAny5 = [any, any, any, any, any]
+
 export const is = (value: unknown): value is Any => {
   return Array.isArray(value)
 }
 
-export const ensure = <value>(value: value): FlattenShallow<value>[] => {
-  return Array.isArray(value) ? value : [value as any]
+export type Maybe<$Type> = $Type | $Type[]
+
+export const sure = <value>(value: value): sure<value> => {
+  return is(value) ? value as any : [value] as any
 }
 
-export type FlattenShallow<$Type> = $Type extends (infer __inner_type__)[] ? __inner_type__ : $Type
+export type sure<$Type> = $Type extends AnyAny ? $Type : $Type[]
+
+// dprint-ignore
+export type FlattenShallow<$Type> =
+  $Type extends (infer __inner_type__)[]
+    ? __inner_type__
+    : $Type
 
 export const partitionOne = <item, itemSub extends item>(
   items: item[],
@@ -48,60 +63,67 @@ export const partitionErrors = <T>(array: T[]): [Exclude<T, Error>[], Extract<T,
   return [values, errors]
 }
 
-export type NonEmpty<T> = [T, ...T[]]
+// Empty
 
-export const isEmpty = (array: unknown[]): array is [] => array.length === 0
+export type NonEmpty<$Type = any> = [$Type, ...$Type[]]
 
-export const isNotEmpty = <T>(
-  array: T[],
-): array is NonEmpty<T> => {
+export const isEmpty = (array: unknown[]): array is [] => {
+  return array.length === 0
+}
+
+export const isNotEmpty = <value>(array: value[]): array is NonEmpty<value> => {
   return array.length > 0
 }
 
-export const mapNonEmptyArray = <nonEmptyArray extends NonEmpty<any>, T2>(
-  nonEmptyArray: nonEmptyArray,
-  fn: (value: nonEmptyArray[number]) => T2,
-): NonEmpty<T2> => {
-  return nonEmptyArray.map(fn) as NonEmpty<T2>
-}
+// export const mapNonEmptyArray = <nonEmptyArray extends NonEmpty<any>, T2>(
+//   nonEmptyArray: nonEmptyArray,
+//   fn: (value: nonEmptyArray[number]) => T2,
+// ): NonEmpty<T2> => {
+//   return nonEmptyArray.map(fn) as NonEmpty<T2>
+// }
 
-export type AnyTuple2 = [any, any]
-export type AnyTuple3 = [any, any, any]
-export type AnyTuple4 = [any, any, any, any]
-export type AnyTuple5 = [any, any, any, any, any]
+// Map
 
-export const map = <array extends any[], newType>(
+// dprint-ignore
+export type ReplaceInner<$Array extends AnyAny, $NewType> =
+    $Array extends AnyAny2       ? [$NewType, $NewType]
+  : $Array extends AnyAny3       ? [$NewType, $NewType, $NewType]
+  : $Array extends AnyAny4       ? [$NewType, $NewType, $NewType, $NewType]
+  : $Array extends AnyAny5       ? [$NewType, $NewType, $NewType, $NewType, $NewType]
+  : $Array extends NonEmpty      ? NonEmpty<$NewType>
+                                 : $NewType[]
+
+export type JsMapper<
+  $Array extends AnyAny,
+  $NewType,
+> = (value: $Array[number], index: number) => $NewType
+
+export const map = <array extends AnyAny, newType>(
   array: array,
-  fn: (value: array[number], index: number) => newType,
-): array extends AnyTuple2 ? [newType, newType]
-  : array extends AnyTuple3 ? [newType, newType, newType]
-  : array extends AnyTuple4 ? [newType, newType, newType, newType]
-  : array extends AnyTuple5 ? [newType, newType, newType, newType, newType]
-  : array extends NonEmpty<any> ? NonEmpty<newType>
-  : newType[] =>
-{
+  fn: JsMapper<array, newType>,
+): ReplaceInner<array, newType> => {
   return array.map(fn) as any
 }
 
+// dprint-ignore
+export const mapOn =
+  <array extends AnyAny, newType>(array: array) =>
+    (fn: JsMapper<NoInfer<array>, newType>):ReplaceInner<array, newType> => {
+      return array.map(fn) as any
+    }
+
+// dprint-ignore
 export const mapWith =
-  <array extends any[], newType>(fn: (value: array[number], index: number) => newType) =>
-  (array: array): array extends AnyTuple2 ? [newType, newType]
-    : array extends AnyTuple3 ? [newType, newType, newType]
-    : array extends AnyTuple4 ? [newType, newType, newType, newType]
-    : array extends AnyTuple5 ? [newType, newType, newType, newType, newType]
-    : array extends NonEmpty<any> ? NonEmpty<newType>
-    : newType[] =>
-  {
-    return array.map(fn) as any
-  }
+  <array extends AnyAny, newType>(fn: JsMapper<array, newType>) =>
+    (array: array): ReplaceInner<array, newType> => {
+      return array.map(fn) as any
+    }
+
+// Utils
 
 export const includesUnknown = <T>(array: T[], value: unknown): value is T => {
   return array.includes(value as any)
 }
-
-export type Maybe<$Type> = $Type | $Type[]
-
-export const sure = <T>(value: T | T[]) => Array.isArray(value) ? value : [value]
 
 export const dedupe = <arr extends unknown[]>(arr: arr): arr => {
   // Using filter to iterate through the array once, keeping only the first occurrence of each item

@@ -10,7 +10,7 @@ export const defaultCopyDirOptions: CopyDirConfig = Object.freeze({
 })
 
 export interface CopyDirOptions {
-  ignore?: Str.Pattern
+  ignore?: Str.PatternInput
 }
 
 export const copyDirFactory = (options?: CopyDirOptions) => {
@@ -44,7 +44,7 @@ const _copyDir = async (parameters: { from: string; to: string; config: CopyDirC
   // Process each entity, skipping any that match the ignore patterns
   await Promise.all(
     entries
-      .filter(entry => !Str.isMatchPattern(config.ignore)(entry.name))
+      .filter(entry => !Str.isMatchWith(config.ignore)(entry.name))
       .map(async entry => {
         const sourcePath = Path.join(from, entry.name)
         const targetPath = Path.join(to, entry.name)

@@ -1,17 +1,20 @@
 {
   "files.exclude": {
-    "tsconfig.json": false,
-    "tsconfig.build.json": false,
-    ".gitignore": false,
-    ".github": false,
-    "pnpm-workspace.yaml": false,
-    "pnpm-lock.yaml": false,
+    "tsconfig.json": true,
+    "tsconfig.build.json": true,
+    ".gitignore": true,
+    ".github": true,
+    "pnpm-workspace.yaml": true,
+    "pnpm-lock.yaml": true,
     ".vscode": true,
-    "dprint.json": false,
-    "eslint.config.js": false,
-    "build": false,
-    "node_modules/": false,
-    ".dprint/": false
+    "dprint.json": true,
+    "eslint.config.js": true,
+    "build": true,
+    "node_modules/": true,
+    ".dprint/": true,
+    "tsconfig.libra.json": true,
+    ".dprintrc.json": true,
+    "vitest.config.ts": true
   },
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.tsdk": "node_modules/typescript/lib"

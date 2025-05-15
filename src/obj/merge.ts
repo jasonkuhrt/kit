@@ -5,6 +5,7 @@ import { type Any, is } from './obj.js'
 
 interface MergeOptions {
   undefined?: boolean
+  defaults?: boolean
   array?: (arr1: unknown[], arr2: unknown[]) => Language.SideEffect
 }
 
@@ -30,6 +31,14 @@ export const mergeWithArrayPushDedupe = mergeWith({
   },
 })
 
+export const mergeDefaults: <
+  obj1 extends Any,
+  obj1Defaults extends Partial<obj1>,
+>(
+  obj1: obj1,
+  obj1Defaults: obj1Defaults,
+) => obj1 & obj1Defaults = mergeWith({ defaults: true })
+
 // dprint-ignore
 export type MergeShallow<
   $Object1 extends Any,
@@ -47,7 +56,7 @@ export type MergeShallow<
 // ---- INTERNALS ----
 
 const _mergeWith = <obj1 extends Any, obj2 extends Any>(
-  mergers: MergeOptions,
+  options: MergeOptions,
   obj1: obj1,
   obj2: obj2,
 ): obj1 & obj2 => {
@@ -59,17 +68,21 @@ const _mergeWith = <obj1 extends Any, obj2 extends Any>(
     const obj2Value = obj2_AS[k2]
 
     if (is(obj2Value) && is(obj1Value)) {
-      obj1_AS[k2] = _mergeWith(mergers, obj1Value, obj2Value)
+      obj1_AS[k2] = _mergeWith(options, obj1Value, obj2Value)
       continue
     }
 
-    if (Arr.is(obj2Value) && Arr.is(obj1Value) && mergers.array) {
-      mergers.array(obj1Value, obj2Value)
+    if (Arr.is(obj2Value) && Arr.is(obj1Value) && options.array) {
+      options.array(obj1Value, obj2Value)
       obj1_AS[k2] = obj1Value
       continue
     }
 
-    if (obj2Value === undefined && mergers?.undefined !== true) {
+    if (obj2Value === undefined && options.undefined !== true) {
+      continue
+    }
+
+    if (obj1Value !== undefined && options.defaults === true) {
       continue
     }
 

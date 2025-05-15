@@ -1,4 +1,4 @@
-import { isTemplateStringsArray } from './base.js'
+import { isTemplateStringsArray } from './template.js'
 
 export interface Builder {
   (...linesInput: LinesInput): Builder

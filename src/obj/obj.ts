@@ -1,6 +1,7 @@
 import { Language } from '../language/index.js'
 import type { Rec } from '../rec/index.js'
 import { Str } from '../str/index.js'
+import { splitWith } from '../str/split.js'
 
 export * from './merge.js'
 
@@ -50,12 +51,12 @@ export const isEmpty$ = (obj: object): obj is {} => {
  * // Returns: `New York`
  * ```
  */
-export const get = (pathInput: PropertyPathInput) => (obj: Any): unknown => {
+export const getWith = (pathInput: PropertyPathInput) => (obj: Any): unknown => {
   return _get(normalizePropertyPathInput(pathInput), obj)
 }
 
 /**
- * Inverses the parameter order of {@link get}.
+ * Inverses the parameter order of {@link getWith}.
  */
 export const getOn = (obj: Any) => (pathInput: PropertyPathInput): unknown => {
   return _get(normalizePropertyPathInput(pathInput), obj)
@@ -81,4 +82,4 @@ export const normalizePropertyPathInput = (pathInput: PropertyPathInput): Proper
 
 export const PropertyPathSeparator = `.`
 
-export const parsePropertyPath = Str.split(PropertyPathSeparator)
+export const parsePropertyPath = splitWith(PropertyPathSeparator)

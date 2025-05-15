@@ -11,7 +11,16 @@ export const exists = async (path: string): Promise<boolean> => {
   }
 }
 
-export const readDir = async (path: string): Promise<string[] | null> => {
+export const readDirFilesNames = async (path: string): Promise<string[] | null> => {
+  try {
+    const entities = await FS.readdir(path, { withFileTypes: true })
+    return entities.filter((entity) => entity.isFile()).map((entity) => entity.name)
+  } catch {
+    return null
+  }
+}
+
+export const readDirEntityNames = async (path: string): Promise<string[] | null> => {
   try {
     return await FS.readdir(path)
   } catch {

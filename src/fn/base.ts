@@ -35,3 +35,17 @@ export type ReturnExclude<$Type, $Fn extends AnyAny> =
     : never
 
 export type ReturnExcludeNull<$Fn extends AnyAny> = ReturnExclude<null, $Fn>
+
+// Currying
+
+export type CurriedFn = (arg1: any) => (arg2: any) => any
+
+export type flipCurry<$Fn extends CurriedFn> = $Fn extends
+  (...args: infer __args1__) => (...args: infer __args2__) => infer __return__
+  ? (...args: __args2__) => (...args: __args1__) => __return__
+  : never
+
+export const flipCurry = <fn extends CurriedFn>(fn: fn): flipCurry<fn> => {
+  const flipped = (arg1: any) => (arg2: any) => fn(arg2)(arg1)
+  return flipped as any
+}
