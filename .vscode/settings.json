@@ -1,21 +1,21 @@
 {
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
   "files.exclude": {
     "tsconfig.json": true,
     "tsconfig.build.json": true,
+    "tsconfig.libra.json": true,
     ".gitignore": true,
     ".github": true,
     "pnpm-workspace.yaml": true,
     "pnpm-lock.yaml": true,
     ".vscode": true,
     "dprint.json": true,
+    ".dprintrc.json": true,
     "eslint.config.js": true,
+    "vitest.config.ts": true,
     "build": true,
     "node_modules/": true,
-    ".dprint/": true,
-    "tsconfig.libra.json": true,
-    ".dprintrc.json": true,
-    "vitest.config.ts": true
-  },
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.tsdk": "node_modules/typescript/lib"
+    ".dprint/": true
+  }
 }

@@ -43,7 +43,8 @@
   },
   "scripts": {
     "r": "libra refresh && pnpm fix:format",
-    "build": "tsc --project tsconfig.build.json --build",
+    "z": "libra toggle-hiding && pnpm fix:format",
+    "build": "tsc --build tsconfig.build.json",
     "dev": "pnpm build:watch:emit",
     "build:watch:emit": "pnpm build --noCheck --watch",
     "build:watch": "pnpm build --watch",
@@ -79,7 +80,6 @@
   },
   "libra": {
     "visibility": false,
-    "cli": false,
     "exports": {
       "include": {
         "sourceCodeLayout": "/(?<module>.+)/\\1",
@@ -87,6 +87,7 @@
           "./${module}": "${libra.paths.build}/${module}/${module}.js"
         }
       }
-    }
+    },
+    "cli": false
   }
 }
