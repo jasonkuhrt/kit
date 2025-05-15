@@ -49,7 +49,7 @@
     "build:watch:emit": "pnpm build --noCheck --watch",
     "build:watch": "pnpm build --watch",
     "build:emit": "pnpm build --noEmit",
-    "build:clean": "pnpm build --clean && rm -rf build",
+    "build:clean": "pnpm tsc --build tsconfig.build.json --clean && rm -rf build",
     "fix:format": "dprint fmt",
     "check:format": "dprint check",
     "check:types": "tsc --noEmit",
