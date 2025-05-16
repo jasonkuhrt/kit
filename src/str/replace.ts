@@ -1,4 +1,5 @@
 import { Arr } from '../arr/index.js'
+import { flipCurry } from '../fn/base.js'
 import type { PatternInput } from './match.js'
 
 // Leading
@@ -36,3 +37,39 @@ export const replaceOn = (value: string) => (replacement: string) => (matcher: P
 }
 
 export const strip = replaceWith(``)
+
+// append
+
+export const append = (value1: string, value2: string): string => {
+  return value2 + value1
+}
+
+export const appendOn = (value1: string) => (value2: string): string => {
+  return append(value1, value2)
+}
+
+export const appendWith = flipCurry(appendOn)
+
+// prepend
+
+export const prepend = (value1: string, value2: string): string => {
+  return value1 + value2
+}
+
+export const prependOn = (value1: string) => (value2: string): string => {
+  return prepend(value1, value2)
+}
+
+export const prependWith = flipCurry(prependOn)
+
+// repeat
+
+export const repeat = (value: string, count: number): string => {
+  return value.repeat(count)
+}
+
+export const repeatOn = (value: string) => (count: number): string => {
+  return repeat(value, count)
+}
+
+export const repeatWith = flipCurry(repeatOn)

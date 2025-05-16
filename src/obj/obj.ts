@@ -1,7 +1,9 @@
 import { Language } from '../language/index.js'
 import type { Rec } from '../rec/index.js'
-import { Str } from '../str/index.js'
-import { splitWith } from '../str/split.js'
+
+export * from './path.js'
+
+export * from './get.js'
 
 export * from './merge.js'
 
@@ -35,51 +37,3 @@ export const isEmpty = (obj: object): boolean => {
 export const isEmpty$ = (obj: object): obj is {} => {
   return Object.keys(obj).length === 0
 }
-
-// Path
-
-/**
- * Access a nested property in an object using a dot-notation path string
- * @example
- * ```ts
- * get(`user.address.city`, { user: { address: { city: `New York` } } })
- * // Returns: `New York`
- * ```
- * @example
- * ```ts
- * get([`user`, `address`, `city`], { user: { address: { city: `New York` } } })
- * // Returns: `New York`
- * ```
- */
-export const getWith = (pathInput: PropertyPathInput) => (obj: Any): unknown => {
-  return _get(normalizePropertyPathInput(pathInput), obj)
-}
-
-/**
- * Inverses the parameter order of {@link getWith}.
- */
-export const getOn = (obj: Any) => (pathInput: PropertyPathInput): unknown => {
-  return _get(normalizePropertyPathInput(pathInput), obj)
-}
-
-const _get = (propertyPath: PropertyPath, obj: Any): unknown => {
-  return propertyPath.reduce<unknown>((acc, part) => {
-    return is(acc)
-      ? (acc as Rec.Any)[part]
-      : undefined
-  }, obj)
-}
-
-export type PropertyPath = string[]
-
-export type PropertyPathInput = string | PropertyPath
-
-export const normalizePropertyPathInput = (pathInput: PropertyPathInput): PropertyPath => {
-  return Str.is(pathInput)
-    ? parsePropertyPath(pathInput)
-    : pathInput
-}
-
-export const PropertyPathSeparator = `.`
-
-export const parsePropertyPath = splitWith(PropertyPathSeparator)
