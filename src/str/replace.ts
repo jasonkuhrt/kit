@@ -2,7 +2,7 @@ import { Arr } from '../arr/index.js'
 import { curry, flipCurried } from '../fn/base.js'
 import { Fn } from '../fn/index.js'
 import { spaceNoBreak, spaceRegular } from './char/char.js'
-import type { PatternInput } from './match.js'
+import type { PatternsInput } from './match.js'
 import { Char } from './str.js'
 
 // Leading
@@ -24,18 +24,18 @@ export const stripLeading = replaceLeadingWith(``)
 
 // General
 
-export const replace = (replacement: string, matcher: PatternInput, value: string): string => {
+export const replace = (replacement: string, matcher: PatternsInput, value: string): string => {
   const patterns = Arr.sure(matcher)
   return patterns.reduce<string>((value, pattern) => {
     return value.replaceAll(pattern, replacement)
   }, value)
 }
 
-export const replaceWith = (replacement: string) => (matcher: PatternInput) => (value: string): string => {
+export const replaceWith = (replacement: string) => (matcher: PatternsInput) => (value: string): string => {
   return replace(replacement, matcher, value)
 }
 
-export const replaceOn = (value: string) => (replacement: string) => (matcher: PatternInput): string => {
+export const replaceOn = (value: string) => (replacement: string) => (matcher: PatternsInput): string => {
   return replace(replacement, matcher, value)
 }
 

@@ -1,4 +1,5 @@
 export * from '../arr/index.js'
+export * from '../bool/index.js'
 export * from '../cache/index.js'
 export * from '../cli/index.js'
 export * from '../codec/index.js'

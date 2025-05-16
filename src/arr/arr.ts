@@ -1,3 +1,6 @@
+import { Bool } from '../bool/index.js'
+import { Pat } from '../pat/index.js'
+
 export type Any = unknown[]
 
 export type AnyAny = any[]
@@ -9,6 +12,17 @@ export type AnyAny5 = [any, any, any, any, any]
 
 export const is = (value: unknown): value is Any => {
   return Array.isArray(value)
+}
+
+export const find = <value>(arr: value[], predicate: Bool.PredicateMaybe<value>): value | undefined => {
+  const predicate_ = Bool.ensurePredicate(predicate)
+  return arr.find((value) => {
+    return predicate_(value as any)
+  })
+}
+
+export const findFirstMatching = <value>(arr: value[], pattern: Pat.Pattern<value>): value | undefined => {
+  return arr.find(Pat.isMatchWith(pattern))
 }
 
 export type Maybe<$Type> = $Type | $Type[]

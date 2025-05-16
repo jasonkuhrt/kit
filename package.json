@@ -16,6 +16,7 @@
     "./_types": "./build/exports/_types.js",
     ".": "./build/exports/index.js",
     "./arr": "./build/arr/arr.js",
+    "./bool": "./build/bool/bool.js",
     "./cache": "./build/cache/cache.js",
     "./cli": "./build/cli/cli.js",
     "./codec": "./build/codec/codec.js",
@@ -31,6 +32,7 @@
     "./manifest": "./build/manifest/manifest.js",
     "./obj": "./build/obj/obj.js",
     "./package-manager": "./build/package-manager/package-manager.js",
+    "./pat": "./build/pat/pat.js",
     "./path": "./build/path/path.js",
     "./project-controller": "./build/project-controller/project-controller.js",
     "./prom": "./build/prom/prom.js",
@@ -82,7 +84,7 @@
     "visibility": false,
     "exports": {
       "include": {
-        "sourceCodeLayout": "/(?<module>.+)/\\1",
+        "sourceCodeLayout": "^/(?<module>.+)/\\1",
         "manifestExportsEntries": {
           "./${module}": "${libra.paths.build}/${module}/${module}.js"
         }

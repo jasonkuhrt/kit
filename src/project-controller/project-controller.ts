@@ -46,7 +46,7 @@ interface TemplateScaffoldInput {
    * Its files will be copied.
    */
   dir: string
-  ignore?: Str.PatternInput
+  ignore?: Str.PatternsInput
 }
 
 interface InitScaffold {
@@ -61,7 +61,7 @@ interface TemplateScaffold {
    * Its files will be copied.
    */
   dir: string
-  ignore: Str.PatternInput
+  ignore: Str.PatternsInput
 }
 
 type Scaffold = TemplateScaffold | InitScaffold

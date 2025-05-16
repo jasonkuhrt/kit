@@ -1,26 +1,17 @@
-// dprint-ignore
-export const is =
-  <value1>(value1: value1) =>
-    (value2: unknown): value2 is value1 => {
-      return value1 === value2
-    }
+import { Fn } from '../fn/index.js'
 
-// dprint-ignore
-export const isNot =
-  <value1>(value1: value1) =>
-  <variableValue>(value2: variableValue): value2 is Exclude<variableValue, value1> => {
-    // @ts-expect-error
-    return value1 !== value2
-  }
+export * from './type.js'
 
-// null
+// Strict Equality Operator
 
-export const isNull = is(null)
+export const is = (value1: unknown, value2: unknown): boolean => {
+  return value1 === value2
+}
 
-export const isNotNull = isNot(null)
+export const isWith = Fn.curry(is)
 
-// undefined
+export const isNot = (value1: unknown, value2: unknown): boolean => {
+  return value1 !== value2
+}
 
-export const isUndefined = is(undefined)
-
-export const isNotUndefined = isNot(undefined)
+export const isNotWith = Fn.curry(isNot)

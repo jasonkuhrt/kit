@@ -11,6 +11,7 @@ export {
   join,
   normalize,
   parse,
+  type ParsedPath,
   posix,
   relative,
   resolve,
@@ -69,3 +70,21 @@ export const tmpDirectory = tmpdir()
 // export const fileProtocol = `file://`
 
 // export const stripFileProtocol = Str.stripLeading(fileProtocol)
+
+export const executableJavaScriptExtensions = [
+  // JavaScript
+  '.js',
+  '.mjs',
+  '.cjs',
+  '.jsx',
+  // TypeScript
+  '.ts',
+  '.mts',
+  '.cts',
+  '.tsx',
+]
+
+export const buildArtifactExtensions = [
+  '.map',
+  '.d.ts',
+]
