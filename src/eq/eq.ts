@@ -12,3 +12,15 @@ export const isNot =
     // @ts-expect-error
     return value1 !== value2
   }
+
+// null
+
+export const isNull = is(null)
+
+export const isNotNull = isNot(null)
+
+// undefined
+
+export const isUndefined = is(undefined)
+
+export const isNotUndefined = isNot(undefined)

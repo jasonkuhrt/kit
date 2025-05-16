@@ -8,7 +8,7 @@ export const isMatchWith = (patternOrPatterns: PatternInput) => (value: string):
   return patterns.some(_match(value))
 }
 
-export const isMatchOn = Fn.flipCurry(isMatchWith)
+export const isMatchOn = Fn.flipCurried(isMatchWith)
 
 const _match = (value: string) => (pattern: string | RegExp): boolean => {
   if (typeof pattern === `string`) {

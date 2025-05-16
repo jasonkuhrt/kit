@@ -1,24 +1,25 @@
 import { Fn } from '../fn/index.js'
-import { prepend, prependWith, repeat } from './replace.js'
+import { Char } from './char/index.js'
+import { prependWith, repeat } from './replace.js'
+import { joinWith, splitWith } from './split.js'
 
 export const defaultIndentSize = 2
-
-export const characters = {
-  space: ` `,
-  newline: `\n`,
-}
+export const defaultIndentCharacter = Char.spaceNoBreak
+export const defaultLineSeparator = Char.newline
 
 // Lines
 
-export const lines = (text: string) => text.split(characters.newline)
+export const lines = splitWith(defaultLineSeparator)
 
-export const unlines = (lines: string[]) => lines.join(characters.newline)
+export const unlines = joinWith(defaultLineSeparator)
 
 // Indent
 
-export const indent = (text: string, size: number = defaultIndentSize) =>
-  unlines(lines(text).map(prependWith(repeat(characters.space, size))))
+export const indent = (text: string, size?: number | undefined) => {
+  const result = unlines(lines(text).map(prependWith(repeat(defaultIndentCharacter, size ?? defaultIndentSize))))
+  return result
+}
 
-export const indentOn = (text: string) => (size: number = defaultIndentSize) => indent(text, size)
+export const indentOn = Fn.curry(indent)
 
-export const indentWith = Fn.flipCurry(indentOn)
+export const indentWith = Fn.flipCurried(indentOn)

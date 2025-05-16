@@ -1,4 +1,10 @@
+import { Eq } from '../eq/index.js'
+import { Fn } from '../fn/index.js'
+import { trimSpaceRegular } from './replace.js'
 import { isTemplateStringsArray } from './template.js'
+import { unlines } from './text.js'
+
+export const defaultRender = unlines
 
 export interface Builder {
   (...linesInput: LinesInput): Builder
@@ -38,7 +44,7 @@ export const Builder = (): Builder => {
         }
       }
 
-      state.lines.push(code.trim())
+      state.lines.push(trimSpaceRegular(code))
     } else {
       // Usage as function
 
@@ -48,7 +54,7 @@ export const Builder = (): Builder => {
       if (isEmptyInput) {
         state.lines.push(``)
       } else {
-        const lines = linesInput.filter(_ => _ !== null).map(_ => _.trim())
+        const lines = linesInput.filter(Eq.isNotNull).map(trimSpaceRegular)
         state.lines.push(...lines)
       }
     }
@@ -58,15 +64,9 @@ export const Builder = (): Builder => {
 
   builder.state = state
 
-  builder.render = () => render(state.lines)
+  builder.render = Fn.bind(defaultRender, state.lines)
 
   builder.toString = builder.render
 
   return builder
-}
-
-export const separator = `\n`
-
-export const render = (lines: Lines) => {
-  return lines.join(separator)
 }
