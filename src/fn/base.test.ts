@@ -1,20 +1,19 @@
-import { expectTypeOf } from "vitest";
-import { bind } from "./base.js";
-import { _, fn1p, fn2p } from "./_test.js";
-
+import { expectTypeOf } from 'vitest'
+import { _, fn1p, fn2p } from './_test.js'
+import { bind } from './base.js'
 
 // bind
 
 bind(
   // @ts-expect-error
   fnNoParameters,
-  _
+  _,
 )
 
 bind(
   fn1p,
   // @ts-expect-error
-  'invalid'
+  'invalid',
 )
 
 expectTypeOf(bind(fn1p, 1)).toEqualTypeOf<() => void>()

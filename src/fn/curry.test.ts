@@ -1,7 +1,6 @@
-import { expectTypeOf } from "vitest";
-import { _, fn1p, fn2p, fn3p, fn0p, fn1pOptional, fn2pOptional } from "./_test.js";
-import { curry } from "./curry.js";
-
+import { expectTypeOf } from 'vitest'
+import { _, fn0p, fn1p, fn1pOptional, fn2p, fn2pOptional, fn3p } from './_test.js'
+import { curry } from './curry.js'
 
 // @ts-expect-error
 curry(0)

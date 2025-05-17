@@ -44,16 +44,14 @@ export type ReturnExclude<$Type, $Fn extends AnyAny> =
 
 export type ReturnExcludeNull<$Fn extends AnyAny> = ReturnExclude<null, $Fn>
 
-
 // Binding
 
 export const bind = <fn extends AnyAny>(
-  fn: AnyAnyParametersMin1 extends fn
-    ? fn
+  fn: AnyAnyParametersMin1 extends fn ? fn
     : {
-        Error: 'Given function must have at least one parameter'
-      },
-  arg: Parameters<fn>[0]
+      Error: 'Given function must have at least one parameter'
+    },
+  arg: Parameters<fn>[0],
 ): bind<fn> => {
   const fn_ = fn as AnyAny
   return fn_.bind(null, arg) as any

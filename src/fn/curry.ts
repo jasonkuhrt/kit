@@ -1,14 +1,13 @@
-import type { Arr } from "../arr/index.js"
-import type { AnyAny, AnyAnyParametersMin1 } from "./base.js"
+import type { Arr } from '../arr/index.js'
+import type { AnyAny, AnyAnyParametersMin1 } from './base.js'
 
 export type AnyAny2Curried = (arg1: any) => (arg2: any) => any
 
 export const curry = <fn extends AnyAny>(
-  fn: AnyAnyParametersMin1 extends fn 
-    ? fn
+  fn: AnyAnyParametersMin1 extends fn ? fn
     : {
-        Error: 'Given function must have at least one parameter'
-      }
+      Error: 'Given function must have at least one parameter'
+    },
 ): curry<fn> => {
   const fn_ = fn as AnyAny
   const curried = (arg1: any) => (arg2: any) => fn_(arg1, arg2)
@@ -21,25 +20,6 @@ export type curry<fn extends AnyAny> =
     ? Curry__Signature<__args__, __return__>
     : never
 
-type params = Parameters<(x?:1, y?:2) => void>
-
-type l = params extends { length: 1|2 } ? 1 : 0
-
-type x<x extends Arr.Any> = x extends [...infer args, any] ? 1 : 0
-
-type _ = [a?:1,b?:2,c?:3] extends [...infer args, x?:any] ? args : never
-
-type h = [a?:1] extends [] ? 1 : 0
-
-type w = x<params>
-type y = Curry__Signature<params, void>
-
-type i = LastAsTuple<[a?:1,b?:2,c?:3]>
-
-
-// type aa = LastParameterAsTuple<params>
-  
-
 /**
  * Note: This curry presrves the parameter names in the new signature.
  * Thanks to a user who shared the following to me on Discord.
@@ -47,19 +27,19 @@ type i = LastAsTuple<[a?:1,b?:2,c?:3]>
  */
 // dprint-ignore
 type Curry__Signature<$Parameters extends Arr.Any, $Return> =
-  LastAsTuple<$Parameters> extends infer __last_arg_as_tuple__ extends Arr.Any
-    ? Leading<$Parameters> extends infer __leading_parameters__ extends Arr.Any
-      ? __leading_parameters__ extends []
-        ? (...args: __last_arg_as_tuple__) => $Return
-        : Curry__Signature<__leading_parameters__, (...args: __last_arg_as_tuple__) => $Return>
-    : $Return
-  : never
+  $Parameters extends []
+    ? $Return
+    : LastAsTuple<$Parameters> extends infer __last_arg_as_tuple__ extends Arr.Any
+        ? Leading<$Parameters> extends infer __leading_parameters__ extends Arr.Any
+           ? Curry__Signature<__leading_parameters__, (...args: __last_arg_as_tuple__) => $Return>
+           : never
+        : never
 
 // dprint-ignore
 type Leading<$Array extends Arr.Any> =
   $Array extends [...infer leading extends Arr.Any, arg?:any]
     ? leading
-    : []
+    : never
 
 // dprint-ignore
 type LastAsTuple<$Array extends Arr.Any> =
