@@ -3,7 +3,7 @@ import { curry, flipCurried } from '../fn/curry.js'
 import { Fn } from '../fn/index.js'
 import { spaceNoBreak, spaceRegular } from './char/char.js'
 import type { PatternsInput } from './match.js'
-import { Char } from './str.js'
+import { Char } from './char/index.js'
 
 // Leading
 
