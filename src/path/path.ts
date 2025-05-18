@@ -1,5 +1,6 @@
 import { tmpdir } from 'node:os'
 import * as NodePath from 'node:path'
+import { Fn } from '../fn/index.js'
 
 export {
   basename,
@@ -20,6 +21,14 @@ export {
   win32,
 } from 'node:path'
 
+export const ensureAbsolute = (filePath: string, basePath: string = process.cwd()): string => {
+  return NodePath.isAbsolute(filePath)
+    ? filePath
+    : NodePath.resolve(basePath, filePath)
+}
+
+export const ensureAbsoluteOn = Fn.curry(ensureAbsolute)
+
 /**
  * Make a path absolute if it isn't already
  *
@@ -27,11 +36,9 @@ export {
  * @param basePath - The base path to resolve against (defaults to process current working directory)
  * @returns An absolute path
  */
-export const absolutify = (basePath: string = process.cwd()) => (filePath: string): string => {
-  return NodePath.isAbsolute(filePath)
-    ? filePath
-    : NodePath.resolve(basePath, filePath)
-}
+export const ensureAbsoluteWith = Fn.flipCurried(ensureAbsoluteOn)
+
+export const ensureAbsoluteWithCWD = ensureAbsoluteWith(process.cwd())
 
 export const formatExplicitRelative = (path: string) => {
   if (NodePath.isAbsolute(path)) {

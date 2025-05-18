@@ -50,13 +50,13 @@ export const create = <name extends string, type>(configInput: {
       value: undefined,
     },
     ensureInit: async (dir) => {
-      const filePath = Path.absolutify(dir)(config.path)
+      const filePath = Path.ensureAbsoluteWith(dir)(config.path)
       const isExists = await Fs.exists(filePath)
       if (isExists) return
       await resource.write(emptyValue())
     },
     read: cache(async (dir) => {
-      const filePath = Path.absolutify(dir)(config.path)
+      const filePath = Path.ensureAbsoluteWith(dir)(config.path)
       try {
         const content = await Fs.read(filePath)
         if (content === null) return undefined
@@ -67,7 +67,7 @@ export const create = <name extends string, type>(configInput: {
       }
     }),
     readOrEmpty: cache(async (dir) => {
-      const filePath = Path.absolutify(dir)(config.path)
+      const filePath = Path.ensureAbsoluteWith(dir)(config.path)
       const content = await Fs.read(filePath)
       if (content === null) {
         return emptyValue()
@@ -76,7 +76,7 @@ export const create = <name extends string, type>(configInput: {
       return value
     }),
     write: async (contents, dir, hard) => {
-      const filePath = Path.absolutify(dir)(config.path)
+      const filePath = Path.ensureAbsoluteWith(dir)(config.path)
       const serialized = config.codec.serialize(contents)
       await Fs.write({ path: filePath, content: serialized, hard })
     },

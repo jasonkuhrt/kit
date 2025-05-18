@@ -8,18 +8,18 @@ export interface FsRelative {
 }
 
 export const create = (parameters: { directory: string }): FsRelative => {
-  const absolutify = Path.absolutify(parameters.directory)
+  const ensureAbsolute = Path.ensureAbsoluteWith(parameters.directory)
 
-  const cwd = absolutify('./')
+  const cwd = ensureAbsolute('./')
 
   const absolutifyFile = (file: Fs.FileWriteInputMaybeJson) => {
-    file.path = absolutify(file.path)
+    file.path = ensureAbsolute(file.path)
   }
 
   return {
     cwd,
     changeDirectory: path => {
-      const fsRelative = create({ directory: Path.absolutify(cwd)(path) })
+      const fsRelative = create({ directory: Path.ensureAbsolute(path, cwd) })
       return fsRelative
     },
     write: (file) => {
