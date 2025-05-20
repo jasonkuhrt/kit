@@ -1,8 +1,9 @@
-import type { Shell } from 'zx'
+import type { ProcessPromise, Shell } from 'zx'
 import { Debug } from '../debug/index.js'
 import { FsRelative } from '../fs-relative/index.js'
 import { Fs } from '../fs/index.js'
 import { Language } from '../language/index.js'
+import type { SideEffect } from '../language/language.js'
 import { Manifest } from '../manifest/index.js'
 import type { PackageManager } from '../package-manager/index.js'
 import { Path } from '../path/index.js'
@@ -27,13 +28,17 @@ export interface ProjectController<
   shell: Shell
   packageManager: Shell
   files: {
-    packageJson: Manifest.Manifest
+    packageJson?: Manifest.Manifest | undefined
   }
   run: $ScriptRunners
   /**
    * Directory path to this project.
    */
   dir: string
+  /**
+   * Cancel any still running child processes.
+   */
+  stop: () => SideEffect
 }
 
 type ScaffoldInput = TemplateScaffoldInput | InitScaffold
@@ -68,25 +73,30 @@ type Scaffold = TemplateScaffold | InitScaffold
 
 interface ConfigInput<$ScriptRunners extends ScriptRunners = ScriptRunners> {
   debug?: Debug.Debug | undefined
+  package?: false | {
+    /**
+     * @defaultValue `false`
+     */
+    install?: boolean | undefined
+    links?: {
+      dir: string
+      protocol: PackageManager.LinkProtocol
+    }[] | undefined
+  }
   scripts?: ((project: ProjectController) => $ScriptRunners) | undefined
   /**
    * By default uses an "init" scaffold. This is akin to running e.g. `pnpm init`.
    */
   scaffold?: string | ScaffoldInput | undefined
-  /**
-   * @defaultValue `false`
-   */
-  install?: boolean | undefined
-  links?: {
-    dir: string
-    protocol: PackageManager.LinkProtocol
-  }[] | undefined
 }
 
 interface Config {
   debug: Debug.Debug
   scaffold: Scaffold
-  install: boolean
+  package: {
+    enabled: boolean
+    install: boolean
+  }
 }
 
 const resolveConfigInput = (configInput: ConfigInput<any>): Config => {
@@ -107,12 +117,15 @@ const resolveConfigInput = (configInput: ConfigInput<any>): Config => {
     ? ({ type: `init` } satisfies InitScaffold)
     : ({ type: `init` } satisfies InitScaffold)
 
-  const install = configInput.install ?? false
+  const install = configInput.package ? (configInput.package.install ?? false) : false
 
   return {
     debug,
     scaffold,
-    install,
+    package: {
+      enabled: configInput.package !== false,
+      install,
+    },
   }
 }
 
@@ -131,9 +144,22 @@ export const create = async <scriptRunners extends ScriptRunners = {}>(
   debug(`created temporary directory`, { path: fsr.cwd })
 
   const { $ } = await import(`zx`)
+
+  // const ac = new AbortController()
+
   const shell = $({ cwd: fsr.cwd })
 
-  const pnpmShell = shell({ prefix: `pnpm ` })
+  const shellProcesses: ProcessPromise[] = []
+
+  const shellWrapped: Shell = (pieces: any, ...args: any[]) => {
+    const p = shell(pieces, ...args)
+    shellProcesses.push(p)
+    return p
+  }
+
+  shellWrapped.sync = shell.sync
+
+  const pnpmShell: Shell = shellWrapped({ prefix: `pnpm ` })
 
   const layout = Layout.create({ fsRelative: fsr })
 
@@ -168,7 +194,9 @@ export const create = async <scriptRunners extends ScriptRunners = {}>(
   // files
 
   const packageJson = await Manifest.resource.read(fsr.cwd)
-  if (!packageJson) Language.never(`packageJson missing in ${fsr.cwd}`)
+  if (config.package.enabled) {
+    if (!packageJson) Language.never(`packageJson missing in ${fsr.cwd}`)
+  }
 
   const files = {
     packageJson,
@@ -177,11 +205,23 @@ export const create = async <scriptRunners extends ScriptRunners = {}>(
   // instance
 
   const project: ProjectController<scriptRunners> = {
-    shell,
+    shell: shellWrapped,
     layout,
     files,
     packageManager: pnpmShell,
     dir: fsr.cwd,
+    stop: async () => {
+      await Promise.allSettled(shellProcesses.map(async p => {
+        if (p.isHalted()) return
+        await p.kill()
+      }))
+
+      // if (!ac.signal.aborted) {
+      //   ac.abort('project.stop()')
+      //   setTimeout(() => {
+      //   }, 1000);
+      // }
+    },
     // Will be overwritten
     // eslint-disable-next-line
     run: undefined as any,
@@ -193,7 +233,8 @@ export const create = async <scriptRunners extends ScriptRunners = {}>(
 
   // links
 
-  for (const link of parameters.links ?? []) {
+  const links = parameters.package ? parameters.package.links ?? [] : []
+  for (const link of links) {
     const pathToLinkDirFromProject = Path.join(
       `..`,
       Path.relative(project.layout.cwd, link.dir),
@@ -219,7 +260,7 @@ export const create = async <scriptRunners extends ScriptRunners = {}>(
 
   // install
 
-  if (parameters.install) {
+  if (config.package.install) {
     await project.packageManager`install`
     debug(`installed dependencies`)
   }
