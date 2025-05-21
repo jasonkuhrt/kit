@@ -1,4 +1,4 @@
-import { Arr, Fs, Path } from '@wollybeard/kit'
+import { Arr, Fs, Path, Str } from '@wollybeard/kit'
 import { pipe } from '../fn/pipe.js'
 import { argv } from './argv.js'
 import { type CommandTarget, getCommandTarget } from './commend-target.js'
@@ -11,7 +11,14 @@ export const dispatch = async (commandsDirPath: string) => {
   const commandPointer = Arr.findFirstMatching(commandPointers, { name: moduleTargetName })
 
   if (!commandPointer) {
-    console.error(`Error: Command module "${moduleTargetName}" not found in commands directory ${commandsDirPath}`)
+    const availableCommands = commandPointers.map(({ name }) => name).map(_ => `${Str.Char.rightwardsArrow} ${_}`).join(
+      Str.Char.newline,
+    )
+    if (moduleTargetName === `$default`) {
+      console.error(`Error: You must specify a command.\n\nAvailable commands:\n${availableCommands}`)
+    } else {
+      console.error(`Error: No such command "${moduleTargetName}".\n\nAvailable commands:\n${availableCommands}`)
+    }
     process.exit(1)
   }
 
