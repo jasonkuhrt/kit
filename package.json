@@ -34,7 +34,6 @@
     "./package-manager": "./build/package-manager/package-manager.js",
     "./pat": "./build/pat/pat.js",
     "./path": "./build/path/path.js",
-    "./project-controller": "./build/project-controller/project-controller.js",
     "./prom": "./build/prom/prom.js",
     "./rec": "./build/rec/rec.js",
     "./resource": "./build/resource/resource.js",
@@ -48,9 +47,9 @@
     "z": "libra toggle-hiding && pnpm fix:format",
     "build": "tsc --build tsconfig.build.json",
     "dev": "pnpm build:watch:emit",
-    "build:watch:emit": "pnpm build --noCheck --watch",
-    "build:watch": "pnpm build --watch",
-    "build:emit": "pnpm build --noEmit",
+    "build:watch:emit": "pnpm build:watch --noCheck",
+    "build:watch": "tsc --build tsconfig.build.json --watch",
+    "build:emit": "pnpm build --noCheck",
     "build:clean": "pnpm tsc --build tsconfig.build.json --clean && rm -rf build",
     "fix:format": "dprint fmt",
     "check:format": "dprint check",
@@ -58,7 +57,10 @@
     "release": "dripip stable",
     "prepack": "pnpm build",
     "test:unit": "vitest",
-    "test": "vitest"
+    "test": "vitest",
+    "fixcheck": "pnpm run '/fix:.*/' && pnpm run '/check:.*/'",
+    "check": "pnpm run '/check:.*/'",
+    "fix": "pnpm run '/fix:.*/'"
   },
   "devDependencies": {
     "@tsconfig/node-lts": "^22.0.1",
@@ -77,8 +79,7 @@
     "es-toolkit": "^1.37.2",
     "jsonc-parser": "^3.3.1",
     "type-fest": "^4.41.0",
-    "zod": "^3.24.4",
-    "zx": "^8.5.4"
+    "zod": "^3.24.4"
   },
   "libra": {
     "visibility": false,
@@ -91,5 +92,13 @@
       }
     },
     "cli": false
+  },
+  "imports": {
+    "#dep/*": {
+      "default": "./build/dep/*"
+    },
+    "#lib/*": {
+      "default": "./build/lib/*"
+    }
   }
 }

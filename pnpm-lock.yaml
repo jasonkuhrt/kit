@@ -26,9 +26,6 @@ importers:
       zod:
         specifier: ^3.24.4
         version: 3.24.4
-      zx:
-        specifier: ^8.5.4
-        version: 8.5.4
     devDependencies:
       '@tsconfig/node-lts':
         specifier: ^22.0.1
@@ -1283,11 +1280,6 @@ packages:
   zod@3.24.4:
     resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
 
-  zx@8.5.4:
-    resolution: {integrity: sha512-44oKea9Sa8ZnOkTnS6fRJpg3quzgnbB43nLrVfYnqE86J4sxgZMUDLezzKET/FdOAVkF4X+Alm9Bume+W+RW9Q==}
-    engines: {node: '>= 12.17.0'}
-    hasBin: true
-
 snapshots:
 
   '@dprint/darwin-arm64@0.49.1':
@@ -2494,5 +2486,3 @@ snapshots:
   wrappy@1.0.2: {}
 
   zod@3.24.4: {}
-
-  zx@8.5.4: {}

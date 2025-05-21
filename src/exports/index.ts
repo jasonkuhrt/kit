@@ -16,7 +16,6 @@ export * from '../manifest/index.js'
 export * from '../obj/index.js'
 export * from '../package-manager/index.js'
 export * from '../path/index.js'
-export * from '../project-controller/index.js'
 export * from '../prom/index.js'
 export * from '../rec/index.js'
 export * from '../resource/index.js'
@@ -29,4 +28,3 @@ export * from '../zod-aid/index.js'
 // e.g.
 // The inferred type of 'create' cannot be named without a reference to '@wollybeard/kit/node_modules/.pnpm/type-fest@4.41.0/node_modules/type-fest'. This is likely not portable. A type annotation is necessary.
 export type { PackageJson } from 'type-fest'
-export type * from 'zx'
