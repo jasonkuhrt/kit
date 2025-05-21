@@ -1,4 +1,5 @@
 import { Bool } from '../bool/index.js'
+import { Fn } from '../fn/index.js'
 import { Pat } from '../pat/index.js'
 
 export type Any = unknown[]
@@ -156,3 +157,13 @@ export const dedupe = <arr extends unknown[]>(arr: arr): arr => {
 
   return arr
 }
+
+// join
+
+export const join = (values: unknown[], separator: string): string => {
+  return values.join(separator)
+}
+
+export const joinOn = Fn.curry(join)
+
+export const joinWith = Fn.flipCurried(joinOn)
