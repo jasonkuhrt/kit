@@ -1,4 +1,4 @@
-import type { Fn } from '../fn/index.js'
+import { Fn } from '../fn/index.js'
 import { Prom } from '../prom/index.js'
 
 type AnyPromise = Promise<any>
@@ -10,12 +10,12 @@ export const tryCatch = <r, e extends Error = Error>(
     const result = fn() as any
     if (Prom.isIsh(result)) {
       return result.catch((error) => {
-        return fromUnknown(error)
+        return ensure(error)
       }) as any
     }
     return result
   } catch (error) {
-    return fromUnknown(error) as any
+    return ensure(error) as any
   }
 }
 
@@ -23,7 +23,7 @@ export const tryCatch = <r, e extends Error = Error>(
  * Ensure that the given value is an error and return it. If it is not an error than
  * wrap it in one, passing the given value as the error message.
  */
-export const fromUnknown = (value: unknown): Error => {
+export const ensure = (value: unknown): Error => {
   if (value instanceof Error) return value
 
   return new Error(String(value))
@@ -49,4 +49,12 @@ export const guardNull = <fn extends Fn.AnyAny>(
     const result = fn(...args)
     return throwNull(result, message)
   }
+}
+
+export const tryCatchIgnore = <$Return>(fn: () => $Return): $Return => {
+  const result = tryCatch(fn)
+  if (Prom.isIsh(result)) {
+    return result.catch(Fn.noop) as any
+  }
+  return result as any
 }

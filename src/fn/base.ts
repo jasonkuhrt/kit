@@ -62,3 +62,6 @@ export type bind<$Fn extends AnyAnyParametersMin1> =
   $Fn extends (...args: [any, ...infer __args_tail__]) => infer __return__
     ? (...args: __args_tail__) => __return__
     : never
+
+
+export const noop = () => {}
