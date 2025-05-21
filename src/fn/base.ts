@@ -63,5 +63,4 @@ export type bind<$Fn extends AnyAnyParametersMin1> =
     ? (...args: __args_tail__) => __return__
     : never
 
-
 export const noop = () => {}
