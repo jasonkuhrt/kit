@@ -179,8 +179,8 @@ export const create = async <scriptRunners extends ScriptRunners = {}>(
       const initPackageJson = {
         path: `package.json`,
         content: {
-          name: `project-${fsr.cwd}`,
-          packageManager: `pnpm@10.8.0`,
+          name: `project`,
+          packageManager: `pnpm@10.10.0`,
         },
       }
       await fsr.write(initPackageJson)
