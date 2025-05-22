@@ -1,5 +1,6 @@
 import { tmpdir } from 'node:os'
 import * as NodePath from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { Fn } from '../fn/index.js'
 
 export {
@@ -95,3 +96,5 @@ export const buildArtifactExtensions = [
   '.map',
   '.d.ts',
 ]
+
+export const fromFileUrl = fileURLToPath
