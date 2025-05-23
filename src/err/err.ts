@@ -1,6 +1,6 @@
 import { Fn } from '../fn/index.js'
 import { Prom } from '../prom/index.js'
-import { inspect } from './inspect.js'
+import { inspect, type InspectOptions } from './inspect.js'
 import { tryCatch } from './tryCatch.js'
 
 export * from './inspect.js'
@@ -12,8 +12,8 @@ export * from './type.js'
 /**
  * Log an error to console with nice formatting.
  */
-export const log = (error: Error): void => {
-  console.log(inspect(error))
+export const log = (error: Error, options?: InspectOptions): void => {
+  console.log(inspect(error, options))
 }
 
 /**

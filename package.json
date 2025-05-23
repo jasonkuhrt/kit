@@ -76,6 +76,7 @@
   },
   "dependencies": {
     "@types/node": "^22.15.17",
+    "ansis": "^4.0.0",
     "consola": "^3.4.2",
     "es-toolkit": "^1.37.2",
     "jsonc-parser": "^3.3.1",
