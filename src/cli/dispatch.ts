@@ -1,6 +1,6 @@
 import { Arr, Fs, Path, Str } from '@wollybeard/kit'
-import { parseArgvOrThrow } from '../../build/cli/argv.js'
 import { pipe } from '../fn/pipe.js'
+import { parseArgvOrThrow } from './argv.js'
 import { type CommandTarget, getCommandTarget } from './commend-target.js'
 
 export const dispatch = async (commandsDirPath: string) => {
