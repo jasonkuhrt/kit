@@ -35,5 +35,3 @@ export const parseArgvOrThrow = (value: unknown): Argv => {
     args,
   }
 }
-
-export const argv = parseArgvOrThrow(process.argv)
