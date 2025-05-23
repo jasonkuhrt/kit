@@ -100,3 +100,15 @@ export const trimWith = Fn.flipCurried(trimOn)
 export const trimSpaceRegular = trimWith(spaceRegular)
 
 export const trimSpaceNoBreak = trimWith(spaceNoBreak)
+
+export const truncate = (str: string, maxLength: number = 80): string => {
+  if (str.length <= maxLength) return str
+  const indicator = '...'
+  // No negative slice size
+  const sliceSize = Math.max(maxLength - indicator.length, 0)
+  return `${str.slice(0, sliceSize)}${indicator}`
+}
+
+export const truncateOn = Fn.curry(truncate)
+
+export const truncateWith = Fn.flipCurried(truncateOn)
