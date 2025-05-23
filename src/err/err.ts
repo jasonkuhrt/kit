@@ -3,6 +3,12 @@ import { Prom } from '../prom/index.js'
 
 type AnyPromise = Promise<any>
 
+export const is = (value: unknown): value is Error => {
+  // TODO: use upcoming Error.isError() once its widely available.
+  // See: https://github.com/tc39/proposal-error-is-error
+  return value instanceof Error
+}
+
 export const tryCatch = <r, e extends Error = Error>(
   fn: () => r,
 ): r extends AnyPromise ? Promise<Awaited<r> | e> : r | e => {
