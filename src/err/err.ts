@@ -1,28 +1,19 @@
 import { Fn } from '../fn/index.js'
 import { Prom } from '../prom/index.js'
+import { inspect } from './inspect.js'
+import { tryCatch } from './tryCatch.js'
 
-type AnyPromise = Promise<any>
+export * from './inspect.js'
 
-export const is = (value: unknown): value is Error => {
-  // TODO: use upcoming Error.isError() once its widely available.
-  // See: https://github.com/tc39/proposal-error-is-error
-  return value instanceof Error
-}
+export * from './tryCatch.js'
 
-export const tryCatch = <r, e extends Error = Error>(
-  fn: () => r,
-): r extends AnyPromise ? Promise<Awaited<r> | e> : r | e => {
-  try {
-    const result = fn() as any
-    if (Prom.isIsh(result)) {
-      return result.catch((error) => {
-        return ensure(error)
-      }) as any
-    }
-    return result
-  } catch (error) {
-    return ensure(error) as any
-  }
+export * from './type.js'
+
+/**
+ * Log an error to console with nice formatting.
+ */
+export const log = (error: Error): void => {
+  console.log(inspect(error))
 }
 
 /**
@@ -55,12 +46,4 @@ export const guardNull = <fn extends Fn.AnyAny>(
     const result = fn(...args)
     return throwNull(result, message)
   }
-}
-
-export const tryCatchIgnore = <$Return>(fn: () => $Return): $Return => {
-  const result = tryCatch(fn)
-  if (Prom.isIsh(result)) {
-    return result.catch(Fn.noop) as any
-  }
-  return result as any
 }
