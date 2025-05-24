@@ -1,4 +1,4 @@
-import { Fn } from '../fn/index.js'
+import { Fn } from '#fn/index.js'
 
 export const split = (value: string, separator: string): string[] => {
   return value.split(separator)

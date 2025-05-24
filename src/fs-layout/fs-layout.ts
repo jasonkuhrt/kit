@@ -1,5 +1,5 @@
-import { Path } from '../path/index.js'
-import { Rec } from '../rec/index.js'
+import { Path } from '#path/index.js'
+import { Rec } from '#rec/index.js'
 
 // eslint-ignore
 export interface Tree {

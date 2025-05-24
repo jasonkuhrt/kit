@@ -1,5 +1,5 @@
+import type { Json } from '#json/index.js'
 import { parse } from 'jsonc-parser'
-import type { Json } from '../json/index.js'
 import { writeString } from './mutation.js'
 import { read } from './query.js'
 import type { FileWriteInput } from './types.js'

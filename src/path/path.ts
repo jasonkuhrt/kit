@@ -1,7 +1,7 @@
+import { Fn } from '#fn/index.js'
 import { tmpdir } from 'node:os'
 import * as NodePath from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Fn } from '../fn/index.js'
 
 export {
   basename,
@@ -13,7 +13,7 @@ export {
   join,
   normalize,
   parse,
-  type ParsedPath,
+  type ParsedPath as Parsed,
   posix,
   relative,
   resolve,

@@ -1,5 +1,5 @@
-import { Fn } from '../fn/index.js'
-import { Language } from '../language/index.js'
+import { Fn } from '#fn/index.js'
+import { Language } from '#language/index.js'
 
 export const not = <value extends boolean>(value: value): not<value> => {
   return !value as any

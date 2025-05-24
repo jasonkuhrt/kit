@@ -1,4 +1,4 @@
-import { Obj } from '../obj/index.js'
+import { Obj } from '#obj/index.js'
 
 export const isIsh = Obj.isIsh<Promise<unknown>>({
   then: `function`,

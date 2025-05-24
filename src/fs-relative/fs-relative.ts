@@ -1,5 +1,5 @@
-import { Fs } from '../fs/index.js'
-import { Path } from '../path/index.js'
+import { Fs } from '#fs/index.js'
+import { Path } from '#path/index.js'
 
 export interface FsRelative {
   cwd: string

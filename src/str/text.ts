@@ -1,4 +1,4 @@
-import { Fn } from '../fn/index.js'
+import { Fn } from '#fn/index.js'
 import { Char } from './char/index.js'
 import { prependWith, repeat } from './replace.js'
 import { joinWith, splitWith } from './split.js'

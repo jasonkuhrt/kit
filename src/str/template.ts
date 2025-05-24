@@ -1,5 +1,5 @@
-import type { Json } from '../json/index.js'
-import { Obj } from '../obj/index.js'
+import type { Json } from '#json/index.js'
+import { Obj } from '#obj/index.js'
 
 export const interpolate = (template: string) => (args: TemplateArgs) => {
   const get = Obj.getOn(args)

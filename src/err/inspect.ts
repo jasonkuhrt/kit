@@ -1,5 +1,5 @@
+import { Str } from '#str/index.js'
 import { cyan, red } from 'ansis'
-import { Str } from '../str/index.js'
 import { is } from './type.js'
 
 export interface InspectOptions {

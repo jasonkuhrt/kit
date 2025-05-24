@@ -1,5 +1,5 @@
-import { Fn } from '../fn/index.js'
-import { Prom } from '../prom/index.js'
+import { Fn } from '#fn/index.js'
+import { Prom } from '#prom/index.js'
 import { ensure } from './err.js'
 
 // Overload for promise input

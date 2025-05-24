@@ -1,8 +1,8 @@
+import { Fs } from '#fs/index.js'
+import { Json } from '#json/index.js'
+import { Path } from '#path/index.js'
 import { afterEach, describe } from 'node:test'
 import { expect, test } from 'vitest'
-import { Fs } from '../fs/index.js'
-import { Json } from '../json/index.js'
-import { Path } from '../path/index.js'
 import { create } from './resource.js'
 
 describe('emptyValue input', () => {

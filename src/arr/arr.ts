@@ -1,6 +1,6 @@
-import { Bool } from '../bool/index.js'
-import { Fn } from '../fn/index.js'
-import { Pat } from '../pat/index.js'
+import { Bool } from '#bool/index.js'
+import { Fn } from '#fn/index.js'
+import { Pat } from '#pat/index.js'
 
 export type Any = unknown[]
 

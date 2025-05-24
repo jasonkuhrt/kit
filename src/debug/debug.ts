@@ -1,6 +1,6 @@
+import { Str } from '#str/index.js'
 import { colorize } from 'consola/utils'
 import { inspect } from 'node:util'
-import { Str } from '../str/index.js'
 import { calcIsEnabledFromEnv } from './environment-variable.js'
 
 type DebugParameters = [event: string, payload?: unknown]

@@ -1,5 +1,5 @@
-import { Eq } from '../eq/index.js'
-import { Fn } from '../fn/index.js'
+import { Eq } from '#eq/index.js'
+import { Fn } from '#fn/index.js'
 import { trimSpaceRegular } from './replace.js'
 import { isTemplateStringsArray } from './template.js'
 import { unlines } from './text.js'

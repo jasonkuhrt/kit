@@ -1,5 +1,5 @@
-import { Language } from '../language/index.js'
-import type { Prom } from '../prom/index.js'
+import { Language } from '#language/index.js'
+import type { Prom } from '#prom/index.js'
 
 export type AnyAny = (...args: any[]) => any
 

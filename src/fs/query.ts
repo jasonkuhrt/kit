@@ -1,6 +1,6 @@
+import { Err } from '#err/index.js'
 import { constants } from 'node:fs'
 import * as FS from 'node:fs/promises'
-import { Err } from '../err/index.js'
 
 export const exists = async (path: string): Promise<boolean> => {
   try {

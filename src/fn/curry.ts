@@ -1,4 +1,4 @@
-import type { Arr } from '../arr/index.js'
+import type { Arr } from '#arr/index.js'
 import type { AnyAny, AnyAnyParametersMin1 } from './base.js'
 
 export type AnyAny2Curried = (arg1: any) => (arg2: any) => any

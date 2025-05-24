@@ -1,4 +1,4 @@
-import type { Json } from '../json/index.js'
+import type { Json } from '#json/index.js'
 
 export interface File<$Type = string> {
   path: string

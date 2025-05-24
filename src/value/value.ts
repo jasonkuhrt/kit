@@ -1,4 +1,4 @@
-import { Fn } from '../fn/index.js'
+import { Fn } from '#fn/index.js'
 
 export type Lazy<$Value> = () => $Value
 

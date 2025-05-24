@@ -1,6 +1,6 @@
+import { Codec } from '#codec/index.js'
+import { ZodAid } from '#zod-aid/index.js'
 import { z } from 'zod'
-import { Codec } from '../codec/index.js'
-import { ZodAid } from '../zod-aid/index.js'
 
 export const Primitive = z.union([z.string(), z.number(), z.boolean(), z.null()])
 export type Primitive = z.infer<typeof Primitive>

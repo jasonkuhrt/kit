@@ -1,8 +1,8 @@
+import type { Language } from '#language/index.js'
+import { Obj } from '#obj/index.js'
+import { Path } from '#path/index.js'
+import { Str } from '#str/index.js'
 import * as NodeFs from 'node:fs/promises'
-import type { Language } from '../language/index.js'
-import { Obj } from '../obj/index.js'
-import { Path } from '../path/index.js'
-import { Str } from '../str/index.js'
 import { makeDirectory } from './mutation.js'
 
 export const defaultCopyDirOptions: CopyDirConfig = Object.freeze({

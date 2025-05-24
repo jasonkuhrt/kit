@@ -1,6 +1,6 @@
-import { Arr } from '../arr/index.js'
-import { Language } from '../language/index.js'
-import type { Rec } from '../rec/index.js'
+import { Arr } from '#arr/index.js'
+import { Language } from '#language/index.js'
+import type { Rec } from '#rec/index.js'
 import { type Any, is } from './obj.js'
 
 interface MergeOptions {

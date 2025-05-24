@@ -1,5 +1,5 @@
-import { Json } from '../json/index.js'
-import { Resource } from '../resource/index.js'
+import { Json } from '#json/index.js'
+import { Resource } from '#resource/index.js'
 import type { Manifest } from './manifest.js'
 
 export const resource = Resource.create({

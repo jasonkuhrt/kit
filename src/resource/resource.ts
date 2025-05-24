@@ -1,8 +1,8 @@
-import type { Codec } from '../codec/index.js'
-import { Fs } from '../fs/index.js'
-import { Language } from '../language/index.js'
-import { Path } from '../path/index.js'
-import { Value } from '../value/index.js'
+import type { Codec } from '#codec/index.js'
+import { Fs } from '#fs/index.js'
+import { Language } from '#language/index.js'
+import { Path } from '#path/index.js'
+import { Value } from '#value/index.js'
 
 export interface Resource<$Name extends string = string, $Type = any> {
   name: $Name

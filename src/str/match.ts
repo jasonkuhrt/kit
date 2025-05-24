@@ -1,5 +1,5 @@
-import { Arr } from '../arr/index.js'
-import { Fn } from '../fn/index.js'
+import { Arr } from '#arr/index.js'
+import { Fn } from '#fn/index.js'
 
 // One
 

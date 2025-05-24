@@ -12,7 +12,7 @@
  * ```
  */
 
-import type { Rec } from '../rec/index.js'
+import type { Rec } from '#rec/index.js'
 import { type Any, is } from './obj.js'
 import {
   type InferShapeFromPropertyPath,

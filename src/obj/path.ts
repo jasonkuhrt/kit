@@ -1,5 +1,5 @@
-import { Str } from '../str/index.js'
-import { splitWith } from '../str/split.js'
+import { Str } from '#str/index.js'
+import { splitWith } from '#str/split.js'
 
 export type PropertyPathExpression = string
 

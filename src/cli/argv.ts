@@ -1,5 +1,5 @@
-import { Arr } from '../arr/index.js'
-import { Str } from '../str/index.js'
+import { Arr } from '#arr/index.js'
+import { Str } from '#str/index.js'
 
 // Process argv
 

@@ -1,4 +1,4 @@
-import type { Prom } from '../prom/index.js'
+import type { Prom } from '#prom/index.js'
 
 export * from './never.js'
 

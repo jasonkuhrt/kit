@@ -1,5 +1,5 @@
-import { Language } from '../language/index.js'
-import type { Rec } from '../rec/index.js'
+import { Language } from '#language/index.js'
+import type { Rec } from '#rec/index.js'
 
 export * from './path.js'
 
