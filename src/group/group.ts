@@ -1,9 +1,7 @@
-import type { Any } from '#rec/type.js'
-
 export type AnyIndex = Record<PropertyKey, any[]>
 
 // dprint-ignore
-export type IndexBy<
+export type By<
   $Type extends object,
   $Key extends keyof $Type,
 > =
@@ -12,7 +10,7 @@ export type IndexBy<
     : never
 
 // dprint-ignore
-export type indexBy<
+export type by<
   $Type extends object,
   $Key extends keyof $Type,
   ___value = $Type[$Key]
@@ -21,10 +19,10 @@ export type indexBy<
     ? { [_ in ___value]?: $Type[] }
     : `ERROR: type of $Type[$Key] is not a subtype of PropertyKey and so $Key "${PropertyKeyToString<$Key>}" cannot be used as an indexing value.`
 
-export const indexBy = <obj extends object, key extends keyof obj>(
+export const by = <obj extends object, key extends keyof obj>(
   array: obj[],
   key: key,
-): indexBy<obj, key> => {
+): by<obj, key> => {
   const index = array.reduce((index, item) => {
     const indexKey = item[key] as PropertyKey
     index[indexKey] ??= []
@@ -34,7 +32,7 @@ export const indexBy = <obj extends object, key extends keyof obj>(
   return index as any
 }
 
-export const indexesMerge = <index extends AnyIndex>(
+export const merge = <index extends AnyIndex>(
   index1: index,
   index2: index,
 ): index => {

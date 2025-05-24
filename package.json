@@ -28,6 +28,7 @@
     "./fs-layout": "./build/fs-layout/fs-layout.js",
     "./fs-relative": "./build/fs-relative/fs-relative.js",
     "./http": "./build/http/http.js",
+    "./group": "./build/group/group.js",
     "./json": "./build/json/json.js",
     "./language": "./build/language/language.js",
     "./manifest": "./build/manifest/manifest.js",
