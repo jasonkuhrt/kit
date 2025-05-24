@@ -96,11 +96,8 @@
     "cli": false
   },
   "imports": {
-    "#dep/*": {
-      "default": "./build/dep/*"
-    },
-    "#lib/*": {
-      "default": "./build/lib/*"
+    "#*": {
+      "default": "./build/*"
     }
   }
 }

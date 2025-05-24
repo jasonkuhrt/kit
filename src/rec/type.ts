@@ -1,5 +1,5 @@
-import type { Language } from '../language/index.js'
-import { Obj } from '../obj/index.js'
+import type { Language } from '#language/index.js'
+import { Obj } from '#obj/index.js'
 
 export type Any = {
   [key: PropertyKey]: unknown
