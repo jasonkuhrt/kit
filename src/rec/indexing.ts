@@ -1,3 +1,7 @@
+import type { Any } from '#rec/type.js'
+
+export type AnyIndex = Record<PropertyKey, any[]>
+
 // dprint-ignore
 export type IndexBy<
   $Type extends object,
@@ -28,6 +32,19 @@ export const indexBy = <obj extends object, key extends keyof obj>(
     return index
   }, {} as Record<PropertyKey, any[]>)
   return index as any
+}
+
+export const indexesMerge = <index extends AnyIndex>(
+  index1: index,
+  index2: index,
+): index => {
+  const index1_ = index1 as AnyIndex
+  const index2_ = index2 as AnyIndex
+  for (const k2 in index2_) {
+    index1_[k2] ??= []
+    index1_[k2].push(...index2_[k2]!)
+  }
+  return index1_ as any
 }
 
 // dprint-ignore
