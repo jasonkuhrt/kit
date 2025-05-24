@@ -4,7 +4,7 @@ export type IndexBy<
   $Key extends keyof $Type,
 > =
   $Type[$Key] extends PropertyKey
-    ? Record<$Type[$Key], $Type[]>
+    ? { [_ in $Type[$Key]]?: $Type[] }
     : never
 
 // dprint-ignore
@@ -14,7 +14,7 @@ export type indexBy<
   ___value = $Type[$Key]
 > =
   ___value extends PropertyKey
-    ? Record<___value, $Type[]>
+    ? { [_ in ___value]?: $Type[] }
     : `ERROR: type of $Type[$Key] is not a subtype of PropertyKey and so $Key "${PropertyKeyToString<$Key>}" cannot be used as an indexing value.`
 
 export const indexBy = <obj extends object, key extends keyof obj>(
