@@ -40,6 +40,7 @@
     "./rec": "./build/rec/rec.js",
     "./resource": "./build/resource/resource.js",
     "./str": "./build/str/str.js",
+    "./undefined": "./build/undefined/undefined.js",
     "./url": "./build/url/url.js",
     "./value": "./build/value/value.js",
     "./zod-aid": "./build/zod-aid/zod-aid.js"

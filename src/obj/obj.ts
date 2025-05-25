@@ -1,5 +1,6 @@
 import { Language } from '#language/index.js'
 import type { Rec } from '#rec/index.js'
+import { Undefined } from '#undefined/index.js'
 
 export * from './path.js'
 
@@ -17,9 +18,8 @@ export const entries = <obj extends Any>(obj: obj): Language.Simplify<entries<ob
   return Object.entries(obj) as any
 }
 
-type ExcludeUndefined<T> = Exclude<T, undefined>
-
-export type entries<obj extends Any> = ExcludeUndefined<
+// We exclude undefined in case of optional properties.
+export type entries<obj extends Any> = Undefined.Exclude<
   {
     [__key__ in keyof obj]: [__key__, obj[__key__]]
   }[keyof obj]
