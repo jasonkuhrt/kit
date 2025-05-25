@@ -15,3 +15,11 @@ export const join = (value: string[], separator: string): string => {
 export const joinOn = Fn.curry(join)
 
 export const joinWith = Fn.flipCurried(joinOn)
+
+// merge
+
+export const merge = (string1: string, string2: string): string => {
+  return string1 + string2
+}
+
+export const mergeOn = Fn.curry(merge)

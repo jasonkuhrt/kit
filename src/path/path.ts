@@ -98,3 +98,11 @@ export const buildArtifactExtensions = [
 ]
 
 export const fromFileUrl = fileURLToPath
+
+// merge
+
+export const merge = (path1: string, path2: string): string => {
+  return NodePath.join(path1, path2)
+}
+
+export const mergeOn = Fn.curry(merge)

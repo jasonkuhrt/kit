@@ -167,3 +167,11 @@ export const join = (values: unknown[], separator: string): string => {
 export const joinOn = Fn.curry(join)
 
 export const joinWith = Fn.flipCurried(joinOn)
+
+// merge
+
+export const merge = <T>(array1: T[], array2: T[]): T[] => {
+  return array1.concat(array2)
+}
+
+export const mergeOn = Fn.curry(merge)
