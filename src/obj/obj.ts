@@ -17,9 +17,13 @@ export const entries = <obj extends Any>(obj: obj): Language.Simplify<entries<ob
   return Object.entries(obj) as any
 }
 
-export type entries<obj extends Any> = {
-  [__key__ in keyof obj]: [__key__, obj[__key__]]
-}[keyof obj][]
+type ExcludeUndefined<T> = Exclude<T, undefined>
+
+export type entries<obj extends Any> = ExcludeUndefined<
+  {
+    [__key__ in keyof obj]: [__key__, obj[__key__]]
+  }[keyof obj]
+>[]
 
 export const isIsh = <type>(spec: Record<PropertyKey, Language.TypeofTypes>) => (value: unknown): value is type => {
   if (!is(value)) return false
