@@ -1,6 +1,6 @@
 import { Language } from '#language/index.js'
 import type { Rec } from '#rec/index.js'
-import { Undefined } from '#undefined/index.js'
+import type { Undefined } from '#undefined/index.js'
 
 export * from './path.js'
 
@@ -18,12 +18,16 @@ export const entries = <obj extends Any>(obj: obj): Language.Simplify<entries<ob
   return Object.entries(obj) as any
 }
 
-// We exclude undefined in case of optional properties.
-export type entries<obj extends Any> = Undefined.Exclude<
-  {
-    [__key__ in keyof obj]: [__key__, obj[__key__]]
-  }[keyof obj]
->[]
+
+// dprint-ignore
+export type entries<obj extends Any> = {
+  [K in keyof obj]-?: // Regarding "-?": we don't care about keys being undefined when we're trying to list out all the possible entries
+    undefined extends obj[K]
+      ? {} extends Pick<obj, K>
+        ? [K, Undefined.Exclude<obj[K]>] // Optional key - remove only undefined, preserve null
+        : [K, obj[K]] // Required key with undefined - preserve exact type including undefined
+      : [K, obj[K]] // Required key without undefined - preserve exact type
+}[keyof obj][]
 
 export const isShape = <type>(spec: Record<PropertyKey, Language.TypeofTypes>) => (value: unknown): value is type => {
   if (!is(value)) return false

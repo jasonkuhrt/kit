@@ -13,8 +13,6 @@ export const is = (value: unknown): value is Any => {
   return Obj.is(value) && !Array.isArray(value)
 }
 
-// merge
-
 export const merge = <rec1 extends Any, rec2 extends Any>(rec1: rec1, rec2: rec2): rec1 & rec2 => {
   return Obj.merge(rec1, rec2)
 }
