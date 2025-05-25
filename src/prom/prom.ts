@@ -1,6 +1,6 @@
 import { Obj } from '#obj/index.js'
 
-export const isIsh = Obj.isIsh<Promise<unknown>>({
+export const isShape = Obj.isShape<Promise<unknown>>({
   then: `function`,
   catch: `function`,
   finally: `function`,

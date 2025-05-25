@@ -18,7 +18,7 @@ export function tryCatch<R, E extends Error = Error>(
   input: Promise<any> | (() => R),
 ): any {
   // Check if input is a promise
-  if (Prom.isIsh(input)) {
+  if (Prom.isShape(input)) {
     return (input as Promise<any>).catch((error) => ensure(error))
   }
 
@@ -26,7 +26,7 @@ export function tryCatch<R, E extends Error = Error>(
   const fn = input as () => R
   try {
     const result = fn() as any
-    if (Prom.isIsh(result)) {
+    if (Prom.isShape(result)) {
       return result.catch((error) => {
         return ensure(error)
       }) as any
@@ -39,7 +39,7 @@ export function tryCatch<R, E extends Error = Error>(
 
 export const tryCatchIgnore = <$Return>(fn: () => $Return): $Return => {
   const result = tryCatch(fn)
-  if (Prom.isIsh(result)) {
+  if (Prom.isShape(result)) {
     return result.catch(Fn.noop) as any
   }
   return result as any

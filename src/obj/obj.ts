@@ -25,7 +25,7 @@ export type entries<obj extends Any> = Undefined.Exclude<
   }[keyof obj]
 >[]
 
-export const isIsh = <type>(spec: Record<PropertyKey, Language.TypeofTypes>) => (value: unknown): value is type => {
+export const isShape = <type>(spec: Record<PropertyKey, Language.TypeofTypes>) => (value: unknown): value is type => {
   if (!is(value)) return false
   const obj_ = value as Rec.Any
 
