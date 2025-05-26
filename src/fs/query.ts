@@ -1,6 +1,7 @@
 import { Err } from '#err/index.js'
-import { constants } from 'node:fs'
+import { constants, Stats } from 'node:fs'
 import * as FS from 'node:fs/promises'
+import { type ErrorNotFound, isNotFoundError } from './error.js'
 
 export const exists = async (path: string): Promise<boolean> => {
   try {
@@ -52,3 +53,5 @@ export const isEmptyDir = async (path: string): Promise<boolean> => {
   const files = await FS.readdir(path)
   return files.length === 0
 }
+
+export const stat = Err.tryCatchify(FS.stat, [isNotFoundError])

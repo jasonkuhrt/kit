@@ -1,4 +1,5 @@
 export * from './copy-dir.js'
+export * from './error.js'
 export * from './json.js'
 export * from './mutation.js'
 export * from './query.js'
