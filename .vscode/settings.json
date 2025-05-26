@@ -15,7 +15,7 @@
     "eslint.config.js": true,
     "vitest.config.ts": true,
     "build": true,
-    "node_modules/": true,
-    ".dprint/": true
+    "node_modules": true,
+    ".dprint": true
   }
 }

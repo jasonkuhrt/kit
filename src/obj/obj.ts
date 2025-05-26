@@ -18,7 +18,6 @@ export const entries = <obj extends Any>(obj: obj): Language.Simplify<entries<ob
   return Object.entries(obj) as any
 }
 
-
 // dprint-ignore
 export type entries<obj extends Any> = {
   [K in keyof obj]-?: // Regarding "-?": we don't care about keys being undefined when we're trying to list out all the possible entries

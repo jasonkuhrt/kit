@@ -6,14 +6,15 @@
   "json": {},
   "markdown": {},
   "excludes": [
-    "**/node_modules",
     "**/__snapshots__",
-    "**/*-lock.json",
-    "**/*-lock.yaml"
+    "**/*-lock.yaml",
+    "**/.dprint",
+    "**/pnpm-lock.yaml"
   ],
   "plugins": [
     "https://plugins.dprint.dev/typescript-0.95.4.wasm",
     "https://plugins.dprint.dev/json-0.20.0.wasm",
     "https://plugins.dprint.dev/markdown-0.18.0.wasm"
-  ]
+  ],
+  "$schema": "https://dprint.dev/schemas/v0.json"
 }

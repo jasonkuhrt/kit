@@ -33,11 +33,11 @@ src/module-name/
 
 ```typescript
 // ✅ Correct
-import { Obj } from "#obj/index.js";
-import { Fn } from "#fn/index.js";
+import { Fn } from '#fn/index.js'
+import { Obj } from '#obj/index.js'
 
 // ❌ Incorrect
-import { Obj } from "../obj/index.js";
+import { Obj } from '../obj/index.js'
 ```
 
 **Configuration:**
@@ -51,13 +51,13 @@ Module exports should NOT repeat the namespace name:
 
 ```typescript
 // ✅ Correct
-Group.by(array, key); // not Group.groupBy
-Undefined.is(value); // not Undefined.isUndefined
-Str.merge(a, b); // not Str.mergeStrings
+Group.by(array, key) // not Group.groupBy
+Undefined.is(value) // not Undefined.isUndefined
+Str.merge(a, b) // not Str.mergeStrings
 
 // ❌ Incorrect
-Group.groupBy(array, key);
-Undefined.isUndefined(value);
+Group.groupBy(array, key)
+Undefined.isUndefined(value)
 ```
 
 ### Function Design
@@ -94,20 +94,20 @@ export const splitWith = Fn.flipCurried(splitOn)
 
 ```typescript
 // splitOn - useful when you have data and want different separators
-const csvLine = "name,age,city";
-const splitByComa = Str.splitOn(csvLine);
-const fields = splitByComa(","); // ['name', 'age', 'city']
-const chars = splitByComa(""); // ['n','a','m','e',',','a','g','e'...]
+const csvLine = 'name,age,city'
+const splitByComa = Str.splitOn(csvLine)
+const fields = splitByComa(',') // ['name', 'age', 'city']
+const chars = splitByComa('') // ['n','a','m','e',',','a','g','e'...]
 
 // splitWith - useful when you have a separator and different data
-const splitByComma = Str.splitWith(",");
-const userFields = splitByComma("john,25,nyc"); // ['john', '25', 'nyc']
-const productFields = splitByComma("laptop,999"); // ['laptop', '999']
+const splitByComma = Str.splitWith(',')
+const userFields = splitByComma('john,25,nyc') // ['john', '25', 'nyc']
+const productFields = splitByComma('laptop,999') // ['laptop', '999']
 
 // trimWith - useful when you have a character set to trim different strings
-const trimSpaces = Str.trimWith(" \t");
-const clean1 = trimSpaces("  hello  "); // 'hello'
-const clean2 = trimSpaces("\thello\t"); // 'hello'
+const trimSpaces = Str.trimWith(' \t')
+const clean1 = trimSpaces('  hello  ') // 'hello'
+const clean2 = trimSpaces('\thello\t') // 'hello'
 ```
 
 ### Universal Operations
@@ -170,7 +170,7 @@ pnpm test               # Run tests
 2. **Implement main file**: `src/new-module/new-module.ts`
 3. **Create index file**: `src/new-module/index.ts`
    ```typescript
-   export * as NewModule from "./new-module.js";
+   export * as NewModule from './new-module.js'
    ```
 4. **Add to package.json exports**:
    ```json
@@ -178,7 +178,7 @@ pnpm test               # Run tests
    ```
 5. **Add to main exports**: `src/exports/index.ts`
    ```typescript
-   export * from "../new-module/index.js";
+   export * from '../new-module/index.js'
    ```
 
 ### TypeScript Guidelines
@@ -225,8 +225,8 @@ export const parseJson = (text: string): Json.Value | Error => { ... }
 ```typescript
 // Use options objects for complex configurations
 export interface MergeOptions {
-  deep?: boolean;
-  arrays?: "replace" | "concat";
+  deep?: boolean
+  arrays?: 'replace' | 'concat'
 }
 ```
 
@@ -235,7 +235,7 @@ export interface MergeOptions {
 ```typescript
 export const is = (value: unknown): value is ModuleType => {
   // Implementation
-};
+}
 ```
 
 ## Release Process
