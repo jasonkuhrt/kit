@@ -18,6 +18,8 @@ export const negate = <predicate extends Predicate>(predicate: predicate): predi
 
 export type Predicate<$Value = unknown> = (value: $Value) => boolean
 
+export type TypePredicate<$Type> = (value: unknown) => value is $Type
+
 export type PredicateMaybe<$Value> = $Value | Predicate<$Value>
 
 export const ensurePredicate = <predicateMaybe extends PredicateMaybe<any>>(
