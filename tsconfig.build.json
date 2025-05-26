@@ -1,3 +1,4 @@
+// @libra
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
@@ -6,5 +7,13 @@
     "noEmit": false
   },
   "include": ["./src"],
-  "exclude": ["./src/**/*.test.*"]
+  "exclude": [
+    "./src/**/_test.*",
+    "./src/**/_spec.*",
+    "./src/**/*.test.*",
+    "./src/**/*.test-d.*",
+    "./src/**/*.spec.*",
+    "./src/**/*.spec-d.*",
+    "./src/**/__tests__"
+  ]
 }
