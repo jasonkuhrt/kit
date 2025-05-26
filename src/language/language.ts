@@ -72,3 +72,5 @@ export const isPrimitive = (value: unknown): value is Primitive => {
   // todo: use Obj.is
   return (type !== TypeofTypesEnum.object || value === null) && type !== TypeofTypesEnum.function
 }
+
+export type ExtractPredicateType<T> = T extends (x: any) => x is infer U ? U : never
