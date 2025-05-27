@@ -4,6 +4,8 @@ import { Pat } from '#pat/index.js'
 
 export type Any = unknown[]
 
+export type AnyRO = readonly unknown[]
+
 export type AnyAny = any[]
 
 export type AnyAny2 = [any, any]
@@ -179,3 +181,17 @@ export const mergeOn = Fn.curry(merge)
 export const pickRandomly = <const value>(arr: readonly value[]): value => {
   return arr[Math.floor(Math.random() * arr.length)]!
 }
+
+export type Empty = []
+
+export type EmptyRO = readonly []
+
+// dprint-ignore
+export type ReduceWithIntersection<$Items extends AnyRO> =
+  $Items extends readonly [infer First, ...infer Rest]
+    ? First & ReduceWithIntersection<Rest>
+    : $Items extends EmptyRO
+      ? {}
+      // Means we got something like {x:1}[]
+      // in which case we just strip the array
+      : $Items[number]
