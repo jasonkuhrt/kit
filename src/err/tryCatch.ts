@@ -2,8 +2,7 @@ import type { Bool } from '#bool/index.js'
 import { Fn } from '#fn/index.js'
 import { Prom } from '#prom/index.js'
 import type { IsUnknown } from 'type-fest'
-import { ensure } from './err.js'
-import { is } from './type.js'
+import { ensure, is } from './type.js'
 
 export type TryCatchDefaultPredicateTypes = Error
 

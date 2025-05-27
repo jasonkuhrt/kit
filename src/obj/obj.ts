@@ -1,6 +1,7 @@
-import { Language } from '#language/index.js'
+import type { Language } from '#language/index.js'
 import type { Rec } from '#rec/index.js'
 import type { Undefined } from '#undefined/index.js'
+import { type Any, is } from './type.js'
 
 export * from './path.js'
 
@@ -8,11 +9,7 @@ export * from './get.js'
 
 export * from './merge.js'
 
-export type Any = object
-
-export const is = (value: unknown): value is Any => {
-  return typeof value === Language.TypeofTypesEnum.object && value !== null
-}
+export * from './type.js'
 
 export const entries = <obj extends Any>(obj: obj): Language.Simplify<entries<obj>> => {
   return Object.entries(obj) as any

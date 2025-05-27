@@ -13,13 +13,13 @@
  */
 
 import type { Rec } from '#rec/index.js'
-import { type Any, is } from './obj.js'
 import {
   type InferShapeFromPropertyPath,
   normalizePropertyPathInput,
   type PropertyPath,
   type PropertyPathInput,
 } from './path.js'
+import { type Any, is } from './type.js'
 
 // dprint-ignore
 export const getWith =

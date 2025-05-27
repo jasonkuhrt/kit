@@ -1,6 +1,6 @@
-import { Arr } from '#arr/index.js'
+// import { Arr } from '#arr/index.js'
+import { sure } from '#arr/arr.js'
 import { curry, flipCurried } from '#fn/curry.js'
-import { Fn } from '#fn/index.js'
 import { spaceNoBreak, spaceRegular } from './char/char.js'
 import { Char } from './char/index.js'
 import type { PatternsInput } from './match.js'
@@ -25,7 +25,7 @@ export const stripLeading = replaceLeadingWith(``)
 // General
 
 export const replace = (replacement: string, matcher: PatternsInput, value: string): string => {
-  const patterns = Arr.sure(matcher)
+  const patterns = sure(matcher)
   return patterns.reduce<string>((value, pattern) => {
     return value.replaceAll(pattern, replacement)
   }, value)
@@ -93,9 +93,9 @@ export const trim = (str: string, target: string): string => {
   return start > 0 || end < str.length - 1 ? str.substring(start, end + 1) : str
 }
 
-export const trimOn = Fn.curry(trim)
+export const trimOn = curry(trim)
 
-export const trimWith = Fn.flipCurried(trimOn)
+export const trimWith = flipCurried(trimOn)
 
 export const trimSpaceRegular = trimWith(spaceRegular)
 
@@ -109,6 +109,6 @@ export const truncate = (str: string, maxLength: number = 80): string => {
   return `${str.slice(0, sliceSize)}${indicator}`
 }
 
-export const truncateOn = Fn.curry(truncate)
+export const truncateOn = curry(truncate)
 
-export const truncateWith = Fn.flipCurried(truncateOn)
+export const truncateWith = flipCurried(truncateOn)

@@ -1,8 +1,7 @@
 import type { Json } from '#json/index.js'
 import { parse } from 'jsonc-parser'
-import { writeString } from './mutation.js'
-import { read } from './query.js'
-import type { FileWriteInput } from './types.js'
+import type { FileWriteInput } from '../types.js'
+import { read, writeString } from './string.js'
 
 export const readJson = async <data extends Json.Value>(path: string): Promise<data | undefined> => {
   const text = await read(path)

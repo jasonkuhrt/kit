@@ -14,16 +14,6 @@ export const log = (error: Error, options?: InspectOptions): void => {
   console.log(inspect(error, options))
 }
 
-/**
- * Ensure that the given value is an error and return it. If it is not an error than
- * wrap it in one, passing the given value as the error message.
- */
-export const ensure = (value: unknown): Error => {
-  if (value instanceof Error) return value
-
-  return new Error(String(value))
-}
-
 export const throwNull = <V>(value: V, message?: string): Exclude<V, null> => {
   if (value === null) throw new Error(message ?? defaultThrowNullMessage)
 

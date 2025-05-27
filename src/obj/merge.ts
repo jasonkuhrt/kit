@@ -1,7 +1,7 @@
 import { Arr } from '#arr/index.js'
 import { Language } from '#language/index.js'
 import type { Rec } from '#rec/index.js'
-import { type Any, is } from './obj.js'
+import { type Any, is } from './type.js'
 
 interface MergeOptions {
   undefined?: boolean

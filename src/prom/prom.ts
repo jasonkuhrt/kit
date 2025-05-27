@@ -1,4 +1,4 @@
-import { Obj } from '#obj/index.js'
+import { isShape as Obj_isShape } from '#obj/obj.js'
 
 export type Any = Promise<unknown>
 
@@ -6,7 +6,7 @@ export type AnyAny = Promise<any>
 
 export type Maybe<$Type> = $Type | Promise<$Type>
 
-export const isShape = Obj.isShape<AnyAny>({
+export const isShape = Obj_isShape<AnyAny>({
   then: `function`,
   catch: `function`,
   finally: `function`,
