@@ -1,5 +1,6 @@
 import type { Language } from '#language/index.js'
 import type { Rec } from '#rec/index.js'
+import type { Ts } from '#ts/index.js'
 import type { Undefined } from '#undefined/index.js'
 import { type Any, is } from './type.js'
 
@@ -11,7 +12,7 @@ export * from './merge.js'
 
 export * from './type.js'
 
-export const entries = <obj extends Any>(obj: obj): Language.Simplify<entries<obj>> => {
+export const entries = <obj extends Any>(obj: obj): Ts.Simplify<entries<obj>> => {
   return Object.entries(obj) as any
 }
 

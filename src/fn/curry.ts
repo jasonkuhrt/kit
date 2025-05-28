@@ -26,23 +26,23 @@ export type curry<fn extends AnyAny> =
  * @see https://www.typescriptlang.org/play/?noImplicitAny=false&target=6&jsx=0&ts=5.8.3#code/PQKhAIChwgLAXeAHAzgLmMAJgSxQYwHsAnLAOiIFth9YBDAOwYFMAbFYATgFYB2XzrwBMARlEAGAMziRANgAs3ABzARa+bJmyhkoUu6zeSkZyGrJwzpO4GlS+fM4j5vZdDiJ0mAOY54sAFcAIwpCajpYYgArOmJiZkR3cCFxIW4AWnEMuSgYYEhIeABPJGZwABU6AGtmAB5ygBpwADlwZgAPeGYGLBRwBgDKIOZiAD5c8ABeCrbO7t7wAG9wVm7vfzQW8AAfcHFwAF9wAH4K6HBN8tmunr6AbUYiprIXnAYAMxHwAAkAXROKtU6t8ms1RudNndfgViqVwAAFWIoZgAQWI3hQtQAyk0APIBeDjaaVGrYpoicYdG4LN6fYjgFHXeZ9R5QgFYpm3cB3F5kWlfRrgR7-U6I4jItEY+pNAAUvIA+pDeSjfgBKKbjfGEi7gLU6lgANxGBQ6SBI8HAsLKAGEAnEirUAGIMInnZ2chZyl6xDGbfn0lHqybjf3gABKALFEvRmJRTTD402huNhRKZQ68pkU3AtvttRldE2IiaQU2Qia+E2kiD43k4Mw4EbAD1jpAgA
  */
 // dprint-ignore
-type Curry__Signature<$Parameters extends Arr.Any, $Return> =
+type Curry__Signature<$Parameters extends Arr.Unknown, $Return> =
   $Parameters extends []
     ? $Return
-    : LastAsTuple<$Parameters> extends infer __last_arg_as_tuple__ extends Arr.Any
-        ? Leading<$Parameters> extends infer __leading_parameters__ extends Arr.Any
+    : LastAsTuple<$Parameters> extends infer __last_arg_as_tuple__ extends Arr.Unknown
+        ? Leading<$Parameters> extends infer __leading_parameters__ extends Arr.Unknown
            ? Curry__Signature<__leading_parameters__, (...args: __last_arg_as_tuple__) => $Return>
            : never
         : never
 
 // dprint-ignore
-type Leading<$Array extends Arr.Any> =
-  $Array extends [...infer leading extends Arr.Any, arg?:any]
+type Leading<$Array extends Arr.Unknown> =
+  $Array extends [...infer leading extends Arr.Unknown, arg?:any]
     ? leading
     : never
 
 // dprint-ignore
-type LastAsTuple<$Array extends Arr.Any> =
+type LastAsTuple<$Array extends Arr.Unknown> =
   $Array extends { length: 1 | 0 }
     ? $Array
     : $Array extends [item?: any, ...infer __tail__]

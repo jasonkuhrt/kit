@@ -1,29 +1,34 @@
-export type AnyIndex = Record<PropertyKey, any[]>
+import { Ts } from '#ts/index.js'
 
-// dprint-ignore
-export type By<
-  $Type extends object,
-  $Key extends keyof $Type,
-> =
-  $Type[$Key] extends PropertyKey
-    ? { [_ in $Type[$Key]]?: $Type[] }
-    : never
+export type AnyIndex = Record<PropertyKey, any[]>
 
 // dprint-ignore
 export type by<
   $Type extends object,
   $Key extends keyof $Type,
-  ___value = $Type[$Key]
 > =
-  ___value extends PropertyKey
-    ? { [_ in ___value]?: $Type[] }
-    : `ERROR: type of $Type[$Key] is not a subtype of PropertyKey and so $Key "${PropertyKeyToString<$Key>}" cannot be used as an indexing value.`
+  $Type[$Key] extends PropertyKey
+    ? {
+        [__group_name__ in $Type[$Key]]?:
+          // If $Type is a union type we want to extract the relevent members for this group.
+          Extract<$Type, { [_ in $Key]: __group_name__ }>[]
+      }
+    : never
+
+export type ErrorInvalidGroupKey<obj extends object, key extends keyof obj> =
+  // dprint-ignore
+  Ts.StaticError<
+    `The value at your chosen key ${Ts.Show<key>} is not a subtype of allowed property key types (${Ts.Show<PropertyKey>}) and so cannot be used to group your objects.`,
+    { your_key_type: obj[key] }
+  >
 
 export const by = <obj extends object, key extends keyof obj>(
   array: obj[],
-  key: key,
+  // dprint-ignore
+  key: GuardIsGroupableKey<obj, key, ErrorInvalidGroupKey<obj, key>>,
 ): by<obj, key> => {
   const index = array.reduce((index, item) => {
+    // @ts-expect-error
     const indexKey = item[key] as PropertyKey
     index[indexKey] ??= []
     index[indexKey].push(item)
@@ -32,23 +37,25 @@ export const by = <obj extends object, key extends keyof obj>(
   return index as any
 }
 
-export const merge = <index extends AnyIndex>(
-  index1: index,
-  index2: index,
-): index => {
-  const index1_ = index1 as AnyIndex
-  const index2_ = index2 as AnyIndex
-  for (const k2 in index2_) {
-    index1_[k2] ??= []
-    index1_[k2].push(...index2_[k2]!)
-  }
-  return index1_ as any
-}
+type GuardIsGroupableKey<
+  $Obj extends object,
+  $Key extends keyof $Obj,
+  $Error extends Ts.StaticError,
+> = $Obj[$Key] extends PropertyKey ? $Key : Ts.Simplify<$Error>
 
-// dprint-ignore
-export type PropertyKeyToString<$PropertyKey extends PropertyKey> =
-  $PropertyKey extends string
-    ? $PropertyKey
-    : $PropertyKey extends number
-      ? `${$PropertyKey}`
-      : '<< SOME SYMBOL >>'
+/**
+ * Merge two groups.
+ */
+export const merge = <index extends AnyIndex>(
+  group1: index,
+  group2: index,
+): index => {
+  const group1_ = group1 as AnyIndex
+  const group2_ = group2 as AnyIndex
+
+  for (const k2 in group2_) {
+    group1_[k2] ??= []
+    group1_[k2].push(...group2_[k2]!)
+  }
+  return group1_ as any
+}

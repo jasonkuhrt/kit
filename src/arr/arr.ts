@@ -2,18 +2,46 @@ import { Bool } from '#bool/index.js'
 import { Fn } from '#fn/index.js'
 import { Pat } from '#pat/index.js'
 
-export type Any = unknown[]
+export type Unknown = unknown[]
 
-export type AnyRO = readonly unknown[]
+export type Any = any[]
 
-export type AnyAny = any[]
+export type Empty = []
 
-export type AnyAny2 = [any, any]
-export type AnyAny3 = [any, any, any]
-export type AnyAny4 = [any, any, any, any]
-export type AnyAny5 = [any, any, any, any, any]
+export type Any1 = [any]
+export type Any2 = [any, any]
+export type Any3 = [any, any, any]
+export type Any4 = [any, any, any, any]
+export type Any5 = [any, any, any, any, any]
 
-export const is = (value: unknown): value is Any => {
+export type Any1OrMore = readonly [any, ...readonly any[]]
+export type Any2OrMore = readonly [any, any, ...readonly any[]]
+export type Any3OrMore = readonly [any, any, any, ...readonly any[]]
+export type Any4OrMore = readonly [any, any, any, any, ...readonly any[]]
+export type Any5OrMore = readonly [any, any, any, any, any, ...readonly any[]]
+
+// Readonly
+
+export type UnknownRO = readonly unknown[]
+
+export type AnyRO = readonly any[]
+
+export type EmptyRO = readonly []
+
+export type Any0RO = readonly []
+export type Any1RO = readonly [any]
+export type Any2RO = readonly [any, any]
+export type Any3RO = readonly [any, any, any]
+export type Any4RO = readonly [any, any, any, any]
+export type Any5RO = readonly [any, any, any, any, any]
+
+export type Any1OrMoreRO = readonly [any, ...readonly any[]]
+export type Any2OrMoreRO = readonly [any, any, ...readonly any[]]
+export type Any3OrMoreRO = readonly [any, any, any, ...readonly any[]]
+export type Any4OrMoreRO = readonly [any, any, any, any, ...readonly any[]]
+export type Any5OrMoreRO = readonly [any, any, any, any, any, ...readonly any[]]
+
+export const is = (value: unknown): value is Unknown => {
   return Array.isArray(value)
 }
 
@@ -34,7 +62,7 @@ export const sure = <value>(value: value): sure<value> => {
   return is(value) ? value as any : [value] as any
 }
 
-export type sure<$Type> = $Type extends AnyAny ? $Type : $Type[]
+export type sure<$Type> = $Type extends Any ? $Type : $Type[]
 
 // dprint-ignore
 export type FlattenShallow<$Type> =
@@ -104,20 +132,20 @@ export const isNotEmpty = <value>(array: value[]): array is NonEmpty<value> => {
 // Map
 
 // dprint-ignore
-export type ReplaceInner<$Array extends AnyAny, $NewType> =
-    $Array extends AnyAny2       ? [$NewType, $NewType]
-  : $Array extends AnyAny3       ? [$NewType, $NewType, $NewType]
-  : $Array extends AnyAny4       ? [$NewType, $NewType, $NewType, $NewType]
-  : $Array extends AnyAny5       ? [$NewType, $NewType, $NewType, $NewType, $NewType]
+export type ReplaceInner<$Array extends Any, $NewType> =
+    $Array extends Any2       ? [$NewType, $NewType]
+  : $Array extends Any3       ? [$NewType, $NewType, $NewType]
+  : $Array extends Any4       ? [$NewType, $NewType, $NewType, $NewType]
+  : $Array extends Any5       ? [$NewType, $NewType, $NewType, $NewType, $NewType]
   : $Array extends NonEmpty      ? NonEmpty<$NewType>
                                  : $NewType[]
 
 export type JsMapper<
-  $Array extends AnyAny,
+  $Array extends Any,
   $NewType,
 > = (value: $Array[number], index: number) => $NewType
 
-export const map = <array extends AnyAny, newType>(
+export const map = <array extends Any, newType>(
   array: array,
   fn: JsMapper<array, newType>,
 ): ReplaceInner<array, newType> => {
@@ -126,14 +154,14 @@ export const map = <array extends AnyAny, newType>(
 
 // dprint-ignore
 export const mapOn =
-  <array extends AnyAny, newType>(array: array) =>
+  <array extends Any, newType>(array: array) =>
     (fn: JsMapper<NoInfer<array>, newType>):ReplaceInner<array, newType> => {
       return array.map(fn) as any
     }
 
 // dprint-ignore
 export const mapWith =
-  <array extends AnyAny, newType>(fn: JsMapper<array, newType>) =>
+  <array extends Any, newType>(fn: JsMapper<array, newType>) =>
     (array: array): ReplaceInner<array, newType> => {
       return array.map(fn) as any
     }
@@ -184,12 +212,8 @@ export const pickRandomly = <const value>(arr: readonly value[]): value => {
   return arr[Math.floor(Math.random() * arr.length)]!
 }
 
-export type Empty = []
-
-export type EmptyRO = readonly []
-
 // dprint-ignore
-export type ReduceWithIntersection<$Items extends AnyRO> =
+export type ReduceWithIntersection<$Items extends UnknownRO> =
   $Items extends readonly [infer First, ...infer Rest]
     ? First & ReduceWithIntersection<Rest>
     : $Items extends EmptyRO
