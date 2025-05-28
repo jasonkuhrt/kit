@@ -100,3 +100,5 @@ export type _PrintUnion<$Type extends Arr.AnyRO> =
       : $Type extends Arr.EmptyRO
         ? ''
         : never
+
+// export const as = <T>(): T => value as T;

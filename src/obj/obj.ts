@@ -2,7 +2,7 @@ import type { Language } from '#language/index.js'
 import type { Rec } from '#rec/index.js'
 import type { Ts } from '#ts/index.js'
 import type { Undefined } from '#undefined/index.js'
-import { type Any, is } from './type.js'
+import { type Any, is, isNot } from './type.js'
 
 export * from './path.js'
 
@@ -41,4 +41,22 @@ export const isEmpty = (obj: object): boolean => {
 
 export const isEmpty$ = (obj: object): obj is {} => {
   return Object.keys(obj).length === 0
+}
+
+const PrivateStateSymbol = Symbol('PrivateState')
+
+export const setPrivateState = <obj extends Any>(obj: obj, value: object): obj => {
+  Object.defineProperty(obj, PrivateStateSymbol, {
+    value,
+    writable: false,
+    enumerable: false,
+    configurable: false,
+  })
+  return obj
+}
+
+export const getPrivateState = <state extends Any>(obj: Any): state => {
+  const value = Object.getOwnPropertyDescriptor(obj, PrivateStateSymbol)
+  if (isNot(value)) throw new Error('Private state not found')
+  return value
 }
