@@ -3,7 +3,7 @@ import { inspect, type InspectOptions } from './inspect.js'
 
 export * from './inspect.js'
 
-export * from './tryCatch.js'
+export * from './try.js'
 
 export * from './type.js'
 

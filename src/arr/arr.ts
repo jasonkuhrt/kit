@@ -84,6 +84,8 @@ export const partitionErrors = <T>(array: T[]): [Exclude<T, Error>[], Extract<T,
 
 export type NonEmpty<$Type = any> = [$Type, ...$Type[]]
 
+export type NonEmptyRO<$Type = any> = readonly [$Type, ...readonly $Type[]]
+
 export const isEmpty = (array: unknown[]): array is [] => {
   return array.length === 0
 }

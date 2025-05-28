@@ -11,3 +11,9 @@ export const isShape = Obj_isShape<AnyAny>({
   catch: `function`,
   finally: `function`,
 })
+
+// dprint-ignore
+export type AwaitedUnion<$MaybePromise, $Additional> =
+  $MaybePromise extends Promise<infer __promised__>
+    ? Promise<Awaited<__promised__ | $Additional>>
+    : $MaybePromise | $Additional

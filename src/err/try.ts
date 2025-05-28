@@ -1,6 +1,9 @@
+import type { Arr } from '#arr/index.js'
 import type { Bool } from '#bool/index.js'
 import { Fn } from '#fn/index.js'
 import { Prom } from '#prom/index.js'
+import type { AwaitedUnion } from '#prom/prom.js'
+import { Value } from '#value/index.js'
 import type { IsUnknown } from 'type-fest'
 import { ensure, is } from './type.js'
 
@@ -12,9 +15,10 @@ export const tryCatchify = <fn extends Fn.AnyAny, thrown>(
   predicates: readonly [Bool.TypePredicate<thrown>, ...readonly Bool.TypePredicate<thrown>[]] = [is as Bool.TypePredicate<thrown>],
 ): (
   (...args: Parameters<fn>) =>
-    ReturnType<fn> extends Promise<any>
-      ? Promise<Awaited<ReturnType<fn>> | (IsUnknown<thrown> extends true ? TryCatchDefaultPredicateTypes : thrown)>
-      : ReturnType<fn>                  | (IsUnknown<thrown> extends true ? TryCatchDefaultPredicateTypes : thrown)
+    AwaitedUnion<
+      ReturnType<fn>,
+      IsUnknown<thrown> extends true ? TryCatchDefaultPredicateTypes : thrown
+    >
 ) => {
   const tryCatchifiedFn: Fn.AnyAny = (...args) => {
     return tryCatch(() => fn(...args), predicates)
@@ -35,11 +39,12 @@ export function tryCatch<returned, thrown>(
 // dprint-ignore
 export function tryCatch<returned, thrown>(
   fn: () => returned,
-  predicates?: readonly [Bool.TypePredicate<thrown>, ...readonly Bool.TypePredicate<thrown>[]],
+  predicates?: Arr.NonEmptyRO<Bool.TypePredicate<thrown>>,
 ):
-  returned extends Prom.AnyAny
-    ? Promise<Awaited<returned> | (IsUnknown<thrown> extends true ? TryCatchDefaultPredicateTypes : thrown)>
-    : returned                  | (IsUnknown<thrown> extends true ? TryCatchDefaultPredicateTypes : thrown)
+  AwaitedUnion<
+    returned,
+    IsUnknown<thrown> extends true ? TryCatchDefaultPredicateTypes : thrown
+  >
 
 // Implementation
 
@@ -78,3 +83,37 @@ export const tryCatchIgnore = <$Return>(fn: () => $Return): $Return => {
   }
   return result as any
 }
+
+// tryOr
+
+// todo all fn being a promise directly
+// todo: allow fallback returning a promise and it being awaited
+export const tryOr = <success, fallback>(
+  fn: () => success,
+  fallback: Value.LazyMaybe<fallback>,
+): AwaitedUnion<success, fallback> => {
+  try {
+    const result = fn()
+    if (Prom.isShape(result)) {
+      return result.catch(Fn.bind(Value.resolveLazy, fallback)) as any
+    }
+    return result as any
+  } catch (error) {
+    return Value.resolveLazy(fallback) as any
+  }
+}
+
+// dprint-ignore
+export const tryOrOn =
+  <success>(fn: () => success) =>
+    <fallback>(fallback: Value.LazyMaybe<fallback>): AwaitedUnion<success, fallback> =>
+      tryOr(fn, fallback)
+
+// dprint-ignore
+export const tryOrWith =
+  <fallback>(fallback: Value.LazyMaybe<fallback>) =>
+    <success>(fn: () => success): AwaitedUnion<success, fallback> =>
+      tryOr(fn, fallback)
+
+export const tryOrUndefined = tryOrWith(undefined)
+export const tryOrNull = tryOrWith(null)
