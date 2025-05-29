@@ -1,0 +1,8 @@
+[
+  {
+    "label": "dev",
+    "command": "pnpm",
+    "args": ["run", "dev"],
+    "reveal": "never"
+  }
+]
