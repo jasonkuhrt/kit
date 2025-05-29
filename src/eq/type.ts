@@ -11,7 +11,7 @@ export const isTypeWith =
   }
 
 // dprint-ignore
-export const isNotTypeWith =
+export const isntTypeWith =
   <reference>(reference: reference) => {
     return <valueGiven>(
         value: ValidateIsSupertype<reference, valueGiven>

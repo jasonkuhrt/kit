@@ -1,4 +1,4 @@
-import { isNotTypeWith } from '#eq/type.js'
+import { isntTypeWith as isntTypeWith } from '#eq/type.js'
 import { isTypeWith } from '#eq/type.js'
 import { expect, expectTypeOf, test } from 'vitest'
 
@@ -20,16 +20,16 @@ test('isTypeWith', () => {
   }
 })
 
-test('isNotTypeWith', () => {
-  const isNotNull = isNotTypeWith(null)
+test('isntTypeWith', () => {
+  const isntNull = isntTypeWith(null)
 
   // runtime
 
-  expect(isNotNull(x)).toBe(false)
+  expect(isntNull(x)).toBe(false)
 
   // devtime
 
-  if (isNotNull(x)) {
+  if (isntNull(x)) {
     expectTypeOf(x).toEqualTypeOf<1 | 2>()
   } else {
     expectTypeOf(x).toEqualTypeOf<null>()

@@ -70,13 +70,13 @@ export const isMatchOn = Fn.curry(isMatch)
 
 export const isMatchWith = Fn.flipCurried(isMatchOn)
 
-export const isNotMatch = (pattern: PatternInput) => (value: string): boolean => {
+export const isntMatch = (pattern: PatternInput) => (value: string): boolean => {
   return !isMatch(value, pattern)
 }
 
-export const isNotMatchOn = Fn.curry(isNotMatch)
+export const isntMatchOn = Fn.curry(isntMatch)
 
-export const isNotMatchWith = Fn.flipCurried(isNotMatchOn)
+export const isntMatchWith = Fn.flipCurried(isntMatchOn)
 
 // Any
 

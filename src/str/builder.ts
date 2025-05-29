@@ -1,5 +1,5 @@
-import { Eq } from '#eq/index.js'
 import { Fn } from '#fn/index.js'
+import { Null } from '#null/index.js'
 import { trimSpaceRegular } from './replace.js'
 import { isTemplateStringsArray } from './template.js'
 import { unlines } from './text.js'
@@ -54,7 +54,7 @@ export const Builder = (): Builder => {
       if (isEmptyInput) {
         state.lines.push(``)
       } else {
-        const lines = linesInput.filter(Eq.isNotNull).map(trimSpaceRegular)
+        const lines = linesInput.filter(Null.isnt).map(trimSpaceRegular)
         state.lines.push(...lines)
       }
     }

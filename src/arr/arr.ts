@@ -118,7 +118,7 @@ export const isEmpty = (array: unknown[]): array is [] => {
   return array.length === 0
 }
 
-export const isNotEmpty = <value>(array: value[]): array is NonEmpty<value> => {
+export const isntEmpty = <value>(array: value[]): array is NonEmpty<value> => {
   return array.length > 0
 }
 

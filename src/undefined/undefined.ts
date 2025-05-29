@@ -1,8 +1,8 @@
-import { isNotTypeWith, isTypeWith } from '#eq/type.js'
+import { isntTypeWith, isTypeWith } from '#eq/type.js'
 
 export const is = isTypeWith(undefined)
 
-export const isNot = isNotTypeWith(undefined)
+export const isnt = isntTypeWith(undefined)
 
 // export const is = (value: unknown): value is undefined => {
 //   return value === undefined

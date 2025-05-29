@@ -7,6 +7,6 @@ export const is = (value: unknown): value is Any => {
   return typeof value === TypeofTypesEnum.object && value !== null
 }
 
-export const isNot = (value: unknown): value is Exclude<typeof value, Any> => {
+export const isnt = (value: unknown): value is Exclude<typeof value, Any> => {
   return !is(value)
 }

@@ -10,8 +10,8 @@ export const is = (value1: unknown, value2: unknown): boolean => {
 
 export const isWith = Fn.curry(is)
 
-export const isNot = (value1: unknown, value2: unknown): boolean => {
+export const isnt = (value1: unknown, value2: unknown): boolean => {
   return value1 !== value2
 }
 
-export const isNotWith = Fn.curry(isNot)
+export const isntWith = Fn.curry(isnt)
