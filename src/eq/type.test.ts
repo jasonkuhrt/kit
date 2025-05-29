@@ -1,9 +1,11 @@
+import { isNotTypeWith } from '#eq/type.js'
+import { isTypeWith } from '#eq/type.js'
 import { expect, expectTypeOf, test } from 'vitest'
-import { isNotTypeWith, isTypeWith } from './type.js'
+
+const x = null as null | 1 | 2
 
 test('isTypeWith', () => {
   const isNull = isTypeWith(null)
-  const x = null as null | 1 | 2
 
   // runtime
 
@@ -20,7 +22,6 @@ test('isTypeWith', () => {
 
 test('isNotTypeWith', () => {
   const isNotNull = isNotTypeWith(null)
-  const x = null as null | 1 | 2
 
   // runtime
 

@@ -33,7 +33,7 @@ interface PrivateState {
 export const by = <obj extends object, key extends keyof obj>(
   array: obj[],
   // dprint-ignore
-  key: GuardIsGroupableKey<obj, key, ErrorInvalidGroupKey<obj, key>>,
+  key: ValidateIsGroupableKey<obj, key, ErrorInvalidGroupKey<obj, key>>,
 ): by<obj, key> => {
   const groupSet = array.reduce((index, item) => {
     // @ts-expect-error
@@ -48,7 +48,7 @@ export const by = <obj extends object, key extends keyof obj>(
   return groupSet as any
 }
 
-type GuardIsGroupableKey<
+type ValidateIsGroupableKey<
   $Obj extends object,
   $Key extends keyof $Obj,
   $Error extends Ts.StaticError,
