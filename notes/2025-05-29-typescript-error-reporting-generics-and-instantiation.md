@@ -8,65 +8,64 @@ The core challenge addressed was improving the display of inferred types within 
 
 ## General Principles
 
-1.  **Type Instantiation vs. Generic Signature Display:**
-    *   **Generic Signature:** When TypeScript refers to a generic function or type itself (e.g., in IDE hovers over the function name, or in the initial part of a compiler error describing the "Argument of type `GenericFunc<T>`..."), it will display the type parameters as placeholders (e.g., `T`, `$Value`, `value_`). This is accurate because the function/type *is* generic at this level of description.
-    *   **Type Instantiation:** When a generic function is *called* or a generic type is *used* with specific type arguments (often inferred), TypeScript instantiates it. In the detailed part of a compiler error explaining an assignability failure for that specific call/use, TypeScript will use these concrete, instantiated types.
+1. **Type Instantiation vs. Generic Signature Display:**
+   - **Generic Signature:** When TypeScript refers to a generic function or type itself (e.g., in IDE hovers over the function name, or in the initial part of a compiler error describing the "Argument of type `GenericFunc<T>`..."), it will display the type parameters as placeholders (e.g., `T`, `$Value`, `value_`). This is accurate because the function/type _is_ generic at this level of description.
+   - **Type Instantiation:** When a generic function is _called_ or a generic type is _used_ with specific type arguments (often inferred), TypeScript instantiates it. In the detailed part of a compiler error explaining an assignability failure for that specific call/use, TypeScript will use these concrete, instantiated types.
 
-2.  **Custom Error Types and `CONTEXT`:**
-    *   If a custom error type like `StaticErrorGuard<$Guard, $Value>` includes a `CONTEXT` object (e.g., `{ guard: $Guard, value: $Value }`), this `CONTEXT` object *will* show instantiated types in the relevant part of the compiler error (i.e., when detailing the assignability failure for a specific instantiation).
-    *   Example:
-        ```typescript
-        // Generic Definition
-        interface MyError<T> {
-          ERROR_INFO: { param: T };
-        }
+2. **Custom Error Types and `CONTEXT`:**
+   - If a custom error type like `StaticErrorGuard<$Guard, $Value>` includes a `CONTEXT` object (e.g., `{ guard: $Guard, value: $Value }`), this `CONTEXT` object _will_ show instantiated types in the relevant part of the compiler error (i.e., when detailing the assignability failure for a specific instantiation).
+   - Example:
+     ```typescript
+     // Generic Definition
+     interface MyError<T> {
+       ERROR_INFO: { param: T }
+     }
 
-        // In an error for a specific call where T is inferred as `string`:
-        // Type 'number' is not assignable to type 'MyError<string>'
-        //   Property 'ERROR_INFO' has issues:
-        //     Type '{ param: number; }' is not assignable to type '{ param: string; }'. // 'string' is instantiated
-        ```
+     // In an error for a specific call where T is inferred as `string`:
+     // Type 'number' is not assignable to type 'MyError<string>'
+     //   Property 'ERROR_INFO' has issues:
+     //     Type '{ param: number; }' is not assignable to type '{ param: string; }'. // 'string' is instantiated
+     ```
 
-3.  **Template Literal Types for Error Messages (e.g., using `Print<T>`):**
-    *   When a template literal type is used to construct an error message string (e.g., `` `Value is ${Print<T>}` ``), the `Print<T>` utility will be evaluated with the *instantiated* type for `T` in the detailed compiler error.
-    *   If `Print<T>` itself is shown with a generic `T` (e.g., `Print<value_, ...>`) in an error message, it's likely in the part of the error describing the generic signature, not the specific failure.
+3. **Template Literal Types for Error Messages (e.g., using `Print<T>`):**
+   - When a template literal type is used to construct an error message string (e.g., `` `Value is ${Print<T>}` ``), the `Print<T>` utility will be evaluated with the _instantiated_ type for `T` in the detailed compiler error.
+   - If `Print<T>` itself is shown with a generic `T` (e.g., `Print<value_, ...>`) in an error message, it's likely in the part of the error describing the generic signature, not the specific failure.
 
-4.  **`Simplify<T>` Utility:**
-    *   `Simplify<T>` helps improve the readability of complex types by expanding aliases or flattening structures.
-    *   It operates on the type it's given. If given `MyType<G>` (where `G` is generic), it simplifies `MyType<G>`. If given `MyType<string>`, it simplifies `MyType<string>`.
-    *   It does not "force instantiation" in the sense of making a generic signature display with specific types before a call-site inference occurs.
+4. **`Simplify<T>` Utility:**
+   - `Simplify<T>` helps improve the readability of complex types by expanding aliases or flattening structures.
+   - It operates on the type it's given. If given `MyType<G>` (where `G` is generic), it simplifies `MyType<G>`. If given `MyType<string>`, it simplifies `MyType<string>`.
+   - It does not "force instantiation" in the sense of making a generic signature display with specific types before a call-site inference occurs.
 
-5.  **IDE Hovers vs. Compiler Errors:**
-    *   IDE hovers on a generic function/type definition or reference will typically show its generic signature.
-    *   Compiler errors are more detailed and hierarchical. The initial parts might describe generic signature mismatches, while deeper parts will detail failures with instantiated types. The latter is the "ground truth" for a specific call.
+5. **IDE Hovers vs. Compiler Errors:**
+   - IDE hovers on a generic function/type definition or reference will typically show its generic signature.
+   - Compiler errors are more detailed and hierarchical. The initial parts might describe generic signature mismatches, while deeper parts will detail failures with instantiated types. The latter is the "ground truth" for a specific call.
 
 ## Brief Self-Contained Example
 
 ```typescript
 // 1. A Generic Error Type
 interface CustomError<ParamType> {
-  MESSAGE: string; // To be constructed with Print<ParamType>
+  MESSAGE: string // To be constructed with Print<ParamType>
   CONTEXT: {
-    expectedParamType: ParamType;
-  };
+    expectedParamType: ParamType
+  }
 }
 
 // 2. A "Print" utility (simplified)
-type Print<T> =
-  T extends string ? `"${T}" (string)` :
-  T extends number ? `${T} (number)` :
-  "some_other_type";
+type Print<T> = T extends string ? `"${T}" (string)`
+  : T extends number ? `${T} (number)`
+  : 'some_other_type'
 
 // 3. A generic function that uses the error type
 // If ArgType is not a string, its parameter expects CustomError<ArgType>
 function processOrError<ArgType>(
-  arg: ArgType extends string ? string : CustomError<ArgType>
+  arg: ArgType extends string ? string : CustomError<ArgType>,
 ): void {
   // ...
 }
 
 // 4. Usage
-declare const myNumber: number;
+declare const myNumber: number
 
 // Calling processOrError(myNumber):
 // - ArgType is inferred as `number`.
@@ -104,8 +103,8 @@ IDE Hover on `processOrError` definition:
 
 ## Conclusion for the Original Case
 
-The initial concern about `value_` (a generic type parameter) appearing in error messages was largely due to observing it in IDE hovers or the parts of compiler errors that describe the *generic signature* of the function `Null.isnt`.
+The initial concern about `value_` (a generic type parameter) appearing in error messages was largely due to observing it in IDE hovers or the parts of compiler errors that describe the _generic signature_ of the function `Null.isnt`.
 
-In the *detailed assignability failure* part of the compiler error, TypeScript *does* correctly use the instantiated type (e.g., `PageBranchContent | undefined`) for `value_` when constructing the `CONTEXT` object and evaluating `Print<value_>` for the error message string.
+In the _detailed assignability failure_ part of the compiler error, TypeScript _does_ correctly use the instantiated type (e.g., `PageBranchContent | undefined`) for `value_` when constructing the `CONTEXT` object and evaluating `Print<value_>` for the error message string.
 
 There isn't a known TypeScript mechanism to force the generic signature display itself to "pre-instantiate" with types from a potential call site. The current behavior accurately distinguishes between generic definitions and specific instantiations.
