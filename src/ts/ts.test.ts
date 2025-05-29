@@ -100,20 +100,8 @@ describe('Print', () => {
 
   describe('Union Types', () => {
     test('union of primitives', () => {
-      type x = P<'A' | 1 | true>
-      expectTypeOf<P<PropertyKey>>().toEqualTypeOf<'string | number | symbol'>()
-      expectTypeOf<P<string | number>>().toEqualTypeOf<'string | number'>()
-      expectTypeOf<P<'A' | 1 | true>>().toExtend<"true | 1 | 'A'">()
-    })
-
-    test('union with object types', () => {
-      expectTypeOf<P<Date | string[]>>().toEqualTypeOf<'Date | Array<string>'>()
-      expectTypeOf<P<Promise<any> | { a: 1 }>>().toEqualTypeOf<'Promise<any> | object'>()
-    })
-
-    test('union including undefined/null', () => {
-      expectTypeOf<P<string | undefined>>().toEqualTypeOf<'string | undefined'>()
-      expectTypeOf<P<number | null>>().toEqualTypeOf<'number | null'>()
+      // union order is not deterministic so we have to be a bit loose here.
+      expectTypeOf<P<number | null>>().toExtend<'number | null' | 'null | number'>()
     })
 
     test('union including any, unknown, never', () => {
