@@ -1,8 +1,12 @@
 [
   {
     "label": "dev",
-    "command": "pnpm",
-    "args": ["run", "dev"],
+    "command": "pnpm dev",
+    "reveal": "never"
+  },
+  {
+    "label": "check:types --watch",
+    "command": "pnpm check:types --watch",
     "reveal": "never"
   }
 ]
