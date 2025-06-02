@@ -15,6 +15,7 @@ export type Unknown = unknown[]
 export type Any = any[]
 
 export type Empty = []
+export const Empty: Empty = []
 
 export type Any1 = [any]
 export type Any2 = [any, any]
