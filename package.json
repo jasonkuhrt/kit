@@ -19,6 +19,7 @@
   "sideEffects": false,
   "exports": {
     ".": "./build/exports/index.js",
+    "./idx": "./build/idx/idx.js",
     "./arr": "./build/arr/arr.js",
     "./bool": "./build/bool/bool.js",
     "./cache": "./build/cache/cache.js",
