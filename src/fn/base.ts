@@ -64,3 +64,17 @@ export type bind<$Fn extends AnyAnyParametersMin1> =
     : never
 
 export const noop = () => {}
+
+export const $identityPartial = <value>(value: $identityPartial<value>): value => value as any
+
+// dprint-ignore
+export type $identityPartial<$Type> =
+  $Type extends Array<infer __inner__>                  ? Array<$identityPartial<__inner__>> :
+  $Type extends ReadonlyArray<infer __inner__>          ? ReadonlyArray<$identityPartial<__inner__>> :
+  $Type extends Promise<infer __inner__>                ? Promise<$identityPartial<__inner__>> :
+  $Type extends Function                                ? $Type :
+  $Type extends object                                  ? {
+                                                            [key in keyof $Type]?: $identityPartial<$Type[key]>
+                                                          } :
+                                                        // else
+                                                          $Type
