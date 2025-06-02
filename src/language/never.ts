@@ -21,3 +21,9 @@ export const neverCase = (value: never): never => {
 export const never: (context?: object | string) => never = context => {
   throw new Error('Something that should be impossible happened', { cause: context })
 }
+
+export const todo = <type>(...args: any[]): type => {
+  console.log(`TODO`)
+  console.log(...args)
+  throw new Error(`todo: ${JSON.stringify(args)}`)
+}
