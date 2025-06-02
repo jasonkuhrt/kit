@@ -5,3 +5,5 @@ export const factory = (baesUrl: URL): Factory => {
     return new URL(path, baesUrl)
   }
 }
+
+export const pathSeparator = '/'
