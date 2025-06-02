@@ -1,6 +1,6 @@
 import { Fn } from '#fn/index.js'
 import { Null } from '#null/index.js'
-import { trimSpaceRegular } from './replace.js'
+import { removeSurroundingSpaceRegular } from './replace.js'
 import { isTemplateStringsArray } from './template.js'
 import { unlines } from './text.js'
 
@@ -44,7 +44,7 @@ export const Builder = (): Builder => {
         }
       }
 
-      state.lines.push(trimSpaceRegular(code))
+      state.lines.push(removeSurroundingSpaceRegular(code))
     } else {
       // Usage as function
 
@@ -54,7 +54,7 @@ export const Builder = (): Builder => {
       if (isEmptyInput) {
         state.lines.push(``)
       } else {
-        const lines = linesInput.filter(Null.isnt).map(trimSpaceRegular)
+        const lines = linesInput.filter(Null.isnt).map(removeSurroundingSpaceRegular)
         state.lines.push(...lines)
       }
     }

@@ -1,7 +1,9 @@
 import { flipCurried } from '#fn/curry.js'
 import { curry } from '#fn/curry.js'
+import { Empty } from '#str/type.js'
 
 export const split = (value: string, separator: string): string[] => {
+  if (value === Empty) return []
   return value.split(separator)
 }
 

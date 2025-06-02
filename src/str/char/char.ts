@@ -1,5 +1,3 @@
-export const empty = ''
-
 /** @see https://unicode-explorer.com/c/00A0 */
 export const spaceNoBreak = `\u00A0`
 
