@@ -221,3 +221,17 @@ export type ReduceWithIntersection<$Items extends UnknownRO> =
       // Means we got something like {x:1}[]
       // in which case we just strip the array
       : $Items[number]
+
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Access
+//
+//
+export const first = <item>(array: readonly item[]): item | undefined => {
+  return array[0]
+}
+export const last = <item>(array: readonly item[]): item | undefined => {
+  return array[array.length - 1]
+}
