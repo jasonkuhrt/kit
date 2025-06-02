@@ -2,6 +2,14 @@ import { Bool } from '#bool/index.js'
 import { Fn } from '#fn/index.js'
 import { Pat } from '#pat/index.js'
 
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Type
+//
+//
+
 export type Unknown = unknown[]
 
 export type Any = any[]
@@ -20,7 +28,7 @@ export type Any3OrMore = readonly [any, any, any, ...readonly any[]]
 export type Any4OrMore = readonly [any, any, any, any, ...readonly any[]]
 export type Any5OrMore = readonly [any, any, any, any, any, ...readonly any[]]
 
-// Readonly
+// ━ Readonly
 
 export type UnknownRO = readonly unknown[]
 
@@ -43,6 +51,10 @@ export type Any5OrMoreRO = readonly [any, any, any, any, any, ...readonly any[]]
 
 export const is = (value: unknown): value is Unknown => {
   return Array.isArray(value)
+}
+
+export const create = <item>(): item[] => {
+  return [] as any
 }
 
 export const find = <value>(arr: value[], predicate: Bool.PredicateMaybe<value>): value | undefined => {
@@ -114,7 +126,7 @@ export type NonEmpty<$Type = any> = [$Type, ...$Type[]]
 
 export type NonEmptyRO<$Type = any> = readonly [$Type, ...readonly $Type[]]
 
-export const isEmpty = (array: unknown[]): array is [] => {
+export const isEmpty = (array: unknown[]): array is Empty => {
   return array.length === 0
 }
 
@@ -229,9 +241,11 @@ export type ReduceWithIntersection<$Items extends UnknownRO> =
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Access
 //
 //
+
 export const first = <item>(array: readonly item[]): item | undefined => {
   return array[0]
 }
+
 export const last = <item>(array: readonly item[]): item | undefined => {
   return array[array.length - 1]
 }
