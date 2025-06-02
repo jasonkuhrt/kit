@@ -1,5 +1,4 @@
 import { Fn } from '#fn/index.js'
-import { Language } from '#language/index.js'
 
 export const not = <value extends boolean>(value: value): not<value> => {
   return !value as any
@@ -25,7 +24,7 @@ export type PredicateMaybe<$Value> = $Value | Predicate<$Value>
 export const ensurePredicate = <predicateMaybe extends PredicateMaybe<any>>(
   predicateMaybe: predicateMaybe,
 ): ensurePredicate<predicateMaybe> => {
-  const predicate = Fn.is(predicateMaybe) ? predicateMaybe : Language.constant(predicateMaybe)
+  const predicate = Fn.is(predicateMaybe) ? predicateMaybe : Fn.constant(predicateMaybe)
   return predicate as any
 }
 

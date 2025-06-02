@@ -2,10 +2,6 @@ import type { Prom } from '#prom/index.js'
 
 export * from './never.js'
 
-export const identity = <value>(value: value): value => value
-
-export const constant = <value>(value: value): () => value => () => value
-
 // typeof
 
 export const TypeofTypesEnum = {
