@@ -15,6 +15,7 @@ export interface Idx<$Item, $Key extends PropertyKey = PropertyKey> {
 
 export const create = <item, key extends PropertyKey>(input?: { toKey?: (item: item) => key }): Idx<item, key> => {
   const array = Arr.create<item>()
+  // todo use map so that key can be any type?
   const record = Rec.create<{ item: item; index: number }>()
   const itemToKey = Cache.memoize(input?.toKey ?? String, null)
 
@@ -46,4 +47,16 @@ export const create = <item, key extends PropertyKey>(input?: { toKey?: (item: i
   return index as any
 }
 
-// export const createWith = <item, key>(input?: { toKey?: (item: item) => key }): Idx => create<item>(input as any)
+// todo: fromIterable?
+export const fromArray = <item, key extends PropertyKey>(
+  items: item[],
+  options?: { toKey?: (item: item) => key },
+): Idx<item, key> => {
+  const index = create(options)
+
+  for (const item of items) {
+    index.set(item)
+  }
+
+  return index
+}
