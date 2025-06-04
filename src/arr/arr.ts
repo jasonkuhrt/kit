@@ -54,6 +54,25 @@ export const is = (value: unknown): value is Unknown => {
   return Array.isArray(value)
 }
 
+/**
+ * Check that one array is structurally equal _one level deep_. This means items are compared with strict equality operator (`===`).
+ *
+ * @param array1 Must be subtype of {@link array2}
+ * @param array2 Array to check against. Must be supertype of {@link array1}.
+ *
+ * @returns
+ */
+export const equalShallowly = <array1_ extends Any, array2_ extends array1_>(
+  array1: array1_,
+  array2: array2_,
+): array1 is array2_ => {
+  if (array1.length !== array2.length) return false
+  for (let i = 0; i < array1.length; i++) {
+    if (array1[i] !== array2[i]) return false
+  }
+  return true
+}
+
 export const create = <item>(): item[] => {
   return [] as any
 }
