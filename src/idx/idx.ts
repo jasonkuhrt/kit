@@ -1,59 +1,330 @@
 import { Arr } from '#arr/index.js'
 import { Cache } from '#cache/index.js'
-import { Rec } from '#rec/index.js'
 
-export interface Idx<$Item, $Key extends PropertyKey = PropertyKey> {
+// todo: allow key to be given as a property name instead of a function.
+
+/**
+ * An indexed collection that provides O(1) key-based lookups while maintaining array ordering.
+ *
+ * @template $Item - The type of items stored in the collection
+ * @template $Key - The type of keys used for lookups (derived from items or provided explicitly)
+ */
+export interface Idx<$Item = any, $Key = any> {
+  /**
+   * Retrieves an item by strict equality check against itself or if a key function is configured, then what that returns.
+   *
+   * @param item - The item to search for
+   * @returns The found item or undefined if not found
+   *
+   * @example
+   * const idx = Idx.create({ key: item => item.id })
+   * idx.set({ id: 1, name: 'Alice' })
+   * idx.get({ id: 1 }) // { id: 1, name: 'Alice' }
+   */
   get(item: $Item): $Item | undefined
+
+  /**
+   * Adds or updates an item in the collection.
+   * If an item with the same key already exists, it will be replaced.
+   *
+   * @param item - The item to add or update
+   *
+   * @example
+   * idx.set({ id: 1, name: 'Alice' })
+   * idx.set({ id: 1, name: 'Alice Updated' }) // Replaces the previous item
+   */
   set(item: $Item): void
-  getKey(key: $Key): $Item | undefined
-  setKey(key: $Key, item: $Item): void
-  data: {
-    array: $Item[]
-    record: Record<$Key, { item: $Item; index: number }>
-  }
+
+  /**
+   * Removes an item from the collection by its value.
+   * Uses sparse array internally for O(1) deletion.
+   *
+   * @param item - The item to remove
+   * @returns true if the item was found and removed, false otherwise
+   */
+  delete(item: $Item): boolean
+
+  /**
+   * Retrieves an item by its key directly.
+   *
+   * @param key - The key to search for
+   * @returns The found item or undefined if not found
+   *
+   * @example
+   * const idx = Idx.create({ key: item => item.id })
+   * idx.set({ id: 1, name: 'Alice' })
+   * idx.getAt(1) // { id: 1, name: 'Alice' }
+   */
+  getAt(key: $Key): $Item | undefined
+
+  /**
+   * Adds or updates an item at a specific key.
+   *
+   * @param key - The key to set
+   * @param item - The item to store at this key
+   *
+   * @example
+   * idx.setAt('custom-key', { value: 42 })
+   */
+  setAt(key: $Key, item: $Item): void
+
+  /**
+   * Removes an item by its key.
+   * Uses sparse array internally for O(1) deletion.
+   *
+   * @param key - The key of the item to remove
+   * @returns true if the item was found and removed, false otherwise
+   */
+  deleteAt(key: $Key): boolean
+
+  /**
+   * Returns a compacted array of all items, preserving insertion order.
+   * If deletions occurred, this triggers lazy compaction.
+   *
+   * @returns Array of all items in insertion order
+   */
+  toArray(): $Item[]
+
+  /**
+   * Returns a Map of all key-item pairs.
+   * For WeakMap storage mode, this rebuilds the map from the array.
+   *
+   * @returns Map of keys to items
+   */
+  toMap(): Map<$Key, $Item>
 }
 
-export const create = <item, key extends PropertyKey>(input?: { toKey?: (item: item) => key }): Idx<item, key> => {
-  const array = Arr.create<item>()
-  // todo use map so that key can be any type?
-  const record = Rec.create<{ item: item; index: number }>()
-  const itemToKey = Cache.memoize(input?.toKey ?? String, null)
+/**
+ * Configuration options for creating an Idx collection.
+ */
+export interface Options<$Item = any, $Key = any> {
+  /**
+   * Function to derive a key from an item.
+   * If not provided, the item itself is used as the key.
+   *
+   * @example
+   * { key: item => item.id }
+   * { key: item => `${item.type}-${item.id}` }
+   */
+  key?: (item: $Item) => $Key
 
-  const index = {
-    get(item: item) {
-      return index.getKey(itemToKey(item))
+  /**
+   * Storage mode for the internal key-item mapping.
+   *
+   * - 'map': Always use Map (supports all key types)
+   * - 'weakMap': Always use WeakMap (only object keys, allows garbage collection)
+   * - 'auto': Automatically choose based on if the first key type is a typeof === 'object' (excluding null) or not
+   *
+   * @default 'auto'
+   */
+  mode?: 'map' | 'weakMap' | 'auto'
+}
+
+/**
+ * Creates a new indexed collection.
+ *
+ * @template item - The type of items to store
+ * @template key - The type of keys for lookups
+ * @param options - Configuration options
+ * @returns A new Idx collection
+ *
+ * @example
+ * // Simple usage with default key (item itself)
+ * const idx = Idx.create<number>()
+ * idx.set(42)
+ *
+ * @example
+ * // With custom key function
+ * const idx = Idx.create<User, number>({
+ *   key: user => user.id
+ * })
+ *
+ * @example
+ * // Force WeakMap for garbage collection
+ * const idx = Idx.create<MyObject>({
+ *   mode: 'weakMap'
+ * })
+ */
+export const create = <item, key>(options?: Options<item, key>): Idx<item, key> => {
+  const array = Arr.create<item>()
+  const deletedIndices = new Set<number>()
+  let lowestDeletedIndex: number | null = null
+  const itemToKey = options?.key ? Cache.memoize(options.key, null) : null
+
+  type MapAsMap = Map<key, { item: item; index: number }>
+  type MapAsWeakMap = WeakMap<any, { item: item; index: number }>
+
+  // Storage initialization - may be lazy
+  let map: MapAsMap | MapAsWeakMap | null = null
+  let useWeakMap: boolean | null = null
+
+  // Initialize storage based on mode
+  if (options?.mode === 'map') {
+    map = new Map()
+    useWeakMap = false
+  } else if (options?.mode === 'weakMap') {
+    map = new WeakMap()
+    useWeakMap = true
+  }
+  // For 'auto' or undefined, we'll initialize on first use
+
+  const initializeMap = (key: key) => {
+    if (map === null) {
+      // Auto-detect based on first key type
+      const keyType = typeof key
+      useWeakMap = keyType === 'object' && key !== null
+      map = useWeakMap ? new WeakMap() : new Map()
+    }
+  }
+
+  const index: Idx<item, key> = {
+    get(item) {
+      const key = (itemToKey?.(item) ?? item) as key
+      return index.getAt(key)
     },
-    set(item: item) {
-      index.setKey(itemToKey(item), item)
+    set(item) {
+      const key = (itemToKey?.(item) ?? item) as key
+      index.setAt(key, item)
     },
-    getKey(key: PropertyKey) {
-      return record[key]?.item
+    getAt(key) {
+      if (map === null) return undefined
+      return map.get(key)?.item
     },
-    setKey(key: PropertyKey, item: item) {
-      if (record[key]) {
-        record[key].item = item
-        array.splice(record[key].index, 1, item)
+    setAt(key, item) {
+      initializeMap(key)
+      const existing = map!.get(key)
+      if (existing) {
+        existing.item = item
+        array.splice(existing.index, 1, item)
       } else {
-        const index = array.push(item)
-        record[key] = { item, index }
+        const index = array.push(item) - 1
+        map!.set(key, { item, index })
       }
     },
-    data: {
-      array,
-      record,
+    delete(item) {
+      const key = (itemToKey?.(item) ?? item) as key
+      return index.deleteAt(key)
+    },
+    deleteAt(key) {
+      if (map === null) return false
+      const entry = map.get(key)
+      if (!entry) return false
+
+      delete array[entry.index]
+      deletedIndices.add(entry.index)
+
+      // Track lowest deleted index
+      if (lowestDeletedIndex === null || entry.index < lowestDeletedIndex) {
+        lowestDeletedIndex = entry.index
+      }
+
+      map.delete(key)
+      return true
+    },
+    toArray() {
+      // Only compact if there were deletions
+      const isNeedsCompaction = deletedIndices.size > 0
+      if (!isNeedsCompaction) return array
+
+      // Start with intact prefix up to first deletion
+      const compactedArray: item[] = array.slice(0, lowestDeletedIndex ?? 0)
+      const sparseToCompacted = new Map<number, number>()
+
+      // Map all indices in the intact prefix
+      for (let i = 0; i < compactedArray.length; i++) {
+        sparseToCompacted.set(i, i)
+      }
+
+      // Build rest of array and index mapping
+      const startIndex = lowestDeletedIndex ?? 0
+      for (let i = startIndex; i < array.length; i++) {
+        if (!deletedIndices.has(i) && array[i] !== undefined) {
+          sparseToCompacted.set(i, compactedArray.length)
+          compactedArray.push(array[i]!)
+        }
+      }
+
+      return compactedArray
+
+      // todo: should we spend the extra cpu to update the internal state with compaction result?
+      // Update map with new indices
+      // if (map && map instanceof Map) {
+      //   map.forEach((entry) => {
+      //     entry.index = oldToNewIndex.get(entry.index)!
+      //   })
+      // }
+
+      // Replace array and clear deleted indices
+      // array.length = 0
+      // array.push(...newArray)
+      // deletedIndices.clear()
+      // lowestDeletedIndex = null
+    },
+    // todo: split tracking keyed item and keyed index so that in this function
+    // we can just return the map without rebuilding it
+    toMap() {
+      // Handle different storage scenarios
+      const dataMap = new Map<key, item>()
+
+      if (map === null) {
+        // No items have been added yet
+        return dataMap
+      }
+
+      // For WeakMap mode, rebuild a Map from the array for the data getter
+      if (useWeakMap) {
+        for (let i = 0; i < array.length; i++) {
+          if (!deletedIndices.has(i) && array[i] !== undefined) {
+            const item = array[i]!
+            const key = (itemToKey?.(item) ?? item) as key
+            dataMap.set(key, item)
+          }
+        }
+      } else {
+        for (const [key, { item }] of (map as MapAsMap)) {
+          dataMap.set(key, item)
+        }
+      }
+      return dataMap
     },
   }
 
   return index as any
 }
 
+/**
+ * Creates an indexed collection from an array of items.
+ *
+ * @template item - The type of items in the array
+ * @template key - The type of keys for lookups
+ * @param items - Array of items to index
+ * @param options - Configuration options
+ * @returns A new Idx collection containing all items
+ *
+ * @example
+ * // From array of numbers
+ * const idx = Idx.fromArray([1, 2, 3])
+ *
+ * @example
+ * // From array of objects with key function
+ * const users = [
+ *   { id: 1, name: 'Alice' },
+ *   { id: 2, name: 'Bob' }
+ * ]
+ * const idx = Idx.fromArray(users, { key: user => user.id })
+ * idx.getAt(1) // { id: 1, name: 'Alice' }
+ */
 // todo: fromIterable?
 export const fromArray = <item, key extends PropertyKey>(
   items: item[],
-  options?: { toKey?: (item: item) => key },
+  options?: Options<item, key>,
 ): Idx<item, key> => {
   const index = create(options)
 
+  // Note: We build the index eagerly here. For very large datasets, a lazy approach
+  // could defer index building until first key-based access. However, the overhead
+  // of tracking partial index state often outweighs the benefits, especially since
+  // most use cases will eventually access the full dataset anyway.
   for (const item of items) {
     index.set(item)
   }

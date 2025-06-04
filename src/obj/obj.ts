@@ -60,3 +60,15 @@ export const getPrivateState = <state extends Any>(obj: Any): state => {
   if (isnt(value)) throw new Error('Private state not found')
   return value
 }
+
+// dprint-ignore
+export type PartialDeep<$Type> =
+  $Type extends Array<infer __inner__>                  ? Array<PartialDeep<__inner__>> :
+  $Type extends ReadonlyArray<infer __inner__>          ? ReadonlyArray<PartialDeep<__inner__>> :
+  $Type extends Promise<infer __inner__>                ? Promise<PartialDeep<__inner__>> :
+  $Type extends Function                                ? $Type :
+  $Type extends object                                  ? {
+                                                            [key in keyof $Type]?: PartialDeep<$Type[key]>
+                                                          } :
+                                                        // else
+                                                          $Type
