@@ -222,7 +222,11 @@ export const merge = <T>(array1: T[], array2: T[]): T[] => {
 export const mergeOn = Fn.curry(merge)
 
 export const pickRandomly = <const value>(arr: readonly value[]): value => {
-  return arr[Math.floor(Math.random() * arr.length)]!
+  return arr[randomIndex(arr)]!
+}
+
+export const randomIndex = <T>(arr: readonly T[]): number => {
+  return Math.floor(Math.random() * arr.length)
 }
 
 // dprint-ignore
