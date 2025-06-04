@@ -12,6 +12,7 @@
  * ```
  */
 
+import { isntEmpty, randomIndex } from '#arr/arr.js'
 import type { Rec } from '#rec/index.js'
 import {
   type InferShapeFromPropertyPath,
@@ -75,12 +76,16 @@ const _get = (propertyPath: PropertyPath, obj: Any): unknown => {
  * getRandomly({}) // Returns undefined
  * ```
  */
-export const getRandomly = <obj extends Rec.Any>(obj: obj): keyof obj extends never ? undefined : obj[keyof obj] => {
-  const keys = Object.keys(obj) as (keyof obj)[]
-  if (keys.length === 0) return undefined as any
+export const getRandomly = <obj extends Any>(obj: obj): keyof obj extends never ? undefined : obj[keyof obj] => {
+  const keys = toKeys(obj)
 
-  // todo:
-  // return obj[keys[Arr.randomIndex(keys)]]
-  const randomIndex = Math.floor(Math.random() * keys.length)
-  return obj[keys[randomIndex]!] as any
+  if (isntEmpty(keys)) {
+    const i = randomIndex(keys)
+    const key = keys[i]!
+    return obj[key] as any
+  }
+
+  return undefined as any
 }
+
+const toKeys = <obj extends object>(obj: obj): (keyof obj)[] => Object.keys(obj) as any
