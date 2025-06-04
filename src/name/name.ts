@@ -5,9 +5,9 @@ import { Arr } from '#arr/index.js'
  * The pool of possible names is 150 (adjectives) * 52 (colors) * 150 (animals) = 1,170,000
  */
 export const generate = (): string => {
-  const randomAdjective = Arr.pickRandomly(adjectives)
-  const randomNoun = Arr.pickRandomly(animals)
-  const randomColor = Arr.pickRandomly(colors)
+  const randomAdjective = Arr.getRandomly(adjectives)
+  const randomNoun = Arr.getRandomly(animals)
+  const randomColor = Arr.getRandomly(colors)
   return `${randomAdjective} ${randomColor} ${randomNoun}`
 }
 

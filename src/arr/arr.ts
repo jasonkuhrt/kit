@@ -221,12 +221,16 @@ export const merge = <T>(array1: T[], array2: T[]): T[] => {
 
 export const mergeOn = Fn.curry(merge)
 
-export const pickRandomly = <const value>(arr: readonly value[]): value => {
-  return arr[randomIndex(arr)]!
-}
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Random
+//
+//
 
-export const randomIndex = <T>(arr: readonly T[]): number => {
-  return Math.floor(Math.random() * arr.length)
+export const randomIndex = <arr extends AnyRO>(arr: arr): arr extends Any1OrMoreRO ? number : undefined => {
+  return Math.floor(Math.random() * arr.length) as any
 }
 
 // dprint-ignore
@@ -247,10 +251,23 @@ export type ReduceWithIntersection<$Items extends UnknownRO> =
 //
 //
 
-export const first = <item>(array: readonly item[]): item | undefined => {
+export const getRandomly = <arr extends AnyRO>(
+  arr: arr,
+): arr[number] | (arr extends Any1OrMoreRO ? undefined : never) => {
+  if (arr.length === 0) return undefined
+  return arr[randomIndex(arr)!]
+}
+
+// todo: support typings for RO, non-empty, etc.
+
+export const getAt = <item>(array: readonly item[], index: number): item | undefined => {
+  return array[index]
+}
+
+export const getFirst = <item>(array: readonly item[]): item | undefined => {
   return array[0]
 }
 
-export const last = <item>(array: readonly item[]): item | undefined => {
+export const getLast = <item>(array: readonly item[]): item | undefined => {
   return array[array.length - 1]
 }
