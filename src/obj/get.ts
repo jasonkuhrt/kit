@@ -62,3 +62,25 @@ const _get = (propertyPath: PropertyPath, obj: Any): unknown => {
       : undefined
   }, obj)
 }
+
+/**
+ * Get a random property value from an object
+ * @param obj - The object to get a random value from
+ * @returns A random value from the object, or undefined for empty objects
+ *
+ * @example
+ * ```ts
+ * getRandomly({ a: 1, b: 2, c: 3 }) // Could return 1, 2, or 3
+ * getRandomly({ a: 1, b: undefined }) // Could return 1 or undefined
+ * getRandomly({}) // Returns undefined
+ * ```
+ */
+export const getRandomly = <obj extends Rec.Any>(obj: obj): keyof obj extends never ? undefined : obj[keyof obj] => {
+  const keys = Object.keys(obj) as (keyof obj)[]
+  if (keys.length === 0) return undefined as any
+
+  // todo:
+  // return obj[keys[Arr.randomIndex(keys)]]
+  const randomIndex = Math.floor(Math.random() * keys.length)
+  return obj[keys[randomIndex]!] as any
+}
