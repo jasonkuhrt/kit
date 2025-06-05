@@ -67,3 +67,17 @@ export type Simplify<$Type> =
     [_ in keyof $Type]: $Type[_]
   }
   & unknown
+
+export namespace Union {
+  // dprint-ignore
+  export type IsHas<$Type, $LookingFor> =
+    _IsHas<$Type, $LookingFor> extends false
+      ? false
+      : true
+
+  // dprint-ignore
+  type _IsHas<$Type, $LookingFor> =
+    $Type extends $LookingFor
+      ? true
+      : false
+}
