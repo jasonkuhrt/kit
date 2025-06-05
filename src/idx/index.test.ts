@@ -1,5 +1,6 @@
 import { Arr } from '#arr/index.js'
-import { expect, test } from 'vitest'
+import { Obj } from '#obj/index.js'
+import { expect, expectTypeOf, test } from 'vitest'
 import { Test } from '../test/index.js'
 import { Idx } from './index.js'
 
@@ -41,8 +42,8 @@ const cases = Test.cases<CaseInstructions>([
   ['get: obj',                       { set: o1,                              get: [o1, o1] }],
   ['get: with keyer',                { options: { key },      set: o1,   get: [o1, o1] }],
 
-  ['mode: explicit map',             { options: { mode: 'map' },             set: o1,                     data: { array: [o1] } }],
-  ['mode: explicit weakMap',         { options: { mode: 'weakMap' },         set: o1,                     data: { array: [o1] } }],
+  ['mode: explicit map',             { options: { mode: 'strong' },             set: o1,                     data: { array: [o1] } }],
+  ['mode: explicit weakMap',         { options: { mode: 'weak' },         set: o1,                     data: { array: [o1] } }],
   ['mode: auto with object',         { set: o1,                                                           data: { array: [o1] } }],
   ['mode: auto with primitive',      { set: 1,                                                            data: { array: [1], map: new Map([[1, 1]])} }],
 
@@ -110,4 +111,40 @@ test.for(cases)('%j', ([_, instructions]) => {
   if (instructions.data?.map) {
     expect(idx.toMap()).toMatchObject(instructions.data.map)
   }
+})
+
+test('type: mode is conditional to key', () => {
+  const p = 1
+  const o = { x: 0 }
+  const kp = () => p
+  const ko = () => o
+  const kop = () => Arr.getRandomly([p, o])
+  const modeAny = Obj.getRandomly(Idx.Mode)
+  type o = typeof o
+  type p = typeof p
+  type op = o | p
+
+  expectTypeOf<Idx.InferModeOptions<p>>().toEqualTypeOf<Idx.ModeFor.PrimitiveKey>
+  expectTypeOf<Idx.InferModeOptions<op>>().toEqualTypeOf<Idx.ModeFor.PrimitiveKey>
+  expectTypeOf<Idx.InferModeOptions<o>>().toEqualTypeOf<Idx.ModeFor.ObjectKey>
+  expectTypeOf<Idx.InferModeOptions<unknown>>().toEqualTypeOf<Idx.ModeFor.Unknown>
+  expectTypeOf<Idx.InferModeOptions<any>>().toEqualTypeOf<Idx.ModeFor.Unknown>
+
+  // ━ Via primitive Key
+  // @ts-expect-error
+  c({ key: kp, mode: 'weak' })
+  c({ key: kp, mode: 'auto' })
+  c({ key: kp, mode: 'strong' })
+  // ━ Via mixed Key
+  // @ts-expect-error
+  c({ key: kop, mode: 'weak' })
+  c({ key: kop, mode: 'auto' })
+  c({ key: kop, mode: 'strong' })
+  // ━ Via object key
+  // @ts-expect-error
+  c({ key: ko, mode: 'strong' })
+  c({ key: ko, mode: 'auto' })
+  c({ key: ko, mode: 'weak' })
+  // ━ Via unknown key
+  c({ mode: modeAny })
 })

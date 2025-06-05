@@ -1,5 +1,8 @@
 import { Arr } from '#arr/index.js'
 import { Cache } from '#cache/index.js'
+import type { Language } from '#language/index.js'
+import type { Ts } from '#ts/index.js'
+import type { IsAny } from 'type-fest'
 
 // todo: allow key to be given as a property name instead of a function.
 
@@ -111,14 +114,50 @@ export interface Options<$Item = any, $Key = any> {
   /**
    * Storage mode for the internal key-item mapping.
    *
-   * - 'map': Always use Map (supports all key types)
-   * - 'weakMap': Always use WeakMap (only object keys, allows garbage collection)
-   * - 'auto': Automatically choose based on if the first key type is a typeof === 'object' (excluding null) or not
+   * In general you shouldn't have to use this option.
+   *
+   * If the key type is known then the typings will force you to choose the related mode.
+   * If your key is an object but you know you still don't want a weakMap then you can still
+   * use 'map' with a @ts-expect-error directive.
+   *
+   * - map: Always use Map (all key types, prone to memory leaks)
+   * - weakMap: Always use WeakMap (only object keys, allows garbage collection)
+   * - auto: Automatically choose based on if the key value received is typeof === 'object' (excluding null) or not
    *
    * @default 'auto'
    */
-  mode?: 'map' | 'weakMap' | 'auto'
+  mode?:
+    | undefined
+    | InferModeOptions<$Key>
 }
+
+export const Mode = {
+  strong: 'strong',
+  weak: 'weak',
+  auto: 'auto',
+} as const
+
+export type Mode = typeof Mode[keyof typeof Mode]
+
+export namespace Mode {
+  export type strong = typeof Mode.strong
+  export type weak = typeof Mode.weak
+  export type auto = typeof Mode.auto
+}
+
+export namespace ModeFor {
+  export type PrimitiveKey = Mode.strong | Mode.auto
+  export type ObjectKey = Mode.weak | Mode.auto
+  export type Unknown = Mode.strong | Mode.auto | Mode.weak
+}
+
+// dprint-ignore
+export type InferModeOptions<$Key> =
+  IsAny<$Key> extends true                                  ? ModeFor.Unknown :
+  Ts.Union.IsHas<$Key, Language.Primitive> extends true       ? ModeFor.PrimitiveKey :
+  [$Key] extends [object]                                   ? ModeFor.ObjectKey :
+                                                            // else
+                                                              ModeFor.Unknown
 
 /**
  * Creates a new indexed collection.
@@ -159,10 +198,10 @@ export const create = <item, key>(options?: Options<item, key>): Idx<item, key> 
   let useWeakMap: boolean | null = null
 
   // Initialize storage based on mode
-  if (options?.mode === 'map') {
+  if (options?.mode === Mode.strong) {
     map = new Map()
     useWeakMap = false
-  } else if (options?.mode === 'weakMap') {
+  } else if (options?.mode === Mode.weak) {
     map = new WeakMap()
     useWeakMap = true
   }
