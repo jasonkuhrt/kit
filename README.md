@@ -21,7 +21,7 @@ npm add @wollybeard/kit
 - High performance (close to native as practical)
 - Organized by data structure with consistent base interfaces (e.g. `Arr.is`, `Obj.is`, `Str.is`, ...)
 
-## Documentatin
+## Documentation
 
 For now read the code, things are very self contained.
 I will focus on JSDoc before writing here.
