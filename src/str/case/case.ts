@@ -5,3 +5,7 @@ export const title = (str: string) => {
     .replaceAll(/[-_]/g, ' ')
     .replace(/\b\w/g, l => l.toUpperCase())
 }
+
+export const upper = (str: string): string => {
+  return str.toUpperCase()
+}
