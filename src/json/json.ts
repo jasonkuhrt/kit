@@ -2,6 +2,14 @@ import { Codec } from '#codec/index.js'
 import { ZodAid } from '#zod-aid/index.js'
 import { z } from 'zod'
 
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Types
+//
+//
+
 export const Primitive = z.union([z.string(), z.number(), z.boolean(), z.null()])
 export type Primitive = z.infer<typeof Primitive>
 export const isPrimitive = ZodAid.typeGuard(Primitive)
@@ -18,6 +26,14 @@ export const isObject = ZodAid.typeGuard(Obj)
 // TODO: open issue with Vitest team
 export { Obj as Object }
 
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Codec
+//
+//
+
 export const codec = Codec.create<Value>({
   encode: json => JSON.stringify(json, null, 2),
   decode: JSON.parse,
@@ -28,3 +44,14 @@ export const codecAs = <$Data>() =>
     encode: json => JSON.stringify(json, null, 2),
     decode: JSON.parse,
   })
+
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Convenience
+//
+//
+
+export const encode = codec.encode
+export const decode = codec.decode
