@@ -60,8 +60,8 @@ export const create = <name extends string, type>(configInput: {
       try {
         const content = await Fs.read(filePath)
         if (content === null) return undefined
-        const value = config.codec.deserialize(content)
-        return value
+        const decoded = config.codec.decode(content)
+        return decoded
       } catch {
         return undefined
       }
@@ -72,13 +72,13 @@ export const create = <name extends string, type>(configInput: {
       if (content === null) {
         return emptyValue()
       }
-      const value = config.codec.deserialize(content)
+      const value = config.codec.decode(content)
       return value
     }),
     write: async (contents, dir, hard) => {
       const filePath = Path.ensureAbsoluteWith(dir)(config.path)
-      const serialized = config.codec.serialize(contents)
-      await Fs.write({ path: filePath, content: serialized, hard })
+      const encoded = config.codec.encode(contents)
+      await Fs.write({ path: filePath, content: encoded, hard })
     },
     update: async (updater, dir, hard) => {
       const value = await resource.readOrEmpty(dir)
