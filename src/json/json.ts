@@ -19,12 +19,12 @@ export const isObject = ZodAid.typeGuard(Obj)
 export { Obj as Object }
 
 export const codec = Codec.create<Value>({
-  serialize: json => JSON.stringify(json, null, 2),
-  deserialize: JSON.parse,
+  encode: json => JSON.stringify(json, null, 2),
+  decode: JSON.parse,
 })
 
-export const codecAs = <$Type>() =>
-  Codec.create<$Type>({
-    serialize: json => JSON.stringify(json, null, 2),
-    deserialize: JSON.parse,
+export const codecAs = <$Data>() =>
+  Codec.create<$Data>({
+    encode: json => JSON.stringify(json, null, 2),
+    decode: JSON.parse,
   })
