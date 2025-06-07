@@ -206,10 +206,36 @@ pnpm test               # Run tests
 
 ## Testing
 
-- Place tests adjacent to implementation: `module.test.ts`
-- Use descriptive test names
-- Test both happy path and edge cases
-- Include type-level tests for complex generic types
+- Do colocate tests to modules.
+- For modules that have simple interfaces prefer putting all tests into `index.test.ts` and then access the interface(s) under test via the module namespace. For example this layout:
+
+  ```
+  src/foo/{index.ts, index.test.ts, foo.ts}
+  ```
+
+  With this content:
+
+  ```ts
+  // index.ts
+  export * as Foo from "./foo.ts";
+  ```
+
+  ```ts
+  // index.test.ts
+  import { Foo } from './index.ts'
+
+  test('...', () => { Foo... })
+  ```
+
+- For modules with complex parts you may create a test file for each such part, while still keeping the rest of the simpler tests, if any, in `index.test.ts`. Example:
+
+  ```
+  src/bar/{index.ts, index.test.ts, bar.ts, thing-complex.ts thing-complex.test.ts}
+  ```
+
+- Prefer using Vitest `test.for` feature to cover many cases in a succinct way. Use Kit's own `Test` module to support writing such tests.
+- Do include type-level tests for complex generic types
+- Do _not_ write sprawling test code. _Do_ be as concise as possible.
 
 ## Common Patterns
 
