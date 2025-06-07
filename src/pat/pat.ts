@@ -1,4 +1,3 @@
-import { Arr } from '#arr/index.js'
 import { Fn } from '#fn/index.js'
 import { Obj } from '#obj/index.js'
 import type { Rec } from '#rec/index.js'

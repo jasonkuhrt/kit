@@ -25,7 +25,7 @@
       "#*": ["./src/*"]
     },
 
-    // DX covered by ESLint:
+    // DX covered by linter:
     "noUnusedLocals": false,
     "noUnusedParameters": false,
 
@@ -35,5 +35,5 @@
     "declaration": true,
     "declarationMap": true
   },
-  "exclude": ["build", "eslint.config.js"]
+  "exclude": ["build"]
 }

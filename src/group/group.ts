@@ -26,9 +26,9 @@ export type ErrorInvalidGroupKey<obj extends object, key extends keyof obj> =
     { your_key_type: obj[key] }
   >
 
-interface PrivateState {
-  key: PropertyKey
-}
+// interface PrivateState {
+//   key: PropertyKey
+// }
 
 export const by = <obj extends object, key extends keyof obj>(
   array: obj[],

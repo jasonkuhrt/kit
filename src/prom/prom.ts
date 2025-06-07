@@ -7,7 +7,7 @@ export type AnyAny = Promise<any>
 export type Maybe<$Type> = $Type | Promise<$Type>
 
 export const isShape = Obj_isShape<AnyAny>({
-  then: `function`,
+  then: `function`, // oxlint-disable-line
   catch: `function`,
   finally: `function`,
 })

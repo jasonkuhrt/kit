@@ -98,7 +98,7 @@ export const tryOr = <success, fallback>(
       return result.catch(Fn.bind(Value.resolveLazy, fallback)) as any
     }
     return result as any
-  } catch (error) {
+  } catch {
     return Value.resolveLazy(fallback) as any
   }
 }

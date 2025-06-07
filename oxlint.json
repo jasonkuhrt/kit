@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "env": {
+    "node": true,
+    "es2024": true
+  },
+  "rules": {
+    "no-unused-vars": "error",
+    "no-console": "off",
+    "eqeqeq": ["error", "always"],
+    "prefer-const": "error"
+  },
+  "ignore": ["node_modules", "build", "*.test.ts", "*.test-d.ts"]
+}
+3

@@ -2,7 +2,7 @@ import type { Language } from '#language/index.js'
 import type { Rec } from '#rec/index.js'
 import type { Ts } from '#ts/index.js'
 import type { Undefined } from '#undefined/index.js'
-import { type Any, is, isnt as isnt } from './type.js'
+import { type Any, is, isnt } from './type.js'
 
 export * from './path.js'
 

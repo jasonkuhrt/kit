@@ -1,4 +1,4 @@
-import { isntTypeWith as isntTypeWith } from '#eq/type.js'
+import { isntTypeWith } from '#eq/type.js'
 import { isTypeWith } from '#eq/type.js'
 import { expect, expectTypeOf, test } from 'vitest'
 
