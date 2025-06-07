@@ -217,7 +217,7 @@ pnpm test               # Run tests
 
   ```ts
   // index.ts
-  export * as Foo from "./foo.ts";
+  export * as Foo from './foo.ts'
   ```
 
   ```ts
