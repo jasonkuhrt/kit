@@ -272,7 +272,7 @@ export type ReduceWithIntersection<$Items extends UnknownRO> =
 
 export const getRandomly = <arr extends AnyRO>(
   arr: arr,
-): arr[number] | (arr extends Any1OrMoreRO ? undefined : never) => {
+): arr[number] | (arr extends Any1OrMoreRO ? never : undefined) => {
   if (arr.length === 0) return undefined
   return arr[randomIndex(arr)!]
 }

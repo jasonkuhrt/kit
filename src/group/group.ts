@@ -1,6 +1,7 @@
 import { Obj } from '#obj/index.js'
 import { Ts } from '#ts/index.js'
 import type { Undefined } from '#undefined/index.js'
+import type { Simplify } from 'type-fest'
 
 export type Unknown = Record<PropertyKey, unknown[]>
 
@@ -14,8 +15,21 @@ export type by<
   $Type[$Key] extends PropertyKey
     ? {
         [__group_name__ in $Type[$Key]]?:
-          // If $Type is a union type we want to extract the relevent members for this group.
-          Extract<$Type, { [_ in $Key]: __group_name__ }>[]
+        Array<
+          (
+            // If $Type is a union type we want to extract the relevent members for this group.
+            //
+            // If Extraction results in never then that means its not a union of types but rather
+            // the key value itself is a union. In this case each group  gets the type but narrowed
+            // for the key property.
+            //
+            Ts.Simplify<
+              Extract<$Type, { [_ in $Key]: __group_name__ }> extends never
+                ? $Type & { [_ in $Key]: __group_name__ }
+                : Extract<$Type, { [_ in $Key]: __group_name__ }>
+            >
+          )
+        >
       }
     : never
 
