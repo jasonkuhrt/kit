@@ -82,6 +82,7 @@
     "@tsconfig/strictest": "^2.0.5",
     "dprint": "^0.49.0",
     "dripip": "^0.10.0",
+    "fast-check": "^4.1.1",
     "madge": "^8.0.0",
     "oxlint": "^0.18.0",
     "tsx": "^4.19.3",

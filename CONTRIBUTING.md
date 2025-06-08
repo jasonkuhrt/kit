@@ -236,6 +236,8 @@ pnpm test               # Run tests
 - Prefer using Vitest `test.for` feature to cover many cases in a succinct way. Use Kit's own `Test` module to support writing such tests.
 - Do include type-level tests for complex generic types
 - Do _not_ write sprawling test code. _Do_ be as concise as possible.
+- Do _not_ use top-level `describe` blocks that repeat the module name. Instead, use `test` directly for each test case or group of related tests.
+- Prefer using `fast-check` for property-based runtime testing where applicable.
 
 ## Common Patterns
 

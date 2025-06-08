@@ -1,3 +1,6 @@
+import * as FastCheck from 'fast-check'
+import * as Vitest from 'vitest'
+
 export interface CaseInstructions {
   only?: boolean
   skip?: boolean
@@ -16,4 +19,24 @@ export const cases = <instructions extends CaseInstructions>(cases: Cases<instru
   }
 
   return cases
+}
+
+// declare function property<Ts extends [unknown, ...unknown[]]>(...args: ): IPropertyWithHooks<Ts>;
+
+export const property = <Ts extends [unknown, ...unknown[]]>(
+  ...args: [
+    description: string,
+    ...arbitraries: {
+      [K in keyof Ts]: FastCheck.Arbitrary<Ts[K]>
+    },
+    predicate: (...args: Ts) => boolean | void,
+  ]
+) => {
+  const description = args[0]
+  const rest = args.slice(1) as Parameters<typeof FastCheck.property>
+  Vitest.test('property: ' + description, () => {
+    FastCheck.assert(
+      FastCheck.property(...rest),
+    )
+  })
 }
