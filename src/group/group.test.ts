@@ -1,9 +1,12 @@
+import { Arr } from '#arr/index.js'
 import { Group } from '#group/index.js'
 import { describe, expect, expectTypeOf, test } from 'vitest'
 
 const a = { type: 'A' as const, a: 1 as const, date: new Date() }
 const b = { type: 'B' as const, b: 2 as const, date: new Date() }
 const ab = [a, b]
+const abOnKey = { type: Arr.getRandomly(['A', 'B'] as const) }
+type abOnKey = typeof abOnKey
 type a = typeof a
 type b = typeof b
 type ab = a | b
@@ -15,7 +18,11 @@ test('groups values', () => {
 })
 
 describe('types', () => {
-  test('Group.By with union: does not distribute', () => {
+  test('Group.by with key value a union narrows it for each group', () => {
+    type g = Group.by<abOnKey, 'type'>
+    expectTypeOf<g>().toEqualTypeOf<{ A?: { type: 'A' }[]; B?: { type: 'B' }[] }>()
+  })
+  test('Group.by with union: does not distribute', () => {
     type u = a | b
     type g = Group.by<u, 'type'>
     expectTypeOf<g>().toEqualTypeOf<{ A?: a[]; B?: b[] }>()

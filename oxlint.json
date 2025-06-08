@@ -12,4 +12,3 @@
   },
   "ignore": ["node_modules", "build", "*.test.ts", "*.test-d.ts"]
 }
-3

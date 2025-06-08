@@ -1,7 +1,6 @@
 import { Obj } from '#obj/index.js'
 import { Ts } from '#ts/index.js'
 import type { Undefined } from '#undefined/index.js'
-import type { Simplify } from 'type-fest'
 
 export type Unknown = Record<PropertyKey, unknown[]>
 
