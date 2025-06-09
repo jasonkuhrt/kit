@@ -1,6 +1,7 @@
 import { Fs } from '#fs/index.js'
 import { Json } from '#json/index.js'
 import { Path } from '#path/index.js'
+import { tmpdir } from 'node:os'
 import { afterEach, describe, expect, test } from 'vitest'
 import { create } from './resource.js'
 
@@ -11,7 +12,7 @@ describe('emptyValue input', () => {
   const invalid = new Date()
   const name = 'test'
   const emptyValue = Object.freeze({ empty: true })
-  const path = Path.join(Path.tmpDirectory, Math.random().toString() + '-test.json')
+  const path = Path.join(tmpdir(), Math.random().toString() + '-test.json')
   const codec = Json.codec
   const args = { name, codec, path }
 

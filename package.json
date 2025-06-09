@@ -12,6 +12,10 @@
     "src"
   ],
   "imports": {
+    "#platform:*.js": {
+      "browser": "./build/*.browser.js",
+      "default": "./build/*.node.js"
+    },
     "#*": {
       "default": "./build/*"
     }
@@ -91,10 +95,12 @@
   },
   "dependencies": {
     "@types/node": "^22.15.17",
+    "@zenfs/core": "^2.2.3",
     "ansis": "^4.0.0",
     "consola": "^3.4.2",
     "es-toolkit": "^1.37.2",
     "jsonc-parser": "^3.3.1",
+    "pathe": "^2.0.3",
     "type-fest": "^4.41.0",
     "zod": "^3.24.4"
   },

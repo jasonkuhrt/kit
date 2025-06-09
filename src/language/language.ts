@@ -1,5 +1,8 @@
 import type { Prom } from '#prom/index.js'
 
+export * from '#platform:language/colorize.js'
+export * from '#platform:language/inspect.js'
+export * from '#platform:language/process.js'
 export * from './never.js'
 
 // typeof

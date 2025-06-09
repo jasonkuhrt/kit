@@ -1,6 +1,5 @@
+import { Language } from '#language/index.js'
 import { Str } from '#str/index.js'
-import { colorize } from 'consola/utils'
-import { inspect } from 'node:util'
 import { calcIsEnabledFromEnv } from './environment-variable.js'
 
 type DebugParameters = [event: string, payload?: unknown]
@@ -17,7 +16,7 @@ interface State {
 
 /*@__NO_SIDE_EFFECTS__*/
 export const create = (namespace?: string, initialState?: State): Debug => {
-  const isDebugEnabledFromEnv = calcIsEnabledFromEnv(process.env, namespace)
+  const isDebugEnabledFromEnv = calcIsEnabledFromEnv(Language.process.env, namespace)
 
   const state: State = initialState ?? {
     isEnabled: isDebugEnabledFromEnv,
@@ -32,11 +31,11 @@ export const create = (namespace?: string, initialState?: State): Debug => {
       const isPayloadArray = Array.isArray(payload)
       const depthBoost = isPayloadArray ? 1 : 0
       const defaultDepth = 3
-      const debugDepth = parseNumberOr(process.env[`DEBUG_DEPTH`], defaultDepth) + depthBoost
+      const debugDepth = parseNumberOr(Language.process.env[`DEBUG_DEPTH`], defaultDepth) + depthBoost
       const isPayloadDisabled = debugDepth < 0
 
       const payloadRendered = isPayloadPassed && !isPayloadDisabled
-        ? inspect(payload, {
+        ? Language.inspect(payload, {
           colors: true,
           depth: debugDepth,
           // compact: true,
@@ -45,17 +44,17 @@ export const create = (namespace?: string, initialState?: State): Debug => {
         : ``
 
       const namespaceRendered = namespace
-        ? colorize(
+        ? Language.colorize(
           `bold`,
-          colorize(
+          Language.colorize(
             `bgYellowBright`,
             ` ` + Str.Case.snake(namespace).toUpperCase() + ` `,
           ),
         )
         : ``
-      const eventRendered = colorize(
+      const eventRendered = Language.colorize(
         `bold`,
-        colorize(
+        Language.colorize(
           `bgMagentaBright`,
           ` ` + Str.Case.snake(event).toUpperCase() + ` `,
         ),
@@ -94,5 +93,5 @@ const parseNumberOr = (str: string | undefined, defaultValue: number): number =>
 export const debug = create()
 
 export const dump = (value: any) => {
-  console.log(inspect(value, { depth: 20, colors: true }))
+  console.log(Language.inspect(value, { depth: 20, colors: true }))
 }

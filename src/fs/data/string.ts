@@ -1,8 +1,7 @@
 import { Err } from '#err/index.js'
 import type { Language } from '#language/index.js'
 import { Path } from '#path/index.js'
-import * as NodeFs from 'node:fs/promises'
-import * as NodeFS from 'node:fs/promises'
+import * as NodeFs from '#platform:fs/fs.js'
 import { removeMany } from '../delete.js'
 import { makeDirectory } from '../directory.js'
 import type { FileWriteInput } from '../fs.js'
@@ -18,7 +17,7 @@ export const writeString = async (file: FileWriteInput): Language.SideEffectAsyn
 
 export const read = async (path: string): Promise<string | null> => {
   try {
-    return await NodeFS.readFile(path, { encoding: `utf-8` })
+    return await NodeFs.readFile(path, { encoding: `utf-8` })
     // eslint-disable-next-line
   } catch (error) {
     if (error instanceof Error && `code` in error && error.code === `ENOENT`) {

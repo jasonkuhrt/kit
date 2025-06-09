@@ -1,4 +1,5 @@
 import { Arr } from '#arr/index.js'
+import { Language } from '#language/index.js'
 import { Obj } from '#obj/index.js'
 import { Rec } from '#rec/index.js'
 import { Str } from '#str/index.js'
@@ -63,7 +64,7 @@ const resolve = <const specs extends EnvironmentConfigurableOptionSpec[]>(
   const input$ = input as Record<string, any>
 
   for (const spec of specs) {
-    const processValue = process.env[makeEnvVarName(spec)]
+    const processValue = Language.process.env[makeEnvVarName(spec)]
     if (processValue !== undefined) {
       config[spec.name] = {
         spec,

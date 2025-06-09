@@ -1,6 +1,6 @@
 import { Arr } from '#arr/index.js'
 import type { Language } from '#language/index.js'
-import * as NodeFs from 'node:fs/promises'
+import * as NodeFs from '#platform:fs/fs.js'
 
 // todo: rename to "delete"
 

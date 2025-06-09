@@ -1,11 +1,11 @@
-import { Arr, Fs, Path, Str } from '@wollybeard/kit'
+import { Arr, Fs, Language, Path, Str } from '@wollybeard/kit'
 import { parseArgvOrThrow } from './argv.js'
 import { type CommandTarget, getCommandTarget } from './commend-target.js'
 
 export const dispatch = async (commandsDirPath: string) => {
   const commandPointers = await discoverCommandPointers(commandsDirPath)
 
-  const argv = parseArgvOrThrow(process.argv)
+  const argv = parseArgvOrThrow(Language.process.argv)
   const commandTarget = getCommandTarget(argv)
   const moduleTargetName = getModuleName(commandTarget)
   const commandPointer = Arr.findFirstMatching(commandPointers, { name: moduleTargetName })
@@ -19,14 +19,14 @@ export const dispatch = async (commandsDirPath: string) => {
     } else {
       console.error(`Error: No such command "${moduleTargetName}".\n\nAvailable commands:\n${availableCommands}`)
     }
-    process.exit(1)
+    Language.process.exit(1)
   }
 
   try {
     await import(commandPointer.filePath)
   } catch (error) {
     console.error(error)
-    process.exit(1)
+    Language.process.exit(1)
   }
 }
 
@@ -41,7 +41,7 @@ export const discoverCommandPointers = async (
   const commandsDirFileNamesRelative = await Fs.readDirFilesNames(commandsDirPath)
   if (!commandsDirFileNamesRelative) {
     console.error(`Error: Commands directory not found. Looked at ${commandsDirPath}`)
-    process.exit(1)
+    Language.process.exit(1)
   }
 
   // todo:

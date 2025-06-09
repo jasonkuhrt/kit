@@ -1,31 +1,13 @@
 import { Fn } from '#fn/index.js'
-import { tmpdir } from 'node:os'
-import * as NodePath from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { Language } from '#language/index.js'
+import * as PlatformPath from '#platform:path/path.js'
 
-export {
-  basename,
-  delimiter,
-  dirname,
-  extname,
-  format,
-  isAbsolute,
-  join,
-  normalize,
-  parse,
-  type ParsedPath as Parsed,
-  posix,
-  relative,
-  resolve,
-  sep,
-  toNamespacedPath,
-  win32,
-} from 'node:path'
+export * from '#platform:path/path.js'
 
-export const ensureAbsolute = (filePath: string, basePath: string = process.cwd()): string => {
-  return NodePath.isAbsolute(filePath)
+export const ensureAbsolute = (filePath: string, basePath: string = Language.process.cwd()): string => {
+  return PlatformPath.isAbsolute(filePath)
     ? filePath
-    : NodePath.resolve(basePath, filePath)
+    : PlatformPath.resolve(basePath, filePath)
 }
 
 export const ensureAbsoluteOn = Fn.curry(ensureAbsolute)
@@ -39,10 +21,10 @@ export const ensureAbsoluteOn = Fn.curry(ensureAbsolute)
  */
 export const ensureAbsoluteWith = Fn.flipCurried(ensureAbsoluteOn)
 
-export const ensureAbsoluteWithCWD = ensureAbsoluteWith(process.cwd())
+export const ensureAbsoluteWithCWD = ensureAbsoluteWith(Language.process.cwd())
 
 export const formatExplicitRelative = (path: string) => {
-  if (NodePath.isAbsolute(path)) {
+  if (PlatformPath.isAbsolute(path)) {
     return path
   }
 
@@ -54,7 +36,7 @@ export const formatExplicitRelative = (path: string) => {
 }
 
 export const formatImplicitRelative = (path: string) => {
-  if (NodePath.isAbsolute(path)) {
+  if (PlatformPath.isAbsolute(path)) {
     return path
   }
 
@@ -67,7 +49,7 @@ export const formatImplicitRelative = (path: string) => {
 
 export const explicitRelativePrefix = `./`
 
-export const tmpDirectory = tmpdir()
+// export const tmpDirectory = tmpdir()
 
 // Protocol
 
@@ -97,12 +79,10 @@ export const buildArtifactExtensions = [
   '.d.ts',
 ]
 
-export const fromFileUrl = fileURLToPath
-
 // merge
 
 export const merge = (path1: string, path2: string): string => {
-  return NodePath.join(path1, path2)
+  return PlatformPath.join(path1, path2)
 }
 
 export const mergeOn = Fn.curry(merge)

@@ -1,6 +1,5 @@
 import type { Language } from '#language/index.js'
 import { Path } from '#path/index.js'
-import { tmpdir } from 'node:os'
 import { writeJson } from './data/json.js'
 import { writeString } from './data/string.js'
 import { makeDirectory } from './directory.js'
@@ -8,6 +7,7 @@ import type { FileWriteInputMaybeJson } from './fs.js'
 import { exists } from './query.js'
 
 export const makeTemporaryDirectory = async (name: string = Date.now().toString()): Promise<string> => {
+  const { tmpdir } = await import('node:os') // todo make isomorphic
   const osTmpDirPath = tmpdir()
   const path = Path.join(osTmpDirPath, name)
   await makeDirectory(path)
