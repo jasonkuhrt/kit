@@ -1,4 +1,8 @@
-import { Arr, Fs, Language, Path, Str } from '@wollybeard/kit'
+import { Arr } from '#arr/index.js'
+import { Fs } from '#fs/index.js'
+import { Language } from '#language/index.js'
+import { Path } from '#path/index.js'
+import { Str } from '#str/index.js'
 import { parseArgvOrThrow } from './argv.js'
 import { type CommandTarget, getCommandTarget } from './commend-target.js'
 
