@@ -22,7 +22,8 @@
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "#*": ["./src/*"]
+      "#*": ["./src/*"],
+      "#platform:*.js": ["./src/*.node.ts"]
     },
 
     // DX covered by linter:

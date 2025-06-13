@@ -64,10 +64,10 @@ export const discoverCommandPointers = async (
 
   return commandsDirFileNamesRelative
     .map(Path.parse)
-    .filter(parsedPath => {
-      return !Path.buildArtifactExtensions.some(ext => parsedPath.base.endsWith(ext))
+    .filter((parsedPath) => {
+      return !Path.buildArtifactExtensions.some((ext) => parsedPath.base.endsWith(ext))
     })
-    .map(parsedPath => {
+    .map((parsedPath) => {
       return {
         name: parsedPath.name,
         filePath: Path.join(commandsDirPath, parsedPath.base),
