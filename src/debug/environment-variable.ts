@@ -34,7 +34,7 @@ export const calcIsEnabledFromEnv = (
   // If any is like * then it means "enable everything"
   if (
     includeFilters.some(includeFilter => {
-      if (includeFilter.length === 1 && enVarEnabledValuesStatic.includes(includeFilter[0]!)) return true
+      return includeFilter.length === 1 && enVarEnabledValuesStatic.includes(includeFilter[0]!)
     })
   ) return true
 
