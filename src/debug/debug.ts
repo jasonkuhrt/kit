@@ -1,8 +1,11 @@
+import { Arr } from '#arr/index.js'
 import { Language } from '#language/index.js'
 import { Str } from '#str/index.js'
 import { calcIsEnabledFromEnv } from './environment-variable.js'
 
 type DebugParameters = [event: string, payload?: unknown]
+
+export * from './dump.js'
 
 export interface Debug {
   (...args: DebugParameters): void
@@ -14,12 +17,45 @@ interface State {
   isEnabled: boolean
 }
 
-/*@__NO_SIDE_EFFECTS__*/
-export const create = (namespace?: string, initialState?: State): Debug => {
-  const isDebugEnabledFromEnv = calcIsEnabledFromEnv(Language.process.env, namespace)
+// todo:
+// const Option = {
+//   else:
+//     <alternative>(alternative: alternative) => <value>(value: value): value extends undefined ? alternative : value => {
+//       if (value === undefined || value === null) {
+//         return alternative as any
+//       }
+//       return value as any
+//     },
+// }
 
-  const state: State = initialState ?? {
-    isEnabled: isDebugEnabledFromEnv,
+// const namespaceToString = (namespace: string[] = []): string => {
+//   return formatNamespaceSegment(namespace.join(`_`))
+//   // todo:
+//   // const x = Option.else([] as string[])
+//   // const y = x(namespace)
+//   // const z = Fn.pipe(
+//   //   namespace,
+//   //   x,
+//   //   // Option.else([]),
+//   //   // (_) => Array.is(_) ? _ : [],
+//   //   // Str.joinWith(`_`),
+//   //   // Str.Case.upper,
+//   // )
+// }
+
+const formatNamespaceSegment = (segment: string): string => {
+  return Str.Case.snake(segment).toUpperCase()
+}
+
+export const create = (namespaceInput?: string | string[], initialState?: State): Debug => {
+  const namespace = Arr.sure(namespaceInput ?? [])
+
+  const state: State = initialState ?? { isEnabled: false }
+
+  // Can be enabled via envar
+  const isDebugEnabledFromEnv = calcIsEnabledFromEnv(Language.process.env, namespace)
+  if (isDebugEnabledFromEnv) {
+    state.isEnabled = true
   }
 
   const debug: Debug = (...args) => {
@@ -43,20 +79,19 @@ export const create = (namespace?: string, initialState?: State): Debug => {
         })
         : ``
 
-      const namespaceRendered = namespace
-        ? Language.colorize(
+      const formatNamespaceSegmentAnsi = (segment: string): string => {
+        return Language.colorize(
           `bold`,
-          Language.colorize(
-            `bgYellowBright`,
-            ` ` + Str.Case.snake(namespace).toUpperCase() + ` `,
-          ),
+          Language.colorize(`bgYellowBright`, ` ` + formatNamespaceSegment(segment) + ` `),
         )
-        : ``
+      }
+
+      const namespaceRendered = namespace.map(formatNamespaceSegmentAnsi).join(` `)
       const eventRendered = Language.colorize(
         `bold`,
         Language.colorize(
           `bgMagentaBright`,
-          ` ` + Str.Case.snake(event).toUpperCase() + ` `,
+          ` ` + formatNamespaceSegment(event) + ` `,
         ),
       )
       const prefixRendered = `${namespaceRendered} ${eventRendered}`
@@ -69,10 +104,10 @@ export const create = (namespace?: string, initialState?: State): Debug => {
     state.isEnabled = isEnabled
   }
 
-  debug.sub = (subNamespace: string) => {
+  debug.sub = (subNamespace: string | string[]) => {
+    const s = Arr.sure(subNamespace)
     const stateCopy = structuredClone(state)
-    const fullNamespace = namespace ? `${namespace}:${subNamespace}` : subNamespace
-    return create(fullNamespace, stateCopy)
+    return create([...namespace, ...s], stateCopy)
   }
 
   return debug
@@ -86,12 +121,4 @@ const parseNumberOr = (str: string | undefined, defaultValue: number): number =>
     return defaultValue
   }
   return parsed
-}
-
-// initialize root debug
-
-export const debug = create()
-
-export const dump = (value: any) => {
-  console.log(Language.inspect(value, { depth: 20, colors: true }))
 }

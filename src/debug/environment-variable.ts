@@ -1,18 +1,58 @@
+import { Arr } from '#arr/index.js'
+import { Language } from '#language/index.js'
+
 export const enVarName = `DEBUG`
 
-export const enVarEnabledValuesStatic = [`true`, `*`, `1`]
+export const deliminator = `,`
+export const wildcard = `*`
+export const enVarEnabledValuesStatic = [`true`, wildcard, `1`]
+export const sep = ':'
 
 export const calcIsEnabledFromEnv = (
   enVars: Record<string, unknown>,
-  namespace?: string,
+  namespace?: string[],
 ): boolean => {
-  const enVar = typeof enVars[enVarName] === `string` ? enVars[enVarName].trim() : undefined
+  const namespace_ = namespace?.map(_ => _.toLowerCase())
 
-  if (!enVar) return false
+  const includeFilters = typeof enVars[enVarName] === `string`
+    ? enVars[enVarName]
+      .trim()
+      .toLowerCase()
+      .split(deliminator)
+      .map(patternExpression => {
+        return patternExpression
+          .trim()
+          .split(sep)
+          .map(_ => _.trim())
+      })
+    : undefined
 
-  if (enVarEnabledValuesStatic.includes(enVar)) return true
+  if (!includeFilters) return false
 
-  if (namespace) return enVar.startsWith(namespace)
+  if (includeFilters.length === 0) return false
 
-  return false
+  // If any is like * then it means "enable everything"
+  if (
+    includeFilters.some(includeFilter => {
+      if (includeFilter.length === 1 && enVarEnabledValuesStatic.includes(includeFilter[0]!)) return true
+    })
+  ) return true
+
+  // At this point, if there is no namespace (e.g. root), then we cannot match anything
+  if (!namespace_) return false
+
+  for (const includeFilter of includeFilters) {
+    if (Arr.getLast(includeFilter) !== wildcard) {
+      return includeFilter.join(sep) === namespace_.join(sep)
+    }
+
+    let i = 0
+    for (const segment of includeFilter) {
+      if (segment === wildcard) return true
+      if (segment !== namespace_[i]) return false
+      i++
+    }
+  }
+
+  Language.never()
 }
