@@ -1,6 +1,6 @@
 import { Test } from '#test/index.js'
 import * as fc from 'fast-check'
-import { describe, expect, test } from 'vitest'
+import { describe, expect } from 'vitest'
 import { arbitrary, arbitraryShapes } from './arbitrary.js'
 import { Node } from './data.js'
 import { count, depth } from './queries.js'

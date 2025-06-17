@@ -97,7 +97,7 @@ export const fromList = <value extends { id: string; parentId?: string }>(
   // Build hierarchy
   values.forEach(item => {
     const itemNode = nodeMap.get(item.id)!
-    if (item.parentId === rootId) {
+    if (item.parentId === rootId || (!item.parentId && rootId === undefined)) {
       roots.push(itemNode)
     } else if (item.parentId) {
       const parent = nodeMap.get(item.parentId)
