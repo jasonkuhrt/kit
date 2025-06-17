@@ -6,7 +6,9 @@ import { Str } from '#str/index.js'
 import { Char } from '#str/str.js'
 import type { Ts } from '#ts/index.js'
 import { cyan, red } from 'ansis'
+import { cleanStack } from './stack.js'
 import { is } from './type.js'
+import type { Context } from './types.js'
 
 interface EnvironmentConfigurableOptionSpec<$Name extends string = string, $Type = any> {
   name: $Name
@@ -195,14 +197,21 @@ const _inspectResursively = (error: Error, parentIndent: string, config: Inspect
   if ('context' in error && error.context !== undefined) {
     lines.push(formatTitle(parentIndent, 'context', config))
     // todo: pretty object rendering
-    lines.push(String(error.context))
+    lines.push(String((error as Error & { context: Context }).context))
   }
 
   // Handle stack property if present
   if (error.stack) {
+    // Clean the stack trace first
+    const cleanedStack = cleanStack(error.stack, {
+      removeInternal: true,
+      maxFrames: 15,
+      filterPatterns: ['node_modules', 'node:internal'],
+    })
+
     const stack = Str.unlines(
       Str
-        .lines(error.stack)
+        .lines(cleanedStack)
         // Stacks include the message by default, we already showed that above.
         .slice(1)
         .map(_ => Str.truncate(`${parentIndent}${formatIndent}${_.trim()}`, config.stackTraceColumns.value)),

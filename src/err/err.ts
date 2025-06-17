@@ -3,9 +3,17 @@ import { inspect, type InspectOptions } from './inspect.js'
 
 export * from './inspect.js'
 
+export * from './maybe-promise.js'
+
+export * from './stack.js'
+
 export * from './try.js'
 
 export * from './type.js'
+
+export * from './types.js'
+
+export * from './wrap.js'
 
 /**
  * Log an error to console with nice formatting.

@@ -5,6 +5,13 @@ export const is = (value: unknown): value is Error => {
 }
 
 /**
+ * Check if a value is an AggregateError instance.
+ */
+export const isAggregateError = (value: unknown): value is AggregateError => {
+  return value instanceof AggregateError
+}
+
+/**
  * Ensure that the given value is an error and return it. If it is not an error than
  * wrap it in one, passing the given value as the error message.
  */
