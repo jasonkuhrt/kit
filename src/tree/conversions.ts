@@ -97,7 +97,8 @@ export const fromList = <value extends { id: string; parentId?: string }>(
   // Build hierarchy
   values.forEach(item => {
     const itemNode = nodeMap.get(item.id)!
-    if (item.parentId === rootId || (!item.parentId && rootId === undefined)) {
+    if (item.parentId === rootId || !item.parentId) {
+      // Items match the rootId OR have no parent (orphans) become roots
       roots.push(itemNode)
     } else if (item.parentId) {
       const parent = nodeMap.get(item.parentId)
@@ -108,4 +109,56 @@ export const fromList = <value extends { id: string; parentId?: string }>(
   })
 
   return roots
+}
+
+/**
+ * Build a single tree from a flat list of items with parent references.
+ * This is a variant of {@link fromList} that ensures exactly one root node is found.
+ * Throws an error if zero or multiple root nodes are found.
+ *
+ * @param values - Array of items with id and parentId properties
+ * @param rootId - Optional ID to use as the root parent (defaults to undefined)
+ * @returns Single root node
+ * @throws Error if not exactly one root is found
+ *
+ * @example
+ * ```ts
+ * const items = [
+ *   { id: '1', name: 'Root' },
+ *   { id: '2', parentId: '1', name: 'Child A' },
+ *   { id: '3', parentId: '1', name: 'Child B' },
+ *   { id: '4', parentId: '2', name: 'Grandchild' }
+ * ]
+ *
+ * const tree = oneFromList(items)
+ * console.log(tree.value.name) // 'Root'
+ *
+ * // Error cases:
+ * const multipleRoots = [
+ *   { id: '1', name: 'Root 1' },
+ *   { id: '2', name: 'Root 2' }
+ * ]
+ * oneFromList(multipleRoots) // Throws: Expected exactly one root node, found 2
+ *
+ * const noRoots = [
+ *   { id: '1', parentId: 'missing', name: 'Orphan' }
+ * ]
+ * oneFromList(noRoots, 'root') // Throws: Expected exactly one root node, found 0
+ * ```
+ */
+export const oneFromList = <value extends { id: string; parentId?: string }>(
+  values: value[],
+  rootId?: string,
+): Node<value> => {
+  const roots = fromList(values, rootId)
+
+  if (roots.length === 0) {
+    throw new Error('Expected exactly one root node, found 0')
+  }
+
+  if (roots.length > 1) {
+    throw new Error(`Expected exactly one root node, found ${roots.length}`)
+  }
+
+  return roots[0]!
 }

@@ -2,7 +2,7 @@ import { Test } from '#test/index.js'
 import * as fc from 'fast-check'
 import { describe, expect, test } from 'vitest'
 import { arbitrary } from './arbitrary.js'
-import { fromList, toList } from './conversions.js'
+import { fromList, oneFromList, toList } from './conversions.js'
 import { Node } from './data.js'
 
 describe('toList', () => {
@@ -88,5 +88,85 @@ describe('fromList', () => {
     expect(trees[1]!.value.name).toBe('root2')
     expect(trees[0]!.children[0]!.value.name).toBe('child1')
     expect(trees[1]!.children[0]!.value.name).toBe('child2')
+  })
+
+  test('handles items without parentId when rootId is specified', () => {
+    const items = [
+      { id: '1', parentId: 'root', name: 'child-of-root' },
+      { id: '2', name: 'orphan-1' }, // no parentId
+      { id: '3', parentId: '2', name: 'child-of-orphan' },
+      { id: '4', name: 'orphan-2' }, // no parentId
+    ]
+
+    // When rootId is 'root', items without parentId get lost in current implementation
+    const trees = fromList(items, 'root')
+
+    // BUG: This test demonstrates that orphan nodes (without parentId) are lost
+    // when a specific rootId is provided. They should be included as roots.
+    expect(trees).toHaveLength(3) // Should include the orphans as roots
+    expect(trees.map(t => t.value.name).sort()).toEqual([
+      'child-of-root',
+      'orphan-1',
+      'orphan-2',
+    ])
+  })
+})
+
+describe('oneFromList', () => {
+  test('returns single tree when exactly one root exists', () => {
+    const items = [
+      { id: '1', name: 'root' },
+      { id: '2', parentId: '1', name: 'child1' },
+      { id: '3', parentId: '1', name: 'child2' },
+      { id: '4', parentId: '2', name: 'grandchild' },
+    ]
+
+    const tree = oneFromList(items)
+    expect(tree.value.name).toBe('root')
+    expect(tree.children).toHaveLength(2)
+    expect(tree.children[0]!.value.name).toBe('child1')
+    expect(tree.children[1]!.value.name).toBe('child2')
+  })
+
+  test('throws when no roots found', () => {
+    const items = [
+      { id: '1', parentId: 'missing', name: 'orphan1' },
+      { id: '2', parentId: 'missing', name: 'orphan2' },
+    ]
+
+    expect(() => oneFromList(items, 'root')).toThrow('Expected exactly one root node, found 0')
+  })
+
+  test('throws when multiple roots found', () => {
+    const items = [
+      { id: '1', name: 'root1' },
+      { id: '2', name: 'root2' },
+      { id: '3', parentId: '1', name: 'child' },
+    ]
+
+    expect(() => oneFromList(items)).toThrow('Expected exactly one root node, found 2')
+  })
+
+  test('works with specific rootId', () => {
+    const items = [
+      { id: '1', parentId: 'app', name: 'main' },
+      { id: '2', parentId: '1', name: 'sidebar' },
+      { id: '3', parentId: '1', name: 'content' },
+    ]
+
+    const tree = oneFromList(items, 'app')
+    expect(tree.value.name).toBe('main')
+    expect(tree.children).toHaveLength(2)
+  })
+
+  test('handles orphan nodes as additional roots causing error', () => {
+    const items = [
+      { id: '1', parentId: 'root', name: 'proper-child' },
+      { id: '2', name: 'orphan' }, // This will also be a root
+      { id: '3', parentId: '2', name: 'child-of-orphan' },
+    ]
+
+    // With the fix, orphans are treated as roots, so this should throw
+    expect(() => oneFromList(items, 'root')).toThrow('Expected exactly one root node, found 2')
   })
 })

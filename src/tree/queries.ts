@@ -307,7 +307,7 @@ export const path = <$Value>(
 
 /**
  * Get the path of values from the root to a node matching the predicate.
- * Similar to `path` but returns just the values instead of node objects.
+ * Similar to {@link path} but returns just the values instead of node objects.
  *
  * @param tree - The root node of the tree to search
  * @param predicate - Function that tests each node's value
