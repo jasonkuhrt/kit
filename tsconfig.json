@@ -11,6 +11,8 @@
 
     // Output
     "verbatimModuleSyntax": true,
+    // todo
+    // "rewriteRelativeImportExtensions": true, // Run source with NodeJS
 
     // DX
     "moduleDetection": "force",
@@ -21,6 +23,7 @@
     "noEmit": true,
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": false, // Great for conditional middlewares
     "paths": {
       "#*": ["./src/*"],
       "#platform:*.js": ["./src/*.node.ts"]

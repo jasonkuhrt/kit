@@ -130,6 +130,7 @@ We maintain some consistent operation names across data structures:
 - **`Path`** - File path utilities (merge via join, resolution)
 - **`Rec`** - Record utilities (merge, type checking)
 - **`Group`** - Array grouping/indexing (by, merge)
+- **`Tree`** - Tree data structure utilities (map, filter, reduce, path operations, arbitrary generation)
 
 ### Utility Modules
 

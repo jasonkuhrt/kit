@@ -16,6 +16,15 @@
     "vitest.config.ts": true,
     "build": true,
     "node_modules": true,
-    ".dprint": true
-  }
+    ".dprint": true,
+    ".zed": true
+  },
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "package.json"
+      ],
+      "path": "./node_modules/libra/schema/package-json-libra.json"
+    }
+  ]
 }

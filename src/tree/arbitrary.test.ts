@@ -1,0 +1,162 @@
+import { Test } from '#test/index.js'
+import * as fc from 'fast-check'
+import { describe, expect, test } from 'vitest'
+import { arbitrary, arbitraryShapes } from './arbitrary.js'
+import { Node } from './data.js'
+import { count, depth } from './queries.js'
+
+describe('arbitrary', () => {
+  Test.property(
+    'generates valid tree nodes',
+    fc.integer(),
+    (seed) => {
+      const tree = fc.sample(arbitrary(fc.constant(seed)), 1)[0]!
+      expect(tree).toBeDefined()
+      expect(tree.value).toBe(seed)
+      expect(Array.isArray(tree.children)).toBe(true)
+    },
+  )
+
+  Test.property(
+    'respects maxDepth option',
+    fc.integer({ min: 0, max: 5 }),
+    fc.integer(),
+    (maxDepth, seed) => {
+      const tree = fc.sample(
+        arbitrary(fc.constant(seed), { maxDepth, leafWeight: 1 }),
+        10,
+      )
+      tree.forEach(t => {
+        expect(depth(t)).toBeLessThanOrEqual(maxDepth)
+      })
+    },
+  )
+
+  Test.property(
+    'respects maxChildren option',
+    fc.integer({ min: 1, max: 5 }),
+    fc.integer(),
+    (maxChildren, seed) => {
+      const trees = fc.sample(
+        arbitrary(fc.constant(seed), { maxChildren }),
+        10,
+      )
+      trees.forEach(tree => {
+        const checkChildren = (node: Node<number>) => {
+          expect(node.children.length).toBeLessThanOrEqual(maxChildren)
+          node.children.forEach(checkChildren)
+        }
+        checkChildren(tree)
+      })
+    },
+  )
+})
+
+describe('arbitraryShapes.leaf', () => {
+  Test.property(
+    'always generates leaf nodes',
+    fc.integer(),
+    (value) => {
+      const leaf = fc.sample(arbitraryShapes.leaf(fc.constant(value)), 10)
+      leaf.forEach(node => {
+        expect(node.value).toBe(value)
+        expect(node.children).toEqual([])
+      })
+    },
+  )
+})
+
+describe('arbitraryShapes.withDepth', () => {
+  Test.property(
+    'generates trees with exact depth',
+    fc.integer({ min: 0, max: 5 }),
+    fc.integer(),
+    (targetDepth, seed) => {
+      const trees = fc.sample(
+        arbitraryShapes.withDepth(fc.constant(seed), targetDepth),
+        5,
+      )
+      trees.forEach(tree => {
+        expect(depth(tree)).toBe(targetDepth)
+      })
+    },
+  )
+})
+
+describe('arbitraryShapes.linear', () => {
+  Test.property(
+    'generates linear trees (linked list style)',
+    fc.integer({ min: 1, max: 10 }),
+    fc.integer(),
+    (length, seed) => {
+      const tree = fc.sample(
+        arbitraryShapes.linear(fc.constant(seed), length),
+        1,
+      )[0]!
+
+      // Count should equal length
+      expect(count(tree)).toBe(length)
+
+      // Each non-leaf node should have exactly one child
+      let current = tree
+      let nodeCount = 1
+      while (current.children.length > 0) {
+        expect(current.children.length).toBe(1)
+        current = current.children[0]!
+        nodeCount++
+      }
+      expect(nodeCount).toBe(length)
+    },
+  )
+})
+
+describe('arbitraryShapes.balanced', () => {
+  Test.property(
+    'generates balanced trees with specified children per node',
+    fc.integer({ min: 0, max: 3 }),
+    fc.integer({ min: 1, max: 4 }),
+    fc.integer(),
+    (targetDepth, childrenPerNode, seed) => {
+      const tree = fc.sample(
+        arbitraryShapes.balanced(fc.constant(seed), targetDepth, childrenPerNode),
+        1,
+      )[0]!
+
+      // Check depth
+      expect(depth(tree)).toBe(targetDepth)
+
+      // Check that non-leaf nodes have exact number of children
+      const checkBalance = (node: Node<number>, currentDepth: number) => {
+        if (currentDepth < targetDepth) {
+          expect(node.children.length).toBe(childrenPerNode)
+          node.children.forEach(child => checkBalance(child, currentDepth + 1))
+        } else {
+          expect(node.children.length).toBe(0)
+        }
+      }
+      checkBalance(tree, 0)
+    },
+  )
+})
+
+describe('arbitraryShapes.wide', () => {
+  Test.property(
+    'generates wide trees',
+    fc.integer({ min: 2, max: 10 }),
+    fc.integer({ min: 1, max: 3 }),
+    fc.integer(),
+    (width, targetDepth, seed) => {
+      const tree = fc.sample(
+        arbitraryShapes.wide(fc.constant(seed), width, targetDepth),
+        1,
+      )[0]!
+
+      // Check depth
+      expect(depth(tree)).toBeLessThanOrEqual(targetDepth)
+
+      // Root should have many children (at least half of width)
+      expect(tree.children.length).toBeGreaterThanOrEqual(Math.floor(width / 2))
+      expect(tree.children.length).toBeLessThanOrEqual(width)
+    },
+  )
+})

@@ -6,6 +6,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Kit (`@wollybeard/kit`) is a TypeScript utility library providing functional programming utilities and data structure operations. The project emphasizes type safety, consistent APIs, and modular architecture.
 
+## Code Quality Checks
+
+After making code changes, ensure these checks pass:
+
+1. **Type checking**: `pnpm check:types`
+2. **Tests**: `pnpm test` (for specific modules: `pnpm test src/module-name/`)
+3. **Formatting**: `pnpm fix:format` (always run the formatter to auto-fix any style issues)
+
+Run all checks with: `pnpm check`
+
 ## Development Commands
 
 ```bash
@@ -45,7 +55,7 @@ The project uses a highly modular architecture with 30+ specialized modules in `
 
 ### Key Modules
 
-- **Data Structures**: `arr`, `obj`, `str`, `rec`, `group`, `idx`
+- **Data Structures**: `arr`, `obj`, `str`, `rec`, `group`, `idx`, `tree`
 - **Functional Programming**: `fn`, `prom`, `cache`
 - **I/O & External**: `fs`, `fs-layout`, `fs-relative`, `http`, `cli`, `url`
 - **Type/Value**: `bool`, `null`, `undefined`, `value`
