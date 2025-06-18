@@ -85,7 +85,13 @@ describe('ensure', () => {
         (value) => {
           const result = ensure(value)
           expect(result).toBeInstanceOf(Error)
-          expect(result.message).toBe(String(value))
+
+          // Handle edge cases where String() might fail
+          try {
+            expect(result.message).toBe(String(value))
+          } catch {
+            expect(result.message).toBe('[Unrepresentable value]')
+          }
         },
       ),
     )

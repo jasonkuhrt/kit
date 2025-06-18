@@ -18,5 +18,10 @@ export const isAggregateError = (value: unknown): value is AggregateError => {
 export const ensure = (value: unknown): Error => {
   if (value instanceof Error) return value
 
-  return new Error(String(value))
+  try {
+    return new Error(String(value))
+  } catch {
+    // Handle cases where String() fails (e.g., objects with toString: null)
+    return new Error('[Unrepresentable value]')
+  }
 }

@@ -1,5 +1,6 @@
 import type { Print } from './print.js'
 
+export * from './assert.js'
 export * from './print.js'
 
 /**

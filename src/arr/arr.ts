@@ -248,7 +248,7 @@ export const mergeOn = Fn.curry(merge)
 //
 //
 
-export const randomIndex = <arr extends AnyRO>(arr: arr): arr extends Any1OrMoreRO ? number : undefined => {
+export const randomIndex = <const arr extends AnyRO>(arr: arr): arr extends Any1OrMoreRO ? number : undefined => {
   return Math.floor(Math.random() * arr.length) as any
 }
 
@@ -270,7 +270,7 @@ export type ReduceWithIntersection<$Items extends UnknownRO> =
 //
 //
 
-export const getRandomly = <arr extends AnyRO>(
+export const getRandomly = <const arr extends AnyRO>(
   arr: arr,
 ): arr[number] | (arr extends Any1OrMoreRO ? never : undefined) => {
   if (arr.length === 0) return undefined

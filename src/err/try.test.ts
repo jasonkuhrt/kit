@@ -1,6 +1,6 @@
 import { Err } from '#err/index.js'
 import { describe, expect, expectTypeOf, test } from 'vitest'
-import { tryAllOrRethrow, tryOrRethrow } from './try.js'
+import { tryAllOrRethrow, tryOr, tryOrRethrow } from './try.js'
 import { wrapWith } from './wrap.js'
 
 const e = new Error('test error')
@@ -135,6 +135,96 @@ describe('tryOrRethrow', () => {
         wrapAsDataError,
       ),
     ).rejects.toThrow('Failed to fetch data')
+  })
+})
+
+describe('tryOr', () => {
+  test('returns value on success', () => {
+    const result = tryOr(() => 42, 'fallback')
+    expect(result).toBe(42)
+  })
+
+  test('returns fallback on error', () => {
+    const result = tryOr(() => {
+      throw new Error('fail')
+    }, 'fallback')
+    expect(result).toBe('fallback')
+  })
+
+  test('returns lazy fallback on error', () => {
+    const result = tryOr(() => {
+      throw new Error('fail')
+    }, () => 'lazy fallback')
+    expect(result).toBe('lazy fallback')
+  })
+
+  test('handles async function that resolves', async () => {
+    const result = await tryOr(async () => 42, 'fallback')
+    expect(result).toBe(42)
+  })
+
+  test('handles async function that rejects with static fallback', async () => {
+    const result = await tryOr(async () => {
+      throw new Error('fail')
+    }, 'fallback')
+    expect(result).toBe('fallback')
+  })
+
+  test('handles async function that rejects with lazy fallback', async () => {
+    const result = await tryOr(async () => {
+      throw new Error('fail')
+    }, () => 'lazy fallback')
+    expect(result).toBe('lazy fallback')
+  })
+
+  test('handles async function with async fallback', async () => {
+    const result = await tryOr(
+      async () => {
+        throw new Error('fail')
+      },
+      async () => {
+        // Simulate async operation
+        await new Promise(resolve => setTimeout(resolve, 10))
+        return 'async fallback'
+      },
+    )
+    expect(result).toBe('async fallback')
+  })
+
+  test('sync function with async fallback should use tryOrAsync', async () => {
+    const { tryOrAsync } = await import('./try.js')
+    const result = await tryOrAsync(
+      () => {
+        throw new Error('fail')
+      },
+      async () => {
+        await new Promise(resolve => setTimeout(resolve, 10))
+        return 'async fallback from sync error'
+      },
+    )
+
+    // Result should be the fallback value
+    expect(result).toBe('async fallback from sync error')
+  })
+
+  test('tryOrAsync always returns Promise', async () => {
+    const { tryOrAsync } = await import('./try.js')
+
+    // Even when both are sync, tryOrAsync returns Promise
+    const result1 = tryOrAsync(
+      () => 42,
+      () => 'never used',
+    )
+    expect(result1).toBeInstanceOf(Promise)
+    expect(await result1).toBe(42)
+
+    // Works with async fallback too
+    const result2 = tryOrAsync(
+      () => 42,
+      async () => 'never used',
+    )
+    expect(result2).toBeInstanceOf(Promise)
+    expect(await result2).toBe(42)
   })
 })
 

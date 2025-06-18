@@ -9,6 +9,16 @@ import { catchMaybePromise } from './maybe-promise.js'
 import { ensure, is } from './type.js'
 import { wrap, type WrapOptions } from './wrap.js'
 
+/**
+ * Helper type for tryOr that enforces sync fallback when main is sync.
+ * If main function returns Promise, fallback can be sync or async.
+ * If main function is sync, fallback must be sync.
+ */
+type TryOrReturn<$Main, $Fallback> = $Main extends Promise<infer M>
+  ? Promise<Awaited<M> | Awaited<Value.resolveLazy<$Fallback>>>
+  : Value.resolveLazy<$Fallback> extends Promise<any> ? never
+  : $Main | Value.resolveLazy<$Fallback>
+
 export type TryCatchDefaultPredicateTypes = Error
 
 /**
@@ -125,42 +135,141 @@ export const tryCatchIgnore = <$Return>(fn: () => $Return): $Return => {
 
 /**
  * Try to execute a function and return a fallback value if it throws.
- * Handles both synchronous and asynchronous functions automatically.
+ *
+ * **Type constraints:**
+ * - If `fn` is synchronous, `fallback` must also be synchronous
+ * - If `fn` is asynchronous, `fallback` can be either sync or async
+ * - For sync functions with async fallbacks, use {@link tryOrAsync} instead
  *
  * @param fn - The function to execute
- * @param fallback - The fallback value or a function that returns the fallback value
+ * @param fallback - The fallback value or function (must be sync if fn is sync)
  * @returns The result of the function if successful, or the fallback value if it throws
  *
  * @example
  * ```ts
- * // With static fallback
+ * // Sync function with sync fallback
  * const data = tryOr(
  *   () => JSON.parse(input),
  *   { error: 'Invalid JSON' }
  * )
  *
- * // With lazy fallback
+ * // Async function with sync fallback
  * const config = await tryOr(
  *   async () => loadConfig(),
  *   () => getDefaultConfig()
  * )
+ *
+ * // Async function with async fallback
+ * const data = await tryOr(
+ *   async () => fetchFromPrimary(),
+ *   async () => fetchFromSecondary()
+ * )
+ *
+ * // This would be a TYPE ERROR:
+ * // const bad = tryOr(
+ * //   () => 42,                    // sync
+ * //   async () => 'fallback'       // async - not allowed!
+ * // )
  * ```
  */
-// todo all fn being a promise directly
-// todo: allow fallback returning a promise and it being awaited
 export const tryOr = <success, fallback>(
   fn: () => success,
   fallback: Value.LazyMaybe<fallback>,
-): AwaitedUnion<success, fallback> => {
-  return catchMaybePromise(
-    fn,
-    () => Value.resolveLazy(fallback),
-  ) as any
+): TryOrReturn<success, fallback> => {
+  try {
+    const result = fn()
+
+    // If main function returns a promise, handle everything async
+    if (Prom.isShape(result)) {
+      return result.catch(() => Value.resolveLazy(fallback)) as any
+    }
+
+    // Main function is sync - type system ensures fallback is also sync
+    return result as any
+  } catch {
+    // Main function threw synchronously
+    const fallbackValue = Value.resolveLazy(fallback)
+    return fallbackValue as any
+  }
 }
+
+/**
+ * Try to execute a function and return a fallback value if it throws.
+ * Always returns a Promise, allowing async fallbacks for sync functions.
+ *
+ * Use this when:
+ * - You have a sync function with an async fallback
+ * - You want consistent async behavior regardless of input types
+ *
+ * @param fn - The function to execute (sync or async)
+ * @param fallback - The fallback value or function (sync or async)
+ * @returns Always returns a Promise of the result or fallback
+ *
+ * @example
+ * ```ts
+ * // Sync function with async fallback
+ * const data = await tryOrAsync(
+ *   () => readFileSync('config.json'),
+ *   async () => fetchDefaultConfig()
+ * )
+ *
+ * // Ensures consistent Promise return
+ * const result = await tryOrAsync(
+ *   () => 42,
+ *   () => 'fallback'
+ * ) // Always Promise<number | string>
+ * ```
+ */
+export const tryOrAsync = async <success, fallback>(
+  fn: () => success,
+  fallback: Value.LazyMaybe<fallback>,
+): Promise<Awaited<success> | Awaited<fallback>> => {
+  try {
+    return await fn()
+  } catch {
+    const fallbackValue = Value.resolveLazy(fallback)
+    return await fallbackValue as Awaited<fallback>
+  }
+}
+
+/**
+ * Curried version of {@link tryOrAsync} that takes the function first.
+ * Useful for creating reusable async error handlers.
+ *
+ * @example
+ * ```ts
+ * const parseJsonOrFetch = tryOrAsyncOn(() => JSON.parse(input))
+ * const data = await parseJsonOrFetch(async () => fetchDefault())
+ * ```
+ */
+// dprint-ignore
+export const tryOrAsyncOn =
+  <success>(fn: () => success) =>
+    async <fallback>(fallback: Value.LazyMaybe<fallback>): Promise<Awaited<success> | Awaited<fallback>> =>
+      tryOrAsync(fn, fallback)
+
+/**
+ * Curried version of {@link tryOrAsync} that takes the fallback first.
+ * Always returns a Promise regardless of input types.
+ *
+ * @example
+ * ```ts
+ * const orFetchDefault = tryOrAsyncWith(async () => fetchDefault())
+ * const data1 = await orFetchDefault(() => localData())
+ * const data2 = await orFetchDefault(() => cachedData())
+ * ```
+ */
+// dprint-ignore
+export const tryOrAsyncWith =
+  <fallback>(fallback: Value.LazyMaybe<fallback>) =>
+    async <success>(fn: () => success): Promise<Awaited<success> | Awaited<fallback>> =>
+      tryOrAsync(fn, fallback)
 
 /**
  * Curried version of {@link tryOr} that takes the function first.
  * Useful for creating reusable error handlers.
+ *
+ * **Note:** Same type constraints as {@link tryOr} apply - sync functions require sync fallbacks.
  *
  * @example
  * ```ts
@@ -171,12 +280,14 @@ export const tryOr = <success, fallback>(
 // dprint-ignore
 export const tryOrOn =
   <success>(fn: () => success) =>
-    <fallback>(fallback: Value.LazyMaybe<fallback>): AwaitedUnion<success, fallback> =>
+    <fallback>(fallback: Value.LazyMaybe<fallback>): TryOrReturn<success, fallback> =>
       tryOr(fn, fallback)
 
 /**
  * Curried version of {@link tryOr} that takes the fallback first.
  * Useful for creating reusable fallback patterns.
+ *
+ * **Note:** Same type constraints as {@link tryOr} apply - sync functions require sync fallbacks.
  *
  * @example
  * ```ts
@@ -189,7 +300,7 @@ export const tryOrOn =
 // dprint-ignore
 export const tryOrWith =
   <fallback>(fallback: Value.LazyMaybe<fallback>) =>
-    <success>(fn: () => success): AwaitedUnion<success, fallback> =>
+    <success>(fn: () => success): TryOrReturn<success, fallback> =>
       tryOr(fn, fallback)
 
 /**
