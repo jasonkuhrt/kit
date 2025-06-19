@@ -1,8 +1,20 @@
 import { Arr } from '#arr/index.js'
 
 /**
- * Random name generator.
- * The pool of possible names is 150 (adjectives) * 52 (colors) * 150 (animals) = 1,170,000
+ * Generates a random name in the format "adjective color animal".
+ * The pool of possible names is 150 (adjectives) * 52 (colors) * 150 (animals) = 1,170,000.
+ *
+ * @returns A randomly generated name string.
+ *
+ * @example
+ * // generate a random name
+ * const name = generate()
+ * // name might be "Adventurous Azure Beluga"
+ *
+ * @example
+ * // generate multiple unique names
+ * const names = [generate(), generate(), generate()]
+ * // names might be ["Bold Crimson Tiger", "Gentle Gold Panda", "Mysterious Navy Owl"]
  */
 export const generate = (): string => {
   const randomAdjective = Arr.getRandomly(adjectives)

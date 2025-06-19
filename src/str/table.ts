@@ -1,6 +1,33 @@
 import { Char } from './char/index.js'
 import { repeatOn } from './replace.js'
 
+/**
+ * Format a key-value object as an aligned table string.
+ * @param input - Configuration object
+ * @param input.data - Key-value pairs to format as a table
+ * @param input.separator - String to separate keys and values (default: ' → ')
+ * @param input.separatorAlignment - Whether to align separators (default: true)
+ * @returns Formatted table string with aligned columns
+ * @example
+ * ```typescript
+ * table({
+ *   data: { name: 'John', age: '25', city: 'NYC' }
+ * })
+ * // Returns:
+ * // name → John
+ * // age  → 25
+ * // city → NYC
+ *
+ * table({
+ *   data: { foo: 'bar', hello: 'world' },
+ *   separator: ' = ',
+ *   separatorAlignment: false
+ * })
+ * // Returns:
+ * // foo =   bar
+ * // hello = world
+ * ```
+ */
 export const table = (input: {
   data: Record<string, string>
   separator?: string | undefined | false

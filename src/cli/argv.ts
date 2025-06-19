@@ -9,6 +9,21 @@ import { Str } from '#str/index.js'
  */
 export type ProcessArgv = [string, ...string[]]
 
+/**
+ * Type guard to check if a value is a valid process argv array.
+ *
+ * Validates that the value is an array with at least one element (the executable path)
+ * and that all elements are strings.
+ *
+ * @param value - The value to check
+ * @returns true if the value is a valid ProcessArgv array
+ *
+ * @example
+ * isProcessArgvLoose(['node', 'script.js', '--flag']) // true
+ * isProcessArgvLoose(['node']) // true (valid in REPL)
+ * isProcessArgvLoose([]) // false (no executable path)
+ * isProcessArgvLoose(['node', 123]) // false (non-string element)
+ */
 export const isProcessArgvLoose = (value: unknown): value is ProcessArgv => {
   return Arr.is(value) && value.length >= 1 && value.every(Str.is)
 }
@@ -24,6 +39,34 @@ export interface Argv {
   args: string[]
 }
 
+/**
+ * Parses a process argv array into a structured Argv object.
+ *
+ * Extracts the executable path, script path (if present), and remaining arguments.
+ * Throws an error if the input is not a valid argv array.
+ *
+ * @param value - The value to parse as argv
+ * @returns A structured Argv object with execPath, scriptPath, and args
+ * @throws {Error} If the value is not a valid argv array
+ *
+ * @example
+ * // Normal CLI execution
+ * parseArgvOrThrow(['node', 'script.js', '--verbose', 'input.txt'])
+ * // Returns: {
+ * //   execPath: 'node',
+ * //   scriptPath: 'script.js',
+ * //   args: ['--verbose', 'input.txt']
+ * // }
+ *
+ * @example
+ * // REPL execution (no script path)
+ * parseArgvOrThrow(['node'])
+ * // Returns: {
+ * //   execPath: 'node',
+ * //   scriptPath: null,
+ * //   args: []
+ * // }
+ */
 export const parseArgvOrThrow = (value: unknown): Argv => {
   if (!isProcessArgvLoose(value)) throw new Error(`Invalid argv: ${value}`)
 

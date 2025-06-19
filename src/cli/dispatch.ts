@@ -6,6 +6,26 @@ import { Str } from '#str/index.js'
 import { parseArgvOrThrow } from './argv.js'
 import { type CommandTarget, getCommandTarget } from './commend-target.js'
 
+/**
+ * Dispatches CLI commands by discovering and executing command modules.
+ *
+ * Scans the specified directory for command files, matches the command from argv,
+ * and dynamically imports and executes the appropriate command module.
+ *
+ * @param commandsDirPath - The absolute path to the directory containing command modules
+ * @returns A promise that resolves when the command execution completes
+ *
+ * @example
+ * // Directory structure:
+ * // commands/
+ * //   build.js
+ * //   test.js
+ * //   $default.js
+ *
+ * await dispatch('/path/to/commands')
+ * // If argv is ['node', 'cli.js', 'build'], imports and executes build.js
+ * // If argv is ['node', 'cli.js'], imports and executes $default.js
+ */
 export const dispatch = async (commandsDirPath: string) => {
   const commandPointers = await discoverCommandPointers(commandsDirPath)
 
@@ -39,6 +59,25 @@ const getModuleName = (commandTarget: CommandTarget): string => {
   return name
 }
 
+/**
+ * Discovers available command modules in a directory.
+ *
+ * Scans the directory for JavaScript/TypeScript files and returns pointers
+ * to each command with its name and file path. Filters out build artifacts.
+ *
+ * @param commandsDirPath - The absolute path to the directory containing command modules
+ * @returns A promise resolving to an array of command pointers with name and filePath
+ * @throws {Error} Exits process if the commands directory is not found
+ *
+ * @example
+ * const commands = await discoverCommandPointers('/path/to/commands')
+ * // Returns:
+ * // [
+ * //   { name: 'build', filePath: '/path/to/commands/build.js' },
+ * //   { name: 'test', filePath: '/path/to/commands/test.ts' },
+ * //   { name: '$default', filePath: '/path/to/commands/$default.js' }
+ * // ]
+ */
 export const discoverCommandPointers = async (
   commandsDirPath: string,
 ): Promise<{ name: string; filePath: string }[]> => {

@@ -19,6 +19,9 @@ type TryOrReturn<$Main, $Fallback> = $Main extends Promise<infer M>
   : Value.resolveLazy<$Fallback> extends Promise<any> ? never
   : $Main | Value.resolveLazy<$Fallback>
 
+/**
+ * Default error types caught by try/catch functions when no predicates are specified.
+ */
 export type TryCatchDefaultPredicateTypes = Error
 
 /**
@@ -61,8 +64,33 @@ export const tryCatchify = <fn extends Fn.AnyAny, thrown>(
   return tryCatchifiedFn
 }
 
+/**
+ * Try to execute a function or resolve a promise, catching errors instead of throwing.
+ * Returns either the successful result or the caught error.
+ *
+ * @param fnOrPromise - Function to execute or promise to resolve
+ * @param predicates - Type predicates to filter which errors to catch (defaults to all Error instances)
+ * @returns The result if successful, or the caught error
+ *
+ * @example
+ * ```ts
+ * // With function
+ * const result = tryCatch(() => JSON.parse(input)) // parsed value | Error
+ *
+ * // With promise
+ * const data = await tryCatch(fetch(url)) // Response | Error
+ *
+ * // With custom predicates
+ * const isNetworkError = (e: unknown): e is NetworkError =>
+ *   e instanceof Error && e.name === 'NetworkError'
+ *
+ * const response = tryCatch(
+ *   () => fetch(url),
+ *   [isNetworkError]
+ * ) // Response | NetworkError
+ * ```
+ */
 // Overload for promise input
-
 // dprint-ignore
 export function tryCatch<returned, thrown>(
   promise: Promise<returned>,
@@ -70,7 +98,6 @@ export function tryCatch<returned, thrown>(
 ): Promise<returned | (IsUnknown<thrown> extends true ? TryCatchDefaultPredicateTypes : thrown)>
 
 // Overload for function input
-
 // dprint-ignore
 export function tryCatch<returned, thrown>(
   fn: () => returned,
@@ -82,7 +109,6 @@ export function tryCatch<returned, thrown>(
   >
 
 // Implementation
-
 export function tryCatch<returned, thrown>(
   fnOrPromise: Promise<any> | (() => returned),
   predicates: readonly [Bool.TypePredicate<thrown>, ...readonly Bool.TypePredicate<thrown>[]] = [

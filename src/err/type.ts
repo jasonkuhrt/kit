@@ -1,3 +1,14 @@
+/**
+ * Type predicate to check if a value is an Error instance.
+ * @param value - The value to check
+ * @returns True if the value is an Error instance
+ * @example
+ * ```ts
+ * is(new Error('test')) // true
+ * is('not an error') // false
+ * is(null) // false
+ * ```
+ */
 export const is = (value: unknown): value is Error => {
   // TODO: use upcoming Error.isError() once its widely available.
   // See: https://github.com/tc39/proposal-is-error

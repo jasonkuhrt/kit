@@ -5,14 +5,34 @@ import { Path } from '#path/index.js'
 import * as NodeFs from '#platform:fs/fs.js'
 import { Str } from '#str/index.js'
 
+/**
+ * Default options for directory copying operations.
+ */
 export const defaultCopyDirOptions: CopyDirConfig = Object.freeze({
   ignore: [],
 })
 
+/**
+ * Options for directory copying operations.
+ */
 export interface CopyDirOptions {
   ignore?: Str.PatternsInput
 }
 
+/**
+ * Create a directory copy function with default options.
+ *
+ * @param options - Default options to apply to all copy operations.
+ * @returns A copy function with the specified defaults.
+ *
+ * @example
+ * ```ts
+ * const copyIgnoringNodeModules = copyDirFactory({
+ *   ignore: ['node_modules']
+ * })
+ * await copyIgnoringNodeModules({ from: './src', to: './dist' })
+ * ```
+ */
 export const copyDirFactory = (options?: CopyDirOptions) => {
   const factoryDefaultOptions = Obj.merge(structuredClone(defaultCopyDirOptions), options ?? {})
 
@@ -26,6 +46,24 @@ export const copyDirFactory = (options?: CopyDirOptions) => {
   return _
 }
 
+/**
+ * Copy a directory recursively.
+ *
+ * @param parameters - The copy parameters.
+ * @param parameters.from - The source directory path.
+ * @param parameters.to - The destination directory path.
+ * @param parameters.options - Optional copy configuration.
+ * @param parameters.options.ignore - Patterns to ignore during copy.
+ *
+ * @example
+ * ```ts
+ * await copyDir({
+ *   from: './source',
+ *   to: './destination',
+ *   options: { ignore: ['*.tmp', '.DS_Store'] }
+ * })
+ * ```
+ */
 export const copyDir = copyDirFactory()
 
 // --- Internal

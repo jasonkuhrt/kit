@@ -7,6 +7,16 @@ type DebugParameters = [event: string, payload?: unknown]
 
 export * from './dump.js'
 
+/**
+ * A debug function with namespace support and toggle capabilities.
+ *
+ * @example
+ * ```ts
+ * const debug = Debug.create('myapp')
+ * debug('start', { port: 3000 }) // logs if enabled
+ * debug.toggle(true) // enable debugging
+ * ```
+ */
 export interface Debug {
   (...args: DebugParameters): void
   toggle: (isEnabled: boolean) => void
@@ -47,6 +57,35 @@ const formatNamespaceSegment = (segment: string): string => {
   return Str.Case.snake(segment).toUpperCase()
 }
 
+/**
+ * Create a new debug instance with optional namespace and initial state.
+ *
+ * @param namespaceInput - The namespace(s) for this debug instance. Can be a string or array of strings.
+ * @param initialState - Initial state configuration for the debug instance.
+ * @returns A debug function with toggle and sub-namespace capabilities.
+ *
+ * @example
+ * ```ts
+ * // create a simple debug instance
+ * const debug = Debug.create('myapp')
+ *
+ * // create with multiple namespace segments
+ * const debug2 = Debug.create(['myapp', 'database'])
+ *
+ * // create with initial enabled state
+ * const debug3 = Debug.create('myapp', { isEnabled: true })
+ *
+ * // use the debug instance
+ * debug('server_start', { port: 3000 })
+ *
+ * // create sub-namespaces
+ * const dbDebug = debug.sub('database')
+ * dbDebug('query', { sql: 'SELECT * FROM users' })
+ *
+ * // toggle debugging on/off
+ * debug.toggle(true)
+ * ```
+ */
 export const create = (namespaceInput?: string | string[], initialState?: State): Debug => {
   const namespace = Arr.sure(namespaceInput ?? [])
 

@@ -7,6 +7,9 @@ export * as Method from './method.js'
 
 import type * as _Method from './method.js'
 
+/**
+ * Union type of all supported HTTP methods.
+ */
 export type Method =
   | _Method.delete
   | _Method.get

@@ -4,26 +4,86 @@ import { removeSurroundingSpaceRegular } from './replace.js'
 import { isTemplateStringsArray } from './template.js'
 import { unlines } from './text.js'
 
+/**
+ * Default render function for string builders.
+ * Joins lines with newline characters.
+ * @see {@link unlines}
+ */
 export const defaultRender = unlines
 
+/**
+ * String builder interface for constructing multi-line strings.
+ * Supports both function call syntax and template literal syntax.
+ */
 export interface Builder {
+  /**
+   * Add lines to the builder.
+   * @param linesInput - Lines to add (null values are filtered out)
+   * @returns The builder instance for chaining
+   */
   (...linesInput: LinesInput): Builder
+  /**
+   * Add content using template literal syntax.
+   * @param strings - Template string array
+   * @param values - Interpolated values
+   * @returns The builder instance for chaining
+   */
   (strings: TemplateStringsArray, ...values: string[]): Builder
+  /**
+   * The internal state containing accumulated lines.
+   */
   state: State
+  /**
+   * Render the accumulated lines into a single string.
+   * @returns The rendered string
+   */
   render: () => string
+  /**
+   * Alias for render() to support string coercion.
+   * @returns The rendered string
+   */
   toString(): string
 }
 
+/**
+ * Input type for lines - allows null values which are filtered out.
+ */
 export type LinesInput = (Line | null)[]
 
+/**
+ * Array of line strings.
+ */
 export type Lines = Line[]
 
+/**
+ * A single line of text.
+ */
 export type Line = string
 
+/**
+ * Internal state of the string builder.
+ */
 export interface State {
+  /**
+   * Accumulated lines.
+   */
   lines: Lines
 }
 
+/**
+ * Create a new string builder for constructing multi-line strings.
+ *
+ * @example
+ * ```typescript
+ * const b = Builder()
+ * b('Line 1')
+ * b('Line 2', 'Line 3')
+ * b`Template line`
+ * console.log(b.render()) // "Line 1\nLine 2\nLine 3\nTemplate line"
+ * ```
+ *
+ * @returns A new builder instance
+ */
 export const Builder = (): Builder => {
   const state: State = {
     lines: [],

@@ -1,12 +1,29 @@
 import { Fs } from '#fs/index.js'
 import { Path } from '#path/index.js'
 
+/**
+ * A filesystem interface with relative path operations.
+ */
 export interface FsRelative {
   cwd: string
   changeDirectory: (path: string) => FsRelative
   write: typeof Fs.write
 }
 
+/**
+ * Create a filesystem interface rooted at a specific directory.
+ *
+ * @param parameters - The creation parameters.
+ * @param parameters.directory - The root directory for relative operations.
+ * @returns A filesystem interface with relative path operations.
+ *
+ * @example
+ * ```ts
+ * const fs = create({ directory: './src' })
+ * await fs.write({ path: 'index.ts', content: 'export {}' })
+ * // writes to './src/index.ts'
+ * ```
+ */
 export const create = (parameters: { directory: string }): FsRelative => {
   const ensureAbsolute = Path.ensureAbsoluteWith(parameters.directory)
 

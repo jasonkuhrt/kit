@@ -22,6 +22,18 @@ export const never: (context?: object | string) => never = context => {
   throw new Error('Something that should be impossible happened', { cause: context })
 }
 
+/**
+ * Mark a code path as not yet implemented with optional debug arguments.
+ *
+ * @param args - Optional debug arguments to log.
+ * @returns Never returns (throws an error).
+ * @throws {Error} Always throws with todo message and arguments.
+ *
+ * @example
+ * ```ts
+ * const result = todo<string>('implement parser', { context: data })
+ * ```
+ */
 export const todo = <type>(...args: any[]): type => {
   console.log(`TODO`)
   console.log(...args)

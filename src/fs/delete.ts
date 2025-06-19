@@ -4,6 +4,17 @@ import * as NodeFs from '#platform:fs/fs.js'
 
 // todo: rename to "delete"
 
+/**
+ * Remove a file or directory recursively.
+ *
+ * @param path - The path to remove.
+ *
+ * @example
+ * ```ts
+ * await remove('./temp-dir')
+ * // removes directory and all contents
+ * ```
+ */
 export const remove = async (path: string): Promise<void> => {
   try {
     await NodeFs.rm(path, { recursive: true, force: true })
@@ -15,6 +26,17 @@ export const remove = async (path: string): Promise<void> => {
   }
 }
 
+/**
+ * Remove multiple files or directories recursively.
+ *
+ * @param path - A single path or array of paths to remove.
+ *
+ * @example
+ * ```ts
+ * await removeMany(['./temp1', './temp2', './temp3'])
+ * // removes all specified paths
+ * ```
+ */
 export const removeMany = async (path: string | string[]): Language.SideEffectAsync => {
   const path_ = Arr.sure(path)
   await Promise.all(path_.map(p => remove(p)))

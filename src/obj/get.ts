@@ -22,6 +22,38 @@ import {
 } from './path.js'
 import { type Any, is } from './type.js'
 
+/**
+ * Create a getter function for a specific property path.
+ * Returns a function that extracts the value at that path from any compatible object.
+ *
+ * @param pathInput - A dot-notation string or array of property names
+ * @returns A function that extracts the value at the specified path
+ *
+ * @example
+ * ```ts
+ * const getCityName = getWith('address.city')
+ * getCityName({ address: { city: 'NYC' } }) // 'NYC'
+ * getCityName({ address: { city: 'LA' } }) // 'LA'
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Type-safe property access
+ * const getAge = getWith(['user', 'profile', 'age'])
+ * const data = { user: { profile: { age: 30 } } }
+ * const age = getAge(data) // number
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Useful for mapping over arrays
+ * const users = [
+ *   { name: 'Alice', score: 95 },
+ *   { name: 'Bob', score: 87 }
+ * ]
+ * users.map(getWith('score')) // [95, 87]
+ * ```
+ */
 // dprint-ignore
 export const getWith =
   <pathInput extends PropertyPathInput>(pathInput: pathInput) =>
@@ -50,7 +82,35 @@ export type getWith<
     : $Obj
 
 /**
- * Inverses the parameter order of {@link getWith}.
+ * Create a getter function bound to a specific object.
+ * Returns a function that can extract values from that object using any property path.
+ * Inverse parameter order of {@link getWith}.
+ *
+ * @param obj - The object to extract values from
+ * @returns A function that accepts a property path and returns the value at that path
+ *
+ * @example
+ * ```ts
+ * const user = {
+ *   name: 'Alice',
+ *   address: { city: 'NYC', zip: '10001' }
+ * }
+ *
+ * const getUserProp = getOn(user)
+ * getUserProp('name') // 'Alice'
+ * getUserProp('address.city') // 'NYC'
+ * getUserProp(['address', 'zip']) // '10001'
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Useful for extracting multiple properties
+ * const config = { api: { url: 'https://api.com', key: 'secret' } }
+ * const getConfig = getOn(config)
+ *
+ * const apiUrl = getConfig('api.url')
+ * const apiKey = getConfig('api.key')
+ * ```
  */
 export const getOn = (obj: Any) => (pathInput: PropertyPathInput): unknown => {
   return _get(normalizePropertyPathInput(pathInput), obj)

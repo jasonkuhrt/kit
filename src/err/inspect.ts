@@ -24,6 +24,10 @@ const makeEnvVarName = (spec: EnvironmentConfigurableOptionSpec) => {
   )
 }
 
+/**
+ * Type helper for inferring option types from environment configurable option specifications.
+ * @template $EnvironmentConfigurableOptions - Array of option specifications
+ */
 export type InferOptions<$EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[]> = Ts.Simplify<
   Arr.ReduceWithIntersection<_InferOptions<$EnvironmentConfigurableOptions>>
 >
@@ -119,10 +123,26 @@ const optionSpecs = define([
   },
 ])
 
+/**
+ * Options for configuring error inspection output.
+ * @property color - Whether to use color in output (default: true)
+ * @property stackTraceColumns - Column count before truncation (default: 120)
+ * @property identColumns - Column count for indentation (default: 4)
+ */
 export type InspectOptions = InferOptions<typeof optionSpecs>
 
+/**
+ * Resolved configuration for error inspection with values and sources.
+ */
 export type InspectConfig = Resolve<typeof optionSpecs>
 
+/**
+ * Format a section title for error output.
+ * @param indent - Indentation string to prepend
+ * @param text - Title text to format
+ * @param config - Inspection configuration
+ * @returns Formatted title string with optional color
+ */
 export const formatTitle = (indent: string, text: string, config: InspectConfig) => {
   const title = `\n${indent}${text.toUpperCase()}\n`
   return config.color.value ? cyan(title) : title
