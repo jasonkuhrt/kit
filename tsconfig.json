@@ -80,6 +80,8 @@
       "#resource/resource": ["./src/resource/$$.ts"],
       "#str": ["./src/str/$.ts"],
       "#str/str": ["./src/str/$$.ts"],
+      "#task": ["./src/task/$.ts"],
+      "#task/task": ["./src/task/$$.ts"],
       "#test": ["./src/test/$.ts"],
       "#test/test": ["./src/test/$$.ts"],
       "#tree": ["./src/tree/$.ts"],
