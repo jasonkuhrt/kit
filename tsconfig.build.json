@@ -3,7 +3,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./build",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "noEmit": false,
+    "rewriteRelativeImportExtensions": true
   },
   "include": ["./src"],
   "exclude": [
