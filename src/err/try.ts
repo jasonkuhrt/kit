@@ -5,7 +5,6 @@ import { Prom } from '#prom'
 import type { AwaitedUnion } from '#prom/prom'
 import { Value } from '#value'
 import type { IsUnknown } from 'type-fest'
-import { catchMaybePromise } from './maybe-promise.ts'
 import { ensure, is } from './type.ts'
 import { wrap, type WrapOptions } from './wrap.ts'
 
@@ -121,9 +120,9 @@ export function tryCatch<returned, thrown>(
   }
 
   // Otherwise treat as function
-  return catchMaybePromise(
+  return Prom.maybeAsyncCatch(
     fnOrPromise,
-    (error) => {
+    (error, _isAsync) => {
       if (predicates.some((predicate) => predicate(error))) {
         return error
       }
@@ -394,7 +393,7 @@ export function tryOrRethrow<$Return>(
   fn: () => $Return,
   wrapper: string | WrapOptions | ((cause: Error) => Error)
 ): $Return extends Promise<any> ? $Return : ReturnType<typeof fn> {
-  return catchMaybePromise(fn, (thrown) => {
+  return Prom.maybeAsyncCatch(fn, (thrown, _isAsync) => {
     const cause = ensure(thrown)
     if (typeof wrapper === 'function') throw wrapper(cause)
     throw wrap(cause, wrapper)

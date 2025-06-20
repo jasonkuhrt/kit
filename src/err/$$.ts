@@ -3,8 +3,6 @@ import { inspect, type InspectOptions } from './inspect.ts'
 
 export * from './inspect.ts'
 
-export * from './maybe-promise.ts'
-
 export * from './stack.ts'
 
 export * from './try.ts'
