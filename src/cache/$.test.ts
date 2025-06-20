@@ -206,14 +206,14 @@ test('memoize cache management methods', () => {
   expect(callCount).toBe(2)
 
   // Clear specific key
-  memoized.clearKey(JSON.stringify([5]))
+  memoized.cache.clearKey(JSON.stringify([5]))
   expect(memoized(5)).toBe(10) // Re-executed
   expect(callCount).toBe(3)
   expect(memoized(7)).toBe(14) // Still cached
   expect(callCount).toBe(3)
 
   // Clear all
-  memoized.clear()
+  memoized.cache.clear()
   expect(memoized(5)).toBe(10) // Re-executed
   expect(memoized(7)).toBe(14) // Re-executed
   expect(callCount).toBe(5)

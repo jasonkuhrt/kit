@@ -119,6 +119,10 @@ export interface MemoizeOptions<fn extends ((...args: any[]) => unknown)> {
  *
  * // Clear all cached data at once
  * cache.clear()
+ *
+ * // Or clear individual function caches
+ * readFile.cache.clear()
+ * parseFile.cache.clearKey(someKey)
  * ```
  */
 /**
@@ -126,14 +130,19 @@ export interface MemoizeOptions<fn extends ((...args: any[]) => unknown)> {
  */
 export type MemoizedFunction<fn extends ((...args: any[]) => unknown)> = fn & {
   /**
-   * Clear the entire cache.
+   * Cache management operations.
    */
-  clear: () => void
+  cache: {
+    /**
+     * Clear the entire cache.
+     */
+    clear: () => void
 
-  /**
-   * Clear a specific cache entry.
-   */
-  clearKey: (key: unknown) => void
+    /**
+     * Clear a specific cache entry.
+     */
+    clearKey: (key: unknown) => void
+  }
 }
 
 // Internal envelope to distinguish between "not cached" and "cached undefined"
@@ -182,8 +191,10 @@ export const memoize = <fn extends ((...args: any[]) => unknown)>(
   }) as MemoizedFunction<fn>
 
   // Add cache management methods
-  memoizedFn.clear = () => cache.clear()
-  memoizedFn.clearKey = (key: unknown) => cache.delete(key)
+  memoizedFn.cache = {
+    clear: () => cache.clear(),
+    clearKey: (key: unknown) => cache.delete(key),
+  }
 
   return memoizedFn
 }
