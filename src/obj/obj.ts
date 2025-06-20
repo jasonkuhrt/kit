@@ -215,6 +215,90 @@ export const getPrivateState = <state extends Any>(obj: Any): state => {
   return descriptor.value
 }
 
+/**
+ * Create a new object with only the specified properties.
+ *
+ * @param obj - The object to pick properties from
+ * @param keys - Array of property keys to include
+ * @returns A new object containing only the specified properties
+ *
+ * @example
+ * ```ts
+ * const user = { name: 'Alice', age: 30, email: 'alice@example.com' }
+ * const publicInfo = pick(user, ['name', 'email'])
+ * // Result: { name: 'Alice', email: 'alice@example.com' }
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Type-safe property selection
+ * interface User {
+ *   id: number
+ *   name: string
+ *   password: string
+ *   email: string
+ * }
+ *
+ * function getPublicUser(user: User) {
+ *   return pick(user, ['id', 'name', 'email'])
+ *   // Type: Pick<User, 'id' | 'name' | 'email'>
+ * }
+ * ```
+ */
+export const pick = <T extends object, K extends keyof T>(
+  obj: T,
+  keys: readonly K[],
+): Pick<T, K> => {
+  const result = {} as Pick<T, K>
+  for (const key of keys) {
+    if (key in obj) {
+      result[key] = obj[key]
+    }
+  }
+  return result
+}
+
+/**
+ * Create a new object with the specified properties removed.
+ *
+ * @param obj - The object to omit properties from
+ * @param keys - Array of property keys to exclude
+ * @returns A new object without the specified properties
+ *
+ * @example
+ * ```ts
+ * const user = { name: 'Alice', age: 30, password: 'secret' }
+ * const safeUser = omit(user, ['password'])
+ * // Result: { name: 'Alice', age: 30 }
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Remove sensitive fields
+ * interface User {
+ *   id: number
+ *   name: string
+ *   password: string
+ *   apiKey: string
+ * }
+ *
+ * function sanitizeUser(user: User) {
+ *   return omit(user, ['password', 'apiKey'])
+ *   // Type: Omit<User, 'password' | 'apiKey'>
+ * }
+ * ```
+ */
+export const omit = <T extends object, K extends keyof T>(
+  obj: T,
+  keys: readonly K[],
+): Omit<T, K> => {
+  const result = { ...obj }
+  for (const key of keys) {
+    delete result[key]
+  }
+  return result as Omit<T, K>
+}
+
 // dprint-ignore
 export type PartialDeep<$Type> =
   $Type extends Array<infer __inner__>                  ? Array<PartialDeep<__inner__>> :
