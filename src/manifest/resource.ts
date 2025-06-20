@@ -18,5 +18,5 @@ export const resource = Resource.create({
   name: `manifest`,
   path: `package.json`,
   codec: Json.codecAs<Manifest>(),
-  emptyValue: {},
+  init: { value: {} },
 })

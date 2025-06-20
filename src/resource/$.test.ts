@@ -24,7 +24,7 @@ describe('Resource with union error handling', () => {
     const resource = Resource.create({
       name: 'test',
       path: testPath,
-      emptyValue: { value: 'default' },
+      init: { value: { value: 'default' } },
     })
 
     const result = await resource.read()
@@ -43,7 +43,7 @@ describe('Resource with union error handling', () => {
     const resource = Resource.create({
       name: 'test',
       path: testPath,
-      emptyValue: { value: 'default' },
+      init: { value: { value: 'default' } },
     })
 
     const result = await resource.read()
@@ -57,7 +57,7 @@ describe('Resource with union error handling', () => {
     const resource = Resource.create({
       name: 'test',
       path: testPath,
-      emptyValue: { value: 'default' },
+      init: { value: { value: 'default' } },
     })
 
     const result = await resource.read()
@@ -68,17 +68,17 @@ describe('Resource with union error handling', () => {
     }
   })
 
-  test('readOrEmpty returns empty value when file missing', async () => {
-    const emptyValue = { value: 'default' }
+  test('readOrEmpty returns init value when file missing', async () => {
+    const initValue = { value: 'default' }
     const resource = Resource.create({
       name: 'test',
       path: testPath,
-      emptyValue,
+      init: { value: initValue },
     })
 
     const result = await resource.readOrEmpty()
 
-    expect(result).toEqual(emptyValue)
+    expect(result).toEqual(initValue)
   })
 
   test('readOrEmpty returns error on decode failure', async () => {
@@ -87,7 +87,7 @@ describe('Resource with union error handling', () => {
     const resource = Resource.create({
       name: 'test',
       path: testPath,
-      emptyValue: { value: 'default' },
+      init: { value: { value: 'default' } },
     })
 
     const result = await resource.readOrEmpty()
@@ -101,7 +101,7 @@ describe('Resource with union error handling', () => {
     const resource = Resource.create({
       name: 'test',
       path: testPath,
-      emptyValue: {},
+      init: { value: {} },
     })
 
     const result = await resource.assertExists()
@@ -113,7 +113,7 @@ describe('Resource with union error handling', () => {
     const resource = Resource.create({
       name: 'test',
       path: testPath,
-      emptyValue: {},
+      init: { value: {} },
     })
 
     const result = await resource.assertExists()
@@ -125,7 +125,7 @@ describe('Resource with union error handling', () => {
     const resource = Resource.create({
       name: 'test',
       path: testPath,
-      emptyValue: { value: 'default' },
+      init: { value: { value: 'default' } },
     })
 
     const result = await resource.read()
@@ -138,11 +138,11 @@ describe('Resource with union error handling', () => {
     expect(Resource.Errors.isNotFound(result)).toBe(true)
   })
 
-  test('update creates file with empty value if missing', async () => {
+  test('update creates file with init value if missing and auto: true', async () => {
     const resource = Resource.create<'test', { count: number }>({
       name: 'test',
       path: testPath,
-      emptyValue: { count: 0 },
+      init: { value: { count: 0 }, auto: true },
     })
 
     const result = await resource.update(data => {
@@ -162,7 +162,7 @@ describe('Resource with union error handling', () => {
     const resource = Resource.create({
       name: 'test',
       path: testPath,
-      emptyValue: { value: 'default' },
+      init: { value: { value: 'default' } },
     })
 
     // First read loads from disk
@@ -193,7 +193,7 @@ describe('Resource with union error handling', () => {
         name: 'users',
         path: testPath,
         codec: Codec.fromZod(UserSchema),
-        emptyValue: { name: 'Default', age: 18 },
+        init: { value: { name: 'Default', age: 18 } },
       })
 
       const result = await resource.read()
@@ -212,7 +212,7 @@ describe('Resource with union error handling', () => {
         name: 'users',
         path: testPath,
         codec: Codec.fromZod(UserSchema),
-        emptyValue: { name: 'Default', age: 18 },
+        init: { value: { name: 'Default', age: 18 } },
       })
 
       const result = await resource.read()
@@ -228,7 +228,7 @@ describe('Resource with union error handling', () => {
     const resource = Resource.create({
       name: 'test',
       path: testPath,
-      emptyValue: { value: 'default' },
+      init: { value: { value: 'default' } },
     })
 
     // First read loads from disk
@@ -238,7 +238,7 @@ describe('Resource with union error handling', () => {
     // Delete file
     await Fs.remove(testPath)
 
-    // readOrEmpty should return cached value, not empty value
+    // readOrEmpty should return cached value, not init value
     const result2 = await resource.readOrEmpty()
     expect(result2).toEqual(data) // Shared cache returns the cached data
 
@@ -255,7 +255,7 @@ describe('Resource with union error handling', () => {
     const resource = Resource.create({
       name: 'test',
       path: testPath,
-      emptyValue: { value: 'default' },
+      init: { value: { value: 'default' } },
     })
 
     // Read and cache
@@ -268,5 +268,59 @@ describe('Resource with union error handling', () => {
     // Read should return new data from disk
     const result2 = await resource.read()
     expect(result2).toEqual(data2)
+  })
+
+  describe('auto initialization option', () => {
+    type TestData = { count: number }
+    test('update with auto: false returns error for missing file', async () => {
+      const resource = Resource.create<'test', TestData>({
+        name: 'test',
+        path: testPath,
+        init: { value: { count: 0 }, auto: false },
+      })
+
+      const result = await resource.update(data => {
+        data.count = 5
+      })
+
+      expect(Resource.Errors.isNotFound(result)).toBe(true)
+    })
+
+    test('update with auto: true creates missing file', async () => {
+      const resource = Resource.create<'test', TestData>({
+        name: 'test',
+        path: testPath,
+        init: { value: { count: 0 }, auto: true },
+      })
+
+      const result = await resource.update(data => {
+        data.count = 5
+      })
+
+      expect(result).toBeUndefined()
+
+      const content = await Fs.read(testPath)
+      expect(JSON.parse(content!)).toEqual({ count: 5 })
+    })
+
+    test('update with auto: false works when file exists', async () => {
+      const initialData = { count: 10 }
+      await Fs.write({ path: testPath, content: JSON.stringify(initialData) })
+
+      const resource = Resource.create<'test', TestData>({
+        name: 'test',
+        path: testPath,
+        init: { value: { count: 0 }, auto: false },
+      })
+
+      const result = await resource.update(data => {
+        data.count = 20
+      })
+
+      expect(result).toBeUndefined()
+
+      const content = await Fs.read(testPath)
+      expect(JSON.parse(content!)).toEqual({ count: 20 })
+    })
   })
 })

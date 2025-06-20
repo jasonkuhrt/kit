@@ -29,7 +29,7 @@ import * as Errors from './errors.ts'
  * const config = Resource.create({
  *   name: 'app-config',
  *   path: './config.json',
- *   emptyValue: { theme: 'dark', lang: 'en' }
+ *   init: { value: { theme: 'dark', lang: 'en' } }
  * })
  *
  * // Read with error handling
@@ -81,11 +81,11 @@ export interface Resource<$Name extends string = string, $Type = any> {
   read: (dir?: string) => Promise<$Type | Errors.ResourceErrorAny>
 
   /**
-   * Read the resource from disk, returning the empty value if not found.
-   * This is useful for resources that should be auto-initialized.
+   * Read the resource from disk, returning the init value if not found.
+   * This is useful when you want to handle missing files gracefully without errors.
    *
    * @param dir - Optional directory to prepend to the resource path
-   * @returns The parsed data, empty value if not found, or decode error
+   * @returns The parsed data, init value if not found, or decode error
    *
    * @example
    * ```ts
@@ -118,22 +118,40 @@ export interface Resource<$Name extends string = string, $Type = any> {
 
   /**
    * Update the resource by reading it, applying an updater function, and writing it back.
-   * Uses readOrEmpty so missing files are initialized with empty value before updating.
+   * Behavior for missing files depends on the `init.auto` config option:
+   * - When `init.auto: false` (default): Uses read so missing files return ResourceErrorNotFound
+   * - When `init.auto: true`: Uses readOrEmpty so missing files are initialized with init value
    *
-   * @param updater - Function to modify the data (can be async)
+   * @param updater - Function that receives the current data and mutates it in-place.
+   *   The function should modify the received data object directly rather than returning a new value.
+   *   Can be async if needed.
    * @param dir - Optional directory to prepend to the resource path
    * @param hard - If true, ensures data is synced to disk (fsync)
-   * @returns void on success, or ResourceErrorDecodeFailed if the file exists but is invalid
+   * @returns void on success, or a resource error:
+   *   - ResourceErrorNotFound if autoInit is false and the file doesn't exist
+   *   - ResourceErrorDecodeFailed if the file exists but cannot be decoded (e.g., invalid JSON)
+   *   - ResourceErrorValidationFailed if the file content fails schema validation
    *
    * @example
    * ```ts
-   * // Update existing or create new with empty value
+   * // With auto: false (default) - requires file to exist
    * const result = await resource.update(data => {
+   *   // Mutate the data object directly - don't return anything
    *   data.lastUpdated = Date.now()
    *   data.counter++
+   *   data.settings.theme = 'dark'
    * })
    *
    * if (Resource.Errors.isDecodeFailed(result)) {
+   *   console.error('Existing file has invalid format')
+   * }
+   *
+   * // With auto: true - creates missing files
+   * const autoResult = await autoResource.update(data => {
+   *   data.counter++
+   * })
+   *
+   * if (Resource.Errors.isDecodeFailed(autoResult)) {
    *   console.error('Existing file has invalid format')
    * }
    * ```
@@ -142,11 +160,11 @@ export interface Resource<$Name extends string = string, $Type = any> {
     updater: (data: $Type) => void | Promise<void>,
     dir?: string,
     hard?: boolean,
-  ) => Promise<void | Errors.ResourceErrorDecodeFailed>
+  ) => Promise<void | Errors.ResourceErrorAny>
 
   /**
-   * Ensure the resource file exists, creating it with the empty value if it doesn't.
-   * This is useful for initialization routines.
+   * Ensure the resource file exists, creating it with the init value if it doesn't.
+   * This is useful for initialization routines where you want to guarantee the file exists.
    *
    * @param dir - Optional directory to prepend to the resource path
    *
@@ -204,17 +222,44 @@ export interface ResourceConfig<$Name extends string, $Type> {
   codec?: Codec.Codec<$Type>
 
   /**
-   * The empty value to use when the resource doesn't exist.
-   * Can be a value or a factory function for dynamic defaults.
+   * Initialization configuration for the resource.
+   * Controls the default value and auto-initialization behavior.
    *
    * @example
    * ```ts
-   * emptyValue: { version: 1, entries: [] }
-   * // or
-   * emptyValue: () => ({ id: uuid(), created: Date.now() })
+   * // Simple value with auto-init disabled (default)
+   * init: {
+   *   value: { version: 1, entries: [] }
+   * }
+   *
+   * // Factory function for dynamic defaults
+   * init: {
+   *   value: () => ({ id: uuid(), created: Date.now() })
+   * }
+   *
+   * // Enable auto-initialization
+   * init: {
+   *   value: { theme: 'dark' },
+   *   auto: true
+   * }
    * ```
    */
-  emptyValue: Value.LazyMaybe<NoInfer<$Type>>
+  init: {
+    /**
+     * The value to use when initializing the resource.
+     * Can be a value or a factory function for dynamic defaults.
+     */
+    value: Value.LazyMaybe<NoInfer<$Type>>
+
+    /**
+     * Whether to automatically initialize missing files.
+     * When true, operations like `update` will create missing files with the init value.
+     * When false (default), operations will return errors for missing files.
+     *
+     * @default false
+     */
+    auto?: boolean
+  }
 }
 
 /**
@@ -236,7 +281,7 @@ export interface ResourceConfig<$Name extends string, $Type> {
  * const config = Resource.create({
  *   name: 'app-config',
  *   path: './config.json',
- *   emptyValue: { theme: 'dark', debug: false }
+ *   init: { value: { theme: 'dark', debug: false } }
  * })
  *
  * // With Zod validation
@@ -250,7 +295,7 @@ export interface ResourceConfig<$Name extends string, $Type> {
  *   name: 'users',
  *   path: './data/users.json',
  *   codec: Codec.fromZod(z.array(UserSchema)),
- *   emptyValue: []
+ *   init: { value: [] }
  * })
  *
  * // Handle errors appropriately
@@ -269,7 +314,8 @@ export const create = <name extends string, type>(
   config: ResourceConfig<name, type>,
 ): Resource<name, type> => {
   const codec = config.codec ?? (Json.codec as Codec.Codec<type>)
-  const emptyValue = Value.resolveLazyFactory(config.emptyValue)
+  const initValue = Value.resolveLazyFactory(config.init.value)
+  const autoInit = config.init.auto ?? false
 
   // Shared cache for all read operations
   const sharedCache = new Map<unknown, unknown>()
@@ -301,7 +347,7 @@ export const create = <name extends string, type>(
     const content = await Fs.read(filePath)
 
     if (content === null) {
-      return emptyValue()
+      return initValue()
     }
 
     try {
@@ -350,7 +396,7 @@ export const create = <name extends string, type>(
       const filePath = Path.ensureAbsoluteWith(dir)(config.path)
       const exists = await Fs.exists(filePath)
       if (!exists) {
-        await resource.write(emptyValue(), dir)
+        await resource.write(initValue(), dir)
       }
     },
 
@@ -363,9 +409,9 @@ export const create = <name extends string, type>(
     },
 
     update: async (updater, dir, hard) => {
-      const result = await resource.readOrEmpty(dir)
+      const result = autoInit ? await resource.readOrEmpty(dir) : await resource.read(dir)
 
-      if (result instanceof Errors.ResourceErrorDecodeFailed) {
+      if (Errors.isResourceError(result)) {
         return result
       }
 
