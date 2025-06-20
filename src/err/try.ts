@@ -120,13 +120,15 @@ export function tryCatch<returned, thrown>(
   }
 
   // Otherwise treat as function
-  return Prom.maybeAsyncCatch(
+  return Prom.maybeAsync(
     fnOrPromise,
-    (error, _isAsync) => {
-      if (predicates.some((predicate) => predicate(error))) {
-        return error
-      }
-      throw error
+    {
+      catch: (error, _isAsync) => {
+        if (predicates.some((predicate) => predicate(error))) {
+          return error
+        }
+        throw error
+      },
     },
   )
 }
@@ -393,11 +395,16 @@ export function tryOrRethrow<$Return>(
   fn: () => $Return,
   wrapper: string | WrapOptions | ((cause: Error) => Error)
 ): $Return extends Promise<any> ? $Return : ReturnType<typeof fn> {
-  return Prom.maybeAsyncCatch(fn, (thrown, _isAsync) => {
-    const cause = ensure(thrown)
-    if (typeof wrapper === 'function') throw wrapper(cause)
-    throw wrap(cause, wrapper)
-  }) as any
+  return Prom.maybeAsync(
+    fn,
+    {
+      catch: (thrown, _isAsync) => {
+        const cause = ensure(thrown)
+        if (typeof wrapper === 'function') throw wrapper(cause)
+        throw wrap(cause, wrapper)
+      },
+    },
+  ) as any
 }
 
 /**

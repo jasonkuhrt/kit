@@ -164,15 +164,20 @@ export const memoize = <fn extends ((...args: any[]) => unknown)>(
     const result = func(...args)
 
     // Handle successful results (both sync and async)
-    return Prom.maybeAsyncThen(result, (resultResolved) => {
-      // Cache the result if:
-      // 1. It's not an Error instance, OR
-      // 2. It IS an Error instance AND cacheErrors is true
-      if (!Err.is(resultResolved) || cacheErrors) {
-        cache.set(cacheKey, { value: resultResolved })
-      }
-      return resultResolved
-    })
+    return Prom.maybeAsync(
+      () => result,
+      {
+        then: (resultResolved) => {
+          // Cache the result if:
+          // 1. It's not an Error instance, OR
+          // 2. It IS an Error instance AND cacheErrors is true
+          if (!Err.is(resultResolved) || cacheErrors) {
+            cache.set(cacheKey, { value: resultResolved })
+          }
+          return resultResolved
+        },
+      },
+    )
   }) as MemoizedFunction<fn>
 
   // Add cache management methods

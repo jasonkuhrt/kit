@@ -84,67 +84,94 @@ export type AwaitedUnion<$MaybePromise, $Additional> =
     : $MaybePromise | $Additional
 
 /**
+ * Options for handling values that might be promises.
+ */
+export interface MaybeAsyncHandlers<T, R = T, E = unknown> {
+  /**
+   * Handler for successful values (sync or async).
+   */
+  then?: (value: T) => R
+
+  /**
+   * Handler for errors (sync or async).
+   * @param error - The caught error
+   * @param isAsync - Whether the error occurred asynchronously
+   */
+  catch?: (error: unknown, isAsync: boolean) => E
+}
+
+/**
  * Handle a function that might return a promise or a regular value,
- * executing error handling in both sync and async cases.
+ * with unified handlers for both sync and async cases.
  *
  * @param fn - Function to execute that might return a promise
- * @param onError - Error handler that receives the caught error and isAsync flag
- * @returns The result of fn if successful, or the result of onError if it fails
+ * @param handlers - Object with then/catch handlers
+ * @returns The result, potentially wrapped in a Promise
  *
  * @example
  * ```ts
- * // Throwing case:
- * return maybeAsyncCatch(fn, (error, isAsync) => {
- *   throw new Error(`Failed ${isAsync ? 'async' : 'sync'}`, { cause: error })
- * })
- *
- * // Returning case:
- * const result = await maybeAsyncCatch(
+ * // Basic usage
+ * const result = maybeAsync(
  *   () => fetchData(),
- *   (error, isAsync) => ({ success: false, error, isAsync })
+ *   {
+ *     then: (data) => processData(data),
+ *     catch: (error) => ({ success: false, error })
+ *   }
+ * )
+ *
+ * // Just error handling
+ * const safeResult = maybeAsync(
+ *   () => riskyOperation(),
+ *   {
+ *     catch: (error, isAsync) => {
+ *       console.error(`Failed ${isAsync ? 'async' : 'sync'}:`, error)
+ *       return null
+ *     }
+ *   }
+ * )
+ *
+ * // Just success handling
+ * const transformed = maybeAsync(
+ *   () => getValue(),
+ *   {
+ *     then: (value) => value.toUpperCase()
+ *   }
  * )
  * ```
  */
-export function maybeAsyncCatch<T, E>(
+export function maybeAsync<T, R = T, E = unknown>(
   fn: () => T,
-  onError: (error: unknown, isAsync: boolean) => E,
-): T extends Promise<infer U> ? Promise<U | E> : T | E {
+  handlers: MaybeAsyncHandlers<T extends Promise<infer U> ? U : T, R, E> = {},
+): T extends Promise<infer U> ? Promise<R | U | E> : R | T | E {
   try {
     const result = fn()
 
     if (isShape(result)) {
-      return (result as any).catch((error: unknown) => onError(error, true)) as any
+      // Handle async result
+      let promiseChain = result as any
+
+      if (handlers.then) {
+        promiseChain = promiseChain.then(handlers.then)
+      }
+
+      if (handlers.catch) {
+        promiseChain = promiseChain.catch((error: unknown) => handlers.catch!(error, true))
+      }
+
+      return promiseChain as any
+    }
+
+    // Handle sync result
+    if (handlers.then) {
+      return handlers.then(result as any) as any
     }
 
     return result as any
   } catch (error) {
-    return onError(error, false) as any
+    // Handle sync error
+    if (handlers.catch) {
+      return handlers.catch(error, false) as any
+    }
+    throw error
   }
-}
-
-/**
- * Handle a value that might be a promise or a regular value,
- * executing success handling in both sync and async cases.
- *
- * @param value - Value that might be a promise
- * @param onSuccess - Success handler that receives the resolved value
- * @returns The result of onSuccess
- *
- * @example
- * ```ts
- * const result = thenMaybePromise(
- *   fetchData(),
- *   (data) => processData(data)
- * )
- * ```
- */
-export function maybeAsyncThen<T, R>(
-  value: T,
-  onSuccess: (value: T extends Promise<infer U> ? U : T) => R,
-): T extends Promise<any> ? Promise<R> : R {
-  if (isShape(value)) {
-    return (value as any).then(onSuccess) as any
-  }
-
-  return onSuccess(value as any) as any
 }
