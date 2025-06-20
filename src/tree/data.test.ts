@@ -1,7 +1,7 @@
-import { Test } from '#test/index.js'
-import * as fc from 'fast-check'
+import { Test } from '#test'
+import fc from 'fast-check'
 import { describe, expect, test } from 'vitest'
-import { isLeaf, Node } from './data.js'
+import { isLeaf, Node } from './data.ts'
 
 describe('Node', () => {
   test('creates a tree node', () => {

@@ -1,9 +1,9 @@
-import { Test } from '#test/index.js'
-import * as fc from 'fast-check'
+import { Test } from '#test'
+import fc from 'fast-check'
 import { describe, expect, test } from 'vitest'
-import { arbitrary } from './arbitrary.js'
-import { Node } from './data.js'
-import { count, depth, every, find, leaves, path, pathTo, some, visit } from './queries.js'
+import { arbitrary } from './arbitrary.ts'
+import { Node } from './data.ts'
+import { count, depth, every, find, leaves, path, pathTo, some, visit } from './queries.ts'
 
 const sampleTree = Node('root', [
   Node('a', [

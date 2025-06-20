@@ -1,6 +1,6 @@
-import { Err } from '#err/index.js'
-import * as NodeFs from '#platform:fs/fs.js'
-import { isNotFoundError } from './error.js'
+import { Err } from '#err'
+import * as NodeFs from '#platform:fs/fs'
+import { isNotFoundError } from './error.ts'
 
 /**
  * Check if a file or directory exists.

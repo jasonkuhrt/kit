@@ -1,4 +1,4 @@
-import { Fn } from '#fn/index.js'
+import { Fn } from '#fn'
 
 /**
  * Negate a boolean value.

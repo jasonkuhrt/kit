@@ -1,4 +1,4 @@
-import { isShape as Obj_isShape } from '#obj/obj.js'
+// import { isShape as Obj_isShape } from '#obj/obj' // Temporarily disabled for migration
 
 /**
  * Type representing a Promise of unknown type.
@@ -50,11 +50,15 @@ export type Maybe<$Type> = $Type | Promise<$Type>
  * isShape({}) // false
  * ```
  */
-export const isShape = Obj_isShape<AnyAny>({
-  then: `function`, // oxlint-disable-line
-  catch: `function`,
-  finally: `function`,
-})
+export const isShape = (value: unknown): value is AnyAny => {
+  return (
+    typeof value === 'object'
+    && value !== null
+    && typeof (value as any).then === 'function'
+    && typeof (value as any).catch === 'function'
+    && typeof (value as any).finally === 'function'
+  )
+}
 
 /**
  * Type that adds an additional type to a potentially promised union.

@@ -1,9 +1,9 @@
-import { Fn } from '#fn/index.js'
-import { property } from '#test/test.js'
-import * as fc from 'fast-check'
+import { Fn } from '#fn'
+import { Test } from '#test'
+import fc from 'fast-check'
 import { expect, expectTypeOf, test } from 'vitest'
 
-property('returns a function that always returns the initial value', fc.anything(), (value) => {
+Test.property('returns a function that always returns the initial value', fc.anything(), (value) => {
   const constantFn = Fn.constant(value)
   // Call multiple times to ensure consistency
   expect(constantFn()).toBe(value)
@@ -11,7 +11,7 @@ property('returns a function that always returns the initial value', fc.anything
   expect(constantFn()).toBe(value)
 })
 
-property(
+Test.property(
   'preserves reference equality for objects',
   fc.oneof(fc.object(), fc.array(fc.anything())),
   (value) => {
@@ -23,7 +23,7 @@ property(
   },
 )
 
-property(
+Test.property(
   'returned function is pure (no arguments affect output)',
   fc.anything(),
   fc.array(fc.anything(), { minLength: 1, maxLength: 5 }),

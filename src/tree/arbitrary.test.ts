@@ -1,9 +1,9 @@
-import { Test } from '#test/index.js'
-import * as fc from 'fast-check'
+import { Test } from '#test'
+import fc from 'fast-check'
 import { describe, expect } from 'vitest'
-import { arbitrary, arbitraryShapes } from './arbitrary.js'
-import { Node } from './data.js'
-import { count, depth } from './queries.js'
+import { arbitrary, arbitraryShapes } from './arbitrary.ts'
+import { Node } from './data.ts'
+import { count, depth } from './queries.ts'
 
 describe('arbitrary', () => {
   Test.property(

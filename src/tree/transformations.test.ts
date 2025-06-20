@@ -1,9 +1,9 @@
-import { Test } from '#test/index.js'
-import * as fc from 'fast-check'
+import { Test } from '#test'
+import fc from 'fast-check'
 import { describe, expect, test } from 'vitest'
-import { arbitrary } from './arbitrary.js'
-import { Node } from './data.js'
-import { filter, map, merge, prune, reduce, sort, updateAt } from './transformations.js'
+import { arbitrary } from './arbitrary.ts'
+import { Node } from './data.ts'
+import { filter, map, merge, prune, reduce, sort, updateAt } from './transformations.ts'
 
 const sampleTree = Node('root', [
   Node('a', [

@@ -1,10 +1,10 @@
-import { Err } from '#err/index.js'
-import type { Language } from '#language/index.js'
-import { Path } from '#path/index.js'
-import * as NodeFs from '#platform:fs/fs.js'
-import { removeMany } from '../delete.js'
-import { makeDirectory } from '../directory.js'
-import type { FileWriteInput } from '../fs.js'
+import { Err } from '#err'
+import type { Language } from '#language'
+import { Path } from '#path'
+import * as NodeFs from '#platform:fs/fs'
+import { removeMany } from '../delete.ts'
+import { makeDirectory } from '../directory.ts'
+import type { FileWriteInput } from '../fs.ts'
 
 /**
  * Write a string to a file.

@@ -1,6 +1,6 @@
-import { Fn } from '#fn/index.js'
+import { Fn } from '#fn'
 
-export * from './type.js'
+export * from './type.ts'
 
 // Strict Equality Operator
 

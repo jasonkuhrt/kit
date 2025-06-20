@@ -1,8 +1,8 @@
-import { Fn } from '#fn/index.js'
-import { Null } from '#null/index.js'
-import { removeSurroundingSpaceRegular } from './replace.js'
-import { isTemplateStringsArray } from './template.js'
-import { unlines } from './text.js'
+import { Fn } from '#fn'
+import { Null } from '#null'
+import { removeSurroundingSpaceRegular } from './replace.ts'
+import { isTemplateStringsArray } from './template.ts'
+import { unlines } from './text.ts'
 
 /**
  * Default render function for string builders.

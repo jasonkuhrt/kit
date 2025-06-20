@@ -9,11 +9,11 @@ export interface Status {
   description: string
 }
 
-import type * as StatusesInformational from './1xx-informational.js'
-import type * as StatusesSuccessful from './2xx-successful.js'
-import type * as StatusesRedirection from './3xx-redirection.js'
-import type * as StatusesClientError from './4xx-client-error.js'
-import type * as StatusesServerError from './5xx-server-error.js'
+import type * as StatusesInformational from './1xx-informational.ts'
+import type * as StatusesSuccessful from './2xx-successful.ts'
+import type * as StatusesRedirection from './3xx-redirection.ts'
+import type * as StatusesClientError from './4xx-client-error.ts'
+import type * as StatusesServerError from './5xx-server-error.ts'
 
 export namespace Code {
   export type Informational = typeof StatusesInformational[keyof typeof StatusesInformational]['code']

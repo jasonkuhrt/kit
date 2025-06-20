@@ -1,4 +1,4 @@
-import { Prom } from '#prom/index.js'
+import { Prom } from '#prom'
 
 /**
  * Handle a function that might return a promise or a regular value,

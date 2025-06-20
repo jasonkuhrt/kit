@@ -1,5 +1,5 @@
-import { isntTypeWith } from '#eq/type.js'
-import { isTypeWith } from '#eq/type.js'
+import { isntTypeWith } from '#eq/type'
+import { isTypeWith } from '#eq/type'
 import { expect, expectTypeOf, test } from 'vitest'
 
 const x = null as null | 1 | 2

@@ -1,4 +1,4 @@
-import { isntTypeWith, isTypeWith } from '#eq/type.js'
+import { isntTypeWith, isTypeWith } from '#eq/type'
 
 /**
  * Checks if a value is `undefined`.

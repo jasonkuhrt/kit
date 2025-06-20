@@ -1,6 +1,6 @@
-import { Json } from '#json/index.js'
-import { Resource } from '#resource/index.js'
-import type { Manifest } from './manifest.js'
+import { Json } from '#json'
+import { Resource } from '#resource'
+import type { Manifest } from './$$.ts'
 
 /**
  * Resource definition for reading and writing package.json manifest files.

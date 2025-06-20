@@ -1,4 +1,4 @@
-import { Arr } from '#arr/index.js'
+import { Arr } from '#arr'
 
 /**
  * Generates a random name in the format "adjective color animal".

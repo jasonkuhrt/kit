@@ -1,8 +1,8 @@
-import { sure } from '#arr/arr.js'
-import { curry, flipCurried } from '#fn/curry.js'
-import { Empty } from '#str/type.js'
-import { spaceNoBreak, spaceRegular } from './char/char.js'
-import type { PatternsInput } from './match.js'
+import { sure } from '#arr/arr'
+import { curry, flipCurried } from '#fn/curry'
+import { Empty } from '#str/type'
+import { spaceNoBreak, spaceRegular } from './char/char.ts'
+import type { PatternsInput } from './match.ts'
 
 //
 //

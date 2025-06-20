@@ -1,9 +1,9 @@
-import { makeDirectory } from '#fs/directory.js'
-import type { Language } from '#language/index.js'
-import { Obj } from '#obj/index.js'
-import { Path } from '#path/index.js'
-import * as NodeFs from '#platform:fs/fs.js'
-import { Str } from '#str/index.js'
+import { makeDirectory } from '#fs/directory'
+import type { Language } from '#language'
+import { Obj } from '#obj'
+import { Path } from '#path'
+import * as NodeFs from '#platform:fs/fs'
+import { Str } from '#str'
 
 /**
  * Default options for directory copying operations.

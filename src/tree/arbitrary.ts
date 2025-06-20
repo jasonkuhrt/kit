@@ -1,5 +1,5 @@
-import * as fc from 'fast-check'
-import { Node } from './data.js'
+import fc from 'fast-check'
+import { Node } from './data.ts'
 
 /**
  * Configuration options for generating arbitrary trees.
@@ -43,7 +43,7 @@ export interface ArbitraryOptions {
  *
  * @example
  * ```ts
- * import * as fc from 'fast-check'
+ * import fc from 'fast-check'
  * import { arbitrary, Node } from '@wollybeard/kit/tree'
  *
  * // Generate trees of strings

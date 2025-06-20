@@ -1,7 +1,7 @@
-import type { Json } from '#json/index.js'
+import type { Json } from '#json'
 import { parse } from 'jsonc-parser'
-import type { FileWriteInput } from '../types.js'
-import { read, writeString } from './string.js'
+import type { FileWriteInput } from '../types.ts'
+import { read, writeString } from './string.ts'
 
 /**
  * Read a JSON file from the filesystem.

@@ -1,9 +1,9 @@
-import type { Prom } from '#prom/index.js'
+import type { Prom } from '#prom'
 
-export * from '#platform:language/colorize.js'
-export * from '#platform:language/inspect.js'
-export * from '#platform:language/process.js'
-export * from './never.js'
+export * from '#platform:language/colorize'
+export * from '#platform:language/inspect'
+export * from '#platform:language/process'
+export * from './never.ts'
 
 // typeof
 

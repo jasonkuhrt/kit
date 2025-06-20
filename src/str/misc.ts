@@ -1,5 +1,5 @@
-import { title } from '#str/case/case.js'
-import { Url } from '#url/index.js'
+import { title } from '#str/case/case'
+import { Url } from '#url'
 
 /**
  * Convert a URL slug to title case.

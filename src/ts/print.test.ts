@@ -1,4 +1,4 @@
-import { Ts } from '#ts/index.js'
+import { Ts } from '#ts'
 import { describe, expectTypeOf, test } from 'vitest'
 
 // Alias for Ts.Print to make test cases less verbose

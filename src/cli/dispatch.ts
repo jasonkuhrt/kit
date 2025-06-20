@@ -1,10 +1,10 @@
-import { Arr } from '#arr/index.js'
-import { Fs } from '#fs/index.js'
-import { Language } from '#language/index.js'
-import { Path } from '#path/index.js'
-import { Str } from '#str/index.js'
-import { parseArgvOrThrow } from './argv.js'
-import { type CommandTarget, getCommandTarget } from './commend-target.js'
+import { Arr } from '#arr'
+import { Fs } from '#fs'
+import { Language } from '#language'
+import { Path } from '#path'
+import { Str } from '#str'
+import { parseArgvOrThrow } from './argv.ts'
+import { type CommandTarget, getCommandTarget } from './commend-target.ts'
 
 /**
  * Dispatches CLI commands by discovering and executing command modules.
@@ -23,8 +23,8 @@ import { type CommandTarget, getCommandTarget } from './commend-target.js'
  * //   $default.js
  *
  * await dispatch('/path/to/commands')
- * // If argv is ['node', 'cli.js', 'build'], imports and executes build.js
- * // If argv is ['node', 'cli.js'], imports and executes $default.js
+ * // If argv is ['node', 'cli.ts', 'build'], imports and executes build.js
+ * // If argv is ['node', 'cli.ts'], imports and executes $default.js
  */
 export const dispatch = async (commandsDirPath: string) => {
   const commandPointers = await discoverCommandPointers(commandsDirPath)
@@ -73,9 +73,9 @@ const getModuleName = (commandTarget: CommandTarget): string => {
  * const commands = await discoverCommandPointers('/path/to/commands')
  * // Returns:
  * // [
- * //   { name: 'build', filePath: '/path/to/commands/build.js' },
+ * //   { name: 'build', filePath: '/path/to/commands/build.ts' },
  * //   { name: 'test', filePath: '/path/to/commands/test.ts' },
- * //   { name: '$default', filePath: '/path/to/commands/$default.js' }
+ * //   { name: '$default', filePath: '/path/to/commands/$default.ts' }
  * // ]
  */
 export const discoverCommandPointers = async (

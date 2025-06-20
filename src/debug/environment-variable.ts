@@ -1,5 +1,5 @@
-import { Arr } from '#arr/index.js'
-import { Language } from '#language/index.js'
+import { Arr } from '#arr'
+import { Language } from '#language'
 
 export const enVarName = `DEBUG`
 

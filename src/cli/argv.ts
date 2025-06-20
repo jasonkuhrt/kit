@@ -1,5 +1,5 @@
-import { Arr } from '#arr/index.js'
-import { Str } from '#str/index.js'
+import { Arr } from '#arr'
+import { Str } from '#str'
 
 // Process argv
 
@@ -19,7 +19,7 @@ export type ProcessArgv = [string, ...string[]]
  * @returns true if the value is a valid ProcessArgv array
  *
  * @example
- * isProcessArgvLoose(['node', 'script.js', '--flag']) // true
+ * isProcessArgvLoose(['node', 'script.ts', '--flag']) // true
  * isProcessArgvLoose(['node']) // true (valid in REPL)
  * isProcessArgvLoose([]) // false (no executable path)
  * isProcessArgvLoose(['node', 123]) // false (non-string element)
@@ -51,10 +51,10 @@ export interface Argv {
  *
  * @example
  * // Normal CLI execution
- * parseArgvOrThrow(['node', 'script.js', '--verbose', 'input.txt'])
+ * parseArgvOrThrow(['node', 'script.ts', '--verbose', 'input.txt'])
  * // Returns: {
  * //   execPath: 'node',
- * //   scriptPath: 'script.js',
+ * //   scriptPath: 'script.ts',
  * //   args: ['--verbose', 'input.txt']
  * // }
  *

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { wrap, wrapOn, wrapWith } from './wrap.js'
+import { wrap, wrapOn, wrapWith } from './wrap.ts'
 
 describe('wrap', () => {
   test('wraps error with message', () => {

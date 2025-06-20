@@ -12,15 +12,15 @@
  * ```
  */
 
-import { isntEmpty, randomIndex } from '#arr/arr.js'
-import type { Rec } from '#rec/index.js'
+import { isntEmpty, randomIndex } from '#arr/arr'
+import type { Rec } from '#rec'
 import {
   type InferShapeFromPropertyPath,
   normalizePropertyPathInput,
   type PropertyPath,
   type PropertyPathInput,
-} from './path.js'
-import { type Any, is } from './type.js'
+} from './path.ts'
+import { type Any, is } from './type.ts'
 
 /**
  * Create a getter function for a specific property path.

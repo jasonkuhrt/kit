@@ -1,4 +1,4 @@
-import * as MimeType from './mime-type.js'
+import * as MimeType from './mime-type.ts'
 
 /**
  * HTTP Accept header name.

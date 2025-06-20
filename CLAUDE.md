@@ -47,8 +47,12 @@ pnpm release        # Release stable version with dripip
 
 The project uses a highly modular architecture with 30+ specialized modules in `src/`. Each module follows these patterns:
 
-1. **File Structure**: `src/module-name/module-name.ts` + `src/module-name/index.ts`
-2. **Internal Imports**: Use `#` imports (e.g., `import { Fn } from '#fn/index.js'`)
+1. **File Structure**: `src/module-name/{$.ts, $$.ts, *.ts, $.test.ts}`
+   - `$$.ts` - Barrel file exporting all functions/types
+   - `$.ts` - Namespace file exporting the module namespace
+   - `*.ts` - Implementation files
+   - `$.test.ts` - Module tests
+2. **Internal Imports**: Use `#` imports (e.g., `import { Fn } from '#fn'`)
 3. **Namespace Exports**: All modules export as PascalCase namespaces
 4. **Currying Pattern**: Functions support currying with `*On` and `*With` variants
 5. **Universal Operations**: Consistent operations across modules (merge, by, is)

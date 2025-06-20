@@ -1,6 +1,6 @@
-import { Bool } from '#bool/index.js'
-import { Fn } from '#fn/index.js'
-import { Pat } from '#pat/index.js'
+import { Bool } from '#bool'
+import { Fn } from '#fn'
+import { Pat } from '#pat'
 
 //
 //
@@ -135,7 +135,7 @@ export const find = <value>(arr: value[], predicate: Bool.PredicateMaybe<value>)
  * ```
  */
 export const findFirstMatching = <value>(arr: value[], pattern: Pat.Pattern<value>): value | undefined => {
-  return arr.find(Pat.isMatchWith(pattern))
+  return arr.find(Pat.isMatchOn(pattern))
 }
 
 export type Maybe<$Type> = $Type | $Type[]

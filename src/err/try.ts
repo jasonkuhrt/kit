@@ -1,13 +1,13 @@
-import type { Arr } from '#arr/index.js'
-import type { Bool } from '#bool/index.js'
-import { Fn } from '#fn/index.js'
-import { Prom } from '#prom/index.js'
-import type { AwaitedUnion } from '#prom/prom.js'
-import { Value } from '#value/index.js'
+import type { Arr } from '#arr'
+import type { Bool } from '#bool'
+import { Fn } from '#fn'
+import { Prom } from '#prom'
+import type { AwaitedUnion } from '#prom/prom'
+import { Value } from '#value'
 import type { IsUnknown } from 'type-fest'
-import { catchMaybePromise } from './maybe-promise.js'
-import { ensure, is } from './type.js'
-import { wrap, type WrapOptions } from './wrap.js'
+import { catchMaybePromise } from './maybe-promise.ts'
+import { ensure, is } from './type.ts'
+import { wrap, type WrapOptions } from './wrap.ts'
 
 /**
  * Helper type for tryOr that enforces sync fallback when main is sync.

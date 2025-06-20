@@ -8,6 +8,14 @@ Kit is a comprehensive TypeScript utility library providing functional programmi
 
 ## Recent Major Changes
 
+### 2025 Module Structure Refactoring
+
+1. **Module Organization**: Migrated all modules to use `$` (namespace) and `$$` (barrel) pattern
+2. **Import Path Simplification**: Removed `.js` extensions from internal imports
+3. **Circular Dependency Resolution**: Fixed circular dependencies using deep imports where needed
+4. **Test Utilities Enhancement**: Improved property-based testing error messages
+5. **Fast-check Migration**: Standardized all tests to use default export pattern
+
 ### 2024 Refactoring
 
 1. **Import System Migration**: Converted all relative imports (`../`) to `#` syntax
@@ -23,9 +31,16 @@ Every module follows a consistent pattern:
 
 ```
 src/module-name/
-├── module-name.ts    # Main implementation
-└── index.ts          # Exports: export * as ModuleName from './module-name.js'
+├── $$.ts             # Barrel exports (all functions/types)
+├── $.ts              # Namespace export
+├── $.test.ts         # Module tests
+└── *.ts              # Implementation files
 ```
+
+The `$` and `$$` naming convention:
+
+- `$$` (barrel file) - Exports all individual functions/types from the module
+- `$` (namespace file) - Creates and exports the namespace object
 
 ### Import System
 
@@ -33,17 +48,18 @@ src/module-name/
 
 ```typescript
 // ✅ Correct
-import { Fn } from '#fn/index.js'
-import { Obj } from '#obj/index.js'
+import { Fn } from '#fn'
+import { Obj } from '#obj'
 
 // ❌ Incorrect
-import { Obj } from '../obj/index.js'
+import { Fn } from '#fn/index.js' // Don't include .js extension
+import { Obj } from '../obj'
 ```
 
 **Configuration:**
 
-- TypeScript: `"paths": { "#*": ["./src/*"] }` in `tsconfig.json`
-- Node.js: `"imports": { "#*": { "default": "./build/*" } }` in `package.json`
+- TypeScript: `"paths": { "#*": ["./src/*.ts"] }` in `tsconfig.json`
+- Package.json: `"imports": { "#*": { "default": "./src/*.ts" } }` for mapping imports
 
 ### Namespace Name Elision
 
@@ -168,18 +184,32 @@ pnpm test               # Run tests
 ### Adding a New Module
 
 1. **Create module directory**: `src/new-module/`
-2. **Implement main file**: `src/new-module/new-module.ts`
-3. **Create index file**: `src/new-module/index.ts`
+2. **Create barrel file**: `src/new-module/$$.ts`
    ```typescript
-   export * as NewModule from './new-module.js'
+   export * from './implementation.ts'
+   export * from './types.ts'
+   // etc.
    ```
-4. **Add to package.json exports**:
+3. **Create namespace file**: `src/new-module/$.ts`
+   ```typescript
+   export * as NewModule from './$$.ts'
+   ```
+4. **Add import mapping**: Update `package.json`
+   ```json
+   {
+     "imports": {
+       "#new-module": "./src/new-module/$.ts",
+       "#new-module/new-module": "./src/new-module/$$.ts"
+     }
+   }
+   ```
+5. **Add to package.json exports**:
    ```json
    "./new-module": "./build/new-module/new-module.js"
    ```
-5. **Add to main exports**: `src/exports/index.ts`
+6. **Add to main exports**: `src/exports/index.ts`
    ```typescript
-   export * from '../new-module/index.js'
+   export * from '#new-module'
    ```
 
 ### TypeScript Guidelines
@@ -208,30 +238,30 @@ pnpm test               # Run tests
 ## Testing
 
 - Do colocate tests to modules.
-- For modules that have simple interfaces prefer putting all tests into `index.test.ts` and then access the interface(s) under test via the module namespace. For example this layout:
+- For modules that have simple interfaces prefer putting all tests into `$.test.ts` and then access the interface(s) under test via the module namespace. For example this layout:
 
   ```
-  src/foo/{index.ts, index.test.ts, foo.ts}
+  src/foo/{$.ts, $.test.ts, $$.ts, implementation.ts}
   ```
 
   With this content:
 
   ```ts
-  // index.ts
-  export * as Foo from './foo.ts'
+  // $.ts
+  export * as Foo from './$$.ts'
   ```
 
   ```ts
-  // index.test.ts
-  import { Foo } from './index.ts'
+  // $.test.ts
+  import { Foo } from './$.ts'
 
   test('...', () => { Foo... })
   ```
 
-- For modules with complex parts you may create a test file for each such part, while still keeping the rest of the simpler tests, if any, in `index.test.ts`. Example:
+- For modules with complex parts you may create a test file for each such part, while still keeping the rest of the simpler tests, if any, in `$.test.ts`. Example:
 
   ```
-  src/bar/{index.ts, index.test.ts, bar.ts, thing-complex.ts thing-complex.test.ts}
+  src/bar/{$.ts, $.test.ts, $$.ts, bar.ts, thing-complex.ts, thing-complex.test.ts}
   ```
 
 - Prefer using Vitest `test.for` feature to cover many cases in a succinct way. Use Kit's own `Test` module to support writing such tests.

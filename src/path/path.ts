@@ -1,8 +1,8 @@
-import { Fn } from '#fn/index.js'
-import { Language } from '#language/index.js'
-import * as PlatformPath from '#platform:path/path.js'
+import { Fn } from '#fn'
+import { Language } from '#language'
+import * as PlatformPath from '#platform:path/path'
 
-export * from '#platform:path/path.js'
+export * from '#platform:path/path'
 
 /**
  * Make a path absolute if it isn't already.
@@ -14,10 +14,10 @@ export * from '#platform:path/path.js'
  * @example
  * ```ts
  * // with relative path
- * ensureAbsolute('foo/bar.js', '/home/user') // '/home/user/foo/bar.js'
+ * ensureAbsolute('foo/bar.ts', '/home/user') // '/home/user/foo/bar.ts'
  *
  * // with absolute path (returns as-is)
- * ensureAbsolute('/foo/bar.js', '/home/user') // '/foo/bar.js'
+ * ensureAbsolute('/foo/bar.ts', '/home/user') // '/foo/bar.ts'
  * ```
  */
 export const ensureAbsolute = (filePath: string, basePath: string = Language.process.cwd()): string => {
@@ -34,8 +34,8 @@ export const ensureAbsolute = (filePath: string, basePath: string = Language.pro
  *
  * @example
  * ```ts
- * const ensureAbsoluteForFile = ensureAbsoluteOn('foo/bar.js')
- * ensureAbsoluteForFile('/home/user') // '/home/user/foo/bar.js'
+ * const ensureAbsoluteForFile = ensureAbsoluteOn('foo/bar.ts')
+ * ensureAbsoluteForFile('/home/user') // '/home/user/foo/bar.ts'
  * ```
  */
 export const ensureAbsoluteOn = Fn.curry(ensureAbsolute)
@@ -49,7 +49,7 @@ export const ensureAbsoluteOn = Fn.curry(ensureAbsolute)
  * @example
  * ```ts
  * const ensureAbsoluteInHome = ensureAbsoluteWith('/home/user')
- * ensureAbsoluteInHome('foo/bar.js') // '/home/user/foo/bar.js'
+ * ensureAbsoluteInHome('foo/bar.ts') // '/home/user/foo/bar.ts'
  * ```
  */
 export const ensureAbsoluteWith = Fn.flipCurried(ensureAbsoluteOn)
@@ -63,7 +63,7 @@ export const ensureAbsoluteWith = Fn.flipCurried(ensureAbsoluteOn)
  * @example
  * ```ts
  * // resolve relative to cwd
- * ensureAbsoluteWithCWD('foo/bar.js') // '/current/working/dir/foo/bar.js'
+ * ensureAbsoluteWithCWD('foo/bar.ts') // '/current/working/dir/foo/bar.ts'
  * ```
  */
 export const ensureAbsoluteWithCWD = ensureAbsoluteWith(Language.process.cwd())
@@ -78,13 +78,13 @@ export const ensureAbsoluteWithCWD = ensureAbsoluteWith(Language.process.cwd())
  * @example
  * ```ts
  * // adds prefix to implicit relative paths
- * formatExplicitRelative('foo/bar.js') // './foo/bar.js'
+ * formatExplicitRelative('foo/bar.ts') // './foo/bar.ts'
  *
  * // leaves explicit relative paths unchanged
- * formatExplicitRelative('./foo/bar.js') // './foo/bar.js'
+ * formatExplicitRelative('./foo/bar.ts') // './foo/bar.ts'
  *
  * // leaves absolute paths unchanged
- * formatExplicitRelative('/foo/bar.js') // '/foo/bar.js'
+ * formatExplicitRelative('/foo/bar.ts') // '/foo/bar.ts'
  * ```
  */
 export const formatExplicitRelative = (path: string) => {
@@ -109,13 +109,13 @@ export const formatExplicitRelative = (path: string) => {
  * @example
  * ```ts
  * // removes prefix from explicit relative paths
- * formatImplicitRelative('./foo/bar.js') // 'foo/bar.js'
+ * formatImplicitRelative('./foo/bar.ts') // 'foo/bar.ts'
  *
  * // leaves implicit relative paths unchanged
- * formatImplicitRelative('foo/bar.js') // 'foo/bar.js'
+ * formatImplicitRelative('foo/bar.ts') // 'foo/bar.ts'
  *
  * // leaves absolute paths unchanged
- * formatImplicitRelative('/foo/bar.js') // '/foo/bar.js'
+ * formatImplicitRelative('/foo/bar.ts') // '/foo/bar.ts'
  * ```
  */
 export const formatImplicitRelative = (path: string) => {
@@ -153,7 +153,7 @@ export const explicitRelativePrefix = `./`
  */
 export const executableJavaScriptExtensions = [
   // JavaScript
-  '.js',
+  '.ts',
   '.mjs',
   '.cjs',
   '.jsx',
@@ -185,10 +185,10 @@ export const buildArtifactExtensions = [
  * @example
  * ```ts
  * // join path segments
- * merge('/home/user', 'foo/bar.js') // '/home/user/foo/bar.js'
+ * merge('/home/user', 'foo/bar.ts') // '/home/user/foo/bar.ts'
  *
  * // handles trailing slashes
- * merge('/home/user/', 'foo/bar.js') // '/home/user/foo/bar.js'
+ * merge('/home/user/', 'foo/bar.ts') // '/home/user/foo/bar.ts'
  * ```
  */
 export const merge = (path1: string, path2: string): string => {
@@ -204,7 +204,7 @@ export const merge = (path1: string, path2: string): string => {
  * @example
  * ```ts
  * const mergeWithHome = mergeOn('/home/user')
- * mergeWithHome('foo/bar.js') // '/home/user/foo/bar.js'
+ * mergeWithHome('foo/bar.ts') // '/home/user/foo/bar.ts'
  * ```
  */
 export const mergeOn = Fn.curry(merge)

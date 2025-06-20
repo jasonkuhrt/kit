@@ -1,5 +1,5 @@
-import type { Node } from '#tree/data.js'
-import type { Predicate } from '#tree/tree.js'
+import type { Node } from '#tree/data'
+import type { Predicate } from '#tree/predicate'
 
 /**
  * A function that transforms a value from one type to another during tree mapping.

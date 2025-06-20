@@ -1,6 +1,6 @@
 import { expectTypeOf, test } from 'vitest'
-import { fn0p, fn1p, fn1pOptional, fn2p, fn2pOptional, fn3p } from './_test.js'
-import { curry } from './curry.js'
+import { fn0p, fn1p, fn1pOptional, fn2p, fn2pOptional, fn3p } from './_test.ts'
+import { curry } from './curry.ts'
 
 test('cannot curry non-function', () => {
   // @ts-expect-error

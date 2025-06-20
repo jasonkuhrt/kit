@@ -1,10 +1,10 @@
-import type { Language } from '#language/index.js'
-import { Path } from '#path/index.js'
-import { writeJson } from './data/json.js'
-import { writeString } from './data/string.js'
-import { makeDirectory } from './directory.js'
-import type { FileWriteInputMaybeJson } from './fs.js'
-import { exists } from './query.js'
+import type { Language } from '#language'
+import { Path } from '#path'
+import { writeJson } from './data/json.ts'
+import { writeString } from './data/string.ts'
+import { makeDirectory } from './directory.ts'
+import type { FileWriteInputMaybeJson } from './fs.ts'
+import { exists } from './query.ts'
 
 /**
  * Create a temporary directory in the system's temp folder.

@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'vitest'
-import { CleanError, cleanStack, formatFrame, getCaller, mergeStacks, parseStack } from './stack.js'
+import { CleanError, cleanStack, formatFrame, getCaller, mergeStacks, parseStack } from './stack.ts'
 
 describe('parseStack', () => {
   test('parses stack frames correctly', () => {
     const stack = `Error: Test error
-    at functionName (/path/to/file.js:10:15)
-    at async asyncFunction (/path/to/async.js:20:25)
-    at Object.<anonymous> (/path/to/index.js:5:10)
+    at functionName (/path/to/file.ts:10:15)
+    at async asyncFunction (/path/to/async.ts:20:25)
+    at Object.<anonymous> (/path/to/index.ts:5:10)
     at Module._compile (node:internal/modules/cjs/loader:1165:14)`
 
     const frames = parseStack(stack)
@@ -14,7 +14,7 @@ describe('parseStack', () => {
     expect(frames).toHaveLength(4)
     expect(frames[0]).toMatchObject({
       function: 'functionName',
-      file: '/path/to/file.js',
+      file: '/path/to/file.ts',
       line: 10,
       column: 15,
       isInternal: false,
@@ -23,7 +23,7 @@ describe('parseStack', () => {
 
     expect(frames[1]).toMatchObject({
       function: 'asyncFunction',
-      file: '/path/to/async.js',
+      file: '/path/to/async.ts',
       line: 20,
       column: 25,
     })
@@ -36,7 +36,7 @@ describe('parseStack', () => {
 
   test('handles anonymous functions', () => {
     const stack = `Error: Test
-    at /path/to/file.js:10:15
+    at /path/to/file.ts:10:15
     at new Promise (<anonymous>)`
 
     const frames = parseStack(stack)
@@ -48,10 +48,10 @@ describe('parseStack', () => {
 describe('cleanStack', () => {
   test('removes internal frames by default', () => {
     const stack = `Error: Test error
-    at userFunction (/src/app.js:10:15)
-    at wrapWith (/src/err/wrap.js:20:25)
-    at tryOrThrow (/src/err/wrap.js:30:35)
-    at userFunction2 (/src/app.js:40:45)`
+    at userFunction (/src/app.ts:10:15)
+    at wrapWith (/src/err/wrap.ts:20:25)
+    at tryOrThrow (/src/err/wrap.ts:30:35)
+    at userFunction2 (/src/app.ts:40:45)`
 
     const cleaned = cleanStack(stack)
 
@@ -63,9 +63,9 @@ describe('cleanStack', () => {
 
   test('filters node_modules by default', () => {
     const stack = `Error: Test error
-    at userFunction (/src/app.js:10:15)
-    at someLibrary (/node_modules/lib/index.js:20:25)
-    at userFunction2 (/src/app.js:30:35)`
+    at userFunction (/src/app.ts:10:15)
+    at someLibrary (/node_modules/lib/index.ts:20:25)
+    at userFunction2 (/src/app.ts:30:35)`
 
     const cleaned = cleanStack(stack)
 
@@ -76,11 +76,11 @@ describe('cleanStack', () => {
 
   test('respects maxFrames option', () => {
     const stack = `Error: Test error
-    at frame1 (/src/1.js:1:1)
-    at frame2 (/src/2.js:2:2)
-    at frame3 (/src/3.js:3:3)
-    at frame4 (/src/4.js:4:4)
-    at frame5 (/src/5.js:5:5)`
+    at frame1 (/src/1.ts:1:1)
+    at frame2 (/src/2.ts:2:2)
+    at frame3 (/src/3.ts:3:3)
+    at frame4 (/src/4.ts:4:4)
+    at frame5 (/src/5.ts:5:5)`
 
     const cleaned = cleanStack(stack, { maxFrames: 3 })
     const lines = cleaned.split('\n')
@@ -98,14 +98,14 @@ describe('mergeStacks', () => {
     const cause = new Error('Original error')
     // Simulate stack
     cause.stack = `Error: Original error
-    at deepFunction (/src/deep.js:10:15)
-    at causeFunction (/src/cause.js:20:25)`
+    at deepFunction (/src/deep.ts:10:15)
+    at causeFunction (/src/cause.ts:20:25)`
 
     const wrapper = new Error('Wrapped error')
     wrapper.stack = `Error: Wrapped error
-    at wrapperFunction (/src/wrapper.js:5:10)
-    at wrap (/src/err/wrap.js:15:20)
-    at topLevel (/src/top.js:25:30)`
+    at wrapperFunction (/src/wrapper.ts:5:10)
+    at wrap (/src/err/wrap.ts:15:20)
+    at topLevel (/src/top.ts:25:30)`
 
     const merged = mergeStacks(wrapper, cause)
 
@@ -141,29 +141,29 @@ describe('formatFrame', () => {
   test('formats frame nicely', () => {
     const frame = {
       function: 'testFunction',
-      file: '/src/test.js',
+      file: '/src/test.ts',
       line: 10,
       column: 15,
       isInternal: false,
       isNative: false,
-      raw: 'at testFunction (/src/test.js:10:15)',
+      raw: 'at testFunction (/src/test.ts:10:15)',
     }
 
-    expect(formatFrame(frame)).toBe('at testFunction (/src/test.js:10:15)')
+    expect(formatFrame(frame)).toBe('at testFunction (/src/test.ts:10:15)')
   })
 
   test('handles anonymous functions', () => {
     const frame = {
       function: '<anonymous>',
-      file: '/src/test.js',
+      file: '/src/test.ts',
       line: 10,
       column: 15,
       isInternal: false,
       isNative: false,
-      raw: 'at /src/test.js:10:15',
+      raw: 'at /src/test.ts:10:15',
     }
 
-    expect(formatFrame(frame)).toBe('at (/src/test.js:10:15)')
+    expect(formatFrame(frame)).toBe('at (/src/test.ts:10:15)')
   })
 })
 

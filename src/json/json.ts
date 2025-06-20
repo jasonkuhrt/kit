@@ -1,5 +1,5 @@
-import { Codec } from '#codec/index.js'
-import { ZodAid } from '#zod-aid/index.js'
+import { Codec } from '#codec'
+import { ZodAid } from '#zod-aid'
 import { z } from 'zod'
 
 //
@@ -37,7 +37,8 @@ export const isPrimitive = ZodAid.typeGuard(Primitive)
  * Matches any valid JSON value: primitives, objects, or arrays (recursively).
  */
 export const Value: z.ZodType<Value> = z.lazy(() => z.union([Primitive, z.array(Value), z.record(Value)]))
-export type Value = Primitive | { [key: string]: Value } | Value[]
+export type Value = Primitive | Obj | Value[]
+
 /**
  * Type guard to check if a value is a valid JSON value.
  * @param value - The value to check
@@ -54,7 +55,7 @@ export type Value = Primitive | { [key: string]: Value } | Value[]
 export const isValue = ZodAid.typeGuard(Value)
 
 const Obj: z.ZodType<Obj> = z.record(Value)
-type Obj = { [key: string]: Value }
+type Obj = { [key in string]?: Value }
 /**
  * Type guard to check if a value is a JSON object.
  * @param value - The value to check

@@ -1,6 +1,6 @@
-import { flipCurried } from '#fn/curry.js'
-import { curry } from '#fn/curry.js'
-import { Empty } from '#str/type.js'
+import { flipCurried } from '#fn/curry'
+import { curry } from '#fn/curry'
+import { Empty } from '#str/type'
 
 /**
  * Split a string into an array of substrings using a separator.

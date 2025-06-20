@@ -1,7 +1,7 @@
-import { Arr } from '#arr/index.js'
-import { Language } from '#language/index.js'
-import type { Rec } from '#rec/index.js'
-import { type Any, is } from './type.js'
+import { Arr } from '#arr'
+import { Language } from '#language'
+import type { Rec } from '#rec'
+import { type Any, is } from './type.ts'
 
 interface MergeOptions {
   undefined?: boolean

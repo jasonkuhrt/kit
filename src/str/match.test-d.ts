@@ -1,5 +1,5 @@
+import { Str } from '#str'
 import { describe, expectTypeOf, test } from 'vitest'
-import { Str } from './index.js'
 
 // We are only interested in type-level testing here so
 // the string and regex runtime value does not matter.

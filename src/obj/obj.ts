@@ -1,16 +1,16 @@
-import type { Language } from '#language/index.js'
-import type { Rec } from '#rec/index.js'
-import type { Ts } from '#ts/index.js'
-import type { Undefined } from '#undefined/index.js'
-import { type Any, is } from './type.js'
+import type { Language } from '#language'
+import type { Rec } from '#rec'
+import type { Ts } from '#ts'
+import type { Undefined } from '#undefined'
+import { type Any, is } from './type.ts'
 
-export * from './path.js'
+export * from './path.ts'
 
-export * from './get.js'
+export * from './get.ts'
 
-export * from './merge.js'
+export * from './merge.ts'
 
-export * from './type.js'
+export * from './type.ts'
 
 /**
  * Get an array of key-value pairs from an object.

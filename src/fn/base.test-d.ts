@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, test } from 'vitest'
-import { _, fn1p, fn2p } from './_test.js'
-import { bind } from './base.js'
+import { _, fn1p, fn2p } from './_test.ts'
+import { bind } from './base.ts'
 
 describe('bind', () => {
   test('fn must have parameters', () => {

@@ -1,5 +1,5 @@
-import type { Json } from '#json/index.js'
-import { Obj } from '#obj/index.js'
+import type { Json } from '#json'
+import { Obj } from '#obj'
 
 /**
  * Interpolate variables into a template string using ${variable} syntax.

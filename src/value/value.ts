@@ -1,4 +1,4 @@
-import { Fn } from '#fn/index.js'
+import { Fn } from '#fn'
 
 /**
  * A lazy value that is computed when called.

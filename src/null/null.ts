@@ -1,5 +1,5 @@
-import { isntTypeWith } from '#eq/type.js'
-import { isTypeWith } from '#eq/type.js'
+import { isntTypeWith } from '#eq/type'
+import { isTypeWith } from '#eq/type'
 
 /**
  * Checks if a value is null.

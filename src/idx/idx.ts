@@ -1,7 +1,7 @@
-import { Arr } from '#arr/index.js'
-import { Cache } from '#cache/index.js'
-import type { Language } from '#language/index.js'
-import type { Ts } from '#ts/index.js'
+import { Arr } from '#arr'
+import { Cache } from '#cache'
+import type { Language } from '#language'
+import type { Ts } from '#ts'
 import type { IsAny } from 'type-fest'
 
 // todo: allow key to be given as a property name instead of a function.

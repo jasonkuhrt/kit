@@ -1,6 +1,6 @@
-import { Arr } from '#arr/index.js'
-import { Fn } from '#fn/index.js'
-import type { Undefined } from '#undefined/index.js'
+import { Arr } from '#arr'
+import { Fn } from '#fn'
+import type { Undefined } from '#undefined'
 
 type MatchItem = string | undefined
 

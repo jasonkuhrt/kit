@@ -1,13 +1,13 @@
-import { Fn } from '#fn/index.js'
-import { property } from '#test/test.js'
+import { Fn } from '#fn'
+import { Test } from '#test'
 import fc from 'fast-check'
 import { expect, expectTypeOf, test } from 'vitest'
 
-property('returns input unchanged for any value', fc.anything(), (value) => {
+Test.property('returns input unchanged for any value', fc.anything(), (value) => {
   expect(Fn.identity(value)).toBe(value)
 })
 
-property('preserves object references', fc.oneof(fc.object(), fc.array(fc.anything())), (value) => {
+Test.property('preserves object references', fc.oneof(fc.object(), fc.array(fc.anything())), (value) => {
   expect(Fn.identity(value)).toBe(value)
 })
 

@@ -4,8 +4,8 @@
  * of sync/async functions and fallbacks.
  */
 
-import { Ts } from '#ts/index.js'
-import { tryOr, tryOrAsync, tryOrAsyncWith, tryOrNull, tryOrUndefined, tryOrWith } from './try.js'
+import { Ts } from '#ts'
+import { tryOr, tryOrAsync, tryOrAsyncWith, tryOrNull, tryOrUndefined, tryOrWith } from './try.ts'
 
 // tryOr type tests
 

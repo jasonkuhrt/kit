@@ -1,4 +1,4 @@
-import { Node } from './data.js'
+import { Node } from './data.ts'
 
 //
 //
@@ -81,7 +81,7 @@ export const toList = <$Value>(tree: Node<$Value>): $Value[] => {
  * // Result: [electronics -> [computers -> [laptops], phones]]
  * ```
  */
-export const fromList = <value extends { id: string; parentId?: string }>(
+export const fromList = <value extends { id: string; parentId?: string | undefined | null }>(
   values: value[],
   rootId?: string,
 ): Node<value>[] => {

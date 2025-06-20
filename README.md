@@ -8,14 +8,14 @@ npm add @wollybeard/kit
 
 ## About
 
-- I accumulated a threshold of value across various utility functions across various projects over years that I watned to stop repeating and start organizing.
+- I accumulated a threshold of value across various utility functions across various projects over years that I wanted to stop repeating and start organizing.
 - Work in progress, breaking changes daily/weekly.
 - Note: the author does occasionally have a wolly beard.
 
 ## Goals
 
 - Maximum type safety
-- Maximum tree shakabiliy
+- Maximum tree shakability
 - Maximum inline JSDoc
 - Functional interface
 - High performance (close to native as practical)

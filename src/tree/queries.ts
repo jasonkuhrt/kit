@@ -1,5 +1,5 @@
-import type { Predicate } from '#tree/tree.js'
-import { isLeaf, type Node } from './data.js'
+import type { Predicate } from '#tree/predicate'
+import { isLeaf, type Node } from './data.ts'
 
 /**
  * A function that visits a node in the tree during traversal.

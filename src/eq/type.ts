@@ -1,4 +1,4 @@
-import { Ts } from '#ts/index.js'
+import { Ts } from '#ts'
 
 // dprint-ignore
 export const isTypeWith =

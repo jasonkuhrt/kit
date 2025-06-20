@@ -1,4 +1,4 @@
-import type { Json } from '#json/index.js'
+import type { Json } from '#json'
 
 /**
  * Represents a file with path and content.

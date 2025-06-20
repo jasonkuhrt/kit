@@ -1,4 +1,4 @@
-import type { Arr } from '#arr/index.js'
+import type { Arr } from '#arr'
 
 /**
  * Type-level assertion utilities for testing type correctness.
@@ -89,7 +89,7 @@ export type AssertNever<$Type> = [$Type] extends [never] ? true : false
  * assert<{ id: string; name: string }>(result)
  * ```
  */
-import type { StaticError } from './ts.js'
+import type { StaticError } from './ts.ts'
 
 export const assert = <$Expected>() =>
 <$Actual>(

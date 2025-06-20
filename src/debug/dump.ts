@@ -1,4 +1,4 @@
-import { Language } from '#language/index.js'
+import { Language } from '#language'
 
 /**
  * Dump a value to the console with deep inspection and colors.

@@ -1,4 +1,4 @@
-import type { Arr } from '#arr/index.js'
+import type { Arr } from '#arr'
 import type { IsAny, IsNever, IsUnknown, UnionToTuple } from 'type-fest'
 
 // TODO: I believe there is a library we can use for a very robust type printing solution.

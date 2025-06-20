@@ -1,6 +1,6 @@
 import fc from 'fast-check'
 import { describe, expect, test } from 'vitest'
-import { ensure, is, isAggregateError } from './type.js'
+import { ensure, is, isAggregateError } from './type.ts'
 
 describe('is', () => {
   test('returns true for any Error instance', () => {

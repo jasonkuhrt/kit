@@ -1,5 +1,5 @@
-import type { Language } from '#language/index.js'
-import * as NodeFs from '#platform:fs/fs.js'
+import type { Language } from '#language'
+import * as NodeFs from '#platform:fs/fs'
 
 /**
  * Create a directory recursively.

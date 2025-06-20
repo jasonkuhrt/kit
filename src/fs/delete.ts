@@ -1,6 +1,6 @@
-import { Arr } from '#arr/index.js'
-import type { Language } from '#language/index.js'
-import * as NodeFs from '#platform:fs/fs.js'
+import { Arr } from '#arr'
+import type { Language } from '#language'
+import * as NodeFs from '#platform:fs/fs'
 
 // todo: rename to "delete"
 

@@ -2,9 +2,9 @@
  * Type-level tests for assert utilities
  */
 
-import { Arr } from '#arr/index.js'
-import { tryOr } from '#err/try.js'
-import { Ts } from '#ts/index.js'
+import { Arr } from '#arr'
+import { tryOr } from '#err/try'
+import { Ts } from '#ts'
 
 // Test improved error messages
 Ts.test('assertType with StaticError', () => {

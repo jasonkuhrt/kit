@@ -1,5 +1,5 @@
-import { Str } from '#str/index.js'
-import { splitWith } from '#str/split.js'
+import { is as isString } from '#str/type'
+import { splitWith } from '../str/split.ts'
 
 export type PropertyPathExpression = string
 
@@ -29,7 +29,7 @@ export type PropertyPathInput = PropertyPathExpression | PropertyPath
 export const normalizePropertyPathInput = <pathInput extends PropertyPathInput>(
   pathInput: pathInput,
 ): normalizePropertyPathInput<pathInput> => {
-  const result = Str.is(pathInput)
+  const result = isString(pathInput)
     ? parsePropertyPathExpression(pathInput)
     : pathInput
   return result as any
@@ -79,7 +79,7 @@ export const parsePropertyPathExpression:
     splitWith(PropertyPathSeparator) as any
 
 // dprint-ignore
-export type parsePropertyPathExpression<$Expression extends string> = 
+export type parsePropertyPathExpression<$Expression extends string> =
   $Expression extends `${infer __key__}.${infer __rest__}`
     ? [__key__, ...parsePropertyPathExpression<__rest__>]
     : [$Expression]

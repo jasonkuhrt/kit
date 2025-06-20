@@ -1,4 +1,4 @@
-import { Err } from '#err/index.js'
+import { Err } from '#err'
 
 /**
  * Error type for file not found errors (ENOENT).

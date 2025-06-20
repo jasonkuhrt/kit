@@ -1,6 +1,5 @@
-import { Fn } from '#fn/index.js'
-import { Obj } from '#obj/index.js'
-import type { Rec } from '#rec/index.js'
+import { Fn } from '#fn'
+import { Rec } from '#rec'
 
 /**
  * A pattern for matching against values.
@@ -37,7 +36,7 @@ export type Pattern<$Value> = Partial<$Value>
  * ```
  */
 export const isMatch = <value>(value: value, pattern: Pattern<value>): boolean => {
-  if (Obj.is(value)) {
+  if (Rec.is(value) && Rec.is(pattern)) {
     const value_ = value as Rec.Any
 
     return Object.entries(pattern).every(([patternKey, patternValue]) => {
@@ -70,7 +69,7 @@ export const isMatch = <value>(value: value, pattern: Pattern<value>): boolean =
  * users.filter(hasAge30) // [{ name: 'Alice', age: 30 }, { name: 'Charlie', age: 30 }]
  * ```
  */
-export const isMatchOn = Fn.curry(isMatch)
+export const isMatchOn = Fn.flipCurried(Fn.curry(isMatch))
 
 /**
  * Curried version of {@link isMatch} with value first.

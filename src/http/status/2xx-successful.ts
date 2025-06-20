@@ -3,7 +3,7 @@
  * Indicates that the client's request was successfully received, understood, and accepted.
  */
 
-import type { Status } from './type.js'
+import type { Status } from './type.ts'
 
 /**
  * The request has succeeded.

@@ -1,4 +1,4 @@
-import { Fn } from '#fn/index.js'
+import { Fn } from '#fn'
 
 /**
  * A codec that can encode data to string and decode string back to data.

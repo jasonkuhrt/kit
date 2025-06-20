@@ -1,7 +1,7 @@
-import { Err } from '#err/index.js'
+import { Err } from '#err'
 import { describe, expect, expectTypeOf, test } from 'vitest'
-import { tryAllOrRethrow, tryOr, tryOrRethrow } from './try.js'
-import { wrapWith } from './wrap.js'
+import { tryAllOrRethrow, tryOr, tryOrRethrow } from './try.ts'
+import { wrapWith } from './wrap.ts'
 
 const e = new Error('test error')
 const v = 1
@@ -192,7 +192,7 @@ describe('tryOr', () => {
   })
 
   test('sync function with async fallback should use tryOrAsync', async () => {
-    const { tryOrAsync } = await import('./try.js')
+    const { tryOrAsync } = await import('./try.ts')
     const result = await tryOrAsync(
       () => {
         throw new Error('fail')
@@ -208,7 +208,7 @@ describe('tryOr', () => {
   })
 
   test('tryOrAsync always returns Promise', async () => {
-    const { tryOrAsync } = await import('./try.js')
+    const { tryOrAsync } = await import('./try.ts')
 
     // Even when both are sync, tryOrAsync returns Promise
     const result1 = tryOrAsync(
