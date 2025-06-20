@@ -2,10 +2,9 @@ import { Arr } from '#arr'
 import { Language } from '#language'
 import { Str } from '#str'
 import { calcIsEnabledFromEnv } from './environment-variable.ts'
+import { trace, type TraceOptions } from './trace.ts'
 
 type DebugParameters = [event: string, payload?: unknown]
-
-export * from './dump.ts'
 
 /**
  * A debug function with namespace support and toggle capabilities.
@@ -21,6 +20,10 @@ export interface Debug {
   (...args: DebugParameters): void
   toggle: (isEnabled: boolean) => void
   sub: (subNamespace: string) => Debug
+  trace: <Args extends any[], Result>(
+    fn: (...args: Args) => Result,
+    options?: TraceOptions<Args, Result>,
+  ) => (...args: Args) => Result
 }
 
 interface State {
@@ -95,6 +98,8 @@ export const create = (namespaceInput?: string | string[], initialState?: State)
     const stateCopy = structuredClone(state)
     return create([...namespace, ...s], stateCopy)
   }
+
+  debug.trace = trace.bind(null, debug) as any
 
   return debug
 }

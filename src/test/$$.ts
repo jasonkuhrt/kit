@@ -110,7 +110,7 @@ export const property = <Ts extends [unknown, ...unknown[]]>(
 ) => {
   const description = args[0]
   const rest = args.slice(1) as Parameters<typeof fc.property>
-  Vitest.test('property: ' + description, () => {
+  Vitest.test('PROPERTY: ' + description, () => {
     const result = fc.check(fc.property(...rest))
 
     if (result.failed) {

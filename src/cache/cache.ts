@@ -167,6 +167,7 @@ export const memoize = <fn extends ((...args: any[]) => unknown)>(
     return Prom.maybeAsync(
       () => result,
       {
+        // oxlint-disable-next-line
         then: (resultResolved) => {
           // Cache the result if:
           // 1. It's not an Error instance, OR
