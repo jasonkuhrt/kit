@@ -191,6 +191,48 @@ export type Simplify<$Type> =
 /**
  * Utilities for working with union types at the type level.
  */
+/**
+ * Type-level helper that ensures a type exactly matches a constraint.
+ *
+ * Unlike standard `extends`, this requires bidirectional compatibility:
+ * the input must extend the constraint AND the constraint must extend the input.
+ * This enforces exact type matching without allowing excess properties.
+ *
+ * @template $Input - The input type to check
+ * @template $Constraint - The constraint type that must be exactly matched
+ *
+ * @example
+ * ```ts
+ * type User = { name: string; age: number }
+ *
+ * // Standard extends allows excess properties
+ * type T1 = { name: string; age: number; extra: boolean } extends User ? true : false  // true
+ *
+ * // ExtendsExact requires exact match
+ * type T2 = ExtendsExact<{ name: string; age: number; extra: boolean }, User>  // never
+ * type T3 = ExtendsExact<{ name: string; age: number }, User>  // { name: string; age: number }
+ * type T4 = ExtendsExact<{ name: string }, User>  // never (missing property)
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Useful for strict function parameters
+ * function updateUser<T>(user: ExtendsExact<T, User>): void {
+ *   // Only accepts objects that exactly match User type
+ * }
+ *
+ * updateUser({ name: 'Alice', age: 30 })  // OK
+ * updateUser({ name: 'Bob', age: 25, extra: true })  // Type error
+ * ```
+ */
+// dprint-ignore
+export type ExtendsExact<$Input, $Constraint> =
+  $Input extends $Constraint
+    ? $Constraint extends $Input
+      ? $Input
+      : never
+    : never
+
 export namespace Union {
   /**
    * Checks if a union type contains a specific type.
