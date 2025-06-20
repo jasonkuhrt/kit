@@ -1,4 +1,4 @@
-import type { z } from 'zod'
+import type { z } from 'zod/v4'
 import { type Codec, create } from './codec.ts'
 
 /**
@@ -11,7 +11,7 @@ import { type Codec, create } from './codec.ts'
  *
  * @example
  * ```ts
- * import { z } from 'zod'
+ * import { z } from 'zod/v4'
  *
  * const UserSchema = z.object({
  *   name: z.string(),

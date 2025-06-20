@@ -5,7 +5,7 @@ import { Path } from '#path'
 import { Resource } from '#resource'
 import { tmpdir } from 'node:os'
 import { afterEach, beforeEach, describe, expect, test } from 'vitest'
-import { z } from 'zod'
+import { z } from 'zod/v4'
 
 describe('Resource with union error handling', () => {
   let testDir: string
