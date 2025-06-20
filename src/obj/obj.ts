@@ -249,13 +249,7 @@ export const pick = <T extends object, K extends keyof T>(
   obj: T,
   keys: readonly K[],
 ): Pick<T, K> => {
-  const result = {} as Pick<T, K>
-  for (const key of keys) {
-    if (key in obj) {
-      result[key] = obj[key]
-    }
-  }
-  return result
+  return policyFilter('allow', obj, keys) as any
 }
 
 /**
@@ -292,11 +286,123 @@ export const omit = <T extends object, K extends keyof T>(
   obj: T,
   keys: readonly K[],
 ): Omit<T, K> => {
-  const result = { ...obj }
-  for (const key of keys) {
-    delete result[key]
+  return policyFilter('deny', obj, keys) as any
+}
+
+/**
+ * Filter object properties based on a policy mode and set of keys.
+ *
+ * @param mode - 'allow' to keep only specified keys, 'deny' to remove specified keys
+ * @param obj - The object to filter
+ * @param keys - The keys to process
+ * @returns A filtered object with proper type inference
+ *
+ * @example
+ * ```ts
+ * const obj = { a: 1, b: 2, c: 3 }
+ *
+ * // Allow mode: keep only 'a' and 'c'
+ * policyFilter('allow', obj, ['a', 'c']) // { a: 1, c: 3 }
+ *
+ * // Deny mode: remove 'a' and 'c'
+ * policyFilter('deny', obj, ['a', 'c']) // { b: 2 }
+ * ```
+ */
+export const policyFilter = <
+  $Object extends object,
+  $Key extends Keyof<$Object>,
+  $Mode extends 'allow' | 'deny',
+>(
+  mode: $Mode,
+  obj: $Object,
+  keys: readonly $Key[],
+): PolicyFilter<$Object, $Key, $Mode> => {
+  const result: any = mode === 'deny' ? { ...obj } : {}
+
+  if (mode === 'allow') {
+    // For allow mode, only add specified keys
+    for (const key of keys) {
+      if (key in obj) {
+        // @ts-expect-error
+        result[key] = obj[key]
+      }
+    }
+  } else {
+    // For deny mode, remove specified keys
+    for (const key of keys) {
+      delete result[key]
+    }
   }
-  return result as Omit<T, K>
+
+  return result
+}
+
+// dprint-ignore
+export type PolicyFilter<
+  $Object extends object,
+  $Key extends Keyof<$Object>,
+  $Mode extends 'allow' | 'deny',
+> = $Mode extends 'allow'
+      ? Pick<$Object, Extract<$Key, keyof $Object>>
+      : Omit<$Object, Extract<$Key, keyof $Object>>
+
+/**
+ * Filter an object using a predicate function.
+ *
+ * @param obj - The object to filter
+ * @param predicate - Function that returns true to keep a key/value pair
+ * @returns A new object with only the key/value pairs where predicate returned true
+ *
+ * @example
+ * ```ts
+ * const obj = { a: 1, b: 2, c: 3 }
+ * filter(obj, (k, v) => v > 1) // { b: 2, c: 3 }
+ * filter(obj, k => k !== 'b') // { a: 1, c: 3 }
+ * ```
+ */
+export const filter = <$Object extends object>(
+  obj: $Object,
+  predicate: (key: keyof $Object, value: $Object[keyof $Object], obj: $Object) => boolean,
+): Partial<$Object> => {
+  const result = {} as Partial<$Object>
+  for (const key in obj) {
+    if (predicate(key, obj[key], obj)) {
+      result[key] = obj[key]
+    }
+  }
+  return result
+}
+
+/**
+ * Partition an object into picked and omitted parts.
+ *
+ * @param obj - The object to partition
+ * @param pickedKeys - The keys to pick
+ * @returns An object with picked and omitted properties
+ *
+ * @example
+ * ```ts
+ * const obj = { a: 1, b: 2, c: 3 }
+ * const { picked, omitted } = partition(obj, ['a', 'c'])
+ * // picked: { a: 1, c: 3 }
+ * // omitted: { b: 2 }
+ * ```
+ */
+export const partition = <$Object extends object, $Key extends keyof $Object>(
+  obj: $Object,
+  pickedKeys: readonly $Key[],
+): { omitted: Omit<$Object, $Key>; picked: Pick<$Object, $Key> } => {
+  return pickedKeys.reduce((acc, key) => {
+    if (key in acc.omitted) {
+      // @ts-expect-error omitted already at type level
+      delete acc.omitted[key]
+      acc.picked[key] = obj[key]
+    }
+    return acc
+  }, {
+    omitted: { ...obj } as Omit<$Object, $Key>,
+    picked: {} as Pick<$Object, $Key>,
+  })
 }
 
 // dprint-ignore
@@ -310,3 +416,9 @@ export type PartialDeep<$Type> =
                                                           } :
                                                         // else
                                                           $Type
+
+/**
+ * Like keyof but returns PropertyKey for object.
+ * @internal
+ */
+type Keyof<$Object extends object> = object extends $Object ? PropertyKey : keyof $Object

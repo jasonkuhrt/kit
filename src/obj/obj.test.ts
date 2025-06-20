@@ -1,5 +1,6 @@
 import { Obj } from '#obj'
-import { describe, expectTypeOf, test } from 'vitest'
+import * as fc from 'fast-check'
+import { describe, expect, expectTypeOf, test } from 'vitest'
 
 describe('Obj.entries', () => {
   describe('type-level behavior', () => {
@@ -189,5 +190,156 @@ describe('Obj.entries', () => {
 
       expectTypeOf<Entries>().toMatchTypeOf<ExpectedEntries>()
     })
+  })
+})
+
+describe('policyFilter', () => {
+  const testObj = { a: 1, b: 2, c: 3, d: 4 }
+
+  test('allow mode picks specified keys', () => {
+    expect(Obj.policyFilter('allow', testObj, ['a', 'c'])).toEqual({ a: 1, c: 3 })
+    expect(Obj.policyFilter('allow', testObj, [])).toEqual({})
+    expect(Obj.policyFilter('allow', testObj, ['a', 'z'] as any)).toEqual({ a: 1 })
+  })
+
+  test('deny mode omits specified keys', () => {
+    expect(Obj.policyFilter('deny', testObj, ['a', 'c'])).toEqual({ b: 2, d: 4 })
+    expect(Obj.policyFilter('deny', testObj, [])).toEqual(testObj)
+    expect(Obj.policyFilter('deny', testObj, ['z'] as any)).toEqual(testObj)
+  })
+
+  test('preserves undefined values', () => {
+    const obj = { a: 1, b: undefined, c: 3 }
+    expect(Obj.policyFilter('allow', obj, ['a', 'b'])).toEqual({ a: 1, b: undefined })
+  })
+})
+
+describe('filter', () => {
+  const testObj = { a: 1, b: 2, c: 3, d: 4 }
+
+  test('filters by predicates', () => {
+    // By value
+    expect(Obj.filter(testObj, (k, v) => v > 2)).toEqual({ c: 3, d: 4 })
+
+    // By key
+    expect(Obj.filter(testObj, k => k === 'a' || k === 'c')).toEqual({ a: 1, c: 3 })
+
+    // By full object context
+    expect(Obj.filter(testObj, (k, v, obj) => {
+      const avg = Object.values(obj).reduce((a, b) => a + b, 0) / Object.keys(obj).length
+      return v < avg
+    })).toEqual({ a: 1, b: 2 })
+  })
+
+  test('edge cases', () => {
+    expect(Obj.filter(testObj, () => false)).toEqual({})
+    expect(Obj.filter(testObj, () => true)).toEqual(testObj)
+    expect(Obj.filter({}, () => true)).toEqual({})
+  })
+})
+
+describe('partition', () => {
+  test('partitions object into picked and omitted', () => {
+    const obj = { a: 1, b: 2, c: 3, d: 4 }
+    const result = Obj.partition(obj, ['a', 'c'])
+
+    expect(result.picked).toEqual({ a: 1, c: 3 })
+    expect(result.omitted).toEqual({ b: 2, d: 4 })
+  })
+
+  test('handles empty keys', () => {
+    const obj = { a: 1, b: 2 }
+    const result = Obj.partition(obj, [])
+
+    expect(result.picked).toEqual({})
+    expect(result.omitted).toEqual(obj)
+  })
+
+  test('handles non-existent keys', () => {
+    const obj = { a: 1, b: 2 }
+    const result = Obj.partition(obj, ['a', 'z'] as any)
+
+    expect(result.picked).toEqual({ a: 1 })
+    expect(result.omitted).toEqual({ b: 2 })
+  })
+})
+
+describe('property-based tests', () => {
+  test('policyFilter allow/deny are complementary', () => {
+    fc.assert(
+      fc.property(
+        fc.dictionary(fc.string(), fc.anything()),
+        fc.array(fc.string()),
+        (obj, keys) => {
+          // Filter out prototype pollution keys
+          const safeObj = Object.fromEntries(
+            Object.entries(obj).filter(([k]) => !['__proto__', 'constructor', 'prototype'].includes(k)),
+          )
+          const safeKeys = keys.filter(k => !['__proto__', 'constructor', 'prototype'].includes(k))
+
+          const allowed = Obj.policyFilter('allow', safeObj, safeKeys)
+          const denied = Obj.policyFilter('deny', safeObj, safeKeys)
+
+          // Every own key in obj is either in allowed or denied, never both
+          Object.keys(safeObj).forEach(key => {
+            const inAllowed = Object.prototype.hasOwnProperty.call(allowed, key)
+            const inDenied = Object.prototype.hasOwnProperty.call(denied, key)
+            expect(inAllowed).toBe(!inDenied)
+          })
+
+          // Combined they reconstruct the original object
+          expect({ ...allowed, ...denied }).toEqual(safeObj)
+        },
+      ),
+    )
+  })
+
+  test('filter preserves values unchanged', () => {
+    fc.assert(
+      fc.property(
+        fc.dictionary(fc.string(), fc.anything()),
+        (obj) => {
+          // Filter out prototype pollution keys
+          const safeObj = Object.fromEntries(
+            Object.entries(obj).filter(([k]) => !['__proto__', 'constructor', 'prototype'].includes(k)),
+          )
+
+          const filtered = Obj.filter(safeObj, () => true)
+          expect(filtered).toEqual(safeObj)
+
+          // Values are the same reference
+          Object.keys(filtered).forEach(key => {
+            expect(filtered[key]).toBe(safeObj[key])
+          })
+        },
+      ),
+    )
+  })
+
+  test('policyFilter is immutable', () => {
+    fc.assert(
+      fc.property(
+        fc.dictionary(fc.string(), fc.anything()),
+        fc.array(fc.string()),
+        fc.oneof(fc.constant('allow' as const), fc.constant('deny' as const)),
+        (obj, keys, mode) => {
+          const original = { ...obj }
+          Obj.policyFilter(mode, obj, keys)
+          expect(obj).toEqual(original)
+        },
+      ),
+    )
+  })
+
+  test('empty keys behavior', () => {
+    fc.assert(
+      fc.property(
+        fc.dictionary(fc.string(), fc.anything()),
+        (obj) => {
+          expect(Obj.policyFilter('allow', obj, [])).toEqual({})
+          expect(Obj.policyFilter('deny', obj, [])).toEqual(obj)
+        },
+      ),
+    )
   })
 })
