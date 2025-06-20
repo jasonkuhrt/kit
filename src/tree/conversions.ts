@@ -1,4 +1,5 @@
-import { Node } from './data.ts'
+import { Node, Tree } from './data.ts'
+import type { Forest, Tree as TreeType } from './data.ts'
 
 //
 //
@@ -10,49 +11,60 @@ import { Node } from './data.ts'
 
 /**
  * Flatten a tree into an array using depth-first traversal.
- * The root value comes first, followed by all descendant values
- * in the order they would be visited in a depth-first search.
+ * All node values are collected in the order they would be visited
+ * in a depth-first search.
  *
- * @param tree - The root node of the tree to flatten
+ * @param tree - The tree to flatten
  * @returns Array containing all values in depth-first order
  *
  * @example
  * ```ts
- * const tree = Node('A', [
- *   Node('B', [
- *     Node('D'),
- *     Node('E')
- *   ]),
- *   Node('C', [Node('F')])
- * ])
+ * const tree = Tree(
+ *   Node('A', [
+ *     Node('B', [
+ *       Node('D'),
+ *       Node('E')
+ *     ]),
+ *     Node('C', [Node('F')])
+ *   ])
+ * )
  *
  * const list = toList(tree)
  * console.log(list) // ['A', 'B', 'D', 'E', 'C', 'F']
  *
  * // Works with any value type
- * const numTree = Node(1, [
- *   Node(2, [Node(4), Node(5)]),
- *   Node(3)
- * ])
+ * const numTree = Tree(
+ *   Node(1, [
+ *     Node(2, [Node(4), Node(5)]),
+ *     Node(3)
+ *   ])
+ * )
  * console.log(toList(numTree)) // [1, 2, 4, 5, 3]
  * ```
  */
-export const toList = <$Value>(tree: Node<$Value>): $Value[] => {
-  const result: $Value[] = [tree.value]
-  tree.children.forEach(child => {
-    result.push(...toList(child))
-  })
-  return result
+export const toList = <$Value>(tree: TreeType<$Value>): $Value[] => {
+  if (tree.root === null) return []
+
+  const toListNode = (node: Node<$Value>): $Value[] => {
+    const result: $Value[] = [node.value]
+    node.children.forEach(child => {
+      result.push(...toListNode(child))
+    })
+    return result
+  }
+
+  return toListNode(tree.root)
 }
 
 /**
- * Build a tree (or forest) from a flat list of items with parent references.
+ * Build trees from a flat list of items with parent references.
  * Each item must have an `id` and optionally a `parentId` to establish hierarchy.
  * Items with no parent or matching rootId become root nodes.
+ * Returns a forest (array of trees) as there may be multiple root nodes.
  *
  * @param values - Array of items with id and parentId properties
  * @param rootId - Optional ID to use as the root parent (defaults to undefined)
- * @returns Array of root nodes forming a forest
+ * @returns A forest (array of trees) containing all root nodes
  *
  * @example
  * ```ts
@@ -65,9 +77,11 @@ export const toList = <$Value>(tree: Node<$Value>): $Value[] => {
  * ]
  *
  * const forest = fromList(items)
- * // Result: Two trees:
- * // 1. Root -> [Child A -> [Grandchild], Child B]
- * // 2. Another Root
+ * // Result: Forest with two trees:
+ * // [
+ * //   Tree(Root -> [Child A -> [Grandchild], Child B]),
+ * //   Tree(Another Root)
+ * // ]
  *
  * // Build tree with specific root
  * const categories = [
@@ -77,15 +91,15 @@ export const toList = <$Value>(tree: Node<$Value>): $Value[] => {
  *   { id: 'laptops', parentId: 'computers' }
  * ]
  *
- * const categoryTree = fromList(categories, 'root')
- * // Result: [electronics -> [computers -> [laptops], phones]]
+ * const categoryForest = fromList(categories, 'root')
+ * // Result: Forest with one tree:
+ * // [Tree(electronics -> [computers -> [laptops], phones])]
  * ```
  */
-export const fromList = <value extends { id: string; parentId?: string | undefined | null }>(
+export const manyFromList = <value extends { id: string; parentId?: string | undefined | null }>(
   values: value[],
-  rootId?: string,
-): Node<value>[] => {
-  // const itemMap = new Map(items.map(item => [item.id, item]))
+  rootId?: string | undefined,
+): Forest<value> => {
   const roots: Node<value>[] = []
   const nodeMap = new Map<string, Node<value>>()
 
@@ -108,18 +122,18 @@ export const fromList = <value extends { id: string; parentId?: string | undefin
     }
   })
 
-  return roots
+  return roots.map(root => Tree(root))
 }
 
 /**
- * Build a single tree from a flat list of items with parent references.
- * This is a variant of {@link fromList} that ensures exactly one root node is found.
- * Throws an error if zero or multiple root nodes are found.
+ * Build a tree from a flat list expecting at most one root node.
+ * Returns an empty tree if no roots are found.
+ * Throws an error if multiple root nodes are found.
  *
  * @param values - Array of items with id and parentId properties
  * @param rootId - Optional ID to use as the root parent (defaults to undefined)
- * @returns Single root node
- * @throws Error if not exactly one root is found
+ * @returns Tree with single root node or empty tree
+ * @throws Error if multiple roots are found
  *
  * @example
  * ```ts
@@ -130,35 +144,33 @@ export const fromList = <value extends { id: string; parentId?: string | undefin
  *   { id: '4', parentId: '2', name: 'Grandchild' }
  * ]
  *
- * const tree = oneFromList(items)
- * console.log(tree.value.name) // 'Root'
+ * const tree = fromList(items)
+ * console.log(tree.root!.value.name) // 'Root'
  *
- * // Error cases:
+ * // Error case: multiple roots
  * const multipleRoots = [
  *   { id: '1', name: 'Root 1' },
  *   { id: '2', name: 'Root 2' }
  * ]
- * oneFromList(multipleRoots) // Throws: Expected exactly one root node, found 2
+ * fromList(multipleRoots) // Throws: Found multiple root nodes, count: 2
  *
+ * // Empty tree case: no roots
  * const noRoots = [
  *   { id: '1', parentId: 'missing', name: 'Orphan' }
  * ]
- * oneFromList(noRoots, 'root') // Throws: Expected exactly one root node, found 0
+ * const emptyTree = fromList(noRoots, 'root')
+ * console.log(emptyTree.root) // null
  * ```
  */
-export const oneFromList = <value extends { id: string; parentId?: string }>(
+export const fromList = <value extends { id: string; parentId?: string | undefined | null }>(
   values: value[],
-  rootId?: string,
-): Node<value> => {
-  const roots = fromList(values, rootId)
+  rootId?: string | undefined,
+): Tree<value> => {
+  const forest = manyFromList(values, rootId)
 
-  if (roots.length === 0) {
-    throw new Error('Expected exactly one root node, found 0')
+  if (forest.length > 1) {
+    throw new Error(`Found multiple root nodes, count: ${forest.length}`)
   }
 
-  if (roots.length > 1) {
-    throw new Error(`Expected exactly one root node, found ${roots.length}`)
-  }
-
-  return roots[0]!
+  return forest[0] ?? Tree()
 }

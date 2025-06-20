@@ -2,19 +2,21 @@ import { Test } from '#test'
 import fc from 'fast-check'
 import { describe, expect, test } from 'vitest'
 import { arbitrary } from './arbitrary.ts'
-import { Node } from './data.ts'
+import { Node, Tree } from './data.ts'
 import { count, depth, every, find, leaves, path, pathTo, some, visit } from './queries.ts'
 
-const sampleTree = Node('root', [
-  Node('a', [
-    Node('a1'),
-    Node('a2'),
+const sampleTree = Tree(
+  Node('root', [
+    Node('a', [
+      Node('a1'),
+      Node('a2'),
+    ]),
+    Node('b', [
+      Node('b1'),
+    ]),
+    Node('c'),
   ]),
-  Node('b', [
-    Node('b1'),
-  ]),
-  Node('c'),
-])
+)
 
 describe('visit', () => {
   test('traverses all nodes', () => {
@@ -37,16 +39,16 @@ describe('find', () => {
 
 describe('depth', () => {
   test('calculates tree depth', () => {
-    expect(depth(Node('single'))).toBe(0)
+    expect(depth(Tree(Node('single')))).toBe(0)
     expect(depth(sampleTree)).toBe(2)
   })
 
   Test.property(
-    'leaf nodes always have depth 0',
+    'single node trees have depth 0',
     fc.anything(),
     (value) => {
-      const leaf = Node(value)
-      expect(depth(leaf)).toBe(0)
+      const tree = Tree(Node(value))
+      expect(depth(tree)).toBe(0)
     },
   )
 
@@ -55,11 +57,16 @@ describe('depth', () => {
     arbitrary(fc.integer()),
     (tree) => {
       const treeDepth = depth(tree)
-      if (tree.children.length === 0) {
-        expect(treeDepth).toBe(0)
+      if (tree.root === null) {
+        expect(treeDepth).toBe(-1) // Empty tree has depth -1
       } else {
-        const childDepths = tree.children.map(depth)
-        expect(treeDepth).toBe(Math.max(...childDepths) + 1)
+        // Calculate node depth
+        const nodeDepth = (node: Node<number>): number => {
+          if (node.children.length === 0) return 0
+          return 1 + Math.max(...node.children.map(nodeDepth))
+        }
+        const calculatedDepth = nodeDepth(tree.root)
+        expect(treeDepth).toBe(calculatedDepth)
       }
     },
   )
@@ -67,7 +74,7 @@ describe('depth', () => {
 
 describe('count', () => {
   test('counts all nodes', () => {
-    expect(count(Node('single'))).toBe(1)
+    expect(count(Tree(Node('single')))).toBe(1)
     expect(count(sampleTree)).toBe(7)
   })
 
@@ -76,16 +83,24 @@ describe('count', () => {
     arbitrary(fc.integer()),
     (tree) => {
       const totalCount = count(tree)
-      const childrenCount = tree.children.reduce((sum, child) => sum + count(child), 0)
-      expect(totalCount).toBe(1 + childrenCount)
+      const countNode = (node: Node<number>): number =>
+        1 + node.children.reduce((sum, child) => sum + countNode(child), 0)
+      const childrenCount = tree.root === null ? 0 : countNode(tree.root)
+      expect(totalCount).toBe(childrenCount)
     },
   )
 
   Test.property(
-    'count is always at least 1',
+    'non-empty trees have count at least 1',
     arbitrary(fc.anything()),
     (tree) => {
-      expect(count(tree)).toBeGreaterThanOrEqual(1)
+      const nodeCount = count(tree)
+      // Empty tree has count 0, otherwise at least 1
+      if (tree.root === null) {
+        expect(nodeCount).toBe(0)
+      } else {
+        expect(nodeCount).toBeGreaterThanOrEqual(1)
+      }
     },
   )
 })
@@ -112,10 +127,15 @@ describe('every', () => {
   )
 
   Test.property(
-    'every with always-false predicate returns false',
+    'every with always-false predicate returns false for non-empty trees',
     arbitrary(fc.anything()),
     (tree) => {
-      expect(every(tree, () => false)).toBe(false)
+      // Empty tree returns true for every (vacuous truth)
+      if (tree.root === null) {
+        expect(every(tree, () => false)).toBe(true)
+      } else {
+        expect(every(tree, () => false)).toBe(false)
+      }
     },
   )
 })
@@ -127,10 +147,15 @@ describe('some', () => {
   })
 
   Test.property(
-    'some with always-true predicate returns true',
+    'some with always-true predicate returns true for non-empty trees',
     arbitrary(fc.anything()),
     (tree) => {
-      expect(some(tree, () => true)).toBe(true)
+      // Empty tree returns false for some
+      if (tree.root === null) {
+        expect(some(tree, () => true)).toBe(false)
+      } else {
+        expect(some(tree, () => true)).toBe(true)
+      }
     },
   )
 
@@ -147,6 +172,9 @@ describe('some', () => {
     arbitrary(fc.integer()),
     fc.func(fc.boolean()),
     (tree, predicate) => {
+      // Skip empty trees as they have different semantics
+      if (tree.root === null) return
+
       const someResult = some(tree, predicate)
       const everyResult = every(tree, (v, d, p) => !predicate(v, d, p))
       // If some match, then NOT every doesn't match
@@ -157,7 +185,7 @@ describe('some', () => {
 
 describe('path', () => {
   test('returns path to node', () => {
-    const targetNode = sampleTree.children[0]!.children[0]! // a1
+    const targetNode = sampleTree.root!.children[0]!.children[0]! // a1
     const result = path(sampleTree, targetNode)
 
     expect(result?.map(n => n.value)).toEqual(['root', 'a', 'a1'])

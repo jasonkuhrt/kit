@@ -2,21 +2,23 @@ import { Test } from '#test'
 import fc from 'fast-check'
 import { describe, expect, test } from 'vitest'
 import { arbitrary } from './arbitrary.ts'
-import { fromList, oneFromList, toList } from './conversions.ts'
-import { Node } from './data.ts'
+import { fromList, manyFromList, toList } from './conversions.ts'
+import { Node, Tree } from './data.ts'
 
 describe('toList', () => {
   test('flattens tree to array', () => {
-    const tree = Node('root', [
-      Node('a', [
-        Node('a1'),
-        Node('a2'),
+    const tree = Tree(
+      Node('root', [
+        Node('a', [
+          Node('a1'),
+          Node('a2'),
+        ]),
+        Node('b', [
+          Node('b1'),
+        ]),
+        Node('c'),
       ]),
-      Node('b', [
-        Node('b1'),
-      ]),
-      Node('c'),
-    ])
+    )
 
     const flat = toList(tree)
     expect(flat).toEqual(['root', 'a', 'a1', 'a2', 'b', 'b1', 'c'])
@@ -28,13 +30,11 @@ describe('toList', () => {
     (tree) => {
       const list = toList(tree)
 
-      // List should contain at least the root value
-      expect(list).toContain(tree.value)
-
       // List length should equal total node count
       const countNodes = (node: Node<number>): number =>
-        1 + node.children.reduce((sum, child) => sum + countNodes(child), 0)
-      expect(list.length).toBe(countNodes(tree))
+        1 + node.children.reduce((sum: number, child) => sum + countNodes(child), 0)
+      const totalCount = tree.root === null ? 0 : countNodes(tree.root)
+      expect(list.length).toBe(totalCount)
     },
   )
 
@@ -44,7 +44,7 @@ describe('toList', () => {
     fc.array(fc.integer(), { minLength: 1, maxLength: 3 }),
     (rootValue, childValues) => {
       const children = childValues.map(v => Node(v))
-      const tree = Node(rootValue, children)
+      const tree = Tree(Node(rootValue, children))
       const list = toList(tree)
 
       // Root should be first
@@ -67,11 +67,11 @@ describe('fromList', () => {
       { id: '4', parentId: '2', name: 'grandchild' },
     ]
 
-    const trees = fromList(items, undefined)
-    expect(trees).toHaveLength(1)
-    expect(trees[0]!.value.name).toBe('root')
-    expect(trees[0]!.children).toHaveLength(2)
-    expect(trees[0]!.children[0]!.children[0]!.value.name).toBe('grandchild')
+    const forest = manyFromList(items, undefined)
+    expect(forest).toHaveLength(1)
+    expect(forest[0]!.root!.value.name).toBe('root')
+    expect(forest[0]!.root!.children).toHaveLength(2)
+    expect(forest[0]!.root!.children[0]!.children[0]!.value.name).toBe('grandchild')
   })
 
   test('handles multiple roots', () => {
@@ -82,12 +82,12 @@ describe('fromList', () => {
       { id: '4', parentId: '2', name: 'child2' },
     ]
 
-    const trees = fromList(items, undefined)
-    expect(trees).toHaveLength(2)
-    expect(trees[0]!.value.name).toBe('root1')
-    expect(trees[1]!.value.name).toBe('root2')
-    expect(trees[0]!.children[0]!.value.name).toBe('child1')
-    expect(trees[1]!.children[0]!.value.name).toBe('child2')
+    const forest = manyFromList(items, undefined)
+    expect(forest).toHaveLength(2)
+    expect(forest[0]!.root!.value.name).toBe('root1')
+    expect(forest[1]!.root!.value.name).toBe('root2')
+    expect(forest[0]!.root!.children[0]!.value.name).toBe('child1')
+    expect(forest[1]!.root!.children[0]!.value.name).toBe('child2')
   })
 
   test('handles items without parentId when rootId is specified', () => {
@@ -99,12 +99,12 @@ describe('fromList', () => {
     ]
 
     // When rootId is 'root', items without parentId get lost in current implementation
-    const trees = fromList(items, 'root')
+    const forest = manyFromList(items, 'root')
 
     // BUG: This test demonstrates that orphan nodes (without parentId) are lost
     // when a specific rootId is provided. They should be included as roots.
-    expect(trees).toHaveLength(3) // Should include the orphans as roots
-    expect(trees.map(t => t.value.name).sort()).toEqual([
+    expect(forest).toHaveLength(3) // Should include the orphans as roots
+    expect(forest.map((t: any) => t.root!.value.name).sort()).toEqual([
       'child-of-root',
       'orphan-1',
       'orphan-2',
@@ -121,20 +121,22 @@ describe('oneFromList', () => {
       { id: '4', parentId: '2', name: 'grandchild' },
     ]
 
-    const tree = oneFromList(items)
-    expect(tree.value.name).toBe('root')
-    expect(tree.children).toHaveLength(2)
-    expect(tree.children[0]!.value.name).toBe('child1')
-    expect(tree.children[1]!.value.name).toBe('child2')
+    const tree = fromList(items)
+    expect(tree.root).not.toBe(null)
+    expect(tree.root!.value.name).toBe('root')
+    expect(tree.root!.children).toHaveLength(2)
+    expect(tree.root!.children[0]!.value.name).toBe('child1')
+    expect(tree.root!.children[1]!.value.name).toBe('child2')
   })
 
-  test('throws when no roots found', () => {
+  test('returns empty tree when no roots found', () => {
     const items = [
       { id: '1', parentId: 'missing', name: 'orphan1' },
       { id: '2', parentId: 'missing', name: 'orphan2' },
     ]
 
-    expect(() => oneFromList(items, 'root')).toThrow('Expected exactly one root node, found 0')
+    const tree = fromList(items, 'root')
+    expect(tree.root).toBe(null)
   })
 
   test('throws when multiple roots found', () => {
@@ -144,7 +146,7 @@ describe('oneFromList', () => {
       { id: '3', parentId: '1', name: 'child' },
     ]
 
-    expect(() => oneFromList(items)).toThrow('Expected exactly one root node, found 2')
+    expect(() => fromList(items)).toThrow('Found multiple root nodes, count: 2')
   })
 
   test('works with specific rootId', () => {
@@ -154,9 +156,10 @@ describe('oneFromList', () => {
       { id: '3', parentId: '1', name: 'content' },
     ]
 
-    const tree = oneFromList(items, 'app')
-    expect(tree.value.name).toBe('main')
-    expect(tree.children).toHaveLength(2)
+    const tree = fromList(items, 'app')
+    expect(tree.root).not.toBe(null)
+    expect(tree.root!.value.name).toBe('main')
+    expect(tree.root!.children).toHaveLength(2)
   })
 
   test('handles orphan nodes as additional roots causing error', () => {
@@ -167,6 +170,6 @@ describe('oneFromList', () => {
     ]
 
     // With the fix, orphans are treated as roots, so this should throw
-    expect(() => oneFromList(items, 'root')).toThrow('Expected exactly one root node, found 2')
+    expect(() => fromList(items, 'root')).toThrow('Found multiple root nodes, count: 2')
   })
 })

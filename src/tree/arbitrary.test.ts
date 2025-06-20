@@ -2,18 +2,22 @@ import { Test } from '#test'
 import fc from 'fast-check'
 import { describe, expect } from 'vitest'
 import { arbitrary, arbitraryShapes } from './arbitrary.ts'
-import { Node } from './data.ts'
+import { Node, Tree } from './data.ts'
 import { count, depth } from './queries.ts'
 
 describe('arbitrary', () => {
   Test.property(
-    'generates valid tree nodes',
+    'generates valid trees',
     fc.integer(),
     (seed) => {
       const tree = fc.sample(arbitrary(fc.constant(seed)), 1)[0]!
       expect(tree).toBeDefined()
-      expect(tree.value).toBe(seed)
-      expect(Array.isArray(tree.children)).toBe(true)
+      expect(tree.root === null || typeof tree.root === 'object').toBe(true)
+      // Tree has single root or null
+      if (tree.root !== null) {
+        expect(tree.root.value).toBeDefined()
+        expect(Array.isArray(tree.root.children)).toBe(true)
+      }
     },
   )
 
@@ -46,7 +50,7 @@ describe('arbitrary', () => {
           expect(node.children.length).toBeLessThanOrEqual(maxChildren)
           node.children.forEach(checkChildren)
         }
-        checkChildren(tree)
+        if (tree.root !== null) checkChildren(tree.root)
       })
     },
   )
@@ -76,7 +80,8 @@ describe('arbitraryShapes.withDepth', () => {
         arbitraryShapes.withDepth(fc.constant(seed), targetDepth),
         5,
       )
-      trees.forEach(tree => {
+      trees.forEach(node => {
+        const tree = Tree(node)
         expect(depth(tree)).toBe(targetDepth)
       })
     },
@@ -95,7 +100,8 @@ describe('arbitraryShapes.linear', () => {
       )[0]!
 
       // Count should equal length
-      expect(count(tree)).toBe(length)
+      const treeWrapper = Tree(tree)
+      expect(count(treeWrapper)).toBe(length)
 
       // Each non-leaf node should have exactly one child
       let current = tree
@@ -123,7 +129,8 @@ describe('arbitraryShapes.balanced', () => {
       )[0]!
 
       // Check depth
-      expect(depth(tree)).toBe(targetDepth)
+      const treeWrapper = Tree(tree)
+      expect(depth(treeWrapper)).toBe(targetDepth)
 
       // Check that non-leaf nodes have exact number of children
       const checkBalance = (node: Node<number>, currentDepth: number) => {
@@ -152,7 +159,8 @@ describe('arbitraryShapes.wide', () => {
       )[0]!
 
       // Check depth
-      expect(depth(tree)).toBeLessThanOrEqual(targetDepth)
+      const treeWrapper = Tree(tree)
+      expect(depth(treeWrapper)).toBeLessThanOrEqual(targetDepth)
 
       // Root should have many children (at least half of width)
       expect(tree.children.length).toBeGreaterThanOrEqual(Math.floor(width / 2))

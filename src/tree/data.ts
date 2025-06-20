@@ -1,22 +1,47 @@
 /**
- * A tree data structure represented as a Node with a value and children.
- * Trees are hierarchical structures where each node can have zero or more child nodes.
+ * A tree data structure with a single root node.
+ * Trees are hierarchical structures where each tree has exactly one root.
+ * An empty tree is represented as `{ root: null }`.
  *
  * @typeParam $Value - The type of value stored in each node
  *
  * @example
  * ```ts
- * type FileTree = Tree<string>
- * const fileSystem: FileTree = {
- *   value: 'root',
- *   children: [
- *     { value: 'src', children: [] },
- *     { value: 'docs', children: [] }
- *   ]
+ * // Create a tree
+ * const tree: Tree<string> = {
+ *   root: { value: 'root', children: [] }
  * }
+ *
+ * // Create an empty tree
+ * const empty: Tree<string> = { root: null }
+ *
+ * // Or use the constructor
+ * const tree2 = Tree(Node('root', [
+ *   Node('child1'),
+ *   Node('child2')
+ * ]))
  * ```
  */
-export type Tree<$Value> = Node<$Value>
+export interface Tree<$Value> {
+  root: Node<$Value> | null
+}
+
+/**
+ * Type alias for a collection of trees.
+ * Use this when you need to work with multiple disconnected trees.
+ *
+ * @typeParam $Value - The type of value stored in each node
+ *
+ * @example
+ * ```ts
+ * const forest: Forest<string> = [
+ *   Tree(Node('tree1')),
+ *   Tree(Node('tree2')),
+ *   Tree(Node('tree3'))
+ * ]
+ * ```
+ */
+export type Forest<$Value> = Tree<$Value>[]
 
 /**
  * A node in a tree structure containing a value and an array of child nodes.
@@ -43,6 +68,45 @@ export interface Node<$Value> {
 }
 
 /**
+ * Create a new tree with a root node or empty tree.
+ * This is a convenience constructor function for creating Tree objects.
+ *
+ * @param root - The root node of the tree, or null for an empty tree
+ * @returns A new Tree object with the specified root
+ *
+ * @example
+ * ```ts
+ * // Create a tree with a single root node
+ * const tree = Tree(
+ *   Node('root', [
+ *     Node('child1'),
+ *     Node('child2')
+ *   ])
+ * )
+ *
+ * // Create a simple tree
+ * const simple = Tree(Node('root'))
+ *
+ * // Create an empty tree
+ * const empty = Tree<string>(null)
+ *
+ * // Create a deeper tree
+ * const deep = Tree(
+ *   Node('A', [
+ *     Node('B', [
+ *       Node('D'),
+ *       Node('E')
+ *     ]),
+ *     Node('C')
+ *   ])
+ * )
+ * ```
+ */
+export const Tree = <$Value>(root?: Node<$Value> | null | undefined): Tree<$Value> => ({
+  root: root ?? null,
+})
+
+/**
  * Create a new tree node with the given value and optional children.
  * This is a convenience constructor function for creating Node objects.
  *
@@ -61,8 +125,8 @@ export interface Node<$Value> {
  *   Node('child2')
  * ])
  *
- * // Create a complex tree
- * const tree = Node('root', [
+ * // Create a complex node structure
+ * const root = Node('root', [
  *   Node('branch1', [
  *     Node('leaf1'),
  *     Node('leaf2')
@@ -73,10 +137,31 @@ export interface Node<$Value> {
  * ])
  * ```
  */
-export const Node = <value>(value: value, children: Node<value>[] = []): Node<value> => ({
+export const Node = <$Value>(value: $Value, children: Node<$Value>[] = []): Node<$Value> => ({
   value,
   children,
 })
+
+/**
+ * Check if a tree is empty (has no root).
+ *
+ * @param tree - The tree to check
+ * @returns `true` if the tree has no root (is empty), `false` otherwise
+ *
+ * @example
+ * ```ts
+ * const empty = Tree<string>(null)
+ * const leaf = Tree(Node('root'))
+ * const withChildren = Tree(Node('root', [Node('child')]))
+ *
+ * console.log(isEmpty(empty))         // true
+ * console.log(isEmpty(leaf))          // false
+ * console.log(isEmpty(withChildren))  // false
+ * ```
+ */
+export const isEmpty = <$Value>(tree: Tree<$Value>): boolean => {
+  return tree.root === null
+}
 
 /**
  * Check if a node is a leaf (has no children).
@@ -94,6 +179,6 @@ export const Node = <value>(value: value, children: Node<value>[] = []): Node<va
  * console.log(isLeaf(parent)) // false
  * ```
  */
-export const isLeaf = <T>(node: Node<T>): boolean => {
+export const isLeaf = <$Value>(node: Node<$Value>): boolean => {
   return node.children.length === 0
 }

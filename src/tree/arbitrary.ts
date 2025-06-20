@@ -1,5 +1,6 @@
 import fc from 'fast-check'
-import { Node } from './data.ts'
+import { Node, Tree } from './data.ts'
+import type { Tree as TreeType } from './data.ts'
 
 /**
  * Configuration options for generating arbitrary trees.
@@ -44,7 +45,7 @@ export interface ArbitraryOptions {
  * @example
  * ```ts
  * import fc from 'fast-check'
- * import { arbitrary, Node } from '@wollybeard/kit/tree'
+ * import { arbitrary, Tree } from '@wollybeard/kit/tree'
  *
  * // Generate trees of strings
  * const stringTreeArb = arbitrary(fc.string())
@@ -61,7 +62,7 @@ export interface ArbitraryOptions {
  *   fc.property(stringTreeArb, (tree) => {
  *     // Test that toList never returns empty for non-empty trees
  *     const list = toList(tree)
- *     return list.length >= 1
+ *     return list.length >= 0  // Can be 0 for empty tree
  *   })
  * )
  *
@@ -74,7 +75,7 @@ export interface ArbitraryOptions {
 export const arbitrary = <$Value>(
   valueArb: fc.Arbitrary<$Value>,
   options?: ArbitraryOptions,
-): fc.Arbitrary<Node<$Value>> => {
+): fc.Arbitrary<TreeType<$Value>> => {
   const opts = {
     maxDepth: 5,
     maxChildren: 3,
@@ -103,7 +104,11 @@ export const arbitrary = <$Value>(
     )
   }
 
-  return generateTree(0)
+  // Generate a tree with a single root, or occasionally an empty tree
+  return fc.oneof(
+    { weight: 1, arbitrary: fc.constant(Tree<$Value>(null)) }, // empty tree
+    { weight: 9, arbitrary: generateTree(0).map(root => Tree(root)) }, // tree with root
+  )
 }
 
 /**
