@@ -323,4 +323,62 @@ describe('Resource with union error handling', () => {
       expect(JSON.parse(content!)).toEqual({ count: 20 })
     })
   })
+
+  describe('resources without init config', () => {
+    test('can be created without init config', () => {
+      const resource = Resource.create({
+        name: 'test',
+        path: testPath,
+      })
+
+      expect(resource).toBeDefined()
+    })
+
+    test('read works normally without init', async () => {
+      const data = { value: 'test' }
+      await Fs.write({ path: testPath, content: JSON.stringify(data) })
+
+      const resource = Resource.create({
+        name: 'test',
+        path: testPath,
+      })
+
+      const result = await resource.read()
+      expect(result).toEqual(data)
+    })
+
+    test('readOrEmpty returns error when file missing and no init', async () => {
+      const resource = Resource.create({
+        name: 'test',
+        path: testPath,
+      })
+
+      const result = await resource.readOrEmpty()
+      expect(Resource.Errors.isNotFound(result)).toBe(true)
+    })
+
+    test('ensureInit throws when no init configured', async () => {
+      const resource = Resource.create({
+        name: 'test',
+        path: testPath,
+      })
+
+      await expect(resource.ensureInit()).rejects.toThrow(
+        'Cannot ensure init for resource "test" - no init value configured',
+      )
+    })
+
+    test('update returns error for missing file when no init', async () => {
+      const resource = Resource.create<'test', { value: string }>({
+        name: 'test',
+        path: testPath,
+      })
+
+      const result = await resource.update(data => {
+        data.value = 'updated'
+      })
+
+      expect(Resource.Errors.isNotFound(result)).toBe(true)
+    })
+  })
 })

@@ -84,12 +84,15 @@ export interface Resource<$Name extends string = string, $Type = any> {
    * Read the resource from disk, returning the init value if not found.
    * This is useful when you want to handle missing files gracefully without errors.
    *
+   * Note: Requires `init` to be configured. Returns ResourceErrorNotFound if
+   * the file doesn't exist and no init value is configured.
+   *
    * @param dir - Optional directory to prepend to the resource path
-   * @returns The parsed data, init value if not found, or decode error
+   * @returns The parsed data, init value if not found, or an error
    *
    * @example
    * ```ts
-   * // Always returns data or decode error, never "not found"
+   * // Always returns data or decode error when init is configured
    * const config = await resource.readOrEmpty()
    * if (Resource.Errors.isDecodeFailed(config)) {
    *   console.error('Config file is corrupted')
@@ -98,7 +101,7 @@ export interface Resource<$Name extends string = string, $Type = any> {
    * }
    * ```
    */
-  readOrEmpty: (dir?: string) => Promise<$Type | Errors.ResourceErrorDecodeFailed>
+  readOrEmpty: (dir?: string) => Promise<$Type | Errors.ResourceErrorAny>
 
   /**
    * Check if the resource file exists without reading its contents.
@@ -166,6 +169,8 @@ export interface Resource<$Name extends string = string, $Type = any> {
    * Ensure the resource file exists, creating it with the init value if it doesn't.
    * This is useful for initialization routines where you want to guarantee the file exists.
    *
+   * Note: Requires `init` to be configured. Throws an error if no init value is configured.
+   *
    * @param dir - Optional directory to prepend to the resource path
    *
    * @example
@@ -224,6 +229,7 @@ export interface ResourceConfig<$Name extends string, $Type> {
   /**
    * Initialization configuration for the resource.
    * Controls the default value and auto-initialization behavior.
+   * If not provided, the resource will not have init values and cannot use auto-initialization.
    *
    * @example
    * ```ts
@@ -244,7 +250,7 @@ export interface ResourceConfig<$Name extends string, $Type> {
    * }
    * ```
    */
-  init: {
+  init?: {
     /**
      * The value to use when initializing the resource.
      * Can be a value or a factory function for dynamic defaults.
@@ -314,8 +320,14 @@ export const create = <name extends string, type>(
   config: ResourceConfig<name, type>,
 ): Resource<name, type> => {
   const codec = config.codec ?? (Json.codec as Codec.Codec<type>)
-  const initValue = Value.resolveLazyFactory(config.init.value)
-  const autoInit = config.init.auto ?? false
+  // Handle optional init configuration
+  let initValue: (() => type) | undefined = undefined
+  let autoInit = false
+
+  if (config.init) {
+    initValue = Value.resolveLazyFactory(config.init.value)
+    autoInit = config.init.auto ?? false
+  }
 
   // Shared cache for all read operations
   const sharedCache = new Map<unknown, unknown>()
@@ -347,6 +359,9 @@ export const create = <name extends string, type>(
     const content = await Fs.read(filePath)
 
     if (content === null) {
+      if (!initValue) {
+        return Errors.notFound(config.name, filePath)
+      }
       return initValue()
     }
 
@@ -393,6 +408,9 @@ export const create = <name extends string, type>(
     readOrEmpty: readOrEmptyMemoized,
 
     ensureInit: async (dir) => {
+      if (!initValue) {
+        throw new Error(`Cannot ensure init for resource "${config.name}" - no init value configured`)
+      }
       const filePath = Path.ensureAbsoluteWith(dir)(config.path)
       const exists = await Fs.exists(filePath)
       if (!exists) {
