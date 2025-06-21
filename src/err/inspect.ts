@@ -207,19 +207,6 @@ const _inspectResursively = (error: Error, parentIndent: string, config: Inspect
   lines.push('')
   lines.push(`${parentIndent}${formatIndent}${error.message}`)
 
-  // Handle cause if present
-  if ('cause' in error && error.cause instanceof Error) {
-    lines.push(formatTitle(parentIndent, 'cause', config))
-    lines.push(_inspectResursively(error.cause, parentIndent + formatIndent, config))
-  }
-
-  // Handle context property if present
-  if ('context' in error && error.context !== undefined) {
-    lines.push(formatTitle(parentIndent, 'context', config))
-    // todo: pretty object rendering
-    lines.push(String((error as Error & { context: Context }).context))
-  }
-
   // Handle stack property if present
   if (error.stack) {
     // Clean the stack trace first
@@ -238,6 +225,19 @@ const _inspectResursively = (error: Error, parentIndent: string, config: Inspect
     )
     lines.push(formatTitle(parentIndent, 'stack', config))
     lines.push(stack)
+  }
+
+  // Handle context property if present
+  if ('context' in error && error.context !== undefined) {
+    lines.push(formatTitle(parentIndent, 'context', config))
+    // todo: pretty object rendering
+    lines.push(String((error as Error & { context: Context }).context))
+  }
+
+  // Handle cause if present
+  if ('cause' in error && error.cause instanceof Error) {
+    lines.push(formatTitle(parentIndent, 'cause', config))
+    lines.push(_inspectResursively(error.cause, parentIndent + formatIndent, config))
   }
 
   return Str.unlines(lines)
