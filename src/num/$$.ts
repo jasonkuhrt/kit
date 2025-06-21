@@ -1,103 +1,82 @@
 /**
- * Core number module barrel exports.
+ * Flattening data types allows us to have e.g. `Num.Even` be a type and namespace.
+ *
+ * IMPORTANT: TypeScript limitation with namespace and type exports
+ *
+ * We cannot use the pattern:
+ *   export type { Foo } from './foo/$$.ts'
+ *   export * from './foo/$.ts'
+ *
+ * This breaks TypeScript's ability to recognize the namespace exports.
+ *
+ * Instead, we must use:
+ *   import type { Foo as Foo_ } from './foo/$$.ts'
+ *   export { Foo } from './foo/$.ts'
+ *   export type Foo = Foo_
+ *
+ * This pattern:
+ * 1. Imports the type with an alias to avoid conflicts
+ * 2. Explicitly exports the namespace value
+ * 3. Creates a type alias (not a re-export) which TypeScript allows
+ *
+ * This enables `Num.Foo` to work as both a type and a namespace.
  */
 
-// Re-export all branded types and their operations
-// Only use wildcard exports for modules that don't have conflicting names
-// or for the primary modules that should "win" in case of conflicts
+import type { Degrees as Degrees_ } from './degrees/$$.ts'
+export { Degrees } from './degrees/$.ts'
+export type Degrees = Degrees_
+import type { Even as Even_ } from './even/$$.ts'
+export { Even } from './even/$.ts'
+export type Even = Even_
+import type { Finite as Finite_ } from './finite/$$.ts'
+export { Finite } from './finite/$.ts'
+export type Finite = Finite_
+import type { Float as Float_ } from './float/$$.ts'
+export { Float } from './float/$.ts'
+export type Float = Float_
+import type { InRange as InRange_ } from './in-range/$$.ts'
+export { InRange } from './in-range/$.ts'
+export type InRange<Min extends number = number, Max extends number = number> = InRange_<Min, Max>
+import type { Int as Int_ } from './int/$$.ts'
+export { Int } from './int/$.ts'
+export type Int = Int_
+import type { Natural as Natural_ } from './natural/$$.ts'
+export { Natural } from './natural/$.ts'
+export type Natural = Natural_
+import type { Negative as Negative_ } from './negative/$$.ts'
+export { Negative } from './negative/$.ts'
+export type Negative = Negative_
+import type { NonNegative as NonNegative_ } from './non-negative/$$.ts'
+export { NonNegative } from './non-negative/$.ts'
+export type NonNegative = NonNegative_
+import type { NonPositive as NonPositive_ } from './non-positive/$$.ts'
+export { NonPositive } from './non-positive/$.ts'
+export type NonPositive = NonPositive_
+import type { NonZero as NonZero_ } from './non-zero/$$.ts'
+export { NonZero } from './non-zero/$.ts'
+export type NonZero = NonZero_
+import type { Odd as Odd_ } from './odd/$$.ts'
+export { Odd } from './odd/$.ts'
+export type Odd = Odd_
+import type { Percentage as Percentage_ } from './percentage/$$.ts'
+export { Percentage } from './percentage/$.ts'
+export type Percentage = Percentage_
+import type { Positive as Positive_ } from './positive/$$.ts'
+export { Positive } from './positive/$.ts'
+export type Positive = Positive_
+import type { Radians as Radians_ } from './radians/$$.ts'
+export { Radians } from './radians/$.ts'
+export type Radians = Radians_
+import type { SafeInt as SafeInt_ } from './safe-int/$$.ts'
+export { SafeInt } from './safe-int/$.ts'
+export type SafeInt = SafeInt_
+import type { Whole as Whole_ } from './whole/$$.ts'
+export { Whole } from './whole/$.ts'
+export type Whole = Whole_
+import type { Zero as Zero_ } from './zero/$$.ts'
+export { Zero } from './zero/$.ts'
+export type Zero = Zero_
 
-// Export main functions from all modules
-export {
-  from as degrees,
-  fromRadians,
-  is as isDegrees,
-  normalize as normalizeDegrees,
-  toRadians,
-  tryFrom as tryDegrees,
-} from './degrees/$$.ts'
-export { from as even, is as isEven, next as nextEven, prev as prevEven, tryFrom as tryEven } from './even/$$.ts'
-export { from as finite, is as isFinite, tryFrom as tryFinite } from './finite/$$.ts'
-export { from as float, is as isFloat, toFloat, tryFrom as tryFloat } from './float/$$.ts'
-export {
-  clamp,
-  clampOn,
-  clampWith,
-  from as ranged,
-  is as inRange,
-  isOn as inRangeOn,
-  isWith as inRangeWith,
-  tryFrom as tryRanged,
-} from './in-range/$$.ts'
-export { from as int, is as isInt, parse as parseAsInt, round as roundToInt, tryFrom as tryInt } from './int/$$.ts'
-export {
-  from as natural,
-  is as isNatural,
-  next as nextNatural,
-  parseAsNatural,
-  prev as prevNatural,
-  tryFrom as tryNatural,
-} from './natural/$$.ts'
-export { from as negative, is as isNegative, negate, tryFrom as tryNegative } from './negative/$$.ts'
-export { from as nonNegative, is as isNonNegative, tryFrom as tryNonNegative } from './non-negative/$$.ts'
-export { from as nonPositive, is as isNonPositive, tryFrom as tryNonPositive } from './non-positive/$$.ts'
-export {
-  from as nonZero,
-  is as isNonZero,
-  safeDiv,
-  safeDivide,
-  safeDivOn,
-  safeDivWith,
-  tryFrom as tryNonZero,
-} from './non-zero/$$.ts'
-export { from as odd, is as isOdd, next as nextOdd, prev as prevOdd, tryFrom as tryOdd } from './odd/$$.ts'
-export {
-  clamp as clampToPercentage,
-  from as percentage,
-  fromPercent,
-  is as isPercentage,
-  toPercent,
-  tryFrom as tryPercentage,
-} from './percentage/$$.ts'
-export { from as positive, is as isPositive, tryFrom as tryPositive } from './positive/$$.ts'
-export {
-  from as radians,
-  fromDegrees,
-  is as isRadians,
-  normalize as normalizeRadians,
-  toDegrees,
-  tryFrom as tryRadians,
-} from './radians/$$.ts'
-export { from as safeInt, is as isSafeInt, MAX_SAFE_INT, MIN_SAFE_INT, tryFrom as trySafeInt } from './safe-int/$$.ts'
-export {
-  from as whole,
-  is as isWhole,
-  next as nextWhole,
-  parseAsWhole,
-  prev as prevWhole,
-  tryFrom as tryWhole,
-} from './whole/$$.ts'
-export { from as zero, is as isZero, tryFrom as tryZero, ZERO } from './zero/$$.ts'
-
-// Re-export types
-export type { Degrees } from './degrees/degrees.ts'
-export type { Even } from './even/even.ts'
-export type { Finite } from './finite/finite.ts'
-export type { Float } from './float/float.ts'
-export type { InRange } from './in-range/in-range.ts'
-export type { Int } from './int/int.ts'
-export type { Natural } from './natural/natural.ts'
-export type { Negative } from './negative/negative.ts'
-export type { NonNegative } from './non-negative/non-negative.ts'
-export type { NonPositive } from './non-positive/non-positive.ts'
-export type { NonZero } from './non-zero/non-zero.ts'
-export type { Odd } from './odd/odd.ts'
-export type { Percentage } from './percentage/percentage.ts'
-export type { Positive } from './positive/positive.ts'
-export type { Radians } from './radians/radians.ts'
-export type { SafeInt } from './safe-int/safe-int.ts'
-export type { Whole } from './whole/whole.ts'
-export type { Zero } from './zero/zero.ts'
-
-// Re-export core operations and math
 export * from './math.ts'
 export * from './operations.ts'
+export * from './range.ts'

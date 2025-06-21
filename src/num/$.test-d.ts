@@ -11,34 +11,34 @@ Ts.test('Type narrowing works correctly when combining predicates', () => {
   const value: unknown = 42
 
   // Single predicate narrows type
-  if (Num.isFinite(value)) {
+  if (Num.Finite.is(value)) {
     Ts.assert<Num.Finite>()(value)
   }
 
   // Multiple predicates narrow to intersection
-  if (Num.isPositive(value) && Num.isInt(value)) {
+  if (Num.Positive.is(value) && Num.Int.is(value)) {
     Ts.assert<Num.Positive & Num.Int>()(value)
   }
 
   // Complex narrowing with multiple brands
-  if (Num.isFinite(value) && Num.isPositive(value) && Num.isInt(value) && Num.isOdd(value)) {
+  if (Num.Finite.is(value) && Num.Positive.is(value) && Num.Int.is(value) && Num.Odd.is(value)) {
     Ts.assert<Num.Finite & Num.Positive & Num.Int & Num.Odd>()(value)
   }
 
   // Narrowing with incompatible predicates
-  if (Num.isZero(value)) {
+  if (Num.Zero.is(value)) {
     Ts.assert<Num.Zero>()(value)
     // @ts-expect-error - Zero cannot be Positive
     Ts.assert<Num.Positive>()(value)
   }
 
   // Range-based narrowing
-  if (Num.inRange(value, 0, 100)) {
+  if (Num.InRange.is(value, 0, 100)) {
     Ts.assert<Num.InRange<0, 100>>()(value)
   }
 
   // Percentage narrowing
-  if (Num.isPercentage(value)) {
+  if (Num.Percentage.is(value)) {
     Ts.assert<Num.Percentage>()(value)
     // Percentage is InRange<0, 1> not InRange<0, 100>
     Ts.assert<Num.InRange<0, 1>>()(value)
@@ -49,55 +49,55 @@ Ts.test('Type narrowing works correctly when combining predicates', () => {
 
 Ts.test('Constructor functions produce correctly branded types', () => {
   // Single brand constructors
-  const pos = Num.positive(5)
+  const pos = Num.Positive.from(5)
   Ts.assert<Num.Positive>()(pos)
 
-  const int = Num.int(42)
+  const int = Num.Int.from(42)
   Ts.assert<Num.Int>()(int)
 
-  const finite = Num.finite(3.14)
+  const finite = Num.Finite.from(3.14)
   Ts.assert<Num.Finite>()(finite)
 
-  const zero = Num.zero(0)
+  const zero = Num.Zero.from(0)
   Ts.assert<Num.Zero>()(zero)
 
-  const nonZero = Num.nonZero(1)
+  const nonZero = Num.NonZero.from(1)
   Ts.assert<Num.NonZero>()(nonZero)
 
-  const neg = Num.negative(-5)
+  const neg = Num.Negative.from(-5)
   Ts.assert<Num.Negative>()(neg)
 
-  const nonNeg = Num.nonNegative(0)
+  const nonNeg = Num.NonNegative.from(0)
   Ts.assert<Num.NonNegative>()(nonNeg)
 
-  const nonPos = Num.nonPositive(0)
+  const nonPos = Num.NonPositive.from(0)
   Ts.assert<Num.NonPositive>()(nonPos)
 
-  const even = Num.even(4)
+  const even = Num.Even.from(4)
   Ts.assert<Num.Even>()(even)
 
-  const odd = Num.odd(3)
+  const odd = Num.Odd.from(3)
   Ts.assert<Num.Odd>()(odd)
 
-  const safeInt = Num.safeInt(1000)
+  const safeInt = Num.SafeInt.from(1000)
   Ts.assert<Num.SafeInt>()(safeInt)
 
-  const float = Num.float(3.14)
+  const float = Num.Float.from(3.14)
   Ts.assert<Num.Float>()(float)
 
   // Range constructor
-  const inRange = Num.ranged(50, 0, 100)
+  const inRange = Num.InRange.from(50, 0, 100)
   Ts.assert<Num.InRange<0, 100>>()(inRange)
 
   // Percentage constructor
-  const pct = Num.percentage(0.75)
+  const pct = Num.Percentage.from(0.75)
   Ts.assert<Num.Percentage>()(pct)
 
   // Angle constructors
-  const rad = Num.radians(Math.PI)
+  const rad = Num.Radians.from(Math.PI)
   Ts.assert<Num.Radians>()(rad)
 
-  const deg = Num.degrees(180)
+  const deg = Num.Degrees.from(180)
   Ts.assert<Num.Degrees>()(deg)
 })
 
@@ -105,18 +105,18 @@ Ts.test('Constructor functions produce correctly branded types', () => {
 
 Ts.test('Try constructors return branded types or null', () => {
   // Try constructors have correct return types
-  const tryPos = Num.tryPositive(5)
+  const tryPos = Num.Positive.tryFrom(5)
   Ts.assert<Num.Positive | null>()(tryPos)
 
-  const tryInt = Num.tryInt(42.5)
+  const tryInt = Num.Int.tryFrom(42.5)
   Ts.assert<Num.Int | null>()(tryInt)
 
-  const tryFinite = Num.tryFinite(Infinity)
+  const tryFinite = Num.Finite.tryFrom(Infinity)
   Ts.assert<Num.Finite | null>()(tryFinite)
 
   // Type narrowing with try constructors
   const value = 42
-  const result = Num.tryPositive(value)
+  const result = Num.Positive.tryFrom(value)
   if (result !== null) {
     Ts.assert<Num.Positive>()(result)
   }
@@ -135,7 +135,7 @@ Ts.test('Math operations enforce branded type constraints', () => {
   const product = Num.multiply(4, 5)
   Ts.assert<number>()(product)
 
-  const divisor = Num.nonZero(2)
+  const divisor = Num.NonZero.from(2)
   const quotient = Num.divide(10, divisor)
   Ts.assert<number>()(quotient)
 
@@ -144,11 +144,12 @@ Ts.test('Math operations enforce branded type constraints', () => {
   Ts.assert<number>()(squared)
 
   // Root operations
-  const sqrtResult = Num.sqrt(16)
+  const sqrtInput = Num.NonNegative.from(16)
+  const sqrtResult = Num.sqrt(sqrtInput)
   Ts.assert<number>()(sqrtResult)
 
-  // Modulo operations
-  const remainder = Num.mod(10, 3)
+  // Modulo operations (mod doesn't exist, using % operator)
+  const remainder = 10 % 3
   Ts.assert<number>()(remainder)
 
   // Absolute value
@@ -160,16 +161,17 @@ Ts.test('Math operations enforce branded type constraints', () => {
   Ts.assert<number>()(signResult)
 
   // Rounding operations
-  const rounded = Num.round(3.7)
+  const finiteValue = Num.Finite.from(3.7)
+  const rounded = Num.round(finiteValue)
   Ts.assert<number>()(rounded)
 
-  const floored = Num.floor(3.7)
+  const floored = Num.floor(finiteValue)
   Ts.assert<number>()(floored)
 
-  const ceiled = Num.ceil(3.2)
+  const ceiled = Num.ceil(Num.Finite.from(3.2))
   Ts.assert<number>()(ceiled)
 
-  const truncated = Num.trunc(3.7)
+  const truncated = Num.trunc(finiteValue)
   Ts.assert<number>()(truncated)
 
   // Comparison operations
@@ -179,11 +181,11 @@ Ts.test('Math operations enforce branded type constraints', () => {
   const maxResult = Num.max(5, 3)
   Ts.assert<number>()(maxResult)
 
-  const clamped = Num.clamp(10, 0, 5)
+  const clamped = Num.InRange.clamp(10, 0, 5)
   Ts.assert<number>()(clamped)
 
   // Trigonometric operations with Radians
-  const rad: Num.Radians = Num.radians(Math.PI / 2)
+  const rad = Num.Radians.from(Math.PI / 2)
   const sinResult = Num.sin(rad)
   Ts.assert<number>()(sinResult)
 
@@ -194,7 +196,7 @@ Ts.test('Math operations enforce branded type constraints', () => {
   Ts.assert<number>()(tanResult)
 
   // Angle conversions
-  const deg: Num.Degrees = Num.degrees(180)
+  const deg: Num.Degrees = Num.Degrees.from(180)
   const toRad = Num.degToRad(deg)
   Ts.assert<Num.Radians>()(toRad)
 
@@ -212,19 +214,19 @@ Ts.test('Branded types can be properly intersected', () => {
 
   // Runtime values with multiple brands
   const value = 5
-  if (Num.isPositive(value) && Num.isInt(value)) {
+  if (Num.Positive.is(value) && Num.Int.is(value)) {
     const posInt: PositiveInt = value
     Ts.assert<PositiveInt>()(posInt)
   }
 
   // Complex intersection
-  if (Num.isPositive(value) && Num.isInt(value) && Num.isOdd(value)) {
+  if (Num.Positive.is(value) && Num.Int.is(value) && Num.Odd.is(value)) {
     const posOddInt: PositiveOddInt = value
     Ts.assert<PositiveOddInt>()(posOddInt)
   }
 
   // Finite non-zero
-  if (Num.isFinite(value) && Num.isNonZero(value)) {
+  if (Num.Finite.is(value) && Num.NonZero.is(value)) {
     const finiteNonZero: FiniteNonZero = value
     Ts.assert<FiniteNonZero>()(finiteNonZero)
   }
@@ -254,12 +256,12 @@ type _BrandsExtendNumber = Ts.TestSuite<[
 // Test brand relationships
 // Verify that incompatible brands cannot be assigned to each other
 Ts.test('Brand exclusivity', () => {
-  const pos: Num.Positive = Num.positive(5)
-  const neg: Num.Negative = Num.negative(-5)
-  const zero: Num.Zero = Num.zero(0)
-  const nonZero: Num.NonZero = Num.nonZero(1)
-  const even: Num.Even = Num.even(4)
-  const odd: Num.Odd = Num.odd(3)
+  const pos: Num.Positive = Num.Positive.from(5)
+  const neg: Num.Negative = Num.Negative.from(-5)
+  const zero: Num.Zero = Num.Zero.from(0)
+  const nonZero: Num.NonZero = Num.NonZero.from(1)
+  const even: Num.Even = Num.Even.from(4)
+  const odd: Num.Odd = Num.Odd.from(3)
 
   // @ts-expect-error - Cannot assign Positive to Negative
   const _neg: Num.Negative = pos

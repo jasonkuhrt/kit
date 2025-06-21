@@ -1,6 +1,6 @@
 # Num Module
 
-The `Num` module provides comprehensive utilities for working with numbers, including type predicates, mathematical operations, and common number transformations.
+The `Num` module provides comprehensive utilities for working with numbers, including type predicates, mathematical operations, and common number transformations. The module is organized into logical namespaces for better discoverability and grouping of related functionality.
 
 ## Import
 
@@ -8,7 +8,8 @@ The `Num` module provides comprehensive utilities for working with numbers, incl
 import { Num } from '@wollybeard/kit'
 
 // Or import specific functions
-import { clamp, isInt, round } from '@wollybeard/kit/num'
+import { InRange, is, round } from '@wollybeard/kit/num'
+// Then use as: InRange.clamp()
 ```
 
 ## Type Predicates
@@ -24,36 +25,36 @@ Num.is(NaN) // false
 Num.is(Infinity) // true
 ```
 
-### `isFinite`
+### `Finite.is`
 
 Checks if a value is a finite number.
 
 ```typescript
-Num.isFinite(42) // true
-Num.isFinite(Infinity) // false
-Num.isFinite(-Infinity) // false
-Num.isFinite(NaN) // false
+Num.Finite.is(42) // true
+Num.Finite.is(Infinity) // false
+Num.Finite.is(-Infinity) // false
+Num.Finite.is(NaN) // false
 ```
 
-### `isInt`
+### `Int.is`
 
 Checks if a value is an integer.
 
 ```typescript
-Num.isInt(42) // true
-Num.isInt(42.0) // true
-Num.isInt(42.5) // false
-Num.isInt('42') // false
+Num.Int.is(42) // true
+Num.Int.is(42.0) // true
+Num.Int.is(42.5) // false
+Num.Int.is('42') // false
 ```
 
-### `isFloat`
+### `Float.is`
 
 Checks if a value is a floating-point number (non-integer).
 
 ```typescript
-Num.isFloat(42.5) // true
-Num.isFloat(42) // false
-Num.isFloat(NaN) // false
+Num.Float.is(42.5) // true
+Num.Float.is(42) // false
+Num.Float.is(NaN) // false
 ```
 
 ### `isNaN`
@@ -67,77 +68,77 @@ Num.isNaN(42) // false
 Num.isNaN('not a number') // false
 ```
 
-### `isPositive` / `isNegative` / `isZero`
+### `Positive.is` / `Negative.is` / `Zero.is`
 
 Checks the sign of a number.
 
 ```typescript
-Num.isPositive(42) // true
-Num.isPositive(0) // false
-Num.isPositive(-42) // false
+Num.Positive.is(42) // true
+Num.Positive.is(0) // false
+Num.Positive.is(-42) // false
 
-Num.isNegative(-42) // true
-Num.isNegative(0) // false
-Num.isNegative(42) // false
+Num.Negative.is(-42) // true
+Num.Negative.is(0) // false
+Num.Negative.is(42) // false
 
-Num.isZero(0) // true
-Num.isZero(-0) // true
-Num.isZero(42) // false
+Num.Zero.is(0) // true
+Num.Zero.is(-0) // true
+Num.Zero.is(42) // false
 ```
 
-### `isEven` / `isOdd`
+### `Even.is` / `Odd.is`
 
 Checks if an integer is even or odd.
 
 ```typescript
-Num.isEven(42) // true
-Num.isEven(43) // false
-Num.isEven(42.5) // false (not an integer)
+Num.Even.is(42) // true
+Num.Even.is(43) // false
+Num.Even.is(42.5) // false (not an integer)
 
-Num.isOdd(43) // true
-Num.isOdd(42) // false
+Num.Odd.is(43) // true
+Num.Odd.is(42) // false
 ```
 
-### `isSafe`
+### `SafeInt.is`
 
 Checks if a value is a safe integer.
 
 ```typescript
-Num.isSafe(42) // true
-Num.isSafe(Number.MAX_SAFE_INTEGER) // true
-Num.isSafe(Number.MAX_SAFE_INTEGER + 1) // false
-Num.isSafe(42.5) // false
+Num.SafeInt.is(42) // true
+Num.SafeInt.is(Number.MAX_SAFE_INTEGER) // true
+Num.SafeInt.is(Number.MAX_SAFE_INTEGER + 1) // false
+Num.SafeInt.is(42.5) // false
 ```
 
-### `inRange`
+### `InRange.is`
 
 Checks if a value is within a range (inclusive).
 
 ```typescript
-Num.inRange(5, 0, 10) // true
-Num.inRange(10, 0, 10) // true
-Num.inRange(11, 0, 10) // false
+Num.InRange.is(5, 0, 10) // true
+Num.InRange.is(10, 0, 10) // true
+Num.InRange.is(11, 0, 10) // false
 
 // Curried version
-const inRange0to10 = Num.inRangeWith(0, 10)
+const inRange0to10 = Num.InRange.isWith(0, 10)
 inRange0to10(5) // true
 inRange0to10(15) // false
 ```
 
 ## Core Operations
 
-### `clamp`
+### `InRange.clamp`
 
 Restricts a number to be within a range.
 
 ```typescript
-Num.clamp(5, 0, 10) // 5
-Num.clamp(-5, 0, 10) // 0
-Num.clamp(15, 0, 10) // 10
+Num.InRange.clamp(5, 0, 10) // 5
+Num.InRange.clamp(-5, 0, 10) // 0
+Num.InRange.clamp(15, 0, 10) // 10
 
 // Curried versions
-Num.clampOn(5)(0, 10) // 5
-Num.clampWith(0, 10)(15) // 10
+Num.InRange.clampOn(5)(0, 10) // 5
+Num.InRange.clampWith(0, 10)(15) // 10
 ```
 
 ### `abs`
@@ -170,17 +171,17 @@ Num.inc(41) // 42
 Num.dec(43) // 42
 ```
 
-### `safeDiv`
+### `NonZero.safeDiv`
 
 Division with protection against division by zero.
 
 ```typescript
-Num.safeDiv(10, 2) // 5
-Num.safeDiv(10, 0) // 0 (default)
-Num.safeDiv(10, 0, -1) // -1 (custom default)
+Num.NonZero.safeDiv(10, 2) // 5
+Num.NonZero.safeDiv(10, 0) // 0 (default)
+Num.NonZero.safeDiv(10, 0, -1) // -1 (custom default)
 
 // Curried version
-const divWith2 = Num.safeDivWith(2)
+const divWith2 = Num.NonZero.safeDivWith(2)
 divWith2(10) // 5
 ```
 
@@ -313,7 +314,7 @@ Num.GOLDEN_RATIO // 1.618033988749895
 
 ```typescript
 // Ensure a value stays within bounds
-const clampPercentage = Num.clampWith(0, 100)
+const clampPercentage = Num.InRange.clampWith(0, 100)
 
 clampPercentage(50) // 50
 clampPercentage(150) // 100
@@ -325,7 +326,7 @@ clampPercentage(-10) // 0
 ```typescript
 // Avoid division by zero
 const calculateAverage = (sum: number, count: number) =>
-  Num.safeDiv(sum, count, 0)
+  Num.NonZero.safeDiv(sum, count, 0)
 
 calculateAverage(100, 5) // 20
 calculateAverage(100, 0) // 0
@@ -350,8 +351,8 @@ calculateTax(19.99) // 1.60
 ```typescript
 const validateAge = (value: unknown): number | null => {
   if (!Num.is(value)) return null
-  if (!Num.isInt(value)) return null
-  if (!Num.inRange(value, 0, 150)) return null
+  if (!Num.Int.is(value)) return null
+  if (!Num.InRange.is(value, 0, 150)) return null
   return value
 }
 

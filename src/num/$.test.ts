@@ -32,15 +32,15 @@ describe('type predicates', () => {
     test('property: accepts finite numbers', () => {
       fc.assert(
         fc.property(fc.double({ noNaN: true, noDefaultInfinity: true }), (n) => {
-          expect(Num.isFinite(n)).toBe(true)
+          expect(Num.Finite.is(n)).toBe(true)
         }),
       )
     })
 
     test('property: rejects infinite and NaN', () => {
-      expect(Num.isFinite(Infinity)).toBe(false)
-      expect(Num.isFinite(-Infinity)).toBe(false)
-      expect(Num.isFinite(NaN)).toBe(false)
+      expect(Num.Finite.is(Infinity)).toBe(false)
+      expect(Num.Finite.is(-Infinity)).toBe(false)
+      expect(Num.Finite.is(NaN)).toBe(false)
     })
   })
 
@@ -48,7 +48,7 @@ describe('type predicates', () => {
     test('property: accepts all integers', () => {
       fc.assert(
         fc.property(fc.integer(), (n) => {
-          expect(Num.isInt(n)).toBe(true)
+          expect(Num.Int.is(n)).toBe(true)
         }),
       )
     })
@@ -58,7 +58,7 @@ describe('type predicates', () => {
         fc.property(
           fc.double({ noNaN: true }).filter(n => !Number.isInteger(n)),
           (n) => {
-            expect(Num.isInt(n)).toBe(false)
+            expect(Num.Int.is(n)).toBe(false)
           },
         ),
       )
@@ -71,7 +71,7 @@ describe('type predicates', () => {
         fc.property(
           fc.double({ noNaN: true, noDefaultInfinity: true }).filter(n => !Number.isInteger(n)),
           (n) => {
-            expect(Num.isFloat(n)).toBe(true)
+            expect(Num.Float.is(n)).toBe(true)
           },
         ),
       )
@@ -80,12 +80,12 @@ describe('type predicates', () => {
     test('property: rejects integers, NaN, and infinities', () => {
       fc.assert(
         fc.property(fc.integer(), (n) => {
-          expect(Num.isFloat(n)).toBe(false)
+          expect(Num.Float.is(n)).toBe(false)
         }),
       )
-      expect(Num.isFloat(NaN)).toBe(false)
-      expect(Num.isFloat(Infinity)).toBe(false)
-      expect(Num.isFloat(-Infinity)).toBe(false)
+      expect(Num.Float.is(NaN)).toBe(false)
+      expect(Num.Float.is(Infinity)).toBe(false)
+      expect(Num.Float.is(-Infinity)).toBe(false)
     })
   })
 
@@ -104,7 +104,7 @@ describe('type predicates', () => {
     test('property: accepts numbers > 0', () => {
       fc.assert(
         fc.property(fc.double({ min: Number.MIN_VALUE, noNaN: true }), (n) => {
-          expect(Num.isPositive(n)).toBe(true)
+          expect(Num.Positive.is(n)).toBe(true)
         }),
       )
     })
@@ -112,7 +112,7 @@ describe('type predicates', () => {
     test('property: rejects numbers <= 0', () => {
       fc.assert(
         fc.property(fc.double({ max: 0, noNaN: true }), (n) => {
-          expect(Num.isPositive(n)).toBe(false)
+          expect(Num.Positive.is(n)).toBe(false)
         }),
       )
     })
@@ -122,7 +122,7 @@ describe('type predicates', () => {
     test('property: accepts numbers < 0', () => {
       fc.assert(
         fc.property(fc.double({ max: -Number.MIN_VALUE, noNaN: true }), (n) => {
-          expect(Num.isNegative(n)).toBe(true)
+          expect(Num.Negative.is(n)).toBe(true)
         }),
       )
     })
@@ -130,7 +130,7 @@ describe('type predicates', () => {
     test('property: rejects numbers >= 0', () => {
       fc.assert(
         fc.property(fc.double({ min: 0, noNaN: true }), (n) => {
-          expect(Num.isNegative(n)).toBe(false)
+          expect(Num.Negative.is(n)).toBe(false)
         }),
       )
     })
@@ -138,13 +138,13 @@ describe('type predicates', () => {
 
   describe('isZero', () => {
     test('property: only accepts 0 and -0', () => {
-      expect(Num.isZero(0)).toBe(true)
-      expect(Num.isZero(-0)).toBe(true)
+      expect(Num.Zero.is(0)).toBe(true)
+      expect(Num.Zero.is(-0)).toBe(true)
       fc.assert(
         fc.property(
           fc.double({ noNaN: true }).filter(n => n !== 0 && !Object.is(n, -0)),
           (n) => {
-            expect(Num.isZero(n)).toBe(false)
+            expect(Num.Zero.is(n)).toBe(false)
           },
         ),
       )
@@ -155,7 +155,7 @@ describe('type predicates', () => {
     test('property: n is even iff n % 2 === 0', () => {
       fc.assert(
         fc.property(fc.integer(), (n) => {
-          expect(Num.isEven(n)).toBe(n % 2 === 0)
+          expect(Num.Even.is(n)).toBe(n % 2 === 0)
         }),
       )
     })
@@ -165,7 +165,7 @@ describe('type predicates', () => {
         fc.property(
           fc.double({ noNaN: true }).filter(n => !Number.isInteger(n)),
           (n) => {
-            expect(Num.isEven(n)).toBe(false)
+            expect(Num.Even.is(n)).toBe(false)
           },
         ),
       )
@@ -176,7 +176,7 @@ describe('type predicates', () => {
     test('property: n is odd iff n % 2 !== 0', () => {
       fc.assert(
         fc.property(fc.integer(), (n) => {
-          expect(Num.isOdd(n)).toBe(n % 2 !== 0)
+          expect(Num.Odd.is(n)).toBe(n % 2 !== 0)
         }),
       )
     })
@@ -184,7 +184,7 @@ describe('type predicates', () => {
     test('property: isOdd and isEven are mutually exclusive for integers', () => {
       fc.assert(
         fc.property(fc.integer(), (n) => {
-          expect(Num.isOdd(n)).toBe(!Num.isEven(n))
+          expect(Num.Odd.is(n)).toBe(!Num.Even.is(n))
         }),
       )
     })
@@ -194,15 +194,15 @@ describe('type predicates', () => {
     test('property: accepts safe integers', () => {
       fc.assert(
         fc.property(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: Number.MAX_SAFE_INTEGER }), (n) => {
-          expect(Num.isSafeInt(n)).toBe(true)
+          expect(Num.SafeInt.is(n)).toBe(true)
         }),
       )
     })
 
     test('property: rejects unsafe values', () => {
-      expect(Num.isSafeInt(Number.MAX_SAFE_INTEGER + 1)).toBe(false)
-      expect(Num.isSafeInt(Number.MIN_SAFE_INTEGER - 1)).toBe(false)
-      expect(Num.isSafeInt(1.5)).toBe(false)
+      expect(Num.SafeInt.is(Number.MAX_SAFE_INTEGER + 1)).toBe(false)
+      expect(Num.SafeInt.is(Number.MIN_SAFE_INTEGER - 1)).toBe(false)
+      expect(Num.SafeInt.is(1.5)).toBe(false)
     })
   })
 
@@ -216,7 +216,7 @@ describe('type predicates', () => {
           (a, b, value) => {
             const min = Math.min(a, b)
             const max = Math.max(a, b)
-            expect(Num.inRange(value, min, max)).toBe(value >= min && value <= max)
+            expect(Num.InRange.is(value, min, max)).toBe(value >= min && value <= max)
           },
         ),
       )
@@ -229,7 +229,7 @@ describe('type predicates', () => {
           fc.double({ noNaN: true }),
           fc.double({ noNaN: true }),
           (min, max, value) => {
-            expect(Num.inRangeWith(min, max)(value)).toBe(Num.inRange(value, min, max))
+            expect(Num.InRange.isWith(min, max)(value)).toBe(Num.InRange.is(value, min, max))
           },
         ),
       )
@@ -248,7 +248,7 @@ describe('core operations', () => {
           (value, a, b) => {
             const min = Math.min(a, b)
             const max = Math.max(a, b)
-            const result = Num.clamp(value, min, max)
+            const result = Num.InRange.clamp(value, min, max)
             expect(result).toBeGreaterThanOrEqual(min)
             expect(result).toBeLessThanOrEqual(max)
           },
@@ -265,8 +265,8 @@ describe('core operations', () => {
           (value, a, b) => {
             const min = Math.min(a, b)
             const max = Math.max(a, b)
-            const once = Num.clamp(value, min, max)
-            const twice = Num.clamp(once, min, max)
+            const once = Num.InRange.clamp(value, min, max)
+            const twice = Num.InRange.clamp(once, min, max)
             expect(twice).toBe(once)
           },
         ),
@@ -282,8 +282,8 @@ describe('core operations', () => {
           (value, a, b) => {
             const min = Math.min(a, b)
             const max = Math.max(a, b)
-            expect(Num.clampOn(value)(min, max)).toBe(Num.clamp(value, min, max))
-            expect(Num.clampWith(min, max)(value)).toBe(Num.clamp(value, min, max))
+            expect(Num.InRange.clampOn(value)(min, max)).toBe(Num.InRange.clamp(value, min, max))
+            expect(Num.InRange.clampWith(min, max)(value)).toBe(Num.InRange.clamp(value, min, max))
           },
         ),
       )
@@ -374,7 +374,7 @@ describe('core operations', () => {
           fc.double({ noNaN: true, noDefaultInfinity: true }),
           fc.double({ noNaN: true, noDefaultInfinity: true }).filter(n => n !== 0),
           (dividend, divisor) => {
-            expect(Num.safeDiv(dividend, divisor)).toBe(dividend / divisor)
+            expect(Num.NonZero.safeDiv(dividend, divisor)).toBe(dividend / divisor)
           },
         ),
       )
@@ -385,13 +385,13 @@ describe('core operations', () => {
         fc.property(
           fc.double({ noNaN: true }),
           (dividend) => {
-            expect(Num.safeDiv(dividend, 0)).toBe(null)
+            expect(Num.NonZero.safeDiv(dividend, 0)).toBe(null)
           },
         ),
       )
-      expect(Num.safeDiv(Infinity, 1)).toBe(null)
-      expect(Num.safeDiv(1, Infinity)).toBe(null)
-      expect(Num.safeDiv(-Infinity, 1)).toBe(null)
+      expect(Num.NonZero.safeDiv(Infinity, 1)).toBe(null)
+      expect(Num.NonZero.safeDiv(1, Infinity)).toBe(null)
+      expect(Num.NonZero.safeDiv(-Infinity, 1)).toBe(null)
     })
 
     test('property: safeDivWith is equivalent', () => {
@@ -400,7 +400,7 @@ describe('core operations', () => {
           fc.double({ noNaN: true }),
           fc.double({ noNaN: true }),
           (dividend, divisor) => {
-            expect(Num.safeDivWith(divisor)(dividend)).toBe(Num.safeDiv(dividend, divisor))
+            expect(Num.NonZero.safeDivWith(divisor)(dividend)).toBe(Num.NonZero.safeDiv(dividend, divisor))
           },
         ),
       )
@@ -414,7 +414,7 @@ describe('core operations', () => {
           fc.double({ noNaN: true, noDefaultInfinity: true, min: -1e100, max: 1e100 }),
           fc.double({ min: Number.MIN_VALUE, noNaN: true, noDefaultInfinity: true, max: 1e100 }),
           (dividend, divisor) => {
-            const nonZeroDivisor = Num.nonZero(divisor)
+            const nonZeroDivisor = Num.NonZero.from(divisor)
             if (!nonZeroDivisor) return // Skip if divisor is zero
             const result = Num.mod(dividend, nonZeroDivisor)
             // Skip if result is NaN due to overflow
@@ -432,7 +432,7 @@ describe('core operations', () => {
           fc.double({ noNaN: true }),
           fc.double({ noNaN: true }).filter(n => n !== 0),
           (dividend, divisor) => {
-            const nonZeroDivisor = Num.nonZero(divisor)
+            const nonZeroDivisor = Num.NonZero.from(divisor)
             if (!nonZeroDivisor) return // Skip if divisor is zero
             expect(Num.modWith(nonZeroDivisor)(dividend)).toBe(Num.mod(dividend, nonZeroDivisor))
           },
@@ -490,7 +490,7 @@ describe('mathematical operations', () => {
           fc.double({ noNaN: true, noDefaultInfinity: true, min: -1e15, max: 1e15 }),
           fc.double({ noNaN: true, noDefaultInfinity: true, min: -1e15, max: 1e15 }).filter(n => Math.abs(n) > 1e-10),
           (a, b) => {
-            const result = Num.divide(Num.multiply(a, b), Num.nonZero(b))
+            const result = Num.divide(Num.multiply(a, b), Num.NonZero.from(b))
             // Use relative tolerance for floating point comparisons
             const tolerance = Math.max(Math.abs(a) * 1e-9, 1e-9)
             expect(Math.abs(result - a)).toBeLessThanOrEqual(tolerance)
@@ -510,7 +510,7 @@ describe('mathematical operations', () => {
             expect(Num.multiplyWith(b)(a)).toBe(Num.multiply(a, b))
             // Only test divide when b is non-zero
             if (b !== 0) {
-              expect(Num.divideWith(Num.nonZero(b))(a)).toBe(Num.divide(a, Num.nonZero(b)))
+              expect(Num.divideWith(Num.NonZero.from(b))(a)).toBe(Num.divide(a, Num.NonZero.from(b)))
             }
           },
         ),
@@ -577,7 +577,7 @@ describe('mathematical operations', () => {
     test('property: floor(n) <= n <= ceil(n)', () => {
       fc.assert(
         fc.property(fc.double({ noNaN: true, noDefaultInfinity: true }), (n) => {
-          const finite = Num.finite(n)
+          const finite = Num.Finite.from(n)
           if (!finite) return // Skip if not finite
           expect(Num.floor(finite)).toBeLessThanOrEqual(n)
           expect(Num.ceil(finite)).toBeGreaterThanOrEqual(n)
@@ -588,7 +588,7 @@ describe('mathematical operations', () => {
     test('property: trunc removes fractional part', () => {
       fc.assert(
         fc.property(fc.double({ noNaN: true, noDefaultInfinity: true }), (n) => {
-          const finite = Num.finite(n)
+          const finite = Num.Finite.from(n)
           if (!finite) return // Skip if not finite
           const truncated = Num.trunc(finite)
           expect(Number.isInteger(truncated) || !Number.isFinite(truncated)).toBe(true)
@@ -601,7 +601,7 @@ describe('mathematical operations', () => {
     test('property: sqrt(x)^2 = x for x >= 0', () => {
       fc.assert(
         fc.property(fc.double({ min: 0, max: 1e15, noNaN: true, noDefaultInfinity: true }), (x) => {
-          const nonNeg = Num.nonNegative(x)
+          const nonNeg = Num.NonNegative.from(x)
           if (!nonNeg) return // This should never happen as x >= 0
           const result = Num.power(Num.sqrt(nonNeg), 2)
           // Use relative tolerance
@@ -624,7 +624,7 @@ describe('mathematical operations', () => {
         fc.property(fc.double({ min: -100, max: 100, noNaN: true }), (x) => {
           const expX = Math.exp(x)
           if (expX > 0) {
-            expect(Num.log(Num.positive(expX))).toBeCloseTo(x, 10)
+            expect(Num.log(Num.Positive.from(expX))).toBeCloseTo(x, 10)
           }
         }),
       )
@@ -635,7 +635,7 @@ describe('mathematical operations', () => {
         fc.property(fc.double({ min: -100, max: 100, noNaN: true }), (x) => {
           const pow10X = Math.pow(10, x)
           if (pow10X > 0) {
-            expect(Num.log10(Num.positive(pow10X))).toBeCloseTo(x, 10)
+            expect(Num.log10(Num.Positive.from(pow10X))).toBeCloseTo(x, 10)
           }
         }),
       )
@@ -646,7 +646,7 @@ describe('mathematical operations', () => {
         fc.property(fc.double({ min: -100, max: 100, noNaN: true }), (x) => {
           const pow2X = Math.pow(2, x)
           if (pow2X > 0) {
-            expect(Num.log2(Num.positive(pow2X))).toBeCloseTo(x, 10)
+            expect(Num.log2(Num.Positive.from(pow2X))).toBeCloseTo(x, 10)
           }
         }),
       )
@@ -657,7 +657,7 @@ describe('mathematical operations', () => {
     test('property: sin^2 + cos^2 = 1', () => {
       fc.assert(
         fc.property(fc.double({ noNaN: true, noDefaultInfinity: true }), (x) => {
-          const finite = Num.finite(x)
+          const finite = Num.Finite.from(x)
           if (!finite) return // Skip if not finite
           const sin2 = Num.power(Num.sin(finite), 2)
           const cos2 = Num.power(Num.cos(finite), 2)
@@ -671,11 +671,11 @@ describe('mathematical operations', () => {
         fc.property(
           fc.double({ noNaN: true }).filter(x => Math.abs(Math.cos(x)) > 0.0001),
           (x) => {
-            const finite = Num.finite(x)
+            const finite = Num.Finite.from(x)
             if (!finite) return // Skip if not finite
             const cosX = Num.cos(finite)
             if (cosX === 0) return // Skip if cos(x) is zero
-            const nonZeroCos = Num.nonZero(cosX)
+            const nonZeroCos = Num.NonZero.from(cosX)
             if (!nonZeroCos) return // Skip if we can't create NonZero
             expect(Num.tan(finite)).toBeCloseTo(Num.sin(finite) / nonZeroCos, 10)
           },
@@ -686,7 +686,7 @@ describe('mathematical operations', () => {
     test('property: asin(sin(x)) = x for x in [-π/2, π/2]', () => {
       fc.assert(
         fc.property(fc.double({ min: -Math.PI / 2, max: Math.PI / 2, noNaN: true }), (x) => {
-          const finite = Num.finite(x)
+          const finite = Num.Finite.from(x)
           if (!finite) return // Skip if not finite
           expect(Num.asin(Num.sin(finite))).toBeCloseTo(x, 10)
         }),
@@ -696,7 +696,7 @@ describe('mathematical operations', () => {
     test('property: degToRad and radToDeg are inverses', () => {
       fc.assert(
         fc.property(fc.double({ noNaN: true, noDefaultInfinity: true, min: -1e10, max: 1e10 }), (deg) => {
-          const result = Num.radToDeg(Num.degToRad(Num.degrees(deg)))
+          const result = Num.radToDeg(Num.degToRad(Num.Degrees.from(deg)))
           // Use relative tolerance for floating point comparisons
           const tolerance = Math.max(Math.abs(deg) * 1e-10, 1e-10)
           expect(Math.abs(result - deg)).toBeLessThan(tolerance)
@@ -755,8 +755,8 @@ describe('mathematical operations', () => {
           fc.integer({ min: 1, max: 10000 }),
           fc.integer({ min: 1, max: 10000 }),
           (a, b) => {
-            const intA = Num.int(a)
-            const intB = Num.int(b)
+            const intA = Num.Int.from(a)
+            const intB = Num.Int.from(b)
             if (!intA || !intB) return // This should never happen
             const g = Num.gcd(intA, intB)
             expect(a % g).toBe(0)
@@ -772,8 +772,8 @@ describe('mathematical operations', () => {
           fc.integer({ min: 1, max: 1000 }),
           fc.integer({ min: 1, max: 1000 }),
           (a, b) => {
-            const intA = Num.int(a)
-            const intB = Num.int(b)
+            const intA = Num.Int.from(a)
+            const intB = Num.Int.from(b)
             if (!intA || !intB) return // This should never happen
             const l = Num.lcm(intA, intB)
             expect(l % a).toBe(0)
@@ -789,8 +789,8 @@ describe('mathematical operations', () => {
           fc.integer({ min: 1, max: 1000 }),
           fc.integer({ min: 1, max: 1000 }),
           (a, b) => {
-            const intA = Num.int(a)
-            const intB = Num.int(b)
+            const intA = Num.Int.from(a)
+            const intB = Num.Int.from(b)
             if (!intA || !intB) return // This should never happen
             expect(Num.gcd(intA, intB) * Num.lcm(intA, intB)).toBe(Math.abs(a * b))
           },

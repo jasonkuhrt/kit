@@ -1,1 +1,1 @@
-export * as Num from './namespace.ts'
+export * as Num from './$$.ts'

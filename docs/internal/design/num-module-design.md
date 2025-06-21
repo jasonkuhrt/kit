@@ -22,7 +22,7 @@ src/num/
 ├── num.ts        # Core number operations ✅
 ├── math.ts       # Mathematical operations and constants ✅
 ├── format.ts     # Number formatting utilities ❌ TODO
-├── range.ts      # Range operations and generation ❌ TODO
+├── range.ts      # Range operations and generation ✅
 └── random.ts     # Random number generation ❌ TODO
 ```
 
@@ -138,57 +138,37 @@ export const fileSize = (bytes: number, options?: FileSizeOptions): string
 export const fileSizeWith = (options: FileSizeOptions) => (bytes: number): string
 ```
 
-### Range Operations (`range.ts`) ❌ TODO
+### Range Operations (`range.ts`) ✅ COMPLETED
 
-```typescript
-/**
- * Generate array of numbers in range.
- */
-export interface RangeOptions {
-  step?: number
-  inclusive?: boolean
-}
+All range operations have been implemented with comprehensive tests:
 
-export const range = (start: number, end: number, options?: RangeOptions): number[]
-export const rangeFrom = (start: number) => (end: number, options?: RangeOptions): number[]
-export const rangeTo = (end: number) => (start: number, options?: RangeOptions): number[]
+- **Range Generation**: `range`, `rangeFrom`, `rangeTo`, `rangeStep`, `rangeStepWith`, `rangeInclusive`, `sequence`
+  - Supports custom steps, inclusive/exclusive ranges, and automatic direction detection
+  - Uses index-based iteration to avoid floating point accumulation errors
+  - Handles edge cases like zero step and reverse ranges
 
-/**
- * Generate range with step.
- */
-export const rangeStep = (start: number, end: number, step: number): number[]
-export const rangeStepBy = (step: number) => (start: number, end: number): number[]
+- **Iteration**: `times`, `timesWith`
+  - Execute functions n times with index parameter
+  - Type-safe with generic support
+  - Validates non-negative integer counts
 
-/**
- * Create inclusive range.
- */
-export const rangeInclusive = (start: number, end: number): number[]
+- **Interpolation**: `lerp`, `lerpBetween`
+  - Linear interpolation between values
+  - Handles extrapolation (t outside [0,1])
+  - Edge case handling for infinite values and overflow
 
-/**
- * Times function - execute n times.
- */
-export const times = <T>(n: number, fn: (index: number) => T): T[]
-export const timesWith = <T>(fn: (index: number) => T) => (n: number): T[]
+- **Range Mapping**: `mapRange`, `mapRangeFrom`
+  - Maps values from one range to another
+  - Preserves endpoints exactly
+  - Handles zero-width source range errors
+  - Robust handling of large numbers and precision issues
 
-/**
- * Linear interpolation.
- */
-export const lerp = (start: number, end: number, t: number): number
-export const lerpBetween = (start: number, end: number) => (t: number): number
+- **Wrapping**: `wrap`, `wrapWithin`
+  - Wraps values within a range (modulo-like behavior)
+  - Used for angles, time, and cyclic values
+  - Robust algorithm for edge cases and floating point precision
 
-/**
- * Map value from one range to another.
- */
-export const mapRange = (
-  value: number,
-  fromMin: number,
-  fromMax: number,
-  toMin: number,
-  toMax: number
-): number
-export const mapRangeFrom = (fromMin: number, fromMax: number, toMin: number, toMax: number) =>
-  (value: number): number
-```
+All functions follow the `*With` currying pattern and include extensive property-based tests.
 
 ### Random Number Generation (`random.ts`) ❌ TODO
 

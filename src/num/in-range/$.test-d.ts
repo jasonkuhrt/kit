@@ -4,16 +4,7 @@
 
 import { Ts } from '#ts'
 import type { InRange } from './$$.ts'
-import {
-  clamp,
-  clampOn,
-  clampWith,
-  from as ranged,
-  is as inRange,
-  isOn as inRangeOn,
-  isWith as inRangeWith,
-  tryFrom as tryRanged,
-} from './$$.ts'
+import { clamp, clampWith, from as ranged, is as inRange, isWith as inRangeWith, tryFrom as tryRanged } from './$$.ts'
 
 // === Type Narrowing with Predicates ===
 
@@ -152,7 +143,7 @@ type _ComplexTypeParameters = Ts.TestSuite<[
 Ts.test('InRange types are nominal (brand-based), not structural', () => {
   // Even though both are numbers in range 0-100, they have different brands
   const range1: InRange<0, 100> = ranged(50, 0, 100)
-  const range2: InRange<0, 100> = ranged(75, 0, 100)
+  // const range2: InRange<0, 100> = ranged(75, 0, 100)
 
   // Same range types are assignable
   const _ok: InRange<0, 100> = range1

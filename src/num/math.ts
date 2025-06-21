@@ -289,7 +289,7 @@ export const roundWith = Fn.flipCurried(Fn.curry(round))
  * Type-level floor transformation.
  * Floor always returns an integer.
  */
-export type Floor<T extends number> = Int
+export type Floor<_T extends number> = Int
 
 /**
  * Round a number down to the nearest integer.
