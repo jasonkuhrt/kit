@@ -3,3 +3,7 @@ build
 **/.dprint/
 
 .DS_Store
+
+# VitePress
+docs/.vitepress/dist/
+docs/.vitepress/cache/

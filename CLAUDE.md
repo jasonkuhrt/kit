@@ -86,4 +86,21 @@ The project uses a highly modular architecture with 30+ specialized modules in `
 
 5. **Testing**: Tests use Vitest and follow the pattern `*.test.ts` or `*.test-d.ts` for type tests
 
+6. **Type-Level Transformations**: Prefer conditional types over function overloads:
+   ```typescript
+   // ✅ Good - Type-level transformation
+   type Abs<T extends number> = 
+     T extends Negative ? Positive :
+     T extends NonPositive ? NonNegative :
+     NonNegative
+
+   const abs = <T extends number>(value: T): Abs<T> => ...
+
+   // ❌ Avoid - Function overloads
+   function abs(value: Negative): Positive
+   function abs(value: NonPositive): NonNegative
+   function abs(value: number): NonNegative
+   ```
+   Benefits: Cleaner API, better type inference, easier to maintain
+
 Refer to CONTRIBUTING.md for detailed architectural patterns and API design principles.
