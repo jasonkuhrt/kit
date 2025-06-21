@@ -76,6 +76,15 @@ export type Whole = Whole_
 import type { Zero as Zero_ } from './zero/$$.ts'
 export { Zero } from './zero/$.ts'
 export type Zero = Zero_
+import type { Prime as Prime_ } from './prime/$$.ts'
+export { Prime } from './prime/$.ts'
+export type Prime = Prime_
+import type { Ratio as Ratio_ } from './ratio/$$.ts'
+export { Ratio } from './ratio/$.ts'
+export type Ratio = Ratio_
+import type { Frac as Frac_ } from './frac/$$.ts'
+export { Frac } from './frac/$.ts'
+export type Frac = Frac_
 
 export * from './math.ts'
 export * from './operations.ts'

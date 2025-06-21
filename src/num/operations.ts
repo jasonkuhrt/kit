@@ -97,7 +97,7 @@ export const dec = (value: number): number => {
  * Type-level modulo transformation.
  * Modulo always returns a non-negative result.
  */
-export type Mod<T extends number, U extends NonZero> = NonNegative
+export type Mod<_T extends number, _U extends NonZero> = NonNegative
 
 /**
  * Modulo operation that always returns positive result.
