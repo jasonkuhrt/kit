@@ -86,7 +86,7 @@ Undefined.isUndefined(value)
 
 3. We have a few patterns of curried functions, each with their corresponding naming pattern.
 
-   1. When data is first then we use `<functionName>On` to represent a factory that will return a function that operations on that data.
+   1. When data is first then we use `<functionName>On` to represent a factory that will return a function that operates on that data.
    2. When data is second then we use `<functionName>With` to represent a factory that will operate with that configuration (e.g. mapper function).
 
 4. Some functions have only data parameters and as such only have a `*On` curried variant.
@@ -99,11 +99,11 @@ For most 2-parameter functions, provide both curried variants:
 // Base function
 export const split = (value: string, separator: string): string[] => { ... }
 
-// Curried version (partial application of first parameter)
+// Curried version - data first (operates ON the data)
 export const splitOn = Fn.curry(split)
 
-// Flipped curry (partial application of second parameter)
-export const splitWith = Fn.flipCurried(splitOn)
+// Flipped curry - data second (operates WITH the separator)
+export const splitWith = Fn.flipCurried(Fn.curry(split))
 ```
 
 #### Example Curry Variant Use Cases

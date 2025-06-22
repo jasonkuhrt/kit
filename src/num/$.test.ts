@@ -811,4 +811,26 @@ describe('mathematical operations', () => {
       expect(Num.TAU).toBe(2 * Num.PI)
     })
   })
+
+  describe('BigInt module', () => {
+    test('BigInt is accessible as Num.BigInt', () => {
+      expect(typeof Num.BigInt).toBe('object')
+      expect(typeof Num.BigInt.from).toBe('function')
+      expect(typeof Num.BigInt.add).toBe('function')
+    })
+
+    test('BigInt basic operations work', () => {
+      const a = Num.BigInt.from(123)
+      const b = Num.BigInt.from(456)
+      const sum = Num.BigInt.add(a, b)
+
+      expect(sum).toBe(579n)
+      expect(Num.BigInt.is(sum)).toBe(true)
+    })
+
+    test('BigInt handles large numbers', () => {
+      const large = Num.BigInt.from('123456789012345678901234567890')
+      expect(Num.BigInt.toString(large)).toBe('123456789012345678901234567890')
+    })
+  })
 })

@@ -3,6 +3,7 @@
  * A fraction represents a positive proper fraction where 0 < numerator < denominator.
  */
 
+import { Fn } from '#fn'
 import type { Int } from '../int/$$.ts'
 import type { Natural } from '../natural/$$.ts'
 import type { NonZero } from '../non-zero/$$.ts'
@@ -82,6 +83,36 @@ export const from = (numerator: Natural, denominator: Natural): Frac => {
 
   return Ratio_.from(numerator as unknown as Int, denominator as unknown as NonZero) as Frac
 }
+
+/**
+ * Create a function that constructs fractions with a fixed numerator.
+ * Useful for creating series of fractions.
+ *
+ * @param numerator - The fixed numerator
+ * @returns A function that creates fractions with the given numerator
+ *
+ * @example
+ * const oneOver = fromWith(1)
+ * oneOver(2) // 1/2
+ * oneOver(3) // 1/3
+ * oneOver(4) // 1/4
+ */
+export const fromWith = Fn.curry(from)
+
+/**
+ * Create a function that constructs fractions with a fixed denominator.
+ * Useful for working with common denominators.
+ *
+ * @param denominator - The fixed denominator
+ * @returns A function that creates fractions with the given denominator
+ *
+ * @example
+ * const percentages = fromOn(100)
+ * percentages(25) // 25/100 = 1/4
+ * percentages(50) // 50/100 = 1/2
+ * percentages(75) // 75/100 = 3/4
+ */
+export const fromOn = Fn.flipCurried(Fn.curry(from))
 
 /**
  * Try to construct a Fraction.
@@ -215,6 +246,34 @@ export const add = (a: Frac, b: Frac): Ratio => {
 }
 
 /**
+ * Create a function that adds to a specific fraction.
+ * Data-first pattern: fix the first argument.
+ *
+ * @param a - The base fraction
+ * @returns A function that adds its input to the base fraction
+ *
+ * @example
+ * const addToHalf = addOn(from(1, 2))
+ * addToHalf(from(1, 4)) // 3/4
+ * addToHalf(from(1, 3)) // 5/6
+ */
+export const addOn = Fn.curry(add)
+
+/**
+ * Create a function that adds with a specific fraction.
+ * Data-second pattern: fix the second argument.
+ *
+ * @param b - The fraction to add
+ * @returns A function that adds the fraction to its input
+ *
+ * @example
+ * const addQuarter = addWith(from(1, 4))
+ * addQuarter(from(1, 4)) // 1/2
+ * addQuarter(from(1, 2)) // 3/4
+ */
+export const addWith = Fn.flipCurried(Fn.curry(add))
+
+/**
  * Multiply two fractions.
  * The result is always a fraction (product of two numbers < 1 is < 1).
  *
@@ -238,6 +297,34 @@ export const multiply = (a: Frac, b: Frac): Frac => {
 }
 
 /**
+ * Create a function that multiplies a specific fraction.
+ * Data-first pattern: fix the first argument.
+ *
+ * @param a - The base fraction
+ * @returns A function that multiplies the base fraction by its input
+ *
+ * @example
+ * const multiplyHalf = multiplyOn(from(1, 2))
+ * multiplyHalf(from(1, 3)) // 1/6
+ * multiplyHalf(from(3, 4)) // 3/8
+ */
+export const multiplyOn = Fn.curry(multiply)
+
+/**
+ * Create a function that multiplies with a specific fraction.
+ * Data-second pattern: fix the second argument.
+ *
+ * @param b - The fraction to multiply with
+ * @returns A function that multiplies its input with the fraction
+ *
+ * @example
+ * const half = multiplyWith(from(1, 2))
+ * half(from(1, 3)) // 1/6
+ * half(from(3, 4)) // 3/8
+ */
+export const multiplyWith = Fn.flipCurried(Fn.curry(multiply))
+
+/**
  * Compare two fractions.
  *
  * @param a - First fraction
@@ -252,3 +339,31 @@ export const multiply = (a: Frac, b: Frac): Frac => {
 export const compare = (a: Frac, b: Frac): -1 | 0 | 1 => {
   return Ratio_.compare(a, b)
 }
+
+/**
+ * Create a function that compares a specific fraction.
+ * Data-first pattern: fix the first argument.
+ *
+ * @param a - The base fraction
+ * @returns A function that compares the base fraction with its input
+ *
+ * @example
+ * const compareHalf = compareOn(from(1, 2))
+ * compareHalf(from(1, 3)) // 1 (1/2 > 1/3)
+ * compareHalf(from(2, 3)) // -1 (1/2 < 2/3)
+ */
+export const compareOn = Fn.curry(compare)
+
+/**
+ * Create a function that compares with a specific fraction.
+ * Data-second pattern: fix the second argument.
+ *
+ * @param b - The fraction to compare against
+ * @returns A function that compares its input with the fraction
+ *
+ * @example
+ * const compareToHalf = compareWith(from(1, 2))
+ * compareToHalf(from(1, 3)) // -1 (1/3 < 1/2)
+ * compareToHalf(from(2, 3)) // 1 (2/3 > 1/2)
+ */
+export const compareWith = Fn.flipCurried(Fn.curry(compare))

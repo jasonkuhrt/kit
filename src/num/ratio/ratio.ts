@@ -3,6 +3,7 @@
  * A ratio represents a number that can be expressed as a fraction p/q where q ≠ 0.
  */
 
+import { Fn } from '#fn'
 import type { Int } from '../int/$$.ts'
 import { gcd } from '../math.ts'
 import type { NonZero } from '../non-zero/$$.ts'
@@ -92,6 +93,36 @@ export const from = (numerator: Int, denominator: NonZero): Ratio => {
     denominator: d as NonZero,
   } as Ratio
 }
+
+/**
+ * Create a function that constructs ratios with a fixed numerator.
+ * Useful for creating unit fractions.
+ *
+ * @param numerator - The fixed numerator
+ * @returns A function that creates ratios with the given numerator
+ *
+ * @example
+ * const oneOver = fromWith(1 as Int)
+ * oneOver(2 as NonZero) // 1/2
+ * oneOver(3 as NonZero) // 1/3
+ * oneOver(4 as NonZero) // 1/4
+ */
+export const fromWith = Fn.flipCurried(Fn.curry(from))
+
+/**
+ * Create a function that constructs ratios with a fixed denominator.
+ * Useful for working with common denominators.
+ *
+ * @param denominator - The fixed denominator
+ * @returns A function that creates ratios with the given denominator
+ *
+ * @example
+ * const percentages = fromOn(100 as NonZero)
+ * percentages(25 as Int) // 25/100 = 1/4
+ * percentages(50 as Int) // 50/100 = 1/2
+ * percentages(75 as Int) // 75/100 = 3/4
+ */
+export const fromOn = Fn.curry(from)
 
 /**
  * Convert a decimal number to a Ratio with specified precision.
@@ -212,6 +243,34 @@ export const add = (a: Ratio, b: Ratio): Ratio => {
 }
 
 /**
+ * Create a function that adds a specific ratio.
+ * Useful for repeated additions.
+ *
+ * @param b - The ratio to add
+ * @returns A function that adds the ratio to its input
+ *
+ * @example
+ * const addHalf = addOn(from(1, 2))
+ * addHalf(from(1, 4)) // 3/4
+ * addHalf(from(1, 3)) // 5/6
+ */
+export const addOn = Fn.curry(add)
+
+/**
+ * Create a function that adds to a specific ratio.
+ * Useful for accumulating values.
+ *
+ * @param a - The ratio to add to
+ * @returns A function that adds its input to the ratio
+ *
+ * @example
+ * const addToHalf = addWith(from(1, 2))
+ * addToHalf(from(1, 4)) // 3/4
+ * addToHalf(from(1, 3)) // 5/6
+ */
+export const addWith = Fn.flipCurried(Fn.curry(add))
+
+/**
  * Subtract two ratios.
  * Result is automatically simplified.
  *
@@ -229,6 +288,34 @@ export const subtract = (a: Ratio, b: Ratio): Ratio => {
   const denominator = (a.denominator * b.denominator) as NonZero
   return from(numerator, denominator)
 }
+
+/**
+ * Create a function that subtracts from a specific ratio.
+ * Useful for calculating remainders.
+ *
+ * @param a - The ratio to subtract from
+ * @returns A function that subtracts its input from the ratio
+ *
+ * @example
+ * const subtractFromOne = subtractWith(from(1, 1))
+ * subtractFromOne(from(1, 4)) // 3/4
+ * subtractFromOne(from(2, 3)) // 1/3
+ */
+export const subtractWith = Fn.curry(subtract)
+
+/**
+ * Create a function that subtracts a specific ratio.
+ * Useful for repeated subtractions.
+ *
+ * @param b - The ratio to subtract
+ * @returns A function that subtracts the ratio from its input
+ *
+ * @example
+ * const subtractQuarter = subtractOn(from(1, 4))
+ * subtractQuarter(from(1, 1)) // 3/4
+ * subtractQuarter(from(1, 2)) // 1/4
+ */
+export const subtractOn = Fn.curry(subtract)
 
 /**
  * Multiply two ratios.
@@ -252,6 +339,34 @@ export const multiply = (a: Ratio, b: Ratio): Ratio => {
   const denominator = (a.denominator * b.denominator) as NonZero
   return from(numerator, denominator)
 }
+
+/**
+ * Create a function that multiplies by a specific ratio.
+ * Useful for scaling.
+ *
+ * @param b - The ratio to multiply by
+ * @returns A function that multiplies its input by the ratio
+ *
+ * @example
+ * const half = multiplyOn(from(1, 2))
+ * half(from(3, 4)) // 3/8
+ * half(from(2, 3)) // 1/3
+ */
+export const multiplyOn = Fn.curry(multiply)
+
+/**
+ * Create a function that multiplies a specific ratio.
+ * Useful for applying ratios to values.
+ *
+ * @param a - The ratio to multiply
+ * @returns A function that multiplies the ratio by its input
+ *
+ * @example
+ * const multiplyHalf = multiplyWith(from(1, 2))
+ * multiplyHalf(from(3, 4)) // 3/8
+ * multiplyHalf(from(2, 3)) // 1/3
+ */
+export const multiplyWith = Fn.flipCurried(Fn.curry(multiply))
 
 /**
  * Divide two ratios.
@@ -279,6 +394,34 @@ export const divide = (a: Ratio, b: Ratio): Ratio => {
 }
 
 /**
+ * Create a function that divides from a specific ratio.
+ * Useful for finding proportions.
+ *
+ * @param a - The ratio to divide from
+ * @returns A function that divides the ratio by its input
+ *
+ * @example
+ * const divideOne = divideWith(from(1, 1))
+ * divideOne(from(2, 1)) // 1/2
+ * divideOne(from(3, 1)) // 1/3
+ */
+export const divideWith = Fn.curry(divide)
+
+/**
+ * Create a function that divides by a specific ratio.
+ * Useful for repeated divisions.
+ *
+ * @param b - The ratio to divide by
+ * @returns A function that divides its input by the ratio
+ *
+ * @example
+ * const double = divideOn(from(1, 2)) // dividing by 1/2 doubles
+ * double(from(1, 3)) // 2/3
+ * double(from(1, 4)) // 1/2
+ */
+export const divideOn = Fn.curry(divide)
+
+/**
  * Compare two ratios.
  * Returns -1 if a < b, 0 if a = b, 1 if a > b.
  *
@@ -300,6 +443,34 @@ export const compare = (a: Ratio, b: Ratio): -1 | 0 | 1 => {
   if (left > right) return 1
   return 0
 }
+
+/**
+ * Create a function that compares against a specific ratio.
+ * Useful for filtering or sorting.
+ *
+ * @param b - The ratio to compare against
+ * @returns A function that compares its input against the ratio
+ *
+ * @example
+ * const compareToHalf = compareOn(from(1, 2))
+ * compareToHalf(from(1, 3)) // -1 (1/3 < 1/2)
+ * compareToHalf(from(2, 3)) // 1 (2/3 > 1/2)
+ */
+export const compareOn = Fn.curry(compare)
+
+/**
+ * Create a function that compares a specific ratio.
+ * Useful for finding where a ratio fits in a range.
+ *
+ * @param a - The ratio to compare
+ * @returns A function that compares the ratio against its input
+ *
+ * @example
+ * const compareHalf = compareWith(from(1, 2))
+ * compareHalf(from(1, 3)) // 1 (1/2 > 1/3)
+ * compareHalf(from(2, 3)) // -1 (1/2 < 2/3)
+ */
+export const compareWith = Fn.flipCurried(Fn.curry(compare))
 
 /**
  * Get the reciprocal (inverse) of a ratio.

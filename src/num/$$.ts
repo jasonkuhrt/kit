@@ -85,6 +85,12 @@ export type Ratio = Ratio_
 import type { Frac as Frac_ } from './frac/$$.ts'
 export { Frac } from './frac/$.ts'
 export type Frac = Frac_
+import type { Complex as Complex_ } from './complex/$$.ts'
+export { Complex } from './complex/$.ts'
+export type Complex = Complex_
+import type { BigInteger as BigInteger_ } from './big-integer/$$.ts'
+export { BigInteger as BigInt } from './big-integer/$.ts'
+export type BigInt = BigInteger_
 
 export * from './math.ts'
 export * from './operations.ts'
