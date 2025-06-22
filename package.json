@@ -124,6 +124,8 @@
     "#task/task": "./build/task/$$.js",
     "#zod-aid": "./build/zod-aid/$.js",
     "#zod-aid/zod-aid": "./build/zod-aid/$$.js",
+    "#traitor": "./build/traitor/$.js",
+    "#traitor/traitor": "./build/traitor/$$.js",
     "#*": {
       "default": "./build/*.js"
     }
@@ -162,6 +164,7 @@
     "./resource": "./build/resource/$$.js",
     "./str": "./build/str/$$.js",
     "./task": "./build/task/$$.js",
+    "./traitor": "./build/traitor/$$.js",
     "./tree": "./build/tree/$$.js",
     "./ts": "./build/ts/$$.js",
     "./undefined": "./build/undefined/$$.js",
