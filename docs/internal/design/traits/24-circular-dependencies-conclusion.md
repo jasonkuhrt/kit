@@ -12,8 +12,8 @@ In most cases, domains provide pure implementations without needing traits:
 
 ```typescript
 // num/range.ts - Pure implementation
-export const diff = (a: NumRange, b: NumRange) => { /* ... */ }
-export const contains = (range: NumRange, value: number) => { /* ... */ }
+export const diff = (a: NumRange, b: NumRange) => {/* ... */}
+export const contains = (range: NumRange, value: number) => {/* ... */}
 ```
 
 ### 2. When Domains Do Import Traits, It's Fine
@@ -26,13 +26,11 @@ import { Monoid } from '../traits/monoid.js'
 
 // ✅ Fine - used inside function (lazy)
 export const merge = (t1, t2) => {
-  return mergeNodes(t1, t2, (v1, v2) => 
-    Monoid.combine(v1, v2)
-  )
+  return mergeNodes(t1, t2, (v1, v2) => Monoid.combine(v1, v2))
 }
 
 // ❌ Would be bad - module-level execution
-const EMPTY = Monoid.empty()  // Don't do this
+const EMPTY = Monoid.empty() // Don't do this
 ```
 
 ### 3. Trait-to-Trait Dependencies Are Fine
@@ -47,7 +45,7 @@ export const Ord = {
   // ✅ Fine - lazy evaluation
   lessThanOrEqual: (a, b) => {
     return Ord.compare(a, b) <= 0 || Eq.equals(a, b)
-  }
+  },
 }
 ```
 
@@ -57,7 +55,7 @@ The question isn't about circular dependencies, but about **when** registration 
 
 ```typescript
 // Option 1: Explicit registration module
-import './traits/registrations.js'  // User must remember
+import './traits/registrations.js' // User must remember
 
 // Option 2: On-demand registration
 const ensureRegistered = (type) => {
@@ -75,7 +73,7 @@ const ensureRegistered = (type) => {
 JavaScript/TypeScript modules handle circular imports well when:
 
 1. **Imports are for types** - Type-only imports have no runtime impact
-2. **Imports are for functions** - Functions create lazy evaluation  
+2. **Imports are for functions** - Functions create lazy evaluation
 3. **No module-level execution** - Avoid side effects during import
 
 ```typescript
@@ -83,25 +81,27 @@ JavaScript/TypeScript modules handle circular imports well when:
 // A.ts
 import { B } from './B.js'
 export const A = {
-  foo: () => B.bar()  // Lazy - B.bar called at runtime
+  foo: () => B.bar(), // Lazy - B.bar called at runtime
 }
 
-// B.ts  
+// B.ts
 import { A } from './A.js'
 export const B = {
-  bar: () => A.foo()  // Lazy - A.foo called at runtime
+  bar: () => A.foo(), // Lazy - A.foo called at runtime
 }
 ```
 
 ## Architecture Guidelines
 
 ### DO ✅
+
 - Use traits inside functions (lazy evaluation)
 - Import types freely
 - Keep module-level code side-effect free
 - Use explicit registration phases
 
 ### DON'T ❌
+
 - Execute trait methods at module level
 - Register during import (side effects)
 - Access trait results during module initialization
@@ -133,6 +133,7 @@ With optional domain→trait imports for generic operations:
 ## Conclusion
 
 The perceived "circular dependency problem" was actually about:
+
 - Module-level side effects (bad practice anyway)
 - Registration timing (a bootstrapping question)
 - Not understanding JavaScript's lazy evaluation

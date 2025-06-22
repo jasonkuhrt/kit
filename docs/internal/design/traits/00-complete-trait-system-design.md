@@ -16,8 +16,8 @@ Num.Range.diff(numRange1, numRange2)
 Str.Range.diff(strRange1, strRange2)
 
 // Traits enable polymorphic calls
-Range.diff(numRange1, numRange2)  // Works with any Range type
-Range.diff(strRange1, strRange2)  // Same interface, different implementation
+Range.diff(numRange1, numRange2) // Works with any Range type
+Range.diff(strRange1, strRange2) // Same interface, different implementation
 ```
 
 ### Domains vs Traits
@@ -51,25 +51,28 @@ src/
 ### Import Patterns
 
 #### 1. Main Import (Trait-Enabled)
+
 ```typescript
-import { Range, Num } from '@wollybeard/kit'
+import { Num, Range } from '@wollybeard/kit'
 
 // All registrations happen automatically via side effects
-Range.diff(r1, r2)  // Polymorphic dispatch
+Range.diff(r1, r2) // Polymorphic dispatch
 ```
 
 #### 2. Deep Import (Tree-Shakeable)
+
 ```typescript
 import { diff } from '@wollybeard/kit/num/range'
 
 // Direct function call, no trait system
-diff(r1, r2)  // Only this specific function is bundled
+diff(r1, r2) // Only this specific function is bundled
 ```
 
 #### 3. Traits Not Available as Deep Imports
+
 ```typescript
 // ❌ FORBIDDEN - Ensures registration happens
-import { equals } from '@wollybeard/kit/eq'  // Module not found!
+import { equals } from '@wollybeard/kit/eq' // Module not found!
 ```
 
 ## Registration System
@@ -78,12 +81,12 @@ import { equals } from '@wollybeard/kit/eq'  // Module not found!
 
 ```typescript
 // src/num/$.ts
-import './traits/range.registry.js'  // Generated file
+import './traits/range.registry.js' // Generated file
 import './traits/eq.registry.js'
 import './traits/ord.registry.js'
 
 export * from './$$.js'
-export const id = Symbol('Num')  // Domain identifier
+export const id = Symbol('Num') // Domain identifier
 ```
 
 ### Generated Registry Files
@@ -140,14 +143,14 @@ For domain-specific return types, we use type-level functions:
 
 ```typescript
 // src/num/traits/parse.ts
-export const parse = <T extends string>(input: T): ParseResult<T> => { /* ... */ }
+export const parse = <T extends string>(input: T): ParseResult<T> => {/* ... */}
 
 // Signal dependent return type with __ prefix
-export type __parse_return<$Parameters extends [string]> = 
+export type __parse_return<$Parameters extends [string]> =
   $Parameters[0] extends `0x${string}`
     ? { success: true; value: number; format: 'hex' }
     : $Parameters[0] extends `${number}.${number}`
-    ? { success: true; value: number; format: 'decimal' }
+      ? { success: true; value: number; format: 'decimal' }
     : { success: boolean; value?: number; error?: string }
 ```
 
@@ -160,27 +163,26 @@ type GetReturnType<
   Method extends string,
   Domain extends string,
   Params extends any[],
-  DefaultReturn
-> = 
+  DefaultReturn,
+> =
   // Check if KitRegistry exists and has traits
   KitRegistry extends { traits: infer Traits }
     ? Traits extends Record<Trait, infer TraitDef>
       ? TraitDef extends { domains: infer Domains }
         ? Domains extends Record<Domain, infer DomainDef>
           ? DomainDef extends Record<Method, infer MethodDef>
-            ? MethodDef extends (...args: any[]) => any
-              ? MethodDef<Params>      // Call type-level function
-              : MethodDef              // Use type directly
-            : DefaultReturn            // Method not found
-          : DefaultReturn              // Domain not found
-        : DefaultReturn                // No domains property
-      : DefaultReturn                  // Trait not found
-    : DefaultReturn                    // No traits property
+            ? MethodDef extends (...args: any[]) => any ? MethodDef<Params> // Call type-level function
+            : MethodDef // Use type directly
+          : DefaultReturn // Method not found
+        : DefaultReturn // Domain not found
+      : DefaultReturn // No domains property
+    : DefaultReturn // Trait not found
+    : DefaultReturn // No traits property
 
 // Trait method preserves types
 export const diff = <T, V extends Range<T>>(
   a: V,
-  b: V
+  b: V,
 ): GetReturnType<'range', 'diff', GetDomain<V>, [V, V], Range<T>[]> => {
   return dispatch('range', 'diff', [a, b])
 }
@@ -201,9 +203,9 @@ const nativeToDomainMap = {
 }
 
 // These work automatically
-Eq.equals([1, 2], [1, 2])        // Uses Arr.Eq.equals
-Show.show(42)                     // Uses Num.Show.show
-Range.contains(dateRange, today)  // Uses Date.Range.contains
+Eq.equals([1, 2], [1, 2]) // Uses Arr.Eq.equals
+Show.show(42) // Uses Num.Show.show
+Range.contains(dateRange, today) // Uses Date.Range.contains
 ```
 
 ## Tree-Shaking Strategy
@@ -215,6 +217,7 @@ Trait dispatch breaks static analysis - bundlers can't determine which implement
 ### Solution: Trait-Aware Rollup Plugin
 
 The plugin:
+
 1. Analyzes trait usage using TypeScript compiler API
 2. Determines which domain implementations are needed
 3. Ensures bundler keeps required implementations
@@ -236,6 +239,7 @@ The plugin:
 ### The Problem
 
 Some environments have unreliable global state:
+
 - Cloudflare Workers: Shared across concurrent requests
 - Serverless: Fresh isolates per invocation
 
@@ -248,11 +252,11 @@ For environments needing request isolation:
 export default {
   async fetch(request, env, ctx) {
     return await withTraits([
-      { trait: 'Range', type: 'NumRange', impl: NumRangeOps }
+      { trait: 'Range', type: 'NumRange', impl: NumRangeOps },
     ], async () => {
-      return app(request)  // Traits work in isolated context
+      return app(request) // Traits work in isolated context
     })
-  }
+  },
 }
 ```
 
@@ -267,10 +271,10 @@ const Range = {
     if (contextRegistry) {
       return dispatch(contextRegistry, 'Range', 'diff', [a, b])
     }
-    
+
     // Fall back to global registry (Node/Browser)
     return dispatch(globalRegistry, 'Range', 'diff', [a, b])
-  }
+  },
 }
 ```
 
@@ -291,6 +295,7 @@ Kit uses a build step to generate registry files:
 ### For Kit Users
 
 No build tooling required! Users just:
+
 ```bash
 npm install @wollybeard/kit
 ```
@@ -303,24 +308,24 @@ All types and registrations are pre-built.
 
 ```typescript
 // Full Kit with traits
-import { Range, Eq, Num, Str } from '@wollybeard/kit'
+import { Eq, Num, Range, Str } from '@wollybeard/kit'
 
-Range.diff(numRange, numRange2)  // Polymorphic
-Eq.equals([1, 2], [1, 2])       // Works with natives
+Range.diff(numRange, numRange2) // Polymorphic
+Eq.equals([1, 2], [1, 2]) // Works with natives
 
 // Tree-shakeable direct imports
 import { diff } from '@wollybeard/kit/num/range'
-diff(r1, r2)  // No trait system, minimal bundle
+diff(r1, r2) // No trait system, minimal bundle
 ```
 
 ### For Domain Implementors
 
 ```typescript
 // src/num/traits/range.ts - Just write the implementation
-export const diff = (a: NumRange, b: NumRange): NumRangeDiff => { /* ... */ }
+export const diff = (a: NumRange, b: NumRange): NumRangeDiff => {/* ... */}
 
 // Optional: type-level function for precise types
-export type __diff_return<$Parameters extends [NumRange, NumRange]> = 
+export type __diff_return<$Parameters extends [NumRange, NumRange]> =
   DiffSegment<$Parameters[0], $Parameters[1]>[]
 
 // Everything else is generated!
@@ -338,7 +343,7 @@ declare module '@wollybeard/kit' {
 
 // Add implementation
 Traits.Range.MyType = {
-  interpolate: (range, t) => { /* ... */ }
+  interpolate: (range, t) => {/* ... */},
 }
 ```
 
@@ -354,18 +359,21 @@ Traits.Range.MyType = {
 ## Benefits
 
 ### For Users
+
 - Zero configuration
 - Excellent TypeScript inference
 - Choose between polymorphism and bundle size
 - Works in all environments
 
 ### For Kit Development
+
 - Minimal boilerplate via code generation
 - Type-safe implementations
 - Clean separation of concerns
 - Extensible architecture
 
 ### For the Ecosystem
+
 - Plugins can extend without forking
 - Tree-shaking still possible
 - No vendor lock-in

@@ -7,8 +7,9 @@ This document outlines how Kit maintains tree-shaking capabilities while support
 ## The Challenge
 
 Trait dispatch breaks static analysis:
+
 ```typescript
-Range.diff(r1, r2)  // Which implementation? Bundler can't tell!
+Range.diff(r1, r2) // Which implementation? Bundler can't tell!
 ```
 
 ## Solution: Trait-Aware Rollup Plugin
@@ -16,6 +17,7 @@ Range.diff(r1, r2)  // Which implementation? Bundler can't tell!
 ### Core Principle
 
 A Rollup plugin that:
+
 1. Analyzes trait usage in user code
 2. Determines which domain implementations are needed
 3. Ensures bundler keeps required implementations
@@ -28,7 +30,7 @@ To keep initial implementation manageable:
    ```typescript
    // ✅ SUPPORTED
    Range.diff(r1, r2)
-   
+
    // ❌ NOT SUPPORTED (Phase 1)
    const { diff } = Range
    diff(r1, r2)
@@ -38,7 +40,7 @@ To keep initial implementation manageable:
    ```typescript
    // ✅ SUPPORTED
    import { Range } from '@wollybeard/kit'
-   
+
    // ❌ NOT SUPPORTED (Phase 1)
    import { Range as R } from '@wollybeard/kit'
    ```
@@ -46,7 +48,9 @@ To keep initial implementation manageable:
 ### Implementation Approaches
 
 #### Approach 1: Transform Imports
+
 Add phantom imports for used implementations:
+
 ```typescript
 // Original
 import { Range } from '@wollybeard/kit'
@@ -59,7 +63,9 @@ Range.diff(r1, r2)
 ```
 
 #### Approach 2: Virtual Re-exports
+
 Generate a virtual module with only used exports:
+
 ```typescript
 // Generated virtual module
 export { diff as Num_Range_diff } from './num/range/diff.js'
@@ -68,7 +74,9 @@ export { equals as Str_Eq_equals } from './str/eq/equals.js'
 ```
 
 #### Approach 3: Module Side Effects
+
 Use Rollup's `moduleSideEffects` to mark modules as used:
+
 ```typescript
 resolveId(source) {
   return {
@@ -81,16 +89,17 @@ resolveId(source) {
 ### Type Analysis
 
 The plugin requires TypeScript compiler API to:
+
 1. Determine types of values used with traits
 2. Map native types to domain types
 3. Handle generic type resolution
 
 ```typescript
 // Plugin needs to know:
-const arr = [1, 2, 3]        // Type: number[] → Arr + Num domains
-const range = createRange()   // Type: NumRange → Num domain
-Eq.equals(arr, [1, 2, 3])    // Needs: Arr.Eq.equals
-Range.diff(range, range2)     // Needs: Num.Range.diff
+const arr = [1, 2, 3] // Type: number[] → Arr + Num domains
+const range = createRange() // Type: NumRange → Num domain
+Eq.equals(arr, [1, 2, 3]) // Needs: Arr.Eq.equals
+Range.diff(range, range2) // Needs: Num.Range.diff
 ```
 
 ### Native Type Mapping
@@ -111,6 +120,7 @@ const nativeToDomainMap = {
 ### Recursive Analysis
 
 If domain implementations use other traits:
+
 ```typescript
 // Num.Range.diff uses Ord.compare
 export const diff = (a, b) => {
@@ -131,6 +141,6 @@ export const diff = (a, b) => {
 ## Future Enhancements
 
 - Support for destructuring
-- Support for aliasing  
+- Support for aliasing
 - Dynamic trait method access
 - Cross-module trait usage tracking
