@@ -1,0 +1,6 @@
+export * from './dispatcher/$.ts'
+export * from './domain.ts'
+export * from './registry/$.ts'
+export type { Definition, GetDeps, GetExternal, GetInternal, TraitInterface } from './trait-interface.ts'
+export * from './traitor.ts'
+export * from './types.ts'

@@ -46,17 +46,29 @@ Arr.Eq.is(a, b) // No naming conflicts, clear semantics
 ```
 src/
 ├── traitor/                  # Trait system infrastructure ("trait operator")
-│   ├── core.ts               # Registry and dispatch
-│   ├── types.ts              # Core types/interfaces
-│   └── $.ts                  # System exports
+│   ├── dispatcher/           # Dispatch system
+│   │   ├── dispatcher.ts     # Core dispatch implementation
+│   │   └── ...
+│   ├── registry/             # Registry system
+│   ├── $.ts                  # Namespace export
+│   └── $$.ts                 # Barrel export
 ├── traits/                   # Trait definitions
-│   ├── eq.ts                 # Eq trait interface
-│   ├── ord.ts                # Future: Ord trait
-│   └── $.ts                  # Traits namespace export
+│   ├── eq/                   # Eq trait
+│   │   ├── interface.ts      # Trait interface and proxy
+│   │   ├── laws.ts           # Property-based law tests for implementations
+│   │   ├── $.ts              # Namespace export (exports as Eq)
+│   │   └── $$.ts             # Barrel export
+│   ├── ord/                  # Future: Ord trait
+│   │   └── ...
+│   ├── $.ts                  # Namespace export (exports as Traits)
+│   └── $$.ts                 # Barrel export
 ├── arr/                      # Domain modules
-│   ├── $.ts                  # Includes trait implementations
+│   ├── $.ts                  # Namespace export (includes trait implementations)
+│   ├── $$.ts                 # Barrel export
 │   ├── traits/               # Trait implementations
-│   │   └── eq.ts             # Eq implementation for arrays
+│   │   ├── eq.ts             # Eq implementation for arrays
+│   │   ├── eq.test.ts        # Tests for Eq implementation + registration
+│   │   └── eq-laws.test.ts   # Property-based law tests
 │   └── ...
 └── index.ts                  # Main barrel export
 ```
@@ -87,15 +99,14 @@ export { Eq }
 ### Trait Definition
 
 ```typescript
-// src/traits/eq.ts
-export interface EqOps<T> {
-  is(a: T, b: T): boolean
+// src/traits/eq/interface.ts
+export interface Eq<$Value = unknown> {
+  is<value extends $Value>(a: value, b: value): boolean
+  isOn<value extends $Value>(a: value): (b: value) => boolean
 }
 
-// For MVP, manual dispatch (later will be generated)
-export const is = <T>(a: T, b: T): boolean => {
-  return dispatch('Eq', 'is', [a, b])
-}
+// Trait proxy using dispatcher
+export const Eq = Traitor.Dispatcher.create<Eq>(Traitor.REGISTRY, 'Eq')
 ```
 
 ## Type System
@@ -147,12 +158,80 @@ Eq.is('a', 'a') // Detects string, uses Str.Eq.is
 - Plugin extensibility
 - Performance optimizations
 
+## Testing Strategy
+
+### Responsibility Separation
+
+- **Traits module (`src/traits/`)**: Defines interfaces only, no tests (interfaces have no implementation to test)
+- **Domain modules**: Own their trait implementations and tests
+
+### Domain Testing Structure
+
+Each domain's trait implementation includes comprehensive tests:
+
+```typescript
+// src/arr/traits/eq.test.ts
+describe('Arr.Eq implementation', () => {
+  test('direct implementation', () => {
+    expect(Arr.Eq.is([1, 2], [1, 2])).toBe(true)
+    expect(Arr.Eq.is([1, 2], [1, 3])).toBe(false)
+  })
+
+  test('registration with dispatch system', () => {
+    expect(dispatchOrThrow(REGISTRY, 'Eq', 'is', [[1, 2], [1, 2]])).toBe(true)
+  })
+
+  test('domain-specific edge cases', () => {
+    // Nested arrays, empty arrays, mixed types, etc.
+  })
+})
+```
+
+### Test Coverage Areas
+
+1. **Direct trait method testing** - Test the implementation API users interact with
+2. **Registration verification** - Ensure trait is properly registered with dispatch system
+3. **Domain-specific scenarios** - Edge cases relevant to each data type
+4. **Integration testing** - Cross-domain scenarios can live in domain tests or separate integration suite
+5. **Trait laws** - Mathematical properties that all implementations must satisfy
+
+### Trait Laws
+
+Traits provide property-based law tests to help domains verify their implementations are mathematically correct. These are located at `src/traits/<trait-name>/laws.ts` and accessible via the namespace pattern:
+
+```typescript
+// src/traits/eq/laws.ts
+export const EqLaws = {
+  reflexivity: <T>(arbitrary: fc.Arbitrary<T>, eq: Eq<T>) => {/* ... */},
+  symmetry: <T>(arbitrary: fc.Arbitrary<T>, eq: Eq<T>) => {/* ... */},
+  transitivity: <T>(arbitrary: fc.Arbitrary<T>, eq: Eq<T>) => {/* ... */},
+  curryingConsistency: <T>(
+    arbitrary: fc.Arbitrary<T>,
+    eq: Eq<T>,
+  ) => {/* ... */},
+  all: <T>(arbitrary: fc.Arbitrary<T>, eq: Eq<T>) => {/* ... */},
+}
+```
+
+Domains use these laws in their tests:
+
+```typescript
+// src/str/traits/eq-laws.test.ts
+import { Str } from '#str'
+import { Eq } from '#traits/eq'
+
+test('Str.Eq satisfies all Eq laws', () => {
+  fc.assert(Eq.Laws.all(fc.string(), Str.Eq))
+})
+```
+
 ## Key Design Decisions
 
 1. **Namespaced trait methods** - Avoids naming conflicts, preserves trait semantics
 2. **ESM side effects for registration** - Ensures traits work immediately
 3. **Manual MVP, generated later** - Start simple, automate repetitive parts
 4. **Domain-first organization** - Traits live with their implementations
+5. **Domain-owned testing** - Each domain tests its own trait implementations and registration
 
 ## Open Questions
 

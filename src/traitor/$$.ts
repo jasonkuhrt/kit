@@ -1,5 +1,0 @@
-export * from './dispatcher.ts'
-export * from './domain.ts'
-export * from './registry-singleton.ts'
-export * from './registry/$.ts'
-export * from './types.ts'

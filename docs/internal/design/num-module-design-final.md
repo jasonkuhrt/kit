@@ -358,7 +358,7 @@ export const mapRange = (
   toMin: number,
   toMax: number
 ): number
-export const mapRangeOn = (value: number) => 
+export const mapRangeOn = (value: number) =>
   (fromMin: number, fromMax: number, toMin: number, toMax: number): number
 export const mapRangeWith = (fromMin: number, fromMax: number, toMin: number, toMax: number) =>
   (value: number): number
