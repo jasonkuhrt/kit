@@ -11,16 +11,17 @@
     "build",
     "src"
   ],
+  "bin": {
+    "kit-partialize": "./build/cli/partialize.js"
+  },
   "imports": {
     "#platform:*": {
       "browser": "./build/utils/*.browser.js",
       "default": "./build/utils/*.node.js"
     },
-    "#traits": "./build/traits/$.js",
-    "#traits/traits": "./build/traits/$$.js",
-    "#Arb": "./build/traits/arb/$.js",
-    "#Eq": "./build/traits/eq/$.js",
-    "#Type": "./build/traits/type/$.js",
+    "#arb": "./build/traits/arb.js",
+    "#eq": "./build/traits/eq.js",
+    "#type": "./build/traits/type.js",
     "#arr": "./build/domains/arr/$.js",
     "#arr/arr": "./build/domains/arr/$$.js",
     "#arr-mut": "./build/domains/arr-mut/$.js",
@@ -67,6 +68,8 @@
     "#group/group": "./build/domains/group/$$.js",
     "#prom": "./build/domains/prom/$.js",
     "#prom/prom": "./build/domains/prom/$$.js",
+    "#prox": "./build/domains/prox/$.js",
+    "#prox/prox": "./build/domains/prox/$$.js",
     "#ref": "./build/utils/ref/$.js",
     "#ref/ref": "./build/utils/ref/$$.js",
     "#value": "./build/utils/value/$.js",
@@ -142,9 +145,9 @@
   "sideEffects": false,
   "exports": {
     ".": "./build/exports/index.js",
-    "./Arb": "./build/traits/arb/$.js",
-    "./Eq": "./build/traits/eq/$.js",
-    "./Type": "./build/traits/type/$.js",
+    "./arb": "./build/traits/arb.js",
+    "./eq": "./build/traits/eq.js",
+    "./type": "./build/traits/type.js",
     "./arr": "./build/domains/arr/$$.js",
     "./arr-mut": "./build/domains/arr-mut/$$.js",
     "./bool": "./build/domains/bool/$$.js",
@@ -172,6 +175,7 @@
     "./pat": "./build/utils/pat/$$.js",
     "./path": "./build/utils/path/$$.js",
     "./prom": "./build/domains/prom/$$.js",
+    "./prox": "./build/domains/prox/$$.js",
     "./rec": "./build/domains/rec/$$.js",
     "./resource": "./build/utils/resource/$$.js",
     "./str": "./build/domains/str/$$.js",
@@ -181,7 +185,6 @@
     "./ts": "./build/utils/ts/$$.js",
     "./undefined": "./build/domains/undefined/$$.js",
     "./url": "./build/domains/url/$$.js",
-    "./traits": "./build/traits/$$.js",
     "./value": "./build/utils/value/$$.js",
     "./zod-aid": "./build/utils/zod-aid/$$.js"
   },
@@ -209,7 +212,6 @@
     "check": "pnpm run '/check:.*/'",
     "fix": "pnpm run '/fix:.*/'",
     "prebuild": "pnpm build:clean",
-    "check:package:circular": "madge --circular --no-spinner --extensions ts,tsx ./src",
     "prepare": "husky",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
@@ -223,11 +225,9 @@
     "dprint": "^0.50.0",
     "dripip": "^0.10.0",
     "husky": "^9.1.7",
-    "madge": "^8.0.0",
     "oxlint": "^1.2.0",
     "publint": "^0.3.12",
     "tsx": "^4.20.3",
-    "typescript": "^5.8.3",
     "vitepress": "^1.6.3",
     "vitest": "^3.2.4"
   },
@@ -240,7 +240,9 @@
     "fast-check": "^4.1.1",
     "jsonc-parser": "^3.3.1",
     "pathe": "^2.0.3",
+    "ts-morph": "^21.0.0",
     "type-fest": "^4.41.0",
+    "typescript": "^5.8.3",
     "zod": "^3.25.67"
   },
   "libra": {

@@ -135,7 +135,7 @@ export type PrivateKindParameters = typeof PrivateKindParameters
  * }
  * ```
  */
-export interface PrivateKind {
+export interface Private {
   [PrivateKindReturn]: unknown
   [PrivateKindParameters]: unknown
 }
@@ -151,8 +151,13 @@ export interface PrivateKind {
  * type BoxOfString = PrivateKindApply<BoxKind, [string]> // Box<string>
  * ```
  */
-export type PrivateKindApply<$Kind extends PrivateKind, $Args> =
-  ($Kind & { [PrivateKindParameters]: $Args })[PrivateKindReturn]
+export type PrivateApply<$Kind extends Private, $Args> = ($Kind & { [PrivateKindParameters]: $Args })[PrivateKindReturn]
+
+// dprint-ignore
+export type MaybePrivateApplyOr<$MaybeKind, $Args, $Or> =
+  $MaybeKind extends Private
+    ? PrivateApply<$MaybeKind, $Args>
+    : $Or
 
 /**
  * Check if a type is a private kind.
@@ -165,4 +170,4 @@ export type PrivateKindApply<$Kind extends PrivateKind, $Args> =
  * type Test2 = IsPrivateKind<string> // false
  * ```
  */
-export type IsPrivateKind<T> = T extends PrivateKind ? true : false
+export type IsPrivateKind<T> = T extends Private ? true : false

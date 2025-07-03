@@ -1,7 +1,7 @@
 // Traits - exported directly at root level
-export * from '#Arb'
-export * from '#Eq'
-export * from '#Type'
+export * from '#arb'
+export * from '#eq'
+export * from '#type'
 
 // Domains
 export * from '#arr'
@@ -14,6 +14,7 @@ export * from '#null'
 export * from '#num'
 export * from '#obj'
 export * from '#prom'
+export * from '#prox'
 export * from '#rec'
 export * from '#str'
 export * from '#task'

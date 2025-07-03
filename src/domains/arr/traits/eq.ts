@@ -1,4 +1,5 @@
-import { Eq as EqTrait } from '#Eq'
+import { Traitor } from '#traitor'
+import { Eq as EqTrait } from '../../../traits/eq.ts'
 import { domain } from '../domain.ts'
 
 /**
@@ -29,7 +30,7 @@ import { domain } from '../domain.ts'
  * ) // true
  * ```
  */
-export const Eq = EqTrait.$.implement(domain, {
+export const Eq = Traitor.implement(EqTrait, domain, {
   is(a, b) {
     // Type checking handled by base, both a and b are arrays
     if (a.length !== b.length) return false
@@ -41,9 +42,3 @@ export const Eq = EqTrait.$.implement(domain, {
     return true
   },
 })
-
-declare global {
-  interface TRAITOR_DOMAINS_Eq {
-    Arr: typeof Eq
-  }
-}

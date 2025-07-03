@@ -1,27 +1,6 @@
-import { Type as TypeTrait } from '#Type'
+import { Traitor } from '#traitor'
+import { Type as TypeTrait } from '../../../traits/type.ts'
 import { domain } from '../domain.ts'
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Registration
-//
-//
-
-declare global {
-  interface TRAITOR_DOMAINS_Type {
-    Num: typeof Type
-  }
-}
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Implementation
-//
-//
 
 /**
  * {@link Type} trait implementation for numbers.
@@ -38,7 +17,7 @@ declare global {
  * Num.Type.is('42')          // false
  * ```
  */
-export const Type = TypeTrait.$.implement(domain, {
+export const Type = Traitor.implement(TypeTrait, domain, {
   is(value) {
     return typeof value === 'number'
   },

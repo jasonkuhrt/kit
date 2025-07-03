@@ -45,6 +45,20 @@ export type ReturnExclude<$Type, $Fn extends AnyAny> =
 
 export type ReturnExcludeNull<$Fn extends AnyAny> = ReturnExclude<null, $Fn>
 
+/**
+ * Modify function such that it can return an additional type along with its original return types.
+ * This is useful for functions that may return early with a specific type (like void).
+ */
+// dprint-ignore
+export type ReturnInclude<$Type, $Fn extends AnyAny> =
+  $Fn extends (...args: infer __args__) => infer __return__
+    ? (...args: __args__) => (
+        __return__ extends Prom.AnyAny
+          ? Promise<$Type | Awaited<__return__>>
+          : $Type | __return__
+    )
+    : never
+
 // Binding
 
 export const bind = <fn extends AnyAny>(

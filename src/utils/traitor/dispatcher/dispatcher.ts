@@ -1,35 +1,22 @@
 import type { Fn } from '#fn'
-import { nativeToDomainOrThrow } from '../domain.ts'
+import { Prox } from '#prox'
+import type { MethodConfig } from '../definition.ts'
+import { defaultDomainCheck, traitMethodConfigs } from '../definition.ts'
+import { detectDomain } from '../domain.ts'
 import type { Registry } from '../registry/$.ts'
 import type { MethodName, TraitName } from '../types.ts'
 
-export interface Dispatcher {
-  [methodName: string]: Fn.AnyAny
+export const createTraitProxy = <$Interface>(
+  registry: Registry.Registry,
+  traitName: TraitName,
+): $Interface => {
+  return Prox.createCachedGetProxy<$Interface, {}>(
+    (propertyName: string) => createTraitDispatcher(registry, traitName)(propertyName as MethodName),
+  )
 }
 
-/**
- * Creates a generic trait proxy that dispatches all method calls to the registry.
- *
- * This creates a proxy object where any method access returns a function that
- * dispatches to the appropriate domain implementation based on the first argument.
- * Methods are cached after first access for performance.
- *
- * @param registry - The trait registry to dispatch against
- * @param traitName - The name of the trait (e.g., 'Eq')
- * @returns A proxy object implementing the trait interface
- *
- * @example
- * ```ts
- * const Eq = createTraitProxy(REGISTRY, 'Eq')
- * Eq.is('hello', 'hello') // Dispatches to Str.Eq.is
- * Eq.isOn([1,2,3]) // Dispatches to Arr.Eq.isOn
- * ```
- */
-export const createTraitProxy = (
-  registry: Registry.Data,
-  traitName: TraitName,
-): Dispatcher => {
-  return createCachedGetProxy<Dispatcher, {}>(createTraitDispatcher(registry, traitName))
+export interface Dispatcher {
+  [methodName: string]: Fn.AnyAny
 }
 
 /**
@@ -47,66 +34,99 @@ export const createTraitProxy = (
  * dispatchOrThrow(registry, 'Eq', 'is', [[1, 2], [1, 2]]) // calls Arr.Eq.is
  */
 export const createTraitDispatcher = <$Return>(
-  registry: Registry.Data,
+  registry: Registry.Registry,
   traitName: TraitName,
-  thisArg?: any,
 ) =>
 (methodName: MethodName) =>
 (...args: any[]): $Return => {
-  const [firstArg] = args
-
-  // Determine domain from first argument
-  const domainName = nativeToDomainOrThrow(firstArg)
-
-  const trait = registry[traitName]
-  if (!trait) {
+  const traitRegistry = registry[traitName]
+  if (!traitRegistry) {
     throw new Error(`Trait "${traitName}" not found in registry`)
   }
 
-  const domain = trait[domainName]
+  return dispatchMethodCall(traitRegistry, traitName, methodName, args)
+}
+
+const resolveDomainInfer = (args: any[], strategy: number[]): string | null => {
+  const doamins = detectDomains(args, strategy)
+  const domain = allDomainsMatch(doamins)
+  return domain
+}
+
+/**
+ * Detect domains from arguments based on detection strategy.
+ */
+const detectDomains = (args: any[], strategy: number[]): (string | null)[] => {
+  if (strategy.length === 0) {
+    // Empty array means all arguments
+    return args.map(arg => detectDomain(arg))
+  }
+
+  // Specific indices
+  return strategy.map(index => {
+    if (index >= args.length) return null
+    return detectDomain(args[index])
+  })
+}
+
+/**
+ * Check if all detected domains are the same (and not null).
+ */
+const allDomainsMatch = (domains: (string | null)[]): string | null => {
+  const firstDomain = domains[0]
+  if (!firstDomain) return null
+
+  for (const domain of domains) {
+    if (domain !== firstDomain) return null
+  }
+
+  return firstDomain
+}
+
+/**
+ * Dispatch a method call directly without creating a dispatcher function.
+ * Lower-level building block for compiled output.
+ */
+export const dispatchMethodCall = <T>(
+  registry: Registry.TraitRegistry<T>,
+  traitName: string,
+  methodName: string,
+  args: any[],
+): any => {
+  // If initialize is provided and hasn't been called yet, call it now
+  if (registry.initialize && !registry.isInitialized) {
+    registry.initialize()
+    registry.isInitialized = true
+  }
+
+  // Get method configuration from global store
+  const traitConfigs = traitMethodConfigs.get(traitName)
+  const methodConfig = traitConfigs?.[methodName] as MethodConfig<any> | undefined
+  const domainCheckStrategy = methodConfig?.domainCheck ?? defaultDomainCheck
+
+  let domainName: string | null = null
+
+  // Always use infer strategy (brand types handled elsewhere)
+  domainName = resolveDomainInfer(args, domainCheckStrategy)
+
+  if (!domainName && methodConfig?.domainMissing) {
+    // Call domainMissing hook if domain detection failed
+    return methodConfig.domainMissing(...args)
+  }
+
+  if (!domainName) {
+    throw new Error(`No valid domain detected for ${traitName}.${methodName}`)
+  }
+
+  const domain = registry.implementations[domainName] as Record<string, Fn.AnyAny>
   if (!domain) {
-    throw new Error(`Domain "${domainName}" not registered for trait "${traitName}"`)
+    throw new Error(`No ${traitName} implementation for domain: ${domainName}`)
   }
 
   const method = domain[methodName]
-  if (!method) {
-    throw new Error(`Method "${methodName}" not found for domain "${domainName}" in trait "${traitName}"`)
+  if (typeof method !== 'function') {
+    throw new Error(`Method ${methodName} not found on ${traitName} for domain ${domainName}`)
   }
 
-  return thisArg ? method.call(thisArg, ...args) : method(...args)
-}
-
-interface GetProxyOptions {
-  symbols?: boolean
-}
-
-const createCachedGetProxy = <type, options extends GetProxyOptions>(
-  createValue: (propertyName: options['symbols'] extends true ? symbol | string : string) => Function,
-  options?: options,
-): type => {
-  const cache = new Map<symbol | string, any>()
-  const config = {
-    symbols: options?.symbols ?? false,
-  }
-
-  return new Proxy({} as any, {
-    get(target, propertyName) {
-      if (!config.symbols && typeof propertyName !== 'string') {
-        return undefined
-      }
-
-      // Check if property exists on the target (e.g., $ property)
-      if (propertyName in target) {
-        return target[propertyName]
-      }
-
-      let cachedMethod = cache.get(propertyName)
-      if (cachedMethod) return cachedMethod
-
-      const value = createValue(propertyName as any)
-      cache.set(propertyName, value)
-
-      return value
-    },
-  })
+  return method(...args)
 }

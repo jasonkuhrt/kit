@@ -83,7 +83,13 @@ export interface State {
  *
  * @returns A new builder instance
  */
-export const Builder = (): Builder => {
+export const Builder = (options?: {
+  /**
+   * During render, the character to join with.
+   * @defaultValue '\n'
+   */
+  join?: string
+}): Builder => {
   const state: State = {
     lines: [],
   }
@@ -123,7 +129,11 @@ export const Builder = (): Builder => {
 
   builder.state = state
 
-  builder.render = Fn.bind(defaultRender, state.lines)
+  builder.render = options?.join
+    ? () => {
+      return state.lines.join(options.join)
+    }
+    : Fn.bind(defaultRender, state.lines)
 
   builder.toString = builder.render
 

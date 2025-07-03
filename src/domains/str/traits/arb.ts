@@ -1,5 +1,6 @@
-import { Arb as ArbTrait } from '#Arb'
+import { Traitor } from '#traitor'
 import * as fc from 'fast-check'
+import { Arb as ArbTrait } from '../../../traits/arb.ts'
 import { domain } from '../domain.ts'
 
 /**
@@ -27,19 +28,8 @@ import { domain } from '../domain.ts'
  */
 const arbitrary = fc.string()
 
-export const Arb = ArbTrait.$.implement(domain, {
+export const Arb = Traitor.implement(ArbTrait, domain, {
   arbitrary,
   sample: () => fc.sample(arbitrary, 1)[0]!,
   samples: (count = 10) => fc.sample(arbitrary, count),
 })
-
-// Additional specialized string arbitraries could be exposed:
-export const arbNonEmpty = fc.string({ minLength: 1 })
-export const arbAlphanumeric = fc.string({ minLength: 1 }).filter(s => /^[a-zA-Z0-9]+$/.test(s))
-export const arbEmail = fc.string().map(s => `${s}@example.com`)
-
-declare global {
-  interface TRAITOR_DOMAINS_Arb {
-    Str: typeof Arb
-  }
-}

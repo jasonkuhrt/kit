@@ -1,4 +1,5 @@
-import { Eq as EqTrait } from '#Eq'
+import { Traitor } from '#traitor'
+import { Eq as EqTrait } from '../../../traits/eq.ts'
 import { domain } from '../domain.ts'
 
 /**
@@ -17,14 +18,8 @@ import { domain } from '../domain.ts'
  * Num.Eq.is(NaN, NaN)         // false (NaN is never equal to itself)
  * ```
  */
-export const Eq = EqTrait.$.implement(domain, {
+export const Eq = Traitor.implement(EqTrait, domain, {
   is(a, b) {
-    return typeof b === 'number' && a === b
+    return a === b
   },
 })
-
-declare global {
-  interface TRAITOR_DOMAINS_Eq {
-    Num: typeof Eq
-  }
-}

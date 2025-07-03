@@ -1,27 +1,6 @@
-import { Eq as EqTrait } from '#Eq'
+import { Traitor } from '#traitor'
+import { Eq as EqTrait } from '../../../traits/eq.ts'
 import { domain } from '../domain.ts'
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Registration
-//
-//
-
-declare global {
-  interface TRAITOR_DOMAINS_Eq {
-    Str: typeof Eq
-  }
-}
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Implementation
-//
-//
 
 /**
  * {@link Eq} trait implementation for strings.
@@ -38,9 +17,8 @@ declare global {
  * Str.Eq.is('', '')               // true (empty strings)
  * ```
  */
-export const Eq = EqTrait.$.implement(domain, {
+export const Eq = Traitor.implement(EqTrait, domain, {
   is(a, b) {
-    // Type checking handled by base, both a and b are strings
     return a === b
   },
 })

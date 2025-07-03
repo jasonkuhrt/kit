@@ -1,27 +1,6 @@
-import { Type as TypeTrait } from '#Type'
+import { Traitor } from '#traitor'
+import { Type as TypeTrait } from '../../../traits/type.ts'
 import { domain } from '../domain.ts'
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Registration
-//
-//
-
-declare global {
-  interface TRAITOR_DOMAINS_Type {
-    ArrMut: typeof Type
-  }
-}
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Implementation
-//
-//
 
 /**
  * {@link Type} trait implementation for arrays.
@@ -38,7 +17,7 @@ declare global {
  * ArrMut.Type.is(null)          // false
  * ```
  */
-export const Type = TypeTrait.$.implement(domain, {
+export const Type = Traitor.implement(TypeTrait, domain, {
   is(value) {
     return Array.isArray(value)
   },

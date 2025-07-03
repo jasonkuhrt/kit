@@ -1,4 +1,5 @@
-import { Eq as EqTrait } from '#Eq'
+import { Traitor } from '#traitor'
+import { Eq as EqTrait } from '../../../traits/eq.ts'
 import { domain } from '../domain.ts'
 
 /**
@@ -15,14 +16,8 @@ import { domain } from '../domain.ts'
  * Bool.Eq.is(true, false)    // false
  * ```
  */
-export const Eq = EqTrait.$.implement(domain, {
+export const Eq = Traitor.implement(EqTrait, domain, {
   is(a, b) {
-    return typeof b === 'boolean' && a === b
+    return a === b
   },
 })
-
-declare global {
-  interface TRAITOR_DOMAINS_Eq {
-    Bool: typeof Eq
-  }
-}

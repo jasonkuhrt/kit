@@ -1,8 +1,19 @@
 /**
- * Domain detection utilities.
+ * Name of a domain (e.g., 'Arr', 'Str', 'Num').
+ * Domains represent data types that can implement traits.
  */
+export type DomainName = string
 
-import type { DomainName } from './types.ts'
+/**
+ * Domain definition for trait implementations.
+ *
+ * @template $Type - The type this domain represents
+ * @template $Name - The literal name of the domain (e.g., 'Str', 'Arr')
+ */
+export interface Domain<$Type = any, $Name extends string = string> {
+  name: $Name
+  _type: $Type
+}
 
 /**
  * Lookup table for native type to domain mapping.
@@ -19,7 +30,7 @@ import type { DomainName } from './types.ts'
  * - Symbol -> 'Symbol'
  * - BigInt -> 'BigInt'
  */
-const nativeToDomain = {
+const nativeToDomainMap = {
   'null': 'Null',
   'undefined': 'Undefined',
   'boolean': 'Bool',
@@ -27,13 +38,16 @@ const nativeToDomain = {
   'string': 'Str',
   'array': 'Arr',
   'object': 'Obj',
+  'function': 'Fn',
 } as const
 
 /**
  * Type-level domain detection utility.
  * Maps types to their corresponding domain names.
  */
-export type GetDomain<$Value> = $Value extends null ? 'Null'
+// dprint-ignore
+export type detectDomain<$Value> =
+    $Value extends null ? 'Null'
   : $Value extends undefined ? 'Undefined'
   : $Value extends boolean ? 'Bool'
   : $Value extends number ? 'Num'
@@ -49,22 +63,59 @@ export type GetDomain<$Value> = $Value extends null ? 'Null'
  * @returns The domain name (e.g., 'Arr', 'Str', 'Num')
  * @throws If the value type cannot be mapped to a domain
  */
-export const nativeToDomainOrThrow = (value: unknown): DomainName => {
+export const detectDomain = <value>(value: value): detectDomain<value> | null => {
   const type = typeof value
 
-  switch (type) {
-    case 'undefined':
-      return nativeToDomain.undefined
-    case 'boolean':
-      return nativeToDomain.boolean
-    case 'number':
-      return nativeToDomain.number
-    case 'string':
-      return nativeToDomain.string
-    case 'object':
-      if (value === null) return nativeToDomain.null
-      return Array.isArray(value) ? nativeToDomain.array : nativeToDomain.object
-    default:
-      throw new Error(`Cannot determine domain for value of type "${type}": ${value}`)
+  if (type === 'object') {
+    if (value === null) return nativeToDomainMap.null as any
+    if (Array.isArray(value)) return nativeToDomainMap.array as any
+    return nativeToDomainMap.object as any
   }
+
+  if (type === 'bigint') return null
+  if (type === 'symbol') return null
+
+  return nativeToDomainMap[type] as any
+}
+
+export const detectDomainOrThrow = <value>(value: value): detectDomain<value> => {
+  const result = detectDomain(value)
+  if (result === null) {
+    throw new Error(`Cannot detect domain for value of type ${typeof value}`)
+  }
+  return result
+}
+
+/**
+ * Define a domain for trait implementations.
+ *
+ * @param name - The domain name (e.g., 'Str', 'Num', 'Arr')
+ * @param typeWitness - A representative value of the type this domain handles
+ * @returns A domain definition that can be passed to trait implementations
+ *
+ * @example
+ * ```ts
+ * const strDomain = domain('Str', '')
+ * export const Eq = EqTrait.implement(strDomain, {
+ *   is(a, b) { return typeof b === 'string' && a === b }
+ * })
+ * ```
+ */
+export const domain = <
+  const $Name extends string,
+  $Type,
+>(name: $Name, _typeWitness: $Type): Domain<$Type, $Name> => ({
+  name,
+  _type: undefined as any,
+})
+
+/**
+ * Domain definition for trait implementations.
+ *
+ * @template $Type - The type this domain represents
+ * @template $Name - The literal name of the domain (e.g., 'Str', 'Arr')
+ */
+export interface Domain<$Type = any, $Name extends string = string> {
+  name: $Name
+  _type: $Type
 }

@@ -1,59 +1,52 @@
-import type { DomainName, Implementation, TraitName } from '../types.ts'
+import type { DomainName } from '../domain.ts'
+import type { Implementation } from '../implement.ts'
+import type { TraitName } from '../types.ts'
 
 /**
- * Runtime registry data structure.
+ * Type-safe trait registry for a single trait.
+ * Used both internally and in compiled output.
  */
-export type Data = Record<string, Record<string, any>>
-
-/**
- * Registry instance with data and proxy access.
- */
-export interface Registry {
-  /**
-   * The underlying registry data.
-   * Mutated by register() and the proxy.
-   */
-  readonly data: Data
-
-  /**
-   * Proxy-based API for intuitive trait registration.
-   *
-   * @example
-   * registry.proxy.Eq.Arr = {
-   *   is: (a, b) => a.length === b.length
-   * }
-   */
-  readonly proxy: any
+export interface TraitRegistry<T> {
+  implementations: Record<string, T>
+  domainDetector: ((value: unknown) => string | null) | null
+  methodConfigs?: Record<string, any> // Stores method configurations from trait definition
+  initialize?: () => void
+  isInitialized?: boolean
 }
+
+/**
+ * Factory for creating trait registries.
+ */
+export const TraitRegistry = {
+  create<T = any>(initialize?: () => void): TraitRegistry<T> {
+    const registry: TraitRegistry<T> = {
+      implementations: {},
+      domainDetector: null,
+    }
+    if (initialize) {
+      registry.initialize = initialize
+    }
+    return registry
+  },
+}
+
+/**
+ * Runtime registry data structure - now uses TraitRegistry internally.
+ */
+export type Registry = Record<string, TraitRegistry<any>>
 
 /**
  * Create a new trait registry.
  *
- * @returns A new registry with data and proxy access
+ * @returns A new empty registry
  *
  * @example
  * const registry = Registry.create()
- * registry.proxy.Eq.Num = { is: (a, b) => a === b }
- * console.log(registry.data) // { Eq: { Num: { is: [Function] } } }
+ * Registry.register(registry, 'Eq', 'Num', { is: (a, b) => a === b })
+ * console.log(registry) // { Eq: { implementations: { Num: { is: [Function] } } } }
  */
 const create = (): Registry => {
-  const data: Data = {}
-
-  const proxy = new Proxy({} as any, {
-    get(_, traitName: string) {
-      return new Proxy({}, {
-        get(_, domainName: string) {
-          return data[traitName]?.[domainName]
-        },
-        set(_, domainName: string, implementation: Implementation) {
-          register(data, traitName, domainName, implementation)
-          return true
-        },
-      })
-    },
-  })
-
-  return { data, proxy }
+  return {}
 }
 
 /**
@@ -68,18 +61,20 @@ const create = (): Registry => {
  * @param implementation - Object containing the trait methods
  *
  * @example
- * register(registry.data, 'Eq', 'Arr', {
+ * register(registry, 'Eq', 'Arr', {
  *   is: (a, b) => a.length === b.length && a.every((v, i) => v === b[i])
  * })
  */
 export const register = (
-  registry: Data,
+  registry: Registry,
   traitName: TraitName,
   domainName: DomainName,
   implementation: Implementation,
 ): void => {
-  registry[traitName] ??= {}
-  registry[traitName][domainName] = implementation
+  if (!registry[traitName]) {
+    registry[traitName] = TraitRegistry.create()
+  }
+  registry[traitName].implementations[domainName] = implementation
 }
 
 export { create }

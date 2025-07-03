@@ -1,27 +1,6 @@
-import { Type as TypeTrait } from '#Type'
+import { Traitor } from '#traitor'
+import { Type as TypeTrait } from '../../../traits/type.ts'
 import { domain } from '../domain.ts'
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Registration
-//
-//
-
-declare global {
-  interface TRAITOR_DOMAINS_Type {
-    Null: typeof Type
-  }
-}
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Implementation
-//
-//
 
 /**
  * {@link Type} trait implementation for null.
@@ -38,7 +17,7 @@ declare global {
  * Null.Type.is('')          // false
  * ```
  */
-export const Type = TypeTrait.$.implement(domain, {
+export const Type = Traitor.implement(TypeTrait, domain, {
   is(value) {
     return value === null
   },

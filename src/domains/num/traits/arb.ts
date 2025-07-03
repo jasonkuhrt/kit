@@ -1,5 +1,6 @@
-import { Arb as ArbTrait } from '#Arb'
+import { Traitor } from '#traitor'
 import * as fc from 'fast-check'
+import { Arb as ArbTrait } from '../../../traits/arb.ts'
 import { domain } from '../domain.ts'
 
 /**
@@ -30,7 +31,7 @@ const arbitrary = fc.oneof(
   fc.float(),
 )
 
-export const Arb = ArbTrait.$.implement(domain, {
+export const Arb = Traitor.implement(ArbTrait, domain, {
   arbitrary,
   sample: () => fc.sample(arbitrary, 1)[0]!,
   samples: (count = 10) => fc.sample(arbitrary, count),
@@ -42,9 +43,3 @@ export const arbPositive = fc.integer({ min: 1 })
 export const arbNonNegative = fc.nat()
 export const arbFloat = fc.float()
 export const arbInRange = (min: number, max: number) => fc.float({ min, max })
-
-declare global {
-  interface TRAITOR_DOMAINS_Arb {
-    Num: typeof Arb
-  }
-}

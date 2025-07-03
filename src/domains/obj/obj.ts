@@ -423,3 +423,14 @@ export type PartialDeep<$Type> =
  * @internal
  */
 type Keyof<$Object extends object> = object extends $Object ? PropertyKey : keyof $Object
+
+// Check if an interface has any optional properties
+export type HasOptionalKeys<$Obj extends object> = OptionalKeys<$Obj> extends never ? false : true
+
+// Extract keys that are optional in the interface
+export type OptionalKeys<T> = {
+  [K in keyof T]-?: {} extends Pick<T, K> ? K : never
+}[keyof T]
+
+// Extract keys that are required in the interface
+export type RequiredKeys<T> = Exclude<keyof T, OptionalKeys<T>>

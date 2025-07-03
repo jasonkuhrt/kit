@@ -1,23 +1,6 @@
-import { Glo } from '#glo'
 import { Traitor } from '#traitor'
 import type { Ts } from '#ts'
 import * as fc from 'fast-check'
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Global Registration
-//
-//
-
-declare global {
-  interface TRAITOR_TRAITS {
-    Arb: Arb
-  }
-
-  interface TRAITOR_DOMAINS_Arb {}
-}
 
 //
 //
@@ -54,8 +37,9 @@ declare global {
  */
 export interface Arb<$Type = unknown> extends
   Traitor.Definition<
-    [], // No dependencies
-    { // External interface
+    'Arb',
+    [],
+    {
       /**
        * The fast-check arbitrary for this domain.
        */
@@ -71,7 +55,7 @@ export interface Arb<$Type = unknown> extends
        */
       samples(count?: number): $Type[]
     },
-    { // Internal interface
+    {
       arbitrary: fc.Arbitrary<$Type>
       sample?(): $Type
       samples?(count?: number): $Type[]
@@ -91,4 +75,11 @@ export interface Arb<$Type = unknown> extends
 //
 //
 
-export const Arb = Glo.traitor.trait('Arb')
+export const Arb = Traitor.define<Arb>('Arb', {
+  sample: {
+    defaultWith: ({ trait }) => () => fc.sample(trait.arbitrary, 1)[0],
+  },
+  samples: {
+    defaultWith: ({ trait }) => (count = 10) => fc.sample(trait.arbitrary, count),
+  },
+})

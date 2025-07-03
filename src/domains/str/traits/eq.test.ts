@@ -17,10 +17,4 @@ describe('Str.Eq implementation', () => {
     expect(Str.Eq.is('hello', 'Hello')).toBe(false)
     expect(Str.Eq.is('hello', '')).toBe(false)
   })
-
-  test('isOn currying', () => {
-    const isHello = Str.Eq.isOn('hello' as any)
-    expect(isHello('hello' as any)).toBe(true)
-    expect(isHello('world' as any)).toBe(false)
-  })
 })

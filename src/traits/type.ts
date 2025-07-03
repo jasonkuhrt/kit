@@ -1,30 +1,5 @@
-import { Glo } from '#glo'
-import type { Traitor } from '#traitor'
+import { Traitor } from '#traitor'
 import type { Ts } from '#ts'
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Global Registration
-//
-//
-
-declare global {
-  interface TRAITOR_TRAITS {
-    Type: Type
-  }
-
-  interface TRAITOR_DOMAINS_Type {}
-}
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Interface
-//
-//
 
 /**
  * Type trait interface for type checking operations.
@@ -48,8 +23,9 @@ declare global {
  * Type.is(123)      // true (dispatches to Num)
  * ```
  */
-export interface Type<$Value = unknown> extends
+export interface Type<$Value = any> extends
   Traitor.Definition<
+    'Type',
     [], // Dependencies (none)
     { // External interface - rich types for users
       /**
@@ -83,7 +59,7 @@ export interface Type<$Value = unknown> extends
       is(value: unknown): boolean
     }
   >,
-  Ts.Kind.PrivateKind
+  Ts.Kind.Private
 {
   // @ts-expect-error - PrivateKind pattern: unknown will be overridden via intersection
   [Ts.Kind.PrivateKindReturn]: Type<this[Ts.Kind.PrivateKindParameters][0]>
@@ -98,4 +74,4 @@ export interface Type<$Value = unknown> extends
 //
 //
 
-export const Type = Glo.traitor.trait('Type')
+export const Type = Traitor.define<Type>('Type')

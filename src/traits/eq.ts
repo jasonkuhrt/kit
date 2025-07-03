@@ -1,31 +1,7 @@
-import { Glo } from '#glo'
 import { Lang } from '#lang'
 import { Traitor } from '#traitor'
 import type { Ts } from '#ts'
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Global Registration
-//
-//
-
-declare global {
-  interface TRAITOR_TRAITS {
-    Eq: Eq
-  }
-
-  interface TRAITOR_DOMAINS_Eq {}
-}
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Interface
-//
-//
+import type { Type } from '#type'
 
 /**
  * Eq trait interface for type-safe equality operations.
@@ -50,10 +26,11 @@ declare global {
  * Eq.is('hello', 'hello') // true
  * ```
  */
-export interface Eq<$A = unknown> extends
+export interface Eq<$A = any> extends
   Traitor.Definition<
-    ['Type'], // Dependencies
-    { // External interface
+    'Eq',
+    [Type],
+    {
       /**
        * Check structural equality between two values.
        *
@@ -79,27 +56,10 @@ export interface Eq<$A = unknown> extends
        * ```
        */
       is<a extends $A, b = a>(a: a, b: ValidateComparable<a, b>): boolean
-      /**
-       * Creates a function that checks equality against the given value.
-       *
-       * @param a - First value to compare (fixed)
-       * @returns Function that takes the second value and returns equality result
-       *
-       * @example
-       * ```ts
-       * const isHello = Str.Eq.isOn('hello')
-       * isHello('hello') // true
-       * isHello('world') // false
-       * isHello(123) // false - cross-type comparison
-       *
-       * const isUndefined = Undefined.Eq.isOn(undefined)
-       * isUndefined(null) // false
-       * ```
-       */
-      isOn<a extends $A>(a: a): <b = a>(b: ValidateComparable<a, b>) => boolean
     },
-    { // Internal interface
-      is(a: $A, b: $A): boolean
+    {
+      // todo: Fn.Partialize<
+      is: (value1: $A, value2: $A) => boolean
     }
   >
 {
@@ -131,17 +91,13 @@ type ErrorDisjointTypes<A, B> = Ts.StaticError<
 //
 //
 
-export const Eq = Glo.traitor.trait('Eq', {
-  base(domain, self) {
-    return {
-      is: (a: unknown, b: unknown) => {
-        // Use Type trait to check if b is the correct type
-        if (!domain.Type.is(b)) return false
-        // Now both a and b are guaranteed to be the correct type
-        // domain.Eq is the domain's Eq implementation being registered
-        return domain.Eq.is(a, b)
-      },
-      isOn: (a: unknown) => (b: unknown) => self.is(a, b),
-    }
+export const Eq = Traitor.define<Eq>('Eq', {
+  is: {
+    domainMissing: () => false,
+    laws: {
+      reflexivity: true,
+      symmetry: true,
+      transitivity: true,
+    },
   },
 })
