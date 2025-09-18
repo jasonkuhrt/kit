@@ -1,7 +1,6 @@
 import { ArrMut } from '#arr-mut'
 import { Idx } from '#idx'
 import { Obj } from '#obj'
-import { Test } from '#test'
 import { property } from '#test/test'
 import fc from 'fast-check'
 import { expect, expectTypeOf, test } from 'vitest'
@@ -159,7 +158,9 @@ property(
 
 const c = Idx.create
 
-interface CaseInstructions extends Test.CaseInstructions {
+// TODO: Rewrite this test to use the new Test.Case API
+// The old CaseInstructions API has been removed
+interface CaseInstructions {
   set?: ArrMut.Maybe<any>
   setAt?: [key: any, item: any]
   get?: [item: any, expectedValue: any]
@@ -176,8 +177,9 @@ const o2 = { id: 2 }
 
 const key = (item: any) => item.id
 
+// TODO: Rewrite using new Test.Case API
 // dprint-ignore
-const cases = Test.cases<CaseInstructions>([
+const cases: Array<[string, CaseInstructions]> = [
   ['empty',                          {                                                                    data: { array: [], map: new Map() } }],
 
   ['get: undefined',                 { get: [1, undefined] }],
@@ -222,9 +224,10 @@ const cases = Test.cases<CaseInstructions>([
   ['fromArray: empty',               { options: { fromArray: [] },                                        data: { array: [], map: new Map() } }],
   ['fromArray: items',               { options: { fromArray: [1, 2, 3] },                                 data: { array: [1, 2, 3] } }],
   ['fromArray: with keyer',          { options: { fromArray: [o1, o2], key: key },                        data: { array: [o1, o2], map: new Map([[1, o1], [2, o2]]) } }],
-])
+]
 
-test.for(cases)('%j', ([_, instructions]) => {
+// TODO: Update to use Test.each or test.for with proper Test.Case format
+test.for(cases)('%j', ([_, instructions]: [string, CaseInstructions]) => {
   const idx = instructions.options?.fromArray
     ? Idx.fromArray(instructions.options.fromArray, instructions.options)
     : c(instructions.options)

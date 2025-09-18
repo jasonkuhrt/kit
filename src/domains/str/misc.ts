@@ -16,3 +16,8 @@ import { title } from './case/case.ts'
 export const titlizeSlug = (str: string) => {
   return title(str.replace(Url.pathSeparator, ' '))
 }
+
+export const ensureEnd = (string: string, ending: string) => {
+  if (string.endsWith(ending)) return string
+  return string + ending
+}

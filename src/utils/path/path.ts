@@ -69,6 +69,96 @@ export const ensureAbsoluteWith = Fn.flipCurried(ensureAbsoluteOn)
 export const ensureAbsoluteWithCWD = ensureAbsoluteWith(Lang.process.cwd())
 
 /**
+ * Make a path absolute if it isn't already, with support for undefined paths.
+ * If the path is undefined, returns the current working directory.
+ *
+ * @param pathExp - The path to ensure is absolute (or undefined).
+ * @returns An absolute path or the current working directory if undefined.
+ *
+ * @example
+ * ```ts
+ * // with undefined
+ * ensureOptionalAbsoluteWithCwd(undefined) // '/current/working/dir'
+ *
+ * // with relative path
+ * ensureOptionalAbsoluteWithCwd('foo/bar.ts') // '/current/working/dir/foo/bar.ts'
+ *
+ * // with absolute path
+ * ensureOptionalAbsoluteWithCwd('/foo/bar.ts') // '/foo/bar.ts'
+ * ```
+ */
+export const ensureOptionalAbsoluteWithCwd = (pathExp: string | undefined): string => {
+  if (pathExp === undefined) return Lang.process.cwd()
+  return PlatformPath.isAbsolute(pathExp) ? pathExp : PlatformPath.resolve(Lang.process.cwd(), pathExp)
+}
+
+/**
+ * Make a path absolute if it isn't already, with support for undefined paths.
+ * If the path is undefined, returns the base path.
+ *
+ * @param pathExp - The path to ensure is absolute (or undefined).
+ * @param basePathExp - The base path to resolve against or return if pathExp is undefined.
+ * @returns An absolute path or the base path if undefined.
+ *
+ * @example
+ * ```ts
+ * // with undefined
+ * ensureOptionalAbsolute(undefined, '/home/user') // '/home/user'
+ *
+ * // with relative path
+ * ensureOptionalAbsolute('foo/bar.ts', '/home/user') // '/home/user/foo/bar.ts'
+ *
+ * // with absolute path
+ * ensureOptionalAbsolute('/foo/bar.ts', '/home/user') // '/foo/bar.ts'
+ * ```
+ */
+export const ensureOptionalAbsolute = (pathExp: string | undefined, basePathExp: string): string => {
+  assertAbsolute(basePathExp)
+  if (pathExp === undefined) return basePathExp
+  return PlatformPath.isAbsolute(pathExp) ? pathExp : PlatformPath.resolve(basePathExp, pathExp)
+}
+
+/**
+ * Assert that a path is absolute, throwing an error if it's not.
+ *
+ * @param pathExpression - The path to check.
+ * @throws Error if the path is not absolute.
+ *
+ * @example
+ * ```ts
+ * assertAbsolute('/foo/bar.ts') // passes
+ * assertAbsolute('foo/bar.ts') // throws Error: Path must be absolute: foo/bar.ts
+ * ```
+ */
+export const assertAbsolute = (pathExpression: string): void => {
+  if (PlatformPath.isAbsolute(pathExpression)) return
+  throw new Error(`Path must be absolute: ${pathExpression}`)
+}
+
+/**
+ * Assert that a path is absolute if defined, throwing an error if it's relative.
+ * Undefined paths are allowed and will not throw.
+ *
+ * @param pathExpression - The path to check (or undefined).
+ * @param message - Optional custom error message.
+ * @throws Error if the path is defined but not absolute.
+ *
+ * @example
+ * ```ts
+ * assertOptionalAbsolute(undefined) // passes
+ * assertOptionalAbsolute('/foo/bar.ts') // passes
+ * assertOptionalAbsolute('foo/bar.ts') // throws Error: Path must be absolute: foo/bar.ts
+ * assertOptionalAbsolute('foo/bar.ts', 'Custom error') // throws Error: Custom error
+ * ```
+ */
+export const assertOptionalAbsolute = (pathExpression: string | undefined, message?: string): void => {
+  if (pathExpression === undefined) return
+  if (PlatformPath.isAbsolute(pathExpression)) return
+  const message_ = message ?? `Path must be absolute: ${pathExpression}`
+  throw new Error(message_)
+}
+
+/**
  * Format a path to have an explicit relative prefix (./) if it's relative.
  * Absolute paths are returned unchanged.
  *

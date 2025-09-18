@@ -96,52 +96,46 @@ Ts.test('Odd has correct relationship with Int and Even', () => {
 // === Type-Level Only Tests ===
 
 // Test brand relationships
-type _OddRelationships = Ts.TestSuite<[
+type _OddRelationships = Ts.Cases<
   // Odd extends number
   Ts.Assert<number, Odd>,
-
   // Int extends number
   Ts.Assert<number, Int>,
-
   // Odd & Int extends both Odd and Int
   Ts.AssertExtendsTyped<Odd & Int, Odd>,
   Ts.AssertExtendsTyped<Odd & Int, Int>,
   Ts.AssertExtendsTyped<Odd & Int, number>,
-
   // Odd does not extend Int (not all Odd are Int in type system)
   Ts.AssertNotExtends<Odd, Int>,
-
   // Int does not extend Odd (not all Int are Odd)
   Ts.AssertNotExtends<Int, Odd>,
-
   // Odd & Int is more specific than either alone
   Ts.AssertNotExtends<Odd, Odd & Int>,
-  Ts.AssertNotExtends<Int, Odd & Int>,
-]>
+  Ts.AssertNotExtends<Int, Odd & Int>
+>
 
 // Test mutual exclusivity with Even
-type _OddEvenExclusive = Ts.TestSuite<[
+type _OddEvenExclusive = Ts.Cases<
   // Odd and Even don't extend each other
   Ts.AssertNotExtends<Odd, Even>,
-  Ts.AssertNotExtends<Even, Odd>,
-  // The intersection Odd & Even would be never in practice
-  // (though TypeScript won't reduce it to never automatically)
-]>
+  Ts.AssertNotExtends<Even, Odd>
+> // The intersection Odd & Even would be never in practice
+// (though TypeScript won't reduce it to never automatically)
 
 // Test constructor return types
-type _ConstructorReturnTypes = Ts.TestSuite<[
+type _ConstructorReturnTypes = Ts.Cases<
   // All constructors return the intersection type
   Ts.AssertExact<ReturnType<typeof odd>, Odd & Int>,
   Ts.AssertExact<ReturnType<typeof tryOdd>, (Odd & Int) | null>,
   Ts.AssertExact<ReturnType<typeof nextOdd>, Odd & Int>,
-  Ts.AssertExact<ReturnType<typeof prevOdd>, Odd & Int>,
-]>
+  Ts.AssertExact<ReturnType<typeof prevOdd>, Odd & Int>
+>
 
 // Test predicate return type
-type _PredicateTypes = Ts.TestSuite<[
+type _PredicateTypes = Ts.Cases<
   // isOdd narrows to the intersection
-  Ts.Assert<(value: unknown) => value is Odd & Int, typeof isOdd>,
-]>
+  Ts.Assert<(value: unknown) => value is Odd & Int, typeof isOdd>
+>
 
 // Demonstrate intersection behavior
 Ts.test('Odd and Int form a proper intersection', () => {

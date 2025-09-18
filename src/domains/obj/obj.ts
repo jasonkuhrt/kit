@@ -3,6 +3,7 @@ import type { Rec } from '#rec'
 import type { Ts } from '#ts'
 import type { Undefined } from '#undefined'
 import { Type } from './traits/type.ts'
+import type { Keyof, PolicyFilter } from './type-utils.ts'
 import { type Any } from './type.ts'
 
 export * from './path.ts'
@@ -254,6 +255,37 @@ export const pick = <T extends object, K extends keyof T>(
 }
 
 /**
+ * Create a new object with the same keys but with values transformed by a function.
+ *
+ * @param obj - The object to map values from
+ * @param fn - Function to transform each value, receives the value and key
+ * @returns A new object with transformed values
+ *
+ * @example
+ * ```ts
+ * const prices = { apple: 1.5, banana: 0.75, orange: 2 }
+ * const doublePrices = mapValues(prices, (price) => price * 2)
+ * // Result: { apple: 3, banana: 1.5, orange: 4 }
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Using the key parameter
+ * const data = { a: 1, b: 2, c: 3 }
+ * const withKeys = mapValues(data, (value, key) => `${key}: ${value}`)
+ * // Result: { a: 'a: 1', b: 'b: 2', c: 'c: 3' }
+ * ```
+ */
+export const mapValues = <rec extends Record<PropertyKey, any>, newValue>(
+  obj: rec,
+  fn: (value: rec[keyof rec], key: keyof rec) => newValue,
+): Record<keyof rec, newValue> => {
+  return Object.fromEntries(
+    Object.entries(obj).map(([k, v]) => [k, fn(v, k as keyof rec)]),
+  ) as Record<keyof rec, newValue>
+}
+
+/**
  * Create a new object with the specified properties removed.
  *
  * @param obj - The object to omit properties from
@@ -338,15 +370,6 @@ export const policyFilter = <
   return result
 }
 
-// dprint-ignore
-export type PolicyFilter<
-  $Object extends object,
-  $Key extends Keyof<$Object>,
-  $Mode extends 'allow' | 'deny',
-> = $Mode extends 'allow'
-      ? Pick<$Object, Extract<$Key, keyof $Object>>
-      : Omit<$Object, Extract<$Key, keyof $Object>>
-
 /**
  * Filter an object using a predicate function.
  *
@@ -406,6 +429,89 @@ export const partition = <$Object extends object, $Key extends keyof $Object>(
   })
 }
 
+/**
+ * Filter object properties by key pattern matching.
+ * Useful for extracting properties that match a pattern like data attributes.
+ *
+ * @param obj - The object to filter
+ * @param predicate - Function that returns true to keep a key
+ * @returns A new object with only the key/value pairs where key predicate returned true
+ *
+ * @example
+ * ```ts
+ * const props = {
+ *   'data-type': 'button',
+ *   'data-current': true,
+ *   onClick: fn,
+ *   className: 'btn'
+ * }
+ * const dataAttrs = pickMatching(props, key => key.startsWith('data-'))
+ * // Result: { 'data-type': 'button', 'data-current': true }
+ * ```
+ */
+export const pickMatching = <T extends object>(
+  obj: T,
+  predicate: (key: string) => boolean,
+): Partial<T> => {
+  const result = {} as Partial<T>
+  for (const key of Object.keys(obj)) {
+    if (predicate(key)) {
+      result[key as keyof T] = obj[key as keyof T]
+    }
+  }
+  return result
+}
+
+/**
+ * Shallow merge objects while omitting undefined values.
+ * Simplifies the common pattern of conditionally spreading objects
+ * to avoid including undefined values that would override existing values.
+ *
+ * @param objects - Objects to merge (later objects override earlier ones). Undefined objects are ignored.
+ * @returns Merged object with undefined values omitted
+ *
+ * @example
+ * ```ts
+ * // Instead of:
+ * const config = {
+ *   ...defaultConfig,
+ *   ...(userConfig ? userConfig : {}),
+ *   ...(debug ? { debug: true } : {}),
+ * }
+ *
+ * // Use:
+ * const config = spreadShallow(
+ *   defaultConfig,
+ *   userConfig,
+ *   { debug: debug ? true : undefined }
+ * )
+ * // undefined values won't override earlier values
+ * ```
+ */
+export const spreadShallow = <T extends object>(...objects: (T | undefined)[]): T => {
+  const result = {} as T
+
+  for (const obj of objects) {
+    if (obj === undefined) continue
+
+    for (const key in obj) {
+      // Protect against prototype pollution
+      if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+        continue
+      }
+
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const value = obj[key]
+        if (value !== undefined) {
+          result[key] = value
+        }
+      }
+    }
+  }
+
+  return result
+}
+
 // dprint-ignore
 export type PartialDeep<$Type> =
   $Type extends Array<infer __inner__>                  ? Array<PartialDeep<__inner__>> :
@@ -417,12 +523,6 @@ export type PartialDeep<$Type> =
                                                           } :
                                                         // else
                                                           $Type
-
-/**
- * Like keyof but returns PropertyKey for object.
- * @internal
- */
-type Keyof<$Object extends object> = object extends $Object ? PropertyKey : keyof $Object
 
 // Check if an interface has any optional properties
 export type HasOptionalKeys<$Obj extends object> = OptionalKeys<$Obj> extends never ? false : true

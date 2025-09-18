@@ -107,48 +107,43 @@ Ts.test('NonZero has correct relationship with Zero', () => {
 // === Type-Level Only Tests ===
 
 // Test brand relationships
-type _NonZeroRelationships = Ts.TestSuite<[
+type _NonZeroRelationships = Ts.Cases<
   // NonZero extends number
   Ts.Assert<number, NonZero>,
-
   // number does not extend NonZero
   Ts.AssertNotExtends<number, NonZero>,
-
   // NonZero is distinct from Zero
   Ts.AssertNotExtends<NonZero, Zero>,
-  Ts.AssertNotExtends<Zero, NonZero>,
-]>
+  Ts.AssertNotExtends<Zero, NonZero>
+>
 
 // Test constructor and operation return types
-type _FunctionReturnTypes = Ts.TestSuite<[
+type _FunctionReturnTypes = Ts.Cases<
   // Constructor return types
   Ts.AssertExact<ReturnType<typeof nonZero>, NonZero>,
   Ts.AssertExact<ReturnType<typeof tryNonZero>, NonZero | null>,
-
   // Division operation types
   Ts.AssertExact<ReturnType<typeof safeDivide>, number>,
-  Ts.AssertExact<ReturnType<typeof safeDiv>, number | null>,
-]>
+  Ts.AssertExact<ReturnType<typeof safeDiv>, number | null>
+>
 
 // Test safe division parameter types
-type _SafeDivisionParameters = Ts.TestSuite<[
+type _SafeDivisionParameters = Ts.Cases<
   // safeDivide requires NonZero as second parameter
   Ts.AssertExact<Parameters<typeof safeDivide>[0], number>,
   Ts.AssertExact<Parameters<typeof safeDivide>[1], NonZero>,
-
   // safeDiv accepts regular numbers
   Ts.AssertExact<Parameters<typeof safeDiv>[0], number>,
-  Ts.AssertExact<Parameters<typeof safeDiv>[1], number>,
-]>
+  Ts.AssertExact<Parameters<typeof safeDiv>[1], number>
+>
 
 // Test curried function types
-type _CurriedFunctions = Ts.TestSuite<[
+type _CurriedFunctions = Ts.Cases<
   // safeDivOn returns a function that may return null
   Ts.Assert<(divisor: number) => number | null, ReturnType<typeof safeDivOn>>,
-
   // safeDivWith returns a function that may return null
-  Ts.Assert<(dividend: number) => number | null, ReturnType<typeof safeDivWith>>,
-]>
+  Ts.Assert<(dividend: number) => number | null, ReturnType<typeof safeDivWith>>
+>
 
 // Demonstrate type safety with division
 Ts.test('NonZero enables type-safe division', () => {

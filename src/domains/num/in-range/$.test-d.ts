@@ -76,12 +76,12 @@ Ts.test('Clamp operations produce correctly branded types', () => {
 // === Type-Level Only Tests ===
 
 // Test that InRange types extend number
-type _InRangeExtendsNumber = Ts.TestSuite<[
+type _InRangeExtendsNumber = Ts.Cases<
   Ts.Assert<number, InRange<0, 100>>,
   Ts.Assert<number, InRange<-100, 100>>,
   Ts.Assert<number, InRange<0, 1>>,
-  Ts.Assert<number, InRange<42, 42>>,
-]>
+  Ts.Assert<number, InRange<42, 42>>
+>
 
 // Test that different ranges are distinct types
 Ts.test('Different ranges create distinct branded types', () => {
@@ -95,49 +95,44 @@ Ts.test('Different ranges create distinct branded types', () => {
 })
 
 // Test type parameter constraints and relationships
-type _RangeTypeParameters = Ts.TestSuite<[
+type _RangeTypeParameters = Ts.Cases<
   // InRange with literal number parameters
   Ts.Assert<InRange<0, 100>, InRange<0, 100>>,
   Ts.Assert<InRange<-10, 10>, InRange<-10, 10>>,
-
   // InRange extends number
   Ts.AssertExtendsTyped<InRange<0, 100>, number>,
   Ts.AssertExtendsTyped<InRange<-50, 50>, number>,
-
   // Number does not extend specific InRange
-  Ts.AssertNotExtends<number, InRange<0, 100>>,
-]>
+  Ts.AssertNotExtends<number, InRange<0, 100>>
+>
 
 // Test clamp return type transformation
-type _ClampReturnTypes = Ts.TestSuite<[
+type _ClampReturnTypes = Ts.Cases<
   // Clamp always returns the target range type
   Ts.AssertExact<ReturnType<typeof clamp<number, 0, 100>>, InRange<0, 100>>,
   Ts.AssertExact<ReturnType<typeof clamp<number, -10, 10>>, InRange<-10, 10>>,
-
   // Input type doesn't affect output range
-  Ts.AssertExact<ReturnType<typeof clamp<InRange<0, 50>, 0, 100>>, InRange<0, 100>>,
-]>
+  Ts.AssertExact<ReturnType<typeof clamp<InRange<0, 50>, 0, 100>>, InRange<0, 100>>
+>
 
 // Test curried function variants
-type _CurriedFunctions = Ts.TestSuite<[
+type _CurriedFunctions = Ts.Cases<
   // inRangeWith returns a type predicate function
   Ts.Assert<(value: unknown) => value is InRange<0, 100>, ReturnType<typeof inRangeWith<0, 100>>>,
-
   // clampWith returns a clamping function
   Ts.Assert<
     <T extends number>(value: T) => InRange<0, 100>,
     ReturnType<typeof clampWith<0, 100>>
-  >,
-]>
+  >
+>
 
 // Test complex type parameter scenarios
-type _ComplexTypeParameters = Ts.TestSuite<[
+type _ComplexTypeParameters = Ts.Cases<
   // Nested type parameters work correctly
   Ts.Assert<InRange<0, 100>, InRange<0, 100>>,
-
   // Generic constraints can be applied
-  Ts.AssertExtendsTyped<InRange<0, 1>, InRange<number, number>>,
-]>
+  Ts.AssertExtendsTyped<InRange<0, 1>, InRange<number, number>>
+>
 
 // Demonstrate that InRange types are nominal, not structural
 Ts.test('InRange types are nominal (brand-based), not structural', () => {

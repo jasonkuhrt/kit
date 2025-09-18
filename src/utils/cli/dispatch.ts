@@ -1,8 +1,8 @@
 import { ArrMut } from '#arr-mut'
-import { Fs } from '#fs'
 import { Lang } from '#lang'
 import { Path } from '#path'
 import { Str } from '#str'
+import * as NodeFileSystem from 'node:fs/promises'
 import { parseArgvOrThrow } from './argv.ts'
 import { type CommandTarget, getCommandTarget } from './commend-target.ts'
 
@@ -81,7 +81,15 @@ const getModuleName = (commandTarget: CommandTarget): string => {
 export const discoverCommandPointers = async (
   commandsDirPath: string,
 ): Promise<{ name: string; filePath: string }[]> => {
-  const commandsDirFileNamesRelative = await Fs.readDirFilesNames(commandsDirPath)
+  let commandsDirFileNamesRelative: string[] | null = null
+
+  try {
+    const entries = await NodeFileSystem.readdir(commandsDirPath, { withFileTypes: true })
+    commandsDirFileNamesRelative = entries.filter(entry => entry.isFile()).map(entry => entry.name)
+  } catch {
+    commandsDirFileNamesRelative = null
+  }
+
   if (!commandsDirFileNamesRelative) {
     console.error(`Error: Commands directory not found. Looked at ${commandsDirPath}`)
     Lang.process.exit(1)

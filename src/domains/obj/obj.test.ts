@@ -1,4 +1,5 @@
 import { Obj } from '#obj'
+import { Test } from '#test'
 import * as fc from 'fast-check'
 import { describe, expect, expectTypeOf, test } from 'vitest'
 
@@ -194,18 +195,24 @@ describe('Obj.entries', () => {
 })
 
 describe('policyFilter', () => {
+  // dprint-ignore
+  const policyFilterCases: Test.Table.Case<{
+    mode: 'allow' | 'deny'
+    keys: string[]
+    expected: Record<string, any>
+  }>[] = [
+    { name: 'allow mode picks specified keys',      mode: 'allow', keys: ['a', 'c'], expected: { a: 1, c: 3 } },
+    { name: 'allow mode with empty keys',           mode: 'allow', keys: [],         expected: {} },
+    { name: 'allow mode with non-existent key',     mode: 'allow', keys: ['a', 'z'], expected: { a: 1 } },
+    { name: 'deny mode omits specified keys',       mode: 'deny',  keys: ['a', 'c'], expected: { b: 2, d: 4 } },
+    { name: 'deny mode with empty keys',            mode: 'deny',  keys: [],         expected: { a: 1, b: 2, c: 3, d: 4 } },
+    { name: 'deny mode with non-existent key',      mode: 'deny',  keys: ['z'],      expected: { a: 1, b: 2, c: 3, d: 4 } },
+  ]
+
   const testObj = { a: 1, b: 2, c: 3, d: 4 }
 
-  test('allow mode picks specified keys', () => {
-    expect(Obj.policyFilter('allow', testObj, ['a', 'c'])).toEqual({ a: 1, c: 3 })
-    expect(Obj.policyFilter('allow', testObj, [])).toEqual({})
-    expect(Obj.policyFilter('allow', testObj, ['a', 'z'] as any)).toEqual({ a: 1 })
-  })
-
-  test('deny mode omits specified keys', () => {
-    expect(Obj.policyFilter('deny', testObj, ['a', 'c'])).toEqual({ b: 2, d: 4 })
-    expect(Obj.policyFilter('deny', testObj, [])).toEqual(testObj)
-    expect(Obj.policyFilter('deny', testObj, ['z'] as any)).toEqual(testObj)
+  Test.Table.each(policyFilterCases, (case_) => {
+    expect(Obj.policyFilter(case_.mode, testObj, case_.keys as any)).toEqual(case_.expected)
   })
 
   test('preserves undefined values', () => {
@@ -215,26 +222,47 @@ describe('policyFilter', () => {
 })
 
 describe('filter', () => {
+  // dprint-ignore
+  const filterCases: Test.Table.Case<{
+    testType: 'byValue' | 'byKey' | 'byContext' | 'allFalse' | 'allTrue' | 'emptyObj'
+    expected: Record<string, any>
+  }>[] = [
+    { name: 'filters by value predicate',      testType: 'byValue',   expected: { c: 3, d: 4 } },
+    { name: 'filters by key predicate',        testType: 'byKey',     expected: { a: 1, c: 3 } },
+    { name: 'filters by full context',         testType: 'byContext', expected: { a: 1, b: 2 } },
+    { name: 'returns empty when all false',    testType: 'allFalse',  expected: {} },
+    { name: 'returns all when all true',       testType: 'allTrue',   expected: { a: 1, b: 2, c: 3, d: 4 } },
+    { name: 'handles empty object',            testType: 'emptyObj',  expected: {} },
+  ]
+
   const testObj = { a: 1, b: 2, c: 3, d: 4 }
 
-  test('filters by predicates', () => {
-    // By value
-    expect(Obj.filter(testObj, (k, v) => v > 2)).toEqual({ c: 3, d: 4 })
-
-    // By key
-    expect(Obj.filter(testObj, k => k === 'a' || k === 'c')).toEqual({ a: 1, c: 3 })
-
-    // By full object context
-    expect(Obj.filter(testObj, (k, v, obj) => {
-      const avg = Object.values(obj).reduce((a, b) => a + b, 0) / Object.keys(obj).length
-      return v < avg
-    })).toEqual({ a: 1, b: 2 })
-  })
-
-  test('edge cases', () => {
-    expect(Obj.filter(testObj, () => false)).toEqual({})
-    expect(Obj.filter(testObj, () => true)).toEqual(testObj)
-    expect(Obj.filter({}, () => true)).toEqual({})
+  Test.Table.each(filterCases, (case_) => {
+    let result: any
+    switch (case_.testType) {
+      case 'byValue':
+        result = Obj.filter(testObj, (k, v) => v > 2)
+        break
+      case 'byKey':
+        result = Obj.filter(testObj, k => k === 'a' || k === 'c')
+        break
+      case 'byContext':
+        result = Obj.filter(testObj, (k, v, obj) => {
+          const avg = Object.values(obj).reduce((a, b) => a + b, 0) / Object.keys(obj).length
+          return v < avg
+        })
+        break
+      case 'allFalse':
+        result = Obj.filter(testObj, () => false)
+        break
+      case 'allTrue':
+        result = Obj.filter(testObj, () => true)
+        break
+      case 'emptyObj':
+        result = Obj.filter({}, () => true)
+        break
+    }
+    expect(result).toEqual(case_.expected)
   })
 })
 
@@ -261,6 +289,89 @@ describe('partition', () => {
 
     expect(result.picked).toEqual({ a: 1 })
     expect(result.omitted).toEqual({ b: 2 })
+  })
+})
+
+describe('spreadShallow', () => {
+  // dprint-ignore
+  const spreadShallowCases: Test.Table.Case<{
+    objects?: any[]
+    expected: Record<string, any>
+  }>[] = [
+    { name: 'merges objects while omitting undefined values', objects: [{ a: 1, b: 2, c: 3 }, { a: 1, b: undefined, c: 4, d: 5 }],                                           expected: { a: 1, b: 2, c: 4, d: 5 } },
+    { name: 'handles multiple objects',                       objects: [{ a: 1, b: 2 }, { a: 1, b: undefined, c: 3 }, { a: 1, b: 2, c: undefined, d: 4 }],                   expected: { a: 1, b: 2, c: 3, d: 4 } },
+    { name: 'handles empty objects',                          objects: [{}, {}],                                                                                              expected: {} },
+    { name: 'merges empty with non-empty',                    objects: [{ a: 1 }, {}],                                                                                        expected: { a: 1 } },
+    { name: 'merges non-empty with empty',                    objects: [{}, { a: 1 }],                                                                                        expected: { a: 1 } },
+    { name: 'handles single object',                          objects: [{ a: 1, b: undefined, c: 3 }],                                                                        expected: { a: 1, c: 3 } },
+    { name: 'handles no objects',                             objects: [],                                                                                                     expected: {} },
+    { name: 'handles undefined objects in middle',            objects: [undefined, { a: 1, b: 2 }, undefined],                                                               expected: { a: 1, b: 2 } },
+    { name: 'handles undefined at end',                       objects: [{ a: 1, b: 2 }, undefined],                                                                          expected: { a: 1, b: 2 } },
+    { name: 'handles all undefined',                          objects: [undefined, undefined],                                                                               expected: {} },
+    { name: 'preserves null values',                          objects: [{ a: 1, b: null }, { a: 1, b: 2, c: null }],                                                         expected: { a: 1, b: 2, c: null } },
+    { name: 'preserves false and 0 values',                   objects: [{ a: true, b: 1 }, { a: false, b: 0 }],                                                              expected: { a: false, b: 0 } },
+  ]
+
+  Test.Table.each(spreadShallowCases, (case_) => {
+    const result = Obj.spreadShallow<any>(...(case_.objects || []))
+    expect(result).toEqual(case_.expected)
+  })
+
+  test('property-based: never includes undefined values', () => {
+    fc.assert(
+      fc.property(
+        fc.array(fc.dictionary(fc.string(), fc.option(fc.anything()))),
+        (objects) => {
+          const result = Obj.spreadShallow(...objects)
+          Object.values(result).forEach(value => {
+            expect(value).not.toBe(undefined)
+          })
+        },
+      ),
+    )
+  })
+
+  test('property-based: later objects override earlier ones', () => {
+    fc.assert(
+      fc.property(
+        fc.object(),
+        fc.object(),
+        fc.string().filter(k => k !== '__proto__' && k !== 'constructor' && k !== 'prototype'),
+        fc.anything().filter(v => v !== undefined),
+        (obj1, obj2, key, value) => {
+          // Set the same key in both objects
+          obj1[key] = 'first'
+          obj2[key] = value
+
+          const result = Obj.spreadShallow(obj1, obj2)
+          expect(result[key]).toBe(value)
+        },
+      ),
+    )
+  })
+
+  test('protects against prototype pollution', () => {
+    // Test __proto__ pollution attempt
+    const maliciousObj = { '__proto__': { polluted: true } } as any
+    const normalObj = { safe: 'value' }
+
+    const result = Obj.spreadShallow(normalObj, maliciousObj)
+
+    // The result should not have __proto__ key
+    expect(Object.prototype.hasOwnProperty.call(result, '__proto__')).toBe(false)
+
+    // The Object prototype should not be polluted
+    expect((Object.prototype as any).polluted).toBeUndefined()
+
+    // Test constructor pollution attempt
+    const constructorObj = { constructor: { polluted: true } } as any
+    const result2 = Obj.spreadShallow(normalObj, constructorObj)
+    expect(Object.prototype.hasOwnProperty.call(result2, 'constructor')).toBe(false)
+
+    // Test prototype pollution attempt
+    const prototypeObj = { prototype: { polluted: true } } as any
+    const result3 = Obj.spreadShallow(normalObj, prototypeObj)
+    expect(Object.prototype.hasOwnProperty.call(result3, 'prototype')).toBe(false)
   })
 })
 

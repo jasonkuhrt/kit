@@ -1,7 +1,3 @@
-/**
- * Type-level tests for assert utilities
- */
-
 import { ArrMut } from '#arr-mut'
 import { Err } from '#err'
 import { Ts } from '#ts'
@@ -130,123 +126,37 @@ Ts.test('integration with tryOr', () => {
   Ts.assertPromise<number | string>()(asyncResult)
 })
 
-// === Type-Level Only Tests ===
-
 // Individual type assertions
 type _SubtypeTest = Ts.Assert<string, 'hello'> // Should be true
 type _SupertypeTest = Ts.AssertSuper<{ a: 1 }, { a: 1; b: 2 }> // Should be true
 type _ExactTest = Ts.AssertExact<number, number> // Should be true
 type _ExtendsTest = Ts.AssertExtendsTyped<'hello', string> // Should be true
 
-// Test suite examples - all passing
-type _BasicTests = Ts.TestSuite<[
-  Ts.Assert<string, 'hello'>,
-  Ts.AssertExact<number, number>,
-  Ts.AssertSuper<{ a: 1 }, object>, // Fixed: { a: 1 } extends object (not the other way)
-  Ts.AssertExtendsTyped<'hello', string>,
-]> // Should be true
+// === Test Case and Cases Types ===
 
-// Demonstrate TestSuite failure behavior
-Ts.test('TestSuite shows StaticError on failure', () => {
-  // Example 1: All pass - result is true
-  type AllPass = Ts.TestSuite<[
-    Ts.Assert<string, 'hello'>,
-    Ts.Assert<number, 42>,
-  ]>
-  const _checkAllPass: AllPass = true // ✓ Works
+// Test Case type - single assertion wrapper
+type _Case1 = Ts.Case<true> // Should work
+type _Case2 = Ts.Case<Ts.AssertEqual<string, string>> // Should work
+type _Case3 = Ts.Case<Ts.AssertExtends<'hello', string>> // Should work
 
-  // Example 2: One fails - result is StaticError
-  // @ts-expect-error - Intentionally demonstrating TestSuite failure
-  type OneFails = Ts.TestSuite<[
-    Ts.Assert<string, 'hello'>,
-    Ts.Assert<string, 123>, // This fails!
-  ]>
-  // @ts-expect-error - OneFails is StaticError, not true
-  const _checkOneFails: OneFails = true
+// @ts-expect-error - false doesn't extend true
+type _CaseFail1 = Ts.Case<false>
+// @ts-expect-error - AssertEqual returns false for mismatched types
+type _CaseFail2 = Ts.Case<Ts.AssertEqual<string, number>>
 
-  // The type of OneFails is:
-  // StaticError<'Type assertion failed', { Expected: string; Actual: 123 }, '$Actual must extend $Expected'>
-})
+// Test Cases type - multiple assertions
+type _Cases1 = Ts.Cases<
+  Ts.AssertEqual<string, string>,
+  Ts.AssertExtends<'hello', string>,
+  Ts.AssertNever<never>,
+  Ts.Assert<string, 'hello'>
+> // Should be true
 
-type _PromiseTests = Ts.TestCase<'Promise type checks', [
-  Ts.Assert<Promise<any>, Promise<number>>,
-  Ts.Assert<Promise<number | string>, Promise<42>>,
-  Ts.AssertExact<Promise<number>, Promise<number>>,
-]> // Should be true
-
-// Complex type relationships
-type _ComplexTests = Ts.TestSuite<[
-  // Function types
-  Ts.Assert<(...args: any[]) => any, (x: number) => string>,
-  Ts.AssertSub<(...args: any[]) => any, (x: number) => string>,
-
-  // Object types
-  Ts.AssertSuper<{ id: string; name: string }, { id: string }>, // Fixed: { id: string; name: string } extends { id: string }
-  Ts.AssertExtendsTyped<{ id: string; name: string }, { id: string }>,
-
-  // Union types
-  Ts.Assert<string | number, string>,
-  Ts.Assert<string | number, number>,
-]> // Should be true
-
-// === TestSuite Failure Cases ===
-
-// Failure Case 1: Basic type mismatch
-// @ts-expect-error - Intentionally demonstrating TestSuite failure
-type _FailureBasic = Ts.TestSuite<[
-  Ts.Assert<string, 'hello'>, // ✓ Passes
-  Ts.Assert<string, number>, // ✗ Fails - number doesn't extend string
-]>
-// Result: StaticError<'Type assertion failed', { Expected: string; Actual: number }, '$Actual must extend $Expected'>
-
-// @ts-expect-error - TestSuite with failing assertions returns StaticError, not true
-const _failureBasicCheck: _FailureBasic = true
-
-// Failure Case 2: Exact type mismatch
-// @ts-expect-error - Intentionally demonstrating TestSuite failure
-type _FailureExact = Ts.TestSuite<[
-  Ts.AssertExact<{ a: 1; b: 2 }, { a: 1 }>, // ✗ Fails - missing property b
-  Ts.AssertExact<string | number, string>, // ✗ Fails - union vs single type
-]>
-// Result: StaticError with details about the first failing assertion
-
-// @ts-expect-error - TestSuite with failing assertions returns StaticError, not true
-const _failureExactCheck: _FailureExact = true
-
-// Failure Case 3: Mixed assertion types
-// @ts-expect-error - Intentionally demonstrating TestSuite failure
-type _FailureMixed = Ts.TestSuite<[
-  Ts.Assert<number, 42>, // ✓ Passes
-  Ts.AssertSuper<{ id: string }, { name: string }>, // ✗ Fails - no id property
-  Ts.AssertExact<Promise<void>, Promise<unknown>>, // ✗ Fails - void !== unknown
-]>
-// Result: StaticError from the first failing assertion (AssertSuper)
-
-// @ts-expect-error - TestSuite with failing assertions returns StaticError, not true
-const _failureMixedCheck: _FailureMixed = true
-
-// Failure Case 4: Function signature mismatch
-// @ts-expect-error - Intentionally demonstrating TestSuite failure
-type _FailureFunction = Ts.TestSuite<[
-  Ts.Assert<(x: string) => number, (x: number) => string>, // ✗ Fails - incompatible signatures
-]>
-// Result: StaticError with function type details
-
-// @ts-expect-error - TestSuite with failing assertions returns StaticError, not true
-const _failureFunctionCheck: _FailureFunction = true
-
-// Failure Case 5: Promise type mismatch
-// @ts-expect-error - Intentionally demonstrating TestSuite failure
-type _FailurePromise = Ts.TestSuite<[
-  Ts.Assert<Promise<string>, number>, // ✗ Fails - number is not a Promise
-  Ts.AssertExact<Promise<any>, Promise<42>>, // ✗ Fails - any !== 42
-]>
-// Result: StaticError from the first failing assertion
-
-// @ts-expect-error - TestSuite with failing assertions returns StaticError, not true
-const _failurePromiseCheck: _FailurePromise = true
-
-// Demonstrating that we can't assign true to failed TestSuites
-declare const failedSuite: _FailureBasic
-// @ts-expect-error - Cannot assign true to StaticError
-const _: true = failedSuite
+// Test Cases with many assertions
+type _CasesMany = Ts.Cases<
+  Ts.AssertEqual<1, 1>,
+  Ts.AssertEqual<Ts.Cases, true>,
+  Ts.AssertEqual<Ts.Cases<true>, true>,
+  // @ts-expect-error - This should fail
+  Ts.AssertEqual<1, 0>
+>

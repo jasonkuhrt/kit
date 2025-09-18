@@ -623,42 +623,6 @@ export type AssertExtendsTyped<$Sub, $Super> = $Sub extends $Super ? true
     '$Sub must extend $Super'
   >
 
-type PassingTests = readonly true[]
-
-/**
- * Type-level test suite helper.
- * Accepts an array of type assertions and ensures they all pass.
- *
- * @example
- * ```ts
- * type MyTests = Ts.TestSuite<[
- *   Ts.Assert<string, 'hello'>,
- *   Ts.AssertExact<number, number>,
- *   Ts.AssertSuper<object, { a: 1 }>,
- *   Ts.AssertExtends<'hello', string>,
- * ]>
- * // MyTests will be true if all pass, or show StaticError for first failure
- * ```
- */
-export type TestSuite<$Tests extends PassingTests> = $Tests extends readonly [infer First, ...infer Rest]
-  ? First extends true ? Rest extends ArrMut.AnyRO ? TestSuite<Rest>
-    : true
-  : First // Return the failed assertion (StaticError)
-  : true
-
-/**
- * Type-level test case with a name for better debugging.
- *
- * @example
- * ```ts
- * type StringTests = Ts.TestCase<'string operations', [
- *   Ts.Assert<string, 'hello'>,
- *   Ts.Assert<string, `template`>,
- * ]>
- * ```
- */
-export type TestCase<_$Name extends string, $Tests extends readonly any[]> = TestSuite<$Tests>
-
 /**
  * Inline assertion for complex type expressions.
  * Useful when you want to assert the type of a complex expression inline.
@@ -676,3 +640,60 @@ export type TestCase<_$Name extends string, $Tests extends readonly any[]> = Tes
 export const inline = <$Expected>(
   value: $Expected,
 ): $Expected => value
+
+/**
+ * Type-level case assertion that requires the result to be true.
+ * Used in type-level test suites to ensure a type evaluates to true.
+ *
+ * @example
+ * ```ts
+ * type Tests = [
+ *   Case<Ts.AssertEqual<string, string>>,  // OK - evaluates to true
+ *   Case<Ts.AssertEqual<string, number>>,  // Error - doesn't extend true
+ * ]
+ * ```
+ */
+export type Case<$Result extends true> = $Result
+
+/**
+ * Type-level cases helper that accepts multiple assertions.
+ * Each type parameter must extend true, allowing batch type assertions.
+ *
+ * @example
+ * ```ts
+ * type _ = Cases<
+ *   Ts.AssertEqual<string, string>,     // ✓ Pass
+ *   Ts.AssertExtends<'hello', string>,  // ✓ Pass
+ *   Ts.AssertNever<never>               // ✓ Pass
+ * >
+ *
+ * // Type error if any assertion fails
+ * type _ = Cases<
+ *   Ts.AssertEqual<string, string>,     // ✓ Pass
+ *   Ts.AssertEqual<string, number>,     // ✗ Fail - Type error here
+ *   Ts.AssertExtends<'hello', string>   // ✓ Pass
+ * >
+ * ```
+ */
+export type Cases<
+  _T1 extends true = true,
+  _T2 extends true = true,
+  _T3 extends true = true,
+  _T4 extends true = true,
+  _T5 extends true = true,
+  _T6 extends true = true,
+  _T7 extends true = true,
+  _T8 extends true = true,
+  _T9 extends true = true,
+  _T10 extends true = true,
+  _T11 extends true = true,
+  _T12 extends true = true,
+  _T13 extends true = true,
+  _T14 extends true = true,
+  _T15 extends true = true,
+  _T16 extends true = true,
+  _T17 extends true = true,
+  _T18 extends true = true,
+  _T19 extends true = true,
+  _T20 extends true = true,
+> = true

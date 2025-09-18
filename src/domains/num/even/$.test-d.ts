@@ -95,43 +95,38 @@ Ts.test('Even has correct relationship with Int', () => {
 // === Type-Level Only Tests ===
 
 // Test brand relationships
-type _EvenRelationships = Ts.TestSuite<[
+type _EvenRelationships = Ts.Cases<
   // Even extends number
   Ts.Assert<number, Even>,
-
   // Int extends number
   Ts.Assert<number, Int>,
-
   // Even & Int extends both Even and Int
   Ts.AssertExtendsTyped<Even & Int, Even>,
   Ts.AssertExtendsTyped<Even & Int, Int>,
   Ts.AssertExtendsTyped<Even & Int, number>,
-
   // Even does not extend Int (not all Even are Int in type system)
   Ts.AssertNotExtends<Even, Int>,
-
   // Int does not extend Even (not all Int are Even)
   Ts.AssertNotExtends<Int, Even>,
-
   // Even & Int is more specific than either alone
   Ts.AssertNotExtends<Even, Even & Int>,
-  Ts.AssertNotExtends<Int, Even & Int>,
-]>
+  Ts.AssertNotExtends<Int, Even & Int>
+>
 
 // Test constructor return types
-type _ConstructorReturnTypes = Ts.TestSuite<[
+type _ConstructorReturnTypes = Ts.Cases<
   // All constructors return the intersection type
   Ts.AssertExact<ReturnType<typeof even>, Even & Int>,
   Ts.AssertExact<ReturnType<typeof tryEven>, (Even & Int) | null>,
   Ts.AssertExact<ReturnType<typeof nextEven>, Even & Int>,
-  Ts.AssertExact<ReturnType<typeof prevEven>, Even & Int>,
-]>
+  Ts.AssertExact<ReturnType<typeof prevEven>, Even & Int>
+>
 
 // Test predicate return type
-type _PredicateTypes = Ts.TestSuite<[
+type _PredicateTypes = Ts.Cases<
   // isEven narrows to the intersection
-  Ts.Assert<(value: unknown) => value is Even & Int, typeof isEven>,
-]>
+  Ts.Assert<(value: unknown) => value is Even & Int, typeof isEven>
+>
 
 // Demonstrate intersection behavior
 Ts.test('Even and Int form a proper intersection', () => {

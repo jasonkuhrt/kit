@@ -72,16 +72,11 @@ test('codec pretty-prints', () => {
   expect(encoded).toBe('{\n  "a": 1,\n  "b": [\n    2,\n    3\n  ]\n}')
 })
 
-test('codecAs creates typed codec', () => {
-  interface User {
-    name: string
-    age: number
-  }
-  const codec = Json.codecAs<User>()
-  const user: User = { name: 'John', age: 30 }
+test('codec handles typed values', () => {
+  const user = { name: 'John', age: 30 }
 
-  const encoded = codec.encode(user)
-  const decoded = codec.decode(encoded)
+  const encoded = Json.encode(user)
+  const decoded = Json.decode(encoded)
 
   expect(decoded).toEqual(user)
   expect(encoded).toContain('"name": "John"')
@@ -105,6 +100,6 @@ property('schemas parse valid JSON', fc.jsonValue(), (value) => {
   }
 
   if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
-    expect(Json.Object.parse(value)).toEqual(value)
+    expect(Json.ObjectParser.parse(value)).toEqual(value)
   }
 })

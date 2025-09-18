@@ -28,8 +28,6 @@
     "#arr-mut/arr-mut": "./build/domains/arr-mut/$$.js",
     "#obj": "./build/domains/obj/$.js",
     "#obj/obj": "./build/domains/obj/$$.js",
-    "#fs": "./build/utils/fs/$.js",
-    "#fs/fs": "./build/utils/fs/$$.js",
     "#path": "./build/utils/path/$.js",
     "#path/path": "./build/utils/path/$$.js",
     "#str": "./build/domains/str/$.js",
@@ -42,14 +40,14 @@
     "#undefined/undefined": "./build/domains/undefined/$$.js",
     "#num": "./build/domains/num/$.js",
     "#num/num": "./build/domains/num/$$.js",
-    "#cache": "./build/utils/cache/$.js",
-    "#cache/cache": "./build/utils/cache/$$.js",
     "#codec": "./build/utils/codec/$.js",
     "#codec/codec": "./build/utils/codec/$$.js",
     "#url": "./build/domains/url/$.js",
     "#url/url": "./build/domains/url/$$.js",
     "#fn": "./build/domains/fn/$.js",
     "#fn/fn": "./build/domains/fn/$$.js",
+    "#fs": "./build/utils/fs/$.js",
+    "#fs/fs": "./build/utils/fs/$$.js",
     "#idx": "./build/domains/idx/$.js",
     "#idx/idx": "./build/domains/idx/$$.js",
     "#pat": "./build/utils/pat/$.js",
@@ -62,8 +60,6 @@
     "#lang/lang": "./build/utils/lang/$$.js",
     "#mask": "./build/utils/mask/$.js",
     "#mask/mask": "./build/utils/mask/$$.js",
-    "#glo": "./build/utils/glo/$.js",
-    "#glo/glo": "./build/utils/glo/$$.js",
     "#group": "./build/domains/group/$.js",
     "#group/group": "./build/domains/group/$$.js",
     "#prom": "./build/domains/prom/$.js",
@@ -118,10 +114,6 @@
     "#debug/debug": "./build/utils/debug/$$.js",
     "#err": "./build/utils/err/$.js",
     "#err/err": "./build/utils/err/$$.js",
-    "#fs-layout": "./build/utils/fs-layout/$.js",
-    "#fs-layout/fs-layout": "./build/utils/fs-layout/$$.js",
-    "#fs-relative": "./build/utils/fs-relative/$.js",
-    "#fs-relative/fs-relative": "./build/utils/fs-relative/$$.js",
     "#http": "./build/utils/http/$.js",
     "#http/http": "./build/utils/http/$$.js",
     "#json": "./build/utils/json/$.js",
@@ -132,10 +124,8 @@
     "#package-manager/package-manager": "./build/utils/package-manager/$$.js",
     "#resource": "./build/utils/resource/$.js",
     "#resource/resource": "./build/utils/resource/$$.js",
-    "#task": "./build/domains/task/$.js",
-    "#task/task": "./build/domains/task/$$.js",
-    "#zod-aid": "./build/utils/zod-aid/$.js",
-    "#zod-aid/zod-aid": "./build/utils/zod-aid/$$.js",
+    "#sch": "./build/utils/sch/$.js",
+    "#sch/sch": "./build/utils/sch/$$.js",
     "#traitor": "./build/utils/traitor/$.js",
     "#traitor/traitor": "./build/utils/traitor/$$.js",
     "#*": {
@@ -151,15 +141,12 @@
     "./arr": "./build/domains/arr/$$.js",
     "./arr-mut": "./build/domains/arr-mut/$$.js",
     "./bool": "./build/domains/bool/$$.js",
-    "./cache": "./build/utils/cache/$$.js",
     "./cli": "./build/utils/cli/$$.js",
     "./codec": "./build/utils/codec/$$.js",
     "./debug": "./build/utils/debug/$$.js",
     "./err": "./build/utils/err/$$.js",
     "./fn": "./build/domains/fn/$$.js",
     "./fs": "./build/utils/fs/$$.js",
-    "./fs-layout": "./build/utils/fs-layout/$$.js",
-    "./fs-relative": "./build/utils/fs-relative/$$.js",
     "./group": "./build/domains/group/$$.js",
     "./http": "./build/utils/http/$$.js",
     "./idx": "./build/domains/idx/$$.js",
@@ -178,15 +165,15 @@
     "./prox": "./build/domains/prox/$$.js",
     "./rec": "./build/domains/rec/$$.js",
     "./resource": "./build/utils/resource/$$.js",
+    "./sch": "./build/utils/sch/$$.js",
     "./str": "./build/domains/str/$$.js",
-    "./task": "./build/domains/task/$$.js",
+    "./test": "./build/utils/test/$.js",
     "./traitor": "./build/utils/traitor/$$.js",
     "./tree": "./build/domains/tree/$$.js",
     "./ts": "./build/utils/ts/$$.js",
     "./undefined": "./build/domains/undefined/$$.js",
     "./url": "./build/domains/url/$$.js",
-    "./value": "./build/utils/value/$$.js",
-    "./zod-aid": "./build/utils/zod-aid/$$.js"
+    "./value": "./build/utils/value/$$.js"
   },
   "scripts": {
     "r": "libra refresh && pnpm fix:format",
@@ -224,6 +211,7 @@
     "@tsconfig/strictest": "^2.0.5",
     "dprint": "^0.50.0",
     "dripip": "^0.10.0",
+    "effect": "^3.17.13",
     "husky": "^9.1.7",
     "oxlint": "^1.2.0",
     "publint": "^0.3.12",
@@ -232,6 +220,7 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "@effect/platform": "^0.90.9",
     "@types/node": "^24.0.3",
     "@zenfs/core": "^2.3.1",
     "ansis": "^4.1.0",
@@ -242,8 +231,7 @@
     "pathe": "^2.0.3",
     "ts-morph": "^21.0.0",
     "type-fest": "^4.41.0",
-    "typescript": "^5.8.3",
-    "zod": "^3.25.67"
+    "typescript": "^5.8.3"
   },
   "libra": {
     "visibility": false,
@@ -266,5 +254,8 @@
         "skipTypeImports": true
       }
     }
+  },
+  "peerDependencies": {
+    "effect": "^3.17.13"
   }
 }

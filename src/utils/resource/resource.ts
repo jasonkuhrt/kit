@@ -1,444 +1,291 @@
-import { Cache } from '#cache'
-import type { Codec } from '#codec'
-import { Fs } from '#fs'
-import { Json } from '#json'
-import { Lang } from '#lang'
-import { Path } from '#path'
-import { Value } from '#value'
-import * as Errors from './errors.ts'
+import { FileSystem } from '@effect/platform'
+import { Effect, Option, ParseResult, Schema } from 'effect'
+import * as path from 'node:path'
 
 /**
- * A file-based resource that provides cached read/write operations with comprehensive error handling.
- *
- * Resources are used to manage configuration files, data files, or any JSON-serializable data
- * that needs to be persisted to disk with type safety and error handling.
- *
- * Features:
- * - Type-safe read/write operations
- * - Automatic caching with cache invalidation on writes
- * - Distinguishes between different error types (not found, decode failed, validation failed)
- * - Support for custom codecs and schema validation
- * - Atomic writes with optional hard sync
- *
- * @typeParam $Name - The name of the resource (used for error messages)
- * @typeParam $Type - The type of data stored in the resource
- *
- * @example
- * ```ts
- * // Create a config resource
- * const config = Resource.create({
- *   name: 'app-config',
- *   path: './config.json',
- *   init: { value: { theme: 'dark', lang: 'en' } }
- * })
- *
- * // Read with error handling
- * const result = await config.read()
- * if (Resource.Errors.isNotFound(result)) {
- *   console.log('Config not found, using defaults')
- * } else if (Resource.Errors.isDecodeFailed(result)) {
- *   console.error('Invalid config format')
- * } else {
- *   console.log('Config loaded:', result)
- * }
- * ```
+ * Errors that can occur during resource operations
  */
-export interface Resource<$Name extends string = string, $Type = any> {
+export class FileNotFound extends Schema.TaggedError<FileNotFound>()('FileNotFound', {
+  path: Schema.String,
+  resource: Schema.String,
+  message: Schema.String,
+}) {}
+
+export class ReadError extends Schema.TaggedError<ReadError>()('ReadError', {
+  path: Schema.String,
+  resource: Schema.String,
+  message: Schema.String,
+}) {}
+
+export class WriteError extends Schema.TaggedError<WriteError>()('WriteError', {
+  path: Schema.String,
+  resource: Schema.String,
+  message: Schema.String,
+}) {}
+
+export class ParseError extends Schema.TaggedError<ParseError>()('ParseError', {
+  path: Schema.String,
+  resource: Schema.String,
+  message: Schema.String,
+}) {}
+
+export class EncodeError extends Schema.TaggedError<EncodeError>()('EncodeError', {
+  resource: Schema.String,
+  message: Schema.String,
+}) {}
+
+export type ResourceError = FileNotFound | ReadError | WriteError | ParseError | EncodeError
+
+/**
+ * A Resource represents a configuration file that can be read and written
+ * with a specific codec for encoding/decoding
+ */
+export interface Resource<T = unknown, R = FileSystem.FileSystem> {
   /**
-   * The name of the resource.
+   * Read the resource from disk
    */
-  name: $Name
+  read: (dirPath: string) => Effect.Effect<Option.Option<T>, ResourceError, R>
 
   /**
-   * The file path for the resource.
+   * Write the resource to disk
    */
-  path: string
+  write: (value: T, dirPath: string) => Effect.Effect<void, ResourceError, R>
 
   /**
-   * The codec used to encode/decode the resource data.
+   * Read the resource or return empty value if not found
    */
-  codec: Codec.Codec<$Type>
-
-  /**
-   * Read the resource from disk with caching.
-   *
-   * @param dir - Optional directory to prepend to the resource path
-   * @returns The parsed data or an error:
-   *   - {@link Errors.ResourceErrorNotFound} if the file doesn't exist
-   *   - {@link Errors.ResourceErrorDecodeFailed} if the file content cannot be decoded
-   *   - {@link Errors.ResourceErrorValidationFailed} if schema validation fails
-   *
-   * @example
-   * ```ts
-   * const data = await resource.read()
-   * if (Err.is(data)) {
-   *   // Handle error
-   * } else {
-   *   // Use data
-   * }
-   * ```
-   */
-  read: (dir?: string) => Promise<$Type | Errors.ResourceErrorAny>
-
-  /**
-   * Read the resource from disk, returning the init value if not found.
-   * This is useful when you want to handle missing files gracefully without errors.
-   *
-   * Note: Requires `init` to be configured. Returns ResourceErrorNotFound if
-   * the file doesn't exist and no init value is configured.
-   *
-   * @param dir - Optional directory to prepend to the resource path
-   * @returns The parsed data, init value if not found, or an error
-   *
-   * @example
-   * ```ts
-   * // Always returns data or decode error when init is configured
-   * const config = await resource.readOrEmpty()
-   * if (Resource.Errors.isDecodeFailed(config)) {
-   *   console.error('Config file is corrupted')
-   * } else {
-   *   // config is guaranteed to be the data type
-   * }
-   * ```
-   */
-  readOrEmpty: (dir?: string) => Promise<$Type | Errors.ResourceErrorAny>
-
-  /**
-   * Check if the resource file exists without reading its contents.
-   *
-   * @param dir - Optional directory to prepend to the resource path
-   * @returns void if file exists, or ResourceErrorNotFound if it doesn't
-   *
-   * @example
-   * ```ts
-   * const exists = await resource.assertExists()
-   * if (Resource.Errors.isNotFound(exists)) {
-   *   console.log('Resource needs to be created')
-   * }
-   * ```
-   */
-  assertExists: (dir?: string) => Promise<void | Errors.ResourceErrorNotFound>
-
-  /**
-   * Update the resource by reading it, applying an updater function, and writing it back.
-   * Behavior for missing files depends on the `init.auto` config option:
-   * - When `init.auto: false` (default): Uses read so missing files return ResourceErrorNotFound
-   * - When `init.auto: true`: Uses readOrEmpty so missing files are initialized with init value
-   *
-   * @param updater - Function that receives the current data and mutates it in-place.
-   *   The function should modify the received data object directly rather than returning a new value.
-   *   Can be async if needed.
-   * @param dir - Optional directory to prepend to the resource path
-   * @param hard - If true, ensures data is synced to disk (fsync)
-   * @returns void on success, or a resource error:
-   *   - ResourceErrorNotFound if autoInit is false and the file doesn't exist
-   *   - ResourceErrorDecodeFailed if the file exists but cannot be decoded (e.g., invalid JSON)
-   *   - ResourceErrorValidationFailed if the file content fails schema validation
-   *
-   * @example
-   * ```ts
-   * // With auto: false (default) - requires file to exist
-   * const result = await resource.update(data => {
-   *   // Mutate the data object directly - don't return anything
-   *   data.lastUpdated = Date.now()
-   *   data.counter++
-   *   data.settings.theme = 'dark'
-   * })
-   *
-   * if (Resource.Errors.isDecodeFailed(result)) {
-   *   console.error('Existing file has invalid format')
-   * }
-   *
-   * // With auto: true - creates missing files
-   * const autoResult = await autoResource.update(data => {
-   *   data.counter++
-   * })
-   *
-   * if (Resource.Errors.isDecodeFailed(autoResult)) {
-   *   console.error('Existing file has invalid format')
-   * }
-   * ```
-   */
-  update: (
-    updater: (data: $Type) => void | Promise<void>,
-    dir?: string,
-    hard?: boolean,
-  ) => Promise<void | Errors.ResourceErrorAny>
-
-  /**
-   * Ensure the resource file exists, creating it with the init value if it doesn't.
-   * This is useful for initialization routines where you want to guarantee the file exists.
-   *
-   * Note: Requires `init` to be configured. Throws an error if no init value is configured.
-   *
-   * @param dir - Optional directory to prepend to the resource path
-   *
-   * @example
-   * ```ts
-   * // Initialize config file if it doesn't exist
-   * await resource.ensureInit()
-   * ```
-   */
-  ensureInit: (dir?: string) => Lang.SideEffectAsync
-
-  /**
-   * Write data to the resource file, replacing any existing content.
-   * Automatically clears the cache to ensure subsequent reads get fresh data.
-   *
-   * @param contents - The data to write
-   * @param dir - Optional directory to prepend to the resource path
-   * @param hard - If true, ensures data is synced to disk (fsync)
-   *
-   * @example
-   * ```ts
-   * await resource.write({
-   *   theme: 'light',
-   *   lang: 'fr',
-   *   lastSaved: new Date().toISOString()
-   * })
-   * ```
-   */
-  write: (contents: $Type, dir?: string, hard?: boolean) => Lang.SideEffectAsync
+  readOrEmpty: (dirPath: string) => Effect.Effect<T, ResourceError, R>
 }
 
 /**
- * Configuration for creating a resource.
+ * Codec for encoding/decoding resource content
  */
-export interface ResourceConfig<$Name extends string, $Type> {
-  /**
-   * The name of the resource (used in error messages).
-   */
-  name: $Name
-
-  /**
-   * The file path for the resource (relative or absolute).
-   */
-  path: string
-
-  /**
-   * Optional codec for encoding/decoding. Defaults to JSON codec.
-   * Use custom codecs for formats like YAML, TOML, or validated JSON.
-   *
-   * @example
-   * ```ts
-   * codec: Codec.fromZod(ConfigSchema)
-   * ```
-   */
-  codec?: Codec.Codec<$Type>
-
-  /**
-   * Initialization configuration for the resource.
-   * Controls the default value and auto-initialization behavior.
-   * If not provided, the resource will not have init values and cannot use auto-initialization.
-   *
-   * @example
-   * ```ts
-   * // Simple value with auto-init disabled (default)
-   * init: {
-   *   value: { version: 1, entries: [] }
-   * }
-   *
-   * // Factory function for dynamic defaults
-   * init: {
-   *   value: () => ({ id: uuid(), created: Date.now() })
-   * }
-   *
-   * // Enable auto-initialization
-   * init: {
-   *   value: { theme: 'dark' },
-   *   auto: true
-   * }
-   * ```
-   */
-  init?: {
-    /**
-     * The value to use when initializing the resource.
-     * Can be a value or a factory function for dynamic defaults.
-     */
-    value: Value.LazyMaybe<NoInfer<$Type>>
-
-    /**
-     * Whether to automatically initialize missing files.
-     * When true, operations like `update` will create missing files with the init value.
-     * When false (default), operations will return errors for missing files.
-     *
-     * @default false
-     */
-    auto?: boolean
-  }
+export interface Codec<T, R = never> {
+  decode: (content: string, resource: string, path: string) => Effect.Effect<T, ParseError, R>
+  encode: (value: T, resource: string) => Effect.Effect<string, EncodeError, R>
 }
 
 /**
- * Create a new file-based resource with comprehensive error handling.
- *
- * Resources provide a high-level abstraction for managing file-based data with:
- * - Type safety through TypeScript generics
- * - Automatic caching with proper invalidation
- * - Detailed error types for different failure modes
- * - Support for custom codecs and validation
- * - Atomic writes with optional fsync
- *
- * @param config - Configuration for the resource
- * @returns A resource instance with read/write operations
- *
- * @example
- * ```ts
- * // Simple JSON config file
- * const config = Resource.create({
- *   name: 'app-config',
- *   path: './config.json',
- *   init: { value: { theme: 'dark', debug: false } }
- * })
- *
- * // With Zod validation
- * const UserSchema = z.object({
- *   id: z.string().uuid(),
- *   name: z.string().min(1),
- *   role: z.enum(['admin', 'user'])
- * })
- *
- * const users = Resource.create({
- *   name: 'users',
- *   path: './data/users.json',
- *   codec: Codec.fromZod(z.array(UserSchema)),
- *   init: { value: [] }
- * })
- *
- * // Handle errors appropriately
- * const data = await users.read()
- * if (Resource.Errors.isNotFound(data)) {
- *   await users.ensureInit()
- * } else if (Resource.Errors.isValidationFailed(data)) {
- *   console.error('Data corruption detected:', data.errors)
- * } else if (!Err.is(data)) {
- *   // data is properly typed as User[]
- *   console.log(`Loaded ${data.length} users`)
- * }
- * ```
+ * JSON codec for parsing and stringifying JSON
  */
-export const create = <name extends string, type>(
-  config: ResourceConfig<name, type>,
-): Resource<name, type> => {
-  const codec = config.codec ?? (Json.codec as Codec.Codec<type>)
-  // Handle optional init configuration
-  let initValue: (() => type) | undefined = undefined
-  let autoInit = false
+export const jsonCodec = <T>(): Codec<T> => ({
+  decode: (content: string, resource: string, path: string) =>
+    Effect.try({
+      try: () => JSON.parse(content) as T,
+      catch: (error) =>
+        new ParseError({
+          path,
+          resource,
+          message: `Failed to parse JSON: ${error instanceof Error ? error.message : String(error)}`,
+        }),
+    }),
+  encode: (value: T, resource: string) =>
+    Effect.try({
+      try: () => JSON.stringify(value, null, 2),
+      catch: (error) =>
+        new EncodeError({
+          resource,
+          message: `Failed to stringify JSON: ${error instanceof Error ? error.message : String(error)}`,
+        }),
+    }),
+})
 
-  if (config.init) {
-    initValue = Value.resolveLazyFactory(config.init.value)
-    autoInit = config.init.auto ?? false
-  }
-
-  // Shared cache for all read operations
-  const sharedCache = new Map<unknown, unknown>()
-
-  // Create the base read function that will be memoized
-  const readBase = async (dir?: string) => {
-    const filePath = Path.ensureAbsoluteWith(dir)(config.path)
-    const content = await Fs.read(filePath)
-
-    if (content === null) {
-      return Errors.notFound(config.name, filePath)
-    }
-
-    try {
-      const decoded = codec.decode(content)
-      return decoded
-    } catch (cause) {
-      // Check if this is a Zod validation error
-      if (cause && typeof cause === 'object' && 'issues' in cause) {
-        return Errors.validationFailed(config.name, filePath, cause)
-      }
-      return Errors.decodeFailed(config.name, filePath, cause)
-    }
-  }
-
-  // Create the readOrEmpty function that will be memoized
-  const readOrEmptyBase = async (dir?: string) => {
-    const filePath = Path.ensureAbsoluteWith(dir)(config.path)
-    const content = await Fs.read(filePath)
-
-    if (content === null) {
-      if (!initValue) {
-        return Errors.notFound(config.name, filePath)
-      }
-      return initValue()
-    }
-
-    try {
-      const decoded = codec.decode(content)
-      return decoded
-    } catch (cause) {
-      return Errors.decodeFailed(config.name, filePath, cause)
-    }
-  }
-
-  // Helper for cache key generation with punning
-  // Works for any function where first arg is the cache key
-  const createKeyFromFirstArg = (args: readonly unknown[]) => args[0] ?? 'default'
-
-  // Memoize the read functions with shared cache (errors are not cached by default)
-  const readMemoized = Cache.memoize(readBase, {
-    createKey: createKeyFromFirstArg,
-    cache: sharedCache,
-  })
-
-  const readOrEmptyMemoized = Cache.memoize(readOrEmptyBase, {
-    createKey: createKeyFromFirstArg,
-    cache: sharedCache,
-  })
-
-  const resource: Resource<name, type> = {
-    name: config.name,
-    path: config.path,
-    codec,
-
-    assertExists: async (dir) => {
-      const filePath = Path.ensureAbsoluteWith(dir)(config.path)
-      const exists = await Fs.exists(filePath)
-
-      if (!exists) {
-        return Errors.notFound(config.name, filePath)
-      }
-
-      return undefined
-    },
-
-    read: readMemoized,
-    readOrEmpty: readOrEmptyMemoized,
-
-    ensureInit: async (dir) => {
-      if (!initValue) {
-        throw new Error(`Cannot ensure init for resource "${config.name}" - no init value configured`)
-      }
-      const filePath = Path.ensureAbsoluteWith(dir)(config.path)
-      const exists = await Fs.exists(filePath)
-      if (!exists) {
-        await resource.write(initValue(), dir)
-      }
-    },
-
-    write: async (contents, dir, hard) => {
-      const filePath = Path.ensureAbsoluteWith(dir)(config.path)
-      const encoded = codec.encode(contents)
-      await Fs.write({ path: filePath, content: encoded, hard })
-      // Clear shared cache after write to ensure fresh reads
-      sharedCache.delete(dir ?? 'default')
-    },
-
-    update: async (updater, dir, hard) => {
-      const result = autoInit ? await resource.readOrEmpty(dir) : await resource.read(dir)
-
-      if (Errors.isResourceError(result)) {
-        return result
-      }
-
-      await updater(result)
-      await resource.write(result, dir, hard)
-
-      return undefined
-    },
-  }
-
-  return resource
+/**
+ * Text codec for plain text files
+ */
+export const textCodec: Codec<string> = {
+  decode: (content: string) => Effect.succeed(content) as Effect.Effect<string, ParseError>,
+  encode: (value: string) => Effect.succeed(value) as Effect.Effect<string, EncodeError>,
 }
+
+/**
+ * Create a resource with a specific codec
+ */
+export const createResource = <T, R = never>(
+  filename: string,
+  codec: Codec<T, R>,
+  emptyValue: T,
+): Resource<T, FileSystem.FileSystem | R> => ({
+  read: (dirPath: string) =>
+    Effect.gen(function*() {
+      const fs = yield* FileSystem.FileSystem
+      const filePath = path.join(dirPath, filename)
+      const exists = yield* fs.exists(filePath).pipe(
+        Effect.mapError((error) =>
+          new ReadError({
+            path: filePath,
+            resource: filename,
+            message: `Failed to check if resource exists: ${(error as any).message || String(error)}`,
+          })
+        ),
+      )
+
+      if (!exists) return Option.none()
+
+      const content = yield* fs.readFileString(filePath).pipe(
+        Effect.mapError((error) =>
+          new ReadError({
+            path: filePath,
+            resource: filename,
+            message: `Failed to read file: ${(error as any).message || String(error)}`,
+          })
+        ),
+      )
+
+      const decoded = yield* codec.decode(content, filename, filePath)
+
+      return Option.some(decoded)
+    }),
+
+  write: (value: T, dirPath: string) =>
+    Effect.gen(function*() {
+      const fs = yield* FileSystem.FileSystem
+      const filePath = path.join(dirPath, filename)
+      const parentDir = path.dirname(filePath)
+
+      const content = yield* codec.encode(value, filename)
+
+      yield* fs.makeDirectory(parentDir, { recursive: true }).pipe(
+        Effect.mapError((error) =>
+          new WriteError({
+            path: filePath,
+            resource: filename,
+            message: `Failed to create directory: ${(error as any).message || String(error)}`,
+          })
+        ),
+      )
+
+      yield* fs.writeFileString(filePath, content).pipe(
+        Effect.mapError((error) =>
+          new WriteError({
+            path: filePath,
+            resource: filename,
+            message: `Failed to write file: ${(error as any).message || String(error)}`,
+          })
+        ),
+      )
+    }),
+
+  readOrEmpty: (dirPath: string) =>
+    Effect.gen(function*() {
+      const fs = yield* FileSystem.FileSystem
+      const filePath = path.join(dirPath, filename)
+      const exists = yield* fs.exists(filePath).pipe(
+        Effect.mapError((error) =>
+          new ReadError({
+            path: filePath,
+            resource: filename,
+            message: `Failed to check if resource exists: ${(error as any).message || String(error)}`,
+          })
+        ),
+      )
+
+      if (!exists) return emptyValue
+
+      const content = yield* fs.readFileString(filePath).pipe(
+        Effect.catchAll(() => Effect.succeed('')),
+      )
+
+      if (content === '') return emptyValue
+
+      return yield* codec.decode(content, filename, filePath).pipe(
+        Effect.catchAll(() => Effect.succeed(emptyValue)),
+      )
+    }),
+})
+
+/**
+ * Create a JSON resource with a specific filename
+ */
+export const createJsonResource = <T>(
+  filename: string,
+  emptyValue: T,
+): Resource<T> => createResource(filename, jsonCodec<T>(), emptyValue)
+
+/**
+ * Schema codec for parsing with validation
+ */
+export const schemaCodec = <S extends Schema.Schema<any, any>>(
+  schema: S,
+): Codec<Schema.Schema.Type<S>, Schema.Schema.Context<S>> => ({
+  decode: (content: string, resource: string, path: string) =>
+    Effect.gen(function*() {
+      const parsed = yield* Effect.try({
+        try: () => JSON.parse(content),
+        catch: (error) =>
+          new ParseError({
+            path,
+            resource,
+            message: `Failed to parse JSON: ${error instanceof Error ? error.message : String(error)}`,
+          }),
+      })
+
+      return yield* Schema.decodeUnknown(schema)(parsed).pipe(
+        Effect.mapError((error) =>
+          new ParseError({
+            path,
+            resource,
+            message: `Schema validation failed: ${ParseResult.TreeFormatter.formatErrorSync(error)}`,
+          })
+        ),
+      )
+    }),
+
+  encode: (value: Schema.Schema.Type<S>, resource: string) =>
+    Effect.gen(function*() {
+      const encoded = yield* Schema.encode(schema)(value).pipe(
+        Effect.mapError((error) =>
+          new EncodeError({
+            resource,
+            message: `Schema encoding failed: ${ParseResult.TreeFormatter.formatErrorSync(error)}`,
+          })
+        ),
+      )
+
+      return yield* Effect.try({
+        try: () => JSON.stringify(encoded, null, 2),
+        catch: (error) =>
+          new EncodeError({
+            resource,
+            message: `Failed to stringify JSON: ${error instanceof Error ? error.message : String(error)}`,
+          }),
+      })
+    }),
+})
+
+/**
+ * Create a JSON resource with Effect Schema validation
+ */
+export const createSchemaResource = <S extends Schema.Schema<any, any>>(
+  filename: string,
+  schema: S,
+  emptyValue: Schema.Schema.Type<S>,
+): Resource<Schema.Schema.Type<S>, FileSystem.FileSystem | Schema.Schema.Context<S>> =>
+  createResource(filename, schemaCodec(schema), emptyValue)
+
+/**
+ * Create a text resource with a specific filename
+ */
+export const createTextResource = (
+  filename: string,
+  emptyValue = '',
+): Resource<string> => createResource(filename, textCodec, emptyValue)
+
+//
+// Type guards for error types
+//
+
+export const isFileNotFound = (error: ResourceError): error is FileNotFound => error._tag === 'FileNotFound'
+
+export const isReadError = (error: ResourceError): error is ReadError => error._tag === 'ReadError'
+
+export const isWriteError = (error: ResourceError): error is WriteError => error._tag === 'WriteError'
+
+export const isParseError = (error: ResourceError): error is ParseError => error._tag === 'ParseError'
+
+export const isEncodeError = (error: ResourceError): error is EncodeError => error._tag === 'EncodeError'
+
+export const isResourceError = (u: unknown): u is ResourceError =>
+  typeof u === 'object' && u !== null && '_tag' in u
+  && (u._tag === 'FileNotFound' || u._tag === 'ReadError'
+    || u._tag === 'WriteError' || u._tag === 'ParseError' || u._tag === 'EncodeError')

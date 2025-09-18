@@ -96,48 +96,41 @@ Ts.test('NonPositive has correct relationships with other sign brands', () => {
 // === Type-Level Only Tests ===
 
 // Test brand relationships
-type _NonPositiveRelationships = Ts.TestSuite<[
+type _NonPositiveRelationships = Ts.Cases<
   // NonPositive extends number
   Ts.Assert<number, NonPositive>,
-
   // number does not extend NonPositive
   Ts.AssertNotExtends<number, NonPositive>,
-
   // NonPositive and Positive are mutually exclusive
   Ts.AssertNotExtends<NonPositive, Positive>,
   Ts.AssertNotExtends<Positive, NonPositive>,
-
   // Negative and NonPositive are separate brands (no subtype relationship)
   Ts.AssertNotExtends<NonPositive, Negative>,
   Ts.AssertNotExtends<Negative, NonPositive>,
-
   // Zero and NonPositive are separate brands (no subtype relationship)
   Ts.AssertNotExtends<NonPositive, Zero>,
   Ts.AssertNotExtends<Zero, NonPositive>,
-
   // NonPositive does not extend Negative (includes zero)
   Ts.AssertNotExtends<NonPositive, Negative>,
-
   // NonPositive does not extend Zero (includes negatives)
-  Ts.AssertNotExtends<NonPositive, Zero>,
-]>
+  Ts.AssertNotExtends<NonPositive, Zero>
+>
 
 // Test constructor return types
-type _ConstructorReturnTypes = Ts.TestSuite<[
+type _ConstructorReturnTypes = Ts.Cases<
   Ts.AssertExact<ReturnType<typeof nonPositive>, NonPositive>,
-  Ts.AssertExact<ReturnType<typeof tryNonPositive>, NonPositive | null>,
-]>
+  Ts.AssertExact<ReturnType<typeof tryNonPositive>, NonPositive | null>
+>
 
 // Test the conceptual nature of NonPositive
-type _NonPositiveConceptual = Ts.TestSuite<[
+type _NonPositiveConceptual = Ts.Cases<
   // NonPositive conceptually includes negative and zero values
   // But at the type level, they are separate brands
   Ts.AssertNotExtends<Negative, NonPositive>,
   Ts.AssertNotExtends<Zero, NonPositive>,
-
   // NonPositive is its own brand, not literally Negative | Zero
-  Ts.AssertNotExtends<NonPositive, Negative | Zero>,
-]>
+  Ts.AssertNotExtends<NonPositive, Negative | Zero>
+>
 
 // Demonstrate type safety with NonPositive
 Ts.test('NonPositive enables specific numeric constraints', () => {

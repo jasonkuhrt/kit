@@ -1,3 +1,5 @@
-// Re-export the new implementation
-export * as Errors from './errors.ts'
-export * from './resource.ts'
+/**
+ * Barrel export for Resource module
+ */
+export * from './jsonc.js'
+export * from './resource.js'

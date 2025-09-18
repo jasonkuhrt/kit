@@ -1,5 +1,4 @@
 import { ArrMut } from '#arr-mut'
-import { Cache } from '#cache'
 import type { Lang } from '#lang'
 import type { Ts } from '#ts'
 import type { IsAny } from 'type-fest'
@@ -188,7 +187,18 @@ export const create = <item, key>(options?: Options<item, key>): Idx<item, key> 
   const array = ArrMut.create<item>()
   const deletedIndices = new Set<number>()
   let lowestDeletedIndex: number | null = null
-  const itemToKey = options?.key ? Cache.memoize(options.key, null) : null
+  // For now, just use a simple memoization until Effect migration is complete
+  const keyCache = new Map<item, key>()
+  const itemToKey = options?.key
+    ? (item: item): key => {
+      if (keyCache.has(item)) {
+        return keyCache.get(item)!
+      }
+      const result = options.key!(item)
+      keyCache.set(item, result)
+      return result
+    }
+    : null
 
   type MapAsMap = Map<key, { item: item; index: number }>
   type MapAsWeakMap = WeakMap<any, { item: item; index: number }>

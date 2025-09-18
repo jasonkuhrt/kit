@@ -58,8 +58,6 @@
       "#rec/rec": ["./src/domains/rec/$$.ts"],
       "#str": ["./src/domains/str/$.ts"],
       "#str/str": ["./src/domains/str/$$.ts"],
-      "#task": ["./src/domains/task/$.ts"],
-      "#task/task": ["./src/domains/task/$$.ts"],
       "#tree": ["./src/domains/tree/$.ts"],
       "#tree/tree": ["./src/domains/tree/$$.ts"],
       "#undefined": ["./src/domains/undefined/$.ts"],
@@ -108,6 +106,8 @@
       "#ref/ref": ["./src/utils/ref/$$.ts"],
       "#resource": ["./src/utils/resource/$.ts"],
       "#resource/resource": ["./src/utils/resource/$$.ts"],
+      "#sch": ["./src/utils/sch/$.ts"],
+      "#sch/sch": ["./src/utils/sch/$$.ts"],
       "#test": ["./src/utils/test/$.ts"],
       "#test/test": ["./src/utils/test/$$.ts"],
       "#traitor": ["./src/utils/traitor/$.ts"],
@@ -120,7 +120,7 @@
       "#zod-aid/zod-aid": ["./src/utils/zod-aid/$$.ts"],
 
       // Platform and wildcard
-      "#platform:*.ts": ["./src/utils/*.node.ts"],
+      "#platform:*": ["./src/utils/*.node.ts"],
       "#*": ["./src/*"]
     },
 
@@ -134,5 +134,5 @@
     "declaration": true,
     "declarationMap": true
   },
-  "exclude": ["build", "articles"]
+  "exclude": ["build", "articles", "src-new", "src-temp"]
 }

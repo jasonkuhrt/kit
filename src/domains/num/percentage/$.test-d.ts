@@ -103,42 +103,37 @@ Ts.test('Conversion operations have correct types', () => {
 // === Type-Level Only Tests ===
 
 // Test that Percentage extends both number and InRange<0, 1>
-type _PercentageRelationships = Ts.TestSuite<[
+type _PercentageRelationships = Ts.Cases<
   // Percentage extends number
   Ts.Assert<number, Percentage>,
-
   // Percentage extends InRange<0, 1>
   Ts.Assert<InRange<0, 1>, Percentage>,
-
   // Percentage is more specific than InRange<0, 1>
   Ts.AssertExtendsTyped<Percentage, InRange<0, 1>>,
-
   // InRange<0, 1> does not extend Percentage (Percentage has additional brand)
   Ts.AssertNotExtends<InRange<0, 1>, Percentage>,
-
   // Percentage does not extend other ranges
   Ts.AssertNotExtends<Percentage, InRange<0, 100>>,
-  Ts.AssertNotExtends<Percentage, InRange<-1, 1>>,
-]>
+  Ts.AssertNotExtends<Percentage, InRange<-1, 1>>
+>
 
 // Test constructor return types
-type _ConstructorReturnTypes = Ts.TestSuite<[
+type _ConstructorReturnTypes = Ts.Cases<
   Ts.AssertExact<ReturnType<typeof percentage>, Percentage>,
   Ts.AssertExact<ReturnType<typeof tryPercentage>, Percentage | null>,
   Ts.AssertExact<ReturnType<typeof fromPercent>, Percentage>,
-  Ts.AssertExact<ReturnType<typeof clampToPercentage>, Percentage>,
-]>
+  Ts.AssertExact<ReturnType<typeof clampToPercentage>, Percentage>
+>
 
 // Test conversion function types
-type _ConversionTypes = Ts.TestSuite<[
+type _ConversionTypes = Ts.Cases<
   // toPercent accepts Percentage and returns number
   Ts.AssertExact<Parameters<typeof toPercent>[0], Percentage>,
   Ts.AssertExact<ReturnType<typeof toPercent>, number>,
-
   // fromPercent accepts number and returns Percentage
   Ts.AssertExact<Parameters<typeof fromPercent>[0], number>,
-  Ts.AssertExact<ReturnType<typeof fromPercent>, Percentage>,
-]>
+  Ts.AssertExact<ReturnType<typeof fromPercent>, Percentage>
+>
 
 // Demonstrate the dual nature of Percentage
 Ts.test('Percentage has dual brand nature', () => {

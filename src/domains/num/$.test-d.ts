@@ -235,7 +235,7 @@ Ts.test('Branded types can be properly intersected', () => {
 // === Type-Level Only Tests ===
 
 // Test that branded types extend number
-type _BrandsExtendNumber = Ts.TestSuite<[
+type _BrandsExtendNumber = Ts.Cases<
   Ts.Assert<number, Num.Positive>,
   Ts.Assert<number, Num.Negative>,
   Ts.Assert<number, Num.Zero>,
@@ -250,8 +250,8 @@ type _BrandsExtendNumber = Ts.TestSuite<[
   Ts.Assert<number, Num.NonPositive>,
   Ts.Assert<number, Num.Percentage>,
   Ts.Assert<number, Num.Radians>,
-  Ts.Assert<number, Num.Degrees>,
-]>
+  Ts.Assert<number, Num.Degrees>
+>
 
 // Test brand relationships
 // Verify that incompatible brands cannot be assigned to each other
@@ -272,31 +272,31 @@ Ts.test('Brand exclusivity', () => {
 })
 
 // Test range type parameter constraints
-type _RangeTypes = Ts.TestSuite<[
+type _RangeTypes = Ts.Cases<
   Ts.Assert<number, Num.InRange<0, 100>>,
   Ts.Assert<number, Num.InRange<-10, 10>>,
-  Ts.Assert<Num.InRange<0, 1>, Num.Percentage>,
-]>
+  Ts.Assert<Num.InRange<0, 1>, Num.Percentage>
+>
 
 // Test that arithmetic operations return base number type
-type _ArithmeticReturnTypes = Ts.TestSuite<[
+type _ArithmeticReturnTypes = Ts.Cases<
   Ts.AssertExact<ReturnType<typeof Num.add>, number>,
   Ts.AssertExact<ReturnType<typeof Num.multiply>, number>,
   Ts.AssertExact<ReturnType<typeof Num.subtract>, number>,
-  Ts.AssertExact<ReturnType<typeof Num.round>, number>,
-]>
+  Ts.AssertExact<ReturnType<typeof Num.round>, number>
+>
 
 // Test angle conversion types
-type _AngleConversions = Ts.TestSuite<[
+type _AngleConversions = Ts.Cases<
   Ts.AssertExact<Parameters<typeof Num.degToRad>[0], Num.Degrees>,
   Ts.AssertExact<ReturnType<typeof Num.degToRad>, Num.Radians>,
   Ts.AssertExact<Parameters<typeof Num.radToDeg>[0], Num.Radians>,
-  Ts.AssertExact<ReturnType<typeof Num.radToDeg>, Num.Degrees>,
-]>
+  Ts.AssertExact<ReturnType<typeof Num.radToDeg>, Num.Degrees>
+>
 
 // Test curried function types
-type _CurriedFunctions = Ts.TestSuite<[
+type _CurriedFunctions = Ts.Cases<
   Ts.Assert<(b: number) => number, ReturnType<typeof Num.addWith>>,
   Ts.Assert<(b: number) => number, ReturnType<typeof Num.multiplyWith>>,
-  Ts.Assert<(b: number) => number, ReturnType<typeof Num.divideWith>>,
-]>
+  Ts.Assert<(b: number) => number, ReturnType<typeof Num.divideWith>>
+>

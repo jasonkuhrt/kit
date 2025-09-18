@@ -40,7 +40,6 @@ Modules for working with primitive types:
 Modules for external interactions:
 
 - [**Fs**](./fs) - File system operations
-- [**FsLayout**](./fs-layout) - File system layout utilities
 - [**FsRelative**](./fs-relative) - Relative path operations
 - [**Http**](./http) - HTTP client utilities
 - [**Cli**](./cli) - Command-line interface helpers
