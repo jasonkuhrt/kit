@@ -220,7 +220,6 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "@effect/platform": "^0.90.10",
     "@types/node": "^24.5.2",
     "@zenfs/core": "^2.4.0",
     "ansis": "^4.1.0",
@@ -256,6 +255,7 @@
     }
   },
   "peerDependencies": {
+    "@effect/platform": "^0.90.10",
     "effect": "^3.17.13"
   }
 }
