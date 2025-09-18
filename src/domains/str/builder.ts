@@ -1,7 +1,7 @@
 import { Fn } from '#fn'
-import { removeSurroundingSpaceRegular } from './replace.ts'
-import { isTemplateStringsArray } from './template.ts'
-import { unlines } from './text.ts'
+import { removeSurroundingSpaceRegular } from './replace.js'
+import { isTemplateStringsArray } from './template.js'
+import { unlines } from './text.js'
 
 /**
  * Default render function for string builders.

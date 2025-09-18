@@ -1,1 +1,1 @@
-export * from './prom.ts'
+export * from './prom.js'

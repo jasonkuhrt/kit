@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { CleanError, cleanStack, formatFrame, getCaller, mergeStacks, parseStack } from './stack.ts'
+import { CleanError, cleanStack, formatFrame, getCaller, mergeStacks, parseStack } from './stack.js'
 
 describe('parseStack', () => {
   test('parses stack frames correctly', () => {

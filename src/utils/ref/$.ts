@@ -1,5 +1,5 @@
 // @ts-expect-error - Duplicate identifier for JSDoc
-export * as Ref from './$$.ts'
+export * as Ref from './$$.js'
 
 /**
  * @module Ref

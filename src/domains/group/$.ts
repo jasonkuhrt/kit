@@ -1,1 +1,1 @@
-export * as Group from './$$.ts'
+export * as Group from './$$.js'

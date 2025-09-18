@@ -1,7 +1,7 @@
 import { property } from '#test/test'
 import fc from 'fast-check'
 import { expect, test } from 'vitest'
-import { Value } from './$.ts'
+import { Value } from './$.js'
 
 property('lazy wraps any value in a function', fc.anything(), (value) => {
   const lazy = Value.lazy(value)

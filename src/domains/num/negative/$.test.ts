@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { Negative } from './$.ts'
+import { Negative } from './$.js'
 
 test('isNegative', () => {
   // TODO: Add comprehensive tests

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from 'vitest'
-import { Builder } from './builder.ts'
+import { Builder } from './builder.js'
 
 let builder: Builder
 

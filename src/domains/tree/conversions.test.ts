@@ -1,9 +1,9 @@
 import { Test } from '#test'
 import fc from 'fast-check'
 import { describe, expect, test } from 'vitest'
-import { arbitrary } from './arbitrary.ts'
-import { fromList, manyFromList, toList } from './conversions.ts'
-import { Node, Tree } from './data.ts'
+import { arbitrary } from './arbitrary.js'
+import { fromList, manyFromList, toList } from './conversions.js'
+import { Node, Tree } from './data.js'
 
 describe('toList', () => {
   test('flattens tree to array', () => {

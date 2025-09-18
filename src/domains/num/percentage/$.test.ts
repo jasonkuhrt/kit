@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { Percentage } from './$.ts'
+import { Percentage } from './$.js'
 
 test('isPercentage', () => {
   // Valid cases - values between 0 and 1 inclusive

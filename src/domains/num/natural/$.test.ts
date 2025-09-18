@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Natural } from './$.ts'
+import { Natural } from './$.js'
 
 describe('isNatural', () => {
   it('returns true for positive integers', () => {

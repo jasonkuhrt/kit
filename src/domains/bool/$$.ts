@@ -1,3 +1,3 @@
-export * from './bool.ts'
-export { Eq } from './traits/eq.ts'
-export { Type } from './traits/type.ts'
+export * from './bool.js'
+export { Eq } from './traits/eq.js'
+export { Type } from './traits/type.js'

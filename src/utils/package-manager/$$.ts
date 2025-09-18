@@ -1,3 +1,3 @@
-export * from './global-local-check.ts'
-export * from './LinkProtocol.ts'
-export * from './misc.ts'
+export * from './global-local-check.js'
+export * from './LinkProtocol.js'
+export * from './misc.js'

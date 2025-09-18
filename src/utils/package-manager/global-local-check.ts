@@ -1,6 +1,6 @@
+import { FsPath } from '#fs-path'
 import { FileSystem } from '@effect/platform'
 import { Effect } from 'effect'
-import * as path from 'node:path'
 
 interface GlobalLocalCheckOptions {
   /**
@@ -40,7 +40,12 @@ const findPackageInAncestors = (packageName: string): Effect.Effect<string | nul
     let dir = process.cwd()
 
     while (true) {
-      const packageJsonPath = path.join(dir, 'package.json')
+      const dirPathDecoded = dir.endsWith('/')
+        ? FsPath.AbsoluteDir.decodeSync(dir)
+        : FsPath.AbsoluteDir.decodeSync(`${dir}/`)
+      const packageJsonFile = FsPath.RelativeFile.decodeSync('package.json')
+      const fullPath = FsPath.join(dirPathDecoded, packageJsonFile)
+      const packageJsonPath = FsPath.encodeSync(fullPath)
       const fs = yield* FileSystem.FileSystem
 
       try {
@@ -58,7 +63,11 @@ const findPackageInAncestors = (packageName: string): Effect.Effect<string | nul
         // No package.json in this directory, continue
       }
 
-      const parent = path.dirname(dir)
+      const currentDirDecoded = dir.endsWith('/')
+        ? FsPath.AbsoluteDir.decodeSync(dir)
+        : FsPath.AbsoluteDir.decodeSync(`${dir}/`)
+      const parentDecoded = FsPath.getParentDir(currentDirDecoded)
+      const parent = FsPath.encodeSync(parentDecoded)
       if (parent === dir) {
         // Reached root directory
         break

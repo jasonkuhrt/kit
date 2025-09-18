@@ -1,1 +1,1 @@
-export * from './in-range.ts'
+export * from './in-range.js'

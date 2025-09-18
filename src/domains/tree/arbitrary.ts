@@ -1,6 +1,6 @@
 import fc from 'fast-check'
-import { Node, Tree } from './data.ts'
-import type { Tree as TreeType } from './data.ts'
+import { Node, Tree } from './data.js'
+import type { Tree as TreeType } from './data.js'
 
 /**
  * Configuration options for generating arbitrary trees.

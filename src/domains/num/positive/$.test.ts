@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Positive } from './$.ts'
+import { Positive } from './$.js'
 
 describe('is', () => {
   it('returns true for positive numbers', () => {

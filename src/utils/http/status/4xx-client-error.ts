@@ -3,7 +3,7 @@
  * Indicates that the client seems to have erred.
  */
 
-import type { Status } from './type.ts'
+import type { Status } from './type.js'
 
 /**
  * The server cannot or will not process the request due to something that is perceived to be a client error.

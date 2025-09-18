@@ -1,1 +1,1 @@
-export * as Json from './$$.ts'
+export * as Json from './$$.js'

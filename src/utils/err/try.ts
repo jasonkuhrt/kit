@@ -5,8 +5,8 @@ import { Prom } from '#prom'
 import type { AwaitedUnion } from '#prom/prom'
 import { Value } from '#value'
 import type { IsUnknown } from 'type-fest'
-import { ensure, is } from './type.ts'
-import { wrap, type WrapOptions } from './wrap.ts'
+import { ensure, is } from './type.js'
+import { wrap, type WrapOptions } from './wrap.js'
 
 /**
  * Helper type for tryOr that enforces sync fallback when main is sync.

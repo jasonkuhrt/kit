@@ -1,6 +1,6 @@
-import type { DomainName } from '../domain.ts'
-import type { Implementation } from '../implement.ts'
-import type { TraitName } from '../types.ts'
+import type { DomainName } from '../domain.js'
+import type { Implementation } from '../implement.js'
+import type { TraitName } from '../types.js'
 
 /**
  * Type-safe trait registry for a single trait.

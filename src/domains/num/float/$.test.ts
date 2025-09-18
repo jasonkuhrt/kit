@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { Float } from './$.ts'
+import { Float } from './$.js'
 
 test('isFloat', () => {
   // TODO: Add comprehensive tests

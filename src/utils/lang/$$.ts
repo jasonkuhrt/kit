@@ -1,5 +1,5 @@
 export * from '#platform:lang/colorize'
 export * from '#platform:lang/inspect'
 export * from '#platform:lang/process'
-export * from './lang.ts'
-export * from './never.ts'
+export * from './lang.js'
+export * from './never.js'

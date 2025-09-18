@@ -1,1 +1,1 @@
-export * as Char from './char.ts'
+export * as Char from './char.js'

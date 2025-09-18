@@ -1,6 +1,6 @@
 import { describe, type TestContext } from 'vitest'
-import type { Case, CaseFilled } from './case.ts'
-import { each } from './each.ts'
+import type { Case, CaseFilled } from './case.js'
+import { each } from './each.js'
 
 interface Suite extends SuiteBase {
   only: SuiteBase

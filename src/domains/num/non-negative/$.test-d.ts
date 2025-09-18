@@ -3,11 +3,11 @@
  */
 
 import { Ts } from '#ts'
-import type { Negative } from '../negative/$$.ts'
-import type { Positive } from '../positive/$$.ts'
-import type { Zero } from '../zero/$$.ts'
-import type { NonNegative } from './$$.ts'
-import { from as nonNegative, is as isNonNegative, tryFrom as tryNonNegative } from './$$.ts'
+import type { Negative } from '../negative/$$.js'
+import type { Positive } from '../positive/$$.js'
+import type { Zero } from '../zero/$$.js'
+import type { NonNegative } from './$$.js'
+import { from as nonNegative, is as isNonNegative, tryFrom as tryNonNegative } from './$$.js'
 
 // === Type Narrowing with Predicates ===
 

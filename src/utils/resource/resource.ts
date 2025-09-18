@@ -1,6 +1,6 @@
+import { FsPath } from '#fs-path'
 import { FileSystem } from '@effect/platform'
 import { Effect, Option, ParseResult, Schema } from 'effect'
-import * as path from 'node:path'
 
 /**
  * Errors that can occur during resource operations
@@ -109,7 +109,12 @@ export const createResource = <T, R = never>(
   read: (dirPath: string) =>
     Effect.gen(function*() {
       const fs = yield* FileSystem.FileSystem
-      const filePath = path.join(dirPath, filename)
+      const dirPathDecoded = dirPath.endsWith('/')
+        ? FsPath.AbsoluteDir.decodeSync(dirPath)
+        : FsPath.AbsoluteDir.decodeSync(`${dirPath}/`)
+      const filePathDecoded = FsPath.RelativeFile.decodeSync(filename)
+      const fullPath = FsPath.join(dirPathDecoded, filePathDecoded)
+      const filePath = FsPath.encodeSync(fullPath)
       const exists = yield* fs.exists(filePath).pipe(
         Effect.mapError((error) =>
           new ReadError({
@@ -140,8 +145,13 @@ export const createResource = <T, R = never>(
   write: (value: T, dirPath: string) =>
     Effect.gen(function*() {
       const fs = yield* FileSystem.FileSystem
-      const filePath = path.join(dirPath, filename)
-      const parentDir = path.dirname(filePath)
+      const dirPathDecoded = dirPath.endsWith('/')
+        ? FsPath.AbsoluteDir.decodeSync(dirPath)
+        : FsPath.AbsoluteDir.decodeSync(`${dirPath}/`)
+      const filePathDecoded = FsPath.RelativeFile.decodeSync(filename)
+      const fullPath = FsPath.join(dirPathDecoded, filePathDecoded)
+      const filePath = FsPath.encodeSync(fullPath)
+      const parentDir = FsPath.encodeSync(FsPath.getParentDir(fullPath))
 
       const content = yield* codec.encode(value, filename)
 
@@ -169,7 +179,12 @@ export const createResource = <T, R = never>(
   readOrEmpty: (dirPath: string) =>
     Effect.gen(function*() {
       const fs = yield* FileSystem.FileSystem
-      const filePath = path.join(dirPath, filename)
+      const dirPathDecoded = dirPath.endsWith('/')
+        ? FsPath.AbsoluteDir.decodeSync(dirPath)
+        : FsPath.AbsoluteDir.decodeSync(`${dirPath}/`)
+      const filePathDecoded = FsPath.RelativeFile.decodeSync(filename)
+      const fullPath = FsPath.join(dirPathDecoded, filePathDecoded)
+      const filePath = FsPath.encodeSync(fullPath)
       const exists = yield* fs.exists(filePath).pipe(
         Effect.mapError((error) =>
           new ReadError({

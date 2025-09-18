@@ -128,6 +128,10 @@
     "#sch/sch": "./build/utils/sch/$$.js",
     "#traitor": "./build/utils/traitor/$.js",
     "#traitor/traitor": "./build/utils/traitor/$$.js",
+    "#fs-memory": "./build/utils/fs-memory/$.js",
+    "#fs-memory/fs-memory": "./build/utils/fs-memory/$$.js",
+    "#fs-path": "./build/utils/fs-path/$.js",
+    "#fs-path/fs-path": "./build/utils/fs-path/$$.js",
     "#*": {
       "default": "./build/*.js"
     }
@@ -173,7 +177,9 @@
     "./ts": "./build/utils/ts/$$.js",
     "./undefined": "./build/domains/undefined/$$.js",
     "./url": "./build/domains/url/$$.js",
-    "./value": "./build/utils/value/$$.js"
+    "./value": "./build/utils/value/$$.js",
+    "./fs-memory": "./build/utils/fs-memory/$$.js",
+    "./fs-path": "./build/utils/fs-path/$$.js"
   },
   "scripts": {
     "r": "libra refresh && pnpm fix:format",
@@ -228,6 +234,7 @@
     "fast-check": "^4.3.0",
     "jsonc-parser": "^3.3.1",
     "pathe": "^2.0.3",
+    "tinyglobby": "^0.2.15",
     "ts-morph": "^27.0.0",
     "type-fest": "^5.0.0",
     "typescript": "^5.9.2"

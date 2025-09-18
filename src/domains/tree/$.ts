@@ -1,1 +1,1 @@
-export * as Tree from './$$.ts'
+export * as Tree from './$$.js'

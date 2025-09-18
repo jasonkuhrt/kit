@@ -3,8 +3,8 @@
  */
 
 import { Ts } from '#ts'
-import type { InRange } from './$$.ts'
-import { clamp, clampWith, from as ranged, is as inRange, isWith as inRangeWith, tryFrom as tryRanged } from './$$.ts'
+import type { InRange } from './$$.js'
+import { clamp, clampWith, from as ranged, is as inRange, isWith as inRangeWith, tryFrom as tryRanged } from './$$.js'
 
 // === Type Narrowing with Predicates ===
 

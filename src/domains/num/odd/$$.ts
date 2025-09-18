@@ -1,1 +1,1 @@
-export * from './odd.ts'
+export * from './odd.js'

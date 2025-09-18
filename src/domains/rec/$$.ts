@@ -1,1 +1,1 @@
-export * from './rec.ts'
+export * from './rec.js'

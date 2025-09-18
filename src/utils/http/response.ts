@@ -1,4 +1,4 @@
-import { Status } from './status/$.ts'
+import { Status } from './status/$.js'
 
 /**
  * Pre-configured 404 Not Found response.

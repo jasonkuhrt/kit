@@ -1,1 +1,1 @@
-export * from './percentage.ts'
+export * from './percentage.js'

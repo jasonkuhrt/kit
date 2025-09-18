@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { Ratio } from '../ratio/$.ts'
-import { Frac } from './$.ts'
+import { Ratio } from '../ratio/$.js'
+import { Frac } from './$.js'
 
 describe('Frac', () => {
   describe('is', () => {

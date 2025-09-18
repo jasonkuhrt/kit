@@ -1,1 +1,1 @@
-export * as PackageManager from './$$.ts'
+export * as PackageManager from './$$.js'

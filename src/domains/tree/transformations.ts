@@ -1,6 +1,6 @@
-import { Tree } from './data.ts'
-import type { Node, Tree as TreeType } from './data.ts'
-import type { Predicate } from './predicate.ts'
+import { Tree } from './data.js'
+import type { Node, Tree as TreeType } from './data.js'
+import type { Predicate } from './predicate.js'
 
 /**
  * A function that transforms a value from one type to another during tree mapping.

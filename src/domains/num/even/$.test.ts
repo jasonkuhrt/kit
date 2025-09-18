@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { Even } from './$.ts'
+import { Even } from './$.js'
 
 test('is', () => {
   // Valid cases - even integers

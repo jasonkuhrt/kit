@@ -3,7 +3,7 @@
  * A percentage is a number between 0 and 1 (inclusive).
  */
 
-import type { InRange } from '../in-range/$$.ts'
+import type { InRange } from '../in-range/$$.js'
 
 declare const PercentageBrand: unique symbol
 

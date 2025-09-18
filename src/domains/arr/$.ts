@@ -1,1 +1,1 @@
-export * as Arr from './$$.ts'
+export * as Arr from './$$.js'

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { Prime } from './$.ts'
+import { Prime } from './$.js'
 
 describe('Prime', () => {
   describe('is', () => {

@@ -1,6 +1,6 @@
 import { Effect, Layer } from 'effect'
 import { describe, test } from 'vitest'
-import type { Case, CaseFilled } from './case.ts'
+import type { Case, CaseFilled } from './case.js'
 
 /**
  * Creates Effect-based test suites with automatic layer provision and Effect execution.

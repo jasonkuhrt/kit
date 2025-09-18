@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { Registry } from '../registry/$.ts'
-import { createTraitProxy } from './dispatcher.ts'
+import { Registry } from '../registry/$.js'
+import { createTraitProxy } from './dispatcher.js'
 
 describe('createTraitProxy with Prox domain', () => {
   test('createTraitProxy uses Prox.createCachedGetProxy correctly', () => {

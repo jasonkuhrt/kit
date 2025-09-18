@@ -4,9 +4,9 @@
  */
 
 import { Fn } from '#fn'
-import type { Int } from '../int/$$.ts'
-import { gcd } from '../math.ts'
-import type { NonZero } from '../non-zero/$$.ts'
+import type { Int } from '../int/$$.js'
+import { gcd } from '../math.js'
+import type { NonZero } from '../non-zero/$$.js'
 
 declare const RatioBrand: unique symbol
 

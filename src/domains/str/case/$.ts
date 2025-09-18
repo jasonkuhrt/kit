@@ -1,1 +1,1 @@
-export * as Case from './case.ts'
+export * as Case from './case.js'

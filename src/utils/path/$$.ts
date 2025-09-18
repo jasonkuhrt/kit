@@ -1,1 +1,1 @@
-export * from './path.ts'
+export * from './path.js'

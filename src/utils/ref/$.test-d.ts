@@ -1,5 +1,5 @@
 import { Ts } from '#ts'
-import { Ref } from './$.ts'
+import { Ref } from './$.js'
 
 //
 // ─── Ref.is ───────────────────────────────────────────────────────────────

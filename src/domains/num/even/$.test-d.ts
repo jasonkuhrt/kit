@@ -3,9 +3,9 @@
  */
 
 import { Ts } from '#ts'
-import type { Int } from '../int/$$.ts'
-import type { Even } from './$$.ts'
-import { from as even, is as isEven, next as nextEven, prev as prevEven, tryFrom as tryEven } from './$$.ts'
+import type { Int } from '../int/$$.js'
+import type { Even } from './$$.js'
+import { from as even, is as isEven, next as nextEven, prev as prevEven, tryFrom as tryEven } from './$$.js'
 
 // === Type Narrowing with Predicates ===
 

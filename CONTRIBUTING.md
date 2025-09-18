@@ -186,13 +186,13 @@ pnpm test               # Run tests
 1. **Create module directory**: `src/new-module/`
 2. **Create barrel file**: `src/new-module/$$.ts`
    ```typescript
-   export * from './implementation.ts'
-   export * from './types.ts'
+   export * from './implementation.js'
+   export * from './types.js'
    // etc.
    ```
 3. **Create namespace file**: `src/new-module/$.ts`
    ```typescript
-   export * as NewModule from './$$.ts'
+   export * as NewModule from './$$.js'
    ```
 4. **Add import mapping**: Update `package.json`
    ```json
@@ -248,12 +248,12 @@ pnpm test               # Run tests
 
   ```ts
   // $.ts
-  export * as Foo from './$$.ts'
+  export * as Foo from './$$.js'
   ```
 
   ```ts
   // $.test.ts
-  import { Foo } from './$.ts'
+  import { Foo } from './$.js'
 
   test('...', () => { Foo... })
   ```

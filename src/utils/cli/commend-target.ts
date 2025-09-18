@@ -1,5 +1,5 @@
-import type { Argv } from './argv.ts'
-import { isNamedParameter } from './parameter.ts'
+import type { Argv } from './argv.js'
+import { isNamedParameter } from './parameter.js'
 
 export type CommandTarget = {
   type: `sub`
@@ -22,17 +22,17 @@ export type CommandTarget = {
  *
  * @example
  * // Subcommand target
- * getCommandTarget({ execPath: 'node', scriptPath: 'cli.ts', args: ['build', '--watch'] })
+ * getCommandTarget({ execPath: 'node', scriptPath: 'cli.js', args: ['build', '--watch'] })
  * // Returns: { type: 'sub', name: 'build', args: ['--watch'] }
  *
  * @example
  * // Default command (no subcommand)
- * getCommandTarget({ execPath: 'node', scriptPath: 'cli.ts', args: ['--help'] })
+ * getCommandTarget({ execPath: 'node', scriptPath: 'cli.js', args: ['--help'] })
  * // Returns: { type: 'default', args: ['--help'] }
  *
  * @example
  * // Default command (empty args)
- * getCommandTarget({ execPath: 'node', scriptPath: 'cli.ts', args: [] })
+ * getCommandTarget({ execPath: 'node', scriptPath: 'cli.js', args: [] })
  * // Returns: { type: 'default', args: [] }
  */
 export const getCommandTarget = (argv: Argv): CommandTarget => {

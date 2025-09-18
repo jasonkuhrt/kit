@@ -1,7 +1,7 @@
 import { Bool } from '#bool'
 import { Fn } from '#fn'
 import { Pat } from '#pat'
-import { Type } from './traits/type.ts'
+import { Type } from './traits/type.js'
 
 //
 //

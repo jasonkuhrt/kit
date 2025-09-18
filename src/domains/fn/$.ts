@@ -1,1 +1,1 @@
-export * as Fn from './$$.ts'
+export * as Fn from './$$.js'

@@ -1,6 +1,6 @@
 import * as fc from 'fast-check'
 import { describe, expect, test } from 'vitest'
-import { Num } from './$.ts'
+import { Num } from './$.js'
 
 describe('type predicates', () => {
   describe('is', () => {

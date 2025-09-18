@@ -1,4 +1,4 @@
-export * from './obj.ts'
-export { Eq } from './traits/eq.ts'
-export { Type } from './traits/type.ts'
-export * from './type-utils.ts'
+export * from './obj.js'
+export { Eq } from './traits/eq.js'
+export { Type } from './traits/type.js'
+export * from './type-utils.js'

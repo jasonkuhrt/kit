@@ -1,1 +1,1 @@
-export * as ArrMut from './$$.ts'
+export * as ArrMut from './$$.js'

@@ -2,17 +2,17 @@ import type { Lang } from '#lang'
 import type { Rec } from '#rec'
 import type { Ts } from '#ts'
 import type { Undefined } from '#undefined'
-import { Type } from './traits/type.ts'
-import type { Keyof, PolicyFilter } from './type-utils.ts'
-import { type Any } from './type.ts'
+import { Type } from './traits/type.js'
+import type { Keyof, PolicyFilter } from './type-utils.js'
+import { type Any } from './type.js'
 
-export * from './path.ts'
+export * from './path.js'
 
-export * from './get.ts'
+export * from './get.js'
 
-export * from './merge.ts'
+export * from './merge.js'
 
-export * from './type.ts'
+export * from './type.js'
 
 /**
  * Get an array of key-value pairs from an object.

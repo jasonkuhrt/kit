@@ -1,5 +1,5 @@
 import { Str } from '#str'
-import type { Context } from './types.ts'
+import type { Context } from './types.js'
 
 /**
  * Options for cleaning and formatting stack traces.

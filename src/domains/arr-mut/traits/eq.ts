@@ -1,6 +1,6 @@
 import { Traitor } from '#traitor'
-import { Eq as EqTrait } from '../../../traits/eq.ts'
-import { domain } from '../domain.ts'
+import { Eq as EqTrait } from '../../../traits/eq.js'
+import { domain } from '../domain.js'
 
 /**
  * {@link Eq} trait implementation for arrays.

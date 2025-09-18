@@ -1,1 +1,1 @@
-export * from './pat.ts'
+export * from './pat.js'

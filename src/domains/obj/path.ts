@@ -1,5 +1,5 @@
 import { Str } from '#str'
-import { splitWith } from '../str/split.ts'
+import { splitWith } from '../str/split.js'
 
 export type PropertyPathExpression = string
 

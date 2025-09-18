@@ -6,10 +6,10 @@ import {
   type GetAppliedInternalInterface,
   type Internal,
   type ParamContextGeneric,
-} from './definition.ts'
-import { getInternal } from './definition.ts'
-import type { Domain } from './domain.ts'
-import { Registry } from './registry/$.ts'
+} from './definition.js'
+import { getInternal } from './definition.js'
+import type { Domain } from './domain.js'
+import { Registry } from './registry/$.js'
 
 // Internal default registry for when none is provided
 const defaultRegistry = Registry.create()

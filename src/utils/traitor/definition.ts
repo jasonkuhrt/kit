@@ -3,7 +3,7 @@ import type { Fn } from '#fn'
 import type { Obj } from '#obj'
 import type { Domain } from '#traitor/traitor'
 import type { Ts } from '#ts'
-import * as Laws from './laws/$$.ts'
+import * as Laws from './laws/$$.js'
 
 //
 //

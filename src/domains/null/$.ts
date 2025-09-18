@@ -1,1 +1,1 @@
-export * as Null from './$$.ts'
+export * as Null from './$$.js'

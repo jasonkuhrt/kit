@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Whole } from './$.ts'
+import { Whole } from './$.js'
 
 describe('isWhole', () => {
   it('returns true for non-negative integers', () => {

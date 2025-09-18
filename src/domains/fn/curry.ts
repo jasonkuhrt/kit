@@ -1,5 +1,5 @@
 import type { ArrMut } from '#arr-mut'
-import type { AnyAny, AnyAnyParametersMin1 } from './base.ts'
+import type { AnyAny, AnyAnyParametersMin1 } from './base.js'
 
 export type AnyAny2Curried = (arg1: any) => (arg2: any) => any
 

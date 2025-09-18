@@ -1,5 +1,5 @@
 import { curry, flipCurried } from '#fn/fn'
-import { Empty } from './type.ts'
+import { Empty } from './type.js'
 
 /**
  * Split a string into an array of substrings using a separator.

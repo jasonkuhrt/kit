@@ -1,2 +1,2 @@
 // Export the namespace containing all Odd operations
-export * as Odd from './$$.ts'
+export * as Odd from './$$.js'

@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { NonZero } from './$.ts'
+import { NonZero } from './$.js'
 
 test('isNonZero', () => {
   // TODO: Add comprehensive tests

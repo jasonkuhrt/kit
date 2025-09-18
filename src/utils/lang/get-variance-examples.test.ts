@@ -8,7 +8,7 @@
  */
 
 import { expectTypeOf, test } from 'vitest'
-import type { GetVariance } from './lang.ts'
+import type { GetVariance } from './lang.js'
 
 test('GetVariance JSDoc examples', () => {
   // These match the examples in the JSDoc - if these fail, update the JSDoc!

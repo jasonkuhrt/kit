@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { NonNegative } from './$.ts'
+import { NonNegative } from './$.js'
 
 test('isNonNegative', () => {
   // Valid cases - non-negative numbers (>= 0)

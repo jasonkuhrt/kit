@@ -6,9 +6,9 @@ import { Str } from '#str'
 import { Char } from '#str/str'
 import type { Ts } from '#ts'
 import { cyan, red } from 'ansis'
-import { cleanStack } from './stack.ts'
-import { is } from './type.ts'
-import type { Context } from './types.ts'
+import { cleanStack } from './stack.js'
+import { is } from './type.js'
+import type { Context } from './types.js'
 
 interface EnvironmentConfigurableOptionSpec<$Name extends string = string, $Type = any> {
   name: $Name

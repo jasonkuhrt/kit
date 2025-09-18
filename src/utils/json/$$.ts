@@ -1,1 +1,1 @@
-export * from './json.effect.ts'
+export * from './json.effect.js'

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { Ratio } from './$.ts'
+import { Ratio } from './$.js'
 
 describe('Ratio', () => {
   describe('from', () => {

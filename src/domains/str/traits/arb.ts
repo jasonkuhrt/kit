@@ -1,7 +1,7 @@
 import { Traitor } from '#traitor'
 import * as fc from 'fast-check'
-import { Arb as ArbTrait } from '../../../traits/arb.ts'
-import { domain } from '../domain.ts'
+import { Arb as ArbTrait } from '../../../traits/arb.js'
+import { domain } from '../domain.js'
 
 /**
  * {@link Arb} trait implementation for strings.

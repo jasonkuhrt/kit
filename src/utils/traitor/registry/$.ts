@@ -1,1 +1,1 @@
-export * as Registry from './$$.ts'
+export * as Registry from './$$.js'

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { pipe } from './pipe.ts'
+import { pipe } from './pipe.js'
 
 describe('pipe', () => {
   test('returns value when no functions', () => {

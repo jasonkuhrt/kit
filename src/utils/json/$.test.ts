@@ -1,7 +1,7 @@
 import { property } from '#test/test'
 import fc from 'fast-check'
 import { expect, test } from 'vitest'
-import { Json } from './$.ts'
+import { Json } from './$.js'
 
 property('isPrimitive detects JSON primitives', fc.jsonValue(), (value) => {
   const isPrimitive = typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'

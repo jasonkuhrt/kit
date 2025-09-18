@@ -1,8 +1,8 @@
 import { ArrMut } from '#arr-mut'
 import { Lang } from '#lang'
 import { Str } from '#str'
-import { calcIsEnabledFromEnv } from './environment-variable.ts'
-import { trace, type TraceOptions } from './trace.ts'
+import { calcIsEnabledFromEnv } from './environment-variable.js'
+import { trace, type TraceOptions } from './trace.js'
 
 type DebugParameters = [event: string, payload?: unknown]
 

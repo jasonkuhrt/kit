@@ -4,11 +4,11 @@
  */
 
 import { Fn } from '#fn'
-import type { Int } from '../int/$$.ts'
-import type { Natural } from '../natural/$$.ts'
-import type { NonZero } from '../non-zero/$$.ts'
-import type { Ratio } from '../ratio/$$.ts'
-import * as Ratio_ from '../ratio/$$.ts'
+import type { Int } from '../int/$$.js'
+import type { Natural } from '../natural/$$.js'
+import type { NonZero } from '../non-zero/$$.js'
+import type { Ratio } from '../ratio/$$.js'
+import * as Ratio_ from '../ratio/$$.js'
 
 declare const FracBrand: unique symbol
 

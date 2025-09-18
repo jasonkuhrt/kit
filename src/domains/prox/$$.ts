@@ -1,1 +1,1 @@
-export * from './prox.ts'
+export * from './prox.js'

@@ -1,7 +1,7 @@
 import { property } from '#test/test'
 import fc from 'fast-check'
 import { expect, test } from 'vitest'
-import { Url } from './$.ts'
+import { Url } from './$.js'
 
 property(
   'factory creates URLs relative to base',

@@ -1,5 +1,5 @@
 import { Schema } from 'effect'
-import { type Codec, create } from './codec.ts'
+import { type Codec, create } from './codec.js'
 
 /**
  * Create a codec from an Effect Schema.

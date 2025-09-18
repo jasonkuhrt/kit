@@ -89,7 +89,7 @@ export type AssertNever<$Type> = [$Type] extends [never] ? true : false
  * assert<{ id: string; name: string }>(result)
  * ```
  */
-import type { StaticError } from './ts.ts'
+import type { StaticError } from './ts.js'
 
 export const assert = <$Expected>() =>
 <$Actual>(

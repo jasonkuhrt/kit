@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { BigInteger } from './$.ts'
+import { BigInteger } from './$.js'
 
 describe('BigInteger', () => {
   describe('from', () => {

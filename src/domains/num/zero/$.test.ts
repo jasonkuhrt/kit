@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { Zero } from './$.ts'
+import { Zero } from './$.js'
 
 test('isZero', () => {
   // Valid cases - only 0 is zero

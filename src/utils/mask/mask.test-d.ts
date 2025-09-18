@@ -1,5 +1,5 @@
 import { expectTypeOf } from 'vitest'
-import { Mask } from './$.ts'
+import { Mask } from './$.js'
 
 // Test InferOptions type
 type User = { name: string; email: string; age: number; password: string }

@@ -1,9 +1,9 @@
 import { Test } from '#test'
 import fc from 'fast-check'
 import { describe, expect, test } from 'vitest'
-import { arbitrary } from './arbitrary.ts'
-import { Node, Tree } from './data.ts'
-import { count, depth, every, find, leaves, path, pathTo, some, visit } from './queries.ts'
+import { arbitrary } from './arbitrary.js'
+import { Node, Tree } from './data.js'
+import { count, depth, every, find, leaves, path, pathTo, some, visit } from './queries.js'
 
 const sampleTree = Tree(
   Node('root', [

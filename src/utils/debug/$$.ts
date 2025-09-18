@@ -1,3 +1,3 @@
-export * from './debug.ts'
-export * from './dump.ts'
-export * from './trace.ts'
+export * from './debug.js'
+export * from './dump.js'
+export * from './trace.js'

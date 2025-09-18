@@ -1,1 +1,1 @@
-export * from './safe-int.ts'
+export * from './safe-int.js'

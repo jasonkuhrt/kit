@@ -1,5 +1,5 @@
 import { test, type TestContext } from 'vitest'
-import type { Case, CaseFilled } from './case.ts'
+import type { Case, CaseFilled } from './case.js'
 
 /**
  * Executes a parameterized test for each case in the provided array.

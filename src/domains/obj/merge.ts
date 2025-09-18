@@ -1,8 +1,8 @@
 import { ArrMut } from '#arr-mut'
 import { Lang } from '#lang'
 import type { Rec } from '#rec'
-import { Type } from './traits/type.ts'
-import { type Any } from './type.ts'
+import { Type } from './traits/type.js'
+import { type Any } from './type.js'
 
 interface MergeOptions {
   undefined?: boolean

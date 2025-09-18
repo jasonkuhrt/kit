@@ -67,4 +67,4 @@
  * ]
  * ```
  */
-export * as Test from './$$.ts'
+export * as Test from './$$.js'

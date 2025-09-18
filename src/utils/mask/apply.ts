@@ -1,7 +1,7 @@
 import { Lang } from '#lang'
 import { Obj } from '#obj'
 import { Ts } from '#ts'
-import type { GetDataType, Mask } from './mask.ts'
+import type { GetDataType, Mask } from './mask.js'
 
 /**
  * Type-level function that applies a mask to data.

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { createCachedGetProxy } from './prox.ts'
+import { createCachedGetProxy } from './prox.js'
 
 describe('createCachedGetProxy', () => {
   test('creates a proxy that caches function results', () => {

@@ -3,7 +3,7 @@ import { Test } from '#test'
 import fc from 'fast-check'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type * as Vi from 'vitest'
-import { trace } from './trace.ts'
+import { trace } from './trace.js'
 
 export type MockDebug = Vi.Mock<Debug.Debug>
 

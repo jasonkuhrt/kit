@@ -1,17 +1,17 @@
 import { Fn } from '#fn'
-import { inspect, type InspectOptions } from './inspect.ts'
+import { inspect, type InspectOptions } from './inspect.js'
 
-export * from './inspect.ts'
+export * from './inspect.js'
 
-export * from './stack.ts'
+export * from './stack.js'
 
-export * from './try.ts'
+export * from './try.js'
 
-export * from './type.ts'
+export * from './type.js'
 
-export * from './types.ts'
+export * from './types.js'
 
-export * from './wrap.ts'
+export * from './wrap.js'
 
 /**
  * Log an error to console with nice formatting.

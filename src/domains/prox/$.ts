@@ -1,1 +1,1 @@
-export * as Prox from './$$.ts'
+export * as Prox from './$$.js'

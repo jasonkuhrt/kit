@@ -1,7 +1,7 @@
 import { property } from '#test/test'
 import fc from 'fast-check'
 import { expect, test } from 'vitest'
-import { Fn } from './$.ts'
+import { Fn } from './$.js'
 
 property(
   'is detects functions',

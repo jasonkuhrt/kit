@@ -1,5 +1,5 @@
 import { Ts } from '#ts'
-import { Lang } from './$.ts'
+import { Lang } from './$.js'
 
 //
 // ─── GetVariance ──────────────────────────────────────────────────

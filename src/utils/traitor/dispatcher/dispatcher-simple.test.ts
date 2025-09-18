@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import * as Registry from '../registry/registry.ts'
-import { createTraitDispatcher, dispatchMethodCall } from './dispatcher.ts'
+import * as Registry from '../registry/registry.js'
+import { createTraitDispatcher, dispatchMethodCall } from './dispatcher.js'
 
 describe('createTraitDispatcher uses dispatchMethodCall', () => {
   test('createTraitDispatcher delegates to dispatchMethodCall', () => {

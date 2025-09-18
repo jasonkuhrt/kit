@@ -1,9 +1,9 @@
 import { FileSystem } from '@effect/platform'
 import { Effect, ParseResult, Schema } from 'effect'
 import { parseJsonc } from '../jsonc/jsonc.js'
-import { type Codec, createResource, EncodeError, ParseError, type Resource } from './resource.ts'
+import { type Codec, createResource, EncodeError, ParseError, type Resource } from './resource.js'
 
-export type { Resource } from './resource.ts'
+export type { Resource } from './resource.js'
 
 /**
  * JSONC codec for parsing JSON with comments

@@ -1,2 +1,2 @@
 // Export the namespace containing all Float operations
-export * as Float from './$$.ts'
+export * as Float from './$$.js'

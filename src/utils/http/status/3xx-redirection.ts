@@ -3,7 +3,7 @@
  * Indicates that further action needs to be taken by the user agent to fulfill the request.
  */
 
-import type { Status } from './type.ts'
+import type { Status } from './type.js'
 
 /**
  * The request has more than one possible response. The user agent or user should choose one of them.

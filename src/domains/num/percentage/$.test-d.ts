@@ -3,8 +3,8 @@
  */
 
 import { Ts } from '#ts'
-import type { InRange } from '../in-range/$$.ts'
-import type { Percentage } from './$$.ts'
+import type { InRange } from '../in-range/$$.js'
+import type { Percentage } from './$$.js'
 import {
   clamp as clampToPercentage,
   from as percentage,
@@ -12,7 +12,7 @@ import {
   is as isPercentage,
   toPercent,
   tryFrom as tryPercentage,
-} from './$$.ts'
+} from './$$.js'
 
 // === Type Narrowing with Predicates ===
 

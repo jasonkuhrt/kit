@@ -4,14 +4,14 @@
  * IMPORTANT: TypeScript limitation with namespace and type exports
  *
  * We cannot use the pattern:
- *   export type { Foo } from './foo/$$.ts'
- *   export * from './foo/$.ts'
+ *   export type { Foo } from './foo/$$.js'
+ *   export * from './foo/$.js'
  *
  * This breaks TypeScript's ability to recognize the namespace exports.
  *
  * Instead, we must use:
- *   import type { Foo as Foo_ } from './foo/$$.ts'
- *   export { Foo } from './foo/$.ts'
+ *   import type { Foo as Foo_ } from './foo/$$.js'
+ *   export { Foo } from './foo/$.js'
  *   export type Foo = Foo_
  *
  * This pattern:
@@ -22,79 +22,79 @@
  * This enables `Num.Foo` to work as both a type and a namespace.
  */
 
-import type { Degrees as Degrees_ } from './degrees/$$.ts'
-export { Degrees } from './degrees/$.ts'
+import type { Degrees as Degrees_ } from './degrees/$$.js'
+export { Degrees } from './degrees/$.js'
 export type Degrees = Degrees_
-import type { Even as Even_ } from './even/$$.ts'
-export { Even } from './even/$.ts'
+import type { Even as Even_ } from './even/$$.js'
+export { Even } from './even/$.js'
 export type Even = Even_
-import type { Finite as Finite_ } from './finite/$$.ts'
-export { Finite } from './finite/$.ts'
+import type { Finite as Finite_ } from './finite/$$.js'
+export { Finite } from './finite/$.js'
 export type Finite = Finite_
-import type { Float as Float_ } from './float/$$.ts'
-export { Float } from './float/$.ts'
+import type { Float as Float_ } from './float/$$.js'
+export { Float } from './float/$.js'
 export type Float = Float_
-import type { InRange as InRange_ } from './in-range/$$.ts'
-export { InRange } from './in-range/$.ts'
+import type { InRange as InRange_ } from './in-range/$$.js'
+export { InRange } from './in-range/$.js'
 export type InRange<Min extends number = number, Max extends number = number> = InRange_<Min, Max>
-import type { Int as Int_ } from './int/$$.ts'
-export { Int } from './int/$.ts'
+import type { Int as Int_ } from './int/$$.js'
+export { Int } from './int/$.js'
 export type Int = Int_
-import type { Natural as Natural_ } from './natural/$$.ts'
-export { Natural } from './natural/$.ts'
+import type { Natural as Natural_ } from './natural/$$.js'
+export { Natural } from './natural/$.js'
 export type Natural = Natural_
-import type { Negative as Negative_ } from './negative/$$.ts'
-export { Negative } from './negative/$.ts'
+import type { Negative as Negative_ } from './negative/$$.js'
+export { Negative } from './negative/$.js'
 export type Negative = Negative_
-import type { NonNegative as NonNegative_ } from './non-negative/$$.ts'
-export { NonNegative } from './non-negative/$.ts'
+import type { NonNegative as NonNegative_ } from './non-negative/$$.js'
+export { NonNegative } from './non-negative/$.js'
 export type NonNegative = NonNegative_
-import type { NonPositive as NonPositive_ } from './non-positive/$$.ts'
-export { NonPositive } from './non-positive/$.ts'
+import type { NonPositive as NonPositive_ } from './non-positive/$$.js'
+export { NonPositive } from './non-positive/$.js'
 export type NonPositive = NonPositive_
-import type { NonZero as NonZero_ } from './non-zero/$$.ts'
-export { NonZero } from './non-zero/$.ts'
+import type { NonZero as NonZero_ } from './non-zero/$$.js'
+export { NonZero } from './non-zero/$.js'
 export type NonZero = NonZero_
-import type { Odd as Odd_ } from './odd/$$.ts'
-export { Odd } from './odd/$.ts'
+import type { Odd as Odd_ } from './odd/$$.js'
+export { Odd } from './odd/$.js'
 export type Odd = Odd_
-import type { Percentage as Percentage_ } from './percentage/$$.ts'
-export { Percentage } from './percentage/$.ts'
+import type { Percentage as Percentage_ } from './percentage/$$.js'
+export { Percentage } from './percentage/$.js'
 export type Percentage = Percentage_
-import type { Positive as Positive_ } from './positive/$$.ts'
-export { Positive } from './positive/$.ts'
+import type { Positive as Positive_ } from './positive/$$.js'
+export { Positive } from './positive/$.js'
 export type Positive = Positive_
-import type { Radians as Radians_ } from './radians/$$.ts'
-export { Radians } from './radians/$.ts'
+import type { Radians as Radians_ } from './radians/$$.js'
+export { Radians } from './radians/$.js'
 export type Radians = Radians_
-import type { SafeInt as SafeInt_ } from './safe-int/$$.ts'
-export { SafeInt } from './safe-int/$.ts'
+import type { SafeInt as SafeInt_ } from './safe-int/$$.js'
+export { SafeInt } from './safe-int/$.js'
 export type SafeInt = SafeInt_
-import type { Whole as Whole_ } from './whole/$$.ts'
-export { Whole } from './whole/$.ts'
+import type { Whole as Whole_ } from './whole/$$.js'
+export { Whole } from './whole/$.js'
 export type Whole = Whole_
-import type { Zero as Zero_ } from './zero/$$.ts'
-export { Zero } from './zero/$.ts'
+import type { Zero as Zero_ } from './zero/$$.js'
+export { Zero } from './zero/$.js'
 export type Zero = Zero_
-import type { Prime as Prime_ } from './prime/$$.ts'
-export { Prime } from './prime/$.ts'
+import type { Prime as Prime_ } from './prime/$$.js'
+export { Prime } from './prime/$.js'
 export type Prime = Prime_
-import type { Ratio as Ratio_ } from './ratio/$$.ts'
-export { Ratio } from './ratio/$.ts'
+import type { Ratio as Ratio_ } from './ratio/$$.js'
+export { Ratio } from './ratio/$.js'
 export type Ratio = Ratio_
-import type { Frac as Frac_ } from './frac/$$.ts'
-export { Frac } from './frac/$.ts'
+import type { Frac as Frac_ } from './frac/$$.js'
+export { Frac } from './frac/$.js'
 export type Frac = Frac_
-import type { Complex as Complex_ } from './complex/$$.ts'
-export { Complex } from './complex/$.ts'
+import type { Complex as Complex_ } from './complex/$$.js'
+export { Complex } from './complex/$.js'
 export type Complex = Complex_
-import type { BigInteger as BigInteger_ } from './big-integer/$$.ts'
-export { BigInteger as BigInt } from './big-integer/$.ts'
+import type { BigInteger as BigInteger_ } from './big-integer/$$.js'
+export { BigInteger as BigInt } from './big-integer/$.js'
 export type BigInt = BigInteger_
 
-export * from './math.ts'
-export * from './operations.ts'
-export * from './range.ts'
-export { Arb } from './traits/arb.ts'
-export { Eq } from './traits/eq.ts'
-export { Type } from './traits/type.ts'
+export * from './math.js'
+export * from './operations.js'
+export * from './range.js'
+export { Arb } from './traits/arb.js'
+export { Eq } from './traits/eq.js'
+export { Type } from './traits/type.js'

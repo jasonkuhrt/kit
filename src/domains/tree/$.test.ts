@@ -1,8 +1,8 @@
 import { property } from '#test/test'
 import fc from 'fast-check'
 import { expect } from 'vitest'
-import * as Tree from './$$.ts'
-import { arbitrary } from './arbitrary.ts'
+import * as Tree from './$$.js'
+import { arbitrary } from './arbitrary.js'
 
 property('Node creates tree node', fc.anything(), (value) => {
   expect(Tree.Node(value)).toEqual({ value, children: [] })

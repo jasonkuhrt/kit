@@ -1,8 +1,8 @@
-import type { Print } from './print.ts'
+import type { Print } from './print.js'
 
-export * from './assert.ts'
+export * from './assert.js'
 
-export * from './print.ts'
+export * from './print.js'
 
 /**
  * Types that TypeScript accepts being interpolated into a Template Literal Type.

@@ -3,8 +3,8 @@
  */
 
 import { Ts } from '#ts'
-import type { Zero } from '../zero/$$.ts'
-import type { NonZero } from './$$.ts'
+import type { Zero } from '../zero/$$.js'
+import type { NonZero } from './$$.js'
 import {
   from as nonZero,
   is as isNonZero,
@@ -13,7 +13,7 @@ import {
   safeDivOn,
   safeDivWith,
   tryFrom as tryNonZero,
-} from './$$.ts'
+} from './$$.js'
 
 // === Type Narrowing with Predicates ===
 

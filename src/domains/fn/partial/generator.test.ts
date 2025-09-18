@@ -6,7 +6,7 @@ describe('partialize generator', () => {
   test('generates overloads for 2-parameter function', async () => {
     const project = new Project({ useInMemoryFileSystem: true })
     const sourceFile = project.createSourceFile(
-      'test.ts',
+      'test.js',
       `
 export type _ = symbol
 
@@ -40,7 +40,7 @@ export interface Add<N> {
   test('generates overloads for 3-parameter function', async () => {
     const project = new Project({ useInMemoryFileSystem: true })
     const sourceFile = project.createSourceFile(
-      'test.ts',
+      'test.js',
       `
 export type _ = symbol
 
@@ -71,7 +71,7 @@ export interface Calculate<N> {
   test('skips interfaces without directive', async () => {
     const project = new Project({ useInMemoryFileSystem: true })
     const sourceFile = project.createSourceFile(
-      'test.ts',
+      'test.js',
       `
 export interface Normal<T> {
   (value: T): T
@@ -89,12 +89,12 @@ export interface Normal<T> {
   test('removes existing generated section', async () => {
     const project = new Project({ useInMemoryFileSystem: true })
     const sourceFile = project.createSourceFile(
-      'test.ts',
+      'test.js',
       `
 // @partialize
 export interface Add<N> {
   (a: N, b: N): N
-  
+
   // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ @partialize-start
   // ┃━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Positional arguments
   // OLD CONTENT
@@ -118,7 +118,7 @@ export interface Add<N> {
   test('handles custom directive', async () => {
     const project = new Project({ useInMemoryFileSystem: true })
     const sourceFile = project.createSourceFile(
-      'test.ts',
+      'test.js',
       `
 // @custom-partial
 export interface Add<N> {

@@ -1,4 +1,4 @@
-import * as Constructors from './constructors.ts'
+import * as Constructors from './constructors.js'
 
 /**
  * Input types for law selection in trait definitions.

@@ -3,8 +3,8 @@
  * Represents an angle measured in degrees.
  */
 
-import type { Finite } from '../finite/$$.ts'
-import { is as isFinite } from '../finite/$$.ts'
+import type { Finite } from '../finite/$$.js'
+import { is as isFinite } from '../finite/$$.js'
 
 declare const DegreesBrand: unique symbol
 

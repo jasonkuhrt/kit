@@ -1,7 +1,7 @@
 import { property } from '#test/test'
 import fc from 'fast-check'
 import { expect, test } from 'vitest'
-import { Bool } from './$.ts'
+import { Bool } from './$.js'
 
 property('not negates booleans', fc.boolean(), (value) => {
   expect(Bool.not(value)).toBe(!value)

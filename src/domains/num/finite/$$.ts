@@ -1,1 +1,1 @@
-export * from './finite.ts'
+export * from './finite.js'

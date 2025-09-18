@@ -1,1 +1,1 @@
-export * as Idx from './$$.ts'
+export * as Idx from './$$.js'

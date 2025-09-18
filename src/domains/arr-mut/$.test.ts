@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { ArrMut } from './$.ts'
+import { ArrMut } from './$.js'
 
 describe('Type.is', () => {
   test('returns true for arrays', () => {

@@ -3,8 +3,8 @@
  * An even integer is divisible by 2.
  */
 
-import type { Int } from '../int/$$.ts'
-import { Int as IntNs } from '../int/$.ts'
+import type { Int } from '../int/$$.js'
+import { Int as IntNs } from '../int/$.js'
 
 declare const EvenBrand: unique symbol
 

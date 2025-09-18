@@ -1,1 +1,1 @@
-export * as Obj from './$$.ts'
+export * as Obj from './$$.js'

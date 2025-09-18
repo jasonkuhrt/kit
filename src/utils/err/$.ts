@@ -1,1 +1,1 @@
-export * as Err from './$$.ts'
+export * as Err from './$$.js'

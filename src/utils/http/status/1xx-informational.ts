@@ -4,7 +4,7 @@
  * and is terminated by an empty line.
  */
 
-import type { Status } from './type.ts'
+import type { Status } from './type.js'
 
 /**
  * The server has received the request headers and the client should proceed to send the request body.

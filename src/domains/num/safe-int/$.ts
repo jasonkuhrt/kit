@@ -1,2 +1,2 @@
 // Export the namespace containing all SafeInt operations
-export * as SafeInt from './$$.ts'
+export * as SafeInt from './$$.js'

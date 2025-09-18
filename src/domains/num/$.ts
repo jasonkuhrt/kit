@@ -1,1 +1,1 @@
-export * as Num from './$$.ts'
+export * as Num from './$$.js'

@@ -1,1 +1,1 @@
-export * as Pat from './$$.ts'
+export * as Pat from './$$.js'

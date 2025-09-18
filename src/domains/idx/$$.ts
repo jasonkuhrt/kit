@@ -1,1 +1,1 @@
-export * from './idx.ts'
+export * from './idx.js'

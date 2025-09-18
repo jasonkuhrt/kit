@@ -1,1 +1,1 @@
-export * as Dispatcher from './dispatcher.ts'
+export * as Dispatcher from './dispatcher.js'

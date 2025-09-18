@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { Complex } from './$.ts'
+import { Complex } from './$.js'
 
 describe('Complex', () => {
   describe('from', () => {

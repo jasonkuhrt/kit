@@ -1,4 +1,4 @@
-import type { Show, ShowInTemplate, Simplify, StaticError } from './ts.ts'
+import type { Show, ShowInTemplate, Simplify, StaticError } from './ts.js'
 
 /**
  * Create a type guard that checks if a value equals a reference value.

@@ -1,1 +1,1 @@
-export * from './zero.ts'
+export * from './zero.js'

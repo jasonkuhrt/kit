@@ -1,7 +1,7 @@
 import { Fn } from '#fn'
-import { Char } from './char/$.ts'
-import { prependWith, repeat } from './replace.ts'
-import { joinWith, splitWith } from './split.ts'
+import { Char } from './char/$.js'
+import { prependWith, repeat } from './replace.js'
+import { joinWith, splitWith } from './split.js'
 
 /**
  * Default indentation size in characters.

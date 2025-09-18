@@ -1,1 +1,1 @@
-export * as Status from './$$.ts'
+export * as Status from './$$.js'

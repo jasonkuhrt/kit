@@ -1,1 +1,1 @@
-export * as Rec from './$$.ts'
+export * as Rec from './$$.js'

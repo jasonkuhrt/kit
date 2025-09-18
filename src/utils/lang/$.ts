@@ -1,1 +1,1 @@
-export * as Lang from './$$.ts'
+export * as Lang from './$$.js'

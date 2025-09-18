@@ -1,1 +1,1 @@
-export * from './degrees.ts'
+export * from './degrees.js'

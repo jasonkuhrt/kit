@@ -3,7 +3,7 @@
  * Indicates cases in which the server is aware that it has encountered an error or is otherwise incapable of performing the request.
  */
 
-import type { Status } from './type.ts'
+import type { Status } from './type.js'
 
 /**
  * The server has encountered a situation it doesn't know how to handle.

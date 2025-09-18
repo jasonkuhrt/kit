@@ -1,6 +1,6 @@
 import { Traitor } from '#traitor'
-import { Type as TypeTrait } from '../../../traits/type.ts'
-import { domain } from '../domain.ts'
+import { Type as TypeTrait } from '../../../traits/type.js'
+import { domain } from '../domain.js'
 
 /**
  * {@link Type} trait implementation for booleans.

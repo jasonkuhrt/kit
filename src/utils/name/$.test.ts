@@ -1,7 +1,7 @@
 import { property } from '#test/test'
 import fc from 'fast-check'
 import { expect, test } from 'vitest'
-import { Name } from './$.ts'
+import { Name } from './$.js'
 
 property('generate creates three-word names', fc.integer({ min: 1, max: 10 }), (count) => {
   const names = Array.from({ length: count }, () => Name.generate())

@@ -1,1 +1,1 @@
-export * from './whole.ts'
+export * from './whole.js'

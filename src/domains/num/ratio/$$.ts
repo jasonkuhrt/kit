@@ -1,1 +1,1 @@
-export * from './ratio.ts'
+export * from './ratio.js'

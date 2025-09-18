@@ -1,7 +1,7 @@
 import { property } from '#test/test'
 import fc from 'fast-check'
 import { expect, test } from 'vitest'
-import { Prom } from './$.ts'
+import { Prom } from './$.js'
 
 test('isShape detects promises and thenables', () => {
   expect(Prom.isShape(Promise.resolve(42))).toBe(true)

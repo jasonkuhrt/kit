@@ -1,3 +1,3 @@
-export * as Kind from './kind.ts'
-export * from './ts.ts'
-export * from './type-guards.ts'
+export * as Kind from './kind.js'
+export * from './ts.js'
+export * from './type-guards.js'

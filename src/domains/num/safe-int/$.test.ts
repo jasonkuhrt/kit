@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { SafeInt } from './$.ts'
+import { SafeInt } from './$.js'
 
 test('isSafeInt', () => {
   // Valid cases - safe integers

@@ -1,1 +1,1 @@
-export * from './radians.ts'
+export * from './radians.js'

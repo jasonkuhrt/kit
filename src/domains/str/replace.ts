@@ -1,8 +1,8 @@
 import { ArrMut } from '#arr-mut'
 import { curry, flipCurried } from '#fn/fn'
-import { spaceNoBreak, spaceRegular } from './char/char.ts'
-import type { PatternsInput } from './match.ts'
-import { Empty } from './type.ts'
+import { spaceNoBreak, spaceRegular } from './char/char.js'
+import type { PatternsInput } from './match.js'
+import { Empty } from './type.js'
 
 //
 //

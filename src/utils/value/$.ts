@@ -1,1 +1,1 @@
-export * as Value from './$$.ts'
+export * as Value from './$$.js'

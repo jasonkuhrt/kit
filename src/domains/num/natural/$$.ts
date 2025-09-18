@@ -1,1 +1,1 @@
-export * from './natural.ts'
+export * from './natural.js'

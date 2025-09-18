@@ -43,7 +43,7 @@ const HELPER_GENERATED = '@partialize-helper'
  *   tsConfigFilePath: './tsconfig.json'
  * })
  *
- * await Fn.Partial.generate(project, ['src/my-interface.ts'])
+ * await Fn.Partial.generate(project, ['src/my-interface.js'])
  * ```
  */
 export async function generate(
@@ -72,7 +72,7 @@ export async function generate(
  * import { Fn } from '#fn'
  *
  * const project = new Project()
- * const sourceFile = project.createSourceFile('example.ts', `
+ * const sourceFile = project.createSourceFile('example.js', `
  *   // @partialize
  *   export interface Add<N> {
  *     (a: N, b: N): N
@@ -358,7 +358,7 @@ function ensureDollarPrefix(name: string): string {
  * import ts from 'typescript'
  * import { Fn } from '#fn'
  *
- * const program = ts.createProgram(['src/index.ts'], {})
+ * const program = ts.createProgram(['src/index.js'], {})
  * const project = Fn.Partial.createProjectFromProgram(program)
  * ```
  */

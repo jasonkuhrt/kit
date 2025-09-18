@@ -1,1 +1,1 @@
-export * from './non-positive.ts'
+export * from './non-positive.js'

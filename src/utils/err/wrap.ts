@@ -1,7 +1,7 @@
 import { Fn } from '#fn'
-import { mergeStacks } from './stack.ts'
-import { ensure } from './type.ts'
-import type { Context } from './types.ts'
+import { mergeStacks } from './stack.js'
+import { ensure } from './type.js'
+import type { Context } from './types.js'
 
 /**
  * Options for wrapping errors with additional context.

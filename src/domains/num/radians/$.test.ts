@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { Radians } from './$.ts'
+import { Radians } from './$.js'
 
 test('isRadians', () => {
   // Valid cases - any finite number is a valid radian

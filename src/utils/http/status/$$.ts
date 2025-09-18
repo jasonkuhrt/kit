@@ -1,1 +1,1 @@
-export * from './status.ts'
+export * from './status.js'

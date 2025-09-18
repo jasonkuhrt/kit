@@ -1,9 +1,9 @@
 import { Test } from '#test'
 import fc from 'fast-check'
 import { describe, expect } from 'vitest'
-import { arbitrary, arbitraryShapes } from './arbitrary.ts'
-import { Node, Tree } from './data.ts'
-import { count, depth } from './queries.ts'
+import { arbitrary, arbitraryShapes } from './arbitrary.js'
+import { Node, Tree } from './data.js'
+import { count, depth } from './queries.js'
 
 describe('arbitrary', () => {
   Test.property(

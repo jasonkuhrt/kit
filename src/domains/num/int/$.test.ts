@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { Int } from './$.ts'
+import { Int } from './$.js'
 
 test('isInt', () => {
   // Valid cases - integers

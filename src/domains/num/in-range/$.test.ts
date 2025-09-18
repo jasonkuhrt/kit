@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { InRange } from './$.ts'
+import { InRange } from './$.js'
 
 test('tryRanged', () => {
   // TODO: Add comprehensive tests

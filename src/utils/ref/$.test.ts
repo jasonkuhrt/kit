@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { Ref } from './$.ts'
+import { Ref } from './$.js'
 
 describe('Ref', () => {
   test('is/isnt are inverses', () => {

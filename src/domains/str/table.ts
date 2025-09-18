@@ -1,5 +1,5 @@
-import { Char } from './char/$.ts'
-import { repeatOn } from './replace.ts'
+import { Char } from './char/$.js'
+import { repeatOn } from './replace.js'
 
 /**
  * Format a key-value object as an aligned table string.

@@ -1,1 +1,1 @@
-export * from './big-integer.ts'
+export * from './big-integer.js'

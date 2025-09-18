@@ -1,2 +1,2 @@
 // Export the namespace containing all Prime operations
-export * as Prime from './$$.ts'
+export * as Prime from './$$.js'

@@ -1,1 +1,1 @@
-export * as Bool from './$$.ts'
+export * as Bool from './$$.js'

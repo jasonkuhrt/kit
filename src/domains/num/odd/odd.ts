@@ -3,8 +3,8 @@
  * An odd integer is not divisible by 2.
  */
 
-import type { Int } from '../int/$$.ts'
-import { is as isInt } from '../int/$$.ts'
+import type { Int } from '../int/$$.js'
+import { is as isInt } from '../int/$$.js'
 
 declare const OddBrand: unique symbol
 

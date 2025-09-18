@@ -1,1 +1,1 @@
-export * as Prom from './$$.ts'
+export * as Prom from './$$.js'

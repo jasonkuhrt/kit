@@ -1,10 +1,10 @@
-export * as Headers from './headers.ts'
-export * as Method from './method.ts'
-export * as MimeType from './mime-type.ts'
-export * as Response from './response.ts'
-export * from './status/$.ts'
+export * as Headers from './headers.js'
+export * as Method from './method.js'
+export * as MimeType from './mime-type.js'
+export * as Response from './response.js'
+export * from './status/$.js'
 
-import type * as _Method from './method.ts'
+import type * as _Method from './method.js'
 
 /**
  * Union type of all supported HTTP methods.

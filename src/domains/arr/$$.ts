@@ -1,3 +1,3 @@
-export * from './arr.ts'
-export { Eq } from './traits/eq.ts'
-export { Type } from './traits/type.ts'
+export * from './arr.js'
+export { Eq } from './traits/eq.js'
+export { Type } from './traits/type.js'

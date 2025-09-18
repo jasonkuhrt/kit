@@ -1,10 +1,10 @@
 import type { Fn } from '#fn'
 import { Prox } from '#prox'
-import type { MethodConfig } from '../definition.ts'
-import { defaultDomainCheck, traitMethodConfigs } from '../definition.ts'
-import { detectDomain } from '../domain.ts'
-import type { Registry } from '../registry/$.ts'
-import type { MethodName, TraitName } from '../types.ts'
+import type { MethodConfig } from '../definition.js'
+import { defaultDomainCheck, traitMethodConfigs } from '../definition.js'
+import { detectDomain } from '../domain.js'
+import type { Registry } from '../registry/$.js'
+import type { MethodName, TraitName } from '../types.js'
 
 export const createTraitProxy = <$Interface>(
   registry: Registry.Registry,

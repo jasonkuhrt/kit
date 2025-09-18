@@ -19,9 +19,9 @@ import {
   normalizePropertyPathInput,
   type PropertyPath,
   type PropertyPathInput,
-} from './path.ts'
-import { Type } from './traits/type.ts'
-import { type Any } from './type.ts'
+} from './path.js'
+import { Type } from './traits/type.js'
+import { type Any } from './type.js'
 
 /**
  * Create a getter function for a specific property path.

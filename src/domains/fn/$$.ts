@@ -1,1 +1,1 @@
-export * from './fn.ts'
+export * from './fn.js'

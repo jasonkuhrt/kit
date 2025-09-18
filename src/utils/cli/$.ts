@@ -1,1 +1,1 @@
-export * as Cli from './$$.ts'
+export * as Cli from './$$.js'

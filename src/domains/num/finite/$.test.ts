@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { Finite } from './$.ts'
+import { Finite } from './$.js'
 
 test('isFinite', () => {
   // Valid cases - finite numbers

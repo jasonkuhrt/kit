@@ -1,1 +1,1 @@
-export * from './prime.ts'
+export * from './prime.js'

@@ -1,1 +1,1 @@
-export * from './frac.ts'
+export * from './frac.js'

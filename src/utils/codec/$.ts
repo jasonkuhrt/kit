@@ -1,1 +1,1 @@
-export * as Codec from './$$.ts'
+export * as Codec from './$$.js'

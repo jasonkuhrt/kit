@@ -1,2 +1,2 @@
-export * from './codec.ts'
-export * from './conversions.ts'
+export * from './codec.js'
+export * from './conversions.js'

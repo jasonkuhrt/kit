@@ -5,7 +5,7 @@
  */
 
 import { Ts } from '#ts'
-import { tryOr, tryOrAsync, tryOrAsyncWith, tryOrNull, tryOrUndefined, tryOrWith } from './try.ts'
+import { tryOr, tryOrAsync, tryOrAsyncWith, tryOrNull, tryOrUndefined, tryOrWith } from './try.js'
 
 // tryOr type tests
 

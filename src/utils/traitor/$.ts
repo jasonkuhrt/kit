@@ -1,1 +1,1 @@
-export * as Traitor from './$$.ts'
+export * as Traitor from './$$.js'

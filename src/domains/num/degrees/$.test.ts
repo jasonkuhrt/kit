@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { Degrees } from './$.ts'
+import { Degrees } from './$.js'
 
 test('isDegrees', () => {
   // Valid cases - any finite number is a valid degree

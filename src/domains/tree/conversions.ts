@@ -1,5 +1,5 @@
-import { Node, Tree } from './data.ts'
-import type { Forest, Tree as TreeType } from './data.ts'
+import { Node, Tree } from './data.js'
+import type { Forest, Tree as TreeType } from './data.js'
 
 //
 //

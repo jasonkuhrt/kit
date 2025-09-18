@@ -1,2 +1,2 @@
 // Export the namespace containing all Whole operations
-export * as Whole from './$$.ts'
+export * as Whole from './$$.js'

@@ -4,10 +4,10 @@
  * These are the numbers used for counting things.
  */
 
-import type { Int } from '../int/$$.ts'
-import { is as isInt } from '../int/$$.ts'
-import type { Positive } from '../positive/$$.ts'
-import { is as isPositive } from '../positive/$$.ts'
+import type { Int } from '../int/$$.js'
+import { is as isInt } from '../int/$$.js'
+import type { Positive } from '../positive/$$.js'
+import { is as isPositive } from '../positive/$$.js'
 
 declare const NaturalBrand: unique symbol
 

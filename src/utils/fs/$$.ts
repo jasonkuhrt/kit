@@ -7,3 +7,4 @@
  * @module
  */
 export * from './fs.js'
+export * from './glob.js'

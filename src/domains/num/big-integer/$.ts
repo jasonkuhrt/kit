@@ -1,1 +1,1 @@
-export * as BigInteger from './$$.ts'
+export * as BigInteger from './$$.js'

@@ -1,7 +1,7 @@
 import { Mask } from '#mask'
 import type { InferOptions } from '#mask/mask'
 import { Prom } from '#prom'
-import type { Debug } from './debug.ts'
+import type { Debug } from './debug.js'
 
 /**
  * Payload for function start event.
