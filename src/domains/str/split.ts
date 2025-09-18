@@ -3,6 +3,7 @@ import { Empty } from './type.ts'
 
 /**
  * Split a string into an array of substrings using a separator.
+ * @deprecated Use `String.split` from Effect instead
  * @param value - The string to split
  * @param separator - The separator to split on
  * @returns Array of substrings
@@ -39,6 +40,7 @@ export const splitWith = flipCurried(splitOn)
 
 /**
  * Join an array of strings into a single string with a separator.
+ * @deprecated Use `Array.join` from Effect instead
  * @param value - Array of strings to join
  * @param separator - The separator to place between strings
  * @returns The joined string
@@ -74,6 +76,7 @@ export const joinWith = flipCurried(joinOn)
 
 /**
  * Merge two strings together (concatenate).
+ * @deprecated Use `String.concat` from Effect instead
  * @param string1 - The first string
  * @param string2 - The second string
  * @returns The concatenated string

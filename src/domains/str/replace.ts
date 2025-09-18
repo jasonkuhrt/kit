@@ -14,6 +14,7 @@ import { Empty } from './type.ts'
 
 /**
  * Remove whitespace from both ends of a string.
+ * @deprecated Use `String.trim` from Effect instead
  * @param value - The string to trim
  * @returns The trimmed string
  * @example
@@ -92,6 +93,7 @@ export const stripLeading = replaceLeadingWith(``)
 
 /**
  * Replace all occurrences of patterns with a replacement string.
+ * @deprecated Use `String.replace` or `String.replaceAll` from Effect instead
  * @param replacement - The string to replace matches with
  * @param matcher - String or RegExp pattern(s) to match
  * @param value - The string to operate on
@@ -138,6 +140,7 @@ export const replaceOn = (value: string) => (replacement: string) => (matcher: P
 
 /**
  * Append a string to another string.
+ * @deprecated Use `String.concat` from Effect instead
  * @param value1 - The base string
  * @param value2 - The string to append
  * @returns The concatenated string
@@ -174,6 +177,7 @@ export const appendWith = flipCurried(appendOn)
 
 /**
  * Prepend a string to another string.
+ * @deprecated Use `String.concat` from Effect instead (with arguments swapped)
  * @param value1 - The string to prepend
  * @param value2 - The base string
  * @returns The concatenated string with value1 first
@@ -216,6 +220,7 @@ export const prependWith = flipCurried(prependOn)
 
 /**
  * Repeat a string a specified number of times.
+ * @deprecated Use `String.repeat` from Effect instead
  * @param value - The string to repeat
  * @param count - The number of times to repeat
  * @returns The repeated string

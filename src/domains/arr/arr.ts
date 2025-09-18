@@ -14,6 +14,7 @@ export type Empty = readonly []
 
 /**
  * Empty array constant.
+ * @deprecated Use `Array.empty` from Effect instead
  *
  * @example
  * ```ts
