@@ -1,4 +1,4 @@
-import { FsPath } from '#fs-path'
+import { FsLoc } from '#fs-loc'
 import { FileSystem } from '@effect/platform'
 import { Effect } from 'effect'
 
@@ -37,19 +37,18 @@ interface PackageJson {
  */
 const findPackageInAncestors = (packageName: string): Effect.Effect<string | null, Error, FileSystem.FileSystem> =>
   Effect.gen(function*() {
-    let dir = process.cwd()
+    const fs = yield* FileSystem.FileSystem
+    const currentDir = FsLoc.AbsDir.decodeSync(process.cwd())
+    const packageJsonRel = FsLoc.RelFile.decodeSync('package.json')
+
+    // Start with package.json in current directory
+    let packageJsonPath = FsLoc.join(currentDir, packageJsonRel)
 
     while (true) {
-      const dirPathDecoded = dir.endsWith('/')
-        ? FsPath.AbsoluteDir.decodeSync(dir)
-        : FsPath.AbsoluteDir.decodeSync(`${dir}/`)
-      const packageJsonFile = FsPath.RelativeFile.decodeSync('package.json')
-      const fullPath = FsPath.join(dirPathDecoded, packageJsonFile)
-      const packageJsonPath = FsPath.encodeSync(fullPath)
-      const fs = yield* FileSystem.FileSystem
+      const packageJsonPathString = FsLoc.encodeSync(packageJsonPath)
 
       try {
-        const content = yield* fs.readFileString(packageJsonPath)
+        const content = yield* fs.readFileString(packageJsonPathString)
         const pkg: PackageJson = JSON.parse(content)
 
         if (
@@ -57,22 +56,21 @@ const findPackageInAncestors = (packageName: string): Effect.Effect<string | nul
           || pkg.devDependencies?.[packageName]
           || pkg.peerDependencies?.[packageName]
         ) {
-          return dir
+          // Return the directory containing this package.json
+          const dir = FsLoc.up(packageJsonPath)
+          return FsLoc.encodeSync(dir)
         }
       } catch {
-        // No package.json in this directory, continue
+        // No package.json at this path, continue
       }
 
-      const currentDirDecoded = dir.endsWith('/')
-        ? FsPath.AbsoluteDir.decodeSync(dir)
-        : FsPath.AbsoluteDir.decodeSync(`${dir}/`)
-      const parentDecoded = FsPath.getParentDir(currentDirDecoded)
-      const parent = FsPath.encodeSync(parentDecoded)
-      if (parent === dir) {
-        // Reached root directory
+      // Check if we're at root
+      if (FsLoc.isRoot(packageJsonPath)) {
         break
       }
-      dir = parent
+
+      // Move package.json up one directory
+      packageJsonPath = FsLoc.up(packageJsonPath)
     }
 
     return null

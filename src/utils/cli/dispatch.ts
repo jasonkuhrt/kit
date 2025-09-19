@@ -1,5 +1,5 @@
 import { ArrMut } from '#arr-mut'
-import { FsPath } from '#fs-path'
+import { FsLoc } from '#fs-loc'
 import { Lang } from '#lang'
 import { Str } from '#str'
 import { Array, pipe } from 'effect'
@@ -23,11 +23,12 @@ import { type CommandTarget, getCommandTarget } from './commend-target.js'
  * //   test.js
  * //   $default.js
  *
- * await dispatch('/path/to/commands')
+ * const commandsDir = FsLoc.AbsDir.decodeSync('/path/to/commands/')
+ * await dispatch(commandsDir)
  * // If argv is ['node', 'cli.js', 'build'], imports and executes build.js
  * // If argv is ['node', 'cli.js'], imports and executes $default.js
  */
-export const dispatch = async (commandsDirPath: string) => {
+export const dispatch = async (commandsDirPath: FsLoc.AbsDir.AbsDir) => {
   const commandPointers = await discoverCommandPointers(commandsDirPath)
 
   const argv = parseArgvOrThrow(Lang.process.argv)
@@ -71,7 +72,8 @@ const getModuleName = (commandTarget: CommandTarget): string => {
  * @throws {Error} Exits process if the commands directory is not found
  *
  * @example
- * const commands = await discoverCommandPointers('/path/to/commands')
+ * const commandsDir = FsLoc.AbsDir.decodeSync('/path/to/commands/')
+ * const commands = await discoverCommandPointers(commandsDir)
  * // Returns:
  * // [
  * //   { name: 'build', filePath: '/path/to/commands/build.js' },
@@ -80,43 +82,39 @@ const getModuleName = (commandTarget: CommandTarget): string => {
  * // ]
  */
 export const discoverCommandPointers = async (
-  commandsDirPath: string,
+  commandsDirPath: FsLoc.AbsDir.AbsDir,
 ): Promise<{ name: string; filePath: string }[]> => {
   let commandsDirFileNamesRelative: string[] | null = null
 
+  const commandsDirPathString = FsLoc.encodeSync(commandsDirPath)
+
   try {
-    const entries = await NodeFileSystem.readdir(commandsDirPath, { withFileTypes: true })
+    const entries = await NodeFileSystem.readdir(commandsDirPathString, { withFileTypes: true })
     commandsDirFileNamesRelative = entries.filter(entry => entry.isFile()).map(entry => entry.name)
   } catch {
     commandsDirFileNamesRelative = null
   }
 
   if (!commandsDirFileNamesRelative) {
-    console.error(`Error: Commands directory not found. Looked at ${commandsDirPath}`)
+    console.error(`Error: Commands directory not found. Looked at ${commandsDirPathString}`)
     Lang.process.exit(1)
   }
 
-  const commandsDirPathDecoded = FsPath.AbsoluteDir.decodeSync(
-    commandsDirPath.endsWith('/') ? commandsDirPath : `${commandsDirPath}/`,
-  )
-
   return pipe(
     commandsDirFileNamesRelative,
-    Array.map((fileName) => FsPath.RelativeFile.decodeSync(fileName)),
+    Array.map((fileName) => FsLoc.RelFile.decodeSync(fileName)),
     Array.filter(filePath => {
-      const lastSegment = filePath.segments[filePath.segments.length - 1]
-      if (!lastSegment) return true
-      return !FsPath.Extension.Extensions.buildArtifacts.some((ext: string) => lastSegment.endsWith(ext))
+      const filename = filePath.file.extension
+        ? `${filePath.file.name}${filePath.file.extension}`
+        : filePath.file.name
+      return !FsLoc.Extension.Extensions.buildArtifacts.some((ext: string) => filename.endsWith(ext))
     }),
     Array.map(filePath => {
-      const lastSegment = filePath.segments[filePath.segments.length - 1] || ''
-      const name = lastSegment.includes('.')
-        ? lastSegment.slice(0, lastSegment.lastIndexOf('.'))
-        : lastSegment
-      const absolutePath = FsPath.join(commandsDirPathDecoded, filePath)
+      const name = filePath.file.name
+      const absolutePath = FsLoc.join(commandsDirPath, filePath)
       return {
         name,
-        filePath: FsPath.encodeSync(absolutePath),
+        filePath: FsLoc.encodeSync(absolutePath),
       }
     }),
   )

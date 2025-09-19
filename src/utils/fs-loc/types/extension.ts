@@ -1,22 +1,24 @@
-import { Brand, Schema as S } from 'effect'
-
-/**
- * A branded type for file extensions.
- * Must start with a dot followed by alphanumeric characters.
- */
-export type Extension = string & Brand.Brand<'Extension'>
+import { Schema as S } from 'effect'
 
 /**
  * Schema for validating file extensions.
+ * POSIX-compliant: extensions can contain any character except / (path separator) and NUL.
+ * In JavaScript context, we only need to exclude / since strings can't contain NUL.
  */
 export const Extension = S.String.pipe(
-  S.pattern(/^\.[a-zA-Z0-9]+$/),
-  S.brand('Extension'),
+  S.pattern(/^\.[^/]+$/),
+  // S.brand('Extension'),
   S.annotations({
     identifier: 'Extension',
-    description: 'A file extension starting with a dot',
+    description: 'A file extension starting with a dot (POSIX-compliant)',
   }),
 )
+
+/**
+ * A branded type for file extensions.
+ * POSIX-compliant: must start with a dot followed by any characters except /.
+ */
+export type Extension = typeof Extension.Type
 
 /**
  * Create an Extension from a string.
@@ -24,7 +26,15 @@ export const Extension = S.String.pipe(
  * @param ext - The extension string (must start with dot)
  * @returns A branded Extension
  */
-export const make = (ext: string): Extension => ext as Extension
+export const make = Extension.make
+
+export const encodeSync = S.encodeSync(Extension)
+
+export const decode = S.decode(Extension)
+
+export const decodeSync = S.decodeSync(Extension)
+
+export const decodeEither = S.decodeEither(Extension)
 
 /**
  * Common file extensions as branded constants.
@@ -37,11 +47,11 @@ export const Extensions = {
   jsx: make('.jsx'),
 
   // TypeScript
-  ts: make('.js'),
+  ts: make('.ts'),
   mts: make('.mts'),
   cts: make('.cts'),
   tsx: make('.tsx'),
-  dts: make('.d.js'),
+  dts: make('.d.ts'),
 
   // Build artifacts
   map: make('.map'),
@@ -64,14 +74,14 @@ export const Extensions = {
   // Collections
   buildArtifacts: [
     make('.map'),
-    make('.d.js'),
+    make('.d.ts'),
   ],
   executable: [
     make('.js'),
     make('.mjs'),
     make('.cjs'),
     make('.jsx'),
-    make('.js'),
+    make('.ts'),
     make('.mts'),
     make('.cts'),
     make('.tsx'),

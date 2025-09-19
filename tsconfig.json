@@ -116,8 +116,8 @@
       "#ts/ts": ["./src/utils/ts/$$.ts"],
       "#value": ["./src/utils/value/$.ts"],
       "#value/value": ["./src/utils/value/$$.ts"],
-      "#zod-aid": ["./src/utils/zod-aid/$.ts"],
-      "#zod-aid/zod-aid": ["./src/utils/zod-aid/$$.ts"],
+      "#fs-loc": ["./src/utils/fs-loc/$.ts"],
+      "#deps/effect": ["./src/deps/effect.ts"],
 
       // Platform and wildcard
       "#platform:*": ["./src/utils/*.node.ts"],

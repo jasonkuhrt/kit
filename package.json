@@ -15,6 +15,7 @@
     "kit-partialize": "./build/cli/partialize.js"
   },
   "imports": {
+    "#deps/effect": "./build/deps/effect.js",
     "#platform:*": {
       "browser": "./build/utils/*.browser.js",
       "default": "./build/utils/*.node.js"
@@ -130,8 +131,8 @@
     "#traitor/traitor": "./build/utils/traitor/$$.js",
     "#fs-memory": "./build/utils/fs-memory/$.js",
     "#fs-memory/fs-memory": "./build/utils/fs-memory/$$.js",
-    "#fs-path": "./build/utils/fs-path/$.js",
-    "#fs-path/fs-path": "./build/utils/fs-path/$$.js",
+    "#fs-loc": "./build/utils/fs-loc/$.js",
+    "#fs-loc/fs-loc": "./build/utils/fs-loc/$$.js",
     "#*": {
       "default": "./build/*.js"
     }
@@ -179,7 +180,7 @@
     "./url": "./build/domains/url/$$.js",
     "./value": "./build/utils/value/$$.js",
     "./fs-memory": "./build/utils/fs-memory/$$.js",
-    "./fs-path": "./build/utils/fs-path/$$.js"
+    "./fs-loc": "./build/utils/fs-loc/$$.js"
   },
   "scripts": {
     "r": "libra refresh && pnpm fix:format",

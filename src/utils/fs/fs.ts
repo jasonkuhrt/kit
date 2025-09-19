@@ -1,4 +1,4 @@
-import { FsPath } from '#fs-path'
+import { FsLoc } from '#fs-loc'
 import { FileSystem } from '@effect/platform'
 import { Effect } from 'effect'
 
@@ -8,26 +8,26 @@ import { Effect } from 'effect'
  * Useful for finding configuration files in multiple possible locations,
  * or for implementing fallback file paths.
  *
- * @param paths - Array of FsPath objects to check for existence
+ * @param paths - Array of FsLoc objects to check for existence
  * @returns The first existing path, or undefined if none exist
  *
  * @example
  * ```ts
  * import { Fs } from '#fs'
- * import { FsPath } from '#fs-path'
+ * import { FsLoc } from '#fs-loc'
  * import { NodeFileSystem } from '@effect/platform-node'
  * import { Effect } from 'effect'
  *
  * const configPaths = [
- *   FsPath.RelativeFile.decodeSync('./config.local.json'),
- *   FsPath.RelativeFile.decodeSync('./config.json'),
- *   FsPath.AbsoluteFile.decodeSync('/home/user/.config/myapp/config.json')
+ *   FsLoc.RelFile.decodeSync('./config.local.json'),
+ *   FsLoc.RelFile.decodeSync('./config.json'),
+ *   FsLoc.AbsFile.decodeSync('/home/user/.config/myapp/config.json')
  * ]
  *
  * const program = Effect.gen(function* () {
  *   const configPath = yield* Fs.pickFirstPathExisting(configPaths)
  *   if (configPath) {
- *     console.log(`Found config at: ${FsPath.encodeSync(configPath)}`)
+ *     console.log(`Found config at: ${FsLoc.encodeSync(configPath)}`)
  *   } else {
  *     console.log('No config file found')
  *   }
@@ -38,7 +38,7 @@ import { Effect } from 'effect'
  * )
  * ```
  */
-export const pickFirstPathExisting = <T extends FsPath.FsPath>(
+export const pickFirstPathExisting = <T extends FsLoc.FsLoc>(
   paths: readonly T[],
 ): Effect.Effect<T | undefined, Error, FileSystem.FileSystem> =>
   Effect.gen(function*() {
@@ -47,7 +47,7 @@ export const pickFirstPathExisting = <T extends FsPath.FsPath>(
     // Check each path for existence
     const checks = yield* Effect.all(
       paths.map(path => {
-        const pathStr = FsPath.encodeSync(path)
+        const pathStr = FsLoc.encodeSync(path)
         return fs.exists(pathStr).pipe(
           Effect.map(exists => exists ? path : undefined),
           Effect.mapError(error => new Error(`Failed to check path existence: ${pathStr} - ${error}`)),
@@ -62,7 +62,7 @@ export const pickFirstPathExisting = <T extends FsPath.FsPath>(
 /**
  * Find the first existing path from a list of path strings (backward compatibility).
  *
- * @deprecated Use the version that takes FsPath types instead
+ * @deprecated Use the version that takes FsLoc types instead
  * @param paths - Array of path strings to check for existence
  * @returns The first existing path string, or undefined if none exist
  */

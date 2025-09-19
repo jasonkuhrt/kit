@@ -1,3 +1,4 @@
+import { FsLoc } from '#fs-loc'
 import { createSchemaResource, type Resource } from '#resource/resource'
 import { Effect, Option, Schema as S } from 'effect'
 import type { WritableDeep } from 'type-fest'
@@ -142,7 +143,7 @@ export const emptyManifest = make()
  * Resource for reading/writing package.json with Schema validation (mutable for runtime manipulation)
  */
 export const resource: Resource<ManifestMutable> = {
-  read: (dirPath: string) =>
+  read: (dirPath: FsLoc.AbsDir.AbsDir) =>
     createSchemaResource(
       'package.json',
       ManifestSchemaMutable,
@@ -150,13 +151,13 @@ export const resource: Resource<ManifestMutable> = {
     ).read(dirPath).pipe(
       Effect.map(Option.map((result) => result as ManifestMutable)),
     ),
-  write: (value: ManifestMutable, dirPath: string) =>
+  write: (value: ManifestMutable, dirPath: FsLoc.AbsDir.AbsDir) =>
     createSchemaResource(
       'package.json',
       ManifestSchemaMutable,
       emptyManifest,
     ).write(value as any, dirPath),
-  readOrEmpty: (dirPath: string) =>
+  readOrEmpty: (dirPath: FsLoc.AbsDir.AbsDir) =>
     createSchemaResource(
       'package.json',
       ManifestSchemaMutable,
