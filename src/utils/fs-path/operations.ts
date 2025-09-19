@@ -138,3 +138,116 @@ export function toFile(path: Dir): File {
     })
   }
 }
+
+/**
+ * Ensure a path is absolute, converting relative paths to absolute.
+ *
+ * @param path - The path to ensure is absolute
+ * @param base - The base directory to resolve relative paths against (defaults to current working directory)
+ * @returns An absolute path
+ *
+ * @example
+ * ```ts
+ * const relPath = FsPath.RelativeFile.decodeSync('./foo/bar.ts')
+ * const cwd = FsPath.AbsoluteDir.decodeSync(process.cwd() + '/')
+ * const absPath = ensureAbsolute(relPath, cwd) // AbsoluteFile
+ * ```
+ */
+export function ensureAbsolute(path: AbsoluteFile, base?: AbsoluteDir): AbsoluteFile
+export function ensureAbsolute(path: AbsoluteDir, base?: AbsoluteDir): AbsoluteDir
+export function ensureAbsolute(path: RelativeFile, base: AbsoluteDir): AbsoluteFile
+export function ensureAbsolute(path: RelativeDir, base: AbsoluteDir): AbsoluteDir
+export function ensureAbsolute(path: Absolute, base?: AbsoluteDir): Absolute
+export function ensureAbsolute(path: Relative, base: AbsoluteDir): Absolute
+export function ensureAbsolute(path: Path, base?: AbsoluteDir): Absolute
+export function ensureAbsolute(path: Path, base?: AbsoluteDir): Absolute {
+  // If already absolute, return as-is
+  if (path._tag === 'PathAbsoluteFile' || path._tag === 'PathAbsoluteDir') {
+    return path as Absolute
+  }
+
+  // Relative path needs a base
+  if (!base) {
+    // Get current working directory as base
+    const cwd = process.cwd()
+    const cwdWithSlash = cwd.endsWith('/') ? cwd : `${cwd}/`
+    base = AbsoluteDirMod.decodeSync(cwdWithSlash)
+  }
+
+  // Join base with relative path
+  if (path._tag === 'PathRelativeFile') {
+    return join(base, path as RelativeFile)
+  } else {
+    return join(base, path as RelativeDir)
+  }
+}
+
+/**
+ * Ensure an optional path is absolute.
+ *
+ * @param path - The optional path to ensure is absolute
+ * @param base - The base directory to resolve relative paths against or use as default
+ * @returns An absolute path or the base if path is undefined
+ *
+ * @example
+ * ```ts
+ * const base = FsPath.AbsoluteDir.decodeSync('/home/user/')
+ * const path = undefined
+ * const result = ensureOptionalAbsolute(path, base) // returns base
+ * ```
+ */
+export function ensureOptionalAbsolute(
+  path: AbsoluteFile | undefined,
+  base: AbsoluteDir,
+): AbsoluteFile | AbsoluteDir
+export function ensureOptionalAbsolute(
+  path: AbsoluteDir | undefined,
+  base: AbsoluteDir,
+): AbsoluteDir
+export function ensureOptionalAbsolute(
+  path: RelativeFile | undefined,
+  base: AbsoluteDir,
+): AbsoluteFile | AbsoluteDir
+export function ensureOptionalAbsolute(
+  path: RelativeDir | undefined,
+  base: AbsoluteDir,
+): AbsoluteDir
+export function ensureOptionalAbsolute(
+  path: Path | undefined,
+  base: AbsoluteDir,
+): Absolute
+export function ensureOptionalAbsolute(
+  path: Path | undefined,
+  base: AbsoluteDir,
+): Absolute {
+  if (path === undefined) {
+    return base
+  }
+  return ensureAbsolute(path, base)
+}
+
+/**
+ * Ensure an optional path is absolute, using current working directory as default.
+ *
+ * @param path - The optional path to ensure is absolute
+ * @returns An absolute path or current working directory if path is undefined
+ *
+ * @example
+ * ```ts
+ * const path = undefined
+ * const result = ensureOptionalAbsoluteWithCwd(path) // returns cwd as AbsoluteDir
+ * ```
+ */
+export function ensureOptionalAbsoluteWithCwd(
+  path: Path | undefined,
+): Absolute {
+  const cwd = process.cwd()
+  const cwdWithSlash = cwd.endsWith('/') ? cwd : `${cwd}/`
+  const base = AbsoluteDirMod.decodeSync(cwdWithSlash)
+
+  if (path === undefined) {
+    return base
+  }
+
+  return ensureAbsolute(path, base)
+}
