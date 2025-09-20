@@ -1,6 +1,6 @@
 export * as FsLocLoose from './fs-loc-loose.js'
 export * from './fs-loc.js'
-export * as Groups from './groups/$$.ts'
+export * as Groups from './groups/$$.js'
 export * from './operations.js'
 export { Path } from './path/$.js'
 export * as Extension from './types/extension.js'

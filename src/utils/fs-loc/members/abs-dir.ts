@@ -5,7 +5,10 @@ import { Path } from '../path/$.js'
 const Encoded = S.String
 
 const Decoded = S.TaggedStruct('LocAbsDir', {
-  path: Path.Abs.Decoded,
+  path: Path.Abs.Decoded.pipe(
+    S.propertySignature,
+    S.withConstructorDefault(() => Path.Abs.Decoded.make({ segments: [] })),
+  ),
 })
 
 /**

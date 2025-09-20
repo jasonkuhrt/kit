@@ -6,7 +6,10 @@ import * as File from '../types/file.js'
 const Encoded = S.String
 
 const Decoded = S.TaggedStruct('LocRelFile', {
-  path: Path.Rel.Decoded,
+  path: Path.Rel.Decoded.pipe(
+    S.propertySignature,
+    S.withConstructorDefault(() => Path.Rel.Decoded.make({ segments: [] })),
+  ),
   file: File.Decoded,
 })
 

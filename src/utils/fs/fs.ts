@@ -58,3 +58,11 @@ export const pickFirstPathExisting = <loc extends FsLoc.FsLoc>(
     // Return the first existing path
     return checks.find(maybePath => maybePath !== undefined)
   })
+
+export const pickFirstFileInDirExisting = <dir extends FsLoc.Groups.Dir.Dir>(
+  dir: dir,
+) =>
+<files extends FsLoc.File.File>(files: files[]) => {
+  const locs = files.map(file => FsLoc.join(dir, FsLoc.RelFile.make({ file })))
+  return pickFirstPathExisting(locs)
+}

@@ -6,7 +6,10 @@ import * as File from '../types/file.js'
 const Encoded = S.String
 
 const Decoded = S.TaggedStruct('LocAbsFile', {
-  path: Path.Abs.Decoded,
+  path: Path.Abs.Decoded.pipe(
+    S.propertySignature,
+    S.withConstructorDefault(() => Path.Abs.Decoded.make({ segments: [] })),
+  ),
   file: File.Decoded,
 })
 
