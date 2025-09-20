@@ -8,7 +8,7 @@ import { Effect } from 'effect'
  * Useful for finding configuration files in multiple possible locations,
  * or for implementing fallback file paths.
  *
- * @param paths - Array of FsLoc objects to check for existence
+ * @param locs - Array of FsLoc objects to check for existence
  * @returns The first existing path, or undefined if none exist
  *
  * @example
@@ -38,48 +38,21 @@ import { Effect } from 'effect'
  * )
  * ```
  */
-export const pickFirstPathExisting = <T extends FsLoc.FsLoc>(
-  paths: readonly T[],
-): Effect.Effect<T | undefined, Error, FileSystem.FileSystem> =>
+export const pickFirstPathExisting = <loc extends FsLoc.FsLoc>(
+  locs: readonly loc[],
+): Effect.Effect<loc | undefined, Error, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
 
     // Check each path for existence
     const checks = yield* Effect.all(
-      paths.map(path => {
+      locs.map(path => {
         const pathStr = FsLoc.encodeSync(path)
         return fs.exists(pathStr).pipe(
           Effect.map(exists => exists ? path : undefined),
           Effect.mapError(error => new Error(`Failed to check path existence: ${pathStr} - ${error}`)),
         )
       }),
-    )
-
-    // Return the first existing path
-    return checks.find(maybePath => maybePath !== undefined)
-  })
-
-/**
- * Find the first existing path from a list of path strings (backward compatibility).
- *
- * @deprecated Use the version that takes FsLoc types instead
- * @param paths - Array of path strings to check for existence
- * @returns The first existing path string, or undefined if none exist
- */
-export const pickFirstPathExistingString = (
-  paths: readonly string[],
-): Effect.Effect<string | undefined, Error, FileSystem.FileSystem> =>
-  Effect.gen(function*() {
-    const fs = yield* FileSystem.FileSystem
-
-    // Check each path for existence
-    const checks = yield* Effect.all(
-      paths.map(path =>
-        fs.exists(path).pipe(
-          Effect.map(exists => exists ? path : undefined),
-          Effect.mapError(error => new Error(`Failed to check path existence: ${path} - ${error}`)),
-        )
-      ),
     )
 
     // Return the first existing path
