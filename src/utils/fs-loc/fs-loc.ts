@@ -25,3 +25,8 @@ export const encodeSync = S.encodeSync(FsLoc)
 export const encode = S.encode(FsLoc)
 export const decodeSync = S.decodeSync(FsLoc)
 export const decode = S.decode(FsLoc)
+
+/**
+ * Equivalence for FsLoc union type.
+ */
+export const equivalence = S.equivalence(FsLoc)

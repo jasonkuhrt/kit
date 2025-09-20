@@ -48,6 +48,9 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
     devDependencies:
+      '@effect/vitest':
+        specifier: ^0.25.1
+        version: 0.25.1(effect@3.17.13)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.5.2)(tsx@4.20.5))
       '@tsconfig/node-lts':
         specifier: ^22.0.2
         version: 22.0.2
@@ -255,6 +258,12 @@ packages:
     resolution: {integrity: sha512-QhDPgCaLfIMQKOCoCPQvRUS+Y34iYJ07jdZ/CBAvYFvg/iUBebsmFuHL63RCD/YZH9BuK/kqqLYAA3M0fmUEgg==}
     peerDependencies:
       effect: ^3.17.13
+
+  '@effect/vitest@0.25.1':
+    resolution: {integrity: sha512-OMYvOU8iGed8GZXxgVBXlYtjG+jwWj5cJxFk0hOHOfTbCHXtdCMEWlXNba5zxbE7dBnW4srbnSYrP/NGGTC3qQ==}
+    peerDependencies:
+      effect: ^3.17.7
+      vitest: ^3.2.0
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -2477,6 +2486,11 @@ snapshots:
       find-my-way-ts: 0.1.6
       msgpackr: 1.11.5
       multipasta: 0.2.7
+
+  '@effect/vitest@0.25.1(effect@3.17.13)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.5.2)(tsx@4.20.5))':
+    dependencies:
+      effect: 3.17.13
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@24.5.2)(tsx@4.20.5)
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true

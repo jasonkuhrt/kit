@@ -72,8 +72,32 @@ export const join = <
   const file = 'file' in rel ? rel.file : null
 
   // The result keeps the absolute/relative nature of dir and file/dir nature of rel
-  const result = set(dir as FsLoc.FsLoc, { segments, file })
-  return result as Join<dir, rel>
+  // If rel is a file, we need to create a file location, not a directory
+  const isAbsolute = Path.Abs.is(dir.path)
+
+  if (file !== null) {
+    // Joining with a file - create a file location
+    const result = isAbsolute
+      ? FsLoc.AbsFile.make({
+        path: Path.Abs.make({ segments }),
+        file,
+      })
+      : FsLoc.RelFile.make({
+        path: Path.Rel.make({ segments }),
+        file,
+      })
+    return result as Join<dir, rel>
+  } else {
+    // Joining with a directory - create a directory location
+    const result = isAbsolute
+      ? FsLoc.AbsDir.make({
+        path: Path.Abs.make({ segments }),
+      })
+      : FsLoc.RelDir.make({
+        path: Path.Rel.make({ segments }),
+      })
+    return result as Join<dir, rel>
+  }
 }
 
 export const isRoot = <loc extends FsLoc.FsLoc>(

@@ -1,6 +1,6 @@
 import { FsLoc } from '#fs-loc'
 import { FileSystem } from '@effect/platform'
-import { Effect } from 'effect'
+import { Effect, Option } from 'effect'
 
 /**
  * Find the first existing path from a list of paths.
@@ -59,10 +59,54 @@ export const pickFirstPathExisting = <loc extends FsLoc.FsLoc>(
     return checks.find(maybePath => maybePath !== undefined)
   })
 
-export const pickFirstFileInDirExisting = <dir extends FsLoc.Groups.Dir.Dir>(
-  dir: dir,
+/**
+ * Type helper to infer return type based on input relative paths.
+ * - If all paths are RelFile, returns AbsFile
+ * - If all paths are RelDir, returns AbsDir
+ * - If mixed, returns union of AbsFile | AbsDir
+ */
+type InferReturnType<T extends FsLoc.Groups.Rel.Rel> = T extends FsLoc.RelFile.RelFile ? FsLoc.AbsFile.AbsFile
+  : T extends FsLoc.RelDir.RelDir ? FsLoc.AbsDir.AbsDir
+  : FsLoc.Groups.Abs.Abs
+
+/**
+ * Find the first existing path under a directory.
+ *
+ * Takes an absolute directory and a list of relative paths,
+ * and returns the first one that exists on the filesystem.
+ *
+ * @param dir - The absolute directory to search under
+ * @param paths - Array of relative paths (files or directories) to check
+ * @returns The first existing absolute path, or None if none exist
+ *
+ * @example
+ * ```ts
+ * import { Fs } from '#fs'
+ * import { FsLoc } from '#fs-loc'
+ *
+ * const dir = FsLoc.AbsDir.decodeSync('/project/')
+ * const paths = [
+ *   FsLoc.RelFile.decodeSync('./config.local.json'),
+ *   FsLoc.RelFile.decodeSync('./config.json')
+ * ]
+ *
+ * const result = yield* Fs.findFirstUnderDir(dir)(paths)
+ * // result: Option<AbsFile> since all inputs are RelFile
+ * ```
+ */
+export const findFirstUnderDir = (
+  dir: FsLoc.AbsDir.AbsDir,
 ) =>
-<files extends FsLoc.File.File>(files: files[]) => {
-  const locs = files.map(file => FsLoc.join(dir, FsLoc.RelFile.make({ file })))
-  return pickFirstPathExisting(locs)
+<paths extends FsLoc.Groups.Rel.Rel>(
+  paths: readonly paths[],
+): Effect.Effect<
+  Option.Option<InferReturnType<paths>>,
+  Error,
+  FileSystem.FileSystem
+> => {
+  const locs = paths.map(path => FsLoc.join(dir, path))
+  return Effect.map(
+    pickFirstPathExisting(locs),
+    (result) => result === undefined ? Option.none() : Option.some(result as InferReturnType<paths>),
+  )
 }

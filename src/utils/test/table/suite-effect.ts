@@ -188,6 +188,119 @@ export function suiteWithLayers<$Requirements>(
 
   return suite
 }
+
+/**
+ * Creates Effect-based test suites with dynamic layer creation per test case.
+ *
+ * This function enables creating test-specific layers based on each test case's data,
+ * eliminating the need to manually create and provide layers within test bodies.
+ *
+ * **Key Features:**
+ * - Dynamic layer creation based on test case data
+ * - Automatic layer provision for each test
+ * - Separation of layer creation from test logic
+ * - Full support for Test.Case features (skip, todo, only, etc.)
+ * - Type-safe throughout with proper inference
+ *
+ * @example Basic usage with mock FileSystem
+ * ```typescript
+ * interface TestCase {
+ *   data: string[]
+ *   expected: { path: string | null }
+ * }
+ *
+ * Test.Table.suiteWithDynamicLayers<TestCase>({
+ *   description: 'file operations',
+ *   cases: [
+ *     { name: 'finds file', data: ['/test/a.json'], expected: { path: '/test/a.json' } },
+ *     { name: 'no files', data: [], expected: { path: null } }
+ *   ],
+ *   createLayer: ({ data }) => Layer.mock(FileSystem.FileSystem, {
+ *     exists: (path) => Effect.succeed(data.includes(path))
+ *   }),
+ *   test: ({ expected }) => Effect.gen(function* () {
+ *     const result = yield* checkFile()
+ *     expect(result).toEqual(expected.path)
+ *   })
+ * })
+ * ```
+ *
+ * @example With complex layer requirements
+ * ```typescript
+ * interface ApiTestCase {
+ *   mockResponses: Record<string, any>
+ *   expected: { status: number }
+ * }
+ *
+ * Test.Table.suiteWithDynamicLayers<ApiTestCase>({
+ *   description: 'API tests',
+ *   cases,
+ *   createLayer: ({ mockResponses }) =>
+ *     Layer.merge(
+ *       Layer.mock(HttpClient, {
+ *         get: (url) => Effect.succeed(mockResponses[url] ?? { status: 404 })
+ *       }),
+ *       Layer.succeed(Logger, ConsoleLogger)
+ *     ),
+ *   test: ({ expected }) => Effect.gen(function* () {
+ *     const response = yield* apiCall()
+ *     expect(response.status).toBe(expected.status)
+ *   })
+ * })
+ * ```
+ */
+export function suiteWithDynamicLayers<$Case extends object, $Requirements = any, $Error = any>(
+  config: {
+    description: string
+    cases: Case<$Case>[]
+    layer: (testCase: CaseFilled & $Case) => Layer.Layer<$Requirements>
+    test: (testCase: CaseFilled & $Case) => Effect.Effect<void, $Error, $Requirements>
+  },
+): void {
+  const { description, cases, layer: createLayer, test: testFn } = config
+
+  describe(description, () => {
+    // Check if any cases have 'only' set
+    const hasOnly = cases.some(c => 'only' in c && c.only === true)
+    const viTestFn = hasOnly ? test.only : test
+
+    viTestFn.for<Case<$Case>>(cases)('$name', async (caseInput, context) => {
+      if ('todo' in caseInput) {
+        const { todo } = caseInput
+        context.skip(typeof todo === 'string' ? todo : undefined)
+        return
+      }
+
+      const filledCase = caseInput as CaseFilled & $Case
+
+      // Handle skip
+      if (filledCase.skip) {
+        context.skip(typeof filledCase.skip === 'string' ? filledCase.skip : undefined)
+        return
+      }
+
+      // Handle skipIf
+      if (filledCase.skipIf?.()) {
+        context.skip('Skipped by condition')
+        return
+      }
+
+      // If we're using test.only, skip cases that don't have only: true
+      if (hasOnly && !filledCase.only) {
+        context.skip('Skipped - focusing on only tests')
+        return
+      }
+
+      // Create the layer for this specific test case
+      const layer = createLayer(filledCase)
+
+      // Execute the Effect-based test with the dynamically created layer
+      const effect = testFn(filledCase)
+      const effectWithLayer = Effect.provide(effect, layer)
+      await Effect.runPromise(effectWithLayer)
+    })
+  })
+}
 // /**
 //  * Test function that returns an Effect for use with Effect-based test suites.
 //  *
