@@ -34,9 +34,11 @@ export type {
 // ============================================================================
 
 /**
- * Check if a file or directory exists.
+ * Wrapper for {@link FileSystem.FileSystem.exists} that accepts FsLoc types.
  *
- * @param loc - The location to check
+ * Takes a FsLoc location instead of a string path.
+ *
+ * @param loc - The location to check (any FsLoc type)
  * @returns true if the path exists, false otherwise
  *
  * @example
@@ -54,9 +56,11 @@ export const exists = (
   })
 
 /**
- * Check file access permissions.
+ * Wrapper for {@link FileSystem.FileSystem.access} that accepts FsLoc types.
  *
- * @param loc - The location to check
+ * Takes a FsLoc location instead of a string path.
+ *
+ * @param loc - The location to check (any FsLoc type)
  * @param options - Access options
  */
 export const access = (
@@ -69,9 +73,11 @@ export const access = (
   })
 
 /**
- * Change file permissions.
+ * Wrapper for {@link FileSystem.FileSystem.chmod} that accepts FsLoc types.
  *
- * @param loc - The location to modify
+ * Takes a FsLoc location instead of a string path.
+ *
+ * @param loc - The location to modify (any FsLoc type)
  * @param mode - The permission mode
  */
 export const chmod = (
@@ -84,9 +90,11 @@ export const chmod = (
   })
 
 /**
- * Change file ownership.
+ * Wrapper for {@link FileSystem.FileSystem.chown} that accepts FsLoc types.
  *
- * @param loc - The location to modify
+ * Takes a FsLoc location instead of a string path.
+ *
+ * @param loc - The location to modify (any FsLoc type)
  * @param uid - User ID
  * @param gid - Group ID
  */
@@ -101,9 +109,11 @@ export const chown = (
   })
 
 /**
- * Open a file.
+ * Wrapper for {@link FileSystem.FileSystem.open} that accepts FsLoc types.
  *
- * @param loc - The file location to open
+ * Takes a FsLoc location instead of a string path.
+ *
+ * @param loc - The file location to open (any FsLoc type)
  * @param options - File open options
  */
 export const open = (
@@ -116,9 +126,13 @@ export const open = (
   })
 
 /**
- * Read a file or directory.
+ * Wrapper for {@link FileSystem.FileSystem.readFile} and {@link FileSystem.FileSystem.readDirectory} that accepts FsLoc types.
  *
- * @param loc - The location to read
+ * Dispatches to the appropriate underlying function based on the FsLoc type:
+ * - File locations call `readFile` and return `Uint8Array`
+ * - Directory locations call `readDirectory` and return `string[]`
+ *
+ * @param loc - The location to read (file or directory)
  * @param options - Read options (only for directories)
  * @returns File contents as Uint8Array for files, or string array for directories
  *
@@ -166,9 +180,11 @@ export const read: {
   })
 
 /**
- * Read a file as a string.
+ * Wrapper for {@link FileSystem.FileSystem.readFileString} that accepts FsLoc types.
  *
- * @param loc - The file location to read
+ * Takes a FsLoc file location instead of a string path.
+ *
+ * @param loc - The file location to read (must be a file type)
  * @param encoding - Text encoding (default: utf-8)
  *
  * @example
@@ -188,9 +204,12 @@ export const readString = (
   })
 
 /**
- * Read a symbolic link.
+ * Wrapper for {@link FileSystem.FileSystem.readLink} that accepts FsLoc types.
  *
- * @param loc - The symlink location to read
+ * Takes a FsLoc location instead of a string path and returns a FsLocLoose
+ * instead of a string.
+ *
+ * @param loc - The symlink location to read (any FsLoc type)
  * @returns The target location as a FsLocLoose
  */
 export const readLink = (
@@ -203,10 +222,13 @@ export const readLink = (
   })
 
 /**
- * Get the real path (canonical path) of a location.
+ * Wrapper for {@link FileSystem.FileSystem.realPath} that accepts FsLoc types.
  *
- * @param loc - The location to resolve
- * @returns The canonical location
+ * Takes a FsLoc location instead of a string path and returns a FsLocLoose
+ * instead of a string.
+ *
+ * @param loc - The location to resolve (any FsLoc type)
+ * @returns The canonical location as a FsLocLoose
  */
 export const realPath = (
   loc: FsLoc.FsLoc,
@@ -220,9 +242,11 @@ export const realPath = (
   })
 
 /**
- * Remove a file or directory.
+ * Wrapper for {@link FileSystem.FileSystem.remove} that accepts FsLoc types.
  *
- * @param loc - The location to remove
+ * Takes a FsLoc location instead of a string path.
+ *
+ * @param loc - The location to remove (any FsLoc type)
  * @param options - Removal options
  *
  * @example
@@ -241,9 +265,11 @@ export const remove = (
   })
 
 /**
- * Create a sink for writing data to a file.
+ * Wrapper for {@link FileSystem.FileSystem.sink} that accepts FsLoc types.
  *
- * @param loc - The file location to write to
+ * Takes a FsLoc location instead of a string path.
+ *
+ * @param loc - The file location to write to (any FsLoc type)
  * @param options - Sink options
  */
 export const sink = (
@@ -259,9 +285,11 @@ export const sink = (
 }
 
 /**
- * Get file or directory statistics.
+ * Wrapper for {@link FileSystem.FileSystem.stat} that accepts FsLoc types.
  *
- * @param loc - The location to stat
+ * Takes a FsLoc location instead of a string path.
+ *
+ * @param loc - The location to stat (any FsLoc type)
  */
 export const stat = (
   loc: FsLoc.FsLoc,
@@ -272,9 +300,11 @@ export const stat = (
   })
 
 /**
- * Create a stream for reading data from a file.
+ * Wrapper for {@link FileSystem.FileSystem.stream} that accepts FsLoc types.
  *
- * @param loc - The file location to read from
+ * Takes a FsLoc location instead of a string path.
+ *
+ * @param loc - The file location to read from (any FsLoc type)
  * @param options - Stream options
  */
 export const stream = (
@@ -290,9 +320,11 @@ export const stream = (
 }
 
 /**
- * Truncate a file to a specified length.
+ * Wrapper for {@link FileSystem.FileSystem.truncate} that accepts FsLoc types.
  *
- * @param loc - The file location to truncate
+ * Takes a FsLoc location instead of a string path.
+ *
+ * @param loc - The file location to truncate (any FsLoc type)
  * @param length - The new length
  */
 export const truncate = (
@@ -305,9 +337,11 @@ export const truncate = (
   })
 
 /**
- * Update file access and modification times.
+ * Wrapper for {@link FileSystem.FileSystem.utimes} that accepts FsLoc types.
  *
- * @param loc - The file location to update
+ * Takes a FsLoc location instead of a string path.
+ *
+ * @param loc - The file location to update (any FsLoc type)
  * @param atime - Access time
  * @param mtime - Modification time
  */
@@ -322,9 +356,11 @@ export const utimes = (
   })
 
 /**
- * Watch a file or directory for changes.
+ * Wrapper for {@link FileSystem.FileSystem.watch} that accepts FsLoc types.
  *
- * @param loc - The location to watch
+ * Takes a FsLoc location instead of a string path.
+ *
+ * @param loc - The location to watch (any FsLoc type)
  * @param options - Watch options
  */
 export const watch = (
@@ -340,9 +376,13 @@ export const watch = (
 }
 
 /**
- * Write data to a file or create a directory.
+ * Wrapper for {@link FileSystem.FileSystem.writeFile} and {@link FileSystem.FileSystem.makeDirectory} that accepts FsLoc types.
  *
- * @param loc - The location to write to
+ * Dispatches to the appropriate underlying function based on the FsLoc type:
+ * - File locations call `writeFile` with the provided data
+ * - Directory locations call `makeDirectory`
+ *
+ * @param loc - The location to write to (file or directory)
  * @param data - The data to write (Uint8Array for files, void/undefined for directories)
  * @param options - Write options (WriteFileOptions for files, MakeDirectoryOptions for directories)
  *
@@ -399,9 +439,11 @@ export const write: {
   })
 
 /**
- * Write a string to a file.
+ * Wrapper for {@link FileSystem.FileSystem.writeFileString} that accepts FsLoc types.
  *
- * @param loc - The file location to write to
+ * Takes a FsLoc file location instead of a string path.
+ *
+ * @param loc - The file location to write to (must be a file type)
  * @param data - The string to write
  * @param options - Write options
  *
@@ -427,14 +469,14 @@ export const writeString = (
 // ============================================================================
 
 /**
- * Copy a file or directory.
+ * Wrapper for {@link FileSystem.FileSystem.copy} and {@link FileSystem.FileSystem.copyFile} that accepts FsLoc types.
  *
- * Intelligently dispatches to the optimal implementation:
- * - When copying file to file: uses optimized `copyFile`
- * - When copying directories or mixed types: uses general `copy`
+ * Takes FsLoc locations instead of string paths. Intelligently dispatches:
+ * - When both locations are files: uses optimized `copyFile`
+ * - Otherwise: uses general `copy`
  *
- * @param from - Source location
- * @param to - Destination location
+ * @param from - Source location (any FsLoc type)
+ * @param to - Destination location (any FsLoc type)
  * @param options - Copy options
  *
  * @example
@@ -468,10 +510,12 @@ export const copy = (
   })
 
 /**
- * Create a hard link.
+ * Wrapper for {@link FileSystem.FileSystem.link} that accepts FsLoc types.
  *
- * @param from - Source location
- * @param to - Link location
+ * Takes FsLoc locations instead of string paths.
+ *
+ * @param from - Source location (any FsLoc type)
+ * @param to - Link location (any FsLoc type)
  */
 export const link = (
   from: FsLoc.FsLoc,
@@ -483,10 +527,12 @@ export const link = (
   })
 
 /**
- * Rename or move a file or directory.
+ * Wrapper for {@link FileSystem.FileSystem.rename} that accepts FsLoc types.
  *
- * @param oldPath - Current location
- * @param newPath - New location
+ * Takes FsLoc locations instead of string paths.
+ *
+ * @param oldPath - Current location (any FsLoc type)
+ * @param newPath - New location (any FsLoc type)
  *
  * @example
  * ```ts
@@ -505,10 +551,12 @@ export const rename = (
   })
 
 /**
- * Create a symbolic link.
+ * Wrapper for {@link FileSystem.FileSystem.symlink} that accepts FsLoc types.
  *
- * @param from - Target location
- * @param to - Symlink location
+ * Takes FsLoc locations instead of string paths.
+ *
+ * @param from - Target location (any FsLoc type)
+ * @param to - Symlink location (any FsLoc type)
  */
 export const symlink = (
   from: FsLoc.FsLoc,
@@ -548,10 +596,10 @@ export interface TempDirectoryOptions {
 export type MakeTempOptions = TempFileOptions | TempDirectoryOptions
 
 /**
- * Create a temporary directory.
+ * Wrapper for {@link FileSystem.FileSystem.makeTempDirectory} that returns FsLoc types.
  *
- * This is a more specific version of `makeTemp` that only creates directories
- * and directly returns `AbsDir` without requiring type narrowing.
+ * Creates a temporary directory and returns an AbsDir instead of a string path.
+ * Ensures the path has a trailing slash for proper directory representation.
  *
  * @param options - Options for the temporary directory
  * @returns The created directory as an AbsDir
@@ -583,11 +631,10 @@ export const makeTempDirectory = (
   })
 
 /**
- * Create a temporary directory with automatic cleanup.
+ * Wrapper for {@link FileSystem.FileSystem.makeTempDirectoryScoped} that returns FsLoc types.
  *
- * The directory will be automatically removed when the scope ends.
- * This is a more specific version of `makeTempScoped` that only creates directories
- * and directly returns `AbsDir` without requiring type narrowing.
+ * Creates a temporary directory with automatic cleanup and returns an AbsDir instead
+ * of a string path. The directory is automatically removed when the scope ends.
  *
  * @param options - Options for the temporary directory
  * @returns The created directory as an AbsDir (cleaned up when scope ends)
@@ -619,7 +666,11 @@ export const makeTempDirectoryScoped = (
   })
 
 /**
- * Create a temporary file or directory.
+ * Wrapper for {@link FileSystem.FileSystem.makeTempFile} and {@link FileSystem.FileSystem.makeTempDirectory} that returns FsLoc types.
+ *
+ * Dispatches based on `options.type` and returns the appropriate FsLoc type:
+ * - `type: 'file'` returns AbsFile
+ * - `type: 'directory'` returns AbsDir
  *
  * @param options - Options specifying the type and configuration
  * @returns The created location (file or directory based on options.type)
@@ -660,7 +711,10 @@ export const makeTemp = <T extends MakeTempOptions>(options: T): Effect.Effect<
   })
 
 /**
- * Create a temporary file or directory with automatic cleanup.
+ * Wrapper for {@link FileSystem.FileSystem.makeTempFileScoped} and {@link FileSystem.FileSystem.makeTempDirectoryScoped} that returns FsLoc types.
+ *
+ * Dispatches based on `options.type` and returns the appropriate FsLoc type.
+ * The created file or directory is automatically removed when the scope ends.
  *
  * @param options - Options specifying the type and configuration
  * @returns The created location (cleaned up when scope ends)
