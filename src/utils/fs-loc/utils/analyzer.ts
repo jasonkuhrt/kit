@@ -71,7 +71,7 @@ export function analyzeEncodedLocation(input: string): Analysis {
   // 3. Otherwise = directory
   let isDirectory: boolean
 
-  if (input === '' || input === '.' || input === './' || input === '../' || input.endsWith('/')) {
+  if (input === '' || input === '.' || input === './' || input === '..' || input === '../' || input.endsWith('/')) {
     isDirectory = true
   } else {
     // Check if last segment has an extension

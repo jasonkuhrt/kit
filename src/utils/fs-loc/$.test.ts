@@ -1,7 +1,7 @@
 import { Test } from '#test'
 import '../test/matchers/$.js'
-import { describe, expect } from 'vitest'
-import * as FsLoc from './$$.js'
+import { describe, expect, it } from 'vitest'
+import { FsLoc } from './$.js'
 import './$.test-matchers.js'
 
 const relFile = FsLoc.RelFile.decodeSync
@@ -316,3 +316,26 @@ Test.Table.suite<{
     const result = FsLoc.FsLocLoose.decodeSync(input)
     expect(result).toBeEquivalent(expected.loc, FsLoc.FsLocLoose.LocLoose)
   })
+
+describe('.Constants', () => {
+  describe('absDirRoot', () => {
+    it('represents the root directory /', () => {
+      expect(FsLoc.Constants.absDirRoot).toEqual(FsLoc.AbsDir.decodeSync('/'))
+      expect(FsLoc.AbsDir.encodeSync(FsLoc.Constants.absDirRoot)).toBe('/')
+    })
+  })
+
+  describe('relDirCurrent', () => {
+    it('represents the current directory .', () => {
+      expect(FsLoc.Constants.relDirCurrent).toEqual(FsLoc.RelDir.decodeSync('.'))
+      expect(FsLoc.RelDir.encodeSync(FsLoc.Constants.relDirCurrent)).toBe('./')
+    })
+  })
+
+  describe('relDirParent', () => {
+    it('represents the parent directory ..', () => {
+      expect(FsLoc.Constants.relDirParent).toEqual(FsLoc.RelDir.decodeSync('..'))
+      expect(FsLoc.RelDir.encodeSync(FsLoc.Constants.relDirParent)).toBe('./../')
+    })
+  })
+})

@@ -1,6 +1,6 @@
 import { expect } from 'vitest'
 import '../test/matchers/$.js'
-import * as FsLoc from './$$.js'
+import { FsLoc } from './$.js'
 
 interface FsLocMatchers<R = unknown> {
   /**
