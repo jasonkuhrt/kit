@@ -548,6 +548,77 @@ export interface TempDirectoryOptions {
 export type MakeTempOptions = TempFileOptions | TempDirectoryOptions
 
 /**
+ * Create a temporary directory.
+ *
+ * This is a more specific version of `makeTemp` that only creates directories
+ * and directly returns `AbsDir` without requiring type narrowing.
+ *
+ * @param options - Options for the temporary directory
+ * @returns The created directory as an AbsDir
+ *
+ * @example
+ * ```ts
+ * import { Fs } from '#fs'
+ *
+ * // Create a temporary directory with default options
+ * const tempDir = yield* Fs.makeTempDirectory()
+ *
+ * // Create with a prefix
+ * const testDir = yield* Fs.makeTempDirectory({ prefix: 'test-' })
+ *
+ * // Create in a specific parent directory
+ * const buildDir = yield* Fs.makeTempDirectory({
+ *   directory: '/tmp/builds',
+ *   prefix: 'build-'
+ * })
+ * ```
+ */
+export const makeTempDirectory = (
+  options: FileSystem.MakeTempDirectoryOptions = {},
+): Effect.Effect<FsLoc.AbsDir.AbsDir, PlatformError, FileSystem.FileSystem> =>
+  Effect.gen(function*() {
+    const fs = yield* FileSystem.FileSystem
+    const path = yield* fs.makeTempDirectory(options)
+    return FsLoc.AbsDir.decodeSync(path.endsWith('/') ? path : path + '/')
+  })
+
+/**
+ * Create a temporary directory with automatic cleanup.
+ *
+ * The directory will be automatically removed when the scope ends.
+ * This is a more specific version of `makeTempScoped` that only creates directories
+ * and directly returns `AbsDir` without requiring type narrowing.
+ *
+ * @param options - Options for the temporary directory
+ * @returns The created directory as an AbsDir (cleaned up when scope ends)
+ *
+ * @example
+ * ```ts
+ * import { Fs } from '#fs'
+ * import { Effect, Scope } from 'effect'
+ *
+ * Effect.gen(function*() {
+ *   // Directory will be cleaned up when scope ends
+ *   const tempDir = yield* Fs.makeTempDirectoryScoped({ prefix: 'test-' })
+ *
+ *   // Use the directory...
+ *   yield* Fs.writeString(
+ *     FsLoc.join(tempDir, FsLoc.RelFile.decodeSync('./data.txt')),
+ *     'test data'
+ *   )
+ * }).pipe(Effect.scoped)
+ * ```
+ */
+export const makeTempDirectoryScoped = (
+  options: FileSystem.MakeTempDirectoryOptions = {},
+): Effect.Effect<FsLoc.AbsDir.AbsDir, PlatformError, FileSystem.FileSystem | Scope.Scope> =>
+  Effect.gen(function*() {
+    const fs = yield* FileSystem.FileSystem
+    const path = yield* fs.makeTempDirectoryScoped(options)
+    return FsLoc.AbsDir.decodeSync(path.endsWith('/') ? path : path + '/')
+  })
+
+/**
  * Create a temporary file or directory.
  *
  * @param options - Options specifying the type and configuration

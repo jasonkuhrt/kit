@@ -1,6 +1,7 @@
 import { Fs } from '#fs'
 import { FsLoc } from '#fs-loc'
 import { Test } from '#test'
+import '../test/matchers/$.js'
 import { FileSystem } from '@effect/platform'
 import { Array, Effect, Layer, Option } from 'effect'
 import { expect, expectTypeOf, test } from 'vitest'
@@ -95,7 +96,7 @@ Test.Table.suiteWithDynamicLayers<TestCase>({
     return Layer.mock(FileSystem.FileSystem, {
       exists: (path: string) => {
         const pathLoc = FsLoc.decodeSync(path)
-        const exists = Array.containsWith(FsLoc.equivalence)(fixture, pathLoc)
+        const exists = Array.containsWith(FsLoc.equivalence)(fixture, pathLoc as FsLoc.FsLoc)
         return Effect.succeed(exists)
       },
       sink: () => undefined as any,
@@ -108,8 +109,7 @@ Test.Table.suiteWithDynamicLayers<TestCase>({
       if (expected.path) {
         expect(Option.isSome(result)).toBe(true)
         if (Option.isSome(result)) {
-          const isEqual = FsLoc.equivalence(result.value, expected.path)
-          expect(isEqual).toBe(true)
+          expect(result.value).toBeEquivalent(expected.path, FsLoc.FsLoc)
         }
       } else {
         expect(Option.isNone(result)).toBe(true)

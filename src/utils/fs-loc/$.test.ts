@@ -1,4 +1,5 @@
 import { Test } from '#test'
+import '../test/matchers/$.js'
 import { describe, expect } from 'vitest'
 import * as FsLoc from './$$.js'
 import './$.test-matchers.js'
@@ -276,7 +277,7 @@ describe('operations', () => {
       const result = FsLoc.toAbs(input, base)
 
       expect(result).toBeAbs()
-      expect(result).toEqualLoc(expected.loc)
+      expect(result).toBeEquivalent(expected.loc, FsLoc.FsLoc)
     })
 
   // dprint-ignore
@@ -295,7 +296,7 @@ describe('operations', () => {
       { name: 'same location dir',                            input: absDir('/home/user/'),               base: absDir('/home/user/'),               expected: { loc: relDir('./') } },
     ], ({ input, base, expected }) => {
       const result = FsLoc.toRel(input, base)
-      expect(result).toEqualLoc(expected.loc)
+      expect(result).toBeEquivalent(expected.loc, FsLoc.FsLoc)
     })
 })
 
@@ -313,5 +314,5 @@ Test.Table.suite<{
     { name: 'complex path',  input: '/usr/local/bin/node.js',   expected: { loc: LocLoose({ path: PathAbs({ segments: ['usr', 'local', 'bin'] }), file: File({ name: 'node', extension: '.js' }) }) } },
   ], ({ input, expected }) => {
     const result = FsLoc.FsLocLoose.decodeSync(input)
-    expect(result).toEqualLocLoose(expected.loc)
+    expect(result).toBeEquivalent(expected.loc, FsLoc.FsLocLoose.LocLoose)
   })

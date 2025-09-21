@@ -285,6 +285,69 @@ describe('filesystem wrapped functions', () => {
       })
     })
 
+    test('makeTempDirectory returns an AbsDir', () => {
+      const mockFs: Partial<FileSystem.FileSystem> = {
+        makeTempDirectory: vi.fn(() => Effect.succeed('/tmp/test-dir-abc')),
+      }
+
+      const effect = Effect.gen(function*() {
+        const result = yield* Effect.provideService(
+          Fs.makeTempDirectory({ prefix: 'test-' }),
+          FileSystem.FileSystem,
+          mockFs as FileSystem.FileSystem,
+        )
+        return result
+      })
+
+      return Effect.runPromise(effect).then(result => {
+        expect(FsLoc.AbsDir.is(result)).toBe(true)
+        expect(FsLoc.encodeSync(result)).toBe('/tmp/test-dir-abc/')
+        expect(mockFs.makeTempDirectory).toHaveBeenCalledWith({ prefix: 'test-' })
+      })
+    })
+
+    test('makeTempDirectory adds trailing slash if missing', () => {
+      const mockFs: Partial<FileSystem.FileSystem> = {
+        makeTempDirectory: vi.fn(() => Effect.succeed('/tmp/no-trailing-slash')),
+      }
+
+      const effect = Effect.gen(function*() {
+        const result = yield* Effect.provideService(
+          Fs.makeTempDirectory(),
+          FileSystem.FileSystem,
+          mockFs as FileSystem.FileSystem,
+        )
+        return result
+      })
+
+      return Effect.runPromise(effect).then(result => {
+        expect(FsLoc.AbsDir.is(result)).toBe(true)
+        expect(FsLoc.encodeSync(result)).toBe('/tmp/no-trailing-slash/')
+        expect(mockFs.makeTempDirectory).toHaveBeenCalledWith({})
+      })
+    })
+
+    test('makeTempDirectoryScoped returns an AbsDir', () => {
+      const mockFs: Partial<FileSystem.FileSystem> = {
+        makeTempDirectoryScoped: vi.fn(() => Effect.succeed('/tmp/scoped-dir')),
+      }
+
+      const effect = Effect.gen(function*() {
+        const result = yield* Effect.provideService(
+          Fs.makeTempDirectoryScoped({ directory: '/custom/tmp', prefix: 'build-' }),
+          FileSystem.FileSystem,
+          mockFs as FileSystem.FileSystem,
+        )
+        return result
+      }).pipe(Effect.scoped)
+
+      return Effect.runPromise(effect).then(result => {
+        expect(FsLoc.AbsDir.is(result)).toBe(true)
+        expect(FsLoc.encodeSync(result)).toBe('/tmp/scoped-dir/')
+        expect(mockFs.makeTempDirectoryScoped).toHaveBeenCalledWith({ directory: '/custom/tmp', prefix: 'build-' })
+      })
+    })
+
     test('makeTemp with type file returns an AbsFile', () => {
       const mockFs: Partial<FileSystem.FileSystem> = {
         makeTempFile: vi.fn(() => Effect.succeed('/tmp/tempfile123.tmp')),

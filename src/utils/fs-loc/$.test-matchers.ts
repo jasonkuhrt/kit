@@ -1,13 +1,8 @@
-import { Schema as S } from 'effect'
 import { expect } from 'vitest'
+import '../test/matchers/$.js'
 import * as FsLoc from './$$.js'
 
-interface CustomMatchers<R = unknown> {
-  /**
-   * Check if two FsLoc values are equivalent
-   */
-  toEqualLoc(expected: FsLoc.FsLoc): R
-
+interface FsLocMatchers<R = unknown> {
   /**
    * Check if the FsLoc is absolute
    */
@@ -42,33 +37,14 @@ interface CustomMatchers<R = unknown> {
    * Check if the FsLoc encodes to the expected string
    */
   toEncodeTo(expected: string): R
-
-  /**
-   * Check if two FsLocLoose values are equivalent
-   */
-  toEqualLocLoose(expected: FsLoc.FsLocLoose.LocLoose): R
 }
 
 declare module 'vitest' {
-  interface Assertion<T = any> extends CustomMatchers<T> {}
-  interface AsymmetricMatchersContaining extends CustomMatchers {}
+  interface Assertion<T = any> extends FsLocMatchers<T> {}
+  interface AsymmetricMatchersContaining extends FsLocMatchers {}
 }
 
 expect.extend({
-  toEqualLoc(received: FsLoc.FsLoc, expected: FsLoc.FsLoc) {
-    const pass = FsLoc.equivalence(received, expected)
-    const receivedStr = FsLoc.encodeSync(received)
-    const expectedStr = FsLoc.encodeSync(expected)
-
-    return {
-      pass,
-      message: () =>
-        pass
-          ? `Expected FsLoc values not to be equal:\n  Received: ${receivedStr}\n  Expected: ${expectedStr}`
-          : `Expected FsLoc values to be equal:\n  Received: ${receivedStr}\n  Expected: ${expectedStr}`,
-    }
-  },
-
   toBeAbs(received: FsLoc.FsLoc) {
     const pass = FsLoc.Groups.Abs.is(received)
     const receivedStr = FsLoc.encodeSync(received)
@@ -166,21 +142,6 @@ expect.extend({
         pass
           ? `Expected FsLoc not to encode to "${expected}"`
           : `Expected FsLoc to encode to "${expected}", but got "${actual}"`,
-    }
-  },
-
-  toEqualLocLoose(received: FsLoc.FsLocLoose.LocLoose, expected: FsLoc.FsLocLoose.LocLoose) {
-    const equivalence = S.equivalence(FsLoc.FsLocLoose.LocLoose)
-    const pass = equivalence(received, expected)
-    const receivedStr = FsLoc.FsLocLoose.encodeSync(received)
-    const expectedStr = FsLoc.FsLocLoose.encodeSync(expected)
-
-    return {
-      pass,
-      message: () =>
-        pass
-          ? `Expected FsLocLoose values not to be equal:\n  Received: ${receivedStr}\n  Expected: ${expectedStr}`
-          : `Expected FsLocLoose values to be equal:\n  Received: ${receivedStr}\n  Expected: ${expectedStr}`,
     }
   },
 })
