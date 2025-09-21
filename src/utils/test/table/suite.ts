@@ -6,51 +6,6 @@ interface Suite extends SuiteBase {
   only: SuiteBase
 }
 
-// export function suite<$Case extends object>(
-//   description: string,
-//   cases: Case<$Case>[],
-//   runner: (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>
-// ): void
-// export function suite<$Case extends object>(
-//   description: string,
-//   nameTemplate: string,
-//   cases: Case<$Case>[],
-//   runner: (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>
-// ): void
-export const suite: Suite = <$Case extends object>(
-  description: string,
-  arg2: string | Case<$Case>[],
-  arg3: Case<$Case>[] | ((caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>),
-  arg4?: (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>,
-) => {
-  describe(description, () => {
-    if (typeof arg2 === 'string') {
-      // Called with custom name template
-      each(arg2, arg3 as Case<$Case>[], arg4!)
-    } else {
-      // Called without custom name template
-      each(arg2, arg3 as (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>)
-    }
-  })
-}
-
-suite.only = <$Case extends object>(
-  description: string,
-  arg2: string | Case<$Case>[],
-  arg3: Case<$Case>[] | ((caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>),
-  arg4?: (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>,
-) => {
-  describe.only(description, () => {
-    if (typeof arg2 === 'string') {
-      // Called with custom name template
-      each(arg2, arg3 as Case<$Case>[], arg4!)
-    } else {
-      // Called without custom name template
-      each(arg2, arg3 as (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>)
-    }
-  })
-}
-
 /**
  * Creates a test suite that combines describe and Test.each for cleaner table-driven tests.
  *
@@ -165,16 +120,50 @@ suite.only = <$Case extends object>(
  *   the entire Test.suite call. This preserves column alignment for test cases while
  *   allowing normal formatting for the rest of the code.
  */
+export const suite: Suite = <$Case extends object>(
+  description: string,
+  arg2: string | Case<$Case>[],
+  arg3: Case<$Case>[] | ((caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>),
+  arg4?: (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>,
+) => {
+  describe(description, () => {
+    if (typeof arg2 === 'string') {
+      // Called with custom name template
+      each(arg2, arg3 as Case<$Case>[], arg4!)
+    } else {
+      // Called without custom name template
+      each(arg2, arg3 as (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>)
+    }
+  })
+}
+
+suite.only = <$Case extends object>(
+  description: string,
+  arg2: string | Case<$Case>[],
+  arg3: Case<$Case>[] | ((caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>),
+  arg4?: (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>,
+) => {
+  describe.only(description, () => {
+    if (typeof arg2 === 'string') {
+      // Called with custom name template
+      each(arg2, arg3 as Case<$Case>[], arg4!)
+    } else {
+      // Called without custom name template
+      each(arg2, arg3 as (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>)
+    }
+  })
+}
+
 interface SuiteBase {
-     <$Case extends object>(
-       description: string,
-       cases: Case<$Case>[],
-       runner: (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>
-     ): void
-     <$Case extends object>(
-       description: string,
-       nameTemplate: string,
-       cases: Case<$Case>[],
-       runner: (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>
-     ): void
-   }
+  <$Case extends object>(
+    description: string,
+    cases: Case<$Case>[],
+    runner: (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>,
+  ): void
+  <$Case extends object>(
+    description: string,
+    nameTemplate: string,
+    cases: Case<$Case>[],
+    runner: (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>,
+  ): void
+}

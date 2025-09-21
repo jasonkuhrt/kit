@@ -37,6 +37,8 @@ export interface CaseFilled {
   only?: boolean
   /** Tags for categorizing and filtering test cases */
   tags?: string[]
+  /** todo */
+  expected?: object
 }
 
 /**

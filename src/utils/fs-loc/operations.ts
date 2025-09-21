@@ -1,4 +1,5 @@
 import { Match } from 'effect'
+import * as NodePath from 'node:path'
 import * as FsLoc from './$$.js'
 import * as Groups from './groups/$$.js'
 import { Path } from './path/$.js'
@@ -61,6 +62,28 @@ type Join<
   : never
 
 /**
+ * Resolve path segments by collapsing parent references (..)
+ * @internal
+ */
+const resolveSegments = (segments: readonly string[]): string[] => {
+  const resolved: string[] = []
+
+  for (const segment of segments) {
+    if (segment === '..') {
+      // Remove the last segment if it exists and we're not at root
+      if (resolved.length > 0) {
+        resolved.pop()
+      }
+    } else if (segment !== '.' && segment !== '') {
+      // Skip current directory references and empty segments
+      resolved.push(segment)
+    }
+  }
+
+  return resolved
+}
+
+/**
  * Join path segments into a file location.
  * Type-safe conditional return type ensures only valid combinations.
  */
@@ -68,7 +91,8 @@ export const join = <
   dir extends Groups.Dir.Dir,
   rel extends Groups.Rel.Rel,
 >(dir: dir, rel: rel): Join<dir, rel> => {
-  const segments = [...dir.path.segments, ...rel.path.segments]
+  const rawSegments = [...dir.path.segments, ...rel.path.segments]
+  const segments = resolveSegments(rawSegments)
   const file = 'file' in rel ? rel.file : null
 
   // The result keeps the absolute/relative nature of dir and file/dir nature of rel
@@ -279,4 +303,89 @@ export const ensureOptionalAbsoluteWithCwd = (
   }
 
   return ensureAbsolute(loc, base)
+}
+
+/**
+ * Type-level toAbs operation.
+ * Maps relative location types to their absolute counterparts.
+ */
+type ToAbs<R extends Groups.Rel.Rel> = R extends FsLoc.RelFile.RelFile ? FsLoc.AbsFile.AbsFile
+  : R extends FsLoc.RelDir.RelDir ? FsLoc.AbsDir.AbsDir
+  : Groups.Abs.Abs
+
+/**
+ * Convert a relative location to an absolute location.
+ *
+ * @param loc - The relative location to convert
+ * @param base - Optional base directory to resolve against. If not provided, simply converts ./path to /path
+ * @returns An absolute location
+ *
+ * @example
+ * ```ts
+ * const relFile = FsLoc.RelFile.decodeSync('./src/index.ts')
+ * const absFile = toAbs(relFile) // /src/index.ts (just re-tags)
+ *
+ * const base = FsLoc.AbsDir.decodeSync('/home/user/')
+ * const absFile2 = toAbs(relFile, base) // /home/user/src/index.ts (resolves against base)
+ * ```
+ */
+export const toAbs = <R extends Groups.Rel.Rel>(
+  loc: R,
+  base?: FsLoc.AbsDir.AbsDir,
+): ToAbs<R> => {
+  if (base) {
+    // Use join to combine base with relative location
+    return join(base, loc) as ToAbs<R>
+  }
+
+  // No base: just convert relative to absolute by re-tagging
+  // This essentially changes ./path to /path
+  if (Groups.File.is(loc)) {
+    const file = (loc as any).file
+    return FsLoc.AbsFile.make({
+      path: Path.Abs.make({ segments: loc.path.segments }),
+      file,
+    }) as ToAbs<R>
+  } else {
+    return FsLoc.AbsDir.make({
+      path: Path.Abs.make({ segments: loc.path.segments }),
+    }) as ToAbs<R>
+  }
+}
+
+/**
+ * Type-level toRel operation.
+ * Maps absolute location types to their relative counterparts.
+ */
+type ToRel<A extends Groups.Abs.Abs> = A extends FsLoc.AbsFile.AbsFile ? FsLoc.RelFile.RelFile
+  : A extends FsLoc.AbsDir.AbsDir ? FsLoc.RelDir.RelDir
+  : Groups.Rel.Rel
+/**
+ * Convert an absolute location to a relative location.
+ *
+ * @param loc - The absolute location to convert
+ * @param base - The base directory to make the path relative to
+ * @returns A relative location
+ *
+ * @example
+ * ```ts
+ * const absFile = FsLoc.AbsFile.decodeSync('/home/user/src/index.ts')
+ * const base = FsLoc.AbsDir.decodeSync('/home/user/')
+ * const relFile = toRel(absFile, base) // ./src/index.ts
+ * ```
+ */
+export const toRel = <A extends Groups.Abs.Abs>(
+  loc: A,
+  base: FsLoc.AbsDir.AbsDir,
+): ToRel<A> => {
+  // Encode the locations to get their string representations
+  const locPath = FsLoc.encodeSync(loc)
+  const basePath = FsLoc.encodeSync(base)
+
+  // Calculate relative path using Node.js built-in
+  const relativePath = NodePath.relative(basePath, locPath)
+
+  // If empty, it means we're at the same location
+  const finalPath = relativePath === '' ? '.' : relativePath
+  return FsLoc.decodeSync(finalPath) as any
 }
