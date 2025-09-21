@@ -101,27 +101,6 @@ export const chown = (
   })
 
 /**
- * Create a directory.
- *
- * @param loc - The directory location to create
- * @param options - Directory creation options
- *
- * @example
- * ```ts
- * const dir = FsLoc.AbsDir.decodeSync('/tmp/myapp/')
- * yield* Fs.makeDirectory(dir, { recursive: true })
- * ```
- */
-export const makeDirectory = (
-  loc: FsLoc.FsLoc,
-  options: FileSystem.MakeDirectoryOptions = { recursive: false },
-): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
-  Effect.gen(function*() {
-    const fs = yield* FileSystem.FileSystem
-    return yield* fs.makeDirectory(FsLoc.encodeSync(loc), options)
-  })
-
-/**
  * Open a file.
  *
  * @param loc - The file location to open
@@ -137,43 +116,53 @@ export const open = (
   })
 
 /**
- * Read a directory's contents.
+ * Read a file or directory.
  *
- * @param loc - The directory location to read
- * @param options - Read options
- * @returns Array of FsLoc items in the directory
+ * @param loc - The location to read
+ * @param options - Read options (only for directories)
+ * @returns File contents as Uint8Array for files, or string array for directories
  *
  * @example
  * ```ts
+ * // Reading a file returns Uint8Array
+ * const file = FsLoc.AbsFile.decodeSync('/data/file.bin')
+ * const bytes = yield* Fs.read(file)
+ *
+ * // Reading a directory returns string array
  * const dir = FsLoc.AbsDir.decodeSync('/home/user/')
- * const entries = yield* Fs.readDirectory(dir)
- * // entries are FsLoc objects, not strings
+ * const entries = yield* Fs.read(dir)
  * ```
  */
-export const readDirectory = (
+export const read: {
+  <L extends FsLoc.Groups.File.File>(
+    loc: L,
+  ): Effect.Effect<Uint8Array, PlatformError, FileSystem.FileSystem>
+  <L extends FsLoc.Groups.Dir.Dir>(
+    loc: L,
+    options?: FileSystem.ReadDirectoryOptions,
+  ): Effect.Effect<readonly string[], PlatformError, FileSystem.FileSystem>
+  <L extends FsLoc.FsLoc>(
+    loc: L,
+    options?: L extends FsLoc.Groups.Dir.Dir ? FileSystem.ReadDirectoryOptions : never,
+  ): Effect.Effect<
+    L extends FsLoc.Groups.File.File ? Uint8Array : L extends FsLoc.Groups.Dir.Dir ? readonly string[] : never,
+    PlatformError,
+    FileSystem.FileSystem
+  >
+} = (
   loc: FsLoc.FsLoc,
   options?: FileSystem.ReadDirectoryOptions,
-): Effect.Effect<readonly string[], PlatformError, FileSystem.FileSystem> =>
+): Effect.Effect<any, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const dirPath = FsLoc.encodeSync(loc)
-    const entries = yield* (options ? fs.readDirectory(dirPath, options) : fs.readDirectory(dirPath))
 
-    // Return just the string names as the FileSystem API does
-    return entries
-  })
-
-/**
- * Read a file as a Uint8Array.
- *
- * @param loc - The file location to read
- */
-export const readFile = (
-  loc: FsLoc.FsLoc,
-): Effect.Effect<Uint8Array, PlatformError, FileSystem.FileSystem> =>
-  Effect.gen(function*() {
-    const fs = yield* FileSystem.FileSystem
-    return yield* fs.readFile(FsLoc.encodeSync(loc))
+    if (FsLoc.Groups.File.is(loc)) {
+      return yield* fs.readFile(FsLoc.encodeSync(loc))
+    } else {
+      const dirPath = FsLoc.encodeSync(loc)
+      const entries = yield* (options ? fs.readDirectory(dirPath, options) : fs.readDirectory(dirPath))
+      return entries
+    }
   })
 
 /**
@@ -185,12 +174,12 @@ export const readFile = (
  * @example
  * ```ts
  * const config = FsLoc.AbsFile.decodeSync('/etc/config.json')
- * const content = yield* Fs.readFileString(config)
+ * const content = yield* Fs.readString(config)
  * const data = JSON.parse(content)
  * ```
  */
-export const readFileString = (
-  loc: FsLoc.FsLoc,
+export const readString = (
+  loc: FsLoc.Groups.File.File,
   encoding: string = 'utf-8',
 ): Effect.Effect<string, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
@@ -351,20 +340,62 @@ export const watch = (
 }
 
 /**
- * Write a Uint8Array to a file.
+ * Write data to a file or create a directory.
  *
- * @param loc - The file location to write to
- * @param data - The data to write
- * @param options - Write options
+ * @param loc - The location to write to
+ * @param data - The data to write (Uint8Array for files, void/undefined for directories)
+ * @param options - Write options (WriteFileOptions for files, MakeDirectoryOptions for directories)
+ *
+ * @example
+ * ```ts
+ * // Writing to a file
+ * const file = FsLoc.AbsFile.decodeSync('/data/output.bin')
+ * const bytes = new Uint8Array([1, 2, 3])
+ * yield* Fs.write(file, bytes)
+ *
+ * // Creating a directory
+ * const dir = FsLoc.AbsDir.decodeSync('/data/output/')
+ * yield* Fs.write(dir, undefined, { recursive: true })
+ * ```
  */
-export const writeFile = (
+export const write: {
+  <L extends FsLoc.Groups.File.File>(
+    loc: L,
+    data: Uint8Array,
+    options?: FileSystem.WriteFileOptions,
+  ): Effect.Effect<void, PlatformError, FileSystem.FileSystem>
+  <L extends FsLoc.Groups.Dir.Dir>(
+    loc: L,
+    data?: undefined,
+    options?: FileSystem.MakeDirectoryOptions,
+  ): Effect.Effect<void, PlatformError, FileSystem.FileSystem>
+  <L extends FsLoc.FsLoc>(
+    loc: L,
+    data: L extends FsLoc.Groups.File.File ? Uint8Array : undefined,
+    options?: L extends FsLoc.Groups.File.File ? FileSystem.WriteFileOptions
+      : L extends FsLoc.Groups.Dir.Dir ? FileSystem.MakeDirectoryOptions
+      : never,
+  ): Effect.Effect<void, PlatformError, FileSystem.FileSystem>
+} = (
   loc: FsLoc.FsLoc,
-  data: Uint8Array,
-  options: FileSystem.WriteFileOptions = {},
+  data?: Uint8Array | undefined,
+  options?: FileSystem.WriteFileOptions | FileSystem.MakeDirectoryOptions,
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    return yield* fs.writeFile(FsLoc.encodeSync(loc), data, options)
+
+    if (FsLoc.Groups.File.is(loc)) {
+      return yield* fs.writeFile(
+        FsLoc.encodeSync(loc),
+        data as Uint8Array,
+        (options as FileSystem.WriteFileOptions) || {},
+      )
+    } else {
+      return yield* fs.makeDirectory(
+        FsLoc.encodeSync(loc),
+        (options as FileSystem.MakeDirectoryOptions) || { recursive: false },
+      )
+    }
   })
 
 /**
@@ -378,11 +409,11 @@ export const writeFile = (
  * ```ts
  * const config = FsLoc.AbsFile.decodeSync('/etc/config.json')
  * const data = JSON.stringify({ key: 'value' }, null, 2)
- * yield* Fs.writeFileString(config, data)
+ * yield* Fs.writeString(config, data)
  * ```
  */
-export const writeFileString = (
-  loc: FsLoc.FsLoc,
+export const writeString = (
+  loc: FsLoc.Groups.File.File,
   data: string,
   options: FileSystem.WriteFileStringOptions = {},
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
@@ -398,15 +429,25 @@ export const writeFileString = (
 /**
  * Copy a file or directory.
  *
+ * Intelligently dispatches to the optimal implementation:
+ * - When copying file to file: uses optimized `copyFile`
+ * - When copying directories or mixed types: uses general `copy`
+ *
  * @param from - Source location
  * @param to - Destination location
  * @param options - Copy options
  *
  * @example
  * ```ts
+ * // File to file - uses optimized copyFile internally
  * const src = FsLoc.AbsFile.decodeSync('/src/file.txt')
  * const dst = FsLoc.AbsFile.decodeSync('/dst/file.txt')
  * yield* Fs.copy(src, dst)
+ *
+ * // Directory to directory - uses general copy
+ * const srcDir = FsLoc.AbsDir.decodeSync('/src/dir/')
+ * const dstDir = FsLoc.AbsDir.decodeSync('/dst/dir/')
+ * yield* Fs.copy(srcDir, dstDir)
  * ```
  */
 export const copy = (
@@ -416,22 +457,14 @@ export const copy = (
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    return yield* fs.copy(FsLoc.encodeSync(from), FsLoc.encodeSync(to), options)
-  })
 
-/**
- * Copy a file (not a directory).
- *
- * @param from - Source file location
- * @param to - Destination file location
- */
-export const copyFile = (
-  from: FsLoc.FsLoc,
-  to: FsLoc.FsLoc,
-): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
-  Effect.gen(function*() {
-    const fs = yield* FileSystem.FileSystem
-    return yield* fs.copyFile(FsLoc.encodeSync(from), FsLoc.encodeSync(to))
+    // If both source and destination are files, use the optimized copyFile
+    if (FsLoc.Groups.File.is(from) && FsLoc.Groups.File.is(to)) {
+      return yield* fs.copyFile(FsLoc.encodeSync(from), FsLoc.encodeSync(to))
+    }
+
+    // Otherwise use the general copy (for directories or mixed types)
+    return yield* fs.copy(FsLoc.encodeSync(from), FsLoc.encodeSync(to), options)
   })
 
 /**
@@ -491,65 +524,105 @@ export const symlink = (
 // ============================================================================
 
 /**
- * Create a temporary directory.
- *
- * @param options - Options for temporary directory creation
- * @returns The created directory location
+ * Options for creating temporary files.
  */
-export const makeTempDirectory = (
-  options?: FileSystem.MakeTempDirectoryOptions,
-): Effect.Effect<FsLoc.AbsDir.AbsDir, PlatformError, FileSystem.FileSystem> =>
+export interface TempFileOptions {
+  readonly type: 'file'
+  readonly directory?: string
+  readonly prefix?: string
+  readonly suffix?: string
+}
+
+/**
+ * Options for creating temporary directories.
+ */
+export interface TempDirectoryOptions {
+  readonly type: 'directory'
+  readonly directory?: string
+  readonly prefix?: string
+}
+
+/**
+ * Options for creating temporary locations.
+ */
+export type MakeTempOptions = TempFileOptions | TempDirectoryOptions
+
+/**
+ * Create a temporary file or directory.
+ *
+ * @param options - Options specifying the type and configuration
+ * @returns The created location (file or directory based on options.type)
+ *
+ * @example
+ * ```ts
+ * // Create a temporary file
+ * const tempFile = yield* Fs.makeTemp({ type: 'file', suffix: '.txt' })
+ *
+ * // Create a temporary directory
+ * const tempDir = yield* Fs.makeTemp({ type: 'directory', prefix: 'test-' })
+ * ```
+ */
+export const makeTemp = <T extends MakeTempOptions>(options: T): Effect.Effect<
+  T extends TempFileOptions ? FsLoc.AbsFile.AbsFile : FsLoc.AbsDir.AbsDir,
+  PlatformError,
+  FileSystem.FileSystem
+> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const path = yield* (options ? fs.makeTempDirectory(options) : fs.makeTempDirectory())
-    // Temp directories are always absolute paths
-    return FsLoc.AbsDir.decodeSync(path.endsWith('/') ? path : path + '/')
+
+    if (options.type === 'file') {
+      const fileOpts: FileSystem.MakeTempFileOptions = {
+        ...(options.directory !== undefined && { directory: options.directory }),
+        ...(options.prefix !== undefined && { prefix: options.prefix }),
+        ...((options as TempFileOptions).suffix !== undefined && { suffix: (options as TempFileOptions).suffix }),
+      }
+      const path = yield* fs.makeTempFile(fileOpts)
+      return FsLoc.AbsFile.decodeSync(path) as any
+    } else {
+      const dirOpts: FileSystem.MakeTempDirectoryOptions = {
+        ...(options.directory !== undefined && { directory: options.directory }),
+        ...(options.prefix !== undefined && { prefix: options.prefix }),
+      }
+      const path = yield* fs.makeTempDirectory(dirOpts)
+      return FsLoc.AbsDir.decodeSync(path.endsWith('/') ? path : path + '/') as any
+    }
   })
 
 /**
- * Create a temporary directory with automatic cleanup.
+ * Create a temporary file or directory with automatic cleanup.
  *
- * @param options - Options for temporary directory creation
- * @returns The created directory location (cleaned up when scope ends)
+ * @param options - Options specifying the type and configuration
+ * @returns The created location (cleaned up when scope ends)
+ *
+ * @example
+ * ```ts
+ * // Create a scoped temporary file
+ * const tempFile = yield* Fs.makeTempScoped({ type: 'file' })
+ * // File is automatically deleted when scope ends
+ * ```
  */
-export const makeTempDirectoryScoped = (
-  options?: FileSystem.MakeTempDirectoryOptions,
-): Effect.Effect<FsLoc.AbsDir.AbsDir, PlatformError, FileSystem.FileSystem | Scope.Scope> =>
+export const makeTempScoped = <T extends MakeTempOptions>(options: T): Effect.Effect<
+  T extends TempFileOptions ? FsLoc.AbsFile.AbsFile : FsLoc.AbsDir.AbsDir,
+  PlatformError,
+  FileSystem.FileSystem | Scope.Scope
+> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const path = yield* fs.makeTempDirectoryScoped(options)
-    // Temp directories are always absolute paths
-    return FsLoc.AbsDir.decodeSync(path.endsWith('/') ? path : path + '/')
-  })
 
-/**
- * Create a temporary file.
- *
- * @param options - Options for temporary file creation
- * @returns The created file location
- */
-export const makeTempFile = (
-  options?: FileSystem.MakeTempFileOptions,
-): Effect.Effect<FsLoc.AbsFile.AbsFile, PlatformError, FileSystem.FileSystem> =>
-  Effect.gen(function*() {
-    const fs = yield* FileSystem.FileSystem
-    const path = yield* (options ? fs.makeTempFile(options) : fs.makeTempFile())
-    // Temp files are always absolute paths
-    return FsLoc.AbsFile.decodeSync(path)
-  })
-
-/**
- * Create a temporary file with automatic cleanup.
- *
- * @param options - Options for temporary file creation
- * @returns The created file location (cleaned up when scope ends)
- */
-export const makeTempFileScoped = (
-  options?: FileSystem.MakeTempFileOptions,
-): Effect.Effect<FsLoc.AbsFile.AbsFile, PlatformError, FileSystem.FileSystem | Scope.Scope> =>
-  Effect.gen(function*() {
-    const fs = yield* FileSystem.FileSystem
-    const path = yield* fs.makeTempFileScoped(options)
-    // Temp files are always absolute paths
-    return FsLoc.AbsFile.decodeSync(path)
+    if (options.type === 'file') {
+      const fileOpts: FileSystem.MakeTempFileOptions = {
+        ...(options.directory !== undefined && { directory: options.directory }),
+        ...(options.prefix !== undefined && { prefix: options.prefix }),
+        ...((options as TempFileOptions).suffix !== undefined && { suffix: (options as TempFileOptions).suffix }),
+      }
+      const path = yield* fs.makeTempFileScoped(fileOpts)
+      return FsLoc.AbsFile.decodeSync(path) as any
+    } else {
+      const dirOpts: FileSystem.MakeTempDirectoryOptions = {
+        ...(options.directory !== undefined && { directory: options.directory }),
+        ...(options.prefix !== undefined && { prefix: options.prefix }),
+      }
+      const path = yield* fs.makeTempDirectoryScoped(dirOpts)
+      return FsLoc.AbsDir.decodeSync(path.endsWith('/') ? path : path + '/') as any
+    }
   })

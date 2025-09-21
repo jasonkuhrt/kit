@@ -1,8 +1,8 @@
-import { Fs } from '#fs'
 import { FsLoc } from '#fs-loc'
 import { FileSystem } from '@effect/platform'
 import { Effect } from 'effect'
 import { describe, expect, test, vi } from 'vitest'
+import * as Fs from './filesystem.js'
 
 describe('filesystem wrapped functions', () => {
   describe('single-path operations', () => {
@@ -27,7 +27,7 @@ describe('filesystem wrapped functions', () => {
       })
     })
 
-    test('readFile wraps fs.readFile with FsLoc', () => {
+    test('read wraps fs.readFile for files', () => {
       const mockContent = new Uint8Array([72, 101, 108, 108, 111]) // "Hello"
       const mockFs: Partial<FileSystem.FileSystem> = {
         readFile: vi.fn(() => Effect.succeed(mockContent)),
@@ -36,7 +36,7 @@ describe('filesystem wrapped functions', () => {
       const fileLoc = FsLoc.AbsFile.decodeSync('/test/file.txt')
       const effect = Effect.gen(function*() {
         const result = yield* Effect.provideService(
-          Fs.readFile(fileLoc),
+          Fs.read(fileLoc),
           FileSystem.FileSystem,
           mockFs as FileSystem.FileSystem,
         )
@@ -49,7 +49,7 @@ describe('filesystem wrapped functions', () => {
       })
     })
 
-    test('writeFile wraps fs.writeFile with FsLoc', () => {
+    test('write wraps fs.writeFile for files', () => {
       const mockFs: Partial<FileSystem.FileSystem> = {
         writeFile: vi.fn(() => Effect.succeed(undefined)),
       }
@@ -58,7 +58,7 @@ describe('filesystem wrapped functions', () => {
       const content = new Uint8Array([72, 101, 108, 108, 111])
       const effect = Effect.gen(function*() {
         yield* Effect.provideService(
-          Fs.writeFile(fileLoc, content),
+          Fs.write(fileLoc, content),
           FileSystem.FileSystem,
           mockFs as FileSystem.FileSystem,
         )
@@ -69,7 +69,7 @@ describe('filesystem wrapped functions', () => {
       })
     })
 
-    test('makeDirectory wraps fs.makeDirectory with FsLoc', () => {
+    test('write wraps fs.makeDirectory for directories', () => {
       const mockFs: Partial<FileSystem.FileSystem> = {
         makeDirectory: vi.fn(() => Effect.succeed(undefined)),
       }
@@ -77,7 +77,7 @@ describe('filesystem wrapped functions', () => {
       const dirLoc = FsLoc.AbsDir.decodeSync('/test/dir/')
       const effect = Effect.gen(function*() {
         yield* Effect.provideService(
-          Fs.makeDirectory(dirLoc),
+          Fs.write(dirLoc),
           FileSystem.FileSystem,
           mockFs as FileSystem.FileSystem,
         )
@@ -134,7 +134,7 @@ describe('filesystem wrapped functions', () => {
       })
     })
 
-    test('readDirectory wraps fs.readDirectory with FsLoc', () => {
+    test('read wraps fs.readDirectory for directories', () => {
       const mockEntries = ['file1.txt', 'file2.txt', 'subdir']
       const mockFs: Partial<FileSystem.FileSystem> = {
         readDirectory: vi.fn(() => Effect.succeed(mockEntries)),
@@ -143,7 +143,7 @@ describe('filesystem wrapped functions', () => {
       const dirLoc = FsLoc.AbsDir.decodeSync('/test/dir/')
       const effect = Effect.gen(function*() {
         const result = yield* Effect.provideService(
-          Fs.readDirectory(dirLoc),
+          Fs.read(dirLoc),
           FileSystem.FileSystem,
           mockFs as FileSystem.FileSystem,
         )
@@ -158,8 +158,9 @@ describe('filesystem wrapped functions', () => {
   })
 
   describe('two-path operations', () => {
-    test('copy wraps fs.copy with FsLoc', () => {
+    test('copy uses fs.copyFile for file-to-file operations', () => {
       const mockFs: Partial<FileSystem.FileSystem> = {
+        copyFile: vi.fn(() => Effect.succeed(undefined)),
         copy: vi.fn(() => Effect.succeed(undefined)),
       }
 
@@ -174,7 +175,30 @@ describe('filesystem wrapped functions', () => {
       })
 
       return Effect.runPromise(effect).then(() => {
-        expect(mockFs.copy).toHaveBeenCalledWith('/test/source.txt', '/test/dest.txt', {})
+        expect(mockFs.copyFile).toHaveBeenCalledWith('/test/source.txt', '/test/dest.txt')
+        expect(mockFs.copy).not.toHaveBeenCalled()
+      })
+    })
+
+    test('copy uses fs.copy for directory operations', () => {
+      const mockFs: Partial<FileSystem.FileSystem> = {
+        copyFile: vi.fn(() => Effect.succeed(undefined)),
+        copy: vi.fn(() => Effect.succeed(undefined)),
+      }
+
+      const sourceLoc = FsLoc.AbsDir.decodeSync('/test/source/')
+      const destLoc = FsLoc.AbsDir.decodeSync('/test/dest/')
+      const effect = Effect.gen(function*() {
+        yield* Effect.provideService(
+          Fs.copy(sourceLoc, destLoc),
+          FileSystem.FileSystem,
+          mockFs as FileSystem.FileSystem,
+        )
+      })
+
+      return Effect.runPromise(effect).then(() => {
+        expect(mockFs.copy).toHaveBeenCalledWith('/test/source/', '/test/dest/', {})
+        expect(mockFs.copyFile).not.toHaveBeenCalled()
       })
     })
 
@@ -240,14 +264,14 @@ describe('filesystem wrapped functions', () => {
   })
 
   describe('path-returning operations', () => {
-    test('makeTempDirectory returns an AbsDir', () => {
+    test('makeTemp with type directory returns an AbsDir', () => {
       const mockFs: Partial<FileSystem.FileSystem> = {
         makeTempDirectory: vi.fn(() => Effect.succeed('/tmp/temp123')),
       }
 
       const effect = Effect.gen(function*() {
         const result = yield* Effect.provideService(
-          Fs.makeTempDirectory(),
+          Fs.makeTemp({ type: 'directory' }),
           FileSystem.FileSystem,
           mockFs as FileSystem.FileSystem,
         )
@@ -257,18 +281,18 @@ describe('filesystem wrapped functions', () => {
       return Effect.runPromise(effect).then(result => {
         expect(FsLoc.AbsDir.is(result)).toBe(true)
         expect(FsLoc.encodeSync(result)).toBe('/tmp/temp123/')
-        expect(mockFs.makeTempDirectory).toHaveBeenCalledWith()
+        expect(mockFs.makeTempDirectory).toHaveBeenCalledWith({})
       })
     })
 
-    test('makeTempFile returns an AbsFile', () => {
+    test('makeTemp with type file returns an AbsFile', () => {
       const mockFs: Partial<FileSystem.FileSystem> = {
         makeTempFile: vi.fn(() => Effect.succeed('/tmp/tempfile123.tmp')),
       }
 
       const effect = Effect.gen(function*() {
         const result = yield* Effect.provideService(
-          Fs.makeTempFile(),
+          Fs.makeTemp({ type: 'file' }),
           FileSystem.FileSystem,
           mockFs as FileSystem.FileSystem,
         )
@@ -278,7 +302,7 @@ describe('filesystem wrapped functions', () => {
       return Effect.runPromise(effect).then(result => {
         expect(FsLoc.AbsFile.is(result)).toBe(true)
         expect(FsLoc.encodeSync(result)).toBe('/tmp/tempfile123.tmp')
-        expect(mockFs.makeTempFile).toHaveBeenCalledWith()
+        expect(mockFs.makeTempFile).toHaveBeenCalledWith({})
       })
     })
 
@@ -308,7 +332,7 @@ describe('filesystem wrapped functions', () => {
   })
 
   describe('stream operations', () => {
-    test('readFileString wraps fs.readFileString with FsLoc', () => {
+    test('readString wraps fs.readFileString for files', () => {
       const mockFs: Partial<FileSystem.FileSystem> = {
         readFileString: vi.fn(() => Effect.succeed('file content')),
       }
@@ -316,7 +340,7 @@ describe('filesystem wrapped functions', () => {
       const fileLoc = FsLoc.AbsFile.decodeSync('/test/file.txt')
       const effect = Effect.gen(function*() {
         const result = yield* Effect.provideService(
-          Fs.readFileString(fileLoc),
+          Fs.readString(fileLoc),
           FileSystem.FileSystem,
           mockFs as FileSystem.FileSystem,
         )
@@ -329,7 +353,7 @@ describe('filesystem wrapped functions', () => {
       })
     })
 
-    test('writeFileString wraps fs.writeFileString with FsLoc', () => {
+    test('writeString wraps fs.writeFileString for files', () => {
       const mockFs: Partial<FileSystem.FileSystem> = {
         writeFileString: vi.fn(() => Effect.succeed(undefined)),
       }
@@ -338,7 +362,7 @@ describe('filesystem wrapped functions', () => {
       const content = 'file content'
       const effect = Effect.gen(function*() {
         yield* Effect.provideService(
-          Fs.writeFileString(fileLoc, content),
+          Fs.writeString(fileLoc, content),
           FileSystem.FileSystem,
           mockFs as FileSystem.FileSystem,
         )
