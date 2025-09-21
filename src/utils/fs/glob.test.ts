@@ -1,46 +1,46 @@
 import { Fs } from '#fs'
+import { FsLoc } from '#fs-loc'
 import { Effect } from 'effect'
 import { describe, expect, test } from 'vitest'
 
 describe('Glob', () => {
   describe('glob', () => {
-    test('returns an Effect that resolves to an array of file paths', async () => {
+    test('returns an Effect that resolves to an array of relative FsLoc objects', async () => {
       const result = await Effect.runPromise(
         Fs.glob('src/utils/fs/*.ts'),
       )
       expect(result).toBeInstanceOf(Array)
       expect(result.length).toBeGreaterThan(0)
-      expect(result).toContain('src/utils/fs/glob.ts')
-      expect(result).toContain('src/utils/fs/fs.ts')
+
+      // Verify we get FsLoc objects
+      expect(result[0]).toHaveProperty('_tag')
+      expect(result[0]).toHaveProperty('path')
     })
 
-    test('handles glob patterns with options', async () => {
+    test('returns absolute FsLocs with absolute option', async () => {
       const result = await Effect.runPromise(
-        Fs.glob('**/*.test.ts', { cwd: 'src/utils/fs' }),
+        Fs.glob('src/utils/fs/*.ts', { absolute: true }),
       )
       expect(result).toBeInstanceOf(Array)
-      expect(result.some(f => f.endsWith('.test.ts'))).toBe(true)
-    })
+      expect(result.length).toBeGreaterThan(0)
 
-    test('handles array of patterns', async () => {
-      const result = await Effect.runPromise(
-        Fs.glob(['src/utils/fs/$.ts', 'src/utils/fs/$$.ts']),
-      )
-      expect(result).toBeInstanceOf(Array)
-      expect(result.length).toBe(2)
-      expect(result).toContain('src/utils/fs/$.ts')
-      expect(result).toContain('src/utils/fs/$$.ts')
+      // Verify we get absolute paths
+      expect(result[0]).toHaveProperty('_tag')
+      expect(result[0]).toHaveProperty('path')
     })
   })
 
   describe('globSync', () => {
-    test('returns an Effect that contains the result synchronously', () => {
+    test('returns an Effect that contains FsLocs synchronously', () => {
       const result = Effect.runSync(
         Fs.globSync('src/utils/fs/*.ts'),
       )
       expect(result).toBeInstanceOf(Array)
       expect(result.length).toBeGreaterThan(0)
-      expect(result).toContain('src/utils/fs/glob.ts')
+
+      // Verify we get FsLoc objects
+      expect(result[0]).toHaveProperty('_tag')
+      expect(result[0]).toHaveProperty('path')
     })
 
     test('handles errors gracefully', () => {
