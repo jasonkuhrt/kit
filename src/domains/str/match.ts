@@ -63,7 +63,6 @@ export type Matches = {
 
 /**
  * Match a string against a pattern with type-safe results.
- * @deprecated Use `String.match` from Effect instead (note: kit's `match` provides typed capture groups, Effect's doesn't)
  * @param string - The string to match against
  * @param pattern - Regular expression or typed pattern
  * @returns Option of match result with typed capture groups, or None if no match
