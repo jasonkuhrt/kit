@@ -1,4 +1,5 @@
 import { ParseResult, Schema as S } from 'effect'
+import type { ParseOptions } from 'effect/SchemaAST'
 import * as LocLoose from '../fs-loc-loose.js'
 import { Path } from '../path/$.js'
 
@@ -91,3 +92,9 @@ export const encodeSync = S.encodeSync(RelDir)
  * Equivalence for relative directory locations.
  */
 export const equivalence = S.equivalence(RelDir)
+
+/**
+ * Assert that a value is a relative directory location.
+ * @throws {ParseError} if the value is not a relative directory location
+ */
+export const assert: (input: unknown, options?: ParseOptions) => asserts input is RelDir = S.asserts(RelDir)

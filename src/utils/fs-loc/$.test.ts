@@ -488,3 +488,53 @@ describe('.fromString', () => {
     FsLoc.fromString('/' as string)
   })
 })
+
+describe('assert functions', () => {
+  // dprint-ignore
+  Test.Table.suite<string, { assert: Function; pass: boolean }>('Groups', [
+    { n: 'Rel passes for file.txt',      i: 'file.txt',  o: { assert: FsLoc.Groups.Rel.assert,  pass: true } },
+    { n: 'Rel fails for /file.txt',      i: '/file.txt', o: { assert: FsLoc.Groups.Rel.assert,  pass: false } },
+
+    { n: 'Abs passes for /file.txt',     i: '/file.txt', o: { assert: FsLoc.Groups.Abs.assert,  pass: true } },
+    { n: 'Abs fails for file.txt',       i: 'file.txt',  o: { assert: FsLoc.Groups.Abs.assert,  pass: false } },
+
+    { n: 'File passes for file.txt',     i: 'file.txt',  o: { assert: FsLoc.Groups.File.assert, pass: true } },
+    { n: 'File fails for ./src/',        i: './src/',    o: { assert: FsLoc.Groups.File.assert, pass: false } },
+
+    { n: 'Dir passes for ./src/',        i: './src/',    o: { assert: FsLoc.Groups.Dir.assert,  pass: true } },
+    { n: 'Dir fails for file.txt',       i: 'file.txt',  o: { assert: FsLoc.Groups.Dir.assert,  pass: false } },
+  ], ({ i, o }) => {
+    const loc = FsLoc.decodeSync(i)
+    if (o.pass) {
+      expect(() => o.assert(loc)).not.toThrow()
+    } else {
+      expect(() => o.assert(loc)).toThrow()
+    }
+  })
+
+  // dprint-ignore
+  Test.Table.suite<string, { assert: Function; pass: boolean }>('Members', [
+    { n: 'AbsFile passes for /file.txt',  i: '/file.txt',  o: { assert: FsLoc.AbsFile.assert,  pass: true } },
+    { n: 'AbsFile fails for file.txt',    i: 'file.txt',   o: { assert: FsLoc.AbsFile.assert,  pass: false } },
+    { n: 'AbsFile fails for /dir/',       i: '/dir/',      o: { assert: FsLoc.AbsFile.assert,  pass: false } },
+
+    { n: 'RelFile passes for file.txt',   i: 'file.txt',   o: { assert: FsLoc.RelFile.assert,  pass: true } },
+    { n: 'RelFile fails for /file.txt',   i: '/file.txt',  o: { assert: FsLoc.RelFile.assert,  pass: false } },
+    { n: 'RelFile fails for ./dir/',      i: './dir/',     o: { assert: FsLoc.RelFile.assert,  pass: false } },
+
+    { n: 'AbsDir passes for /dir/',       i: '/dir/',      o: { assert: FsLoc.AbsDir.assert,   pass: true } },
+    { n: 'AbsDir fails for ./dir/',       i: './dir/',     o: { assert: FsLoc.AbsDir.assert,   pass: false } },
+    { n: 'AbsDir fails for /file.txt',    i: '/file.txt',  o: { assert: FsLoc.AbsDir.assert,   pass: false } },
+
+    { n: 'RelDir passes for ./dir/',      i: './dir/',     o: { assert: FsLoc.RelDir.assert,   pass: true } },
+    { n: 'RelDir fails for /dir/',        i: '/dir/',      o: { assert: FsLoc.RelDir.assert,   pass: false } },
+    { n: 'RelDir fails for file.txt',     i: 'file.txt',   o: { assert: FsLoc.RelDir.assert,   pass: false } },
+  ], ({ i, o }) => {
+    const loc = FsLoc.decodeSync(i)
+    if (o.pass) {
+      expect(() => o.assert(loc)).not.toThrow()
+    } else {
+      expect(() => o.assert(loc)).toThrow()
+    }
+  })
+})

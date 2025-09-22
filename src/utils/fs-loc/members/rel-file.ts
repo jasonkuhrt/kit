@@ -1,4 +1,5 @@
 import { ParseResult, Schema as S } from 'effect'
+import type { ParseOptions } from 'effect/SchemaAST'
 import * as LocLoose from '../fs-loc-loose.js'
 import { Path } from '../path/$.js'
 import * as File from '../types/file.js'
@@ -94,3 +95,9 @@ export const encodeSync = S.encodeSync(RelFile)
  * Equivalence for relative file locations.
  */
 export const equivalence = S.equivalence(RelFile)
+
+/**
+ * Assert that a value is a relative file location.
+ * @throws {ParseError} if the value is not a relative file location
+ */
+export const assert: (input: unknown, options?: ParseOptions) => asserts input is RelFile = S.asserts(RelFile)

@@ -1,4 +1,5 @@
 import { ParseResult, Schema as S } from 'effect'
+import type { ParseOptions } from 'effect/SchemaAST'
 import * as LocLoose from '../fs-loc-loose.js'
 import { Path } from '../path/$.js'
 
@@ -91,3 +92,9 @@ export const encodeSync = S.encodeSync(AbsDir)
  * Equivalence for absolute directory locations.
  */
 export const equivalence = S.equivalence(AbsDir)
+
+/**
+ * Assert that a value is an absolute directory location.
+ * @throws {ParseError} if the value is not an absolute directory location
+ */
+export const assert: (input: unknown, options?: ParseOptions) => asserts input is AbsDir = S.asserts(AbsDir)
