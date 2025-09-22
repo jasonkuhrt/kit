@@ -3,7 +3,6 @@ import '../test/matchers/$.js'
 import { describe, expect, expectTypeOf, it } from 'vitest'
 import { FsLoc } from './$.js'
 import './$.test-matchers.js'
-import type { Ts } from '#ts'
 
 const RelFile = FsLoc.RelFile.make
 const RelDir = FsLoc.RelDir.make
@@ -158,25 +157,21 @@ describe('.RelDir', () => {
 describe('operations', () => {
   // dprint-ignore
   Test.Table.suite<
-      void,
-      string,
-      {
-        base: FsLoc.Groups.Dir.Dir
-        rel: FsLoc.Groups.Rel.Rel
-      }
+      { base: FsLoc.Groups.Dir.Dir; rel: FsLoc.Groups.Rel.Rel },
+      string
     >('.join', [
       // Note: join doesn't correctly handle file types yet - it preserves the base type instead of using the rel type
-      // { name: 'abs dir + rel file',                           base: l('/home/'),                         rel: l('file.txt'),                         o: '/home/file.txt' },
-      { n: 'abs dir + rel dir',                            base: l('/home/'),                         rel: l('documents/'),                       o: '/home/documents/' },
-      // { name: 'rel dir + rel file',                           base: l('src/'),                           rel: l('index.ts'),                         o: './src/index.ts' },
-      { n: 'rel dir + rel dir',                            base: l('src/'),                           rel: l('components/'),                      o: './src/components/' },
-      // { name: 'root + rel file',                              base: l('/'),                              rel: l('file.txt'),                         o: '/file.txt' },
-      { n: 'root + rel dir',                               base: FsLoc.Constants.absDirRoot,          rel: l('home/'),                           o: '/home/' },
+      // { name: 'abs dir + rel file',                           i: { base: l('/home/'),                         rel: l('file.txt') },                         o: '/home/file.txt' },
+      { n: 'abs dir + rel dir',                            i: { base: l('/home/'),                         rel: l('documents/') },                       o: '/home/documents/' },
+      // { name: 'rel dir + rel file',                           i: { base: l('src/'),                           rel: l('index.ts') },                         o: './src/index.ts' },
+      { n: 'rel dir + rel dir',                            i: { base: l('src/'),                           rel: l('components/') },                      o: './src/components/' },
+      // { name: 'root + rel file',                              i: { base: l('/'),                              rel: l('file.txt') },                         o: '/file.txt' },
+      { n: 'root + rel dir',                               i: { base: FsLoc.Constants.absDirRoot,          rel: l('home/') },                           o: '/home/' },
       // Files without extensions are treated as directories
-      // { name: 'nested abs + nested rel',                      base: l('/usr/local/'),                    rel: l('bin/node'),                         o: '/usr/local/bin/node' },
-      // { name: 'parent refs preserved',                        base: l('../'),                            rel: l('lib/utils.js'),                    o: './../lib/utils.js' },
-    ], ({ o, base, rel }) => {
-      const result = FsLoc.join(base, rel)
+      // { name: 'nested abs + nested rel',                      i: { base: l('/usr/local/'),                    rel: l('bin/node') },                         o: '/usr/local/bin/node' },
+      // { name: 'parent refs preserved',                        i: { base: l('../'),                            rel: l('lib/utils.js') },                    o: './../lib/utils.js' },
+    ], ({ i, o }) => {
+      const result = FsLoc.join(i.base, i.rel)
       expect(result).toEncodeTo(o)
     })
 
@@ -335,48 +330,46 @@ describe('operations', () => {
 
   // dprint-ignore
   Test.Table.suite<
-    void,
-    boolean,
-    { child: FsLoc.FsLoc; parent: FsLoc.Groups.Dir.Dir }
+    { child: FsLoc.FsLoc; parent: FsLoc.Groups.Dir.Dir },
+    boolean
   >('.isUnder', [
     // Absolute paths - true cases
-    { n: 'abs file under abs dir',                          child: l('/home/user/project/src/index.ts'), parent: l('/home/user/project/'),         o: true },
-    { n: 'abs dir under abs dir',                           child: l('/home/user/project/'),             parent: l('/home/user/'),                  o: true },
-    { n: 'file in dir (same segments)',                     child: l('/home/user/README.md'),            parent: l('/home/user/'),                  o: true },
-    { n: 'deeply nested under parent',                      child: l('/a/b/c/d/e/f/g.txt'),              parent: l('/a/b/'),                        o: true },
-    { n: 'file under root',                                 child: l('/file.txt'),                        parent: l('/'),                            o: true },
-    { n: 'deep file under root',                            child: l('/home/user/file.txt'),             parent: l('/'),                            o: true },
+    { n: 'abs file under abs dir',                          i: { child: l('/home/user/project/src/index.ts'), parent: l('/home/user/project/') },         o: true },
+    { n: 'abs dir under abs dir',                           i: { child: l('/home/user/project/'),             parent: l('/home/user/') },                  o: true },
+    { n: 'file in dir (same segments)',                     i: { child: l('/home/user/README.md'),            parent: l('/home/user/') },                  o: true },
+    { n: 'deeply nested under parent',                      i: { child: l('/a/b/c/d/e/f/g.txt'),              parent: l('/a/b/') },                        o: true },
+    { n: 'file under root',                                 i: { child: l('/file.txt'),                        parent: l('/') },                            o: true },
+    { n: 'deep file under root',                            i: { child: l('/home/user/file.txt'),             parent: l('/') },                            o: true },
 
     // Relative paths - true cases
-    { n: 'rel file under rel dir',                          child: l('./src/components/Button.tsx'),     parent: l('./src/'),                       o: true },
-    { n: 'rel dir under rel dir',                           child: l('./src/components/'),               parent: l('./src/'),                       o: true },
+    { n: 'rel file under rel dir',                          i: { child: l('./src/components/Button.tsx'),     parent: l('./src/') },                       o: true },
+    { n: 'rel dir under rel dir',                           i: { child: l('./src/components/'),               parent: l('./src/') },                       o: true },
 
     // False cases
-    { n: 'unrelated abs paths',                             child: l('/home/other/file.txt'),            parent: l('/home/user/project/'),         o: false },
-    { n: 'sibling abs dirs',                                child: l('/home/user2/'),                    parent: l('/home/user1/'),                 o: false },
-    { n: 'same abs dir',                                    child: l('/home/user/'),                    parent: l('/home/user/'),                  o: false },
-    { n: 'child above parent',                              child: l('/home/'),                         parent: l('/home/user/project/'),         o: false },
-    { n: 'root under root',                                 child: l('/'),                              parent: l('/'),                            o: false },
-    { n: 'unrelated rel paths',                             child: l('./lib/util.ts'),                  parent: l('./src/'),                      o: false },
+    { n: 'unrelated abs paths',                             i: { child: l('/home/other/file.txt'),            parent: l('/home/user/project/') },         o: false },
+    { n: 'sibling abs dirs',                                i: { child: l('/home/user2/'),                    parent: l('/home/user1/') },                 o: false },
+    { n: 'same abs dir',                                    i: { child: l('/home/user/'),                    parent: l('/home/user/') },                  o: false },
+    { n: 'child above parent',                              i: { child: l('/home/'),                         parent: l('/home/user/project/') },         o: false },
+    { n: 'root under root',                                 i: { child: l('/'),                              parent: l('/') },                            o: false },
+    { n: 'unrelated rel paths',                             i: { child: l('./lib/util.ts'),                  parent: l('./src/') },                      o: false },
 
     // Mixed abs/rel - false
-    { n: 'abs child with rel parent',                       child: l('/home/file.txt'),                 parent: l('./src/'),                      o: false },
-    { n: 'rel child with abs parent',                       child: l('./file.txt'),                     parent: l('/home/user/'),                 o: false },
-  ], ({ o, child, parent }) => {
-    expect(FsLoc.isUnder(child, parent)).toBe(o)
+    { n: 'abs child with rel parent',                       i: { child: l('/home/file.txt'),                 parent: l('./src/') },                      o: false },
+    { n: 'rel child with abs parent',                       i: { child: l('./file.txt'),                     parent: l('/home/user/') },                 o: false },
+  ], ({ i, o }) => {
+    expect(FsLoc.isUnder(i.child, i.parent)).toBe(o)
   })
 
   // dprint-ignore
   Test.Table.suite<
-    void,
-    boolean,
-    { parent: FsLoc.Groups.Dir.Dir; child: FsLoc.FsLoc }
+    { parent: FsLoc.Groups.Dir.Dir; child: FsLoc.FsLoc },
+    boolean
   >('.isAbove', [
-    { n: 'dir above file',                                  parent: l('/home/user/project/'),           child: l('/home/user/project/src/index.ts'), o: true },
-    { n: 'dir above dir',                                   parent: l('/home/'),                        child: l('/home/user/project/'),            o: true },
-    { n: 'dir not above unrelated',                         parent: l('/home/user/'),                   child: l('/other/file.txt'),                o: false },
-  ], ({ o, parent, child }) => {
-    expect(FsLoc.isAbove(parent, child)).toBe(o)
+    { n: 'dir above file',                                  i: { parent: l('/home/user/project/'),           child: l('/home/user/project/src/index.ts') }, o: true },
+    { n: 'dir above dir',                                   i: { parent: l('/home/'),                        child: l('/home/user/project/') },            o: true },
+    { n: 'dir not above unrelated',                         i: { parent: l('/home/user/'),                   child: l('/other/file.txt') },                o: false },
+  ], ({ i, o }) => {
+    expect(FsLoc.isAbove(i.parent, i.child)).toBe(o)
   })
 
   it('.isAbove is symmetrical with .isUnder', () => {
