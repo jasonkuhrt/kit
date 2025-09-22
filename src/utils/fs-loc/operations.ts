@@ -430,3 +430,121 @@ export const name = (loc: FsLoc.FsLoc): string => {
       : '' // Root directory case
   }
 }
+
+/**
+ * Check if a location is under (descendant of) a directory.
+ * Returns false if paths are of different types (absolute vs relative).
+ *
+ * @param child - The location to check
+ * @param parent - The directory that might contain the child
+ * @returns True if child is under parent, false otherwise
+ *
+ * @example
+ * ```ts
+ * const projectDir = FsLoc.fromString('/home/user/project/')
+ * const sourceFile = FsLoc.fromString('/home/user/project/src/index.ts')
+ * FsLoc.isUnder(sourceFile, projectDir) // true
+ *
+ * const relDir = FsLoc.fromString('./src/')
+ * const absFile = FsLoc.fromString('/home/file.txt')
+ * FsLoc.isUnder(absFile, relDir) // false - different path types
+ * ```
+ */
+export const isUnder = (
+  child: FsLoc.FsLoc,
+  parent: Groups.Dir.Dir,
+): boolean => {
+  // Check if both are absolute or both are relative
+  const childIsAbs = child._tag === 'LocAbsFile' || child._tag === 'LocAbsDir'
+  const parentIsAbs = parent._tag === 'LocAbsDir'
+
+  if (childIsAbs !== parentIsAbs) {
+    return false // Can't compare absolute with relative
+  }
+
+  // Compare path segments
+  const parentSegments = parent.path.segments
+  const childSegments = child.path.segments
+
+  // Special case: root directory (0 segments) contains everything except itself
+  if (parentSegments.length === 0) {
+    // For absolute paths, root contains everything that has segments OR has a file
+    // (files at root like /file.txt have 0 segments but have a file property)
+    return childSegments.length > 0 || 'file' in child
+  }
+
+  // Child must have at least as many segments as parent
+  if (childSegments.length < parentSegments.length) {
+    return false
+  }
+
+  // Check if parent segments match the beginning of child segments
+  for (let i = 0; i < parentSegments.length; i++) {
+    if (parentSegments[i] !== childSegments[i]) {
+      return false
+    }
+  }
+
+  // If all parent segments match and child has more segments, it's under
+  // If they have the same segments but child is a file, it's under
+  // (files in a directory have same segments as the directory)
+  // If both are directories with same segments, they're the same path (not under)
+  return childSegments.length > parentSegments.length
+    || (childSegments.length === parentSegments.length && 'file' in child)
+}
+
+/**
+ * Check if a directory is above (ancestor of) a location.
+ * Symmetrical to isUnder with swapped arguments.
+ *
+ * @param parent - The directory that might contain the child
+ * @param child - The location to check
+ * @returns True if parent is above child, false otherwise
+ *
+ * @example
+ * ```ts
+ * const projectDir = FsLoc.fromString('/home/user/project/')
+ * const sourceFile = FsLoc.fromString('/home/user/project/src/index.ts')
+ * FsLoc.isAbove(projectDir, sourceFile) // true
+ * ```
+ */
+export const isAbove = (
+  parent: Groups.Dir.Dir,
+  child: FsLoc.FsLoc,
+): boolean => {
+  return isUnder(child, parent)
+}
+
+/**
+ * Create a curried version of isUnder with the parent directory fixed.
+ *
+ * @param parent - The directory to check against
+ * @returns A function that checks if a location is under the parent
+ *
+ * @example
+ * ```ts
+ * const projectDir = FsLoc.fromString('/home/user/project/')
+ * const isInProject = FsLoc.isUnderOf(projectDir)
+ *
+ * isInProject(FsLoc.fromString('/home/user/project/src/index.ts')) // true
+ * isInProject(FsLoc.fromString('/home/other/file.txt')) // false
+ * ```
+ */
+export const isUnderOf = (parent: Groups.Dir.Dir) => (child: FsLoc.FsLoc): boolean => isUnder(child, parent)
+
+/**
+ * Create a curried version of isAbove with the child location fixed.
+ *
+ * @param child - The location to check against
+ * @returns A function that checks if a directory is above the child
+ *
+ * @example
+ * ```ts
+ * const sourceFile = FsLoc.fromString('/home/user/project/src/index.ts')
+ * const hasAsParent = FsLoc.isAboveOf(sourceFile)
+ *
+ * hasAsParent(FsLoc.fromString('/home/user/project/')) // true
+ * hasAsParent(FsLoc.fromString('/home/other/')) // false
+ * ```
+ */
+export const isAboveOf = (child: FsLoc.FsLoc) => (parent: Groups.Dir.Dir): boolean => isAbove(parent, child)

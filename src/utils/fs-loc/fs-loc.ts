@@ -55,6 +55,15 @@ export const equivalence = S.equivalence(FsLoc)
  * const loc = FsLoc.fromString(path)  // Error: string not assignable
  * // Use this instead: FsLoc.decodeSync(path)
  * ```
+ *
+ * NOTE: Template literal syntax (e.g., fromString`/path/file.txt`) is not supported
+ * due to a TypeScript limitation where literal types cannot be preserved through
+ * TemplateStringsArray. The type system cannot infer the literal string value from
+ * a tagged template, making compile-time path analysis impossible.
+ *
+ * Tracking issue: https://github.com/microsoft/TypeScript/issues/33304
+ *
+ * If this limitation is ever resolved, we could add template literal support.
  */
 export const fromString: <const input extends string>(
   input: Str.LiteralOnly<
@@ -66,7 +75,9 @@ export const fromString: <const input extends string>(
 /**
  * Map Analysis result to specific FsLoc member type.
  */
-export type AnalysisToFsLoc<T> = T extends { _tag: 'file'; pathType: 'absolute' } ? AbsFile.AbsFile
+// dprint-ignore
+export type AnalysisToFsLoc<T> =
+    T extends { _tag: 'file'; pathType: 'absolute' } ? AbsFile.AbsFile
   : T extends { _tag: 'file'; pathType: 'relative' } ? RelFile.RelFile
   : T extends { _tag: 'dir'; pathType: 'absolute' } ? AbsDir.AbsDir
   : T extends { _tag: 'dir'; pathType: 'relative' } ? RelDir.RelDir

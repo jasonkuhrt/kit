@@ -332,6 +332,94 @@ describe('operations', () => {
       const result = FsLoc.name(i)
       expect(result).toBe(o)
     })
+
+  // dprint-ignore
+  Test.Table.suite<
+    void,
+    boolean,
+    { child: FsLoc.FsLoc; parent: FsLoc.Groups.Dir.Dir }
+  >('.isUnder', [
+    // Absolute paths - true cases
+    { name: 'abs file under abs dir',                          i: undefined, child: l('/home/user/project/src/index.ts'), parent: l('/home/user/project/'),         o: true },
+    { name: 'abs dir under abs dir',                           i: undefined, child: l('/home/user/project/'),             parent: l('/home/user/'),                  o: true },
+    { name: 'file in dir (same segments)',                     i: undefined, child: l('/home/user/README.md'),            parent: l('/home/user/'),                  o: true },
+    { name: 'deeply nested under parent',                      i: undefined, child: l('/a/b/c/d/e/f/g.txt'),              parent: l('/a/b/'),                        o: true },
+    { name: 'file under root',                                 i: undefined, child: l('/file.txt'),                        parent: l('/'),                            o: true },
+    { name: 'deep file under root',                            i: undefined, child: l('/home/user/file.txt'),             parent: l('/'),                            o: true },
+
+    // Relative paths - true cases
+    { name: 'rel file under rel dir',                          i: undefined, child: l('./src/components/Button.tsx'),     parent: l('./src/'),                       o: true },
+    { name: 'rel dir under rel dir',                           i: undefined, child: l('./src/components/'),               parent: l('./src/'),                       o: true },
+
+    // False cases
+    { name: 'unrelated abs paths',                             i: undefined, child: l('/home/other/file.txt'),            parent: l('/home/user/project/'),         o: false },
+    { name: 'sibling abs dirs',                                i: undefined, child: l('/home/user2/'),                    parent: l('/home/user1/'),                 o: false },
+    { name: 'same abs dir',                                    i: undefined, child: l('/home/user/'),                    parent: l('/home/user/'),                  o: false },
+    { name: 'child above parent',                              i: undefined, child: l('/home/'),                         parent: l('/home/user/project/'),         o: false },
+    { name: 'root under root',                                 i: undefined, child: l('/'),                              parent: l('/'),                            o: false },
+    { name: 'unrelated rel paths',                             i: undefined, child: l('./lib/util.ts'),                  parent: l('./src/'),                      o: false },
+
+    // Mixed abs/rel - false
+    { name: 'abs child with rel parent',                       i: undefined, child: l('/home/file.txt'),                 parent: l('./src/'),                      o: false },
+    { name: 'rel child with abs parent',                       i: undefined, child: l('./file.txt'),                     parent: l('/home/user/'),                 o: false },
+  ], ({ i, o, child, parent }) => {
+    expect(FsLoc.isUnder(child, parent)).toBe(o)
+  })
+
+  // dprint-ignore
+  Test.Table.suite<
+    void,
+    boolean,
+    { parent: FsLoc.Groups.Dir.Dir; child: FsLoc.FsLoc }
+  >('.isAbove', [
+    { name: 'dir above file',                                  i: undefined, parent: l('/home/user/project/'),           child: l('/home/user/project/src/index.ts'), o: true },
+    { name: 'dir above dir',                                   i: undefined, parent: l('/home/'),                        child: l('/home/user/project/'),            o: true },
+    { name: 'dir not above unrelated',                         i: undefined, parent: l('/home/user/'),                   child: l('/other/file.txt'),                o: false },
+  ], ({ i, o, parent, child }) => {
+    expect(FsLoc.isAbove(parent, child)).toBe(o)
+  })
+
+  it('.isAbove is symmetrical with .isUnder', () => {
+    const parent = l('/home/user/')
+    const child = l('/home/user/file.txt')
+    expect(FsLoc.isAbove(parent, child)).toBe(FsLoc.isUnder(child, parent))
+  })
+
+  describe('.isUnderOf', () => {
+    it('creates a predicate for checking if locations are under a directory', () => {
+      const projectDir = FsLoc.fromString('/home/user/project/')
+      const isInProject = FsLoc.isUnderOf(projectDir)
+
+      expect(isInProject(FsLoc.fromString('/home/user/project/src/index.ts'))).toBe(true)
+      expect(isInProject(FsLoc.fromString('/home/user/project/README.md'))).toBe(true)
+      expect(isInProject(FsLoc.fromString('/home/other/file.txt'))).toBe(false)
+    })
+
+    it('works with array filtering', () => {
+      const projectDir = FsLoc.fromString('/project/')
+      const files = [
+        FsLoc.fromString('/project/src/index.ts'),
+        FsLoc.fromString('/project/README.md'),
+        FsLoc.fromString('/other/file.txt'),
+        FsLoc.fromString('/project/docs/guide.md'),
+      ]
+
+      const projectFiles = files.filter(FsLoc.isUnderOf(projectDir))
+      expect(projectFiles).toHaveLength(3)
+    })
+  })
+
+  describe('.isAboveOf', () => {
+    it('creates a predicate for checking if directories are above a location', () => {
+      const sourceFile = FsLoc.fromString('/home/user/project/src/index.ts')
+      const hasAsParent = FsLoc.isAboveOf(sourceFile)
+
+      expect(hasAsParent(FsLoc.fromString('/home/user/project/'))).toBe(true)
+      expect(hasAsParent(FsLoc.fromString('/home/user/'))).toBe(true)
+      expect(hasAsParent(FsLoc.fromString('/home/'))).toBe(true)
+      expect(hasAsParent(FsLoc.fromString('/other/'))).toBe(false)
+    })
+  })
 })
 
 Test.Table.suite<
