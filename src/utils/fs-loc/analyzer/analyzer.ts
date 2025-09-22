@@ -1,3 +1,5 @@
+import type { Analyze } from './analyzer.types.js'
+
 interface AnalysisBase {
   /** Original input string */
   original: string
@@ -50,7 +52,11 @@ export interface AnalysisDir extends AnalysisNonRoot {
  * analyze('../src/file.ts')  // { isAbsolute: false, parentRefs: 1, filename: 'file.ts', ... }
  * ```
  */
-export function analyzeEncodedLocation(input: string): Analysis {
+export function analyze<const input extends string>(input: input): Analyze<input> {
+  return analyze_(input) as Analyze<input>
+}
+
+export function analyze_(input: string): Analysis {
   const isAbsolute = input.startsWith('/')
 
   // Handle root case as an absolute directory with empty path

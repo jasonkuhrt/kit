@@ -1,6 +1,6 @@
 import { Match, ParseResult, Schema as S } from 'effect'
+import { Analyzer } from '../analyzer/$.js'
 import * as Segment from '../types/segment.js'
-import * as Analyzer from '../utils/analyzer.ts'
 
 const Encoded = S.String
 
@@ -25,7 +25,7 @@ export const Rel = S.transformOrFail(
       return ParseResult.succeed('./' + path)
     },
     decode: (input, options, ast) => {
-      return Match.value(Analyzer.analyzeEncodedLocation(input)).pipe(
+      return Match.value(Analyzer.analyze(input)).pipe(
         Match.tagsExhaustive({
           file: (analysis) => {
             if (analysis.isPathAbsolute) {

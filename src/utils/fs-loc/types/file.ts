@@ -1,5 +1,5 @@
 import { Match, ParseResult, Schema as S } from 'effect'
-import * as Analyzer from '../utils/analyzer.ts'
+import { Analyzer } from '../analyzer/$.js'
 import * as Extension from './extension.ts'
 
 export const Encoded = S.String
@@ -25,7 +25,7 @@ export const File = S.transformOrFail(
       return ParseResult.succeed(filename)
     },
     decode: (input, options, ast) => {
-      return Match.value(Analyzer.analyzeEncodedLocation(input)).pipe(
+      return Match.value(Analyzer.analyze(input)).pipe(
         Match.tagsExhaustive({
           file: (file) => {
             // File should be just a filename, not a path

@@ -1,7 +1,7 @@
 import { Match, ParseResult, Schema as S } from 'effect'
+import { Analyzer } from './analyzer/$.js'
 import { Path } from './path/$.js'
 import * as File from './types/file.js'
-import * as Analyzer from './utils/analyzer.ts'
 
 const Encoded = S.String
 
@@ -29,7 +29,7 @@ export const LocLoose = S.transformOrFail(
       return ParseResult.succeed(encoded)
     },
     decode: (input) => {
-      return Match.value(Analyzer.analyzeEncodedLocation(input)).pipe(
+      return Match.value(Analyzer.analyze(input)).pipe(
         Match.tagsExhaustive({
           file: (analysis) => {
             const path = analysis.isPathAbsolute

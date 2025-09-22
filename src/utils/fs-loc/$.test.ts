@@ -1,6 +1,6 @@
 import { Test } from '#test'
 import '../test/matchers/$.js'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, expectTypeOf, it } from 'vitest'
 import { FsLoc } from './$.js'
 import './$.test-matchers.js'
 
@@ -16,6 +16,7 @@ const PathAbs = FsLoc.Path.Abs.make
 const PathRel = FsLoc.Path.Rel.make
 const File = FsLoc.File.make
 const LocLoose = FsLoc.FsLocLoose.make
+const l = FsLoc.fromString
 
 describe('.AbsFile', () => {
   // dprint-ignore
@@ -187,12 +188,12 @@ describe('operations', () => {
       FsLoc.FsLoc,
       string
     >('.up', [
-      { name: 'abs file up one level',                        i: absFile('/home/user/file.txt'),      o: '/home/file.txt' },
-      { name: 'abs dir up one level',                         i: absDir('/home/user/'),               o: '/home/' },
-      { name: 'rel file up one level',                        i: relFile('src/index.ts'),             o: './index.ts' },
-      { name: 'rel dir up one level',                         i: relDir('src/components/'),           o: './src/' },
+      { name: 'abs file up one level',                        i: l('/home/user/file.txt'),      o: '/home/file.txt' },
+      { name: 'abs dir up one level',                         i: l('/home/user/'),               o: '/home/' },
+      { name: 'rel file up one level',                        i: l('src/index.ts'),             o: './index.ts' },
+      { name: 'rel dir up one level',                         i: l('src/components/'),           o: './src/' },
       { name: 'root stays at root',                           i: FsLoc.Constants.absDirRoot,         o: '/' },
-      { name: 'file in root stays in root',                   i: absFile('/file.txt'),                o: '/file.txt' },
+      { name: 'file in root stays in root',                   i: l('/file.txt'),                o: '/file.txt' },
     ], ({ i, o }) => {
       const result = FsLoc.up(i)
       expect(result).toEncodeTo(o)
@@ -376,5 +377,31 @@ describe('.Constants', () => {
       expect(FsLoc.Constants.relDirParent).toEqual(FsLoc.RelDir.decodeSync('..'))
       expect(FsLoc.RelDir.encodeSync(FsLoc.Constants.relDirParent)).toBe('./../')
     })
+  })
+})
+
+describe('.fromString', () => {
+  it('returns AbsFile for absolute file paths', () => {
+    const result = FsLoc.fromString('/path/file.txt')
+    expect(result._tag).toBe('LocAbsFile')
+    expectTypeOf(result).toEqualTypeOf<FsLoc.AbsFile.AbsFile>()
+  })
+
+  it('returns RelFile for relative file paths', () => {
+    const result = FsLoc.fromString('file.txt')
+    expect(result._tag).toBe('LocRelFile')
+    expectTypeOf(result).toEqualTypeOf<FsLoc.RelFile.RelFile>()
+  })
+
+  it('returns AbsDir for absolute directory paths', () => {
+    const result = FsLoc.fromString('/home/')
+    expect(result._tag).toBe('LocAbsDir')
+    expectTypeOf(result).toEqualTypeOf<FsLoc.AbsDir.AbsDir>()
+  })
+
+  it('returns RelDir for relative directory paths', () => {
+    const result = FsLoc.fromString('./src/')
+    expect(result._tag).toBe('LocRelDir')
+    expectTypeOf(result).toEqualTypeOf<FsLoc.RelDir.RelDir>()
   })
 })
