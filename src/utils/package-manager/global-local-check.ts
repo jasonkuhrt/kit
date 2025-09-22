@@ -1,4 +1,5 @@
 import { FsLoc } from '#fs-loc'
+import { Pro } from '#pro'
 import { FileSystem } from '@effect/platform'
 import { Effect } from 'effect'
 
@@ -38,7 +39,7 @@ interface PackageJson {
 const findPackageInAncestors = (packageName: string): Effect.Effect<string | null, Error, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const currentDir = FsLoc.AbsDir.decodeSync(process.cwd())
+    const currentDir = Pro.cwd()
     const packageJsonRel = FsLoc.RelFile.decodeSync('package.json')
 
     // Start with package.json in current directory

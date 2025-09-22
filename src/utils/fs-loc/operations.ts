@@ -1,3 +1,4 @@
+import { Pro } from '#pro'
 import { Match } from 'effect'
 import * as NodePath from 'node:path'
 import * as FsLoc from './$$.js'
@@ -220,9 +221,7 @@ export const ensureAbsolute = <
   let resolvedBase = base
   if (!resolvedBase) {
     // Get current working directory as base
-    const cwd = process.cwd()
-    const cwdWithSlash = cwd.endsWith('/') ? cwd : `${cwd}/`
-    resolvedBase = FsLoc.AbsDir.decodeSync(cwdWithSlash) as base
+    resolvedBase = Pro.cwd() as base
   }
 
   // Join base with relative location
@@ -305,9 +304,7 @@ type EnsureOptionalAbsoluteWithCwd<L extends FsLoc.FsLoc | undefined> = L extend
 export const ensureOptionalAbsoluteWithCwd = <L extends FsLoc.FsLoc | undefined>(
   loc: L,
 ): EnsureOptionalAbsoluteWithCwd<L> => {
-  const cwd = process.cwd()
-  const cwdWithSlash = cwd.endsWith('/') ? cwd : `${cwd}/`
-  const base = FsLoc.AbsDir.decodeSync(cwdWithSlash)
+  const base = Pro.cwd()
 
   if (loc === undefined) {
     return base as any

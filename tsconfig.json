@@ -54,6 +54,8 @@
       "#prom/prom": ["./src/domains/prom/$$.ts"],
       "#prox": ["./src/domains/prox/$.ts"],
       "#prox/prox": ["./src/domains/prox/$$.ts"],
+      "#pro": ["./src/utils/pro/$.ts"],
+      "#pro/pro": ["./src/utils/pro/$$.ts"],
       "#rec": ["./src/domains/rec/$.ts"],
       "#rec/rec": ["./src/domains/rec/$$.ts"],
       "#str": ["./src/domains/str/$.ts"],
