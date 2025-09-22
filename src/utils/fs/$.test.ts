@@ -6,25 +6,22 @@ import { FileSystem } from '@effect/platform'
 import { Array, Effect, Layer, Option } from 'effect'
 import { expect, expectTypeOf, test } from 'vitest'
 
-const relDir = FsLoc.RelDir.decodeSync
-const absDir = FsLoc.AbsDir.decodeSync
-const absFile = FsLoc.AbsFile.decodeSync
-const relFile = FsLoc.RelFile.decodeSync
+const l = FsLoc.fromString
 
-const absDirTest = absDir('/a/')
+const absDirTest = l('/a/')
 
 const fx = {
   a: {
-    rel: relFile('./a.json'),
-    abs: absFile('/a/a.json'),
+    rel: l('./a.json'),
+    abs: l('/a/a.json'),
   },
   b: {
-    rel: relFile('./b.json'),
-    abs: absFile('/a/b.json'),
+    rel: l('./b.json'),
+    abs: l('/a/b.json'),
   },
   dir: {
-    rel: relDir('./c'),
-    abs: absDir('/a/c'),
+    rel: l('./c/'),
+    abs: l('/a/c/'),
   },
 }
 
@@ -37,7 +34,7 @@ test('.findFirstUnderDir type inference', () => {
   >()
 
   // Test with only directories - should return Option<AbsDir>
-  const onlyDirs = [fx.dir.rel, relDir('./test/')]
+  const onlyDirs = [fx.dir.rel, l('./test/')]
   const dirResult = Fs.findFirstUnderDir(absDirTest)(onlyDirs)
   expectTypeOf(dirResult).toEqualTypeOf<
     Effect.Effect<Option.Option<FsLoc.AbsDir.AbsDir>, Error, FileSystem.FileSystem>

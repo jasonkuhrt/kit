@@ -57,7 +57,10 @@ export const equivalence = S.equivalence(FsLoc)
  * ```
  */
 export const fromString: <const input extends string>(
-  input: Str.LiteralOnly<input>,
+  input: Str.LiteralOnly<
+    input,
+    'FsLoc.fromString requires a literal string. Use FsLoc.decodeSync() for runtime strings.'
+  >,
 ) => AnalysisToFsLoc<Analyzer.Analyze<input>> = decodeSync as any
 
 /**

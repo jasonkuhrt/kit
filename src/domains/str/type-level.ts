@@ -4,6 +4,8 @@
  * Provides compile-time string manipulation and analysis types.
  */
 
+import type { Ts } from '#ts'
+
 /**
  * Check if a string ends with a specific suffix.
  */
@@ -44,6 +46,17 @@ export type Contains<S extends string, C extends string> = S extends `${string}$
 
 /**
  * Constraint that only accepts literal strings.
- * Returns never for non-literal string type.
+ * Returns StaticError for non-literal string type with customizable error message.
+ *
+ * @template T - The string type to check
+ * @template $ErrorMessage - Custom error message to display when T is not a literal
  */
-export type LiteralOnly<T extends string> = string extends T ? never : T
+export type LiteralOnly<
+  T extends string,
+  $ErrorMessage extends string = 'Expected a literal string',
+> = string extends T ? Ts.StaticError<
+    $ErrorMessage,
+    { ReceivedType: T },
+    'Use a string literal instead of string type'
+  >
+  : T

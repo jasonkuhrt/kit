@@ -3,14 +3,11 @@ import '../test/matchers/$.js'
 import { describe, expect, expectTypeOf, it } from 'vitest'
 import { FsLoc } from './$.js'
 import './$.test-matchers.js'
+import type { Ts } from '#ts'
 
-const relFile = FsLoc.RelFile.decodeSync
 const RelFile = FsLoc.RelFile.make
-const relDir = FsLoc.RelDir.decodeSync
 const RelDir = FsLoc.RelDir.make
-const absFile = FsLoc.AbsFile.decodeSync
 const AbsFile = FsLoc.AbsFile.make
-const absDir = FsLoc.AbsDir.decodeSync
 const AbsDir = FsLoc.AbsDir.make
 const PathAbs = FsLoc.Path.Abs.make
 const PathRel = FsLoc.Path.Rel.make
@@ -169,15 +166,15 @@ describe('operations', () => {
       }
     >('.join', [
       // Note: join doesn't correctly handle file types yet - it preserves the base type instead of using the rel type
-      // { name: 'abs dir + rel file',                           i: undefined, base: absDir('/home/'),                    rel: relFile('file.txt'),                   o: '/home/file.txt' },
-      { name: 'abs dir + rel dir',                            i: undefined, base: absDir('/home/'),                    rel: relDir('documents/'),                 o: '/home/documents/' },
-      // { name: 'rel dir + rel file',                           i: undefined, base: relDir('src/'),                      rel: relFile('index.ts'),                   o: './src/index.ts' },
-      { name: 'rel dir + rel dir',                            i: undefined, base: relDir('src/'),                      rel: relDir('components/'),                o: './src/components/' },
-      // { name: 'root + rel file',                              i: undefined, base: absDir('/'),                         rel: relFile('file.txt'),                   o: '/file.txt' },
-      { name: 'root + rel dir',                               i: undefined, base: FsLoc.Constants.absDirRoot,          rel: relDir('home/'),                      o: '/home/' },
+      // { name: 'abs dir + rel file',                           i: undefined, base: l('/home/'),                         rel: l('file.txt'),                         o: '/home/file.txt' },
+      { name: 'abs dir + rel dir',                            i: undefined, base: l('/home/'),                         rel: l('documents/'),                       o: '/home/documents/' },
+      // { name: 'rel dir + rel file',                           i: undefined, base: l('src/'),                           rel: l('index.ts'),                         o: './src/index.ts' },
+      { name: 'rel dir + rel dir',                            i: undefined, base: l('src/'),                           rel: l('components/'),                      o: './src/components/' },
+      // { name: 'root + rel file',                              i: undefined, base: l('/'),                              rel: l('file.txt'),                         o: '/file.txt' },
+      { name: 'root + rel dir',                               i: undefined, base: FsLoc.Constants.absDirRoot,          rel: l('home/'),                           o: '/home/' },
       // Files without extensions are treated as directories
-      // { name: 'nested abs + nested rel',                      i: undefined, base: absDir('/usr/local/'),               rel: relFile('bin/node'),                   o: '/usr/local/bin/node' },
-      // { name: 'parent refs preserved',                        i: undefined, base: relDir('../'),                       rel: relFile('lib/utils.js'),              o: './../lib/utils.js' },
+      // { name: 'nested abs + nested rel',                      i: undefined, base: l('/usr/local/'),                    rel: l('bin/node'),                         o: '/usr/local/bin/node' },
+      // { name: 'parent refs preserved',                        i: undefined, base: l('../'),                            rel: l('lib/utils.js'),                    o: './../lib/utils.js' },
     ], ({ i, o, base, rel }) => {
       const result = FsLoc.join(base, rel)
       expect(result).toEncodeTo(o)
@@ -204,11 +201,11 @@ describe('operations', () => {
       FsLoc.Groups.File.File,
       string
     >('.toDir', [
-      { name: 'abs file to abs dir',                          i: absFile('/home/file.txt'),           o: '/home/file.txt/' },
-      { name: 'rel file to rel dir',                          i: relFile('src/index.ts'),             o: './src/index.ts/' },
+      { name: 'abs file to abs dir',                          i: l('/home/file.txt'),                  o: '/home/file.txt/' },
+      { name: 'rel file to rel dir',                          i: l('src/index.ts'),                    o: './src/index.ts/' },
       // Files without extensions are treated as directories
-      // { name: 'file without extension',                       input: absFile('/README'),                  o: '/README/' },
-      // { name: 'hidden file',                                  input: absFile('/.gitignore'),              o: '/.gitignore/' },
+      // { name: 'file without extension',                       input: l('/README'),                         o: '/README/' },
+      // { name: 'hidden file',                                  input: l('/.gitignore'),                     o: '/.gitignore/' },
     ], ({ i, o }) => {
       const result = FsLoc.toDir(i)
       expect(result).toBeDir()
@@ -221,12 +218,12 @@ describe('operations', () => {
       boolean
     >('.isRoot', [
       { name: 'root is root',                                 i: FsLoc.Constants.absDirRoot,        o: true },
-      { name: 'abs dir not root',                             i: absDir('/home/'),                   o: false },
+      { name: 'abs dir not root',                             i: l('/home/'),                        o: false },
       // Files with no path segments also return true for isRoot currently
-      { name: 'abs file in root',                             i: absFile('/file.txt'),                o: true },
-      { name: 'rel dir not root',                             i: relDir('src/'),                     o: false },
+      { name: 'abs file in root',                             i: l('/file.txt'),                      o: true },
+      { name: 'rel dir not root',                             i: l('src/'),                          o: false },
       // Files with no path segments also return true for isRoot currently
-      { name: 'rel file in current dir',                      i: relFile('file.txt'),                o: true },
+      { name: 'rel file in current dir',                      i: l('file.txt'),                      o: true },
       // Empty relative dir also has empty segments
       { name: 'empty rel dir',                                i: FsLoc.Constants.relDirCurrent,      o: true },
     ], ({ i, o }) => {
@@ -245,13 +242,13 @@ describe('operations', () => {
         base?: FsLoc.AbsDir.AbsDir
       }
     >('.ensureAbsolute', [
-      { name: 'abs file stays abs',                           i: absFile('/home/file.txt'),           o: '/home/file.txt' },
-      { name: 'abs dir stays abs',                            i: absDir('/home/'),                    o: '/home/' },
+      { name: 'abs file stays abs',                           i: l('/home/file.txt'),                  o: '/home/file.txt' },
+      { name: 'abs dir stays abs',                            i: l('/home/'),                         o: '/home/' },
       // Join doesn't preserve file type correctly yet
-      // { name: 'rel file with base',                           i: relFile('file.txt'),                 base: absDir('/home/'),                    o: '/home/file.txt' },
-      { name: 'rel dir with base',                            i: relDir('src/'),                     base: absDir('/project/'),                 o: '/project/src/' },
-      { name: 'rel file without base uses cwd',               i: relFile('file.txt'),                 o: undefined },
-      { name: 'rel dir without base uses cwd',                i: relDir('src/'),                      o: undefined },
+      // { name: 'rel file with base',                           i: l('file.txt'),                       base: l('/home/'),                         o: '/home/file.txt' },
+      { name: 'rel dir with base',                            i: l('src/'),                           base: l('/project/'),                      o: '/project/src/' },
+      { name: 'rel file without base uses cwd',               i: l('file.txt'),                       o: undefined },
+      { name: 'rel dir without base uses cwd',                i: l('src/'),                           o: undefined },
     ], ({ i, o, base }) => {
       const result = FsLoc.ensureAbsolute(i, base)
 
@@ -272,15 +269,15 @@ describe('operations', () => {
         base?: FsLoc.AbsDir.AbsDir
       }
     >('.toAbs', [
-      { name: 'rel file no base (re-tag)',                    i: relFile('./file.txt'),               o: absFile('/file.txt') },
-      { name: 'rel dir no base (re-tag)',                     i: relDir('./src/'),                    o: absDir('/src/') },
-      { name: 'nested file no base (re-tag)',                 i: relFile('./src/index.ts'),           o: absFile('/src/index.ts') },
-      { name: 'rel file with base',                           i: relFile('file.txt'),                 base: absDir('/home/'),                    o: absFile('/home/file.txt') },
-      { name: 'rel dir with base',                            i: relDir('src/'),                      base: absDir('/home/'),                    o: absDir('/home/src/') },
-      { name: 'nested rel file',                              i: relFile('src/index.ts'),             base: absDir('/project/'),                 o: absFile('/project/src/index.ts') },
-      { name: 'nested rel dir',                               i: relDir('src/components/'),           base: absDir('/project/'),                 o: absDir('/project/src/components/') },
-      { name: 'parent ref file',                              i: relFile('../file.txt'),              base: absDir('/home/user/'),               o: absFile('/home/file.txt') },
-      { name: 'parent ref dir',                               i: relDir('../lib/'),                   base: absDir('/home/user/'),               o: absDir('/home/lib/') },
+      { name: 'rel file no base (re-tag)',                    i: l('./file.txt'),                     o: l('/file.txt') },
+      { name: 'rel dir no base (re-tag)',                     i: l('./src/'),                         o: l('/src/') },
+      { name: 'nested file no base (re-tag)',                 i: l('./src/index.ts'),                 o: l('/src/index.ts') },
+      { name: 'rel file with base',                           i: l('file.txt'),                       base: l('/home/'),                         o: l('/home/file.txt') },
+      { name: 'rel dir with base',                            i: l('src/'),                           base: l('/home/'),                         o: l('/home/src/') },
+      { name: 'nested rel file',                              i: l('src/index.ts'),                   base: l('/project/'),                      o: l('/project/src/index.ts') },
+      { name: 'nested rel dir',                               i: l('src/components/'),                base: l('/project/'),                      o: l('/project/src/components/') },
+      { name: 'parent ref file',                              i: l('../file.txt'),                    base: l('/home/user/'),                    o: l('/home/file.txt') },
+      { name: 'parent ref dir',                               i: l('../lib/'),                        base: l('/home/user/'),                    o: l('/home/lib/') },
     ], ({ i, o, base }) => {
       const result = FsLoc.toAbs(i, base)
       expect(result).toBeAbs()
@@ -295,14 +292,14 @@ describe('operations', () => {
         base: FsLoc.AbsDir.AbsDir
       }
     >('.toRel', [
-      { name: 'abs file same base',                           i: absFile('/home/file.txt'),           base: absDir('/home/'),                    o: relFile('./file.txt') },
-      { name: 'abs dir same base',                            i: absDir('/home/src/'),                base: absDir('/home/'),                    o: relDir('./src/') },
-      { name: 'nested abs file',                              i: absFile('/project/src/index.ts'),    base: absDir('/project/'),                 o: relFile('./src/index.ts') },
-      { name: 'nested abs dir',                               i: absDir('/project/src/components/'),  base: absDir('/project/'),                 o: relDir('./src/components/') },
-      { name: 'file needs parent',                            i: absFile('/home/file.txt'),           base: absDir('/home/user/'),               o: relFile('./../file.txt') },
-      { name: 'dir needs parent',                             i: absDir('/home/lib/'),                base: absDir('/home/user/'),               o: relDir('./../lib/') },
-      { name: 'different roots',                              i: absFile('/var/log/app.log'),         base: absDir('/home/user/'),               o: relFile('./../../var/log/app.log') },
-      { name: 'same location dir',                            i: absDir('/home/user/'),               base: absDir('/home/user/'),               o: relDir('./') },
+      { name: 'abs file same base',                           i: l('/home/file.txt'),                 base: l('/home/'),                         o: l('./file.txt') },
+      { name: 'abs dir same base',                            i: l('/home/src/'),                     base: l('/home/'),                         o: l('./src/') },
+      { name: 'nested abs file',                              i: l('/project/src/index.ts'),          base: l('/project/'),                      o: l('./src/index.ts') },
+      { name: 'nested abs dir',                               i: l('/project/src/components/'),       base: l('/project/'),                      o: l('./src/components/') },
+      { name: 'file needs parent',                            i: l('/home/file.txt'),                 base: l('/home/user/'),                    o: l('./../file.txt') },
+      { name: 'dir needs parent',                             i: l('/home/lib/'),                     base: l('/home/user/'),                    o: l('./../lib/') },
+      { name: 'different roots',                              i: l('/var/log/app.log'),               base: l('/home/user/'),                    o: l('./../../var/log/app.log') },
+      { name: 'same location dir',                            i: l('/home/user/'),                    base: l('/home/user/'),                    o: l('./') },
     ], ({ i, o, base }) => {
       const result = FsLoc.toRel(i, base)
       expect(result).toBeEquivalent(o, FsLoc.FsLoc)
@@ -314,23 +311,23 @@ describe('operations', () => {
       string
     >('.name', [
       // Files with extensions
-      { name: 'abs file with extension',                      i: absFile('/home/file.txt'),           o: 'file.txt' },
-      { name: 'rel file with extension',                      i: relFile('./docs/README.md'),         o: 'README.md' },
-      { name: 'file with multiple dots',                      i: absFile('/archive.tar.gz'),          o: 'archive.tar.gz' },
-      { name: 'hidden file with extension',                   i: relFile('./.config.json'),           o: '.config.json' },
+      { name: 'abs file with extension',                      i: l('/home/file.txt'),                 o: 'file.txt' },
+      { name: 'rel file with extension',                      i: l('./docs/README.md'),               o: 'README.md' },
+      { name: 'file with multiple dots',                      i: l('/archive.tar.gz'),                o: 'archive.tar.gz' },
+      { name: 'hidden file with extension',                   i: l('./.config.json'),                 o: '.config.json' },
 
       // Directories
-      { name: 'abs directory',                                i: absDir('/home/user/'),               o: 'user' },
-      { name: 'rel directory',                                i: relDir('./src/'),                    o: 'src' },
-      { name: 'nested abs directory',                         i: absDir('/project/src/components/'),  o: 'components' },
-      { name: 'nested rel directory',                         i: relDir('./lib/utils/'),              o: 'utils' },
+      { name: 'abs directory',                                i: l('/home/user/'),                    o: 'user' },
+      { name: 'rel directory',                                i: l('./src/'),                         o: 'src' },
+      { name: 'nested abs directory',                         i: l('/project/src/components/'),       o: 'components' },
+      { name: 'nested rel directory',                         i: l('./lib/utils/'),                   o: 'utils' },
 
       // Edge cases
       { name: 'root directory returns empty',                 i: FsLoc.Constants.absDirRoot,         o: '' },
-      { name: 'file in root',                                 i: absFile('/file.txt'),                o: 'file.txt' },
-      { name: 'single segment abs dir',                       i: absDir('/home/'),                    o: 'home' },
+      { name: 'file in root',                                 i: l('/file.txt'),                      o: 'file.txt' },
+      { name: 'single segment abs dir',                       i: l('/home/'),                         o: 'home' },
       { name: 'empty rel dir returns empty',                  i: FsLoc.Constants.relDirCurrent,      o: '' },
-      { name: 'directory with dots in name',                  i: absDir('/my.folder.v2/'),            o: 'my.folder.v2' },
+      { name: 'directory with dots in name',                  i: l('/my.folder.v2/'),                 o: 'my.folder.v2' },
     ], ({ i, o }) => {
       const result = FsLoc.name(i)
       expect(result).toBe(o)
@@ -360,21 +357,21 @@ Test.Table.suite<
 describe('.Constants', () => {
   describe('absDirRoot', () => {
     it('represents the root directory /', () => {
-      expect(FsLoc.Constants.absDirRoot).toEqual(FsLoc.AbsDir.decodeSync('/'))
+      expect(FsLoc.Constants.absDirRoot).toEqual(l('/'))
       expect(FsLoc.AbsDir.encodeSync(FsLoc.Constants.absDirRoot)).toBe('/')
     })
   })
 
   describe('relDirCurrent', () => {
     it('represents the current directory .', () => {
-      expect(FsLoc.Constants.relDirCurrent).toEqual(FsLoc.RelDir.decodeSync('.'))
+      expect(FsLoc.Constants.relDirCurrent).toEqual(l('./'))
       expect(FsLoc.RelDir.encodeSync(FsLoc.Constants.relDirCurrent)).toBe('./')
     })
   })
 
   describe('relDirParent', () => {
     it('represents the parent directory ..', () => {
-      expect(FsLoc.Constants.relDirParent).toEqual(FsLoc.RelDir.decodeSync('..'))
+      expect(FsLoc.Constants.relDirParent).toEqual(l('../'))
       expect(FsLoc.RelDir.encodeSync(FsLoc.Constants.relDirParent)).toBe('./../')
     })
   })
@@ -403,5 +400,10 @@ describe('.fromString', () => {
     const result = FsLoc.fromString('./src/')
     expect(result._tag).toBe('LocRelDir')
     expectTypeOf(result).toEqualTypeOf<FsLoc.RelDir.RelDir>()
+  })
+
+  it('type-errors when given non-literal string', () => {
+    // @ts-expect-error: fromString requires a literal string
+    FsLoc.fromString('/' as string)
   })
 })
