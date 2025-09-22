@@ -26,7 +26,7 @@ const failNotFound = (method: string, path: string, operation: string) =>
 
 /**
  * Memory filesystem disk layout specification.
- * Keys are file paths, values are file contents as strings.
+ * Keys are file paths, values are file contents as strings or Uint8Array.
  *
  * @example
  * ```ts
@@ -38,13 +38,13 @@ const failNotFound = (method: string, path: string, operation: string) =>
  * ```
  */
 export interface DiskLayout {
-  readonly [path: string]: string
+  [path: string]: string | Uint8Array
 }
 
 /**
  * Creates a memory filesystem layer from a disk layout specification.
  * This layer can be composed with other layers for testing.
- * Provides a read-only filesystem implementation backed by memory.
+ * Provides a fully functional in-memory filesystem implementation.
  *
  * @param diskLayout - Object mapping file paths to their contents
  * @returns Layer that provides a FileSystem service backed by memory
@@ -71,8 +71,11 @@ export interface DiskLayout {
  * )
  * ```
  */
-export const layer = (diskLayout: DiskLayout) =>
-  Layer.succeed(
+export const layer = (initialDiskLayout: DiskLayout) => {
+  // Create mutable copy of disk layout for write operations
+  const diskLayout: DiskLayout = { ...initialDiskLayout }
+
+  return Layer.succeed(
     FileSystem,
     {
       // File existence check
@@ -81,9 +84,12 @@ export const layer = (diskLayout: DiskLayout) =>
       // Read file as string
       readFileString: (path: string) => {
         const content = diskLayout[path]
-        return content !== undefined
-          ? Effect.succeed(content)
-          : failNotFound('readFileString', path, 'open')
+        if (content !== undefined) {
+          return Effect.succeed(
+            typeof content === 'string' ? content : new TextDecoder().decode(content),
+          )
+        }
+        return failNotFound('readFileString', path, 'open')
       },
 
       // Read directory contents
@@ -102,11 +108,13 @@ export const layer = (diskLayout: DiskLayout) =>
       // File stats (simplified - just checks existence)
       stat: (path: string) => {
         if (path in diskLayout) {
+          const content = diskLayout[path]!
           return Effect.succeed({
+            type: 'File' as const,
             isFile: () => true,
             isDirectory: () => false,
             isSymbolicLink: () => false,
-            size: diskLayout[path]!.length,
+            size: typeof content === 'string' ? content.length : content.byteLength,
           } as any)
         }
 
@@ -116,8 +124,9 @@ export const layer = (diskLayout: DiskLayout) =>
           filePath.startsWith(normalizedPath) && filePath !== path
         )
 
-        if (hasChildren) {
+        if (hasChildren || normalizedPath === '/') {
           return Effect.succeed({
+            type: 'Directory' as const,
             isFile: () => false,
             isDirectory: () => true,
             isSymbolicLink: () => false,
@@ -128,40 +137,114 @@ export const layer = (diskLayout: DiskLayout) =>
         return failNotFound('stat', path, 'stat')
       },
 
-      // Stub implementations for write operations (not needed for read-only testing)
-      writeFileString: () => failUnsupported('writeFileString', 'Write operations'),
-      writeFile: () => failUnsupported('writeFile', 'Write operations'),
-      truncate: () => failUnsupported('truncate', 'Write operations'),
-      remove: () => failUnsupported('remove', 'Write operations'),
-      makeDirectory: () => failUnsupported('makeDirectory', 'Write operations'),
+      // Write operations
+      writeFileString: (path: string, content: string) => {
+        diskLayout[path] = content
+        return Effect.void
+      },
+
+      writeFile: (path: string, content: Uint8Array) => {
+        diskLayout[path] = content
+        return Effect.void
+      },
+
+      truncate: (path: string) => {
+        if (path in diskLayout) {
+          diskLayout[path] = ''
+          return Effect.void
+        }
+        return failNotFound('truncate', path, 'truncate')
+      },
+
+      remove: (path: string, options?: { recursive?: boolean }) => {
+        if (options?.recursive) {
+          // Remove all files under this path
+          const normalizedPath = path.endsWith('/') ? path : path + '/'
+          Object.keys(diskLayout).forEach(key => {
+            if (key === path || key.startsWith(normalizedPath)) {
+              delete diskLayout[key]
+            }
+          })
+        } else {
+          delete diskLayout[path]
+        }
+        return Effect.void
+      },
+
+      makeDirectory: (path: string, options?: { recursive?: boolean }) => {
+        // In memory fs, directories are implicit - just mark success
+        // We could track empty directories if needed
+        return Effect.void
+      },
       makeTempDirectory: () => failUnsupported('makeTempDirectory', 'Write operations'),
       makeTempDirectoryScoped: () => failUnsupported('makeTempDirectoryScoped', 'Write operations'),
       makeTempFile: () => failUnsupported('makeTempFile', 'Write operations'),
       makeTempFileScoped: () => failUnsupported('makeTempFileScoped', 'Write operations'),
       open: () => failUnsupported('open', 'File operations'),
-      copy: () => failUnsupported('copy', 'Write operations'),
-      copyFile: () => failUnsupported('copyFile', 'Write operations'),
-      chmod: () => failUnsupported('chmod', 'Write operations'),
-      chown: () => failUnsupported('chown', 'Write operations'),
+      copy: (oldPath: string, newPath: string) => {
+        const content = diskLayout[oldPath]
+        if (content !== undefined) {
+          diskLayout[newPath] = content
+          return Effect.void
+        }
+        return failNotFound('copy', oldPath, 'copy')
+      },
+      copyFile: (oldPath: string, newPath: string) => {
+        const content = diskLayout[oldPath]
+        if (content !== undefined) {
+          diskLayout[newPath] = content
+          return Effect.void
+        }
+        return failNotFound('copyFile', oldPath, 'copy')
+      },
+      chmod: () => Effect.void,
+      chown: () => Effect.void,
       access: (path: string) =>
         path in diskLayout
           ? Effect.void
           : failNotFound('access', path, 'access'),
-      link: () => failUnsupported('link', 'Write operations'),
+      link: (oldPath: string, newPath: string) => {
+        const content = diskLayout[oldPath]
+        if (content !== undefined) {
+          diskLayout[newPath] = content
+          return Effect.void
+        }
+        return failNotFound('link', oldPath, 'link')
+      },
       realPath: (path: string) => Effect.succeed(path),
       readFile: (path: string) => {
         const content = diskLayout[path]
-        return content !== undefined
-          ? Effect.succeed(new TextEncoder().encode(content))
-          : failNotFound('readFile', path, 'open')
+        if (content !== undefined) {
+          return Effect.succeed(
+            typeof content === 'string'
+              ? new TextEncoder().encode(content)
+              : content,
+          )
+        }
+        return failNotFound('readFile', path, 'open')
       },
-      readLink: () => failUnsupported('readLink', 'Symlink operations'),
-      symlink: () => failUnsupported('symlink', 'Write operations'),
-      utimes: () => failUnsupported('utimes', 'Write operations'),
+      readLink: (path: string) => Effect.succeed(path),
+      symlink: (target: string, path: string) => {
+        // For simplicity, just copy the content
+        const content = diskLayout[target]
+        if (content !== undefined) {
+          diskLayout[path] = content
+        }
+        return Effect.void
+      },
+      utimes: () => Effect.void,
       watch: () => failUnsupported('watch', 'Watch operations'),
 
-      // Rename/move files (not implemented for memory filesystem)
-      rename: () => failUnsupported('rename', 'Write operations'),
+      // Rename/move files
+      rename: (oldPath: string, newPath: string) => {
+        const content = diskLayout[oldPath]
+        if (content !== undefined) {
+          diskLayout[newPath] = content
+          delete diskLayout[oldPath]
+          return Effect.void
+        }
+        return failNotFound('rename', oldPath, 'rename')
+      },
 
       // Create writable sink (not implemented for memory filesystem)
       sink: () => failUnsupported('sink', 'Stream operations'),
@@ -170,6 +253,7 @@ export const layer = (diskLayout: DiskLayout) =>
       stream: () => failUnsupported('stream', 'Stream operations'),
     },
   )
+}
 
 /**
  * Convenience function for creating memory filesystem layers from disk layout.
