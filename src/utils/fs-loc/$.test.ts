@@ -298,6 +298,34 @@ describe('operations', () => {
       const result = FsLoc.toRel(input, base)
       expect(result).toBeEquivalent(expected.loc, FsLoc.FsLoc)
     })
+
+  // dprint-ignore
+  Test.Table.suite<{
+      input: FsLoc.FsLoc
+      expected: { name: string }
+    }>('.name', [
+      // Files with extensions
+      { name: 'abs file with extension',                      input: absFile('/home/file.txt'),           expected: { name: 'file.txt' } },
+      { name: 'rel file with extension',                      input: relFile('./docs/README.md'),         expected: { name: 'README.md' } },
+      { name: 'file with multiple dots',                      input: absFile('/archive.tar.gz'),          expected: { name: 'archive.tar.gz' } },
+      { name: 'hidden file with extension',                   input: relFile('./.config.json'),           expected: { name: '.config.json' } },
+
+      // Directories
+      { name: 'abs directory',                                input: absDir('/home/user/'),               expected: { name: 'user' } },
+      { name: 'rel directory',                                input: relDir('./src/'),                    expected: { name: 'src' } },
+      { name: 'nested abs directory',                         input: absDir('/project/src/components/'),  expected: { name: 'components' } },
+      { name: 'nested rel directory',                         input: relDir('./lib/utils/'),              expected: { name: 'utils' } },
+
+      // Edge cases
+      { name: 'root directory returns empty',                 input: absDir('/'),                         expected: { name: '' } },
+      { name: 'file in root',                                 input: absFile('/file.txt'),                expected: { name: 'file.txt' } },
+      { name: 'single segment abs dir',                       input: absDir('/home/'),                    expected: { name: 'home' } },
+      { name: 'empty rel dir returns empty',                  input: relDir('./'),                        expected: { name: '' } },
+      { name: 'directory with dots in name',                  input: absDir('/my.folder.v2/'),            expected: { name: 'my.folder.v2' } },
+    ], ({ input, expected }) => {
+      const result = FsLoc.name(input)
+      expect(result).toBe(expected.name)
+    })
 })
 
 // dprint-ignore

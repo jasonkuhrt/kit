@@ -400,3 +400,36 @@ export const toRel = <A extends Groups.Abs.Abs>(
   const finalPath = relativePath === '' ? '.' : relativePath
   return FsLoc.decodeSync(finalPath) as any
 }
+
+/**
+ * Get the name (last segment) of a location.
+ *
+ * For files: returns the filename including extension.
+ * For directories: returns the directory name.
+ * For root directories: returns an empty string.
+ *
+ * @param loc - The location to get the name from
+ * @returns The name of the file or directory
+ *
+ * @example
+ * ```ts
+ * name(AbsFile.decodeSync('/path/to/file.txt')) // 'file.txt'
+ * name(AbsDir.decodeSync('/path/to/src/')) // 'src'
+ * name(RelFile.decodeSync('./docs/README.md')) // 'README.md'
+ * name(AbsDir.decodeSync('/')) // ''
+ * ```
+ */
+export const name = (loc: FsLoc.FsLoc): string => {
+  if ('file' in loc) {
+    // For files, combine name and extension
+    return loc.file.extension
+      ? loc.file.name + loc.file.extension
+      : loc.file.name
+  } else {
+    // For directories, return the last segment
+    const segments = loc.path.segments
+    return segments.length > 0
+      ? segments[segments.length - 1]!
+      : '' // Root directory case
+  }
+}
