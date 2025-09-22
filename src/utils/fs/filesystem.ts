@@ -130,11 +130,11 @@ export const open = (
  *
  * Dispatches to the appropriate underlying function based on the FsLoc type:
  * - File locations call `readFile` and return `Uint8Array`
- * - Directory locations call `readDirectory` and return `string[]`
+ * - Directory locations call `readDirectory`, stat each entry, and return an array of FsLoc types
  *
  * @param loc - The location to read (file or directory)
  * @param options - Read options (only for directories)
- * @returns File contents as Uint8Array for files, or string array for directories
+ * @returns File contents as Uint8Array for files, or FsLoc array for directories
  *
  * @example
  * ```ts
@@ -142,9 +142,10 @@ export const open = (
  * const file = FsLoc.AbsFile.decodeSync('/data/file.bin')
  * const bytes = yield* Fs.read(file)
  *
- * // Reading a directory returns string array
+ * // Reading a directory returns FsLoc array
  * const dir = FsLoc.AbsDir.decodeSync('/home/user/')
  * const entries = yield* Fs.read(dir)
+ * // entries is FsLoc.Groups.Abs.Abs[] (union of AbsFile | AbsDir)
  * ```
  */
 export const read: {
@@ -154,12 +155,19 @@ export const read: {
   <L extends FsLoc.Groups.Dir.Dir>(
     loc: L,
     options?: FileSystem.ReadDirectoryOptions,
-  ): Effect.Effect<readonly string[], PlatformError, FileSystem.FileSystem>
+  ): Effect.Effect<
+    readonly (L extends FsLoc.AbsDir.AbsDir ? FsLoc.Groups.Abs.Abs : FsLoc.Groups.Rel.Rel)[],
+    PlatformError,
+    FileSystem.FileSystem
+  >
   <L extends FsLoc.FsLoc>(
     loc: L,
     options?: L extends FsLoc.Groups.Dir.Dir ? FileSystem.ReadDirectoryOptions : never,
   ): Effect.Effect<
-    L extends FsLoc.Groups.File.File ? Uint8Array : L extends FsLoc.Groups.Dir.Dir ? readonly string[] : never,
+    L extends FsLoc.Groups.File.File ? Uint8Array
+      : L extends FsLoc.Groups.Dir.Dir
+        ? readonly (L extends FsLoc.AbsDir.AbsDir ? FsLoc.Groups.Abs.Abs : FsLoc.Groups.Rel.Rel)[]
+      : never,
     PlatformError,
     FileSystem.FileSystem
   >
@@ -175,7 +183,39 @@ export const read: {
     } else {
       const dirPath = FsLoc.encodeSync(loc)
       const entries = yield* (options ? fs.readDirectory(dirPath, options) : fs.readDirectory(dirPath))
-      return entries
+
+      // Stat each entry to determine if it's a file or directory
+      const fsLocs = yield* Effect.all(
+        entries.map(entry =>
+          Effect.gen(function*() {
+            // Create the full path for stat
+            const entryPath = dirPath.endsWith('/') ? dirPath + entry : dirPath + '/' + entry
+            const info = yield* fs.stat(entryPath)
+
+            // Use stat info to determine type
+            const isDirectory = info.type === 'Directory'
+
+            if (isDirectory) {
+              // Create directory FsLoc
+              const dirEntry = entry.endsWith('/') ? entry : entry + '/'
+              if (FsLoc.AbsDir.is(loc)) {
+                return FsLoc.AbsDir.decodeSync(entryPath + '/')
+              } else {
+                return FsLoc.RelDir.decodeSync('./' + dirEntry)
+              }
+            } else {
+              // Create file FsLoc
+              if (FsLoc.AbsDir.is(loc)) {
+                return FsLoc.AbsFile.decodeSync(entryPath)
+              } else {
+                return FsLoc.RelFile.decodeSync('./' + entry)
+              }
+            }
+          })
+        ),
+      )
+
+      return fsLocs
     }
   })
 
