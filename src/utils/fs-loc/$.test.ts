@@ -170,7 +170,7 @@ describe('operations', () => {
       // { name: 'rel dir + rel file',                           base: relDir('src/'),                      rel: relFile('index.ts'),                   expected: { encoded: './src/index.ts' } },
       { name: 'rel dir + rel dir',                            base: relDir('src/'),                      rel: relDir('components/'),                expected: { encoded: './src/components/' } },
       // { name: 'root + rel file',                              base: absDir('/'),                         rel: relFile('file.txt'),                   expected: { encoded: '/file.txt' } },
-      { name: 'root + rel dir',                               base: absDir('/'),                         rel: relDir('home/'),                      expected: { encoded: '/home/' } },
+      { name: 'root + rel dir',                               base: FsLoc.Constants.absDirRoot,          rel: relDir('home/'),                      expected: { encoded: '/home/' } },
       // Files without extensions are treated as directories
       // { name: 'nested abs + nested rel',                      base: absDir('/usr/local/'),               rel: relFile('bin/node'),                   expected: { encoded: '/usr/local/bin/node' } },
       // { name: 'parent refs preserved',                        base: relDir('../'),                       rel: relFile('lib/utils.js'),              expected: { encoded: './../lib/utils.js' } },
@@ -188,7 +188,7 @@ describe('operations', () => {
       { name: 'abs dir up one level',                         input: absDir('/home/user/'),               expected: { encoded: '/home/' } },
       { name: 'rel file up one level',                        input: relFile('src/index.ts'),             expected: { encoded: './index.ts' } },
       { name: 'rel dir up one level',                         input: relDir('src/components/'),           expected: { encoded: './src/' } },
-      { name: 'root stays at root',                           input: absDir('/'),                         expected: { encoded: '/' } },
+      { name: 'root stays at root',                           input: FsLoc.Constants.absDirRoot,         expected: { encoded: '/' } },
       { name: 'file in root stays in root',                   input: absFile('/file.txt'),                expected: { encoded: '/file.txt' } },
     ], ({ input, expected }) => {
       const result = FsLoc.up(input)
@@ -216,7 +216,7 @@ describe('operations', () => {
       input: FsLoc.FsLoc
       expected: { isRoot: boolean }
     }>('.isRoot', [
-      { name: 'root is root',                                 input: absDir('/'),                        expected: { isRoot: true } },
+      { name: 'root is root',                                 input: FsLoc.Constants.absDirRoot,        expected: { isRoot: true } },
       { name: 'abs dir not root',                             input: absDir('/home/'),                   expected: { isRoot: false } },
       // Files with no path segments also return true for isRoot currently
       { name: 'abs file in root',                             input: absFile('/file.txt'),                expected: { isRoot: true } },
@@ -224,7 +224,7 @@ describe('operations', () => {
       // Files with no path segments also return true for isRoot currently
       { name: 'rel file in current dir',                      input: relFile('file.txt'),                expected: { isRoot: true } },
       // Empty relative dir also has empty segments
-      { name: 'empty rel dir',                                input: relDir('./'),                       expected: { isRoot: true } },
+      { name: 'empty rel dir',                                input: FsLoc.Constants.relDirCurrent,      expected: { isRoot: true } },
     ], ({ input, expected }) => {
       if (expected.isRoot) {
         expect(input).toBeRoot()
@@ -317,10 +317,10 @@ describe('operations', () => {
       { name: 'nested rel directory',                         input: relDir('./lib/utils/'),              expected: { name: 'utils' } },
 
       // Edge cases
-      { name: 'root directory returns empty',                 input: absDir('/'),                         expected: { name: '' } },
+      { name: 'root directory returns empty',                 input: FsLoc.Constants.absDirRoot,         expected: { name: '' } },
       { name: 'file in root',                                 input: absFile('/file.txt'),                expected: { name: 'file.txt' } },
       { name: 'single segment abs dir',                       input: absDir('/home/'),                    expected: { name: 'home' } },
-      { name: 'empty rel dir returns empty',                  input: relDir('./'),                        expected: { name: '' } },
+      { name: 'empty rel dir returns empty',                  input: FsLoc.Constants.relDirCurrent,      expected: { name: '' } },
       { name: 'directory with dots in name',                  input: absDir('/my.folder.v2/'),            expected: { name: 'my.folder.v2' } },
     ], ({ input, expected }) => {
       const result = FsLoc.name(input)
