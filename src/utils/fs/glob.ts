@@ -8,20 +8,31 @@ import * as TinyGlobby from 'tinyglobby'
 export type GlobOptions = Omit<TinyGlobby.GlobOptions, 'patterns'>
 
 /**
- * Type helper to infer FsLoc return type based on absolute option.
- * - If absolute is true, returns Abs (AbsFile | AbsDir)
- * - Otherwise returns Rel (RelFile | RelDir)
+ * Type helper to infer FsLoc return type based on glob options.
+ * - If onlyFiles is true (default), returns only File types
+ * - If onlyDirectories is true, returns only Dir types
+ * - If onlyFiles is false, returns both File and Dir types
+ * - If absolute is true, returns absolute locations
+ * - Otherwise returns relative locations
  */
-type InferGlobReturn<O extends GlobOptions | undefined> = O extends { absolute: true } ? FsLoc.Groups.Abs.Abs
-  : FsLoc.Groups.Rel.Rel
+type InferGlobReturn<O extends GlobOptions | undefined> = O extends { onlyDirectories: true }
+  ? O extends { absolute: true } ? FsLoc.AbsDir.AbsDir
+  : FsLoc.RelDir.RelDir
+  : O extends { onlyFiles: false } ? O extends { absolute: true } ? FsLoc.Groups.Abs.Abs
+    : FsLoc.Groups.Rel.Rel
+  // Default behavior: onlyFiles is true
+  : O extends { absolute: true } ? FsLoc.AbsFile.AbsFile
+  : FsLoc.RelFile.RelFile
 
 /**
  * Effect-based wrapper for globbing file patterns.
  * Returns an Effect that resolves to an array of matched FsLoc objects.
  *
- * The return type is determined by the `absolute` option:
- * - With `absolute: true`, returns absolute locations (AbsFile | AbsDir)
- * - Otherwise, returns relative locations (RelFile | RelDir)
+ * The return type is determined by the options:
+ * - With `onlyFiles: true` (default), returns only file locations
+ * - With `onlyDirectories: true`, returns only directory locations
+ * - With `absolute: true`, returns absolute locations
+ * - Otherwise, returns relative locations
  *
  * @param pattern - The glob pattern(s) to match against
  * @param options - Additional globbing options
@@ -34,11 +45,14 @@ type InferGlobReturn<O extends GlobOptions | undefined> = O extends { absolute: 
  * import { Effect } from 'effect'
  *
  * const program = Effect.gen(function* () {
- *   // Returns relative FsLocs
+ *   // Returns relative files (onlyFiles defaults to true)
  *   const relFiles = yield* Fs.glob('src/**' + '/*.ts')
  *
- *   // Returns absolute FsLocs
- *   const absFiles = yield* Fs.glob('src/**' + '/*.ts', { absolute: true })
+ *   // Returns absolute files only
+ *   const absFiles = yield* Fs.glob('src/**' + '/*.ts', { absolute: true, onlyFiles: true })
+ *
+ *   // Returns directories only
+ *   const dirs = yield* Fs.glob('src/**', { onlyDirectories: true })
  *
  *   // Get string path from FsLoc
  *   const path = FsLoc.encodeSync(relFiles[0])
@@ -74,9 +88,11 @@ export const glob = <O extends GlobOptions | undefined = undefined>(
  * Synchronous Effect-based wrapper for globbing file patterns.
  * Uses the synchronous version of glob internally.
  *
- * The return type is determined by the `absolute` option:
- * - With `absolute: true`, returns absolute locations (AbsFile | AbsDir)
- * - Otherwise, returns relative locations (RelFile | RelDir)
+ * The return type is determined by the options:
+ * - With `onlyFiles: true` (default), returns only file locations
+ * - With `onlyDirectories: true`, returns only directory locations
+ * - With `absolute: true`, returns absolute locations
+ * - Otherwise, returns relative locations
  *
  * @param pattern - The glob pattern(s) to match against
  * @param options - Additional globbing options
@@ -89,11 +105,14 @@ export const glob = <O extends GlobOptions | undefined = undefined>(
  * import { Effect } from 'effect'
  *
  * const program = Effect.gen(function* () {
- *   // Returns relative FsLocs
+ *   // Returns relative files (onlyFiles defaults to true)
  *   const relFiles = yield* Fs.globSync('**' + '/*.js', { cwd: './dist' })
  *
- *   // Returns absolute FsLocs
- *   const absFiles = yield* Fs.globSync('**' + '/*.js', { absolute: true })
+ *   // Returns absolute files only
+ *   const absFiles = yield* Fs.globSync('**' + '/*.js', { absolute: true, onlyFiles: true })
+ *
+ *   // Returns directories only
+ *   const dirs = yield* Fs.globSync('src/**', { onlyDirectories: true })
  * })
  *
  * Effect.runSync(program)

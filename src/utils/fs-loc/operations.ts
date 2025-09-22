@@ -280,6 +280,17 @@ export const ensureOptionalAbsolute = <
 }
 
 /**
+ * Type-level ensureOptionalAbsoluteWithCwd operation.
+ * Returns AbsDir when undefined, preserves file/dir distinction for other inputs.
+ */
+type EnsureOptionalAbsoluteWithCwd<L extends FsLoc.FsLoc | undefined> = L extends undefined ? FsLoc.AbsDir.AbsDir
+  : L extends FsLoc.AbsFile.AbsFile ? FsLoc.AbsFile.AbsFile
+  : L extends FsLoc.AbsDir.AbsDir ? FsLoc.AbsDir.AbsDir
+  : L extends FsLoc.RelFile.RelFile ? FsLoc.AbsFile.AbsFile
+  : L extends FsLoc.RelDir.RelDir ? FsLoc.AbsDir.AbsDir
+  : Groups.Abs.Abs
+
+/**
  * Ensure an optional location is absolute, using current working directory as default.
  *
  * @param loc - The optional location to ensure is absolute
@@ -291,18 +302,18 @@ export const ensureOptionalAbsolute = <
  * const result = ensureOptionalAbsoluteWithCwd(loc) // returns cwd as AbsDir
  * ```
  */
-export const ensureOptionalAbsoluteWithCwd = (
-  loc: FsLoc.FsLoc | undefined,
-): Groups.Abs.Abs => {
+export const ensureOptionalAbsoluteWithCwd = <L extends FsLoc.FsLoc | undefined>(
+  loc: L,
+): EnsureOptionalAbsoluteWithCwd<L> => {
   const cwd = process.cwd()
   const cwdWithSlash = cwd.endsWith('/') ? cwd : `${cwd}/`
   const base = FsLoc.AbsDir.decodeSync(cwdWithSlash)
 
   if (loc === undefined) {
-    return base
+    return base as any
   }
 
-  return ensureAbsolute(loc, base)
+  return ensureAbsolute(loc, base) as any
 }
 
 /**
