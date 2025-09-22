@@ -6,7 +6,7 @@ import { Effect, Option } from 'effect'
 import * as Fs from './filesystem.js'
 
 describe('single-path operations', () => {
-  it.effect('exists wraps fs.exists with FsLoc', () =>
+  it.effect('.exists', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         exists: vi.fn((path: string) => Effect.succeed(path === '/test/file.txt')),
@@ -23,7 +23,7 @@ describe('single-path operations', () => {
       expect(mockFs.exists).toHaveBeenCalledWith('/test/file.txt')
     }))
 
-  it.effect('read wraps fs.readFile for files', () =>
+  it.effect('.read file', () =>
     Effect.gen(function*() {
       const mockContent = new Uint8Array([72, 101, 108, 108, 111]) // "Hello"
       const mockFs: Partial<FileSystem.FileSystem> = {
@@ -41,7 +41,7 @@ describe('single-path operations', () => {
       expect(mockFs.readFile).toHaveBeenCalledWith('/test/file.txt')
     }))
 
-  it.effect('write wraps fs.writeFile for files', () =>
+  it.effect('.write file', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         writeFile: vi.fn(() => Effect.succeed(undefined)),
@@ -58,7 +58,7 @@ describe('single-path operations', () => {
       expect(mockFs.writeFile).toHaveBeenCalledWith('/test/file.txt', content, {})
     }))
 
-  it.effect('write wraps fs.makeDirectory for directories', () =>
+  it.effect('.write dir', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         makeDirectory: vi.fn(() => Effect.succeed(undefined)),
@@ -74,7 +74,23 @@ describe('single-path operations', () => {
       expect(mockFs.makeDirectory).toHaveBeenCalledWith('/test/dir/', { recursive: false })
     }))
 
-  it.effect('remove wraps fs.remove with FsLoc', () =>
+  it.effect('.write dir with options', () =>
+    Effect.gen(function*() {
+      const mockFs: Partial<FileSystem.FileSystem> = {
+        makeDirectory: vi.fn(() => Effect.succeed(undefined)),
+      }
+
+      const dirLoc = FsLoc.AbsDir.decodeSync('/test/dir/')
+      yield* Effect.provideService(
+        Fs.write(dirLoc, { recursive: true }),
+        FileSystem.FileSystem,
+        mockFs as FileSystem.FileSystem,
+      )
+
+      expect(mockFs.makeDirectory).toHaveBeenCalledWith('/test/dir/', { recursive: true })
+    }))
+
+  it.effect('.remove', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         remove: vi.fn(() => Effect.succeed(undefined)),
@@ -90,7 +106,7 @@ describe('single-path operations', () => {
       expect(mockFs.remove).toHaveBeenCalledWith('/test/file.txt', { recursive: false })
     }))
 
-  it.effect('stat wraps fs.stat with FsLoc', () =>
+  it.effect('.stat', () =>
     Effect.gen(function*() {
       const mockStat = {
         type: 'File' as const,
@@ -113,7 +129,7 @@ describe('single-path operations', () => {
       expect(mockFs.stat).toHaveBeenCalledWith('/test/file.txt')
     }))
 
-  it.effect('read wraps fs.readDirectory for directories and returns FsLoc array', () =>
+  it.effect('.read dir returns FsLoc array', () =>
     Effect.gen(function*() {
       const mockEntries = ['file1.txt', 'file2.txt', 'subdir']
       const mockFs: Partial<FileSystem.FileSystem> = {
@@ -167,7 +183,7 @@ describe('single-path operations', () => {
       expect(mockFs.stat).toHaveBeenCalledTimes(3)
     }))
 
-  it.effect('read returns relative FsLoc for relative directories', () =>
+  it.effect('.read rel dir returns rel FsLoc', () =>
     Effect.gen(function*() {
       const mockEntries = ['file.js', 'folder']
       const mockFs: Partial<FileSystem.FileSystem> = {
@@ -219,7 +235,7 @@ describe('single-path operations', () => {
 })
 
 describe('two-path operations', () => {
-  it.effect('copy uses fs.copyFile for file-to-file operations', () =>
+  it.effect('.copy file to file', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         copyFile: vi.fn(() => Effect.succeed(undefined)),
@@ -238,7 +254,7 @@ describe('two-path operations', () => {
       expect(mockFs.copy).not.toHaveBeenCalled()
     }))
 
-  it.effect('copy uses fs.copy for directory operations', () =>
+  it.effect('.copy dir to dir', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         copyFile: vi.fn(() => Effect.succeed(undefined)),
@@ -257,7 +273,7 @@ describe('two-path operations', () => {
       expect(mockFs.copyFile).not.toHaveBeenCalled()
     }))
 
-  it.effect('rename wraps fs.rename with FsLoc', () =>
+  it.effect('.rename', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         rename: vi.fn(() => Effect.succeed(undefined)),
@@ -274,7 +290,7 @@ describe('two-path operations', () => {
       expect(mockFs.rename).toHaveBeenCalledWith('/test/old.txt', '/test/new.txt')
     }))
 
-  it.effect('link wraps fs.link with FsLoc', () =>
+  it.effect('.link', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         link: vi.fn(() => Effect.succeed(undefined)),
@@ -291,7 +307,7 @@ describe('two-path operations', () => {
       expect(mockFs.link).toHaveBeenCalledWith('/test/target.txt', '/test/link.txt')
     }))
 
-  it.effect('symlink wraps fs.symlink with FsLoc', () =>
+  it.effect('.symlink', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         symlink: vi.fn(() => Effect.succeed(undefined)),
@@ -310,7 +326,7 @@ describe('two-path operations', () => {
 })
 
 describe('path-returning operations', () => {
-  it.effect('makeTemp with type directory returns an AbsDir', () =>
+  it.effect('.makeTemp type dir', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         makeTempDirectory: vi.fn(() => Effect.succeed('/tmp/temp123')),
@@ -328,7 +344,7 @@ describe('path-returning operations', () => {
       expect(mockFs.makeTempDirectory).toHaveBeenCalledWith({})
     }))
 
-  it.effect('makeTempDirectory returns an AbsDir', () =>
+  it.effect('.makeTempDirectory', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         makeTempDirectory: vi.fn(() => Effect.succeed('/tmp/test-dir-abc')),
@@ -346,7 +362,7 @@ describe('path-returning operations', () => {
       expect(mockFs.makeTempDirectory).toHaveBeenCalledWith({ prefix: 'test-' })
     }))
 
-  it.effect('makeTempDirectory adds trailing slash if missing', () =>
+  it.effect('.makeTempDirectory adds trailing slash', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         makeTempDirectory: vi.fn(() => Effect.succeed('/tmp/no-trailing-slash')),
@@ -364,7 +380,7 @@ describe('path-returning operations', () => {
       expect(mockFs.makeTempDirectory).toHaveBeenCalledWith({})
     }))
 
-  it.scoped('makeTempDirectoryScoped returns an AbsDir', () =>
+  it.scoped('.makeTempDirectoryScoped', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         makeTempDirectoryScoped: vi.fn(() => Effect.succeed('/tmp/scoped-dir')),
@@ -382,7 +398,7 @@ describe('path-returning operations', () => {
       expect(mockFs.makeTempDirectoryScoped).toHaveBeenCalledWith({ directory: '/custom/tmp', prefix: 'build-' })
     }))
 
-  it.effect('makeTemp with type file returns an AbsFile', () =>
+  it.effect('.makeTemp type file', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         makeTempFile: vi.fn(() => Effect.succeed('/tmp/tempfile123.tmp')),
@@ -400,7 +416,7 @@ describe('path-returning operations', () => {
       expect(mockFs.makeTempFile).toHaveBeenCalledWith({})
     }))
 
-  it.effect('realPath returns FsLocLoose', () =>
+  it.effect('.realPath', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         realPath: vi.fn((path: string) =>
@@ -422,7 +438,7 @@ describe('path-returning operations', () => {
 })
 
 describe('stream operations', () => {
-  it.effect('readString wraps fs.readFileString for files', () =>
+  it.effect('.readString', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         readFileString: vi.fn(() => Effect.succeed('file content')),
@@ -439,7 +455,7 @@ describe('stream operations', () => {
       expect(mockFs.readFileString).toHaveBeenCalledWith('/test/file.txt', 'utf-8')
     }))
 
-  it.effect('writeString wraps fs.writeFileString for files', () =>
+  it.effect('.writeString', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         writeFileString: vi.fn(() => Effect.succeed(undefined)),
@@ -456,12 +472,12 @@ describe('stream operations', () => {
       expect(mockFs.writeFileString).toHaveBeenCalledWith('/test/file.txt', content, {})
     }))
 
-  it.skip('stream wraps fs.stream with FsLoc', () => {
+  it.skip('.stream', () => {
     // Stream and Sink are lazy - they don't call the underlying functions until evaluated
     // This requires more complex testing setup
   })
 
-  it.skip('sink wraps fs.sink with FsLoc', () => {
+  it.skip('.sink', () => {
     // Stream and Sink are lazy - they don't call the underlying functions until evaluated
     // This requires more complex testing setup
   })

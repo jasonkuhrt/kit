@@ -54,6 +54,14 @@ export const equivalence = S.equivalence(FsLoc)
  * const path: string = getPath()
  * const loc = FsLoc.fromString(path)  // Error: string not assignable
  * // Use this instead: FsLoc.decodeSync(path)
+ *
+ * // Template literals vs string concatenation:
+ * const ext = '.ts'
+ * // ✅ Template literal preserves literal type
+ * const file1 = FsLoc.fromString(`src/index${ext}`)  // works!
+ *
+ * // ❌ String concatenation loses literal type
+ * const file2 = FsLoc.fromString('src/index' + ext)  // Type error!
  * ```
  *
  * NOTE: Template literal syntax (e.g., fromString`/path/file.txt`) is not supported

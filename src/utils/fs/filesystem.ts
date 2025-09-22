@@ -423,7 +423,7 @@ export const watch = (
  * - Directory locations call `makeDirectory`
  *
  * @param loc - The location to write to (file or directory)
- * @param data - The data to write (Uint8Array for files, void/undefined for directories)
+ * @param data - The data to write (Uint8Array for files, omitted for directories)
  * @param options - Write options (WriteFileOptions for files, MakeDirectoryOptions for directories)
  *
  * @example
@@ -435,7 +435,8 @@ export const watch = (
  *
  * // Creating a directory
  * const dir = FsLoc.AbsDir.decodeSync('/data/output/')
- * yield* Fs.write(dir, undefined, { recursive: true })
+ * yield* Fs.write(dir)
+ * yield* Fs.write(dir, { recursive: true })
  * ```
  */
 export const write: {
@@ -446,34 +447,33 @@ export const write: {
   ): Effect.Effect<void, PlatformError, FileSystem.FileSystem>
   <L extends FsLoc.Groups.Dir.Dir>(
     loc: L,
-    data?: undefined,
     options?: FileSystem.MakeDirectoryOptions,
   ): Effect.Effect<void, PlatformError, FileSystem.FileSystem>
   <L extends FsLoc.FsLoc>(
     loc: L,
-    data: L extends FsLoc.Groups.File.File ? Uint8Array : undefined,
-    options?: L extends FsLoc.Groups.File.File ? FileSystem.WriteFileOptions
-      : L extends FsLoc.Groups.Dir.Dir ? FileSystem.MakeDirectoryOptions
-      : never,
+    ...args: L extends FsLoc.Groups.File.File ? [data: Uint8Array, options?: FileSystem.WriteFileOptions]
+      : L extends FsLoc.Groups.Dir.Dir ? [options?: FileSystem.MakeDirectoryOptions]
+      : never
   ): Effect.Effect<void, PlatformError, FileSystem.FileSystem>
 } = (
   loc: FsLoc.FsLoc,
-  data?: Uint8Array | undefined,
-  options?: FileSystem.WriteFileOptions | FileSystem.MakeDirectoryOptions,
+  ...args: any[]
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
 
     if (FsLoc.Groups.File.is(loc)) {
+      const [data, options] = args as [Uint8Array, FileSystem.WriteFileOptions | undefined]
       return yield* fs.writeFile(
         FsLoc.encodeSync(loc),
-        data as Uint8Array,
-        (options as FileSystem.WriteFileOptions) || {},
+        data,
+        options || {},
       )
     } else {
+      const [options] = args as [FileSystem.MakeDirectoryOptions | undefined]
       return yield* fs.makeDirectory(
         FsLoc.encodeSync(loc),
-        (options as FileSystem.MakeDirectoryOptions) || { recursive: false },
+        options || { recursive: false },
       )
     }
   })
