@@ -100,8 +100,6 @@
       "#package-manager/package-manager": ["./src/utils/package-manager/$$.ts"],
       "#pat": ["./src/utils/pat/$.ts"],
       "#pat/pat": ["./src/utils/pat/$$.ts"],
-      "#path": ["./src/utils/path/$.ts"],
-      "#path/path": ["./src/utils/path/$$.ts"],
       "#ref": ["./src/utils/ref/$.ts"],
       "#ref/ref": ["./src/utils/ref/$$.ts"],
       "#resource": ["./src/utils/resource/$.ts"],
