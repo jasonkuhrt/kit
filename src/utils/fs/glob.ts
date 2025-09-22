@@ -4,8 +4,16 @@ import * as TinyGlobby from 'tinyglobby'
 
 /**
  * Options for globbing file patterns, excluding the patterns parameter.
+ * The `cwd` option only accepts {@link FsLoc.AbsDir.AbsDir} or URL for type safety.
  */
-export type GlobOptions = Omit<TinyGlobby.GlobOptions, 'patterns'>
+export type GlobOptions = Omit<TinyGlobby.GlobOptions, 'patterns' | 'cwd'> & {
+  /**
+   * The working directory in which to search. Results will be returned relative to this directory.
+   * Only accepts {@link FsLoc.AbsDir.AbsDir} or URL for type-safe filesystem paths.
+   * @default process.cwd() as FsLoc.AbsDir.AbsDir
+   */
+  cwd?: FsLoc.AbsDir.AbsDir | URL
+}
 
 /**
  * Type helper to infer FsLoc return type based on glob options.
@@ -54,6 +62,10 @@ type InferGlobReturn<O extends GlobOptions | undefined> = O extends { onlyDirect
  *   // Returns directories only
  *   const dirs = yield* Fs.glob('src/**', { onlyDirectories: true })
  *
+ *   // Search from a specific directory using FsLoc
+ *   const srcDir = FsLoc.AbsDir.decodeSync('/path/to/project/')
+ *   const srcFiles = yield* Fs.glob('**' + '/*.ts', { cwd: srcDir })
+ *
  *   // Get string path from FsLoc
  *   const path = FsLoc.encodeSync(relFiles[0])
  * })
@@ -66,7 +78,13 @@ export const glob = <O extends GlobOptions | undefined = undefined>(
   options?: O,
 ): Effect.Effect<InferGlobReturn<O>[], Error> =>
   Effect.tryPromise({
-    try: () => TinyGlobby.glob(pattern, options),
+    try: () => {
+      // Convert FsLoc.AbsDir to string for TinyGlobby
+      const tinyGlobbyOptions = options && options.cwd && FsLoc.AbsDir.is(options.cwd)
+        ? { ...options, cwd: FsLoc.AbsDir.encodeSync(options.cwd) }
+        : options
+      return TinyGlobby.glob(pattern, tinyGlobbyOptions as TinyGlobby.GlobOptions)
+    },
     catch: (error) => new Error(`Failed to glob pattern: ${String(error)}`),
   }).pipe(
     Effect.flatMap((paths) =>
@@ -105,8 +123,9 @@ export const glob = <O extends GlobOptions | undefined = undefined>(
  * import { Effect } from 'effect'
  *
  * const program = Effect.gen(function* () {
- *   // Returns relative files (onlyFiles defaults to true)
- *   const relFiles = yield* Fs.globSync('**' + '/*.js', { cwd: './dist' })
+ *   // Search from a specific directory using FsLoc
+ *   const distDir = FsLoc.AbsDir.decodeSync('./dist/')
+ *   const relFiles = yield* Fs.globSync('**' + '/*.js', { cwd: distDir })
  *
  *   // Returns absolute files only
  *   const absFiles = yield* Fs.globSync('**' + '/*.js', { absolute: true, onlyFiles: true })
@@ -123,7 +142,13 @@ export const globSync = <O extends GlobOptions | undefined = undefined>(
   options?: O,
 ): Effect.Effect<InferGlobReturn<O>[], Error> =>
   Effect.try({
-    try: () => TinyGlobby.globSync(pattern, options),
+    try: () => {
+      // Convert FsLoc.AbsDir to string for TinyGlobby
+      const tinyGlobbyOptions = options && options.cwd && FsLoc.AbsDir.is(options.cwd)
+        ? { ...options, cwd: FsLoc.AbsDir.encodeSync(options.cwd) }
+        : options
+      return TinyGlobby.globSync(pattern, tinyGlobbyOptions as TinyGlobby.GlobOptions)
+    },
     catch: (error) => error instanceof Error ? error : new Error(String(error)),
   }).pipe(
     Effect.flatMap((paths) =>

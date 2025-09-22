@@ -28,6 +28,21 @@ describe('Glob', () => {
       expect(result[0]).toHaveProperty('_tag')
       expect(result[0]).toHaveProperty('path')
     })
+
+    test('accepts FsLoc.AbsDir for cwd option', async () => {
+      // Use process.cwd() to get an absolute path
+      const cwd = process.cwd()
+      const srcDir = FsLoc.AbsDir.decodeSync(`${cwd}/src/`)
+      const result = await Effect.runPromise(
+        Fs.glob('utils/fs/*.ts', { cwd: srcDir }),
+      )
+      expect(result).toBeInstanceOf(Array)
+      expect(result.length).toBeGreaterThan(0)
+
+      // Verify we get FsLoc objects relative to the cwd
+      expect(result[0]).toHaveProperty('_tag')
+      expect(result[0]).toHaveProperty('path')
+    })
   })
 
   describe('globSync', () => {
@@ -45,8 +60,24 @@ describe('Glob', () => {
 
     test('handles errors gracefully', () => {
       // Test with an invalid pattern that might cause an error
-      const effect = Fs.globSync('', { cwd: '/nonexistent/path' })
+      const nonExistentDir = FsLoc.AbsDir.decodeSync('/nonexistent/path/')
+      const effect = Fs.globSync('', { cwd: nonExistentDir })
       expect(() => Effect.runSync(effect)).not.toThrow()
+    })
+
+    test('accepts FsLoc.AbsDir for cwd option', () => {
+      // Use process.cwd() to get an absolute path
+      const cwd = process.cwd()
+      const srcDir = FsLoc.AbsDir.decodeSync(`${cwd}/src/`)
+      const result = Effect.runSync(
+        Fs.globSync('utils/fs/*.ts', { cwd: srcDir }),
+      )
+      expect(result).toBeInstanceOf(Array)
+      expect(result.length).toBeGreaterThan(0)
+
+      // Verify we get FsLoc objects relative to the cwd
+      expect(result[0]).toHaveProperty('_tag')
+      expect(result[0]).toHaveProperty('path')
     })
   })
 })
