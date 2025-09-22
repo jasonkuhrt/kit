@@ -16,11 +16,11 @@ Test.Table.suite<
     expectedFields?: Record<string, any>
   } | undefined
 >('.Union.makeMake', [
-  { name: 'creates Added variant with correct tag',       i: { testType: 'basic', tag: 'LifecycleEventAdded', data: { schema: 'test-schema', revision: 'test-revision' } }, o: { expectedTag: 'LifecycleEventAdded', expectedFields: { schema: 'test-schema', revision: 'test-revision' } } },
-  { name: 'creates Removed variant with correct tag',     i: { testType: 'basic', tag: 'LifecycleEventRemoved', data: { schema: 'test-schema', revision: 'test-revision' } }, o: { expectedTag: 'LifecycleEventRemoved', expectedFields: { schema: 'test-schema', revision: 'test-revision' } } },
-  { name: 'throws error for unknown tag',                 i: { testType: 'invalidTag', tag: 'UnknownTag', data: { schema: 'test', revision: 'test' } }, o: { shouldThrow: true } },
-  { name: 'works with complex field types - Added',       i: { testType: 'complex', tag: 'ComplexAdded', data: { name: 'test', count: 42, nested: { value: 'nested-value' } } }, o: { expectedTag: 'ComplexAdded', expectedFields: { name: 'test', count: 42, nested: { value: 'nested-value' } } } },
-  { name: 'works with complex field types - Removed',     i: { testType: 'complex', tag: 'ComplexRemoved', data: { reason: 'test reason', timestamp: 123456 } }, o: { expectedTag: 'ComplexRemoved', expectedFields: { reason: 'test reason', timestamp: 123456 } } },
+  { n: 'creates Added variant with correct tag',       i: { testType: 'basic', tag: 'LifecycleEventAdded', data: { schema: 'test-schema', revision: 'test-revision' } }, o: { expectedTag: 'LifecycleEventAdded', expectedFields: { schema: 'test-schema', revision: 'test-revision' } } },
+  { n: 'creates Removed variant with correct tag',     i: { testType: 'basic', tag: 'LifecycleEventRemoved', data: { schema: 'test-schema', revision: 'test-revision' } }, o: { expectedTag: 'LifecycleEventRemoved', expectedFields: { schema: 'test-schema', revision: 'test-revision' } } },
+  { n: 'throws error for unknown tag',                 i: { testType: 'invalidTag', tag: 'UnknownTag', data: { schema: 'test', revision: 'test' } }, o: { shouldThrow: true } },
+  { n: 'works with complex field types - Added',       i: { testType: 'complex', tag: 'ComplexAdded', data: { name: 'test', count: 42, nested: { value: 'nested-value' } } }, o: { expectedTag: 'ComplexAdded', expectedFields: { name: 'test', count: 42, nested: { value: 'nested-value' } } } },
+  { n: 'works with complex field types - Removed',     i: { testType: 'complex', tag: 'ComplexRemoved', data: { reason: 'test reason', timestamp: 123456 } }, o: { expectedTag: 'ComplexRemoved', expectedFields: { reason: 'test reason', timestamp: 123456 } } },
 ], ({ i, o }) => {
   // Define test schemas
   const Added = S.TaggedStruct('LifecycleEventAdded', {
@@ -82,12 +82,12 @@ Test.Table.suite<
   string[],
   { name: string; members: { tag: string; memberName: string }[] } | null
 >('.Union.parse', [
-  { name: 'CatalogVersioned, CatalogUnversioned -> Catalog ADT',                                       i: ['CatalogVersioned', 'CatalogUnversioned'], o: { name: 'Catalog', members: [{ tag: 'CatalogVersioned', memberName: 'Versioned' }, { tag: 'CatalogUnversioned', memberName: 'Unversioned' }] } },
-  { name: 'SchemaVersioned, SchemaUnversioned -> Schema ADT',                                          i: ['SchemaVersioned', 'SchemaUnversioned'], o: { name: 'Schema', members: [{ tag: 'SchemaVersioned', memberName: 'Versioned' }, { tag: 'SchemaUnversioned', memberName: 'Unversioned' }] } },
-  { name: 'User, Post -> null (non-ADT)',                                                              i: ['User', 'Post'], o: null },
-  { name: 'CatalogVersioned, User -> null (mixed ADT)',                                                i: ['CatalogVersioned', 'User'], o: null },
-  { name: 'CatalogVersioned -> null (only one member)',                                                i: ['CatalogVersioned'], o: null },
-  { name: 'empty array -> null',                                                                       i: [], o: null },
+  { n: 'CatalogVersioned, CatalogUnversioned -> Catalog ADT',                                       i: ['CatalogVersioned', 'CatalogUnversioned'], o: { name: 'Catalog', members: [{ tag: 'CatalogVersioned', memberName: 'Versioned' }, { tag: 'CatalogUnversioned', memberName: 'Unversioned' }] } },
+  { n: 'SchemaVersioned, SchemaUnversioned -> Schema ADT',                                          i: ['SchemaVersioned', 'SchemaUnversioned'], o: { name: 'Schema', members: [{ tag: 'SchemaVersioned', memberName: 'Versioned' }, { tag: 'SchemaUnversioned', memberName: 'Unversioned' }] } },
+  { n: 'User, Post -> null (non-ADT)',                                                              i: ['User', 'Post'], o: null },
+  { n: 'CatalogVersioned, User -> null (mixed ADT)',                                                i: ['CatalogVersioned', 'User'], o: null },
+  { n: 'CatalogVersioned -> null (only one member)',                                                i: ['CatalogVersioned'], o: null },
+  { n: 'empty array -> null',                                                                       i: [], o: null },
 ], ({ i, o }) => {
   expect(Sch.Union.parse(i)).toEqual(o)
 })
@@ -97,11 +97,11 @@ Test.Table.suite<
   { tag: string; allTags: string[] },
   boolean
 >('.Union.isADTMember', [
-  { name: 'CatalogVersioned in [CatalogVersioned, CatalogUnversioned] -> true',                        i: { tag: 'CatalogVersioned', allTags: ['CatalogVersioned', 'CatalogUnversioned'] }, o: true },
-  { name: 'CatalogUnversioned in [CatalogVersioned, CatalogUnversioned] -> true',                      i: { tag: 'CatalogUnversioned', allTags: ['CatalogVersioned', 'CatalogUnversioned'] }, o: true },
-  { name: 'User in [CatalogVersioned, CatalogUnversioned, User] -> false',                             i: { tag: 'User', allTags: ['CatalogVersioned', 'CatalogUnversioned', 'User'] }, o: false },
-  { name: 'CatalogVersioned in [CatalogVersioned] -> false (only one member)',                         i: { tag: 'CatalogVersioned', allTags: ['CatalogVersioned'] }, o: false },
-  { name: 'userProfile in [userProfile, userSettings] -> false (lowercase)',                           i: { tag: 'userProfile', allTags: ['userProfile', 'userSettings'] }, o: false },
+  { n: 'CatalogVersioned in [CatalogVersioned, CatalogUnversioned] -> true',                        i: { tag: 'CatalogVersioned', allTags: ['CatalogVersioned', 'CatalogUnversioned'] }, o: true },
+  { n: 'CatalogUnversioned in [CatalogVersioned, CatalogUnversioned] -> true',                      i: { tag: 'CatalogUnversioned', allTags: ['CatalogVersioned', 'CatalogUnversioned'] }, o: true },
+  { n: 'User in [CatalogVersioned, CatalogUnversioned, User] -> false',                             i: { tag: 'User', allTags: ['CatalogVersioned', 'CatalogUnversioned', 'User'] }, o: false },
+  { n: 'CatalogVersioned in [CatalogVersioned] -> false (only one member)',                         i: { tag: 'CatalogVersioned', allTags: ['CatalogVersioned'] }, o: false },
+  { n: 'userProfile in [userProfile, userSettings] -> false (lowercase)',                           i: { tag: 'userProfile', allTags: ['userProfile', 'userSettings'] }, o: false },
 ], ({ i, o }) => {
   expect(Sch.Union.isADTMember(i.tag, i.allTags)).toBe(o)
 })
@@ -111,10 +111,10 @@ Test.Table.suite<
   { tag: string; allTags: string[] },
   { adtName: string; memberName: string } | null
 >('.Union.getADTInfo', [
-  { name: 'CatalogVersioned -> { adtName: Catalog, memberName: Versioned }',                           i: { tag: 'CatalogVersioned', allTags: ['CatalogVersioned', 'CatalogUnversioned'] }, o: { adtName: 'Catalog', memberName: 'Versioned' } },
-  { name: 'SchemaUnversioned -> { adtName: Schema, memberName: Unversioned }',                         i: { tag: 'SchemaUnversioned', allTags: ['SchemaVersioned', 'SchemaUnversioned'] }, o: { adtName: 'Schema', memberName: 'Unversioned' } },
-  { name: 'User -> null (non-ADT)',                                                                    i: { tag: 'User', allTags: ['User', 'Post'] }, o: null },
-  { name: 'CatalogVersioned -> null (only one member)',                                                i: { tag: 'CatalogVersioned', allTags: ['CatalogVersioned'] }, o: null },
+  { n: 'CatalogVersioned -> { adtName: Catalog, memberName: Versioned }',                           i: { tag: 'CatalogVersioned', allTags: ['CatalogVersioned', 'CatalogUnversioned'] }, o: { adtName: 'Catalog', memberName: 'Versioned' } },
+  { n: 'SchemaUnversioned -> { adtName: Schema, memberName: Unversioned }',                         i: { tag: 'SchemaUnversioned', allTags: ['SchemaVersioned', 'SchemaUnversioned'] }, o: { adtName: 'Schema', memberName: 'Unversioned' } },
+  { n: 'User -> null (non-ADT)',                                                                    i: { tag: 'User', allTags: ['User', 'Post'] }, o: null },
+  { n: 'CatalogVersioned -> null (only one member)',                                                i: { tag: 'CatalogVersioned', allTags: ['CatalogVersioned'] }, o: null },
 ], ({ i, o }) => {
   expect(Sch.Union.getADTInfo(i.tag, i.allTags)).toEqual(o)
 })
@@ -124,9 +124,9 @@ Test.Table.suite<
   { adtName: string; memberName: string },
   string
 >('.Union.formatADTTag', [
-  { name: 'Catalog + Versioned -> CatalogVersioned',                                                   i: { adtName: 'Catalog', memberName: 'Versioned' }, o: 'CatalogVersioned' },
-  { name: 'Schema + Unversioned -> SchemaUnversioned',                                                 i: { adtName: 'Schema', memberName: 'Unversioned' }, o: 'SchemaUnversioned' },
-  { name: 'Revision + Initial -> RevisionInitial',                                                     i: { adtName: 'Revision', memberName: 'Initial' }, o: 'RevisionInitial' },
+  { n: 'Catalog + Versioned -> CatalogVersioned',                                                   i: { adtName: 'Catalog', memberName: 'Versioned' }, o: 'CatalogVersioned' },
+  { n: 'Schema + Unversioned -> SchemaUnversioned',                                                 i: { adtName: 'Schema', memberName: 'Unversioned' }, o: 'SchemaUnversioned' },
+  { n: 'Revision + Initial -> RevisionInitial',                                                     i: { adtName: 'Revision', memberName: 'Initial' }, o: 'RevisionInitial' },
 ], ({ i, o }) => {
   expect(Sch.Union.formatADTTag(i.adtName, i.memberName)).toBe(o)
 })

@@ -28,7 +28,7 @@ export type Case<$Input extends object = object> =
  */
 export interface CaseFilled {
   /** Descriptive name for the test case */
-  name: string
+  n: string
   /** Skip this test case. If string, provides skip reason */
   skip?: boolean | string
   /** Conditionally skip this test case based on runtime condition */
@@ -47,7 +47,7 @@ export interface CaseFilled {
  */
 export interface CaseTodo {
   /** Descriptive name for the test case */
-  name: string
+  n: string
   /** Mark as todo. If string, provides todo reason */
   todo: boolean | string
 }
@@ -59,7 +59,7 @@ export interface CaseTodo {
  */
 export interface SuiteCaseBase {
   /** Descriptive name for the test case */
-  name: string
+  n: string
   /** Skip this test case. If string, provides skip reason */
   skip?: boolean | string
   /** Conditionally skip this test case based on runtime condition */
@@ -73,10 +73,12 @@ export interface SuiteCaseBase {
 /**
  * A filled test case with input, output, and optional custom properties.
  * Merges SuiteCaseBase with i, o, and custom properties.
+ * When $I is void or never, the 'i' property is omitted from the type.
  */
 export type SuiteCase<$I, $O, $Custom = {}> =
   & SuiteCaseBase
-  & { i: $I; o: $O }
+  & ($I extends void | never ? {} : { i: $I })
+  & { o: $O }
   & $Custom
 
 /**

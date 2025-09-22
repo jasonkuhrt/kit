@@ -201,12 +201,12 @@ describe('policyFilter', () => {
     keys: string[]
     expected: Record<string, any>
   }>[] = [
-    { name: 'allow mode picks specified keys',      mode: 'allow', keys: ['a', 'c'], expected: { a: 1, c: 3 } },
-    { name: 'allow mode with empty keys',           mode: 'allow', keys: [],         expected: {} },
-    { name: 'allow mode with non-existent key',     mode: 'allow', keys: ['a', 'z'], expected: { a: 1 } },
-    { name: 'deny mode omits specified keys',       mode: 'deny',  keys: ['a', 'c'], expected: { b: 2, d: 4 } },
-    { name: 'deny mode with empty keys',            mode: 'deny',  keys: [],         expected: { a: 1, b: 2, c: 3, d: 4 } },
-    { name: 'deny mode with non-existent key',      mode: 'deny',  keys: ['z'],      expected: { a: 1, b: 2, c: 3, d: 4 } },
+    { n: 'allow mode picks specified keys',      mode: 'allow', keys: ['a', 'c'], expected: { a: 1, c: 3 } },
+    { n: 'allow mode with empty keys',           mode: 'allow', keys: [],         expected: {} },
+    { n: 'allow mode with non-existent key',     mode: 'allow', keys: ['a', 'z'], expected: { a: 1 } },
+    { n: 'deny mode omits specified keys',       mode: 'deny',  keys: ['a', 'c'], expected: { b: 2, d: 4 } },
+    { n: 'deny mode with empty keys',            mode: 'deny',  keys: [],         expected: { a: 1, b: 2, c: 3, d: 4 } },
+    { n: 'deny mode with non-existent key',      mode: 'deny',  keys: ['z'],      expected: { a: 1, b: 2, c: 3, d: 4 } },
   ]
 
   const testObj = { a: 1, b: 2, c: 3, d: 4 }
@@ -227,12 +227,12 @@ describe('filter', () => {
     testType: 'byValue' | 'byKey' | 'byContext' | 'allFalse' | 'allTrue' | 'emptyObj'
     expected: Record<string, any>
   }>[] = [
-    { name: 'filters by value predicate',      testType: 'byValue',   expected: { c: 3, d: 4 } },
-    { name: 'filters by key predicate',        testType: 'byKey',     expected: { a: 1, c: 3 } },
-    { name: 'filters by full context',         testType: 'byContext', expected: { a: 1, b: 2 } },
-    { name: 'returns empty when all false',    testType: 'allFalse',  expected: {} },
-    { name: 'returns all when all true',       testType: 'allTrue',   expected: { a: 1, b: 2, c: 3, d: 4 } },
-    { name: 'handles empty object',            testType: 'emptyObj',  expected: {} },
+    { n: 'filters by value predicate',      testType: 'byValue',   expected: { c: 3, d: 4 } },
+    { n: 'filters by key predicate',        testType: 'byKey',     expected: { a: 1, c: 3 } },
+    { n: 'filters by full context',         testType: 'byContext', expected: { a: 1, b: 2 } },
+    { n: 'returns empty when all false',    testType: 'allFalse',  expected: {} },
+    { n: 'returns all when all true',       testType: 'allTrue',   expected: { a: 1, b: 2, c: 3, d: 4 } },
+    { n: 'handles empty object',            testType: 'emptyObj',  expected: {} },
   ]
 
   const testObj = { a: 1, b: 2, c: 3, d: 4 }
@@ -296,25 +296,25 @@ describe('spreadShallow', () => {
   // dprint-ignore
   const spreadShallowCases: Test.Table.Case<{
     objects?: any[]
-    expected: Record<string, any>
+    o: Record<string, any>
   }>[] = [
-    { name: 'merges objects while omitting undefined values', objects: [{ a: 1, b: 2, c: 3 }, { a: 1, b: undefined, c: 4, d: 5 }],                                           expected: { a: 1, b: 2, c: 4, d: 5 } },
-    { name: 'handles multiple objects',                       objects: [{ a: 1, b: 2 }, { a: 1, b: undefined, c: 3 }, { a: 1, b: 2, c: undefined, d: 4 }],                   expected: { a: 1, b: 2, c: 3, d: 4 } },
-    { name: 'handles empty objects',                          objects: [{}, {}],                                                                                              expected: {} },
-    { name: 'merges empty with non-empty',                    objects: [{ a: 1 }, {}],                                                                                        expected: { a: 1 } },
-    { name: 'merges non-empty with empty',                    objects: [{}, { a: 1 }],                                                                                        expected: { a: 1 } },
-    { name: 'handles single object',                          objects: [{ a: 1, b: undefined, c: 3 }],                                                                        expected: { a: 1, c: 3 } },
-    { name: 'handles no objects',                             objects: [],                                                                                                     expected: {} },
-    { name: 'handles undefined objects in middle',            objects: [undefined, { a: 1, b: 2 }, undefined],                                                               expected: { a: 1, b: 2 } },
-    { name: 'handles undefined at end',                       objects: [{ a: 1, b: 2 }, undefined],                                                                          expected: { a: 1, b: 2 } },
-    { name: 'handles all undefined',                          objects: [undefined, undefined],                                                                               expected: {} },
-    { name: 'preserves null values',                          objects: [{ a: 1, b: null }, { a: 1, b: 2, c: null }],                                                         expected: { a: 1, b: 2, c: null } },
-    { name: 'preserves false and 0 values',                   objects: [{ a: true, b: 1 }, { a: false, b: 0 }],                                                              expected: { a: false, b: 0 } },
+    { n: 'merges objects while omitting undefined values', objects: [{ a: 1, b: 2, c: 3 }, { a: 1, b: undefined, c: 4, d: 5 }],                                           o: { a: 1, b: 2, c: 4, d: 5 } },
+    { n: 'handles multiple objects',                       objects: [{ a: 1, b: 2 }, { a: 1, b: undefined, c: 3 }, { a: 1, b: 2, c: undefined, d: 4 }],                   o: { a: 1, b: 2, c: 3, d: 4 } },
+    { n: 'handles empty objects',                          objects: [{}, {}],                                                                                              o: {} },
+    { n: 'merges empty with non-empty',                    objects: [{ a: 1 }, {}],                                                                                        o: { a: 1 } },
+    { n: 'merges non-empty with empty',                    objects: [{}, { a: 1 }],                                                                                        o: { a: 1 } },
+    { n: 'handles single object',                          objects: [{ a: 1, b: undefined, c: 3 }],                                                                        o: { a: 1, c: 3 } },
+    { n: 'handles no objects',                             objects: [],                                                                                                     o: {} },
+    { n: 'handles undefined objects in middle',            objects: [undefined, { a: 1, b: 2 }, undefined],                                                               o: { a: 1, b: 2 } },
+    { n: 'handles undefined at end',                       objects: [{ a: 1, b: 2 }, undefined],                                                                          o: { a: 1, b: 2 } },
+    { n: 'handles all undefined',                          objects: [undefined, undefined],                                                                               o: {} },
+    { n: 'preserves null values',                          objects: [{ a: 1, b: null }, { a: 1, b: 2, c: null }],                                                         o: { a: 1, b: 2, c: null } },
+    { n: 'preserves false and 0 values',                   objects: [{ a: true, b: 1 }, { a: false, b: 0 }],                                                              o: { a: false, b: 0 } },
   ]
 
   Test.Table.each(spreadShallowCases, (case_) => {
     const result = Obj.spreadShallow<any>(...(case_.objects || []))
-    expect(result).toEqual(case_.expected)
+    expect(result).toEqual(case_.o)
   })
 
   test('property-based: never includes undefined values', () => {

@@ -11,9 +11,9 @@ describe('match', () => {
     { text: string; pattern: RegExp },
     { match: string | null; groups?: string[] }
   >('basic matching', [
-    { name: 'no match returns None',                      i: { text: 'hello world', pattern: /foo/ },            o: { match: null } },
-    { name: 'simple match returns Some',                  i: { text: 'hello world', pattern: /hello/ },          o: { match: 'hello' } },
-    { name: 'captures groups',                            i: { text: 'hello world', pattern: /hello (\w+)/ },    o: { match: 'hello world', groups: ['world'] } },
+    { n: 'no match returns None',                      i: { text: 'hello world', pattern: /foo/ },            o: { match: null } },
+    { n: 'simple match returns Some',                  i: { text: 'hello world', pattern: /hello/ },          o: { match: 'hello' } },
+    { n: 'captures groups',                            i: { text: 'hello world', pattern: /hello (\w+)/ },    o: { match: 'hello world', groups: ['world'] } },
   ], ({ i, o }) => {
     const result = match(i.text, i.pattern)
 
@@ -80,10 +80,10 @@ describe('match', () => {
   >(
     'edge cases', // dprint-ignore
     [
-      { name: 'empty string with empty pattern',            i: '',          pattern: /^$/,        o: { match: '' } },
-      { name: 'empty string with non-empty pattern',        i: '',          pattern: /foo/,       o: { isNone: true } },
-      { name: 'case sensitive match fails',                 i: 'HELLO',     pattern: /hello/,     o: { isNone: true } },
-      { name: 'case insensitive match succeeds',            i: 'HELLO',     pattern: /hello/i,    o: { match: 'HELLO' } },
+      { n: 'empty string with empty pattern',            i: '',          pattern: /^$/,        o: { match: '' } },
+      { n: 'empty string with non-empty pattern',        i: '',          pattern: /foo/,       o: { isNone: true } },
+      { n: 'case sensitive match fails',                 i: 'HELLO',     pattern: /hello/,     o: { isNone: true } },
+      { n: 'case insensitive match succeeds',            i: 'HELLO',     pattern: /hello/i,    o: { match: 'HELLO' } },
   ],
     ({ i, pattern, o }) => {
       const result = match(i, pattern)

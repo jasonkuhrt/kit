@@ -56,22 +56,22 @@ Test.Table.suiteWithDynamicLayers<
   description: '.findFirstUnderDir',
   // dprint-ignore
   cases: [
-    { name: 'finds single file',
+    { n: 'finds single file',
       i: { paths: [fx.a.rel] }, o: fx.a.abs },
 
-    { name: 'finds first file when both exist',
+    { n: 'finds first file when both exist',
       i: { paths: [fx.a.rel, fx.b.rel] }, o: fx.a.abs },
 
-    { name: 'finds second file when only second exists',
+    { n: 'finds second file when only second exists',
       i: { paths: [fx.a.rel, fx.b.rel] }, data: [fx.b.abs], o: fx.b.abs },
 
-    { name: 'finds directory',
+    { n: 'finds directory',
       i: { paths: [fx.dir.rel] }, o: fx.dir.abs },
 
-    { name: 'finds first of mixed types',
+    { n: 'finds first of mixed types',
       i: { paths: [fx.a.rel, fx.dir.rel] }, o: fx.a.abs },
 
-    { name: 'returns None when nothing exists',
+    { n: 'returns None when nothing exists',
       i: { paths: [fx.a.rel, fx.b.rel] }, data: [], o: null },
   ],
   layer: ({ data }) => {
