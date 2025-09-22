@@ -1,6 +1,7 @@
 import { ArrMut } from '#arr-mut'
 import { Fn } from '#fn'
 import type { Undefined } from '#undefined'
+import { Option } from 'effect'
 
 type MatchItem = string | undefined
 
@@ -14,21 +15,18 @@ type ToGroupsProperties<$MatchItems extends readonly [MatchItem, ...readonly Mat
 
 // dprint-ignore
 export type RegExpMatchResult<$Matches extends Matches> =
-  | null
-  | (
-    & Omit<RegExpMatchArray, 'groups'>
-    & {
-        groups:
-          $Matches['groups'] extends readonly [MatchItem,... readonly MatchItem[]]
-            ? ArrMut.ReduceWithIntersection<ToGroupsProperties<$Matches['groups']>>
-            : undefined
-      }
-    & (
-        $Matches extends { indicies: readonly [MatchItem,... readonly MatchItem[]] }
-          ? [originalValue: string, ...$Matches['indicies']]
-          : [originalValue: string]
-      )
-  )
+  & Omit<RegExpMatchArray, 'groups'>
+  & {
+      groups:
+        $Matches['groups'] extends readonly [MatchItem,... readonly MatchItem[]]
+          ? ArrMut.ReduceWithIntersection<ToGroupsProperties<$Matches['groups']>>
+          : undefined
+    }
+  & (
+      $Matches extends { indicies: readonly [MatchItem,... readonly MatchItem[]] }
+        ? [originalValue: string, ...$Matches['indicies']]
+        : [originalValue: string]
+    )
 
 const RegExpTypeSymbol = Symbol(`RegExpType`)
 
@@ -45,9 +43,9 @@ interface Pattern<$Matches extends Matches> extends RegExp {
  * ```typescript
  * const p = pattern<{ groups: ['name', 'age'] }>(/(?<name>\w+) is (?<age>\d+)/)
  * const result = match('John is 25', p)
- * if (result) {
- *   console.log(result.groups.name) // 'John' (typed)
- *   console.log(result.groups.age) // '25' (typed)
+ * if (Option.isSome(result)) {
+ *   console.log(result.value.groups.name) // 'John' (typed)
+ *   console.log(result.value.groups.age) // '25' (typed)
  * }
  * ```
  */
@@ -68,21 +66,22 @@ export type Matches = {
  * @deprecated Use `String.match` from Effect instead (note: kit's `match` provides typed capture groups, Effect's doesn't)
  * @param string - The string to match against
  * @param pattern - Regular expression or typed pattern
- * @returns Match result with typed capture groups, or null if no match
+ * @returns Option of match result with typed capture groups, or None if no match
  * @example
  * ```typescript
  * const result = match('hello world', /hello (\w+)/)
- * if (result) {
- *   console.log(result[0]) // 'hello world'
- *   console.log(result[1]) // 'world'
+ * if (Option.isSome(result)) {
+ *   console.log(result.value[0]) // 'hello world'
+ *   console.log(result.value[1]) // 'world'
  * }
  * ```
  */
 export const match = <matches extends Matches>(
   string: string,
   pattern: RegExp | Pattern<matches>,
-): RegExpMatchResult<matches> => {
-  return string.match(pattern) as any
+): Option.Option<RegExpMatchResult<matches>> => {
+  const result = string.match(pattern)
+  return result ? Option.some(result as any) : Option.none()
 }
 
 // One
