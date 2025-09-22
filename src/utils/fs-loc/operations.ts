@@ -201,7 +201,7 @@ type EnsureAbsolute<
  * @example
  * ```ts
  * const relPath = FsLoc.RelFile.decodeSync('./foo/bar.ts')
- * const cwd = FsLoc.AbsDir.decodeSync(process.cwd() + '/')
+ * const cwd = FsLoc.AbsDir.decodeSync(process.cwd())
  * const absPath = ensureAbsolute(relPath, cwd) // AbsFile
  * ```
  */

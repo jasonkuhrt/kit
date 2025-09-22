@@ -53,29 +53,29 @@ test('.findFirstUnderDir type inference', () => {
 
 Test.Table.suiteWithDynamicLayers<
   { dir?: FsLoc.AbsDir.AbsDir; paths: FsLoc.Groups.Rel.Rel[] },
-  { path: FsLoc.Groups.Abs.Abs | null },
+  FsLoc.Groups.Abs.Abs | null,
   { data?: FsLoc.FsLoc[] }
 >({
   description: '.findFirstUnderDir',
   // dprint-ignore
   cases: [
     { name: 'finds single file',
-      i: { paths: [fx.a.rel] }, o: { path: fx.a.abs } },
+      i: { paths: [fx.a.rel] }, o: fx.a.abs },
 
     { name: 'finds first file when both exist',
-      i: { paths: [fx.a.rel, fx.b.rel] }, o: { path: fx.a.abs } },
+      i: { paths: [fx.a.rel, fx.b.rel] }, o: fx.a.abs },
 
     { name: 'finds second file when only second exists',
-      i: { paths: [fx.a.rel, fx.b.rel] }, data: [fx.b.abs], o: { path: fx.b.abs } },
+      i: { paths: [fx.a.rel, fx.b.rel] }, data: [fx.b.abs], o: fx.b.abs },
 
     { name: 'finds directory',
-      i: { paths: [fx.dir.rel] }, o: { path: fx.dir.abs } },
+      i: { paths: [fx.dir.rel] }, o: fx.dir.abs },
 
     { name: 'finds first of mixed types',
-      i: { paths: [fx.a.rel, fx.dir.rel] }, o: { path: fx.a.abs } },
+      i: { paths: [fx.a.rel, fx.dir.rel] }, o: fx.a.abs },
 
     { name: 'returns None when nothing exists',
-      i: { paths: [fx.a.rel, fx.b.rel] }, data: [], o: { path: null } },
+      i: { paths: [fx.a.rel, fx.b.rel] }, data: [], o: null },
   ],
   layer: ({ data }) => {
     const fixture = data ?? [
@@ -97,10 +97,10 @@ Test.Table.suiteWithDynamicLayers<
     Effect.gen(function*() {
       const result = yield* Fs.findFirstUnderDir(i.dir ?? absDirTest)(i.paths)
 
-      if (o.path) {
+      if (o) {
         expect(Option.isSome(result)).toBe(true)
         if (Option.isSome(result)) {
-          expect(result.value).toBeEquivalent(o.path, FsLoc.FsLoc)
+          expect(result.value).toBeEquivalent(o, FsLoc.FsLoc)
         }
       } else {
         expect(Option.isNone(result)).toBe(true)

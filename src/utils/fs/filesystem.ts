@@ -667,7 +667,7 @@ export const makeTempDirectory = (
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
     const path = yield* fs.makeTempDirectory(options)
-    return FsLoc.AbsDir.decodeSync(path.endsWith('/') ? path : path + '/')
+    return FsLoc.AbsDir.decodeSync(path)
   })
 
 /**
@@ -702,7 +702,7 @@ export const makeTempDirectoryScoped = (
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
     const path = yield* fs.makeTempDirectoryScoped(options)
-    return FsLoc.AbsDir.decodeSync(path.endsWith('/') ? path : path + '/')
+    return FsLoc.AbsDir.decodeSync(path)
   })
 
 /**
@@ -746,7 +746,7 @@ export const makeTemp = <T extends MakeTempOptions>(options: T): Effect.Effect<
         ...(options.prefix !== undefined && { prefix: options.prefix }),
       }
       const path = yield* fs.makeTempDirectory(dirOpts)
-      return FsLoc.AbsDir.decodeSync(path.endsWith('/') ? path : path + '/') as any
+      return FsLoc.AbsDir.decodeSync(path) as any
     }
   })
 
@@ -788,6 +788,6 @@ export const makeTempScoped = <T extends MakeTempOptions>(options: T): Effect.Ef
         ...(options.prefix !== undefined && { prefix: options.prefix }),
       }
       const path = yield* fs.makeTempDirectoryScoped(dirOpts)
-      return FsLoc.AbsDir.decodeSync(path.endsWith('/') ? path : path + '/') as any
+      return FsLoc.AbsDir.decodeSync(path) as any
     }
   })
