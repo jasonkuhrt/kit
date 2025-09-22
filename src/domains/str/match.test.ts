@@ -7,25 +7,24 @@ import type { Matches } from './match.js'
 // Test the match function using table-driven tests for consistency
 describe('match', () => {
   // dprint-ignore
-  Test.Table.suite<{
-    input: string
-    pattern: RegExp
-    expected: { match: string | null; groups?: string[] }
-  }>('basic matching', [
-    { name: 'no match returns None',                      input: 'hello world',    pattern: /foo/,            expected: { match: null } },
-    { name: 'simple match returns Some',                  input: 'hello world',    pattern: /hello/,          expected: { match: 'hello' } },
-    { name: 'captures groups',                            input: 'hello world',    pattern: /hello (\w+)/,    expected: { match: 'hello world', groups: ['world'] } },
-  ], ({ input, pattern, expected }) => {
-    const result = match(input, pattern)
+  Test.Table.suite<
+    { text: string; pattern: RegExp },
+    { match: string | null; groups?: string[] }
+  >('basic matching', [
+    { name: 'no match returns None',                      i: { text: 'hello world', pattern: /foo/ },            o: { match: null } },
+    { name: 'simple match returns Some',                  i: { text: 'hello world', pattern: /hello/ },          o: { match: 'hello' } },
+    { name: 'captures groups',                            i: { text: 'hello world', pattern: /hello (\w+)/ },    o: { match: 'hello world', groups: ['world'] } },
+  ], ({ i, o }) => {
+    const result = match(i.text, i.pattern)
 
-    if (expected.match === null) {
+    if (o.match === null) {
       expect(Option.isNone(result)).toBe(true)
     } else {
       expect(Option.isSome(result)).toBe(true)
       if (Option.isSome(result)) {
-        expect(result.value[0]).toBe(expected.match)
-        if (expected.groups) {
-          expected.groups.forEach((group, i) => {
+        expect(result.value[0]).toBe(o.match)
+        if (o.groups) {
+          o.groups.forEach((group, i) => {
             expect(result.value[i + 1]).toBe(group)
           })
         }
@@ -74,26 +73,29 @@ describe('match', () => {
     }
   })
 
-  // dprint-ignore
-  Test.Table.suite<{
-    input: string
-    pattern: RegExp
-    expected: { isNone?: boolean; match?: string }
-  }>('edge cases', [
-    { name: 'empty string with empty pattern',            input: '',          pattern: /^$/,        expected: { match: '' } },
-    { name: 'empty string with non-empty pattern',        input: '',          pattern: /foo/,       expected: { isNone: true } },
-    { name: 'case sensitive match fails',                 input: 'HELLO',     pattern: /hello/,     expected: { isNone: true } },
-    { name: 'case insensitive match succeeds',            input: 'HELLO',     pattern: /hello/i,    expected: { match: 'HELLO' } },
-  ], ({ input, pattern, expected }) => {
-    const result = match(input, pattern)
+  Test.Table.suite<
+    string,
+    { isNone?: boolean; match?: string },
+    { pattern: RegExp }
+  >(
+    'edge cases', // dprint-ignore
+    [
+      { name: 'empty string with empty pattern',            i: '',          pattern: /^$/,        o: { match: '' } },
+      { name: 'empty string with non-empty pattern',        i: '',          pattern: /foo/,       o: { isNone: true } },
+      { name: 'case sensitive match fails',                 i: 'HELLO',     pattern: /hello/,     o: { isNone: true } },
+      { name: 'case insensitive match succeeds',            i: 'HELLO',     pattern: /hello/i,    o: { match: 'HELLO' } },
+  ],
+    ({ i, pattern, o }) => {
+      const result = match(i, pattern)
 
-    if (expected.isNone) {
-      expect(Option.isNone(result)).toBe(true)
-    } else if (expected.match !== undefined) {
-      expect(Option.isSome(result)).toBe(true)
-      if (Option.isSome(result)) {
-        expect(result.value[0]).toBe(expected.match)
+      if (o.isNone) {
+        expect(Option.isNone(result)).toBe(true)
+      } else if (o.match !== undefined) {
+        expect(Option.isSome(result)).toBe(true)
+        if (Option.isSome(result)) {
+          expect(result.value[0]).toBe(o.match)
+        }
       }
-    }
-  })
+    },
+  )
 })

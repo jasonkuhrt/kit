@@ -23,14 +23,16 @@ export type GlobOptions = Omit<TinyGlobby.GlobOptions, 'patterns' | 'cwd'> & {
  * - If absolute is true, returns absolute locations
  * - Otherwise returns relative locations
  */
-type InferGlobReturn<O extends GlobOptions | undefined> = O extends { onlyDirectories: true }
-  ? O extends { absolute: true } ? FsLoc.AbsDir.AbsDir
-  : FsLoc.RelDir.RelDir
-  : O extends { onlyFiles: false } ? O extends { absolute: true } ? FsLoc.Groups.Abs.Abs
-    : FsLoc.Groups.Rel.Rel
-  // Default behavior: onlyFiles is true
-  : O extends { absolute: true } ? FsLoc.AbsFile.AbsFile
-  : FsLoc.RelFile.RelFile
+type InferGlobReturn<O extends GlobOptions | undefined> = O extends undefined ? FsLoc.RelFile.RelFile // Explicit undefined type param
+  : O extends { onlyDirectories: true; absolute: true } ? FsLoc.AbsDir.AbsDir
+  : O extends { onlyDirectories: true } ? FsLoc.RelDir.RelDir
+  : O extends { onlyFiles: false; absolute: true } ? FsLoc.Groups.Abs.Abs
+  : O extends { onlyFiles: false } ? FsLoc.Groups.Rel.Rel
+  : O extends { onlyFiles: true; absolute: true } ? FsLoc.AbsFile.AbsFile
+  : O extends { onlyFiles: true } ? FsLoc.RelFile.RelFile
+  : O extends { absolute: true } ? FsLoc.AbsFile.AbsFile // onlyFiles defaults to true
+  : O extends GlobOptions ? FsLoc.RelFile.RelFile // Default case for bare GlobOptions/{}
+  : never // Should never reach here
 
 /**
  * Effect-based wrapper for globbing file patterns.

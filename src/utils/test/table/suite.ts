@@ -1,5 +1,5 @@
 import { describe, type TestContext } from 'vitest'
-import type { Case, CaseFilled } from './case.js'
+import type { CaseTodo, SuiteCase, TestCase } from './case.js'
 import { each } from './each.js'
 
 interface Suite extends SuiteBase {
@@ -12,158 +12,150 @@ interface Suite extends SuiteBase {
  * This reduces boilerplate by automatically wrapping Test.each in a describe block,
  * eliminating the need for separate interface declarations and nested structures.
  *
- * @example Basic usage
+ * @example Basic usage with i/o
  * ```typescript
  * // dprint-ignore  <-- Place directly above Test.suite for column alignment
- * Test.suite<{ input: string; expected: string }>('string transformations', [
- *   { name: 'uppercase', input: 'hello', expected: 'HELLO' },
- *   { name: 'lowercase', input: 'WORLD', expected: 'world' },
- * ], ({ input, expected }) => {
- *   expect(transform(input)).toBe(expected)
+ * Test.suite<{ i: string; o: string }>('string transformations', [
+ *   { name: 'uppercase', i: 'hello', o: 'HELLO' },
+ *   { name: 'lowercase', i: 'WORLD', o: 'world' },
+ * ], ({ i, o }) => {
+ *   expect(transform(i)).toBe(o)
  * })
  * ```
  *
  * @example With custom name template and column alignment
  * ```typescript
- * interface MathCase {
- *   a: number
- *   b: number
- *   expected: number
+ * type MathCase = {
+ *   i: { a: number; b: number }
+ *   o: number
  * }
  *
  * // dprint-ignore
- * Test.suite<MathCase>('math operations', '$a + $b = $expected', [
- *   { name: 'addition',     a: 2, b: 3, expected: 5 },
- *   { name: 'subtraction',  a: 5, b: 3, expected: 2 },
- * ], ({ a, b, expected }) => {
- *   expect(calculate(a, b)).toBe(expected)
+ * Test.suite<MathCase>('math operations', '$i.a + $i.b = $o', [
+ *   { name: 'addition',     i: { a: 2, b: 3 }, o: 5 },
+ *   { name: 'subtraction',  i: { a: 5, b: 3 }, o: 2 },
+ * ], ({ i, o }) => {
+ *   expect(calculate(i.a, i.b)).toBe(o)
  * })
  * ```
  *
- * @example With nested expected property pattern (recommended for complex cases)
+ * @example With data and custom properties
  * ```typescript
- * interface ComplexCase {
- *   input: string
- *   transform: 'upper' | 'lower'
- *   locale: string
- *   options: { trim: boolean; normalize: boolean }
- *   expected: {
- *     result: string
- *     length: number
- *     metadata: { processed: boolean; warnings?: string[] }
- *   }
+ * type ComplexCase = {
+ *   i: string
+ *   o: { result: string; length: number }
+ *   data: { locale: string; options: { trim: boolean } }
+ *   custom: { category: 'transform' | 'validate' }
  * }
  *
- * // Using expected property pattern keeps expectations together on one line
  * Test.suite<ComplexCase>('complex transformations', [
  *   { name: 'uppercase with trimming',
- *     input: '  hello  ',
- *     transform: 'upper',
- *     locale: 'en-US',
- *     options: { trim: true, normalize: false },
- *     expected: { result: 'HELLO', length: 5, metadata: { processed: true } } },
- *   { name: 'lowercase normalized',
- *     input: 'WORLD',
- *     transform: 'lower',
- *     locale: 'de-DE',
- *     options: { trim: false, normalize: true },
- *     expected: { result: 'world', length: 5, metadata: { processed: true, warnings: ['normalized'] } } },
- * ], ({ input, transform, locale, options, expected }) => {
- *   const result = complexTransform(input, transform, locale, options)
- *   expect(result.value).toBe(expected.result)
- *   expect(result.length).toBe(expected.length)
- *   expect(result.metadata).toEqual(expected.metadata)
+ *     i: '  hello  ',
+ *     o: { result: 'HELLO', length: 5 },
+ *     data: { locale: 'en-US', options: { trim: true } },
+ *     category: 'transform' },
+ *   { name: 'lowercase validation',
+ *     i: 'WORLD',
+ *     o: { result: 'world', length: 5 },
+ *     data: { locale: 'de-DE', options: { trim: false } },
+ *     category: 'validate' },
+ * ], ({ i, o, data, category }) => {
+ *   const result = complexTransform(i, data.locale, data.options)
+ *   expect(result.value).toBe(o.result)
+ *   expect(result.length).toBe(o.length)
+ *   expect(result.category).toBe(category)
  * })
  * ```
  *
  * @example Inline case typing with column alignment
  * ```typescript
  * Test.suite<{
- *   input: string
- *   expected: number
+ *   i: string
+ *   o: number
  * }>(
  *   'string length',
  *   // dprint-ignore
  *   [
- *     { name: 'short string',    input: 'hi',     expected: 2 },
- *     { name: 'medium string',   input: 'hello',  expected: 5 },
- *     { name: 'long string',     input: 'world!', expected: 6 },
+ *     { name: 'short string',    i: 'hi',     o: 2 },
+ *     { name: 'medium string',   i: 'hello',  o: 5 },
+ *     { name: 'long string',     i: 'world!', o: 6 },
  *   ],
- *   ({ input, expected }) => {
- *     expect(input.length).toBe(expected)
+ *   ({ i, o }) => {
+ *     expect(i.length).toBe(o)
  *   }
  * )
  * ```
  *
  * @example With todo and skip cases
  * ```typescript
- * Test.suite<{ feature: string }>('feature tests', [
- *   { name: 'implemented feature', feature: 'login' },
+ * Test.suite<{ i: string; o: boolean }>('feature tests', [
+ *   { name: 'implemented feature', i: 'login', o: true },
  *   { name: 'upcoming feature', todo: 'Not implemented yet' },
- *   { name: 'flaky test', feature: 'api', skip: 'Flaky on CI' },
- * ], ({ feature }) => {
- *   expect(isFeatureEnabled(feature)).toBe(true)
+ *   { name: 'flaky test', i: 'api', o: false, skip: 'Flaky on CI' },
+ * ], ({ i, o }) => {
+ *   expect(isFeatureEnabled(i)).toBe(o)
  * })
  * ```
  *
  * @remarks
- * - Type parameter is mandatory to encourage explicit typing
+ * - Type parameter defines the test specification with optional i/o/data/custom properties
  * - Supports all Test.each features (todo, skip, only, etc.)
  * - Automatically handles describe block creation
  * - Name template is optional - defaults to using the 'name' property
- * - Best practice: Use an `expected` property to group all expected values together,
- *   especially when test cases have many fields and span multiple lines. This keeps
- *   the expected outcomes clearly visible on a single line per case.
- * - For simple types, prefer inline typing with column alignment over separate interface
+ * - Best practice: Use 'i' for inputs, 'o' for expected outputs, 'data' for test metadata,
+ *   and 'custom' for any additional user-defined properties
+ * - For simple types, prefer inline typing with column alignment over separate type
  *   declarations for better readability.
  * - Place `// dprint-ignore` comment directly before the array literal only, not before
  *   the entire Test.suite call. This preserves column alignment for test cases while
  *   allowing normal formatting for the rest of the code.
  */
-export const suite: Suite = <$Case extends object>(
+export const suite: Suite = <$I, $O, $Custom = {}>(
   description: string,
-  arg2: string | Case<$Case>[],
-  arg3: Case<$Case>[] | ((caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>),
-  arg4?: (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>,
+  arg2: string | (TestCase<$I, $O, $Custom> | CaseTodo)[],
+  arg3: (TestCase<$I, $O, $Custom> | CaseTodo)[] | ((caseInput: SuiteCase<$I, $O, $Custom>, context: TestContext) => void | Promise<void>),
+  arg4?: (caseInput: SuiteCase<$I, $O, $Custom>, context: TestContext) => void | Promise<void>,
 ) => {
   describe(description, () => {
     if (typeof arg2 === 'string') {
       // Called with custom name template
-      each(arg2, arg3 as Case<$Case>[], arg4!)
+      each(arg2, arg3 as any, arg4!)
     } else {
       // Called without custom name template
-      each(arg2, arg3 as (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>)
+      each(arg2 as any, arg3 as (caseInput: SuiteCase<$I, $O, $Custom>, context: TestContext) => void | Promise<void>)
     }
   })
 }
 
-suite.only = <$Case extends object>(
+suite.only = <$I, $O, $Custom = {}>(
   description: string,
-  arg2: string | Case<$Case>[],
-  arg3: Case<$Case>[] | ((caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>),
-  arg4?: (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>,
+  arg2: string | (TestCase<$I, $O, $Custom> | CaseTodo)[],
+  arg3:
+    | (TestCase<$I, $O, $Custom> | CaseTodo)[]
+    | ((caseInput: SuiteCase<$I, $O, $Custom>, context: TestContext) => void | Promise<void>),
+  arg4?: (caseInput: SuiteCase<$I, $O, $Custom>, context: TestContext) => void | Promise<void>,
 ) => {
   describe.only(description, () => {
     if (typeof arg2 === 'string') {
       // Called with custom name template
-      each(arg2, arg3 as Case<$Case>[], arg4!)
+      each(arg2, arg3 as any, arg4!)
     } else {
       // Called without custom name template
-      each(arg2, arg3 as (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>)
+      each(arg2 as any, arg3 as (caseInput: SuiteCase<$I, $O, $Custom>, context: TestContext) => void | Promise<void>)
     }
   })
 }
 
 interface SuiteBase {
-  <$Case extends object>(
+  <$I, $O, $Custom = {}>(
     description: string,
-    cases: Case<$Case>[],
-    runner: (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>,
+    cases: (TestCase<$I, $O, $Custom> | CaseTodo)[],
+    runner: (caseInput: SuiteCase<$I, $O, $Custom>, context: TestContext) => void | Promise<void>,
   ): void
-  <$Case extends object>(
+  <$I, $O, $Custom = {}>(
     description: string,
     nameTemplate: string,
-    cases: Case<$Case>[],
-    runner: (caseInput: CaseFilled & $Case, context: TestContext) => void | Promise<void>,
+    cases: (TestCase<$I, $O, $Custom> | CaseTodo)[],
+    runner: (caseInput: SuiteCase<$I, $O, $Custom>, context: TestContext) => void | Promise<void>,
   ): void
 }

@@ -28,7 +28,7 @@ const fx = {
   },
 }
 
-test('findFirstUnderDir type inference', () => {
+test('.findFirstUnderDir type inference', () => {
   // Test with only files - should return Option<AbsFile>
   const onlyFiles = [fx.a.rel, fx.b.rel]
   const fileResult = Fs.findFirstUnderDir(absDirTest)(onlyFiles)
@@ -51,43 +51,34 @@ test('findFirstUnderDir type inference', () => {
   >()
 })
 
-interface TestCase {
-  fixture?: FsLoc.FsLoc[]
-  input: {
-    dir?: FsLoc.AbsDir.AbsDir
-    paths: FsLoc.Groups.Rel.Rel[]
-  }
-  expected: {
-    path: FsLoc.Groups.Abs.Abs | null
-  }
-}
+Test.Table.suiteWithDynamicLayers<
+  { dir?: FsLoc.AbsDir.AbsDir; paths: FsLoc.Groups.Rel.Rel[] },
+  { path: FsLoc.Groups.Abs.Abs | null },
+  { data?: FsLoc.FsLoc[] }
+>({
+  description: '.findFirstUnderDir',
+  // dprint-ignore
+  cases: [
+    { name: 'finds single file',
+      i: { paths: [fx.a.rel] }, o: { path: fx.a.abs } },
 
-// dprint-ignore
-const cases: Test.Table.Case<TestCase>[] = [
-  { name: 'finds single file',
-    input: { paths: [fx.a.rel] }, expected: { path: fx.a.abs } },
+    { name: 'finds first file when both exist',
+      i: { paths: [fx.a.rel, fx.b.rel] }, o: { path: fx.a.abs } },
 
-  { name: 'finds first file when both exist',
-    input: { paths: [fx.a.rel, fx.b.rel] }, expected: { path: fx.a.abs } },
+    { name: 'finds second file when only second exists',
+      i: { paths: [fx.a.rel, fx.b.rel] }, data: [fx.b.abs], o: { path: fx.b.abs } },
 
-  { name: 'finds second file when only second exists',
-    input: { paths: [fx.a.rel, fx.b.rel] }, fixture: [fx.b.abs], expected: { path: fx.b.abs } },
+    { name: 'finds directory',
+      i: { paths: [fx.dir.rel] }, o: { path: fx.dir.abs } },
 
-  { name: 'finds directory',
-    input: { paths: [fx.dir.rel] }, expected: { path: fx.dir.abs } },
+    { name: 'finds first of mixed types',
+      i: { paths: [fx.a.rel, fx.dir.rel] }, o: { path: fx.a.abs } },
 
-  { name: 'finds first of mixed types',
-    input: { paths: [fx.a.rel, fx.dir.rel] }, expected: { path: fx.a.abs } },
-
-  { name: 'returns None when nothing exists',
-    input: { paths: [fx.a.rel, fx.b.rel] }, fixture: [], expected: { path: null } },
-]
-
-Test.Table.suiteWithDynamicLayers<TestCase>({
-  description: 'findFirstUnderDir',
-  cases,
-  layer: ({ fixture: fixtureOverride }) => {
-    const fixture = fixtureOverride ?? [
+    { name: 'returns None when nothing exists',
+      i: { paths: [fx.a.rel, fx.b.rel] }, data: [], o: { path: null } },
+  ],
+  layer: ({ data }) => {
+    const fixture = data ?? [
       fx.a.abs,
       fx.b.abs,
       fx.dir.abs,
@@ -102,14 +93,14 @@ Test.Table.suiteWithDynamicLayers<TestCase>({
       sink: () => undefined as any,
     })
   },
-  test: ({ input, expected }) =>
+  test: ({ i, o }) =>
     Effect.gen(function*() {
-      const result = yield* Fs.findFirstUnderDir(input.dir ?? absDirTest)(input.paths)
+      const result = yield* Fs.findFirstUnderDir(i.dir ?? absDirTest)(i.paths)
 
-      if (expected.path) {
+      if (o.path) {
         expect(Option.isSome(result)).toBe(true)
         if (Option.isSome(result)) {
-          expect(result.value).toBeEquivalent(expected.path, FsLoc.FsLoc)
+          expect(result.value).toBeEquivalent(o.path, FsLoc.FsLoc)
         }
       } else {
         expect(Option.isNone(result)).toBe(true)
