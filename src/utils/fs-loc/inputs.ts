@@ -1,146 +1,302 @@
-/**
- * Input validation types for FsLoc APIs.
- *
- * These types allow APIs to accept either strongly-typed FsLoc objects
- * or string literals that are validated at compile time.
- *
- * @module
- */
-
 import type { Ts } from '#ts'
+import { Schema as S } from 'effect'
 import type { Analyzer } from './analyzer/$.js'
 import * as FsLoc from './fs-loc.js'
-import type * as Groups from './groups/$$.js'
+import * as Groups from './groups/$$.js'
 
 /**
- * Accept RelFile type OR string literal that must be a relative file.
+ * Input type for FsLoc APIs that accepts either a FsLoc type or a string.
+ *
+ * When a string is provided, it will be validated at compile time if it's a literal,
+ * or at runtime if it's a dynamic value.
+ *
+ * @example
+ * ```ts
+ * function processPath<T extends Input>(path: T) { ... }
+ *
+ * // Can accept FsLoc types
+ * processPath(FsLoc.AbsFile.decodeSync('/path/file.txt'))
+ *
+ * // Can accept string literals
+ * processPath('/path/file.txt')
+ * processPath('./relative/path/')
+ * ```
  */
-export type RelFile<T> = T extends FsLoc.RelFile.RelFile ? T
-  : T extends string ? (
-      Analyzer.Analyze<T> extends { _tag: 'file'; isPathRelative: true } ? T
-        : Ts.StaticError<
-          'Must be a relative file path',
-          { received: T; hint: 'Relative files must not start with / and must have an extension' }
-        >
-    )
-  : Ts.StaticError<'Must be a RelFile or string', { received: T }>
+export type Input<$FsLoc extends FsLoc.FsLoc = FsLoc.FsLoc> = $FsLoc | string
 
 /**
- * Accept RelDir type OR string literal that must be a relative directory.
+ * Namespace containing type aliases for Input types.
+ * Provides convenient shortcuts for common FsLoc input constraints.
  */
-export type RelDir<T> = T extends FsLoc.RelDir.RelDir ? T
-  : T extends string ? (
-      Analyzer.Analyze<T> extends { _tag: 'dir'; isPathRelative: true } ? T
-        : Ts.StaticError<
-          'Must be a relative directory path',
-          { received: T; hint: 'Relative directories must not start with / or have an extensions' }
-        >
-    )
-  : Ts.StaticError<'Must be a RelDir or string', { received: T }>
+export namespace Input {
+  /**
+   * Input that accepts a relative file path.
+   */
+  export type RelFile = Input<FsLoc.RelFile.RelFile>
+
+  /**
+   * Input that accepts a relative directory path.
+   */
+  export type RelDir = Input<FsLoc.RelDir.RelDir>
+
+  /**
+   * Input that accepts an absolute file path.
+   */
+  export type AbsFile = Input<FsLoc.AbsFile.AbsFile>
+
+  /**
+   * Input that accepts an absolute directory path.
+   */
+  export type AbsDir = Input<FsLoc.AbsDir.AbsDir>
+
+  /**
+   * Input that accepts any file path (absolute or relative).
+   */
+  export type File = Input<Groups.File.File>
+
+  /**
+   * Input that accepts any directory path (absolute or relative).
+   */
+  export type Dir = Input<Groups.Dir.Dir>
+
+  /**
+   * Input that accepts any relative path (file or directory).
+   */
+  export type Rel = Input<Groups.Rel.Rel>
+
+  /**
+   * Input that accepts any absolute path (file or directory).
+   */
+  export type Abs = Input<Groups.Abs.Abs>
+
+  /**
+   * Input that accepts any FsLoc type.
+   */
+  export type Any = Input<FsLoc.FsLoc>
+}
 
 /**
- * Accept AbsFile type OR string literal that must be an absolute file.
+ * Extended input type that includes validation errors.
+ *
+ * This type is used internally by validation functions to handle cases where
+ * validation fails at compile time. The StaticError type provides helpful
+ * error messages to guide users toward correct path formats.
  */
-export type AbsFile<T> = T extends FsLoc.AbsFile.AbsFile ? T
-  : T extends string ? (
-      Analyzer.Analyze<T> extends { _tag: 'file'; isPathAbsolute: true } ? T
-        : Ts.StaticError<
-          'Must be an absolute file path',
-          { received: T; hint: 'Absolute files must start with / and have an extension' }
-        >
-    )
-  : Ts.StaticError<'Must be an AbsFile or string', { received: T }>
+export type InputValidated<$FsLoc extends FsLoc.FsLoc = FsLoc.FsLoc> = $FsLoc | string | Ts.StaticError
 
 /**
- * Accept AbsDir type OR string literal that must be an absolute directory.
+ * Validates an input against a target FsLoc type.
+ *
+ * This type performs compile-time validation when given string literals,
+ * ensuring they match the expected path format (absolute/relative, file/directory).
+ * If validation fails, it returns a StaticError with helpful hints.
+ *
+ * @typeParam $Input - The input to validate (string or FsLoc type)
+ * @typeParam $TargetFsLoc - The target FsLoc type to validate against
+ *
+ * @example
+ * ```ts
+ * // Success: string literal matches target type
+ * type Valid = Validate<'/path/file.txt', FsLoc.AbsFile.AbsFile>
+ * // Result: '/path/file.txt'
+ *
+ * // Error: string literal doesn't match target type
+ * type Invalid = Validate<'./relative.txt', FsLoc.AbsFile.AbsFile>
+ * // Result: StaticError<'Must be an absolute file path', ...>
+ * ```
  */
-export type AbsDir<T> = T extends FsLoc.AbsDir.AbsDir ? T
-  : T extends string ? (
-      Analyzer.Analyze<T> extends { _tag: 'dir'; isPathAbsolute: true } ? T
-        : Ts.StaticError<
-          'Must be an absolute directory path',
-          { received: T; hint: 'Absolute directories must start with / and not have an extension' }
-        >
-    )
-  : Ts.StaticError<'Must be an AbsDir or string', { received: T }>
+// dprint-ignore
+export type Validate<
+  $Input extends Input,
+  $TargetFsLoc extends FsLoc.FsLoc,
+  ___ActualFsLoc extends FsLoc.FsLoc = normalize<$Input>,
+> =
+  ___ActualFsLoc['_tag'] extends $TargetFsLoc['_tag']
+    ? $Input
+    : Ts.StaticError<GetValidationError<$TargetFsLoc['_tag']>['message'], { received: $Input; hint: GetValidationError<$TargetFsLoc['_tag']>['hint'] }>
+
+// dprint-ignore
+type GetValidationError<$Tag> =
+    $Tag extends 'LocRelFile'                         ? { message: 'Must be a relative file path'; hint: 'Relative files must not start with / and must have an extension' }
+  : $Tag extends 'LocRelDir'                          ? { message: 'Must be a relative directory path'; hint: 'Relative directories must not start with / and should end with / or have no extension' }
+  : $Tag extends 'LocAbsDir'                          ? { message: 'Must be an absolute directory path'; hint: 'Absolute directories must start with / and should end with / or have no extension' }
+  : $Tag extends 'LocAbsFile'                         ? { message: 'Must be an absolute file path'; hint: 'Absolute files must start with / and have an extension' }
+  : $Tag extends 'LocRelFile' | 'LocRelDir'           ? { message: 'Must be a relative path'; hint: 'Relative paths must not start with /' }
+  : $Tag extends 'LocAbsFile' | 'LocAbsDir'           ? { message: 'Must be an absolute path'; hint: 'Absolute paths must start with /' }
+  : $Tag extends 'LocRelFile' | 'LocAbsFile'          ? { message: 'Must be a file path'; hint: 'Files must have an extension' }
+  : $Tag extends 'LocRelDir' | 'LocAbsDir'            ? { message: 'Must be a directory path'; hint: 'Directories should end with / or have no extension' }
+  : { message: 'Must be a valid filesystem location'; hint: 'Check the path format' }
 
 /**
- * Accept any File type OR string literal that must be a file.
+ * Namespace containing type aliases for validating FsLoc inputs.
+ * All types accept either the corresponding FsLoc type or a validated string literal.
  */
-export type File<T> = T extends Groups.File.File ? T
-  : T extends string ? (
-      Analyzer.Analyze<T> extends { _tag: 'file' } ? T
-        : Ts.StaticError<'Must be a file path', { received: T; hint: 'Files must have an extension' }>
-    )
-  : Ts.StaticError<'Must be a File or string', { received: T }>
+export namespace Validate {
+  /**
+   * Validates that input is a relative file path.
+   * Relative files must not start with `/` and must have an extension.
+   */
+  export type RelFile<$Input extends Input> = Validate<$Input, FsLoc.RelFile.RelFile>
+
+  /**
+   * Validates that input is a relative directory path.
+   * Relative directories must not start with `/` and should end with `/` or have no extension.
+   */
+  export type RelDir<$Input extends Input> = Validate<$Input, FsLoc.RelDir.RelDir>
+
+  /**
+   * Validates that input is an absolute file path.
+   * Absolute files must start with `/` and have an extension.
+   */
+  export type AbsFile<$Input extends Input> = Validate<$Input, FsLoc.AbsFile.AbsFile>
+
+  /**
+   * Validates that input is an absolute directory path.
+   * Absolute directories must start with `/` and should end with `/` or have no extension.
+   */
+  export type AbsDir<$Input extends Input> = Validate<$Input, FsLoc.AbsDir.AbsDir>
+
+  /**
+   * Validates that input is a file path (either absolute or relative).
+   */
+  export type File<$Input extends Input> = Validate<$Input, Groups.File.File>
+
+  /**
+   * Validates that input is a directory path (either absolute or relative).
+   */
+  export type Dir<$Input extends Input> = Validate<$Input, Groups.Dir.Dir>
+
+  /**
+   * Validates that input is a relative path (either file or directory).
+   */
+  export type Rel<$Input extends Input> = Validate<$Input, Groups.Rel.Rel>
+
+  /**
+   * Validates that input is an absolute path (either file or directory).
+   */
+  export type Abs<$Input extends Input> = Validate<$Input, Groups.Abs.Abs>
+
+  /**
+   * Accept any FsLoc type OR any string without validation.
+   */
+  export type Any<$Input> = $Input extends FsLoc.FsLoc ? $Input
+    : $Input extends string ? $Input
+    : Ts.StaticError<'Must be a FsLoc type or string', { received: $Input }>
+}
+
+// dprint-ignore
+export type normalize<$Input extends InputValidated> =
+  $Input extends Ts.StaticError       ? never :
+  $Input extends string               ? FsLoc.FromAnalysis<Analyzer.Analyze<$Input>> :
+                                        $Input
 
 /**
- * Accept any Dir type OR string literal that must be a directory.
+ * Normalize a validated input to a FsLoc type at runtime.
+ *
+ * This function converts string inputs to their corresponding FsLoc types
+ * using the FsLoc decoder. If the input is already a FsLoc type, it returns
+ * it unchanged. If the input is a StaticError (from failed validation),
+ * the return type is `never`, allowing TypeScript to properly handle
+ * validation failures.
+ *
+ * @param input - The validated input to normalize
+ * @returns The normalized FsLoc type, or never if input is StaticError
+ *
+ * @example
+ * ```ts
+ * const path1 = normalize('/path/file.txt')  // Returns AbsFile
+ * const path2 = normalize(someAbsFile)       // Returns unchanged
+ * ```
  */
-export type Dir<T> = T extends Groups.Dir.Dir ? T
-  : T extends string ? (
-      Analyzer.Analyze<T> extends { _tag: 'dir' } ? T
-        : Ts.StaticError<
-          'Must be a directory path',
-          { received: T; hint: 'Directories should end with / or have no extension' }
-        >
-    )
-  : Ts.StaticError<'Must be a Dir or string', { received: T }>
+export const normalize = <input extends InputValidated>(
+  input: input,
+): normalize<input> => {
+  return (typeof input === 'string' ? FsLoc.decodeSync(input) : input) as any
+}
 
 /**
- * Accept any relative path OR string literal that must be relative.
+ * Schema namespace for FsLoc input validation.
+ * Provides Effect Schema types that accept both strings and FsLoc types.
  */
-export type Rel<T> = T extends Groups.Rel.Rel ? T
-  : T extends string ? (
-      Analyzer.Analyze<T> extends { isPathRelative: true } ? T
-        : Ts.StaticError<'Must be a relative path', { received: T; hint: 'Relative paths must not start with /' }>
-    )
-  : Ts.StaticError<'Must be a relative path or RelFile/RelDir', { received: T }>
+export namespace Schema {
+  /**
+   * Schema for relative file inputs.
+   * Accepts a string or RelFile FsLoc type.
+   */
+  export const RelFile = S.Union(
+    S.String,
+    FsLoc.RelFile.RelFile,
+  )
 
-/**
- * Accept any absolute path OR string literal that must be absolute.
- */
-export type Abs<T> = T extends Groups.Abs.Abs ? T
-  : T extends string ? (
-      Analyzer.Analyze<T> extends { isPathAbsolute: true } ? T
-        : Ts.StaticError<'Must be an absolute path', { received: T; hint: 'Absolute paths must start with /' }>
-    )
-  : Ts.StaticError<'Must be an absolute path or AbsFile/AbsDir', { received: T }>
+  /**
+   * Schema for relative directory inputs.
+   * Accepts a string or RelDir FsLoc type.
+   */
+  export const RelDir = S.Union(
+    S.String,
+    FsLoc.RelDir.RelDir,
+  )
 
-/**
- * Accept any FsLoc type OR any string.
- */
-export type Any<T> = T extends FsLoc.FsLoc ? T
-  : T extends string ? T
-  : Ts.StaticError<'Must be a FsLoc type or string', { received: T }>
+  /**
+   * Schema for absolute file inputs.
+   * Accepts a string or AbsFile FsLoc type.
+   */
+  export const AbsFile = S.Union(
+    S.String,
+    FsLoc.AbsFile.AbsFile,
+  )
 
-/**
- * Helper functions to normalize validated inputs to FsLoc types at runtime.
- */
-export const normalize = {
-  file: <T>(input: File<T>): Groups.File.File =>
-    typeof input === 'string' ? FsLoc.decodeSync(input) as Groups.File.File : input as Groups.File.File,
+  /**
+   * Schema for absolute directory inputs.
+   * Accepts a string or AbsDir FsLoc type.
+   */
+  export const AbsDir = S.Union(
+    S.String,
+    FsLoc.AbsDir.AbsDir,
+  )
 
-  dir: <T>(input: Dir<T>): Groups.Dir.Dir =>
-    typeof input === 'string' ? FsLoc.decodeSync(input) as Groups.Dir.Dir : input as Groups.Dir.Dir,
+  /**
+   * Schema for any file input (absolute or relative).
+   * Accepts a string or any File FsLoc type.
+   */
+  export const File = S.Union(
+    S.String,
+    Groups.File.File,
+  )
 
-  relFile: <T>(input: RelFile<T>): FsLoc.RelFile.RelFile =>
-    typeof input === 'string' ? FsLoc.RelFile.decodeSync(input) : input as FsLoc.RelFile.RelFile,
+  /**
+   * Schema for any directory input (absolute or relative).
+   * Accepts a string or any Dir FsLoc type.
+   */
+  export const Dir = S.Union(
+    S.String,
+    Groups.Dir.Dir,
+  )
 
-  relDir: <T>(input: RelDir<T>): FsLoc.RelDir.RelDir =>
-    typeof input === 'string' ? FsLoc.RelDir.decodeSync(input) : input as FsLoc.RelDir.RelDir,
+  /**
+   * Schema for any relative input (file or directory).
+   * Accepts a string or any Rel FsLoc type.
+   */
+  export const Rel = S.Union(
+    S.String,
+    Groups.Rel.Rel,
+  )
 
-  absFile: <T>(input: AbsFile<T>): FsLoc.AbsFile.AbsFile =>
-    typeof input === 'string' ? FsLoc.AbsFile.decodeSync(input) : input as FsLoc.AbsFile.AbsFile,
+  /**
+   * Schema for any absolute input (file or directory).
+   * Accepts a string or any Abs FsLoc type.
+   */
+  export const Abs = S.Union(
+    S.String,
+    Groups.Abs.Abs,
+  )
 
-  absDir: <T>(input: AbsDir<T>): FsLoc.AbsDir.AbsDir =>
-    typeof input === 'string' ? FsLoc.AbsDir.decodeSync(input) : input as FsLoc.AbsDir.AbsDir,
-
-  rel: <T>(input: Rel<T>): Groups.Rel.Rel =>
-    typeof input === 'string' ? FsLoc.decodeSync(input) as Groups.Rel.Rel : input as Groups.Rel.Rel,
-
-  abs: <T>(input: Abs<T>): Groups.Abs.Abs =>
-    typeof input === 'string' ? FsLoc.decodeSync(input) as Groups.Abs.Abs : input as Groups.Abs.Abs,
-
-  any: <T>(input: Any<T>): FsLoc.FsLoc => typeof input === 'string' ? FsLoc.decodeSync(input) : input as FsLoc.FsLoc,
+  /**
+   * Schema for any FsLoc input.
+   * Accepts a string or any FsLoc type.
+   */
+  export const Any = S.Union(
+    S.String,
+    FsLoc.FsLoc,
+  )
 }

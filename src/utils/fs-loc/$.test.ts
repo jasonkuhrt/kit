@@ -4,10 +4,6 @@ import { describe, expect, expectTypeOf, it } from 'vitest'
 import { FsLoc } from './$.js'
 import './$.test-matchers.js'
 
-const RelFile = FsLoc.RelFile.make
-const RelDir = FsLoc.RelDir.make
-const AbsFile = FsLoc.AbsFile.make
-const AbsDir = FsLoc.AbsDir.make
 const PathAbs = FsLoc.Path.Abs.make
 const PathRel = FsLoc.Path.Rel.make
 const File = FsLoc.File.make

@@ -78,15 +78,15 @@ export const fromString: <const input extends string>(
     input,
     'FsLoc.fromString requires a literal string. Use FsLoc.decodeSync() for runtime strings.'
   >,
-) => AnalysisToFsLoc<Analyzer.Analyze<input>> = decodeSync as any
+) => FromAnalysis<Analyzer.Analyze<input>> = decodeSync as any
 
 /**
  * Map Analysis result to specific FsLoc member type.
  */
 // dprint-ignore
-export type AnalysisToFsLoc<T> =
-    T extends { _tag: 'file'; pathType: 'absolute' } ? AbsFile.AbsFile
-  : T extends { _tag: 'file'; pathType: 'relative' } ? RelFile.RelFile
-  : T extends { _tag: 'dir'; pathType: 'absolute' } ? AbsDir.AbsDir
-  : T extends { _tag: 'dir'; pathType: 'relative' } ? RelDir.RelDir
+export type FromAnalysis<$Analysis extends Analyzer.Analysis> =
+    $Analysis extends { _tag: 'file'; pathType: 'absolute' } ? AbsFile.AbsFile
+  : $Analysis extends { _tag: 'file'; pathType: 'relative' } ? RelFile.RelFile
+  : $Analysis extends { _tag: 'dir'; pathType: 'absolute' } ? AbsDir.AbsDir
+  : $Analysis extends { _tag: 'dir'; pathType: 'relative' } ? RelDir.RelDir
   : never

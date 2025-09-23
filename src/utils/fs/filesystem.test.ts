@@ -436,7 +436,7 @@ describe('stream operations', () => {
       expect(mockFs.readFileString).toHaveBeenCalledWith('/test/file.txt', 'utf-8')
     }))
 
-  it.effect('.writeString', () =>
+  it.effect('.writeString (deprecated - use write instead)', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         writeFileString: vi.fn(() => Effect.succeed(undefined)),

@@ -41,7 +41,7 @@ export interface DirChain {
    * ```
    */
   file<path extends FsLoc.RelFile.RelFile | string>(
-    path: FsLoc.Inputs.RelFile<path>,
+    path: FsLoc.Inputs.Validate.RelFile<path>,
     content: path extends FsLoc.RelFile.RelFile ? Fs.InferFileContent<path>
       : path extends string ? string | Uint8Array | Json.Object // Dynamic path, allow all content types
       : never,
@@ -63,7 +63,7 @@ export interface DirChain {
    * ```
    */
   dir<path extends FsLoc.RelDir.RelDir | string>(
-    path: FsLoc.Inputs.RelDir<path>,
+    path: FsLoc.Inputs.Validate.RelDir<path>,
     builder?: (_: DirChain) => DirChain,
   ): DirChain
 
@@ -117,7 +117,7 @@ export interface DirChain {
    * ```
    */
   remove<path extends FsLoc.Groups.Rel.Rel | string>(
-    path: FsLoc.Inputs.Rel<path>,
+    path: FsLoc.Inputs.Validate.Rel<path>,
   ): DirChain
 
   /**
@@ -132,7 +132,7 @@ export interface DirChain {
    * ```
    */
   clear<path extends FsLoc.RelDir.RelDir | string>(
-    path: FsLoc.Inputs.RelDir<path>,
+    path: FsLoc.Inputs.Validate.RelDir<path>,
   ): DirChain
 
   /**
@@ -151,8 +151,8 @@ export interface DirChain {
     from extends FsLoc.RelFile.RelFile | string,
     to extends FsLoc.RelFile.RelFile | string,
   >(
-    from: FsLoc.Inputs.RelFile<from>,
-    to: FsLoc.Inputs.RelFile<to>,
+    from: FsLoc.Inputs.Validate.RelFile<from>,
+    to: FsLoc.Inputs.Validate.RelFile<to>,
   ): DirChain
 
   /**
@@ -171,8 +171,41 @@ export interface DirChain {
     from extends FsLoc.RelDir.RelDir | string,
     to extends FsLoc.RelDir.RelDir | string,
   >(
-    from: FsLoc.Inputs.RelDir<from>,
-    to: FsLoc.Inputs.RelDir<to>,
+    from: FsLoc.Inputs.Validate.RelDir<from>,
+    to: FsLoc.Inputs.Validate.RelDir<to>,
+  ): DirChain
+
+  /**
+   * Add a file or directory based on the path type.
+   *
+   * For files (paths with extensions), content is required.
+   * For directories (paths ending with / or without extensions), an optional builder can be provided.
+   *
+   * @param path - The file or directory path (relative to base)
+   * @param contentOrBuilder - File content for files, or builder function for directories
+   * @returns The chain for further operations
+   *
+   * @example
+   * ```ts
+   * dir
+   *   .add('config.json', { version: '1.0' })  // File - requires content
+   *   .add('src/')                             // Empty directory
+   *   .add('tests/', d =>                      // Directory with contents
+   *     d.add('unit.test.ts', testCode))
+   * ```
+   */
+  // Overload for file paths - requires content
+  add<path extends FsLoc.RelFile.RelFile | string>(
+    path: FsLoc.Inputs.Validate.RelFile<path>,
+    content: path extends FsLoc.RelFile.RelFile ? Fs.InferFileContent<path>
+      : path extends string ? string | Uint8Array | Json.Object
+      : never,
+  ): DirChain
+
+  // Overload for directory paths - optional builder
+  add<path extends FsLoc.RelDir.RelDir | string>(
+    path: FsLoc.Inputs.Validate.RelDir<path>,
+    builder?: (_: DirChain) => DirChain,
   ): DirChain
 
   /**
@@ -310,6 +343,53 @@ export const chain = (dir: Dir): DirChain => {
             from: from as FsLoc.RelDir.RelDir,
             to: to as FsLoc.RelDir.RelDir,
           })
+        }
+      }
+      return self
+    },
+
+    add(path: any, contentOrBuilder?: any) {
+      // Determine if path is a file or directory
+      if (typeof path === 'string') {
+        const parsed = FsLoc.FsLocLoose.decodeSync(path)
+        if (parsed.file) {
+          // It's a file - treat as file operation
+          const relFile = FsLoc.RelFile.make({
+            path: parsed.path as typeof FsLoc.Path.Rel.Decoded.Type,
+            file: parsed.file,
+          })
+          operations.push({ type: 'file', path: relFile, content: contentOrBuilder })
+        } else {
+          // It's a directory - treat as directory operation
+          const relDir = FsLoc.RelDir.make({
+            path: parsed.path as typeof FsLoc.Path.Rel.Decoded.Type,
+          })
+          if (contentOrBuilder && typeof contentOrBuilder === 'function') {
+            // Has a builder function
+            const subChain = chain(dir)
+            contentOrBuilder(subChain)
+            const subOps = (subChain as any).__operations__ || []
+            operations.push({ type: 'dir', path: relDir, operations: subOps })
+          } else {
+            // Empty directory
+            operations.push({ type: 'dir', path: relDir, operations: [] })
+          }
+        }
+      } else {
+        // Already typed FsLoc
+        if (FsLoc.Groups.File.is(path)) {
+          // It's a file
+          operations.push({ type: 'file', path: path as FsLoc.RelFile.RelFile, content: contentOrBuilder })
+        } else {
+          // It's a directory
+          if (contentOrBuilder && typeof contentOrBuilder === 'function') {
+            const subChain = chain(dir)
+            contentOrBuilder(subChain)
+            const subOps = (subChain as any).__operations__ || []
+            operations.push({ type: 'dir', path: path as FsLoc.RelDir.RelDir, operations: subOps })
+          } else {
+            operations.push({ type: 'dir', path: path as FsLoc.RelDir.RelDir, operations: [] })
+          }
         }
       }
       return self

@@ -1,6 +1,6 @@
 import { expectTypeOf } from 'vitest'
 import * as FsLoc from './$$.js'
-import { ensureOptionalAbsoluteWithCwd } from './operations.js'
+import { ensureOptionalAbsoluteWithCwd } from './operations/$.js'
 
 // Test that undefined returns AbsDir
 {

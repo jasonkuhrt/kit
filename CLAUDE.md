@@ -89,7 +89,7 @@ The project uses a highly modular architecture with 30+ specialized modules in `
 6. **Type-Level Transformations**: Prefer conditional types over function overloads:
    ```typescript
    // ✅ Good - Type-level transformation
-   type Abs<T extends number> = 
+   type Abs<T extends number> =
      T extends Negative ? Positive :
      T extends NonPositive ? NonNegative :
      NonNegative
