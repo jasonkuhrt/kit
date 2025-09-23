@@ -3,6 +3,7 @@ import { Match } from 'effect'
 import * as NodePath from 'node:path'
 import * as FsLoc from './$$.js'
 import * as Groups from './groups/$$.js'
+import * as Inputs from './inputs.js'
 import { Path } from './path/$.js'
 import * as File from './types/file.js'
 
@@ -89,16 +90,24 @@ const resolveSegments = (segments: readonly string[]): string[] => {
  * Type-safe conditional return type ensures only valid combinations.
  */
 export const join = <
-  dir extends Groups.Dir.Dir,
-  rel extends Groups.Rel.Rel,
->(dir: dir, rel: rel): Join<dir, rel> => {
-  const rawSegments = [...dir.path.segments, ...rel.path.segments]
+  dir extends Groups.Dir.Dir | string,
+  rel extends Groups.Rel.Rel | string,
+>(
+  dir: Inputs.Dir<dir>,
+  rel: Inputs.Rel<rel>,
+): Join<
+  dir extends string ? Groups.Dir.Dir : dir,
+  rel extends string ? Groups.Rel.Rel : rel
+> => {
+  const normalizedDir = Inputs.normalize.dir(dir)
+  const normalizedRel = Inputs.normalize.rel(rel)
+  const rawSegments = [...normalizedDir.path.segments, ...normalizedRel.path.segments]
   const segments = resolveSegments(rawSegments)
-  const file = 'file' in rel ? rel.file : null
+  const file = 'file' in normalizedRel ? normalizedRel.file : null
 
   // The result keeps the absolute/relative nature of dir and file/dir nature of rel
   // If rel is a file, we need to create a file location, not a directory
-  const isAbsolute = Path.Abs.is(dir.path)
+  const isAbsolute = Path.Abs.is(normalizedDir.path)
 
   if (file !== null) {
     // Joining with a file - create a file location
@@ -111,7 +120,10 @@ export const join = <
         path: Path.Rel.make({ segments }),
         file,
       })
-    return result as Join<dir, rel>
+    return result as Join<
+      dir extends string ? Groups.Dir.Dir : dir,
+      rel extends string ? Groups.Rel.Rel : rel
+    >
   } else {
     // Joining with a directory - create a directory location
     const result = isAbsolute
@@ -121,23 +133,28 @@ export const join = <
       : FsLoc.RelDir.make({
         path: Path.Rel.make({ segments }),
       })
-    return result as Join<dir, rel>
+    return result as Join<
+      dir extends string ? Groups.Dir.Dir : dir,
+      rel extends string ? Groups.Rel.Rel : rel
+    >
   }
 }
 
-export const isRoot = <loc extends FsLoc.FsLoc>(
-  loc: loc,
+export const isRoot = <loc extends FsLoc.FsLoc | string>(
+  loc: Inputs.Any<loc>,
 ): boolean => {
-  return loc.path.segments.length === 0
+  const normalized = Inputs.normalize.any(loc)
+  return normalized.path.segments.length === 0
 }
 
 /**
  * Move up by one segment on path.
  */
-export const up = <loc extends FsLoc.FsLoc>(
-  loc: loc,
-): loc => {
-  return set(loc, { segments: loc.path.segments.slice(0, -1) }) as loc
+export const up = <loc extends FsLoc.FsLoc | string>(
+  loc: Inputs.Any<loc>,
+): loc extends string ? FsLoc.FsLoc : loc => {
+  const normalized = Inputs.normalize.any(loc)
+  return set(normalized, { segments: normalized.path.segments.slice(0, -1) }) as any
 }
 
 // /**
@@ -165,16 +182,19 @@ type ToDir<F extends Groups.File.File> = F extends FsLoc.AbsFile.AbsFile ? FsLoc
  * @param loc - The file location to convert
  * @returns The directory location
  */
-export const toDir = <F extends Groups.File.File>(loc: F): ToDir<F> => {
-  const fileName = loc.file.extension ? loc.file.name + loc.file.extension : loc.file.name
-  const segments = [...loc.path.segments, fileName]
+export const toDir = <F extends Groups.File.File | string>(
+  loc: Inputs.File<F>,
+): ToDir<F extends string ? Groups.File.File : F> => {
+  const normalized = Inputs.normalize.file(loc)
+  const fileName = normalized.file.extension ? normalized.file.name + normalized.file.extension : normalized.file.name
+  const segments = [...normalized.path.segments, fileName]
 
   // Create the appropriate directory type based on whether loc is absolute or relative
-  const dirLoc = Groups.Abs.is(loc)
+  const dirLoc = Groups.Abs.is(normalized)
     ? FsLoc.AbsDir.make({ path: Path.Abs.make({ segments }) })
     : FsLoc.RelDir.make({ path: Path.Rel.make({ segments }) })
 
-  return dirLoc as ToDir<F>
+  return dirLoc as ToDir<F extends string ? Groups.File.File : F>
 }
 
 /**
@@ -206,35 +226,35 @@ type EnsureAbsolute<
  * ```
  */
 export const ensureAbsolute = <
-  loc extends FsLoc.FsLoc,
-  base extends FsLoc.AbsDir.AbsDir | undefined = undefined,
+  loc extends FsLoc.FsLoc | string,
+  base extends FsLoc.AbsDir.AbsDir | string | undefined = undefined,
 >(
-  loc: loc,
-  base?: base,
-): EnsureAbsolute<loc, base> => {
+  loc: Inputs.Any<loc>,
+  base?: base extends string ? Inputs.AbsDir<base> : base,
+): EnsureAbsolute<
+  loc extends string ? FsLoc.FsLoc : loc,
+  base extends string ? FsLoc.AbsDir.AbsDir : base
+> => {
+  const normalizedLoc = Inputs.normalize.any(loc)
   // If already absolute, return as-is
-  if (Groups.Abs.is(loc)) {
-    return loc as EnsureAbsolute<loc, base>
+  if (Groups.Abs.is(normalizedLoc)) {
+    return normalizedLoc as any
   }
 
   // Relative location needs a base
-  let resolvedBase = base
-  if (!resolvedBase) {
+  let resolvedBase: FsLoc.AbsDir.AbsDir
+  if (!base) {
     // Get current working directory as base
-    resolvedBase = Pro.cwd() as base
+    resolvedBase = Pro.cwd()
+  } else {
+    resolvedBase = Inputs.normalize.absDir(base as any)
   }
 
   // Join base with relative location
-  if (FsLoc.RelFile.is(loc)) {
-    return join(resolvedBase as FsLoc.AbsDir.AbsDir, loc as FsLoc.RelFile.RelFile) as EnsureAbsolute<
-      loc,
-      base
-    >
+  if (FsLoc.RelFile.is(normalizedLoc)) {
+    return join(resolvedBase, normalizedLoc) as any
   } else {
-    return join(resolvedBase as FsLoc.AbsDir.AbsDir, loc as FsLoc.RelDir.RelDir) as EnsureAbsolute<
-      loc,
-      base
-    >
+    return join(resolvedBase, normalizedLoc as FsLoc.RelDir.RelDir) as any
   }
 }
 
@@ -266,16 +286,20 @@ type EnsureOptionalAbsolute<
  * ```
  */
 export const ensureOptionalAbsolute = <
-  loc extends FsLoc.FsLoc | undefined,
-  base extends FsLoc.AbsDir.AbsDir,
+  loc extends FsLoc.FsLoc | string | undefined,
+  base extends FsLoc.AbsDir.AbsDir | string,
 >(
-  loc: loc,
-  base: base,
-): EnsureOptionalAbsolute<loc, base> => {
+  loc: loc extends string ? Inputs.Any<loc> : loc,
+  base: Inputs.AbsDir<base>,
+): EnsureOptionalAbsolute<
+  loc extends string ? FsLoc.FsLoc : loc,
+  base extends string ? FsLoc.AbsDir.AbsDir : base
+> => {
+  const normalizedBase = Inputs.normalize.absDir(base)
   if (loc === undefined) {
-    return base as any
+    return normalizedBase as any
   }
-  return ensureAbsolute(loc, base) as any
+  return ensureAbsolute(loc as any, normalizedBase) as any
 }
 
 /**
@@ -301,16 +325,16 @@ type EnsureOptionalAbsoluteWithCwd<L extends FsLoc.FsLoc | undefined> = L extend
  * const result = ensureOptionalAbsoluteWithCwd(loc) // returns cwd as AbsDir
  * ```
  */
-export const ensureOptionalAbsoluteWithCwd = <L extends FsLoc.FsLoc | undefined>(
-  loc: L,
-): EnsureOptionalAbsoluteWithCwd<L> => {
+export const ensureOptionalAbsoluteWithCwd = <L extends FsLoc.FsLoc | string | undefined>(
+  loc: L extends string ? Inputs.Any<L> : L,
+): EnsureOptionalAbsoluteWithCwd<L extends string ? FsLoc.FsLoc : L> => {
   const base = Pro.cwd()
 
   if (loc === undefined) {
     return base as any
   }
 
-  return ensureAbsolute(loc, base) as any
+  return ensureAbsolute(loc as any, base) as any
 }
 
 /**
@@ -337,27 +361,29 @@ type ToAbs<R extends Groups.Rel.Rel> = R extends FsLoc.RelFile.RelFile ? FsLoc.A
  * const absFile2 = toAbs(relFile, base) // /home/user/src/index.ts (resolves against base)
  * ```
  */
-export const toAbs = <R extends Groups.Rel.Rel>(
-  loc: R,
-  base?: FsLoc.AbsDir.AbsDir,
-): ToAbs<R> => {
+export const toAbs = <R extends Groups.Rel.Rel | string>(
+  loc: Inputs.Rel<R>,
+  base?: FsLoc.AbsDir.AbsDir | string,
+): ToAbs<R extends string ? Groups.Rel.Rel : R> => {
+  const normalized = Inputs.normalize.rel(loc)
   if (base) {
+    const normalizedBase = typeof base === 'string' ? Inputs.normalize.absDir(base as any) : base
     // Use join to combine base with relative location
-    return join(base, loc) as ToAbs<R>
+    return join(normalizedBase, normalized) as any
   }
 
   // No base: just convert relative to absolute by re-tagging
   // This essentially changes ./path to /path
-  if (Groups.File.is(loc)) {
-    const file = (loc as any).file
+  if (Groups.File.is(normalized)) {
+    const file = (normalized as any).file
     return FsLoc.AbsFile.make({
-      path: Path.Abs.make({ segments: loc.path.segments }),
+      path: Path.Abs.make({ segments: normalized.path.segments }),
       file,
-    }) as ToAbs<R>
+    }) as any
   } else {
     return FsLoc.AbsDir.make({
-      path: Path.Abs.make({ segments: loc.path.segments }),
-    }) as ToAbs<R>
+      path: Path.Abs.make({ segments: normalized.path.segments }),
+    }) as any
   }
 }
 
@@ -382,13 +408,15 @@ type ToRel<A extends Groups.Abs.Abs> = A extends FsLoc.AbsFile.AbsFile ? FsLoc.R
  * const relFile = toRel(absFile, base) // ./src/index.ts
  * ```
  */
-export const toRel = <A extends Groups.Abs.Abs>(
-  loc: A,
-  base: FsLoc.AbsDir.AbsDir,
-): ToRel<A> => {
+export const toRel = <A extends Groups.Abs.Abs | string>(
+  loc: Inputs.Abs<A>,
+  base: FsLoc.AbsDir.AbsDir | string,
+): ToRel<A extends string ? Groups.Abs.Abs : A> => {
+  const normalizedLoc = Inputs.normalize.abs(loc)
+  const normalizedBase = typeof base === 'string' ? Inputs.normalize.absDir(base as any) : base
   // Encode the locations to get their string representations
-  const locPath = FsLoc.encodeSync(loc)
-  const basePath = FsLoc.encodeSync(base)
+  const locPath = FsLoc.encodeSync(normalizedLoc)
+  const basePath = FsLoc.encodeSync(normalizedBase)
 
   // Calculate relative path using Node.js built-in
   const relativePath = NodePath.relative(basePath, locPath)
@@ -410,21 +438,24 @@ export const toRel = <A extends Groups.Abs.Abs>(
  *
  * @example
  * ```ts
- * name(AbsFile.decodeSync('/path/to/file.txt')) // 'file.txt'
- * name(AbsDir.decodeSync('/path/to/src/')) // 'src'
- * name(RelFile.decodeSync('./docs/README.md')) // 'README.md'
- * name(AbsDir.decodeSync('/')) // ''
+ * name('/path/to/file.txt') // 'file.txt'
+ * name('/path/to/src/') // 'src'
+ * name('./docs/README.md') // 'README.md'
+ * name('/') // ''
  * ```
  */
-export const name = (loc: FsLoc.FsLoc): string => {
-  if ('file' in loc) {
+export const name = <loc extends FsLoc.FsLoc | string>(
+  loc: Inputs.Any<loc>,
+): string => {
+  const normalized = Inputs.normalize.any(loc)
+  if ('file' in normalized) {
     // For files, combine name and extension
-    return loc.file.extension
-      ? loc.file.name + loc.file.extension
-      : loc.file.name
+    return normalized.file.extension
+      ? normalized.file.name + normalized.file.extension
+      : normalized.file.name
   } else {
     // For directories, return the last segment
-    const segments = loc.path.segments
+    const segments = normalized.path.segments
     return segments.length > 0
       ? segments[segments.length - 1]!
       : '' // Root directory case
@@ -450,27 +481,32 @@ export const name = (loc: FsLoc.FsLoc): string => {
  * FsLoc.isUnder(absFile, relDir) // false - different path types
  * ```
  */
-export const isUnder = (
-  child: FsLoc.FsLoc,
-  parent: Groups.Dir.Dir,
+export const isUnder = <
+  child extends FsLoc.FsLoc | string,
+  parent extends Groups.Dir.Dir | string,
+>(
+  child: Inputs.Any<child>,
+  parent: Inputs.Dir<parent>,
 ): boolean => {
+  const normalizedChild = Inputs.normalize.any(child)
+  const normalizedParent = Inputs.normalize.dir(parent)
   // Check if both are absolute or both are relative
-  const childIsAbs = child._tag === 'LocAbsFile' || child._tag === 'LocAbsDir'
-  const parentIsAbs = parent._tag === 'LocAbsDir'
+  const childIsAbs = normalizedChild._tag === 'LocAbsFile' || normalizedChild._tag === 'LocAbsDir'
+  const parentIsAbs = normalizedParent._tag === 'LocAbsDir'
 
   if (childIsAbs !== parentIsAbs) {
     return false // Can't compare absolute with relative
   }
 
   // Compare path segments
-  const parentSegments = parent.path.segments
-  const childSegments = child.path.segments
+  const parentSegments = normalizedParent.path.segments
+  const childSegments = normalizedChild.path.segments
 
   // Special case: root directory (0 segments) contains everything except itself
   if (parentSegments.length === 0) {
     // For absolute paths, root contains everything that has segments OR has a file
     // (files at root like /file.txt have 0 segments but have a file property)
-    return childSegments.length > 0 || 'file' in child
+    return childSegments.length > 0 || 'file' in normalizedChild
   }
 
   // Child must have at least as many segments as parent
@@ -490,7 +526,7 @@ export const isUnder = (
   // (files in a directory have same segments as the directory)
   // If both are directories with same segments, they're the same path (not under)
   return childSegments.length > parentSegments.length
-    || (childSegments.length === parentSegments.length && 'file' in child)
+    || (childSegments.length === parentSegments.length && 'file' in normalizedChild)
 }
 
 /**
@@ -508,9 +544,12 @@ export const isUnder = (
  * FsLoc.isAbove(projectDir, sourceFile) // true
  * ```
  */
-export const isAbove = (
-  parent: Groups.Dir.Dir,
-  child: FsLoc.FsLoc,
+export const isAbove = <
+  parent extends Groups.Dir.Dir | string,
+  child extends FsLoc.FsLoc | string,
+>(
+  parent: Inputs.Dir<parent>,
+  child: Inputs.Any<child>,
 ): boolean => {
   return isUnder(child, parent)
 }
@@ -530,7 +569,12 @@ export const isAbove = (
  * isInProject(FsLoc.fromString('/home/other/file.txt')) // false
  * ```
  */
-export const isUnderOf = (parent: Groups.Dir.Dir) => (child: FsLoc.FsLoc): boolean => isUnder(child, parent)
+export const isUnderOf = <parent extends Groups.Dir.Dir | string>(
+  parent: Inputs.Dir<parent>,
+) =>
+<child extends FsLoc.FsLoc | string>(
+  child: Inputs.Any<child>,
+): boolean => isUnder(child, parent)
 
 /**
  * Create a curried version of isAbove with the child location fixed.
@@ -547,4 +591,9 @@ export const isUnderOf = (parent: Groups.Dir.Dir) => (child: FsLoc.FsLoc): boole
  * hasAsParent(FsLoc.fromString('/home/other/')) // false
  * ```
  */
-export const isAboveOf = (child: FsLoc.FsLoc) => (parent: Groups.Dir.Dir): boolean => isAbove(parent, child)
+export const isAboveOf = <child extends FsLoc.FsLoc | string>(
+  child: Inputs.Any<child>,
+) =>
+<parent extends Groups.Dir.Dir | string>(
+  parent: Inputs.Dir<parent>,
+): boolean => isAbove(parent, child)

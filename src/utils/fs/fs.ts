@@ -51,7 +51,7 @@ export const findFirstUnderDir = (
     const fs = yield* FileSystem.FileSystem
 
     // Build absolute paths by joining dir with each relative path
-    const locs = paths.map(path => FsLoc.join(dir, path))
+    const locs = paths.map(path => FsLoc.join(dir, path as FsLoc.Groups.Rel.Rel))
 
     // Check each path for existence
     const checks = yield* Effect.all(
