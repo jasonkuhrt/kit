@@ -43,6 +43,8 @@
     "#codec/codec": "./build/utils/codec/$$.js",
     "#url": "./build/domains/url/$.js",
     "#url/url": "./build/domains/url/$$.js",
+    "#dir": "./build/utils/dir/$.js",
+    "#dir/dir": "./build/utils/dir/$$.js",
     "#fn": "./build/domains/fn/$.js",
     "#fn/fn": "./build/domains/fn/$$.js",
     "#fs": "./build/utils/fs/$.js",
