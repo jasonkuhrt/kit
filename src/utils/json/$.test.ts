@@ -84,7 +84,23 @@ test('codec handles typed values', () => {
 
 property('encode/decode are codec aliases', fc.jsonValue(), (value) => {
   expect(Json.encode(value)).toBe(Json.codec.encode(value))
-  expect(Json.decode(Json.encode(value))).toEqual(value)
+
+  // JSON.stringify converts -0 to 0, normalize for comparison
+  const normalizeZeros = (v: unknown): unknown => {
+    if (Object.is(v, -0)) return 0
+    if (Array.isArray(v)) return v.map(normalizeZeros)
+    if (v && typeof v === 'object' && v !== null) {
+      const result: any = {}
+      for (const [k, val] of Object.entries(v)) {
+        result[k] = normalizeZeros(val)
+      }
+      return result
+    }
+    return v
+  }
+
+  const decoded = Json.decode(Json.encode(value))
+  expect(normalizeZeros(decoded)).toEqual(normalizeZeros(value))
 })
 
 test('decode throws on invalid JSON', () => {

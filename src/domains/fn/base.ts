@@ -81,3 +81,28 @@ export type bind<$Fn extends AnyAnyParametersMin1> =
 export const noop = () => {}
 
 export const $identityPartial = <value>(value: Obj.PartialDeep<value>): value => value as any
+
+// Curried function utilities
+
+/**
+ * Apply the second parameter of a curried function.
+ * For a function (a) => (b) => c and a value b, returns (a) => c
+ * Useful for creating service interfaces from curried operations.
+ */
+export const applySecond = <fn extends (...args: any[]) => (arg: any) => any, arg>(
+  fn: fn,
+  arg: arg,
+): applySecond<fn, arg> => {
+  return ((...args: any[]) => fn(...args)(arg)) as any
+}
+
+/**
+ * Apply the second parameter of a curried function.
+ * For a function (a) => (b) => c, returns (a) => c
+ * Useful for creating service interfaces from curried operations.
+ */
+// dprint-ignore
+export type applySecond<$Fn, $Arg> =
+  $Fn extends (...args: infer __args__) => (arg: $Arg) => infer __return__
+    ? (...args: __args__) => __return__
+    : never

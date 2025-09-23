@@ -12,9 +12,8 @@ describe('single-path operations', () => {
         exists: vi.fn((path: string) => Effect.succeed(path === '/test/file.txt')),
       }
 
-      const fileLoc = FsLoc.AbsFile.decodeSync('/test/file.txt')
       const result = yield* Effect.provideService(
-        Fs.exists(fileLoc),
+        Fs.exists('/test/file.txt'),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -30,9 +29,8 @@ describe('single-path operations', () => {
         readFile: vi.fn(() => Effect.succeed(mockContent)),
       }
 
-      const fileLoc = FsLoc.AbsFile.decodeSync('/test/file.txt')
       const result = yield* Effect.provideService(
-        Fs.read(fileLoc),
+        Fs.read('/test/file.txt'),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -45,16 +43,17 @@ describe('single-path operations', () => {
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
         writeFile: vi.fn(() => Effect.succeed(undefined)),
+        makeDirectory: vi.fn(() => Effect.succeed(undefined)),
       }
 
-      const fileLoc = FsLoc.AbsFile.decodeSync('/test/file.txt')
       const content = new Uint8Array([72, 101, 108, 108, 111])
       yield* Effect.provideService(
-        Fs.write(fileLoc, content),
+        Fs.write('/test/file.txt', content),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
 
+      expect(mockFs.makeDirectory).toHaveBeenCalledWith('/test/', { recursive: true })
       expect(mockFs.writeFile).toHaveBeenCalledWith('/test/file.txt', content, {})
     }))
 
@@ -64,9 +63,8 @@ describe('single-path operations', () => {
         makeDirectory: vi.fn(() => Effect.succeed(undefined)),
       }
 
-      const dirLoc = FsLoc.AbsDir.decodeSync('/test/dir/')
       yield* Effect.provideService(
-        Fs.write(dirLoc),
+        Fs.write('/test/dir/'),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -80,9 +78,8 @@ describe('single-path operations', () => {
         makeDirectory: vi.fn(() => Effect.succeed(undefined)),
       }
 
-      const dirLoc = FsLoc.AbsDir.decodeSync('/test/dir/')
       yield* Effect.provideService(
-        Fs.write(dirLoc, { recursive: true }),
+        Fs.write('/test/dir/', { recursive: true }),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -96,9 +93,8 @@ describe('single-path operations', () => {
         remove: vi.fn(() => Effect.succeed(undefined)),
       }
 
-      const fileLoc = FsLoc.AbsFile.decodeSync('/test/file.txt')
       yield* Effect.provideService(
-        Fs.remove(fileLoc),
+        Fs.remove('/test/file.txt'),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -118,9 +114,8 @@ describe('single-path operations', () => {
         stat: vi.fn(() => Effect.succeed(mockStat as any)),
       }
 
-      const fileLoc = FsLoc.AbsFile.decodeSync('/test/file.txt')
       const result = yield* Effect.provideService(
-        Fs.stat(fileLoc),
+        Fs.stat('/test/file.txt'),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -156,9 +151,8 @@ describe('single-path operations', () => {
         }),
       }
 
-      const dirLoc = FsLoc.AbsDir.decodeSync('/test/dir/')
       const result = yield* Effect.provideService(
-        Fs.read(dirLoc),
+        Fs.read('/test/dir/'),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -211,9 +205,8 @@ describe('single-path operations', () => {
         }),
       }
 
-      const dirLoc = FsLoc.RelDir.decodeSync('./src/')
       const result = yield* Effect.provideService(
-        Fs.read(dirLoc),
+        Fs.read('./src/'),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -242,10 +235,8 @@ describe('two-path operations', () => {
         copy: vi.fn(() => Effect.succeed(undefined)),
       }
 
-      const sourceLoc = FsLoc.AbsFile.decodeSync('/test/source.txt')
-      const destLoc = FsLoc.AbsFile.decodeSync('/test/dest.txt')
       yield* Effect.provideService(
-        Fs.copy(sourceLoc, destLoc),
+        Fs.copy('/test/source.txt', '/test/dest.txt'),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -261,10 +252,8 @@ describe('two-path operations', () => {
         copy: vi.fn(() => Effect.succeed(undefined)),
       }
 
-      const sourceLoc = FsLoc.AbsDir.decodeSync('/test/source/')
-      const destLoc = FsLoc.AbsDir.decodeSync('/test/dest/')
       yield* Effect.provideService(
-        Fs.copy(sourceLoc, destLoc),
+        Fs.copy('/test/source/', '/test/dest/'),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -279,10 +268,8 @@ describe('two-path operations', () => {
         rename: vi.fn(() => Effect.succeed(undefined)),
       }
 
-      const oldLoc = FsLoc.AbsFile.decodeSync('/test/old.txt')
-      const newLoc = FsLoc.AbsFile.decodeSync('/test/new.txt')
       yield* Effect.provideService(
-        Fs.rename(oldLoc, newLoc),
+        Fs.rename('/test/old.txt', '/test/new.txt'),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -296,10 +283,8 @@ describe('two-path operations', () => {
         link: vi.fn(() => Effect.succeed(undefined)),
       }
 
-      const targetLoc = FsLoc.AbsFile.decodeSync('/test/target.txt')
-      const linkLoc = FsLoc.AbsFile.decodeSync('/test/link.txt')
       yield* Effect.provideService(
-        Fs.link(targetLoc, linkLoc),
+        Fs.link('/test/target.txt', '/test/link.txt'),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -313,10 +298,8 @@ describe('two-path operations', () => {
         symlink: vi.fn(() => Effect.succeed(undefined)),
       }
 
-      const targetLoc = FsLoc.AbsFile.decodeSync('/test/target.txt')
-      const linkLoc = FsLoc.AbsFile.decodeSync('/test/link.txt')
       yield* Effect.provideService(
-        Fs.symlink(targetLoc, linkLoc),
+        Fs.symlink('/test/target.txt', '/test/link.txt'),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -424,9 +407,8 @@ describe('path-returning operations', () => {
         ),
       }
 
-      const fileLoc = FsLoc.AbsFile.decodeSync('/test/link.txt')
       const result = yield* Effect.provideService(
-        Fs.realPath(fileLoc),
+        Fs.realPath('/test/link.txt'),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -444,9 +426,8 @@ describe('stream operations', () => {
         readFileString: vi.fn(() => Effect.succeed('file content')),
       }
 
-      const fileLoc = FsLoc.AbsFile.decodeSync('/test/file.txt')
       const result = yield* Effect.provideService(
-        Fs.readString(fileLoc),
+        Fs.readString('/test/file.txt'),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )
@@ -461,10 +442,9 @@ describe('stream operations', () => {
         writeFileString: vi.fn(() => Effect.succeed(undefined)),
       }
 
-      const fileLoc = FsLoc.AbsFile.decodeSync('/test/file.txt')
       const content = 'file content'
       yield* Effect.provideService(
-        Fs.writeString(fileLoc, content),
+        Fs.writeString('/test/file.txt', content),
         FileSystem.FileSystem,
         mockFs as FileSystem.FileSystem,
       )

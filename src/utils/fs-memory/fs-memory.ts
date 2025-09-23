@@ -79,7 +79,20 @@ export const layer = (initialDiskLayout: DiskLayout) => {
     FileSystem,
     {
       // File existence check
-      exists: (path: string) => Effect.succeed(path in diskLayout),
+      exists: (path: string) => {
+        // Check if path exists directly
+        if (path in diskLayout) return Effect.succeed(true)
+
+        // Check if it's a directory with marker
+        const dirPath = path.endsWith('/') ? path : path + '/'
+        if (`${dirPath}.dir_marker` in diskLayout) return Effect.succeed(true)
+
+        // Check if it's a directory with files under it
+        const normalizedPath = path.endsWith('/') ? path : path + '/'
+        const hasChildren = Object.keys(diskLayout).some(key => key.startsWith(normalizedPath) && key !== path)
+
+        return Effect.succeed(hasChildren)
+      },
 
       // Read file as string
       readFileString: (path: string) => {
@@ -99,8 +112,12 @@ export const layer = (initialDiskLayout: DiskLayout) => {
           .filter(filePath => filePath.startsWith(normalizedPath))
           .map(filePath => filePath.slice(normalizedPath.length))
           .filter(relativePath => relativePath.length > 0 && !relativePath.includes('/'))
+          .filter(entry => !entry.endsWith('.dir_marker')) // Filter out directory markers
 
-        return entries.length > 0
+        // Check if directory exists (has marker or files)
+        const dirExists = `${normalizedPath}.dir_marker` in diskLayout || entries.length > 0
+
+        return dirExists
           ? Effect.succeed(entries)
           : failNotFound('readDirectory', path, 'scandir')
       },
@@ -115,6 +132,18 @@ export const layer = (initialDiskLayout: DiskLayout) => {
             isDirectory: () => false,
             isSymbolicLink: () => false,
             size: typeof content === 'string' ? content.length : content.byteLength,
+          } as any)
+        }
+
+        // Check if it's a directory with marker
+        const dirPath = path.endsWith('/') ? path : path + '/'
+        if (`${dirPath}.dir_marker` in diskLayout) {
+          return Effect.succeed({
+            type: 'Directory' as const,
+            isFile: () => false,
+            isDirectory: () => true,
+            isSymbolicLink: () => false,
+            size: 0,
           } as any)
         }
 
@@ -172,8 +201,13 @@ export const layer = (initialDiskLayout: DiskLayout) => {
       },
 
       makeDirectory: (path: string, options?: { recursive?: boolean }) => {
-        // In memory fs, directories are implicit - just mark success
-        // We could track empty directories if needed
+        // Track empty directories by adding a marker
+        // This allows exists() to find them
+        if (!path.endsWith('/')) {
+          path = path + '/'
+        }
+        // Add a special marker for the directory
+        diskLayout[`${path}.dir_marker`] = ''
         return Effect.void
       },
       makeTempDirectory: () => failUnsupported('makeTempDirectory', 'Write operations'),

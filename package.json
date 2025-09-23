@@ -149,6 +149,7 @@
     "./cli": "./build/utils/cli/$$.js",
     "./codec": "./build/utils/codec/$$.js",
     "./debug": "./build/utils/debug/$$.js",
+    "./dir": "./build/utils/dir/$$.js",
     "./err": "./build/utils/err/$$.js",
     "./fn": "./build/domains/fn/$$.js",
     "./fs": "./build/utils/fs/$$.js",
