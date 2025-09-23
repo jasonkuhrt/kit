@@ -2,10 +2,10 @@ import { FsLoc } from '#fs-loc'
 import '../fs-loc/$.test-matchers.js'
 import { FileSystem } from '@effect/platform'
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Effect, Option } from 'effect'
+import { Effect, Layer, Option } from 'effect'
 import * as Fs from './filesystem.js'
 
-describe('single-path operations', () => {
+describe('filesystem operations', () => {
   it.effect('.exists', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
@@ -41,20 +41,21 @@ describe('single-path operations', () => {
 
   it.effect('.write file', () =>
     Effect.gen(function*() {
-      const mockFs: Partial<FileSystem.FileSystem> = {
-        writeFile: vi.fn(() => Effect.succeed(undefined)),
-        makeDirectory: vi.fn(() => Effect.succeed(undefined)),
-      }
+      const writeFile = vi.fn(() => Effect.succeed(undefined))
+      const makeDirectory = vi.fn(() => Effect.succeed(undefined))
 
-      const content = new Uint8Array([72, 101, 108, 108, 111])
-      yield* Effect.provideService(
-        Fs.write('/test/file.txt', content),
-        FileSystem.FileSystem,
-        mockFs as FileSystem.FileSystem,
+      const mockLayer = Layer.mock(FileSystem.FileSystem, {
+        writeFile,
+        makeDirectory,
+        sink: () => undefined as any, // Required property, not used in this test
+      })
+
+      yield* Fs.write('/test/file.txt', new Uint8Array([72, 101, 108, 108, 111])).pipe(
+        Effect.provide(mockLayer),
       )
 
-      expect(mockFs.makeDirectory).toHaveBeenCalledWith('/test/', { recursive: true })
-      expect(mockFs.writeFile).toHaveBeenCalledWith('/test/file.txt', content, {})
+      expect(makeDirectory).toHaveBeenCalledWith('/test/', { recursive: true })
+      expect(writeFile).toHaveBeenCalledWith('/test/file.txt', new Uint8Array([72, 101, 108, 108, 111]), {})
     }))
 
   it.effect('.write dir', () =>
@@ -225,9 +226,7 @@ describe('single-path operations', () => {
 
       expect(mockFs.readDirectory).toHaveBeenCalledWith('./src/')
     }))
-})
 
-describe('two-path operations', () => {
   it.effect('.copy file to file', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
@@ -417,9 +416,7 @@ describe('path-returning operations', () => {
       expect(FsLoc.FsLocLoose.encodeSync(result)).toBe('/real/path/file.txt')
       expect(mockFs.realPath).toHaveBeenCalledWith('/test/link.txt')
     }))
-})
 
-describe('stream operations', () => {
   it.effect('.readString', () =>
     Effect.gen(function*() {
       const mockFs: Partial<FileSystem.FileSystem> = {
@@ -438,18 +435,22 @@ describe('stream operations', () => {
 
   it.effect('.writeString (deprecated - use write instead)', () =>
     Effect.gen(function*() {
-      const mockFs: Partial<FileSystem.FileSystem> = {
-        writeFileString: vi.fn(() => Effect.succeed(undefined)),
-      }
+      const writeFileString = vi.fn(() => Effect.succeed(undefined))
+      const makeDirectory = vi.fn(() => Effect.succeed(undefined))
+
+      const mockLayer = Layer.mock(FileSystem.FileSystem, {
+        writeFileString,
+        makeDirectory,
+        sink: () => undefined as any, // Required property, not used in this test
+      })
 
       const content = 'file content'
-      yield* Effect.provideService(
-        Fs.writeString('/test/file.txt', content),
-        FileSystem.FileSystem,
-        mockFs as FileSystem.FileSystem,
+      yield* Fs.write('/test/file.txt', content).pipe(
+        Effect.provide(mockLayer),
       )
 
-      expect(mockFs.writeFileString).toHaveBeenCalledWith('/test/file.txt', content, {})
+      expect(makeDirectory).toHaveBeenCalledWith('/test/', { recursive: true })
+      expect(writeFileString).toHaveBeenCalledWith('/test/file.txt', content, {})
     }))
 
   it.skip('.stream', () => {

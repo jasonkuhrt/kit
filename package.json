@@ -230,7 +230,6 @@
   },
   "dependencies": {
     "@types/node": "^24.5.2",
-    "@zenfs/core": "^2.4.0",
     "ansis": "^4.1.0",
     "consola": "^3.4.2",
     "es-toolkit": "^1.39.10",

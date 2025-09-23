@@ -7,144 +7,68 @@ import './$.test-matchers.js'
 const PathAbs = FsLoc.Path.Abs.make
 const PathRel = FsLoc.Path.Rel.make
 const File = FsLoc.File.make
-const LocLoose = FsLoc.FsLocLoose.make
 const l = FsLoc.fromString
 
-describe('.AbsFile', () => {
+describe('*.decodeSync', () => {
+  const AbsFile = FsLoc.AbsFile.make
+  const RelFile = FsLoc.RelFile.make
+  const AbsDir = FsLoc.AbsDir.make
+  const RelDir = FsLoc.RelDir.make
+
   // dprint-ignore
   Test.Table.suite<
     string,
-    {
-      path: string[]
-      fileName: string
-      extension: string | null
-      encoded: string
-    } | { throws: true }
+    { loc: FsLoc.FsLoc; encoded: string } | { throws: true },
+    { fsloc: typeof FsLoc.AbsFile | typeof FsLoc.RelFile | typeof FsLoc.AbsDir | typeof FsLoc.RelDir }
   >('.decodeSync', [
-    { n: 'simple file in root',                          i: '/file.txt',                o: { path: [],                                   fileName: 'file',       extension: '.txt',  encoded: '/file.txt' } },
-    { n: 'file in nested path',                          i: '/home/user/doc.pdf',       o: { path: ['home', 'user'],                    fileName: 'doc',        extension: '.pdf',  encoded: '/home/user/doc.pdf' } },
-    // Note: Files without extensions are currently treated as directories by the analyzer
-    // { name: 'file with no extension',                       i: '/README',                  o: { path: [],                                   fileName: 'README',     extension: null,    encoded: '/README' } },
-    { n: 'deeply nested file',                           i: '/a/b/c/d/e.js',            o: { path: ['a', 'b', 'c', 'd'],                fileName: 'e',          extension: '.js',   encoded: '/a/b/c/d/e.js' } },
-    { n: 'file with multiple dots',                      i: '/archive.tar.gz',          o: { path: [],                                   fileName: 'archive.tar', extension: '.gz',  encoded: '/archive.tar.gz' } },
-    // Note: Hidden files without extensions are currently treated as directories by the analyzer
-    // { name: 'hidden file',                                  i: '/.gitignore',              o: { path: [],                                   fileName: '.gitignore', extension: null,    encoded: '/.gitignore' } },
-    { n: 'hidden file with extension',                   i: '/.config.json',            o: { path: [],                                   fileName: '.config',    extension: '.json', encoded: '/.config.json' } },
-    { n: 'file with spaces',                             i: '/my docs/file name.txt',   o: { path: ['my docs'],                         fileName: 'file name',  extension: '.txt',  encoded: '/my docs/file name.txt' } },
-    { n: 'throws on relative path',                      i: 'file.txt',                 o: { throws: true } },
-    { n: 'throws on directory path',                     i: '/home/user/',              o: { throws: true } },
-  ], ({ i, o }) => {
+    // AbsFile cases
+    { n: 'AbsFile: simple file in root',        fsloc: FsLoc.AbsFile, i: '/file.txt',                o: { loc: AbsFile({ path: PathAbs({ segments: [] }),                     file: File({ name: 'file',        extension: '.txt' }) }),  encoded: '/file.txt' } },
+    { n: 'AbsFile: file in nested path',        fsloc: FsLoc.AbsFile, i: '/home/user/doc.pdf',       o: { loc: AbsFile({ path: PathAbs({ segments: ['home', 'user'] }),       file: File({ name: 'doc',         extension: '.pdf' }) }),  encoded: '/home/user/doc.pdf' } },
+    { n: 'AbsFile: deeply nested file',         fsloc: FsLoc.AbsFile, i: '/a/b/c/d/e.js',            o: { loc: AbsFile({ path: PathAbs({ segments: ['a', 'b', 'c', 'd'] }),   file: File({ name: 'e',           extension: '.js' }) }),   encoded: '/a/b/c/d/e.js' } },
+    { n: 'AbsFile: file with multiple dots',    fsloc: FsLoc.AbsFile, i: '/archive.tar.gz',          o: { loc: AbsFile({ path: PathAbs({ segments: [] }),                     file: File({ name: 'archive.tar', extension: '.gz' }) }),   encoded: '/archive.tar.gz' } },
+    { n: 'AbsFile: hidden file with extension', fsloc: FsLoc.AbsFile, i: '/.config.json',            o: { loc: AbsFile({ path: PathAbs({ segments: [] }),                     file: File({ name: '.config',     extension: '.json' }) }), encoded: '/.config.json' } },
+    { n: 'AbsFile: file with spaces',           fsloc: FsLoc.AbsFile, i: '/my docs/file name.txt',   o: { loc: AbsFile({ path: PathAbs({ segments: ['my docs'] }),            file: File({ name: 'file name',   extension: '.txt' }) }),  encoded: '/my docs/file name.txt' } },
+    { n: 'AbsFile: throws on relative path',    fsloc: FsLoc.AbsFile, i: 'file.txt',                 o: { throws: true } },
+    { n: 'AbsFile: throws on directory path',   fsloc: FsLoc.AbsFile, i: '/home/user/',              o: { throws: true } },
+
+    // RelFile cases
+    { n: 'RelFile: simple relative file',       fsloc: FsLoc.RelFile, i: 'file.txt',                 o: { loc: RelFile({ path: PathRel({ segments: [] }),                     file: File({ name: 'file',  extension: '.txt' }) }),  encoded: './file.txt' } },
+    { n: 'RelFile: current dir prefix',         fsloc: FsLoc.RelFile, i: './file.txt',               o: { loc: RelFile({ path: PathRel({ segments: [] }),                     file: File({ name: 'file',  extension: '.txt' }) }),  encoded: './file.txt' } },
+    { n: 'RelFile: parent dir reference',       fsloc: FsLoc.RelFile, i: '../file.txt',              o: { loc: RelFile({ path: PathRel({ segments: ['..'] }),                 file: File({ name: 'file',  extension: '.txt' }) }),  encoded: './../file.txt' } },
+    { n: 'RelFile: nested relative path',       fsloc: FsLoc.RelFile, i: 'src/index.ts',             o: { loc: RelFile({ path: PathRel({ segments: ['src'] }),                file: File({ name: 'index', extension: '.ts' }) }),   encoded: './src/index.ts' } },
+    { n: 'RelFile: multiple parent refs',       fsloc: FsLoc.RelFile, i: '../../lib/util.js',        o: { loc: RelFile({ path: PathRel({ segments: ['..', '..', 'lib'] }),    file: File({ name: 'util',  extension: '.js' }) }),   encoded: './../../lib/util.js' } },
+    { n: 'RelFile: complex nested path',        fsloc: FsLoc.RelFile, i: './src/components/App.tsx', o: { loc: RelFile({ path: PathRel({ segments: ['src', 'components'] }),  file: File({ name: 'App',   extension: '.tsx' }) }),  encoded: './src/components/App.tsx' } },
+    { n: 'RelFile: throws on absolute path',    fsloc: FsLoc.RelFile, i: '/file.txt',                o: { throws: true } },
+    { n: 'RelFile: throws on directory',        fsloc: FsLoc.RelFile, i: 'src/',                     o: { throws: true } },
+
+    // AbsDir cases
+    { n: 'AbsDir: root directory',              fsloc: FsLoc.AbsDir,  i: '/',                        o: { loc: AbsDir({ path: PathAbs({ segments: [] }) }),                                                          encoded: '/' } },
+    { n: 'AbsDir: simple directory',            fsloc: FsLoc.AbsDir,  i: '/home/',                   o: { loc: AbsDir({ path: PathAbs({ segments: ['home'] }) }),                                                    encoded: '/home/' } },
+    { n: 'AbsDir: nested directory',            fsloc: FsLoc.AbsDir,  i: '/usr/local/bin/',          o: { loc: AbsDir({ path: PathAbs({ segments: ['usr', 'local', 'bin'] }) }),                                     encoded: '/usr/local/bin/' } },
+    { n: 'AbsDir: without trailing slash',      fsloc: FsLoc.AbsDir,  i: '/home',                    o: { loc: AbsDir({ path: PathAbs({ segments: ['home'] }) }),                                                    encoded: '/home/' } },
+    { n: 'AbsDir: deeply nested',               fsloc: FsLoc.AbsDir,  i: '/a/b/c/d/e/',              o: { loc: AbsDir({ path: PathAbs({ segments: ['a', 'b', 'c', 'd', 'e'] }) }),                                   encoded: '/a/b/c/d/e/' } },
+    { n: 'AbsDir: with spaces',                 fsloc: FsLoc.AbsDir,  i: '/my documents/projects/',  o: { loc: AbsDir({ path: PathAbs({ segments: ['my documents', 'projects'] }) }),                                encoded: '/my documents/projects/' } },
+    { n: 'AbsDir: throws on relative path',     fsloc: FsLoc.AbsDir,  i: 'home/',                    o: { throws: true } },
+    { n: 'AbsDir: throws on relative with dot', fsloc: FsLoc.AbsDir,  i: './home/',                  o: { throws: true } },
+
+    // RelDir cases
+    { n: 'RelDir: current directory',           fsloc: FsLoc.RelDir,  i: './',                       o: { loc: RelDir({ path: PathRel({ segments: [] }) }),                                                          encoded: './' } },
+    { n: 'RelDir: simple relative dir',         fsloc: FsLoc.RelDir,  i: 'src/',                     o: { loc: RelDir({ path: PathRel({ segments: ['src'] }) }),                                                     encoded: './src/' } },
+    { n: 'RelDir: parent directory',            fsloc: FsLoc.RelDir,  i: '../',                      o: { loc: RelDir({ path: PathRel({ segments: ['..'] }) }),                                                      encoded: './../' } },
+    { n: 'RelDir: nested relative',             fsloc: FsLoc.RelDir,  i: 'src/components/',          o: { loc: RelDir({ path: PathRel({ segments: ['src', 'components'] }) }),                                       encoded: './src/components/' } },
+    { n: 'RelDir: multiple parent refs',        fsloc: FsLoc.RelDir,  i: '../../lib/',               o: { loc: RelDir({ path: PathRel({ segments: ['..', '..', 'lib'] }) }),                                         encoded: './../../lib/' } },
+    { n: 'RelDir: with current dir prefix',     fsloc: FsLoc.RelDir,  i: './src/',                   o: { loc: RelDir({ path: PathRel({ segments: ['src'] }) }),                                                     encoded: './src/' } },
+    { n: 'RelDir: complex path',                fsloc: FsLoc.RelDir,  i: '../src/lib/utils/',        o: { loc: RelDir({ path: PathRel({ segments: ['..', 'src', 'lib', 'utils'] }) }),                               encoded: './../src/lib/utils/' } },
+    { n: 'RelDir: without trailing slash',      fsloc: FsLoc.RelDir,  i: 'src',                      o: { loc: RelDir({ path: PathRel({ segments: ['src'] }) }),                                                     encoded: './src/' } },
+    { n: 'RelDir: throws on absolute path',     fsloc: FsLoc.RelDir,  i: '/src/',                    o: { throws: true } },
+  ], ({ i, o, fsloc }) => {
     if ('throws' in o) {
-      expect(() => FsLoc.AbsFile.decodeSync(i)).toThrow()
+      expect(() => fsloc.decodeSync(i)).toThrow()
     } else {
-      const result = FsLoc.AbsFile.decodeSync(i)
-      expect(result.path.segments).toEqual(o.path)
-      expect(result.file.name).toBe(o.fileName)
-      expect(result.file.extension).toBe(o.extension)
-
+      const result = fsloc.decodeSync(i)
+      expect(result).toBeEquivalent(o.loc, FsLoc.FsLoc)
       // Test round-trip encoding
-      const encoded = FsLoc.AbsFile.encodeSync(result)
-      expect(encoded).toBe(o.encoded)
-    }
-  })
-})
-
-describe('.RelFile', () => {
-  // dprint-ignore
-  Test.Table.suite<
-    string,
-    {
-      path: string[]
-      fileName: string
-      extension: string | null
-      encoded: string
-    } | { throws: true }
-  >('.decodeSync', [
-    { n: 'simple relative file',                         i: 'file.txt',                 o: { path: [],                                   fileName: 'file',       extension: '.txt',  encoded: './file.txt' } },
-    { n: 'current dir prefix',                           i: './file.txt',               o: { path: [],                                   fileName: 'file',       extension: '.txt',  encoded: './file.txt' } },
-    { n: 'parent dir reference',                         i: '../file.txt',              o: { path: ['..'],                               fileName: 'file',       extension: '.txt',  encoded: './../file.txt' } },
-    { n: 'nested relative path',                         i: 'src/index.ts',             o: { path: ['src'],                              fileName: 'index',      extension: '.ts',   encoded: './src/index.ts' } },
-    { n: 'multiple parent refs',                         i: '../../lib/util.js',        o: { path: ['..', '..', 'lib'],                 fileName: 'util',       extension: '.js',   encoded: './../../lib/util.js' } },
-    // Note: Files without extensions are currently treated as directories by the analyzer
-    // { name: 'no extension',                                 i: 'README',                   o: { path: [],                                   fileName: 'README',     extension: null,    encoded: './README' } },
-    // { name: 'hidden file',                                  i: '.env',                     o: { path: [],                                   fileName: '.env',       extension: null,    encoded: './.env' } },
-    { n: 'complex nested path',                          i: './src/components/App.tsx', o: { path: ['src', 'components'],               fileName: 'App',        extension: '.tsx',  encoded: './src/components/App.tsx' } },
-    { n: 'throws on absolute path',                      i: '/file.txt',                o: { throws: true } },
-    { n: 'throws on directory',                          i: 'src/',                     o: { throws: true } },
-  ], ({ i, o }) => {
-    if ('throws' in o) {
-      expect(() => FsLoc.RelFile.decodeSync(i)).toThrow()
-    } else {
-      const result = FsLoc.RelFile.decodeSync(i)
-      expect(result.path.segments).toEqual(o.path)
-      expect(result.file.name).toBe(o.fileName)
-      expect(result.file.extension).toBe(o.extension)
-
-      // Test round-trip encoding
-      const encoded = FsLoc.RelFile.encodeSync(result)
-      expect(encoded).toBe(o.encoded)
-    }
-  })
-})
-
-describe('.AbsDir', () => {
-  // dprint-ignore
-  Test.Table.suite<
-    string,
-    {
-      path: string[]
-      encoded: string
-    } | { throws: true }
-  >('.decodeSync', [
-    { n: 'root directory',                               i: '/',                        o: { path: [],                                   encoded: '/' } },
-    { n: 'simple directory',                             i: '/home/',                   o: { path: ['home'],                            encoded: '/home/' } },
-    { n: 'nested directory',                             i: '/usr/local/bin/',          o: { path: ['usr', 'local', 'bin'],             encoded: '/usr/local/bin/' } },
-    { n: 'directory without trailing slash',             i: '/home',                    o: { path: ['home'],                            encoded: '/home/' } },
-    { n: 'deeply nested',                                i: '/a/b/c/d/e/',              o: { path: ['a', 'b', 'c', 'd', 'e'],          encoded: '/a/b/c/d/e/' } },
-    { n: 'with spaces',                                  i: '/my documents/projects/',  o: { path: ['my documents', 'projects'],       encoded: '/my documents/projects/' } },
-    { n: 'throws on relative path',                      i: 'home/',                    o: { throws: true } },
-    { n: 'throws on relative with dot',                  i: './home/',                  o: { throws: true } },
-  ], ({ i, o }) => {
-    if ('throws' in o) {
-      expect(() => FsLoc.AbsDir.decodeSync(i)).toThrow()
-    } else {
-      const result = FsLoc.AbsDir.decodeSync(i)
-      expect(result.path.segments).toEqual(o.path)
-
-      // Test round-trip encoding
-      const encoded = FsLoc.AbsDir.encodeSync(result)
-      expect(encoded).toBe(o.encoded)
-    }
-  })
-})
-
-describe('.RelDir', () => {
-  // dprint-ignore
-  Test.Table.suite<
-    string,
-    {
-      path: string[]
-      encoded: string
-    } | { throws: true }
-  >('.decodeSync', [
-    { n: 'current directory',                            i: './',                       o: { path: [],                                   encoded: './' } },
-    { n: 'simple relative dir',                          i: 'src/',                     o: { path: ['src'],                             encoded: './src/' } },
-    { n: 'parent directory',                             i: '../',                      o: { path: ['..'],                              encoded: './../' } },
-    { n: 'nested relative',                              i: 'src/components/',          o: { path: ['src', 'components'],               encoded: './src/components/' } },
-    { n: 'multiple parent refs',                         i: '../../lib/',               o: { path: ['..', '..', 'lib'],                 encoded: './../../lib/' } },
-    { n: 'with current dir prefix',                      i: './src/',                   o: { path: ['src'],                             encoded: './src/' } },
-    { n: 'complex path',                                 i: '../src/lib/utils/',        o: { path: ['..', 'src', 'lib', 'utils'],       encoded: './../src/lib/utils/' } },
-    { n: 'without trailing slash',                       i: 'src',                      o: { path: ['src'],                             encoded: './src/' } },
-    { n: 'throws on absolute path',                      i: '/src/',                    o: { throws: true } },
-  ], ({ i, o }) => {
-    if ('throws' in o) {
-      expect(() => FsLoc.RelDir.decodeSync(i)).toThrow()
-    } else {
-      const result = FsLoc.RelDir.decodeSync(i)
-      expect(result.path.segments).toEqual(o.path)
-
-      // Test round-trip encoding
-      const encoded = FsLoc.RelDir.encodeSync(result)
+      const encoded = fsloc.encodeSync(result as any)
       expect(encoded).toBe(o.encoded)
     }
   })
@@ -533,6 +457,7 @@ describe('operations', () => {
   })
 })
 
+const LocLoose = FsLoc.FsLocLoose.make
 Test.Table.suite<
   string,
   FsLoc.FsLocLoose.LocLoose
@@ -607,7 +532,7 @@ describe('.fromString', () => {
   })
 })
 
-describe('assert functions', () => {
+describe('*.assert', () => {
   // dprint-ignore
   Test.Table.suite<string, { assert: Function; pass: boolean }>('Groups', [
     { n: 'Rel passes for file.txt',      i: 'file.txt',  o: { assert: FsLoc.Groups.Rel.assert,  pass: true } },
@@ -621,17 +546,7 @@ describe('assert functions', () => {
 
     { n: 'Dir passes for ./src/',        i: './src/',    o: { assert: FsLoc.Groups.Dir.assert,  pass: true } },
     { n: 'Dir fails for file.txt',       i: 'file.txt',  o: { assert: FsLoc.Groups.Dir.assert,  pass: false } },
-  ], ({ i, o }) => {
-    const loc = FsLoc.decodeSync(i)
-    if (o.pass) {
-      expect(() => o.assert(loc)).not.toThrow()
-    } else {
-      expect(() => o.assert(loc)).toThrow()
-    }
-  })
 
-  // dprint-ignore
-  Test.Table.suite<string, { assert: Function; pass: boolean }>('Members', [
     { n: 'AbsFile passes for /file.txt',  i: '/file.txt',  o: { assert: FsLoc.AbsFile.assert,  pass: true } },
     { n: 'AbsFile fails for file.txt',    i: 'file.txt',   o: { assert: FsLoc.AbsFile.assert,  pass: false } },
     { n: 'AbsFile fails for /dir/',       i: '/dir/',      o: { assert: FsLoc.AbsFile.assert,  pass: false } },
