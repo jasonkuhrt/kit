@@ -207,6 +207,128 @@ describe('operations', () => {
       expect(result).toEncodeTo(o)
     })
 
+  describe('String literal support in operations', () => {
+    it('.join accepts string literals', () => {
+      // Absolute directory + relative file
+      const file1 = FsLoc.join('/home/user/', 'config.json')
+      expectTypeOf(file1).toEqualTypeOf<FsLoc.AbsFile.AbsFile>()
+      expect(file1).toBeFile()
+      expect(file1).toEncodeTo('/home/user/config.json')
+
+      // With ./ prefix should also work
+      const file1b = FsLoc.join('/home/user/', './config.json')
+      expectTypeOf(file1b).toEqualTypeOf<FsLoc.AbsFile.AbsFile>()
+      expect(file1b).toBeFile()
+      expect(file1b).toEncodeTo('/home/user/config.json')
+
+      // Absolute directory + relative directory
+      const dir1 = FsLoc.join('/home/user/', 'src/')
+      expectTypeOf(dir1).toEqualTypeOf<FsLoc.AbsDir.AbsDir>()
+      expect(dir1).toBeDir()
+      expect(dir1).toEncodeTo('/home/user/src/')
+
+      // Relative directory + relative file
+      const file2 = FsLoc.join('./src/', 'index.ts')
+      expectTypeOf(file2).toEqualTypeOf<FsLoc.RelFile.RelFile>()
+      expect(file2).toBeFile()
+      expect(file2).toEncodeTo('./src/index.ts')
+
+      // Relative directory + relative directory
+      const dir2 = FsLoc.join('./base/', 'nested/')
+      expectTypeOf(dir2).toEqualTypeOf<FsLoc.RelDir.RelDir>()
+      expect(dir2).toBeDir()
+      expect(dir2).toEncodeTo('./base/nested/')
+    })
+
+    it('.ensureAbsolute accepts string literals', () => {
+      const abs1 = FsLoc.ensureAbsolute('./src/index.ts')
+      expect(abs1).toBeFile()
+      expect(abs1).toBeAbs()
+
+      const abs2 = FsLoc.ensureAbsolute('/already/absolute.ts')
+      expect(abs2).toBeFile()
+      expect(abs2).toEncodeTo('/already/absolute.ts')
+
+      const abs3 = FsLoc.ensureAbsolute('./src/', '/base/')
+      expect(abs3).toBeDir()
+      expect(abs3).toEncodeTo('/base/src/')
+    })
+
+    it('.toDir accepts string literals', () => {
+      const dir1 = FsLoc.toDir('/path/to/file.txt')
+      expect(dir1).toBeDir()
+      expect(dir1).toEncodeTo('/path/to/file.txt/')
+
+      const dir2 = FsLoc.toDir('./src/index.ts')
+      expect(dir2).toBeDir()
+      expect(dir2).toEncodeTo('./src/index.ts/')
+    })
+
+    it('.toAbs accepts string literals', () => {
+      const abs1 = FsLoc.toAbs('./relative/path.ts')
+      expect(abs1).toBeFile()
+      expect(abs1).toEncodeTo('/relative/path.ts')
+
+      const abs2 = FsLoc.toAbs('./rel/', '/base/')
+      expect(abs2).toBeDir()
+      expect(abs2).toEncodeTo('/base/rel/')
+    })
+
+    it('.toRel accepts string literals', () => {
+      const rel1 = FsLoc.toRel('/home/user/src/index.ts', '/home/user/')
+      expect(rel1).toBeFile()
+      expect(rel1).toEncodeTo('./src/index.ts')
+
+      const rel2 = FsLoc.toRel('/home/user/docs/', '/home/')
+      expect(rel2).toBeDir()
+      expect(rel2).toEncodeTo('./user/docs/')
+    })
+
+    it('.name accepts string literals', () => {
+      expect(FsLoc.name('/path/to/file.txt')).toBe('file.txt')
+      expect(FsLoc.name('/path/to/src/')).toBe('src')
+      expect(FsLoc.name('/')).toBe('')
+      expect(FsLoc.name('./relative/file.md')).toBe('file.md')
+    })
+
+    it('.isRoot accepts string literals', () => {
+      expect(FsLoc.isRoot('/')).toBe(true)
+      expect(FsLoc.isRoot('/path/')).toBe(false)
+      expect(FsLoc.isRoot('./')).toBe(true) // Relative current directory has 0 segments
+    })
+
+    it('.up accepts string literals', () => {
+      const up1 = FsLoc.up('/path/to/file.txt')
+      expect(up1).toEncodeTo('/path/file.txt')
+
+      const up2 = FsLoc.up('/path/to/dir/')
+      expect(up2).toEncodeTo('/path/to/')
+    })
+
+    it('.isUnder accepts string literals', () => {
+      expect(FsLoc.isUnder('/home/user/src/index.ts', '/home/user/')).toBe(true)
+      expect(FsLoc.isUnder('/other/path.ts', '/home/user/')).toBe(false)
+      expect(FsLoc.isUnder('./src/index.ts', './src/')).toBe(true)
+    })
+
+    it('.isAbove accepts string literals', () => {
+      expect(FsLoc.isAbove('/home/', '/home/user/file.txt')).toBe(true)
+      expect(FsLoc.isAbove('/other/', '/home/user/file.txt')).toBe(false)
+    })
+
+    it('.isUnderOf accepts string literals', () => {
+      const isInProject = FsLoc.isUnderOf('/project/')
+      expect(isInProject('/project/src/index.ts')).toBe(true)
+      expect(isInProject('/other/file.ts')).toBe(false)
+    })
+
+    it('.isAboveOf accepts string literals', () => {
+      const hasAsParent = FsLoc.isAboveOf('/home/user/src/index.ts')
+      expect(hasAsParent('/home/user/')).toBe(true)
+      expect(hasAsParent('/other/')).toBe(false)
+    })
+  })
+
   // dprint-ignore
   Test.Table.suite<
       FsLoc.FsLoc,

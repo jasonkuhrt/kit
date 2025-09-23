@@ -2,6 +2,7 @@ import { Pro } from '#pro'
 import { Match } from 'effect'
 import * as NodePath from 'node:path'
 import * as FsLoc from './$$.js'
+import { Analyzer } from './analyzer/$.js'
 import * as Groups from './groups/$$.js'
 import * as Inputs from './inputs.js'
 import { Path } from './path/$.js'
@@ -64,6 +65,20 @@ type Join<
   : never
 
 /**
+ * Infer the FsLoc type from a string literal or FsLoc type.
+ * Used to preserve specific type information when strings are passed.
+ */
+type InferFsLocType<T> = T extends FsLoc.FsLoc ? T
+  : T extends string ? (
+      Analyzer.Analyze<T> extends { _tag: 'file'; isPathRelative: true } ? FsLoc.RelFile.RelFile
+        : Analyzer.Analyze<T> extends { _tag: 'dir'; isPathRelative: true } ? FsLoc.RelDir.RelDir
+        : Analyzer.Analyze<T> extends { _tag: 'file'; isPathAbsolute: true } ? FsLoc.AbsFile.AbsFile
+        : Analyzer.Analyze<T> extends { _tag: 'dir'; isPathAbsolute: true } ? FsLoc.AbsDir.AbsDir
+        : FsLoc.FsLoc
+    )
+  : never
+
+/**
  * Resolve path segments by collapsing parent references (..)
  * @internal
  */
@@ -96,8 +111,8 @@ export const join = <
   dir: Inputs.Dir<dir>,
   rel: Inputs.Rel<rel>,
 ): Join<
-  dir extends string ? Groups.Dir.Dir : dir,
-  rel extends string ? Groups.Rel.Rel : rel
+  InferFsLocType<dir> extends Groups.Dir.Dir ? InferFsLocType<dir> : never,
+  InferFsLocType<rel> extends Groups.Rel.Rel ? InferFsLocType<rel> : never
 > => {
   const normalizedDir = Inputs.normalize.dir(dir)
   const normalizedRel = Inputs.normalize.rel(rel)
@@ -121,8 +136,8 @@ export const join = <
         file,
       })
     return result as Join<
-      dir extends string ? Groups.Dir.Dir : dir,
-      rel extends string ? Groups.Rel.Rel : rel
+      InferFsLocType<dir> extends Groups.Dir.Dir ? InferFsLocType<dir> : never,
+      InferFsLocType<rel> extends Groups.Rel.Rel ? InferFsLocType<rel> : never
     >
   } else {
     // Joining with a directory - create a directory location
@@ -134,8 +149,8 @@ export const join = <
         path: Path.Rel.make({ segments }),
       })
     return result as Join<
-      dir extends string ? Groups.Dir.Dir : dir,
-      rel extends string ? Groups.Rel.Rel : rel
+      InferFsLocType<dir> extends Groups.Dir.Dir ? InferFsLocType<dir> : never,
+      InferFsLocType<rel> extends Groups.Rel.Rel ? InferFsLocType<rel> : never
     >
   }
 }
