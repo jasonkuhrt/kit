@@ -6,37 +6,37 @@ import type { WritableDeep } from 'type-fest'
 // Re-export WritableDeep to avoid type portability issues
 export type { WritableDeep }
 
-const AuthorObjectSchema = S.Struct({
+const Author = S.Struct({
   name: S.optional(S.String),
   email: S.optional(S.String),
   url: S.optional(S.String),
 })
 
-const RepositoryObjectSchema = S.Struct({
+const Repository = S.Struct({
   type: S.optional(S.String),
   url: S.optional(S.String),
 })
 
-const BugsObjectSchema = S.Struct({
+const Bugs = S.Struct({
   url: S.optional(S.String),
   email: S.optional(S.String),
 })
 
-const EnginesSchema = S.Struct({
+const Engines = S.Struct({
   node: S.optional(S.String),
   npm: S.optional(S.String),
   pnpm: S.optional(S.String),
 })
 
-const WorkspacesObjectSchema = S.Struct({
+const Workspaces = S.Struct({
   packages: S.optional(S.Array(S.String)),
   nohoist: S.optional(S.Array(S.String)),
 })
 
 /**
- * Base immutable schema for package.json manifest
+ * Class schema for package.json manifest
  */
-export const ManifestSchemaImmutable = S.Struct({
+export class Manifest extends S.Class<Manifest>('Manifest')({
   name: S.optionalWith(S.String, { default: () => 'unnamed' }),
   version: S.optionalWith(S.String, { default: () => '0.0.0' }),
   description: S.optional(S.String),
@@ -57,50 +57,45 @@ export const ManifestSchemaImmutable = S.Struct({
     S.String,
   )),
   imports: S.optional(S.Record({ key: S.String, value: S.Unknown })),
-  engines: S.optional(EnginesSchema),
+  engines: S.optional(Engines),
   repository: S.optional(S.Union(
-    RepositoryObjectSchema,
+    Repository,
     S.String,
   )),
   keywords: S.optional(S.Array(S.String)),
   author: S.optional(S.Union(
     S.String,
-    AuthorObjectSchema,
+    Author,
   )),
   license: S.optional(S.String),
   bugs: S.optional(S.Union(
-    BugsObjectSchema,
+    Bugs,
     S.String,
   )),
   homepage: S.optional(S.String),
   private: S.optional(S.Boolean),
   workspaces: S.optional(S.Union(
     S.Array(S.String),
-    WorkspacesObjectSchema,
+    Workspaces,
   )),
   packageManager: S.optional(S.String),
   madge: S.optional(S.Unknown),
-}).pipe(
-  S.annotations({
-    identifier: 'Manifest',
-    description: 'NPM package.json manifest',
-  }),
-)
+}) {
+  /**
+   * Create a mutable copy of this manifest.
+   * Useful when you need to perform multiple mutations efficiently.
+   */
+  toMutable(): ManifestMutable {
+    return S.decodeUnknownSync(ManifestSchemaMutable)(this) as ManifestMutable
+  }
+}
 
 /**
  * Mutable version of the manifest schema for runtime manipulation
  */
-export const ManifestSchemaMutable = S.mutable(ManifestSchemaImmutable)
+export const ManifestSchemaMutable = S.mutable(Manifest)
 
-/**
- * Default export is the immutable schema (best practice)
- */
-export const ManifestSchema = ManifestSchemaImmutable
-
-/**
- * Type inferred from the immutable Schema
- */
-export interface Manifest extends S.Schema.Type<typeof ManifestSchemaImmutable> {}
+export const ManifestSchemaImmutable = Manifest
 
 /**
  * Mutable type for runtime manipulation
@@ -119,56 +114,57 @@ export type PropertyExports = Record<string, unknown> | string
 
 /**
  * Create a new Manifest with validation and defaults
+ * @deprecated Use Manifest.create() or Manifest.make() instead
  */
-export const make = (input: Partial<Manifest> = {}): Manifest => {
-  return S.decodeUnknownSync(ManifestSchema)(input)
-}
-
-/**
- * Decode unknown input into a Manifest
- */
-export const decode = S.decodeUnknown(ManifestSchema)
-
-/**
- * Encode a Manifest for serialization
- */
-export const encode = S.encode(ManifestSchema)
+export const make = Manifest.make.bind(Manifest)
 
 /**
  * Empty manifest with minimal required fields
  */
-export const emptyManifest = make()
+export const emptyManifest = Manifest.make()
 
 /**
- * Resource for reading/writing package.json with Schema validation (mutable for runtime manipulation)
+ * Resource for reading/writing package.json with Schema validation
  */
-export const resource: Resource<ManifestMutable> = {
+export const resource: Resource<Manifest> = {
   read: (dirPath: FsLoc.AbsDir) =>
     createSchemaResource(
       'package.json',
-      ManifestSchemaMutable,
+      Manifest,
       emptyManifest,
-    ).read(dirPath).pipe(
-      Effect.map(Option.map((result) => result as ManifestMutable)),
-    ),
-  write: (value: ManifestMutable, dirPath: FsLoc.AbsDir) =>
+    ).read(dirPath),
+  write: (value: Manifest, dirPath: FsLoc.AbsDir) =>
     createSchemaResource(
       'package.json',
-      ManifestSchemaMutable,
+      Manifest,
       emptyManifest,
-    ).write(value as any, dirPath),
+    ).write(value, dirPath),
   readOrEmpty: (dirPath: FsLoc.AbsDir) =>
     createSchemaResource(
       'package.json',
-      ManifestSchemaMutable,
+      Manifest,
       emptyManifest,
-    ).readOrEmpty(dirPath).pipe(
-      Effect.map((result) => result as ManifestMutable),
+    ).readOrEmpty(dirPath),
+}
+
+/**
+ * Mutable resource for backward compatibility
+ * @deprecated Use resource instead and call toMutable() on the result if needed
+ */
+export const resourceMutable: Resource<ManifestMutable> = {
+  read: (dirPath: FsLoc.AbsDir) =>
+    resource.read(dirPath).pipe(
+      Effect.map(Option.map((m) => m.toMutable())),
+    ),
+  write: (value: ManifestMutable, dirPath: FsLoc.AbsDir) => resource.write(Manifest.make(value), dirPath),
+  readOrEmpty: (dirPath: FsLoc.AbsDir) =>
+    resource.readOrEmpty(dirPath).pipe(
+      Effect.map((m) => m.toMutable()),
     ),
 }
 
 /**
- * Overwrite a package script
+ * Overwrite a package script (mutates the manifest).
  */
 export const overwritePackageScript = (manifest: ManifestMutable, scriptName: string, script: string): void => {
   if (!manifest.scripts) {
@@ -178,7 +174,7 @@ export const overwritePackageScript = (manifest: ManifestMutable, scriptName: st
 }
 
 /**
- * Merge a script into an existing package script
+ * Merge a script into an existing package script (mutates the manifest).
  */
 export const mergePackageScript = (manifest: ManifestMutable, scriptName: string, script: string): void => {
   if (!manifest.scripts) {
@@ -193,7 +189,7 @@ export const mergePackageScript = (manifest: ManifestMutable, scriptName: string
 }
 
 /**
- * Remove a package script or part of a script
+ * Remove a package script or part of a script (mutates the manifest).
  */
 export const removePackageScript = (manifest: ManifestMutable, scriptName: string, scriptPart?: string): void => {
   if (!manifest.scripts || !manifest.scripts[scriptName]) {
@@ -215,7 +211,7 @@ export const removePackageScript = (manifest: ManifestMutable, scriptName: strin
 }
 
 /**
- * Parse package name moniker (org/name format)
+ * Parse package name moniker (org/name format).
  */
 export const parseMoniker = (packageName: string): { org?: string; name: string } => {
   const parts = packageName.split('/')

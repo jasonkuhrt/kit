@@ -1,16 +1,16 @@
 import { Effect, Schema } from 'effect'
 import { Schema as S } from 'effect'
 import { describe, expect, test } from 'vitest'
-import { type ManifestMutable, ManifestSchema, ManifestSchemaMutable, parseMoniker } from './$$.js'
+import { Manifest, type ManifestMutable, ManifestSchemaMutable, parseMoniker } from './$$.js'
 
-describe('ManifestSchema', () => {
+describe('Manifest', () => {
   test('validates a minimal package.json', () => {
     const minimal = {
       name: 'test-package',
       version: '1.0.0',
     }
 
-    const result = Effect.runSync(Schema.decodeUnknown(ManifestSchema)(minimal))
+    const result = Effect.runSync(Schema.decodeUnknown(Manifest)(minimal))
     expect(result).toMatchObject(minimal)
   })
 
@@ -78,7 +78,7 @@ describe('ManifestSchema', () => {
       },
     }
 
-    const result = Effect.runSync(Schema.decodeUnknown(ManifestSchema)(full))
+    const result = Effect.runSync(Schema.decodeUnknown(Manifest)(full))
     expect(result).toMatchObject(full)
   })
 
@@ -89,7 +89,7 @@ describe('ManifestSchema', () => {
       type: 'invalid',
     }
 
-    expect(() => Effect.runSync(Schema.decodeUnknown(ManifestSchema)(invalid))).toThrow()
+    expect(() => Effect.runSync(Schema.decodeUnknown(Manifest)(invalid))).toThrow()
   })
 
   test('allows string bin field', () => {
@@ -99,8 +99,8 @@ describe('ManifestSchema', () => {
       bin: './cli.js',
     }
 
-    const result = Effect.runSync(Schema.decodeUnknown(ManifestSchema)(manifest))
-    expect(result.bin).toBe('./cli.js')
+    const result = Effect.runSync(Schema.decodeUnknown(Manifest)(manifest))
+    expect(result['bin']).toBe('./cli.js')
   })
 
   test('allows string repository field', () => {
@@ -110,8 +110,8 @@ describe('ManifestSchema', () => {
       repository: 'https://github.com/org/repo.git',
     }
 
-    const result = Effect.runSync(Schema.decodeUnknown(ManifestSchema)(manifest))
-    expect(result.repository).toBe('https://github.com/org/repo.git')
+    const result = Effect.runSync(Schema.decodeUnknown(Manifest)(manifest))
+    expect(result['repository']).toBe('https://github.com/org/repo.git')
   })
 
   test('allows string author field', () => {
@@ -121,8 +121,8 @@ describe('ManifestSchema', () => {
       author: 'John Doe <john@example.com>',
     }
 
-    const result = Effect.runSync(Schema.decodeUnknown(ManifestSchema)(manifest))
-    expect(result.author).toBe('John Doe <john@example.com>')
+    const result = Effect.runSync(Schema.decodeUnknown(Manifest)(manifest))
+    expect(result['author']).toBe('John Doe <john@example.com>')
   })
 
   test('supports mutable fields with mutable schema', () => {
@@ -135,13 +135,13 @@ describe('ManifestSchema', () => {
     }) as ManifestMutable
 
     // Should allow mutation
-    manifest.scripts!['build'] = 'tsc'
-    expect(manifest.scripts!['build']).toBe('tsc')
+    manifest['scripts']!['build'] = 'tsc'
+    expect(manifest['scripts']!['build']).toBe('tsc')
 
     // Arrays should be mutable too
-    manifest.files = ['src']
-    manifest.files.push('dist')
-    expect(manifest.files).toEqual(['src', 'dist'])
+    manifest['files'] = ['src']
+    manifest['files'].push('dist')
+    expect(manifest['files']).toEqual(['src', 'dist'])
   })
 })
 
