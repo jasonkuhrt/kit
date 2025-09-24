@@ -48,17 +48,27 @@ export const isUnder = <
   // Check if child path is descendant of parent path
   const isPathDescendant = Path.isDescendantOf(normalizedChild.path, normalizedParent.path)
 
-  // If paths don't match at all, it's not under
-  if (!isPathDescendant && normalizedChild.path.segments.length !== normalizedParent.path.segments.length) {
+  // If child has fewer segments than parent, it can't be under it
+  if (normalizedChild.path.segments.length < normalizedParent.path.segments.length) {
     return false
   }
 
-  // If all parent segments match and child has more segments, it's under
-  // If they have the same segments but child is a file, it's under
-  // (files in a directory have same segments as the directory)
-  // If both are directories with same segments, they're the same path (not under)
-  return isPathDescendant
-    || (normalizedChild.path.segments.length === normalizedParent.path.segments.length && 'file' in normalizedChild)
+  // If child has more segments and is a descendant, it's under
+  if (normalizedChild.path.segments.length > normalizedParent.path.segments.length && isPathDescendant) {
+    return true
+  }
+
+  // If they have the same number of segments
+  if (normalizedChild.path.segments.length === normalizedParent.path.segments.length) {
+    // If child is a file and paths match, the file is in the directory
+    if ('file' in normalizedChild && isPathDescendant) {
+      return true
+    }
+    // Otherwise (both dirs with same path, or paths don't match), not under
+    return false
+  }
+
+  return false
 }
 
 /**
