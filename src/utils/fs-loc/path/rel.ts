@@ -1,7 +1,7 @@
 import { Match, ParseResult, Schema as S } from 'effect'
 import { Analyzer } from '../codec-string/$.ts'
 import * as Segment from '../types/segment.js'
-import { stringSeparator } from './utils.js'
+import { stringSeparator } from './constants.ts'
 
 /**
  * Class representing a relative path.

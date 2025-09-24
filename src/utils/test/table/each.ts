@@ -64,7 +64,7 @@ export function each<caseInput extends object>(
   arg2: Case<caseInput>[] | ((caseInput: CaseFilled & caseInput, context: TestContext) => void | Promise<void>),
   arg3?: (caseInput: CaseFilled & caseInput, context: TestContext) => void | Promise<void>,
 ) {
-  const nameTemplate = typeof arg1 === 'string' ? arg1 : '$name'
+  const nameTemplate = typeof arg1 === 'string' ? arg1 : '$n'
   const cases = typeof arg1 === 'string' ? arg2 as Case<caseInput>[] : arg1
   const runner = typeof arg1 === 'string'
     ? arg3!

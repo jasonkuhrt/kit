@@ -215,6 +215,7 @@
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
+    "@effect/platform": "^0.91.1",
     "@effect/vitest": "^0.25.1",
     "@tsconfig/node-lts": "^22.0.2",
     "@tsconfig/node22": "^22.0.2",
@@ -224,7 +225,7 @@
     "dripip": "^0.10.0",
     "effect": "^3.17.14",
     "husky": "^9.1.7",
-    "oxlint": "^1.16.0",
+    "oxlint": "^1.17.0",
     "publint": "^0.3.13",
     "tsx": "^4.20.5",
     "vitepress": "^1.6.4",
@@ -266,7 +267,7 @@
     }
   },
   "peerDependencies": {
-    "@effect/platform": "^0.90.0||^0.91.0",
+    "@effect/platform": ">=0.90.0 <1.0.0",
     "effect": "^3.17.0"
   }
 }
