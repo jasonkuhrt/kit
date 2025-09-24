@@ -74,11 +74,12 @@ export interface SuiteCaseBase {
  * A filled test case with input, output, and optional custom properties.
  * Merges SuiteCaseBase with i, o, and custom properties.
  * When $I is void or never, the 'i' property is omitted from the type.
+ * When $O is void or never, the 'o' property is omitted from the type.
  */
 export type SuiteCase<$I, $O, $Custom = {}> =
   & SuiteCaseBase
   & ($I extends void | never ? {} : { i: $I })
-  & { o: $O }
+  & ($O extends void | never ? {} : { o: $O })
   & $Custom
 
 /**
