@@ -1,116 +1,121 @@
-import { expect, expectTypeOf, it } from 'vitest'
-import { Analyzer } from './$.ts'
+import { Test } from '#test'
+import { describe, expect, expectTypeOf, it } from 'vitest'
+import { Analyzer } from './$.js'
 
-it('file with extension', () => {
-  const result = Analyzer.analyze('file.txt')
-  expect(result._tag).toBe('file')
-  if (result._tag === 'file') {
-    expect(result.file.name).toBe('file')
-    expect(result.file.extension).toBe('.txt')
-  }
+describe('Analyzer', () => {
+  describe('analyze', () => {
+    // dprint-ignore
+    Test.Table.suite<
+      string,
+      {
+        _tag: 'file' | 'dir'
+        pathType?: 'absolute' | 'relative'
+        path?: string[]
+        file?: { name: string; extension: string | null }
+      }
+    >('path analysis', [
+      // Files with extensions
+      { n: 'file with extension',           i: 'file.txt',          o: { _tag: 'file', file: { name: 'file', extension: '.txt' } } },
+      { n: 'multiple dots in filename',     i: 'file.test.ts',      o: { _tag: 'file', file: { name: 'file.test', extension: '.ts' } } },
+      { n: 'hidden file with extension',    i: '.env.local',        o: { _tag: 'file', file: { name: '.env', extension: '.local' } } },
 
-  // Type-level test via inference from literal string
-  expectTypeOf(result._tag).toEqualTypeOf<'file'>()
-})
+      // Directories
+      { n: 'directory with trailing slash', i: 'dir/',             o: { _tag: 'dir', path: ['dir'] } },
+      { n: 'directory without extension',   i: 'src',              o: { _tag: 'dir', path: ['src'] } },
+      { n: 'hidden file without extension', i: '.gitignore',       o: { _tag: 'dir' } }, // No extension = directory
+      { n: 'root directory',                i: '/',                o: { _tag: 'dir', path: [] } },
+      { n: 'current directory dot',         i: '.',                o: { _tag: 'dir' } },
+      { n: 'current directory dot slash',   i: './',               o: { _tag: 'dir' } },
+      { n: 'parent directory',              i: '..',               o: { _tag: 'dir' } },
 
-it('directory with trailing slash', () => {
-  const result = Analyzer.analyze('dir/')
-  expect(result._tag).toBe('dir')
-  expect(result.path).toEqual(['dir'])
+      // Absolute vs relative paths
+      { n: 'absolute file path',            i: '/path/file.txt',   o: { _tag: 'file', pathType: 'absolute', file: { name: 'file', extension: '.txt' } } },
+      { n: 'relative file path',            i: './path/file.txt',  o: { _tag: 'file', pathType: 'relative', file: { name: 'file', extension: '.txt' } } },
+    ], ({ i, o }) => {
+      const result = Analyzer.analyze(i)
 
-  type R = Analyzer.Analyze<'dir/'>
-  expectTypeOf<R['_tag']>().toEqualTypeOf<'dir'>()
-})
+      expect(result._tag).toBe(o._tag)
 
-it('directory without extension', () => {
-  const result = Analyzer.analyze('src')
-  expect(result._tag).toBe('dir')
-  expect(result.path).toEqual(['src'])
+      if (o.pathType) {
+        expect(result.pathType).toBe(o.pathType)
+        if (o.pathType === 'absolute') {
+          expect(result.isPathAbsolute).toBe(true)
+        } else {
+          expect(result.isPathRelative).toBe(true)
+        }
+      }
 
-  type R = Analyzer.Analyze<'src'>
-  expectTypeOf<R['_tag']>().toEqualTypeOf<'dir'>()
-})
+      if (o.path !== undefined) {
+        expect(result.path).toEqual(o.path)
+      }
 
-it('absolute vs relative paths', () => {
-  const abs = Analyzer.analyze('/path/file.txt')
-  expect(abs.pathType).toBe('absolute')
-  expect(abs.isPathAbsolute).toBe(true)
+      if (o.file && result._tag === 'file') {
+        expect(result.file.name).toBe(o.file.name)
+        expect(result.file.extension).toBe(o.file.extension)
+      }
+    })
+  })
 
-  const rel = Analyzer.analyze('./path/file.txt')
-  expect(rel.pathType).toBe('relative')
-  expect(rel.isPathRelative).toBe(true)
+  describe('type-level tests', () => {
+    it('file with extension type', () => {
+      type R = Analyzer.Analyze<'file.txt'>
+      expectTypeOf<R['_tag']>().toEqualTypeOf<'file'>()
+    })
 
-  type Abs = Analyzer.Analyze<'/path/file.txt'>
-  type Rel = Analyzer.Analyze<'./path/file.txt'>
-  expectTypeOf<Abs['pathType']>().toEqualTypeOf<'absolute'>()
-  expectTypeOf<Rel['pathType']>().toEqualTypeOf<'relative'>()
-})
+    it('directory with trailing slash type', () => {
+      type R = Analyzer.Analyze<'dir/'>
+      expectTypeOf<R['_tag']>().toEqualTypeOf<'dir'>()
+    })
 
-it('special directory paths', () => {
-  const dot = Analyzer.analyze('.')
-  expect(dot._tag).toBe('dir')
+    it('directory without extension type', () => {
+      type R = Analyzer.Analyze<'src'>
+      expectTypeOf<R['_tag']>().toEqualTypeOf<'dir'>()
+    })
 
-  const dotSlash = Analyzer.analyze('./')
-  expect(dotSlash._tag).toBe('dir')
+    it('absolute vs relative paths type', () => {
+      type Abs = Analyzer.Analyze<'/path/file.txt'>
+      type Rel = Analyzer.Analyze<'./path/file.txt'>
+      expectTypeOf<Abs['pathType']>().toEqualTypeOf<'absolute'>()
+      expectTypeOf<Rel['pathType']>().toEqualTypeOf<'relative'>()
+    })
 
-  const dotDot = Analyzer.analyze('..')
-  expect(dotDot._tag).toBe('dir')
+    it('special directory paths type', () => {
+      type Dot = Analyzer.Analyze<'.'>
+      type DotSlash = Analyzer.Analyze<'./'>
+      type DotDot = Analyzer.Analyze<'..'>
+      expectTypeOf<Dot['_tag']>().toEqualTypeOf<'dir'>()
+      expectTypeOf<DotSlash['_tag']>().toEqualTypeOf<'dir'>()
+      expectTypeOf<DotDot['_tag']>().toEqualTypeOf<'dir'>()
+    })
 
-  type Dot = Analyzer.Analyze<'.'>
-  type DotSlash = Analyzer.Analyze<'./'>
-  type DotDot = Analyzer.Analyze<'..'>
-  expectTypeOf<Dot['_tag']>().toEqualTypeOf<'dir'>()
-  expectTypeOf<DotSlash['_tag']>().toEqualTypeOf<'dir'>()
-  expectTypeOf<DotDot['_tag']>().toEqualTypeOf<'dir'>()
-})
+    it('hidden files type', () => {
+      type NoExt = Analyzer.Analyze<'.gitignore'>
+      type WithExt = Analyzer.Analyze<'.env.local'>
+      expectTypeOf<NoExt['_tag']>().toEqualTypeOf<'dir'>()
+      expectTypeOf<WithExt['_tag']>().toEqualTypeOf<'file'>()
+    })
 
-it('hidden files', () => {
-  const noExt = Analyzer.analyze('.gitignore')
-  expect(noExt._tag).toBe('dir') // No extension = directory
+    it('multiple dots in filename type', () => {
+      type R = Analyzer.Analyze<'file.test.ts'>
+      expectTypeOf<R['_tag']>().toEqualTypeOf<'file'>()
+    })
 
-  const withExt = Analyzer.analyze('.env.local')
-  expect(withExt._tag).toBe('file')
-  if (withExt._tag === 'file') {
-    expect(withExt.file.name).toBe('.env')
-    expect(withExt.file.extension).toBe('.local')
-  }
+    it('root directory type', () => {
+      type R = Analyzer.Analyze<'/'>
+      expectTypeOf<R['_tag']>().toEqualTypeOf<'dir'>()
+    })
+  })
 
-  type NoExt = Analyzer.Analyze<'.gitignore'>
-  type WithExt = Analyzer.Analyze<'.env.local'>
-  expectTypeOf<NoExt['_tag']>().toEqualTypeOf<'dir'>()
-  expectTypeOf<WithExt['_tag']>().toEqualTypeOf<'file'>()
-})
+  it('non-literal string returns Analysis union', () => {
+    function processPath(path: string) {
+      const result = Analyzer.analyze(path)
+      // With non-literal string, should return the union type
+      expectTypeOf(result).toEqualTypeOf<Analyzer.Analysis>()
+      return result
+    }
 
-it('multiple dots in filename', () => {
-  const result = Analyzer.analyze('file.test.ts')
-  expect(result._tag).toBe('file')
-  if (result._tag === 'file') {
-    expect(result.file.name).toBe('file.test')
-    expect(result.file.extension).toBe('.ts')
-  }
-
-  type R = Analyzer.Analyze<'file.test.ts'>
-  expectTypeOf<R['_tag']>().toEqualTypeOf<'file'>()
-})
-
-it('root directory', () => {
-  const result = Analyzer.analyze('/')
-  expect(result._tag).toBe('dir')
-  expect(result.path).toEqual([])
-
-  type R = Analyzer.Analyze<'/'>
-  expectTypeOf<R['_tag']>().toEqualTypeOf<'dir'>()
-})
-
-it('non-literal string returns Analysis union', () => {
-  function processPath(path: string) {
-    const result = Analyzer.analyze(path)
-    // With non-literal string, should return the union type
-    expectTypeOf(result).toEqualTypeOf<Analyzer.Analysis>()
-    return result
-  }
-
-  // Runtime still works correctly
-  const result = processPath('file.txt')
-  expect(result._tag).toBe('file')
+    // Runtime still works correctly
+    const result = processPath('file.txt')
+    expect(result._tag).toBe('file')
+  })
 })

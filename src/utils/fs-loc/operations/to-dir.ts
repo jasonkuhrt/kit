@@ -16,18 +16,18 @@ export type ToDir<F extends Groups.File.File> = F extends FsLoc.AbsFile ? FsLoc.
 export type toDir<$File extends Inputs.Input.File> = ToDir<Inputs.normalize<$File>>
 
 /**
- * Convert a file location to a directory location.
- * Useful when you know a file path actually represents a directory.
+ * Drop the file from a file location, returning just the parent directory location.
  *
- * @param loc - The file location to convert
- * @returns The directory location
+ * @param loc - The file location
+ * @returns The parent directory location
  */
 export const toDir = <F extends Inputs.Input.File>(
   loc: Inputs.Guard.File<F>,
 ): toDir<F> => {
   const normalized = FsLoc.normalizeInput(loc)
-  const fileName = normalized.file.extension ? normalized.file.name + normalized.file.extension : normalized.file.name
-  const segments = [...normalized.path.segments, fileName]
+
+  // Use the file's existing path segments which represent the parent directory
+  const segments = [...normalized.path.segments]
 
   // Create the appropriate directory type based on whether loc is absolute or relative
   const dirLoc = Groups.Abs.is(normalized)
