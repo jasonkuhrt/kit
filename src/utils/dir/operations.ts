@@ -2,8 +2,8 @@ import { Fs } from '#fs'
 import { FsLoc } from '#fs-loc'
 import { Error as PlatformError, FileSystem } from '@effect/platform'
 import { Effect } from 'effect'
-import type { Operation } from './chain.js'
 import type { Dir } from './dir.js'
+import type { Operation } from './spec.js'
 
 type FSError = PlatformError.PlatformError
 type FS = FileSystem.FileSystem
@@ -63,14 +63,14 @@ const executeOperation = (
         break
       }
       case 'move-file': {
-        const fromPath = FsLoc.join(dir.base, op.from)
-        const toPath = FsLoc.join(dir.base, op.to)
+        const fromPath = FsLoc.join(dir.base, op.from) as FsLoc.AbsFile
+        const toPath = FsLoc.join(dir.base, op.to) as FsLoc.AbsFile
         yield* Fs.rename(fromPath, toPath)
         break
       }
       case 'move-dir': {
-        const fromPath = FsLoc.join(dir.base, op.from)
-        const toPath = FsLoc.join(dir.base, op.to)
+        const fromPath = FsLoc.join(dir.base, op.from) as FsLoc.AbsDir
+        const toPath = FsLoc.join(dir.base, op.to) as FsLoc.AbsDir
         yield* Fs.rename(fromPath, toPath)
         break
       }
