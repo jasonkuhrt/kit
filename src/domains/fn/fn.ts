@@ -1,6 +1,7 @@
 export * from './base.js'
 export * from './constant.js'
 export * from './curry.js'
+export * from './endo.js'
 export * from './identity.js'
 export * from './partial/$$.js'
 export * from './pipe.js'
