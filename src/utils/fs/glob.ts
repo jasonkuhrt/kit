@@ -1,18 +1,18 @@
 import { FsLoc } from '#fs-loc'
-import { Effect } from 'effect'
+import { Effect, Schema as S } from 'effect'
 import * as TinyGlobby from 'tinyglobby'
 
 /**
  * Options for globbing file patterns, excluding the patterns parameter.
- * The `cwd` option only accepts {@link FsLoc.AbsDir.AbsDir} or URL for type safety.
+ * The `cwd` option only accepts {@link FsLoc.AbsDir} or URL for type safety.
  */
 export type GlobOptions = Omit<TinyGlobby.GlobOptions, 'patterns' | 'cwd'> & {
   /**
    * The working directory in which to search. Results will be returned relative to this directory.
-   * Only accepts {@link FsLoc.AbsDir.AbsDir} or URL for type-safe filesystem paths.
-   * @default process.cwd() as FsLoc.AbsDir.AbsDir
+   * Only accepts {@link FsLoc.AbsDir} or URL for type-safe filesystem paths.
+   * @default process.cwd() as FsLoc.AbsDir
    */
-  cwd?: FsLoc.AbsDir.AbsDir | URL
+  cwd?: FsLoc.AbsDir | URL
 }
 
 /**
@@ -23,15 +23,15 @@ export type GlobOptions = Omit<TinyGlobby.GlobOptions, 'patterns' | 'cwd'> & {
  * - If absolute is true, returns absolute locations
  * - Otherwise returns relative locations
  */
-type InferGlobReturn<O extends GlobOptions | undefined> = O extends undefined ? FsLoc.RelFile.RelFile // Explicit undefined type param
-  : O extends { onlyDirectories: true; absolute: true } ? FsLoc.AbsDir.AbsDir
-  : O extends { onlyDirectories: true } ? FsLoc.RelDir.RelDir
+type InferGlobReturn<O extends GlobOptions | undefined> = O extends undefined ? FsLoc.RelFile // Explicit undefined type param
+  : O extends { onlyDirectories: true; absolute: true } ? FsLoc.AbsDir
+  : O extends { onlyDirectories: true } ? FsLoc.RelDir
   : O extends { onlyFiles: false; absolute: true } ? FsLoc.Groups.Abs.Abs
   : O extends { onlyFiles: false } ? FsLoc.Groups.Rel.Rel
-  : O extends { onlyFiles: true; absolute: true } ? FsLoc.AbsFile.AbsFile
-  : O extends { onlyFiles: true } ? FsLoc.RelFile.RelFile
-  : O extends { absolute: true } ? FsLoc.AbsFile.AbsFile // onlyFiles defaults to true
-  : O extends GlobOptions ? FsLoc.RelFile.RelFile // Default case for bare GlobOptions/{}
+  : O extends { onlyFiles: true; absolute: true } ? FsLoc.AbsFile
+  : O extends { onlyFiles: true } ? FsLoc.RelFile
+  : O extends { absolute: true } ? FsLoc.AbsFile // onlyFiles defaults to true
+  : O extends GlobOptions ? FsLoc.RelFile // Default case for bare GlobOptions/{}
   : never // Should never reach here
 
 /**
@@ -65,7 +65,7 @@ type InferGlobReturn<O extends GlobOptions | undefined> = O extends undefined ? 
  *   const dirs = yield* Fs.glob('src/**', { onlyDirectories: true })
  *
  *   // Search from a specific directory using FsLoc
- *   const srcDir = FsLoc.AbsDir.decodeSync('/path/to/project/')
+ *   const srcDir = FsLoc.AbsDir.decodeStringSync('/path/to/project/')
  *   const srcFiles = yield* Fs.glob('**' + '/*.ts', { cwd: srcDir })
  *
  *   // Get string path from FsLoc
@@ -83,7 +83,7 @@ export const glob = <O extends GlobOptions | undefined = undefined>(
     try: () => {
       // Convert FsLoc.AbsDir to string for TinyGlobby
       const tinyGlobbyOptions = options && options.cwd && FsLoc.AbsDir.is(options.cwd)
-        ? { ...options, cwd: FsLoc.AbsDir.encodeSync(options.cwd) }
+        ? { ...options, cwd: S.encodeSync(FsLoc.AbsDir.String)(options.cwd) }
         : options
       return TinyGlobby.glob(pattern, tinyGlobbyOptions as TinyGlobby.GlobOptions)
     },
@@ -126,7 +126,7 @@ export const glob = <O extends GlobOptions | undefined = undefined>(
  *
  * const program = Effect.gen(function* () {
  *   // Search from a specific directory using FsLoc
- *   const distDir = FsLoc.AbsDir.decodeSync('./dist/')
+ *   const distDir = FsLoc.AbsDir.decodeStringSync('./dist/')
  *   const relFiles = yield* Fs.globSync('**' + '/*.js', { cwd: distDir })
  *
  *   // Returns absolute files only
@@ -147,7 +147,7 @@ export const globSync = <O extends GlobOptions | undefined = undefined>(
     try: () => {
       // Convert FsLoc.AbsDir to string for TinyGlobby
       const tinyGlobbyOptions = options && options.cwd && FsLoc.AbsDir.is(options.cwd)
-        ? { ...options, cwd: FsLoc.AbsDir.encodeSync(options.cwd) }
+        ? { ...options, cwd: S.encodeSync(FsLoc.AbsDir.String)(options.cwd) }
         : options
       return TinyGlobby.globSync(pattern, tinyGlobbyOptions as TinyGlobby.GlobOptions)
     },

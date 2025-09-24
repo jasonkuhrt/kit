@@ -1,6 +1,7 @@
 import { FsLoc } from '#fs-loc'
 import { Pro } from '#pro'
 import { FileSystem } from '@effect/platform'
+import { Schema as S } from 'effect'
 import { Effect } from 'effect'
 
 interface GlobalLocalCheckOptions {
@@ -40,7 +41,7 @@ const findPackageInAncestors = (packageName: string): Effect.Effect<string | nul
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
     const currentDir = Pro.cwd()
-    const packageJsonRel = FsLoc.RelFile.decodeSync('package.json')
+    const packageJsonRel = S.decodeSync(FsLoc.RelFile.String)('package.json')
 
     // Start with package.json in current directory
     let packageJsonPath = FsLoc.join(currentDir, packageJsonRel)

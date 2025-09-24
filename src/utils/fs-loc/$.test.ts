@@ -1,20 +1,25 @@
 import { Test } from '#test'
 import '../test/matchers/$.js'
+import { Schema as S } from 'effect'
 import { describe, expect, expectTypeOf, it } from 'vitest'
 import { FsLoc } from './$.js'
 import './$.test-matchers.js'
 
-const PathAbs = FsLoc.Path.Abs.make
-const PathRel = FsLoc.Path.Rel.make
-const File = FsLoc.File.make
+const P = FsLoc.Path
+const F = FsLoc.File
+const AbsFile = FsLoc.AbsFile
+const RelFile = FsLoc.RelFile
+const AbsDir = FsLoc.AbsDir
+const RelDir = FsLoc.RelDir
 const l = FsLoc.fromString
 
-describe('*.decodeSync', () => {
-  const AbsFile = FsLoc.AbsFile.make
-  const RelFile = FsLoc.RelFile.make
-  const AbsDir = FsLoc.AbsDir.make
-  const RelDir = FsLoc.RelDir.make
+// Local helper functions for decoding
+const decodeAbsFile = S.decodeSync(FsLoc.AbsFile.String)
+const decodeRelFile = S.decodeSync(FsLoc.RelFile.String)
+const decodeAbsDir = S.decodeSync(FsLoc.AbsDir.String)
+const decodeRelDir = S.decodeSync(FsLoc.RelDir.String)
 
+describe('*.decodeSync', () => {
   // dprint-ignore
   Test.Table.suite<
     string,
@@ -22,53 +27,53 @@ describe('*.decodeSync', () => {
     { fsloc: typeof FsLoc.AbsFile | typeof FsLoc.RelFile | typeof FsLoc.AbsDir | typeof FsLoc.RelDir }
   >('.decodeSync', [
     // AbsFile cases
-    { n: 'AbsFile: simple file in root',        fsloc: FsLoc.AbsFile, i: '/file.txt',                o: { loc: AbsFile({ path: PathAbs({ segments: [] }),                     file: File({ name: 'file',        extension: '.txt' }) }),  encoded: '/file.txt' } },
-    { n: 'AbsFile: file in nested path',        fsloc: FsLoc.AbsFile, i: '/home/user/doc.pdf',       o: { loc: AbsFile({ path: PathAbs({ segments: ['home', 'user'] }),       file: File({ name: 'doc',         extension: '.pdf' }) }),  encoded: '/home/user/doc.pdf' } },
-    { n: 'AbsFile: deeply nested file',         fsloc: FsLoc.AbsFile, i: '/a/b/c/d/e.js',            o: { loc: AbsFile({ path: PathAbs({ segments: ['a', 'b', 'c', 'd'] }),   file: File({ name: 'e',           extension: '.js' }) }),   encoded: '/a/b/c/d/e.js' } },
-    { n: 'AbsFile: file with multiple dots',    fsloc: FsLoc.AbsFile, i: '/archive.tar.gz',          o: { loc: AbsFile({ path: PathAbs({ segments: [] }),                     file: File({ name: 'archive.tar', extension: '.gz' }) }),   encoded: '/archive.tar.gz' } },
-    { n: 'AbsFile: hidden file with extension', fsloc: FsLoc.AbsFile, i: '/.config.json',            o: { loc: AbsFile({ path: PathAbs({ segments: [] }),                     file: File({ name: '.config',     extension: '.json' }) }), encoded: '/.config.json' } },
-    { n: 'AbsFile: file with spaces',           fsloc: FsLoc.AbsFile, i: '/my docs/file name.txt',   o: { loc: AbsFile({ path: PathAbs({ segments: ['my docs'] }),            file: File({ name: 'file name',   extension: '.txt' }) }),  encoded: '/my docs/file name.txt' } },
+    { n: 'AbsFile: simple file in root',        fsloc: FsLoc.AbsFile, i: '/file.txt',                o: { loc: AbsFile.make({ path: P.Abs.make({ segments: [] }),                     file: F.make({ name: 'file',        extension: '.txt' }) }),  encoded: '/file.txt' } },
+    { n: 'AbsFile: file in nested path',        fsloc: FsLoc.AbsFile, i: '/home/user/doc.pdf',       o: { loc: AbsFile.make({ path: P.Abs.make({ segments: ['home', 'user'] }),       file: F.make({ name: 'doc',         extension: '.pdf' }) }),  encoded: '/home/user/doc.pdf' } },
+    { n: 'AbsFile: deeply nested file',         fsloc: FsLoc.AbsFile, i: '/a/b/c/d/e.js',            o: { loc: AbsFile.make({ path: P.Abs.make({ segments: ['a', 'b', 'c', 'd'] }),   file: F.make({ name: 'e',           extension: '.js' }) }),   encoded: '/a/b/c/d/e.js' } },
+    { n: 'AbsFile: file with multiple dots',    fsloc: FsLoc.AbsFile, i: '/archive.tar.gz',          o: { loc: AbsFile.make({ path: P.Abs.make({ segments: [] }),                     file: F.make({ name: 'archive.tar', extension: '.gz' }) }),   encoded: '/archive.tar.gz' } },
+    { n: 'AbsFile: hidden file with extension', fsloc: FsLoc.AbsFile, i: '/.config.json',            o: { loc: AbsFile.make({ path: P.Abs.make({ segments: [] }),                     file: F.make({ name: '.config',     extension: '.json' }) }), encoded: '/.config.json' } },
+    { n: 'AbsFile: file with spaces',           fsloc: FsLoc.AbsFile, i: '/my docs/file name.txt',   o: { loc: AbsFile.make({ path: P.Abs.make({ segments: ['my docs'] }),            file: F.make({ name: 'file name',   extension: '.txt' }) }),  encoded: '/my docs/file name.txt' } },
     { n: 'AbsFile: throws on relative path',    fsloc: FsLoc.AbsFile, i: 'file.txt',                 o: { throws: true } },
     { n: 'AbsFile: throws on directory path',   fsloc: FsLoc.AbsFile, i: '/home/user/',              o: { throws: true } },
 
     // RelFile cases
-    { n: 'RelFile: simple relative file',       fsloc: FsLoc.RelFile, i: 'file.txt',                 o: { loc: RelFile({ path: PathRel({ segments: [] }),                     file: File({ name: 'file',  extension: '.txt' }) }),  encoded: './file.txt' } },
-    { n: 'RelFile: current dir prefix',         fsloc: FsLoc.RelFile, i: './file.txt',               o: { loc: RelFile({ path: PathRel({ segments: [] }),                     file: File({ name: 'file',  extension: '.txt' }) }),  encoded: './file.txt' } },
-    { n: 'RelFile: parent dir reference',       fsloc: FsLoc.RelFile, i: '../file.txt',              o: { loc: RelFile({ path: PathRel({ segments: ['..'] }),                 file: File({ name: 'file',  extension: '.txt' }) }),  encoded: './../file.txt' } },
-    { n: 'RelFile: nested relative path',       fsloc: FsLoc.RelFile, i: 'src/index.ts',             o: { loc: RelFile({ path: PathRel({ segments: ['src'] }),                file: File({ name: 'index', extension: '.ts' }) }),   encoded: './src/index.ts' } },
-    { n: 'RelFile: multiple parent refs',       fsloc: FsLoc.RelFile, i: '../../lib/util.js',        o: { loc: RelFile({ path: PathRel({ segments: ['..', '..', 'lib'] }),    file: File({ name: 'util',  extension: '.js' }) }),   encoded: './../../lib/util.js' } },
-    { n: 'RelFile: complex nested path',        fsloc: FsLoc.RelFile, i: './src/components/App.tsx', o: { loc: RelFile({ path: PathRel({ segments: ['src', 'components'] }),  file: File({ name: 'App',   extension: '.tsx' }) }),  encoded: './src/components/App.tsx' } },
+    { n: 'RelFile: simple relative file',       fsloc: FsLoc.RelFile, i: 'file.txt',                 o: { loc: RelFile.make({ path: P.Rel.make({ segments: [] }),                     file: F.make({ name: 'file',  extension: '.txt' }) }),  encoded: './file.txt' } },
+    { n: 'RelFile: current dir prefix',         fsloc: FsLoc.RelFile, i: './file.txt',               o: { loc: RelFile.make({ path: P.Rel.make({ segments: [] }),                     file: F.make({ name: 'file',  extension: '.txt' }) }),  encoded: './file.txt' } },
+    { n: 'RelFile: parent dir reference',       fsloc: FsLoc.RelFile, i: '../file.txt',              o: { loc: RelFile.make({ path: P.Rel.make({ segments: ['..'] }),                 file: F.make({ name: 'file',  extension: '.txt' }) }),  encoded: './../file.txt' } },
+    { n: 'RelFile: nested relative path',       fsloc: FsLoc.RelFile, i: 'src/index.ts',             o: { loc: RelFile.make({ path: P.Rel.make({ segments: ['src'] }),                file: F.make({ name: 'index', extension: '.ts' }) }),   encoded: './src/index.ts' } },
+    { n: 'RelFile: multiple parent refs',       fsloc: FsLoc.RelFile, i: '../../lib/util.js',        o: { loc: RelFile.make({ path: P.Rel.make({ segments: ['..', '..', 'lib'] }),    file: F.make({ name: 'util',  extension: '.js' }) }),   encoded: './../../lib/util.js' } },
+    { n: 'RelFile: complex nested path',        fsloc: FsLoc.RelFile, i: './src/components/App.tsx', o: { loc: RelFile.make({ path: P.Rel.make({ segments: ['src', 'components'] }),  file: F.make({ name: 'App',   extension: '.tsx' }) }),  encoded: './src/components/App.tsx' } },
     { n: 'RelFile: throws on absolute path',    fsloc: FsLoc.RelFile, i: '/file.txt',                o: { throws: true } },
     { n: 'RelFile: throws on directory',        fsloc: FsLoc.RelFile, i: 'src/',                     o: { throws: true } },
 
     // AbsDir cases
-    { n: 'AbsDir: root directory',              fsloc: FsLoc.AbsDir,  i: '/',                        o: { loc: AbsDir({ path: PathAbs({ segments: [] }) }),                                                          encoded: '/' } },
-    { n: 'AbsDir: simple directory',            fsloc: FsLoc.AbsDir,  i: '/home/',                   o: { loc: AbsDir({ path: PathAbs({ segments: ['home'] }) }),                                                    encoded: '/home/' } },
-    { n: 'AbsDir: nested directory',            fsloc: FsLoc.AbsDir,  i: '/usr/local/bin/',          o: { loc: AbsDir({ path: PathAbs({ segments: ['usr', 'local', 'bin'] }) }),                                     encoded: '/usr/local/bin/' } },
-    { n: 'AbsDir: without trailing slash',      fsloc: FsLoc.AbsDir,  i: '/home',                    o: { loc: AbsDir({ path: PathAbs({ segments: ['home'] }) }),                                                    encoded: '/home/' } },
-    { n: 'AbsDir: deeply nested',               fsloc: FsLoc.AbsDir,  i: '/a/b/c/d/e/',              o: { loc: AbsDir({ path: PathAbs({ segments: ['a', 'b', 'c', 'd', 'e'] }) }),                                   encoded: '/a/b/c/d/e/' } },
-    { n: 'AbsDir: with spaces',                 fsloc: FsLoc.AbsDir,  i: '/my documents/projects/',  o: { loc: AbsDir({ path: PathAbs({ segments: ['my documents', 'projects'] }) }),                                encoded: '/my documents/projects/' } },
+    { n: 'AbsDir: root directory',              fsloc: FsLoc.AbsDir,  i: '/',                        o: { loc: AbsDir.make({ path: P.Abs.make({ segments: [] }) }),                                                          encoded: '/' } },
+    { n: 'AbsDir: simple directory',            fsloc: FsLoc.AbsDir,  i: '/home/',                   o: { loc: AbsDir.make({ path: P.Abs.make({ segments: ['home'] }) }),                                                    encoded: '/home/' } },
+    { n: 'AbsDir: nested directory',            fsloc: FsLoc.AbsDir,  i: '/usr/local/bin/',          o: { loc: AbsDir.make({ path: P.Abs.make({ segments: ['usr', 'local', 'bin'] }) }),                                     encoded: '/usr/local/bin/' } },
+    { n: 'AbsDir: without trailing slash',      fsloc: FsLoc.AbsDir,  i: '/home',                    o: { loc: AbsDir.make({ path: P.Abs.make({ segments: ['home'] }) }),                                                    encoded: '/home/' } },
+    { n: 'AbsDir: deeply nested',               fsloc: FsLoc.AbsDir,  i: '/a/b/c/d/e/',              o: { loc: AbsDir.make({ path: P.Abs.make({ segments: ['a', 'b', 'c', 'd', 'e'] }) }),                                   encoded: '/a/b/c/d/e/' } },
+    { n: 'AbsDir: with spaces',                 fsloc: FsLoc.AbsDir,  i: '/my documents/projects/',  o: { loc: AbsDir.make({ path: P.Abs.make({ segments: ['my documents', 'projects'] }) }),                                encoded: '/my documents/projects/' } },
     { n: 'AbsDir: throws on relative path',     fsloc: FsLoc.AbsDir,  i: 'home/',                    o: { throws: true } },
     { n: 'AbsDir: throws on relative with dot', fsloc: FsLoc.AbsDir,  i: './home/',                  o: { throws: true } },
 
     // RelDir cases
-    { n: 'RelDir: current directory',           fsloc: FsLoc.RelDir,  i: './',                       o: { loc: RelDir({ path: PathRel({ segments: [] }) }),                                                          encoded: './' } },
-    { n: 'RelDir: simple relative dir',         fsloc: FsLoc.RelDir,  i: 'src/',                     o: { loc: RelDir({ path: PathRel({ segments: ['src'] }) }),                                                     encoded: './src/' } },
-    { n: 'RelDir: parent directory',            fsloc: FsLoc.RelDir,  i: '../',                      o: { loc: RelDir({ path: PathRel({ segments: ['..'] }) }),                                                      encoded: './../' } },
-    { n: 'RelDir: nested relative',             fsloc: FsLoc.RelDir,  i: 'src/components/',          o: { loc: RelDir({ path: PathRel({ segments: ['src', 'components'] }) }),                                       encoded: './src/components/' } },
-    { n: 'RelDir: multiple parent refs',        fsloc: FsLoc.RelDir,  i: '../../lib/',               o: { loc: RelDir({ path: PathRel({ segments: ['..', '..', 'lib'] }) }),                                         encoded: './../../lib/' } },
-    { n: 'RelDir: with current dir prefix',     fsloc: FsLoc.RelDir,  i: './src/',                   o: { loc: RelDir({ path: PathRel({ segments: ['src'] }) }),                                                     encoded: './src/' } },
-    { n: 'RelDir: complex path',                fsloc: FsLoc.RelDir,  i: '../src/lib/utils/',        o: { loc: RelDir({ path: PathRel({ segments: ['..', 'src', 'lib', 'utils'] }) }),                               encoded: './../src/lib/utils/' } },
-    { n: 'RelDir: without trailing slash',      fsloc: FsLoc.RelDir,  i: 'src',                      o: { loc: RelDir({ path: PathRel({ segments: ['src'] }) }),                                                     encoded: './src/' } },
+    { n: 'RelDir: current directory',           fsloc: FsLoc.RelDir,  i: './',                       o: { loc: RelDir.make({ path: P.Rel.make({ segments: [] }) }),                                                          encoded: './' } },
+    { n: 'RelDir: simple relative dir',         fsloc: FsLoc.RelDir,  i: 'src/',                     o: { loc: RelDir.make({ path: P.Rel.make({ segments: ['src'] }) }),                                                     encoded: './src/' } },
+    { n: 'RelDir: parent directory',            fsloc: FsLoc.RelDir,  i: '../',                      o: { loc: RelDir.make({ path: P.Rel.make({ segments: ['..'] }) }),                                                      encoded: './../' } },
+    { n: 'RelDir: nested relative',             fsloc: FsLoc.RelDir,  i: 'src/components/',          o: { loc: RelDir.make({ path: P.Rel.make({ segments: ['src', 'components'] }) }),                                       encoded: './src/components/' } },
+    { n: 'RelDir: multiple parent refs',        fsloc: FsLoc.RelDir,  i: '../../lib/',               o: { loc: RelDir.make({ path: P.Rel.make({ segments: ['..', '..', 'lib'] }) }),                                         encoded: './../../lib/' } },
+    { n: 'RelDir: with current dir prefix',     fsloc: FsLoc.RelDir,  i: './src/',                   o: { loc: RelDir.make({ path: P.Rel.make({ segments: ['src'] }) }),                                                     encoded: './src/' } },
+    { n: 'RelDir: complex path',                fsloc: FsLoc.RelDir,  i: '../src/lib/utils/',        o: { loc: RelDir.make({ path: P.Rel.make({ segments: ['..', 'src', 'lib', 'utils'] }) }),                               encoded: './../src/lib/utils/' } },
+    { n: 'RelDir: without trailing slash',      fsloc: FsLoc.RelDir,  i: 'src',                      o: { loc: RelDir.make({ path: P.Rel.make({ segments: ['src'] }) }),                                                     encoded: './src/' } },
     { n: 'RelDir: throws on absolute path',     fsloc: FsLoc.RelDir,  i: '/src/',                    o: { throws: true } },
   ], ({ i, o, fsloc }) => {
     if ('throws' in o) {
-      expect(() => fsloc.decodeSync(i)).toThrow()
+      expect(() => S.decodeSync(fsloc.String as any)(i)).toThrow()
     } else {
-      const result = fsloc.decodeSync(i)
+      const result = S.decodeSync(fsloc.String as any)(i)
       expect(result).toBeEquivalent(o.loc, FsLoc.FsLoc)
       // Test round-trip encoding
-      const encoded = fsloc.encodeSync(result as any)
+      const encoded = S.encodeSync(fsloc.String as any)(result as any)
       expect(encoded).toBe(o.encoded)
     }
   })
@@ -131,31 +136,31 @@ describe('operations', () => {
     it('.join accepts string literals', () => {
       // Absolute directory + relative file
       const file1 = FsLoc.join('/home/user/', 'config.json')
-      expectTypeOf(file1).toEqualTypeOf<FsLoc.AbsFile.AbsFile>()
+      expectTypeOf(file1).toEqualTypeOf<FsLoc.AbsFile>()
       expect(file1).toBeFile()
       expect(file1).toEncodeTo('/home/user/config.json')
 
       // With ./ prefix should also work
       const file1b = FsLoc.join('/home/user/', './config.json')
-      expectTypeOf(file1b).toEqualTypeOf<FsLoc.AbsFile.AbsFile>()
+      expectTypeOf(file1b).toEqualTypeOf<FsLoc.AbsFile>()
       expect(file1b).toBeFile()
       expect(file1b).toEncodeTo('/home/user/config.json')
 
       // Absolute directory + relative directory
       const dir1 = FsLoc.join('/home/user/', 'src/')
-      expectTypeOf(dir1).toEqualTypeOf<FsLoc.AbsDir.AbsDir>()
+      expectTypeOf(dir1).toEqualTypeOf<FsLoc.AbsDir>()
       expect(dir1).toBeDir()
       expect(dir1).toEncodeTo('/home/user/src/')
 
       // Relative directory + relative file
       const file2 = FsLoc.join('./src/', 'index.ts')
-      expectTypeOf(file2).toEqualTypeOf<FsLoc.RelFile.RelFile>()
+      expectTypeOf(file2).toEqualTypeOf<FsLoc.RelFile>()
       expect(file2).toBeFile()
       expect(file2).toEncodeTo('./src/index.ts')
 
       // Relative directory + relative directory
       const dir2 = FsLoc.join('./base/', 'nested/')
-      expectTypeOf(dir2).toEqualTypeOf<FsLoc.RelDir.RelDir>()
+      expectTypeOf(dir2).toEqualTypeOf<FsLoc.RelDir>()
       expect(dir2).toBeDir()
       expect(dir2).toEncodeTo('./base/nested/')
     })
@@ -276,7 +281,7 @@ describe('operations', () => {
       FsLoc.FsLoc,
       string | undefined,
       {
-        base?: FsLoc.AbsDir.AbsDir
+        base?: FsLoc.AbsDir
       }
     >('.ensureAbsolute', [
       { n: 'abs file stays abs',                           i: l('/home/file.txt'),                  o: '/home/file.txt' },
@@ -303,7 +308,7 @@ describe('operations', () => {
       FsLoc.Groups.Rel.Rel,
       FsLoc.Groups.Abs.Abs,
       {
-        base?: FsLoc.AbsDir.AbsDir
+        base?: FsLoc.AbsDir
       }
     >('.toAbs', [
       { n: 'rel file no base (re-tag)',                    i: l('./file.txt'),                     o: l('/file.txt') },
@@ -326,7 +331,7 @@ describe('operations', () => {
       FsLoc.Groups.Abs.Abs,
       FsLoc.Groups.Rel.Rel,
       {
-        base: FsLoc.AbsDir.AbsDir
+        base: FsLoc.AbsDir
       }
     >('.toRel', [
       { n: 'abs file same base',                           i: l('/home/file.txt'),                 base: l('/home/'),                         o: l('./file.txt') },
@@ -455,26 +460,63 @@ describe('operations', () => {
       expect(hasAsParent(FsLoc.fromString('/other/'))).toBe(false)
     })
   })
+
+  describe('.ensureOptionalAbsoluteWithCwd type inference', () => {
+    it('undefined returns AbsDir', () => {
+      const result = FsLoc.ensureOptionalAbsoluteWithCwd(undefined)
+      expectTypeOf(result).toEqualTypeOf<FsLoc.AbsDir>()
+    })
+
+    it('AbsFile stays AbsFile', () => {
+      const absFile = decodeAbsFile('/path/to/file.txt')
+      const result = FsLoc.ensureOptionalAbsoluteWithCwd(absFile)
+      expectTypeOf(result).toEqualTypeOf<FsLoc.AbsFile>()
+    })
+
+    it('AbsDir stays AbsDir', () => {
+      const absDir = decodeAbsDir('/path/to/dir/')
+      const result = FsLoc.ensureOptionalAbsoluteWithCwd(absDir)
+      expectTypeOf(result).toEqualTypeOf<FsLoc.AbsDir>()
+    })
+
+    it('RelFile becomes AbsFile', () => {
+      const relFile = decodeRelFile('./file.txt')
+      const result = FsLoc.ensureOptionalAbsoluteWithCwd(relFile)
+      expectTypeOf(result).toEqualTypeOf<FsLoc.AbsFile>()
+    })
+
+    it('RelDir becomes AbsDir', () => {
+      const relDir = decodeRelDir('./dir/')
+      const result = FsLoc.ensureOptionalAbsoluteWithCwd(relDir)
+      expectTypeOf(result).toEqualTypeOf<FsLoc.AbsDir>()
+    })
+
+    it('union type with undefined', () => {
+      const loc = Math.random() > 0.5 ? decodeRelFile('./file.txt') : undefined
+      const result = FsLoc.ensureOptionalAbsoluteWithCwd(loc)
+      expectTypeOf(result).toEqualTypeOf<FsLoc.AbsFile | FsLoc.AbsDir>()
+    })
+  })
 })
 
 const LocLoose = FsLoc.FsLocLoose.make
 Test.Table.suite<
   string,
-  FsLoc.FsLocLoose.LocLoose
+  FsLoc.FsLocLoose.FsLocLooseClass
 >(
   '.FsLocLoose.decodeSync', // dprint-ignore
   [
-    { n: 'abs file',      i: '/home/file.txt',           o: LocLoose({ path: PathAbs({ segments: ['home'] }), file: File({ name: 'file', extension: '.txt' }) }) },
-    { n: 'abs dir',       i: '/home/',                   o: LocLoose({ path: PathAbs({ segments: ['home'] }), file: null }) },
-    { n: 'rel file',      i: 'file.txt',                 o: LocLoose({ path: PathRel({ segments: [] }), file: File({ name: 'file', extension: '.txt' }) }) },
-    { n: 'rel dir',       i: 'src/',                     o: LocLoose({ path: PathRel({ segments: ['src'] }), file: null }) },
-    { n: 'root',          i: '/',                        o: LocLoose({ path: PathAbs({ segments: [] }), file: null }) },
+    { n: 'abs file',      i: '/home/file.txt',           o: LocLoose({ path: P.Abs.make({ segments: ['home'] }), file: F.make({ name: 'file', extension: '.txt' }) }) },
+    { n: 'abs dir',       i: '/home/',                   o: LocLoose({ path: P.Abs.make({ segments: ['home'] }), file: null }) },
+    { n: 'rel file',      i: 'file.txt',                 o: LocLoose({ path: P.Rel.make({ segments: [] }), file: F.make({ name: 'file', extension: '.txt' }) }) },
+    { n: 'rel dir',       i: 'src/',                     o: LocLoose({ path: P.Rel.make({ segments: ['src'] }), file: null }) },
+    { n: 'root',          i: '/',                        o: LocLoose({ path: P.Abs.make({ segments: [] }), file: null }) },
     // Files without extensions are treated as directories - changed to .js extension
-    { n: 'complex path',  i: '/usr/local/bin/node.js',   o: LocLoose({ path: PathAbs({ segments: ['usr', 'local', 'bin'] }), file: File({ name: 'node', extension: '.js' }) }) },
+    { n: 'complex path',  i: '/usr/local/bin/node.js',   o: LocLoose({ path: P.Abs.make({ segments: ['usr', 'local', 'bin'] }), file: F.make({ name: 'node', extension: '.js' }) }) },
   ],
   ({ i, o }) => {
     const result = FsLoc.FsLocLoose.decodeSync(i)
-    expect(result).toBeEquivalent(o, FsLoc.FsLocLoose.LocLoose)
+    expect(result).toBeEquivalent(o, FsLoc.FsLocLoose.FsLocLooseClass)
   },
 )
 
@@ -482,21 +524,21 @@ describe('.Constants', () => {
   describe('absDirRoot', () => {
     it('represents the root directory /', () => {
       expect(FsLoc.Constants.absDirRoot).toEqual(l('/'))
-      expect(FsLoc.AbsDir.encodeSync(FsLoc.Constants.absDirRoot)).toBe('/')
+      expect(S.encodeSync(FsLoc.AbsDir.String as any)(FsLoc.Constants.absDirRoot)).toBe('/')
     })
   })
 
   describe('relDirCurrent', () => {
     it('represents the current directory .', () => {
       expect(FsLoc.Constants.relDirCurrent).toEqual(l('./'))
-      expect(FsLoc.RelDir.encodeSync(FsLoc.Constants.relDirCurrent)).toBe('./')
+      expect(S.encodeSync(FsLoc.RelDir.String as any)(FsLoc.Constants.relDirCurrent)).toBe('./')
     })
   })
 
   describe('relDirParent', () => {
     it('represents the parent directory ..', () => {
       expect(FsLoc.Constants.relDirParent).toEqual(l('../'))
-      expect(FsLoc.RelDir.encodeSync(FsLoc.Constants.relDirParent)).toBe('./../')
+      expect(S.encodeSync(FsLoc.RelDir.String as any)(FsLoc.Constants.relDirParent)).toBe('./../')
     })
   })
 })
@@ -505,25 +547,25 @@ describe('.fromString', () => {
   it('returns AbsFile for absolute file paths', () => {
     const result = FsLoc.fromString('/path/file.txt')
     expect(result._tag).toBe('LocAbsFile')
-    expectTypeOf(result).toEqualTypeOf<FsLoc.AbsFile.AbsFile>()
+    expectTypeOf(result).toEqualTypeOf<FsLoc.AbsFile>()
   })
 
   it('returns RelFile for relative file paths', () => {
     const result = FsLoc.fromString('file.txt')
     expect(result._tag).toBe('LocRelFile')
-    expectTypeOf(result).toEqualTypeOf<FsLoc.RelFile.RelFile>()
+    expectTypeOf(result).toEqualTypeOf<FsLoc.RelFile>()
   })
 
   it('returns AbsDir for absolute directory paths', () => {
     const result = FsLoc.fromString('/home/')
     expect(result._tag).toBe('LocAbsDir')
-    expectTypeOf(result).toEqualTypeOf<FsLoc.AbsDir.AbsDir>()
+    expectTypeOf(result).toEqualTypeOf<FsLoc.AbsDir>()
   })
 
   it('returns RelDir for relative directory paths', () => {
     const result = FsLoc.fromString('./src/')
     expect(result._tag).toBe('LocRelDir')
-    expectTypeOf(result).toEqualTypeOf<FsLoc.RelDir.RelDir>()
+    expectTypeOf(result).toEqualTypeOf<FsLoc.RelDir>()
   })
 
   it('type-errors when given non-literal string', () => {
@@ -547,21 +589,21 @@ describe('*.assert', () => {
     { n: 'Dir passes for ./src/',        i: './src/',    o: { assert: FsLoc.Groups.Dir.assert,  pass: true } },
     { n: 'Dir fails for file.txt',       i: 'file.txt',  o: { assert: FsLoc.Groups.Dir.assert,  pass: false } },
 
-    { n: 'AbsFile passes for /file.txt',  i: '/file.txt',  o: { assert: FsLoc.AbsFile.assert,  pass: true } },
-    { n: 'AbsFile fails for file.txt',    i: 'file.txt',   o: { assert: FsLoc.AbsFile.assert,  pass: false } },
-    { n: 'AbsFile fails for /dir/',       i: '/dir/',      o: { assert: FsLoc.AbsFile.assert,  pass: false } },
+    { n: 'AbsFile passes for /file.txt',  i: '/file.txt',  o: { assert: S.asserts(FsLoc.AbsFile),  pass: true } },
+    { n: 'AbsFile fails for file.txt',    i: 'file.txt',   o: { assert: S.asserts(FsLoc.AbsFile),  pass: false } },
+    { n: 'AbsFile fails for /dir/',       i: '/dir/',      o: { assert: S.asserts(FsLoc.AbsFile),  pass: false } },
 
-    { n: 'RelFile passes for file.txt',   i: 'file.txt',   o: { assert: FsLoc.RelFile.assert,  pass: true } },
-    { n: 'RelFile fails for /file.txt',   i: '/file.txt',  o: { assert: FsLoc.RelFile.assert,  pass: false } },
-    { n: 'RelFile fails for ./dir/',      i: './dir/',     o: { assert: FsLoc.RelFile.assert,  pass: false } },
+    { n: 'RelFile passes for file.txt',   i: 'file.txt',   o: { assert: S.asserts(FsLoc.RelFile),  pass: true } },
+    { n: 'RelFile fails for /file.txt',   i: '/file.txt',  o: { assert: S.asserts(FsLoc.RelFile),  pass: false } },
+    { n: 'RelFile fails for ./dir/',      i: './dir/',     o: { assert: S.asserts(FsLoc.RelFile),  pass: false } },
 
-    { n: 'AbsDir passes for /dir/',       i: '/dir/',      o: { assert: FsLoc.AbsDir.assert,   pass: true } },
-    { n: 'AbsDir fails for ./dir/',       i: './dir/',     o: { assert: FsLoc.AbsDir.assert,   pass: false } },
-    { n: 'AbsDir fails for /file.txt',    i: '/file.txt',  o: { assert: FsLoc.AbsDir.assert,   pass: false } },
+    { n: 'AbsDir passes for /dir/',       i: '/dir/',      o: { assert: S.asserts(FsLoc.AbsDir),   pass: true } },
+    { n: 'AbsDir fails for ./dir/',       i: './dir/',     o: { assert: S.asserts(FsLoc.AbsDir),   pass: false } },
+    { n: 'AbsDir fails for /file.txt',    i: '/file.txt',  o: { assert: S.asserts(FsLoc.AbsDir),   pass: false } },
 
-    { n: 'RelDir passes for ./dir/',      i: './dir/',     o: { assert: FsLoc.RelDir.assert,   pass: true } },
-    { n: 'RelDir fails for /dir/',        i: '/dir/',      o: { assert: FsLoc.RelDir.assert,   pass: false } },
-    { n: 'RelDir fails for file.txt',     i: 'file.txt',   o: { assert: FsLoc.RelDir.assert,   pass: false } },
+    { n: 'RelDir passes for ./dir/',      i: './dir/',     o: { assert: S.asserts(FsLoc.RelDir),   pass: true } },
+    { n: 'RelDir fails for /dir/',        i: '/dir/',      o: { assert: S.asserts(FsLoc.RelDir),   pass: false } },
+    { n: 'RelDir fails for file.txt',     i: 'file.txt',   o: { assert: S.asserts(FsLoc.RelDir),   pass: false } },
   ], ({ i, o }) => {
     const loc = FsLoc.decodeSync(i)
     if (o.pass) {

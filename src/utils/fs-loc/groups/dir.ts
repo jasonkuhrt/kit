@@ -1,13 +1,14 @@
 import { Schema as S } from 'effect'
 import type { ParseOptions } from 'effect/SchemaAST'
-import * as FsLoc from '../fs-loc.js'
+import { AbsDir } from '../members/abs-dir.js'
+import { RelDir } from '../members/rel-dir.js'
 
 /**
  * Union of all directory location types.
  */
 export const Dir = S.Union(
-  FsLoc.AbsDir.AbsDir,
-  FsLoc.RelDir.RelDir,
+  AbsDir,
+  RelDir,
 )
 
 /**

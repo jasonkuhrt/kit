@@ -1,4 +1,4 @@
-import * as FsLoc from '../$$.js'
+import * as FsLoc from '../fs-loc.js'
 import * as Groups from '../groups/$$.js'
 import * as Inputs from '../inputs.js'
 import { Path } from '../path/$.js'
@@ -8,8 +8,8 @@ import { join } from './join.js'
  * Type-level ToAbs operation.
  * Maps relative location types to their absolute counterparts.
  */
-export type ToAbs<R extends Groups.Rel.Rel> = R extends FsLoc.RelFile.RelFile ? FsLoc.AbsFile.AbsFile
-  : R extends FsLoc.RelDir.RelDir ? FsLoc.AbsDir.AbsDir
+export type ToAbs<R extends Groups.Rel.Rel> = R extends FsLoc.RelFile ? FsLoc.AbsFile
+  : R extends FsLoc.RelDir ? FsLoc.AbsDir
   : Groups.Abs.Abs
 
 /**
@@ -26,20 +26,23 @@ export type toAbs<$Input extends Inputs.Input.Rel> = ToAbs<Inputs.normalize<$Inp
  *
  * @example
  * ```ts
- * const relFile = FsLoc.RelFile.decodeSync('./src/index.ts')
+ * const relFile = FsLoc.RelFile.decodeStringSync('./src/index.ts')
  * const absFile = toAbs(relFile) // /src/index.ts (just re-tags)
  *
- * const base = FsLoc.AbsDir.decodeSync('/home/user/')
+ * const base = FsLoc.AbsDir.decodeStringSync('/home/user/')
  * const absFile2 = toAbs(relFile, base) // /home/user/src/index.ts (resolves against base)
  * ```
  */
-export const toAbs = <loc extends Inputs.Input.Rel>(
-  loc: Inputs.Validate.Rel<loc>,
-  base?: FsLoc.AbsDir.AbsDir | string,
+export const toAbs = <
+  loc extends Inputs.Input.Rel,
+  base extends Inputs.Input.AbsDir | undefined = undefined,
+>(
+  loc: Inputs.Guard.Rel<loc>,
+  base?: base,
 ): toAbs<loc> => {
-  const normalized = Inputs.normalize(loc)
+  const normalized = FsLoc.normalizeInput(loc)
   if (base) {
-    const normalizedBase = typeof base === 'string' ? FsLoc.AbsDir.decodeSync(base) : base
+    const normalizedBase = FsLoc.normalizeInput(base) as Groups.Dir.Dir
     // Use join to combine base with relative location
     return join(normalizedBase, normalized as Groups.Rel.Rel) as any
   }

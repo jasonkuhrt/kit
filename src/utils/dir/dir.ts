@@ -1,4 +1,5 @@
 import { FsLoc } from '#fs-loc'
+import { Schema as S } from 'effect'
 import { Effect, Scope } from 'effect'
 import * as NodeOs from 'node:os'
 import * as NodePath from 'node:path'
@@ -8,7 +9,7 @@ import * as NodePath from 'node:path'
  * This is the core data type that operations work with.
  */
 export interface Dir {
-  readonly base: FsLoc.AbsDir.AbsDir
+  readonly base: FsLoc.AbsDir
 }
 
 /**
@@ -22,8 +23,8 @@ export interface Dir {
  * const dir = Dir.create('/project')
  * ```
  */
-export const create = (base: string | FsLoc.AbsDir.AbsDir): Dir => ({
-  base: typeof base === 'string' ? FsLoc.AbsDir.decodeSync(base) : base,
+export const create = (base: string | FsLoc.AbsDir): Dir => ({
+  base: typeof base === 'string' ? S.decodeSync(FsLoc.AbsDir.String)(base) : base,
 })
 
 /**
@@ -48,7 +49,7 @@ export const createTemp = (): Effect.Effect<Dir, never, Scope.Scope> =>
       NodeOs.tmpdir(),
       `kit-dir-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     )
-    const absDir = FsLoc.AbsDir.decodeSync(tempBase)
+    const absDir = S.decodeSync(FsLoc.AbsDir.String)(tempBase)
     const dir = create(absDir)
 
     // Add cleanup finalizer
@@ -81,5 +82,5 @@ export const createTempUnsafe = (): Dir => {
     NodeOs.tmpdir(),
     `kit-dir-${Date.now()}-${Math.random().toString(36).slice(2)}`,
   )
-  return create(FsLoc.AbsDir.decodeSync(tempBase))
+  return create(S.decodeSync(FsLoc.AbsDir.String)(tempBase))
 }

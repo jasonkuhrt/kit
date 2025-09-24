@@ -8,8 +8,8 @@ import { Effect, Option } from 'effect'
  * - If all paths are RelDir, returns AbsDir
  * - If mixed, returns union of AbsFile | AbsDir
  */
-type InferReturnType<T extends FsLoc.Groups.Rel.Rel> = T extends FsLoc.RelFile.RelFile ? FsLoc.AbsFile.AbsFile
-  : T extends FsLoc.RelDir.RelDir ? FsLoc.AbsDir.AbsDir
+type InferReturnType<T extends FsLoc.Groups.Rel.Rel> = T extends FsLoc.RelFile ? FsLoc.AbsFile
+  : T extends FsLoc.RelDir ? FsLoc.AbsDir
   : FsLoc.Groups.Abs.Abs
 
 /**
@@ -27,10 +27,10 @@ type InferReturnType<T extends FsLoc.Groups.Rel.Rel> = T extends FsLoc.RelFile.R
  * import { Fs } from '#fs'
  * import { FsLoc } from '#fs-loc'
  *
- * const dir = FsLoc.AbsDir.decodeSync('/project/')
+ * const dir = FsLoc.AbsDir.decodeStringSync('/project/')
  * const paths = [
- *   FsLoc.RelFile.decodeSync('./config.local.json'),
- *   FsLoc.RelFile.decodeSync('./config.json')
+ *   FsLoc.RelFile.decodeStringSync('./config.local.json'),
+ *   FsLoc.RelFile.decodeStringSync('./config.json')
  * ]
  *
  * const result = yield* Fs.findFirstUnderDir(dir)(paths)
@@ -38,7 +38,7 @@ type InferReturnType<T extends FsLoc.Groups.Rel.Rel> = T extends FsLoc.RelFile.R
  * ```
  */
 export const findFirstUnderDir = (
-  dir: FsLoc.AbsDir.AbsDir,
+  dir: FsLoc.AbsDir,
 ) =>
 <paths extends FsLoc.Groups.Rel.Rel>(
   paths: readonly paths[],

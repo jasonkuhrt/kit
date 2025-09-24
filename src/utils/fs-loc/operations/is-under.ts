@@ -1,3 +1,4 @@
+import * as FsLoc from '../fs-loc.js'
 import * as Groups from '../groups/$$.js'
 import * as Inputs from '../inputs.js'
 
@@ -24,11 +25,11 @@ export const isUnder = <
   child extends Inputs.Input.Any,
   parent extends Inputs.Input.Dir,
 >(
-  child: Inputs.Validate.Any<child>,
-  parent: Inputs.Validate.Dir<parent>,
+  child: Inputs.Guard.Any<child>,
+  parent: Inputs.Guard.Dir<parent>,
 ): boolean => {
-  const normalizedChild = Inputs.normalize(child)
-  const normalizedParent = Inputs.normalize(parent)
+  const normalizedChild = FsLoc.normalizeInput(child)
+  const normalizedParent = FsLoc.normalizeInput(parent)
   // Check if both are absolute or both are relative
   const childIsAbs = normalizedChild._tag === 'LocAbsFile' || normalizedChild._tag === 'LocAbsDir'
   const parentIsAbs = normalizedParent._tag === 'LocAbsDir'

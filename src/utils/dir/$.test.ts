@@ -1,8 +1,12 @@
+import { FsLoc } from '#fs-loc'
 import { FsMemory } from '#fs-memory'
 import { FileSystem } from '@effect/platform'
-import { Effect } from 'effect'
+import { Effect, Schema as S } from 'effect'
 import { describe, expect, it } from 'vitest'
 import { Dir } from './$.js'
+
+// Local helper function for decoding
+const decodeAbsDir = S.decodeSync(FsLoc.AbsDir.String)
 
 describe('Dir', () => {
   describe('chaining API', () => {
@@ -247,7 +251,7 @@ describe('Dir', () => {
     })
 
     it('creates a Dir with FsLoc.AbsDir', () => {
-      const absDir = { _tag: 'LocAbsDir' as const, path: { _tag: 'PathAbs' as const, segments: ['test'] } }
+      const absDir = decodeAbsDir('/test/')
       const dir = Dir.create(absDir)
       expect(dir.base).toBe(absDir)
     })

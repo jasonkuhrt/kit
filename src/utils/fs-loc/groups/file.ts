@@ -1,13 +1,14 @@
 import { Schema as S } from 'effect'
 import type { ParseOptions } from 'effect/SchemaAST'
-import * as FsLoc from '../fs-loc.js'
+import { AbsFile } from '../members/abs-file.js'
+import { RelFile } from '../members/rel-file.js'
 
 /**
  * Union of all file location types.
  */
 export const File = S.Union(
-  FsLoc.AbsFile.AbsFile,
-  FsLoc.RelFile.RelFile,
+  AbsFile,
+  RelFile,
 )
 
 /**

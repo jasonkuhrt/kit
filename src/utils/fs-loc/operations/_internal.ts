@@ -1,5 +1,5 @@
 import { Match } from 'effect'
-import * as FsLoc from '../$$.js'
+import * as FsLoc from '../fs-loc.js'
 import { Path } from '../path/$.js'
 import * as File from '../types/file.js'
 

@@ -1,5 +1,5 @@
 import { expect, expectTypeOf, it } from 'vitest'
-import { Analyzer } from './$.js'
+import { Analyzer } from './$.ts'
 
 it('file with extension', () => {
   const result = Analyzer.analyze('file.txt')

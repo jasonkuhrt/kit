@@ -1,3 +1,4 @@
+import * as FsLoc from '../fs-loc.js'
 import * as Inputs from '../inputs.js'
 
 /**
@@ -19,9 +20,9 @@ import * as Inputs from '../inputs.js'
  * ```
  */
 export const name = <loc extends Inputs.Input.Any>(
-  loc: Inputs.Validate.Any<loc>,
+  loc: Inputs.Guard.Any<loc>,
 ): string => {
-  const normalized = Inputs.normalize(loc)
+  const normalized = FsLoc.normalizeInput(loc)
   if ('file' in normalized) {
     // For files, combine name and extension
     return normalized.file.extension

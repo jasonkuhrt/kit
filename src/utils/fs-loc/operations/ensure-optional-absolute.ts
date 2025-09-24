@@ -1,19 +1,19 @@
-import * as FsLoc from '../$$.js'
+import * as FsLoc from '../fs-loc.js'
 import * as Groups from '../groups/$$.js'
 import * as Inputs from '../inputs.js'
-import { type EnsureAbsolute, ensureAbsolute } from './ensure-absolute.js'
+import { ensureAbsolute } from './ensure-absolute.js'
 
 /**
  * Type-level EnsureOptionalAbsolute operation.
  */
 export type EnsureOptionalAbsolute<
   L extends FsLoc.FsLoc | undefined,
-  B extends FsLoc.AbsDir.AbsDir,
+  B extends FsLoc.AbsDir,
 > = L extends undefined ? B
-  : L extends FsLoc.AbsFile.AbsFile ? FsLoc.AbsFile.AbsFile
-  : L extends FsLoc.AbsDir.AbsDir ? FsLoc.AbsDir.AbsDir
-  : L extends FsLoc.RelFile.RelFile ? FsLoc.AbsFile.AbsFile
-  : L extends FsLoc.RelDir.RelDir ? FsLoc.AbsDir.AbsDir
+  : L extends FsLoc.AbsFile ? FsLoc.AbsFile
+  : L extends FsLoc.AbsDir ? FsLoc.AbsDir
+  : L extends FsLoc.RelFile ? FsLoc.AbsFile
+  : L extends FsLoc.RelDir ? FsLoc.AbsDir
   : Groups.Abs.Abs
 
 /**
@@ -36,7 +36,7 @@ export type ensureOptionalAbsolute<
  *
  * @example
  * ```ts
- * const base = FsLoc.AbsDir.decodeSync('/home/user/')
+ * const base = FsLoc.AbsDir.decodeStringSync('/home/user/')
  * const loc = undefined
  * const result = ensureOptionalAbsolute(loc, base) // returns base
  * ```
@@ -45,10 +45,10 @@ export const ensureOptionalAbsolute = <
   loc extends Inputs.Input.Any | undefined,
   base extends Inputs.Input.AbsDir,
 >(
-  loc: loc extends Inputs.Input.Any ? Inputs.Validate.Any<loc> : undefined,
-  base: Inputs.Validate.AbsDir<base>,
+  loc: loc extends Inputs.Input.Any ? Inputs.Guard.Any<loc> : undefined,
+  base: Inputs.Guard.AbsDir<base>,
 ): ensureOptionalAbsolute<loc, base> => {
-  const normalizedBase = Inputs.normalize(base)
+  const normalizedBase = FsLoc.normalizeInput(base)
   if (loc === undefined) {
     return normalizedBase as any
   }

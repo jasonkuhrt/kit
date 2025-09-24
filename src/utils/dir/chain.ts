@@ -2,6 +2,7 @@ import { Fs } from '#fs'
 import { FsLoc } from '#fs-loc'
 import type { Json } from '#json'
 import { Error as PlatformError, FileSystem } from '@effect/platform'
+import { Schema as S } from 'effect'
 import { Effect } from 'effect'
 import type { Dir } from './dir.js'
 import * as Ops from './operations.js'
@@ -13,12 +14,12 @@ type FS = FileSystem.FileSystem
  * Represents a single file system operation to be executed.
  */
 export type Operation =
-  | { type: 'file'; path: FsLoc.RelFile.RelFile; content: any } // Keep as any to preserve original types
-  | { type: 'dir'; path: FsLoc.RelDir.RelDir; operations: Operation[] }
-  | { type: 'remove'; path: FsLoc.RelFile.RelFile | FsLoc.RelDir.RelDir }
-  | { type: 'clear'; path: FsLoc.RelDir.RelDir }
-  | { type: 'move-file'; from: FsLoc.RelFile.RelFile; to: FsLoc.RelFile.RelFile }
-  | { type: 'move-dir'; from: FsLoc.RelDir.RelDir; to: FsLoc.RelDir.RelDir }
+  | { type: 'file'; path: FsLoc.RelFile; content: any } // Keep as any to preserve original types
+  | { type: 'dir'; path: FsLoc.RelDir; operations: Operation[] }
+  | { type: 'remove'; path: FsLoc.RelFile | FsLoc.RelDir }
+  | { type: 'clear'; path: FsLoc.RelDir }
+  | { type: 'move-file'; from: FsLoc.RelFile; to: FsLoc.RelFile }
+  | { type: 'move-dir'; from: FsLoc.RelDir; to: FsLoc.RelDir }
 
 /**
  * A chainable builder for directory operations.
@@ -40,9 +41,9 @@ export interface DirChain {
    *   .file('image.png', uint8Array)
    * ```
    */
-  file<path extends FsLoc.RelFile.RelFile | string>(
-    path: FsLoc.Inputs.Validate.RelFile<path>,
-    content: path extends FsLoc.RelFile.RelFile ? Fs.InferFileContent<path>
+  file<path extends FsLoc.RelFile | string>(
+    path: FsLoc.Inputs.Guard.RelFile<path>,
+    content: path extends FsLoc.RelFile ? Fs.InferFileContent<path>
       : path extends string ? string | Uint8Array | Json.Object // Dynamic path, allow all content types
       : never,
   ): DirChain
@@ -62,8 +63,8 @@ export interface DirChain {
    *   .dir('tests') // empty directory
    * ```
    */
-  dir<path extends FsLoc.RelDir.RelDir | string>(
-    path: FsLoc.Inputs.Validate.RelDir<path>,
+  dir<path extends FsLoc.RelDir | string>(
+    path: FsLoc.Inputs.Guard.RelDir<path>,
     builder?: (_: DirChain) => DirChain,
   ): DirChain
 
@@ -117,7 +118,7 @@ export interface DirChain {
    * ```
    */
   remove<path extends FsLoc.Groups.Rel.Rel | string>(
-    path: FsLoc.Inputs.Validate.Rel<path>,
+    path: FsLoc.Inputs.Guard.Rel<path>,
   ): DirChain
 
   /**
@@ -131,8 +132,8 @@ export interface DirChain {
    * dir.clear('build/')
    * ```
    */
-  clear<path extends FsLoc.RelDir.RelDir | string>(
-    path: FsLoc.Inputs.Validate.RelDir<path>,
+  clear<path extends FsLoc.RelDir | string>(
+    path: FsLoc.Inputs.Guard.RelDir<path>,
   ): DirChain
 
   /**
@@ -148,11 +149,11 @@ export interface DirChain {
    * ```
    */
   move<
-    from extends FsLoc.RelFile.RelFile | string,
-    to extends FsLoc.RelFile.RelFile | string,
+    from extends FsLoc.RelFile | string,
+    to extends FsLoc.RelFile | string,
   >(
-    from: FsLoc.Inputs.Validate.RelFile<from>,
-    to: FsLoc.Inputs.Validate.RelFile<to>,
+    from: FsLoc.Inputs.Guard.RelFile<from>,
+    to: FsLoc.Inputs.Guard.RelFile<to>,
   ): DirChain
 
   /**
@@ -168,11 +169,11 @@ export interface DirChain {
    * ```
    */
   move<
-    from extends FsLoc.RelDir.RelDir | string,
-    to extends FsLoc.RelDir.RelDir | string,
+    from extends FsLoc.RelDir | string,
+    to extends FsLoc.RelDir | string,
   >(
-    from: FsLoc.Inputs.Validate.RelDir<from>,
-    to: FsLoc.Inputs.Validate.RelDir<to>,
+    from: FsLoc.Inputs.Guard.RelDir<from>,
+    to: FsLoc.Inputs.Guard.RelDir<to>,
   ): DirChain
 
   /**
@@ -195,16 +196,16 @@ export interface DirChain {
    * ```
    */
   // Overload for file paths - requires content
-  add<path extends FsLoc.RelFile.RelFile | string>(
-    path: FsLoc.Inputs.Validate.RelFile<path>,
-    content: path extends FsLoc.RelFile.RelFile ? Fs.InferFileContent<path>
+  add<path extends FsLoc.RelFile | string>(
+    path: FsLoc.Inputs.Guard.RelFile<path>,
+    content: path extends FsLoc.RelFile ? Fs.InferFileContent<path>
       : path extends string ? string | Uint8Array | Json.Object
       : never,
   ): DirChain
 
   // Overload for directory paths - optional builder
-  add<path extends FsLoc.RelDir.RelDir | string>(
-    path: FsLoc.Inputs.Validate.RelDir<path>,
+  add<path extends FsLoc.RelDir | string>(
+    path: FsLoc.Inputs.Guard.RelDir<path>,
     builder?: (_: DirChain) => DirChain,
   ): DirChain
 
@@ -237,16 +238,16 @@ export const chain = (dir: Dir): DirChain => {
   const self: DirChain = {
     file(path, content) {
       const relFile = typeof path === 'string'
-        ? FsLoc.RelFile.decodeSync(path as string)
-        : path as FsLoc.RelFile.RelFile
+        ? S.decodeSync(FsLoc.RelFile.String)(path as string)
+        : path as FsLoc.RelFile
       operations.push({ type: 'file', path: relFile, content })
       return self
     },
 
     dir(path, builder?) {
       const relDir = typeof path === 'string'
-        ? FsLoc.RelDir.decodeSync(path as string)
-        : path as FsLoc.RelDir.RelDir
+        ? S.decodeSync(FsLoc.RelDir.String)(path as string)
+        : path as FsLoc.RelDir
       if (builder) {
         // Create a sub-chain to collect nested operations
         const subChain = chain(dir)
@@ -280,20 +281,20 @@ export const chain = (dir: Dir): DirChain => {
         : path
       // Determine if it's a file or directory for the operation
       const operationPath = FsLoc.Groups.File.is(fsPath)
-        ? fsPath as FsLoc.RelFile.RelFile
-        : fsPath as FsLoc.RelDir.RelDir
+        ? fsPath as FsLoc.RelFile
+        : fsPath as FsLoc.RelDir
       operations.push({ type: 'remove', path: operationPath })
       return self
     },
 
     clear(path) {
-      let relDir: FsLoc.RelDir.RelDir
+      let relDir: FsLoc.RelDir
       if (typeof path === 'string') {
         // Handle special case for current directory
         const dirPath = path === '.' ? './' : path as string
-        relDir = FsLoc.RelDir.decodeSync(dirPath)
+        relDir = S.decodeSync(FsLoc.RelDir.String)(dirPath)
       } else {
-        relDir = path as FsLoc.RelDir.RelDir
+        relDir = path as FsLoc.RelDir
       }
       operations.push({ type: 'clear', path: relDir })
       return self
@@ -309,21 +310,21 @@ export const chain = (dir: Dir): DirChain => {
         if (fromLoc.file && toLoc.file) {
           // Both are files - reconstruct as RelFile
           const fromFile = FsLoc.RelFile.make({
-            path: fromLoc.path as typeof FsLoc.Path.Rel.Decoded.Type,
+            path: (fromLoc.path as any),
             file: fromLoc.file,
           })
           const toFile = FsLoc.RelFile.make({
-            path: toLoc.path as typeof FsLoc.Path.Rel.Decoded.Type,
+            path: (toLoc.path as any),
             file: toLoc.file,
           })
           operations.push({ type: 'move-file', from: fromFile, to: toFile })
         } else if (!fromLoc.file && !toLoc.file) {
           // Both are directories - reconstruct as RelDir
           const fromDir = FsLoc.RelDir.make({
-            path: fromLoc.path as typeof FsLoc.Path.Rel.Decoded.Type,
+            path: (fromLoc.path as any),
           })
           const toDir = FsLoc.RelDir.make({
-            path: toLoc.path as typeof FsLoc.Path.Rel.Decoded.Type,
+            path: (toLoc.path as any),
           })
           operations.push({ type: 'move-dir', from: fromDir, to: toDir })
         } else {
@@ -334,14 +335,14 @@ export const chain = (dir: Dir): DirChain => {
         if (FsLoc.Groups.File.is(from)) {
           operations.push({
             type: 'move-file',
-            from: from as FsLoc.RelFile.RelFile,
-            to: to as FsLoc.RelFile.RelFile,
+            from: from as FsLoc.RelFile,
+            to: to as FsLoc.RelFile,
           })
         } else {
           operations.push({
             type: 'move-dir',
-            from: from as FsLoc.RelDir.RelDir,
-            to: to as FsLoc.RelDir.RelDir,
+            from: from as FsLoc.RelDir,
+            to: to as FsLoc.RelDir,
           })
         }
       }
@@ -355,14 +356,14 @@ export const chain = (dir: Dir): DirChain => {
         if (parsed.file) {
           // It's a file - treat as file operation
           const relFile = FsLoc.RelFile.make({
-            path: parsed.path as typeof FsLoc.Path.Rel.Decoded.Type,
+            path: (parsed.path as any),
             file: parsed.file,
           })
           operations.push({ type: 'file', path: relFile, content: contentOrBuilder })
         } else {
           // It's a directory - treat as directory operation
           const relDir = FsLoc.RelDir.make({
-            path: parsed.path as typeof FsLoc.Path.Rel.Decoded.Type,
+            path: (parsed.path as any),
           })
           if (contentOrBuilder && typeof contentOrBuilder === 'function') {
             // Has a builder function
@@ -379,16 +380,16 @@ export const chain = (dir: Dir): DirChain => {
         // Already typed FsLoc
         if (FsLoc.Groups.File.is(path)) {
           // It's a file
-          operations.push({ type: 'file', path: path as FsLoc.RelFile.RelFile, content: contentOrBuilder })
+          operations.push({ type: 'file', path: path as FsLoc.RelFile, content: contentOrBuilder })
         } else {
           // It's a directory
           if (contentOrBuilder && typeof contentOrBuilder === 'function') {
             const subChain = chain(dir)
             contentOrBuilder(subChain)
             const subOps = (subChain as any).__operations__ || []
-            operations.push({ type: 'dir', path: path as FsLoc.RelDir.RelDir, operations: subOps })
+            operations.push({ type: 'dir', path: path as FsLoc.RelDir, operations: subOps })
           } else {
-            operations.push({ type: 'dir', path: path as FsLoc.RelDir.RelDir, operations: [] })
+            operations.push({ type: 'dir', path: path as FsLoc.RelDir, operations: [] })
           }
         }
       }

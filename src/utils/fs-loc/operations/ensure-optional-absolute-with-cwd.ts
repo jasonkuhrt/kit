@@ -1,5 +1,5 @@
 import { Pro } from '#pro'
-import * as FsLoc from '../$$.js'
+import * as FsLoc from '../fs-loc.js'
 import * as Groups from '../groups/$$.js'
 import * as Inputs from '../inputs.js'
 import { ensureAbsolute } from './ensure-absolute.js'
@@ -8,11 +8,11 @@ import { ensureAbsolute } from './ensure-absolute.js'
  * Type-level EnsureOptionalAbsoluteWithCwd operation.
  * Returns AbsDir when undefined, preserves file/dir distinction for other inputs.
  */
-export type EnsureOptionalAbsoluteWithCwd<L extends FsLoc.FsLoc | undefined> = L extends undefined ? FsLoc.AbsDir.AbsDir
-  : L extends FsLoc.AbsFile.AbsFile ? FsLoc.AbsFile.AbsFile
-  : L extends FsLoc.AbsDir.AbsDir ? FsLoc.AbsDir.AbsDir
-  : L extends FsLoc.RelFile.RelFile ? FsLoc.AbsFile.AbsFile
-  : L extends FsLoc.RelDir.RelDir ? FsLoc.AbsDir.AbsDir
+export type EnsureOptionalAbsoluteWithCwd<L extends FsLoc.FsLoc | undefined> = L extends undefined ? FsLoc.AbsDir
+  : L extends FsLoc.AbsFile ? FsLoc.AbsFile
+  : L extends FsLoc.AbsDir ? FsLoc.AbsDir
+  : L extends FsLoc.RelFile ? FsLoc.AbsFile
+  : L extends FsLoc.RelDir ? FsLoc.AbsDir
   : Groups.Abs.Abs
 
 /**
@@ -35,7 +35,7 @@ export type ensureOptionalAbsoluteWithCwd<$Loc extends Inputs.Input.Any | undefi
  * ```
  */
 export const ensureOptionalAbsoluteWithCwd = <L extends Inputs.Input.Any | undefined>(
-  loc: L extends Inputs.Input.Any ? Inputs.Validate.Any<L> : undefined,
+  loc: L extends Inputs.Input.Any ? Inputs.Guard.Any<L> : undefined,
 ): ensureOptionalAbsoluteWithCwd<L> => {
   const base = Pro.cwd()
 

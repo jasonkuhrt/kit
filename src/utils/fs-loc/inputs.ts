@@ -1,8 +1,8 @@
+import { S } from '#deps/effect'
 import type { Ts } from '#ts'
-import { Schema as S } from 'effect'
-import type { Analyzer } from './analyzer/$.js'
-import * as FsLoc from './fs-loc.js'
-import * as Groups from './groups/$$.js'
+import type { Analyzer } from './codec-string/$.js'
+import type * as FsLoc from './fs-loc.js'
+import type * as Groups from './groups/$$.js'
 
 /**
  * Input type for FsLoc APIs that accepts either a FsLoc type or a string.
@@ -15,7 +15,7 @@ import * as Groups from './groups/$$.js'
  * function processPath<T extends Input>(path: T) { ... }
  *
  * // Can accept FsLoc types
- * processPath(FsLoc.AbsFile.decodeSync('/path/file.txt'))
+ * processPath(AbsFileClass.decodeSync('/path/file.txt'))
  *
  * // Can accept string literals
  * processPath('/path/file.txt')
@@ -32,22 +32,22 @@ export namespace Input {
   /**
    * Input that accepts a relative file path.
    */
-  export type RelFile = Input<FsLoc.RelFile.RelFile>
+  export type RelFile = Input<FsLoc.RelFile>
 
   /**
    * Input that accepts a relative directory path.
    */
-  export type RelDir = Input<FsLoc.RelDir.RelDir>
+  export type RelDir = Input<FsLoc.RelDir>
 
   /**
    * Input that accepts an absolute file path.
    */
-  export type AbsFile = Input<FsLoc.AbsFile.AbsFile>
+  export type AbsFile = Input<FsLoc.AbsFile>
 
   /**
    * Input that accepts an absolute directory path.
    */
-  export type AbsDir = Input<FsLoc.AbsDir.AbsDir>
+  export type AbsDir = Input<FsLoc.AbsDir>
 
   /**
    * Input that accepts any file path (absolute or relative).
@@ -82,7 +82,7 @@ export namespace Input {
  * validation fails at compile time. The StaticError type provides helpful
  * error messages to guide users toward correct path formats.
  */
-export type InputValidated<$FsLoc extends FsLoc.FsLoc = FsLoc.FsLoc> = $FsLoc | string | Ts.StaticError
+export type InputOrError<$FsLoc extends FsLoc.FsLoc = FsLoc.FsLoc> = Input<$FsLoc> | Ts.StaticErrorAny
 
 /**
  * Validates an input against a target FsLoc type.
@@ -97,23 +97,33 @@ export type InputValidated<$FsLoc extends FsLoc.FsLoc = FsLoc.FsLoc> = $FsLoc | 
  * @example
  * ```ts
  * // Success: string literal matches target type
- * type Valid = Validate<'/path/file.txt', FsLoc.AbsFile.AbsFile>
+ * type Valid = Validate<'/path/file.txt', AbsFileClass>
  * // Result: '/path/file.txt'
  *
  * // Error: string literal doesn't match target type
- * type Invalid = Validate<'./relative.txt', FsLoc.AbsFile.AbsFile>
+ * type Invalid = Validate<'./relative.txt', AbsFileClass>
  * // Result: StaticError<'Must be an absolute file path', ...>
  * ```
  */
 // dprint-ignore
-export type Validate<
+export type Guard<
   $Input extends Input,
   $TargetFsLoc extends FsLoc.FsLoc,
-  ___ActualFsLoc extends FsLoc.FsLoc = normalize<$Input>,
+  ___ActualFsLoc extends FsLoc.FsLoc = $Input extends string ? FromAnalysis<Analyzer.Analyze<$Input>> : $Input,
 > =
+  string extends $Input
+    ? Ts.Simplify<Ts.StaticError<'When giving a string, it must be a literal so that it can be statically parsed.'>> :
   ___ActualFsLoc['_tag'] extends $TargetFsLoc['_tag']
-    ? $Input
-    : Ts.StaticError<GetValidationError<$TargetFsLoc['_tag']>['message'], { received: $Input; hint: GetValidationError<$TargetFsLoc['_tag']>['hint'] }>
+    ? $Input :
+  // else
+    Ts.Simplify<Ts.StaticError<GetValidationError<$TargetFsLoc['_tag']>['message'], { received: $Input  }, GetValidationError<$TargetFsLoc['_tag']>['hint']>>
+
+export type FromAnalysis<$Analysis extends Analyzer.Analysis> = $Analysis extends { _tag: 'file'; pathType: 'absolute' }
+  ? FsLoc.AbsFile
+  : $Analysis extends { _tag: 'file'; pathType: 'relative' } ? FsLoc.RelFile
+  : $Analysis extends { _tag: 'dir'; pathType: 'absolute' } ? FsLoc.AbsDir
+  : $Analysis extends { _tag: 'dir'; pathType: 'relative' } ? FsLoc.RelDir
+  : never
 
 // dprint-ignore
 type GetValidationError<$Tag> =
@@ -131,50 +141,50 @@ type GetValidationError<$Tag> =
  * Namespace containing type aliases for validating FsLoc inputs.
  * All types accept either the corresponding FsLoc type or a validated string literal.
  */
-export namespace Validate {
+export namespace Guard {
   /**
    * Validates that input is a relative file path.
    * Relative files must not start with `/` and must have an extension.
    */
-  export type RelFile<$Input extends Input> = Validate<$Input, FsLoc.RelFile.RelFile>
+  export type RelFile<$Input extends Input> = Guard<$Input, FsLoc.RelFile>
 
   /**
    * Validates that input is a relative directory path.
    * Relative directories must not start with `/` and should end with `/` or have no extension.
    */
-  export type RelDir<$Input extends Input> = Validate<$Input, FsLoc.RelDir.RelDir>
+  export type RelDir<$Input extends Input> = Guard<$Input, FsLoc.RelDir>
 
   /**
    * Validates that input is an absolute file path.
    * Absolute files must start with `/` and have an extension.
    */
-  export type AbsFile<$Input extends Input> = Validate<$Input, FsLoc.AbsFile.AbsFile>
+  export type AbsFile<$Input extends Input> = Guard<$Input, FsLoc.AbsFile>
 
   /**
    * Validates that input is an absolute directory path.
    * Absolute directories must start with `/` and should end with `/` or have no extension.
    */
-  export type AbsDir<$Input extends Input> = Validate<$Input, FsLoc.AbsDir.AbsDir>
+  export type AbsDir<$Input extends Input> = Guard<$Input, FsLoc.AbsDir>
 
   /**
    * Validates that input is a file path (either absolute or relative).
    */
-  export type File<$Input extends Input> = Validate<$Input, Groups.File.File>
+  export type File<$Input extends Input> = Guard<$Input, Groups.File.File>
 
   /**
    * Validates that input is a directory path (either absolute or relative).
    */
-  export type Dir<$Input extends Input> = Validate<$Input, Groups.Dir.Dir>
+  export type Dir<$Input extends Input> = Guard<$Input, Groups.Dir.Dir>
 
   /**
    * Validates that input is a relative path (either file or directory).
    */
-  export type Rel<$Input extends Input> = Validate<$Input, Groups.Rel.Rel>
+  export type Rel<$Input extends Input> = Guard<$Input, Groups.Rel.Rel>
 
   /**
    * Validates that input is an absolute path (either file or directory).
    */
-  export type Abs<$Input extends Input> = Validate<$Input, Groups.Abs.Abs>
+  export type Abs<$Input extends Input> = Guard<$Input, Groups.Abs.Abs>
 
   /**
    * Accept any FsLoc type OR any string without validation.
@@ -185,118 +195,33 @@ export namespace Validate {
 }
 
 // dprint-ignore
-export type normalize<$Input extends InputValidated> =
-  $Input extends Ts.StaticError       ? never :
-  $Input extends string               ? FsLoc.FromAnalysis<Analyzer.Analyze<$Input>> :
+export type normalize<$Input extends InputOrError> =
+  $Input extends Ts.StaticErrorAny    ? never :
+  $Input extends string               ? FromAnalysis<Analyzer.Analyze<$Input>> :
                                         $Input
 
-/**
- * Normalize a validated input to a FsLoc type at runtime.
- *
- * This function converts string inputs to their corresponding FsLoc types
- * using the FsLoc decoder. If the input is already a FsLoc type, it returns
- * it unchanged. If the input is a StaticError (from failed validation),
- * the return type is `never`, allowing TypeScript to properly handle
- * validation failures.
- *
- * @param input - The validated input to normalize
- * @returns The normalized FsLoc type, or never if input is StaticError
- *
- * @example
- * ```ts
- * const path1 = normalize('/path/file.txt')  // Returns AbsFile
- * const path2 = normalize(someAbsFile)       // Returns unchanged
- * ```
- */
-export const normalize = <input extends InputValidated>(
-  input: input,
-): normalize<input> => {
-  return (typeof input === 'string' ? FsLoc.decodeSync(input) : input) as any
+export const normalize = <$schema extends S.Schema.All>(schema: $schema) => {
+  const decodeSync = S.decodeSync(schema as any)
+
+  return <const $input extends Input<$schema['Type']>>(
+    input: Guard<$input, $schema['Type']>,
+  ): normalize<$input> => {
+    if (typeof input === 'string') {
+      return decodeSync(input) as any
+    }
+    return input as any
+  }
 }
 
-/**
- * Schema namespace for FsLoc input validation.
- * Provides Effect Schema types that accept both strings and FsLoc types.
- */
-export namespace Schema {
-  /**
-   * Schema for relative file inputs.
-   * Accepts a string or RelFile FsLoc type.
-   */
-  export const RelFile = S.Union(
-    S.String,
-    FsLoc.RelFile.RelFile,
-  )
+export const normalizeDynamic = <$schema extends S.Schema.All>(schema: $schema) => {
+  const decodeSync = S.decodeSync(schema as any)
 
-  /**
-   * Schema for relative directory inputs.
-   * Accepts a string or RelDir FsLoc type.
-   */
-  export const RelDir = S.Union(
-    S.String,
-    FsLoc.RelDir.RelDir,
-  )
-
-  /**
-   * Schema for absolute file inputs.
-   * Accepts a string or AbsFile FsLoc type.
-   */
-  export const AbsFile = S.Union(
-    S.String,
-    FsLoc.AbsFile.AbsFile,
-  )
-
-  /**
-   * Schema for absolute directory inputs.
-   * Accepts a string or AbsDir FsLoc type.
-   */
-  export const AbsDir = S.Union(
-    S.String,
-    FsLoc.AbsDir.AbsDir,
-  )
-
-  /**
-   * Schema for any file input (absolute or relative).
-   * Accepts a string or any File FsLoc type.
-   */
-  export const File = S.Union(
-    S.String,
-    Groups.File.File,
-  )
-
-  /**
-   * Schema for any directory input (absolute or relative).
-   * Accepts a string or any Dir FsLoc type.
-   */
-  export const Dir = S.Union(
-    S.String,
-    Groups.Dir.Dir,
-  )
-
-  /**
-   * Schema for any relative input (file or directory).
-   * Accepts a string or any Rel FsLoc type.
-   */
-  export const Rel = S.Union(
-    S.String,
-    Groups.Rel.Rel,
-  )
-
-  /**
-   * Schema for any absolute input (file or directory).
-   * Accepts a string or any Abs FsLoc type.
-   */
-  export const Abs = S.Union(
-    S.String,
-    Groups.Abs.Abs,
-  )
-
-  /**
-   * Schema for any FsLoc input.
-   * Accepts a string or any FsLoc type.
-   */
-  export const Any = S.Union(
-    S.String,
-    FsLoc.FsLoc,
-  )
+  return <const $input extends InputOrError<$schema['Type']>>(
+    input: $input,
+  ): normalize<$input> & unknown => {
+    if (typeof input === 'string') {
+      return decodeSync(input) as any
+    }
+    return input as any
+  }
 }

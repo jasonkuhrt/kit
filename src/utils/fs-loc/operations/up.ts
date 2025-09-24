@@ -1,4 +1,4 @@
-import * as FsLoc from '../$$.js'
+import * as FsLoc from '../fs-loc.js'
 import * as Inputs from '../inputs.js'
 import { set } from './_internal.js'
 
@@ -17,8 +17,8 @@ export type up<$Loc extends Inputs.Input.Any> = Up<Inputs.normalize<$Loc>>
  * Move up by one segment on path.
  */
 export const up = <loc extends Inputs.Input.Any>(
-  loc: Inputs.Validate.Any<loc>,
+  loc: Inputs.Guard.Any<loc>,
 ): up<loc> => {
-  const normalized = Inputs.normalize(loc)
+  const normalized = FsLoc.normalizeInput(loc)
   return set(normalized, { segments: normalized.path.segments.slice(0, -1) }) as any
 }

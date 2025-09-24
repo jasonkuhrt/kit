@@ -143,7 +143,7 @@ export const emptyManifest = make()
  * Resource for reading/writing package.json with Schema validation (mutable for runtime manipulation)
  */
 export const resource: Resource<ManifestMutable> = {
-  read: (dirPath: FsLoc.AbsDir.AbsDir) =>
+  read: (dirPath: FsLoc.AbsDir) =>
     createSchemaResource(
       'package.json',
       ManifestSchemaMutable,
@@ -151,13 +151,13 @@ export const resource: Resource<ManifestMutable> = {
     ).read(dirPath).pipe(
       Effect.map(Option.map((result) => result as ManifestMutable)),
     ),
-  write: (value: ManifestMutable, dirPath: FsLoc.AbsDir.AbsDir) =>
+  write: (value: ManifestMutable, dirPath: FsLoc.AbsDir) =>
     createSchemaResource(
       'package.json',
       ManifestSchemaMutable,
       emptyManifest,
     ).write(value as any, dirPath),
-  readOrEmpty: (dirPath: FsLoc.AbsDir.AbsDir) =>
+  readOrEmpty: (dirPath: FsLoc.AbsDir) =>
     createSchemaResource(
       'package.json',
       ManifestSchemaMutable,

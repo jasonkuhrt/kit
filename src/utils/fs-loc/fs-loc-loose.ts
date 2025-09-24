@@ -1,14 +1,22 @@
 import { Match, ParseResult, Schema as S } from 'effect'
-import { Analyzer } from './analyzer/$.js'
-import { Path } from './path/$.js'
-import * as File from './types/file.js'
+import { Analyzer } from './codec-string/$.js'
+import { Abs, Rel } from './path/$$.js'
+import { File } from './types/file.js'
 
 const Encoded = S.String
 
-export const Decoded = S.TaggedStruct('FsLocLoose', {
-  path: S.Union(Path.Abs.Decoded, Path.Rel.Decoded),
-  file: S.NullOr(File.Decoded),
-})
+/**
+ * Class representing a loose filesystem location.
+ */
+export class FsLocLooseClass extends S.TaggedClass<FsLocLooseClass>()('FsLocLoose', {
+  path: S.Union(Abs, Rel),
+  file: S.NullOr(File),
+}) {
+  static is = S.is(FsLocLooseClass)
+}
+
+// Keep Decoded export for backward compatibility
+export const Decoded = FsLocLooseClass
 
 /**
  * Schema for parsing location strings without enforcing strict type constraints.
@@ -17,12 +25,21 @@ export const Decoded = S.TaggedStruct('FsLocLoose', {
  */
 export const LocLoose = S.transformOrFail(
   Encoded,
-  Decoded,
+  FsLocLooseClass,
   {
     strict: true,
     encode: (decoded) => {
-      const pathEncoded = Path.encodeSync(decoded.path)
-      const fileEncoded = decoded.file ? File.encodeSync(decoded.file) : ''
+      // Since decoded is the class instance, we need to encode the path properly
+      const pathIsAbs = decoded.path._tag === 'PathAbs'
+      const pathSegments = decoded.path.segments
+      let pathEncoded: string
+      if (pathIsAbs) {
+        pathEncoded = pathSegments.length === 0 ? '/' : '/' + pathSegments.join('/')
+      } else {
+        pathEncoded = './' + pathSegments.join('/')
+      }
+
+      const fileEncoded = decoded.file ? `${decoded.file.name}${decoded.file.extension || ''}` : ''
       if (!fileEncoded) return ParseResult.succeed(pathEncoded)
       const pathEncodedForJoin = pathEncoded.endsWith('/') ? pathEncoded.slice(0, -1) : pathEncoded
       const encoded = pathEncodedForJoin + '/' + fileEncoded
@@ -33,13 +50,13 @@ export const LocLoose = S.transformOrFail(
         Match.tagsExhaustive({
           file: (analysis) => {
             const path = analysis.isPathAbsolute
-              ? Path.Abs.Decoded.make({ segments: analysis.path })
-              : Path.Rel.Decoded.make({ segments: analysis.path })
+              ? new Abs({ segments: analysis.path })
+              : new Rel({ segments: analysis.path })
 
             return ParseResult.succeed(
-              Decoded.make({
+              FsLocLooseClass.make({
                 path,
-                file: File.Decoded.make({
+                file: new File({
                   name: analysis.file.name,
                   extension: analysis.file.extension,
                 }),
@@ -48,11 +65,11 @@ export const LocLoose = S.transformOrFail(
           },
           dir: (analysis) => {
             const path = analysis.isPathAbsolute
-              ? Path.Abs.Decoded.make({ segments: analysis.path })
-              : Path.Rel.Decoded.make({ segments: analysis.path })
+              ? new Abs({ segments: analysis.path })
+              : new Rel({ segments: analysis.path })
 
             return ParseResult.succeed(
-              Decoded.make({
+              FsLocLooseClass.make({
                 path,
                 file: null,
               }),
@@ -72,7 +89,7 @@ export type LocLoose = typeof LocLoose.Type
 /**
  * Create a loose location.
  */
-export const make = Decoded.make
+export const make = FsLocLooseClass.make.bind(FsLocLooseClass)
 
 /**
  * Check if a value is a loose location.

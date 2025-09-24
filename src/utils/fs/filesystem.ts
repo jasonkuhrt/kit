@@ -11,7 +11,7 @@ import { FsLoc } from '#fs-loc'
 import type { Json } from '#json'
 import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
-import { Effect, Scope, Sink, Stream } from 'effect'
+import { Effect, Schema as S, Scope, Sink, Stream } from 'effect'
 
 /**
  * Type utility to infer content type from file path.
@@ -19,8 +19,8 @@ import { Effect, Scope, Sink, Stream } from 'effect'
  */
 // dprint-ignore
 export type InferFileContent<$Path extends FsLoc.Groups.File.File> =
-     $Path extends FsLoc.AbsFile.AbsFile                    ? InferContentFromExtension<$Path['file']['extension']>
-   : $Path extends FsLoc.RelFile.RelFile                    ? InferContentFromExtension<$Path['file']['extension']>
+     $Path extends FsLoc.AbsFile                    ? InferContentFromExtension<$Path['file']['extension']>
+   : $Path extends FsLoc.RelFile                    ? InferContentFromExtension<$Path['file']['extension']>
    : never
 /**
  * Maps file extensions to their expected content types.
@@ -72,16 +72,16 @@ export type {
  *
  * @example
  * ```ts
- * const file = FsLoc.AbsFile.decodeSync('/etc/passwd')
+ * const file = S.decodeSync(FsLoc.AbsFile.String)('/etc/passwd')
  * const exists = yield* Fs.exists(file)
  * ```
  */
-export const exists = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.Any<loc>,
+export const exists = <loc extends FsLoc.Inputs.Input.Any>(
+  loc: FsLoc.Inputs.Guard.Any<loc>,
 ): Effect.Effect<boolean, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
     return yield* fs.exists(FsLoc.encodeSync(fsLoc))
   })
 
@@ -93,13 +93,13 @@ export const exists = <loc extends FsLoc.Inputs.Input>(
  * @param loc - The location to check (any FsLoc type)
  * @param options - Access options
  */
-export const access = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.Any<loc>,
+export const access = <loc extends FsLoc.Inputs.Input.Any>(
+  loc: FsLoc.Inputs.Guard.Any<loc>,
   options?: FileSystem.AccessFileOptions,
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
     return yield* fs.access(FsLoc.encodeSync(fsLoc), options)
   })
 
@@ -111,13 +111,13 @@ export const access = <loc extends FsLoc.Inputs.Input>(
  * @param loc - The location to modify (any FsLoc type)
  * @param mode - The permission mode
  */
-export const chmod = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.Any<loc>,
+export const chmod = <loc extends FsLoc.Inputs.Input.Any>(
+  loc: FsLoc.Inputs.Guard.Any<loc>,
   mode: number,
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
     return yield* fs.chmod(FsLoc.encodeSync(fsLoc), mode)
   })
 
@@ -130,14 +130,14 @@ export const chmod = <loc extends FsLoc.Inputs.Input>(
  * @param uid - User ID
  * @param gid - Group ID
  */
-export const chown = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.Any<loc>,
+export const chown = <loc extends FsLoc.Inputs.Input.Any>(
+  loc: FsLoc.Inputs.Guard.Any<loc>,
   uid: number,
   gid: number,
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
     return yield* fs.chown(FsLoc.encodeSync(fsLoc), uid, gid)
   })
 
@@ -149,13 +149,13 @@ export const chown = <loc extends FsLoc.Inputs.Input>(
  * @param loc - The file location to open (any FsLoc type)
  * @param options - File open options
  */
-export const open = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.Any<loc>,
+export const open = <loc extends FsLoc.Inputs.Input.Any>(
+  loc: FsLoc.Inputs.Guard.Any<loc>,
   options?: FileSystem.OpenFileOptions,
 ): Effect.Effect<FileSystem.File, PlatformError, FileSystem.FileSystem | Scope.Scope> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
     return yield* fs.open(FsLoc.encodeSync(fsLoc), options)
   })
 
@@ -173,25 +173,25 @@ export const open = <loc extends FsLoc.Inputs.Input>(
  * @example
  * ```ts
  * // Reading a file returns Uint8Array
- * const file = FsLoc.AbsFile.decodeSync('/data/file.bin')
+ * const file = S.decodeSync(FsLoc.AbsFile.String)('/data/file.bin')
  * const bytes = yield* Fs.read(file)
  *
  * // Reading a directory returns FsLoc array
- * const dir = FsLoc.AbsDir.decodeSync('/home/user/')
+ * const dir = S.decodeSync(FsLoc.AbsDir.String)('/home/user/')
  * const entries = yield* Fs.read(dir)
  * // entries is FsLoc.Groups.Abs.Abs[] (union of AbsFile | AbsDir)
  * ```
  */
 export const read: {
   <L extends FsLoc.Groups.File.File | string>(
-    loc: FsLoc.Inputs.Validate.File<L>,
+    loc: FsLoc.Inputs.Guard.File<L>,
   ): Effect.Effect<Uint8Array, PlatformError, FileSystem.FileSystem>
 
   <L extends FsLoc.Groups.Dir.Dir | string>(
-    loc: FsLoc.Inputs.Validate.Dir<L>,
+    loc: FsLoc.Inputs.Guard.Dir<L>,
     options?: FileSystem.ReadDirectoryOptions,
   ): Effect.Effect<
-    readonly (L extends FsLoc.AbsDir.AbsDir ? FsLoc.Groups.Abs.Abs
+    readonly (L extends FsLoc.AbsDir ? FsLoc.Groups.Abs.Abs
       : L extends string ? FsLoc.FsLoc
       : FsLoc.Groups.Rel.Rel)[],
     PlatformError,
@@ -199,7 +199,7 @@ export const read: {
   >
 
   <L extends FsLoc.FsLoc | string>(
-    loc: FsLoc.Inputs.Validate.Any<L>,
+    loc: FsLoc.Inputs.Guard.Any<L>,
     options?: L extends FsLoc.Groups.Dir.Dir ? FileSystem.ReadDirectoryOptions
       : L extends string ? FileSystem.ReadDirectoryOptions
       : never,
@@ -207,7 +207,7 @@ export const read: {
     L extends FsLoc.Groups.File.File ? Uint8Array
       : L extends string ? Uint8Array | readonly FsLoc.FsLoc[]
       : L extends FsLoc.Groups.Dir.Dir
-        ? readonly (L extends FsLoc.AbsDir.AbsDir ? FsLoc.Groups.Abs.Abs : FsLoc.Groups.Rel.Rel)[]
+        ? readonly (L extends FsLoc.AbsDir ? FsLoc.Groups.Abs.Abs : FsLoc.Groups.Rel.Rel)[]
       : never,
     PlatformError,
     FileSystem.FileSystem
@@ -218,7 +218,7 @@ export const read: {
 ): Effect.Effect<any, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
 
     if (FsLoc.Groups.File.is(fsLoc)) {
       return yield* fs.readFile(FsLoc.encodeSync(fsLoc))
@@ -239,18 +239,18 @@ export const read: {
 
             if (isDirectory) {
               // Create directory FsLoc
-              const dirEntry = entry.endsWith('/') ? entry : entry + '/'
+              const dirEntry = entry
               if (FsLoc.AbsDir.is(fsLoc)) {
-                return FsLoc.AbsDir.decodeSync(entryPath + '/')
+                return S.decodeSync(FsLoc.AbsDir.String)(entryPath)
               } else {
-                return FsLoc.RelDir.decodeSync('./' + dirEntry)
+                return S.decodeSync(FsLoc.RelDir.String)(dirEntry)
               }
             } else {
               // Create file FsLoc
               if (FsLoc.AbsDir.is(fsLoc)) {
-                return FsLoc.AbsFile.decodeSync(entryPath)
+                return S.decodeSync(FsLoc.AbsFile.String)(entryPath)
               } else {
-                return FsLoc.RelFile.decodeSync('./' + entry)
+                return S.decodeSync(FsLoc.RelFile.String)(entry)
               }
             }
           })
@@ -271,18 +271,18 @@ export const read: {
  *
  * @example
  * ```ts
- * const config = FsLoc.AbsFile.decodeSync('/etc/config.json')
+ * const config = S.decodeSync(FsLoc.AbsFile.String)('/etc/config.json')
  * const content = yield* Fs.readString(config)
  * const data = JSON.parse(content)
  * ```
  */
-export const readString = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.File<loc>,
+export const readString = <loc extends FsLoc.Inputs.Input.File>(
+  loc: FsLoc.Inputs.Guard.File<loc>,
   encoding: string = 'utf-8',
 ): Effect.Effect<string, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
     return yield* fs.readFileString(FsLoc.encodeSync(fsLoc), encoding)
   })
 
@@ -295,12 +295,12 @@ export const readString = <loc extends FsLoc.Inputs.Input>(
  * @param loc - The symlink location to read (any FsLoc type)
  * @returns The target location as a FsLocLoose
  */
-export const readLink = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.Any<loc>,
+export const readLink = <loc extends FsLoc.Inputs.Input.Any>(
+  loc: FsLoc.Inputs.Guard.Any<loc>,
 ): Effect.Effect<FsLoc.FsLocLoose.LocLoose, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
     const target = yield* fs.readLink(FsLoc.encodeSync(fsLoc))
     return FsLoc.FsLocLoose.decodeSync(target)
   })
@@ -314,12 +314,12 @@ export const readLink = <loc extends FsLoc.Inputs.Input>(
  * @param loc - The location to resolve (any FsLoc type)
  * @returns The canonical location as a FsLocLoose
  */
-export const realPath = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.Any<loc>,
+export const realPath = <loc extends FsLoc.Inputs.Input.Any>(
+  loc: FsLoc.Inputs.Guard.Any<loc>,
 ): Effect.Effect<FsLoc.FsLocLoose.LocLoose, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
     const real = yield* fs.realPath(FsLoc.encodeSync(fsLoc))
     // We can't easily determine if it's a file or directory without stat
     // So we return FsLocLoose which can be either
@@ -337,17 +337,17 @@ export const realPath = <loc extends FsLoc.Inputs.Input>(
  *
  * @example
  * ```ts
- * const cache = FsLoc.AbsDir.decodeSync('/tmp/cache/')
+ * const cache = S.decodeSync(FsLoc.AbsDir.String)('/tmp/cache/')
  * yield* Fs.clear(cache)
  * // /tmp/cache/ now exists but is empty
  * ```
  */
-export const clear = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.Dir<loc>,
+export const clear = <loc extends FsLoc.Inputs.Input.Dir>(
+  loc: FsLoc.Inputs.Guard.Dir<loc>,
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> => {
   return Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
     const dirPath = FsLoc.encodeSync(fsLoc)
 
     // Ensure the directory exists
@@ -376,17 +376,17 @@ export const clear = <loc extends FsLoc.Inputs.Input>(
  *
  * @example
  * ```ts
- * const tempDir = FsLoc.AbsDir.decodeSync('/tmp/build/')
+ * const tempDir = S.decodeSync(FsLoc.AbsDir.String)('/tmp/build/')
  * yield* Fs.remove(tempDir, { recursive: true })
  * ```
  */
-export const remove = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.Any<loc>,
+export const remove = <loc extends FsLoc.Inputs.Input.Any>(
+  loc: FsLoc.Inputs.Guard.Any<loc>,
   options: FileSystem.RemoveOptions = { recursive: false },
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
     return yield* fs.remove(FsLoc.encodeSync(fsLoc), options)
   })
 
@@ -398,14 +398,14 @@ export const remove = <loc extends FsLoc.Inputs.Input>(
  * @param loc - The file location to write to (any FsLoc type)
  * @param options - Sink options
  */
-export const sink = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.File<loc>,
+export const sink = <loc extends FsLoc.Inputs.Input.File>(
+  loc: FsLoc.Inputs.Guard.File<loc>,
   options: FileSystem.SinkOptions = {},
 ): Sink.Sink<void, Uint8Array, never, PlatformError, FileSystem.FileSystem> => {
   return Sink.unwrapScoped(
     Effect.gen(function*() {
       const fs = yield* FileSystem.FileSystem
-      const fsLoc = FsLoc.Inputs.normalize(loc)
+      const fsLoc = FsLoc.normalizeInput(loc)
       return fs.sink(FsLoc.encodeSync(fsLoc), options)
     }),
   )
@@ -418,12 +418,12 @@ export const sink = <loc extends FsLoc.Inputs.Input>(
  *
  * @param loc - The location to stat (any FsLoc type)
  */
-export const stat = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.Any<loc>,
+export const stat = <loc extends FsLoc.Inputs.Input.Any>(
+  loc: FsLoc.Inputs.Guard.Any<loc>,
 ): Effect.Effect<FileSystem.File.Info, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
     return yield* fs.stat(FsLoc.encodeSync(fsLoc))
   })
 
@@ -435,14 +435,14 @@ export const stat = <loc extends FsLoc.Inputs.Input>(
  * @param loc - The file location to read from (any FsLoc type)
  * @param options - Stream options
  */
-export const stream = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.File<loc>,
+export const stream = <loc extends FsLoc.Inputs.Input.File>(
+  loc: FsLoc.Inputs.Guard.File<loc>,
   options: FileSystem.StreamOptions = {},
 ): Stream.Stream<Uint8Array, PlatformError, FileSystem.FileSystem> => {
   return Stream.unwrap(
     Effect.gen(function*() {
       const fs = yield* FileSystem.FileSystem
-      const fsLoc = FsLoc.Inputs.normalize(loc)
+      const fsLoc = FsLoc.normalizeInput(loc)
       return fs.stream(FsLoc.encodeSync(fsLoc), options)
     }),
   )
@@ -456,13 +456,13 @@ export const stream = <loc extends FsLoc.Inputs.Input>(
  * @param loc - The file location to truncate (any FsLoc type)
  * @param length - The new length
  */
-export const truncate = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.File<loc>,
+export const truncate = <loc extends FsLoc.Inputs.Input.File>(
+  loc: FsLoc.Inputs.Guard.File<loc>,
   length?: FileSystem.SizeInput,
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
     return yield* fs.truncate(FsLoc.encodeSync(fsLoc), length)
   })
 
@@ -475,14 +475,14 @@ export const truncate = <loc extends FsLoc.Inputs.Input>(
  * @param atime - Access time
  * @param mtime - Modification time
  */
-export const utimes = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.Any<loc>,
+export const utimes = <loc extends FsLoc.Inputs.Input.Any>(
+  loc: FsLoc.Inputs.Guard.Any<loc>,
   atime: Date | number,
   mtime: Date | number,
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
     return yield* fs.utimes(FsLoc.encodeSync(fsLoc), atime, mtime)
   })
 
@@ -494,14 +494,14 @@ export const utimes = <loc extends FsLoc.Inputs.Input>(
  * @param loc - The location to watch (any FsLoc type)
  * @param options - Watch options
  */
-export const watch = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.Any<loc>,
+export const watch = <loc extends FsLoc.Inputs.Input.Any>(
+  loc: FsLoc.Inputs.Guard.Any<loc>,
   options?: FileSystem.WatchOptions,
 ): Stream.Stream<FileSystem.WatchEvent, PlatformError, FileSystem.FileSystem> => {
   return Stream.unwrap(
     Effect.gen(function*() {
       const fs = yield* FileSystem.FileSystem
-      const fsLoc = FsLoc.Inputs.normalize(loc)
+      const fsLoc = FsLoc.normalizeInput(loc)
       return fs.watch(FsLoc.encodeSync(fsLoc), options)
     }),
   )
@@ -537,32 +537,32 @@ type WriteParametersInternal = WriteFileParameters | WriteDirectoryParameters
  * @example
  * ```ts
  * // JSON file - accepts Json.Value
- * const config = FsLoc.AbsFile.decodeSync('/config.json')
+ * const config = S.decodeSync(FsLoc.AbsFile.String)('/config.json')
  * yield* Fs.write(config, { name: 'app', version: '1.0' })
  *
  * // Text file - accepts string
- * const readme = FsLoc.AbsFile.decodeSync('/README.md')
+ * const readme = S.decodeSync(FsLoc.AbsFile.String)('/README.md')
  * yield* Fs.write(readme, '# My Project')
  *
  * // Binary file - accepts Uint8Array
- * const image = FsLoc.AbsFile.decodeSync('/logo.png')
+ * const image = S.decodeSync(FsLoc.AbsFile.String)('/logo.png')
  * yield* Fs.write(image, imageBytes)
  *
  * // Creating a directory
- * const dir = FsLoc.AbsDir.decodeSync('/data/output/')
+ * const dir = S.decodeSync(FsLoc.AbsDir.String)('/data/output/')
  * yield* Fs.write(dir, { recursive: true })
  * ```
  */
 export const write: {
   <loc extends FsLoc.Groups.File.File | string>(
-    loc: FsLoc.Inputs.Validate.File<loc>,
+    loc: FsLoc.Inputs.Guard.File<loc>,
     content: loc extends FsLoc.Groups.File.File ? InferFileContent<loc>
       : loc extends string ? string | Uint8Array | Json.Object // Dynamic path, allow all content types
       : never,
     options?: FileSystem.WriteFileOptions | FileSystem.WriteFileStringOptions,
   ): Effect.Effect<void, PlatformError, FileSystem.FileSystem>
   <loc extends FsLoc.Groups.Dir.Dir | string>(
-    loc: FsLoc.Inputs.Validate.Dir<loc>,
+    loc: FsLoc.Inputs.Guard.Dir<loc>,
     options?: FileSystem.MakeDirectoryOptions,
   ): Effect.Effect<void, PlatformError, FileSystem.FileSystem>
 } = ((
@@ -582,8 +582,8 @@ export const write: {
       // Construct the parent directory from the file's path segments
       if (loc.path.segments.length > 0) {
         const parentDir = FsLoc.Groups.Abs.is(loc)
-          ? FsLoc.AbsDir.decodeSync('/' + loc.path.segments.join('/') + '/')
-          : FsLoc.RelDir.decodeSync(loc.path.segments.join('/') + '/')
+          ? S.decodeSync(FsLoc.AbsDir.String)('/' + loc.path.segments.join('/') + '/')
+          : S.decodeSync(FsLoc.RelDir.String)(loc.path.segments.join('/') + '/')
         const parentPath = FsLoc.encodeSync(parentDir)
         yield* fs.makeDirectory(parentPath, { recursive: true })
       }
@@ -636,7 +636,7 @@ export const write: {
  *
  * @example
  * ```ts
- * const config = FsLoc.AbsFile.decodeSync('/etc/config.json')
+ * const config = S.decodeSync(FsLoc.AbsFile.String)('/etc/config.json')
  * const data = JSON.stringify({ key: 'value' }, null, 2)
  * // Old way (deprecated):
  * yield* Fs.writeString(config, data)
@@ -644,14 +644,14 @@ export const write: {
  * yield* Fs.write(config, data)
  * ```
  */
-export const writeString = <loc extends FsLoc.Inputs.Input>(
-  loc: FsLoc.Inputs.Validate.File<loc>,
+export const writeString = <loc extends FsLoc.Inputs.Input.File>(
+  loc: FsLoc.Inputs.Guard.File<loc>,
   data: string,
   options: FileSystem.WriteFileStringOptions = {},
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fsLoc = FsLoc.Inputs.normalize(loc)
+    const fsLoc = FsLoc.normalizeInput(loc)
     return yield* fs.writeFileString(FsLoc.encodeSync(fsLoc), data, options)
   })
 
@@ -673,25 +673,25 @@ export const writeString = <loc extends FsLoc.Inputs.Input>(
  * @example
  * ```ts
  * // File to file - uses optimized copyFile internally
- * const src = FsLoc.AbsFile.decodeSync('/src/file.txt')
- * const dst = FsLoc.AbsFile.decodeSync('/dst/file.txt')
+ * const src = S.decodeSync(FsLoc.AbsFile.String)('/src/file.txt')
+ * const dst = S.decodeSync(FsLoc.AbsFile.String)('/dst/file.txt')
  * yield* Fs.copy(src, dst)
  *
  * // Directory to directory - uses general copy
- * const srcDir = FsLoc.AbsDir.decodeSync('/src/dir/')
- * const dstDir = FsLoc.AbsDir.decodeSync('/dst/dir/')
+ * const srcDir = S.decodeSync(FsLoc.AbsDir.String)('/src/dir/')
+ * const dstDir = S.decodeSync(FsLoc.AbsDir.String)('/dst/dir/')
  * yield* Fs.copy(srcDir, dstDir)
  * ```
  */
-export const copy = <from extends FsLoc.Inputs.Input, to extends FsLoc.Inputs.Input>(
-  from: FsLoc.Inputs.Validate.Any<from>,
-  to: FsLoc.Inputs.Validate.Any<to>,
+export const copy = <from extends FsLoc.Inputs.Input.Any, to extends FsLoc.Inputs.Input.Any>(
+  from: FsLoc.Inputs.Guard.Any<from>,
+  to: FsLoc.Inputs.Guard.Any<to>,
   options: FileSystem.CopyOptions = {},
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fromLoc = FsLoc.Inputs.normalize(from)
-    const toLoc = FsLoc.Inputs.normalize(to)
+    const fromLoc = FsLoc.normalizeInput(from)
+    const toLoc = FsLoc.normalizeInput(to)
 
     // If both source and destination are files, use the optimized copyFile
     if (FsLoc.Groups.File.is(fromLoc) && FsLoc.Groups.File.is(toLoc)) {
@@ -710,14 +710,14 @@ export const copy = <from extends FsLoc.Inputs.Input, to extends FsLoc.Inputs.In
  * @param from - Source location (any FsLoc type)
  * @param to - Link location (any FsLoc type)
  */
-export const link = <from extends FsLoc.Inputs.Input, to extends FsLoc.Inputs.Input>(
-  from: FsLoc.Inputs.Validate.Any<from>,
-  to: FsLoc.Inputs.Validate.Any<to>,
+export const link = <from extends FsLoc.Inputs.Input.Any, to extends FsLoc.Inputs.Input.Any>(
+  from: FsLoc.Inputs.Guard.Any<from>,
+  to: FsLoc.Inputs.Guard.Any<to>,
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fromLoc = FsLoc.Inputs.normalize(from)
-    const toLoc = FsLoc.Inputs.normalize(to)
+    const fromLoc = FsLoc.normalizeInput(from)
+    const toLoc = FsLoc.normalizeInput(to)
     return yield* fs.link(FsLoc.encodeSync(fromLoc), FsLoc.encodeSync(toLoc))
   })
 
@@ -733,24 +733,24 @@ export const link = <from extends FsLoc.Inputs.Input, to extends FsLoc.Inputs.In
  * @example
  * ```ts
  * // File to file rename
- * const old = FsLoc.AbsFile.decodeSync('/tmp/old.txt')
- * const new = FsLoc.AbsFile.decodeSync('/tmp/new.txt')
+ * const old = S.decodeSync(FsLoc.AbsFile.String)('/tmp/old.txt')
+ * const new = S.decodeSync(FsLoc.AbsFile.String)('/tmp/new.txt')
  * yield* Fs.rename(old, new)
  *
  * // Directory to directory rename
- * const oldDir = FsLoc.AbsDir.decodeSync('/tmp/old/')
- * const newDir = FsLoc.AbsDir.decodeSync('/tmp/new/')
+ * const oldDir = S.decodeSync(FsLoc.AbsDir.String)('/tmp/old/')
+ * const newDir = S.decodeSync(FsLoc.AbsDir.String)('/tmp/new/')
  * yield* Fs.rename(oldDir, newDir)
  * ```
  */
 export const rename: {
   <Old extends FsLoc.Groups.File.File | string, New extends FsLoc.Groups.File.File | string>(
-    oldPath: FsLoc.Inputs.Validate.File<Old>,
-    newPath: FsLoc.Inputs.Validate.File<New>,
+    oldPath: FsLoc.Inputs.Guard.File<Old>,
+    newPath: FsLoc.Inputs.Guard.File<New>,
   ): Effect.Effect<void, PlatformError, FileSystem.FileSystem>
   <Old extends FsLoc.Groups.Dir.Dir | string, New extends FsLoc.Groups.Dir.Dir | string>(
-    oldPath: FsLoc.Inputs.Validate.Dir<Old>,
-    newPath: FsLoc.Inputs.Validate.Dir<New>,
+    oldPath: FsLoc.Inputs.Guard.Dir<Old>,
+    newPath: FsLoc.Inputs.Guard.Dir<New>,
   ): Effect.Effect<void, PlatformError, FileSystem.FileSystem>
 } = (
   oldPath: any,
@@ -758,8 +758,8 @@ export const rename: {
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const oldLoc = FsLoc.Inputs.normalize(oldPath)
-    const newLoc = FsLoc.Inputs.normalize(newPath)
+    const oldLoc = FsLoc.normalizeInput(oldPath)
+    const newLoc = FsLoc.normalizeInput(newPath)
     return yield* fs.rename(FsLoc.encodeSync(oldLoc), FsLoc.encodeSync(newLoc))
   })
 
@@ -771,14 +771,14 @@ export const rename: {
  * @param from - Target location (any FsLoc type)
  * @param to - Symlink location (any FsLoc type)
  */
-export const symlink = <from extends FsLoc.Inputs.Input, to extends FsLoc.Inputs.Input>(
-  from: FsLoc.Inputs.Validate.Any<from>,
-  to: FsLoc.Inputs.Validate.Any<to>,
+export const symlink = <from extends FsLoc.Inputs.Input.Any, to extends FsLoc.Inputs.Input.Any>(
+  from: FsLoc.Inputs.Guard.Any<from>,
+  to: FsLoc.Inputs.Guard.Any<to>,
 ): Effect.Effect<void, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const fromLoc = FsLoc.Inputs.normalize(from)
-    const toLoc = FsLoc.Inputs.normalize(to)
+    const fromLoc = FsLoc.normalizeInput(from)
+    const toLoc = FsLoc.normalizeInput(to)
     return yield* fs.symlink(FsLoc.encodeSync(fromLoc), FsLoc.encodeSync(toLoc))
   })
 
@@ -838,11 +838,11 @@ export type MakeTempOptions = TempFileOptions | TempDirectoryOptions
  */
 export const makeTempDirectory = (
   options: FileSystem.MakeTempDirectoryOptions = {},
-): Effect.Effect<FsLoc.AbsDir.AbsDir, PlatformError, FileSystem.FileSystem> =>
+): Effect.Effect<FsLoc.AbsDir, PlatformError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
     const path = yield* fs.makeTempDirectory(options)
-    return FsLoc.AbsDir.decodeSync(path)
+    return S.decodeSync(FsLoc.AbsDir.String)(path)
   })
 
 /**
@@ -865,7 +865,7 @@ export const makeTempDirectory = (
  *
  *   // Use the directory...
  *   yield* Fs.writeString(
- *     FsLoc.join(tempDir, FsLoc.RelFile.decodeSync('./data.txt')),
+ *     FsLoc.join(tempDir, S.decodeSync(FsLoc.RelFile.String)('./data.txt')),
  *     'test data'
  *   )
  * }).pipe(Effect.scoped)
@@ -873,11 +873,11 @@ export const makeTempDirectory = (
  */
 export const makeTempDirectoryScoped = (
   options: FileSystem.MakeTempDirectoryOptions = {},
-): Effect.Effect<FsLoc.AbsDir.AbsDir, PlatformError, FileSystem.FileSystem | Scope.Scope> =>
+): Effect.Effect<FsLoc.AbsDir, PlatformError, FileSystem.FileSystem | Scope.Scope> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
     const path = yield* fs.makeTempDirectoryScoped(options)
-    return FsLoc.AbsDir.decodeSync(path)
+    return S.decodeSync(FsLoc.AbsDir.String)(path)
   })
 
 /**
@@ -900,7 +900,7 @@ export const makeTempDirectoryScoped = (
  * ```
  */
 export const makeTemp = <T extends MakeTempOptions>(options: T): Effect.Effect<
-  T extends TempFileOptions ? FsLoc.AbsFile.AbsFile : FsLoc.AbsDir.AbsDir,
+  T extends TempFileOptions ? FsLoc.AbsFile : FsLoc.AbsDir,
   PlatformError,
   FileSystem.FileSystem
 > =>
@@ -914,14 +914,14 @@ export const makeTemp = <T extends MakeTempOptions>(options: T): Effect.Effect<
         ...((options as TempFileOptions).suffix !== undefined && { suffix: (options as TempFileOptions).suffix }),
       }
       const path = yield* fs.makeTempFile(fileOpts)
-      return FsLoc.AbsFile.decodeSync(path) as any
+      return S.decodeSync(FsLoc.AbsFile.String)(path) as any
     } else {
       const dirOpts: FileSystem.MakeTempDirectoryOptions = {
         ...(options.directory !== undefined && { directory: options.directory }),
         ...(options.prefix !== undefined && { prefix: options.prefix }),
       }
       const path = yield* fs.makeTempDirectory(dirOpts)
-      return FsLoc.AbsDir.decodeSync(path) as any
+      return S.decodeSync(FsLoc.AbsDir.String)(path) as any
     }
   })
 
@@ -942,7 +942,7 @@ export const makeTemp = <T extends MakeTempOptions>(options: T): Effect.Effect<
  * ```
  */
 export const makeTempScoped = <T extends MakeTempOptions>(options: T): Effect.Effect<
-  T extends TempFileOptions ? FsLoc.AbsFile.AbsFile : FsLoc.AbsDir.AbsDir,
+  T extends TempFileOptions ? FsLoc.AbsFile : FsLoc.AbsDir,
   PlatformError,
   FileSystem.FileSystem | Scope.Scope
 > =>
@@ -956,13 +956,13 @@ export const makeTempScoped = <T extends MakeTempOptions>(options: T): Effect.Ef
         ...((options as TempFileOptions).suffix !== undefined && { suffix: (options as TempFileOptions).suffix }),
       }
       const path = yield* fs.makeTempFileScoped(fileOpts)
-      return FsLoc.AbsFile.decodeSync(path) as any
+      return S.decodeSync(FsLoc.AbsFile.String)(path) as any
     } else {
       const dirOpts: FileSystem.MakeTempDirectoryOptions = {
         ...(options.directory !== undefined && { directory: options.directory }),
         ...(options.prefix !== undefined && { prefix: options.prefix }),
       }
       const path = yield* fs.makeTempDirectoryScoped(dirOpts)
-      return FsLoc.AbsDir.decodeSync(path) as any
+      return S.decodeSync(FsLoc.AbsDir.String)(path) as any
     }
   })

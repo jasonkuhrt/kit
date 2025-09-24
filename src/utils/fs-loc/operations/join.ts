@@ -1,4 +1,4 @@
-import * as FsLoc from '../$$.js'
+import * as FsLoc from '../fs-loc.js'
 import * as Groups from '../groups/$$.js'
 import * as Inputs from '../inputs.js'
 import { Path } from '../path/$.js'
@@ -11,14 +11,14 @@ import { resolveSegments } from './_internal.js'
 export type Join<
   Base extends Groups.Dir.Dir,
   Path extends Groups.Rel.Rel,
-> = Base extends FsLoc.AbsDir.AbsDir ? (
-    Path extends FsLoc.RelFile.RelFile ? FsLoc.AbsFile.AbsFile
-      : Path extends FsLoc.RelDir.RelDir ? FsLoc.AbsDir.AbsDir
+> = Base extends FsLoc.AbsDir ? (
+    Path extends FsLoc.RelFile ? FsLoc.AbsFile
+      : Path extends FsLoc.RelDir ? FsLoc.AbsDir
       : never
   )
-  : Base extends FsLoc.RelDir.RelDir ? (
-      Path extends FsLoc.RelFile.RelFile ? FsLoc.RelFile.RelFile
-        : Path extends FsLoc.RelDir.RelDir ? FsLoc.RelDir.RelDir
+  : Base extends FsLoc.RelDir ? (
+      Path extends FsLoc.RelFile ? FsLoc.RelFile
+        : Path extends FsLoc.RelDir ? FsLoc.RelDir
         : never
     )
   : never
@@ -40,11 +40,11 @@ export const join = <
   dir extends Inputs.Input.Dir,
   rel extends Inputs.Input.Rel,
 >(
-  dir: Inputs.Validate.Dir<dir>,
-  rel: Inputs.Validate.Rel<rel>,
+  dir: Inputs.Guard.Dir<dir>,
+  rel: Inputs.Guard.Rel<rel>,
 ): join<dir, rel> => {
-  const normalizedDir = Inputs.normalize(dir)
-  const normalizedRel = Inputs.normalize(rel)
+  const normalizedDir = FsLoc.normalizeInput(dir)
+  const normalizedRel = FsLoc.normalizeInput(rel)
   const rawSegments = [...normalizedDir.path.segments, ...normalizedRel.path.segments]
   const segments = resolveSegments(rawSegments)
   const file = 'file' in normalizedRel ? normalizedRel.file : null

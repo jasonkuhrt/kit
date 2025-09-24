@@ -1,3 +1,4 @@
+import * as FsLoc from '../fs-loc.js'
 import * as Inputs from '../inputs.js'
 import { isAbove } from './is-above.js'
 
@@ -17,8 +18,8 @@ import { isAbove } from './is-above.js'
  * ```
  */
 export const isAboveOf = <child extends Inputs.Input.Any>(
-  child: Inputs.Validate.Any<child>,
+  child: Inputs.Guard.Any<child>,
 ) =>
 <parent extends Inputs.Input.Dir>(
-  parent: Inputs.Validate.Dir<parent>,
+  parent: Inputs.Guard.Dir<parent>,
 ): boolean => isAbove(parent, child)

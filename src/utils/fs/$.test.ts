@@ -30,14 +30,14 @@ test('.findFirstUnderDir type inference', () => {
   const onlyFiles = [fx.a.rel, fx.b.rel]
   const fileResult = Fs.findFirstUnderDir(absDirTest)(onlyFiles)
   expectTypeOf(fileResult).toEqualTypeOf<
-    Effect.Effect<Option.Option<FsLoc.AbsFile.AbsFile>, Error, FileSystem.FileSystem>
+    Effect.Effect<Option.Option<FsLoc.AbsFile>, Error, FileSystem.FileSystem>
   >()
 
   // Test with only directories - should return Option<AbsDir>
   const onlyDirs = [fx.dir.rel, l('./test/')]
   const dirResult = Fs.findFirstUnderDir(absDirTest)(onlyDirs)
   expectTypeOf(dirResult).toEqualTypeOf<
-    Effect.Effect<Option.Option<FsLoc.AbsDir.AbsDir>, Error, FileSystem.FileSystem>
+    Effect.Effect<Option.Option<FsLoc.AbsDir>, Error, FileSystem.FileSystem>
   >()
 
   // Test with mixed - should return Option<Abs>
@@ -49,7 +49,7 @@ test('.findFirstUnderDir type inference', () => {
 })
 
 Test.Table.suiteWithDynamicLayers<
-  { dir?: FsLoc.AbsDir.AbsDir; paths: FsLoc.Groups.Rel.Rel[] },
+  { dir?: FsLoc.AbsDir; paths: FsLoc.Groups.Rel.Rel[] },
   FsLoc.Groups.Abs.Abs | null,
   { data?: FsLoc.FsLoc[] }
 >({

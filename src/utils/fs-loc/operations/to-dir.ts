@@ -1,4 +1,4 @@
-import * as FsLoc from '../$$.js'
+import * as FsLoc from '../fs-loc.js'
 import * as Groups from '../groups/$$.js'
 import * as Inputs from '../inputs.js'
 import { Path } from '../path/$.js'
@@ -6,8 +6,8 @@ import { Path } from '../path/$.js'
 /**
  * Type-level toDir operation.
  */
-export type ToDir<F extends Groups.File.File> = F extends FsLoc.AbsFile.AbsFile ? FsLoc.AbsDir.AbsDir
-  : F extends FsLoc.RelFile.RelFile ? FsLoc.RelDir.RelDir
+export type ToDir<F extends Groups.File.File> = F extends FsLoc.AbsFile ? FsLoc.AbsDir
+  : F extends FsLoc.RelFile ? FsLoc.RelDir
   : Groups.Dir.Dir
 
 /**
@@ -23,9 +23,9 @@ export type toDir<$File extends Inputs.Input.File> = ToDir<Inputs.normalize<$Fil
  * @returns The directory location
  */
 export const toDir = <F extends Inputs.Input.File>(
-  loc: Inputs.Validate.File<F>,
+  loc: Inputs.Guard.File<F>,
 ): toDir<F> => {
-  const normalized = Inputs.normalize(loc)
+  const normalized = FsLoc.normalizeInput(loc)
   const fileName = normalized.file.extension ? normalized.file.name + normalized.file.extension : normalized.file.name
   const segments = [...normalized.path.segments, fileName]
 

@@ -1,5 +1,5 @@
 import * as NodePath from 'node:path'
-import * as FsLoc from '../$$.js'
+import * as FsLoc from '../fs-loc.js'
 import * as Groups from '../groups/$$.js'
 import * as Inputs from '../inputs.js'
 
@@ -7,8 +7,8 @@ import * as Inputs from '../inputs.js'
  * Type-level ToRel operation.
  * Maps absolute location types to their relative counterparts.
  */
-export type ToRel<A extends Groups.Abs.Abs> = A extends FsLoc.AbsFile.AbsFile ? FsLoc.RelFile.RelFile
-  : A extends FsLoc.AbsDir.AbsDir ? FsLoc.RelDir.RelDir
+export type ToRel<A extends Groups.Abs.Abs> = A extends FsLoc.AbsFile ? FsLoc.RelFile
+  : A extends FsLoc.AbsDir ? FsLoc.RelDir
   : Groups.Rel.Rel
 
 /**
@@ -25,17 +25,20 @@ export type toRel<$Abs extends Inputs.Input.Abs> = ToRel<Inputs.normalize<$Abs>>
  *
  * @example
  * ```ts
- * const absFile = FsLoc.AbsFile.decodeSync('/home/user/src/index.ts')
- * const base = FsLoc.AbsDir.decodeSync('/home/user/')
+ * const absFile = FsLoc.AbsFile.decodeStringSync('/home/user/src/index.ts')
+ * const base = FsLoc.AbsDir.decodeStringSync('/home/user/')
  * const relFile = toRel(absFile, base) // ./src/index.ts
  * ```
  */
-export const toRel = <A extends Inputs.Input.Abs>(
-  loc: Inputs.Validate.Abs<A>,
-  base: FsLoc.AbsDir.AbsDir | string,
+export const toRel = <
+  A extends Inputs.Input.Abs,
+  B extends Inputs.Input.AbsDir,
+>(
+  loc: Inputs.Guard.Abs<A>,
+  base: Inputs.Guard.AbsDir<B>,
 ): toRel<A> => {
-  const normalizedLoc = Inputs.normalize(loc)
-  const normalizedBase = typeof base === 'string' ? FsLoc.AbsDir.decodeSync(base) : base
+  const normalizedLoc = FsLoc.normalizeInput(loc)
+  const normalizedBase = FsLoc.normalizeInput(base)
   // Encode the locations to get their string representations
   const locPath = FsLoc.encodeSync(normalizedLoc)
   const basePath = FsLoc.encodeSync(normalizedBase)

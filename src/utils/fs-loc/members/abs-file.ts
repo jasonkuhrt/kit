@@ -1,103 +1,86 @@
 import { ParseResult, Schema as S } from 'effect'
 import type { ParseOptions } from 'effect/SchemaAST'
 import * as LocLoose from '../fs-loc-loose.js'
-import { Path } from '../path/$.js'
-import * as File from '../types/file.js'
+import { Abs } from '../path/abs.js'
+import { File } from '../types/file.js'
 
-const Encoded = S.String
-
-const Decoded = S.TaggedStruct('LocAbsFile', {
-  path: Path.Abs.Decoded.pipe(
+/**
+ * Absolute file location.
+ *
+ * Represents a file with an absolute path (starting with /).
+ *
+ * @example
+ * // For structured data (e.g., from API)
+ * const schema1 = S.Struct({ file: AbsFile })
+ *
+ * // For string input (e.g., from config)
+ * const schema2 = S.Struct({ path: AbsFile.FromString })
+ */
+export class AbsFile extends S.TaggedClass<AbsFile>()('LocAbsFile', {
+  path: Abs.pipe(
     S.propertySignature,
-    S.withConstructorDefault(() => Path.Abs.Decoded.make({ segments: [] })),
+    S.withConstructorDefault(() => new Abs({ segments: [] })),
   ),
-  file: File.Decoded,
-})
+  file: File,
+}) {
+  static is = S.is(AbsFile)
 
-/**
- * Schema for absolute file locations.
- * Absolute file paths must start with a leading slash and represent a file.
- */
-export const AbsFile = S.transformOrFail(
-  Encoded,
-  Decoded,
-  {
-    strict: true,
-    encode: (decoded) => {
-      const pathString = decoded.path.segments.join('/')
-      const fileString = File.encodeSync(decoded.file)
-      const encoded = pathString.length > 0 ? `/${pathString}/${fileString}` : `/${fileString}`
-      return ParseResult.succeed(encoded)
-    },
-    decode: (input, options, ast) => {
-      // First decode with LocLoose
-      const looseResult = LocLoose.decodeSync(input)
+  override toString() {
+    return S.encodeSync(AbsFile.String)(this)
+  }
 
-      // Validate it's an absolute file
-      if (looseResult.path._tag !== 'PathAbs') {
-        return ParseResult.fail(
-          new ParseResult.Type(ast, input, 'Absolute paths must start with /'),
+  /**
+   * Schema for parsing from/encoding to string representation.
+   * Use this when you need to accept string paths (e.g., from user input, config files).
+   *
+   * @example
+   * const ConfigSchema = S.Struct({
+   *   sourcePath: AbsFile.String,
+   *   outputPath: AbsFile.String
+   * })
+   */
+  static String = S.transformOrFail(
+    S.String,
+    AbsFile,
+    {
+      strict: true,
+      encode: (decoded) => {
+        // Source of truth for string conversion
+        const pathString = decoded.path.segments.join('/')
+        const fileString = decoded.file.extension ? `${decoded.file.name}${decoded.file.extension}` : decoded.file.name
+        return ParseResult.succeed(pathString.length > 0 ? `/${pathString}/${fileString}` : `/${fileString}`)
+      },
+      decode: (input, options, ast) => {
+        // First decode with LocLoose
+        const looseResult = LocLoose.decodeSync(input)
+
+        // Validate it's an absolute file
+        if (looseResult.path._tag !== 'PathAbs') {
+          return ParseResult.fail(
+            new ParseResult.Type(ast, input, 'Absolute paths must start with /'),
+          )
+        }
+        if (!looseResult.file) {
+          return ParseResult.fail(
+            new ParseResult.Type(ast, input, 'Expected a file path, got a directory or root path'),
+          )
+        }
+
+        // Valid - return as AbsFile
+        return ParseResult.succeed(
+          new AbsFile({
+            path: new Abs({ segments: (looseResult.path as any).segments }),
+            file: new File({
+              name: looseResult.file.name,
+              extension: looseResult.file.extension,
+            }),
+          }),
         )
-      }
-      if (!looseResult.file) {
-        return ParseResult.fail(
-          new ParseResult.Type(ast, input, 'Expected a file path, got a directory or root path'),
-        )
-      }
-
-      // Valid - return as AbsFile
-      return ParseResult.succeed(
-        Decoded.make({
-          path: looseResult.path as typeof Path.Abs.Decoded.Type,
-          file: looseResult.file,
-        }),
-      )
+      },
     },
-  },
-)
+  )
 
-/**
- * Type representing an absolute file location.
- */
-export type AbsFile = typeof AbsFile.Type
-
-/**
- * Create an absolute file location.
- */
-export const make = Decoded.make
-
-/**
- * Check if a value is an absolute file location.
- */
-export const is = S.is(AbsFile)
-
-/**
- * Decode a value into an absolute file location.
- */
-export const decode = S.decode(AbsFile)
-
-/**
- * Synchronously decode a value into an absolute file location.
- */
-export const decodeSync = S.decodeSync(AbsFile)
-
-/**
- * Encode an absolute file location to a string.
- */
-export const encode = S.encode(AbsFile)
-
-/**
- * Synchronously encode an absolute file location to a string.
- */
-export const encodeSync = S.encodeSync(AbsFile)
-
-/**
- * Equivalence for absolute file locations.
- */
-export const equivalence = S.equivalence(AbsFile)
-
-/**
- * Assert that a value is an absolute file location.
- * @throws {ParseError} if the value is not an absolute file location
- */
-export const assert: (input: unknown, options?: ParseOptions) => asserts input is AbsFile = S.asserts(AbsFile)
+  static fromString = <const input extends string>(input: input) => {
+    return S.decodeSync(AbsFile.String)(input) as any
+  }
+}

@@ -1,13 +1,14 @@
 import { Schema as S } from 'effect'
 import type { ParseOptions } from 'effect/SchemaAST'
-import * as FsLoc from '../fs-loc.js'
+import { AbsDir } from '../members/abs-dir.js'
+import { AbsFile } from '../members/abs-file.js'
 
 /**
  * Union of all absolute location types.
  */
 export const Abs = S.Union(
-  FsLoc.AbsFile.AbsFile,
-  FsLoc.AbsDir.AbsDir,
+  AbsFile,
+  AbsDir,
 )
 
 /**

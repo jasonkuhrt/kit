@@ -1,13 +1,14 @@
 import { Schema as S } from 'effect'
 import type { ParseOptions } from 'effect/SchemaAST'
-import * as FsLoc from '../fs-loc.js'
+import { RelDir } from '../members/rel-dir.js'
+import { RelFile } from '../members/rel-file.js'
 
 /**
  * Union of all relative location types.
  */
 export const Rel = S.Union(
-  FsLoc.RelFile.RelFile,
-  FsLoc.RelDir.RelDir,
+  RelFile,
+  RelDir,
 )
 
 /**

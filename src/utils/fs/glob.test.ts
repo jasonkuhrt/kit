@@ -1,8 +1,12 @@
 import { Fs } from '#fs'
 import { FsLoc } from '#fs-loc'
 import { Pro } from '#pro'
-import { Effect } from 'effect'
+import { Effect, Schema as S } from 'effect'
 import { describe, expect, test } from 'vitest'
+
+// Local helper functions for decoding
+const decodeRelDir = S.decodeSync(FsLoc.RelDir.String)
+const decodeAbsDir = S.decodeSync(FsLoc.AbsDir.String)
 
 describe('Glob', () => {
   describe('glob', () => {
@@ -33,7 +37,7 @@ describe('Glob', () => {
     test('accepts FsLoc.AbsDir for cwd option', async () => {
       // Use Pro.cwd() to get the current directory
       const cwd = Pro.cwd()
-      const srcDir = FsLoc.join(cwd, FsLoc.RelDir.decodeSync('./src/'))
+      const srcDir = FsLoc.join(cwd, decodeRelDir('./src/'))
       const result = await Effect.runPromise(
         Fs.glob('utils/fs/*.ts', { cwd: srcDir }),
       )
@@ -61,7 +65,7 @@ describe('Glob', () => {
 
     test('handles errors gracefully', () => {
       // Test with an invalid pattern that might cause an error
-      const nonExistentDir = FsLoc.AbsDir.decodeSync('/nonexistent/path/')
+      const nonExistentDir = decodeAbsDir('/nonexistent/path/')
       const effect = Fs.globSync('', { cwd: nonExistentDir })
       expect(() => Effect.runSync(effect)).not.toThrow()
     })
@@ -69,7 +73,7 @@ describe('Glob', () => {
     test('accepts FsLoc.AbsDir for cwd option', () => {
       // Use Pro.cwd() to get the current directory
       const cwd = Pro.cwd()
-      const srcDir = FsLoc.join(cwd, FsLoc.RelDir.decodeSync('./src/'))
+      const srcDir = FsLoc.join(cwd, decodeRelDir('./src/'))
       const result = Effect.runSync(
         Fs.globSync('utils/fs/*.ts', { cwd: srcDir }),
       )

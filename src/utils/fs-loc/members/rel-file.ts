@@ -1,103 +1,86 @@
 import { ParseResult, Schema as S } from 'effect'
-import type { ParseOptions } from 'effect/SchemaAST'
 import * as LocLoose from '../fs-loc-loose.js'
+import * as Inputs from '../inputs.js'
 import { Path } from '../path/$.js'
-import * as File from '../types/file.js'
+import { File } from '../types/file.js'
 
-const Encoded = S.String
-
-const Decoded = S.TaggedStruct('LocRelFile', {
-  path: Path.Rel.Decoded.pipe(
+/**
+ * Relative file location.
+ *
+ * Represents a file with a relative path (starting with ./).
+ *
+ * @example
+ * // For structured data (e.g., from API)
+ * const schema1 = S.Struct({ file: RelFile })
+ *
+ * // For string input (e.g., from config)
+ * const schema2 = S.Struct({ path: RelFile.String })
+ */
+export class RelFile extends S.TaggedClass<RelFile>()('LocRelFile', {
+  path: Path.Rel.pipe(
     S.propertySignature,
-    S.withConstructorDefault(() => Path.Rel.Decoded.make({ segments: [] })),
+    S.withConstructorDefault(() => Path.Rel.make({ segments: [] })),
   ),
-  file: File.Decoded,
-})
+  file: File,
+}) {
+  static is = S.is(RelFile)
 
-/**
- * Schema for relative file locations.
- * Relative file paths must not start with a leading slash and represent a file.
- */
-export const RelFile = S.transformOrFail(
-  Encoded,
-  Decoded,
-  {
-    strict: true,
-    encode: (decoded) => {
-      const pathString = decoded.path.segments.join('/')
-      const fileString = File.encodeSync(decoded.file)
-      const encoded = pathString.length > 0 ? `./${pathString}/${fileString}` : `./${fileString}`
-      return ParseResult.succeed(encoded)
-    },
-    decode: (input, options, ast) => {
-      // First decode with LocLoose
-      const looseResult = LocLoose.decodeSync(input)
+  override toString() {
+    return S.encodeSync(RelFile.String)(this)
+  }
 
-      // Validate it's a relative file
-      if (looseResult.path._tag !== 'PathRelative') {
-        return ParseResult.fail(
-          new ParseResult.Type(ast, input, 'Relative paths must not start with /'),
+  /**
+   * Schema for parsing from/encoding to string representation.
+   * Use this when you need to accept string paths (e.g., from user input, config files).
+   *
+   * @example
+   * const ConfigSchema = S.Struct({
+   *   sourcePath: RelFile.String,
+   *   outputPath: RelFile.String
+   * })
+   */
+  static String = S.transformOrFail(
+    S.String,
+    RelFile,
+    {
+      strict: true,
+      encode: (decoded) => {
+        // Source of truth for string conversion
+        const pathString = decoded.path.segments.join('/')
+        const fileString = decoded.file.extension ? `${decoded.file.name}${decoded.file.extension}` : decoded.file.name
+        return ParseResult.succeed(pathString.length > 0 ? `./${pathString}/${fileString}` : `./${fileString}`)
+      },
+      decode: (input, options, ast) => {
+        // First decode with LocLoose
+        const looseResult = LocLoose.decodeSync(input)
+
+        // Validate it's a relative file
+        if (looseResult.path._tag !== 'PathRelative') {
+          return ParseResult.fail(
+            new ParseResult.Type(ast, input, 'Relative paths must not start with /'),
+          )
+        }
+        if (!looseResult.file) {
+          return ParseResult.fail(
+            new ParseResult.Type(ast, input, 'Expected a file path, got a directory or root path'),
+          )
+        }
+
+        // Valid - return as RelFile
+        return ParseResult.succeed(
+          new RelFile({
+            path: Path.Rel.make({ segments: (looseResult.path as any).segments }),
+            file: File.make({
+              name: looseResult.file.name,
+              extension: looseResult.file.extension,
+            }),
+          }),
         )
-      }
-      if (!looseResult.file) {
-        return ParseResult.fail(
-          new ParseResult.Type(ast, input, 'Expected a file path, got a directory or root path'),
-        )
-      }
-
-      // Valid - return as RelFile
-      return ParseResult.succeed(
-        Decoded.make({
-          path: looseResult.path as typeof Path.Rel.Decoded.Type,
-          file: looseResult.file,
-        }),
-      )
+      },
     },
-  },
-)
+  )
 
-/**
- * Type representing a relative file location.
- */
-export type RelFile = typeof RelFile.Type
-
-/**
- * Create a relative file location.
- */
-export const make = Decoded.make
-
-/**
- * Check if a value is a relative file location.
- */
-export const is = S.is(RelFile)
-
-/**
- * Decode a value into a relative file location.
- */
-export const decode = S.decode(RelFile)
-
-/**
- * Synchronously decode a value into a relative file location.
- */
-export const decodeSync = S.decodeSync(RelFile)
-
-/**
- * Encode a relative file location to a string.
- */
-export const encode = S.encode(RelFile)
-
-/**
- * Synchronously encode a relative file location to a string.
- */
-export const encodeSync = S.encodeSync(RelFile)
-
-/**
- * Equivalence for relative file locations.
- */
-export const equivalence = S.equivalence(RelFile)
-
-/**
- * Assert that a value is a relative file location.
- * @throws {ParseError} if the value is not a relative file location
- */
-export const assert: (input: unknown, options?: ParseOptions) => asserts input is RelFile = S.asserts(RelFile)
+  static get fromString() {
+    return Inputs.normalize(RelFile.String)
+  }
+}

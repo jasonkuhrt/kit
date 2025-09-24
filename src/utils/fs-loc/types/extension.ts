@@ -28,14 +28,6 @@ export type Extension = typeof Extension.Type
  */
 export const make = Extension.make
 
-export const encodeSync = S.encodeSync(Extension)
-
-export const decode = S.decode(Extension)
-
-export const decodeSync = S.decodeSync(Extension)
-
-export const decodeEither = S.decodeEither(Extension)
-
 /**
  * Common file extensions as branded constants.
  */

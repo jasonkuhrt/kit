@@ -90,6 +90,8 @@ export interface StaticError<
   HINT: $Hint
 }
 
+export type StaticErrorAny = StaticError<string, object, string>
+
 /**
  * Like {@link Print} but adds additional styling to display the rendered type in a sentence.
  *
