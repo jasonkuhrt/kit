@@ -535,7 +535,61 @@ function createBuilder(state: BuilderState = defaultState): any {
 // ============================================================================
 
 /**
- * Create a test table with a top-level describe block
+ * Creates a test table builder for property-based and example-based testing.
+ *
+ * Test tables allow you to define multiple test cases with inputs and expected outputs,
+ * reducing boilerplate and making tests more maintainable. The builder supports two modes:
+ *
+ * ## Modes
+ *
+ * **Function Mode** - Test a specific function with `.on(fn)`:
+ * - Types are automatically inferred from the function signature
+ * - Test cases specify function arguments and expected return values
+ * - Default assertion compares actual vs expected using Effect's equality
+ *
+ * **Generic Mode** - Define custom types with `.i<T>()` and `.o<T>()`:
+ * - Explicitly specify input and output types
+ * - Provide custom test logic to validate cases
+ * - Useful for testing complex behaviors beyond simple function calls
+ *
+ * @example
+ * ```ts
+ * // Function mode - testing a math function
+ * Test.describe('addition')
+ *   .on(add)
+ *   .cases(
+ *     [[2, 3], 5],                          // Test case: add(2, 3) should return 5
+ *     ['negative', [-1, -2], -3],           // Named test case
+ *     [[0, 0], 0]                           // Edge case: zeros
+ *   )
+ *   .test()  // Execute tests with default assertions
+ *
+ * // Generic mode - custom validation logic
+ * Test.describe('email validation')
+ *   .i<string>()                           // Input type
+ *   .o<boolean>()                          // Output type
+ *   .cases(
+ *     { n: 'valid email', i: 'user@example.com', o: true },
+ *     { n: 'no @', i: 'invalid.com', o: false },
+ *     { n: 'empty', i: '', o: false }
+ *   )
+ *   .test((input, expected) => {
+ *     const result = isValidEmail(input)
+ *     expect(result).toBe(expected)
+ *   })
+ *
+ * // Using describe blocks for organization
+ * Test.describe('string utilities')
+ *   .on(capitalize)
+ *   .casesIn('basic')([['hello'], 'Hello'], [['world'], 'World'])
+ *   .casesIn('edge cases')([[''], ''], [['123'], '123'])
+ *   .test()
+ * ```
+ *
+ * @param description - Optional description for the test suite, creates a Vitest describe block
+ * @returns A {@link TableBuilderBase} for chaining configuration, cases, and execution
+ *
+ * @see {@link on} for function mode without a describe block
  */
 export function describe(): TableBuilderBase<
   { i: unknown; o: unknown; context: {}; fn: Fn.AnyAny }
@@ -555,8 +609,76 @@ export function describe(
 }
 
 /**
- * Create a test table without a top-level describe block
- * Useful for simple test cases that don't need grouping
+ * Creates a test table builder for testing a specific function.
+ *
+ * This is a shorthand for `describe().on(fn)` when you don't need a describe block.
+ * Types are automatically inferred from the function signature, making it ideal for
+ * quick function testing with minimal boilerplate.
+ *
+ * ## Case Formats
+ *
+ * Test cases can be specified in multiple formats:
+ *
+ * **Tuple Format** (most common):
+ * - `[[arg1, arg2], expected]` - Test with expected output
+ * - `['name', [arg1, arg2], expected]` - Named test case
+ * - `[[arg1, arg2]]` - Snapshot test (no expected value)
+ *
+ * **Object Format** (more verbose but clearer):
+ * - `{ n: 'name', i: [arg1, arg2], o: expected }`
+ * - `{ n: 'name', i: [arg1, arg2], o: expected, skip: true }`
+ * - `{ n: 'name', todo: 'Not implemented yet' }`
+ *
+ * **Direct Arguments** (with `.case()` method):
+ * - `.case(arg1, arg2, expected)` - Spreads arguments naturally
+ * - `.case('name', arg1, arg2, expected)` - Named with spread
+ *
+ * @example
+ * ```ts
+ * // Basic function testing
+ * Test.on(add)
+ *   .cases(
+ *     [[2, 3], 5],                    // add(2, 3) === 5
+ *     [[0, 0], 0],                    // add(0, 0) === 0
+ *     [[-1, 1], 0]                    // add(-1, 1) === 0
+ *   )
+ *   .test()
+ *
+ * // Using different case formats
+ * Test.on(multiply)
+ *   .case(2, 3, 6)                   // Direct arguments
+ *   .case('zero', 5, 0, 0)          // Named direct arguments
+ *   .cases(
+ *     { n: 'negative', i: [-2, 3], o: -6 },  // Object format
+ *     { n: 'large', i: [100, 100], o: 10000 }
+ *   )
+ *   .test()
+ *
+ * // Custom assertions
+ * Test.on(divide)
+ *   .cases([[10, 2], 5], [[10, 0], Infinity])
+ *   .test((result, expected) => {
+ *     if (expected === Infinity) {
+ *       expect(result).toBe(Infinity)
+ *     } else {
+ *       expect(result).toBeCloseTo(expected, 2)
+ *     }
+ *   })
+ *
+ * // Output transformation - build full expectations from partials
+ * Test.on(createUser)
+ *   .o((partial, [name]) => ({ ...defaultUser, name, ...partial }))  // Transform expected output
+ *   .cases(
+ *     [['Alice'], { role: 'admin' }],    // Only specify what differs from defaults
+ *     [['Bob'], { role: 'user', age: 30 }]
+ *   )
+ *   .test()
+ * ```
+ *
+ * @param $fn - The function to test. Types are inferred from its signature
+ * @returns A {@link TableBuilderWithFunction} for configuring and running tests
+ *
+ * @see {@link describe} for creating tests with a describe block
  */
 export function on<$fn extends Fn.AnyAny>(
   $fn: $fn,

@@ -1,7 +1,7 @@
-import type { Effect, Layer } from 'effect'
-import type { TestContext } from 'vitest'
 import type { Fn } from '#fn'
 import { Ts } from '#ts'
+import type { Effect, Layer } from 'effect'
+import type { TestContext } from 'vitest'
 
 // ============================================================================
 // Core Types
@@ -94,102 +94,173 @@ type UpdateState<State extends BuilderTypeState, Updates extends Partial<Builder
 /**
  * Extract function parameters from state.
  */
-type FnParams<State extends BuilderTypeState> =
-  State['fn'] extends (...args: infer P) => any ? P : never
+type FnParams<State extends BuilderTypeState> = State['fn'] extends (...args: infer P) => any ? P : never
 
 /**
  * Extract function return type from state.
  */
-type FnReturn<State extends BuilderTypeState> =
-  State['fn'] extends (...args: any[]) => infer R ? R : never
+type FnReturn<State extends BuilderTypeState> = State['fn'] extends (...args: any[]) => infer R ? R : never
 
 /**
  * Extract both parameters and return type from state.
  */
-type FnSignature<State extends BuilderTypeState> =
-  State['fn'] extends (...args: infer P) => infer R ? [P, R] : never
+type FnSignature<State extends BuilderTypeState> = State['fn'] extends (...args: infer P) => infer R ? [P, R] : never
 
 /**
  * Extract i, o, and context from state as a tuple.
  */
-type StateIOContext<T extends BuilderTypeState> =
-  T extends { i: infer I; o: infer O; context: infer Ctx }
-    ? [I, O, Ctx]
-    : never
+type StateIOContext<T extends BuilderTypeState> = T extends { i: infer I; o: infer O; context: infer Ctx } ? [I, O, Ctx]
+  : never
 
 /**
  * Test function signature for generic mode (non-.on() mode).
  */
-type GenericTestFn<T extends BuilderTypeState> =
-  StateIOContext<T> extends [infer I, infer O, infer Ctx]
-    ? (i: I, o: O, ctx: Ctx, context: TestContext) => void | Promise<void>
-    : never
+type GenericTestFn<T extends BuilderTypeState> = StateIOContext<T> extends [infer I, infer O, infer Ctx]
+  ? (i: I, o: O, ctx: Ctx, context: TestContext) => void | Promise<void>
+  : never
 
 /**
  * Effect test function signature for generic mode.
  */
-type GenericEffectTestFn<T extends BuilderTypeState, R> =
-  StateIOContext<T> extends [infer I, infer O, infer Ctx]
-    ? (i: I, o: O, ctx: Ctx) => Effect.Effect<void, any, R>
-    : never
+type GenericEffectTestFn<T extends BuilderTypeState, R> = StateIOContext<T> extends [infer I, infer O, infer Ctx]
+  ? (i: I, o: O, ctx: Ctx) => Effect.Effect<void, any, R>
+  : never
 
 /**
  * Test function signature for function mode (.on() mode).
  */
-type FunctionTestFn<State extends BuilderTypeState> =
-  FnSignature<State> extends [infer P, infer R]
-    ? (result: R, expected: R | undefined, ctx: State['context'], context: TestContext) => void | Promise<void>
-    : never
+type FunctionTestFn<State extends BuilderTypeState> = FnSignature<State> extends [infer P, infer R]
+  ? (result: R, expected: R | undefined, ctx: State['context'], context: TestContext) => void | Promise<void>
+  : never
 
 /**
  * Effect test function signature for function mode.
  */
-type FunctionEffectTestFn<State extends BuilderTypeState, R> =
-  FnSignature<State> extends [infer P, infer Ret]
-    ? (i: P, o: Ret | undefined, ctx: State['context']) => Effect.Effect<void, any, R>
-    : never
+type FunctionEffectTestFn<State extends BuilderTypeState, R> = FnSignature<State> extends [infer P, infer Ret]
+  ? (i: P, o: Ret | undefined, ctx: State['context']) => Effect.Effect<void, any, R>
+  : never
 
 // ============================================================================
 // Case Types
 // ============================================================================
 
 /**
- * Base properties for test cases in object form
+ * Base properties available for all test cases in object form.
+ *
+ * These properties can be used to control test execution and organization
+ * on a per-case basis.
+ *
+ * @example
+ * ```ts
+ * Test.on(add).cases(
+ *   { n: 'basic', i: [1, 2], o: 3 },
+ *   { n: 'skip this', i: [2, 2], o: 4, skip: 'Flaky on CI' },
+ *   { n: 'not ready', todo: 'Implement negative number handling' },
+ *   { n: 'focus', i: [5, 5], o: 10, only: true }
+ * )
+ * ```
  */
 export interface CaseObjectBase {
-  /** Test name */
+  /**
+   * Test case name/description.
+   * Will be used as the test name in the test runner output.
+   */
   n: string
-  /** Skip this test case */
+
+  /**
+   * Skip this test case.
+   * Provide a string to document why it's skipped.
+   */
   skip?: boolean | string
-  /** Conditionally skip this test case */
+
+  /**
+   * Conditionally skip based on runtime conditions.
+   * Function is evaluated when the test would run.
+   */
   skipIf?: () => boolean
-  /** Run only this test case */
+
+  /**
+   * Run only this test case (and other `only` cases).
+   * Useful for debugging specific cases.
+   */
   only?: boolean
-  /** Tags for categorizing tests */
+
+  /**
+   * Tags for categorizing and filtering tests.
+   * Can be used by test runners or reporting tools.
+   */
   tags?: string[]
-  /** Mark as todo */
+
+  /**
+   * Mark as a todo/pending test.
+   * String value documents what needs to be implemented.
+   */
   todo?: boolean | string
 }
 
 /**
- * Test case in object form with input and output
+ * Test case in object form with input and expected output.
+ *
+ * The object form is more verbose but provides better readability
+ * and access to all case configuration options.
+ *
+ * @typeParam I - Input type (for functions, this is a tuple of parameters)
+ * @typeParam O - Expected output type
+ *
+ * @example
+ * ```ts
+ * // Function mode
+ * Test.on(add).cases(
+ *   { n: 'positive', i: [2, 3], o: 5 },
+ *   { n: 'negative', i: [-1, -2], o: -3, tags: ['edge-case'] }
+ * )
+ *
+ * // Generic mode
+ * Test.describe()
+ *   .i<string>()
+ *   .o<boolean>()
+ *   .cases(
+ *     { n: 'valid', i: 'test@example.com', o: true },
+ *     { n: 'invalid', i: 'not-email', o: false }
+ *   )
+ * ```
  */
 export type CaseObject<I, O> =
   | (CaseObjectBase & { i?: I; o?: O })
   | (Omit<CaseObjectBase, 'todo'> & { todo: boolean | string })
 
 /**
- * Test case in tuple form for functions with .on()
- * I is always a tuple of function parameters
+ * Test case in tuple form for function testing.
+ *
+ * The tuple form is more concise and natural for simple test cases.
+ * Multiple formats are supported for flexibility.
+ *
+ * @typeParam I - Tuple of function parameters
+ * @typeParam O - Expected return value
+ *
+ * @example
+ * ```ts
+ * Test.on(add).cases(
+ *   [[2, 3], 5],                    // [args, expected]
+ *   ['negative', [-1, -2], -3],     // [name, args, expected]
+ *   [[10, 10]],                     // [args] - snapshot test
+ *   ['snapshot', [5, 5]]            // [name, args] - named snapshot
+ * )
+ * ```
  */
 export type CaseTuple<I extends any[], O> =
-  | [I] // Just input tuple (snapshot)
-  | [string, I] // Name + input tuple (snapshot)
-  | [I, O] // Input tuple + output
-  | [string, I, O] // Name + input tuple + output
+  | [I] // Just input tuple (snapshot test)
+  | [string, I] // Name + input tuple (snapshot test)
+  | [I, O] // Input tuple + expected output
+  | [string, I, O] // Name + input tuple + expected output
 
 /**
- * Combined case type for .on() mode
+ * Combined case type for function mode.
+ *
+ * Allows both tuple and object formats for maximum flexibility.
+ *
+ * @typeParam I - Function parameters (must be a tuple)
+ * @typeParam O - Expected return value
  */
 export type FunctionCase<I, O> = I extends any[] ? (CaseTuple<I, O> | CaseObject<I, O>) : never
 
@@ -223,7 +294,33 @@ export type GenericCaseTuple<I, O, Context> = IsEmptyObject<Context> extends tru
     | [string, [I], O, Context] // Name + input + output + context - REQUIRED
 
 /**
- * Generic test case for non-.on() mode
+ * Generic test case for non-.on() mode.
+ *
+ * Supports both tuple and object forms with optional context properties.
+ * Context properties allow passing additional data to test functions.
+ *
+ * @typeParam I - Input type for the test
+ * @typeParam O - Expected output type
+ * @typeParam Context - Additional context properties (e.g., environment, dependencies)
+ *
+ * @example
+ * ```ts
+ * // Object form with context
+ * Test.describe()
+ *   .i<string>()
+ *   .o<number>()
+ *   .context<{ multiplier: number }>()
+ *   .cases(
+ *     { n: 'with context', i: 'hello', o: 5, multiplier: 1 },
+ *     { n: 'doubled', i: 'hi', o: 4, multiplier: 2 }
+ *   )
+ *
+ * // Tuple form (context as last element when required)
+ * .cases(
+ *   [['hello'], 5, { multiplier: 1 }],
+ *   ['doubled', ['hi'], 4, { multiplier: 2 }]
+ * )
+ * ```
  */
 export type GenericCase<I, O, Context> =
   | ({ i: I; o: O } & Context)
@@ -231,10 +328,21 @@ export type GenericCase<I, O, Context> =
   | GenericCaseTuple<I, O, Context>
 
 /**
- * Normalize a generic case to standard object form
- * Converts tuples to objects with i and o properties
- * Note: Tuple input is wrapped in array, so we need to unwrap it
- * Context properties are extracted from the last tuple element when present
+ * Normalizes various case formats into a consistent internal representation.
+ *
+ * Handles the conversion of tuple and object case formats into a standard
+ * form for internal processing. Extracts name, input, output, and context
+ * from different case representations.
+ *
+ * Note: Tuple input is wrapped in array, so we need to unwrap it.
+ * Context properties are extracted from the last tuple element when present.
+ *
+ * @typeParam I - Input type
+ * @typeParam O - Output type
+ * @typeParam Context - Context properties type
+ * @typeParam Case - The actual case being normalized
+ *
+ * @internal
  */
 export type NormalizeGenericCase<I, O, Context, Case> = IsEmptyObject<Context> extends true // No context expected - parse without context
   ? Case extends [string, [infer _I], infer _O] ? { i: _I; o: _O; n: string }
@@ -254,32 +362,104 @@ export type NormalizeGenericCase<I, O, Context, Case> = IsEmptyObject<Context> e
 // ============================================================================
 
 /**
- * Configuration methods shared across multiple builders.
- * These methods control test execution behavior.
+ * Configuration methods for controlling test execution behavior.
+ *
+ * These methods are available on all builder types and return the same
+ * builder type for method chaining. They affect how tests are run but
+ * don't change the test data or assertions.
+ *
+ * @example
+ * ```ts
+ * Test.on(complexFunction)
+ *   .only()              // Focus on these tests
+ *   .concurrent()        // Run in parallel
+ *   .skip('Broken')      // Actually, skip them
+ *   .cases(...)
+ * ```
  */
 interface ConfigurationMethods<State, SelfKind extends Ts.Kind.Kind> {
   /**
-   * Mark tests to run exclusively (skips all other tests).
+   * Run only this test suite, skipping all others.
+   * Useful for focusing on specific tests during development.
+   *
+   * @returns The same builder for chaining
+   *
+   * @example
+   * ```ts
+   * Test.on(myFunction)
+   *   .only()  // Only these tests will run
+   *   .cases([[1], 1], [[2], 2])
+   *   .test()
+   * ```
    */
   only(): Ts.Kind.Apply<SelfKind, [State]>
 
   /**
-   * Skip tests with an optional reason.
+   * Skip this test suite.
+   *
+   * @param reason - Optional reason for skipping (shown in test output)
+   * @returns The same builder for chaining
+   *
+   * @example
+   * ```ts
+   * Test.on(unstableFunction)
+   *   .skip('Flaky on CI')
+   *   .cases([[1], 1])
+   *   .test()
+   * ```
    */
   skip(reason?: string): Ts.Kind.Apply<SelfKind, [State]>
 
   /**
-   * Conditionally skip tests based on a runtime condition.
+   * Skip tests conditionally based on runtime evaluation.
+   *
+   * @param condition - Function that returns true to skip tests
+   * @returns The same builder for chaining
+   *
+   * @example
+   * ```ts
+   * Test.on(platformSpecific)
+   *   .skipIf(() => process.platform === 'win32')
+   *   .cases([['/usr/bin'], true])
+   *   .test()
+   * ```
    */
   skipIf(condition: () => boolean): Ts.Kind.Apply<SelfKind, [State]>
 
   /**
-   * Run test cases concurrently.
+   * Run test cases concurrently for better performance.
+   * Only use if tests don't share state or resources.
+   *
+   * @returns The same builder for chaining
+   *
+   * @example
+   * ```ts
+   * Test.on(independentCalculation)
+   *   .concurrent()  // Tests run in parallel
+   *   .cases(
+   *     [[1], 1],
+   *     [[2], 4],
+   *     [[3], 9]
+   *   )
+   *   .test()
+   * ```
    */
   concurrent(): Ts.Kind.Apply<SelfKind, [State]>
 
   /**
-   * Tag tests for categorization and filtering.
+   * Add tags for test categorization and filtering.
+   * Can be used by test runners or reporting tools.
+   *
+   * @param tags - Array of tag strings
+   * @returns The same builder for chaining
+   *
+   * @example
+   * ```ts
+   * Test.on(criticalFunction)
+   *   .tags(['critical', 'auth'])
+   *   .cases([[user], true])
+   *   .test()
+   * ```
    */
   tags(tags: string[]): Ts.Kind.Apply<SelfKind, [State]>
 }
@@ -367,11 +547,42 @@ interface MappedFunctionCaseMethods<Fn extends Fn.AnyAny, MappedInput, SelfKind 
 }
 
 /**
- * Case methods for function mode builders.
+ * Methods for adding test cases in function mode.
+ *
+ * These methods are available after calling `.on(fn)` and provide
+ * various ways to specify test cases for the function being tested.
+ *
+ * @example
+ * ```ts
+ * Test.on(add)
+ *   .cases(                    // Multiple cases at once
+ *     [[1, 2], 3],
+ *     [[4, 5], 9]
+ *   )
+ *   .case(10, 10, 20)         // Single case with spread
+ *   .casesAsArgs([1, 1], [2, 2])  // Just arguments
+ *   .test()
+ * ```
  */
 interface FunctionCaseMethods<State extends BuilderTypeState, SelfKind extends Ts.Kind.Kind> {
   /**
    * Add multiple test cases at once.
+   *
+   * Supports both tuple and object formats for maximum flexibility.
+   *
+   * @param cases - Array of test cases
+   * @returns Builder for method chaining
+   *
+   * @example
+   * ```ts
+   * Test.on(multiply)
+   *   .cases(
+   *     [[2, 3], 6],                              // Tuple format
+   *     ['zero case', [0, 5], 0],                 // Named tuple
+   *     { n: 'negative', i: [-2, 3], o: -6 },    // Object format
+   *     [[10, 10]]                                // Snapshot test
+   *   )
+   * ```
    */
   cases<const Cases extends readonly any[] = readonly []>(
     ...cases: FnSignature<State> extends [infer P, infer R] ? Array<FunctionCase<P, R>>
@@ -379,7 +590,21 @@ interface FunctionCaseMethods<State extends BuilderTypeState, SelfKind extends T
   ): Ts.Kind.Apply<SelfKind, [State]>
 
   /**
-   * Add cases within a describe block.
+   * Add test cases within a nested describe block.
+   *
+   * Useful for organizing related cases together in the test output.
+   *
+   * @param describeName - Name for the describe block
+   * @returns Function that accepts cases and returns the builder
+   *
+   * @example
+   * ```ts
+   * Test.on(calculate)
+   *   .casesIn('positive numbers')([[1, 2], 3], [[4, 5], 9])
+   *   .casesIn('negative numbers')([[-1, -2], -3], [[-4, -5], -9])
+   *   .casesIn('mixed')([[1, -1], 0], [[-2, 2], 0])
+   *   .test()
+   * ```
    */
   casesIn(
     describeName: string,
@@ -389,7 +614,21 @@ interface FunctionCaseMethods<State extends BuilderTypeState, SelfKind extends T
   ) => Ts.Kind.Apply<SelfKind, [State]>
 
   /**
-   * Add a single test case.
+   * Add a single test case with natural argument spreading.
+   *
+   * The most ergonomic way to add individual test cases.
+   *
+   * @param args - Arguments and expected output (spreads naturally)
+   * @returns Builder for method chaining
+   *
+   * @example
+   * ```ts
+   * Test.on(add)
+   *   .case(1, 2, 3)                     // add(1, 2) === 3
+   *   .case('zero', 0, 0, 0)            // Named: add(0, 0) === 0
+   *   .case(10, 10, 20)                 // add(10, 10) === 20
+   *   .test()
+   * ```
    */
   case(
     ...args: FnSignature<State> extends [infer P, infer R] ? CaseSingleParams<P, R>
@@ -397,14 +636,43 @@ interface FunctionCaseMethods<State extends BuilderTypeState, SelfKind extends T
   ): Ts.Kind.Apply<SelfKind, [State]>
 
   /**
-   * Add cases where each case is the arguments tuple directly.
+   * Add snapshot test cases (no expected output).
+   *
+   * Each case is just the function arguments.
+   * The actual output will be captured as a snapshot.
+   *
+   * @param cases - Array of argument tuples
+   * @returns Builder for method chaining
+   *
+   * @example
+   * ```ts
+   * Test.on(generateHTML)
+   *   .casesAsArgs(
+   *     ['<div>Hello</div>'],
+   *     ['<span>World</span>'],
+   *     ['<p>Test</p>']
+   *   )
+   *   .test()  // Outputs will be snapshot tested
+   * ```
    */
   casesAsArgs(
     ...cases: Array<FnParams<State>>
   ): Ts.Kind.Apply<SelfKind, [State]>
 
   /**
-   * Add cases where each case is a single argument (for single-param functions).
+   * Add snapshot tests for single-argument functions.
+   *
+   * Convenience method when testing functions that take one argument.
+   *
+   * @param cases - Array of single arguments
+   * @returns Builder for method chaining
+   *
+   * @example
+   * ```ts
+   * Test.on(capitalize)
+   *   .casesAsArg('hello', 'world', 'foo')  // Each becomes [arg]
+   *   .test()  // Snapshots: 'Hello', 'World', 'Foo'
+   * ```
    */
   casesAsArg<T>(
     ...cases: State['fn'] extends (arg: T) => any ? T[]
@@ -425,9 +693,8 @@ interface LayerMethods<State extends BuilderTypeState, NextBuilderKind extends T
    * Configure a dynamic Effect layer per test case.
    */
   layerEach<R>(
-    factory: State['fn'] extends Fn.AnyAny
-      ? (testCase: { i: FnParams<State>; o?: FnReturn<State> }) => Layer.Layer<R>
-      : (testCase: { i: State['i']; o: State['o'] } & State['context']) => Layer.Layer<R>
+    factory: State['fn'] extends Fn.AnyAny ? (testCase: { i: FnParams<State>; o?: FnReturn<State> }) => Layer.Layer<R>
+      : (testCase: { i: State['i']; o: State['o'] } & State['context']) => Layer.Layer<R>,
   ): Ts.Kind.Apply<NextBuilderKind, [State, State['fn'], R]>
 }
 
@@ -444,9 +711,8 @@ interface TerminalMethods<State extends BuilderTypeState> {
    * Execute tests with a custom test function.
    */
   test(
-    fn: State['fn'] extends Fn.AnyAny
-      ? FunctionTestFn<State>
-      : GenericTestFn<State>
+    fn: State['fn'] extends Fn.AnyAny ? FunctionTestFn<State>
+      : GenericTestFn<State>,
   ): void
 }
 
@@ -458,9 +724,8 @@ interface EffectTerminalMethods<State extends BuilderTypeState, R> extends Termi
    * Execute tests with Effect-based test functions.
    */
   testEffect(
-    fn: State['fn'] extends Fn.AnyAny
-      ? FunctionEffectTestFn<State, R>
-      : GenericEffectTestFn<State, R>
+    fn: State['fn'] extends Fn.AnyAny ? FunctionEffectTestFn<State, R>
+      : GenericEffectTestFn<State, R>,
   ): void
 }
 
@@ -469,52 +734,231 @@ interface EffectTerminalMethods<State extends BuilderTypeState, R> extends Termi
 // ============================================================================
 
 /**
- * Base table builder before cases are provided
- * State extends BuilderTypeState to track i, o, context, and fn types
+ * The initial test table builder created by `describe()`.
+ *
+ * This builder is the entry point for creating test tables. You can either:
+ * - Enter **function mode** with `.on(fn)` to test a specific function
+ * - Enter **generic mode** with `.i<T>()` and `.o<T>()` to define custom types
+ * - Configure test behavior with methods like `.only()`, `.skip()`, etc.
+ *
+ * @typeParam State - Internal type state tracking input, output, context, and function types
+ *
+ * @example
+ * ```ts
+ * // Function mode - test a specific function
+ * Test.describe('math operations')
+ *   .on(add)                      // Enter function mode
+ *   .cases([[1, 2], 3])          // Add test cases
+ *   .test()                       // Execute tests
+ *
+ * // Generic mode - define custom types
+ * Test.describe('validation')
+ *   .i<string>()                  // Set input type
+ *   .o<boolean>()                 // Set output type
+ *   .cases(
+ *     { n: 'valid', i: 'test@example.com', o: true }
+ *   )
+ *   .test((input, output) => {
+ *     expect(validate(input)).toBe(output)
+ *   })
+ * ```
  */
-export interface TableBuilderBase<State extends BuilderTypeState> extends
-  ConfigurationMethods<State, TableBuilderBaseKind> {
-
-  // Type building
+export interface TableBuilderBase<State extends BuilderTypeState>
+  extends ConfigurationMethods<State, TableBuilderBaseKind>
+{
+  /**
+   * Set the input type for generic mode testing.
+   *
+   * @typeParam I - The input type for test cases
+   * @returns A new builder with the input type set
+   *
+   * @example
+   * ```ts
+   * Test.describe()
+   *   .i<{ name: string; age: number }>()  // Input is an object
+   *   .o<boolean>()                         // Output is boolean
+   *   .cases(
+   *     { i: { name: 'Alice', age: 25 }, o: true },
+   *     { i: { name: '', age: -1 }, o: false }
+   *   )
+   * ```
+   */
   i<I>(): TableBuilderBase<UpdateState<State, { i: I }>>
+
+  /**
+   * Set the output/expected type for generic mode testing.
+   *
+   * @typeParam O - The expected output type for test cases
+   * @returns A new builder with the output type set
+   */
   o<O>(): TableBuilderBase<UpdateState<State, { o: O }>>
 
-  // Function testing
+  /**
+   * Enter function mode by specifying a function to test.
+   * Types are automatically inferred from the function signature.
+   *
+   * @param fn - The function to test
+   * @returns A {@link TableBuilderWithFunction} for function-specific testing
+   *
+   * @example
+   * ```ts
+   * Test.describe('string utils')
+   *   .on(capitalize)
+   *   .cases(
+   *     [['hello'], 'Hello'],
+   *     [['world'], 'World']
+   *   )
+   *   .test()
+   * ```
+   */
   on<Fn extends Fn.AnyAny>(
     fn: Fn,
   ): TableBuilderWithFunction<UpdateState<State, { i: never; o: never; fn: Fn }>>
 
-  // Cases
+  /**
+   * Add test cases for generic mode.
+   * Cases can include additional context properties beyond `i` and `o`.
+   *
+   * @param cases - Array of test cases with input, output, and optional context
+   * @returns A {@link TableBuilderWithCases} ready for test execution
+   *
+   * @example
+   * ```ts
+   * Test.describe()
+   *   .i<number>()
+   *   .o<string>()
+   *   .cases(
+   *     { n: 'positive', i: 5, o: 'positive' },
+   *     { n: 'negative', i: -3, o: 'negative' },
+   *     { n: 'zero', i: 0, o: 'zero', special: true }  // Extra context
+   *   )
+   * ```
+   */
   cases<const $Context extends object = {}>(
     ...cases: readonly GenericCase<State['i'], State['o'], NoInfer<$Context>>[]
   ): TableBuilderWithCases<UpdateState<State, { context: State['context'] & $Context }>>
 
-  // Shorthand for describe + cases
+  /**
+   * Create a nested describe block with cases.
+   * Useful for organizing related test cases.
+   *
+   * @param describeName - Name for the nested describe block
+   * @returns A function that accepts cases and returns a builder
+   *
+   * @example
+   * ```ts
+   * Test.describe('math')
+   *   .on(calculate)
+   *   .casesIn('addition')([[1, '+', 2], 3], [[5, '+', 5], 10])
+   *   .casesIn('multiplication')([[2, '*', 3], 6], [[4, '*', 4], 16])
+   *   .test()
+   * ```
+   */
   casesIn<const Context = {}>(
     describeName: string,
   ): (
     ...cases: readonly GenericCase<State['i'], State['o'], NoInfer<Context>>[]
   ) => TableBuilderWithCases<UpdateState<State, { context: State['context'] & Context }>>
 
-  // Layer methods (untyped until cases are provided)
+  /**
+   * Configure an Effect layer for dependency injection.
+   * The layer will be provided to all test cases when using `.testEffect()`.
+   *
+   * @param layer - The Effect layer to provide
+   * @returns A builder with layer support (type becomes specific after cases are added)
+   */
   layer<R>(layer: Layer.Layer<R>): any
+
+  /**
+   * Configure a dynamic Effect layer that receives test case data.
+   * Each test case gets its own layer instance.
+   *
+   * @param factory - Function that creates a layer based on test case data
+   * @returns A builder with layer support (type becomes specific after cases are added)
+   */
   layerEach<R>(factory: (testCase: any) => Layer.Layer<R>): any
 }
 
 /**
- * Builder after .on() is called
- * State tracks the function being tested in State['fn']
+ * Test table builder for function mode, created after calling `.on(fn)`.
+ *
+ * This builder provides methods specific to testing functions, with automatic
+ * type inference from the function signature. Test cases specify function arguments
+ * and expected return values.
+ *
+ * @typeParam State - Internal type state including the function being tested
+ *
+ * @example
+ * ```ts
+ * Test.on(add)
+ *   .cases(
+ *     [[1, 2], 3],         // Test: add(1, 2) === 3
+ *     [[-1, 1], 0]         // Test: add(-1, 1) === 0
+ *   )
+ *   .test()
+ *
+ * // With configuration
+ * Test.on(complexCalculation)
+ *   .only()                // Run only these tests
+ *   .concurrent()          // Run tests in parallel
+ *   .name('calc($i) = $o') // Custom name template
+ *   .cases(
+ *     [[5, 10], 50],
+ *     [[0, 0], 0]
+ *   )
+ *   .test()
+ * ```
  */
-export interface TableBuilderWithFunction<State extends BuilderTypeState> extends
-  ConfigurationMethods<State, TableBuilderWithFunctionKind>,
-  NameableMethods<State, TableBuilderWithFunctionKind>,
-  MatcherMethods<State, TableBuilderWithFunctionKind>,
-  TestOrganizationMethods<State, TableBuilderWithFunctionKind>,
-  FunctionCaseMethods<State, TableBuilderWithFunctionKind>,
-  LayerMethods<State, TableBuilderWithFunctionAndLayersKind>,
-  TerminalMethods<State> {
-
-  // Output transformation - returns a new builder with mapped output type
+export interface TableBuilderWithFunction<State extends BuilderTypeState>
+  extends
+    ConfigurationMethods<State, TableBuilderWithFunctionKind>,
+    NameableMethods<State, TableBuilderWithFunctionKind>,
+    MatcherMethods<State, TableBuilderWithFunctionKind>,
+    TestOrganizationMethods<State, TableBuilderWithFunctionKind>,
+    FunctionCaseMethods<State, TableBuilderWithFunctionKind>,
+    LayerMethods<State, TableBuilderWithFunctionAndLayersKind>,
+    TerminalMethods<State>
+{
+  /**
+   * Transform expected output values before comparison.
+   *
+   * This allows you to specify simpler expected values in test cases
+   * and transform them into the full expected object. Useful for
+   * merging with defaults or building complex expectations from partials.
+   *
+   * @param mapper - Function that transforms the test case output (receives output and input args)
+   * @returns A {@link TableBuilderWithMappedFunction} with transformed output type
+   *
+   * @example
+   * ```ts
+   * // Build full expected objects from partial specifications
+   * Test.on(createUser)
+   *   .o((partial, [name]) => ({
+   *     id: expect.any(String),
+   *     name,
+   *     createdAt: expect.any(Date),
+   *     ...defaultUser,
+   *     ...partial
+   *   }))
+   *   .cases(
+   *     [['Alice'], { role: 'admin' }],  // Only specify what differs
+   *     [['Bob'], { role: 'user' }]
+   *   )
+   *   .test()
+   *
+   * // Transform simple values to complex expectations
+   * Test.on(parseConfig)
+   *   .o((debugValue) => ({
+   *     ...defaultConfig,
+   *     settings: { ...defaultSettings, debug: debugValue }
+   *   }))
+   *   .cases(
+   *     [['dev.json'], true],     // Simple boolean becomes full config
+   *     [['prod.json'], false]
+   *   )
+   *   .test()
+   * ```
+   */
   o<MappedInput>(
     mapper: (
       output: MappedInput,
@@ -528,7 +972,28 @@ export interface TableBuilderWithFunction<State extends BuilderTypeState> extend
 }
 
 /**
- * Builder after .o() mapper is applied - changes expected output type
+ * Builder state after .o() mapper is applied.
+ *
+ * This variant is created when an output transformation function is provided
+ * via the .o() method. The mapper transforms the expected output from test cases
+ * before comparison with the actual function result.
+ *
+ * @typeParam State - Current builder type state
+ * @typeParam Fn - The function being tested
+ * @typeParam MappedInput - The input type for the mapper (what you specify in test cases)
+ *
+ * @example
+ * ```ts
+ * // Testing a function that returns complex objects, but only checking one property
+ * Test.on(getUserData)
+ *   .o(result => result.name) // Transform output to just the name
+ *   .cases(
+ *     [['user123'], 'Alice'],  // Now expecting string instead of full user object
+ *     [['user456'], 'Bob']
+ *   )
+ * ```
+ *
+ * @internal Used internally when .o() is called on a function builder
  */
 export interface TableBuilderWithMappedFunction<
   State extends BuilderTypeState,
@@ -539,8 +1004,8 @@ export interface TableBuilderWithMappedFunction<
   NameableMethods<State, TableBuilderWithMappedFunctionKind>,
   MatcherMethods<State, TableBuilderWithMappedFunctionKind>,
   TestOrganizationMethods<State, TableBuilderWithMappedFunctionKind>,
-  MappedFunctionCaseMethods<Fn, MappedInput, TableBuilderWithMappedFunctionKind, State> {
-
+  MappedFunctionCaseMethods<Fn, MappedInput, TableBuilderWithMappedFunctionKind, State>
+{
   // Terminal - execute tests
   test(): void
   test<Ctx = {}>(
@@ -599,6 +1064,34 @@ interface FunctionCaseMethodsWithLayers<State extends BuilderTypeState, Fn exten
   ): TableBuilderWithFunctionAndLayers<State, Fn, R>
 }
 
+/**
+ * Builder state for function mode with Effect layers.
+ *
+ * This variant supports dependency injection via Effect layers,
+ * allowing tests to provide runtime dependencies to effectful functions.
+ *
+ * @typeParam State - Current builder type state
+ * @typeParam Fn - The function being tested
+ * @typeParam R - Effect requirements (dependencies)
+ *
+ * @example
+ * ```ts
+ * // Testing an effectful function that requires dependencies
+ * const fetchUser = (id: string) => Effect.gen(function* () {
+ *   const db = yield* Database
+ *   return yield* db.query(`SELECT * FROM users WHERE id = $1`, [id])
+ * })
+ *
+ * Test.on(fetchUser)
+ *   .provide(() => Layer.succeed(Database, mockDb))
+ *   .cases(
+ *     [['user1'], { name: 'Alice', id: 'user1' }],
+ *     [['user2'], { name: 'Bob', id: 'user2' }]
+ *   )
+ * ```
+ *
+ * @internal Used when testing effectful functions with dependencies
+ */
 export interface TableBuilderWithFunctionAndLayers<
   State extends BuilderTypeState,
   Fn extends Fn.AnyAny,
@@ -609,33 +1102,91 @@ export interface TableBuilderWithFunctionAndLayers<
   MatcherMethods<State, TableBuilderWithFunctionAndLayersKind>,
   TestOrganizationMethods<State, TableBuilderWithFunctionAndLayersKind>,
   FunctionCaseMethodsWithLayers<State, Fn, R>,
-  EffectTerminalMethods<State, R> {}
+  EffectTerminalMethods<State, R>
+{}
 
 /**
- * Builder after cases are provided (non-.on() mode)
- * T extends BuilderTypeState to maintain type-level state
+ * Test table builder after cases are provided in generic mode.
+ *
+ * Created after calling `.cases()` on a builder that has defined types
+ * with `.i<T>()` and `.o<T>()`. Ready for test execution.
+ *
+ * @typeParam T - Type state containing input, output, and context types
+ *
+ * @example
+ * ```ts
+ * Test.describe('validation')
+ *   .i<string>()
+ *   .o<boolean>()
+ *   .cases(
+ *     { n: 'valid email', i: 'user@example.com', o: true },
+ *     { n: 'invalid', i: 'not-email', o: false }
+ *   )
+ *   .test((input, expected, ctx) => {
+ *     const result = validateEmail(input)
+ *     expect(result).toBe(expected)
+ *   })
+ * ```
  */
-export interface TableBuilderWithCases<T extends BuilderTypeState> extends
-  ConfigurationMethods<T, TableBuilderWithCasesKind>,
-  NameableMethods<T, TableBuilderWithCasesKind> {
-
-  // Layers
+export interface TableBuilderWithCases<T extends BuilderTypeState>
+  extends ConfigurationMethods<T, TableBuilderWithCasesKind>, NameableMethods<T, TableBuilderWithCasesKind>
+{
+  /**
+   * Configure an Effect layer for dependency injection.
+   *
+   * @param layer - Static layer provided to all test cases
+   * @returns Builder with Effect support via `.testEffect()`
+   */
   layer<R>(layer: Layer.Layer<R>): TableBuilderWithCasesAndLayers<T, R>
+
+  /**
+   * Configure a dynamic Effect layer per test case.
+   *
+   * @param factory - Creates a layer for each test case with access to case data
+   * @returns Builder with Effect support via `.testEffect()`
+   */
   layerEach<R>(
     factory: (testCase: { i: T['i']; o: T['o'] } & T['context']) => Layer.Layer<R>,
   ): TableBuilderWithCasesAndLayers<T, R>
 
-  // Terminal
+  /**
+   * Execute the test cases with a custom test function.
+   *
+   * @param fn - Test function receiving input, expected output, context, and Vitest context
+   */
   test(fn: GenericTestFn<T>): void
 }
 
 /**
- * Builder with cases and layers
+ * Builder state after cases are added with Effect layers.
+ *
+ * Final builder state when both test cases and Effect layers have been
+ * configured. This state only allows test execution methods.
+ *
+ * @typeParam T - Current builder type state
+ * @typeParam R - Effect requirements (dependencies)
+ *
+ * @example
+ * ```ts
+ * Test.describe()
+ *   .i<string>()
+ *   .o<User>()
+ *   .provide(() => TestLayer)
+ *   .cases(
+ *     { n: 'fetch user', i: 'user1', o: { name: 'Alice' } }
+ *   )
+ *   .test((input, expected, deps) => {
+ *     // Test implementation with dependencies
+ *   })
+ * ```
+ *
+ * @internal Final state for effectful test execution
  */
-export interface TableBuilderWithCasesAndLayers<T extends BuilderTypeState, R> extends
-  ConfigurationMethods<T, TableBuilderWithCasesAndLayersKind>,
-  NameableMethods<T, TableBuilderWithCasesAndLayersKind> {
-
+export interface TableBuilderWithCasesAndLayers<T extends BuilderTypeState, R>
+  extends
+    ConfigurationMethods<T, TableBuilderWithCasesAndLayersKind>,
+    NameableMethods<T, TableBuilderWithCasesAndLayersKind>
+{
   // Terminal methods
   testEffect(fn: GenericEffectTestFn<T, R>): void
   test(fn: GenericTestFn<T>): void
@@ -646,17 +1197,38 @@ export interface TableBuilderWithCasesAndLayers<T extends BuilderTypeState, R> e
 // ============================================================================
 
 /**
- * Parameters for .case() method - supports direct params or object
- * When using .on(), params are passed as tuple [params]
+ * Parameters for the .case() method in different builder modes.
+ *
+ * Handles the different parameter formats based on whether the builder
+ * is in function mode (with .on()) or generic mode. Function mode expects
+ * parameters as tuples, while generic mode allows various formats.
+ *
+ * @typeParam P - Parameter type (tuple for function mode, any for generic)
+ * @typeParam R - Return type (for function mode)
+ *
+ * @example
+ * ```ts
+ * // Function mode - parameters as tuple
+ * Test.on(add)
+ *   .case(2, 3, 5)           // Positional args
+ *   .case('negative', -1, -2, -3) // Named with positional
+ *
+ * // Generic mode - flexible formats
+ * Test.describe()
+ *   .i<string>()
+ *   .o<boolean>()
+ *   .case('valid', 'test@example.com', true)
+ *   .case({ n: 'invalid', i: 'not-email', o: false })
+ * ```
  */
 export type CaseSingleParams<P, R> = P extends any[] ?
-  | [P] // Just params tuple (for .on() mode)
-  | [string, P] // Name + params tuple
-  | [P, R] // Params tuple + output
-  | [string, P, R] // Name + params tuple + output
-  | [...P] // Direct params (spread)
-  | [string, ...P] // Name + direct params
-  | [...P, R] // Direct params + output
-  | [string, ...P, R] // Name + direct params + output
-  | [CaseObject<P, R>] // Object form
+    | [P] // Just params tuple (for .on() mode)
+    | [string, P] // Name + params tuple
+    | [P, R] // Params tuple + output
+    | [string, P, R] // Name + params tuple + output
+    | [...P] // Direct params (spread)
+    | [string, ...P] // Name + direct params
+    | [...P, R] // Direct params + output
+    | [string, ...P, R] // Name + direct params + output
+    | [CaseObject<P, R>] // Object form
   : never
