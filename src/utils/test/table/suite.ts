@@ -18,7 +18,7 @@ interface Suite extends SuiteBase {
  * Test.suite<{ i: string; o: string }>('string transformations', [
  *   { name: 'uppercase', i: 'hello', o: 'HELLO' },
  *   { name: 'lowercase', i: 'WORLD', o: 'world' },
- * ], ({ i, o }) => {
+ * ], ( i, o ) => {
  *   expect(transform(i)).toBe(o)
  * })
  * ```
@@ -34,7 +34,7 @@ interface Suite extends SuiteBase {
  * Test.suite<MathCase>('math operations', '$i.a + $i.b = $o', [
  *   { name: 'addition',     i: { a: 2, b: 3 }, o: 5 },
  *   { name: 'subtraction',  i: { a: 5, b: 3 }, o: 2 },
- * ], ({ i, o }) => {
+ * ], ( i, o ) => {
  *   expect(calculate(i.a, i.b)).toBe(o)
  * })
  * ```
@@ -80,7 +80,7 @@ interface Suite extends SuiteBase {
  *     { name: 'medium string',   i: 'hello',  o: 5 },
  *     { name: 'long string',     i: 'world!', o: 6 },
  *   ],
- *   ({ i, o }) => {
+ *   ( i, o ) => {
  *     expect(i.length).toBe(o)
  *   }
  * )
@@ -92,7 +92,7 @@ interface Suite extends SuiteBase {
  *   { name: 'implemented feature', i: 'login', o: true },
  *   { name: 'upcoming feature', todo: 'Not implemented yet' },
  *   { name: 'flaky test', i: 'api', o: false, skip: 'Flaky on CI' },
- * ], ({ i, o }) => {
+ * ], ( i, o ) => {
  *   expect(isFeatureEnabled(i)).toBe(o)
  * })
  * ```

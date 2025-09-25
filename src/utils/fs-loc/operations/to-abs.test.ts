@@ -7,27 +7,27 @@ const l = FsLoc.fromString
 
 describe('toAbs', () => {
   // dprint-ignore
-  Test.Table.suite<
-    FsLoc.Groups.Rel.Rel,
-    FsLoc.Groups.Abs.Abs,
-    {
+  Test.describe('convert relative to absolute')
+    .i<FsLoc.Groups.Rel.Rel>()
+    .o<FsLoc.Groups.Abs.Abs>()
+    .cases<{
       base?: FsLoc.AbsDir
-    }
-  >('convert relative to absolute', [
-    { n: 'rel file no base (re-tag)',                    i: l('./file.txt'),                     o: l('/file.txt') },
-    { n: 'rel dir no base (re-tag)',                     i: l('./src/'),                         o: l('/src/') },
-    { n: 'nested file no base (re-tag)',                 i: l('./src/index.ts'),                 o: l('/src/index.ts') },
-    { n: 'rel file with base',                           i: l('file.txt'),                       base: l('/home/'),                         o: l('/home/file.txt') },
-    { n: 'rel dir with base',                            i: l('src/'),                           base: l('/home/'),                         o: l('/home/src/') },
-    { n: 'nested rel file',                              i: l('src/index.ts'),                   base: l('/project/'),                      o: l('/project/src/index.ts') },
-    { n: 'nested rel dir',                               i: l('src/components/'),                base: l('/project/'),                      o: l('/project/src/components/') },
-    { n: 'parent ref file',                              i: l('../file.txt'),                    base: l('/home/user/'),                    o: l('/home/file.txt') },
-    { n: 'parent ref dir',                               i: l('../lib/'),                        base: l('/home/user/'),                    o: l('/home/lib/') },
-  ], ({ i, o, base }) => {
-    const result = FsLoc.toAbs(i, base)
-    expect(result).toBeAbs()
-    expect(result).toBeEquivalent(o, FsLoc.FsLoc)
-  })
+    }>(
+      { n: 'rel file no base (re-tag)',                    i: l('./file.txt'),                     o: l('/file.txt') },
+      { n: 'rel dir no base (re-tag)',                     i: l('./src/'),                         o: l('/src/') },
+      { n: 'nested file no base (re-tag)',                 i: l('./src/index.ts'),                 o: l('/src/index.ts') },
+      { n: 'rel file with base',                           i: l('file.txt'),                       o: l('/home/file.txt'), base: l('/home/') },
+      { n: 'rel dir with base',                            i: l('src/'),                           o: l('/home/src/'), base: l('/home/') },
+      { n: 'nested rel file',                              i: l('src/index.ts'),                   o: l('/project/src/index.ts'), base: l('/project/') },
+      { n: 'nested rel dir',                               i: l('src/components/'),                o: l('/project/src/components/'), base: l('/project/') },
+      { n: 'parent ref file',                              i: l('../file.txt'),                    o: l('/home/file.txt'), base: l('/home/user/') },
+      { n: 'parent ref dir',                               i: l('../lib/'),                        o: l('/home/lib/'), base: l('/home/user/') },
+    )
+    .test((i, o, ctx) => {
+      const result = FsLoc.toAbs(i, ctx.base)
+      expect(result).toBeAbs()
+      expect(result).toBeEquivalent(o, FsLoc.FsLoc)
+    })
 
   describe('String literal support', () => {
     it('accepts string literals', () => {

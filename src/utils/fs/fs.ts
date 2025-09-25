@@ -50,15 +50,15 @@ export const findFirstUnderDir = (
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
 
-    // Build absolute paths by joining dir with each relative path
-    const locs = paths.map(path => FsLoc.join(dir, path as FsLoc.Groups.Rel.Rel))
-
-    // Check each path for existence
+    // Check each path for existence, maintaining the index relationship
     const checks = yield* Effect.all(
-      locs.map(path => {
-        const pathStr = FsLoc.encodeSync(path)
+      paths.map((relativePath) => {
+        // Join to get absolute path for checking
+        const absolutePath = FsLoc.join(dir, relativePath as FsLoc.Groups.Rel.Rel)
+        const pathStr = FsLoc.encodeSync(absolutePath)
         return fs.exists(pathStr).pipe(
-          Effect.map(exists => exists ? path : undefined),
+          // Return the absolute path if it exists (this is what we want!)
+          Effect.map(exists => exists ? absolutePath : undefined),
           Effect.mapError(error => new Error(`Failed to check path existence: ${pathStr} - ${error}`)),
         )
       }),

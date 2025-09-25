@@ -28,7 +28,7 @@ import type { CaseTodo, SuiteCase, TestCase } from './case.js'
  * testWithSchema<LoadCase>('Schema operations', [
  *   { name: 'no config', i: {}, o: { result: null } },
  *   { name: 'with config', i: { enabled: true }, o: { result: 'loaded' } },
- * ], ({ i, o }) => Effect.gen(function* () {
+ * ], ( i, o ) => Effect.gen(function* () {
  *   const result = yield* Schema.loadOrNull(i)  // Schema service available
  *   expect(result).toEqual(o.result)
  * }))
@@ -72,7 +72,7 @@ import type { CaseTodo, SuiteCase, TestCase } from './case.js'
  *   { name: 'todo case', todo: 'Need to implement validation' },
  *   { name: 'skipped case', i: 'flaky', o: 'result', skip: 'Flaky on CI' },
  *   { name: 'focused case', i: 'debug', o: 'test', only: true },
- * ], ({ i, o }) => Effect.gen(function* () {
+ * ], ( i, o ) => Effect.gen(function* () {
  *   const result = yield* processInput(i)
  *   expect(result).toBe(o)
  * }))
@@ -269,7 +269,7 @@ export function suiteWithLayers<$Requirements>(
  *       }),
  *       Layer.succeed(Logger, ConsoleLogger)
  *     ),
- *   test: ({ i, o }) => Effect.gen(function* () {
+ *   test: ( i, o ) => Effect.gen(function* () {
  *     const response = yield* apiCall(i.url)
  *     expect(response.status).toBe(o.status)
  *   })

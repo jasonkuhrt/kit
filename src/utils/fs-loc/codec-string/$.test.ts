@@ -5,33 +5,34 @@ import { Analyzer } from './$.js'
 describe('Analyzer', () => {
   describe('analyze', () => {
     // dprint-ignore
-    Test.Table.suite<
-      string,
-      {
+    Test.describe('path analysis')
+      .i<string>()
+      .o<{
         _tag: 'file' | 'dir'
         pathType?: 'absolute' | 'relative'
         path?: string[]
         file?: { name: string; extension: string | null }
-      }
-    >('path analysis', [
-      // Files with extensions
-      { n: 'file with extension',           i: 'file.txt',          o: { _tag: 'file', file: { name: 'file', extension: '.txt' } } },
-      { n: 'multiple dots in filename',     i: 'file.test.ts',      o: { _tag: 'file', file: { name: 'file.test', extension: '.ts' } } },
-      { n: 'hidden file with extension',    i: '.env.local',        o: { _tag: 'file', file: { name: '.env', extension: '.local' } } },
+      }>()
+      .cases(
+        // Files with extensions
+        ['file with extension',           ['file.txt'],          { _tag: 'file', file: { name: 'file', extension: '.txt' } }],
+        ['multiple dots in filename',     ['file.test.ts'],      { _tag: 'file', file: { name: 'file.test', extension: '.ts' } }],
+        ['hidden file with extension',    ['.env.local'],        { _tag: 'file', file: { name: '.env', extension: '.local' } }],
 
-      // Directories
-      { n: 'directory with trailing slash', i: 'dir/',             o: { _tag: 'dir', path: ['dir'] } },
-      { n: 'directory without extension',   i: 'src',              o: { _tag: 'dir', path: ['src'] } },
-      { n: 'hidden file without extension', i: '.gitignore',       o: { _tag: 'dir' } }, // No extension = directory
-      { n: 'root directory',                i: '/',                o: { _tag: 'dir', path: [] } },
-      { n: 'current directory dot',         i: '.',                o: { _tag: 'dir' } },
-      { n: 'current directory dot slash',   i: './',               o: { _tag: 'dir' } },
-      { n: 'parent directory',              i: '..',               o: { _tag: 'dir' } },
+        // Directories
+        ['directory with trailing slash', ['dir/'],             { _tag: 'dir', path: ['dir'] }],
+        ['directory without extension',   ['src'],              { _tag: 'dir', path: ['src'] }],
+        ['hidden file without extension', ['.gitignore'],       { _tag: 'dir' }], // No extension = directory
+        ['root directory',                ['/'],                { _tag: 'dir', path: [] }],
+        ['current directory dot',         ['.'],                { _tag: 'dir' }],
+        ['current directory dot slash',   ['./'],               { _tag: 'dir' }],
+        ['parent directory',              ['..'],               { _tag: 'dir' }],
 
-      // Absolute vs relative paths
-      { n: 'absolute file path',            i: '/path/file.txt',   o: { _tag: 'file', pathType: 'absolute', file: { name: 'file', extension: '.txt' } } },
-      { n: 'relative file path',            i: './path/file.txt',  o: { _tag: 'file', pathType: 'relative', file: { name: 'file', extension: '.txt' } } },
-    ], ({ i, o }) => {
+        // Absolute vs relative paths
+        ['absolute file path',            ['/path/file.txt'],   { _tag: 'file', pathType: 'absolute', file: { name: 'file', extension: '.txt' } }],
+        ['relative file path',            ['./path/file.txt'],  { _tag: 'file', pathType: 'relative', file: { name: 'file', extension: '.txt' } }],
+      )
+      .test(( i, o ) => {
       const result = Analyzer.analyze(i)
 
       expect(result._tag).toBe(o._tag)
@@ -53,7 +54,7 @@ describe('Analyzer', () => {
         expect(result.file.name).toBe(o.file.name)
         expect(result.file.extension).toBe(o.file.extension)
       }
-    })
+      })
   })
 
   describe('type-level tests', () => {

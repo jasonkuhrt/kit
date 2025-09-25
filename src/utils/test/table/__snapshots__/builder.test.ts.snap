@@ -1,0 +1,5 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Test.table() builder > functional tests > casesAsArg helper > upperCase("hello") > upperCase("hello") 1`] = `"HELLO"`;
+
+exports[`Test.table() builder > functional tests > casesAsArg helper > upperCase("world") > upperCase("world") 1`] = `"WORLD"`;

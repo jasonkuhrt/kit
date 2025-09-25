@@ -7,20 +7,21 @@ const l = FsLoc.fromString
 
 describe('up', () => {
   // dprint-ignore
-  Test.Table.suite<
-    FsLoc.FsLoc,
-    string
-  >('move up one level', [
-    { n: 'abs file up one level',                        i: l('/home/user/file.txt'),      o: '/home/file.txt' },
-    { n: 'abs dir up one level',                         i: l('/home/user/'),               o: '/home/' },
-    { n: 'rel file up one level',                        i: l('src/index.ts'),             o: './index.ts' },
-    { n: 'rel dir up one level',                         i: l('src/components/'),           o: './src/' },
-    { n: 'root stays at root',                           i: FsLoc.Constants.absDirRoot,         o: '/' },
-    { n: 'file in root stays in root',                   i: l('/file.txt'),                o: '/file.txt' },
-  ], ({ i, o }) => {
-    const result = FsLoc.up(i)
-    expect(result).toEncodeTo(o)
-  })
+  Test.describe('move up one level')
+    .i<FsLoc.FsLoc>()
+    .o<string>()
+    .cases(
+      ['abs file up one level',                        [l('/home/user/file.txt')],      '/home/file.txt'],
+      ['abs dir up one level',                         [l('/home/user/')],               '/home/'],
+      ['rel file up one level',                        [l('src/index.ts')],             './index.ts'],
+      ['rel dir up one level',                         [l('src/components/')],           './src/'],
+      ['root stays at root',                           [FsLoc.Constants.absDirRoot],         '/'],
+      ['file in root stays in root',                   [l('/file.txt')],                '/file.txt'],
+    )
+    .test(( i, o ) => {
+      const result = FsLoc.up(i)
+      expect(result).toEncodeTo(o)
+    })
 
   describe('String literal support', () => {
     it('accepts string literals', () => {

@@ -7,29 +7,30 @@ const l = FsLoc.fromString
 
 describe('isUnder', () => {
   // dprint-ignore
-  Test.Table.suite<
-    { child: FsLoc.FsLoc; parent: FsLoc.Groups.Dir.Dir },
-    boolean
-  >('check if path is under another', [
-    // Absolute paths
-    { n: 'abs file under abs dir',                      i: { child: l('/home/user/file.txt'), parent: l('/home/') },                         o: true },
-    { n: 'abs dir under abs dir',                       i: { child: l('/home/user/src/'), parent: l('/home/') },                             o: true },
-    { n: 'abs file not under abs dir',                  i: { child: l('/var/file.txt'), parent: l('/home/') },                               o: false },
-    { n: 'abs file under immediate parent',             i: { child: l('/home/file.txt'), parent: l('/home/') },                              o: true },
-    { n: 'abs file under root',                         i: { child: l('/file.txt'), parent: FsLoc.Constants.absDirRoot },                    o: true },
+  Test.describe('check if path is under another')
+    .i<{ child: FsLoc.FsLoc; parent: FsLoc.Groups.Dir.Dir }>()
+    .o<boolean>()
+    .cases(
+      // Absolute paths
+      ['abs file under abs dir',                      [{ child: l('/home/user/file.txt'), parent: l('/home/') }],                         true],
+      ['abs dir under abs dir',                       [{ child: l('/home/user/src/'), parent: l('/home/') }],                             true],
+      ['abs file not under abs dir',                  [{ child: l('/var/file.txt'), parent: l('/home/') }],                               false],
+      ['abs file under immediate parent',             [{ child: l('/home/file.txt'), parent: l('/home/') }],                              true],
+      ['abs file under root',                         [{ child: l('/file.txt'), parent: FsLoc.Constants.absDirRoot }],                    true],
 
-    // Relative paths
-    { n: 'rel file under rel dir',                      i: { child: l('./src/index.ts'), parent: l('./src/') },                              o: true },
-    { n: 'rel dir under rel dir',                       i: { child: l('./src/components/'), parent: l('./src/') },                           o: true },
-    { n: 'rel file not under rel dir',                  i: { child: l('./test/file.ts'), parent: l('./src/') },                              o: false },
+      // Relative paths
+      ['rel file under rel dir',                      [{ child: l('./src/index.ts'), parent: l('./src/') }],                              true],
+      ['rel dir under rel dir',                       [{ child: l('./src/components/'), parent: l('./src/') }],                           true],
+      ['rel file not under rel dir',                  [{ child: l('./test/file.ts'), parent: l('./src/') }],                              false],
 
-    // Edge cases
-    { n: 'same location not under',                     i: { child: l('/home/'), parent: l('/home/') },                                      o: false },
-    { n: 'parent deeper than child',                    i: { child: l('/home/'), parent: l('/home/user/') },                                 o: false },
-  ], ({ i, o }) => {
-    const result = FsLoc.isUnder(i.child, i.parent)
-    expect(result).toBe(o)
-  })
+      // Edge cases
+      ['same location not under',                     [{ child: l('/home/'), parent: l('/home/') }],                                      false],
+      ['parent deeper than child',                    [{ child: l('/home/'), parent: l('/home/user/') }],                                 false],
+    )
+    .test(( i, o ) => {
+      const result = FsLoc.isUnder(i.child, i.parent)
+      expect(result).toBe(o)
+    })
 
   describe('curried form', () => {
     it('isUnderOf creates a predicate', () => {

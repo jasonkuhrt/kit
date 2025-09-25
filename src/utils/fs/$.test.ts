@@ -48,14 +48,11 @@ test('.findFirstUnderDir type inference', () => {
   >()
 })
 
-Test.Table.suiteWithDynamicLayers<
-  { dir?: FsLoc.AbsDir; paths: FsLoc.Groups.Rel.Rel[] },
-  FsLoc.Groups.Abs.Abs | null,
-  { data?: FsLoc.FsLoc[] }
->({
-  description: '.findFirstUnderDir',
-  // dprint-ignore
-  cases: [
+// dprint-ignore
+Test.describe('.findFirstUnderDir')
+  .i<{ dir?: FsLoc.AbsDir; paths: FsLoc.Groups.Rel.Rel[] }>()
+  .o<FsLoc.Groups.Abs.Abs | null>()
+  .cases<{ data?: FsLoc.FsLoc[] }>(
     { n: 'finds single file',
       i: { paths: [fx.a.rel] }, o: fx.a.abs },
 
@@ -73,9 +70,9 @@ Test.Table.suiteWithDynamicLayers<
 
     { n: 'returns None when nothing exists',
       i: { paths: [fx.a.rel, fx.b.rel] }, data: [], o: null },
-  ],
-  layer: ({ data }) => {
-    const fixture = data ?? [
+  )
+  .layerEach((testCase) => {
+    const fixture = testCase.data ?? [
       fx.a.abs,
       fx.b.abs,
       fx.dir.abs,
@@ -84,13 +81,13 @@ Test.Table.suiteWithDynamicLayers<
     return Layer.mock(FileSystem.FileSystem, {
       exists: (path: string) => {
         const pathLoc = FsLoc.decodeSync(path)
-        const exists = Array.containsWith(FsLoc.equivalence)(fixture, pathLoc as FsLoc.FsLoc)
+        const exists = Array.containsWith(FsLoc.equivalence)(fixture, pathLoc)
         return Effect.succeed(exists)
       },
       sink: () => undefined as any,
     })
-  },
-  test: ({ i, o }) =>
+  })
+  .testEffect((i, o) =>
     Effect.gen(function*() {
       const result = yield* Fs.findFirstUnderDir(i.dir ?? absDirTest)(i.paths)
 
@@ -102,5 +99,5 @@ Test.Table.suiteWithDynamicLayers<
       } else {
         expect(Option.isNone(result)).toBe(true)
       }
-    }),
-})
+    })
+  )

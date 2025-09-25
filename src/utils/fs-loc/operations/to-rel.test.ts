@@ -7,25 +7,25 @@ const l = FsLoc.fromString
 
 describe('toRel', () => {
   // dprint-ignore
-  Test.Table.suite<
-    FsLoc.Groups.Abs.Abs,
-    FsLoc.Groups.Rel.Rel,
-    {
+  Test.describe('convert absolute to relative')
+    .i<FsLoc.Groups.Abs.Abs>()
+    .o<FsLoc.Groups.Rel.Rel>()
+    .cases<{
       base: FsLoc.AbsDir
-    }
-  >('convert absolute to relative', [
-    { n: 'abs file same base',                           i: l('/home/file.txt'),                 base: l('/home/'),                         o: l('./file.txt') },
-    { n: 'abs dir same base',                            i: l('/home/src/'),                     base: l('/home/'),                         o: l('./src/') },
-    { n: 'nested abs file',                              i: l('/project/src/index.ts'),          base: l('/project/'),                      o: l('./src/index.ts') },
-    { n: 'nested abs dir',                               i: l('/project/src/components/'),       base: l('/project/'),                      o: l('./src/components/') },
-    { n: 'file needs parent',                            i: l('/home/file.txt'),                 base: l('/home/user/'),                    o: l('./../file.txt') },
-    { n: 'dir needs parent',                             i: l('/home/lib/'),                     base: l('/home/user/'),                    o: l('./../lib/') },
-    { n: 'different roots',                              i: l('/var/log/app.log'),               base: l('/home/user/'),                    o: l('./../../var/log/app.log') },
-    { n: 'same location dir',                            i: l('/home/user/'),                    base: l('/home/user/'),                    o: l('./') },
-  ], ({ i, o, base }) => {
-    const result = FsLoc.toRel(i, base)
-    expect(result).toBeEquivalent(o, FsLoc.FsLoc)
-  })
+    }>(
+      { n: 'abs file same base',                           i: l('/home/file.txt'),                 o: l('./file.txt'), base: l('/home/') },
+      { n: 'abs dir same base',                            i: l('/home/src/'),                     o: l('./src/'), base: l('/home/') },
+      { n: 'nested abs file',                              i: l('/project/src/index.ts'),          o: l('./src/index.ts'), base: l('/project/') },
+      { n: 'nested abs dir',                               i: l('/project/src/components/'),       o: l('./src/components/'), base: l('/project/') },
+      { n: 'file needs parent',                            i: l('/home/file.txt'),                 o: l('./../file.txt'), base: l('/home/user/') },
+      { n: 'dir needs parent',                             i: l('/home/lib/'),                     o: l('./../lib/'), base: l('/home/user/') },
+      { n: 'different roots',                              i: l('/var/log/app.log'),               o: l('./../../var/log/app.log'), base: l('/home/user/') },
+      { n: 'same location dir',                            i: l('/home/user/'),                    o: l('./'), base: l('/home/user/') },
+    )
+    .test((i, o, ctx) => {
+      const result = FsLoc.toRel(i, ctx.base)
+      expect(result).toBeEquivalent(o, FsLoc.FsLoc)
+    })
 
   describe('String literal support', () => {
     it('accepts string literals', () => {

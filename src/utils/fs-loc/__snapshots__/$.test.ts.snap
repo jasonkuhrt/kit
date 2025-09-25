@@ -1,0 +1,379 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AbsDir > .decodeSync > fn("/") > fn("/") 1`] = `
+AbsDir {
+  "_tag": "LocAbsDir",
+  "path": Abs {
+    "_tag": "PathAbs",
+    "segments": [],
+  },
+}
+`;
+
+exports[`AbsDir > .decodeSync > fn("/a/b/c/d/e/") > fn("/a/b/c/d/e/") 1`] = `
+AbsDir {
+  "_tag": "LocAbsDir",
+  "path": Abs {
+    "_tag": "PathAbs",
+    "segments": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+    ],
+  },
+}
+`;
+
+exports[`AbsDir > .decodeSync > fn("/home") > fn("/home") 1`] = `
+AbsDir {
+  "_tag": "LocAbsDir",
+  "path": Abs {
+    "_tag": "PathAbs",
+    "segments": [
+      "home",
+    ],
+  },
+}
+`;
+
+exports[`AbsDir > .decodeSync > fn("/home/") > fn("/home/") 1`] = `
+AbsDir {
+  "_tag": "LocAbsDir",
+  "path": Abs {
+    "_tag": "PathAbs",
+    "segments": [
+      "home",
+    ],
+  },
+}
+`;
+
+exports[`AbsDir > .decodeSync > fn("/my documents/projects/") > fn("/my documents/projects/") 1`] = `
+AbsDir {
+  "_tag": "LocAbsDir",
+  "path": Abs {
+    "_tag": "PathAbs",
+    "segments": [
+      "my documents",
+      "projects",
+    ],
+  },
+}
+`;
+
+exports[`AbsDir > .decodeSync > fn("/usr/local/bin/") > fn("/usr/local/bin/") 1`] = `
+AbsDir {
+  "_tag": "LocAbsDir",
+  "path": Abs {
+    "_tag": "PathAbs",
+    "segments": [
+      "usr",
+      "local",
+      "bin",
+    ],
+  },
+}
+`;
+
+exports[`AbsFile > .decodeSync > fn("/.config.json") > fn("/.config.json") 1`] = `
+AbsFile {
+  "_tag": "LocAbsFile",
+  "file": File {
+    "_tag": "File",
+    "extension": ".json",
+    "name": ".config",
+  },
+  "path": Abs {
+    "_tag": "PathAbs",
+    "segments": [],
+  },
+}
+`;
+
+exports[`AbsFile > .decodeSync > fn("/a/b/c/d/e.js") > fn("/a/b/c/d/e.js") 1`] = `
+AbsFile {
+  "_tag": "LocAbsFile",
+  "file": File {
+    "_tag": "File",
+    "extension": ".js",
+    "name": "e",
+  },
+  "path": Abs {
+    "_tag": "PathAbs",
+    "segments": [
+      "a",
+      "b",
+      "c",
+      "d",
+    ],
+  },
+}
+`;
+
+exports[`AbsFile > .decodeSync > fn("/archive.tar.gz") > fn("/archive.tar.gz") 1`] = `
+AbsFile {
+  "_tag": "LocAbsFile",
+  "file": File {
+    "_tag": "File",
+    "extension": ".gz",
+    "name": "archive.tar",
+  },
+  "path": Abs {
+    "_tag": "PathAbs",
+    "segments": [],
+  },
+}
+`;
+
+exports[`AbsFile > .decodeSync > fn("/file.txt") > fn("/file.txt") 1`] = `
+AbsFile {
+  "_tag": "LocAbsFile",
+  "file": File {
+    "_tag": "File",
+    "extension": ".txt",
+    "name": "file",
+  },
+  "path": Abs {
+    "_tag": "PathAbs",
+    "segments": [],
+  },
+}
+`;
+
+exports[`AbsFile > .decodeSync > fn("/home/user/doc.pdf") > fn("/home/user/doc.pdf") 1`] = `
+AbsFile {
+  "_tag": "LocAbsFile",
+  "file": File {
+    "_tag": "File",
+    "extension": ".pdf",
+    "name": "doc",
+  },
+  "path": Abs {
+    "_tag": "PathAbs",
+    "segments": [
+      "home",
+      "user",
+    ],
+  },
+}
+`;
+
+exports[`AbsFile > .decodeSync > fn("/my docs/file name.txt") > fn("/my docs/file name.txt") 1`] = `
+AbsFile {
+  "_tag": "LocAbsFile",
+  "file": File {
+    "_tag": "File",
+    "extension": ".txt",
+    "name": "file name",
+  },
+  "path": Abs {
+    "_tag": "PathAbs",
+    "segments": [
+      "my docs",
+    ],
+  },
+}
+`;
+
+exports[`RelDir > .decodeSync > fn("../") > fn("../") 1`] = `
+RelDir {
+  "_tag": "LocRelDir",
+  "path": Rel {
+    "_tag": "PathRelative",
+    "segments": [
+      "..",
+    ],
+  },
+}
+`;
+
+exports[`RelDir > .decodeSync > fn("../../lib/") > fn("../../lib/") 1`] = `
+RelDir {
+  "_tag": "LocRelDir",
+  "path": Rel {
+    "_tag": "PathRelative",
+    "segments": [
+      "..",
+      "..",
+      "lib",
+    ],
+  },
+}
+`;
+
+exports[`RelDir > .decodeSync > fn("../src/lib/utils/") > fn("../src/lib/utils/") 1`] = `
+RelDir {
+  "_tag": "LocRelDir",
+  "path": Rel {
+    "_tag": "PathRelative",
+    "segments": [
+      "..",
+      "src",
+      "lib",
+      "utils",
+    ],
+  },
+}
+`;
+
+exports[`RelDir > .decodeSync > fn("./") > fn("./") 1`] = `
+RelDir {
+  "_tag": "LocRelDir",
+  "path": Rel {
+    "_tag": "PathRelative",
+    "segments": [],
+  },
+}
+`;
+
+exports[`RelDir > .decodeSync > fn("./src/") > fn("./src/") 1`] = `
+RelDir {
+  "_tag": "LocRelDir",
+  "path": Rel {
+    "_tag": "PathRelative",
+    "segments": [
+      "src",
+    ],
+  },
+}
+`;
+
+exports[`RelDir > .decodeSync > fn("src") > fn("src") 1`] = `
+RelDir {
+  "_tag": "LocRelDir",
+  "path": Rel {
+    "_tag": "PathRelative",
+    "segments": [
+      "src",
+    ],
+  },
+}
+`;
+
+exports[`RelDir > .decodeSync > fn("src/") > fn("src/") 1`] = `
+RelDir {
+  "_tag": "LocRelDir",
+  "path": Rel {
+    "_tag": "PathRelative",
+    "segments": [
+      "src",
+    ],
+  },
+}
+`;
+
+exports[`RelDir > .decodeSync > fn("src/components/") > fn("src/components/") 1`] = `
+RelDir {
+  "_tag": "LocRelDir",
+  "path": Rel {
+    "_tag": "PathRelative",
+    "segments": [
+      "src",
+      "components",
+    ],
+  },
+}
+`;
+
+exports[`RelFile > .decodeSync > fn("../../lib/util.js") > fn("../../lib/util.js") 1`] = `
+RelFile {
+  "_tag": "LocRelFile",
+  "file": File {
+    "_tag": "File",
+    "extension": ".js",
+    "name": "util",
+  },
+  "path": Rel {
+    "_tag": "PathRelative",
+    "segments": [
+      "..",
+      "..",
+      "lib",
+    ],
+  },
+}
+`;
+
+exports[`RelFile > .decodeSync > fn("../file.txt") > fn("../file.txt") 1`] = `
+RelFile {
+  "_tag": "LocRelFile",
+  "file": File {
+    "_tag": "File",
+    "extension": ".txt",
+    "name": "file",
+  },
+  "path": Rel {
+    "_tag": "PathRelative",
+    "segments": [
+      "..",
+    ],
+  },
+}
+`;
+
+exports[`RelFile > .decodeSync > fn("./file.txt") > fn("./file.txt") 1`] = `
+RelFile {
+  "_tag": "LocRelFile",
+  "file": File {
+    "_tag": "File",
+    "extension": ".txt",
+    "name": "file",
+  },
+  "path": Rel {
+    "_tag": "PathRelative",
+    "segments": [],
+  },
+}
+`;
+
+exports[`RelFile > .decodeSync > fn("./src/components/App.tsx") > fn("./src/components/App.tsx") 1`] = `
+RelFile {
+  "_tag": "LocRelFile",
+  "file": File {
+    "_tag": "File",
+    "extension": ".tsx",
+    "name": "App",
+  },
+  "path": Rel {
+    "_tag": "PathRelative",
+    "segments": [
+      "src",
+      "components",
+    ],
+  },
+}
+`;
+
+exports[`RelFile > .decodeSync > fn("file.txt") > fn("file.txt") 1`] = `
+RelFile {
+  "_tag": "LocRelFile",
+  "file": File {
+    "_tag": "File",
+    "extension": ".txt",
+    "name": "file",
+  },
+  "path": Rel {
+    "_tag": "PathRelative",
+    "segments": [],
+  },
+}
+`;
+
+exports[`RelFile > .decodeSync > fn("src/index.ts") > fn("src/index.ts") 1`] = `
+RelFile {
+  "_tag": "LocRelFile",
+  "file": File {
+    "_tag": "File",
+    "extension": ".ts",
+    "name": "index",
+  },
+  "path": Rel {
+    "_tag": "PathRelative",
+    "segments": [
+      "src",
+    ],
+  },
+}
+`;

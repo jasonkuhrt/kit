@@ -7,21 +7,22 @@ const l = FsLoc.fromString
 
 describe('toDir', () => {
   // dprint-ignore
-  Test.Table.suite<
-    FsLoc.Groups.File.File,
-    string
-  >('get parent directory of file', [
-    { n: 'abs file to parent dir',                       i: l('/home/file.txt'),                  o: '/home/' },
-    { n: 'rel file to parent dir',                       i: l('src/index.ts'),                    o: './src/' },
-    { n: 'file in root to root dir',                     i: l('/file.txt'),                       o: '/' },
-    { n: 'rel file in current dir',                      i: l('./a.md'),                          o: './' },
-    { n: 'nested file to parent dir',                    i: l('./a/b/c.md'),                      o: './a/b/' },
-    { n: 'abs nested file to parent',                    i: l('/home/user/docs/file.txt'),        o: '/home/user/docs/' },
-  ], ({ i, o }) => {
-    const result = FsLoc.toDir(i)
-    expect(result).toBeDir()
-    expect(result).toEncodeTo(o)
-  })
+  Test.describe('get parent directory of file')
+    .i<FsLoc.Groups.File.File>()
+    .o<string>()
+    .cases(
+      ['abs file to parent dir',                       [l('/home/file.txt')],                  '/home/'],
+      ['rel file to parent dir',                       [l('src/index.ts')],                    './src/'],
+      ['file in root to root dir',                     [l('/file.txt')],                       '/'],
+      ['rel file in current dir',                      [l('./a.md')],                          './'],
+      ['nested file to parent dir',                    [l('./a/b/c.md')],                      './a/b/'],
+      ['abs nested file to parent',                    [l('/home/user/docs/file.txt')],        '/home/user/docs/'],
+    )
+    .test(( i, o ) => {
+      const result = FsLoc.toDir(i)
+      expect(result).toBeDir()
+      expect(result).toEncodeTo(o)
+    })
 
   describe('String literal support', () => {
     it('accepts string literals', () => {

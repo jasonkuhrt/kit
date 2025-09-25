@@ -7,29 +7,30 @@ const l = FsLoc.fromString
 
 describe('isAbove', () => {
   // dprint-ignore
-  Test.Table.suite<
-    { parent: FsLoc.Groups.Dir.Dir; child: FsLoc.FsLoc },
-    boolean
-  >('check if path is above another', [
-    // Absolute paths
-    { n: 'abs dir above abs file',                      i: { parent: l('/home/'), child: l('/home/user/file.txt') },                         o: true },
-    { n: 'abs dir above abs dir',                       i: { parent: l('/home/'), child: l('/home/user/src/') },                             o: true },
-    { n: 'abs dir not above abs file',                  i: { parent: l('/home/'), child: l('/var/file.txt') },                               o: false },
-    { n: 'immediate parent above file',                 i: { parent: l('/home/'), child: l('/home/file.txt') },                              o: true },
-    { n: 'root above file',                             i: { parent: FsLoc.Constants.absDirRoot, child: l('/file.txt') },                    o: true },
+  Test.describe('check if path is above another')
+    .i<{ parent: FsLoc.Groups.Dir.Dir; child: FsLoc.FsLoc }>()
+    .o<boolean>()
+    .cases(
+      // Absolute paths
+      ['abs dir above abs file',                      [{ parent: l('/home/'), child: l('/home/user/file.txt') }],                         true],
+      ['abs dir above abs dir',                       [{ parent: l('/home/'), child: l('/home/user/src/') }],                             true],
+      ['abs dir not above abs file',                  [{ parent: l('/home/'), child: l('/var/file.txt') }],                               false],
+      ['immediate parent above file',                 [{ parent: l('/home/'), child: l('/home/file.txt') }],                              true],
+      ['root above file',                             [{ parent: FsLoc.Constants.absDirRoot, child: l('/file.txt') }],                    true],
 
-    // Relative paths
-    { n: 'rel dir above rel file',                      i: { parent: l('./src/'), child: l('./src/index.ts') },                              o: true },
-    { n: 'rel dir above rel dir',                       i: { parent: l('./src/'), child: l('./src/components/') },                           o: true },
-    { n: 'rel dir not above rel file',                  i: { parent: l('./src/'), child: l('./test/file.ts') },                              o: false },
+      // Relative paths
+      ['rel dir above rel file',                      [{ parent: l('./src/'), child: l('./src/index.ts') }],                              true],
+      ['rel dir above rel dir',                       [{ parent: l('./src/'), child: l('./src/components/') }],                           true],
+      ['rel dir not above rel file',                  [{ parent: l('./src/'), child: l('./test/file.ts') }],                              false],
 
-    // Edge cases
-    { n: 'same location not above',                     i: { parent: l('/home/'), child: l('/home/') },                                      o: false },
-    { n: 'child deeper than parent',                    i: { parent: l('/home/user/'), child: l('/home/') },                                 o: false },
-  ], ({ i, o }) => {
-    const result = FsLoc.isAbove(i.parent, i.child)
-    expect(result).toBe(o)
-  })
+      // Edge cases
+      ['same location not above',                     [{ parent: l('/home/'), child: l('/home/') }],                                      false],
+      ['child deeper than parent',                    [{ parent: l('/home/user/'), child: l('/home/') }],                                 false],
+    )
+    .test(( i, o ) => {
+      const result = FsLoc.isAbove(i.parent, i.child)
+      expect(result).toBe(o)
+    })
 
   describe('curried form', () => {
     it('isAboveOf creates a predicate', () => {

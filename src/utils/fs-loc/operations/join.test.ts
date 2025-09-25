@@ -7,27 +7,28 @@ const l = FsLoc.fromString
 
 describe('join', () => {
   // dprint-ignore
-  Test.Table.suite<
-    { base: FsLoc.Groups.Dir.Dir; rel: FsLoc.Groups.Rel.Rel },
-    string
-  >('join paths', [
-    // Joining directories with files
-    { n: 'abs dir + rel file',                           i: { base: l('/home/'),                         rel: l('file.txt') },                         o: '/home/file.txt' },
-    { n: 'rel dir + rel file',                           i: { base: l('src/'),                           rel: l('index.ts') },                         o: './src/index.ts' },
-    { n: 'root + rel file',                              i: { base: l('/'),                              rel: l('file.txt') },                         o: '/file.txt' },
+  Test.describe('join paths')
+    .i<{ base: FsLoc.Groups.Dir.Dir; rel: FsLoc.Groups.Rel.Rel }>()
+    .o<string>()
+    .cases(
+      // Joining directories with files
+      ['abs dir + rel file',                           [{ base: l('/home/'),                         rel: l('file.txt') }],                         '/home/file.txt'],
+      ['rel dir + rel file',                           [{ base: l('src/'),                           rel: l('index.ts') }],                         './src/index.ts'],
+      ['root + rel file',                              [{ base: l('/'),                              rel: l('file.txt') }],                         '/file.txt'],
 
-    // Joining directories with directories
-    { n: 'abs dir + rel dir',                            i: { base: l('/home/'),                         rel: l('documents/') },                       o: '/home/documents/' },
-    { n: 'rel dir + rel dir',                            i: { base: l('src/'),                           rel: l('components/') },                      o: './src/components/' },
-    { n: 'root + rel dir',                               i: { base: FsLoc.Constants.absDirRoot,          rel: l('home/') },                           o: '/home/' },
+      // Joining directories with directories
+      ['abs dir + rel dir',                            [{ base: l('/home/'),                         rel: l('documents/') }],                       '/home/documents/'],
+      ['rel dir + rel dir',                            [{ base: l('src/'),                           rel: l('components/') }],                      './src/components/'],
+      ['root + rel dir',                               [{ base: FsLoc.Constants.absDirRoot,          rel: l('home/') }],                           '/home/'],
 
-    // Parent references (resolved during join)
-    { n: 'parent refs with file',                        i: { base: l('../'),                            rel: l('lib/utils.js') },                    o: './lib/utils.js' },
-    { n: 'parent refs in nested path',                   i: { base: l('src/'),                           rel: l('../test/file.ts') },                 o: './test/file.ts' },
-  ], ({ i, o }) => {
-    const result = FsLoc.join(i.base, i.rel)
-    expect(result).toEncodeTo(o)
-  })
+      // Parent references (resolved during join)
+      ['parent refs with file',                        [{ base: l('../'),                            rel: l('lib/utils.js') }],                    './lib/utils.js'],
+      ['parent refs in nested path',                   [{ base: l('src/'),                           rel: l('../test/file.ts') }],                 './test/file.ts'],
+    )
+    .test(( i, o ) => {
+      const result = FsLoc.join(i.base, i.rel)
+      expect(result).toEncodeTo(o)
+    })
 
   describe('String literal support', () => {
     it('accepts string literals', () => {
