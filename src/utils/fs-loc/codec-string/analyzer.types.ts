@@ -40,7 +40,7 @@ type ExtractExtension<S extends string> =
     : null
 
 /**
- * Extract the name without extension from a filename.
+ * Extract the stem (name without extension) from a filename.
  */
 type ExtractName<S extends string> =
   // Handle files starting with dot
@@ -106,7 +106,7 @@ export type AnalysisFile<S extends string = string> = {
   isPathRelative: IsRelative<S>
   path: ExtractPathSegments<S>
   file: {
-    name: ExtractName<Str.LastSegment<S>>
+    stem: ExtractName<Str.LastSegment<S>>
     extension: ExtractExtension<Str.LastSegment<S>>
   }
 }

@@ -47,7 +47,7 @@ export class AbsFile extends S.TaggedClass<AbsFile>()('LocAbsFile', {
       encode: (decoded) => {
         // Source of truth for string conversion
         const pathString = decoded.path.segments.join('/')
-        const fileString = decoded.file.extension ? `${decoded.file.name}${decoded.file.extension}` : decoded.file.name
+        const fileString = decoded.file.extension ? `${decoded.file.stem}${decoded.file.extension}` : decoded.file.stem
         return ParseResult.succeed(pathString.length > 0 ? `/${pathString}/${fileString}` : `/${fileString}`)
       },
       decode: (input, options, ast) => {
@@ -71,7 +71,7 @@ export class AbsFile extends S.TaggedClass<AbsFile>()('LocAbsFile', {
           new AbsFile({
             path: new Abs({ segments: (looseResult.path as any).segments }),
             file: new File({
-              name: looseResult.file.name,
+              stem: looseResult.file.stem,
               extension: looseResult.file.extension,
             }),
           }),

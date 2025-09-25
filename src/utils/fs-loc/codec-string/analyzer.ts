@@ -25,7 +25,7 @@ export interface AnalysisFile extends AnalysisNonRoot {
   path: string[]
   /** File metadata */
   file: {
-    name: string
+    stem: string
     extension: string | null
   }
 }
@@ -159,7 +159,7 @@ export function analyze_(input: string): Analysis {
       isPathRelative,
       path: [],
       file: {
-        name: '',
+        stem: '',
         extension: null,
       },
       original: input,
@@ -172,7 +172,7 @@ export function analyze_(input: string): Analysis {
   // Extract extension
   const dotIndex = filename.lastIndexOf('.')
   const extension = dotIndex > 0 ? filename.substring(dotIndex) : null
-  const name = dotIndex > 0 ? filename.substring(0, dotIndex) : filename
+  const stem = dotIndex > 0 ? filename.substring(0, dotIndex) : filename
 
   return {
     _tag: 'file',
@@ -181,7 +181,7 @@ export function analyze_(input: string): Analysis {
     isPathRelative,
     path,
     file: {
-      name,
+      stem,
       extension,
     },
     original: input,

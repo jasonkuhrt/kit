@@ -218,7 +218,7 @@ export const normalizeDynamic = <$schema extends S.Schema.All>(schema: $schema) 
 
   return <const $input extends InputOrError<$schema['Type']>>(
     input: $input,
-  ): normalize<$input> & unknown => {
+  ): normalize<$input> => {
     if (typeof input === 'string') {
       return decodeSync(input) as any
     }

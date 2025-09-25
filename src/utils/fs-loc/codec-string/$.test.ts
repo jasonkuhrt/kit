@@ -11,13 +11,13 @@ describe('Analyzer', () => {
         _tag: 'file' | 'dir'
         pathType?: 'absolute' | 'relative'
         path?: string[]
-        file?: { name: string; extension: string | null }
+        file?: { stem: string; extension: string | null }
       }>()
       .cases(
         // Files with extensions
-        ['file with extension',           ['file.txt'],          { _tag: 'file', file: { name: 'file', extension: '.txt' } }],
-        ['multiple dots in filename',     ['file.test.ts'],      { _tag: 'file', file: { name: 'file.test', extension: '.ts' } }],
-        ['hidden file with extension',    ['.env.local'],        { _tag: 'file', file: { name: '.env', extension: '.local' } }],
+        ['file with extension',           ['file.txt'],          { _tag: 'file', file: { stem: 'file', extension: '.txt' } }],
+        ['multiple dots in filename',     ['file.test.ts'],      { _tag: 'file', file: { stem: 'file.test', extension: '.ts' } }],
+        ['hidden file with extension',    ['.env.local'],        { _tag: 'file', file: { stem: '.env', extension: '.local' } }],
 
         // Directories
         ['directory with trailing slash', ['dir/'],             { _tag: 'dir', path: ['dir'] }],
@@ -29,8 +29,8 @@ describe('Analyzer', () => {
         ['parent directory',              ['..'],               { _tag: 'dir' }],
 
         // Absolute vs relative paths
-        ['absolute file path',            ['/path/file.txt'],   { _tag: 'file', pathType: 'absolute', file: { name: 'file', extension: '.txt' } }],
-        ['relative file path',            ['./path/file.txt'],  { _tag: 'file', pathType: 'relative', file: { name: 'file', extension: '.txt' } }],
+        ['absolute file path',            ['/path/file.txt'],   { _tag: 'file', pathType: 'absolute', file: { stem: 'file', extension: '.txt' } }],
+        ['relative file path',            ['./path/file.txt'],  { _tag: 'file', pathType: 'relative', file: { stem: 'file', extension: '.txt' } }],
       )
       .test(( i, o ) => {
       const result = Analyzer.analyze(i)
@@ -51,7 +51,7 @@ describe('Analyzer', () => {
       }
 
       if (o.file && result._tag === 'file') {
-        expect(result.file.name).toBe(o.file.name)
+        expect(result.file.stem).toBe(o.file.stem)
         expect(result.file.extension).toBe(o.file.extension)
       }
       })

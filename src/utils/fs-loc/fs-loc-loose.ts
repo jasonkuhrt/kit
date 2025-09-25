@@ -39,7 +39,7 @@ export const LocLoose = S.transformOrFail(
         pathEncoded = './' + pathSegments.join('/')
       }
 
-      const fileEncoded = decoded.file ? `${decoded.file.name}${decoded.file.extension || ''}` : ''
+      const fileEncoded = decoded.file ? `${decoded.file.stem}${decoded.file.extension || ''}` : ''
       if (!fileEncoded) return ParseResult.succeed(pathEncoded)
       const pathEncodedForJoin = pathEncoded.endsWith('/') ? pathEncoded.slice(0, -1) : pathEncoded
       const encoded = pathEncodedForJoin + '/' + fileEncoded
@@ -57,7 +57,7 @@ export const LocLoose = S.transformOrFail(
               FsLocLooseClass.make({
                 path,
                 file: new File({
-                  name: analysis.file.name,
+                  stem: analysis.file.stem,
                   extension: analysis.file.extension,
                 }),
               }),

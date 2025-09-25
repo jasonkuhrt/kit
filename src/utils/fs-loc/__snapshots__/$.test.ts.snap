@@ -83,7 +83,7 @@ AbsFile {
   "file": File {
     "_tag": "File",
     "extension": ".json",
-    "name": ".config",
+    "stem": ".config",
   },
   "path": Abs {
     "_tag": "PathAbs",
@@ -98,7 +98,7 @@ AbsFile {
   "file": File {
     "_tag": "File",
     "extension": ".js",
-    "name": "e",
+    "stem": "e",
   },
   "path": Abs {
     "_tag": "PathAbs",
@@ -118,7 +118,7 @@ AbsFile {
   "file": File {
     "_tag": "File",
     "extension": ".gz",
-    "name": "archive.tar",
+    "stem": "archive.tar",
   },
   "path": Abs {
     "_tag": "PathAbs",
@@ -133,7 +133,7 @@ AbsFile {
   "file": File {
     "_tag": "File",
     "extension": ".txt",
-    "name": "file",
+    "stem": "file",
   },
   "path": Abs {
     "_tag": "PathAbs",
@@ -148,7 +148,7 @@ AbsFile {
   "file": File {
     "_tag": "File",
     "extension": ".pdf",
-    "name": "doc",
+    "stem": "doc",
   },
   "path": Abs {
     "_tag": "PathAbs",
@@ -166,7 +166,7 @@ AbsFile {
   "file": File {
     "_tag": "File",
     "extension": ".txt",
-    "name": "file name",
+    "stem": "file name",
   },
   "path": Abs {
     "_tag": "PathAbs",
@@ -283,7 +283,7 @@ RelFile {
   "file": File {
     "_tag": "File",
     "extension": ".js",
-    "name": "util",
+    "stem": "util",
   },
   "path": Rel {
     "_tag": "PathRelative",
@@ -302,7 +302,7 @@ RelFile {
   "file": File {
     "_tag": "File",
     "extension": ".txt",
-    "name": "file",
+    "stem": "file",
   },
   "path": Rel {
     "_tag": "PathRelative",
@@ -319,7 +319,7 @@ RelFile {
   "file": File {
     "_tag": "File",
     "extension": ".txt",
-    "name": "file",
+    "stem": "file",
   },
   "path": Rel {
     "_tag": "PathRelative",
@@ -334,7 +334,7 @@ RelFile {
   "file": File {
     "_tag": "File",
     "extension": ".tsx",
-    "name": "App",
+    "stem": "App",
   },
   "path": Rel {
     "_tag": "PathRelative",
@@ -352,7 +352,7 @@ RelFile {
   "file": File {
     "_tag": "File",
     "extension": ".txt",
-    "name": "file",
+    "stem": "file",
   },
   "path": Rel {
     "_tag": "PathRelative",
@@ -367,7 +367,7 @@ RelFile {
   "file": File {
     "_tag": "File",
     "extension": ".ts",
-    "name": "index",
+    "stem": "index",
   },
   "path": Rel {
     "_tag": "PathRelative",

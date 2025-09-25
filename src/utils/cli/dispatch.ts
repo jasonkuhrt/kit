@@ -106,12 +106,12 @@ export const discoverCommandPointers = async (
     Array.map((fileName) => S.decodeSync(FsLoc.RelFile.String)(fileName)),
     Array.filter(filePath => {
       const filename = filePath.file.extension
-        ? `${filePath.file.name}${filePath.file.extension}`
-        : filePath.file.name
+        ? `${filePath.file.stem}${filePath.file.extension}`
+        : filePath.file.stem
       return !FsLoc.Extension.Extensions.buildArtifacts.some((ext: string) => filename.endsWith(ext))
     }),
     Array.map(filePath => {
-      const name = filePath.file.name
+      const name = filePath.file.stem
       const absolutePath = FsLoc.join(commandsDirPath, filePath)
       return {
         name,

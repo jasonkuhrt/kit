@@ -23,16 +23,21 @@ export const name = <loc extends Inputs.Input.Any>(
   loc: Inputs.Guard.Any<loc>,
 ): string => {
   const normalized = FsLoc.normalizeInput(loc)
-  if ('file' in normalized) {
-    // For files, combine name and extension
-    return normalized.file.extension
-      ? normalized.file.name + normalized.file.extension
-      : normalized.file.name
-  } else {
-    // For directories, return the last segment
-    const segments = normalized.path.segments
-    return segments.length > 0
-      ? segments[segments.length - 1]!
-      : '' // Root directory case
+
+  switch (normalized._tag) {
+    case 'LocAbsFile':
+    case 'LocRelFile':
+      // For files, combine stem and extension
+      return normalized.file.extension
+        ? normalized.file.stem + normalized.file.extension
+        : normalized.file.stem
+
+    case 'LocAbsDir':
+    case 'LocRelDir':
+      // For directories, return the last segment
+      const segments = normalized.path.segments
+      return segments.length > 0
+        ? segments[segments.length - 1]!
+        : '' // Root directory case
   }
 }

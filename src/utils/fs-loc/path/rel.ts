@@ -35,8 +35,8 @@ export class Rel extends S.TaggedClass<Rel>()('PathRelative', {
               }
               // Include the filename and extension in path segments
               const filename = analysis.file.extension
-                ? `${analysis.file.name}${analysis.file.extension}`
-                : analysis.file.name
+                ? `${analysis.file.stem}${analysis.file.extension}`
+                : analysis.file.stem
               const rawSegments = [...analysis.path, filename]
 
               // Validate each segment

@@ -58,13 +58,13 @@ Test.describe('.FsLocLoose.decodeSync')
   .i<string>()
   .o<FsLoc.FsLocLoose.FsLocLooseClass>()
   .cases(
-    ['abs file',      ['/home/file.txt'],           LocLoose({ path: P.Abs.make({ segments: ['home'] }), file: F.make({ name: 'file', extension: '.txt' }) })],
+    ['abs file',      ['/home/file.txt'],           LocLoose({ path: P.Abs.make({ segments: ['home'] }), file: F.make({ stem: 'file', extension: '.txt' }) })],
     ['abs dir',       ['/home/'],                   LocLoose({ path: P.Abs.make({ segments: ['home'] }), file: null })],
-    ['rel file',      ['file.txt'],                 LocLoose({ path: P.Rel.make({ segments: [] }), file: F.make({ name: 'file', extension: '.txt' }) })],
+    ['rel file',      ['file.txt'],                 LocLoose({ path: P.Rel.make({ segments: [] }), file: F.make({ stem: 'file', extension: '.txt' }) })],
     ['rel dir',       ['src/'],                     LocLoose({ path: P.Rel.make({ segments: ['src'] }), file: null })],
     ['root',          ['/'],                        LocLoose({ path: P.Abs.make({ segments: [] }), file: null })],
     // Files without extensions are treated as directories - changed to .js extension
-    ['complex path',  ['/usr/local/bin/node.js'],   LocLoose({ path: P.Abs.make({ segments: ['usr', 'local', 'bin'] }), file: F.make({ name: 'node', extension: '.js' }) })],
+    ['complex path',  ['/usr/local/bin/node.js'],   LocLoose({ path: P.Abs.make({ segments: ['usr', 'local', 'bin'] }), file: F.make({ stem: 'node', extension: '.js' }) })],
   )
   .test((i: string, o: any) => {
     const result = FsLoc.FsLocLoose.decodeSync(i)

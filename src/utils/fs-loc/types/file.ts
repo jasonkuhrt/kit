@@ -6,7 +6,7 @@ import * as Extension from './extension.ts'
  * Class representing file metadata.
  */
 export class File extends S.TaggedClass<File>()('File', {
-  name: S.String,
+  stem: S.String,
   extension: S.NullOr(Extension.Extension),
 }) {
   static is = S.is(File)
@@ -21,8 +21,8 @@ export class File extends S.TaggedClass<File>()('File', {
       strict: true,
       encode: (decoded) => {
         const filename = decoded.extension
-          ? `${decoded.name}${decoded.extension}`
-          : decoded.name
+          ? `${decoded.stem}${decoded.extension}`
+          : decoded.stem
         return ParseResult.succeed(filename)
       },
       decode: (input, options, ast) => {
@@ -45,12 +45,12 @@ export class File extends S.TaggedClass<File>()('File', {
                   )
                 }
                 return ParseResult.succeed(File.make({
-                  name: file.file.name,
+                  stem: file.file.stem,
                   extension: extResult.right,
                 }))
               } else {
                 return ParseResult.succeed(File.make({
-                  name: file.file.name,
+                  stem: file.file.stem,
                   extension: null,
                 }))
               }

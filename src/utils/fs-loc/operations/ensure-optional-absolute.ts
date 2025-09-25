@@ -48,7 +48,7 @@ export const ensureOptionalAbsolute = <
   loc: loc extends Inputs.Input.Any ? Inputs.Guard.Any<loc> : undefined,
   base: Inputs.Guard.AbsDir<base>,
 ): ensureOptionalAbsolute<loc, base> => {
-  const normalizedBase = FsLoc.normalizeInput(base)
+  const normalizedBase = FsLoc.normalizeInput(base) as FsLoc.AbsDir
   if (loc === undefined) {
     return normalizedBase as any
   }
