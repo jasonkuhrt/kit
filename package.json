@@ -201,7 +201,7 @@
     "check:lint": "oxlint src",
     "check:types": "tsc",
     "check:package": "publint",
-    "release": "dripip stable",
+    "release": "GITHUB_TOKEN=$(gh auth token) dripip stable",
     "prepack": "pnpm build",
     "test:unit": "vitest",
     "test": "vitest",
