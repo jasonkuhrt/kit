@@ -268,7 +268,7 @@ describe('Dir', () => {
       expect(spec.operations[0]).toEqual({
         type: 'file',
         path: expect.objectContaining({
-          file: expect.objectContaining({ name: 'README', extension: '.md' }),
+          file: expect.objectContaining({ stem: 'README', extension: '.md' }),
         }),
         content: '# Test',
       })
@@ -287,7 +287,7 @@ describe('Dir', () => {
       expect(spec.operations[1]).toEqual({
         type: 'file',
         path: expect.objectContaining({
-          file: expect.objectContaining({ name: 'env', extension: '.txt' }),
+          file: expect.objectContaining({ stem: 'env', extension: '.txt' }),
         }),
         content: 'DEBUG=true',
       })
@@ -320,21 +320,21 @@ describe('Dir', () => {
       expect(merged.operations[0]).toEqual({
         type: 'file',
         path: expect.objectContaining({
-          file: expect.objectContaining({ name: 'a', extension: '.txt' }),
+          file: expect.objectContaining({ stem: 'a', extension: '.txt' }),
         }),
         content: 'A',
       })
       expect(merged.operations[1]).toEqual({
         type: 'file',
         path: expect.objectContaining({
-          file: expect.objectContaining({ name: 'b', extension: '.txt' }),
+          file: expect.objectContaining({ stem: 'b', extension: '.txt' }),
         }),
         content: 'B',
       })
       expect(merged.operations[2]).toEqual({
         type: 'file',
         path: expect.objectContaining({
-          file: expect.objectContaining({ name: 'c', extension: '.txt' }),
+          file: expect.objectContaining({ stem: 'c', extension: '.txt' }),
         }),
         content: 'C',
       })

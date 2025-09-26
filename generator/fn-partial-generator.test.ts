@@ -1,6 +1,6 @@
 import { Project } from 'ts-morph'
 import { describe, expect, test } from 'vitest'
-import { generateForFile } from './generator.js'
+import { generateForFile } from './fn-partial-generator.js'
 
 describe('partialize generator', () => {
   test('generates overloads for 2-parameter function', async () => {

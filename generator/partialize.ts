@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { Fn } from '#fn'
 import process from 'node:process'
 import { Project } from 'ts-morph'
+import * as Generator from './fn-partial-generator.js'
 
 /**
  * CLI for generating partialize interfaces
@@ -89,7 +89,7 @@ async function main() {
 
     console.log(`Processing ${files.length} file(s) with directive "${directive}"...`)
 
-    await Fn.Generator.generate(project, files, {
+    await Generator.generate(project, files, {
       directive,
       generateHelpers,
     })
