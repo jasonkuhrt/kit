@@ -29,6 +29,12 @@ export type ReturnExtract<$Type, $Fn extends AnyAny> =
           : Extract<__return__, $Type>
 			: never
 
+// dprint-ignore
+export type ReturnReplace<$Fn extends AnyAny, $Type> =
+  $Fn extends (...args: infer __args__) => infer __return__
+    ? (...args: __args__) => $Type
+    : never
+
 /**
  * Modify function such that it does not return the given type.
  * If function does not return the given the type, then this is effectively an identity function.
