@@ -3,10 +3,10 @@ import { Lang } from '#lang'
 import { Obj } from '#obj'
 import { Rec } from '#rec'
 import { Str } from '#str'
-import { Char } from '#str/str'
 import type { Ts } from '#ts'
-import { cyan, red } from 'ansis'
-import { cleanStack } from './stack.js'
+import { dim, red } from 'ansis'
+import objectInspect from 'object-inspect'
+import { cleanStackWithStats } from './stack.js'
 import { is } from './type.js'
 import type { Context } from './types.js'
 
@@ -26,7 +26,10 @@ const makeEnvVarName = (spec: EnvironmentConfigurableOptionSpec) => {
 
 /**
  * Type helper for inferring option types from environment configurable option specifications.
+ * Transforms an array of option specs into a typed options object.
+ *
  * @template $EnvironmentConfigurableOptions - Array of option specifications
+ * @internal
  */
 export type InferOptions<$EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[]> = Ts.Simplify<
   ArrMut.ReduceWithIntersection<_InferOptions<$EnvironmentConfigurableOptions>>
@@ -102,142 +105,460 @@ const resolve = <const specs extends EnvironmentConfigurableOptionSpec[]>(
 const optionSpecs = define([
   {
     name: 'color',
-    envVarNamePrefix: 'errorDsiplay',
+    envVarNamePrefix: 'errorDisplay',
     description: 'Should output be colored for easier reading',
     default: true,
     parse: (envVarValue) => envVarValue === '0' || envVarValue === 'false' ? false : true,
   },
   {
     name: 'stackTraceColumns',
-    envVarNamePrefix: 'errorDsiplay',
+    envVarNamePrefix: 'errorDisplay',
     description: 'The column count to display before truncation begins',
     default: 120,
     parse: (envVarValue) => parseInt(envVarValue, 10),
   },
   {
     name: 'identColumns',
-    envVarNamePrefix: 'errorDsiplay',
+    envVarNamePrefix: 'errorDisplay',
     description: 'The column count to use for indentation',
     default: 4,
     parse: (envVarValue) => parseInt(envVarValue, 10),
+  },
+  {
+    name: 'showHelp',
+    envVarNamePrefix: 'errorDisplay',
+    description: 'Show environment variable help section',
+    default: true,
+    parse: (envVarValue) => envVarValue === '0' || envVarValue === 'false' ? false : true,
   },
 ])
 
 /**
  * Options for configuring error inspection output.
- * @property color - Whether to use color in output (default: true)
- * @property stackTraceColumns - Column count before truncation (default: 120)
- * @property identColumns - Column count for indentation (default: 4)
+ * All options can be overridden via environment variables.
+ *
+ * @property color - Whether to use ANSI color codes for better readability (default: true, env: ERROR_DISPLAY_COLOR)
+ * @property stackTraceColumns - Maximum column width before truncating stack trace lines (default: 120, env: ERROR_DISPLAY_STACK_TRACE_COLUMNS)
+ * @property identColumns - Number of spaces to use for indentation (default: 4, env: ERROR_DISPLAY_IDENT_COLUMNS)
+ * @property showHelp - Whether to display the environment variable help section (default: true, env: ERROR_DISPLAY_SHOW_HELP)
+ *
+ * @example
+ * ```ts
+ * // Use default options
+ * Err.inspect(error)
+ *
+ * // Customize options
+ * Err.inspect(error, {
+ *   color: false,
+ *   stackTraceColumns: 200,
+ *   showHelp: false
+ * })
+ *
+ * // Set via environment variables
+ * process.env.ERROR_DISPLAY_COLOR = 'false'
+ * process.env.ERROR_DISPLAY_SHOW_HELP = 'false'
+ * ```
  */
 export type InspectOptions = InferOptions<typeof optionSpecs>
 
 /**
  * Resolved configuration for error inspection with values and sources.
+ * Contains the final values after merging defaults, user options, and environment variables.
+ *
+ * @internal
  */
 export type InspectConfig = Resolve<typeof optionSpecs>
 
 /**
- * Format a section title for error output.
- * @param indent - Indentation string to prepend
- * @param text - Title text to format
- * @param config - Inspection configuration
- * @returns Formatted title string with optional color
+ * Get the prefix letter for a section.
+ * @internal
  */
-export const formatTitle = (indent: string, text: string, config: InspectConfig) => {
-  const title = `\n${indent}${text.toUpperCase()}\n`
-  return config.color.value ? cyan(title) : title
+const getSectionPrefix = (section: 'type' | 'message' | 'stack' | 'context' | 'cause'): string => {
+  const prefixes = {
+    type: 'T',
+    message: 'M',
+    stack: 'S',
+    context: 'C',
+    cause: 'CAUSE',
+  }
+  return prefixes[section]
 }
 
 /**
- * Render an error to a string with nice formatting including causes, aggregate errors, context, and stack traces.
+ * Render an error to a string with detailed formatting.
+ *
+ * Features:
+ * - Nested error support (causes and aggregate errors)
+ * - Context object formatting
+ * - Stack trace cleaning with filtering indicators
+ * - Tree-like visual guides for nested structures
+ * - Configurable via options or environment variables
+ *
+ * @param error - The error to inspect
+ * @param options - Optional configuration for formatting
+ * @returns A formatted string representation of the error
+ *
+ * @example
+ * ```ts
+ * // Simple error
+ * const error = new Error('Something went wrong')
+ * console.log(Err.inspect(error))
+ *
+ * // Error with context
+ * const contextError = new Error('API failed')
+ * contextError.context = { userId: 123, endpoint: '/api/users' }
+ * console.log(Err.inspect(contextError))
+ *
+ * // Aggregate error with multiple failures
+ * const errors = [
+ *   new Error('Database connection failed'),
+ *   new Error('Redis timeout')
+ * ]
+ * const aggregate = new AggregateError(errors, 'Multiple services failed')
+ * console.log(Err.inspect(aggregate))
+ *
+ * // Disable help section
+ * console.log(Err.inspect(error, { showHelp: false }))
+ * ```
  */
-
 export const inspect = (error: Error, options?: InspectOptions): string => {
   const config = resolve(optionSpecs, options ?? {})
 
-  let inspection = _inspectResursively(error, '', config)
+  let inspection = _inspectResursively(error, '', config, { isRoot: true })
 
-  inspection += `\n${formatTitle('', 'Environment Variable Formatting', config)}`
-
-  // todo: indent should not indent empty lines
-  inspection += Str.indent(
-    `\nYou can control formatting of this error display with the following environment variables.\n`,
-    config.identColumns.value,
-  )
-
-  inspection += '\n'
-
-  for (const [_, state] of Obj.entries(config)) {
-    inspection += Str.indent(
-      `${makeEnvVarName(state.spec)} – The column count to display before truncation ${
-        state.source === 'environment'
-          ? `(currently set to ${state.value})`
-          : `(currently unset, defaulting to ${state.value})`
-      }`,
-      config.identColumns.value,
-    )
+  // Only show help section if enabled
+  if (config.showHelp.value) {
+    inspection += '\n\n'
+    inspection += config.color.value ? dim('─'.repeat(40)) : '─'.repeat(40)
     inspection += '\n'
+    inspection += config.color.value
+      ? dim('Environment Variable Configuration:')
+      : 'Environment Variable Configuration:'
+    inspection += '\n'
+
+    for (const [_, state] of Obj.entries(config)) {
+      const envVar = makeEnvVarName(state.spec)
+      const status = state.source === 'environment'
+        ? `= ${state.value}`
+        : `(default: ${state.value})`
+
+      const line = `  ${envVar} ${status}`
+      inspection += config.color.value ? dim(line) : line
+      inspection += '\n'
+    }
   }
 
   return inspection
 }
 
-const _inspectResursively = (error: Error, parentIndent: string, config: InspectConfig): string => {
-  const formatIndent = Char.spaceRegular.repeat(config.identColumns.value)
+/**
+ * Options for recursive error inspection.
+ * Used internally to track position in the error hierarchy.
+ *
+ * @internal
+ */
+interface InspectContext {
+  /**
+   * Whether this is the root error being inspected.
+   */
+  isRoot?: boolean
+
+  /**
+   * Whether this is the last item in a list.
+   */
+  isLast?: boolean
+
+  /**
+   * Index in aggregate error list.
+   */
+  index?: number
+}
+
+/**
+ * Format context object for display using isomorphic inspect.
+ * @internal
+ */
+const formatContext = (context: any): string => {
+  return objectInspect(context, {
+    indent: 2,
+    quoteStyle: 'single',
+    maxStringLength: Infinity,
+    customInspect: false, // Avoid invoking custom inspect methods
+    // depth: null, // No depth limit
+  })
+}
+
+/**
+ * Format a line with indentation.
+ * @internal
+ */
+const formatLine = (
+  content: string,
+  indent: string,
+  config: InspectConfig,
+): string => {
+  return `${indent}${content}`
+}
+
+/**
+ * Format and align stack trace frames.
+ * @internal
+ */
+const formatStackFrames = (stackLines: string[]): string[] => {
+  // Parse stack frames to extract function names and locations
+  const frames = stackLines.map(line => {
+    const trimmed = line.trim()
+
+    // Replace <anonymous> with <?>
+    const cleaned = trimmed.replace(/<anonymous>/g, '<?>')
+
+    // Try to match different stack frame formats
+    // Format: "at functionName (file:line:col)" or "at file:line:col"
+    const match = cleaned.match(/^at\s+([^(]+?)\s*\((.+)\)$/) || cleaned.match(/^at\s+(.+)$/)
+
+    if (!match) return cleaned
+
+    if (match[2]) {
+      // Has function name and location
+      const funcName = match[1]!.trim().replace('Object.', '')
+      const location = match[2]!.trim()
+      return { funcName, location, original: cleaned }
+    } else {
+      // Only location
+      return { funcName: '', location: match[1]!.trim(), original: cleaned }
+    }
+  })
+
+  // Find the longest function name for alignment
+  let maxFuncLength = 0
+  for (const frame of frames) {
+    if (typeof frame === 'object' && frame.funcName) {
+      maxFuncLength = Math.max(maxFuncLength, frame.funcName.length)
+    }
+  }
+
+  // Format with alignment
+  return frames.map(frame => {
+    if (typeof frame === 'string') return frame
+
+    if (frame.funcName) {
+      const paddedFunc = frame.funcName.padEnd(maxFuncLength)
+      return `@ ${paddedFunc} ${frame.location}`
+    } else {
+      return `@ ${' '.repeat(maxFuncLength)} ${frame.location}`
+    }
+  })
+}
+
+const _inspectResursively = (
+  error: Error,
+  parentIndent: string,
+  config: InspectConfig,
+  context: InspectContext = {},
+): string => {
   if (!is(error)) {
     return parentIndent + String(error)
   }
 
   const lines: string[] = []
+  const isAggregateError = error instanceof AggregateError && error.errors.length > 0
+  const isNested = !context.isRoot
 
-  // Handle AggregateError
-  if (error instanceof AggregateError && error.errors.length > 0) {
-    lines.push(formatTitle(parentIndent, 'errors', config))
-    lines.push(...error.errors.reduce<string[]>((acc, err, index) => {
-      acc.push(formatTitle(parentIndent, `[${index}]`, config))
-      acc.push(_inspectResursively(err, parentIndent + formatIndent, config))
-      return acc
-    }, []))
+  // For nested errors in aggregate, use tree structure
+  if (isNested && context.index !== undefined) {
+    // Always use ├─ for aggregate error items, the closing └ is separate
+    const treeChar = '├─'
+
+    // Dedent the number by 2 spaces if we have enough indentation
+    let numberIndent = parentIndent
+    let contentIndent = parentIndent
+    if (parentIndent.length >= 2) {
+      numberIndent = parentIndent.slice(0, -2) // Remove 2 spaces for the number
+      contentIndent = parentIndent // Keep full indent for content alignment
+    }
+
+    const indexPrefix = config.color.value ? dim(`${context.index} ${treeChar}`) : `${context.index} ${treeChar}`
+    const errorName = config.color.value ? red(error.name) : error.name
+    const errorLine = error.message ? `${errorName}: ${error.message}` : errorName
+    lines.push(`${numberIndent}${indexPrefix} ${errorLine}`)
+
+    // The continuation aligns with the original indent
+    // Always use │ for continuation since we're using ├─ for all items
+    const continuation = '│  '
+    const contPrefix = config.color.value ? dim(continuation) : continuation
+    const childIndent = contentIndent + contPrefix
+
+    // Stack (compact)
+    if (error.stack) {
+      const cleanResult = cleanStackWithStats(error.stack, {
+        removeInternal: true,
+        maxFrames: 3,
+        filterPatterns: ['node_modules', 'node:internal'],
+      })
+      const stackLines = Str.lines(cleanResult.stack).slice(1)
+      if (stackLines.length > 0) {
+        const formattedFrames = formatStackFrames(stackLines)
+        for (const line of formattedFrames) {
+          lines.push(`${childIndent}${line}`)
+        }
+      }
+    }
+
+    // Context (inline)
+    if ('context' in error && error.context !== undefined) {
+      const context = (error as Error & { context: Context }).context
+      const jsonString = formatContext(context)
+      const jsonLines = Str.lines(jsonString)
+      for (let i = 0; i < jsonLines.length; i++) {
+        const line = jsonLines[i]!
+        // Don't add extra indent for JSON lines that already have indent from JSON.stringify
+        lines.push(`${childIndent}${line}`)
+      }
+    }
+
+    // If this nested error is itself an AggregateError, show its children
+    if (isAggregateError) {
+      const aggregateError = error as AggregateError
+      if (aggregateError.errors.length > 0) {
+        // Add a visual separator
+        lines.push(`${childIndent}${config.color.value ? dim('↓') : '↓'}`)
+
+        // Render child errors
+        aggregateError.errors.forEach((err, idx) => {
+          const isLastChild = idx === aggregateError.errors.length - 1
+          const childTreeChar = isLastChild ? '└─' : '├─'
+          const childPrefix = config.color.value ? dim(`  ${childTreeChar}`) : `  ${childTreeChar}`
+
+          const childErrorName = config.color.value ? red(err.name) : err.name
+          const childErrorLine = err.message ? `${childErrorName}: ${err.message}` : childErrorName
+          lines.push(`${childIndent}${childPrefix} ${childErrorLine}`)
+
+          // Need to account for "  " (indent) + tree char width
+          const childCont = isLastChild ? '   ' : '  │'
+          const nestedIndent = childIndent + (config.color.value ? dim(childCont) : childCont)
+
+          if (err.stack) {
+            const cleanResult = cleanStackWithStats(err.stack, {
+              removeInternal: true,
+              maxFrames: 1,
+              filterPatterns: ['node_modules', 'node:internal'],
+            })
+            const stackLines = Str.lines(cleanResult.stack).slice(1)
+            if (stackLines.length > 0) {
+              const formattedFrames = formatStackFrames(stackLines)
+              lines.push(`${nestedIndent}${formattedFrames[0]}`)
+            }
+          }
+
+          // If this is also an AggregateError, show indicator
+          if (err instanceof AggregateError && err.errors.length > 0) {
+            lines.push(`${nestedIndent}[contains ${err.errors.length} error${err.errors.length > 1 ? 's' : ''}]`)
+          }
+        })
+      }
+    }
+
     return Str.unlines(lines)
   }
 
-  // Render the main error message
+  // Root or non-aggregate nested error
+  // Type and Message on same line
   const errorName = config.color.value ? red(error.name) : error.name
-  lines.push(`${parentIndent}${errorName}`)
-  lines.push('')
-  lines.push(`${parentIndent}${formatIndent}${error.message}`)
+  const errorLine = error.message ? `${errorName}: ${error.message}` : errorName
+  lines.push(formatLine(errorLine, parentIndent, config))
 
-  // Handle stack property if present
+  // Stack - no indentation
   if (error.stack) {
-    // Clean the stack trace first
-    const cleanedStack = cleanStack(error.stack, {
+    const cleanResult = cleanStackWithStats(error.stack, {
       removeInternal: true,
-      maxFrames: 15,
+      maxFrames: 10,
       filterPatterns: ['node_modules', 'node:internal'],
     })
 
-    const stack = Str.unlines(
-      Str
-        .lines(cleanedStack)
-        // Stacks include the message by default, we already showed that above.
-        .slice(1)
-        .map(_ => Str.truncate(`${parentIndent}${formatIndent}${_.trim()}`, config.stackTraceColumns.value)),
-    )
-    lines.push(formatTitle(parentIndent, 'stack', config))
-    lines.push(stack)
+    const stackLines = Str.lines(cleanResult.stack).slice(1)
+    if (cleanResult.stats.shownFrames === 0) {
+      const frameWord = cleanResult.stats.totalFrames === 1 ? 'frame' : 'frames'
+      const paddedLocation = '...'.padEnd(15)
+      lines.push(
+        formatLine(
+          `@ ${paddedLocation} all ${cleanResult.stats.totalFrames} ${frameWord} elided`,
+          parentIndent,
+          config,
+        ),
+      )
+    } else {
+      const formattedFrames = formatStackFrames(stackLines)
+
+      // Calculate the max function length from formatted frames to maintain alignment
+      let maxFuncLength = 0
+      for (const frame of formattedFrames) {
+        const match = frame.match(/^@\s+(\S+)/)
+        if (match && match[1]) {
+          maxFuncLength = Math.max(maxFuncLength, match[1].length)
+        }
+      }
+
+      for (let i = 0; i < formattedFrames.length; i++) {
+        lines.push(formatLine(formattedFrames[i]!, parentIndent, config))
+      }
+      if (cleanResult.stats.filteredFrames > 0) {
+        const frameWord = cleanResult.stats.filteredFrames === 1 ? 'frame' : 'frames'
+        // Format like a stack frame with padding to align with file paths
+        const paddedFunc = '...'.padEnd(maxFuncLength)
+        lines.push(
+          formatLine(`@ ${paddedFunc} elided ${cleanResult.stats.filteredFrames} ${frameWord}`, parentIndent, config),
+        )
+      }
+    }
   }
 
-  // Handle context property if present
+  // Context - no indentation
   if ('context' in error && error.context !== undefined) {
-    lines.push(formatTitle(parentIndent, 'context', config))
-    // todo: pretty object rendering
-    lines.push(String((error as Error & { context: Context }).context))
+    const context = (error as Error & { context: Context }).context
+    const jsonString = formatContext(context)
+    const jsonLines = Str.lines(jsonString)
+
+    for (let i = 0; i < jsonLines.length; i++) {
+      lines.push(formatLine(jsonLines[i]!, parentIndent, config))
+    }
   }
 
-  // Handle cause if present
+  // Cause - indented progressively
   if ('cause' in error && error.cause instanceof Error) {
-    lines.push(formatTitle(parentIndent, 'cause', config))
-    lines.push(_inspectResursively(error.cause, parentIndent + formatIndent, config))
+    lines.push(formatLine('  ↓', parentIndent, config))
+    lines.push(_inspectResursively(error.cause, `${parentIndent}  `, config, { isRoot: false }))
+  }
+
+  // Aggregate errors
+  if (isAggregateError) {
+    const aggregateError = error as AggregateError
+    if (aggregateError.errors.length > 0) {
+      // Visual separator - indented by 4 spaces to align with tree continuation
+      const separator1 = config.color.value ? dim('    ↓') : '    ↓'
+      const separator2 = config.color.value ? dim('    │') : '    │'
+      lines.push(`${parentIndent}${separator1}`)
+      lines.push(`${parentIndent}${separator2}`)
+
+      // Render each error with tree structure, indented under parent
+      const childIndent = parentIndent + '    ' // 4 spaces for child indentation
+      aggregateError.errors.forEach((err, index) => {
+        const isLastError = index === aggregateError.errors.length - 1
+        lines.push(_inspectResursively(err, childIndent, config, {
+          isRoot: false,
+          isLast: isLastError,
+          index,
+        }))
+        if (!isLastError) {
+          // Separator aligns with the content, not the dedented number
+          const separator = config.color.value ? dim('│') : '│'
+          lines.push(`${childIndent}${separator}`)
+        }
+      })
+
+      // Add closing tree character aligned with tree structure
+      const closingLine = config.color.value ? dim('    └') : '    └'
+      lines.push(`${closingLine}`)
+    }
   }
 
   return Str.unlines(lines)

@@ -11,6 +11,9 @@ importers:
       '@types/node':
         specifier: ^24.5.2
         version: 24.5.2
+      '@types/object-inspect':
+        specifier: ^1.13.0
+        version: 1.13.0
       ansis:
         specifier: ^4.1.0
         version: 4.1.0
@@ -26,15 +29,15 @@ importers:
       jsonc-parser:
         specifier: ^3.3.1
         version: 3.3.1
+      object-inspect:
+        specifier: ^1.13.4
+        version: 1.13.4
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
       tinyglobby:
         specifier: ^0.2.15
         version: 0.2.15
-      ts-morph:
-        specifier: ^27.0.0
-        version: 27.0.0
       type-fest:
         specifier: ^5.0.1
         version: 5.0.1
@@ -75,6 +78,9 @@ importers:
       publint:
         specifier: ^0.3.13
         version: 0.3.13
+      ts-morph:
+        specifier: ^27.0.0
+        version: 27.0.0
       tsx:
         specifier: ^4.20.5
         version: 4.20.5
@@ -941,6 +947,9 @@ packages:
   '@types/node@24.5.2':
     resolution: {integrity: sha512-FYxk1I7wPv3K2XBaoyH2cTnocQEu8AOZ60hPbsyukMPLv5/5qr7V1i8PLHdl6Zf87I+xZXFvPCXYjiTFq+YSDQ==}
 
+  '@types/object-inspect@1.13.0':
+    resolution: {integrity: sha512-lwGTVESDDV+XsQ1pH4UifpJ1f7OtXzQ6QBOX2Afq2bM/T3oOt8hF6exJMjjIjtEWeAN2YAo25J7HxWh97CCz9w==}
+
   '@types/parse-git-config@3.0.4':
     resolution: {integrity: sha512-jz5eGdk9lBgAd4rMbXTP7MRG7AsGQ8DrXsRumDcXDLClHcpKluislylPVMP/qp90J/LlIrrPZRZIQUflHfrDnQ==}
 
@@ -1729,6 +1738,10 @@ packages:
 
   oauth-sign@0.9.0:
     resolution: {integrity: sha512-fexhUFFPTGV8ybAtSIGbV6gOkSv8UtRbDBnAyLQw4QPKkgNlsH2ByPGtMUqdWkos6YCRmAqViwgZrJc/mRDzZQ==}
+
+  object-inspect@1.13.4:
+    resolution: {integrity: sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==}
+    engines: {node: '>= 0.4'}
 
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
@@ -3012,6 +3025,8 @@ snapshots:
     dependencies:
       undici-types: 7.12.0
 
+  '@types/object-inspect@1.13.0': {}
+
   '@types/parse-git-config@3.0.4': {}
 
   '@types/parse-github-url@1.0.3':
@@ -3864,6 +3879,8 @@ snapshots:
     optional: true
 
   oauth-sign@0.9.0: {}
+
+  object-inspect@1.13.4: {}
 
   once@1.4.0:
     dependencies:

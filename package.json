@@ -232,11 +232,13 @@
   },
   "dependencies": {
     "@types/node": "^24.5.2",
+    "@types/object-inspect": "^1.13.0",
     "ansis": "^4.1.0",
     "consola": "^3.4.2",
     "es-toolkit": "^1.39.10",
     "fast-check": "^4.3.0",
     "jsonc-parser": "^3.3.1",
+    "object-inspect": "^1.13.4",
     "pathe": "^2.0.3",
     "tinyglobby": "^0.2.15",
     "type-fest": "^5.0.1"
