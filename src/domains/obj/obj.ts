@@ -38,6 +38,11 @@ export const entries = <obj extends Any>(obj: obj): Ts.Simplify<entries<obj>> =>
   return Object.entries(obj) as any
 }
 
+/**
+ * todo
+ */
+export type ValuesOr<$Obj extends object, $Or> = [keyof $Obj] extends [never] ? $Or : $Obj[keyof $Obj]
+
 // dprint-ignore
 export type entries<obj extends Any> = {
   [K in keyof obj]-?: // Regarding "-?": we don't care about keys being undefined when we're trying to list out all the possible entries
