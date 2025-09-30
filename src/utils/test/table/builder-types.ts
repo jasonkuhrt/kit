@@ -500,7 +500,25 @@ interface TestOrganizationMethods<State, SelfKind extends Ts.Kind.Kind> {
  */
 interface MappedFunctionCaseMethods<Fn extends Fn.AnyAny, MappedInput, SelfKind extends Ts.Kind.Kind, State> {
   /**
-   * Add multiple test cases with mapped output.
+   * Add multiple test cases at once with mapped output.
+   *
+   * Supports both tuple and object formats for maximum flexibility.
+   * Output values are transformed using the mapper function provided to `.o()`.
+   *
+   * @param cases - Array of test cases with mapped output type
+   * @returns Builder for method chaining
+   *
+   * @example
+   * ```ts
+   * Test.on(createUser)
+   *   .o((partial, [name]) => ({ ...defaultUser, name, ...partial }))
+   *   .cases(
+   *     [['Alice'], { role: 'admin' }],           // Only specify differences
+   *     [['Bob'], { role: 'user', age: 30 }],
+   *     { n: 'Charlie', i: ['Charlie'], o: { verified: true } }
+   *   )
+   *   .test()
+   * ```
    */
   cases(
     ...cases: Array<
@@ -510,7 +528,29 @@ interface MappedFunctionCaseMethods<Fn extends Fn.AnyAny, MappedInput, SelfKind 
   ): Ts.Kind.Apply<SelfKind, [State, Fn, MappedInput]>
 
   /**
-   * Add cases within a describe block with mapped output.
+   * Add test cases within a nested describe block with mapped output.
+   *
+   * Groups related test cases under a describe block for better organization
+   * in test output. Multiple calls create separate describe blocks that can
+   * be chained together.
+   *
+   * @param describeName - Name for the describe block in test output
+   * @returns A function that accepts cases with mapped output and returns the builder for chaining
+   *
+   * @example
+   * ```ts
+   * Test.on(createUser)
+   *   .o((partial, [name]) => ({ ...defaultUser, name, ...partial }))
+   *   .casesIn('admin users')(
+   *     [['Alice'], { role: 'admin' }],
+   *     [['Bob'], { role: 'admin', premium: true }]
+   *   )
+   *   .casesIn('regular users')(
+   *     [['Charlie'], { role: 'user' }],
+   *     [['David'], { role: 'user', verified: true }]
+   *   )
+   *   .test()
+   * ```
    */
   casesIn(
     describeName: string,
@@ -522,7 +562,22 @@ interface MappedFunctionCaseMethods<Fn extends Fn.AnyAny, MappedInput, SelfKind 
   ) => Ts.Kind.Apply<SelfKind, [State, Fn, MappedInput]>
 
   /**
-   * Add a single test case with mapped output.
+   * Add a single test case with direct parameter spreading and mapped output.
+   *
+   * Allows natural function call syntax for specifying test cases.
+   * Output values are transformed using the mapper function provided to `.o()`.
+   *
+   * @param args - Test case parameters (name, inputs, expected output)
+   * @returns Builder for method chaining
+   *
+   * @example
+   * ```ts
+   * Test.on(createUser)
+   *   .o((partial, [name]) => ({ ...defaultUser, name, ...partial }))
+   *   .case('Alice', { role: 'admin' })          // createUser('Alice') with partial expectation
+   *   .case('Bob', { role: 'user', age: 30 })    // Different partial expectation
+   *   .test()
+   * ```
    */
   case(
     ...args: Fn extends (...args: infer P) => any ? CaseSingleParams<P, MappedInput>
@@ -592,17 +647,29 @@ interface FunctionCaseMethods<State extends BuilderTypeState, SelfKind extends T
   /**
    * Add test cases within a nested describe block.
    *
-   * Useful for organizing related cases together in the test output.
+   * Groups related test cases under a describe block for better organization
+   * in test output. Multiple calls create separate describe blocks that can
+   * be chained together.
    *
-   * @param describeName - Name for the describe block
-   * @returns Function that accepts cases and returns the builder
+   * @param describeName - Name for the describe block in test output
+   * @returns A function that accepts cases and returns the builder for chaining
    *
    * @example
    * ```ts
    * Test.on(calculate)
-   *   .casesIn('positive numbers')([[1, 2], 3], [[4, 5], 9])
-   *   .casesIn('negative numbers')([[-1, -2], -3], [[-4, -5], -9])
-   *   .casesIn('mixed')([[1, -1], 0], [[-2, 2], 0])
+   *   .casesIn('positive numbers')(
+   *     [[1, 2], 3],
+   *     [[4, 5], 9],
+   *     [[10, 20], 30]
+   *   )
+   *   .casesIn('negative numbers')(
+   *     [[-1, -2], -3],
+   *     [[-4, -5], -9]
+   *   )
+   *   .casesIn('mixed')(
+   *     [[1, -1], 0],
+   *     [[-2, 2], 0]
+   *   )
    *   .test()
    * ```
    */
@@ -681,6 +748,92 @@ interface FunctionCaseMethods<State extends BuilderTypeState, SelfKind extends T
 }
 
 /**
+ * Generic case methods for builders that have already added cases.
+ * Shared between TableBuilderWithCases and TableBuilderWithCasesAndLayers.
+ */
+interface GenericCaseMethodsForExistingCases<State extends BuilderTypeState, SelfKind extends Ts.Kind.Kind> {
+  /**
+   * Add multiple test cases at once.
+   *
+   * Supports object format for test cases with input, output, and optional context.
+   * Can be chained multiple times to add more cases to the existing set.
+   *
+   * @param cases - Array of test cases
+   * @returns Builder for method chaining
+   *
+   * @example
+   * ```ts
+   * Test.describe('validation')
+   *   .i<string>()
+   *   .o<boolean>()
+   *   .cases(
+   *     { n: 'valid email', i: 'test@example.com', o: true },
+   *     { n: 'invalid email', i: 'not-an-email', o: false }
+   *   )
+   *   .cases(  // Can chain more cases
+   *     { n: 'empty string', i: '', o: false }
+   *   )
+   *   .test()
+   * ```
+   */
+  cases<const $Context extends object = {}>(
+    ...cases: readonly GenericCase<State['i'], State['o'], NoInfer<$Context>>[]
+  ): Ts.Kind.Apply<SelfKind, [UpdateState<State, { context: State['context'] & $Context }>]>
+
+  /**
+   * Add more test cases within a new describe block.
+   *
+   * @param describeName - Name for the nested describe block
+   * @returns A function that accepts cases and returns a builder
+   *
+   * @example
+   * ```ts
+   * Test.describe('validation')
+   *   .i<string>()
+   *   .o<boolean>()
+   *   .casesIn('valid emails')({ n: 'gmail', i: 'test@gmail.com', o: true })
+   *   .casesIn('invalid emails')({ n: 'no @', i: 'test.com', o: false })
+   * ```
+   */
+  casesIn<const Context = {}>(
+    describeName: string,
+  ): (
+    ...cases: readonly GenericCase<State['i'], State['o'], NoInfer<Context>>[]
+  ) => Ts.Kind.Apply<SelfKind, [UpdateState<State, { context: State['context'] & Context }>]>
+}
+
+/**
+ * Generic case methods for builders with Effect layers.
+ * Used by TableBuilderWithCasesAndLayers.
+ */
+interface GenericCaseMethodsForExistingCasesWithLayers<State extends BuilderTypeState, R> {
+  /**
+   * Add multiple test cases at once.
+   *
+   * Supports object format for test cases with input, output, and optional context.
+   * Can be chained multiple times to add more cases to the existing set.
+   *
+   * @param cases - Array of test cases
+   * @returns Builder for method chaining
+   */
+  cases<const $Context extends object = {}>(
+    ...cases: readonly GenericCase<State['i'], State['o'], NoInfer<$Context>>[]
+  ): TableBuilderWithCasesAndLayers<UpdateState<State, { context: State['context'] & $Context }>, R>
+
+  /**
+   * Add more test cases within a new describe block.
+   *
+   * @param describeName - Name for the nested describe block
+   * @returns A function that accepts cases and returns a builder
+   */
+  casesIn<const Context = {}>(
+    describeName: string,
+  ): (
+    ...cases: readonly GenericCase<State['i'], State['o'], NoInfer<Context>>[]
+  ) => TableBuilderWithCasesAndLayers<UpdateState<State, { context: State['context'] & Context }>, R>
+}
+
+/**
  * Layer configuration methods.
  */
 interface LayerMethods<State extends BuilderTypeState, NextBuilderKind extends Ts.Kind.Kind> {
@@ -703,12 +856,39 @@ interface LayerMethods<State extends BuilderTypeState, NextBuilderKind extends T
  */
 interface TerminalMethods<State extends BuilderTypeState> {
   /**
-   * Execute tests with default assertions.
+   * Execute all test cases with default assertions.
+   *
+   * Uses Effect's equality checking for comparisons.
+   * Falls back to Vitest's toEqual for better error messages on failures.
+   *
+   * @example
+   * ```ts
+   * Test.on(add)
+   *   .cases([[1, 2], 3], [[4, 5], 9])
+   *   .test()  // Runs tests with default equality assertions
+   * ```
    */
   test(): void
 
   /**
-   * Execute tests with a custom test function.
+   * Execute all test cases with a custom test function.
+   *
+   * Provides full control over assertions and test behavior.
+   *
+   * @param fn - Custom test function with access to results and context
+   *
+   * @example
+   * ```ts
+   * Test.on(divide)
+   *   .cases([[10, 2], 5], [[10, 0], Infinity])
+   *   .test((result, expected) => {
+   *     if (expected === Infinity) {
+   *       expect(result).toBe(Infinity)
+   *     } else {
+   *       expect(result).toBeCloseTo(expected, 2)
+   *     }
+   *   })
+   * ```
    */
   test(
     fn: State['fn'] extends Fn.AnyAny ? FunctionTestFn<State>
@@ -721,7 +901,25 @@ interface TerminalMethods<State extends BuilderTypeState> {
  */
 interface EffectTerminalMethods<State extends BuilderTypeState, R> extends TerminalMethods<State> {
   /**
-   * Execute tests with Effect-based test functions.
+   * Execute all test cases with Effect-based test functions.
+   *
+   * Automatically provides configured layers to each test case.
+   * Test functions return Effects that are executed with runPromise.
+   *
+   * @param fn - Effect-returning test function with access to input, output, and context
+   *
+   * @example
+   * ```ts
+   * Test.on(fetchUser)
+   *   .layer(HttpLayer)
+   *   .cases([['user-1'], { id: 'user-1', name: 'Alice' }])
+   *   .testEffect((input, expected) =>
+   *     Effect.gen(function* () {
+   *       const result = yield* fetchUser(...input)
+   *       expect(result).toEqual(expected)
+   *     })
+   *   )
+   * ```
    */
   testEffect(
     fn: State['fn'] extends Fn.AnyAny ? FunctionEffectTestFn<State, R>
@@ -839,18 +1037,32 @@ export interface TableBuilderBase<State extends BuilderTypeState>
   ): TableBuilderWithCases<UpdateState<State, { context: State['context'] & $Context }>>
 
   /**
-   * Create a nested describe block with cases.
-   * Useful for organizing related test cases.
+   * Add test cases within a nested describe block.
    *
-   * @param describeName - Name for the nested describe block
-   * @returns A function that accepts cases and returns a builder
+   * Groups related test cases under a describe block for better organization
+   * in test output. Multiple calls create separate describe blocks that can
+   * be chained together.
+   *
+   * @param describeName - Name for the describe block in test output
+   * @returns A function that accepts cases and returns the builder for chaining
    *
    * @example
    * ```ts
    * Test.describe('math')
    *   .on(calculate)
-   *   .casesIn('addition')([[1, '+', 2], 3], [[5, '+', 5], 10])
-   *   .casesIn('multiplication')([[2, '*', 3], 6], [[4, '*', 4], 16])
+   *   .casesIn('addition')(
+   *     [[1, '+', 2], 3],
+   *     [[5, '+', 5], 10],
+   *     [[100, '+', 200], 300]
+   *   )
+   *   .casesIn('subtraction')(
+   *     [[10, '-', 5], 5],
+   *     [[0, '-', 5], -5]
+   *   )
+   *   .casesIn('multiplication')(
+   *     [[2, '*', 3], 6],
+   *     [[4, '*', 4], 16]
+   *   )
    *   .test()
    * ```
    */
@@ -1006,8 +1218,41 @@ export interface TableBuilderWithMappedFunction<
   TestOrganizationMethods<State, TableBuilderWithMappedFunctionKind>,
   MappedFunctionCaseMethods<Fn, MappedInput, TableBuilderWithMappedFunctionKind, State>
 {
-  // Terminal - execute tests
+  /**
+   * Execute all test cases with default assertions.
+   *
+   * Uses Effect's equality checking for comparisons.
+   * Output values are transformed using the mapper function before comparison.
+   *
+   * @example
+   * ```ts
+   * Test.on(createUser)
+   *   .o((partial, [name]) => ({ ...defaultUser, name, ...partial }))
+   *   .cases([['Alice'], { role: 'admin' }])
+   *   .test()  // Uses default assertions with mapped output
+   * ```
+   */
   test(): void
+
+  /**
+   * Execute all test cases with a custom test function.
+   *
+   * Provides full control over assertions and test behavior.
+   * Expected values are pre-transformed using the mapper function.
+   *
+   * @param fn - Test function with access to input, mapped output, context, and Vitest context
+   *
+   * @example
+   * ```ts
+   * Test.on(createUser)
+   *   .o((partial, [name]) => ({ ...defaultUser, name, ...partial }))
+   *   .cases([['Alice'], { role: 'admin' }])
+   *   .test((input, mapped, ctx) => {
+   *     expect(mapped.name).toBe(input[0])
+   *     expect(mapped.role).toBe('admin')
+   *   })
+   * ```
+   */
   test<Ctx = {}>(
     fn: Fn extends (...args: infer P) => any
       ? (i: P, o: MappedInput | undefined, ctx: Ctx, context: TestContext) => void | Promise<void>
@@ -1024,6 +1269,23 @@ export interface TableBuilderWithMappedFunction<
 interface FunctionCaseMethodsWithLayers<State extends BuilderTypeState, Fn extends Fn.AnyAny, R> {
   /**
    * Add multiple test cases at once.
+   *
+   * Supports both tuple and object formats for maximum flexibility.
+   *
+   * @param cases - Array of test cases
+   * @returns Builder for method chaining
+   *
+   * @example
+   * ```ts
+   * Test.on(multiply)
+   *   .layer(TestLayer)
+   *   .cases(
+   *     [[2, 3], 6],                              // Tuple format
+   *     ['zero case', [0, 5], 0],                 // Named tuple
+   *     { n: 'negative', i: [-2, 3], o: -6 }     // Object format
+   *   )
+   *   .testEffect()
+   * ```
    */
   cases(
     ...cases: FnSignature<State> extends [infer P, infer Ret] ? Array<FunctionCase<P, Ret>>
@@ -1031,7 +1293,14 @@ interface FunctionCaseMethodsWithLayers<State extends BuilderTypeState, Fn exten
   ): TableBuilderWithFunctionAndLayers<State, Fn, R>
 
   /**
-   * Add cases within a describe block.
+   * Add test cases within a nested describe block.
+   *
+   * Groups related test cases under a describe block for better organization
+   * in test output. Multiple calls create separate describe blocks that can
+   * be chained together.
+   *
+   * @param describeName - Name for the describe block in test output
+   * @returns A function that accepts cases and returns the builder for chaining
    */
   casesIn(
     describeName: string,
@@ -1041,7 +1310,22 @@ interface FunctionCaseMethodsWithLayers<State extends BuilderTypeState, Fn exten
   ) => TableBuilderWithFunctionAndLayers<State, Fn, R>
 
   /**
-   * Add a single test case.
+   * Add a single test case with direct parameter spreading.
+   *
+   * Allows natural function call syntax for specifying test cases.
+   *
+   * @param args - Test case parameters (name, inputs, expected output)
+   * @returns Builder for method chaining
+   *
+   * @example
+   * ```ts
+   * Test.on(multiply)
+   *   .layer(TestLayer)
+   *   .case(2, 3, 6)                     // multiply(2, 3) === 6
+   *   .case('zero', 0, 5, 0)            // Named: multiply(0, 5) === 0
+   *   .case(-2, 3, -6)                  // multiply(-2, 3) === -6
+   *   .testEffect()
+   * ```
    */
   case(
     ...args: FnSignature<State> extends [infer P, infer Ret] ? CaseSingleParams<P, Ret>
@@ -1129,7 +1413,10 @@ export interface TableBuilderWithFunctionAndLayers<
  * ```
  */
 export interface TableBuilderWithCases<T extends BuilderTypeState>
-  extends ConfigurationMethods<T, TableBuilderWithCasesKind>, NameableMethods<T, TableBuilderWithCasesKind>
+  extends
+    ConfigurationMethods<T, TableBuilderWithCasesKind>,
+    NameableMethods<T, TableBuilderWithCasesKind>,
+    GenericCaseMethodsForExistingCases<T, TableBuilderWithCasesKind>
 {
   /**
    * Configure an Effect layer for dependency injection.
@@ -1150,7 +1437,9 @@ export interface TableBuilderWithCases<T extends BuilderTypeState>
   ): TableBuilderWithCasesAndLayers<T, R>
 
   /**
-   * Execute the test cases with a custom test function.
+   * Execute all test cases with a custom test function.
+   *
+   * Provides full control over assertions and test behavior.
    *
    * @param fn - Test function receiving input, expected output, context, and Vitest context
    */
@@ -1185,10 +1474,26 @@ export interface TableBuilderWithCases<T extends BuilderTypeState>
 export interface TableBuilderWithCasesAndLayers<T extends BuilderTypeState, R>
   extends
     ConfigurationMethods<T, TableBuilderWithCasesAndLayersKind>,
-    NameableMethods<T, TableBuilderWithCasesAndLayersKind>
+    NameableMethods<T, TableBuilderWithCasesAndLayersKind>,
+    GenericCaseMethodsForExistingCasesWithLayers<T, R>
 {
-  // Terminal methods
+  /**
+   * Execute all test cases with Effect-based test functions.
+   *
+   * Automatically provides configured layers to each test case.
+   * Test functions return Effects that are executed with runPromise.
+   *
+   * @param fn - Effect-returning test function with access to input, output, and context
+   */
   testEffect(fn: GenericEffectTestFn<T, R>): void
+
+  /**
+   * Execute all test cases with a custom test function.
+   *
+   * Provides full control over assertions and test behavior.
+   *
+   * @param fn - Test function receiving input, expected output, context, and Vitest context
+   */
   test(fn: GenericTestFn<T>): void
 }
 
