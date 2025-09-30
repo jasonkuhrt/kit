@@ -642,6 +642,36 @@ export const inline = <$Expected>(
 ): $Expected => value
 
 /**
+ * Cast any value to a specific type for testing purposes.
+ * Useful for type-level testing where you need to create a value with a specific type.
+ *
+ * @template $value - The type to cast to
+ * @param value - The value to cast (defaults to undefined)
+ * @returns The value cast to the specified type
+ *
+ * @example
+ * ```ts
+ * // Testing type constraints
+ * test('type parameter constrains default value', () => {
+ *   // @ts-expect-error - string is not assignable to number
+ *   as<Var.Builder<number>>($var).default('not a number')
+ *
+ *   const validNumber = as<Var.Builder<number>>($var).default(42)
+ *   expect(validNumber._.default).toBe(42)
+ * })
+ *
+ * // Creating typed test values
+ * const user = as<{ id: string; name: string }>({ id: '1', name: 'Alice' })
+ *
+ * // Testing type inference
+ * declare let _: any
+ * const result = someFunction()
+ * Ts.assert<string>()(_ as typeof result)
+ * ```
+ */
+export const as = <$value>(value?: unknown): $value => value as any
+
+/**
  * Type-level case assertion that requires the result to be true.
  * Used in type-level test suites to ensure a type evaluates to true.
  *
