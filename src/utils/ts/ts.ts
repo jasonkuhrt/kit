@@ -235,6 +235,50 @@ export type ExtendsExact<$Input, $Constraint> =
       : never
     : never
 
+/**
+ * Type-level utility that checks if a type does NOT extend another type.
+ *
+ * Returns `true` if type A does not extend type B, `false` otherwise.
+ * Useful for conditional type logic where you need to check the absence
+ * of a type relationship.
+ *
+ * @template $A - The type to check
+ * @template $B - The type to check against
+ * @returns `true` if $A does not extend $B, `false` otherwise
+ *
+ * @example
+ * ```ts
+ * type T1 = NotExtends<string, number>      // true (string doesn't extend number)
+ * type T2 = NotExtends<'hello', string>     // false ('hello' extends string)
+ * type T3 = NotExtends<42, number>          // false (42 extends number)
+ * type T4 = NotExtends<{ a: 1 }, { b: 2 }>  // true (different properties)
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Using in conditional types for optional handling
+ * type VarBuilderToType<$Type, $VarBuilder> =
+ *   $VarBuilder['required'] extends true                     ? Exclude<$Type, undefined> :
+ *   NotExtends<$VarBuilder['default'], undefined> extends true ? $Type | undefined :
+ *                                                               $Type
+ *
+ * // If default is undefined, type is just $Type
+ * // If default is not undefined, type is $Type | undefined
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Checking for specific type exclusions
+ * type SafeDivide<T> = NotExtends<T, 0> extends true
+ *   ? number
+ *   : StaticError<'Cannot divide by zero'>
+ *
+ * type Result1 = SafeDivide<5>   // number
+ * type Result2 = SafeDivide<0>   // StaticError<'Cannot divide by zero'>
+ * ```
+ */
+export type NotExtends<$A, $B> = [$A] extends [$B] ? false : true
+
 export namespace Union {
   /**
    * Checks if a union type contains a specific type.
