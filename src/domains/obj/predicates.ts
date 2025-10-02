@@ -36,6 +36,18 @@ export type OptionalKeys<T> = {
 export type RequiredKeys<T> = Exclude<keyof T, OptionalKeys<T>>
 
 /**
+ * Check if an interface has any required properties.
+ *
+ * @example
+ * ```ts
+ * type T1 = HasRequiredKeys<{ a: string }>  // true
+ * type T2 = HasRequiredKeys<{ a?: string }>  // false
+ * type T3 = HasRequiredKeys<{ a: string; b?: number }>  // true
+ * ```
+ */
+export type HasRequiredKeys<$Obj extends object> = RequiredKeys<$Obj> extends never ? false : true
+
+/**
  * Check if a key is optional in an object.
  *
  * @example

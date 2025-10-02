@@ -279,12 +279,23 @@ type Exact<T, U> = T extends U ? U extends T ? T : never : never
  * Tuple cases for generic mode with separate i, o, and context tracking
  * Input is always wrapped in array for tuple form to avoid ambiguity
  */
-export type GenericCaseTuple<I, O, Context> = Obj.IsEmpty<Context & object> extends true ?
+export type GenericCaseTuple<I, O, Context> = Obj.IsEmpty<Context & object> extends true
+  // Empty context - no context variants
+  ?
     | [[I]] // Just input (snapshot) - wrapped
     | [string, [I]] // Name + input (snapshot) - wrapped
     | [[I], O] // Input + output - wrapped
     | [string, [I], O] // Name + input + output - wrapped
-  // Has context properties - must include them as last element
+  : Obj.HasRequiredKeys<Context & object> extends false
+  // Context with only optional keys - context is optional
+    ?
+      | [[I]] // Just input (snapshot) - wrapped
+      | [string, [I]] // Name + input (snapshot) - wrapped
+      | [[I], O] // Input + output - wrapped
+      | [string, [I], O] // Name + input + output - wrapped
+      | [[I], O, Context] // Input + output + context - OPTIONAL
+      | [string, [I], O, Context] // Name + input + output + context - OPTIONAL
+  // Context has required keys - context is required
   :
     | [[I], O, Context] // Input + output + context - REQUIRED
     | [string, [I], O, Context] // Name + input + output + context - REQUIRED
@@ -311,11 +322,21 @@ export type GenericCaseTuple<I, O, Context> = Obj.IsEmpty<Context & object> exte
  *     { n: 'doubled', i: 'hi', o: 4, multiplier: 2 }
  *   )
  *
- * // Tuple form (context as last element when required)
+ * // Tuple form - context required when it has required properties
  * .cases(
  *   [['hello'], 5, { multiplier: 1 }],
  *   ['doubled', ['hi'], 4, { multiplier: 2 }]
  * )
+ *
+ * // When context has only optional properties, context can be omitted
+ * Test.describe()
+ *   .i<string>()
+ *   .o<number>()
+ *   .context<{ debug?: boolean }>()
+ *   .cases(
+ *     [['hello'], 5],  // Context omitted
+ *     [['world'], 10, { debug: true }]  // Context provided
+ *   )
  * ```
  */
 export type GenericCase<I, O, Context> =
@@ -751,13 +772,14 @@ interface GenericCaseMethodsForExistingCases<State extends BuilderTypeState, Sel
   /**
    * Add multiple test cases at once.
    *
-   * Supports object format for test cases with input, output, and optional context.
-   * Can be chained multiple times to add more cases to the existing set.
+   * Supports both object and tuple syntax. Can be chained multiple times to add
+   * more cases to the existing set.
    *
    * @param cases - Array of test cases
    * @returns Builder for method chaining
    *
    * @example
+   * **Chaining Cases - Object Syntax**
    * ```ts
    * Test.describe('validation')
    *   .i<string>()
@@ -766,8 +788,41 @@ interface GenericCaseMethodsForExistingCases<State extends BuilderTypeState, Sel
    *     { n: 'valid email', i: 'test@example.com', o: true },
    *     { n: 'invalid email', i: 'not-an-email', o: false }
    *   )
-   *   .cases(  // Can chain more cases
+   *   .cases(  // Chain more cases
    *     { n: 'empty string', i: '', o: false }
+   *   )
+   *   .test()
+   * ```
+   *
+   * @example
+   * **Chaining Cases - Tuple Syntax**
+   * ```ts
+   * Test.describe()
+   *   .i<number>()
+   *   .o<string>()
+   *   .cases(
+   *     [[1], 'one'],
+   *     [[2], 'two']
+   *   )
+   *   .cases(  // Chain more cases with tuple syntax
+   *     [['three', [3], 'three']],
+   *     [[4], 'four']
+   *   )
+   *   .test()
+   * ```
+   *
+   * @example
+   * **Chaining with Mixed Syntax**
+   * ```ts
+   * Test.describe()
+   *   .i<number>()
+   *   .o<boolean>()
+   *   .cases(
+   *     { n: 'positive', i: 5, o: true }
+   *   )
+   *   .cases(  // Mix object and tuple
+   *     [[-3], false],
+   *     { n: 'zero', i: 0, o: false }
    *   )
    *   .test()
    * ```
@@ -1037,12 +1092,16 @@ export interface TableBuilderBase<State extends BuilderTypeState>
 
   /**
    * Add test cases for generic mode.
-   * Cases can include additional context properties beyond `i` and `o`.
+   *
+   * Supports both object and tuple syntax. Cases can include additional context
+   * properties beyond `i` and `o`. When all context properties are optional, the
+   * context parameter becomes optional in tuple syntax.
    *
    * @param cases - Array of test cases with input, output, and optional context
    * @returns A {@link TableBuilderWithCases} ready for test execution
    *
    * @example
+   * **Object Syntax**
    * ```ts
    * Test.describe()
    *   .i<number>()
@@ -1050,7 +1109,61 @@ export interface TableBuilderBase<State extends BuilderTypeState>
    *   .cases(
    *     { n: 'positive', i: 5, o: 'positive' },
    *     { n: 'negative', i: -3, o: 'negative' },
-   *     { n: 'zero', i: 0, o: 'zero', special: true }  // Extra context
+   *     { n: 'zero', i: 0, o: 'zero', special: true }  // Context property
+   *   )
+   * ```
+   *
+   * @example
+   * **Tuple Syntax - Basic Forms**
+   * ```ts
+   * Test.describe()
+   *   .i<string>()
+   *   .o<number>()
+   *   .cases(
+   *     [['hello'], 5],                    // [input, output]
+   *     ['with name', ['world'], 5],       // [name, input, output]
+   *     [['snapshot']],                    // [input] - snapshot test
+   *     ['named snap', ['test']]           // [name, input] - named snapshot
+   *   )
+   * ```
+   *
+   * @example
+   * **Tuple Syntax - With Optional Context**
+   * ```ts
+   * Test.describe()
+   *   .i<string>()
+   *   .o<number>()
+   *   .ctx<{ multiplier?: number }>()  // All context props optional
+   *   .cases(
+   *     [['hello'], 5],                           // Context omitted (optional)
+   *     [['world'], 10, { multiplier: 2 }],       // Context included
+   *     ['named', ['foo'], 3, { multiplier: 1 }]  // With name and context
+   *   )
+   * ```
+   *
+   * @example
+   * **Tuple Syntax - With Required Context**
+   * ```ts
+   * Test.describe()
+   *   .i<string>()
+   *   .o<number>()
+   *   .ctx<{ multiplier: number }>()  // Required property
+   *   .cases(
+   *     [['hello'], 5, { multiplier: 1 }],        // Context required
+   *     ['named', ['world'], 10, { multiplier: 2 }]  // With name and context
+   *   )
+   * ```
+   *
+   * @example
+   * **Mixed Object and Tuple Syntax**
+   * ```ts
+   * Test.describe()
+   *   .i<number>()
+   *   .o<string>()
+   *   .cases(
+   *     { n: 'object form', i: 5, o: 'five' },
+   *     [[10], 'ten'],                      // Tuple form
+   *     ['mixed', [15], 'fifteen']          // Named tuple form
    *   )
    * ```
    */
