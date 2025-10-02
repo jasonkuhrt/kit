@@ -1,70 +1,49 @@
 /**
- * Enhanced test utilities for parameterized testing with Vitest.
+ * Enhanced test utilities for table-driven testing with Vitest.
  *
- * Provides a declarative API for table-driven tests with built-in support for
- * todo and skip cases, reducing boilerplate and improving test maintainability.
+ * Provides builder API and type-safe utilities for parameterized tests with
+ * built-in support for todo, skip, and only cases.
  *
- * @example Basic usage with formatting best practices
+ * @example Basic table-driven testing with builder API
  * ```typescript
- * interface MathCase {
- *   a: number
- *   b: number
- *   expected: number
- * }
+ * const add = (a: number, b: number) => a + b
  *
- * // dprint-ignore
- * const cases: Test.Case<MathCase>[] = [
- *   { name: '2 + 2 = 4',         a: 2, b: 2, expected: 4 },
- *   { name: '3 + 5 = 8',         a: 3, b: 5, expected: 8 },
- *   { name: 'negative numbers',  todo: 'Not implemented yet' },
- * ]
- *
- * Test.each(cases, (case_) => {
- *   const { a, b, expected } = case_
- *   expect(add(a, b)).toBe(expected)
- * })
+ * Test.describe('addition')
+ *   .on(add)
+ *   .cases(
+ *     [[2, 3], 5],
+ *     [[0, 0], 0],
+ *     [[-1, 1], 0]
+ *   )
+ *   .test()
  * ```
  *
- * @example Column formatting for complex cases
+ * @example Custom test logic
  * ```typescript
- * interface ComplexCase {
- *   input: string
- *   transform: 'upper' | 'lower' | 'capitalize'
- *   expected: string
- *   description?: string
- * }
- *
- * // dprint-ignore - Preserves column alignment for readability
- * const cases: Test.Case<ComplexCase>[] = [
- *   { name: 'uppercase transform',
- *     input: 'hello', transform: 'upper', expected: 'HELLO' },
- *   { name: 'lowercase transform with long description',
- *     input: 'WORLD', transform: 'lower', expected: 'world',
- *     description: 'This is a very long description that would break alignment' },
- *   { name: 'capitalize first letter',
- *     input: 'test', transform: 'capitalize', expected: 'Test' },
- * ]
+ * Test.describe('validation')
+ *   .i<string>()
+ *   .o<boolean>()
+ *   .cases(
+ *     { n: 'valid email', i: 'user@example.com', o: true },
+ *     { n: 'invalid', i: 'not-email', o: false },
+ *     { n: 'future feature', todo: 'Not implemented yet' }
+ *   )
+ *   .test((input, expected) => {
+ *     expect(isValid(input)).toBe(expected)
+ *   })
  * ```
  *
- * @example With skip cases
+ * @example Property-based testing
  * ```typescript
- * const cases: Test.Case<MyCase>[] = [
- *   { name: 'normal case', input: 'foo', expected: 'bar' },
- *   { name: 'edge case', input: '', expected: '', skip: 'Flaky on CI' },
- *   { name: 'future feature', todo: true },
- * ]
- * ```
- *
- * @example With advanced features
- * ```typescript
- * const cases: Test.Case<TestData>[] = [
- *   { name: 'basic test', data: 'foo', expected: 'bar' },
- *   { name: 'windows only', data: 'baz', expected: 'qux',
- *     skipIf: () => process.platform !== 'win32' },
- *   { name: 'focus on this', data: 'test', expected: 'result', only: true },
- *   { name: 'integration test', data: 'api', expected: 'response',
- *     tags: ['integration', 'api'] },
- * ]
+ * Test.property(
+ *   'reversing array twice returns original',
+ *   fc.array(fc.integer()),
+ *   (arr) => {
+ *     const reversed = arr.slice().reverse()
+ *     const reversedTwice = reversed.slice().reverse()
+ *     expect(reversedTwice).toEqual(arr)
+ *   }
+ * )
  * ```
  */
 export * as Test from './$$.js'
