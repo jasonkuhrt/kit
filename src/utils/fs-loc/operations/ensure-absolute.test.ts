@@ -28,7 +28,8 @@ describe('ensureAbsolute', () => {
   Test.describe('paths with base')
     .i<FsLoc.FsLoc>()
     .o<string | undefined>()
-    .cases<{ base: FsLoc.AbsDir }>(
+    .ctx<{ base: FsLoc.AbsDir }>()
+    .cases(
       { n: 'rel file with base',                           i: l('file.txt'),                       base: l('/home/'),                         o: '/home/file.txt' },
       { n: 'rel dir with base',                            i: l('src/'),                           base: l('/project/'),                      o: '/project/src/' },
     )

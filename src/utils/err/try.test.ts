@@ -48,9 +48,10 @@ test('async tryCatch type inference', () => {
 Test.describe('tryOrRethrow success cases')
   .i<{ fn: () => any; wrapper: any }>()
   .o<any>()
-  .cases<{
+  .ctx<{
     isAsync?: boolean
-  }>(
+  }>()
+  .cases(
     { n: 'returns value on success', i: { fn: () => 42, wrapper: 'Should not throw' }, o: 42, isAsync: false },
     {
       n: 'handles async functions that resolve',
@@ -70,12 +71,13 @@ Test.describe('tryOrRethrow success cases')
 Test.describe('tryOrRethrow error wrapping')
   .i<{ fn: () => any; wrapper: any }>()
   .o<void>()
-  .cases<{
+  .ctx<{
     expectedMessage: string
     expectedCauseMessage?: string
     checkContext?: { id: number }
     checkCustomError?: boolean
-  }>(
+  }>()
+  .cases(
     {
       n: 'wraps thrown errors with string message',
       i: {
@@ -145,10 +147,11 @@ describe('tryOrRethrow custom wrapper', () => {
 Test.describe('async tryOrRethrow errors')
   .i<{ fn: () => Promise<any>; wrapper: any }>()
   .o<void>()
-  .cases<{
+  .ctx<{
     expectedMessage: string
     expectedCauseMessage?: string
-  }>(
+  }>()
+  .cases(
     {
       n: 'wraps async function errors',
       i: {

@@ -772,9 +772,9 @@ interface GenericCaseMethodsForExistingCases<State extends BuilderTypeState, Sel
    *   .test()
    * ```
    */
-  cases<const $Context extends object = {}>(
-    ...cases: readonly GenericCase<State['i'], State['o'], NoInfer<$Context>>[]
-  ): Ts.Kind.Apply<SelfKind, [UpdateState<State, { context: State['context'] & $Context }>]>
+  cases(
+    ...cases: readonly GenericCase<State['i'], State['o'], State['context']>[]
+  ): Ts.Kind.Apply<SelfKind, [State]>
 
   /**
    * Add more test cases within a new describe block.
@@ -791,11 +791,11 @@ interface GenericCaseMethodsForExistingCases<State extends BuilderTypeState, Sel
    *   .casesIn('invalid emails')({ n: 'no @', i: 'test.com', o: false })
    * ```
    */
-  casesIn<const Context = {}>(
+  casesIn(
     describeName: string,
   ): (
-    ...cases: readonly GenericCase<State['i'], State['o'], NoInfer<Context>>[]
-  ) => Ts.Kind.Apply<SelfKind, [UpdateState<State, { context: State['context'] & Context }>]>
+    ...cases: readonly GenericCase<State['i'], State['o'], State['context']>[]
+  ) => Ts.Kind.Apply<SelfKind, [State]>
 }
 
 /**
@@ -812,9 +812,9 @@ interface GenericCaseMethodsForExistingCasesWithLayers<State extends BuilderType
    * @param cases - Array of test cases
    * @returns Builder for method chaining
    */
-  cases<const $Context extends object = {}>(
-    ...cases: readonly GenericCase<State['i'], State['o'], NoInfer<$Context>>[]
-  ): TableBuilderWithCasesAndLayers<UpdateState<State, { context: State['context'] & $Context }>, R>
+  cases(
+    ...cases: readonly GenericCase<State['i'], State['o'], State['context']>[]
+  ): TableBuilderWithCasesAndLayers<State, R>
 
   /**
    * Add more test cases within a new describe block.
@@ -822,11 +822,11 @@ interface GenericCaseMethodsForExistingCasesWithLayers<State extends BuilderType
    * @param describeName - Name for the nested describe block
    * @returns A function that accepts cases and returns a builder
    */
-  casesIn<const Context = {}>(
+  casesIn(
     describeName: string,
   ): (
-    ...cases: readonly GenericCase<State['i'], State['o'], NoInfer<Context>>[]
-  ) => TableBuilderWithCasesAndLayers<UpdateState<State, { context: State['context'] & Context }>, R>
+    ...cases: readonly GenericCase<State['i'], State['o'], State['context']>[]
+  ) => TableBuilderWithCasesAndLayers<State, R>
 }
 
 /**
@@ -988,6 +988,32 @@ export interface TableBuilderBase<State extends BuilderTypeState>
   o<O>(): TableBuilderBase<UpdateState<State, { o: O }>>
 
   /**
+   * Set the context type for test cases.
+   *
+   * Context properties are additional fields that can be included in test cases
+   * beyond `i` and `o`, useful for passing extra configuration or data to test functions.
+   *
+   * @typeParam Ctx - The context type for test cases
+   * @returns A new builder with the context type set
+   *
+   * @example
+   * ```ts
+   * Test.describe()
+   *   .i<string>()
+   *   .o<string>()
+   *   .ctx<{ hoistArguments?: boolean }>()
+   *   .casesIn('with hoisting')(
+   *     { n: 'case 1', i: 'input', o: 'output', hoistArguments: true }
+   *   )
+   *   .casesIn('without hoisting')(
+   *     { n: 'case 2', i: 'input', o: 'output', hoistArguments: false }
+   *   )
+   *   .test()
+   * ```
+   */
+  ctx<Ctx extends {} = {}>(): TableBuilderBase<UpdateState<State, { context: Ctx }>>
+
+  /**
    * Enter function mode by specifying a function to test.
    * Types are automatically inferred from the function signature.
    *
@@ -1028,9 +1054,9 @@ export interface TableBuilderBase<State extends BuilderTypeState>
    *   )
    * ```
    */
-  cases<const $Context extends object = {}>(
-    ...cases: readonly GenericCase<State['i'], State['o'], NoInfer<$Context>>[]
-  ): TableBuilderWithCases<UpdateState<State, { context: State['context'] & $Context }>>
+  cases(
+    ...cases: readonly GenericCase<State['i'], State['o'], State['context']>[]
+  ): TableBuilderWithCases<State>
 
   /**
    * Add test cases within a nested describe block.
@@ -1062,11 +1088,11 @@ export interface TableBuilderBase<State extends BuilderTypeState>
    *   .test()
    * ```
    */
-  casesIn<const Context = {}>(
+  casesIn(
     describeName: string,
   ): (
-    ...cases: readonly GenericCase<State['i'], State['o'], NoInfer<Context>>[]
-  ) => TableBuilderWithCases<UpdateState<State, { context: State['context'] & Context }>>
+    ...cases: readonly GenericCase<State['i'], State['o'], State['context']>[]
+  ) => TableBuilderWithCases<State>
 
   /**
    * Configure an Effect layer for dependency injection.

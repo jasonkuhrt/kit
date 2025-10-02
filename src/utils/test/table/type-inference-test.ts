@@ -39,7 +39,8 @@ import { Test } from '../$.js'
   Test.describe('tuple cases with context')
     .i<string>()
     .o<number>()
-    .cases<{ extra: boolean }>(
+    .ctx<{ extra: boolean }>()
+    .cases(
       { n: 'case 1', i: 'input', o: 42, extra: true },
       { n: 'case 2', i: 'other', o: 100, extra: false },
     )
@@ -101,7 +102,8 @@ import { Test } from '../$.js'
   Test.describe('context')
     .i<string>()
     .o<number>()
-    .cases<{ a: 0 }>(
+    .ctx<{ a: 0 }>()
+    .cases(
       ['', [''], 0, { a: 0 }],
     )
     .test((i, o, ctx) => {
@@ -113,7 +115,8 @@ import { Test } from '../$.js'
   Test.describe('context')
     .i<string>()
     .o<number>()
-    .cases<{ a: 0 }>(
+    .ctx<{ a: 0 }>()
+    .cases(
       // @ts-expect-error Missing context
       ['', [''], 0],
     )
@@ -121,9 +124,10 @@ import { Test } from '../$.js'
   const testBuilder = Test.describe('context')
     .i<string>()
     .o<number>()
+    .ctx<{ a: 0 }>()
 
   // This should error
-  testBuilder.cases<{ a: 0 }>(
+  testBuilder.cases(
     // @ts-expect-error invalid context type - should have 'a: 0'
     ['test', ['input'], 42, { z: 'wrong' }],
   )

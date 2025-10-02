@@ -10,9 +10,10 @@ describe('toRel', () => {
   Test.describe('convert absolute to relative')
     .i<FsLoc.Groups.Abs.Abs>()
     .o<FsLoc.Groups.Rel.Rel>()
-    .cases<{
+    .ctx<{
       base: FsLoc.AbsDir
-    }>(
+    }>()
+    .cases(
       { n: 'abs file same base',                           i: l('/home/file.txt'),                 o: l('./file.txt'), base: l('/home/') },
       { n: 'abs dir same base',                            i: l('/home/src/'),                     o: l('./src/'), base: l('/home/') },
       { n: 'nested abs file',                              i: l('/project/src/index.ts'),          o: l('./src/index.ts'), base: l('/project/') },

@@ -36,7 +36,8 @@ import { Test } from '../$.js'
   Test.describe('test with custom context')
     .i<string>()
     .o<number>()
-    .cases<{ extra: boolean }>(
+    .ctx<{ extra: boolean }>()
+    .cases(
       { n: 'case 1', i: 'input', o: 42, extra: true },
       { n: 'case 2', i: 'other', o: 100, extra: false },
     )
@@ -65,7 +66,8 @@ import { Test } from '../$.js'
   Test.describe('test with context')
     .i<string>()
     .o<number>()
-    .cases<{ extra: string; flag: boolean }>(
+    .ctx<{ extra: string; flag: boolean }>()
+    .cases(
       { n: 'case 1', i: 'hello', o: 5, extra: 'metadata1', flag: true },
       { n: 'case 2', i: 'world', o: 10, extra: 'metadata2', flag: false },
     )

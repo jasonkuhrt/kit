@@ -345,6 +345,13 @@ function createBuilder(state: BuilderState = defaultState): any {
       })
     },
 
+    ctx() {
+      return createBuilder({
+        ...state,
+        typeState: { ...state.typeState, context: undefined as any },
+      })
+    },
+
     // Function mode
     on(fn: Fn.AnyAny) {
       return createBuilder({
