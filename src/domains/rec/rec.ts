@@ -10,20 +10,20 @@ export type Value = {
 }
 
 /**
- * Check if a value is a record (plain object that is not an array).
- * Records are objects with string, number, or symbol keys mapping to any values.
+ * Check if a value is a record (plain object only, not class instances or arrays).
+ * This is a strict check that only accepts plain objects with Object.prototype.
  *
  * @param value - The value to check
- * @returns True if the value is a record, false otherwise
+ * @returns True if the value is a plain record object
  *
  * @example
  * ```ts
  * is({ a: 1, b: 2 }) // true
  * is({}) // true
- * is(Object.create(null)) // true
  * is([1, 2, 3]) // false - arrays are not records
  * is(null) // false
- * is(new Date()) // false - class instances are not records
+ * is(new Date()) // false - class instances are not plain records
+ * is(Object.create(null)) // false - not plain Object.prototype
  * ```
  *
  * @example
@@ -40,7 +40,14 @@ export type Value = {
  * ```
  */
 export const is = (value: unknown): value is Any => {
-  return Obj.Type.is(value) && !Array.isArray(value)
+  const proto = Obj.Type.is(value) ? Object.getPrototypeOf(value) : undefined
+  return (
+    typeof value === 'object'
+    && value !== null
+    && !Array.isArray(value)
+    // Allow plain objects (Object.prototype) and Object.create(null) objects, but reject class instances
+    && (proto === Object.prototype || proto === null)
+  )
 }
 
 /**
@@ -86,6 +93,32 @@ export const merge = <rec1 extends Any, rec2 extends Any>(rec1: rec1, rec2: rec2
 export type Optional<$Key extends PropertyKey, $Value> = {
   [K in $Key]?: $Value
 }
+
+/**
+ * Remove index signatures from an object type.
+ * Useful for converting Record types to object types with only known keys.
+ *
+ * @example
+ * ```ts
+ * type WithIndex = { a: string; b: number; [key: string]: any }
+ * type WithoutIndex = RemoveIndex<WithIndex>  // { a: string; b: number }
+ * ```
+ */
+export type RemoveIndex<$T> = {
+  [k in keyof $T as string extends k ? never : number extends k ? never : k]: $T[k]
+}
+
+/**
+ * Check if a type has an index signature.
+ *
+ * @example
+ * ```ts
+ * type T1 = IsHasIndex<{ [key: string]: any }>  // true
+ * type T2 = IsHasIndex<{ a: string }>  // false
+ * type T3 = IsHasIndex<{ [key: number]: any }, number>  // true
+ * ```
+ */
+export type IsHasIndex<$T, $Key extends PropertyKey = string> = $Key extends keyof $T ? true : false
 
 /**
  * Create an empty record with a specific value type.

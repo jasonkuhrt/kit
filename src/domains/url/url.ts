@@ -32,4 +32,33 @@ export const factory = (baseUrl: URL): Factory => {
  */
 export const pathSeparator = '/'
 
+/**
+ * Parse a URL string without throwing errors.
+ * Returns either a URL instance or an Error if parsing fails.
+ *
+ * @param url - The URL string to parse
+ * @returns A URL instance if successful, or an Error if parsing fails
+ * @example
+ * ```ts
+ * const result1 = Url.parse('https://example.com')
+ * // result1 is URL instance
+ *
+ * const result2 = Url.parse('not a valid url')
+ * // result2 is Error instance
+ *
+ * if (result instanceof Error) {
+ *   console.error('Invalid URL:', result.message)
+ * } else {
+ *   console.log('Parsed URL:', result.href)
+ * }
+ * ```
+ */
+export const parse = (url: string): URL | Error => {
+  try {
+    return new URL(url)
+  } catch (error) {
+    return error instanceof Error ? error : new Error(String(error))
+  }
+}
+
 // export const fileURLToPath

@@ -19,7 +19,7 @@ interface EnvironmentConfigurableOptionSpec<$Name extends string = string, $Type
 }
 
 const makeEnvVarName = (spec: EnvironmentConfigurableOptionSpec) => {
-  return Str.Case.upper(
+  return Str.Case.capAll(
     Str.Case.snake(`${spec.envVarNamePrefix}_${spec.name}`),
   )
 }

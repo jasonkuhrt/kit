@@ -81,3 +81,59 @@ export const resolveLazy = <lazyMaybeValue extends LazyMaybe>(
  */
 export const resolveLazyFactory = <value>(lazyMaybeValue: LazyMaybe<value>) => (): value =>
   resolveLazy(lazyMaybeValue) as any
+
+// Note: emptyArray and EmptyArray are exported from Arr module
+
+// Note: emptyObject and EmptyObject are exported from Obj module
+
+/**
+ * A proxy that returns itself for any property access.
+ * Useful for default values or chaining patterns.
+ *
+ * @example
+ * ```ts
+ * identityProxy.foo.bar.baz  // Returns identityProxy
+ * identityProxy.anything()  // Returns identityProxy
+ * ```
+ */
+export const identityProxy = new Proxy({}, {
+  get: () => identityProxy,
+})
+
+/**
+ * Type guard to check if a value is a symbol.
+ *
+ * @param value - The value to check
+ * @returns True if the value is a symbol
+ * @example
+ * ```ts
+ * isSymbol(Symbol('test'))  // true
+ * isSymbol('test')  // false
+ * ```
+ */
+export const isSymbol = (value: unknown): value is symbol => {
+  return typeof value === 'symbol'
+}
+
+// Note: Use !Null.Type.is(value) for null checking
+
+// Note: Use Obj.Type.is(value) for object type checking (excludes arrays)
+//       or typeof value === 'object' && value !== null for objects including arrays
+
+// Note: Use Fn.is(value) for function type checking
+
+/**
+ * Type guard to check if a value is a Date instance.
+ *
+ * @param value - The value to check
+ * @returns True if the value is a Date
+ * @example
+ * ```ts
+ * isDate(new Date())  // true
+ * isDate('2024-01-01')  // false
+ * isDate(Date.now())  // false
+ * ```
+ */
+export const isDate = (value: unknown): value is Date => {
+  return value instanceof Date
+}

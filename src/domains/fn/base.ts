@@ -17,6 +17,17 @@ export const is = Lang.typeGuard<AnyAny>(value => typeof value === Lang.TypeofTy
 export type AnyAnyAsync = (...args: any[]) => Prom.AnyAny
 
 /**
+ * Extract the guarded type from a type guard function.
+ *
+ * @example
+ * ```ts
+ * const isString = (x: any): x is string => typeof x === 'string'
+ * type T = GuardedType<typeof isString>  // string
+ * ```
+ */
+export type GuardedType<$T> = $T extends (x: any) => x is infer __u__ ? __u__ : never
+
+/**
  * Modify function such that it only returns the given type.
  * Assumes that the given type is among the possible return types of the function.
  */

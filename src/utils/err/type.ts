@@ -23,6 +23,34 @@ export const isAggregateError = (value: unknown): value is AggregateError => {
 }
 
 /**
+ * Check if an error is an AbortError (from AbortController/AbortSignal).
+ *
+ * @param error - The error to check
+ * @returns True if the error is an AbortError
+ * @example
+ * ```ts
+ * const controller = new AbortController()
+ * controller.abort()
+ *
+ * try {
+ *   await fetch(url, { signal: controller.signal })
+ * } catch (error) {
+ *   if (isAbortError(error)) {
+ *     console.log('Request was aborted')
+ *   }
+ * }
+ * ```
+ */
+export const isAbortError = (error: any): error is DOMException & { name: 'AbortError' } => {
+  return (
+    error instanceof Error
+    && error.name === 'AbortError'
+    && 'code' in error
+    && error.code === 20
+  )
+}
+
+/**
  * Ensure that the given value is an error and return it. If it is not an error than
  * wrap it in one, passing the given value as the error message.
  */

@@ -1,6 +1,7 @@
 import { ArrMut } from '#arr-mut'
 import { Lang } from '#lang'
 import type { Rec } from '#rec'
+import type { Ts } from '#ts'
 import { Type } from './traits/type.js'
 import { type Any } from './type.js'
 
@@ -167,7 +168,80 @@ export const mergeDefaults: <
 >(
   obj1: obj1,
   obj1Defaults: obj1Defaults,
-) => obj1 & obj1Defaults = mergeWith({ defaults: true })
+) => Ts.Simplify<obj1 & obj1Defaults> = mergeWith({ defaults: true })
+
+/**
+ * Shallow merge two objects with later values overriding earlier ones.
+ * Useful for providing defaults that can be overridden.
+ *
+ * @param defaults - The default values
+ * @param input - The input values that override defaults
+ * @returns Merged object
+ * @example
+ * ```ts
+ * const defaults = { a: 1, b: 2, c: 3 }
+ * const input = { b: 20 }
+ * shallowMergeDefaults(defaults, input)  // { a: 1, b: 20, c: 3 }
+ * ```
+ */
+export const shallowMergeDefaults = <$Defaults extends object, $Input extends object>(
+  defaults: $Defaults,
+  input: $Input,
+): $Defaults & $Input => {
+  return { ...defaults, ...input }
+}
+
+/**
+ * Shallow merge objects while omitting undefined values.
+ * Simplifies the common pattern of conditionally spreading objects
+ * to avoid including undefined values that would override existing values.
+ *
+ * @param objects - Objects to merge (later objects override earlier ones). Undefined objects are ignored.
+ * @returns Merged object with undefined values omitted
+ *
+ * @example
+ * ```ts
+ * // Instead of:
+ * const config = {
+ *   ...defaultConfig,
+ *   ...(userConfig ? userConfig : {}),
+ *   ...(debug ? { debug: true } : {}),
+ * }
+ *
+ * // Use:
+ * const config = spreadShallow(
+ *   defaultConfig,
+ *   userConfig,
+ *   { debug: debug ? true : undefined }
+ * )
+ * // undefined values won't override earlier values
+ * ```
+ */
+export const spreadShallow = <$Objects extends readonly (object | undefined)[]>(
+  ...objects: $Objects
+): MergeAllShallow<Exclude<$Objects[number], undefined>[]> => {
+  const result = {} as any
+
+  for (const obj of objects) {
+    if (obj === undefined) continue
+
+    for (const key in obj) {
+      // Protect against prototype pollution
+      if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+        continue
+      }
+
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const value = obj[key as keyof typeof obj]
+        if (value !== undefined) {
+          result[key] = value
+        }
+      }
+    }
+  }
+
+  return result
+}
 
 // dprint-ignore
 export type MergeShallow<
@@ -182,6 +256,65 @@ export type MergeShallow<
             [__k__ in keyof $Object1 as __k__ extends keyof $Object2 ? never : __k__]: $Object1[__k__]
           }
 > = __
+
+/**
+ * Recursively merge an array of objects using shallow merge semantics.
+ * Each object in the array overrides properties from previous objects.
+ *
+ * @example
+ * ```ts
+ * type T = MergeAllShallow<[{ a: string }, { b: number }, { c: boolean }]>
+ * // Result: { a: string; b: number; c: boolean }
+ * ```
+ */
+// dprint-ignore
+export type MergeAllShallow<$Objects extends readonly object[]> =
+  $Objects extends readonly [infer $First extends object, ...infer $Rest extends object[]]
+    ? $Rest extends readonly []
+      ? $First
+      : MergeShallow<$First, MergeAllShallow<$Rest>>
+    : {}
+
+/**
+ * Merge an array of object types into a single type using deep merge semantics.
+ * Uses TypeScript's intersection type (`&`) for merging.
+ *
+ * @example
+ * ```ts
+ * type T = MergeAll<[{ a: string }, { b: number }]>
+ * // Result: { a: string; b: number }
+ * ```
+ */
+export type MergeAll<$Objects extends object[]> = $Objects extends
+  [infer __first__ extends object, ...infer __rest__ extends object[]] ? __first__ & MergeAll<__rest__>
+  : {}
+
+/**
+ * Replace the type of a specific property in an object.
+ * @example
+ * ```ts
+ * type User = { id: number; name: string; age: number }
+ * type UpdatedUser = ReplaceProperty<User, 'id', string>
+ * // Result: { id: string; name: string; age: number }
+ * ```
+ */
+export type ReplaceProperty<$Obj extends object, $Key extends keyof $Obj, $NewType> =
+  & Omit<$Obj, $Key>
+  & {
+    [_ in $Key]: $NewType
+  }
+
+/**
+ * Replace properties in an object type with new types.
+ * Useful for overriding specific property types.
+ * @example
+ * ```ts
+ * type User = { id: number; name: string; createdAt: Date }
+ * type SerializedUser = Replace<User, { createdAt: string }>
+ * // Result: { id: number; name: string; createdAt: string }
+ * ```
+ */
+export type Replace<$Object1, $Object2> = Omit<$Object1, keyof $Object2> & $Object2
 
 // ---- INTERNALS ----
 

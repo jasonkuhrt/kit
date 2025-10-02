@@ -191,6 +191,17 @@ export type Simplify<$Type> =
   & unknown
 
 /**
+ * Simplify a nullable type while preserving null.
+ *
+ * @example
+ * ```ts
+ * type T1 = SimplifyNullable<{ a: 1 } | null>  // { a: 1 } | null
+ * type T2 = SimplifyNullable<{ a: 1 }>  // { a: 1 }
+ * ```
+ */
+export type SimplifyNullable<$T> = null extends $T ? (Simplify<$T> & {}) | null : Simplify<$T> & {}
+
+/**
  * Utilities for working with union types at the type level.
  */
 /**
@@ -279,7 +290,281 @@ export type ExtendsExact<$Input, $Constraint> =
  */
 export type NotExtends<$A, $B> = [$A] extends [$B] ? false : true
 
+/**
+ * Phantom type helper that makes a type parameter covariant.
+ *
+ * @remarks
+ * Covariance allows subtypes to be assigned to supertypes (natural direction).
+ * Example: `Phantom<Covariant<1>>` can be assigned to `Phantom<Covariant<number>>`.
+ *
+ * Use this when you want narrower types to flow to wider types:
+ * - Literal types → base types (`1` → `number`, `'hello'` → `string`)
+ * - Subclasses → base classes
+ * - More specific → more general
+ *
+ * @example
+ * ```ts
+ * interface Container<T> {
+ *   readonly __type?: Covariant<T>
+ * }
+ *
+ * let narrow: Container<1> = {}
+ * let wide: Container<number> = {}
+ *
+ * wide = narrow  // ✅ Allowed (1 extends number)
+ * narrow = wide  // ❌ Error (number does not extend 1)
+ * ```
+ *
+ * @see {@link https://www.typescriptlang.org/docs/handbook/type-compatibility.html | TypeScript Type Compatibility}
+ */
+export type Covariant<$T> = () => $T
+
+/**
+ * Phantom type helper that makes a type parameter contravariant.
+ *
+ * @remarks
+ * Contravariance allows supertypes to be assigned to subtypes (opposite direction).
+ * Example: `Phantom<Contravariant<number>>` can be assigned to `Phantom<Contravariant<1>>`.
+ *
+ * This is useful for function parameters where a handler that accepts wider types
+ * can substitute for one that accepts narrower types.
+ *
+ * @example
+ * ```ts
+ * interface Handler<T> {
+ *   readonly __type?: Contravariant<T>
+ * }
+ *
+ * let narrow: Handler<1> = {}
+ * let wide: Handler<number> = {}
+ *
+ * narrow = wide  // ✅ Allowed (reversed direction!)
+ * wide = narrow  // ❌ Error
+ * ```
+ *
+ * @see {@link https://www.typescriptlang.org/docs/handbook/type-compatibility.html#function-parameter-bivariance | Function Parameter Bivariance}
+ */
+export type Contravariant<$T> = (value: $T) => void
+
+/**
+ * Phantom type helper that makes a type parameter invariant.
+ *
+ * @remarks
+ * Invariance requires exact type matches - no subtype or supertype assignments allowed.
+ * This is the strictest variance, useful when you need precise type guarantees.
+ *
+ * @example
+ * ```ts
+ * interface Exact<T> {
+ *   readonly __type?: Invariant<T>
+ * }
+ *
+ * let one: Exact<1> = {}
+ * let num: Exact<number> = {}
+ *
+ * num = one  // ❌ Error (no direction works)
+ * one = num  // ❌ Error (no direction works)
+ * ```
+ */
+export type Invariant<$T> = (value: $T) => $T
+
+/**
+ * Phantom type helper that makes a type parameter bivariant (unsafe).
+ *
+ * @remarks
+ * Bivariance allows assignments in BOTH directions. This is generally unsafe as it
+ * can allow runtime type errors. Only use when absolutely necessary.
+ *
+ * @example
+ * ```ts
+ * interface Unsafe<T> {
+ *   readonly __type?: Bivariant<T>
+ * }
+ *
+ * let one: Unsafe<1> = {}
+ * let num: Unsafe<number> = {}
+ *
+ * num = one  // ⚠️ Allowed (both directions work)
+ * one = num  // ⚠️ Allowed (unsafe!)
+ * ```
+ */
+export type Bivariant<$T> = { bivariantHack(value: $T): void }['bivariantHack']
+
+/**
+ * Make all properties in an object mutable (removes readonly modifiers).
+ *
+ * @example
+ * ```ts
+ * type Readonly = { readonly x: number; readonly y: string }
+ * type Mutable = Writeable<Readonly>  // { x: number; y: string }
+ * ```
+ */
+export type Writeable<$Object> = {
+  -readonly [k in keyof $Object]: $Object[k]
+}
+
+// Note: RemoveIndex is exported from Rec module
+
+// Note: ExcludeNull is exported from Null module as Null.Exclude
+
+// Note: ExcludeUndefined is exported from Undefined module as Undefined.Exclude
+
+// Note: To exclude both null and undefined, use: Null.Exclude<Undefined.Exclude<T>>
+
+/**
+ * Alias for {@link ExtendsExact}.
+ * Requires exact type matching without excess properties.
+ */
+export type Exact<$Value, $Constraint> = ExtendsExact<$Value, $Constraint>
+
+// Note: Values is exported from Obj module (obj/type-utils.ts)
+
+// Note: ValuesOrEmptyObject, GetKeyOr and other object types are exported from Obj module (obj/type-utils.ts)
+
+// Note: Union utilities are in Union namespace (e.g., Union.ToIntersection, Union.LastOf, Union.ToTuple)
+
+// Note: SuffixKeyNames, OmitKeysWithPrefix, PickRequiredProperties, RequireProperties, PartialOrUndefined, UnionMerge, MergeAll exported from Obj module
+
+// Note: MaybePromise is exported from Prom module as Prom.Maybe
+
+// Note: Include is exported from Union namespace as Union.Include
+
+// Note: Negate is exported from Bool module as Bool.not
+
+// Note: GuardedType is exported from Fn module (fn/base.ts)
+
+// Note: Union.Expanded for union distribution
+
+/**
+ * Conditional type with else branch.
+ *
+ * @example
+ * ```ts
+ * type T = IfExtendsElse<string, string, 'yes', 'no'>  // 'yes'
+ * ```
+ */
+export type IfExtendsElse<$Type, $Extends, $Then, $Else> = $Type extends $Extends ? $Then : $Else
+
+// Note: All is exported from Arr module
+
+// Note: AssertExtends is exported from assert.ts
+
+// Note: Union.IgnoreAnyOrUnknown for filtering union types
+
+/**
+ * Intersection that ignores never and any.
+ */
+export type IntersectionIgnoreNeverOrAny<$T> = IsAny<$T> extends true ? unknown : $T extends never ? unknown : $T
+
+/**
+ * Convert never or any to unknown.
+ */
+export type NeverOrAnyToUnknown<$T> = IsAny<$T> extends true ? unknown : $T extends never ? unknown : $T
+
+/**
+ * Any narrowable primitive type.
+ */
+export type Narrowable = string | number | bigint | boolean | []
+
+// Note: LetterUpper, LetterLower, Letter, and Digit are exported from Str.Char module
+
+// Note: Union.IsAnyMemberExtends for checking union members
+
+/**
+ * Convert any and unknown to never.
+ */
+export type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never : IsUnknown<$T> extends true ? never : $T
+
+// Type-fest imports (used by some types above)
+type IsAny<T> = 0 extends 1 & T ? true : false
+
+type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true) : false
+
 export namespace Union {
+  /**
+   * Valid values for discriminant properties in tagged unions.
+   */
+  export type DiscriminantPropertyValue = string | number | symbol
+
+  /**
+   * Include only types that extend a constraint (opposite of Exclude).
+   * Filters a union type to only include members that extend the constraint.
+   *
+   * @example
+   * ```ts
+   * type T = Union.Include<string | number | boolean, string | number>  // string | number
+   * type T2 = Union.Include<'a' | 'b' | 1 | 2, string>  // 'a' | 'b'
+   * ```
+   */
+  export type Include<$T, $U> = $T extends $U ? $T : never
+
+  /**
+   * Convert a union type to a tuple type.
+   *
+   * @example
+   * ```ts
+   * type T = Union.ToTuple<'a' | 'b' | 'c'>  // ['a', 'b', 'c']
+   * ```
+   */
+  export type ToTuple<
+    $Union,
+    ___L = LastOf<$Union>,
+    ___N = [$Union] extends [never] ? true : false,
+  > = true extends ___N ? []
+    : [...ToTuple<Exclude<$Union, ___L>>, ___L]
+
+  /**
+   * Convert a union type to an intersection type.
+   *
+   * @example
+   * ```ts
+   * type U = { a: string } | { b: number }
+   * type I = Union.ToIntersection<U>  // { a: string } & { b: number }
+   * ```
+   */
+  export type ToIntersection<$U> = ($U extends any ? (k: $U) => void : never) extends ((k: infer __i__) => void) ? __i__
+    : never
+
+  /**
+   * Get the last type in a union.
+   *
+   * @example
+   * ```ts
+   * type T = Union.LastOf<'a' | 'b' | 'c'>  // 'c'
+   * ```
+   */
+  export type LastOf<$T> = ToIntersection<$T extends any ? () => $T : never> extends () => infer __r__ ? __r__
+    : never
+
+  /**
+   * Force union distribution in conditional types.
+   *
+   * @example
+   * ```ts
+   * type T = Union.Expanded<'a' | 'b'>  // 'a' | 'b' (forced distribution)
+   * ```
+   */
+  export type Expanded<$Union> = $Union
+
+  /**
+   * Union that ignores any and unknown.
+   */
+  export type IgnoreAnyOrUnknown<$T> = unknown extends $T ? never : $T
+
+  /**
+   * Check if any member of a union extends a type.
+   *
+   * @example
+   * ```ts
+   * type T1 = Union.IsAnyMemberExtends<string | number, string>  // true
+   * type T2 = Union.IsAnyMemberExtends<number | boolean, string>  // false
+   * ```
+   */
+  export type IsAnyMemberExtends<$T, $U> = (
+    $T extends any ? ($T extends $U ? true : false) : never
+  ) extends false ? false
+    : true
+
   /**
    * Checks if a union type contains a specific type.
    *
@@ -328,4 +613,21 @@ export namespace Union {
     $Type extends $LookingFor
       ? true
       : false
+
+  /**
+   * Merge all members of a union into a single type.
+   *
+   * @example
+   * ```ts
+   * type U = { a: string } | { b: number }
+   * type M = Union.Merge<U>  // { a: string; b: number }
+   * ```
+   */
+  export type Merge<$U> = {
+    [
+      k in (
+        $U extends any ? keyof $U : never
+      )
+    ]: $U extends any ? (k extends keyof $U ? $U[k] : never) : never
+  }
 }

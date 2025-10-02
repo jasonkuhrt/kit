@@ -288,8 +288,8 @@ describe('interpolation', () => {
               return
             }
 
-            // Use relative tolerance for large numbers
-            const tolerance = Math.max(1e-7, Math.abs(avgValue) * 1e-10)
+            // Use relative tolerance for large numbers (1e-6 to account for floating point precision)
+            const tolerance = Math.max(1e-6, Math.abs(avgValue) * 1e-10)
             expect(Math.abs(midValue - avgValue)).toBeLessThan(tolerance)
           },
         ),

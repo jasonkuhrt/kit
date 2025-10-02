@@ -140,7 +140,9 @@ describe('property-based tests', () => {
           const result = Mask.apply(obj as any, mask) as any
 
           // Result should only have keys that were both in obj and keys
-          const expectedKeys = keys.filter(k => k in obj)
+          // Exclude prototype pollution keys that are filtered for security
+          const dangerousKeys = ['__proto__', 'constructor', 'prototype']
+          const expectedKeys = keys.filter(k => k in obj && !dangerousKeys.includes(k))
           expect(Object.keys(result).sort()).toEqual(expectedKeys.sort())
 
           // Values should be preserved

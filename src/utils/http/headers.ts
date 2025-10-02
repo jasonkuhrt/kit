@@ -102,3 +102,72 @@ export const responseCacheControl = (input: {
   const value = parts.filter(Boolean).join(`, `)
   return [CacheControl, value] as [typeof CacheControl, string]
 }
+
+/**
+ * Headers input type - either a Headers instance, array of tuples, or object.
+ */
+export type HeadersInput = Headers | [string, string][] | Record<string, string>
+
+/**
+ * Convert HeadersInit to a plain object.
+ * Handles Headers instances, arrays, and plain objects.
+ *
+ * @param headers - Headers in any format (Headers, array of tuples, or object)
+ * @returns Plain object with header names and values
+ * @example
+ * ```ts
+ * // From Headers instance
+ * const headers = new Headers({ 'Content-Type': 'application/json' })
+ * HeadersInitToPlainObject(headers)  // { 'content-type': 'application/json' }
+ *
+ * // From array
+ * HeadersInitToPlainObject([['Content-Type', 'text/html']])  // { 'content-type': 'text/html' }
+ *
+ * // From object
+ * HeadersInitToPlainObject({ 'X-Custom': 'value' })  // { 'x-custom': 'value' }
+ * ```
+ */
+export const initToRec = (headers?: HeadersInput): Record<string, string> => {
+  if (!headers) return {}
+
+  if (headers instanceof Headers) {
+    return toRec(headers)
+  }
+
+  if (Array.isArray(headers)) {
+    const result: Record<string, string> = {}
+    for (const [key, value] of headers) {
+      result[key.toLowerCase()] = value
+    }
+    return result
+  }
+
+  // Plain object
+  const result: Record<string, string> = {}
+  for (const [key, value] of Object.entries(headers)) {
+    result[key.toLowerCase()] = String(value)
+  }
+  return result
+}
+
+/**
+ * Convert a Headers instance to a plain object.
+ *
+ * @param headers - Headers instance (e.g., from Response)
+ * @returns Plain object with header names and values
+ * @example
+ * ```ts
+ * const response = await fetch('https://example.com')
+ * const headers = HeadersInstanceToPlainObject(response.headers)
+ * // { 'content-type': 'text/html', ... }
+ * ```
+ */
+export const toRec = (headers: Headers): Record<string, string> => {
+  const result: Record<string, string> = {}
+
+  headers.forEach((value, key) => {
+    result[key.toLowerCase()] = value
+  })
+
+  return result
+}

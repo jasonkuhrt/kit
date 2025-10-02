@@ -109,6 +109,18 @@ test('decode throws on invalid JSON', () => {
 })
 
 property('schemas parse valid JSON', fc.jsonValue(), (value) => {
+  // Skip objects with __proto__ key as it's a special property that doesn't round-trip
+  const hasProtoKey = (v: unknown): boolean => {
+    if (v && typeof v === 'object' && v !== null) {
+      if ('__proto__' in v && Object.hasOwn(v, '__proto__')) return true
+      if (Array.isArray(v)) return v.some(hasProtoKey)
+      return Object.values(v).some(hasProtoKey)
+    }
+    return false
+  }
+
+  if (hasProtoKey(value)) return
+
   expect(Json.Value.parse(value)).toEqual(value)
 
   if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || value === null) {

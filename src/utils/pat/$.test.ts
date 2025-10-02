@@ -54,7 +54,8 @@ property('isMatchWith creates value matcher', fc.object(), fc.array(fc.object())
   const matching = patterns.filter(matches)
   matching.forEach(pattern => {
     Object.entries(pattern).forEach(([k, v]) => {
-      expect((value as any)[k]).toBe(v)
+      // Use toStrictEqual for deep equality (handles objects, arrays, primitives)
+      expect((value as any)[k]).toStrictEqual(v)
     })
   })
 })

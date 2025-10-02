@@ -57,15 +57,53 @@ export const title = (str: string) => {
 }
 
 /**
- * Convert string to UPPERCASE.
+ * Convert string to UPPERCASE with type-level transformation.
+ * Preserves the uppercase type at the type level.
+ *
  * @param str - The string to convert
- * @returns The uppercase string
+ * @returns The uppercase string with Uppercase<S> type
  * @example
  * ```typescript
- * upper('hello world') // 'HELLO WORLD'
- * upper('FooBar') // 'FOOBAR'
+ * uppercase('hello')  // Type: "HELLO" (not string)
+ * uppercase('world')  // Type: "WORLD"
+ *
+ * // Works with plain strings too
+ * uppercase('hello world') // 'HELLO WORLD'
+ * uppercase('FooBar') // 'FOOBAR'
  * ```
  */
-export const upper = (str: string): string => {
-  return str.toUpperCase()
+export const capAll = <$S extends string>(str: $S): Uppercase<$S> => {
+  return str.toUpperCase() as Uppercase<$S>
+}
+
+/**
+ * Convert the first letter of a string to lowercase with type-level transformation.
+ *
+ * @param s - The string to convert
+ * @returns The string with lowercase first letter and Uncapitalize<S> type
+ * @example
+ * ```typescript
+ * lowerCaseFirst('Hello')  // Type: "hello"
+ * lowerCaseFirst('World')  // Type: "world"
+ * lowerCaseFirst('HELLO')  // Type: "hELLO"
+ * ```
+ */
+export const uncapFirst = <$S extends string>(s: $S): Uncapitalize<$S> => {
+  return (s.charAt(0).toLowerCase() + s.slice(1)) as Uncapitalize<$S>
+}
+
+/**
+ * Capitalize the first letter of a string with type-level transformation.
+ *
+ * @param string - The string to capitalize
+ * @returns The string with capitalized first letter and Capitalize<S> type
+ * @example
+ * ```typescript
+ * capitalizeFirst('hello')  // Type: "Hello"
+ * capitalizeFirst('world')  // Type: "World"
+ * capitalizeFirst('foo bar')  // Type: "Foo bar"
+ * ```
+ */
+export const capFirst = <$S extends string>(string: $S): Capitalize<$S> => {
+  return (string.charAt(0).toUpperCase() + string.slice(1)) as Capitalize<$S>
 }

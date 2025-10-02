@@ -162,3 +162,66 @@ export const modOn = <T extends number>(dividend: T) => <U extends NonZero>(divi
 export const modWith = <U extends NonZero>(divisor: U) => <T extends number>(dividend: T): Mod<T, U> => {
   return mod(dividend, divisor)
 }
+
+/**
+ * Number literal type.
+ */
+export type NumberLiteral = number
+
+/**
+ * Add one to a number literal type.
+ */
+export type PlusOne<$n extends NumberLiteral> = [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+][
+  $n
+]
+
+/**
+ * Subtract one from a number literal type.
+ */
+export type MinusOne<$n extends NumberLiteral> = [
+  -1,
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+][
+  $n
+]

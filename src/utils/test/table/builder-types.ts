@@ -1,4 +1,5 @@
 import type { Fn } from '#fn'
+import type { Obj } from '#obj'
 import { Ts } from '#ts'
 import type { Effect, Layer } from 'effect'
 import type { TestContext } from 'vitest'
@@ -270,11 +271,6 @@ export type FunctionCase<I, O> = I extends any[] ? (CaseTuple<I, O> | CaseObject
 type ExtractContext<T> = Omit<T, 'i' | 'o'>
 
 /**
- * Helper to check if a type is exactly {}
- */
-type IsEmptyObject<T> = keyof T extends never ? true : false
-
-/**
  * Exact type matching - ensures T is exactly U with no extra properties
  */
 type Exact<T, U> = T extends U ? U extends T ? T : never : never
@@ -283,7 +279,7 @@ type Exact<T, U> = T extends U ? U extends T ? T : never : never
  * Tuple cases for generic mode with separate i, o, and context tracking
  * Input is always wrapped in array for tuple form to avoid ambiguity
  */
-export type GenericCaseTuple<I, O, Context> = IsEmptyObject<Context> extends true ?
+export type GenericCaseTuple<I, O, Context> = Obj.IsEmpty<Context & object> extends true ?
     | [[I]] // Just input (snapshot) - wrapped
     | [string, [I]] // Name + input (snapshot) - wrapped
     | [[I], O] // Input + output - wrapped
@@ -344,7 +340,7 @@ export type GenericCase<I, O, Context> =
  *
  * @internal
  */
-export type NormalizeGenericCase<I, O, Context, Case> = IsEmptyObject<Context> extends true // No context expected - parse without context
+export type NormalizeGenericCase<I, O, Context, Case> = Obj.IsEmpty<Context & object> extends true // No context expected - parse without context
   ? Case extends [string, [infer _I], infer _O] ? { i: _I; o: _O; n: string }
   : Case extends [[infer _I], infer _O] ? { i: _I; o: _O; n: string }
   : Case extends [string, [infer _I]] ? { i: _I; n: string }

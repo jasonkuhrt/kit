@@ -1,10 +1,10 @@
 import type { Lang } from '#lang'
 import type { Rec } from '#rec'
-import type { Ts } from '#ts'
 import type { Undefined } from '#undefined'
+import type { Writable } from 'type-fest'
+import { entries } from './get.js'
 import { Type } from './traits/type.js'
-import type { Keyof, PolicyFilter } from './type-utils.js'
-import { type Any } from './type.js'
+import { type Any, type IsEmpty } from './type.js'
 
 export * from './path.js'
 
@@ -15,43 +15,30 @@ export * from './merge.js'
 export * from './type.js'
 
 /**
- * Get an array of key-value pairs from an object.
- * Preserves exact types including optional properties and undefined values.
+ * Assert that a value is an object.
+ * Throws a TypeError if the value is not an object (including null).
  *
- * @param obj - The object to extract entries from
- * @returns An array of tuples containing [key, value] pairs
- *
- * @example
- * ```ts
- * entries({ a: 1, b: 'hello', c: true })
- * // Returns: [['a', 1], ['b', 'hello'], ['c', true]]
- * ```
+ * @param value - The value to check
+ * @throws {TypeError} If the value is not an object
  *
  * @example
  * ```ts
- * // Handles optional properties and undefined values
- * entries({ a: 1, b?: 2, c: undefined })
- * // Returns proper types preserving optionality
+ * function process(value: unknown) {
+ *   Obj.assert(value)
+ *   // value is now typed as object
+ *   console.log(Object.keys(value))
+ * }
  * ```
  */
-export const entries = <obj extends Any>(obj: obj): Ts.Simplify<entries<obj>> => {
-  return Object.entries(obj) as any
+export function assert(value: unknown): asserts value is object {
+  if (typeof value !== 'object' || value === null) {
+    throw new TypeError(`Expected object but got ${typeof value}`)
+  }
 }
 
-/**
- * todo
- */
-export type ValuesOr<$Obj extends object, $Or> = [keyof $Obj] extends [never] ? $Or : $Obj[keyof $Obj]
+// Note: entries moved to get.ts
 
-// dprint-ignore
-export type entries<obj extends Any> = {
-  [K in keyof obj]-?: // Regarding "-?": we don't care about keys being undefined when we're trying to list out all the possible entries
-    undefined extends obj[K]
-      ? {} extends Pick<obj, K>
-        ? [K, Undefined.Exclude<obj[K]>] // Optional key - remove only undefined, preserve null
-        : [K, obj[K]] // Required key with undefined - preserve exact type including undefined
-      : [K, obj[K]] // Required key without undefined - preserve exact type
-}[keyof obj][]
+// Note: keyofOr moved to get.ts
 
 /**
  * Create a type predicate function that checks if a value matches a shape specification.
@@ -89,61 +76,7 @@ export const isShape = <type>(spec: Record<PropertyKey, Lang.TypeofTypes>) => (v
   })
 }
 
-/**
- * Check if an object has no enumerable properties.
- *
- * @param obj - The object to check
- * @returns True if the object has no enumerable properties, false otherwise
- *
- * @example
- * ```ts
- * isEmpty({}) // true
- * isEmpty({ a: 1 }) // false
- * isEmpty(Object.create(null)) // true
- * ```
- *
- * @example
- * ```ts
- * // Only checks enumerable properties
- * const obj = {}
- * Object.defineProperty(obj, 'hidden', { value: 1, enumerable: false })
- * isEmpty(obj) // true - non-enumerable properties are ignored
- * ```
- */
-export const isEmpty = (obj: object): boolean => {
-  return Object.keys(obj).length === 0
-}
-
-/**
- * Type predicate that checks if an object has no enumerable properties.
- * Narrows the type to an empty object literal type.
- *
- * @param obj - The object to check
- * @returns True if the object has no enumerable properties, with type narrowing
- *
- * @example
- * ```ts
- * const obj: { a?: number } = {}
- * if (isEmpty$(obj)) {
- *   // obj is now typed as {}
- * }
- * ```
- *
- * @example
- * ```ts
- * // Useful in conditional type flows
- * function processObject<T extends object>(obj: T) {
- *   if (isEmpty$(obj)) {
- *     // obj is {} here
- *     return 'empty'
- *   }
- *   // obj retains its original type here
- * }
- * ```
- */
-export const isEmpty$ = (obj: object): obj is {} => {
-  return Object.keys(obj).length === 0
-}
+// Note: IsEmpty, Empty, empty, isEmpty, isEmpty$ moved to type.ts
 
 const PrivateStateSymbol = Symbol('PrivateState')
 
@@ -223,299 +156,22 @@ export const getPrivateState = <state extends Any>(obj: Any): state => {
 }
 
 /**
- * Create a new object with only the specified properties.
+ * Check if an object has any non-undefined values.
  *
- * @param obj - The object to pick properties from
- * @param keys - Array of property keys to include
- * @returns A new object containing only the specified properties
- *
+ * @param object - The object to check
+ * @returns True if at least one value is not undefined
  * @example
  * ```ts
- * const user = { name: 'Alice', age: 30, email: 'alice@example.com' }
- * const publicInfo = pick(user, ['name', 'email'])
- * // Result: { name: 'Alice', email: 'alice@example.com' }
- * ```
- *
- * @example
- * ```ts
- * // Type-safe property selection
- * interface User {
- *   id: number
- *   name: string
- *   password: string
- *   email: string
- * }
- *
- * function getPublicUser(user: User) {
- *   return pick(user, ['id', 'name', 'email'])
- *   // Type: Pick<User, 'id' | 'name' | 'email'>
- * }
+ * hasNonUndefinedKeys({ a: undefined, b: undefined })  // false
+ * hasNonUndefinedKeys({ a: undefined, b: 1 })  // true
+ * hasNonUndefinedKeys({})  // false
  * ```
  */
-export const pick = <T extends object, K extends keyof T>(
-  obj: T,
-  keys: readonly K[],
-): Pick<T, K> => {
-  return policyFilter('allow', obj, keys) as any
+export const hasNonUndefinedKeys = (object: object): boolean => {
+  return Object.values(object).some(value => value !== undefined)
 }
 
-/**
- * Create a new object with the same keys but with values transformed by a function.
- *
- * @param obj - The object to map values from
- * @param fn - Function to transform each value, receives the value and key
- * @returns A new object with transformed values
- *
- * @example
- * ```ts
- * const prices = { apple: 1.5, banana: 0.75, orange: 2 }
- * const doublePrices = mapValues(prices, (price) => price * 2)
- * // Result: { apple: 3, banana: 1.5, orange: 4 }
- * ```
- *
- * @example
- * ```ts
- * // Using the key parameter
- * const data = { a: 1, b: 2, c: 3 }
- * const withKeys = mapValues(data, (value, key) => `${key}: ${value}`)
- * // Result: { a: 'a: 1', b: 'b: 2', c: 'c: 3' }
- * ```
- */
-export const mapValues = <rec extends Record<PropertyKey, any>, newValue>(
-  obj: rec,
-  fn: (value: rec[keyof rec], key: keyof rec) => newValue,
-): Record<keyof rec, newValue> => {
-  return Object.fromEntries(
-    Object.entries(obj).map(([k, v]) => [k, fn(v, k as keyof rec)]),
-  ) as Record<keyof rec, newValue>
-}
-
-/**
- * Create a new object with the specified properties removed.
- *
- * @param obj - The object to omit properties from
- * @param keys - Array of property keys to exclude
- * @returns A new object without the specified properties
- *
- * @example
- * ```ts
- * const user = { name: 'Alice', age: 30, password: 'secret' }
- * const safeUser = omit(user, ['password'])
- * // Result: { name: 'Alice', age: 30 }
- * ```
- *
- * @example
- * ```ts
- * // Remove sensitive fields
- * interface User {
- *   id: number
- *   name: string
- *   password: string
- *   apiKey: string
- * }
- *
- * function sanitizeUser(user: User) {
- *   return omit(user, ['password', 'apiKey'])
- *   // Type: Omit<User, 'password' | 'apiKey'>
- * }
- * ```
- */
-export const omit = <T extends object, K extends keyof T>(
-  obj: T,
-  keys: readonly K[],
-): Omit<T, K> => {
-  return policyFilter('deny', obj, keys) as any
-}
-
-/**
- * Filter object properties based on a policy mode and set of keys.
- *
- * @param mode - 'allow' to keep only specified keys, 'deny' to remove specified keys
- * @param obj - The object to filter
- * @param keys - The keys to process
- * @returns A filtered object with proper type inference
- *
- * @example
- * ```ts
- * const obj = { a: 1, b: 2, c: 3 }
- *
- * // Allow mode: keep only 'a' and 'c'
- * policyFilter('allow', obj, ['a', 'c']) // { a: 1, c: 3 }
- *
- * // Deny mode: remove 'a' and 'c'
- * policyFilter('deny', obj, ['a', 'c']) // { b: 2 }
- * ```
- */
-export const policyFilter = <
-  $Object extends object,
-  $Key extends Keyof<$Object>,
-  $Mode extends 'allow' | 'deny',
->(
-  mode: $Mode,
-  obj: $Object,
-  keys: readonly $Key[],
-): PolicyFilter<$Object, $Key, $Mode> => {
-  const result: any = mode === 'deny' ? { ...obj } : {}
-
-  if (mode === 'allow') {
-    // For allow mode, only add specified keys
-    for (const key of keys) {
-      if (key in obj) {
-        // @ts-expect-error
-        result[key] = obj[key]
-      }
-    }
-  } else {
-    // For deny mode, remove specified keys
-    for (const key of keys) {
-      delete result[key]
-    }
-  }
-
-  return result
-}
-
-/**
- * Filter an object using a predicate function.
- *
- * @param obj - The object to filter
- * @param predicate - Function that returns true to keep a key/value pair
- * @returns A new object with only the key/value pairs where predicate returned true
- *
- * @example
- * ```ts
- * const obj = { a: 1, b: 2, c: 3 }
- * filter(obj, (k, v) => v > 1) // { b: 2, c: 3 }
- * filter(obj, k => k !== 'b') // { a: 1, c: 3 }
- * ```
- */
-export const filter = <$Object extends object>(
-  obj: $Object,
-  predicate: (key: keyof $Object, value: $Object[keyof $Object], obj: $Object) => boolean,
-): Partial<$Object> => {
-  const result = {} as Partial<$Object>
-  for (const key in obj) {
-    if (predicate(key, obj[key], obj)) {
-      result[key] = obj[key]
-    }
-  }
-  return result
-}
-
-/**
- * Partition an object into picked and omitted parts.
- *
- * @param obj - The object to partition
- * @param pickedKeys - The keys to pick
- * @returns An object with picked and omitted properties
- *
- * @example
- * ```ts
- * const obj = { a: 1, b: 2, c: 3 }
- * const { picked, omitted } = partition(obj, ['a', 'c'])
- * // picked: { a: 1, c: 3 }
- * // omitted: { b: 2 }
- * ```
- */
-export const partition = <$Object extends object, $Key extends keyof $Object>(
-  obj: $Object,
-  pickedKeys: readonly $Key[],
-): { omitted: Omit<$Object, $Key>; picked: Pick<$Object, $Key> } => {
-  return pickedKeys.reduce((acc, key) => {
-    if (key in acc.omitted) {
-      // @ts-expect-error omitted already at type level
-      delete acc.omitted[key]
-      acc.picked[key] = obj[key]
-    }
-    return acc
-  }, {
-    omitted: { ...obj } as Omit<$Object, $Key>,
-    picked: {} as Pick<$Object, $Key>,
-  })
-}
-
-/**
- * Filter object properties by key pattern matching.
- * Useful for extracting properties that match a pattern like data attributes.
- *
- * @param obj - The object to filter
- * @param predicate - Function that returns true to keep a key
- * @returns A new object with only the key/value pairs where key predicate returned true
- *
- * @example
- * ```ts
- * const props = {
- *   'data-type': 'button',
- *   'data-current': true,
- *   onClick: fn,
- *   className: 'btn'
- * }
- * const dataAttrs = pickMatching(props, key => key.startsWith('data-'))
- * // Result: { 'data-type': 'button', 'data-current': true }
- * ```
- */
-export const pickMatching = <T extends object>(
-  obj: T,
-  predicate: (key: string) => boolean,
-): Partial<T> => {
-  const result = {} as Partial<T>
-  for (const key of Object.keys(obj)) {
-    if (predicate(key)) {
-      result[key as keyof T] = obj[key as keyof T]
-    }
-  }
-  return result
-}
-
-/**
- * Shallow merge objects while omitting undefined values.
- * Simplifies the common pattern of conditionally spreading objects
- * to avoid including undefined values that would override existing values.
- *
- * @param objects - Objects to merge (later objects override earlier ones). Undefined objects are ignored.
- * @returns Merged object with undefined values omitted
- *
- * @example
- * ```ts
- * // Instead of:
- * const config = {
- *   ...defaultConfig,
- *   ...(userConfig ? userConfig : {}),
- *   ...(debug ? { debug: true } : {}),
- * }
- *
- * // Use:
- * const config = spreadShallow(
- *   defaultConfig,
- *   userConfig,
- *   { debug: debug ? true : undefined }
- * )
- * // undefined values won't override earlier values
- * ```
- */
-export const spreadShallow = <T extends object>(...objects: (T | undefined)[]): T => {
-  const result = {} as T
-
-  for (const obj of objects) {
-    if (obj === undefined) continue
-
-    for (const key in obj) {
-      // Protect against prototype pollution
-      if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
-        continue
-      }
-
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        const value = obj[key]
-        if (value !== undefined) {
-          result[key] = value
-        }
-      }
-    }
-  }
-
-  return result
-}
+// Note: spreadShallow moved to merge.ts
 
 // dprint-ignore
 export type PartialDeep<$Type> =
@@ -529,13 +185,91 @@ export type PartialDeep<$Type> =
                                                         // else
                                                           $Type
 
-// Check if an interface has any optional properties
-export type HasOptionalKeys<$Obj extends object> = OptionalKeys<$Obj> extends never ? false : true
+// Note: HasOptionalKeys moved to predicates.ts
 
-// Extract keys that are optional in the interface
-export type OptionalKeys<T> = {
-  [K in keyof T]-?: {} extends Pick<T, K> ? K : never
-}[keyof T]
+// Note: OptionalKeys moved to predicates.ts
 
-// Extract keys that are required in the interface
-export type RequiredKeys<T> = Exclude<keyof T, OptionalKeys<T>>
+// Note: RequiredKeys moved to predicates.ts
+
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Type Utilities
+//
+//
+//
+
+// Note: PickWhereValueExtends moved to filter.ts
+
+// Note: ReplaceProperty moved to merge.ts
+
+// Note: ExactNonEmpty moved to type.ts
+
+// Note: KeysArray moved to get.ts
+
+// Note: KeysReadonlyArray moved to get.ts
+
+// Note: OnlyKeysInArray moved to filter.ts
+
+/**
+ * Make all properties of an object writable (remove readonly modifiers).
+ * @example
+ * ```ts
+ * type ReadonlyUser = { readonly id: number; readonly name: string }
+ * type WritableUser = Writeable<ReadonlyUser>
+ * // Result: { id: number; name: string }
+ * ```
+ */
+export type Writeable<$Obj extends object> = Writable<$Obj>
+
+// Note: Keyof, PolicyFilter moved to filter.ts
+
+// Note: Replace moved to merge.ts
+
+// Note: PrimitiveFieldKeys moved to get.ts
+
+// Note: GetKeyOr moved to get.ts
+
+// Note: SuffixKeyNames, OmitKeysWithPrefix moved to filter.ts
+
+// Note: PickRequiredProperties, RequireProperties, PartialOrUndefined moved to filter.ts
+
+// Note: UnionMerge moved to Ts.Union.Merge
+
+// Note: MergeAll moved to merge.ts
+
+// Note: PickOptionalPropertyOrFallback moved to filter.ts
+
+// Note: HasOptionalKey moved to predicates.ts
+
+// Note: IsKeyInObjectOptional renamed to IsKeyOptional and moved to predicates.ts
+
+// Note: IsKeyInObject renamed to HasKey and moved to predicates.ts
+
+// Note: StringKeyof moved to get.ts
+
+// Note: GetOrNever moved to get.ts
+
+/**
+ * Convert an object to a parameters tuple.
+ */
+// dprint-ignore
+export type ToParameters<$Params extends object | undefined> =
+  undefined extends $Params ? [params?: $Params] :
+  $Params extends undefined ? [params?: $Params] :
+                              [params: $Params]
+
+/**
+ * Convert an object to parameters tuple with exact matching.
+ */
+export type ToParametersExact<$Input extends object, $Params extends object | undefined> = IsEmpty<$Input> extends true
+  ? []
+  : ToParameters<$Params>
+
+/**
+ * Convert PropertyKey to string if possible.
+ */
+export type PropertyKeyToString<$Key extends PropertyKey> = $Key extends string ? $Key
+  : $Key extends number ? `${$Key}`
+  : never
