@@ -82,25 +82,33 @@ const assertEffectEqual = (actual: any, expected: any) => {
  * Format a snapshot with clear GIVEN/THEN sections showing arguments and return value or error.
  */
 const formatSnapshotWithInput = (input: any[], result: any, error?: Error): string => {
-  // Format input - handle single vs multiple params
-  let inputStr: string
+  // Fixed width for all boxes
   const width = 50
-  if (input.length === 1) {
-    inputStr = typeof input[0] === 'function'
-      ? input[0].toString()
-      : JSON.stringify(input[0], null, 2)
-  } else {
-    const separator = '─'.repeat(width)
-    inputStr = input
-      .map((i) => typeof i === 'function' ? i.toString() : JSON.stringify(i, null, 2))
-      .join('\n' + separator + '\n')
-  }
 
-  // Format output or error
+  // Format all inputs and output
+  const formattedInputs = input.map((i) => {
+    if (typeof i === 'function') return i.toString()
+    const stringified = JSON.stringify(i, null, 2)
+    return stringified === undefined ? 'undefined' : stringified
+  })
+
   const isError = error !== undefined
   const outputStr = isError
     ? `${error.name}: ${error.message}`
-    : JSON.stringify(result, null, 2)
+    : (() => {
+      const stringified = JSON.stringify(result, null, 2)
+      return stringified === undefined ? 'undefined' : stringified
+    })()
+
+  // Format input string
+  let inputStr: string
+  if (input.length === 1) {
+    inputStr = formattedInputs[0]!
+  } else {
+    // Separator should match box border width (width + 2 for the corner characters)
+    const separator = '─'.repeat(width + 2)
+    inputStr = formattedInputs.join('\n' + separator + '\n')
+  }
 
   // Box drawing with titles at the end
   const givenLabel = ' GIVEN ARGUMENTS'
@@ -239,7 +247,9 @@ function createBuilder(state: BuilderState = defaultState): any {
           // Convert function to string and compress whitespace for test names
           str = value.toString().replace(/\s+/g, ' ').trim()
         } else {
-          str = JSON.stringify(value)
+          // JSON.stringify(undefined) returns undefined, not a string
+          const stringified = JSON.stringify(value)
+          str = stringified === undefined ? 'undefined' : stringified
         }
         if (str.length <= maxLength) return str
         return str.slice(0, maxLength) + '...'

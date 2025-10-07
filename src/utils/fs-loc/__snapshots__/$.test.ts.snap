@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AbsDir > .decodeSync > fn("/") > fn("/") 1`] = `
+exports[`AbsDir > .decodeSync > fn("/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "/"
@@ -15,7 +15,7 @@ exports[`AbsDir > .decodeSync > fn("/") > fn("/") 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`AbsDir > .decodeSync > fn("/a/b/c/d/e/") > fn("/a/b/c/d/e/") 1`] = `
+exports[`AbsDir > .decodeSync > fn("/a/b/c/d/e/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "/a/b/c/d/e/"
@@ -36,7 +36,7 @@ exports[`AbsDir > .decodeSync > fn("/a/b/c/d/e/") > fn("/a/b/c/d/e/") 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`AbsDir > .decodeSync > fn("/home") > fn("/home") 1`] = `
+exports[`AbsDir > .decodeSync > fn("/home") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "/home"
@@ -53,7 +53,7 @@ exports[`AbsDir > .decodeSync > fn("/home") > fn("/home") 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`AbsDir > .decodeSync > fn("/home/") > fn("/home/") 1`] = `
+exports[`AbsDir > .decodeSync > fn("/home/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "/home/"
@@ -70,7 +70,7 @@ exports[`AbsDir > .decodeSync > fn("/home/") > fn("/home/") 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`AbsDir > .decodeSync > fn("/my documents/projects/") > fn("/my documents/projects/") 1`] = `
+exports[`AbsDir > .decodeSync > fn("/my documents/projects/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "/my documents/projects/"
@@ -88,7 +88,7 @@ exports[`AbsDir > .decodeSync > fn("/my documents/projects/") > fn("/my document
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`AbsDir > .decodeSync > fn("/usr/local/bin/") > fn("/usr/local/bin/") 1`] = `
+exports[`AbsDir > .decodeSync > fn("/usr/local/bin/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "/usr/local/bin/"
@@ -107,7 +107,7 @@ exports[`AbsDir > .decodeSync > fn("/usr/local/bin/") > fn("/usr/local/bin/") 1`
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`AbsFile > .decodeSync > fn("/.config.json") > fn("/.config.json") 1`] = `
+exports[`AbsFile > .decodeSync > fn("/.config.json") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "/.config.json"
@@ -127,7 +127,7 @@ exports[`AbsFile > .decodeSync > fn("/.config.json") > fn("/.config.json") 1`] =
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`AbsFile > .decodeSync > fn("/a/b/c/d/e.js") > fn("/a/b/c/d/e.js") 1`] = `
+exports[`AbsFile > .decodeSync > fn("/a/b/c/d/e.js") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "/a/b/c/d/e.js"
@@ -152,7 +152,7 @@ exports[`AbsFile > .decodeSync > fn("/a/b/c/d/e.js") > fn("/a/b/c/d/e.js") 1`] =
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`AbsFile > .decodeSync > fn("/archive.tar.gz") > fn("/archive.tar.gz") 1`] = `
+exports[`AbsFile > .decodeSync > fn("/archive.tar.gz") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "/archive.tar.gz"
@@ -172,7 +172,7 @@ exports[`AbsFile > .decodeSync > fn("/archive.tar.gz") > fn("/archive.tar.gz") 1
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`AbsFile > .decodeSync > fn("/file.txt") > fn("/file.txt") 1`] = `
+exports[`AbsFile > .decodeSync > fn("/file.txt") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "/file.txt"
@@ -192,7 +192,7 @@ exports[`AbsFile > .decodeSync > fn("/file.txt") > fn("/file.txt") 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`AbsFile > .decodeSync > fn("/home/user/doc.pdf") > fn("/home/user/doc.pdf") 1`] = `
+exports[`AbsFile > .decodeSync > fn("/home/user/doc.pdf") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "/home/user/doc.pdf"
@@ -215,7 +215,7 @@ exports[`AbsFile > .decodeSync > fn("/home/user/doc.pdf") > fn("/home/user/doc.p
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`AbsFile > .decodeSync > fn("/my docs/file name.txt") > fn("/my docs/file name.txt") 1`] = `
+exports[`AbsFile > .decodeSync > fn("/my docs/file name.txt") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "/my docs/file name.txt"
@@ -237,7 +237,7 @@ exports[`AbsFile > .decodeSync > fn("/my docs/file name.txt") > fn("/my docs/fil
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`RelDir > .decodeSync > fn("../") > fn("../") 1`] = `
+exports[`RelDir > .decodeSync > fn("../") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "../"
@@ -254,7 +254,7 @@ exports[`RelDir > .decodeSync > fn("../") > fn("../") 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`RelDir > .decodeSync > fn("../../lib/") > fn("../../lib/") 1`] = `
+exports[`RelDir > .decodeSync > fn("../../lib/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "../../lib/"
@@ -273,7 +273,7 @@ exports[`RelDir > .decodeSync > fn("../../lib/") > fn("../../lib/") 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`RelDir > .decodeSync > fn("../src/lib/utils/") > fn("../src/lib/utils/") 1`] = `
+exports[`RelDir > .decodeSync > fn("../src/lib/utils/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "../src/lib/utils/"
@@ -293,7 +293,7 @@ exports[`RelDir > .decodeSync > fn("../src/lib/utils/") > fn("../src/lib/utils/"
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`RelDir > .decodeSync > fn("./") > fn("./") 1`] = `
+exports[`RelDir > .decodeSync > fn("./") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "./"
@@ -308,7 +308,7 @@ exports[`RelDir > .decodeSync > fn("./") > fn("./") 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`RelDir > .decodeSync > fn("./src/") > fn("./src/") 1`] = `
+exports[`RelDir > .decodeSync > fn("./src/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "./src/"
@@ -325,7 +325,7 @@ exports[`RelDir > .decodeSync > fn("./src/") > fn("./src/") 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`RelDir > .decodeSync > fn("src") > fn("src") 1`] = `
+exports[`RelDir > .decodeSync > fn("src") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "src"
@@ -342,7 +342,7 @@ exports[`RelDir > .decodeSync > fn("src") > fn("src") 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`RelDir > .decodeSync > fn("src/") > fn("src/") 1`] = `
+exports[`RelDir > .decodeSync > fn("src/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "src/"
@@ -359,7 +359,7 @@ exports[`RelDir > .decodeSync > fn("src/") > fn("src/") 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`RelDir > .decodeSync > fn("src/components/") > fn("src/components/") 1`] = `
+exports[`RelDir > .decodeSync > fn("src/components/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "src/components/"
@@ -377,7 +377,7 @@ exports[`RelDir > .decodeSync > fn("src/components/") > fn("src/components/") 1`
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`RelFile > .decodeSync > fn("../../lib/util.js") > fn("../../lib/util.js") 1`] = `
+exports[`RelFile > .decodeSync > fn("../../lib/util.js") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "../../lib/util.js"
@@ -401,7 +401,7 @@ exports[`RelFile > .decodeSync > fn("../../lib/util.js") > fn("../../lib/util.js
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`RelFile > .decodeSync > fn("../file.txt") > fn("../file.txt") 1`] = `
+exports[`RelFile > .decodeSync > fn("../file.txt") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "../file.txt"
@@ -423,7 +423,7 @@ exports[`RelFile > .decodeSync > fn("../file.txt") > fn("../file.txt") 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`RelFile > .decodeSync > fn("./file.txt") > fn("./file.txt") 1`] = `
+exports[`RelFile > .decodeSync > fn("./file.txt") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "./file.txt"
@@ -443,7 +443,7 @@ exports[`RelFile > .decodeSync > fn("./file.txt") > fn("./file.txt") 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`RelFile > .decodeSync > fn("./src/components/App.tsx") > fn("./src/components/App.tsx") 1`] = `
+exports[`RelFile > .decodeSync > fn("./src/components/App.tsx") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "./src/components/App.tsx"
@@ -466,7 +466,7 @@ exports[`RelFile > .decodeSync > fn("./src/components/App.tsx") > fn("./src/comp
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`RelFile > .decodeSync > fn("file.txt") > fn("file.txt") 1`] = `
+exports[`RelFile > .decodeSync > fn("file.txt") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "file.txt"
@@ -486,7 +486,7 @@ exports[`RelFile > .decodeSync > fn("file.txt") > fn("file.txt") 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`RelFile > .decodeSync > fn("src/index.ts") > fn("src/index.ts") 1`] = `
+exports[`RelFile > .decodeSync > fn("src/index.ts") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 "src/index.ts"

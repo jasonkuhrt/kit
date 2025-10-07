@@ -1,0 +1,309 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`arrays > mapEntriesDeep({"numbers":[1,2,3],"strings":["a","b"]}, () => void 0) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  "numbers": [
+    1,
+    2,
+    3
+  ],
+  "strings": [
+    "a",
+    "b"
+  ]
+}
+────────────────────────────────────────────────────
+() => void 0
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+{
+  "numbers": [
+    1,
+    2,
+    3
+  ],
+  "strings": [
+    "a",
+    "b"
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`arrays > mapEntriesDeep({"users":[{"$id":1,"$name":"alice"},{"$id":2,"$name":"bob"}]}, (key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  "users": [
+    {
+      "$id": 1,
+      "$name": "alice"
+    },
+    {
+      "$id": 2,
+      "$name": "bob"
+    }
+  ]
+}
+────────────────────────────────────────────────────
+(key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "alice"
+    },
+    {
+      "id": 2,
+      "name": "bob"
+    }
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`combined transformations > mapEntriesDeep({"$name":"alice","age":25,"$email":"alice@example.com"}, (key, value) => { if (key.startsWith("$")) { return { key: key.slice(1), value: ...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  "$name": "alice",
+  "age": 25,
+  "$email": "alice@example.com"
+}
+────────────────────────────────────────────────────
+(key, value) => {
+  if (key.startsWith("$")) {
+    return { key: key.slice(1), value: typeof value === "string" ? value.toUpperCase() : value };
+  };
+  return void 0;
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+{
+  "name": "ALICE",
+  "age": 25,
+  "email": "ALICE@EXAMPLE.COM"
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`empty objects > mapEntriesDeep({}, (key, value) => ({ key: key.toUpperCase(), value })) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{}
+────────────────────────────────────────────────────
+(key, value) => ({ key: key.toUpperCase(), value })
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+{}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`key transformations > mapEntriesDeep({"$a":{"$b":{"$c":{"$d":"deep"}}}}, (key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  "$a": {
+    "$b": {
+      "$c": {
+        "$d": "deep"
+      }
+    }
+  }
+}
+────────────────────────────────────────────────────
+(key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+{
+  "a": {
+    "b": {
+      "c": {
+        "d": "deep"
+      }
+    }
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`key transformations > mapEntriesDeep({"$foo":"a","bar":"b","$baz":{"nested":"c"}}, (key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  "$foo": "a",
+  "bar": "b",
+  "$baz": {
+    "nested": "c"
+  }
+}
+────────────────────────────────────────────────────
+(key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+{
+  "foo": "a",
+  "bar": "b",
+  "baz": {
+    "nested": "c"
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`key transformations > mapEntriesDeep({"$foo":"bar","$baz":{"$nested":"value"}}, (key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  "$foo": "bar",
+  "$baz": {
+    "$nested": "value"
+  }
+}
+────────────────────────────────────────────────────
+(key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+{
+  "foo": "bar",
+  "baz": {
+    "nested": "value"
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`mixed structures > mapEntriesDeep({"str":"hello","arr":[1,"two",{"nested":"obj"}],"obj":{"inner":"value"}}, (key, value) => typeof value === "string" ? { key, value: value.toUpperCase() } ...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  "str": "hello",
+  "arr": [
+    1,
+    "two",
+    {
+      "nested": "obj"
+    }
+  ],
+  "obj": {
+    "inner": "value"
+  }
+}
+────────────────────────────────────────────────────
+(key, value) => typeof value === "string" ? { key, value: value.toUpperCase() } : void 0
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+{
+  "str": "HELLO",
+  "arr": [
+    1,
+    "two",
+    {
+      "nested": "OBJ"
+    }
+  ],
+  "obj": {
+    "inner": "VALUE"
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`primitives > mapEntriesDeep("hello", () => void 0) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+"hello"
+────────────────────────────────────────────────────
+() => void 0
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+"hello"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`primitives > mapEntriesDeep(42, () => void 0) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+42
+────────────────────────────────────────────────────
+() => void 0
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+42
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`primitives > mapEntriesDeep(null, () => void 0) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+null
+────────────────────────────────────────────────────
+() => void 0
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+null
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`primitives > mapEntriesDeep(true, () => void 0) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+true
+────────────────────────────────────────────────────
+() => void 0
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+true
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`selective transformations > mapEntriesDeep({"keep":"me","transform":"this"}, (key, value) => key === "transform" ? { key, value: "TRANSFORMED" } : void 0) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  "keep": "me",
+  "transform": "this"
+}
+────────────────────────────────────────────────────
+(key, value) => key === "transform" ? { key, value: "TRANSFORMED" } : void 0
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+{
+  "keep": "me",
+  "transform": "TRANSFORMED"
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`value transformations > mapEntriesDeep({"name":"alice","address":{"city":"nyc"}}, (key, value) => typeof value === "string" ? { key, value: value.toUpperCase() } ...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  "name": "alice",
+  "address": {
+    "city": "nyc"
+  }
+}
+────────────────────────────────────────────────────
+(key, value) => typeof value === "string" ? { key, value: value.toUpperCase() } : void 0
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+{
+  "name": "ALICE",
+  "address": {
+    "city": "NYC"
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`value transformations > mapEntriesDeep({"str":"hi","num":42,"bool":true,"nil":null}, (key, value) => typeof value === "string" ? { key, value: value.toUpperCase() } ...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  "str": "hi",
+  "num": 42,
+  "bool": true,
+  "nil": null
+}
+────────────────────────────────────────────────────
+(key, value) => typeof value === "string" ? { key, value: value.toUpperCase() } : void 0
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+{
+  "str": "HI",
+  "num": 42,
+  "bool": true,
+  "nil": null
+}
+╚══════════════════════════════════════════════════╝"
+`;
