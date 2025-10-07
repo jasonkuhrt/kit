@@ -1,8 +1,29 @@
 import type { Print } from './print.js'
 
-export * from './assert.js'
+export * from './test.js'
 
 export * from './print.js'
+
+/**
+ * Cast any value to a specific type for testing purposes.
+ * Useful for type-level testing where you need to create a value with a specific type.
+ *
+ * @template $value - The type to cast to
+ * @param value - The value to cast (defaults to undefined)
+ * @returns The value cast to the specified type
+ *
+ * @example
+ * ```ts
+ * // Creating typed test values
+ * const user = as<{ id: string; name: string }>({ id: '1', name: 'Alice' })
+ *
+ * // Testing type inference
+ * declare let _: any
+ * const result = someFunction()
+ * assertExtends<string>()(_ as typeof result)
+ * ```
+ */
+export const as = <$value>(value?: unknown): $value => value as any
 
 /**
  * Types that TypeScript accepts being interpolated into a Template Literal Type.
@@ -91,6 +112,44 @@ export interface StaticError<
 }
 
 export type StaticErrorAny = StaticError<string, object, string>
+
+/**
+ * Represents a static assertion error at the type level, optimized for type testing.
+ *
+ * This is a simpler, more focused error type compared to {@link StaticError}. It's specifically
+ * designed for type assertions where you need to communicate expected vs. actual types.
+ *
+ * @template $Message - A string literal type describing the assertion failure
+ * @template $Expected - The expected type
+ * @template $Actual - The actual type that was provided
+ *
+ * @example
+ * ```ts
+ * // Using in parameter assertions
+ * function assertParameters<T extends readonly any[]>(
+ *   fn: Parameters<typeof fn> extends T ? typeof fn
+ *     : StaticErrorAssertion<
+ *       'Parameters mismatch',
+ *       T,
+ *       Parameters<typeof fn>
+ *     >
+ * ): void {}
+ *
+ * // Error shows:
+ * // MESSAGE: 'Parameters mismatch'
+ * // EXPECTED: [string, number]
+ * // ACTUAL: [number, string]
+ * ```
+ */
+export interface StaticErrorAssertion<
+  $Message extends string = string,
+  $Expected = unknown,
+  $Actual = unknown,
+> {
+  MESSAGE: $Message
+  EXPECTED: $Expected
+  ACTUAL: $Actual
+}
 
 /**
  * Like {@link Print} but adds additional styling to display the rendered type in a sentence.
