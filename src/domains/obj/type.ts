@@ -29,15 +29,24 @@ export type IsEmpty<$Obj extends object> = keyof $Obj extends never ? true : fal
 export type Empty = Record<string, never>
 
 /**
- * Empty object constant (frozen).
- * Useful as a default value or sentinel.
+ * Create an empty object with proper type.
+ * Returns a frozen empty object typed as {@link Empty}.
+ *
+ * @returns An empty object with type `Record<string, never>`
  *
  * @example
  * ```ts
- * const opts = options ?? Obj.empty
+ * const opts = options ?? Obj.empty()
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Type is properly inferred as Empty
+ * const emptyObj = Obj.empty()
+ * type T = typeof emptyObj  // Record<string, never>
  * ```
  */
-export const empty = Object.freeze({})
+export const empty = (): Empty => Object.freeze({}) as Empty
 
 /**
  * Like Ts.Exact but also requires the value to be non-empty.

@@ -1,4 +1,5 @@
 import type { Fn } from '#fn'
+import type { Obj } from '#obj'
 
 /**
  * Type-level assertion utilities for testing type correctness.
@@ -25,12 +26,12 @@ import type { StaticErrorAssertion } from './ts.js'
  *
  * @example
  * ```ts
- * type _ = testCases<
- *   Equal<string, string>,           // true
- *   Equal<string | number, string>,  // StaticError
- *   Equal<{ a: 1 }, { a: 1 }>,       // true
- *   Equal<any, unknown>,             // StaticError
- *   Equal<1 | 2, 2 | 1>,             // StaticError - different structure
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.equal<string, string>,           // ✓ Pass
+ *   Ts.Test.equal<string | number, string>,  // ✗ Fail - Type error
+ *   Ts.Test.equal<{ a: 1 }, { a: 1 }>,       // ✓ Pass
+ *   Ts.Test.equal<any, unknown>,             // ✗ Fail - Type error
+ *   Ts.Test.equal<1 | 2, 2 | 1>              // ✗ Fail - Type error (different structure)
  * >
  * ```
  */
@@ -77,11 +78,11 @@ export const equal = <$Expected>() =>
  *
  * @example
  * ```ts
- * type _ = testCases<
- *   EqualComputed<string, string>,     // true
- *   EqualComputed<1 | 2, 2 | 1>,       // true - same union
- *   EqualComputed<string & {}, string>, // true - both compute to string
- *   EqualComputed<string, number>,     // StaticError
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.equalComputed<string, string>,      // ✓ Pass
+ *   Ts.Test.equalComputed<1 | 2, 2 | 1>,        // ✓ Pass - same union
+ *   Ts.Test.equalComputed<string & {}, string>, // ✓ Pass - both compute to string
+ *   Ts.Test.equalComputed<string, number>       // ✗ Fail - Type error
  * >
  * ```
  */
@@ -135,11 +136,11 @@ export const equalComputed = <$Expected>() =>
  *
  * @example
  * ```ts
- * type _ = testCases<
- *   sub<string, 'hello'>,           // true - 'hello' extends string
- *   sub<'hello', string>,           // StaticError - string doesn't extend 'hello'
- *   sub<{ a: 1 }, { a: 1; b: 2 }>,  // true - more specific extends less specific
- *   sub<object, { a: 1 }>,          // true - { a: 1 } extends object
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.sub<string, 'hello'>,           // ✓ Pass - 'hello' extends string
+ *   Ts.Test.sub<'hello', string>,           // ✗ Fail - string doesn't extend 'hello'
+ *   Ts.Test.sub<{ a: 1 }, { a: 1; b: 2 }>,  // ✓ Pass - more specific extends less specific
+ *   Ts.Test.sub<object, { a: 1 }>           // ✓ Pass - { a: 1 } extends object
  * >
  * ```
  */
@@ -195,9 +196,9 @@ export const sub = <$Expected>() =>
  *
  * @example
  * ```ts
- * type _ = testCases<
- *   subNot<number, string>,  // true
- *   subNot<string, 'hello'>, // StaticError - 'hello' extends string
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.subNot<number, string>,  // ✓ Pass
+ *   Ts.Test.subNot<string, 'hello'>  // ✗ Fail - 'hello' extends string
  * >
  * ```
  */
@@ -213,9 +214,9 @@ export type subNot<$NotExpected, $Actual> = $Actual extends $NotExpected ? Stati
  *
  * @example
  * ```ts
- * type _ = testCases<
- *   equalNever<never>,  // true
- *   equalNever<string>, // StaticError
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.equalNever<never>,  // ✓ Pass
+ *   Ts.Test.equalNever<string>  // ✗ Fail - Type error
  * >
  * ```
  */
@@ -250,10 +251,10 @@ export const equalNever = <$Actual>() =>
  *
  * @example
  * ```ts
- * type _ = testCases<
- *   equalAny<any>,     // true
- *   equalAny<unknown>, // StaticError
- *   equalAny<string>,  // StaticError
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.equalAny<any>,      // ✓ Pass
+ *   Ts.Test.equalAny<unknown>,  // ✗ Fail - Type error
+ *   Ts.Test.equalAny<string>    // ✗ Fail - Type error
  * >
  * ```
  */
@@ -286,10 +287,10 @@ export const equalAny = <$Actual>() =>
  *
  * @example
  * ```ts
- * type _ = testCases<
- *   equalUnknown<unknown>, // true
- *   equalUnknown<any>,     // StaticError
- *   equalUnknown<string>,  // StaticError
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.equalUnknown<unknown>,  // ✓ Pass
+ *   Ts.Test.equalUnknown<any>,      // ✗ Fail - Type error
+ *   Ts.Test.equalUnknown<string>    // ✗ Fail - Type error
  * >
  * ```
  */
@@ -328,6 +329,55 @@ export const equalUnknown = <$Actual>() =>
 ): void => {}
 
 /**
+ * Assert that a type is an empty object (no properties).
+ *
+ * Uses {@link Obj.IsEmpty} from kit to check if the object has no keys.
+ * Note: `{}` in TypeScript means "any non-nullish value", not an empty object.
+ *
+ * @example
+ * ```ts
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.equalEmptyObject<Record<string, never>>,  // ✓ Pass
+ *   Ts.Test.equalEmptyObject<{}>,                      // ✗ Fail - {} is not empty
+ *   Ts.Test.equalEmptyObject<{ a: 1 }>                 // ✗ Fail - has properties
+ * >
+ * ```
+ */
+export type equalEmptyObject<$Actual extends object> = Obj.IsEmpty<$Actual> extends true ? true
+  : StaticErrorAssertion<'Type is not an empty object (has keys)', Obj.Empty, $Actual>
+
+/**
+ * Assert that a value's type is an empty object (no properties).
+ *
+ * Uses {@link Obj.IsEmpty} from kit to check if the object has no keys.
+ * Note: `{}` in TypeScript means "any non-nullish value", not an empty object.
+ *
+ * Type-level equivalent: {@link equalEmptyObject}
+ *
+ * @example
+ * ```ts
+ * // Using Obj.empty() factory (recommended)
+ * Ts.Test.equalEmptyObject()(Obj.empty())  // ✓ Pass
+ *
+ * // Using Obj.Empty type explicitly
+ * Ts.Test.equalEmptyObject()({} as Obj.Empty)  // ✓ Pass
+ *
+ * // Plain {} infers as the problematic {} type
+ * Ts.Test.equalEmptyObject()({})                // ✗ Fail - inferred as {}
+ * Ts.Test.equalEmptyObject()({ a: 1 })          // ✗ Fail - has properties
+ * ```
+ */
+export const equalEmptyObject = <$Actual extends object>() =>
+(
+  _actual: Obj.IsEmpty<$Actual> extends true ? $Actual
+    : StaticErrorAssertion<
+      'Actual value type is not an empty object (has keys)',
+      Obj.Empty,
+      $Actual
+    >,
+): void => {}
+
+/**
  * Assert that a type is a supertype of (i.e., extended by) another type.
  *
  * Equivalent to TypeScript's `extends` keyword: checks if `$Actual extends $Supertype`.
@@ -336,10 +386,10 @@ export const equalUnknown = <$Actual>() =>
  *
  * @example
  * ```ts
- * type _ = testCases<
- *   sup<object, { a: 1 }>,     // true - { a: 1 } extends object (object is supertype)
- *   sup<{ a: 1 }, object>,     // StaticError - object doesn't extend { a: 1 }
- *   sup<string, 'hello'>,      // true - 'hello' extends string (string is supertype)
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.sup<object, { a: 1 }>,  // ✓ Pass - { a: 1 } extends object (object is supertype)
+ *   Ts.Test.sup<{ a: 1 }, object>,  // ✗ Fail - object doesn't extend { a: 1 }
+ *   Ts.Test.sup<string, 'hello'>    // ✓ Pass - 'hello' extends string (string is supertype)
  * >
  * ```
  */
@@ -390,9 +440,9 @@ export const sup = <$Supertype>() =>
  * @example
  * ```ts
  * function add(a: number, b: number): number { return a + b }
- * type _ = testCases<
- *   Parameters<[number, number], typeof add>,  // true
- *   Parameters<[string, string], typeof add>,  // StaticError
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.parameters<[number, number], typeof add>,  // ✓ Pass
+ *   Ts.Test.parameters<[string, string], typeof add>   // ✗ Fail - Type error
  * >
  * ```
  */
@@ -432,10 +482,10 @@ export const parameters = <$Expected extends readonly any[]>() =>
  *
  * @example
  * ```ts
- * type _ = testCases<
- *   Promise<number, Promise<number>>,  // true
- *   Promise<string, Promise<number>>,  // StaticError
- *   Promise<number, number>,           // StaticError
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.promise<number, Promise<number>>,  // ✓ Pass
+ *   Ts.Test.promise<string, Promise<number>>,  // ✗ Fail - Type error
+ *   Ts.Test.promise<number, number>            // ✗ Fail - Type error
  * >
  * ```
  */
@@ -473,9 +523,9 @@ export const promise = <$Type>() =>
  *
  * @example
  * ```ts
- * type _ = testCases<
- *   PromiseNot<number>,         // true
- *   PromiseNot<Promise<number>>, // StaticError
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.PromiseNot<number>,          // ✓ Pass
+ *   Ts.Test.PromiseNot<Promise<number>>  // ✗ Fail - Type error
  * >
  * ```
  */
@@ -511,10 +561,10 @@ export const promiseNot = <$Actual>(
  *
  * @example
  * ```ts
- * type _ = testCases<
- *   Array<string, string[]>,       // true
- *   Array<number, string[]>,       // StaticError
- *   Array<string, string>,         // StaticError
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.array<string, string[]>,  // ✓ Pass
+ *   Ts.Test.array<number, string[]>,  // ✗ Fail - Type error
+ *   Ts.Test.array<string, string>     // ✗ Fail - Type error
  * >
  * ```
  */
@@ -733,6 +783,66 @@ export type Cases<
   _T38 extends true = true,
   _T39 extends true = true,
   _T40 extends true = true,
+  _T41 extends true = true,
+  _T42 extends true = true,
+  _T43 extends true = true,
+  _T44 extends true = true,
+  _T45 extends true = true,
+  _T46 extends true = true,
+  _T47 extends true = true,
+  _T48 extends true = true,
+  _T49 extends true = true,
+  _T50 extends true = true,
+  _T51 extends true = true,
+  _T52 extends true = true,
+  _T53 extends true = true,
+  _T54 extends true = true,
+  _T55 extends true = true,
+  _T56 extends true = true,
+  _T57 extends true = true,
+  _T58 extends true = true,
+  _T59 extends true = true,
+  _T60 extends true = true,
+  _T61 extends true = true,
+  _T62 extends true = true,
+  _T63 extends true = true,
+  _T64 extends true = true,
+  _T65 extends true = true,
+  _T66 extends true = true,
+  _T67 extends true = true,
+  _T68 extends true = true,
+  _T69 extends true = true,
+  _T70 extends true = true,
+  _T71 extends true = true,
+  _T72 extends true = true,
+  _T73 extends true = true,
+  _T74 extends true = true,
+  _T75 extends true = true,
+  _T76 extends true = true,
+  _T77 extends true = true,
+  _T78 extends true = true,
+  _T79 extends true = true,
+  _T80 extends true = true,
+  _T81 extends true = true,
+  _T82 extends true = true,
+  _T83 extends true = true,
+  _T84 extends true = true,
+  _T85 extends true = true,
+  _T86 extends true = true,
+  _T87 extends true = true,
+  _T88 extends true = true,
+  _T89 extends true = true,
+  _T90 extends true = true,
+  _T91 extends true = true,
+  _T92 extends true = true,
+  _T93 extends true = true,
+  _T94 extends true = true,
+  _T95 extends true = true,
+  _T96 extends true = true,
+  _T97 extends true = true,
+  _T98 extends true = true,
+  _T99 extends true = true,
+  _T100 extends true = true,
 > = true
 
 //
