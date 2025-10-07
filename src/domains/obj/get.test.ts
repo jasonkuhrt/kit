@@ -1,5 +1,5 @@
 import { Obj } from '#obj'
-import { describe, expect, expectTypeOf, test } from 'vitest'
+import { describe, expectTypeOf, test } from 'vitest'
 
 describe('Obj.entries', () => {
   describe('type-level behavior', () => {

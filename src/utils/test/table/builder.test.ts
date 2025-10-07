@@ -41,9 +41,18 @@ describe('Test.table() builder', () => {
     // Test casesAsArg
     Test.describe('casesAsArg helper')
       .on(upperCase)
-      .casesAsArg(
+      .casesAsArgs(
         'hello',
         'world',
+      )
+      .test()
+
+    // Test multi-argument snapshot with separator
+    Test.describe('multi-argument snapshots')
+      .on(add)
+      .casesAsArgs(
+        [1, 2],
+        [10, 20],
       )
       .test()
   })
@@ -89,7 +98,7 @@ describe('Test.table() builder', () => {
       const builder = Test.describe()
         .on(upperCase)
       expect(builder.cases).toBeDefined()
-      expect(builder.casesAsArg).toBeDefined()
+      expect(builder.casesAsArgs).toBeDefined()
     })
 
     it('should work with zero-param functions', () => {
@@ -179,7 +188,7 @@ describe('Test.table() builder', () => {
             { n: 'test', i: 1, o: 2 },
           )
           .layer(mockLayer)
-          .testEffect((i, o) => Effect.succeed(undefined))
+          .testEffect(() => Effect.succeed(undefined))
       }
       expect(code).toBeDefined()
     })
@@ -194,7 +203,7 @@ describe('Test.table() builder', () => {
             { n: 'test 1', i: 1, o: 2 },
           )
           .layerEach(({ i }) => Layer.empty)
-          .testEffect((i, o) => Effect.succeed(undefined))
+          .testEffect(() => Effect.succeed(undefined))
       }
       expect(code).toBeDefined()
     })

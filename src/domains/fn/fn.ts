@@ -1,3 +1,4 @@
+export * from './analyze.js'
 export * from './base.js'
 export * from './constant.js'
 export * from './curry.js'

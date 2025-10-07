@@ -13,42 +13,42 @@ const l = FsLoc.fromString
 Test.describe('.decodeSync')
   .on(S.decodeSync(FsLoc.FsLoc))
   .describe('AbsFile')
-  .casesAsArg(
-    '/file.txt',
-    '/home/user/doc.pdf',
-    '/a/b/c/d/e.js',
-    '/archive.tar.gz',
-    '/.config.json',
-    '/my docs/file name.txt',
+  .casesAsArgs(
+    ['/file.txt'],
+    ['/home/user/doc.pdf'],
+    ['/a/b/c/d/e.js'],
+    ['/archive.tar.gz'],
+    ['/.config.json'],
+    ['/my docs/file name.txt'],
   )
   .describe('RelFile')
-  .casesAsArg(
-    'file.txt',
-    './file.txt',
-    '../file.txt',
-    'src/index.ts',
-    '../../lib/util.js',
-    './src/components/App.tsx',
+  .casesAsArgs(
+    ['file.txt'],
+    ['./file.txt'],
+    ['../file.txt'],
+    ['src/index.ts'],
+    ['../../lib/util.js'],
+    ['./src/components/App.tsx'],
   )
   .describe('AbsDir')
-  .casesAsArg(
-    '/',
-    '/home/',
-    '/home',
-    '/usr/local/bin/',
-    '/a/b/c/d/e/',
-    '/my documents/projects/',
+  .casesAsArgs(
+    ['/'],
+    ['/home/'],
+    ['/home'],
+    ['/usr/local/bin/'],
+    ['/a/b/c/d/e/'],
+    ['/my documents/projects/'],
   )
   .describe('RelDir')
-  .casesAsArg(
-    './',
-    'src/',
-    '../',
-    'src/components/',
-    '../../lib/',
-    './src/',
-    '../src/lib/utils/',
-    'src',
+  .casesAsArgs(
+    ['./'],
+    ['src/'],
+    ['../'],
+    ['src/components/'],
+    ['../../lib/'],
+    ['./src/'],
+    ['../src/lib/utils/'],
+    ['src'],
   )
   .test()
 

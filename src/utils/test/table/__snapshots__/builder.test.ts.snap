@@ -1,5 +1,41 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Test.table() builder > functional tests > casesAsArg helper > upperCase("hello") > upperCase("hello") 1`] = `"HELLO"`;
+exports[`Test.table() builder > functional tests > casesAsArg helper > upperCase("hello") > upperCase("hello") 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+"hello"
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+"HELLO"
+╚══════════════════════════════════════════════════╝"
+`;
 
-exports[`Test.table() builder > functional tests > casesAsArg helper > upperCase("world") > upperCase("world") 1`] = `"WORLD"`;
+exports[`Test.table() builder > functional tests > casesAsArg helper > upperCase("world") > upperCase("world") 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+"world"
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+"WORLD"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`Test.table() builder > functional tests > multi-argument snapshots > add(1, 2) > add(1, 2) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1
+──────────────────────────────────────────────────
+2
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+3
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`Test.table() builder > functional tests > multi-argument snapshots > add(10, 20) > add(10, 20) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+10
+──────────────────────────────────────────────────
+20
+╠══════════════════════════════════════════════════╣ THEN RETURNS
+30
+╚══════════════════════════════════════════════════╝"
+`;

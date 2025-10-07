@@ -602,19 +602,11 @@ interface MappedFunctionCaseMethods<Fn extends Fn.AnyAny, MappedInput, SelfKind 
   ): Ts.Kind.Apply<SelfKind, [State, Fn, MappedInput]>
 
   /**
-   * Add cases where each case is the arguments tuple directly.
+   * Add cases with smart argument handling.
+   * See FunctionCaseMethods.casesAsArgs for full documentation.
    */
   casesAsArgs(
-    ...cases: Fn extends (...args: infer P) => any ? P[]
-      : never
-  ): Ts.Kind.Apply<SelfKind, [State, Fn, MappedInput]>
-
-  /**
-   * Add cases where each case is a single argument (for single-param functions).
-   */
-  casesAsArg<T>(
-    ...cases: Fn extends (arg: T) => any ? T[]
-      : never
+    ...cases: any[]
   ): Ts.Kind.Apply<SelfKind, [State, Fn, MappedInput]>
 }
 
@@ -720,47 +712,57 @@ interface FunctionCaseMethods<State extends BuilderTypeState, SelfKind extends T
   ): Ts.Kind.Apply<SelfKind, [State]>
 
   /**
-   * Add snapshot test cases (no expected output).
+   * Add test cases with smart argument handling based on function signature analysis.
    *
-   * Each case is just the function arguments.
-   * The actual output will be captured as a snapshot.
+   * This method uses runtime analysis (via Fn.analyzeFunction) to determine how to handle
+   * array arguments intelligently:
    *
-   * @param cases - Array of argument tuples
-   * @returns Builder for method chaining
+   * **Heuristic:**
+   * 1. Analyzes the target function to extract parameter count
+   * 2. For each case:
+   *    - If case is an array AND its length matches the parameter count AND function has multiple params:
+   *      → Treat as tuple and spread: `fn(...[a, b])` becomes `fn(a, b)`
+   *    - Otherwise:
+   *      → Treat as single argument: wrap so `fn(value)` or `fn([value])`
    *
-   * @example
+   * **Examples:**
+   *
+   * Multi-param function (detected as 2 params):
    * ```ts
-   * Test.on(generateHTML)
-   *   .casesAsArgs(
-   *     ['<div>Hello</div>'],
-   *     ['<span>World</span>'],
-   *     ['<p>Test</p>']
-   *   )
-   *   .test()  // Outputs will be snapshot tested
+   * Test.on((a: number, b: number) => a + b)
+   *   .casesAsArgs([1, 2], [3, 4])
+   *   // → Spreads: fn(1, 2), fn(3, 4)
    * ```
+   *
+   * Single-param function (detected as 1 param):
+   * ```ts
+   * Test.on((x: number) => x * 2)
+   *   .casesAsArgs(5, 10, 15)
+   *   // → Single values: fn(5), fn(10), fn(15)
+   * ```
+   *
+   * Array-param function (detected as 1 param, arrays don't match count):
+   * ```ts
+   * Test.on((nums: number[]) => sum(nums))
+   *   .casesAsArgs([1, 2], [3, 4, 5])
+   *   // → No spread: fn([1, 2]), fn([3, 4, 5])
+   * ```
+   *
+   * Mixed individual values and tuples:
+   * ```ts
+   * Test.on((a: number, b: string) => `${a}${b}`)
+   *   .casesAsArgs([1, 'a'], [2, 'b'])
+   *   // → Spreads tuples: fn(1, 'a'), fn(2, 'b')
+   * ```
+   *
+   * **Fallback:** If function analysis fails, assumes all arrays should be treated as
+   * single arguments.
+   *
+   * @param cases - Values or tuples matching the function signature
+   * @returns Builder for method chaining
    */
   casesAsArgs(
-    ...cases: Array<FnParams<State>>
-  ): Ts.Kind.Apply<SelfKind, [State]>
-
-  /**
-   * Add snapshot tests for single-argument functions.
-   *
-   * Convenience method when testing functions that take one argument.
-   *
-   * @param cases - Array of single arguments
-   * @returns Builder for method chaining
-   *
-   * @example
-   * ```ts
-   * Test.on(capitalize)
-   *   .casesAsArg('hello', 'world', 'foo')  // Each becomes [arg]
-   *   .test()  // Snapshots: 'Hello', 'World', 'Foo'
-   * ```
-   */
-  casesAsArg<T>(
-    ...cases: State['fn'] extends (arg: T) => any ? T[]
-      : never
+    ...cases: any[]
   ): Ts.Kind.Apply<SelfKind, [State]>
 }
 
@@ -1468,18 +1470,11 @@ interface FunctionCaseMethodsWithLayers<State extends BuilderTypeState, Fn exten
   ): TableBuilderWithFunctionAndLayers<State, Fn, R>
 
   /**
-   * Add cases where each case is the arguments tuple directly.
+   * Add cases with smart argument handling.
+   * See FunctionCaseMethods.casesAsArgs for full documentation.
    */
   casesAsArgs(
-    ...cases: Array<FnParams<State>>
-  ): TableBuilderWithFunctionAndLayers<State, Fn, R>
-
-  /**
-   * Add cases where each case is a single argument (for single-param functions).
-   */
-  casesAsArg<T>(
-    ...cases: State['fn'] extends (arg: T) => any ? T[]
-      : never
+    ...cases: any[]
   ): TableBuilderWithFunctionAndLayers<State, Fn, R>
 }
 

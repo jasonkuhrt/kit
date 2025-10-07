@@ -1,20 +1,13 @@
+import { Fn as FnUtils } from '#fn'
 import type { Fn } from '#fn'
 import { Array, Effect, Equal, Layer, Option } from 'effect'
 import { describe as vitestDescribe, expect, test, type TestContext } from 'vitest'
 import type {
   BuilderTypeState,
   CaseObject,
-  CaseObjectBase,
-  CaseSingleParams,
   CaseTuple,
-  FunctionCase,
-  GenericCase,
   TableBuilderBase,
-  TableBuilderWithCases,
-  TableBuilderWithCasesAndLayers,
   TableBuilderWithFunction,
-  TableBuilderWithFunctionAndLayers,
-  TableBuilderWithMappedFunction,
 } from './builder-types.js'
 
 // ============================================================================
@@ -83,6 +76,44 @@ const assertEffectEqual = (actual: any, expected: any) => {
     expect(actual).toEqual(expected)
   }
   // If Equal.equals returns true, assertion passes silently
+}
+
+/**
+ * Format a snapshot with clear GIVEN/THEN sections showing arguments and return value or error.
+ */
+const formatSnapshotWithInput = (input: any[], result: any, error?: Error): string => {
+  // Format input - handle single vs multiple params
+  let inputStr: string
+  const width = 50
+  if (input.length === 1) {
+    inputStr = typeof input[0] === 'function'
+      ? input[0].toString()
+      : JSON.stringify(input[0], null, 2)
+  } else {
+    const separator = '─'.repeat(width)
+    inputStr = input
+      .map((i) => typeof i === 'function' ? i.toString() : JSON.stringify(i, null, 2))
+      .join('\n' + separator + '\n')
+  }
+
+  // Format output or error
+  const isError = error !== undefined
+  const outputStr = isError
+    ? `${error.name}: ${error.message}`
+    : JSON.stringify(result, null, 2)
+
+  // Box drawing with titles at the end
+  const givenLabel = ' GIVEN ARGUMENTS'
+  const thenLabel = isError ? ' THEN THROWS' : ' THEN RETURNS'
+
+  return [
+    '', // Leading newline to force opening quote on own line
+    '╔' + '═'.repeat(width) + '╗' + givenLabel,
+    inputStr,
+    '╠' + '═'.repeat(width) + '╣' + thenLabel,
+    outputStr,
+    '╚' + '═'.repeat(width) + '╝',
+  ].join('\n')
 }
 
 // ============================================================================
@@ -200,13 +231,27 @@ function createBuilder(state: BuilderState = defaultState): any {
 
       // Tuple form
       const tuple = caseData as CaseTuple<any, any>
+
+      // Helper to stringify values for test names (handles functions, truncates long strings)
+      const stringifyForTestName = (value: any, maxLength = 80): string => {
+        let str: string
+        if (typeof value === 'function') {
+          // Convert function to string and compress whitespace for test names
+          str = value.toString().replace(/\s+/g, ' ').trim()
+        } else {
+          str = JSON.stringify(value)
+        }
+        if (str.length <= maxLength) return str
+        return str.slice(0, maxLength) + '...'
+      }
+
       const generateName = (input: any, output?: any): string => {
         const fnName = fn?.name || 'fn'
         const inputStr = Array.isArray(input)
-          ? input.map(p => JSON.stringify(p)).join(', ')
-          : JSON.stringify(input)
+          ? input.map(p => stringifyForTestName(p)).join(', ')
+          : stringifyForTestName(input)
         return output !== undefined
-          ? `${fnName}(${inputStr}) → ${JSON.stringify(output)}`
+          ? `${fnName}(${inputStr}) → ${stringifyForTestName(output)}`
           : `${fnName}(${inputStr})`
       }
 
@@ -272,32 +317,46 @@ function createBuilder(state: BuilderState = defaultState): any {
           // Run the test
           if (fn) {
             // Function mode (.on() was used)
-            const result = fn(...input)
-
-            if (customTest) {
-              // Custom assertion provided to .test()
-              const transformedOutput = outputMapper ? outputMapper(output, input) : output
-              await customTest(result, transformedOutput, testContext, vitestContext)
-            } else if (output !== undefined) {
-              // Default assertion
-              const transformedOutput = outputMapper ? outputMapper(output, input) : output
-              if (state.config.matcher) {
-                // Use configured matcher
-                ;(expect(result) as any)[state.config.matcher](transformedOutput)
-              } else {
-                // Default to Effect's Equal.equals with fallback to toEqual
-                assertEffectEqual(result, transformedOutput)
+            if (output === undefined && !customTest) {
+              // Snapshot mode - catch errors and snapshot them
+              let result: any
+              let error: Error | undefined
+              try {
+                result = fn(...input)
+              } catch (e) {
+                error = e as Error
               }
+              const formattedSnapshot = formatSnapshotWithInput(input, result, error)
+              expect(formattedSnapshot).toMatchSnapshot()
             } else {
-              // Snapshot mode
-              expect(result).toMatchSnapshot(name)
+              // Non-snapshot mode - let errors propagate
+              const result = fn(...input)
+              if (customTest) {
+                // Custom assertion provided to .test()
+                const transformedOutput = outputMapper ? outputMapper(output, input) : output
+                await customTest(result, transformedOutput, testContext, vitestContext)
+              } else {
+                // Default assertion
+                const transformedOutput = outputMapper ? outputMapper(output, input) : output
+                if (state.config.matcher) {
+                  // Use configured matcher
+                  ;(expect(result) as any)[state.config.matcher](transformedOutput)
+                } else {
+                  // Default to Effect's Equal.equals with fallback to toEqual
+                  assertEffectEqual(result, transformedOutput)
+                }
+              }
             }
           } else if (customTest) {
             // Non-.on() mode with custom test
             const result = await customTest(input, output, testContext, vitestContext)
             // Auto-snapshot if result is returned
             if (result !== undefined) {
-              expect(result).toMatchSnapshot(name)
+              const formattedSnapshot = formatSnapshotWithInput(
+                Array.isArray(input) ? input : [input],
+                result,
+              )
+              expect(formattedSnapshot).toMatchSnapshot()
             }
           }
         })
@@ -386,23 +445,87 @@ function createBuilder(state: BuilderState = defaultState): any {
       }
     },
 
+    /**
+     * Add test cases where each argument becomes a direct input to the function.
+     *
+     * **How it works:**
+     * Uses `Fn.analyzeFunction` to parse the function signature and count parameters.
+     * Based on the parameter count, it either wraps each case value (for unary functions)
+     * or expects case values to already be parameter tuples (for multi-param functions).
+     *
+     * **Unary functions** (exactly 1 parameter in signature):
+     * - Pass case values directly - they will be automatically wrapped
+     * - Example: `casesAsArgs('hello', 'world')` → calls `fn('hello')`, `fn('world')`
+     * - Works correctly even when the parameter type is an array:
+     *   - `casesAsArgs(['a', 'b'], ['c', 'd'])` → calls `fn(['a', 'b'])`, `fn(['c', 'd'])`
+     *
+     * **Multi-parameter functions** (2+ parameters, including optional):
+     * - Pass each case as an array/tuple of parameters
+     * - Example: `casesAsArgs([1, 2], [3, 4])` → calls `fn(1, 2)`, `fn(3, 4)`
+     * - Optional parameters still count (e.g., `(a, b?)` has 2 parameters):
+     *   - `casesAsArgs(['value'], ['other'])` → calls `fn('value')`, `fn('other')`
+     *   - You don't need to pass `undefined` for optional parameters
+     *
+     * **Why not just check if the argument is an array?**
+     * Because a unary function might accept an array as its parameter. The only reliable
+     * way to distinguish `fn(arr)` from `fn(a, b)` is to analyze the function signature.
+     *
+     * @param cases - Variable number of case inputs. For unary functions, pass values directly.
+     *                For multi-param functions, pass tuples/arrays of parameters.
+     * @returns Builder for method chaining
+     *
+     * @example
+     * ```ts
+     * // Unary function - pass values directly
+     * const upperCase = (s: string) => s.toUpperCase()
+     * Test.on(upperCase).casesAsArgs('hello', 'world').test()
+     * // Calls: upperCase('hello'), upperCase('world')
+     *
+     * // Unary function with array parameter - still pass arrays directly
+     * const sumArray = (nums: number[]) => nums.reduce((a, b) => a + b, 0)
+     * Test.on(sumArray).casesAsArgs([1, 2, 3], [4, 5]).test()
+     * // Calls: sumArray([1, 2, 3]), sumArray([4, 5])
+     *
+     * // Multi-parameter function - wrap each case in array
+     * const add = (a: number, b: number) => a + b
+     * Test.on(add).casesAsArgs([1, 2], [5, 5]).test()
+     * // Calls: add(1, 2), add(5, 5)
+     *
+     * // Function with optional parameter - still wrap (optional params count!)
+     * const decode = (input: string, options?: object) => JSON.parse(input)
+     * Test.on(decode).casesAsArgs(['{"a":1}'], ['{"b":2}']).test()
+     * // Calls: decode('{"a":1}'), decode('{"b":2}')
+     * // Note: No need to pass undefined for options
+     *
+     * // Automatic error handling in snapshot mode
+     * // Mix valid and invalid inputs - errors are captured automatically
+     * Test.on(Positive.from)
+     *   .casesAsArgs(
+     *     1, 10, 100,      // Returns successfully
+     *     0, -1, -10,      // Throws - captured as "THEN THROWS" in snapshots
+     *   )
+     *   .test()
+     * ```
+     */
     casesAsArgs(...cases: any[]) {
-      const wrappedCases = cases.map(args => [args])
-      const newState = {
-        ...state,
-        currentCases: [...state.currentCases, ...wrappedCases],
+      const fn = Option.getOrUndefined(state.fn)
+      if (!fn) {
+        throw new Error('casesAsArgs requires .on() to be called first')
       }
-      // Always return builder for chaining
-      return createBuilder(newState)
-    },
 
-    casesAsArg(...cases: any[]) {
-      const wrappedCases = cases.map(arg => [[arg]])
+      // Analyze function to get actual parameter count
+      const analysis = FnUtils.analyzeFunction(fn)
+      const isUnary = analysis.parameters.length === 1
+
+      // Transform cases based on function arity:
+      // Unary: anything → [anything] → fn(...[anything]) → fn(anything)
+      // Multi-param: [1, 2] → [[1, 2]] → fn(...[1, 2]) → fn(1, 2)
+      const processedCases = cases.map(args => [isUnary ? [args] : args])
+
       const newState = {
         ...state,
-        currentCases: [...state.currentCases, ...wrappedCases],
+        currentCases: [...state.currentCases, ...processedCases],
       }
-      // Always return builder for chaining
       return createBuilder(newState)
     },
 
@@ -680,6 +803,49 @@ export function describe(
  *     [['Bob'], { role: 'user', age: 30 }]
  *   )
  *   .test()
+ * ```
+ *
+ * ## Snapshot Mode with Error Handling
+ *
+ * When no expected output is provided, tests automatically run in snapshot mode.
+ * Errors thrown during execution are automatically caught and included in snapshots
+ * with clear "THEN THROWS" vs "THEN RETURNS" formatting:
+ *
+ * @example
+ * ```ts
+ * // Mix successful and error cases - errors are captured automatically
+ * Test.on(parseInt)
+ *   .casesAsArgs(
+ *     '42',      // Returns: 42
+ *     'hello',   // Returns: NaN
+ *   )
+ *   .test()
+ *
+ * // Validation functions - errors documented in snapshots
+ * Test.on(Positive.from)
+ *   .casesAsArgs(
+ *     1, 10, 100,        // THEN RETURNS the value
+ *     0, -1, -10,        // THEN THROWS "Value must be positive"
+ *   )
+ *   .test()
+ * ```
+ *
+ * Snapshot format shows arguments and results clearly:
+ * ```
+ * ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+ * 1
+ * ╠══════════════════════════════════════════════════╣ THEN RETURNS
+ * 1
+ * ╚══════════════════════════════════════════════════╝
+ * ```
+ *
+ * For errors:
+ * ```
+ * ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+ * -1
+ * ╠══════════════════════════════════════════════════╣ THEN THROWS
+ * Error: Value must be positive
+ * ╚══════════════════════════════════════════════════╝
  * ```
  *
  * @param $fn - The function to test. Types are inferred from its signature

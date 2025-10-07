@@ -1,53 +1,59 @@
-import { expect, test } from 'vitest'
+import { Test } from '#test'
 import { Finite } from './$.js'
 
-test('isFinite', () => {
-  // Valid cases - finite numbers
-  expect(Finite.is(0)).toBe(true)
-  expect(Finite.is(1)).toBe(true)
-  expect(Finite.is(-1)).toBe(true)
-  expect(Finite.is(1.5)).toBe(true)
-  expect(Finite.is(-1.5)).toBe(true)
-  expect(Finite.is(Number.MAX_SAFE_INTEGER)).toBe(true)
-  expect(Finite.is(Number.MIN_SAFE_INTEGER)).toBe(true)
+Test.describe('is')
+  .on(Finite.is)
+  .casesAsArgs(
+    // Valid cases - finite numbers
+    0,
+    1,
+    -1,
+    1.5,
+    -1.5,
+    Number.MAX_SAFE_INTEGER,
+    Number.MIN_SAFE_INTEGER,
+    // Invalid cases - non-finite numbers
+    Infinity,
+    -Infinity,
+    NaN,
+    '0',
+    null,
+    undefined,
+  )
+  .test()
 
-  // Invalid cases - non-finite numbers
-  expect(Finite.is(Infinity)).toBe(false)
-  expect(Finite.is(-Infinity)).toBe(false)
-  expect(Finite.is(NaN)).toBe(false)
-  expect(Finite.is('0')).toBe(false)
-  expect(Finite.is(null)).toBe(false)
-  expect(Finite.is(undefined)).toBe(false)
-})
+Test.describe('from')
+  .on(Finite.from)
+  .casesAsArgs(
+    // Valid cases
+    0,
+    1,
+    -1,
+    1.5,
+    -1.5,
+    Number.MAX_SAFE_INTEGER,
+    Number.MIN_SAFE_INTEGER,
+    // Invalid cases - should throw
+    Infinity,
+    -Infinity,
+    NaN,
+  )
+  .test()
 
-test('finite', () => {
-  // Valid cases
-  expect(Finite.from(0)).toBe(0)
-  expect(Finite.from(1)).toBe(1)
-  expect(Finite.from(-1)).toBe(-1)
-  expect(Finite.from(1.5)).toBe(1.5)
-  expect(Finite.from(-1.5)).toBe(-1.5)
-  expect(Finite.from(Number.MAX_SAFE_INTEGER)).toBe(Number.MAX_SAFE_INTEGER)
-  expect(Finite.from(Number.MIN_SAFE_INTEGER)).toBe(Number.MIN_SAFE_INTEGER)
-
-  // Invalid cases - should throw
-  expect(() => Finite.from(Infinity)).toThrow('Value must be finite')
-  expect(() => Finite.from(-Infinity)).toThrow('Value must be finite')
-  expect(() => Finite.from(NaN)).toThrow('Value must be finite')
-})
-
-test('tryFinite', () => {
-  // Valid cases
-  expect(Finite.tryFrom(0)).toBe(0)
-  expect(Finite.tryFrom(1)).toBe(1)
-  expect(Finite.tryFrom(-1)).toBe(-1)
-  expect(Finite.tryFrom(1.5)).toBe(1.5)
-  expect(Finite.tryFrom(-1.5)).toBe(-1.5)
-  expect(Finite.tryFrom(Number.MAX_SAFE_INTEGER)).toBe(Number.MAX_SAFE_INTEGER)
-  expect(Finite.tryFrom(Number.MIN_SAFE_INTEGER)).toBe(Number.MIN_SAFE_INTEGER)
-
-  // Invalid cases - should return null
-  expect(Finite.tryFrom(Infinity)).toBe(null)
-  expect(Finite.tryFrom(-Infinity)).toBe(null)
-  expect(Finite.tryFrom(NaN)).toBe(null)
-})
+Test.describe('tryFrom')
+  .on(Finite.tryFrom)
+  .casesAsArgs(
+    // Valid cases
+    0,
+    1,
+    -1,
+    1.5,
+    -1.5,
+    Number.MAX_SAFE_INTEGER,
+    Number.MIN_SAFE_INTEGER,
+    // Invalid cases - should return null
+    Infinity,
+    -Infinity,
+    NaN,
+  )
+  .test()

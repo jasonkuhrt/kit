@@ -1,6 +1,5 @@
 import type { Lang } from '#lang'
 import type { Rec } from '#rec'
-import type { Undefined } from '#undefined'
 import type { Writable } from 'type-fest'
 import { entries } from './get.js'
 import { Type } from './traits/type.js'

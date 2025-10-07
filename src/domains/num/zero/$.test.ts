@@ -1,48 +1,54 @@
-import { expect, test } from 'vitest'
+import { Test } from '#test'
 import { Zero } from './$.js'
 
-test('isZero', () => {
-  // Valid cases - only 0 is zero
-  expect(Zero.is(0)).toBe(true)
-  expect(Zero.is(-0)).toBe(true) // -0 === 0 in JavaScript
+Test.describe('is')
+  .on(Zero.is)
+  .casesAsArgs(
+    // Valid cases - only 0 is zero
+    0,
+    -0, // -0 === 0 in JavaScript
+    // Invalid cases - any non-zero value
+    1,
+    -1,
+    0.1,
+    -0.1,
+    Infinity,
+    -Infinity,
+    NaN,
+    '0',
+    null,
+    undefined,
+  )
+  .test()
 
-  // Invalid cases - any non-zero value
-  expect(Zero.is(1)).toBe(false)
-  expect(Zero.is(-1)).toBe(false)
-  expect(Zero.is(0.1)).toBe(false)
-  expect(Zero.is(-0.1)).toBe(false)
-  expect(Zero.is(Infinity)).toBe(false)
-  expect(Zero.is(-Infinity)).toBe(false)
-  expect(Zero.is(NaN)).toBe(false)
-  expect(Zero.is('0')).toBe(false)
-  expect(Zero.is(null)).toBe(false)
-  expect(Zero.is(undefined)).toBe(false)
-})
+Test.describe('from')
+  .on(Zero.from)
+  .casesAsArgs(
+    // Valid cases
+    0,
+    -0,
+    // Invalid cases - should throw
+    1,
+    -1,
+    0.1,
+    -0.1,
+    Infinity,
+    NaN,
+  )
+  .test()
 
-test('zero', () => {
-  // Valid cases
-  expect(Zero.from(0)).toBe(0)
-  expect(Zero.from(-0)).toBe(-0)
-
-  // Invalid cases - should throw
-  expect(() => Zero.from(1)).toThrow('Value must be zero')
-  expect(() => Zero.from(-1)).toThrow('Value must be zero')
-  expect(() => Zero.from(0.1)).toThrow('Value must be zero')
-  expect(() => Zero.from(-0.1)).toThrow('Value must be zero')
-  expect(() => Zero.from(Infinity)).toThrow('Value must be zero')
-  expect(() => Zero.from(NaN)).toThrow('Value must be zero')
-})
-
-test('tryZero', () => {
-  // Valid cases
-  expect(Zero.tryFrom(0)).toBe(0)
-  expect(Zero.tryFrom(-0)).toBe(-0)
-
-  // Invalid cases - should return null
-  expect(Zero.tryFrom(1)).toBe(null)
-  expect(Zero.tryFrom(-1)).toBe(null)
-  expect(Zero.tryFrom(0.1)).toBe(null)
-  expect(Zero.tryFrom(-0.1)).toBe(null)
-  expect(Zero.tryFrom(Infinity)).toBe(null)
-  expect(Zero.tryFrom(NaN)).toBe(null)
-})
+Test.describe('tryFrom')
+  .on(Zero.tryFrom)
+  .casesAsArgs(
+    // Valid cases
+    0,
+    -0,
+    // Invalid cases - should return null
+    1,
+    -1,
+    0.1,
+    -0.1,
+    Infinity,
+    NaN,
+  )
+  .test()

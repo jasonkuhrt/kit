@@ -1,17 +1,62 @@
-import { expect, test } from 'vitest'
+import { Test } from '#test'
 import { Float } from './$.js'
 
-test('isFloat', () => {
-  // TODO: Add comprehensive tests
-  expect(Float.is(0)).toBe(false)
-})
+Test.describe('is')
+  .on(Float.is)
+  .casesAsArgs(
+    // Valid cases - non-integer numbers
+    1.5,
+    0.1,
+    -1.5,
+    -0.1,
+    Math.PI,
+    // Invalid cases - integers
+    0,
+    1,
+    -1,
+    100,
+    // Invalid cases - special values
+    Infinity,
+    -Infinity,
+    NaN,
+    '1.5',
+    null,
+    undefined,
+  )
+  .test()
 
-test('float', () => {
-  // TODO: Add comprehensive tests
-  expect(() => Float.from(0)).toThrow()
-})
+Test.describe('from')
+  .on(Float.from)
+  .casesAsArgs(
+    // Valid cases
+    1.5,
+    0.1,
+    -1.5,
+    -0.1,
+    Math.PI,
+    // Invalid cases - should throw
+    0,
+    1,
+    -1,
+    Infinity,
+    NaN,
+  )
+  .test()
 
-test('tryFloat', () => {
-  // TODO: Add comprehensive tests
-  expect(Float.tryFrom(0)).toBe(null)
-})
+Test.describe('tryFrom')
+  .on(Float.tryFrom)
+  .casesAsArgs(
+    // Valid cases
+    1.5,
+    0.1,
+    -1.5,
+    -0.1,
+    Math.PI,
+    // Invalid cases - should return null
+    0,
+    1,
+    -1,
+    Infinity,
+    NaN,
+  )
+  .test()
