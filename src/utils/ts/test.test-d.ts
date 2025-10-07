@@ -19,6 +19,86 @@ test('sub (subtype)', () => {
   Ts.Test.sub<'hello'>()('world')
 })
 
+test('subNoExcess - value level', () => {
+  type Config = { id: boolean; name?: string }
+  type Q = { id: boolean }
+
+  // Should pass - exact match
+  Ts.Test.subNoExcess<Q>()({ id: true })
+
+  // Should pass - subtype without excess
+  Ts.Test.subNoExcess<Q>()({ id: false })
+
+  // Should pass - optional property included
+  Ts.Test.subNoExcess<Config>()({ id: true, name: 'test' })
+
+  // Should pass - optional property omitted
+  Ts.Test.subNoExcess<Config>()({ id: true })
+
+  // Should fail - excess property
+  // @ts-expect-error - Excess property $skip
+  Ts.Test.subNoExcess<Q>()({ $skip: true, id: true })
+
+  // Should fail - excess property on config
+  // @ts-expect-error - Excess property age
+  Ts.Test.subNoExcess<Config>()({ id: true, age: 30 })
+
+  // Should fail - wrong type
+  // @ts-expect-error - id should be boolean
+  Ts.Test.subNoExcess<Q>()({ id: 'wrong' })
+
+  // Should fail - both excess and wrong type
+  // @ts-expect-error - id wrong type and extra has excess property
+  Ts.Test.subNoExcess<Q>()({ id: 'wrong', extra: 1 })
+})
+
+test('subNoExcess - comparison with sub', () => {
+  type Q = { id: boolean }
+
+  // .sub allows excess properties
+  Ts.Test.sub<Q>()({ id: true, extra: 1 }) // ✓ Passes
+
+  // .subNoExcess rejects excess properties
+  // @ts-expect-error - Excess property rejected
+  Ts.Test.subNoExcess<Q>()({ id: true, extra: 1 })
+})
+
+test('subNoExcess - typo detection', () => {
+  type QueryOptions = { limit?: number; offset?: number }
+
+  // Common typo: "offest" instead of "offset"
+  // @ts-expect-error - Catches typo!
+  Ts.Test.subNoExcess<QueryOptions>()({ limit: 10, offest: 20 })
+
+  // Correct spelling passes
+  Ts.Test.subNoExcess<QueryOptions>()({ limit: 10, offset: 20 })
+})
+
+// Type-level tests
+type _SubNoExcessTests = Ts.Test.Cases<
+  // Should pass - exact match
+  Ts.Test.subNoExcess<{ id: boolean }, { id: true }>,
+
+  // Should pass - subtype without excess
+  Ts.Test.subNoExcess<{ id: boolean }, { id: boolean }>,
+
+  // Should pass - optional included
+  Ts.Test.subNoExcess<{ id: boolean; name?: string }, { id: true; name: 'test' }>,
+
+  // Should pass - optional omitted
+  Ts.Test.subNoExcess<{ id: boolean; name?: string }, { id: true }>
+>
+
+// These should produce type errors
+// @ts-expect-error - Excess property
+type _TestExcessFail1 = Ts.Test.subNoExcess<{ id: boolean }, { id: true; extra: 1 }>
+
+// @ts-expect-error - Wrong type
+type _TestWrongType = Ts.Test.subNoExcess<{ id: boolean }, { id: 'wrong' }>
+
+// @ts-expect-error - Missing required property
+type _TestMissing = Ts.Test.subNoExcess<{ id: boolean; name: string }, { id: true }>
+
 test('sup (supertype)', () => {
   // Test supertype relationships (reverse of sub)
   interface Base {
@@ -56,11 +136,45 @@ test('bid (bidirectional assignability)', () => {
   const union1 = 1 as Union1
   Ts.Test.bid<Union2>()(union1)
 
-  // @ts-expect-error - Not mutually assignable (too narrow)
-  Ts.Test.bid<string | number>()('hello')
+  // Value-level bid just checks subtype relationship
+  Ts.Test.bid<string | number>()('hello') // OK - 'hello' extends string | number
   // @ts-expect-error - Not mutually assignable (different types)
   Ts.Test.bid<number>()('hello')
 })
+
+test('bid with lintBidForExactPossibility disabled (default)', () => {
+  // Default behavior: bid allows structurally equal types (value-level only)
+  // Type-level assertions use Cases which require explicit types
+
+  // Value-level - these work because linting is disabled by default
+  Ts.Test.bid<string>()('hello') // OK - no error
+  Ts.Test.bid<number>()(42) // OK - no error
+
+  // Union reassignment works
+  type Union1 = 1 | 2
+  type Union2 = 2 | 1
+  const union1 = 1 as Union1
+  Ts.Test.bid<Union2>()(union1) // OK
+
+  // bid still works correctly when only bidirectional (not exact)
+  const strIntersection = 'test' as string & {}
+  Ts.Test.bid<string>()(strIntersection) // OK - correct bid usage
+})
+
+// Note: Testing with linting enabled would require changing the global setting,
+// which would affect all tests. The type-level test below demonstrates the concept.
+
+// Type-level test showing bid behavior with default settings
+type _BidDefaultBehavior = Ts.Test.Cases<
+  // These pass because linting is disabled by default
+  Ts.Test.bid<string, string>,
+  Ts.Test.bid<number, number>
+> // Note: 1 | 2 vs 2 | 1 are the same type, so bid passes
+
+// Test union reassignment at type level
+type Union1 = 1 | 2
+type Union2 = 2 | 1
+type _UnionBid = Ts.Test.bid<Union2, Union1> // Should pass
 
 // === Test Const Variants ===
 

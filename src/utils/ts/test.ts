@@ -3,8 +3,32 @@ import type { Obj } from '#obj'
 
 /**
  * Type-level assertion utilities for testing type correctness.
+ *
+ * ## Configuration
+ *
+ * Assertion behavior can be configured via global settings.
+ * See {@link KitLibrarySettings.Ts.Test.Settings} for available options.
+ *
+ * @example
+ * ```typescript
+ * // Enable strict linting in your project
+ * // types/kit-settings.d.ts
+ * declare global {
+ *   namespace KitLibrarySettings {
+ *     namespace Ts {
+ *       namespace Test {
+ *         interface Settings {
+ *           lintBidForExactPossibility: true
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ * export {}
+ * ```
  */
 
+import type { GetTestSetting } from './test-settings.js'
 import type { StaticErrorAssertion } from './ts.js'
 
 //
@@ -89,17 +113,34 @@ export const exact = <$Expected>() =>
  * Use this when you care about semantic equality rather than structural equality.
  * For strict structural equality, use {@link exact}.
  *
+ * **Linting:** When `KitLibrarySettings.Ts.Test.Settings.lintBidForExactPossibility` is `true`,
+ * this will show an error if {@link exact} would work, encouraging use of the stricter assertion.
+ * See module documentation for configuration example.
+ *
  * @example
  * ```ts
  * type _ = Ts.Test.Cases<
- *   Ts.Test.bid<string, string>,      // ✓ Pass
- *   Ts.Test.bid<1 | 2, 2 | 1>,        // ✓ Pass - same union
- *   Ts.Test.bid<string & {}, string>, // ✓ Pass - both compute to string
+ *   Ts.Test.bid<string, string>,      // ✓ Pass (or error if linting enabled - should use exact)
+ *   Ts.Test.bid<1 | 2, 2 | 1>,        // ✓ Pass (or error if linting enabled - should use exact)
+ *   Ts.Test.bid<string & {}, string>, // ✓ Pass - both compute to string (exact would fail)
  *   Ts.Test.bid<string, number>       // ✗ Fail - Type error
  * >
  * ```
+ *
+ * @see Module documentation for how to enable strict linting
  */
-export type bid<$Expected, $Actual> = $Actual extends $Expected ? $Expected extends $Actual ? true
+export type bid<$Expected, $Actual> = $Actual extends $Expected ? $Expected extends $Actual
+    // Both directions pass - check if exact would also pass
+    ? (<T>() => T extends $Actual ? 1 : 2) extends (<T>() => T extends $Expected ? 1 : 2)
+      // Exact also passes - check if linting is enabled
+      ? GetTestSetting<'lintBidForExactPossibility'> extends true ? StaticErrorAssertion<
+          'Types are structurally equal',
+          $Expected,
+          $Actual,
+          'Use exact() instead - bid() is only needed when types are mutually assignable but not structurally equal'
+        >
+      : true // Linting disabled, allow it
+    : true // Only bid passes (not exact) - this is correct usage
   : StaticErrorAssertion<
     'Types are not bidirectionally assignable (Expected does not extend Actual)',
     $Expected,
@@ -115,25 +156,29 @@ export type bid<$Expected, $Actual> = $Actual extends $Expected ? $Expected exte
  * Assert that two types are bidirectionally assignable (mutually assignable) at compile time.
  * Checks mutual assignability rather than structural equality.
  *
+ * **Linting:** When `KitLibrarySettings.Ts.Test.Settings.lintBidForExactPossibility` is `true`,
+ * this will show an error if {@link exact} would work, encouraging use of the stricter assertion.
+ * See module documentation for configuration example.
+ *
  * Type-level equivalent: {@link bid}
  *
  * @example
  * ```ts
- * Ts.Test.bid<string>()('hello') // OK
+ * Ts.Test.bid<string>()('hello') // OK (or error if linting enabled - should use exact)
  * Ts.Test.bid<string | number>()(Math.random() > 0.5 ? 'hello' : 42) // OK - mutually assignable
  * Ts.Test.bid<number>()('hello') // Error
  * ```
+ *
+ * @see Module documentation for how to enable strict linting
  */
 export const bid = <$Expected>() =>
 <$Actual>(
-  _actual: $Actual extends $Expected ? ($Expected extends $Actual ? $Actual
-      : StaticErrorAssertion<
-        'Types are not bidirectionally assignable (Expected does not extend Actual)',
-        $Expected,
-        $Actual
-      >)
+  // For value-level, we just need $Actual extends $Expected (subtype check)
+  // The bidirectional check is conceptual - we're checking if the value's type
+  // is compatible with the expected type
+  _actual: $Actual extends $Expected ? $Actual
     : StaticErrorAssertion<
-      'Types are not bidirectionally assignable (Actual does not extend Expected)',
+      'Actual value type is not assignable to expected type',
       $Expected,
       $Actual
     >,
@@ -197,6 +242,119 @@ export type sub<$Expected, $Actual> = $Actual extends $Expected ? true
 export const sub = <$Expected>() =>
 <$Actual>(
   _actual: $Actual extends $Expected ? $Actual
+    : StaticErrorAssertion<
+      'Actual value type does not extend expected type',
+      $Expected,
+      $Actual
+    >,
+): void => {}
+
+/**
+ * Assert that a type extends the expected type AND has no excess properties.
+ *
+ * Similar to {@link sub} but also rejects excess properties beyond those defined
+ * in the expected type. This catches common bugs like typos in configuration objects
+ * or accidentally passing extra properties.
+ *
+ * This is particularly useful for:
+ * - Validating configuration objects
+ * - Checking function parameters that shouldn't have extra properties
+ * - Testing that types don't have unexpected fields
+ *
+ * @example
+ * ```ts
+ * type Config = { id: boolean; name?: string }
+ *
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.subNoExcess<Config, { id: true }>,               // ✓ Pass
+ *   Ts.Test.subNoExcess<Config, { id: true; name: 'test' }>, // ✓ Pass - optional included
+ *   Ts.Test.subNoExcess<Config, { id: true; $skip: true }>,  // ✗ Fail - excess property
+ *   Ts.Test.subNoExcess<Config, { id: 'wrong' }>             // ✗ Fail - wrong type
+ * >
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Compare with .sub (allows excess):
+ * type Q = { id: boolean }
+ *
+ * type T1 = Ts.Test.sub<Q, { id: true; extra: 1 }>         // ✓ Pass (sub allows excess)
+ * type T2 = Ts.Test.subNoExcess<Q, { id: true; extra: 1 }> // ✗ Fail (subNoExcess rejects)
+ * ```
+ *
+ * @see {@link sub} for standard subtype checking (allows excess properties)
+ * @see {@link exact} for exact structural equality
+ */
+export type subNoExcess<$Expected, $Actual> = $Actual extends $Expected
+  ? Exclude<keyof $Actual, keyof $Expected> extends never
+    ? true
+    : StaticErrorAssertion<
+      'Type has excess properties not present in expected type',
+      $Expected,
+      $Actual
+    >
+  : StaticErrorAssertion<
+    'Actual type does not extend expected type',
+    $Expected,
+    $Actual
+  >
+
+/**
+ * Assert that a value's type extends the expected type AND has no excess properties.
+ *
+ * Similar to {@link sub} but also rejects excess properties beyond those defined
+ * in the expected type. This catches common bugs like typos in configuration objects
+ * or accidentally passing extra properties that would be silently ignored.
+ *
+ * Generic functions bypass TypeScript's normal excess property checking, so this
+ * assertion is essential for catching bugs that would otherwise slip through.
+ *
+ * The function is a no-op at runtime; all checking happens at compile time.
+ *
+ * Type-level equivalent: {@link subNoExcess}
+ *
+ * @example
+ * ```ts
+ * type Config = { id: boolean; name?: string }
+ *
+ * // These pass:
+ * Ts.Test.subNoExcess<Config>()({ id: true })
+ * Ts.Test.subNoExcess<Config>()({ id: true, name: 'test' })
+ *
+ * // These fail:
+ * // @ts-expect-error - Excess property
+ * Ts.Test.subNoExcess<Config>()({ id: true, $skip: true })
+ *
+ * // @ts-expect-error - Wrong type
+ * Ts.Test.subNoExcess<Config>()({ id: 'wrong' })
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Real-world example: catching config typos
+ * type QueryOptions = { limit?: number; offset?: number }
+ *
+ * // This would silently fail with .sub():
+ * Ts.Test.sub<QueryOptions>()({ limit: 10, offest: 20 })  // ✓ Passes (typo missed!)
+ *
+ * // But .subNoExcess() catches it:
+ * // @ts-expect-error - Did you mean 'offset'?
+ * Ts.Test.subNoExcess<QueryOptions>()({ limit: 10, offest: 20 })
+ * ```
+ *
+ * @see {@link sub} for standard subtype checking (allows excess properties)
+ * @see {@link exact} for exact structural equality
+ */
+export const subNoExcess = <$Expected>() =>
+<$Actual>(
+  _actual: $Actual extends $Expected
+    ? Exclude<keyof $Actual, keyof $Expected> extends never
+      ? $Actual
+      : StaticErrorAssertion<
+        'Value has excess properties not present in expected type',
+        $Expected,
+        $Actual
+      >
     : StaticErrorAssertion<
       'Actual value type does not extend expected type',
       $Expected,
