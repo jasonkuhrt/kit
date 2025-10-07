@@ -40,31 +40,31 @@ test('Type narrowing works correctly with isOdd predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic odd constructor always returns Odd & Int
   const odd1 = odd(5)
-  Ts.Test.equal<Odd & Int>()(odd1)
+  Ts.Test.exact<Odd & Int>()(odd1)
 
   // Negative odd numbers
   const odd2 = odd(-3)
-  Ts.Test.equal<Odd & Int>()(odd2)
+  Ts.Test.exact<Odd & Int>()(odd2)
 
   // Large odd numbers
   const odd3 = odd(999)
-  Ts.Test.equal<Odd & Int>()(odd3)
+  Ts.Test.exact<Odd & Int>()(odd3)
 
   // Try constructor
   const try1 = tryOdd(7)
-  Ts.Test.equal<(Odd & Int) | null>()(try1)
+  Ts.Test.exact<(Odd & Int) | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Ts.Test.equal<Odd & Int>()(try1)
+    Ts.Test.exact<Odd & Int>()(try1)
   }
 
   // Next/prev odd operations
   const next = nextOdd(4.5) // Should be 5
-  Ts.Test.equal<Odd & Int>()(next)
+  Ts.Test.exact<Odd & Int>()(next)
 
   const prev = prevOdd(6.5) // Should be 5
-  Ts.Test.equal<Odd & Int>()(prev)
+  Ts.Test.exact<Odd & Int>()(prev)
 })
 
 // === Type Relationships ===
@@ -127,10 +127,10 @@ type _OddEvenExclusive = Ts.Test.Cases<
 // Test constructor return types
 type _ConstructorReturnTypes = Ts.Test.Cases<
   // All constructors return the intersection type
-  Ts.Test.equal<ReturnType<typeof odd>, Odd & Int>,
-  Ts.Test.equal<ReturnType<typeof tryOdd>, (Odd & Int) | null>,
-  Ts.Test.equal<ReturnType<typeof nextOdd>, Odd & Int>,
-  Ts.Test.equal<ReturnType<typeof prevOdd>, Odd & Int>
+  Ts.Test.exact<ReturnType<typeof odd>, Odd & Int>,
+  Ts.Test.exact<ReturnType<typeof tryOdd>, (Odd & Int) | null>,
+  Ts.Test.exact<ReturnType<typeof nextOdd>, Odd & Int>,
+  Ts.Test.exact<ReturnType<typeof prevOdd>, Odd & Int>
 >
 
 // Test predicate return type

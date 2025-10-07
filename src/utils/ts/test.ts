@@ -22,105 +22,118 @@ import type { StaticErrorAssertion } from './ts.js'
  * correctly handling any, never, and unknown edge cases.
  *
  * This checks for structural equality - types must have the same structure,
- * not just compute to the same result. For computed equality, use {@link equalComputed}.
+ * not just compute to the same result. For bidirectional extends, use {@link bid}.
+ *
+ * When exact equality fails but bidirectional assignability passes, provides
+ * a helpful tip about using {@link bid} or applying {@link Simplify} from `#ts`.
  *
  * @example
  * ```ts
  * type _ = Ts.Test.Cases<
- *   Ts.Test.equal<string, string>,           // ✓ Pass
- *   Ts.Test.equal<string | number, string>,  // ✗ Fail - Type error
- *   Ts.Test.equal<{ a: 1 }, { a: 1 }>,       // ✓ Pass
- *   Ts.Test.equal<any, unknown>,             // ✗ Fail - Type error
- *   Ts.Test.equal<1 | 2, 2 | 1>              // ✗ Fail - Type error (different structure)
+ *   Ts.Test.exact<string, string>,           // ✓ Pass
+ *   Ts.Test.exact<string | number, string>,  // ✗ Fail - Type error
+ *   Ts.Test.exact<{ a: 1 }, { a: 1 }>,       // ✓ Pass
+ *   Ts.Test.exact<any, unknown>,             // ✗ Fail - Type error
+ *   Ts.Test.exact<1 | 2, 2 | 1>              // ✗ Fail with tip - types are mutually assignable but not structurally equal
  * >
  * ```
  */
-export type equal<$Expected, $Actual> = (<T>() => T extends $Actual ? 1 : 2) extends
+export type exact<$Expected, $Actual> = (<T>() => T extends $Actual ? 1 : 2) extends
   (<T>() => T extends $Expected ? 1 : 2) ? true
-  : StaticErrorAssertion<
-    'Types are not exactly equal',
-    $Expected,
-    $Actual
-  >
+  // If structural equality fails, check if bidirectional assignability passes
+  : $Actual extends $Expected ? $Expected extends $Actual ? StaticErrorAssertion<
+        'Types are mutually assignable but not structurally equal',
+        $Expected,
+        $Actual,
+        'Use bid() for mutual assignability OR apply Simplify<T> to normalize types'
+      >
+    : StaticErrorAssertion<'Types are not structurally equal', $Expected, $Actual>
+  : StaticErrorAssertion<'Types are not structurally equal', $Expected, $Actual>
 
 /**
  * Assert that two types are exactly equal (structurally) at compile time.
  * More strict than extends as it checks structural equality.
  *
- * Type-level equivalent: {@link equal}
+ * When exact equality fails but bidirectional assignability passes, provides
+ * a helpful tip about using {@link bid} or applying Simplify from `#ts`.
+ *
+ * Type-level equivalent: {@link exact}
  *
  * @example
  * ```ts
- * Ts.Test.equal<string>()('hello') // OK - string exactly equals string
- * Ts.Test.equal<string | number>()('hello') // Error - string does not exactly equal string | number
- * Ts.Test.equal<{ a: 1 }>()({ a: 1 }) // OK
- * Ts.Test.equal<{ a: 1; b?: 2 }>()({ a: 1 }) // Error - not exactly equal
+ * Ts.Test.exact<string>()('hello') // OK - string exactly equals string
+ * Ts.Test.exact<string | number>()('hello') // Error - string does not exactly equal string | number
+ * Ts.Test.exact<{ a: 1 }>()({ a: 1 }) // OK
+ * Ts.Test.exact<{ a: 1; b?: 2 }>()({ a: 1 }) // Error - not exactly equal
  * ```
  */
-export const equal = <$Expected>() =>
+export const exact = <$Expected>() =>
 <$Actual>(
   _actual: (<T>() => T extends $Actual ? 1 : 2) extends (<T>() => T extends $Expected ? 1 : 2) ? $Actual
-    : StaticErrorAssertion<
-      'Actual value type is not exactly equal to expected type',
-      $Expected,
-      $Actual
-    >,
+    : $Actual extends $Expected ? $Expected extends $Actual ? StaticErrorAssertion<
+          'Actual value types are mutually assignable but not structurally equal',
+          $Expected,
+          $Actual,
+          'Use bid() for mutual assignability OR apply Simplify<T> to normalize types'
+        >
+      : StaticErrorAssertion<'Actual value type is not structurally equal to expected type', $Expected, $Actual>
+    : StaticErrorAssertion<'Actual value type is not structurally equal to expected type', $Expected, $Actual>,
 ): void => {}
 
 /**
- * Assert that two types compute to the same type (bivariant).
+ * Assert that two types are bidirectionally assignable (mutually assignable).
  *
  * This checks that types are mutually assignable (A extends B and B extends A),
  * which means they compute to the same result even if their structure differs.
  *
  * Use this when you care about semantic equality rather than structural equality.
- * For strict structural equality, use {@link equal}.
+ * For strict structural equality, use {@link exact}.
  *
  * @example
  * ```ts
  * type _ = Ts.Test.Cases<
- *   Ts.Test.equalComputed<string, string>,      // ✓ Pass
- *   Ts.Test.equalComputed<1 | 2, 2 | 1>,        // ✓ Pass - same union
- *   Ts.Test.equalComputed<string & {}, string>, // ✓ Pass - both compute to string
- *   Ts.Test.equalComputed<string, number>       // ✗ Fail - Type error
+ *   Ts.Test.bid<string, string>,      // ✓ Pass
+ *   Ts.Test.bid<1 | 2, 2 | 1>,        // ✓ Pass - same union
+ *   Ts.Test.bid<string & {}, string>, // ✓ Pass - both compute to string
+ *   Ts.Test.bid<string, number>       // ✗ Fail - Type error
  * >
  * ```
  */
-export type equalComputed<$Expected, $Actual> = $Actual extends $Expected ? $Expected extends $Actual ? true
+export type bid<$Expected, $Actual> = $Actual extends $Expected ? $Expected extends $Actual ? true
   : StaticErrorAssertion<
-    'Types are not computationally equal (Expected does not extend Actual)',
+    'Types are not bidirectionally assignable (Expected does not extend Actual)',
     $Expected,
     $Actual
   >
   : StaticErrorAssertion<
-    'Types are not computationally equal (Actual does not extend Expected)',
+    'Types are not bidirectionally assignable (Actual does not extend Expected)',
     $Expected,
     $Actual
   >
 
 /**
- * Assert that two types compute to the same type (bivariant) at compile time.
+ * Assert that two types are bidirectionally assignable (mutually assignable) at compile time.
  * Checks mutual assignability rather than structural equality.
  *
- * Type-level equivalent: {@link equalComputed}
+ * Type-level equivalent: {@link bid}
  *
  * @example
  * ```ts
- * Ts.Test.equalComputed<string>()('hello') // OK
- * Ts.Test.equalComputed<string | number>()(Math.random() > 0.5 ? 'hello' : 42) // OK - mutually assignable
- * Ts.Test.equalComputed<number>()('hello') // Error
+ * Ts.Test.bid<string>()('hello') // OK
+ * Ts.Test.bid<string | number>()(Math.random() > 0.5 ? 'hello' : 42) // OK - mutually assignable
+ * Ts.Test.bid<number>()('hello') // Error
  * ```
  */
-export const equalComputed = <$Expected>() =>
+export const bid = <$Expected>() =>
 <$Actual>(
   _actual: $Actual extends $Expected ? ($Expected extends $Actual ? $Actual
       : StaticErrorAssertion<
-        'Types are not computationally equal (Expected does not extend Actual)',
+        'Types are not bidirectionally assignable (Expected does not extend Actual)',
         $Expected,
         $Actual
       >)
     : StaticErrorAssertion<
-      'Types are not computationally equal (Actual does not extend Expected)',
+      'Types are not bidirectionally assignable (Actual does not extend Expected)',
       $Expected,
       $Actual
     >,
@@ -132,7 +145,7 @@ export const equalComputed = <$Expected>() =>
  * Equivalent to TypeScript's `extends` keyword: checks if `$Actual extends $Expected`.
  * This is useful for validating type relationships and narrowing.
  *
- * For exact type equality (not just subtyping), use {@link equal} instead.
+ * For exact type equality (not just subtyping), use {@link exact} instead.
  *
  * @example
  * ```ts
@@ -159,7 +172,7 @@ export type sub<$Expected, $Actual> = $Actual extends $Expected ? true
  *
  * The function is a no-op at runtime; all checking happens at compile time.
  *
- * For exact type equality (not just subtyping), use {@link equal} instead.
+ * For exact type equality (not just subtyping), use {@link exact} instead.
  *
  * Type-level equivalent: {@link sub}
  *
@@ -646,23 +659,23 @@ export const array = <$ElementType>() =>
  * Assert that a value exactly equals the expected type, using const to preserve literal types.
  * This eliminates the need for `as` casts when testing with literal values.
  *
- * Related: {@link equal} (non-const variant)
+ * Related: {@link exact} (non-const variant)
  *
  * @example
  * ```ts
  * // Without const - requires cast
- * Ts.Test.equal<{ a: 1 }>()({ a: 1 } as { a: 1 })
+ * Ts.Test.exact<{ a: 1 }>()({ a: 1 } as { a: 1 })
  *
  * // With const - no cast needed!
- * Ts.Test.equalConst<{ a: 1 }>()({ a: 1 })
+ * Ts.Test.exactConst<{ a: 1 }>()({ a: 1 })
  *
  * // Works with any literal type
- * Ts.Test.equalConst<'hello'>()('hello')
- * Ts.Test.equalConst<42>()(42)
- * Ts.Test.equalConst<true>()(true)
+ * Ts.Test.exactConst<'hello'>()('hello')
+ * Ts.Test.exactConst<42>()(42)
+ * Ts.Test.exactConst<true>()(true)
  * ```
  */
-export const equalConst = <$Expected>() =>
+export const exactConst = <$Expected>() =>
 <const $Actual>(
   _actual: (<T>() => T extends $Actual ? 1 : 2) extends (<T>() => T extends $Expected ? 1 : 2) ? $Actual
     : StaticErrorAssertion<
@@ -704,31 +717,31 @@ export const subConst = <$Expected>() =>
  * Assert that a value is mutually assignable with the expected type, using const to preserve literal types.
  * This eliminates the need for `as` casts when testing with literal values.
  *
- * Related: {@link equalComputed} (non-const variant)
+ * Related: {@link bid} (non-const variant)
  *
  * @example
  * ```ts
  * // Without const - requires cast for exact match
- * EqualComputed<1 | 2>()(1 as 1 | 2)
+ * Ts.Test.bid<1 | 2>()(1 as 1 | 2)
  *
  * // With const - no cast needed
- * EqualComputedConst<1 | 2>()(1)  // preserves literal 1
+ * Ts.Test.bidConst<1 | 2>()(1)  // preserves literal 1
  *
  * // Useful for union types
  * type Status = 'pending' | 'complete'
- * EqualComputedConst<Status>()('pending')  // keeps 'pending' literal
+ * Ts.Test.bidConst<Status>()('pending')  // keeps 'pending' literal
  * ```
  */
-export const equalComputedConst = <$Expected>() =>
+export const bidConst = <$Expected>() =>
 <const $Actual>(
   _actual: $Actual extends $Expected ? $Expected extends $Actual ? $Actual
     : StaticErrorAssertion<
-      'Types are not computationally equal (Expected does not extend Actual)',
+      'Types are not bidirectionally assignable (Expected does not extend Actual)',
       $Expected,
       $Actual
     >
     : StaticErrorAssertion<
-      'Types are not computationally equal (Actual does not extend Expected)',
+      'Types are not bidirectionally assignable (Actual does not extend Expected)',
       $Expected,
       $Actual
     >,

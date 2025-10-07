@@ -36,32 +36,32 @@ test('Type narrowing works correctly with isNonNegative predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic non-negative constructor
   const nn1 = nonNegative(5)
-  Ts.Test.equal<NonNegative>()(nn1)
+  Ts.Test.exact<NonNegative>()(nn1)
 
   // Zero is non-negative
   const nn2 = nonNegative(0)
-  Ts.Test.equal<NonNegative>()(nn2)
+  Ts.Test.exact<NonNegative>()(nn2)
 
   // Large positive values
   const nn3 = nonNegative(1000)
-  Ts.Test.equal<NonNegative>()(nn3)
+  Ts.Test.exact<NonNegative>()(nn3)
 
   // Small positive values
   const nn4 = nonNegative(0.001)
-  Ts.Test.equal<NonNegative>()(nn4)
+  Ts.Test.exact<NonNegative>()(nn4)
 
   // Try constructor
   const try1 = tryNonNegative(42)
-  Ts.Test.equal<NonNegative | null>()(try1)
+  Ts.Test.exact<NonNegative | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Ts.Test.equal<NonNegative>()(try1)
+    Ts.Test.exact<NonNegative>()(try1)
   }
 
   // Try with negative returns null
   const try2 = tryNonNegative(-1)
-  Ts.Test.equal<NonNegative | null>()(try2)
+  Ts.Test.exact<NonNegative | null>()(try2)
 })
 
 // === Type Relationships ===
@@ -120,8 +120,8 @@ type _NonNegativeRelationships = Ts.Test.Cases<
 
 // Test constructor return types
 type _ConstructorReturnTypes = Ts.Test.Cases<
-  Ts.Test.equal<ReturnType<typeof nonNegative>, NonNegative>,
-  Ts.Test.equal<ReturnType<typeof tryNonNegative>, NonNegative | null>
+  Ts.Test.exact<ReturnType<typeof nonNegative>, NonNegative>,
+  Ts.Test.exact<ReturnType<typeof tryNonNegative>, NonNegative | null>
 >
 
 // Test the conceptual nature of NonNegative

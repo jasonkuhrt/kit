@@ -42,28 +42,28 @@ test('Type narrowing works correctly with isNonZero predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic non-zero constructor
   const nz1 = nonZero(5)
-  Ts.Test.equal<NonZero>()(nz1)
+  Ts.Test.exact<NonZero>()(nz1)
 
   // Negative non-zero
   const nz2 = nonZero(-10)
-  Ts.Test.equal<NonZero>()(nz2)
+  Ts.Test.exact<NonZero>()(nz2)
 
   // Small non-zero values
   const nz3 = nonZero(0.001)
-  Ts.Test.equal<NonZero>()(nz3)
+  Ts.Test.exact<NonZero>()(nz3)
 
   // Try constructor
   const try1 = tryNonZero(42)
-  Ts.Test.equal<NonZero | null>()(try1)
+  Ts.Test.exact<NonZero | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Ts.Test.equal<NonZero>()(try1)
+    Ts.Test.exact<NonZero>()(try1)
   }
 
   // Try with zero returns null
   const try2 = tryNonZero(0)
-  Ts.Test.equal<NonZero | null>()(try2)
+  Ts.Test.exact<NonZero | null>()(try2)
 })
 
 // === Safe Division Operations ===
@@ -122,21 +122,21 @@ type _NonZeroRelationships = Ts.Test.Cases<
 // Test constructor and operation return types
 type _FunctionReturnTypes = Ts.Test.Cases<
   // Constructor return types
-  Ts.Test.equal<ReturnType<typeof nonZero>, NonZero>,
-  Ts.Test.equal<ReturnType<typeof tryNonZero>, NonZero | null>,
+  Ts.Test.exact<ReturnType<typeof nonZero>, NonZero>,
+  Ts.Test.exact<ReturnType<typeof tryNonZero>, NonZero | null>,
   // Division operation types
-  Ts.Test.equal<ReturnType<typeof safeDivide>, number>,
-  Ts.Test.equal<ReturnType<typeof safeDiv>, number | null>
+  Ts.Test.exact<ReturnType<typeof safeDivide>, number>,
+  Ts.Test.exact<ReturnType<typeof safeDiv>, number | null>
 >
 
 // Test safe division parameter types
 type _SafeDivisionParameters = Ts.Test.Cases<
   // safeDivide requires NonZero as second parameter
-  Ts.Test.equal<Parameters<typeof safeDivide>[0], number>,
-  Ts.Test.equal<Parameters<typeof safeDivide>[1], NonZero>,
+  Ts.Test.exact<Parameters<typeof safeDivide>[0], number>,
+  Ts.Test.exact<Parameters<typeof safeDivide>[1], NonZero>,
   // safeDiv accepts regular numbers
-  Ts.Test.equal<Parameters<typeof safeDiv>[0], number>,
-  Ts.Test.equal<Parameters<typeof safeDiv>[1], number>
+  Ts.Test.exact<Parameters<typeof safeDiv>[0], number>,
+  Ts.Test.exact<Parameters<typeof safeDiv>[1], number>
 >
 
 // Test curried function types

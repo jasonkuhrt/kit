@@ -39,31 +39,31 @@ test('Type narrowing works correctly with isEven predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic even constructor always returns Even & Int
   const even1 = even(4)
-  Ts.Test.equal<Even & Int>()(even1)
+  Ts.Test.exact<Even & Int>()(even1)
 
   // Negative even numbers
   const even2 = even(-2)
-  Ts.Test.equal<Even & Int>()(even2)
+  Ts.Test.exact<Even & Int>()(even2)
 
   // Zero is even
   const even3 = even(0)
-  Ts.Test.equal<Even & Int>()(even3)
+  Ts.Test.exact<Even & Int>()(even3)
 
   // Try constructor
   const try1 = tryEven(6)
-  Ts.Test.equal<(Even & Int) | null>()(try1)
+  Ts.Test.exact<(Even & Int) | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Ts.Test.equal<Even & Int>()(try1)
+    Ts.Test.exact<Even & Int>()(try1)
   }
 
   // Next/prev even operations
   const next = nextEven(3.5) // Should be 4
-  Ts.Test.equal<Even & Int>()(next)
+  Ts.Test.exact<Even & Int>()(next)
 
   const prev = prevEven(5.5) // Should be 4
-  Ts.Test.equal<Even & Int>()(prev)
+  Ts.Test.exact<Even & Int>()(prev)
 })
 
 // === Type Relationships ===
@@ -118,10 +118,10 @@ type _EvenRelationships = Ts.Test.Cases<
 // Test constructor return types
 type _ConstructorReturnTypes = Ts.Test.Cases<
   // All constructors return the intersection type
-  Ts.Test.equal<ReturnType<typeof even>, Even & Int>,
-  Ts.Test.equal<ReturnType<typeof tryEven>, (Even & Int) | null>,
-  Ts.Test.equal<ReturnType<typeof nextEven>, Even & Int>,
-  Ts.Test.equal<ReturnType<typeof prevEven>, Even & Int>
+  Ts.Test.exact<ReturnType<typeof even>, Even & Int>,
+  Ts.Test.exact<ReturnType<typeof tryEven>, (Even & Int) | null>,
+  Ts.Test.exact<ReturnType<typeof nextEven>, Even & Int>,
+  Ts.Test.exact<ReturnType<typeof prevEven>, Even & Int>
 >
 
 // Test predicate return type

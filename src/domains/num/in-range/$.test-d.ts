@@ -111,10 +111,10 @@ type _RangeTypeParameters = Ts.Test.Cases<
 // Test clamp return type transformation
 type _ClampReturnTypes = Ts.Test.Cases<
   // Clamp always returns the target range type
-  Ts.Test.equal<ReturnType<typeof clamp<number, 0, 100>>, InRange<0, 100>>,
-  Ts.Test.equal<ReturnType<typeof clamp<number, -10, 10>>, InRange<-10, 10>>,
+  Ts.Test.exact<ReturnType<typeof clamp<number, 0, 100>>, InRange<0, 100>>,
+  Ts.Test.exact<ReturnType<typeof clamp<number, -10, 10>>, InRange<-10, 10>>,
   // Input type doesn't affect output range
-  Ts.Test.equal<ReturnType<typeof clamp<InRange<0, 50>, 0, 100>>, InRange<0, 100>>
+  Ts.Test.exact<ReturnType<typeof clamp<InRange<0, 50>, 0, 100>>, InRange<0, 100>>
 >
 
 // Test curried function variants

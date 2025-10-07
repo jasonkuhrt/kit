@@ -145,10 +145,12 @@ export interface StaticErrorAssertion<
   $Message extends string = string,
   $Expected = unknown,
   $Actual = unknown,
+  $Tip extends string = never,
 > {
   MESSAGE: $Message
   EXPECTED: $Expected
   ACTUAL: $Actual
+  TIP: $Tip
 }
 
 /**

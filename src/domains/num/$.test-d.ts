@@ -52,55 +52,55 @@ test('Type narrowing works correctly when combining predicates', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Single brand constructors
   const pos = Num.Positive.from(5)
-  Ts.Test.equal<Num.Positive>()(pos)
+  Ts.Test.exact<Num.Positive>()(pos)
 
   const int = Num.Int.from(42)
-  Ts.Test.equal<Num.Int>()(int)
+  Ts.Test.exact<Num.Int>()(int)
 
   const finite = Num.Finite.from(3.14)
-  Ts.Test.equal<Num.Finite>()(finite)
+  Ts.Test.exact<Num.Finite>()(finite)
 
   const zero = Num.Zero.from(0)
-  Ts.Test.equal<Num.Zero>()(zero)
+  Ts.Test.exact<Num.Zero>()(zero)
 
   const nonZero = Num.NonZero.from(1)
-  Ts.Test.equal<Num.NonZero>()(nonZero)
+  Ts.Test.exact<Num.NonZero>()(nonZero)
 
   const neg = Num.Negative.from(-5)
-  Ts.Test.equal<Num.Negative>()(neg)
+  Ts.Test.exact<Num.Negative>()(neg)
 
   const nonNeg = Num.NonNegative.from(0)
-  Ts.Test.equal<Num.NonNegative>()(nonNeg)
+  Ts.Test.exact<Num.NonNegative>()(nonNeg)
 
   const nonPos = Num.NonPositive.from(0)
-  Ts.Test.equal<Num.NonPositive>()(nonPos)
+  Ts.Test.exact<Num.NonPositive>()(nonPos)
 
   const even = Num.Even.from(4)
-  Ts.Test.equal<Num.Even & Num.Int>()(even)
+  Ts.Test.exact<Num.Even & Num.Int>()(even)
 
   const odd = Num.Odd.from(3)
-  Ts.Test.equal<Num.Odd & Num.Int>()(odd)
+  Ts.Test.exact<Num.Odd & Num.Int>()(odd)
 
   const safeInt = Num.SafeInt.from(1000)
-  Ts.Test.equal<Num.SafeInt & Num.Int>()(safeInt)
+  Ts.Test.exact<Num.SafeInt & Num.Int>()(safeInt)
 
   const float = Num.Float.from(3.14)
-  Ts.Test.equal<Num.Float & Num.Finite>()(float)
+  Ts.Test.exact<Num.Float & Num.Finite>()(float)
 
   // Range constructor
   const inRange = Num.InRange.from(50, 0, 100)
-  Ts.Test.equal<Num.InRange<0, 100>>()(inRange)
+  Ts.Test.exact<Num.InRange<0, 100>>()(inRange)
 
   // Percentage constructor
   const pct = Num.Percentage.from(0.75)
-  Ts.Test.equal<Num.Percentage>()(pct)
+  Ts.Test.exact<Num.Percentage>()(pct)
 
   // Angle constructors
   const rad = Num.Radians.from(Math.PI)
-  Ts.Test.equal<Num.Radians & Num.Finite>()(rad)
+  Ts.Test.exact<Num.Radians & Num.Finite>()(rad)
 
   const deg = Num.Degrees.from(180)
-  Ts.Test.equal<Num.Degrees & Num.Finite>()(deg)
+  Ts.Test.exact<Num.Degrees & Num.Finite>()(deg)
 })
 
 // === Try Constructors ===
@@ -108,19 +108,19 @@ test('Constructor functions produce correctly branded types', () => {
 test('Try constructors return branded types or null', () => {
   // Try constructors have correct return types
   const tryPos = Num.Positive.tryFrom(5)
-  Ts.Test.equal<Num.Positive | null>()(tryPos)
+  Ts.Test.exact<Num.Positive | null>()(tryPos)
 
   const tryInt = Num.Int.tryFrom(42.5)
-  Ts.Test.equal<Num.Int | null>()(tryInt)
+  Ts.Test.exact<Num.Int | null>()(tryInt)
 
   const tryFinite = Num.Finite.tryFrom(Infinity)
-  Ts.Test.equal<Num.Finite | null>()(tryFinite)
+  Ts.Test.exact<Num.Finite | null>()(tryFinite)
 
   // Type narrowing with try constructors
   const value = 42
   const result = Num.Positive.tryFrom(value)
   if (result !== null) {
-    Ts.Test.equal<Num.Positive>()(result)
+    Ts.Test.exact<Num.Positive>()(result)
   }
 })
 
@@ -282,18 +282,18 @@ type _RangeTypes = Ts.Test.Cases<
 
 // Test that arithmetic operations return base number type
 type _ArithmeticReturnTypes = Ts.Test.Cases<
-  Ts.Test.equal<ReturnType<typeof Num.add>, number>,
-  Ts.Test.equal<ReturnType<typeof Num.multiply>, number>,
-  Ts.Test.equal<ReturnType<typeof Num.subtract>, number>,
-  Ts.Test.equal<ReturnType<typeof Num.round>, number>
+  Ts.Test.exact<ReturnType<typeof Num.add>, number>,
+  Ts.Test.exact<ReturnType<typeof Num.multiply>, number>,
+  Ts.Test.exact<ReturnType<typeof Num.subtract>, number>,
+  Ts.Test.exact<ReturnType<typeof Num.round>, number>
 >
 
 // Test angle conversion types
 type _AngleConversions = Ts.Test.Cases<
-  Ts.Test.equal<Parameters<typeof Num.degToRad>[0], Num.Degrees>,
-  Ts.Test.equal<ReturnType<typeof Num.degToRad>, Num.Radians>,
-  Ts.Test.equal<Parameters<typeof Num.radToDeg>[0], Num.Radians>,
-  Ts.Test.equal<ReturnType<typeof Num.radToDeg>, Num.Degrees>
+  Ts.Test.exact<Parameters<typeof Num.degToRad>[0], Num.Degrees>,
+  Ts.Test.exact<ReturnType<typeof Num.degToRad>, Num.Radians>,
+  Ts.Test.exact<Parameters<typeof Num.radToDeg>[0], Num.Radians>,
+  Ts.Test.exact<ReturnType<typeof Num.radToDeg>, Num.Degrees>
 >
 
 // Test curried function types

@@ -36,55 +36,55 @@ test('sup (supertype)', () => {
   // Ts.Test.sup<Base>()(extended) // Should pass - Extended extends Base
 })
 
-test('equal (exact structural equality)', () => {
+test('exact (exact structural equality)', () => {
   // Should pass
   // Test exact type equality
-  Ts.Test.equal<string>()('hello')
-  Ts.Test.equal<{ a: 1 }>()({ a: 1 } as { a: 1 })
+  Ts.Test.exact<string>()('hello')
+  Ts.Test.exact<{ a: 1 }>()({ a: 1 } as { a: 1 })
   // @ts-expect-error - Types are not exactly equal (too narrow)
-  Ts.Test.equal<string | number>()('hello')
+  Ts.Test.exact<string | number>()('hello')
   // @ts-expect-error - Types are not exactly equal (too wide)
-  Ts.Test.equal<string | number>()(ArrMut.getRandomly(['hello' as string, 1 as number, true]))
+  Ts.Test.exact<string | number>()(ArrMut.getRandomly(['hello' as string, 1 as number, true]))
   // @ts-expect-error - Types are not exactly equal
-  Ts.Test.equal<{ a: 1; b?: 2 }>()({ a: 1 })
+  Ts.Test.exact<{ a: 1; b?: 2 }>()({ a: 1 })
 })
 
-test('assertEqualComputed (computed equality)', () => {
-  // Union order doesn't matter for computed equality
+test('bid (bidirectional assignability)', () => {
+  // Union order doesn't matter for bidirectional assignability
   type Union1 = 1 | 2
   type Union2 = 2 | 1
   const union1 = 1 as Union1
-  Ts.Test.equalComputed<Union2>()(union1)
+  Ts.Test.bid<Union2>()(union1)
 
   // @ts-expect-error - Not mutually assignable (too narrow)
-  Ts.Test.equalComputed<string | number>()('hello')
+  Ts.Test.bid<string | number>()('hello')
   // @ts-expect-error - Not mutually assignable (different types)
-  Ts.Test.equalComputed<number>()('hello')
+  Ts.Test.bid<number>()('hello')
 })
 
 // === Test Const Variants ===
 
-test('assertEqualConst - preserves literal types without cast', () => {
+test('exactConst - preserves literal types without cast', () => {
   // String literals
-  Ts.Test.equalConst<'hello'>()('hello')
+  Ts.Test.exactConst<'hello'>()('hello')
 
   // Number literals
-  Ts.Test.equalConst<42>()(42)
+  Ts.Test.exactConst<42>()(42)
 
   // Boolean literals
-  Ts.Test.equalConst<true>()(true)
+  Ts.Test.exactConst<true>()(true)
 
   // Object literals - no cast needed!
-  Ts.Test.equalConst<{ readonly a: 1 }>()({ a: 1 })
-  Ts.Test.equalConst<{ readonly name: 'Alice'; readonly age: 30 }>()({ name: 'Alice', age: 30 })
+  Ts.Test.exactConst<{ readonly a: 1 }>()({ a: 1 })
+  Ts.Test.exactConst<{ readonly name: 'Alice'; readonly age: 30 }>()({ name: 'Alice', age: 30 })
 
   // Array literals
-  Ts.Test.equalConst<readonly [1, 2, 3]>()([1, 2, 3])
+  Ts.Test.exactConst<readonly [1, 2, 3]>()([1, 2, 3])
 
   // @ts-expect-error - Types don't match
-  Ts.Test.equalConst<'hello'>()('world')
+  Ts.Test.exactConst<'hello'>()('world')
   // @ts-expect-error - Wrong literal value
-  Ts.Test.equalConst<42>()(43)
+  Ts.Test.exactConst<42>()(43)
 })
 
 test('subConst - preserves literal types', () => {
@@ -102,20 +102,20 @@ test('subConst - preserves literal types', () => {
   Ts.Test.subConst<{ a: number; b: string }>()({ a: 1 })
 })
 
-test('equalComputedConst - mutual assignability with literals', () => {
+test('bidConst - mutual assignability with literals', () => {
   // Union types with literals
   type Status = 'pending' | 'complete'
-  Ts.Test.equalComputedConst<Status>()('pending')
-  Ts.Test.equalComputedConst<Status>()('complete')
+  Ts.Test.bidConst<Status>()('pending')
+  Ts.Test.bidConst<Status>()('complete')
 
   // Number unions
   type Score = 1 | 2 | 3 | 4 | 5
-  Ts.Test.equalComputedConst<Score>()(3)
+  Ts.Test.bidConst<Score>()(3)
 
   // @ts-expect-error - Not in union
-  Ts.Test.equalComputedConst<Status>()('invalid')
+  Ts.Test.bidConst<Status>()('invalid')
   // @ts-expect-error - Wrong type
-  Ts.Test.equalComputedConst<Status>()(42)
+  Ts.Test.bidConst<Status>()(42)
 })
 
 const syncValue = 42
@@ -166,33 +166,33 @@ test('integration with tryOr', () => {
 // Individual type assertions
 type _SubtypeTest = Ts.Test.sub<string, 'hello'> // Should be true
 type _SupertypeTest = Ts.Test.sup<{ a: 1 }, { a: 1; b: 2 }> // Should be true
-type _ExactTest = Ts.Test.equal<number, number> // Should be true
-type _ComputedTest = Ts.Test.equalComputed<1 | 2, 2 | 1> // Should be true
+type _ExactTest = Ts.Test.exact<number, number> // Should be true
+type _ComputedTest = Ts.Test.bid<1 | 2, 2 | 1> // Should be true
 type _ExtendsTest = Ts.Test.sub<string, 'hello'> // Should be true
 
-// Test equal vs equalComputed differences
-type _EqualStructural1 = Ts.Test.equal<1 | 2, 1 | 2> // true - same structure
-type _EqualStructural2 = Ts.Test.equal<1 | 2, 2 | 1> // true - union order doesn't matter for structural equality either
+// Test exact vs bid differences
+type _EqualStructural1 = Ts.Test.exact<1 | 2, 1 | 2> // true - same structure
+type _EqualStructural2 = Ts.Test.exact<1 | 2, 2 | 1> // true - union order doesn't matter for structural equality either
 
-type _EqualComputed1 = Ts.Test.equalComputed<1 | 2, 2 | 1> // true - same computed type
-type _EqualComputed2 = Ts.Test.equalComputed<string & {}, string> // true - both compute to string
-type _EqualComputed3 = Ts.Test.equalComputed<number, number> // true
+type _EqualComputed1 = Ts.Test.bid<1 | 2, 2 | 1> // true - same computed type
+type _EqualComputed2 = Ts.Test.bid<string & {}, string> // true - both compute to string
+type _EqualComputed3 = Ts.Test.bid<number, number> // true
 
 // === Test testCase and testCases Types ===
 
 // Test testCase type - single assertion wrapper
 type _testCase1 = Ts.Test.Case<true> // Should work
-type _testCase2 = Ts.Test.Case<Ts.Test.equal<string, string>> // Should work
+type _testCase2 = Ts.Test.Case<Ts.Test.exact<string, string>> // Should work
 type _testCase3 = Ts.Test.Case<Ts.Test.sub<string, 'hello'>> // Should work
 
 // @ts-expect-error - false doesn't extend true
 type _testCaseFail1 = Ts.Test.Case<false>
 // @ts-expect-error - equal returns false for mismatched types
-type _testCaseFail2 = Ts.Test.Case<Ts.Test.equal<string, number>>
+type _testCaseFail2 = Ts.Test.Case<Ts.Test.exact<string, number>>
 
 // Test testCases type - multiple assertions
 type _testCases1 = Ts.Test.Cases<
-  Ts.Test.equal<string, string>,
+  Ts.Test.exact<string, string>,
   Ts.Test.sub<string, 'hello'>,
   Ts.Test.equalNever<never>,
   Ts.Test.sub<string, 'hello'>
@@ -200,11 +200,11 @@ type _testCases1 = Ts.Test.Cases<
 
 // Test testCases with many assertions
 type _testCasesMany = Ts.Test.Cases<
-  Ts.Test.equal<1, 1>,
-  Ts.Test.equal<true, true>,
-  Ts.Test.equal<true, true>,
+  Ts.Test.exact<1, 1>,
+  Ts.Test.exact<true, true>,
+  Ts.Test.exact<true, true>,
   // @ts-expect-error - This should fail
-  Ts.Test.equal<1, 0>
+  Ts.Test.exact<1, 0>
 >
 
 // === Test parameters ===

@@ -43,27 +43,27 @@ test('Type narrowing works correctly with isPercentage predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic percentage constructor
   const pct1 = percentage(0.5)
-  Ts.Test.equal<Percentage>()(pct1)
+  Ts.Test.exact<Percentage>()(pct1)
 
   // Edge cases
   const pct2 = percentage(0)
-  Ts.Test.equal<Percentage>()(pct2)
+  Ts.Test.exact<Percentage>()(pct2)
 
   const pct3 = percentage(1)
-  Ts.Test.equal<Percentage>()(pct3)
+  Ts.Test.exact<Percentage>()(pct3)
 
   // Try constructor
   const try1 = tryPercentage(0.75)
-  Ts.Test.equal<Percentage | null>()(try1)
+  Ts.Test.exact<Percentage | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Ts.Test.equal<Percentage>()(try1)
+    Ts.Test.exact<Percentage>()(try1)
   }
 
   // From percent conversion
   const pct4 = fromPercent(50) // 50% -> 0.5
-  Ts.Test.equal<Percentage>()(pct4)
+  Ts.Test.exact<Percentage>()(pct4)
 })
 
 // === Type Relationships ===
@@ -88,18 +88,18 @@ test('Conversion operations have correct types', () => {
 
   // toPercent returns plain number
   const percent = toPercent(pct)
-  Ts.Test.equal<number>()(percent)
+  Ts.Test.exact<number>()(percent)
 
   // fromPercent returns Percentage
   const fromPct = fromPercent(75)
-  Ts.Test.equal<Percentage>()(fromPct)
+  Ts.Test.exact<Percentage>()(fromPct)
 
   // clampToPercentage always returns Percentage
   const clamped1 = clampToPercentage(1.5)
-  Ts.Test.equal<Percentage>()(clamped1)
+  Ts.Test.exact<Percentage>()(clamped1)
 
   const clamped2 = clampToPercentage(-0.5)
-  Ts.Test.equal<Percentage>()(clamped2)
+  Ts.Test.exact<Percentage>()(clamped2)
 })
 
 // === Type-Level Only Tests ===
@@ -119,20 +119,20 @@ type _PercentageRelationships = Ts.Test.Cases<
 
 // Test constructor return types
 type _ConstructorReturnTypes = Ts.Test.Cases<
-  Ts.Test.equal<ReturnType<typeof percentage>, Percentage>,
-  Ts.Test.equal<ReturnType<typeof tryPercentage>, Percentage | null>,
-  Ts.Test.equal<ReturnType<typeof fromPercent>, Percentage>,
-  Ts.Test.equal<ReturnType<typeof clampToPercentage>, Percentage>
+  Ts.Test.exact<ReturnType<typeof percentage>, Percentage>,
+  Ts.Test.exact<ReturnType<typeof tryPercentage>, Percentage | null>,
+  Ts.Test.exact<ReturnType<typeof fromPercent>, Percentage>,
+  Ts.Test.exact<ReturnType<typeof clampToPercentage>, Percentage>
 >
 
 // Test conversion function types
 type _ConversionTypes = Ts.Test.Cases<
   // toPercent accepts Percentage and returns number
-  Ts.Test.equal<Parameters<typeof toPercent>[0], Percentage>,
-  Ts.Test.equal<ReturnType<typeof toPercent>, number>,
+  Ts.Test.exact<Parameters<typeof toPercent>[0], Percentage>,
+  Ts.Test.exact<ReturnType<typeof toPercent>, number>,
   // fromPercent accepts number and returns Percentage
-  Ts.Test.equal<Parameters<typeof fromPercent>[0], number>,
-  Ts.Test.equal<ReturnType<typeof fromPercent>, Percentage>
+  Ts.Test.exact<Parameters<typeof fromPercent>[0], number>,
+  Ts.Test.exact<ReturnType<typeof fromPercent>, Percentage>
 >
 
 // Demonstrate the dual nature of Percentage
