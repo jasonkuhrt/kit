@@ -210,6 +210,40 @@ export type subNot<$NotExpected, $Actual> = $Actual extends $NotExpected ? Stati
   : true
 
 /**
+ * Assert that a value's type does NOT extend the given type.
+ *
+ * Equivalent to checking that `$Actual extends $NotExpected` is false.
+ * Useful for validating that types are properly distinct or mutually exclusive.
+ *
+ * The function is a no-op at runtime; all checking happens at compile time.
+ *
+ * Type-level equivalent: {@link subNot}
+ *
+ * @example
+ * ```ts
+ * // Type checks happen at compile time
+ * Ts.Test.subNot<number>()('hello')    // OK - string doesn't extend number
+ * Ts.Test.subNot<string>()('hello')    // Error - 'hello' extends string
+ * Ts.Test.subNot<string>()(42)         // OK - number doesn't extend string
+ *
+ * // Validating mutually exclusive types
+ * type Positive = number & { __positive: true }
+ * type Negative = number & { __negative: true }
+ * const neg: Negative = -5 as Negative
+ * Ts.Test.subNot<Positive>()(neg)      // OK - Negative doesn't extend Positive
+ * ```
+ */
+export const subNot = <$NotExpected>() =>
+<$Actual>(
+  _actual: $Actual extends $NotExpected ? StaticErrorAssertion<
+      'Actual value type extends type it should not extend',
+      $NotExpected,
+      $Actual
+    >
+    : $Actual,
+): void => {}
+
+/**
  * Assert that a type is exactly `never`.
  *
  * @example
@@ -524,12 +558,12 @@ export const promise = <$Type>() =>
  * @example
  * ```ts
  * type _ = Ts.Test.Cases<
- *   Ts.Test.PromiseNot<number>,          // ✓ Pass
- *   Ts.Test.PromiseNot<Promise<number>>  // ✗ Fail - Type error
+ *   Ts.Test.promiseNot<number>,          // ✓ Pass
+ *   Ts.Test.promiseNot<Promise<number>>  // ✗ Fail - Type error
  * >
  * ```
  */
-export type PromiseNot<$Actual> = $Actual extends Promise<any> ? StaticErrorAssertion<
+export type promiseNot<$Actual> = $Actual extends Promise<any> ? StaticErrorAssertion<
     'Type is a Promise but should not be',
     never,
     $Actual
@@ -539,12 +573,12 @@ export type PromiseNot<$Actual> = $Actual extends Promise<any> ? StaticErrorAsse
 /**
  * Assert that a value is NOT a Promise.
  *
- * Type-level equivalent: {@link PromiseNot}
+ * Type-level equivalent: {@link promiseNot}
  *
  * @example
  * ```ts
- * PromiseNot()(42) // OK
- * PromiseNot()(Promise.resolve(42)) // Error - is a Promise
+ * Ts.Test.promiseNot()(42) // OK
+ * Ts.Test.promiseNot()(Promise.resolve(42)) // Error - is a Promise
  * ```
  */
 export const promiseNot = <$Actual>(
