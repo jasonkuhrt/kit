@@ -473,10 +473,32 @@ export type Writeable<$Object> = {
 // Note: To exclude both null and undefined, use: Null.Exclude<Undefined.Exclude<T>>
 
 /**
- * Alias for {@link ExtendsExact}.
- * Requires exact type matching without excess properties.
+ * @deprecated - Commented out 2025-01-07
+ *
+ * This utility was too strict - requires BIDIRECTIONAL extends, which rejects
+ * valid narrowed types (e.g., { id: true } for { id: boolean }).
+ *
+ * Use Obj.NoExcess instead, which:
+ * - ✓ Rejects excess properties (what you want)
+ * - ✓ Allows valid subtypes/narrowing (what you need)
+ *
+ * If a use case for true bidirectional exact matching emerges, uncomment.
+ * Otherwise, remove after 3-6 months (target: ~2025-07-01).
+ *
+ * Original implementation:
  */
-export type Exact<$Value, $Constraint> = ExtendsExact<$Value, $Constraint>
+// export type ExtendsExact<$Input, $Constraint> =
+//   $Input extends $Constraint
+//     ? $Constraint extends $Input
+//       ? $Input
+//       : never
+//     : never
+
+// /**
+//  * Alias for {@link ExtendsExact}.
+//  * Requires exact type matching without excess properties.
+//  */
+// export type Exact<$Value, $Constraint> = ExtendsExact<$Value, $Constraint>
 
 // Note: Values is exported from Obj module (obj/type-utils.ts)
 

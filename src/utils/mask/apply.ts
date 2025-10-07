@@ -107,7 +107,7 @@ export const applyExact = <
   data,
   mask extends Mask<any>,
 >(
-  data: Ts.ExtendsExact<data, GetDataType<mask>>,
+  data: Obj.NoExcess<GetDataType<mask>, data>,
   mask: mask,
 ): Apply<data, mask> => {
   return applyInternal(data, mask) as Apply<data, mask>

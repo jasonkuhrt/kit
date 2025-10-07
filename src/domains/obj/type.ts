@@ -49,16 +49,74 @@ export type Empty = Record<string, never>
 export const empty = (): Empty => Object.freeze({}) as Empty
 
 /**
- * Like Ts.Exact but also requires the value to be non-empty.
+ * Enforces that a type has no excess properties beyond those defined in the expected type.
+ *
+ * This utility intersects the actual type with a record that marks all excess keys as `never`,
+ * causing TypeScript to reject values with properties not present in the expected type.
+ * Particularly useful in generic contexts where excess property checking is bypassed.
+ *
+ * @template $Expected - The type defining allowed properties
+ * @template $Actual - The actual type to check for excess properties
  *
  * @example
  * ```ts
- * type T1 = ExactNonEmpty<{}, { a: string }>  // never (empty object)
- * type T2 = ExactNonEmpty<{ a: string }, { a: string }>  // { a: string }
+ * type User = { name: string; age: number }
+ *
+ * // Standard generic - allows excess properties
+ * function test1<T extends User>(input: T): void {}
+ * test1({ name: 'Alice', age: 30, extra: true })  // ✓ No error (excess allowed)
+ *
+ * // With NoExcess - rejects excess
+ * function test2<T extends User>(input: Obj.NoExcess<User, T>): void {}
+ * test2({ name: 'Alice', age: 30, extra: true })  // ✗ Error: 'extra' is never
+ * test2({ name: 'Alice', age: 30 })  // ✓ OK
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Using with optional properties
+ * type Config = { id: string; debug?: boolean }
+ *
+ * function configure<T extends Config>(config: Obj.NoExcess<Config, T>): void {}
+ *
+ * configure({ id: 'test' })  // ✓ OK - optional omitted
+ * configure({ id: 'test', debug: true })  // ✓ OK - optional included
+ * configure({ id: 'test', invalid: 'x' })  // ✗ Error: 'invalid' is never
+ * ```
+ *
+ * @remarks
+ * This works by creating a type that's the intersection of:
+ * 1. The actual type as-is
+ * 2. A record marking excess keys (keys in Actual but not in Expected) as `never`
+ *
+ * When a property is typed as `never`, TypeScript requires that it either:
+ * - Not be present at all, OR
+ * - Have a value that extends `never` (which is impossible for non-never types)
+ *
+ * This forces a type error when excess properties are provided.
+ *
+ * @see {@link NoExcessNonEmpty} for non-empty variant
+ */
+export type NoExcess<$Expected, $Actual> = $Actual & Record<Exclude<keyof $Actual, keyof $Expected>, never>
+
+/**
+ * Like {@link NoExcess} but also requires the object to be non-empty.
+ *
+ * Enforces that:
+ * 1. Object has at least one property (not empty)
+ * 2. Object has no excess properties beyond the constraint
+ *
+ * @example
+ * ```ts
+ * type User = { name: string }
+ *
+ * type T1 = NoExcessNonEmpty<{ name: 'Alice' }, User>        // ✓ Pass
+ * type T2 = NoExcessNonEmpty<{}, User>                       // ✗ Fail - empty
+ * type T3 = NoExcessNonEmpty<{ name: 'Bob', age: 30 }, User> // ✗ Fail - excess
  * ```
  */
-export type ExactNonEmpty<$Value extends object, $Constraint> = IsEmpty<$Value> extends true ? never
-  : Ts.Exact<$Value, $Constraint>
+export type NoExcessNonEmpty<$Value extends object, $Constraint> = IsEmpty<$Value> extends true ? never
+  : NoExcess<$Constraint, $Value>
 
 //
 //

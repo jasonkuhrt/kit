@@ -286,13 +286,12 @@ export const sub = <$Expected>() =>
  * @see {@link exact} for exact structural equality
  */
 export type subNoExcess<$Expected, $Actual> = $Actual extends $Expected
-  ? Exclude<keyof $Actual, keyof $Expected> extends never
-    ? true
-    : StaticErrorAssertion<
-      'Type has excess properties not present in expected type',
-      $Expected,
-      $Actual
-    >
+  ? Exclude<keyof $Actual, keyof $Expected> extends never ? true
+  : StaticErrorAssertion<
+    'Type has excess properties not present in expected type',
+    $Expected,
+    $Actual
+  >
   : StaticErrorAssertion<
     'Actual type does not extend expected type',
     $Expected,
@@ -347,14 +346,7 @@ export type subNoExcess<$Expected, $Actual> = $Actual extends $Expected
  */
 export const subNoExcess = <$Expected>() =>
 <$Actual>(
-  _actual: $Actual extends $Expected
-    ? Exclude<keyof $Actual, keyof $Expected> extends never
-      ? $Actual
-      : StaticErrorAssertion<
-        'Value has excess properties not present in expected type',
-        $Expected,
-        $Actual
-      >
+  _actual: $Actual extends $Expected ? Obj.NoExcess<$Expected, $Actual>
     : StaticErrorAssertion<
       'Actual value type does not extend expected type',
       $Expected,
