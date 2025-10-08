@@ -1,322 +1,283 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`join paths > join({"path":{"segments":[".."],"_tag":"PathRelative"},"_tag":"LocRelDir"}, {"path":{"segments":["lib"],"_tag":"PathRelative"},"file":{"stem":"utils","exten...) 1`] = `
+exports[`join paths > join(AbsDir { path: Abs { segments: [ 'home' ], _tag: 'PathAbs' }, _tag: 'LocAbsDir' ..., RelDir { path: Rel { segments: [ 'documents' ], _tag: 'PathRelative' }, _tag: 'L...) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-{
-  "path": {
-    "segments": [
-      ".."
-    ],
-    "_tag": "PathRelative"
+AbsDir {
+  path: Abs {
+    segments: [ 'home' ],
+    _tag: 'PathAbs'
   },
-  "_tag": "LocRelDir"
+  _tag: 'LocAbsDir'
 }
 ────────────────────────────────────────────────────
-{
-  "path": {
-    "segments": [
-      "lib"
-    ],
-    "_tag": "PathRelative"
+RelDir {
+  path: Rel {
+    segments: [ 'documents' ],
+    _tag: 'PathRelative'
   },
-  "file": {
-    "stem": "utils",
-    "extension": ".js",
-    "_tag": "File"
-  },
-  "_tag": "LocRelFile"
+  _tag: 'LocRelDir'
 }
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
-{
-  "path": {
-    "segments": [
-      "lib"
-    ],
-    "_tag": "PathRelative"
+AbsDir {
+  path: Abs {
+    segments: [ 'home', 'documents' ],
+    _tag: 'PathAbs'
   },
-  "file": {
-    "stem": "utils",
-    "extension": ".js",
-    "_tag": "File"
-  },
-  "_tag": "LocRelFile"
+  _tag: 'LocAbsDir'
 }
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`join paths > join({"path":{"segments":["home"],"_tag":"PathAbs"},"_tag":"LocAbsDir"}, {"path":{"segments":["documents"],"_tag":"PathRelative"},"_tag":"LocRelDir"}) 1`] = `
+exports[`join paths > join(AbsDir { path: Abs { segments: [ 'home' ], _tag: 'PathAbs' }, _tag: 'LocAbsDir' ..., RelFile { path: Rel { segments: [], _tag: 'PathRelative' }, file: File { stem: '...) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-{
-  "path": {
-    "segments": [
-      "home"
-    ],
-    "_tag": "PathAbs"
+AbsDir {
+  path: Abs {
+    segments: [ 'home' ],
+    _tag: 'PathAbs'
   },
-  "_tag": "LocAbsDir"
+  _tag: 'LocAbsDir'
 }
 ────────────────────────────────────────────────────
-{
-  "path": {
-    "segments": [
-      "documents"
-    ],
-    "_tag": "PathRelative"
+RelFile {
+  path: Rel {
+    segments: [],
+    _tag: 'PathRelative'
   },
-  "_tag": "LocRelDir"
+  file: File {
+    stem: 'file',
+    extension: '.txt',
+    _tag: 'File'
+  },
+  _tag: 'LocRelFile'
 }
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
-{
-  "path": {
-    "segments": [
-      "home",
-      "documents"
-    ],
-    "_tag": "PathAbs"
+AbsFile {
+  path: Abs {
+    segments: [ 'home' ],
+    _tag: 'PathAbs'
   },
-  "_tag": "LocAbsDir"
+  file: File {
+    stem: 'file',
+    extension: '.txt',
+    _tag: 'File'
+  },
+  _tag: 'LocAbsFile'
 }
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`join paths > join({"path":{"segments":["home"],"_tag":"PathAbs"},"_tag":"LocAbsDir"}, {"path":{"segments":[],"_tag":"PathRelative"},"file":{"stem":"file","extension":...) 1`] = `
+exports[`join paths > join(AbsDir { path: Abs { segments: [], _tag: 'PathAbs' }, _tag: 'LocAbsDir' }, RelDir { path: Rel { segments: [ 'home' ], _tag: 'PathRelative' }, _tag: 'LocRel...) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-{
-  "path": {
-    "segments": [
-      "home"
-    ],
-    "_tag": "PathAbs"
+AbsDir {
+  path: Abs {
+    segments: [],
+    _tag: 'PathAbs'
   },
-  "_tag": "LocAbsDir"
+  _tag: 'LocAbsDir'
 }
 ────────────────────────────────────────────────────
-{
-  "path": {
-    "segments": [],
-    "_tag": "PathRelative"
+RelDir {
+  path: Rel {
+    segments: [ 'home' ],
+    _tag: 'PathRelative'
   },
-  "file": {
-    "stem": "file",
-    "extension": ".txt",
-    "_tag": "File"
-  },
-  "_tag": "LocRelFile"
+  _tag: 'LocRelDir'
 }
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
-{
-  "path": {
-    "segments": [
-      "home"
-    ],
-    "_tag": "PathAbs"
+AbsDir {
+  path: Abs {
+    segments: [ 'home' ],
+    _tag: 'PathAbs'
   },
-  "file": {
-    "stem": "file",
-    "extension": ".txt",
-    "_tag": "File"
-  },
-  "_tag": "LocAbsFile"
+  _tag: 'LocAbsDir'
 }
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`join paths > join({"path":{"segments":["src"],"_tag":"PathRelative"},"_tag":"LocRelDir"}, {"path":{"segments":["..","test"],"_tag":"PathRelative"},"file":{"stem":"file","...) 1`] = `
+exports[`join paths > join(AbsDir { path: Abs { segments: [], _tag: 'PathAbs' }, _tag: 'LocAbsDir' }, RelFile { path: Rel { segments: [], _tag: 'PathRelative' }, file: File { stem: '...) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-{
-  "path": {
-    "segments": [
-      "src"
-    ],
-    "_tag": "PathRelative"
+AbsDir {
+  path: Abs {
+    segments: [],
+    _tag: 'PathAbs'
   },
-  "_tag": "LocRelDir"
+  _tag: 'LocAbsDir'
 }
 ────────────────────────────────────────────────────
-{
-  "path": {
-    "segments": [
-      "..",
-      "test"
-    ],
-    "_tag": "PathRelative"
+RelFile {
+  path: Rel {
+    segments: [],
+    _tag: 'PathRelative'
   },
-  "file": {
-    "stem": "file",
-    "extension": ".ts",
-    "_tag": "File"
+  file: File {
+    stem: 'file',
+    extension: '.txt',
+    _tag: 'File'
   },
-  "_tag": "LocRelFile"
+  _tag: 'LocRelFile'
 }
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
-{
-  "path": {
-    "segments": [
-      "test"
-    ],
-    "_tag": "PathRelative"
+AbsFile {
+  path: Abs {
+    segments: [],
+    _tag: 'PathAbs'
   },
-  "file": {
-    "stem": "file",
-    "extension": ".ts",
-    "_tag": "File"
+  file: File {
+    stem: 'file',
+    extension: '.txt',
+    _tag: 'File'
   },
-  "_tag": "LocRelFile"
+  _tag: 'LocAbsFile'
 }
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`join paths > join({"path":{"segments":["src"],"_tag":"PathRelative"},"_tag":"LocRelDir"}, {"path":{"segments":["components"],"_tag":"PathRelative"},"_tag":"LocRelDir"}) 1`] = `
+exports[`join paths > join(RelDir { path: Rel { segments: [ '..' ], _tag: 'PathRelative' }, _tag: 'LocRelDi..., RelFile { path: Rel { segments: [ 'lib' ], _tag: 'PathRelative' }, file: File { ...) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-{
-  "path": {
-    "segments": [
-      "src"
-    ],
-    "_tag": "PathRelative"
+RelDir {
+  path: Rel {
+    segments: [ '..' ],
+    _tag: 'PathRelative'
   },
-  "_tag": "LocRelDir"
+  _tag: 'LocRelDir'
 }
 ────────────────────────────────────────────────────
-{
-  "path": {
-    "segments": [
-      "components"
-    ],
-    "_tag": "PathRelative"
+RelFile {
+  path: Rel {
+    segments: [ 'lib' ],
+    _tag: 'PathRelative'
   },
-  "_tag": "LocRelDir"
+  file: File {
+    stem: 'utils',
+    extension: '.js',
+    _tag: 'File'
+  },
+  _tag: 'LocRelFile'
 }
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
-{
-  "path": {
-    "segments": [
-      "src",
-      "components"
-    ],
-    "_tag": "PathRelative"
+RelFile {
+  path: Rel {
+    segments: [ 'lib' ],
+    _tag: 'PathRelative'
   },
-  "_tag": "LocRelDir"
+  file: File {
+    stem: 'utils',
+    extension: '.js',
+    _tag: 'File'
+  },
+  _tag: 'LocRelFile'
 }
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`join paths > join({"path":{"segments":["src"],"_tag":"PathRelative"},"_tag":"LocRelDir"}, {"path":{"segments":[],"_tag":"PathRelative"},"file":{"stem":"index","extension"...) 1`] = `
+exports[`join paths > join(RelDir { path: Rel { segments: [ 'src' ], _tag: 'PathRelative' }, _tag: 'LocRelD..., RelDir { path: Rel { segments: [ 'components' ], _tag: 'PathRelative' }, _tag: '...) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-{
-  "path": {
-    "segments": [
-      "src"
-    ],
-    "_tag": "PathRelative"
+RelDir {
+  path: Rel {
+    segments: [ 'src' ],
+    _tag: 'PathRelative'
   },
-  "_tag": "LocRelDir"
+  _tag: 'LocRelDir'
 }
 ────────────────────────────────────────────────────
-{
-  "path": {
-    "segments": [],
-    "_tag": "PathRelative"
+RelDir {
+  path: Rel {
+    segments: [ 'components' ],
+    _tag: 'PathRelative'
   },
-  "file": {
-    "stem": "index",
-    "extension": ".ts",
-    "_tag": "File"
-  },
-  "_tag": "LocRelFile"
+  _tag: 'LocRelDir'
 }
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
-{
-  "path": {
-    "segments": [
-      "src"
-    ],
-    "_tag": "PathRelative"
+RelDir {
+  path: Rel {
+    segments: [ 'src', 'components' ],
+    _tag: 'PathRelative'
   },
-  "file": {
-    "stem": "index",
-    "extension": ".ts",
-    "_tag": "File"
-  },
-  "_tag": "LocRelFile"
+  _tag: 'LocRelDir'
 }
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`join paths > join({"path":{"segments":[],"_tag":"PathAbs"},"_tag":"LocAbsDir"}, {"path":{"segments":["home"],"_tag":"PathRelative"},"_tag":"LocRelDir"}) 1`] = `
+exports[`join paths > join(RelDir { path: Rel { segments: [ 'src' ], _tag: 'PathRelative' }, _tag: 'LocRelD..., RelFile { path: Rel { segments: [ '..', 'test' ], _tag: 'PathRelative' }, file: ...) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-{
-  "path": {
-    "segments": [],
-    "_tag": "PathAbs"
+RelDir {
+  path: Rel {
+    segments: [ 'src' ],
+    _tag: 'PathRelative'
   },
-  "_tag": "LocAbsDir"
+  _tag: 'LocRelDir'
 }
 ────────────────────────────────────────────────────
-{
-  "path": {
-    "segments": [
-      "home"
-    ],
-    "_tag": "PathRelative"
+RelFile {
+  path: Rel {
+    segments: [ '..', 'test' ],
+    _tag: 'PathRelative'
   },
-  "_tag": "LocRelDir"
+  file: File {
+    stem: 'file',
+    extension: '.ts',
+    _tag: 'File'
+  },
+  _tag: 'LocRelFile'
 }
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
-{
-  "path": {
-    "segments": [
-      "home"
-    ],
-    "_tag": "PathAbs"
+RelFile {
+  path: Rel {
+    segments: [ 'test' ],
+    _tag: 'PathRelative'
   },
-  "_tag": "LocAbsDir"
+  file: File {
+    stem: 'file',
+    extension: '.ts',
+    _tag: 'File'
+  },
+  _tag: 'LocRelFile'
 }
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`join paths > join({"path":{"segments":[],"_tag":"PathAbs"},"_tag":"LocAbsDir"}, {"path":{"segments":[],"_tag":"PathRelative"},"file":{"stem":"file","extension":...) 1`] = `
+exports[`join paths > join(RelDir { path: Rel { segments: [ 'src' ], _tag: 'PathRelative' }, _tag: 'LocRelD..., RelFile { path: Rel { segments: [], _tag: 'PathRelative' }, file: File { stem: '...) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-{
-  "path": {
-    "segments": [],
-    "_tag": "PathAbs"
+RelDir {
+  path: Rel {
+    segments: [ 'src' ],
+    _tag: 'PathRelative'
   },
-  "_tag": "LocAbsDir"
+  _tag: 'LocRelDir'
 }
 ────────────────────────────────────────────────────
-{
-  "path": {
-    "segments": [],
-    "_tag": "PathRelative"
+RelFile {
+  path: Rel {
+    segments: [],
+    _tag: 'PathRelative'
   },
-  "file": {
-    "stem": "file",
-    "extension": ".txt",
-    "_tag": "File"
+  file: File {
+    stem: 'index',
+    extension: '.ts',
+    _tag: 'File'
   },
-  "_tag": "LocRelFile"
+  _tag: 'LocRelFile'
 }
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
-{
-  "path": {
-    "segments": [],
-    "_tag": "PathAbs"
+RelFile {
+  path: Rel {
+    segments: [ 'src' ],
+    _tag: 'PathRelative'
   },
-  "file": {
-    "stem": "file",
-    "extension": ".txt",
-    "_tag": "File"
+  file: File {
+    stem: 'index',
+    extension: '.ts',
+    _tag: 'File'
   },
-  "_tag": "LocAbsFile"
+  _tag: 'LocRelFile'
 }
 ╚══════════════════════════════════════════════════╝"
 `;

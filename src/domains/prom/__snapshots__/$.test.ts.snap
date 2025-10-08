@@ -8,10 +8,12 @@ d.promise.catch(() => {
 });
 ╠══════════════════════════════════════════════════╣ OUTPUTS RETURN OBJECT
 {
-  "promise": {},
-  "isResolved": false,
-  "isRejected": true,
-  "isSettled": true
+  promise: Promise [Promise] {},
+  resolve: [Function: resolve],
+  reject: [Function: reject],
+  isResolved: false,
+  isRejected: true,
+  isSettled: true
 }
 ╚══════════════════════════════════════════════════╝"
 `;
@@ -22,10 +24,12 @@ exports[`createDeferred > state tracking > after resolve 1`] = `
 d.resolve(1);
 ╠══════════════════════════════════════════════════╣ OUTPUTS RETURN OBJECT
 {
-  "promise": {},
-  "isResolved": true,
-  "isRejected": false,
-  "isSettled": true
+  promise: Promise [Promise] {},
+  resolve: [Function: resolve],
+  reject: [Function: reject],
+  isResolved: true,
+  isRejected: false,
+  isSettled: true
 }
 ╚══════════════════════════════════════════════════╝"
 `;
@@ -36,10 +40,12 @@ exports[`createDeferred > state tracking > initial 1`] = `
 
 ╠══════════════════════════════════════════════════╣ OUTPUTS RETURN OBJECT
 {
-  "promise": {},
-  "isResolved": false,
-  "isRejected": false,
-  "isSettled": false
+  promise: Promise [Promise] {},
+  resolve: [Function: resolve],
+  reject: [Function: reject],
+  isResolved: false,
+  isRejected: false,
+  isSettled: false
 }
 ╚══════════════════════════════════════════════════╝"
 `;

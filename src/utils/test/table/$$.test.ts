@@ -1,5 +1,5 @@
 import { Test } from '#test'
-import { describe, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 
 // Test functions for testing
 const add = (a: number, b: number): number => a + b
@@ -302,4 +302,18 @@ describe('snapshot sugar methods', () => {
       .describeInputs('examples', ['hello', 'world', 'test'])
       .test()
   })
+})
+
+describe('circular structure handling', () => {
+  // Test circular reference handling with object-inspect
+  const circular: any = { name: 'test' }
+  circular.self = circular
+
+  const identity = <T>(x: T): T => x
+
+  // This should work with object-inspect handling circular references
+  Test
+    .on(identity)
+    .casesInput(circular)
+    .test()
 })

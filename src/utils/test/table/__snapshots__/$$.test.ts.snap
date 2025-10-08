@@ -8,7 +8,7 @@ exports[`Test.table() builder > auto-snapshot from test callback > auto-snapshot
 2
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
-  "custom": "snapshot data"
+  custom: 'snapshot data'
 }
 ╚══════════════════════════════════════════════════╝"
 `;
@@ -22,7 +22,7 @@ null
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`Test.table() builder > basic functionality > cases helper > upperCase("hello") 1`] = `
+exports[`Test.table() builder > basic functionality > cases helper > upperCase('hello') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 hello
@@ -31,7 +31,7 @@ HELLO
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`Test.table() builder > basic functionality > cases helper > upperCase("world") 1`] = `
+exports[`Test.table() builder > basic functionality > cases helper > upperCase('world') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 world
@@ -59,6 +59,21 @@ exports[`Test.table() builder > basic functionality > multi-argument snapshots >
 20
 ╠══════════════════════════════════════════════════╣ THEN RETURNS NUMBER
 30
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`circular structure handling > identity2({ name: 'test', self: [Circular] }) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  name: 'test',
+  self: [Circular]
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'test',
+  self: [Circular]
+}
 ╚══════════════════════════════════════════════════╝"
 `;
 

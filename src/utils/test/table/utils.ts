@@ -1,6 +1,7 @@
 import { Err } from '#err'
 import { Str } from '#str'
 import { Equal } from 'effect'
+import objectInspect from 'object-inspect'
 import { describe as vitestDescribe, expect } from 'vitest'
 
 // ============================================================================
@@ -129,14 +130,18 @@ export const generateMatrixCombinations = (
 
 /**
  * Default snapshot serializer with smart handling for different value types.
- * - Strings: Display raw (no JSON quotes/escaping) for readability
- * - Functions: Use .toString()
- * - undefined: Display as 'undefined' string
- * - Symbols: Use .toString()
- * - BigInt: Display as '123n' format
- * - RegExp: Use .toString() (e.g., '/foo/gi')
- * - Errors: Use Err.inspect() for detailed formatting
- * - Objects/Arrays: Use JSON.stringify with indentation
+ *
+ * Uses specialized formatting for specific types:
+ * - **Strings**: Raw display without JSON quotes for readability
+ * - **Functions**: `.toString()` representation
+ * - **Errors**: `Err.inspect()` for detailed stack traces and context
+ *
+ * All other values use `object-inspect` which provides:
+ * - **Circular reference handling**: Shows `[Circular]` instead of throwing
+ * - **Special type support**: Maps, Sets, Dates, RegExp, TypedArrays, etc.
+ * - **Clean formatting**: Single quotes, 2-space indentation
+ * - **Type-aware output**: Distinguishes null, undefined, symbols, BigInt, etc.
+ *
  * @param value - The value to serialize
  * @param _context - Test context (unused by default serializer, available for custom serializers)
  * @returns Formatted string representation
@@ -149,7 +154,7 @@ export const defaultSnapshotSerializer = (value: any, _context: any): string => 
   if (typeof value === 'bigint') return value.toString() + 'n'
   if (value instanceof RegExp) return value.toString()
   if (value instanceof Error) return Err.inspect(value)
-  return JSON.stringify(value, null, 2)
+  return objectInspect(value, { indent: 2 })
 }
 
 /**

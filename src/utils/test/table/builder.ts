@@ -1,5 +1,6 @@
 import type { Fn } from '#fn'
 import { Array, Effect, Layer, Option } from 'effect'
+import objectInspect from 'object-inspect'
 import { expect, test } from 'vitest'
 import type { CaseObject, CaseTuple } from './builder-types.js'
 import {
@@ -183,19 +184,18 @@ export function create(state: State = defaultState): any {
       runner?: any
       isRunnerCase?: boolean
     } => {
-      // Helper to stringify values for test names (handles functions, truncates long strings)
+      /**
+       * Stringify values for test names.
+       *
+       * - Functions: Use .toString() with whitespace compression
+       * - All other values: Use object-inspect (handles circular refs, special types, etc.)
+       */
       const stringifyForTestName = (value: any, maxLength = 80): string => {
-        let str: string
-        if (typeof value === 'function') {
-          // Convert function to string and compress whitespace for test names
-          str = value.toString().replace(/\s+/g, ' ').trim()
-        } else {
-          // JSON.stringify(undefined) returns undefined, not a string
-          const stringified = JSON.stringify(value)
-          str = stringified === undefined ? 'undefined' : stringified
-        }
-        if (str.length <= maxLength) return str
-        return str.slice(0, maxLength) + '...'
+        const str = typeof value === 'function'
+          ? value.toString().replace(/\s+/g, ' ').trim()
+          : objectInspect(value)
+
+        return str.length <= maxLength ? str : str.slice(0, maxLength) + '...'
       }
 
       const generateName = (input: any, output?: any): string => {
@@ -303,7 +303,7 @@ export function create(state: State = defaultState): any {
           const name = Object.keys(matrixCombo).length > 0
             ? `${baseName} [matrix: ${
               Object.entries(matrixCombo)
-                .map(([k, v]) => `${k}=${JSON.stringify(v)}`)
+                .map(([k, v]) => `${k}=${objectInspect(v)}`)
                 .join(', ')
             }]`
             : baseName
