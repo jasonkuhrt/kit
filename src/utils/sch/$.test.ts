@@ -5,12 +5,12 @@ import { expect } from 'vitest'
 
 // dprint-ignore
 Test.describe('.Union.makeMake')
-  .i<{
+  .inputType<{
     testType: 'basic' | 'invalidTag' | 'complex'
     tag?: string
     data?: any
   }>()
-  .o<{
+  .outputType<{
     shouldThrow?: boolean
     expectedTag?: string
     expectedFields?: Record<string, any>
@@ -80,8 +80,8 @@ Test.describe('.Union.makeMake')
 
 // dprint-ignore
 Test.describe('.Union.parse')
-  .i<string[]>()
-  .o<{ name: string; members: { tag: string; memberName: string }[] } | null>()
+  .inputType<string[]>()
+  .outputType<{ name: string; members: { tag: string; memberName: string }[] } | null>()
   .cases(
     ['CatalogVersioned, CatalogUnversioned -> Catalog ADT',                                       [['CatalogVersioned', 'CatalogUnversioned']], { name: 'Catalog', members: [{ tag: 'CatalogVersioned', memberName: 'Versioned' }, { tag: 'CatalogUnversioned', memberName: 'Unversioned' }] }],
     ['SchemaVersioned, SchemaUnversioned -> Schema ADT',                                          [['SchemaVersioned', 'SchemaUnversioned']], { name: 'Schema', members: [{ tag: 'SchemaVersioned', memberName: 'Versioned' }, { tag: 'SchemaUnversioned', memberName: 'Unversioned' }] }],
@@ -96,8 +96,8 @@ Test.describe('.Union.parse')
 
 // dprint-ignore
 Test.describe('.Union.isADTMember')
-  .i<{ tag: string; allTags: string[] }>()
-  .o<boolean>()
+  .inputType<{ tag: string; allTags: string[] }>()
+  .outputType<boolean>()
   .cases(
     ['CatalogVersioned in [CatalogVersioned, CatalogUnversioned] -> true',                        [{ tag: 'CatalogVersioned', allTags: ['CatalogVersioned', 'CatalogUnversioned'] }], true],
     ['CatalogUnversioned in [CatalogVersioned, CatalogUnversioned] -> true',                      [{ tag: 'CatalogUnversioned', allTags: ['CatalogVersioned', 'CatalogUnversioned'] }], true],
@@ -111,8 +111,8 @@ Test.describe('.Union.isADTMember')
 
 // dprint-ignore
 Test.describe('.Union.getADTInfo')
-  .i<{ tag: string; allTags: string[] }>()
-  .o<{ adtName: string; memberName: string } | null>()
+  .inputType<{ tag: string; allTags: string[] }>()
+  .outputType<{ adtName: string; memberName: string } | null>()
   .cases(
     ['CatalogVersioned -> { adtName: Catalog, memberName: Versioned }',                           [{ tag: 'CatalogVersioned', allTags: ['CatalogVersioned', 'CatalogUnversioned'] }], { adtName: 'Catalog', memberName: 'Versioned' }],
     ['SchemaUnversioned -> { adtName: Schema, memberName: Unversioned }',                         [{ tag: 'SchemaUnversioned', allTags: ['SchemaVersioned', 'SchemaUnversioned'] }], { adtName: 'Schema', memberName: 'Unversioned' }],
@@ -125,8 +125,8 @@ Test.describe('.Union.getADTInfo')
 
 // dprint-ignore
 Test.describe('.Union.formatADTTag')
-  .i<{ adtName: string; memberName: string }>()
-  .o<string>()
+  .inputType<{ adtName: string; memberName: string }>()
+  .outputType<string>()
   .cases(
     ['Catalog + Versioned -> CatalogVersioned',                                                   [{ adtName: 'Catalog', memberName: 'Versioned' }], 'CatalogVersioned'],
     ['Schema + Unversioned -> SchemaUnversioned',                                                 [{ adtName: 'Schema', memberName: 'Unversioned' }], 'SchemaUnversioned'],

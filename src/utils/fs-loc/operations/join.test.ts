@@ -8,8 +8,8 @@ const l = FsLoc.fromString
 describe('join', () => {
   // dprint-ignore
   Test.describe('join paths')
-    .i<{ base: FsLoc.Groups.Dir.Dir; rel: FsLoc.Groups.Rel.Rel }>()
-    .o<string>()
+    .inputType<{ base: FsLoc.Groups.Dir.Dir; rel: FsLoc.Groups.Rel.Rel }>()
+    .outputType<string>()
     .cases(
       // Joining directories with files
       ['abs dir + rel file',                           [{ base: l('/home/'),                         rel: l('file.txt') }],                         '/home/file.txt'],

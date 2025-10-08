@@ -35,8 +35,8 @@ describe('Test.table() examples', () => {
 
   // Example 4: Without .on() - custom test logic
   Test.describe('custom validation')
-    .i<string>()
-    .o<boolean>()
+    .inputType<string>()
+    .outputType<boolean>()
     .cases(
       { n: 'valid email', i: 'user@example.com', o: true },
       { n: 'invalid email', i: 'not-an-email', o: false },

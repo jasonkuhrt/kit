@@ -6,8 +6,8 @@ describe('Analyzer', () => {
   describe('analyze', () => {
     // dprint-ignore
     Test.describe('path analysis')
-      .i<string>()
-      .o<{
+      .inputType<string>()
+      .outputType<{
         _tag: 'file' | 'dir'
         pathType?: 'absolute' | 'relative'
         path?: string[]

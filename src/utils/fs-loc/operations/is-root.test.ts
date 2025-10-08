@@ -8,8 +8,8 @@ const l = FsLoc.fromString
 describe('isRoot', () => {
   // dprint-ignore
   Test.describe('check if location is root')
-    .i<FsLoc.FsLoc>()
-    .o<boolean>()
+    .inputType<FsLoc.FsLoc>()
+    .outputType<boolean>()
     .cases(
       ['root is root',                                 [FsLoc.Constants.absDirRoot],        true],
       ['abs dir not root',                             [l('/home/')],                        false],

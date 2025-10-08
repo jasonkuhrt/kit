@@ -50,9 +50,9 @@ test('.findFirstUnderDir type inference', () => {
 
 // dprint-ignore
 Test.describe('.findFirstUnderDir')
-  .i<{ dir?: FsLoc.AbsDir; paths: FsLoc.Groups.Rel.Rel[] }>()
-  .o<FsLoc.Groups.Abs.Abs | null>()
-  .ctx<{ data?: FsLoc.FsLoc[] }>()
+  .inputType<{ dir?: FsLoc.AbsDir; paths: FsLoc.Groups.Rel.Rel[] }>()
+  .outputType<FsLoc.Groups.Abs.Abs | null>()
+  .contextType<{ data?: FsLoc.FsLoc[] }>()
   .cases(
     { n: 'finds single file',
       i: { paths: [fx.a.rel] }, o: fx.a.abs },

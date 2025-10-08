@@ -62,8 +62,8 @@ describe('Test.table() builder', () => {
     it('should compile with basic cases', () => {
       // This is a compile-time test - just verify it compiles
       const builder = Test.describe()
-        .i<string>()
-        .o<string>()
+        .inputType<string>()
+        .outputType<string>()
       // Verify the builder has the expected methods
       expect(builder.cases).toBeDefined()
       // test() only exists after cases()
@@ -74,8 +74,8 @@ describe('Test.table() builder', () => {
     it('should work with description', () => {
       // This is a compile-time test - just verify it compiles
       const builder = Test.describe('string transformations')
-        .i<string>()
-        .o<string>()
+        .inputType<string>()
+        .outputType<string>()
       // Verify the builder has the expected methods
       expect(builder.cases).toBeDefined()
       // test() only exists after cases()
@@ -137,8 +137,8 @@ describe('Test.table() builder', () => {
     it('should work with .i() and .o()', () => {
       // This is a compile-time test - just verify it compiles
       const builder = Test.describe()
-        .i<string>()
-        .o<string>()
+        .inputType<string>()
+        .outputType<string>()
       expect(builder.cases).toBeDefined()
       // test() only exists after cases()
       const withCases = builder.cases({ n: 'test', i: 'input', o: 'output' })
@@ -182,8 +182,8 @@ describe('Test.table() builder', () => {
       const code = () => {
         const mockLayer = Layer.empty as Layer.Layer<any>
         Test.describe()
-          .i<number>()
-          .o<number>()
+          .inputType<number>()
+          .outputType<number>()
           .cases(
             { n: 'test', i: 1, o: 2 },
           )
@@ -197,8 +197,8 @@ describe('Test.table() builder', () => {
       // This test just ensures the API compiles
       const code = () => {
         Test.describe()
-          .i<number>()
-          .o<number>()
+          .inputType<number>()
+          .outputType<number>()
           .cases(
             { n: 'test 1', i: 1, o: 2 },
           )
@@ -223,7 +223,7 @@ describe('Test.table() builder', () => {
     it('should support snapshot testing', () => {
       // This is a compile-time test - verify snapshot API exists
       const builder = Test.describe()
-        .i<string>()
+        .inputType<string>()
       expect(builder.cases).toBeDefined()
       // test() only exists after cases()
       const withCases = builder.cases({ n: 'test', i: 'input', o: undefined })

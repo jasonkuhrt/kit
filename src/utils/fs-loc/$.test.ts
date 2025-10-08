@@ -12,8 +12,7 @@ const l = FsLoc.fromString
 // dprint-ignore
 Test.describe('.decodeSync')
   .on(S.decodeSync(FsLoc.FsLoc))
-  .describe('AbsFile')
-  .casesAsArgs(
+  .casesInAsArgs('AbsFile')(
     ['/file.txt'],
     ['/home/user/doc.pdf'],
     ['/a/b/c/d/e.js'],
@@ -21,8 +20,7 @@ Test.describe('.decodeSync')
     ['/.config.json'],
     ['/my docs/file name.txt'],
   )
-  .describe('RelFile')
-  .casesAsArgs(
+  .casesInAsArgs('RelFile')(
     ['file.txt'],
     ['./file.txt'],
     ['../file.txt'],
@@ -30,8 +28,7 @@ Test.describe('.decodeSync')
     ['../../lib/util.js'],
     ['./src/components/App.tsx'],
   )
-  .describe('AbsDir')
-  .casesAsArgs(
+  .casesInAsArgs('AbsDir')(
     ['/'],
     ['/home/'],
     ['/home'],
@@ -39,8 +36,7 @@ Test.describe('.decodeSync')
     ['/a/b/c/d/e/'],
     ['/my documents/projects/'],
   )
-  .describe('RelDir')
-  .casesAsArgs(
+  .casesInAsArgs('RelDir')(
     ['./'],
     ['src/'],
     ['../'],
@@ -55,8 +51,8 @@ Test.describe('.decodeSync')
 const LocLoose = FsLoc.FsLocLoose.make
 // dprint-ignore
 Test.describe('.FsLocLoose.decodeSync')
-  .i<string>()
-  .o<FsLoc.FsLocLoose.FsLocLooseClass>()
+  .inputType<string>()
+  .outputType<FsLoc.FsLocLoose.FsLocLooseClass>()
   .cases(
     ['abs file',      ['/home/file.txt'],           LocLoose({ path: P.Abs.make({ segments: ['home'] }), file: F.make({ stem: 'file', extension: '.txt' }) })],
     ['abs dir',       ['/home/'],                   LocLoose({ path: P.Abs.make({ segments: ['home'] }), file: null })],
@@ -127,8 +123,8 @@ describe('.fromString', () => {
 
 // dprint-ignore
 Test.describe('Groups *.assert')
-  .i<string>()
-  .o<{ assert: Function; pass: boolean }>()
+  .inputType<string>()
+  .outputType<{ assert: Function; pass: boolean }>()
   .cases(
     ['Rel passes for file.txt',      ['file.txt'],  { assert: FsLoc.Groups.Rel.assert,  pass: true }],
     ['Rel fails for /file.txt',      ['/file.txt'], { assert: FsLoc.Groups.Rel.assert,  pass: false }],

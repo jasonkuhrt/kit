@@ -1,11 +1,11 @@
 import { expectTypeOf } from 'vitest'
 import { Test } from '../$.js'
 
-// Test 1: Tuple cases with .i() and .o() should have proper type inference
+// Test 1: Tuple cases with .inputType() and .outputType() should have proper type inference
 {
   Test.describe('tuple cases with i/o')
-    .i<string>()
-    .o<number>()
+    .inputType<string>()
+    .outputType<number>()
     .cases(
       ['case 1', ['input'], 42],
       ['case 2', ['other'], 100],
@@ -18,11 +18,11 @@ import { Test } from '../$.js'
     })
 }
 
-// Test 2: Object cases with .i() and .o() should have proper type inference
+// Test 2: Object cases with .inputType() and .outputType() should have proper type inference
 {
   Test.describe('object cases with i/o')
-    .i<string>()
-    .o<number>()
+    .inputType<string>()
+    .outputType<number>()
     .cases(
       { n: 'case 1', i: 'input', o: 42 },
       { n: 'case 2', i: 'other', o: 100 },
@@ -37,9 +37,9 @@ import { Test } from '../$.js'
 // Test 3: Tuple cases with context
 {
   Test.describe('tuple cases with context')
-    .i<string>()
-    .o<number>()
-    .ctx<{ extra: boolean }>()
+    .inputType<string>()
+    .outputType<number>()
+    .contextType<{ extra: boolean }>()
     .cases(
       { n: 'case 1', i: 'input', o: 42, extra: true },
       { n: 'case 2', i: 'other', o: 100, extra: false },
@@ -47,7 +47,7 @@ import { Test } from '../$.js'
     .test((i, o, ctx) => {
       expectTypeOf(i).toEqualTypeOf<string>()
       expectTypeOf(o).toEqualTypeOf<number>()
-      expectTypeOf(ctx).toEqualTypeOf<{ extra: boolean }>()
+      expectTypeOf(ctx.extra).toEqualTypeOf<boolean>()
     })
 }
 
@@ -68,16 +68,16 @@ import { Test } from '../$.js'
     })
 }
 
-// Test 5: Mixed tuple formats - BUT .i()/.o() mode requires output!
-// This test is invalid - without .on(), if .o() is specified, output is required
+// Test 5: Mixed tuple formats - BUT .inputType()/.outputType() mode requires output!
+// This test is invalid - without .on(), if .outputType() is specified, output is required
 // We need to either:
-// 1. Remove .o() to allow optional output (but then output is forbidden)
+// 1. Remove .outputType() to allow optional output (but then output is forbidden)
 // 2. Provide output for all cases
-// Let's provide output for all cases since .o<number>() is specified
+// Let's provide output for all cases since .outputType<number>() is specified
 {
   Test.describe('tuple formats with required output')
-    .i<string>()
-    .o<number>()
+    .inputType<string>()
+    .outputType<number>()
     .cases(
       [['input1'], 10], // input + output
       ['named', ['input2'], 20], // named input + output
@@ -90,8 +90,8 @@ import { Test } from '../$.js'
       // expectTypeOf(ctx).toEqualTypeOf<{}>()
     })
   Test.describe('tuple formats with required output')
-    .i<string>()
-    .o<number>()
+    .inputType<string>()
+    .outputType<number>()
     .cases(
       // @ts-expect-error missing input (or could say that input of 10 is invalid, who knows which really)
       ['input1', 10], // input + output
@@ -100,31 +100,31 @@ import { Test } from '../$.js'
 
 {
   Test.describe('context')
-    .i<string>()
-    .o<number>()
-    .ctx<{ a: 0 }>()
+    .inputType<string>()
+    .outputType<number>()
+    .contextType<{ a: 0 }>()
     .cases(
       ['', [''], 0, { a: 0 }],
     )
     .test((i, o, ctx) => {
       expectTypeOf(i).toEqualTypeOf<string>()
       expectTypeOf(o).toEqualTypeOf<number>()
-      expectTypeOf(ctx).toEqualTypeOf<{ a: 0 }>()
+      expectTypeOf(ctx.a).toEqualTypeOf<0>()
     })
 
   Test.describe('context')
-    .i<string>()
-    .o<number>()
-    .ctx<{ a: 0 }>()
+    .inputType<string>()
+    .outputType<number>()
+    .contextType<{ a: 0 }>()
     .cases(
       // @ts-expect-error Missing context
       ['', [''], 0],
     )
 
   const testBuilder = Test.describe('context')
-    .i<string>()
-    .o<number>()
-    .ctx<{ a: 0 }>()
+    .inputType<string>()
+    .outputType<number>()
+    .contextType<{ a: 0 }>()
 
   // This should error
   testBuilder.cases(

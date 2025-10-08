@@ -83,3 +83,42 @@ export const indentOn = Fn.curry(indent)
  * ```
  */
 export const indentWith = Fn.flipCurried(indentOn)
+
+/**
+ * Remove common leading whitespace from all lines.
+ * Finds the minimum indentation across all non-empty lines and removes that amount from every line.
+ * This is useful for dedenting code blocks or template strings while preserving relative indentation.
+ * @param text - The text to dedent
+ * @returns The dedented text
+ * @example
+ * ```typescript
+ * stripIndent('    line1\n      line2\n    line3')
+ * // 'line1\n  line2\nline3'
+ *
+ * stripIndent('  code\n    nested\n  code')
+ * // 'code\n  nested\ncode'
+ *
+ * // Empty lines are ignored when calculating minimum indent
+ * stripIndent('    line1\n\n    line2')
+ * // 'line1\n\nline2'
+ * ```
+ */
+export const stripIndent = (text: string): string => {
+  const textLines = lines(text)
+
+  // Find minimum indentation from non-empty lines
+  const indents = textLines
+    .filter((line) => line.trim().length > 0) // Skip empty lines
+    .map((line) => {
+      const match = line.match(/^(\s*)/)
+      return match?.[1]?.length ?? 0
+    })
+
+  // If no non-empty lines, return original text
+  if (indents.length === 0) return text
+
+  const minIndent = Math.min(...indents)
+
+  // Remove the minimum indentation from each line
+  return unlines(textLines.map((line) => line.slice(minIndent)))
+}

@@ -4,8 +4,8 @@ import { Test } from '../$.js'
 // Test type inference with .i() and .o() using tuple cases
 {
   Test.describe('test with i/o and tuple cases')
-    .i<string>()
-    .o<number>()
+    .inputType<string>()
+    .outputType<number>()
     .cases(
       ['case 1', ['input'], 42],
       ['case 2', ['other'], 100],
@@ -19,8 +19,8 @@ import { Test } from '../$.js'
 // Test type inference with .i() and .o() using object cases
 {
   Test.describe('test with i/o and object cases')
-    .i<string>()
-    .o<number>()
+    .inputType<string>()
+    .outputType<number>()
     .cases(
       { n: 'case 1', i: 'input', o: 42 },
       { n: 'case 2', i: 'other', o: 100 },
@@ -34,9 +34,9 @@ import { Test } from '../$.js'
 // Test type inference with custom context properties
 {
   Test.describe('test with custom context')
-    .i<string>()
-    .o<number>()
-    .ctx<{ extra: boolean }>()
+    .inputType<string>()
+    .outputType<number>()
+    .contextType<{ extra: boolean }>()
     .cases(
       { n: 'case 1', i: 'input', o: 42, extra: true },
       { n: 'case 2', i: 'other', o: 100, extra: false },
@@ -44,7 +44,7 @@ import { Test } from '../$.js'
     .test((i, o, ctx) => {
       expectTypeOf(i).toEqualTypeOf<string>()
       expectTypeOf(o).toEqualTypeOf<number>()
-      expectTypeOf(ctx).toEqualTypeOf<{ extra: boolean }>()
+      expectTypeOf(ctx.extra).toEqualTypeOf<boolean>()
     })
 }
 
@@ -64,9 +64,9 @@ import { Test } from '../$.js'
 // Test type inference without .i() and .o() (generic mode)
 {
   Test.describe('test with context')
-    .i<string>()
-    .o<number>()
-    .ctx<{ extra: string; flag: boolean }>()
+    .inputType<string>()
+    .outputType<number>()
+    .contextType<{ extra: string; flag: boolean }>()
     .cases(
       { n: 'case 1', i: 'hello', o: 5, extra: 'metadata1', flag: true },
       { n: 'case 2', i: 'world', o: 10, extra: 'metadata2', flag: false },
@@ -74,6 +74,7 @@ import { Test } from '../$.js'
     .test((i, o, ctx) => {
       expectTypeOf(i).toEqualTypeOf<string>()
       expectTypeOf(o).toEqualTypeOf<number>()
-      expectTypeOf(ctx).toEqualTypeOf<{ extra: string; flag: boolean }>()
+      expectTypeOf(ctx.extra).toEqualTypeOf<string>()
+      expectTypeOf(ctx.flag).toEqualTypeOf<boolean>()
     })
 }

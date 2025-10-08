@@ -8,8 +8,8 @@ describe('policyFilter', () => {
 
   // dprint-ignore
   Test.describe('policyFilter')
-    .i<{ mode: 'allow' | 'deny'; keys: string[] }>()
-    .o<Record<string, any>>()
+    .inputType<{ mode: 'allow' | 'deny'; keys: string[] }>()
+    .outputType<Record<string, any>>()
     .cases(
       ['allow mode picks specified keys',      [{ mode: 'allow', keys: ['a', 'c'] }], { a: 1, c: 3 }],
       ['allow mode with empty keys',           [{ mode: 'allow', keys: [] }],         {}],
@@ -33,8 +33,8 @@ describe('filter', () => {
 
   // dprint-ignore
   Test.describe('filter')
-    .i<{ testType: 'byValue' | 'byKey' | 'byContext' | 'allFalse' | 'allTrue' | 'emptyObj' }>()
-    .o<Record<string, any>>()
+    .inputType<{ testType: 'byValue' | 'byKey' | 'byContext' | 'allFalse' | 'allTrue' | 'emptyObj' }>()
+    .outputType<Record<string, any>>()
     .cases(
       ['filters by value predicate',      [{ testType: 'byValue' }],   { c: 3, d: 4 }],
       ['filters by key predicate',        [{ testType: 'byKey' }],     { a: 1, c: 3 }],

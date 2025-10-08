@@ -3,12 +3,13 @@ import { InRange } from './$.js'
 
 Test.describe('tryRanged')
   .on(InRange.tryFrom)
-  .o((value: number | null, [_, min, max]) => {
+  .onOutput((value: number | null, context) => {
+    const [_, min, max] = context.i
     return value === null ? null : InRange.from(value, min, max)
   })
   .cases(
     ['below range', [0, 1, 10], null],
-    ['within range', [5, 1, 10], 5], // Simple number, transformed by .o()
+    ['within range', [5, 1, 10], 5], // Simple number, transformed by .onOutput()
     ['above range', [11, 1, 10], null],
     // TODO: Add comprehensive tests - easy to add more cases here
     ['at min boundary', [1, 1, 10], 1],

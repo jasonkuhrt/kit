@@ -14,20 +14,42 @@
  * // Use the promise
  * await deferred.promise  // 42
  * ```
+ *
+ * @example
+ * ```ts
+ * // Check resolution state
+ * const deferred = createDeferred<number>()
+ * console.log(deferred.isResolved)  // false
+ * deferred.resolve(42)
+ * console.log(deferred.isResolved)  // true
+ * console.log(deferred.isSettled)   // true
+ * ```
  */
-export interface Deferred<$T> {
+export interface Deferred<$Value> {
   /**
    * The promise that will be resolved or rejected.
    */
-  promise: Promise<$T>
+  promise: Promise<$Value>
   /**
    * Resolve the promise with a value.
    */
-  resolve: (value: $T) => void
+  resolve: (value: $Value) => void
   /**
    * Reject the promise with an error.
    */
   reject: (error: unknown) => void
+  /**
+   * Whether the promise has been resolved.
+   */
+  readonly isResolved: boolean
+  /**
+   * Whether the promise has been rejected.
+   */
+  readonly isRejected: boolean
+  /**
+   * Whether the promise has been settled (resolved or rejected).
+   */
+  readonly isSettled: boolean
 }
 
 /**
@@ -60,7 +82,8 @@ export interface Deferred<$T> {
 export const createDeferred = <$T>(options?: { strict?: boolean }): Deferred<$T> => {
   let resolve: ((value: $T) => void) | undefined
   let reject: ((error: unknown) => void) | undefined
-  let settled = false
+  let resolved = false
+  let rejected = false
 
   const promise = new Promise<$T>((res, rej) => {
     resolve = res
@@ -68,10 +91,9 @@ export const createDeferred = <$T>(options?: { strict?: boolean }): Deferred<$T>
   })
 
   const strictGuard = (fn: () => void) => {
-    if (options?.strict && settled) {
+    if (options?.strict && (resolved || rejected)) {
       throw new Error('Deferred promise already settled')
     }
-    settled = true
     fn()
   }
 
@@ -79,17 +101,34 @@ export const createDeferred = <$T>(options?: { strict?: boolean }): Deferred<$T>
     promise,
     resolve: (value: $T) => {
       if (options?.strict) {
-        strictGuard(() => resolve!(value))
+        strictGuard(() => {
+          resolved = true
+          resolve!(value)
+        })
       } else {
+        resolved = true
         resolve!(value)
       }
     },
     reject: (error: unknown) => {
       if (options?.strict) {
-        strictGuard(() => reject!(error))
+        strictGuard(() => {
+          rejected = true
+          reject!(error)
+        })
       } else {
+        rejected = true
         reject!(error)
       }
+    },
+    get isResolved() {
+      return resolved
+    },
+    get isRejected() {
+      return rejected
+    },
+    get isSettled() {
+      return resolved || rejected
     },
   }
 }

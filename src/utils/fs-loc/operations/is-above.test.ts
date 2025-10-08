@@ -8,8 +8,8 @@ const l = FsLoc.fromString
 describe('isAbove', () => {
   // dprint-ignore
   Test.describe('check if path is above another')
-    .i<{ parent: FsLoc.Groups.Dir.Dir; child: FsLoc.FsLoc }>()
-    .o<boolean>()
+    .inputType<{ parent: FsLoc.Groups.Dir.Dir; child: FsLoc.FsLoc }>()
+    .outputType<boolean>()
     .cases(
       // Absolute paths
       ['abs dir above abs file',                      [{ parent: l('/home/'), child: l('/home/user/file.txt') }],                         true],

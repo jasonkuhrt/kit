@@ -7,8 +7,8 @@ const l = FsLoc.fromString
 
 // dprint-ignore
 Test.describe('.stem - get stem (name without extension) of file or directory')
-    .i<FsLoc.FsLoc>()
-    .o<string>()
+    .inputType<FsLoc.FsLoc>()
+    .outputType<string>()
     .cases(
       // Files with extensions
       ['abs file with extension',                      [l('/home/file.txt')],                 'file'],

@@ -8,8 +8,8 @@ const l = FsLoc.fromString
 describe('isUnder', () => {
   // dprint-ignore
   Test.describe('check if path is under another')
-    .i<{ child: FsLoc.FsLoc; parent: FsLoc.Groups.Dir.Dir }>()
-    .o<boolean>()
+    .inputType<{ child: FsLoc.FsLoc; parent: FsLoc.Groups.Dir.Dir }>()
+    .outputType<boolean>()
     .cases(
       // Absolute paths
       ['abs file under abs dir',                      [{ child: l('/home/user/file.txt'), parent: l('/home/') }],                         true],

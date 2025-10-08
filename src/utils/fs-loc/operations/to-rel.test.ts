@@ -8,9 +8,9 @@ const l = FsLoc.fromString
 describe('toRel', () => {
   // dprint-ignore
   Test.describe('convert absolute to relative')
-    .i<FsLoc.Groups.Abs.Abs>()
-    .o<FsLoc.Groups.Rel.Rel>()
-    .ctx<{
+    .inputType<FsLoc.Groups.Abs.Abs>()
+    .outputType<FsLoc.Groups.Rel.Rel>()
+    .contextType<{
       base: FsLoc.AbsDir
     }>()
     .cases(

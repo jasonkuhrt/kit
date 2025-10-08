@@ -8,8 +8,8 @@ const l = FsLoc.fromString
 describe('toDir', () => {
   // dprint-ignore
   Test.describe('get parent directory of file')
-    .i<FsLoc.Groups.File.File>()
-    .o<string>()
+    .inputType<FsLoc.Groups.File.File>()
+    .outputType<string>()
     .cases(
       ['abs file to parent dir',                       [l('/home/file.txt')],                  '/home/'],
       ['rel file to parent dir',                       [l('src/index.ts')],                    './src/'],

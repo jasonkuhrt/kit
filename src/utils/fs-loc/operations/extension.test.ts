@@ -7,8 +7,8 @@ const l = FsLoc.fromString
 
 // dprint-ignore
 Test.describe('.extension - get extension of file or null for directories')
-    .i<FsLoc.FsLoc>()
-    .o<string | null>()
+    .inputType<FsLoc.FsLoc>()
+    .outputType<string | null>()
     .cases(
       // Files with extensions
       ['abs file with extension',                      [l('/home/file.txt')],                 '.txt'],

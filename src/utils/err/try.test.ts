@@ -27,8 +27,8 @@ Test.describe('sync tryCatch')
 
 // Test async variations
 Test.describe('async tryCatch')
-  .i<() => Promise<any>>()
-  .o<any>()
+  .inputType<() => Promise<any>>()
+  .outputType<any>()
   .cases(
     ['returns thrown error', [fnAsync(e)], e],
     ['returns returned value', [fnAsync()], v],
@@ -46,9 +46,9 @@ test('async tryCatch type inference', () => {
 
 // Success cases
 Test.describe('tryOrRethrow success cases')
-  .i<{ fn: () => any; wrapper: any }>()
-  .o<any>()
-  .ctx<{
+  .inputType<{ fn: () => any; wrapper: any }>()
+  .outputType<any>()
+  .contextType<{
     isAsync?: boolean
   }>()
   .cases(
@@ -69,9 +69,9 @@ Test.describe('tryOrRethrow success cases')
 
 // Error wrapping cases
 Test.describe('tryOrRethrow error wrapping')
-  .i<{ fn: () => any; wrapper: any }>()
-  .o<void>()
-  .ctx<{
+  .inputType<{ fn: () => any; wrapper: any }>()
+  .outputType<void>()
+  .contextType<{
     expectedMessage: string
     expectedCauseMessage?: string
     checkContext?: { id: number }
@@ -145,9 +145,9 @@ describe('tryOrRethrow custom wrapper', () => {
 
 // Async error tests
 Test.describe('async tryOrRethrow errors')
-  .i<{ fn: () => Promise<any>; wrapper: any }>()
-  .o<void>()
-  .ctx<{
+  .inputType<{ fn: () => Promise<any>; wrapper: any }>()
+  .outputType<void>()
+  .contextType<{
     expectedMessage: string
     expectedCauseMessage?: string
   }>()
@@ -191,8 +191,8 @@ Test.describe('async tryOrRethrow errors')
 
 // Test sync variations with Test.table
 Test.describe('sync tryOr variations')
-  .i<{ fn: () => any; fallback: any }>()
-  .o<any>()
+  .inputType<{ fn: () => any; fallback: any }>()
+  .outputType<any>()
   .cases(
     ['returns value on success', [{ fn: () => 42, fallback: 'fallback' }], 42],
     ['returns static fallback on error', [{
@@ -215,11 +215,11 @@ Test.describe('sync tryOr variations')
 
 // Test async variations with Test.table
 Test.describe('async tryOr variations')
-  .i<{
+  .inputType<{
     fn: () => Promise<any>
     fallback: any
   }>()
-  .o<any>()
+  .outputType<any>()
   .cases(
     ['handles async function that resolves', [{
       fn: async () => 42,

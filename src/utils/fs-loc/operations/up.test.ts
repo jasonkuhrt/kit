@@ -8,8 +8,8 @@ const l = FsLoc.fromString
 describe('up', () => {
   // dprint-ignore
   Test.describe('move up one level')
-    .i<FsLoc.FsLoc>()
-    .o<string>()
+    .inputType<FsLoc.FsLoc>()
+    .outputType<string>()
     .cases(
       ['abs file up one level',                        [l('/home/user/file.txt')],      '/home/file.txt'],
       ['abs dir up one level',                         [l('/home/user/')],               '/home/'],

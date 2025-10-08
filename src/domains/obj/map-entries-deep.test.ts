@@ -21,43 +21,35 @@ const combinedTransform = (key: string, value: Obj.DeepObjectValue) => {
 
 // dprint-ignore
 Test.on(Obj.mapEntriesDeep)
-  .describe('primitives')
-  .casesAsArgs(
+  .casesInAsArgs('primitives')(
     ['hello',    () => undefined],
     [42,         () => undefined],
     [true,       () => undefined],
     [null,       () => undefined],
   )
-  .describe('empty objects')
-  .casesAsArgs(
+  .casesInAsArgs('empty objects')(
     [{},         uppercaseKeysTransform],
   )
-  .describe('key transformations')
-  .casesAsArgs(
+  .casesInAsArgs('key transformations')(
     [{ $foo: 'bar', $baz: { $nested: 'value' } },       stripDollarPrefix],
     [{ $a: { $b: { $c: { $d: 'deep' } } } },            stripDollarPrefix],
     [{ $foo: 'a', bar: 'b', $baz: { nested: 'c' } },    stripDollarPrefix],
   )
-  .describe('value transformations')
-  .casesAsArgs(
+  .casesInAsArgs('value transformations')(
     [{ name: 'alice', address: { city: 'nyc' } },       uppercaseStrings],
     [{ str: 'hi', num: 42, bool: true, nil: null },     uppercaseStrings],
   )
-  .describe('arrays')
-  .casesAsArgs(
+  .casesInAsArgs('arrays')(
     [{ users: [{ $id: 1, $name: 'alice' }, { $id: 2, $name: 'bob' }] },  stripDollarPrefix],
     [{ numbers: [1, 2, 3], strings: ['a', 'b'] },                        () => undefined],
   )
-  .describe('mixed structures')
-  .casesAsArgs(
+  .casesInAsArgs('mixed structures')(
     [{ str: 'hello', arr: [1, 'two', { nested: 'obj' }], obj: { inner: 'value' } }, uppercaseStrings],
   )
-  .describe('selective transformations')
-  .casesAsArgs(
+  .casesInAsArgs('selective transformations')(
     [{ keep: 'me', transform: 'this' },  selectiveTransform],
   )
-  .describe('combined transformations')
-  .casesAsArgs(
+  .casesInAsArgs('combined transformations')(
     [{ $name: 'alice', age: 25, $email: 'alice@example.com' }, combinedTransform],
   )
   .test()

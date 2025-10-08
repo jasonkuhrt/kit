@@ -8,8 +8,8 @@ type Ops = Fn.endo<SpecBuilder>
 describe('operations accumulation', () => {
   // dprint-ignore
   Test.describe('accumulates operations')
-    .i<{ ops: Ops }>()
-    .o<{ types: string[]; count: number }>()
+    .inputType<{ ops: Ops }>()
+    .outputType<{ types: string[]; count: number }>()
     .cases(
       ['file operations',      [{ ops: (s: SpecBuilder) => s.file('a.txt', 'A').file('b.md', '#').file('c.json', {}) }], { count: 3, types: ['file', 'file', 'file'] }],
       ['directory operations', [{ ops: (s: SpecBuilder) => s.dir('empty/').dir('nested/', (d: SpecBuilder) => d.file('inner.txt', 'nested')) }], { count: 2, types: ['dir', 'dir'] }],
@@ -24,8 +24,8 @@ describe('operations accumulation', () => {
 
 describe('immutability', () => {
   Test.describe('returns new spec on each operation')
-    .i<{ ops: Ops }>()
-    .o<void>()
+    .inputType<{ ops: Ops }>()
+    .outputType<void>()
     .cases(
       ['file operation', [{ ops: (s: SpecBuilder) => s.file('a.txt', 'A') }]],
       ['dir operation', [{ ops: (s: SpecBuilder) => s.dir('a/') }]],
@@ -46,8 +46,8 @@ describe('immutability', () => {
 describe('conditional operations', () => {
   // dprint-ignore
   Test.describe('conditional inclusion')
-    .i<{ cond: boolean; method: 'when' | 'unless' }>()
-    .o<{ count: number }>()
+    .inputType<{ cond: boolean; method: 'when' | 'unless' }>()
+    .outputType<{ count: number }>()
     .cases(
       ['when true',     [{ cond: true,  method: 'when' }],   { count: 1 }],
       ['when false',    [{ cond: false, method: 'when' }],   { count: 0 }],
@@ -65,8 +65,8 @@ describe('conditional operations', () => {
 
 describe('withBase', () => {
   Test.describe('changes base directory')
-    .i<{ from: string; to: string }>()
-    .o<void>()
+    .inputType<{ from: string; to: string }>()
+    .outputType<void>()
     .cases(
       ['simple change', [{ from: '/project1/', to: '/project2/' }]],
       ['root to subdir', [{ from: '/', to: '/subdir/' }]],
@@ -85,8 +85,8 @@ describe('withBase', () => {
 
 describe('merge', () => {
   Test.describe('combines specs')
-    .i<{ count: number }>()
-    .o<void>()
+    .inputType<{ count: number }>()
+    .outputType<void>()
     .cases(
       ['2 specs', [{ count: 2 }]],
       ['3 specs', [{ count: 3 }]],
@@ -109,8 +109,8 @@ describe('merge', () => {
 
 describe('nested directories', () => {
   Test.describe('nesting depth')
-    .i<{ depth: number }>()
-    .o<void>()
+    .inputType<{ depth: number }>()
+    .outputType<void>()
     .cases(
       ['1 level', [{ depth: 1 }]],
       ['3 levels', [{ depth: 3 }]],
@@ -139,8 +139,8 @@ describe('nested directories', () => {
 describe('path types', () => {
   // dprint-ignore
   Test.describe('file extensions')
-    .i<{ path: string }>()
-    .o<{ expectedType: string }>()
+    .inputType<{ path: string }>()
+    .outputType<{ expectedType: string }>()
     .cases(
       ['.txt file',      [{ path: 'text.txt' }],    { expectedType: 'file' }],
       ['.json file',     [{ path: 'data.json' }],   { expectedType: 'file' }],
@@ -161,8 +161,8 @@ describe('path types', () => {
 
   // dprint-ignore
   Test.describe('move operations')
-    .i<{ from: string; to: string }>()
-    .o<{ expectedType: string }>()
+    .inputType<{ from: string; to: string }>()
+    .outputType<{ expectedType: string }>()
     .cases(
       ['file to file',  [{ from: 'old.txt', to: 'new.txt' }],   { expectedType: 'move-file' }],
       ['dir to dir',    [{ from: 'old/',    to: 'new/' }],      { expectedType: 'move-dir' }],
@@ -177,8 +177,8 @@ describe('path types', () => {
 describe('add method', () => {
   // dprint-ignore
   Test.describe('dynamic paths')
-    .i<{ path: string; content?: any; builder?: Fn.endo<SpecBuilder> }>()
-    .o<{ type: string }>()
+    .inputType<{ path: string; content?: any; builder?: Fn.endo<SpecBuilder> }>()
+    .outputType<{ type: string }>()
     .cases(
       ['file with content', [{ path: 'file.txt', content: 'text' }],                           { type: 'file' }],
       ['empty directory',   [{ path: 'dir/' }],                                                { type: 'dir' }],
@@ -203,8 +203,8 @@ describe('add method', () => {
 describe('edge cases', () => {
   // dprint-ignore
   Test.describe('base paths')
-    .i<{ base: string }>()
-    .o<{ segmentCount: number }>()
+    .inputType<{ base: string }>()
+    .outputType<{ segmentCount: number }>()
     .cases(
       ['root directory',     [{ base: '/' }],         { segmentCount: 0 }],
       ['single segment',     [{ base: '/test/' }],    { segmentCount: 1 }],
@@ -218,8 +218,8 @@ describe('edge cases', () => {
 
   // dprint-ignore
   Test.describe('special characters')
-    .i<{ path: string }>()
-    .o<void>()
+    .inputType<{ path: string }>()
+    .outputType<void>()
     .cases(
       ['dash in name',       [{ path: 'file-with-dash.txt' }]],
       ['underscore in name', [{ path: 'file_underscore.txt' }]],
@@ -233,8 +233,8 @@ describe('edge cases', () => {
 
 describe('JSON content inference', () => {
   Test.describe('content types')
-    .i<{ file: string; content: any }>()
-    .o<void>()
+    .inputType<{ file: string; content: any }>()
+    .outputType<void>()
     .cases(
       ['object for .json', [{ file: 'config.json', content: { key: 'value' } }]],
       ['string for .json', [{ file: 'data.json', content: '{"raw": "json"}' }]],

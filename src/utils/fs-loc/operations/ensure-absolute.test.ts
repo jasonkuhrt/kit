@@ -8,8 +8,8 @@ const l = FsLoc.fromString
 describe('ensureAbsolute', () => {
   // dprint-ignore
   Test.describe('paths without base')
-    .i<FsLoc.FsLoc>()
-    .o<string | undefined>()
+    .inputType<FsLoc.FsLoc>()
+    .outputType<string | undefined>()
     .cases(
       ['abs file stays abs',                           [l('/home/file.txt')],                  '/home/file.txt'],
       ['abs dir stays abs',                            [l('/home/')],                         '/home/'],
@@ -26,9 +26,9 @@ describe('ensureAbsolute', () => {
 
   // dprint-ignore
   Test.describe('paths with base')
-    .i<FsLoc.FsLoc>()
-    .o<string | undefined>()
-    .ctx<{ base: FsLoc.AbsDir }>()
+    .inputType<FsLoc.FsLoc>()
+    .outputType<string | undefined>()
+    .contextType<{ base: FsLoc.AbsDir }>()
     .cases(
       { n: 'rel file with base',                           i: l('file.txt'),                       base: l('/home/'),                         o: '/home/file.txt' },
       { n: 'rel dir with base',                            i: l('src/'),                           base: l('/project/'),                      o: '/project/src/' },
