@@ -12,20 +12,20 @@ describe('isUnder', () => {
     .outputType<boolean>()
     .cases(
       // Absolute paths
-      ['abs file under abs dir',                      [{ child: l('/home/user/file.txt'), parent: l('/home/') }],                         true],
-      ['abs dir under abs dir',                       [{ child: l('/home/user/src/'), parent: l('/home/') }],                             true],
-      ['abs file not under abs dir',                  [{ child: l('/var/file.txt'), parent: l('/home/') }],                               false],
-      ['abs file under immediate parent',             [{ child: l('/home/file.txt'), parent: l('/home/') }],                              true],
-      ['abs file under root',                         [{ child: l('/file.txt'), parent: FsLoc.Constants.absDirRoot }],                    true],
+      [{ child: l('/home/user/file.txt'), parent: l('/home/') },                         true],
+      [{ child: l('/home/user/src/'), parent: l('/home/') },                             true],
+      [{ child: l('/var/file.txt'), parent: l('/home/') },                               false],
+      [{ child: l('/home/file.txt'), parent: l('/home/') },                              true],
+      [{ child: l('/file.txt'), parent: FsLoc.Constants.absDirRoot },                    true],
 
       // Relative paths
-      ['rel file under rel dir',                      [{ child: l('./src/index.ts'), parent: l('./src/') }],                              true],
-      ['rel dir under rel dir',                       [{ child: l('./src/components/'), parent: l('./src/') }],                           true],
-      ['rel file not under rel dir',                  [{ child: l('./test/file.ts'), parent: l('./src/') }],                              false],
+      [{ child: l('./src/index.ts'), parent: l('./src/') },                              true],
+      [{ child: l('./src/components/'), parent: l('./src/') },                           true],
+      [{ child: l('./test/file.ts'), parent: l('./src/') },                              false],
 
       // Edge cases
-      ['same location not under',                     [{ child: l('/home/'), parent: l('/home/') }],                                      false],
-      ['parent deeper than child',                    [{ child: l('/home/'), parent: l('/home/user/') }],                                 false],
+      [{ child: l('/home/'), parent: l('/home/') },                                      false],
+      [{ child: l('/home/'), parent: l('/home/user/') },                                 false],
     )
     .test(({ input, output }) => {
       const result = FsLoc.isUnder(input.child, input.parent)

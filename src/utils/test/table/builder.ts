@@ -4,13 +4,7 @@ import type { Fn } from '#fn'
 import { Str } from '#str'
 import { Array, Effect, Equal, Layer, Option } from 'effect'
 import { describe as vitestDescribe, expect, test, type TestContext } from 'vitest'
-import type {
-  BuilderTypeState,
-  CaseObject,
-  CaseTuple,
-  TableBuilderBase,
-  TableBuilderWithFunction,
-} from './builder-types.js'
+import type { BuilderTypeState, CaseObject, CaseTuple, TestBuilder } from './builder-types.js'
 
 // ============================================================================
 // Configuration & State Types
@@ -65,7 +59,7 @@ const defaultState: BuilderState = {
   nestedDescribeGroups: [],
   layerOrFactory: Option.none(),
   layerType: Option.none(),
-  typeState: { i: undefined, o: undefined, context: {}, fn: (() => {}) as Fn.AnyAny },
+  typeState: { i: undefined, o: undefined, context: {}, fn: (() => {}) as never },
   setupFactories: [],
 }
 
@@ -91,10 +85,10 @@ const assertEffectEqual = (actual: any, expected: any) => {
 
 /**
  * Validate that user context doesn't contain reserved property names.
- * Reserved names: input, output, result, n
+ * Reserved names: input, output, result, comment
  */
 const validateContextKeys = (context: object, caseName: string): void => {
-  const reservedKeys = ['input', 'output', 'result', 'n']
+  const reservedKeys = ['input', 'output', 'result', 'comment']
   const contextKeys = Object.keys(context)
   const conflicts = contextKeys.filter((key) => reservedKeys.includes(key))
 
@@ -265,33 +259,27 @@ function createBuilder(state: BuilderState = defaultState): any {
     return s
   }
 
-  // Parse case arguments helper
+  // Parse case arguments helper for .case() method
   const parseCaseArgs = (args: any[]): any => {
-    // If single argument and it's an object with 'n' property, it's object form
-    if (args.length === 1 && typeof args[0] === 'object' && args[0] !== null && 'n' in args[0]) {
+    // If single argument and it's an object with 'input' or 'comment' property, it's object form
+    if (
+      args.length === 1 && typeof args[0] === 'object' && args[0] !== null
+      && ('input' in args[0] || 'comment' in args[0])
+    ) {
       return args[0] as CaseObject<any, any>
     }
 
     const fn = Option.getOrUndefined(state.fn)
     if (!fn) return args // Can't parse without function
 
-    // Otherwise it's direct parameters
-    const hasName = typeof args[0] === 'string'
-    const startIdx = hasName ? 1 : 0
-    const name = hasName ? args[0] : undefined
-
     // For .on() mode, params are always passed as a tuple
-    if (Array.isArray(args[startIdx])) {
-      const params = args[startIdx] as any[]
-      const hasOutput = args.length > startIdx + 1
-      const output = hasOutput ? args[startIdx + 1] : undefined
+    if (Array.isArray(args[0])) {
+      const params = args[0] as any[]
+      const hasOutput = args.length > 1
+      const output = hasOutput ? args[1] : undefined
 
-      // Build tuple case
-      if (name && hasOutput) {
-        return [name, params, output] as CaseTuple<any, any>
-      } else if (name) {
-        return [name, params] as CaseTuple<any, any>
-      } else if (hasOutput) {
+      // Build tuple case - no name variants
+      if (hasOutput) {
         return [params, output] as CaseTuple<any, any>
       } else {
         return [params] as CaseTuple<any, any>
@@ -299,16 +287,12 @@ function createBuilder(state: BuilderState = defaultState): any {
     } else {
       // Direct params (not in array) - collect based on function arity
       const fnArity = fn.length
-      const params = args.slice(startIdx, startIdx + fnArity)
-      const hasOutput = args.length > startIdx + fnArity
-      const output = hasOutput ? args[startIdx + fnArity] : undefined
+      const params = args.slice(0, fnArity)
+      const hasOutput = args.length > fnArity
+      const output = hasOutput ? args[fnArity] : undefined
 
-      // Build tuple case
-      if (name && hasOutput) {
-        return [name, params, output] as CaseTuple<any, any>
-      } else if (name) {
-        return [name, params] as CaseTuple<any, any>
-      } else if (hasOutput) {
+      // Build tuple case - no name variants
+      if (hasOutput) {
         return [params, output] as CaseTuple<any, any>
       } else {
         return [params] as CaseTuple<any, any>
@@ -368,38 +352,6 @@ function createBuilder(state: BuilderState = defaultState): any {
       runner?: any
       isRunnerCase?: boolean
     } => {
-      // Runner case form
-      if (!Array.isArray(caseData) && caseData.isRunnerCase) {
-        return {
-          name: caseData.n,
-          input: [], // Runner cases don't have static input
-          runner: caseData.runner,
-          isRunnerCase: true,
-        }
-      }
-
-      // Object form
-      if (!Array.isArray(caseData)) {
-        const obj = caseData as any // CaseObject type is complex, use any for destructuring
-        // Extract known properties and preserve the rest as context
-        const { n, i, o, skip, skipIf, only, todo, tags, ...context } = obj
-
-        return {
-          name: n,
-          input: fn ? (i ?? []) : i, // Only default to [] for function mode
-          output: o,
-          skip: skip as boolean | string | undefined,
-          skipIf: skipIf as (() => boolean) | undefined,
-          only: only as boolean | undefined,
-          todo: todo as boolean | string | undefined,
-          tags: tags as string[] | undefined,
-          ...context, // Preserve any additional properties like 'data'
-        } as any
-      }
-
-      // Tuple form
-      const tuple = caseData as CaseTuple<any, any>
-
       // Helper to stringify values for test names (handles functions, truncates long strings)
       const stringifyForTestName = (value: any, maxLength = 80): string => {
         let str: string
@@ -425,39 +377,63 @@ function createBuilder(state: BuilderState = defaultState): any {
           : `${fnName}(${inputStr})`
       }
 
-      const formatName = (template: string, input: any, output?: any): string => {
-        if (!state.config.nameTemplate) return template
-        return state.config.nameTemplate
-          .replace('$i', JSON.stringify(input))
-          .replace('$o', output !== undefined ? JSON.stringify(output) : 'snapshot')
+      // Runner case form
+      if (!Array.isArray(caseData) && caseData.isRunnerCase) {
+        return {
+          name: caseData.n,
+          input: [], // Runner cases don't have static input
+          runner: caseData.runner,
+          isRunnerCase: true,
+        }
       }
 
-      // Determine structure
-      if (typeof tuple[0] === 'string') {
-        const name = tuple[0]
-        const wrappedInput = tuple[1] as any[]
-        const output = tuple[2]
-        const context = tuple[3 as any] // Context is 4th element when name is present
-        // For non-.on() mode, unwrap the input array
-        const input = fn ? wrappedInput : wrappedInput[0]
+      // Object form
+      if (!Array.isArray(caseData)) {
+        const obj = caseData as any // CaseObject type is complex, use any for destructuring
+        // Extract known properties and preserve the rest as context
+        const { comment, input, output, skip, skipIf, only, todo, tags, ...context } = obj
+
+        // Generate name from comment or auto-generate from input/output
+        const name = comment || (input !== undefined
+          ? generateName(input, output)
+          : 'test case')
+
         return {
-          name: formatName(name, wrappedInput, output),
-          input,
+          name,
+          input: fn ? (input ?? []) : input, // Only default to [] for function mode
           output,
-          ...(context && typeof context === 'object' ? context : {}),
-        }
-      } else {
-        const wrappedInput = tuple[0] as any[]
-        const output = tuple[1]
-        const context = tuple[2] // Context is 3rd element when name is absent
-        // For non-.on() mode, unwrap the input array
-        const input = fn ? wrappedInput : wrappedInput[0]
-        return {
-          name: generateName(wrappedInput, output),
-          input,
-          output,
-          ...(context && typeof context === 'object' && !Array.isArray(context) ? context : {}),
-        }
+          skip: skip as boolean | string | undefined,
+          skipIf: skipIf as (() => boolean) | undefined,
+          only: only as boolean | undefined,
+          todo: todo as boolean | string | undefined,
+          tags: tags as string[] | undefined,
+          ...context, // Preserve any additional properties like 'data'
+        } as any
+      }
+
+      // Tuple form - [input, output?, context?]
+      // Function mode and generic mode use same format for consistency
+      const tuple = caseData as any[] // Use any[] to access optional 3rd element
+      let input = tuple[0]
+      const output = tuple[1]
+      const contextObj = tuple[2] // Context is 3rd element
+
+      // Function mode: wrap non-array inputs so they can be spread as parameters
+      // Generic mode: keep input as-is (don't wrap)
+      if (fn && !Array.isArray(input)) {
+        input = [input]
+      }
+
+      // Extract comment from context if present
+      const { comment, ...context } = (contextObj && typeof contextObj === 'object' && !Array.isArray(contextObj))
+        ? contextObj
+        : {}
+
+      return {
+        name: comment || generateName(input, output),
+        input,
+        output,
+        ...context,
       }
     }
 
@@ -792,143 +768,6 @@ function createBuilder(state: BuilderState = defaultState): any {
       return createBuilder(flushCases(newState)) as any
     },
 
-    casesIn(describeName: string) {
-      return (...cases: any[]) => {
-        // Process function cases like in cases()
-        const processedCases = cases.map(caseItem => {
-          if (typeof caseItem === 'function') {
-            const context = state.setupFactories.reduce(
-              (acc, factory) => ({ ...acc, ...factory() }),
-              {} as object,
-            )
-            return caseItem(context)
-          }
-          return caseItem
-        })
-
-        // First flush any pending cases with their describe
-        const flushed = flushCases(state)
-        // Then add the new describe with its cases
-        const newState = {
-          ...flushed,
-          pendingDescribe: Option.some(describeName),
-          currentCases: processedCases,
-        }
-        return createBuilder(flushCases(newState))
-      }
-    },
-
-    /**
-     * Add test cases where each argument becomes a direct input to the function.
-     *
-     * **How it works:**
-     * Uses `Fn.analyzeFunction` to parse the function signature and count parameters.
-     * Based on the parameter count, it either wraps each case value (for unary functions)
-     * or expects case values to already be parameter tuples (for multi-param functions).
-     *
-     * **Unary functions** (exactly 1 parameter in signature):
-     * - Pass case values directly - they will be automatically wrapped
-     * - Example: `casesAsArgs('hello', 'world')` → calls `fn('hello')`, `fn('world')`
-     * - Works correctly even when the parameter type is an array:
-     *   - `casesAsArgs(['a', 'b'], ['c', 'd'])` → calls `fn(['a', 'b'])`, `fn(['c', 'd'])`
-     *
-     * **Multi-parameter functions** (2+ parameters, including optional):
-     * - Pass each case as an array/tuple of parameters
-     * - Example: `casesAsArgs([1, 2], [3, 4])` → calls `fn(1, 2)`, `fn(3, 4)`
-     * - Optional parameters still count (e.g., `(a, b?)` has 2 parameters):
-     *   - `casesAsArgs(['value'], ['other'])` → calls `fn('value')`, `fn('other')`
-     *   - You don't need to pass `undefined` for optional parameters
-     *
-     * **Why not just check if the argument is an array?**
-     * Because a unary function might accept an array as its parameter. The only reliable
-     * way to distinguish `fn(arr)` from `fn(a, b)` is to analyze the function signature.
-     *
-     * @param cases - Variable number of case inputs. For unary functions, pass values directly.
-     *                For multi-param functions, pass tuples/arrays of parameters.
-     * @returns Builder for method chaining
-     *
-     * @example
-     * ```ts
-     * // Unary function - pass values directly
-     * const upperCase = (s: string) => s.toUpperCase()
-     * Test.on(upperCase).casesAsArgs('hello', 'world').test()
-     * // Calls: upperCase('hello'), upperCase('world')
-     *
-     * // Unary function with array parameter - still pass arrays directly
-     * const sumArray = (nums: number[]) => nums.reduce((a, b) => a + b, 0)
-     * Test.on(sumArray).casesAsArgs([1, 2, 3], [4, 5]).test()
-     * // Calls: sumArray([1, 2, 3]), sumArray([4, 5])
-     *
-     * // Multi-parameter function - wrap each case in array
-     * const add = (a: number, b: number) => a + b
-     * Test.on(add).casesAsArgs([1, 2], [5, 5]).test()
-     * // Calls: add(1, 2), add(5, 5)
-     *
-     * // Function with optional parameter - still wrap (optional params count!)
-     * const decode = (input: string, options?: object) => JSON.parse(input)
-     * Test.on(decode).casesAsArgs(['{"a":1}'], ['{"b":2}']).test()
-     * // Calls: decode('{"a":1}'), decode('{"b":2}')
-     * // Note: No need to pass undefined for options
-     *
-     * // Automatic error handling in snapshot mode
-     * // Mix valid and invalid inputs - errors are captured automatically
-     * Test.on(Positive.from)
-     *   .casesAsArgs(
-     *     1, 10, 100,      // Returns successfully
-     *     0, -1, -10,      // Throws - captured as "THEN THROWS" in snapshots
-     *   )
-     *   .test()
-     * ```
-     */
-    casesAsArgs(...cases: any[]) {
-      const fn = Option.getOrUndefined(state.fn)
-      if (!fn) {
-        throw new Error('casesAsArgs requires .on() to be called first')
-      }
-
-      // Analyze function to get actual parameter count
-      const analysis = FnUtils.analyzeFunction(fn)
-      const isUnary = analysis.parameters.length === 1
-
-      // Transform cases based on function arity:
-      // Unary: anything → [anything] → fn(...[anything]) → fn(anything)
-      // Multi-param: [1, 2] → [[1, 2]] → fn(...[1, 2]) → fn(1, 2)
-      const processedCases = cases.map(args => [isUnary ? [args] : args])
-
-      const newState = {
-        ...state,
-        currentCases: [...state.currentCases, ...processedCases],
-      }
-      return createBuilder(newState)
-    },
-
-    casesInAsArgs(describeName: string) {
-      return (...cases: any[]) => {
-        const fn = Option.getOrUndefined(state.fn)
-        if (!fn) {
-          throw new Error('casesInAsArgs requires .on() to be called first')
-        }
-
-        // Analyze function to get actual parameter count
-        const analysis = FnUtils.analyzeFunction(fn)
-        const isUnary = analysis.parameters.length === 1
-
-        // Transform cases based on function arity (same as casesAsArgs)
-        const processedCases = cases.map(args => [isUnary ? [args] : args])
-
-        // First flush any pending cases with their describe
-        const flushed = flushCases(state)
-
-        // Then add the new describe with its cases
-        const newState = {
-          ...flushed,
-          pendingDescribe: Option.some(describeName),
-          currentCases: processedCases,
-        }
-        return createBuilder(flushCases(newState))
-      }
-    },
-
     case(...args: any[]) {
       // Check if this is a runner case: .case(name, runnerFn)
       // Detection: if we have exactly 2 args and second is a function, it's a runner
@@ -954,6 +793,14 @@ function createBuilder(state: BuilderState = defaultState): any {
       return createBuilder({
         ...state,
         currentCases: [...state.currentCases, caseData],
+      })
+    },
+
+    case$(caseObj: any) {
+      // Add a single case in object form
+      return createBuilder({
+        ...state,
+        currentCases: [...state.currentCases, caseObj],
       })
     },
 
@@ -1007,7 +854,21 @@ function createBuilder(state: BuilderState = defaultState): any {
       })
     },
 
-    describe(name: string, callback: Fn.AnyAny) {
+    describe(name: string, callbackOrCases: Fn.AnyAny | any[]) {
+      // Check if second argument is array (direct cases) or function (callback)
+      if (Array.isArray(callbackOrCases)) {
+        // Direct cases array form - add as a new group with describe name
+        const flushed = flushCases(state)
+        const newState = {
+          ...flushed,
+          pendingDescribe: Option.some(name),
+          currentCases: callbackOrCases,
+        }
+        return createBuilder(flushCases(newState))
+      }
+
+      // Callback form
+      const callback = callbackOrCases as Fn.AnyAny
       // Create child builder with inherited state
       const childBuilder = createBuilder({
         ...state,
@@ -1188,25 +1049,23 @@ function createBuilder(state: BuilderState = defaultState): any {
  * ```
  *
  * @param description - Optional description for the test suite, creates a Vitest describe block
- * @returns A {@link TableBuilderBase} for chaining configuration, cases, and execution
+ * @returns A {@link TestBuilder} for chaining configuration, cases, and execution
  *
  * @see {@link on} for function mode without a describe block
  */
-export function describe(): TableBuilderBase<
-  { i: unknown; o: unknown; context: {}; fn: Fn.AnyAny }
+export function describe(): TestBuilder<
+  { i: unknown; o: unknown; context: {}; fn: never }
 >
 export function describe(
   description: string,
-): TableBuilderBase<{ i: unknown; o: unknown; context: {}; fn: Fn.AnyAny }>
+): TestBuilder<{ i: unknown; o: unknown; context: {}; fn: never }>
 export function describe(
   description?: string,
-): TableBuilderBase<{ i: unknown; o: unknown; context: {}; fn: Fn.AnyAny }> {
+): TestBuilder<{ i: unknown; o: unknown; context: {}; fn: never }> {
   const initialState: BuilderState = description
     ? { ...defaultState, config: { description } }
     : defaultState
-  return createBuilder(
-    { ...initialState, typeState: { i: undefined, o: undefined, context: {}, fn: (() => {}) as Fn.AnyAny } },
-  ) as TableBuilderBase<{ i: unknown; o: unknown; context: {}; fn: Fn.AnyAny }>
+  return createBuilder(initialState) as TestBuilder<{ i: unknown; o: unknown; context: {}; fn: never }>
 }
 
 /**
@@ -1286,17 +1145,17 @@ export function describe(
  * ```ts
  * // Mix successful and error cases - errors are captured automatically
  * Test.on(parseInt)
- *   .casesAsArgs(
- *     '42',      // Returns: 42
- *     'hello',   // Returns: NaN
+ *   .cases(
+ *     ['42'],      // Returns: 42
+ *     ['hello'],   // Returns: NaN
  *   )
  *   .test()
  *
  * // Validation functions - errors documented in snapshots
  * Test.on(Positive.from)
- *   .casesAsArgs(
- *     1, 10, 100,        // THEN RETURNS the value
- *     0, -1, -10,        // THEN THROWS "Value must be positive"
+ *   .cases(
+ *     [1], [10], [100],        // THEN RETURNS the value
+ *     [0], [-1], [-10],        // THEN THROWS "Value must be positive"
  *   )
  *   .test()
  * ```
@@ -1320,13 +1179,13 @@ export function describe(
  * ```
  *
  * @param $fn - The function to test. Types are inferred from its signature
- * @returns A {@link TableBuilderWithFunction} for configuring and running tests
+ * @returns A {@link TestBuilder} for configuring and running tests
  *
  * @see {@link describe} for creating tests with a describe block
  */
 export function on<$fn extends Fn.AnyAny>(
   $fn: $fn,
-): TableBuilderWithFunction<{ i: never; o: never; context: {}; fn: $fn }> {
+): TestBuilder<{ i: never; o: never; context: {}; fn: $fn }> {
   const initialState: BuilderState = {
     ...defaultState,
     fn: Option.some($fn),
@@ -1334,5 +1193,5 @@ export function on<$fn extends Fn.AnyAny>(
   return createBuilder({
     ...initialState,
     typeState: { i: undefined, o: undefined, context: {}, fn: $fn },
-  }) as TableBuilderWithFunction<{ i: never; o: never; context: {}; fn: typeof $fn }>
+  }) as TestBuilder<{ i: never; o: never; context: {}; fn: typeof $fn }>
 }

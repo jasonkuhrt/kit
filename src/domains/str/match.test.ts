@@ -9,17 +9,17 @@ const regExpMatchResult = (matchString: string, ...groups: string[]): RegExpMatc
 
 // dprint-ignore
 Test.on(match)
-  .casesIn('basic')(
+  .describe('basic', [
     [['hello world', /foo/ ],         Option.none()],
     [['hello world', /hello/ ],       Option.some(regExpMatchResult('hello')) as any],
     [['hello world', /hello (\w+)/ ], Option.some(regExpMatchResult('hello world', 'world')) as any]
-  )
-  .casesIn('edges')(
+  ])
+  .describe('edges', [
     [['',      /^$/ ],      Option.some(regExpMatchResult('')) as any],
     [['',      /foo/ ],     Option.none()],
     [['HELLO', /hello/ ],   Option.none()],
     [['HELLO', /hello/i ],  Option.some(regExpMatchResult('HELLO')) as any],
-  )
+  ])
   .test(({ result, output }) => {
     if (Option.isNone(output!)) {
       expect(Option.isNone(result)).toBe(true)

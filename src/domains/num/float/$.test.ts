@@ -3,60 +3,60 @@ import { Float } from './$.js'
 
 Test.describe('is')
   .on(Float.is)
-  .casesAsArgs(
+  .cases(
     // Valid cases - non-integer numbers
-    1.5,
-    0.1,
-    -1.5,
-    -0.1,
-    Math.PI,
+    [1.5],
+    [0.1],
+    [-1.5],
+    [-0.1],
+    [Math.PI],
     // Invalid cases - integers
-    0,
-    1,
-    -1,
-    100,
+    [0],
+    [1],
+    [-1],
+    [100],
     // Invalid cases - special values
-    Infinity,
-    -Infinity,
-    NaN,
-    '1.5',
-    null,
-    undefined,
+    [Infinity],
+    [-Infinity],
+    [NaN],
+    ['1.5'],
+    [null],
+    [undefined],
   )
   .test()
 
 Test.describe('from')
   .on(Float.from)
-  .casesAsArgs(
+  .cases(
     // Valid cases
-    1.5,
-    0.1,
-    -1.5,
-    -0.1,
-    Math.PI,
+    [1.5],
+    [0.1],
+    [-1.5],
+    [-0.1],
+    [Math.PI],
     // Invalid cases - should throw
-    0,
-    1,
-    -1,
-    Infinity,
-    NaN,
+    [0],
+    [1],
+    [-1],
+    [Infinity],
+    [NaN],
   )
   .test()
 
 Test.describe('tryFrom')
   .on(Float.tryFrom)
-  .casesAsArgs(
+  .cases(
     // Valid cases
-    1.5,
-    0.1,
-    -1.5,
-    -0.1,
-    Math.PI,
+    [1.5],
+    [0.1],
+    [-1.5],
+    [-0.1],
+    [Math.PI],
     // Invalid cases - should return null
-    0,
-    1,
-    -1,
-    Infinity,
-    NaN,
+    [0],
+    [1],
+    [-1],
+    [Infinity],
+    [NaN],
   )
   .test()

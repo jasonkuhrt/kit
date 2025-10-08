@@ -1,5 +1,23 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Test.table() builder > functional tests > cases helper > upperCase("hello") 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+hello
+╠══════════════════════════════════════════════════╣ THEN RETURNS STRING
+HELLO
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`Test.table() builder > functional tests > cases helper > upperCase("world") 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+world
+╠══════════════════════════════════════════════════╣ THEN RETURNS STRING
+WORLD
+╚══════════════════════════════════════════════════╝"
+`;
+
 exports[`Test.table() builder > functional tests > casesAsArg helper > upperCase("hello") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS

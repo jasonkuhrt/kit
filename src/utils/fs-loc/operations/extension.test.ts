@@ -11,28 +11,28 @@ Test.describe('.extension - get extension of file or null for directories')
     .outputType<string | null>()
     .cases(
       // Files with extensions
-      ['abs file with extension',                      [l('/home/file.txt')],                 '.txt'],
-      ['rel file with extension',                      [l('./docs/README.md')],               '.md'],
-      ['file with multiple dots',                      [l('/archive.tar.gz')],                '.gz'],
-      ['hidden file with extension',                   [l('./.config.json')],                 '.json'],
-      ['file with complex extension',                  [l('/test.d.ts')],                     '.ts'],
-      ['javascript file',                              [l('/script.js')],                     '.js'],
-      ['typescript file',                              [l('/component.tsx')],                 '.tsx'],
-      ['graphql file',                                 [l('/query.graphql')],                 '.graphql'],
+      [l('/home/file.txt'),                 '.txt'],
+      [l('./docs/README.md'),               '.md'],
+      [l('/archive.tar.gz'),                '.gz'],
+      [l('./.config.json'),                 '.json'],
+      [l('/test.d.ts'),                     '.ts'],
+      [l('/script.js'),                     '.js'],
+      [l('/component.tsx'),                 '.tsx'],
+      [l('/query.graphql'),                 '.graphql'],
 
       // Files without extensions
-      ['file without extension',                       [l('/README')],                        null],
-      ['hidden file without extension',                [l('./.gitignore')],                   null],
-      ['file in root without extension',               [l('/Makefile')],                      null],
+      [l('/README'),                        null],
+      [l('./.gitignore'),                   null],
+      [l('/Makefile'),                      null],
 
       // Directories always return null
-      ['abs directory',                                [l('/home/user/')],                    null],
-      ['rel directory',                                [l('./src/')],                         null],
-      ['nested abs directory',                         [l('/project/src/components/')],       null],
-      ['nested rel directory',                         [l('./lib/utils/')],                   null],
-      ['directory with dots in name',                  [l('/my.folder.v2/')],                 null],
-      ['root directory',                               [FsLoc.Constants.absDirRoot],         null],
-      ['current directory',                            [FsLoc.Constants.relDirCurrent],      null],
+      [l('/home/user/'),                    null],
+      [l('./src/'),                         null],
+      [l('/project/src/components/'),       null],
+      [l('./lib/utils/'),                   null],
+      [l('/my.folder.v2/'),                 null],
+      [FsLoc.Constants.absDirRoot,         null],
+      [FsLoc.Constants.relDirCurrent,      null],
     )
     .test(({ input, output }) => {
       const result = FsLoc.extension(input)

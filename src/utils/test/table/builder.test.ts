@@ -38,21 +38,21 @@ describe('Test.table() builder', () => {
         expect(result).toBe(output) // reference equality
       })
 
-    // Test casesAsArg
-    Test.describe('casesAsArg helper')
+    // Test cases helper
+    Test.describe('cases helper')
       .on(upperCase)
-      .casesAsArgs(
-        'hello',
-        'world',
+      .cases(
+        [['hello']],
+        [['world']],
       )
       .test()
 
     // Test multi-argument snapshot with separator
     Test.describe('multi-argument snapshots')
       .on(add)
-      .casesAsArgs(
-        [1, 2],
-        [10, 20],
+      .cases(
+        [[1, 2]],
+        [[10, 20]],
       )
       .test()
   })
@@ -67,7 +67,7 @@ describe('Test.table() builder', () => {
       // Verify the builder has the expected methods
       expect(builder.cases).toBeDefined()
       // test() only exists after cases()
-      const withCases = builder.cases({ n: 'test', i: 'input', o: 'output' })
+      const withCases = builder.cases({ comment: 'test', input: 'input', output: 'output' })
       expect(withCases.test).toBeDefined()
     })
 
@@ -79,7 +79,7 @@ describe('Test.table() builder', () => {
       // Verify the builder has the expected methods
       expect(builder.cases).toBeDefined()
       // test() only exists after cases()
-      const withCases = builder.cases({ n: 'test', i: 'input', o: 'output' })
+      const withCases = builder.cases({ comment: 'test', input: 'input', output: 'output' })
       expect(withCases.test).toBeDefined()
     })
   })
@@ -98,7 +98,6 @@ describe('Test.table() builder', () => {
       const builder = Test.describe()
         .on(upperCase)
       expect(builder.cases).toBeDefined()
-      expect(builder.casesAsArgs).toBeDefined()
     })
 
     it('should work with zero-param functions', () => {
@@ -141,7 +140,7 @@ describe('Test.table() builder', () => {
         .outputType<string>()
       expect(builder.cases).toBeDefined()
       // test() only exists after cases()
-      const withCases = builder.cases({ n: 'test', i: 'input', o: 'output' })
+      const withCases = builder.cases({ comment: 'test', input: 'input', output: 'output' })
       expect(withCases.test).toBeDefined()
     })
   })
@@ -185,7 +184,7 @@ describe('Test.table() builder', () => {
           .inputType<number>()
           .outputType<number>()
           .cases(
-            { n: 'test', i: 1, o: 2 },
+            { comment: 'test', input: 1, output: 2 },
           )
           .layer(mockLayer)
           .testEffect(() => Effect.succeed(undefined))
@@ -200,7 +199,7 @@ describe('Test.table() builder', () => {
           .inputType<number>()
           .outputType<number>()
           .cases(
-            { n: 'test 1', i: 1, o: 2 },
+            { comment: 'test 1', input: 1, output: 2 },
           )
           .layerEach(({ i }) => Layer.empty)
           .testEffect(() => Effect.succeed(undefined))
@@ -226,7 +225,7 @@ describe('Test.table() builder', () => {
         .inputType<string>()
       expect(builder.cases).toBeDefined()
       // test() only exists after cases()
-      const withCases = builder.cases({ n: 'test', i: 'input', o: undefined })
+      const withCases = builder.cases({ comment: 'test', input: 'input', output: undefined })
       expect(withCases.test).toBeDefined()
     })
   })
@@ -241,11 +240,14 @@ describe('Test.table() builder', () => {
     })
 
     it('should accept all object formats', () => {
-      // Verify the API compiles with various object formats
+      // Verify the API compiles
       const builder = Test.describe()
-        .on(add)
-      // Just verify it has the methods
+        .inputType<string>()
+        .outputType<string>()
       expect(builder.cases).toBeDefined()
+      // test() only exists after cases()
+      const withCases = builder.cases({ comment: 'test', input: 'input', output: 'output' })
+      expect(withCases.test).toBeDefined()
     })
   })
 

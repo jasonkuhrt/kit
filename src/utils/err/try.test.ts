@@ -1,4 +1,5 @@
 import { Err } from '#err'
+import { Fn } from '#fn'
 import { Test } from '#test'
 import { describe, expect, expectTypeOf, test } from 'vitest'
 import { tryAllOrRethrow, tryOr, tryOrRethrow } from './try.js'
@@ -21,17 +22,18 @@ const fnAsync = (throwValue?: unknown) => async () => {
 Test.describe('sync tryCatch')
   .on(Err.tryCatch)
   .cases(
-    ['returns thrown error', [fn(e)], e],
-    ['returns returned value', [fn()], v],
+    [[fn(e)], e],
+    [[fn()], v],
   )
+  .test()
 
 // Test async variations
 Test.describe('async tryCatch')
   .inputType<() => Promise<any>>()
   .outputType<any>()
   .cases(
-    ['returns thrown error', [fnAsync(e)], e],
-    ['returns returned value', [fnAsync()], v],
+    [fnAsync(e), e],
+    [fnAsync(), v],
   )
   .test(async ({ input, output }) => {
     const result = await Err.tryCatch(input)
@@ -52,11 +54,10 @@ Test.describe('tryOrRethrow success cases')
     isAsync?: boolean
   }>()
   .cases(
-    { n: 'returns value on success', i: { fn: () => 42, wrapper: 'Should not throw' }, o: 42, isAsync: false },
+    { input: { fn: () => 42, wrapper: 'Should not throw' }, output: 42, isAsync: false },
     {
-      n: 'handles async functions that resolve',
-      i: { fn: async () => 42, wrapper: 'Should not throw' },
-      o: 42,
+      input: { fn: async () => 42, wrapper: 'Should not throw' },
+      output: 42,
       isAsync: true,
     },
   )
@@ -79,26 +80,24 @@ Test.describe('tryOrRethrow error wrapping')
   }>()
   .cases(
     {
-      n: 'wraps thrown errors with string message',
-      i: {
+      input: {
         fn: () => {
           throw new Error('Original')
         },
         wrapper: 'Operation failed',
       },
-      o: undefined,
+      output: undefined,
       expectedMessage: 'Operation failed',
       expectedCauseMessage: 'Original',
     },
     {
-      n: 'wraps thrown errors with options',
-      i: {
+      input: {
         fn: () => {
           throw new Error('Original')
         },
         wrapper: { message: 'Operation failed', context: { id: 123 } },
       },
-      o: undefined,
+      output: undefined,
       expectedMessage: 'Operation failed',
       checkContext: { id: 123 },
     },
@@ -152,26 +151,24 @@ Test.describe('async tryOrRethrow errors')
   }>()
   .cases(
     {
-      n: 'wraps async function errors',
-      i: {
+      input: {
         fn: async () => {
           throw new Error('Async error')
         },
         wrapper: 'Async operation failed',
       },
-      o: undefined,
+      output: undefined,
       expectedMessage: 'Async operation failed',
       expectedCauseMessage: 'Async error',
     },
     {
-      n: 'works with wrapWith curried function',
-      i: {
+      input: {
         fn: async () => {
           throw new Error('Network timeout')
         },
         wrapper: wrapWith('Failed to fetch data'),
       },
-      o: undefined,
+      output: undefined,
       expectedMessage: 'Failed to fetch data',
     },
   )
@@ -187,29 +184,23 @@ Test.describe('async tryOrRethrow errors')
     }
   })
 
-// Test sync variations with Test.table
-Test.describe('sync tryOr variations')
-  .inputType<{ fn: () => any; fallback: any }>()
-  .outputType<any>()
+Test
+  .describe('sync tryOr variations')
+  .on(tryOr)
   .cases(
-    ['returns value on success', [{ fn: () => 42, fallback: 'fallback' }], 42],
-    ['returns static fallback on error', [{
-      fn: () => {
-        throw new Error('fail')
-      },
-      fallback: 'fallback',
-    }], 'fallback'],
-    ['returns lazy fallback on error', [{
-      fn: () => {
-        throw new Error('fail')
-      },
-      fallback: () => 'lazy fallback',
-    }], 'lazy fallback'],
+    [[() => 42, 'fallback'], 42],
+    // dprint-ignore
+    [
+      [() => { throw new Error('fail') }, 'fallback' ],
+      'fallback',
+    ],
+    // dprint-ignore
+    [
+      [() => { throw new Error('fail') }, () => 'lazy fallback' ],
+     'lazy fallback'
+    ],
   )
-  .test(({ input, output }) => {
-    const result = tryOr(input.fn, input.fallback)
-    expect(result).toBe(output)
-  })
+  .test()
 
 // Test async variations with Test.table
 Test.describe('async tryOr variations')
@@ -219,23 +210,23 @@ Test.describe('async tryOr variations')
   }>()
   .outputType<any>()
   .cases(
-    ['handles async function that resolves', [{
+    [{
       fn: async () => 42,
       fallback: 'fallback',
-    }], 42],
-    ['handles async function that rejects with static fallback', [{
+    }, 42],
+    [{
       fn: async () => {
         throw new Error('fail')
       },
       fallback: 'fallback',
-    }], 'fallback'],
-    ['handles async function that rejects with lazy fallback', [{
+    }, 'fallback'],
+    [{
       fn: async () => {
         throw new Error('fail')
       },
       fallback: () => 'lazy fallback',
-    }], 'lazy fallback'],
-    ['handles async function with async fallback', [{
+    }, 'lazy fallback'],
+    [{
       fn: async () => {
         throw new Error('fail')
       },
@@ -243,7 +234,7 @@ Test.describe('async tryOr variations')
         await new Promise(resolve => setTimeout(resolve, 10))
         return 'async fallback'
       },
-    }], 'async fallback'],
+    }, 'async fallback'],
   )
   .test(async ({ input, output }) => {
     const result = await tryOr(input.fn, input.fallback)

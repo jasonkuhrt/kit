@@ -1,14 +1,14 @@
 import { expectTypeOf } from 'vitest'
 import { Test } from '../$.js'
 
-// Test type inference with .i() and .o() using tuple cases
+// Test type inference with .i() and .o() using object cases
 {
-  Test.describe('test with i/o and tuple cases')
+  Test.describe('test with i/o and object cases')
     .inputType<string>()
     .outputType<number>()
     .cases(
-      ['case 1', ['input'], 42],
-      ['case 2', ['other'], 100],
+      { comment: 'case 1', input: 'input', output: 42 },
+      { comment: 'case 2', input: 'other', output: 100 },
     )
     .test(({ input, output }) => {
       expectTypeOf(input).toEqualTypeOf<string>()
@@ -16,14 +16,14 @@ import { Test } from '../$.js'
     })
 }
 
-// Test type inference with .i() and .o() using object cases
+// Test type inference with .i() and .o() using object cases (second test)
 {
-  Test.describe('test with i/o and object cases')
+  Test.describe('test with i/o and object cases 2')
     .inputType<string>()
     .outputType<number>()
     .cases(
-      { n: 'case 1', i: 'input', o: 42 },
-      { n: 'case 2', i: 'other', o: 100 },
+      { comment: 'case 1', input: 'input', output: 42 },
+      { comment: 'case 2', input: 'other', output: 100 },
     )
     .test(({ input, output }) => {
       expectTypeOf(input).toEqualTypeOf<string>()
@@ -38,8 +38,8 @@ import { Test } from '../$.js'
     .outputType<number>()
     .contextType<{ extra: boolean }>()
     .cases(
-      { n: 'case 1', i: 'input', o: 42, extra: true },
-      { n: 'case 2', i: 'other', o: 100, extra: false },
+      { comment: 'case 1', input: 'input', output: 42, extra: true },
+      { comment: 'case 2', input: 'other', output: 100, extra: false },
     )
     .test(({ input, output, extra }) => {
       expectTypeOf(input).toEqualTypeOf<string>()
@@ -68,8 +68,8 @@ import { Test } from '../$.js'
     .outputType<number>()
     .contextType<{ extra: string; flag: boolean }>()
     .cases(
-      { n: 'case 1', i: 'hello', o: 5, extra: 'metadata1', flag: true },
-      { n: 'case 2', i: 'world', o: 10, extra: 'metadata2', flag: false },
+      { comment: 'case 1', input: 'hello', output: 5, extra: 'metadata1', flag: true },
+      { comment: 'case 2', input: 'world', output: 10, extra: 'metadata2', flag: false },
     )
     .test(({ input, output, extra, flag }) => {
       expectTypeOf(input).toEqualTypeOf<string>()

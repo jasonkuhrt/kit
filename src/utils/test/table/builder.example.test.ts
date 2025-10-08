@@ -11,7 +11,7 @@ describe('Test.table() examples', () => {
     .on(add)
     .cases(
       [[2, 3], 5],
-      ['negative numbers', [-1, -2], -3],
+      { comment: 'negative numbers', input: [-1, -2], output: -3 },
       [[10, 10], 20],
     )
 
@@ -28,7 +28,7 @@ describe('Test.table() examples', () => {
   const suite = Test.describe()
     .on(add)
     .case(1, 1, 2)
-    .case('three plus four', 3, 4, 7)
+    .case({ comment: 'three plus four', input: [3, 4], output: 7 })
     .case(5, 5, 10)
 
   suite.cases() // Execute
@@ -38,8 +38,8 @@ describe('Test.table() examples', () => {
     .inputType<string>()
     .outputType<boolean>()
     .cases(
-      { n: 'valid email', i: 'user@example.com', o: true },
-      { n: 'invalid email', i: 'not-an-email', o: false },
+      { comment: 'valid email', input: 'user@example.com', output: true },
+      { comment: 'invalid email', input: 'not-an-email', output: false },
     )
     .test(({ input, output }) => {
       const isValid = input.includes('@')
@@ -51,6 +51,6 @@ describe('Test.table() examples', () => {
     .on(add)
     .cases(
       [[100, 200]], // Will snapshot the result
-      ['complex calc', [999, 1]], // Named snapshot
+      { comment: 'complex calc', input: [999, 1] }, // Named snapshot
     )
 })

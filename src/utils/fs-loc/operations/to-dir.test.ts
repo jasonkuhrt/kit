@@ -11,12 +11,12 @@ describe('toDir', () => {
     .inputType<FsLoc.Groups.File.File>()
     .outputType<string>()
     .cases(
-      ['abs file to parent dir',                       [l('/home/file.txt')],                  '/home/'],
-      ['rel file to parent dir',                       [l('src/index.ts')],                    './src/'],
-      ['file in root to root dir',                     [l('/file.txt')],                       '/'],
-      ['rel file in current dir',                      [l('./a.md')],                          './'],
-      ['nested file to parent dir',                    [l('./a/b/c.md')],                      './a/b/'],
-      ['abs nested file to parent',                    [l('/home/user/docs/file.txt')],        '/home/user/docs/'],
+      [l('/home/file.txt'),                  '/home/'],
+      [l('src/index.ts'),                    './src/'],
+      [l('/file.txt'),                       '/'],
+      [l('./a.md'),                          './'],
+      [l('./a/b/c.md'),                      './a/b/'],
+      [l('/home/user/docs/file.txt'),        '/home/user/docs/'],
     )
     .test(({ input, output }) => {
       const result = FsLoc.toDir(input)

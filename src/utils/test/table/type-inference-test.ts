@@ -7,8 +7,8 @@ import { Test } from '../$.js'
     .inputType<string>()
     .outputType<number>()
     .cases(
-      ['case 1', ['input'], 42],
-      ['case 2', ['other'], 100],
+      ['input', 42],
+      ['other', 100],
     )
     .test(({ input, output }) => {
       // These should infer correctly without annotation
@@ -24,13 +24,13 @@ import { Test } from '../$.js'
     .inputType<string>()
     .outputType<number>()
     .cases(
-      { n: 'case 1', i: 'input', o: 42 },
-      { n: 'case 2', i: 'other', o: 100 },
+      { comment: 'case 1', input: 'input', output: 42 },
+      { comment: 'case 2', input: 'other', output: 100 },
     )
     .test(({ input, output }) => {
       expectTypeOf(input).toEqualTypeOf<string>()
       expectTypeOf(output).toEqualTypeOf<number>()
-      // expectTypeOf(ctx).toEqualTypeOf<{ i: string; o: number; n: string }>()
+      // expectTypeOf(ctx).toEqualTypeOf<{ input: string; output: number; comment: string }>()
     })
 }
 
@@ -41,8 +41,8 @@ import { Test } from '../$.js'
     .outputType<number>()
     .contextType<{ extra: boolean }>()
     .cases(
-      { n: 'case 1', i: 'input', o: 42, extra: true },
-      { n: 'case 2', i: 'other', o: 100, extra: false },
+      { comment: 'case 1', input: 'input', output: 42, extra: true },
+      { comment: 'case 2', input: 'other', output: 100, extra: false },
     )
     .test(({ input, output, extra }) => {
       expectTypeOf(input).toEqualTypeOf<string>()
@@ -59,8 +59,6 @@ import { Test } from '../$.js'
     .cases(
       [['hello'], 5], // with output
       [['world']], // without output (snapshot)
-      ['named', ['test'], 4], // named with output
-      ['snapshot', ['foo']], // named without output
     )
     .test(({ result, output }) => {
       expectTypeOf(result).toEqualTypeOf<number>()
@@ -68,34 +66,22 @@ import { Test } from '../$.js'
     })
 }
 
-// Test 5: Mixed tuple formats - BUT .inputType()/.outputType() mode requires output!
-// This test is invalid - without .on(), if .outputType() is specified, output is required
-// We need to either:
-// 1. Remove .outputType() to allow optional output (but then output is forbidden)
-// 2. Provide output for all cases
-// Let's provide output for all cases since .outputType<number>() is specified
+// Test 5: Tuple formats with required output in generic mode
 {
   Test.describe('tuple formats with required output')
     .inputType<string>()
     .outputType<number>()
     .cases(
-      [['input1'], 10], // input + output
-      ['named', ['input2'], 20], // named input + output
-      [['input3'], 42], // input + output
-      ['complete', ['input4'], 100], // name + input + output
+      ['input1', 10], // input + output
+      ['input2', 20], // input + output
+      ['input3', 42], // input + output
+      ['input4', 100], // input + output
     )
     .test(({ input, output }) => {
       expectTypeOf(input).toEqualTypeOf<string>()
       expectTypeOf(output).toEqualTypeOf<number>() // NOT undefined - output is required!
       // expectTypeOf(ctx).toEqualTypeOf<{}>()
     })
-  Test.describe('tuple formats with required output')
-    .inputType<string>()
-    .outputType<number>()
-    .cases(
-      // @ts-expect-error missing input (or could say that input of 10 is invalid, who knows which really)
-      ['input1', 10], // input + output
-    )
 }
 
 {
@@ -104,7 +90,7 @@ import { Test } from '../$.js'
     .outputType<number>()
     .contextType<{ a: 0 }>()
     .cases(
-      ['', [''], 0, { a: 0 }],
+      ['', 0, { a: 0 }],
     )
     .test(({ input, output, a }) => {
       expectTypeOf(input).toEqualTypeOf<string>()
@@ -118,7 +104,7 @@ import { Test } from '../$.js'
     .contextType<{ a: 0 }>()
     .cases(
       // @ts-expect-error Missing context
-      ['', [''], 0],
+      ['', 0],
     )
 
   const testBuilder = Test.describe('context')
@@ -129,6 +115,6 @@ import { Test } from '../$.js'
   // This should error
   testBuilder.cases(
     // @ts-expect-error invalid context type - should have 'a: 0'
-    ['test', ['input'], 42, { z: 'wrong' }],
+    ['test', 42, { z: 'wrong' }],
   )
 }

@@ -11,23 +11,23 @@ Test.describe('.name - get name of file or directory')
     .outputType<string>()
     .cases(
       // Files with extensions
-      ['abs file with extension',                      [l('/home/file.txt')],                 'file.txt'],
-      ['rel file with extension',                      [l('./docs/README.md')],               'README.md'],
-      ['file with multiple dots',                      [l('/archive.tar.gz')],                'archive.tar.gz'],
-      ['hidden file with extension',                   [l('./.config.json')],                 '.config.json'],
+      [l('/home/file.txt'),                 'file.txt'],
+      [l('./docs/README.md'),               'README.md'],
+      [l('/archive.tar.gz'),                'archive.tar.gz'],
+      [l('./.config.json'),                 '.config.json'],
 
       // Directories
-      ['abs directory',                                [l('/home/user/')],                    'user'],
-      ['rel directory',                                [l('./src/')],                         'src'],
-      ['nested abs directory',                         [l('/project/src/components/')],       'components'],
-      ['nested rel directory',                         [l('./lib/utils/')],                   'utils'],
+      [l('/home/user/'),                    'user'],
+      [l('./src/'),                         'src'],
+      [l('/project/src/components/'),       'components'],
+      [l('./lib/utils/'),                   'utils'],
 
       // Edge cases
-      ['root directory returns empty',                 [FsLoc.Constants.absDirRoot],         ''],
-      ['file in root',                                 [l('/file.txt')],                      'file.txt'],
-      ['single segment abs dir',                       [l('/home/')],                         'home'],
-      ['empty rel dir returns empty',                  [FsLoc.Constants.relDirCurrent],      ''],
-      ['directory with dots in name',                  [l('/my.folder.v2/')],                 'my.folder.v2'],
+      [FsLoc.Constants.absDirRoot,         ''],
+      [l('/file.txt'),                      'file.txt'],
+      [l('/home/'),                         'home'],
+      [FsLoc.Constants.relDirCurrent,      ''],
+      [l('/my.folder.v2/'),                 'my.folder.v2'],
     )
     .test(({ input, output }) => {
       const result = FsLoc.name(input)

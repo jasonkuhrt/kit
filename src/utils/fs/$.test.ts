@@ -54,23 +54,23 @@ Test.describe('.findFirstUnderDir')
   .outputType<FsLoc.Groups.Abs.Abs | null>()
   .contextType<{ data?: FsLoc.FsLoc[] }>()
   .cases(
-    { n: 'finds single file',
-      i: { paths: [fx.a.rel] }, o: fx.a.abs },
+    { comment: 'finds single file',
+      input: { paths: [fx.a.rel] }, output: fx.a.abs },
 
-    { n: 'finds first file when both exist',
-      i: { paths: [fx.a.rel, fx.b.rel] }, o: fx.a.abs },
+    { comment: 'finds first file when both exist',
+      input: { paths: [fx.a.rel, fx.b.rel] }, output: fx.a.abs },
 
-    { n: 'finds second file when only second exists',
-      i: { paths: [fx.a.rel, fx.b.rel] }, data: [fx.b.abs], o: fx.b.abs },
+    { comment: 'finds second file when only second exists',
+      input: { paths: [fx.a.rel, fx.b.rel] }, data: [fx.b.abs], output: fx.b.abs },
 
-    { n: 'finds directory',
-      i: { paths: [fx.dir.rel] }, o: fx.dir.abs },
+    { comment: 'finds directory',
+      input: { paths: [fx.dir.rel] }, output: fx.dir.abs },
 
-    { n: 'finds first of mixed types',
-      i: { paths: [fx.a.rel, fx.dir.rel] }, o: fx.a.abs },
+    { comment: 'finds first of mixed types',
+      input: { paths: [fx.a.rel, fx.dir.rel] }, output: fx.a.abs },
 
-    { n: 'returns None when nothing exists',
-      i: { paths: [fx.a.rel, fx.b.rel] }, data: [], o: null },
+    { comment: 'returns None when nothing exists',
+      input: { paths: [fx.a.rel, fx.b.rel] }, data: [], output: null },
   )
   .layerEach((testCase) => {
     const fixture = testCase.data ?? [

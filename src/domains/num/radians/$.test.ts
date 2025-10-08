@@ -3,54 +3,54 @@ import { Radians } from './$.js'
 
 Test.describe('is')
   .on(Radians.is)
-  .casesAsArgs(
+  .cases(
     // Valid cases - any finite number is a valid radian
-    0,
-    Math.PI,
-    Math.PI / 2,
-    2 * Math.PI,
-    -Math.PI,
-    1.5708,
+    [[0]],
+    [Math.PI],
+    [[Math.PI / 2]],
+    [[2 * Math.PI]],
+    [[-Math.PI]],
+    [[1.5708]],
     // Invalid cases - non-finite numbers
-    Infinity,
-    -Infinity,
-    NaN,
-    '3.14',
-    null,
-    undefined,
+    [[Infinity]],
+    [[-Infinity]],
+    [[NaN]],
+    [['3.14']],
+    [[null]],
+    [[undefined]],
   )
   .test()
 
 Test.describe('from')
   .on(Radians.from)
-  .casesAsArgs(
+  .cases(
     // Valid cases
-    0,
-    Math.PI,
-    Math.PI / 2,
-    2 * Math.PI,
-    -Math.PI,
-    1.5708,
+    [[0]],
+    [Math.PI],
+    [[Math.PI / 2]],
+    [[2 * Math.PI]],
+    [[-Math.PI]],
+    [[1.5708]],
     // Invalid cases - should throw
-    Infinity,
-    -Infinity,
-    NaN,
+    [[Infinity]],
+    [[-Infinity]],
+    [[NaN]],
   )
   .test()
 
 Test.describe('tryFrom')
   .on(Radians.tryFrom)
-  .casesAsArgs(
+  .cases(
     // Valid cases
-    0,
-    Math.PI,
-    Math.PI / 2,
-    2 * Math.PI,
-    -Math.PI,
-    1.5708,
+    [[0]],
+    [Math.PI],
+    [[Math.PI / 2]],
+    [[2 * Math.PI]],
+    [[-Math.PI]],
+    [[1.5708]],
     // Invalid cases - should return null
-    Infinity,
-    -Infinity,
-    NaN,
+    [[Infinity]],
+    [[-Infinity]],
+    [[NaN]],
   )
   .test()

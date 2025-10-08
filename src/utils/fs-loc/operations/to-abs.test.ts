@@ -14,15 +14,15 @@ describe('toAbs', () => {
       base?: FsLoc.AbsDir
     }>()
     .cases(
-      { n: 'rel file no base (re-tag)',                    i: l('./file.txt'),                     o: l('/file.txt') },
-      { n: 'rel dir no base (re-tag)',                     i: l('./src/'),                         o: l('/src/') },
-      { n: 'nested file no base (re-tag)',                 i: l('./src/index.ts'),                 o: l('/src/index.ts') },
-      { n: 'rel file with base',                           i: l('file.txt'),                       o: l('/home/file.txt'), base: l('/home/') },
-      { n: 'rel dir with base',                            i: l('src/'),                           o: l('/home/src/'), base: l('/home/') },
-      { n: 'nested rel file',                              i: l('src/index.ts'),                   o: l('/project/src/index.ts'), base: l('/project/') },
-      { n: 'nested rel dir',                               i: l('src/components/'),                o: l('/project/src/components/'), base: l('/project/') },
-      { n: 'parent ref file',                              i: l('../file.txt'),                    o: l('/home/file.txt'), base: l('/home/user/') },
-      { n: 'parent ref dir',                               i: l('../lib/'),                        o: l('/home/lib/'), base: l('/home/user/') },
+      { input: l('./file.txt'),                     output: l('/file.txt') },
+      { input: l('./src/'),                         output: l('/src/') },
+      { input: l('./src/index.ts'),                 output: l('/src/index.ts') },
+      { input: l('file.txt'),                       output: l('/home/file.txt'), base: l('/home/') },
+      { input: l('src/'),                           output: l('/home/src/'), base: l('/home/') },
+      { input: l('src/index.ts'),                   output: l('/project/src/index.ts'), base: l('/project/') },
+      { input: l('src/components/'),                output: l('/project/src/components/'), base: l('/project/') },
+      { input: l('../file.txt'),                    output: l('/home/file.txt'), base: l('/home/user/') },
+      { input: l('../lib/'),                        output: l('/home/lib/'), base: l('/home/user/') },
     )
     .test(({ input, output, base }) => {
       const result = FsLoc.toAbs(input, base)

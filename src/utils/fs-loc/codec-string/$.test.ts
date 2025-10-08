@@ -15,22 +15,22 @@ describe('Analyzer', () => {
       }>()
       .cases(
         // Files with extensions
-        ['file with extension',           ['file.txt'],          { _tag: 'file', file: { stem: 'file', extension: '.txt' } }],
-        ['multiple dots in filename',     ['file.test.ts'],      { _tag: 'file', file: { stem: 'file.test', extension: '.ts' } }],
-        ['hidden file with extension',    ['.env.local'],        { _tag: 'file', file: { stem: '.env', extension: '.local' } }],
+        ['file.txt',          { _tag: 'file', file: { stem: 'file', extension: '.txt' } }],
+        ['file.test.ts',      { _tag: 'file', file: { stem: 'file.test', extension: '.ts' } }],
+        ['.env.local',        { _tag: 'file', file: { stem: '.env', extension: '.local' } }],
 
         // Directories
-        ['directory with trailing slash', ['dir/'],             { _tag: 'dir', path: ['dir'] }],
-        ['directory without extension',   ['src'],              { _tag: 'dir', path: ['src'] }],
-        ['hidden file without extension', ['.gitignore'],       { _tag: 'dir' }], // No extension = directory
-        ['root directory',                ['/'],                { _tag: 'dir', path: [] }],
-        ['current directory dot',         ['.'],                { _tag: 'dir' }],
-        ['current directory dot slash',   ['./'],               { _tag: 'dir' }],
-        ['parent directory',              ['..'],               { _tag: 'dir' }],
+        ['dir/',             { _tag: 'dir', path: ['dir'] }],
+        ['src',              { _tag: 'dir', path: ['src'] }],
+        ['.gitignore',       { _tag: 'dir' }], // No extension = directory
+        ['/',                { _tag: 'dir', path: [] }],
+        ['.', { _tag: 'dir' }],
+        ['./', { _tag: 'dir' }],
+        ['..', { _tag: 'dir' }],
 
         // Absolute vs relative paths
-        ['absolute file path',            ['/path/file.txt'],   { _tag: 'file', pathType: 'absolute', file: { stem: 'file', extension: '.txt' } }],
-        ['relative file path',            ['./path/file.txt'],  { _tag: 'file', pathType: 'relative', file: { stem: 'file', extension: '.txt' } }],
+        ['/path/file.txt',   { _tag: 'file', pathType: 'absolute', file: { stem: 'file', extension: '.txt' } }],
+        ['./path/file.txt',  { _tag: 'file', pathType: 'relative', file: { stem: 'file', extension: '.txt' } }],
       )
       .test(({ input, output }) => {
       const result = Analyzer.analyze(input)

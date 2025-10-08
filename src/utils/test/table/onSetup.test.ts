@@ -9,8 +9,8 @@ describe('onSetup', () => {
     .outputType<{ value: number }>()
     .onSetup(() => ({ multiplier: 2 }))
     .cases(
-      ({ multiplier }) => [[5], { value: 5 * multiplier }],
-      ({ multiplier }) => [[10], { value: 10 * multiplier }],
+      ({ multiplier }) => [5, { value: 5 * multiplier }],
+      ({ multiplier }) => [10, { value: 10 * multiplier }],
     )
     .test(({ input, output }) => {
       expect({ value: input * 2 }).toEqual(output)
@@ -35,7 +35,7 @@ describe('onSetup', () => {
     .onSetup(() => ({ a: 1 }))
     .onSetup(() => ({ b: 2 }))
     .cases(
-      ({ a, b }) => [[a + b], a + b],
+      ({ a, b }) => [a + b, a + b],
     )
     .test(({ input, output }) => {
       expect(input).toBe(output)

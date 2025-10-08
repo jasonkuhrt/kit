@@ -11,12 +11,12 @@ describe('policyFilter', () => {
     .inputType<{ mode: 'allow' | 'deny'; keys: string[] }>()
     .outputType<Record<string, any>>()
     .cases(
-      ['allow mode picks specified keys',      [{ mode: 'allow', keys: ['a', 'c'] }], { a: 1, c: 3 }],
-      ['allow mode with empty keys',           [{ mode: 'allow', keys: [] }],         {}],
-      ['allow mode with non-existent key',     [{ mode: 'allow', keys: ['a', 'z'] }], { a: 1 }],
-      ['deny mode omits specified keys',       [{ mode: 'deny',  keys: ['a', 'c'] }], { b: 2, d: 4 }],
-      ['deny mode with empty keys',            [{ mode: 'deny',  keys: [] }],         { a: 1, b: 2, c: 3, d: 4 }],
-      ['deny mode with non-existent key',      [{ mode: 'deny',  keys: ['z'] }],      { a: 1, b: 2, c: 3, d: 4 }],
+      [{ mode: 'allow', keys: ['a', 'c'] }, { a: 1, c: 3 }],
+      [{ mode: 'allow', keys: [] },         {}],
+      [{ mode: 'allow', keys: ['a', 'z'] }, { a: 1 }],
+      [{ mode: 'deny',  keys: ['a', 'c'] }, { b: 2, d: 4 }],
+      [{ mode: 'deny',  keys: [] },         { a: 1, b: 2, c: 3, d: 4 }],
+      [{ mode: 'deny',  keys: ['z'] },      { a: 1, b: 2, c: 3, d: 4 }],
     )
     .test(({ input, output }) => {
       expect(Obj.policyFilter(input.mode, testObj, input.keys as any)).toEqual(output)
@@ -36,12 +36,12 @@ describe('filter', () => {
     .inputType<{ testType: 'byValue' | 'byKey' | 'byContext' | 'allFalse' | 'allTrue' | 'emptyObj' }>()
     .outputType<Record<string, any>>()
     .cases(
-      ['filters by value predicate',      [{ testType: 'byValue' }],   { c: 3, d: 4 }],
-      ['filters by key predicate',        [{ testType: 'byKey' }],     { a: 1, c: 3 }],
-      ['filters by full context',         [{ testType: 'byContext' }], { a: 1, b: 2 }],
-      ['returns empty when all false',    [{ testType: 'allFalse' }],  {}],
-      ['returns all when all true',       [{ testType: 'allTrue' }],   { a: 1, b: 2, c: 3, d: 4 }],
-      ['handles empty object',            [{ testType: 'emptyObj' }],  {}],
+      [{ testType: 'byValue' },   { c: 3, d: 4 }],
+      [{ testType: 'byKey' },     { a: 1, c: 3 }],
+      [{ testType: 'byContext' }, { a: 1, b: 2 }],
+      [{ testType: 'allFalse' },  {}],
+      [{ testType: 'allTrue' },   { a: 1, b: 2, c: 3, d: 4 }],
+      [{ testType: 'emptyObj' },  {}],
     )
     .test(({ input, output }) => {
       let result: any

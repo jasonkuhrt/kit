@@ -12,20 +12,20 @@ describe('isAbove', () => {
     .outputType<boolean>()
     .cases(
       // Absolute paths
-      ['abs dir above abs file',                      [{ parent: l('/home/'), child: l('/home/user/file.txt') }],                         true],
-      ['abs dir above abs dir',                       [{ parent: l('/home/'), child: l('/home/user/src/') }],                             true],
-      ['abs dir not above abs file',                  [{ parent: l('/home/'), child: l('/var/file.txt') }],                               false],
-      ['immediate parent above file',                 [{ parent: l('/home/'), child: l('/home/file.txt') }],                              true],
-      ['root above file',                             [{ parent: FsLoc.Constants.absDirRoot, child: l('/file.txt') }],                    true],
+      [{ parent: l('/home/'), child: l('/home/user/file.txt') },                         true],
+      [{ parent: l('/home/'), child: l('/home/user/src/') },                             true],
+      [{ parent: l('/home/'), child: l('/var/file.txt') },                               false],
+      [{ parent: l('/home/'), child: l('/home/file.txt') },                              true],
+      [{ parent: FsLoc.Constants.absDirRoot, child: l('/file.txt') },                    true],
 
       // Relative paths
-      ['rel dir above rel file',                      [{ parent: l('./src/'), child: l('./src/index.ts') }],                              true],
-      ['rel dir above rel dir',                       [{ parent: l('./src/'), child: l('./src/components/') }],                           true],
-      ['rel dir not above rel file',                  [{ parent: l('./src/'), child: l('./test/file.ts') }],                              false],
+      [{ parent: l('./src/'), child: l('./src/index.ts') },                              true],
+      [{ parent: l('./src/'), child: l('./src/components/') },                           true],
+      [{ parent: l('./src/'), child: l('./test/file.ts') },                              false],
 
       // Edge cases
-      ['same location not above',                     [{ parent: l('/home/'), child: l('/home/') }],                                      false],
-      ['child deeper than parent',                    [{ parent: l('/home/user/'), child: l('/home/') }],                                 false],
+      [{ parent: l('/home/'), child: l('/home/') },                                      false],
+      [{ parent: l('/home/user/'), child: l('/home/') },                                 false],
     )
     .test(({ input, output }) => {
       const result = FsLoc.isAbove(input.parent, input.child)

@@ -132,6 +132,8 @@
     "#fs-memory/fs-memory": "./build/utils/fs-memory/$$.js",
     "#fs-loc": "./build/utils/fs-loc/$.js",
     "#fs-loc/fs-loc": "./build/utils/fs-loc/$$.js",
+    "#paka": "./build/utils/paka/$.js",
+    "#paka/paka": "./build/utils/paka/$$.js",
     "#*": {
       "default": "./build/*.js"
     }
@@ -180,7 +182,8 @@
     "./url": "./build/domains/url/$$.js",
     "./value": "./build/utils/value/$$.js",
     "./fs-memory": "./build/utils/fs-memory/$$.js",
-    "./fs-loc": "./build/utils/fs-loc/$$.js"
+    "./fs-loc": "./build/utils/fs-loc/$$.js",
+    "./paka": "./build/utils/paka/$$.js"
   },
   "scripts": {
     "r": "libra refresh && pnpm fix:format",

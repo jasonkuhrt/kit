@@ -11,15 +11,15 @@ describe('isRoot', () => {
     .inputType<FsLoc.FsLoc>()
     .outputType<boolean>()
     .cases(
-      ['root is root',                                 [FsLoc.Constants.absDirRoot],        true],
-      ['abs dir not root',                             [l('/home/')],                        false],
+      [FsLoc.Constants.absDirRoot,        true],
+      [l('/home/'),                        false],
       // Files with no path segments also return true for isRoot currently
-      ['abs file in root',                             [l('/file.txt')],                      true],
-      ['rel dir not root',                             [l('src/')],                          false],
+      [l('/file.txt'),                      true],
+      [l('src/'),                          false],
       // Files with no path segments also return true for isRoot currently
-      ['rel file in current dir',                      [l('file.txt')],                      true],
+      [l('file.txt'),                      true],
       // Empty relative dir also has empty segments
-      ['empty rel dir',                                [FsLoc.Constants.relDirCurrent],      true],
+      [FsLoc.Constants.relDirCurrent,      true],
     )
     .test(({ input, output }) => {
       if (output) {

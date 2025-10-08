@@ -16,14 +16,15 @@ describe('isShape', () => {
   // })
   Test
     .on(Prom.isShape)
-    .casesIn('true')(
+    .describe('true', [
       [[Promise.resolve(42)], true],
       [[{ then() {}, catch() {}, finally() {} }], true],
-    )
-    .casesIn('false')(
+    ])
+    .describe('false', [
       [[{ then() {} }], false],
       [[{ then: 'not a function', catch() {}, finally() {} }], false],
-    )
+    ])
+    .test()
 
   property(
     'rejects non-promise values',

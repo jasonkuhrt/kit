@@ -14,14 +14,14 @@ describe('toRel', () => {
       base: FsLoc.AbsDir
     }>()
     .cases(
-      { n: 'abs file same base',                           i: l('/home/file.txt'),                 o: l('./file.txt'), base: l('/home/') },
-      { n: 'abs dir same base',                            i: l('/home/src/'),                     o: l('./src/'), base: l('/home/') },
-      { n: 'nested abs file',                              i: l('/project/src/index.ts'),          o: l('./src/index.ts'), base: l('/project/') },
-      { n: 'nested abs dir',                               i: l('/project/src/components/'),       o: l('./src/components/'), base: l('/project/') },
-      { n: 'file needs parent',                            i: l('/home/file.txt'),                 o: l('./../file.txt'), base: l('/home/user/') },
-      { n: 'dir needs parent',                             i: l('/home/lib/'),                     o: l('./../lib/'), base: l('/home/user/') },
-      { n: 'different roots',                              i: l('/var/log/app.log'),               o: l('./../../var/log/app.log'), base: l('/home/user/') },
-      { n: 'same location dir',                            i: l('/home/user/'),                    o: l('./'), base: l('/home/user/') },
+      { input: l('/home/file.txt'),                 output: l('./file.txt'), base: l('/home/') },
+      { input: l('/home/src/'),                     output: l('./src/'), base: l('/home/') },
+      { input: l('/project/src/index.ts'),          output: l('./src/index.ts'), base: l('/project/') },
+      { input: l('/project/src/components/'),       output: l('./src/components/'), base: l('/project/') },
+      { input: l('/home/file.txt'),                 output: l('./../file.txt'), base: l('/home/user/') },
+      { input: l('/home/lib/'),                     output: l('./../lib/'), base: l('/home/user/') },
+      { input: l('/var/log/app.log'),               output: l('./../../var/log/app.log'), base: l('/home/user/') },
+      { input: l('/home/user/'),                    output: l('./'), base: l('/home/user/') },
     )
     .test(({ input, output, base }) => {
       const result = FsLoc.toRel(input, base)

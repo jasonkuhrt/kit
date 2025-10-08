@@ -10,43 +10,54 @@ const F = FsLoc.File
 const l = FsLoc.fromString
 
 // dprint-ignore
-Test.describe('.decodeSync')
+Test.describe('.decodeSync - AbsFile')
   .on(S.decodeSync(FsLoc.FsLoc))
-  .casesInAsArgs('AbsFile')(
-    ['/file.txt'],
-    ['/home/user/doc.pdf'],
-    ['/a/b/c/d/e.js'],
-    ['/archive.tar.gz'],
-    ['/.config.json'],
-    ['/my docs/file name.txt'],
+  .cases(
+    [['/file.txt']],
+    [['/home/user/doc.pdf']],
+    [['/a/b/c/d/e.js']],
+    [['/archive.tar.gz']],
+    [['/.config.json']],
+    [['/my docs/file name.txt']],
   )
-  .casesInAsArgs('RelFile')(
-    ['file.txt'],
-    ['./file.txt'],
-    ['../file.txt'],
-    ['src/index.ts'],
-    ['../../lib/util.js'],
-    ['./src/components/App.tsx'],
+
+// dprint-ignore
+Test.describe('.decodeSync - RelFile')
+  .on(S.decodeSync(FsLoc.FsLoc))
+  .cases(
+    [['file.txt']],
+    [['./file.txt']],
+    [['../file.txt']],
+    [['src/index.ts']],
+    [['../../lib/util.js']],
+    [['./src/components/App.tsx']],
   )
-  .casesInAsArgs('AbsDir')(
-    ['/'],
-    ['/home/'],
-    ['/home'],
-    ['/usr/local/bin/'],
-    ['/a/b/c/d/e/'],
-    ['/my documents/projects/'],
+
+// dprint-ignore
+Test.describe('.decodeSync - AbsDir')
+  .on(S.decodeSync(FsLoc.FsLoc))
+  .cases(
+    [['/']],
+    [['/home/']],
+    [['/home']],
+    [['/usr/local/bin/']],
+    [['/a/b/c/d/e/']],
+    [['/my documents/projects/']],
   )
-  .casesInAsArgs('RelDir')(
-    ['./'],
-    ['src/'],
-    ['../'],
-    ['src/components/'],
-    ['../../lib/'],
-    ['./src/'],
-    ['../src/lib/utils/'],
-    ['src'],
+
+// dprint-ignore
+Test.describe('.decodeSync - RelDir')
+  .on(S.decodeSync(FsLoc.FsLoc))
+  .cases(
+    [['./']],
+    [['src/']],
+    [['../']],
+    [['src/components/']],
+    [['../../lib/']],
+    [['./src/']],
+    [['../src/lib/utils/']],
+    [['src']],
   )
-  .test()
 
 const LocLoose = FsLoc.FsLocLoose.make
 // dprint-ignore
@@ -54,13 +65,13 @@ Test.describe('.FsLocLoose.decodeSync')
   .inputType<string>()
   .outputType<FsLoc.FsLocLoose.FsLocLooseClass>()
   .cases(
-    ['abs file',      ['/home/file.txt'],           LocLoose({ path: P.Abs.make({ segments: ['home'] }), file: F.make({ stem: 'file', extension: '.txt' }) })],
-    ['abs dir',       ['/home/'],                   LocLoose({ path: P.Abs.make({ segments: ['home'] }), file: null })],
-    ['rel file',      ['file.txt'],                 LocLoose({ path: P.Rel.make({ segments: [] }), file: F.make({ stem: 'file', extension: '.txt' }) })],
-    ['rel dir',       ['src/'],                     LocLoose({ path: P.Rel.make({ segments: ['src'] }), file: null })],
-    ['root',          ['/'],                        LocLoose({ path: P.Abs.make({ segments: [] }), file: null })],
+    ['/home/file.txt',           LocLoose({ path: P.Abs.make({ segments: ['home'] }), file: F.make({ stem: 'file', extension: '.txt' }) })],
+    ['/home/',                   LocLoose({ path: P.Abs.make({ segments: ['home'] }), file: null })],
+    ['file.txt',                 LocLoose({ path: P.Rel.make({ segments: [] }), file: F.make({ stem: 'file', extension: '.txt' }) })],
+    ['src/',                     LocLoose({ path: P.Rel.make({ segments: ['src'] }), file: null })],
+    ['/',                        LocLoose({ path: P.Abs.make({ segments: [] }), file: null })],
     // Files without extensions are treated as directories - changed to .js extension
-    ['complex path',  ['/usr/local/bin/node.js'],   LocLoose({ path: P.Abs.make({ segments: ['usr', 'local', 'bin'] }), file: F.make({ stem: 'node', extension: '.js' }) })],
+    ['/usr/local/bin/node.js',   LocLoose({ path: P.Abs.make({ segments: ['usr', 'local', 'bin'] }), file: F.make({ stem: 'node', extension: '.js' }) })],
   )
   .test(({ input, output }) => {
     const result = FsLoc.FsLocLoose.decodeSync(input)
@@ -126,33 +137,33 @@ Test.describe('Groups *.assert')
   .inputType<string>()
   .outputType<{ assert: Function; pass: boolean }>()
   .cases(
-    ['Rel passes for file.txt',      ['file.txt'],  { assert: FsLoc.Groups.Rel.assert,  pass: true }],
-    ['Rel fails for /file.txt',      ['/file.txt'], { assert: FsLoc.Groups.Rel.assert,  pass: false }],
+    ['file.txt',  { assert: FsLoc.Groups.Rel.assert,  pass: true }],
+    ['/file.txt', { assert: FsLoc.Groups.Rel.assert,  pass: false }],
 
-    ['Abs passes for /file.txt',     ['/file.txt'], { assert: FsLoc.Groups.Abs.assert,  pass: true }],
-    ['Abs fails for file.txt',       ['file.txt'],  { assert: FsLoc.Groups.Abs.assert,  pass: false }],
+    ['/file.txt', { assert: FsLoc.Groups.Abs.assert,  pass: true }],
+    ['file.txt',  { assert: FsLoc.Groups.Abs.assert,  pass: false }],
 
-    ['File passes for file.txt',     ['file.txt'],  { assert: FsLoc.Groups.File.assert, pass: true }],
-    ['File fails for ./src/',        ['./src/'],    { assert: FsLoc.Groups.File.assert, pass: false }],
+    ['file.txt',  { assert: FsLoc.Groups.File.assert, pass: true }],
+    ['./src/',    { assert: FsLoc.Groups.File.assert, pass: false }],
 
-    ['Dir passes for ./src/',        ['./src/'],    { assert: FsLoc.Groups.Dir.assert,  pass: true }],
-    ['Dir fails for file.txt',       ['file.txt'],  { assert: FsLoc.Groups.Dir.assert,  pass: false }],
+    ['./src/',    { assert: FsLoc.Groups.Dir.assert,  pass: true }],
+    ['file.txt',  { assert: FsLoc.Groups.Dir.assert,  pass: false }],
 
-    ['AbsFile passes for /file.txt',  ['/file.txt'],  { assert: S.asserts(FsLoc.AbsFile),  pass: true }],
-    ['AbsFile fails for file.txt',    ['file.txt'],   { assert: S.asserts(FsLoc.AbsFile),  pass: false }],
-    ['AbsFile fails for /dir/',       ['/dir/'],      { assert: S.asserts(FsLoc.AbsFile),  pass: false }],
+    ['/file.txt',  { assert: S.asserts(FsLoc.AbsFile),  pass: true }],
+    ['file.txt',   { assert: S.asserts(FsLoc.AbsFile),  pass: false }],
+    ['/dir/',      { assert: S.asserts(FsLoc.AbsFile),  pass: false }],
 
-    ['RelFile passes for file.txt',   ['file.txt'],   { assert: S.asserts(FsLoc.RelFile),  pass: true }],
-    ['RelFile fails for /file.txt',   ['/file.txt'],  { assert: S.asserts(FsLoc.RelFile),  pass: false }],
-    ['RelFile fails for ./dir/',      ['./dir/'],     { assert: S.asserts(FsLoc.RelFile),  pass: false }],
+    ['file.txt',   { assert: S.asserts(FsLoc.RelFile),  pass: true }],
+    ['/file.txt',  { assert: S.asserts(FsLoc.RelFile),  pass: false }],
+    ['./dir/',     { assert: S.asserts(FsLoc.RelFile),  pass: false }],
 
-    ['AbsDir passes for /dir/',       ['/dir/'],      { assert: S.asserts(FsLoc.AbsDir),   pass: true }],
-    ['AbsDir fails for ./dir/',       ['./dir/'],     { assert: S.asserts(FsLoc.AbsDir),   pass: false }],
-    ['AbsDir fails for /file.txt',    ['/file.txt'],  { assert: S.asserts(FsLoc.AbsDir),   pass: false }],
+    ['/dir/',      { assert: S.asserts(FsLoc.AbsDir),   pass: true }],
+    ['./dir/',     { assert: S.asserts(FsLoc.AbsDir),   pass: false }],
+    ['/file.txt',  { assert: S.asserts(FsLoc.AbsDir),   pass: false }],
 
-    ['RelDir passes for ./dir/',      ['./dir/'],     { assert: S.asserts(FsLoc.RelDir),   pass: true }],
-    ['RelDir fails for /dir/',        ['/dir/'],      { assert: S.asserts(FsLoc.RelDir),   pass: false }],
-    ['RelDir fails for file.txt',     ['file.txt'],   { assert: S.asserts(FsLoc.RelDir),   pass: false }],
+    ['./dir/',     { assert: S.asserts(FsLoc.RelDir),   pass: true }],
+    ['/dir/',      { assert: S.asserts(FsLoc.RelDir),   pass: false }],
+    ['file.txt',   { assert: S.asserts(FsLoc.RelDir),   pass: false }],
   )
   .test(({ input, output }) => {
     const loc = FsLoc.decodeSync(input)

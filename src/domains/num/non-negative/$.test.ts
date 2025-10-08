@@ -3,40 +3,40 @@ import { NonNegative } from './$.js'
 
 Test.describe('is')
   .on(NonNegative.is)
-  .casesAsArgs(
+  .cases(
     // Valid cases - non-negative numbers (>= 0)
-    0,
-    1,
-    100,
-    0.5,
-    Number.MAX_VALUE,
-    Infinity,
+    [0],
+    [1],
+    [100],
+    [0.5],
+    [Number.MAX_VALUE],
+    [Infinity],
     // Invalid cases - negative numbers
-    -1,
-    -0.1,
-    -100,
-    -Infinity,
-    NaN,
-    '0',
-    null,
+    [-1],
+    [-0.1],
+    [-100],
+    [-Infinity],
+    [NaN],
+    ['0'],
+    [null],
   )
   .test()
 
 Test.describe('tryFrom')
   .on(NonNegative.tryFrom)
-  .casesAsArgs(
+  .cases(
     // Valid cases
-    0,
-    1,
-    100,
-    0.5,
-    Number.MAX_VALUE,
-    Infinity,
+    [0],
+    [1],
+    [100],
+    [0.5],
+    [Number.MAX_VALUE],
+    [Infinity],
     // Invalid cases - should return null
-    -1,
-    -0.1,
-    -100,
-    -Infinity,
-    NaN,
+    [-1],
+    [-0.1],
+    [-100],
+    [-Infinity],
+    [NaN],
   )
   .test()

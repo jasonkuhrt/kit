@@ -11,10 +11,10 @@ describe('ensureAbsolute', () => {
     .inputType<FsLoc.FsLoc>()
     .outputType<string | undefined>()
     .cases(
-      ['abs file stays abs',                           [l('/home/file.txt')],                  '/home/file.txt'],
-      ['abs dir stays abs',                            [l('/home/')],                         '/home/'],
-      ['rel file without base uses cwd',               [l('file.txt')],                       undefined],
-      ['rel dir without base uses cwd',                [l('src/')],                           undefined],
+      [l('/home/file.txt'),                  '/home/file.txt'],
+      [l('/home/'),                         '/home/'],
+      [l('file.txt'),                       undefined],
+      [l('src/'),                           undefined],
     )
     .test(({ input, output }) => {
       const result = FsLoc.ensureAbsolute(input)
@@ -30,8 +30,8 @@ describe('ensureAbsolute', () => {
     .outputType<string | undefined>()
     .contextType<{ base: FsLoc.AbsDir }>()
     .cases(
-      { n: 'rel file with base',                           i: l('file.txt'),                       base: l('/home/'),                         o: '/home/file.txt' },
-      { n: 'rel dir with base',                            i: l('src/'),                           base: l('/project/'),                      o: '/project/src/' },
+      { input: l('file.txt'),                       base: l('/home/'),                         output: '/home/file.txt' },
+      { input: l('src/'),                           base: l('/project/'),                      output: '/project/src/' },
     )
     .test(({ input, output, base }) => {
       const result = FsLoc.ensureAbsolute(input, base)

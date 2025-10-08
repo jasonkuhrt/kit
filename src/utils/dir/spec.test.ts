@@ -11,9 +11,9 @@ describe('operations accumulation', () => {
     .inputType<{ ops: Ops }>()
     .outputType<{ types: string[]; count: number }>()
     .cases(
-      ['file operations',      [{ ops: (s: SpecBuilder) => s.file('a.txt', 'A').file('b.md', '#').file('c.json', {}) }], { count: 3, types: ['file', 'file', 'file'] }],
-      ['directory operations', [{ ops: (s: SpecBuilder) => s.dir('empty/').dir('nested/', (d: SpecBuilder) => d.file('inner.txt', 'nested')) }], { count: 2, types: ['dir', 'dir'] }],
-      ['mixed operations',     [{ ops: (s: SpecBuilder) => s.file('a.txt', 'A').dir('b/').remove('c.txt').clear('d/').move('e.md', 'f.md') }], { count: 5, types: ['file', 'dir', 'remove', 'clear', 'move-file'] }],
+      [{ ops: (s: SpecBuilder) => s.file('a.txt', 'A').file('b.md', '#').file('c.json', {}) }, { count: 3, types: ['file', 'file', 'file'] }],
+      [{ ops: (s: SpecBuilder) => s.dir('empty/').dir('nested/', (d: SpecBuilder) => d.file('inner.txt', 'nested')) }, { count: 2, types: ['dir', 'dir'] }],
+      [{ ops: (s: SpecBuilder) => s.file('a.txt', 'A').dir('b/').remove('c.txt').clear('d/').move('e.md', 'f.md') }, { count: 5, types: ['file', 'dir', 'remove', 'clear', 'move-file'] }],
     )
     .test(({ input, output }) => {
       const s = input.ops(spec('/test/'))
@@ -27,8 +27,8 @@ describe('immutability', () => {
     .inputType<{ ops: Ops }>()
     .outputType<void>()
     .cases(
-      ['file operation', [{ ops: (s: SpecBuilder) => s.file('a.txt', 'A') }]],
-      ['dir operation', [{ ops: (s: SpecBuilder) => s.dir('a/') }]],
+      [{ ops: (s: SpecBuilder) => s.file('a.txt', 'A') }],
+      [{ ops: (s: SpecBuilder) => s.dir('a/') }],
     )
     .test(({ input }) => {
       const s1 = spec('/test/')
@@ -49,10 +49,10 @@ describe('conditional operations', () => {
     .inputType<{ cond: boolean; method: 'when' | 'unless' }>()
     .outputType<{ count: number }>()
     .cases(
-      ['when true',     [{ cond: true,  method: 'when' }],   { count: 1 }],
-      ['when false',    [{ cond: false, method: 'when' }],   { count: 0 }],
-      ['unless true',   [{ cond: true,  method: 'unless' }], { count: 0 }],
-      ['unless false',  [{ cond: false, method: 'unless' }], { count: 1 }],
+      [{ cond: true,  method: 'when' },   { count: 1 }],
+      [{ cond: false, method: 'when' },   { count: 0 }],
+      [{ cond: true,  method: 'unless' }, { count: 0 }],
+      [{ cond: false, method: 'unless' }, { count: 1 }],
     )
     .test(({ input, output }) => {
       const s = spec('/test/')[input.method](input.cond, d => d.file('conditional.txt', 'yes'))
@@ -68,9 +68,9 @@ describe('withBase', () => {
     .inputType<{ from: string; to: string }>()
     .outputType<void>()
     .cases(
-      ['simple change', [{ from: '/project1/', to: '/project2/' }]],
-      ['root to subdir', [{ from: '/', to: '/subdir/' }]],
-      ['subdir to root', [{ from: '/subdir/', to: '/' }]],
+      [{ from: '/project1/', to: '/project2/' }],
+      [{ from: '/', to: '/subdir/' }],
+      [{ from: '/subdir/', to: '/' }],
     )
     .test(({ input }) => {
       const s1 = spec(input.from).file('test.txt', 'content')
@@ -88,9 +88,9 @@ describe('merge', () => {
     .inputType<{ count: number }>()
     .outputType<void>()
     .cases(
-      ['2 specs', [{ count: 2 }]],
-      ['3 specs', [{ count: 3 }]],
-      ['5 specs', [{ count: 5 }]],
+      [{ count: 2 }],
+      [{ count: 3 }],
+      [{ count: 5 }],
     )
     .test(({ input }) => {
       const specs = Array.from({ length: input.count }, (_, idx) => spec('/test/').file(`${idx}.txt`, `content${idx}`))
@@ -112,9 +112,9 @@ describe('nested directories', () => {
     .inputType<{ depth: number }>()
     .outputType<void>()
     .cases(
-      ['1 level', [{ depth: 1 }]],
-      ['3 levels', [{ depth: 3 }]],
-      ['5 levels', [{ depth: 5 }]],
+      [{ depth: 1 }],
+      [{ depth: 3 }],
+      [{ depth: 5 }],
     )
     .test(({ input }) => {
       const buildNested = (depth: number): Fn.endo<SpecBuilder> =>
@@ -142,12 +142,12 @@ describe('path types', () => {
     .inputType<{ path: string }>()
     .outputType<{ expectedType: string }>()
     .cases(
-      ['.txt file',      [{ path: 'text.txt' }],    { expectedType: 'file' }],
-      ['.json file',     [{ path: 'data.json' }],   { expectedType: 'file' }],
-      ['.ts file',       [{ path: 'code.ts' }],     { expectedType: 'file' }],
-      ['no extension',   [{ path: 'README.md' }],   { expectedType: 'file' }], // Changed to have extension
-      ['dotfile',        [{ path: 'config.env' }],  { expectedType: 'file' }], // Changed to have extension
-      ['directory',      [{ path: 'folder/' }],     { expectedType: 'dir' }],
+      [{ path: 'text.txt' },    { expectedType: 'file' }],
+      [{ path: 'data.json' },   { expectedType: 'file' }],
+      [{ path: 'code.ts' },     { expectedType: 'file' }],
+      [{ path: 'README.md' },   { expectedType: 'file' }], // Changed to have extension
+      [{ path: 'config.env' },  { expectedType: 'file' }], // Changed to have extension
+      [{ path: 'folder/' },     { expectedType: 'dir' }],
     )
     .test(({ input, output }) => {
       const s = spec('/test/')
@@ -164,8 +164,8 @@ describe('path types', () => {
     .inputType<{ from: string; to: string }>()
     .outputType<{ expectedType: string }>()
     .cases(
-      ['file to file',  [{ from: 'old.txt', to: 'new.txt' }],   { expectedType: 'move-file' }],
-      ['dir to dir',    [{ from: 'old/',    to: 'new/' }],      { expectedType: 'move-dir' }],
+      [{ from: 'old.txt', to: 'new.txt' },   { expectedType: 'move-file' }],
+      [{ from: 'old/',    to: 'new/' },      { expectedType: 'move-dir' }],
     )
     .test(({ input, output }) => {
       const s = spec('/test/').move(input.from as any, input.to as any)
@@ -180,9 +180,9 @@ describe('add method', () => {
     .inputType<{ path: string; content?: any; builder?: Fn.endo<SpecBuilder> }>()
     .outputType<{ type: string }>()
     .cases(
-      ['file with content', [{ path: 'file.txt', content: 'text' }],                           { type: 'file' }],
-      ['empty directory',   [{ path: 'dir/' }],                                                { type: 'dir' }],
-      ['dir with builder',  [{ path: 'dir/', builder: (d: SpecBuilder) => d.file('inner.txt', 'content') }], { type: 'dir' }],
+      [{ path: 'file.txt', content: 'text' },                           { type: 'file' }],
+      [{ path: 'dir/' },                                                { type: 'dir' }],
+      [{ path: 'dir/', builder: (d: SpecBuilder) => d.file('inner.txt', 'content') }, { type: 'dir' }],
     )
     .test(({ input, output }) => {
       const s = input.builder
@@ -206,9 +206,9 @@ describe('edge cases', () => {
     .inputType<{ base: string }>()
     .outputType<{ segmentCount: number }>()
     .cases(
-      ['root directory',     [{ base: '/' }],         { segmentCount: 0 }],
-      ['single segment',     [{ base: '/test/' }],    { segmentCount: 1 }],
-      ['nested path',        [{ base: '/a/b/c/' }],   { segmentCount: 3 }],
+      [{ base: '/' },         { segmentCount: 0 }],
+      [{ base: '/test/' },    { segmentCount: 1 }],
+      [{ base: '/a/b/c/' },   { segmentCount: 3 }],
     )
     .test(({ input, output }) => {
       const s = spec(input.base)
@@ -221,10 +221,10 @@ describe('edge cases', () => {
     .inputType<{ path: string }>()
     .outputType<void>()
     .cases(
-      ['dash in name',       [{ path: 'file-with-dash.txt' }]],
-      ['underscore in name', [{ path: 'file_underscore.txt' }]],
-      ['multiple dots',      [{ path: 'file.test.spec.txt' }]],
-      ['space (quoted)',     [{ path: '"file with space.txt"' }]],
+      [{ path: 'file-with-dash.txt' }],
+      [{ path: 'file_underscore.txt' }],
+      [{ path: 'file.test.spec.txt' }],
+      [{ path: '"file with space.txt"' }],
     )
     .test(({ input }) => {
       expect(() => spec('/test/').file(input.path as any, 'content')).not.toThrow()
@@ -236,9 +236,9 @@ describe('JSON content inference', () => {
     .inputType<{ file: string; content: any }>()
     .outputType<void>()
     .cases(
-      ['object for .json', [{ file: 'config.json', content: { key: 'value' } }]],
-      ['string for .json', [{ file: 'data.json', content: '{"raw": "json"}' }]],
-      ['string for other', [{ file: 'any.xyz', content: 'plain text' }]],
+      [{ file: 'config.json', content: { key: 'value' } }],
+      [{ file: 'data.json', content: '{"raw": "json"}' }],
+      [{ file: 'any.xyz', content: 'plain text' }],
     )
     .test(({ input }) => {
       const s = spec('/test/').file(input.file as any, input.content)
