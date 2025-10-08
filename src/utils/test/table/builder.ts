@@ -41,6 +41,7 @@ interface BuilderState {
   layerType: Option.Option<'static' | 'dynamic'>
   typeState: BuilderTypeState
   setupFactories: Array<() => object>
+  matrixConfig: Option.Option<Record<string, readonly any[]>>
 }
 
 // ============================================================================
@@ -59,8 +60,9 @@ const defaultState: BuilderState = {
   nestedDescribeGroups: [],
   layerOrFactory: Option.none(),
   layerType: Option.none(),
-  typeState: { i: undefined, o: undefined, context: {}, fn: (() => {}) as never },
+  typeState: { i: undefined, o: undefined, context: {}, fn: (() => {}) as never, matrix: {} },
   setupFactories: [],
+  matrixConfig: Option.none(),
 }
 
 // ============================================================================
@@ -99,6 +101,76 @@ const validateContextKeys = (context: object, caseName: string): void => {
         + `Please rename these properties in your test context.`,
     )
   }
+}
+
+/**
+ * Creates nested describe blocks from a description containing ' > ' separator.
+ *
+ * @example
+ * ```ts
+ * createNestedDescribe('Arguments > Enums', runTests)
+ * // Creates: describe('Arguments', () => describe('Enums', runTests))
+ * ```
+ */
+const createNestedDescribe = (description: string, callback: () => void): void => {
+  const parts = description.split(' > ').map(part => part.trim())
+
+  if (parts.length === 1) {
+    vitestDescribe(description, callback)
+    return
+  }
+
+  // Create nested describe blocks from outer to inner
+  const createNested = (index: number): void => {
+    if (index === parts.length - 1) {
+      vitestDescribe(parts[index]!, callback)
+    } else {
+      vitestDescribe(parts[index]!, () => createNested(index + 1))
+    }
+  }
+
+  createNested(0)
+}
+
+/**
+ * Generate all combinations (cartesian product) of matrix values.
+ *
+ * @example
+ * ```ts
+ * generateMatrixCombinations({ a: [1, 2], b: ['x', 'y'] })
+ * // Returns: [
+ * //   { a: 1, b: 'x' },
+ * //   { a: 1, b: 'y' },
+ * //   { a: 2, b: 'x' },
+ * //   { a: 2, b: 'y' }
+ * // ]
+ * ```
+ */
+const generateMatrixCombinations = (
+  matrix: Record<string, readonly any[]>,
+): Array<Record<string, any>> => {
+  const keys = Object.keys(matrix)
+  if (keys.length === 0) return [{}]
+
+  const combinations: Array<Record<string, any>> = []
+
+  const generate = (index: number, current: Record<string, any>) => {
+    if (index === keys.length) {
+      combinations.push({ ...current })
+      return
+    }
+
+    const key = keys[index]!
+    const values = matrix[key]!
+
+    for (const value of values) {
+      current[key] = value
+      generate(index + 1, current)
+    }
+  }
+
+  generate(0, {})
+  return combinations
 }
 
 /**
@@ -323,7 +395,7 @@ function createBuilder(state: BuilderState = defaultState): any {
 
     // Wrap in describe block if name provided
     if (describeName) {
-      vitestDescribe(describeName, runGroupTests)
+      createNestedDescribe(describeName, runGroupTests)
     } else {
       runGroupTests()
     }
@@ -438,47 +510,106 @@ function createBuilder(state: BuilderState = defaultState): any {
     }
 
     const runTests = () => {
-      for (const caseData of cases) {
-        const { name, input, output, skip, skipIf, only, todo, tags, runner, isRunnerCase, ...testContext } = parseCase(
-          caseData,
-        )
+      // Get matrix combinations (or single empty combo if no matrix)
+      const matrixCombinations = Option.isSome(state.matrixConfig)
+        ? generateMatrixCombinations(Option.getOrUndefined(state.matrixConfig)!)
+        : [{}]
 
-        // Validate that user context doesn't contain reserved keys
-        validateContextKeys(testContext, name)
+      // For each matrix combination, run all test cases
+      for (const matrixCombo of matrixCombinations) {
+        for (const caseData of cases) {
+          const {
+            name: baseName,
+            input,
+            output,
+            skip,
+            skipIf,
+            only,
+            todo,
+            tags,
+            runner,
+            isRunnerCase,
+            ...testContext
+          } = parseCase(
+            caseData,
+          )
 
-        if (todo) {
-          testMethod.todo(name)
-          continue
-        }
+          // Add matrix to context
+          const fullContext = {
+            ...testContext,
+            ...(Object.keys(matrixCombo).length > 0 ? { matrix: matrixCombo } : {}),
+          }
 
-        testMethod(name, async (vitestContext) => {
-          // Handle runner cases
-          if (isRunnerCase && runner) {
-            // Build context for runner with setup
-            const setupContext = state.setupFactories.reduce(
-              (acc, factory) => ({ ...acc, ...factory() }),
-              {} as object,
-            )
-            const runnerContext = {
-              i: input,
-              n: name,
-              o: output,
-              ...setupContext,
-              ...testContext,
-            }
+          // Generate test name with matrix info
+          const name = Object.keys(matrixCombo).length > 0
+            ? `${baseName} [matrix: ${
+              Object.entries(matrixCombo)
+                .map(([k, v]) => `${k}=${JSON.stringify(v)}`)
+                .join(', ')
+            }]`
+            : baseName
 
-            // Snapshot mode detection: no output, no customTest, no function
-            const isSnapshotMode = output === undefined && !customTest && !fn
+          // Validate that user context doesn't contain reserved keys
+          validateContextKeys(fullContext, name)
 
-            // Execute runner with try-catch for snapshot mode
-            let runnerOutput: any
-            let runnerError: Error | undefined
+          if (todo) {
+            testMethod.todo(name)
+            continue
+          }
 
-            if (isSnapshotMode) {
-              try {
+          testMethod(name, async (vitestContext) => {
+            // Handle runner cases
+            if (isRunnerCase && runner) {
+              // Build context for runner with setup
+              const setupContext = state.setupFactories.reduce(
+                (acc, factory) => ({ ...acc, ...factory() }),
+                {} as object,
+              )
+              const runnerContext = {
+                i: input,
+                n: name,
+                o: output,
+                ...setupContext,
+                ...fullContext,
+              }
+
+              // Snapshot mode detection: no output, no customTest, no function
+              const isSnapshotMode = output === undefined && !customTest && !fn
+
+              // Execute runner with try-catch for snapshot mode
+              let runnerOutput: any
+              let runnerError: Error | undefined
+
+              if (isSnapshotMode) {
+                try {
+                  runnerOutput = runner(runnerContext)
+                } catch (e) {
+                  runnerError = e as Error
+                }
+
+                // Resolve output: runner return → default provider → undefined
+                let resolvedOutput = runnerOutput
+                if (resolvedOutput === undefined && Option.isSome(state.defaultOutputProvider)) {
+                  const defaultProvider = Option.getOrUndefined(state.defaultOutputProvider)!
+                  resolvedOutput = defaultProvider(setupContext)
+                }
+
+                // Format and snapshot the result/error
+                const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
+                const snapshotContext = { i: input, n: name, o: resolvedOutput, ...setupContext, ...fullContext }
+                const formattedSnapshot = formatSnapshotWithInput(
+                  Array.isArray(input) ? input : [input],
+                  resolvedOutput,
+                  runnerError,
+                  runner,
+                  serializer,
+                  snapshotContext,
+                )
+                expect(formattedSnapshot).toMatchSnapshot()
+                return
+              } else {
+                // Non-snapshot mode - let errors propagate
                 runnerOutput = runner(runnerContext)
-              } catch (e) {
-                runnerError = e as Error
               }
 
               // Resolve output: runner return → default provider → undefined
@@ -488,195 +619,171 @@ function createBuilder(state: BuilderState = defaultState): any {
                 resolvedOutput = defaultProvider(setupContext)
               }
 
-              // Format and snapshot the result/error
-              const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
-              const snapshotContext = { i: input, n: name, o: resolvedOutput, ...setupContext, ...testContext }
-              const formattedSnapshot = formatSnapshotWithInput(
-                Array.isArray(input) ? input : [input],
-                resolvedOutput,
-                runnerError,
-                runner,
-                serializer,
-                snapshotContext,
-              )
-              expect(formattedSnapshot).toMatchSnapshot()
-              return
-            } else {
-              // Non-snapshot mode - let errors propagate
-              runnerOutput = runner(runnerContext)
-            }
+              // Apply output transform if configured
+              const context = { i: input, n: name, o: resolvedOutput, ...fullContext }
+              const finalOutput = outputMapper ? outputMapper(resolvedOutput, context) : resolvedOutput
 
-            // Resolve output: runner return → default provider → undefined
-            let resolvedOutput = runnerOutput
-            if (resolvedOutput === undefined && Option.isSome(state.defaultOutputProvider)) {
-              const defaultProvider = Option.getOrUndefined(state.defaultOutputProvider)!
-              resolvedOutput = defaultProvider(setupContext)
-            }
-
-            // Apply output transform if configured
-            const context = { i: input, n: name, o: resolvedOutput, ...testContext }
-            const finalOutput = outputMapper ? outputMapper(resolvedOutput, context) : resolvedOutput
-
-            // Function mode: call the function and assert
-            if (fn) {
-              const result = fn(...input)
-              if (customTest) {
-                // Merge vitest context into main context
+              // Function mode: call the function and assert
+              if (fn) {
+                const result = fn(...input)
+                if (customTest) {
+                  // Merge vitest context into main context
+                  await customTest({
+                    input,
+                    output: finalOutput,
+                    result,
+                    n: name,
+                    ...setupContext,
+                    ...fullContext,
+                    ...vitestContext,
+                  })
+                } else {
+                  if (state.config.matcher) {
+                    ;(expect(result) as any)[state.config.matcher](finalOutput)
+                  } else {
+                    assertEffectEqual(result, finalOutput)
+                  }
+                }
+              } else if (customTest) {
+                // Generic mode: call custom test with resolved output
                 await customTest({
                   input,
                   output: finalOutput,
-                  result,
                   n: name,
                   ...setupContext,
-                  ...testContext,
+                  ...fullContext,
                   ...vitestContext,
                 })
+              }
+              return
+            }
+
+            // Handle skip conditions
+            if (skip || state.config.skip) {
+              vitestContext.skip(
+                typeof skip === 'string' ? skip : typeof state.config.skip === 'string' ? state.config.skip : undefined,
+              )
+              return
+            }
+
+            if (skipIf?.() || state.config.skipIf?.()) {
+              vitestContext.skip('Skipped by condition')
+              return
+            }
+
+            // Run the test
+            if (fn) {
+              // Function mode (.on() was used)
+              if (output === undefined && !customTest) {
+                // Snapshot mode - catch errors and snapshot them
+                let result: any
+                let error: Error | undefined
+                try {
+                  result = fn(...input)
+                } catch (e) {
+                  error = e as Error
+                }
+                const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
+                const snapshotContext = { i: input, n: name, o: output, ...fullContext }
+                const formattedSnapshot = formatSnapshotWithInput(
+                  input,
+                  result,
+                  error,
+                  undefined,
+                  serializer,
+                  snapshotContext,
+                )
+                expect(formattedSnapshot).toMatchSnapshot()
               } else {
-                if (state.config.matcher) {
-                  ;(expect(result) as any)[state.config.matcher](finalOutput)
+                // Non-snapshot mode - let errors propagate
+                const result = fn(...input)
+                const context = { i: input, n: name, o: output, ...fullContext }
+                const transformedOutput = outputMapper ? outputMapper(output, context) : output
+                if (customTest) {
+                  // Custom assertion provided to .test() - merge vitest context
+                  const setupContext = state.setupFactories.reduce(
+                    (acc, factory) => ({ ...acc, ...factory() }),
+                    {} as object,
+                  )
+                  const testResult = await customTest({
+                    input,
+                    output: transformedOutput,
+                    result,
+                    n: name,
+                    ...setupContext,
+                    ...fullContext,
+                    ...vitestContext,
+                  })
+                  // Auto-snapshot if test returns a value
+                  if (testResult !== undefined) {
+                    const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
+                    const snapshotContext = { i: input, n: name, o: output, ...setupContext, ...fullContext }
+                    const formattedSnapshot = formatSnapshotWithInput(
+                      input,
+                      testResult,
+                      undefined,
+                      undefined,
+                      serializer,
+                      snapshotContext,
+                    )
+                    expect(formattedSnapshot).toMatchSnapshot()
+                  }
                 } else {
-                  assertEffectEqual(result, finalOutput)
+                  // Default assertion
+                  if (state.config.matcher) {
+                    // Use configured matcher
+                    ;(expect(result) as any)[state.config.matcher](transformedOutput)
+                  } else {
+                    // Default to Effect's Equal.equals with fallback to toEqual
+                    assertEffectEqual(result, transformedOutput)
+                  }
                 }
               }
             } else if (customTest) {
-              // Generic mode: call custom test with resolved output
-              await customTest({
+              // Non-.on() mode with custom test
+              const setupContext = state.setupFactories.reduce(
+                (acc, factory) => ({ ...acc, ...factory() }),
+                {} as object,
+              )
+              const result = await customTest({
                 input,
-                output: finalOutput,
+                output,
                 n: name,
                 ...setupContext,
-                ...testContext,
+                ...fullContext,
                 ...vitestContext,
               })
-            }
-            return
-          }
-
-          // Handle skip conditions
-          if (skip || state.config.skip) {
-            vitestContext.skip(
-              typeof skip === 'string' ? skip : typeof state.config.skip === 'string' ? state.config.skip : undefined,
-            )
-            return
-          }
-
-          if (skipIf?.() || state.config.skipIf?.()) {
-            vitestContext.skip('Skipped by condition')
-            return
-          }
-
-          // Run the test
-          if (fn) {
-            // Function mode (.on() was used)
-            if (output === undefined && !customTest) {
-              // Snapshot mode - catch errors and snapshot them
-              let result: any
-              let error: Error | undefined
-              try {
-                result = fn(...input)
-              } catch (e) {
-                error = e as Error
-              }
-              const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
-              const snapshotContext = { i: input, n: name, o: output, ...testContext }
-              const formattedSnapshot = formatSnapshotWithInput(
-                input,
-                result,
-                error,
-                undefined,
-                serializer,
-                snapshotContext,
-              )
-              expect(formattedSnapshot).toMatchSnapshot()
-            } else {
-              // Non-snapshot mode - let errors propagate
-              const result = fn(...input)
-              const context = { i: input, n: name, o: output, ...testContext }
-              const transformedOutput = outputMapper ? outputMapper(output, context) : output
-              if (customTest) {
-                // Custom assertion provided to .test() - merge vitest context
-                const setupContext = state.setupFactories.reduce(
-                  (acc, factory) => ({ ...acc, ...factory() }),
-                  {} as object,
-                )
-                const testResult = await customTest({
-                  input,
-                  output: transformedOutput,
+              const context = { i: input, n: name, o: output, ...setupContext, ...fullContext }
+              // Auto-snapshot if result is returned
+              if (result !== undefined) {
+                const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
+                const formattedSnapshot = formatSnapshotWithInput(
+                  Array.isArray(input) ? input : [input],
                   result,
-                  n: name,
-                  ...setupContext,
-                  ...testContext,
-                  ...vitestContext,
-                })
-                // Auto-snapshot if test returns a value
-                if (testResult !== undefined) {
-                  const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
-                  const snapshotContext = { i: input, n: name, o: output, ...setupContext, ...testContext }
-                  const formattedSnapshot = formatSnapshotWithInput(
-                    input,
-                    testResult,
-                    undefined,
-                    undefined,
-                    serializer,
-                    snapshotContext,
-                  )
-                  expect(formattedSnapshot).toMatchSnapshot()
-                }
-              } else {
-                // Default assertion
-                if (state.config.matcher) {
-                  // Use configured matcher
-                  ;(expect(result) as any)[state.config.matcher](transformedOutput)
-                } else {
-                  // Default to Effect's Equal.equals with fallback to toEqual
-                  assertEffectEqual(result, transformedOutput)
-                }
+                  undefined,
+                  undefined,
+                  serializer,
+                  context,
+                )
+                expect(formattedSnapshot).toMatchSnapshot()
               }
             }
-          } else if (customTest) {
-            // Non-.on() mode with custom test
-            const setupContext = state.setupFactories.reduce(
-              (acc, factory) => ({ ...acc, ...factory() }),
-              {} as object,
-            )
-            const result = await customTest({
-              input,
-              output,
-              n: name,
-              ...setupContext,
-              ...testContext,
-              ...vitestContext,
-            })
-            const context = { i: input, n: name, o: output, ...setupContext, ...testContext }
-            // Auto-snapshot if result is returned
-            if (result !== undefined) {
-              const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
-              const formattedSnapshot = formatSnapshotWithInput(
-                Array.isArray(input) ? input : [input],
-                result,
-                undefined,
-                undefined,
-                serializer,
-                context,
-              )
-              expect(formattedSnapshot).toMatchSnapshot()
-            }
-          }
-        })
+          })
+        }
       }
     }
 
     // Wrap in describe if description or describeBlock provided
     if (describeBlock) {
-      vitestDescribe(describeBlock, () => {
+      createNestedDescribe(describeBlock, () => {
         if (state.config.description) {
-          vitestDescribe(state.config.description, runTests)
+          createNestedDescribe(state.config.description, runTests)
         } else {
           runTests()
         }
       })
     } else if (state.config.description) {
-      vitestDescribe(state.config.description, runTests)
+      createNestedDescribe(state.config.description, runTests)
     } else {
       runTests()
     }
@@ -730,6 +837,14 @@ function createBuilder(state: BuilderState = defaultState): any {
       return createBuilder({
         ...state,
         typeState: { ...state.typeState, context: undefined as any },
+      })
+    },
+
+    matrix(matrixConfig: Record<string, readonly any[]>) {
+      return createBuilder({
+        ...state,
+        matrixConfig: Option.some(matrixConfig),
+        typeState: { ...state.typeState, context: { ...state.typeState.context, matrix: undefined as any } },
       })
     },
 
@@ -1014,6 +1129,19 @@ function createBuilder(state: BuilderState = defaultState): any {
  * - Provide custom test logic to validate cases
  * - Useful for testing complex behaviors beyond simple function calls
  *
+ * ## Features
+ *
+ * **Nested Describes** - Use ` > ` separator to create nested describe blocks:
+ * - `Test.describe('Parent > Child')` creates `describe('Parent', () => describe('Child', ...))`
+ * - Multiple tests with the same prefix share the outer describe block
+ * - Supports any depth: `'API > Users > Create'` creates three levels
+ *
+ * **Matrix Testing** - Use `.matrix()` to run cases across parameter combinations:
+ * - Generates cartesian product of all matrix value arrays
+ * - Each test case runs once for each combination
+ * - Matrix values available as `matrix` in test context
+ * - Combines with nested describes for organized test suites
+ *
  * @example
  * ```ts
  * // Function mode - testing a math function
@@ -1040,32 +1168,52 @@ function createBuilder(state: BuilderState = defaultState): any {
  *     expect(result).toBe(expected)
  *   })
  *
- * // Using describe blocks for organization
- * Test.describe('string utilities')
- *   .on(capitalize)
- *   .casesIn('basic')([['hello'], 'Hello'], [['world'], 'World'])
- *   .casesIn('edge cases')([[''], ''], [['123'], '123'])
+ * // Nested describe blocks with ' > ' separator
+ * Test.describe('Transform > String')  // Creates: describe('Transform', () => describe('String', ...))
+ *   .on(transform)
+ *   .cases([['hello'], 'HELLO'])
  *   .test()
+ *
+ * Test.describe('Transform > Number')  // Shares the 'Transform' describe block
+ *   .on(transform)
+ *   .cases([[42], 42])
+ *   .test()
+ *
+ * // Matrix testing - runs each case for all parameter combinations
+ * Test.describe('config combinations')
+ *   .i<string>()
+ *   .o<string>()
+ *   .matrix({
+ *     mode: ['strict', 'loose'],
+ *     cache: [true, false],
+ *   })
+ *   .cases(['input', 'expected'])
+ *   .test(({ input, output, matrix }) => {
+ *     // Runs 4 times: strict+cache, strict+no-cache, loose+cache, loose+no-cache
+ *     const result = process(input, matrix.mode, matrix.cache)
+ *     expect(result).toBe(output)
+ *   })
  * ```
  *
- * @param description - Optional description for the test suite, creates a Vitest describe block
+ * @param description - Optional description for the test suite. Supports ` > ` separator for nested describe blocks.
  * @returns A {@link TestBuilder} for chaining configuration, cases, and execution
  *
  * @see {@link on} for function mode without a describe block
+ * @see {@link TestBuilder.matrix matrix()} for matrix testing documentation
  */
 export function describe(): TestBuilder<
-  { i: unknown; o: unknown; context: {}; fn: never }
+  { i: unknown; o: unknown; context: {}; fn: never; matrix: {} }
 >
 export function describe(
   description: string,
-): TestBuilder<{ i: unknown; o: unknown; context: {}; fn: never }>
+): TestBuilder<{ i: unknown; o: unknown; context: {}; fn: never; matrix: {} }>
 export function describe(
   description?: string,
-): TestBuilder<{ i: unknown; o: unknown; context: {}; fn: never }> {
+): TestBuilder<{ i: unknown; o: unknown; context: {}; fn: never; matrix: {} }> {
   const initialState: BuilderState = description
     ? { ...defaultState, config: { description } }
     : defaultState
-  return createBuilder(initialState) as TestBuilder<{ i: unknown; o: unknown; context: {}; fn: never }>
+  return createBuilder(initialState) as TestBuilder<{ i: unknown; o: unknown; context: {}; fn: never; matrix: {} }>
 }
 
 /**
@@ -1185,13 +1333,13 @@ export function describe(
  */
 export function on<$fn extends Fn.AnyAny>(
   $fn: $fn,
-): TestBuilder<{ i: never; o: never; context: {}; fn: $fn }> {
+): TestBuilder<{ i: never; o: never; context: {}; fn: $fn; matrix: {} }> {
   const initialState: BuilderState = {
     ...defaultState,
     fn: Option.some($fn),
   }
   return createBuilder({
     ...initialState,
-    typeState: { i: undefined, o: undefined, context: {}, fn: $fn },
-  }) as TestBuilder<{ i: never; o: never; context: {}; fn: typeof $fn }>
+    typeState: { i: undefined, o: undefined, context: {}, fn: $fn, matrix: {} },
+  }) as TestBuilder<{ i: never; o: never; context: {}; fn: typeof $fn; matrix: {} }>
 }

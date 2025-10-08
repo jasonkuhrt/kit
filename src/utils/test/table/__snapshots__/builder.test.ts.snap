@@ -18,24 +18,6 @@ WORLD
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`Test.table() builder > functional tests > casesAsArg helper > upperCase("hello") 1`] = `
-"
-╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-hello
-╠══════════════════════════════════════════════════╣ THEN RETURNS STRING
-HELLO
-╚══════════════════════════════════════════════════╝"
-`;
-
-exports[`Test.table() builder > functional tests > casesAsArg helper > upperCase("world") 1`] = `
-"
-╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-world
-╠══════════════════════════════════════════════════╣ THEN RETURNS STRING
-WORLD
-╚══════════════════════════════════════════════════╝"
-`;
-
 exports[`Test.table() builder > functional tests > multi-argument snapshots > add(1, 2) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS

@@ -17,6 +17,7 @@ export interface BuilderTypeState {
   o: unknown
   context: {}
   fn: Fn.AnyAny | never // The function being tested (never if not in .on() mode)
+  matrix: {} // Matrix configuration type (empty object when no matrix)
 }
 
 // ============================================================================
@@ -32,6 +33,7 @@ type UpdateState<State extends BuilderTypeState, Updates extends Partial<Builder
   o: 'o' extends keyof Updates ? Updates['o'] : State['o']
   context: 'context' extends keyof Updates ? Updates['context'] : State['context']
   fn: 'fn' extends keyof Updates ? Updates['fn'] : State['fn']
+  matrix: 'matrix' extends keyof Updates ? Updates['matrix'] : State['matrix']
 }
 
 /**
@@ -67,11 +69,17 @@ type StateIOContext<T extends BuilderTypeState> = T extends { i: infer I; o: inf
   : never
 
 /**
+ * Add matrix to params if it exists (non-empty object).
+ */
+type WithMatrix<Params, Matrix> = Obj.IsEmpty<Matrix & object> extends true ? Params
+  : Params & { matrix: Matrix }
+
+/**
  * Test function signature for generic mode (non-.on() mode).
  * Receives destructured params with input, output, test name, setup context, and vitest TestContext.
  */
 type GenericTestFn<T extends BuilderTypeState> = StateIOContext<T> extends [infer I, infer O, infer Ctx] ? (
-    params: { input: I; output: O; n: string } & Ctx & TestContext,
+    params: WithMatrix<{ input: I; output: O; n: string } & Ctx & TestContext, T['matrix']>,
   ) => void | Promise<void>
   : never
 
@@ -80,7 +88,7 @@ type GenericTestFn<T extends BuilderTypeState> = StateIOContext<T> extends [infe
  * Receives destructured params with input, output, and user context.
  */
 type GenericEffectTestFn<T extends BuilderTypeState, R> = StateIOContext<T> extends [infer I, infer O, infer Ctx]
-  ? (params: { input: I; output: O; n: string } & Ctx) => Effect.Effect<void, any, R>
+  ? (params: WithMatrix<{ input: I; output: O; n: string } & Ctx, T['matrix']>) => Effect.Effect<void, any, R>
   : never
 
 /**
@@ -166,9 +174,6 @@ export interface CaseObjectBase {
  * The object form is more verbose but provides better readability
  * and access to all case configuration options.
  *
- * @typeParam I - Input type (for functions, this is a tuple of parameters)
- * @typeParam O - Expected output type
- *
  * @example
  * ```ts
  * // Function mode
@@ -197,9 +202,6 @@ export type CaseObject<I, O> =
  * The tuple form is concise and natural for simple test cases.
  * Input is ALWAYS the first element.
  *
- * @typeParam I - Tuple of function parameters
- * @typeParam O - Expected return value
- *
  * @example
  * ```ts
  * Test.on(add).cases(
@@ -222,10 +224,6 @@ export type CaseTuple<I extends any[], O, Context = {}> =
  * Combined case type for function mode.
  *
  * Allows both tuple and object formats for maximum flexibility.
- *
- * @typeParam I - Function parameters (must be a tuple)
- * @typeParam O - Expected return value
- * @typeParam Context - Additional context properties (optional)
  */
 export type FunctionCase<I, O, Context = {}> = I extends any[] ? (CaseTuple<I, O, Context> | CaseObject<I, O>)
   : never
@@ -253,10 +251,6 @@ export type GenericCaseTuple<I, O, Context> = Obj.IsEmpty<Context & object> exte
  *
  * Supports both tuple and object forms with optional context properties.
  * Context properties allow passing additional data to test functions.
- *
- * @typeParam I - Input type for the test
- * @typeParam O - Expected output type
- * @typeParam Context - Additional context properties (e.g., environment, dependencies)
  */
 export type GenericCase<I, O, Context> =
   | ({ input: I; output: O } & Context)
@@ -273,9 +267,6 @@ export type GenericCase<I, O, Context> =
  *
  * Handles the different parameter formats based on whether the builder
  * is in function mode (with .on()) or generic mode.
- *
- * @typeParam P - Parameter type (tuple for function mode, any for generic)
- * @typeParam R - Return type (for function mode)
  */
 export type CaseSingleParams<P, R> = P extends any[] ?
     | [P] // Just params tuple (for .on() mode)
@@ -298,8 +289,6 @@ export type CaseSingleParams<P, R> = P extends any[] ?
  *
  * This unified builder supports both function mode (via `.on(fn)`) and generic mode (via `.inputType()` / `.outputType()`).
  * Method availability and return types are controlled via conditional types based on the current state.
- *
- * @typeParam State - Internal type state tracking input, output, context, and function types
  *
  * @example
  * **Function mode** - test a specific function:
@@ -377,8 +366,6 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * Set the input type explicitly.
    * Works in both generic mode and function mode (overrides inferred params).
    *
-   * @typeParam I - The input type for test cases
-   *
    * @example
    * ```ts
    * // Generic mode
@@ -397,8 +384,6 @@ export interface TestBuilder<State extends BuilderTypeState> {
   /**
    * Set the output/expected type for generic mode testing.
    * Only available before `.on()` is called.
-   *
-   * @typeParam O - The expected output type for test cases
    */
   outputType<O>(): State['fn'] extends never ? TestBuilder<UpdateState<State, { o: O }>>
     : never
@@ -406,10 +391,40 @@ export interface TestBuilder<State extends BuilderTypeState> {
   /**
    * Set the context type for test cases.
    * Context properties are additional fields beyond `input` and `output`.
-   *
-   * @typeParam Ctx - The context type for test cases
    */
   contextType<Ctx extends {} = {}>(): TestBuilder<UpdateState<State, { context: Ctx }>>
+
+  /**
+   * Run all test cases for each combination of matrix values.
+   *
+   * Creates a cartesian product of all provided value arrays and runs
+   * every test case once for each combination. The current combination
+   * is passed as `matrix` in the test context.
+   *
+   * @example
+   * ```ts
+   * Test.describe('feature')
+   *   .matrix({
+   *     mode: ['strict', 'loose'],
+   *     cache: [true, false],
+   *   })
+   *   .cases([input1], [input2])
+   *   .test(({ input, matrix }) => {
+   *     // Runs 4 times (2 modes × 2 cache values)
+   *     // matrix = { mode: 'strict'|'loose', cache: true|false }
+   *   })
+   * ```
+   */
+  matrix<$values extends Record<string, readonly any[]>>(
+    values: $values,
+  ): TestBuilder<
+    UpdateState<
+      State,
+      {
+        matrix: { [K in keyof $values]: $values[K][number] }
+      }
+    >
+  >
 
   /**
    * Provide default expected output for runner cases in generic mode.
@@ -551,8 +566,28 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * The child builder inherits parent's setup context, default output provider,
    * output mapper, and type declarations.
    *
-   * @param name - Name for the nested describe block
+   * **Nested Describe Syntax**: Use ` > ` separator in the name to create multiple
+   * levels of nested describe blocks automatically. For example:
+   * - `'Parent > Child'` creates `describe('Parent', () => describe('Child', ...))`
+   * - Multiple tests with the same prefix share the outer describe blocks
+   * - Supports any depth: `'API > Users > Create'` creates three levels
+   *
+   * @param name - Name for the nested describe block. Supports ` > ` separator for multi-level nesting.
    * @param callback - Function that receives child builder and returns it with cases
+   *
+   * @example
+   * ```ts
+   * Test.describe('Transform > String', (t) => t
+   *   .i<string>()
+   *   .cases(['hello', 'HELLO'])
+   * ).test()
+   *
+   * Test.describe('Transform > Number', (t) => t
+   *   .i<number>()
+   *   .cases([42, 42])
+   * ).test()
+   * // Results in shared 'Transform' describe block with 'String' and 'Number' nested inside
+   * ```
    */
   describe<ChildContext extends object = {}, ChildI = State['i'], ChildO = State['o']>(
     name: string,
@@ -563,6 +598,7 @@ export interface TestBuilder<State extends BuilderTypeState> {
       i: ChildI
       o: ChildO
       fn: State['fn']
+      matrix: State['matrix']
     }>,
   ): TestBuilder<
     UpdateState<State, {
@@ -579,7 +615,6 @@ export interface TestBuilder<State extends BuilderTypeState> {
   /**
    * Provide setup context that will be passed to function-based cases.
    *
-   * @typeParam Ctx - The context type returned by the factory
    * @param factory - Function that returns context object
    */
   onSetup<Ctx extends object>(
@@ -647,9 +682,6 @@ export interface TestBuilder<State extends BuilderTypeState> {
  *
  * This extends the main builder with Effect-specific test execution methods.
  * Created after calling `.layer()` or `.layerEach()`.
- *
- * @typeParam State - Current builder type state
- * @typeParam R - Effect requirements (dependencies)
  */
 export interface TestBuilderWithLayers<State extends BuilderTypeState, R> extends TestBuilder<State> {
   /**
