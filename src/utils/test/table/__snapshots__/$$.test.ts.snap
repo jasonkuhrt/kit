@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Test.table() builder > auto-snapshot function mode > add(1, 2) → 3 1`] = `
+exports[`Test.table() builder > auto-snapshot from test callback > auto-snapshot function mode > add(1, 2) → 3 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 1
@@ -13,7 +13,7 @@ exports[`Test.table() builder > auto-snapshot function mode > add(1, 2) → 3 1`
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`Test.table() builder > auto-snapshot generic mode > test 1`] = `
+exports[`Test.table() builder > auto-snapshot from test callback > auto-snapshot generic mode > test 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 hello
@@ -22,7 +22,7 @@ null
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`Test.table() builder > functional tests > cases helper > upperCase("hello") 1`] = `
+exports[`Test.table() builder > basic functionality > cases helper > upperCase("hello") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 hello
@@ -31,7 +31,7 @@ HELLO
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`Test.table() builder > functional tests > cases helper > upperCase("world") 1`] = `
+exports[`Test.table() builder > basic functionality > cases helper > upperCase("world") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 world
@@ -40,7 +40,7 @@ WORLD
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`Test.table() builder > functional tests > multi-argument snapshots > add(1, 2) 1`] = `
+exports[`Test.table() builder > basic functionality > multi-argument snapshots > add(1, 2) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 1
@@ -51,7 +51,7 @@ exports[`Test.table() builder > functional tests > multi-argument snapshots > ad
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`Test.table() builder > functional tests > multi-argument snapshots > add(10, 20) 1`] = `
+exports[`Test.table() builder > basic functionality > multi-argument snapshots > add(10, 20) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 10

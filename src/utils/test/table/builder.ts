@@ -1,16 +1,21 @@
-import { Err } from '#err'
-import { Fn as FnUtils } from '#fn'
 import type { Fn } from '#fn'
-import { Str } from '#str'
-import { Array, Effect, Equal, Layer, Option } from 'effect'
-import { describe as vitestDescribe, expect, test, type TestContext } from 'vitest'
-import type { BuilderTypeState, CaseObject, CaseTuple, TestBuilder } from './builder-types.js'
+import { Array, Effect, Layer, Option } from 'effect'
+import { expect, test } from 'vitest'
+import type { CaseObject, CaseTuple } from './builder-types.js'
+import {
+  assertEffectEqual,
+  createNestedDescribe,
+  defaultSnapshotSerializer,
+  formatSnapshotWithInput,
+  generateMatrixCombinations,
+  validateContextKeys,
+} from './utils.js'
 
 // ============================================================================
 // Configuration & State Types
 // ============================================================================
 
-interface BuilderConfig {
+export interface Config {
   description?: string
   nameTemplate?: string
   only?: boolean
@@ -21,25 +26,24 @@ interface BuilderConfig {
   matcher?: string
 }
 
-interface TestGroup {
+interface Group {
   describe: Option.Option<string>
   cases: any[] // Effect's Array module works with regular arrays
-  nestedGroups?: TestGroup[] // Nested describe blocks created via .describe(name, callback)
+  nestedGroups?: Group[] // Nested describe blocks created via .describe(name, callback)
 }
 
-interface BuilderState {
+export interface State {
   fn: Option.Option<Fn.AnyAny>
-  config: BuilderConfig
+  config: Config
   outputMapper: Option.Option<Fn.AnyAny>
   defaultOutputProvider: Option.Option<Fn.AnyAny>
   snapshotSerializer: Option.Option<(value: any, context: any) => string>
   pendingDescribe: Option.Option<string>
-  accumulatedGroups: TestGroup[] // Effect's Array module works with regular arrays
+  accumulatedGroups: Group[] // Effect's Array module works with regular arrays
   currentCases: any[] // Effect's Array module works with regular arrays
-  nestedDescribeGroups: TestGroup[] // Nested describe blocks from .describe(name, callback)
+  nestedDescribeGroups: Group[] // Nested describe blocks from .describe(name, callback)
   layerOrFactory: Option.Option<Layer.Layer<any> | ((testCase: any) => Layer.Layer<any>)>
   layerType: Option.Option<'static' | 'dynamic'>
-  typeState: BuilderTypeState
   setupFactories: Array<() => object>
   matrixConfig: Option.Option<Record<string, readonly any[]>>
 }
@@ -48,7 +52,7 @@ interface BuilderState {
 // Default State
 // ============================================================================
 
-const defaultState: BuilderState = {
+export const defaultState: State = {
   fn: Option.none<Fn.AnyAny>(),
   config: {},
   outputMapper: Option.none<Fn.AnyAny>(),
@@ -60,264 +64,19 @@ const defaultState: BuilderState = {
   nestedDescribeGroups: [],
   layerOrFactory: Option.none(),
   layerType: Option.none(),
-  typeState: { i: undefined, o: undefined, context: {}, fn: (() => {}) as never, matrix: {} },
   setupFactories: [],
   matrixConfig: Option.none(),
-}
-
-// ============================================================================
-// Helper Functions
-// ============================================================================
-
-/**
- * Custom assertion that uses Effect's Equal.equals for equivalence checking.
- * Falls back to Vitest's toEqual for better error messages when values are not equal.
- */
-const assertEffectEqual = (actual: any, expected: any) => {
-  // First try Effect's Equal.equals for proper equivalence checking
-  // This handles Effect data types that implement Equal trait
-  const isEqual = Equal.equals(actual, expected)
-
-  if (!isEqual) {
-    // Use toEqual for better diff output when assertion fails
-    expect(actual).toEqual(expected)
-  }
-  // If Equal.equals returns true, assertion passes silently
-}
-
-/**
- * Validate that user context doesn't contain reserved property names.
- * Reserved names: input, output, result, comment
- */
-const validateContextKeys = (context: object, caseName: string): void => {
-  const reservedKeys = ['input', 'output', 'result', 'comment']
-  const contextKeys = Object.keys(context)
-  const conflicts = contextKeys.filter((key) => reservedKeys.includes(key))
-
-  if (conflicts.length > 0) {
-    throw new Error(
-      `Test case "${caseName}" contains reserved context keys: ${conflicts.join(', ')}. `
-        + `Reserved keys are: ${reservedKeys.join(', ')}. `
-        + `Please rename these properties in your test context.`,
-    )
-  }
-}
-
-/**
- * Creates nested describe blocks from a description containing ' > ' separator.
- *
- * @example
- * ```ts
- * createNestedDescribe('Arguments > Enums', runTests)
- * // Creates: describe('Arguments', () => describe('Enums', runTests))
- * ```
- */
-const createNestedDescribe = (description: string, callback: () => void): void => {
-  const parts = description.split(' > ').map(part => part.trim())
-
-  if (parts.length === 1) {
-    vitestDescribe(description, callback)
-    return
-  }
-
-  // Create nested describe blocks from outer to inner
-  const createNested = (index: number): void => {
-    if (index === parts.length - 1) {
-      vitestDescribe(parts[index]!, callback)
-    } else {
-      vitestDescribe(parts[index]!, () => createNested(index + 1))
-    }
-  }
-
-  createNested(0)
-}
-
-/**
- * Generate all combinations (cartesian product) of matrix values.
- *
- * @example
- * ```ts
- * generateMatrixCombinations({ a: [1, 2], b: ['x', 'y'] })
- * // Returns: [
- * //   { a: 1, b: 'x' },
- * //   { a: 1, b: 'y' },
- * //   { a: 2, b: 'x' },
- * //   { a: 2, b: 'y' }
- * // ]
- * ```
- */
-const generateMatrixCombinations = (
-  matrix: Record<string, readonly any[]>,
-): Array<Record<string, any>> => {
-  const keys = Object.keys(matrix)
-  if (keys.length === 0) return [{}]
-
-  const combinations: Array<Record<string, any>> = []
-
-  const generate = (index: number, current: Record<string, any>) => {
-    if (index === keys.length) {
-      combinations.push({ ...current })
-      return
-    }
-
-    const key = keys[index]!
-    const values = matrix[key]!
-
-    for (const value of values) {
-      current[key] = value
-      generate(index + 1, current)
-    }
-  }
-
-  generate(0, {})
-  return combinations
-}
-
-/**
- * Default snapshot serializer with smart handling for different value types.
- * - Strings: Display raw (no JSON quotes/escaping) for readability
- * - Functions: Use .toString()
- * - undefined: Display as 'undefined' string
- * - Symbols: Use .toString()
- * - BigInt: Display as '123n' format
- * - RegExp: Use .toString() (e.g., '/foo/gi')
- * - Errors: Use Err.inspect() for detailed formatting
- * - Objects/Arrays: Use JSON.stringify with indentation
- * @param value - The value to serialize
- * @param _context - Test context (unused by default serializer, available for custom serializers)
- * @returns Formatted string representation
- */
-const defaultSnapshotSerializer = (value: any, _context: any): string => {
-  if (typeof value === 'string') return value
-  if (typeof value === 'function') return value.toString()
-  if (typeof value === 'undefined') return 'undefined'
-  if (typeof value === 'symbol') return value.toString()
-  if (typeof value === 'bigint') return value.toString() + 'n'
-  if (value instanceof RegExp) return value.toString()
-  if (value instanceof Error) return Err.inspect(value)
-  return JSON.stringify(value, null, 2)
-}
-
-/**
- * Get a human-readable type label for a value.
- */
-const getTypeLabel = (value: any): string => {
-  if (value === null) return `NULL`
-  if (value === undefined) return `UNDEFINED`
-
-  const type = typeof value
-  if (type === `string`) return `STRING`
-  if (type === `number`) return `NUMBER`
-  if (type === `boolean`) return `BOOLEAN`
-  if (type === `bigint`) return `BIGINT`
-  if (type === `symbol`) return `SYMBOL`
-  if (type === `function`) return `FUNCTION`
-
-  // Check for built-in types
-  if (Array.isArray(value)) return `ARRAY`
-  if (value instanceof RegExp) return `REGEXP`
-  if (value instanceof Date) return `DATE`
-  if (value instanceof Map) return `MAP`
-  if (value instanceof Set) return `SET`
-  if (value instanceof Promise) return `PROMISE`
-  if (value instanceof Error) return value.constructor.name.toUpperCase()
-
-  return `OBJECT`
-}
-
-/**
- * Format a snapshot with clear GIVEN/THEN sections showing arguments and return value or error.
- * Two modes:
- * - Function mode (has inputs): GIVEN ARGUMENTS → THEN RETURNS/THROWS
- * - Runner mode (no inputs): RUNNER → OUTPUTS RETURN/THROW
- */
-const formatSnapshotWithInput = (
-  input: any[],
-  result: any,
-  error?: Error,
-  runner?: Function,
-  serializer: (value: any, context: any) => string = defaultSnapshotSerializer,
-  context: any = {},
-): string => {
-  // Fixed width for all boxes
-  const width = 50
-
-  const isError = error !== undefined
-  const outputStr = isError
-    ? `${error.name}: ${error.message}`
-    : serializer(result, context)
-
-  const hasInput = input.length > 0
-
-  if (hasInput) {
-    // Function mode: GIVEN → THEN
-    // Format all inputs
-    const formattedInputs = input.map((i) => serializer(i, context))
-
-    // Format input string
-    let inputStr: string
-    if (input.length === 1) {
-      inputStr = formattedInputs[0]!
-    } else {
-      // Separator should match box border width (width + 2 for the corner characters)
-      const separator = '─'.repeat(width + 2)
-      inputStr = formattedInputs.join('\n' + separator + '\n')
-    }
-
-    // Box drawing with titles at the end
-    const givenLabel = ' GIVEN ARGUMENTS'
-    const thenLabel = isError ? ` THEN THROWS ${getTypeLabel(error)}` : ` THEN RETURNS ${getTypeLabel(result)}`
-
-    return [
-      '', // Leading newline to force opening quote on own line
-      '╔' + '═'.repeat(width) + '╗' + givenLabel,
-      inputStr,
-      '╠' + '═'.repeat(width) + '╣' + thenLabel,
-      outputStr,
-      '╚' + '═'.repeat(width) + '╝',
-    ].join('\n')
-  } else {
-    // Runner mode: Show runner function and output
-    if (runner) {
-      // Extract just the function body (remove first and last lines)
-      const runnerLines = runner.toString().split('\n')
-      const bodyLines = runnerLines.slice(1, -1)
-      const bodyWithIndent = bodyLines.join('\n')
-      const runnerBody = Str.stripIndent(bodyWithIndent)
-
-      const outputLabel = isError ? ` OUTPUTS THROW ${getTypeLabel(error)}` : ` OUTPUTS RETURN ${getTypeLabel(result)}`
-
-      return [
-        '', // Leading newline to force opening quote on own line
-        '╔' + '═'.repeat(width) + '╗' + ' RUNNER',
-        runnerBody,
-        '╠' + '═'.repeat(width) + '╣' + outputLabel,
-        outputStr,
-        '╚' + '═'.repeat(width) + '╝',
-      ].join('\n')
-    } else {
-      // Fallback: no runner function available
-      const outputLabel = isError ? ` OUTPUTS THROW ${getTypeLabel(error)}` : ` OUTPUTS RETURN ${getTypeLabel(result)}`
-
-      return [
-        '', // Leading newline to force opening quote on own line
-        '╔' + '═'.repeat(width) + '╗' + outputLabel,
-        outputStr,
-        '╚' + '═'.repeat(width) + '╝',
-      ].join('\n')
-    }
-  }
 }
 
 // ============================================================================
 // Functional Builder Implementation
 // ============================================================================
 
-function createBuilder(state: BuilderState = defaultState): any {
+export function create(state: State = defaultState): any {
   // Helper to flush current cases to accumulated groups
-  const flushCases = (s: BuilderState): BuilderState => {
+  const flushCases = (s: State): State => {
     if (s.currentCases.length > 0) {
-      const group: TestGroup = {
+      const group: Group = {
         describe: s.pendingDescribe,
         cases: s.currentCases,
       }
@@ -374,7 +133,7 @@ function createBuilder(state: BuilderState = defaultState): any {
 
   // Recursive helper to execute nested describe groups
   const executeNestedGroup = (
-    group: TestGroup,
+    group: Group,
     customTest: ((params: any) => any) | undefined,
   ): void => {
     const describeName = Option.getOrUndefined(group.describe)
@@ -798,28 +557,22 @@ function createBuilder(state: BuilderState = defaultState): any {
 
     // Type building methods
     inputType() {
-      return createBuilder({
-        ...state,
-        typeState: { ...state.typeState, i: undefined as any },
-      })
+      return create(state)
     },
 
     outputType() {
-      return createBuilder({
-        ...state,
-        typeState: { ...state.typeState, o: undefined as any },
-      })
+      return create(state)
     },
 
     outputDefault(provider: Fn.AnyAny) {
-      return createBuilder({
+      return create({
         ...state,
         defaultOutputProvider: Option.some(provider),
       })
     },
 
     snapshotSerializer(serializer: (value: any, context: any) => string) {
-      return createBuilder({
+      return create({
         ...state,
         snapshotSerializer: Option.some(serializer),
       })
@@ -827,33 +580,28 @@ function createBuilder(state: BuilderState = defaultState): any {
 
     onOutput(mapper: Fn.AnyAny) {
       // Output mapper for function mode
-      return createBuilder({
+      return create({
         ...state,
         outputMapper: Option.some(mapper),
       })
     },
 
     contextType() {
-      return createBuilder({
-        ...state,
-        typeState: { ...state.typeState, context: undefined as any },
-      })
+      return create(state)
     },
 
     matrix(matrixConfig: Record<string, readonly any[]>) {
-      return createBuilder({
+      return create({
         ...state,
         matrixConfig: Option.some(matrixConfig),
-        typeState: { ...state.typeState, context: { ...state.typeState.context, matrix: undefined as any } },
       })
     },
 
     // Function mode
     on(fn: Fn.AnyAny) {
-      return createBuilder({
+      return create({
         ...state,
         fn: Option.some(fn),
-        typeState: { ...state.typeState, fn },
       })
     },
 
@@ -880,7 +628,7 @@ function createBuilder(state: BuilderState = defaultState): any {
       }
       // Always return builder for chaining - execution happens in .test()
       // Cast to proper type for type inference
-      return createBuilder(flushCases(newState)) as any
+      return create(flushCases(newState)) as any
     },
 
     case(...args: any[]) {
@@ -897,7 +645,7 @@ function createBuilder(state: BuilderState = defaultState): any {
           isRunnerCase: true,
         }
 
-        return createBuilder({
+        return create({
           ...state,
           currentCases: [...state.currentCases, runnerCase],
         })
@@ -905,7 +653,7 @@ function createBuilder(state: BuilderState = defaultState): any {
 
       // Otherwise parse as normal case
       const caseData = parseCaseArgs(args)
-      return createBuilder({
+      return create({
         ...state,
         currentCases: [...state.currentCases, caseData],
       })
@@ -913,7 +661,7 @@ function createBuilder(state: BuilderState = defaultState): any {
 
     case$(caseObj: any) {
       // Add a single case in object form
-      return createBuilder({
+      return create({
         ...state,
         currentCases: [...state.currentCases, caseObj],
       })
@@ -921,49 +669,49 @@ function createBuilder(state: BuilderState = defaultState): any {
 
     // Configuration methods
     name(template: string) {
-      return createBuilder({
+      return create({
         ...state,
         config: { ...state.config, nameTemplate: template },
       })
     },
 
     only() {
-      return createBuilder({
+      return create({
         ...state,
         config: { ...state.config, only: true },
       })
     },
 
     skip(reason?: string) {
-      return createBuilder({
+      return create({
         ...state,
         config: { ...state.config, skip: reason ?? true },
       })
     },
 
     skipIf(condition: () => boolean) {
-      return createBuilder({
+      return create({
         ...state,
         config: { ...state.config, skipIf: condition },
       })
     },
 
     concurrent() {
-      return createBuilder({
+      return create({
         ...state,
         config: { ...state.config, concurrent: true },
       })
     },
 
     tags(tags: string[]) {
-      return createBuilder({
+      return create({
         ...state,
         config: { ...state.config, tags },
       })
     },
 
     onlyMatching(matcher: string) {
-      return createBuilder({
+      return create({
         ...state,
         config: { ...state.config, matcher },
       })
@@ -979,19 +727,18 @@ function createBuilder(state: BuilderState = defaultState): any {
           pendingDescribe: Option.some(name),
           currentCases: callbackOrCases,
         }
-        return createBuilder(flushCases(newState))
+        return create(flushCases(newState))
       }
 
       // Callback form
       const callback = callbackOrCases as Fn.AnyAny
       // Create child builder with inherited state
-      const childBuilder = createBuilder({
+      const childBuilder = create({
         ...state,
         // Inherit parent's setup, providers, and mappers
         setupFactories: [...state.setupFactories],
         defaultOutputProvider: state.defaultOutputProvider,
         outputMapper: state.outputMapper,
-        typeState: { ...state.typeState },
         // Fresh state for child
         currentCases: [],
         accumulatedGroups: [],
@@ -1009,7 +756,7 @@ function createBuilder(state: BuilderState = defaultState): any {
       const flushedChild = flushCases(childState)
 
       // Create nested group with child's cases and groups
-      const nestedGroup: TestGroup = {
+      const nestedGroup: Group = {
         describe: Option.some(name),
         cases: [...flushedChild.currentCases],
         nestedGroups: [
@@ -1019,7 +766,7 @@ function createBuilder(state: BuilderState = defaultState): any {
       }
 
       // Return builder with nested group added
-      return createBuilder({
+      return create({
         ...state,
         nestedDescribeGroups: [...state.nestedDescribeGroups, nestedGroup],
         // Type state merging happens at type level
@@ -1028,7 +775,7 @@ function createBuilder(state: BuilderState = defaultState): any {
 
     // Setup method
     onSetup(factory: () => object) {
-      return createBuilder({
+      return create({
         ...state,
         setupFactories: [...state.setupFactories, factory],
       })
@@ -1036,7 +783,7 @@ function createBuilder(state: BuilderState = defaultState): any {
 
     // Layer methods
     layer(layer: Layer.Layer<any>) {
-      return createBuilder({
+      return create({
         ...state,
         layerOrFactory: Option.some(layer),
         layerType: Option.some('static' as const),
@@ -1044,7 +791,7 @@ function createBuilder(state: BuilderState = defaultState): any {
     },
 
     layerEach(factory: (testCase: any) => Layer.Layer<any>) {
-      return createBuilder({
+      return create({
         ...state,
         layerOrFactory: Option.some(factory),
         layerType: Option.some('dynamic' as const),
@@ -1105,253 +852,4 @@ function createBuilder(state: BuilderState = defaultState): any {
   }
 
   return builder
-}
-
-// ============================================================================
-// Public API
-// ============================================================================
-
-/**
- * Creates a test table builder for property-based and example-based testing.
- *
- * Test tables allow you to define multiple test cases with inputs and expected outputs,
- * reducing boilerplate and making tests more maintainable. The builder supports two modes:
- *
- * ## Modes
- *
- * **Function Mode** - Test a specific function with `.on(fn)`:
- * - Types are automatically inferred from the function signature
- * - Test cases specify function arguments and expected return values
- * - Default assertion compares actual vs expected using Effect's equality
- *
- * **Generic Mode** - Define custom types with `.i<T>()` and `.o<T>()`:
- * - Explicitly specify input and output types
- * - Provide custom test logic to validate cases
- * - Useful for testing complex behaviors beyond simple function calls
- *
- * ## Features
- *
- * **Nested Describes** - Use ` > ` separator to create nested describe blocks:
- * - `Test.describe('Parent > Child')` creates `describe('Parent', () => describe('Child', ...))`
- * - Multiple tests with the same prefix share the outer describe block
- * - Supports any depth: `'API > Users > Create'` creates three levels
- *
- * **Matrix Testing** - Use `.matrix()` to run cases across parameter combinations:
- * - Generates cartesian product of all matrix value arrays
- * - Each test case runs once for each combination
- * - Matrix values available as `matrix` in test context
- * - Combines with nested describes for organized test suites
- *
- * @example
- * ```ts
- * // Function mode - testing a math function
- * Test.describe('addition')
- *   .on(add)
- *   .cases(
- *     [[2, 3], 5],                          // add(2, 3) should return 5
- *     ['negative', [-1, -2], -3],           // Named test case
- *     [[0, 0], 0]                           // Edge case
- *   )
- *   .test()  // Uses default assertion (Effect's Equal.equals)
- *
- * // Generic mode - custom validation logic
- * Test.describe('email validation')
- *   .inputType<string>()
- *   .outputType<boolean>()
- *   .cases(
- *     ['user@example.com', true],
- *     ['invalid.com', false],
- *     ['', false]
- *   )
- *   .test(({ input, output }) => {
- *     const result = isValidEmail(input)
- *     expect(result).toBe(output)
- *   })
- *
- * // Nested describe blocks with ' > ' separator
- * Test.describe('Transform > String')  // Creates nested: Transform -> String
- *   .inputType<string>()
- *   .outputType<string>()
- *   .cases(['hello', 'HELLO'])
- *   .test(({ input, output }) => {
- *     expect(input.toUpperCase()).toBe(output)
- *   })
- *
- * Test.describe('Transform > Number')  // Shares 'Transform' parent describe
- *   .inputType<number>()
- *   .outputType<number>()
- *   .cases([42, 42])
- *   .test(({ input, output }) => {
- *     expect(input).toBe(output)
- *   })
- *
- * // Matrix testing - runs each case for all parameter combinations
- * Test.describe('string transform')
- *   .inputType<string>()
- *   .outputType<string>()
- *   .matrix({
- *     uppercase: [true, false],
- *     prefix: ['', 'pre_'],
- *   })
- *   .cases(
- *     ['hello', 'hello'],
- *     ['world', 'world']
- *   )
- *   .test(({ input, output, matrix }) => {
- *     // Runs 4 times (2 cases × 2 uppercase × 2 prefix = 8 tests)
- *     let result = input
- *     if (matrix.prefix) result = matrix.prefix + result
- *     if (matrix.uppercase) result = result.toUpperCase()
- *
- *     let expected = output
- *     if (matrix.prefix) expected = matrix.prefix + expected
- *     if (matrix.uppercase) expected = expected.toUpperCase()
- *
- *     expect(result).toBe(expected)
- *   })
- * ```
- *
- * @param description - Optional description for the test suite. Supports ` > ` separator for nested describe blocks.
- * @returns A {@link TestBuilder} for chaining configuration, cases, and execution
- *
- * @see {@link on} for function mode without a describe block
- * @see {@link TestBuilder.matrix matrix()} for matrix testing documentation
- */
-export function describe(): TestBuilder<
-  { i: unknown; o: unknown; context: {}; fn: never; matrix: {} }
->
-export function describe(
-  description: string,
-): TestBuilder<{ i: unknown; o: unknown; context: {}; fn: never; matrix: {} }>
-export function describe(
-  description?: string,
-): TestBuilder<{ i: unknown; o: unknown; context: {}; fn: never; matrix: {} }> {
-  const initialState: BuilderState = description
-    ? { ...defaultState, config: { description } }
-    : defaultState
-  return createBuilder(initialState) as TestBuilder<{ i: unknown; o: unknown; context: {}; fn: never; matrix: {} }>
-}
-
-/**
- * Creates a test table builder for testing a specific function.
- *
- * This is a shorthand for `describe().on(fn)` when you don't need a describe block.
- * Types are automatically inferred from the function signature, making it ideal for
- * quick function testing with minimal boilerplate.
- *
- * ## Case Formats
- *
- * Test cases can be specified in multiple formats:
- *
- * **Tuple Format** (most common):
- * - `[[arg1, arg2], expected]` - Test with expected output
- * - `['name', [arg1, arg2], expected]` - Named test case
- * - `[[arg1, arg2]]` - Snapshot test (no expected value)
- *
- * **Object Format** (more verbose but clearer):
- * - `{ input: [arg1, arg2], output: expected }`
- * - `{ input: [arg1, arg2], output: expected, skip: true, comment: 'name' }`
- * - `{ todo: 'Not implemented yet', comment: 'name' }`
- *
- * @example
- * ```ts
- * // Basic function testing
- * Test.on(add)
- *   .cases(
- *     [[2, 3], 5],                    // add(2, 3) === 5
- *     [[0, 0], 0],                    // add(0, 0) === 0
- *     [[-1, 1], 0]                    // add(-1, 1) === 0
- *   )
- *   .test()
- *
- * // Using different case formats
- * Test.on(multiply)
- *   .cases(
- *     [[2, 3], 6],                              // Tuple format
- *     ['zero case', [5, 0], 0],                 // Named tuple
- *     { input: [-2, 3], output: -6 },           // Object format
- *     { input: [100, 100], output: 10000, comment: 'large numbers' }
- *   )
- *   .test()
- *
- * // Custom assertions
- * Test.on(divide)
- *   .cases([[10, 2], 5], [[10, 0], Infinity])
- *   .test(({ result, output }) => {
- *     if (output === Infinity) {
- *       expect(result).toBe(Infinity)
- *     } else {
- *       expect(result).toBeCloseTo(output, 2)
- *     }
- *   })
- *
- * // Output transformation - build full expectations from partials
- * Test.on(createUser)
- *   .o((partial, context) => ({ ...defaultUser, name: context.input[0], ...partial }))
- *   .cases(
- *     [['Alice'], { role: 'admin' }],           // Only specify differences
- *     [['Bob'], { role: 'user', age: 30 }]
- *   )
- *   .test()
- * ```
- *
- * ## Snapshot Mode with Error Handling
- *
- * When no expected output is provided, tests automatically run in snapshot mode.
- * Errors thrown during execution are automatically caught and included in snapshots
- * with clear "THEN THROWS" vs "THEN RETURNS" formatting:
- *
- * @example
- * ```ts
- * // Mix successful and error cases - errors are captured automatically
- * Test.on(parseInt)
- *   .cases(
- *     ['42'],      // Returns: 42
- *     ['hello'],   // Returns: NaN
- *   )
- *   .test()
- *
- * // Validation functions - errors documented in snapshots
- * Test.on(Positive.from)
- *   .cases(
- *     [1], [10], [100],        // THEN RETURNS the value
- *     [0], [-1], [-10],        // THEN THROWS "Value must be positive"
- *   )
- *   .test()
- * ```
- *
- * Snapshot format shows arguments and results clearly:
- * ```
- * ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
- * 1
- * ╠══════════════════════════════════════════════════╣ THEN RETURNS
- * 1
- * ╚══════════════════════════════════════════════════╝
- * ```
- *
- * For errors:
- * ```
- * ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
- * -1
- * ╠══════════════════════════════════════════════════╣ THEN THROWS
- * Error: Value must be positive
- * ╚══════════════════════════════════════════════════╝
- * ```
- *
- * @param $fn - The function to test. Types are inferred from its signature
- * @returns A {@link TestBuilder} for configuring and running tests
- *
- * @see {@link describe} for creating tests with a describe block
- */
-export function on<$fn extends Fn.AnyAny>(
-  $fn: $fn,
-): TestBuilder<{ i: never; o: never; context: {}; fn: $fn; matrix: {} }> {
-  const initialState: BuilderState = {
-    ...defaultState,
-    fn: Option.some($fn),
-  }
-  return createBuilder({
-    ...initialState,
-    typeState: { i: undefined, o: undefined, context: {}, fn: $fn, matrix: {} },
-  }) as TestBuilder<{ i: never; o: never; context: {}; fn: typeof $fn; matrix: {} }>
 }

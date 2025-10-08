@@ -2,7 +2,6 @@ import type { Arr } from '#arr'
 import type { Fn } from '#fn'
 import type { Obj } from '#obj'
 import type { Rec } from '#rec'
-import { Ts } from '#ts'
 import type { Effect, Layer } from 'effect'
 import type { TestContext } from 'vitest'
 
@@ -15,11 +14,19 @@ import type { TestContext } from 'vitest'
  * Tracks what types have been set via builder methods.
  */
 export interface BuilderTypeState {
-  i: unknown
-  o: unknown
+  input: unknown
+  output: unknown
   context: {}
-  fn: Fn.AnyAny | never // The function being tested (never if not in .on() mode)
+  fn: Fn.AnyAny | undefined // The function being tested (undefined if not in .on() mode)
   matrix: {} // Matrix configuration type (empty object when no matrix)
+}
+
+export interface BuilderTypeStateEmpty extends BuilderTypeState {
+  input: never
+  output: never
+  context: {}
+  matrix: {}
+  fn: undefined
 }
 
 // ============================================================================
@@ -30,9 +37,9 @@ export interface BuilderTypeState {
  * Helper to update state with partial updates.
  * Preserves existing state values when updates are not provided.
  */
-type UpdateState<State extends BuilderTypeState, Updates extends Partial<BuilderTypeState>> = {
-  i: 'i' extends keyof Updates ? Updates['i'] : State['i']
-  o: 'o' extends keyof Updates ? Updates['o'] : State['o']
+export type UpdateState<State extends BuilderTypeState, Updates extends Partial<BuilderTypeState>> = {
+  input: 'input' extends keyof Updates ? Updates['input'] : State['input']
+  output: 'output' extends keyof Updates ? Updates['output'] : State['output']
   context: 'context' extends keyof Updates ? Updates['context'] : State['context']
   fn: 'fn' extends keyof Updates ? Updates['fn'] : State['fn']
   matrix: 'matrix' extends keyof Updates ? Updates['matrix'] : State['matrix']
@@ -41,33 +48,40 @@ type UpdateState<State extends BuilderTypeState, Updates extends Partial<Builder
 /**
  * Extract function parameters from state.
  */
-type FnParams<State extends BuilderTypeState> = State['fn'] extends (...args: infer P) => any ? P : never
+type FnParams<State extends BuilderTypeState> = State['fn'] extends Fn.AnyAny ? Parameters<State['fn']>
+  : never
 
 /**
  * Extract function return type from state.
  */
-type FnReturn<State extends BuilderTypeState> = State['fn'] extends (...args: any[]) => infer R ? R : never
+type FnReturn<State extends BuilderTypeState> = State['fn'] extends Fn.AnyAny ? ReturnType<State['fn']>
+  : never
 
 /**
  * Get effective input type - uses override if set, otherwise function params.
  * Uses [T] extends [never] trick to properly detect never type.
  */
-type EffectiveInput<State extends BuilderTypeState> = [State['i']] extends [never] ? FnParams<State> : State['i']
+type EffectiveInput<State extends BuilderTypeState> = [State['input']] extends [never] ? FnParams<State>
+  : State['input']
 
 /**
  * Get effective output type - uses override if set, otherwise function return.
  */
-type EffectiveOutput<State extends BuilderTypeState> = [State['o']] extends [never] ? FnReturn<State> : State['o']
+type EffectiveOutput<State extends BuilderTypeState> = [State['output']] extends [never] ? FnReturn<State>
+  : State['output']
 
 /**
  * Extract both parameters and return type from state.
  */
-type FnSignature<State extends BuilderTypeState> = State['fn'] extends (...args: infer P) => infer R ? [P, R] : never
+type FnSignature<State extends BuilderTypeState> = State['fn'] extends Fn.AnyAny
+  ? [Parameters<State['fn']>, ReturnType<State['fn']>]
+  : never
 
 /**
- * Extract i, o, and context from state as a tuple.
+ * Extract input, output, and context from state as a tuple.
  */
-type StateIOContext<T extends BuilderTypeState> = T extends { i: infer I; o: infer O; context: infer Ctx } ? [I, O, Ctx]
+type StateIOContext<T extends BuilderTypeState> = T extends { input: infer I; output: infer O; context: infer Ctx }
+  ? [I, O, Ctx]
   : never
 
 /**
@@ -79,10 +93,11 @@ type WithMatrix<Params, Matrix> = Obj.IsEmpty<Matrix & object> extends true ? Pa
 /**
  * Test function signature for generic mode (non-.on() mode).
  * Receives destructured params with input, output, test name, setup context, and vitest TestContext.
+ * Can return a value for auto-snapshot or void/undefined to skip snapshot.
  */
 type GenericTestFn<T extends BuilderTypeState> = StateIOContext<T> extends [infer I, infer O, infer Ctx] ? (
     params: WithMatrix<{ input: I; output: O; n: string } & Ctx & TestContext, T['matrix']>,
-  ) => void | Promise<void>
+  ) => unknown | Promise<unknown>
   : never
 
 /**
@@ -96,10 +111,11 @@ type GenericEffectTestFn<T extends BuilderTypeState, R> = StateIOContext<T> exte
 /**
  * Test function signature for function mode (.on() mode).
  * Receives destructured params with input, result, expected output, test name, setup context, and vitest TestContext.
+ * Can return a value for auto-snapshot or void/undefined to skip snapshot.
  */
 type FunctionTestFn<State extends BuilderTypeState> = FnSignature<State> extends [infer P, infer R] ? (
     params: { input: P; output: R | undefined; result: R; n: string } & State['context'] & TestContext,
-  ) => void | Promise<void>
+  ) => unknown | Promise<unknown>
   : never
 
 /**
@@ -282,6 +298,18 @@ export type CaseSingleParams<P, R> = P extends any[] ?
     | [CaseObject<P, R>] // Object form
   : never
 
+/**
+ * Parameters for the .case() method in generic mode.
+ * Extends GenericCaseTuple with optional string name prefix.
+ */
+export type GenericCaseSingleParams<I, O, Context> =
+  | GenericCaseTuple<I, O, Context>
+  | (GenericCaseTuple<I, O, Context> extends infer T ? T extends [infer A] ? [string, A]
+    : T extends [infer A, infer B] ? [string, A, B]
+    : T extends [infer A, infer B, infer C] ? [string, A, B, C]
+    : never
+    : never)
+
 // ============================================================================
 // Main Builder Interface
 // ============================================================================
@@ -386,13 +414,13 @@ export interface TestBuilder<State extends BuilderTypeState> {
    *   })
    * ```
    */
-  inputType<I>(): TestBuilder<UpdateState<State, { i: I }>>
+  inputType<I>(): TestBuilder<UpdateState<State, { input: I }>>
 
   /**
    * Set the output/expected type for generic mode testing.
    * Only available before `.on()` is called.
    */
-  outputType<O>(): State['fn'] extends never ? TestBuilder<UpdateState<State, { o: O }>>
+  outputType<O>(): State['fn'] extends undefined ? TestBuilder<UpdateState<State, { output: O }>>
     : never
 
   /**
@@ -439,9 +467,9 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * @param provider - Function that receives context and returns default expected output
    */
   outputDefault<R>(
-    provider: State['o'] extends undefined ? (context: State['context']) => R
-      : (context: State['context']) => State['o'],
-  ): State['o'] extends undefined ? TestBuilder<UpdateState<State, { o: R }>>
+    provider: State['output'] extends undefined ? (context: State['context']) => R
+      : (context: State['context']) => State['output'],
+  ): State['output'] extends undefined ? TestBuilder<UpdateState<State, { output: R }>>
     : TestBuilder<State>
 
   /**
@@ -455,7 +483,7 @@ export interface TestBuilder<State extends BuilderTypeState> {
   snapshotSerializer(
     serializer: (
       output: any,
-      context: { i: State['i']; n: string; o: State['o'] } & State['context'],
+      context: { i: State['input']; n: string; o: State['output'] } & State['context'],
     ) => string,
   ): TestBuilder<State>
 
@@ -471,7 +499,7 @@ export interface TestBuilder<State extends BuilderTypeState> {
    */
   on<Fn extends Fn.AnyAny>(
     fn: Fn,
-  ): TestBuilder<UpdateState<State, { i: never; o: never; fn: Fn }>>
+  ): TestBuilder<UpdateState<State, { input: never; output: never; fn: Fn }>>
 
   /**
    * Transform expected output values before comparison.
@@ -483,14 +511,14 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * @param mapper - Function that transforms the test case output
    */
   onOutput<MappedInput>(
-    mapper: State['fn'] extends never ? never
+    mapper: State['fn'] extends undefined ? never
       : State['fn'] extends Fn.AnyAny ? (
           output: MappedInput,
           context: { i: EffectiveInput<State>; n: string; o: MappedInput } & State['context'],
         ) => EffectiveOutput<State>
       : never,
-  ): State['fn'] extends never ? never
-    : State['fn'] extends Fn.AnyAny ? TestBuilder<UpdateState<State, { o: MappedInput }>>
+  ): State['fn'] extends undefined ? never
+    : State['fn'] extends Fn.AnyAny ? TestBuilder<UpdateState<State, { output: MappedInput }>>
     : never
 
   // ============================================================================
@@ -506,7 +534,7 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * @param cases - Array of test cases (static or function-based)
    */
   cases<const Cases extends readonly any[] = readonly []>(
-    ...cases: State['fn'] extends never ? Array<GenericCase<State['i'], State['o'], State['context']>>
+    ...cases: State['fn'] extends undefined ? Array<GenericCase<State['input'], State['output'], State['context']>>
       : State['fn'] extends Fn.AnyAny ? Array<
           | FunctionCase<
             EffectiveInput<State>,
@@ -519,7 +547,7 @@ export interface TestBuilder<State extends BuilderTypeState> {
             State['context']
           >)
         >
-      : Array<GenericCase<State['i'], State['o'], State['context']>>
+      : Array<GenericCase<State['input'], State['output'], State['context']>>
   ): TestBuilder<State>
 
   /**
@@ -528,7 +556,7 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * @param args - Arguments and expected output (spreads naturally)
    */
   case(
-    ...args: State['fn'] extends never ? never
+    ...args: State['fn'] extends undefined ? GenericCaseSingleParams<State['input'], State['output'], State['context']>
       : State['fn'] extends Fn.AnyAny ? CaseSingleParams<EffectiveInput<State>, EffectiveOutput<State>>
       : never
   ): TestBuilder<State>
@@ -548,7 +576,7 @@ export interface TestBuilder<State extends BuilderTypeState> {
    *
    * @param caseObj - Test case object with input, output, and optional context
    */
-  case$(caseObj: GenericCase<State['i'], State['o'], State['context']>): TestBuilder<State>
+  case$(caseObj: GenericCase<State['input'], State['output'], State['context']>): TestBuilder<State>
 
   /**
    * Create a nested describe block with direct cases array.
@@ -558,13 +586,13 @@ export interface TestBuilder<State extends BuilderTypeState> {
    */
   describe(
     name: string,
-    cases: readonly (State['fn'] extends never ? GenericCase<State['i'], State['o'], State['context']>
+    cases: readonly (State['fn'] extends undefined ? GenericCase<State['input'], State['output'], State['context']>
       : State['fn'] extends Fn.AnyAny ? FunctionCase<
           EffectiveInput<State>,
           EffectiveOutput<State>,
           State['context']
         >
-      : GenericCase<State['i'], State['o'], State['context']>)[],
+      : GenericCase<State['input'], State['output'], State['context']>)[],
   ): TestBuilder<State>
 
   /**
@@ -602,22 +630,22 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * // Results in shared 'Transform' describe block with 'String' and 'Number' nested inside
    * ```
    */
-  describe<ChildContext extends object = {}, ChildI = State['i'], ChildO = State['o']>(
+  describe<ChildContext extends object = {}, ChildI = State['input'], ChildO = State['output']>(
     name: string,
     callback: (
       builder: TestBuilder<State>,
     ) => TestBuilder<{
       context: ChildContext
-      i: ChildI
-      o: ChildO
+      input: ChildI
+      output: ChildO
       fn: State['fn']
       matrix: State['matrix']
     }>,
   ): TestBuilder<
     UpdateState<State, {
       context: Omit<State['context'], keyof ChildContext> & ChildContext
-      i: State['i'] | ChildI
-      o: State['o'] | ChildO
+      input: State['input'] | ChildI
+      output: State['output'] | ChildO
     }>
   >
 
@@ -649,11 +677,11 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * @param factory - Function that creates a layer based on test case data
    */
   layerEach<R>(
-    factory: State['fn'] extends never
-      ? (testCase: { i: State['i']; o: State['o'] } & State['context']) => Layer.Layer<R>
+    factory: State['fn'] extends undefined
+      ? (testCase: { i: State['input']; o: State['output'] } & State['context']) => Layer.Layer<R>
       : State['fn'] extends Fn.AnyAny
         ? (testCase: { i: EffectiveInput<State>; o?: EffectiveOutput<State> }) => Layer.Layer<R>
-      : (testCase: { i: State['i']; o: State['o'] } & State['context']) => Layer.Layer<R>,
+      : (testCase: { i: State['input']; o: State['output'] } & State['context']) => Layer.Layer<R>,
   ): TestBuilderWithLayers<State, R>
 
   // ============================================================================
@@ -670,14 +698,35 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * Execute all test cases with a custom test function.
    * Provides full control over assertions and test behavior.
    *
+   * **Auto-Snapshot**: If the test function returns a value (not undefined),
+   * that value is automatically captured in a snapshot for regression testing.
+   * Return `undefined` (or nothing) to skip snapshot creation.
+   *
    * @param fn - Custom test function with access to results and context
+   *
+   * @example
+   * ```ts
+   * // Return a value for auto-snapshot
+   * Test.on(transform).cases([[input], expected])
+   *   .test(({ result }) => {
+   *     return result // Snapshots the result
+   *   })
+   *
+   * // Return nothing to skip snapshot
+   * Test.on(add).cases([[1, 2], 3])
+   *   .test(({ result, output }) => {
+   *     expect(result).toBe(output) // No return = no snapshot
+   *   })
+   * ```
    */
   test(
-    fn: State['fn'] extends never ? GenericTestFn<State>
+    fn: State['fn'] extends undefined ? GenericTestFn<State>
       : State['fn'] extends Fn.AnyAny ? FunctionTestFn<State>
       : GenericTestFn<State>,
   ): void
 }
+
+export type TestBuilderEmpty = TestBuilder<BuilderTypeStateEmpty>
 
 // ============================================================================
 // Effect Builder Interface
@@ -699,7 +748,7 @@ export interface TestBuilderWithLayers<State extends BuilderTypeState, R> extend
    * @param fn - Effect-returning test function with access to input, output, and context
    */
   testEffect(
-    fn: State['fn'] extends never ? GenericEffectTestFn<State, R>
+    fn: State['fn'] extends undefined ? GenericEffectTestFn<State, R>
       : State['fn'] extends Fn.AnyAny ? FunctionEffectTestFn<State, R>
       : GenericEffectTestFn<State, R>,
   ): void
