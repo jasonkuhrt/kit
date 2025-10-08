@@ -26,8 +26,6 @@ export type TypeofTypes = keyof typeof TypeofTypesEnum
 
 /**
  * A function that narrows the type of a value.
- *
- * @typeParam $Type - The type to narrow to.
  */
 export type TypeGuard<$Type> = (value: unknown) => value is $Type
 
@@ -60,8 +58,6 @@ export const typeGuard = <type>(typeGuard: TypeGuardImplementationInput): TypeGu
 
 /**
  * A type guard that excludes a specific type.
- *
- * @typeParam $Type - The type to exclude.
  */
 export type NegatedTypeGuard<$Type> = (value: unknown) => value is Exclude<typeof value, $Type>
 
@@ -85,8 +81,6 @@ export const negatedTypeGuard = <type>(typeGuard: TypeGuardImplementation): Nega
 
 /**
  * Alias for Promise type.
- *
- * @typeParam $Value - The resolved value type.
  */
 export type Async<$Value> = Promise<$Value>
 
@@ -141,8 +135,6 @@ export const isPrimitive = (value: unknown): value is Primitive => {
 /**
  * Extract the narrowed type from a type guard function.
  *
- * @typeParam T - The type guard function type.
- *
  * @example
  * ```ts
  * type Guard = (x: unknown) => x is string
@@ -155,9 +147,6 @@ export type ExtractPredicateType<T> = T extends (x: any) => x is infer U ? U : n
 
 /**
  * Classify how the SECOND type parameter relates to the FIRST type parameter.
- *
- * @typeParam A - The reference type (first parameter)
- * @typeParam B - The type being compared to A (second parameter)
  *
  * Returns one of:
  * - 'covariant' - B is a subtype of A (B extends A, B is narrower than A)

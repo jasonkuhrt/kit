@@ -5,9 +5,6 @@ import type { Predicate } from './predicate.js'
 /**
  * A function that visits a node in the tree during traversal.
  *
- * @typeParam $Value - The type of value stored in tree nodes
- * @typeParam $Result - The return type of the visitor function (defaults to void)
- *
  * @param node - The current node being visited
  * @param depth - The depth of the current node (root is 0)
  * @param path - Array of ancestor values leading to this node (excluding current)

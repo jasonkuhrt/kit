@@ -3,8 +3,6 @@
  * Trees are hierarchical structures where each tree has exactly one root.
  * An empty tree is represented as `{ root: null }`.
  *
- * @typeParam $Value - The type of value stored in each node
- *
  * @example
  * ```ts
  * // Create a tree
@@ -30,8 +28,6 @@ export interface Tree<$Value> {
  * Type alias for a collection of trees.
  * Use this when you need to work with multiple disconnected trees.
  *
- * @typeParam $Value - The type of value stored in each node
- *
  * @example
  * ```ts
  * const forest: Forest<string> = [
@@ -45,8 +41,6 @@ export type Forest<$Value> = Tree<$Value>[]
 
 /**
  * A node in a tree structure containing a value and an array of child nodes.
- *
- * @typeParam $Value - The type of value stored in the node
  *
  * @property value - The data stored in this node
  * @property children - Array of child nodes (empty array for leaf nodes)

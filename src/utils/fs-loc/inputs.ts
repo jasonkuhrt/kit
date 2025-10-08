@@ -91,9 +91,6 @@ export type InputOrError<$FsLoc extends FsLoc.FsLoc = FsLoc.FsLoc> = Input<$FsLo
  * ensuring they match the expected path format (absolute/relative, file/directory).
  * If validation fails, it returns a StaticError with helpful hints.
  *
- * @typeParam $Input - The input to validate (string or FsLoc type)
- * @typeParam $TargetFsLoc - The target FsLoc type to validate against
- *
  * @example
  * ```ts
  * // Success: string literal matches target type

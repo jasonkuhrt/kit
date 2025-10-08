@@ -2,8 +2,6 @@
  * A predicate function for testing tree node values.
  * Used throughout the tree module for filtering, finding, and testing nodes.
  *
- * @typeParam $Value - The type of value being tested
- *
  * @param value - The current node's value to test
  * @param depth - The depth of the current node in the tree (root is 0)
  * @param path - Array of ancestor values from root to current node (excluding current)

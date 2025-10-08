@@ -1,8 +1,6 @@
 /**
  * A mask that can either hide/show data entirely (BinaryMask) or
  * selectively hide/show object properties (PropertiesMask).
- *
- * @typeParam $Data - The data type being masked
  */
 export type Mask<$Data = any> = BinaryMask<$Data> | PropertiesMask<$Data extends object ? $Data : object>
 
@@ -67,8 +65,6 @@ export const create = <$Data = unknown>(
 
 /**
  * Valid options for creating a mask for the given data type.
- *
- * @typeParam $Data - The data type to be masked
  */
 export type InferOptions<$Data> = unknown extends $Data ? boolean | string[] | Record<string, boolean>
   : $Data extends object ? (
@@ -84,8 +80,6 @@ export type InferOptions<$Data> = unknown extends $Data ? boolean | string[] | R
 
 /**
  * A mask that selectively shows or hides object properties.
- *
- * @typeParam $Data - The object type being masked
  */
 export interface PropertiesMask<$Data extends object = object> {
   type: 'properties'
@@ -113,8 +107,6 @@ export const createProperties = <$Data extends object = object>(
 
 /**
  * A mask that either shows or hides data entirely.
- *
- * @typeParam _$Data - The data type being masked (used for type inference)
  */
 export type BinaryMask<_$Data = any> = {
   type: 'binary'
@@ -194,7 +186,6 @@ export const omit = <$Data extends object = object>(
 /**
  * Extract the data type from a mask.
  *
- * @typeParam $Mask - The mask type
  * @returns The data type the mask is designed for
  */
 // dprint-ignore

@@ -15,8 +15,6 @@ export type AnyAny = Promise<any>
 /**
  * Type representing a value that may or may not be wrapped in a Promise.
  *
- * @typeParam $Type - The type that may be wrapped in a Promise.
- *
  * @example
  * ```ts
  * // function that accepts sync or async values
@@ -64,9 +62,6 @@ export const isShape = (value: unknown): value is AnyAny => {
  * Type that adds an additional type to a potentially promised union.
  * If the input is a Promise, the additional type is added to the promised value.
  * If the input is not a Promise, creates a union with the additional type.
- *
- * @typeParam $MaybePromise - A value that may or may not be a Promise.
- * @typeParam $Additional - The type to add to the union.
  *
  * @example
  * ```ts

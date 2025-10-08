@@ -631,9 +631,6 @@ export const sup = <$Supertype>() =>
  * Assert that a function's parameters match the expected type.
  * Combines `Parameters<typeof fn>` with assertion in one step.
  *
- * @typeParam $Expected - The expected parameter tuple type
- * @typeParam $Function - The function whose parameters to check (use `typeof fn`)
- *
  * @example
  * ```ts
  * function add(a: number, b: number): number { return a + b }

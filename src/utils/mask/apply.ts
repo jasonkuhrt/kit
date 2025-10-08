@@ -6,9 +6,6 @@ import type { GetDataType, Mask } from './mask.js'
 /**
  * Type-level function that applies a mask to data.
  *
- * @typeParam Data - The data type
- * @typeParam M - The mask type
- *
  * Binary masks:
  * - show=true returns the data unchanged
  * - show=false returns undefined

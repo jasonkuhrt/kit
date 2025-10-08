@@ -1,5 +1,7 @@
+import type { Arr } from '#arr'
 import type { Fn } from '#fn'
 import type { Obj } from '#obj'
+import type { Rec } from '#rec'
 import { Ts } from '#ts'
 import type { Effect, Layer } from 'effect'
 import type { TestContext } from 'vitest'
@@ -420,7 +422,7 @@ export interface TestBuilder<State extends BuilderTypeState> {
    *   })
    * ```
    */
-  matrix<$values extends Record<string, readonly any[]>>(
+  matrix<$values extends Rec.AnyReadonlyKeyTo<Arr.Any>>(
     values: $values,
   ): TestBuilder<
     UpdateState<

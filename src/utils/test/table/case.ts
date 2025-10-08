@@ -1,7 +1,6 @@
 /**
  * A test case that can be either executable, skipped, or marked as todo.
  *
- * @typeParam $Input - Additional properties required for the test case.
  *                     When no additional properties are needed, defaults to empty object.
  *
  * @example With input properties
@@ -84,10 +83,6 @@ export type SuiteCase<$I, $O, $Custom = {}> =
 
 /**
  * A test case that can be either executable or marked as todo.
- *
- * @typeParam $I - Input type for the test case
- * @typeParam $O - Output/expected type for the test case
- * @typeParam $Custom - Additional custom properties (optional)
  *
  * @example Basic usage with i/o
  * ```typescript

@@ -1,8 +1,16 @@
 import type { Lang } from '#lang'
 import { Obj } from '#obj'
 
-export type Any = {
-  [key: PropertyKey]: unknown
+export type Any = AnyKeyTo<unknown>
+
+export type AnyReadonly = AnyReadonlyKeyTo<unknown>
+
+export type AnyKeyTo<$Value> = {
+  [key: PropertyKey]: $Value
+}
+
+export type AnyReadonlyKeyTo<$Value> = {
+  readonly [key: PropertyKey]: $Value
 }
 
 export type Value = {

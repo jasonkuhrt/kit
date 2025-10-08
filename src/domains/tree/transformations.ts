@@ -5,9 +5,6 @@ import type { Predicate } from './predicate.js'
 /**
  * A function that transforms a value from one type to another during tree mapping.
  *
- * @typeParam $FromValue - The input value type
- * @typeParam $ToValue - The output value type
- *
  * @param value - The current value to transform
  * @param depth - The depth of the current node (root is 0)
  * @param path - Array of ancestor values leading to this node (excluding current)
@@ -447,8 +444,6 @@ export const reduce = <$Value, $Result>(
 
 /**
  * A function that defines how to merge two values when combining trees.
- *
- * @typeParam $Value - The type of values being merged
  *
  * @param a - The value from the first tree
  * @param b - The value from the second tree

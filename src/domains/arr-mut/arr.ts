@@ -61,9 +61,6 @@ export type Any5OrMoreRO = readonly [any, any, any, any, any, ...readonly any[]]
 /**
  * Type-level filter utility that removes specific types from a tuple.
  *
- * @typeParam $Tuple - The tuple to filter
- * @typeParam $Exclude - The type to exclude from the tuple
- *
  * @example
  * ```ts
  * type T1 = Filter<[1, 'a', 2, 'b', 3], string> // [1, 2, 3]
