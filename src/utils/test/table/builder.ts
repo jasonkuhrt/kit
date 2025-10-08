@@ -1148,50 +1148,66 @@ function createBuilder(state: BuilderState = defaultState): any {
  * Test.describe('addition')
  *   .on(add)
  *   .cases(
- *     [[2, 3], 5],                          // Test case: add(2, 3) should return 5
+ *     [[2, 3], 5],                          // add(2, 3) should return 5
  *     ['negative', [-1, -2], -3],           // Named test case
- *     [[0, 0], 0]                           // Edge case: zeros
+ *     [[0, 0], 0]                           // Edge case
  *   )
- *   .test()  // Execute tests with default assertions
+ *   .test()  // Uses default assertion (Effect's Equal.equals)
  *
  * // Generic mode - custom validation logic
  * Test.describe('email validation')
- *   .i<string>()                           // Input type
- *   .o<boolean>()                          // Output type
+ *   .inputType<string>()
+ *   .outputType<boolean>()
  *   .cases(
- *     { n: 'valid email', i: 'user@example.com', o: true },
- *     { n: 'no @', i: 'invalid.com', o: false },
- *     { n: 'empty', i: '', o: false }
+ *     ['user@example.com', true],
+ *     ['invalid.com', false],
+ *     ['', false]
  *   )
- *   .test((input, expected) => {
+ *   .test(({ input, output }) => {
  *     const result = isValidEmail(input)
- *     expect(result).toBe(expected)
+ *     expect(result).toBe(output)
  *   })
  *
  * // Nested describe blocks with ' > ' separator
- * Test.describe('Transform > String')  // Creates: describe('Transform', () => describe('String', ...))
- *   .on(transform)
- *   .cases([['hello'], 'HELLO'])
- *   .test()
+ * Test.describe('Transform > String')  // Creates nested: Transform -> String
+ *   .inputType<string>()
+ *   .outputType<string>()
+ *   .cases(['hello', 'HELLO'])
+ *   .test(({ input, output }) => {
+ *     expect(input.toUpperCase()).toBe(output)
+ *   })
  *
- * Test.describe('Transform > Number')  // Shares the 'Transform' describe block
- *   .on(transform)
- *   .cases([[42], 42])
- *   .test()
+ * Test.describe('Transform > Number')  // Shares 'Transform' parent describe
+ *   .inputType<number>()
+ *   .outputType<number>()
+ *   .cases([42, 42])
+ *   .test(({ input, output }) => {
+ *     expect(input).toBe(output)
+ *   })
  *
  * // Matrix testing - runs each case for all parameter combinations
- * Test.describe('config combinations')
- *   .i<string>()
- *   .o<string>()
+ * Test.describe('string transform')
+ *   .inputType<string>()
+ *   .outputType<string>()
  *   .matrix({
- *     mode: ['strict', 'loose'],
- *     cache: [true, false],
+ *     uppercase: [true, false],
+ *     prefix: ['', 'pre_'],
  *   })
- *   .cases(['input', 'expected'])
+ *   .cases(
+ *     ['hello', 'hello'],
+ *     ['world', 'world']
+ *   )
  *   .test(({ input, output, matrix }) => {
- *     // Runs 4 times: strict+cache, strict+no-cache, loose+cache, loose+no-cache
- *     const result = process(input, matrix.mode, matrix.cache)
- *     expect(result).toBe(output)
+ *     // Runs 4 times (2 cases × 2 uppercase × 2 prefix = 8 tests)
+ *     let result = input
+ *     if (matrix.prefix) result = matrix.prefix + result
+ *     if (matrix.uppercase) result = result.toUpperCase()
+ *
+ *     let expected = output
+ *     if (matrix.prefix) expected = matrix.prefix + expected
+ *     if (matrix.uppercase) expected = expected.toUpperCase()
+ *
+ *     expect(result).toBe(expected)
  *   })
  * ```
  *
@@ -1233,13 +1249,9 @@ export function describe(
  * - `[[arg1, arg2]]` - Snapshot test (no expected value)
  *
  * **Object Format** (more verbose but clearer):
- * - `{ n: 'name', i: [arg1, arg2], o: expected }`
- * - `{ n: 'name', i: [arg1, arg2], o: expected, skip: true }`
- * - `{ n: 'name', todo: 'Not implemented yet' }`
- *
- * **Direct Arguments** (with `.case()` method):
- * - `.case(arg1, arg2, expected)` - Spreads arguments naturally
- * - `.case('name', arg1, arg2, expected)` - Named with spread
+ * - `{ input: [arg1, arg2], output: expected }`
+ * - `{ input: [arg1, arg2], output: expected, skip: true, comment: 'name' }`
+ * - `{ todo: 'Not implemented yet', comment: 'name' }`
  *
  * @example
  * ```ts
@@ -1254,30 +1266,30 @@ export function describe(
  *
  * // Using different case formats
  * Test.on(multiply)
- *   .case(2, 3, 6)                   // Direct arguments
- *   .case('zero', 5, 0, 0)          // Named direct arguments
  *   .cases(
- *     { n: 'negative', i: [-2, 3], o: -6 },  // Object format
- *     { n: 'large', i: [100, 100], o: 10000 }
+ *     [[2, 3], 6],                              // Tuple format
+ *     ['zero case', [5, 0], 0],                 // Named tuple
+ *     { input: [-2, 3], output: -6 },           // Object format
+ *     { input: [100, 100], output: 10000, comment: 'large numbers' }
  *   )
  *   .test()
  *
  * // Custom assertions
  * Test.on(divide)
  *   .cases([[10, 2], 5], [[10, 0], Infinity])
- *   .test((result, expected) => {
- *     if (expected === Infinity) {
+ *   .test(({ result, output }) => {
+ *     if (output === Infinity) {
  *       expect(result).toBe(Infinity)
  *     } else {
- *       expect(result).toBeCloseTo(expected, 2)
+ *       expect(result).toBeCloseTo(output, 2)
  *     }
  *   })
  *
  * // Output transformation - build full expectations from partials
  * Test.on(createUser)
- *   .onOutput((partial, context) => ({ ...defaultUser, name: context.i[0], ...partial }))  // Transform expected output
+ *   .o((partial, context) => ({ ...defaultUser, name: context.input[0], ...partial }))
  *   .cases(
- *     [['Alice'], { role: 'admin' }],    // Only specify what differs from defaults
+ *     [['Alice'], { role: 'admin' }],           // Only specify differences
  *     [['Bob'], { role: 'user', age: 30 }]
  *   )
  *   .test()

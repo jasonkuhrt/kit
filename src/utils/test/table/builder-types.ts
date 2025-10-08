@@ -305,7 +305,10 @@ export type CaseSingleParams<P, R> = P extends any[] ?
  * Test.describe('validation')
  *   .inputType<string>()
  *   .outputType<boolean>()
- *   .cases([['test@example.com', true]])
+ *   .cases(
+ *     ['test@example.com', true],
+ *     ['invalid', false]
+ *   )
  *   .test(({ input, output }) => {
  *     expect(validate(input)).toBe(output)
  *   })
@@ -368,15 +371,17 @@ export interface TestBuilder<State extends BuilderTypeState> {
    *
    * @example
    * ```ts
-   * // Generic mode
-   * Test.describe('process')
-   *   .inputType<[string, number]>()
-   *   .cases({ input: ['hello', 42], output: 'hello42' })
-   *
-   * // Function mode (override complex signatures)
-   * Test.on(FsLoc.join)
-   *   .inputType<[FsLoc.FsLoc, FsLoc.FsLoc]>()
-   *   .cases([[l('/home/'), l('file.txt')]])
+   * // Generic mode - when not using .on()
+   * Test.describe('concatenate')
+   *   .inputType<string>()
+   *   .outputType<string>()
+   *   .cases(
+   *     ['hello', 'hello'],
+   *     ['world', 'world']
+   *   )
+   *   .test(({ input, output }) => {
+   *     expect(input).toBe(output)
+   *   })
    * ```
    */
   inputType<I>(): TestBuilder<UpdateState<State, { i: I }>>
@@ -578,14 +583,20 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * @example
    * ```ts
    * Test.describe('Transform > String', (t) => t
-   *   .i<string>()
+   *   .inputType<string>()
+   *   .outputType<string>()
    *   .cases(['hello', 'HELLO'])
-   * ).test()
+   * ).test(({ input, output }) => {
+   *   expect(input.toUpperCase()).toBe(output)
+   * })
    *
    * Test.describe('Transform > Number', (t) => t
-   *   .i<number>()
+   *   .inputType<number>()
+   *   .outputType<number>()
    *   .cases([42, 42])
-   * ).test()
+   * ).test(({ input, output }) => {
+   *   expect(input).toBe(output)
+   * })
    * // Results in shared 'Transform' describe block with 'String' and 'Number' nested inside
    * ```
    */
@@ -620,13 +631,6 @@ export interface TestBuilder<State extends BuilderTypeState> {
   onSetup<Ctx extends object>(
     factory: () => Ctx,
   ): TestBuilder<UpdateState<State, { context: State['context'] & Ctx }>>
-
-  /**
-   * Provide default expected output for runner cases.
-   *
-   * @param provider - Function that receives context and returns default expected output
-   */
-  o(provider: (context: State['context']) => any): TestBuilder<State>
 
   // ============================================================================
   // Effect Layer Methods
