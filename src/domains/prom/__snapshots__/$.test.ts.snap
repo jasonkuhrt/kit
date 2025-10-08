@@ -6,7 +6,7 @@ exports[`createDeferred > state tracking > after reject 1`] = `
 d.reject(new Error("test"));
 d.promise.catch(() => {
 });
-╠══════════════════════════════════════════════════╣ OUTPUTS RETURN
+╠══════════════════════════════════════════════════╣ OUTPUTS RETURN OBJECT
 {
   "promise": {},
   "isResolved": false,
@@ -20,7 +20,7 @@ exports[`createDeferred > state tracking > after resolve 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ RUNNER
 d.resolve(1);
-╠══════════════════════════════════════════════════╣ OUTPUTS RETURN
+╠══════════════════════════════════════════════════╣ OUTPUTS RETURN OBJECT
 {
   "promise": {},
   "isResolved": true,
@@ -34,7 +34,7 @@ exports[`createDeferred > state tracking > initial 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ RUNNER
 
-╠══════════════════════════════════════════════════╣ OUTPUTS RETURN
+╠══════════════════════════════════════════════════╣ OUTPUTS RETURN OBJECT
 {
   "promise": {},
   "isResolved": false,
@@ -51,7 +51,7 @@ d.reject(new Error("test"));
 d.promise.catch(() => {
 });
 d.resolve(1);
-╠══════════════════════════════════════════════════╣ OUTPUTS THROW
+╠══════════════════════════════════════════════════╣ OUTPUTS THROW ERROR
 Error: Deferred promise already settled
 ╚══════════════════════════════════════════════════╝"
 `;
@@ -63,7 +63,7 @@ d.reject(new Error("test"));
 d.promise.catch(() => {
 });
 d.resolve(1);
-╠══════════════════════════════════════════════════╣ OUTPUTS THROW
+╠══════════════════════════════════════════════════╣ OUTPUTS THROW ERROR
 Error: Deferred promise already settled
 ╚══════════════════════════════════════════════════╝"
 `;
@@ -73,7 +73,7 @@ exports[`createDeferred > strict > resolve resolve calls throw 1`] = `
 ╔══════════════════════════════════════════════════╗ RUNNER
 d.resolve(1);
 d.resolve(1);
-╠══════════════════════════════════════════════════╣ OUTPUTS THROW
+╠══════════════════════════════════════════════════╣ OUTPUTS THROW ERROR
 Error: Deferred promise already settled
 ╚══════════════════════════════════════════════════╝"
 `;

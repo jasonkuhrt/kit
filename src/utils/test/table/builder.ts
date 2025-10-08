@@ -1,3 +1,4 @@
+import { Err } from '#err'
 import { Fn as FnUtils } from '#fn'
 import type { Fn } from '#fn'
 import { Str } from '#str'
@@ -37,6 +38,7 @@ interface BuilderState {
   config: BuilderConfig
   outputMapper: Option.Option<Fn.AnyAny>
   defaultOutputProvider: Option.Option<Fn.AnyAny>
+  snapshotSerializer: Option.Option<(value: any, context: any) => string>
   pendingDescribe: Option.Option<string>
   accumulatedGroups: TestGroup[] // Effect's Array module works with regular arrays
   currentCases: any[] // Effect's Array module works with regular arrays
@@ -56,6 +58,7 @@ const defaultState: BuilderState = {
   config: {},
   outputMapper: Option.none<Fn.AnyAny>(),
   defaultOutputProvider: Option.none<Fn.AnyAny>(),
+  snapshotSerializer: Option.none(),
   pendingDescribe: Option.none(),
   accumulatedGroups: [],
   currentCases: [],
@@ -87,33 +90,85 @@ const assertEffectEqual = (actual: any, expected: any) => {
 }
 
 /**
+ * Default snapshot serializer with smart handling for different value types.
+ * - Strings: Display raw (no JSON quotes/escaping) for readability
+ * - Functions: Use .toString()
+ * - undefined: Display as 'undefined' string
+ * - Symbols: Use .toString()
+ * - BigInt: Display as '123n' format
+ * - RegExp: Use .toString() (e.g., '/foo/gi')
+ * - Errors: Use Err.inspect() for detailed formatting
+ * - Objects/Arrays: Use JSON.stringify with indentation
+ * @param value - The value to serialize
+ * @param _context - Test context (unused by default serializer, available for custom serializers)
+ * @returns Formatted string representation
+ */
+const defaultSnapshotSerializer = (value: any, _context: any): string => {
+  if (typeof value === 'string') return value
+  if (typeof value === 'function') return value.toString()
+  if (typeof value === 'undefined') return 'undefined'
+  if (typeof value === 'symbol') return value.toString()
+  if (typeof value === 'bigint') return value.toString() + 'n'
+  if (value instanceof RegExp) return value.toString()
+  if (value instanceof Error) return Err.inspect(value)
+  return JSON.stringify(value, null, 2)
+}
+
+/**
+ * Get a human-readable type label for a value.
+ */
+const getTypeLabel = (value: any): string => {
+  if (value === null) return `NULL`
+  if (value === undefined) return `UNDEFINED`
+
+  const type = typeof value
+  if (type === `string`) return `STRING`
+  if (type === `number`) return `NUMBER`
+  if (type === `boolean`) return `BOOLEAN`
+  if (type === `bigint`) return `BIGINT`
+  if (type === `symbol`) return `SYMBOL`
+  if (type === `function`) return `FUNCTION`
+
+  // Check for built-in types
+  if (Array.isArray(value)) return `ARRAY`
+  if (value instanceof RegExp) return `REGEXP`
+  if (value instanceof Date) return `DATE`
+  if (value instanceof Map) return `MAP`
+  if (value instanceof Set) return `SET`
+  if (value instanceof Promise) return `PROMISE`
+  if (value instanceof Error) return value.constructor.name.toUpperCase()
+
+  return `OBJECT`
+}
+
+/**
  * Format a snapshot with clear GIVEN/THEN sections showing arguments and return value or error.
  * Two modes:
  * - Function mode (has inputs): GIVEN ARGUMENTS → THEN RETURNS/THROWS
  * - Runner mode (no inputs): RUNNER → OUTPUTS RETURN/THROW
  */
-const formatSnapshotWithInput = (input: any[], result: any, error?: Error, runner?: Function): string => {
+const formatSnapshotWithInput = (
+  input: any[],
+  result: any,
+  error?: Error,
+  runner?: Function,
+  serializer: (value: any, context: any) => string = defaultSnapshotSerializer,
+  context: any = {},
+): string => {
   // Fixed width for all boxes
   const width = 50
 
   const isError = error !== undefined
   const outputStr = isError
     ? `${error.name}: ${error.message}`
-    : (() => {
-      const stringified = JSON.stringify(result, null, 2)
-      return stringified === undefined ? 'undefined' : stringified
-    })()
+    : serializer(result, context)
 
   const hasInput = input.length > 0
 
   if (hasInput) {
     // Function mode: GIVEN → THEN
     // Format all inputs
-    const formattedInputs = input.map((i) => {
-      if (typeof i === 'function') return i.toString()
-      const stringified = JSON.stringify(i, null, 2)
-      return stringified === undefined ? 'undefined' : stringified
-    })
+    const formattedInputs = input.map((i) => serializer(i, context))
 
     // Format input string
     let inputStr: string
@@ -127,7 +182,7 @@ const formatSnapshotWithInput = (input: any[], result: any, error?: Error, runne
 
     // Box drawing with titles at the end
     const givenLabel = ' GIVEN ARGUMENTS'
-    const thenLabel = isError ? ' THEN THROWS' : ' THEN RETURNS'
+    const thenLabel = isError ? ` THEN THROWS ${getTypeLabel(error)}` : ` THEN RETURNS ${getTypeLabel(result)}`
 
     return [
       '', // Leading newline to force opening quote on own line
@@ -146,7 +201,7 @@ const formatSnapshotWithInput = (input: any[], result: any, error?: Error, runne
       const bodyWithIndent = bodyLines.join('\n')
       const runnerBody = Str.stripIndent(bodyWithIndent)
 
-      const outputLabel = isError ? ' OUTPUTS THROW' : ' OUTPUTS RETURN'
+      const outputLabel = isError ? ` OUTPUTS THROW ${getTypeLabel(error)}` : ` OUTPUTS RETURN ${getTypeLabel(result)}`
 
       return [
         '', // Leading newline to force opening quote on own line
@@ -158,7 +213,7 @@ const formatSnapshotWithInput = (input: any[], result: any, error?: Error, runne
       ].join('\n')
     } else {
       // Fallback: no runner function available
-      const outputLabel = isError ? ' OUTPUTS THROW' : ' OUTPUTS RETURN'
+      const outputLabel = isError ? ` OUTPUTS THROW ${getTypeLabel(error)}` : ` OUTPUTS RETURN ${getTypeLabel(result)}`
 
       return [
         '', // Leading newline to force opening quote on own line
@@ -437,11 +492,15 @@ function createBuilder(state: BuilderState = defaultState): any {
               }
 
               // Format and snapshot the result/error
+              const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
+              const snapshotContext = { i: input, n: name, o: resolvedOutput, ...setupContext, ...testContext }
               const formattedSnapshot = formatSnapshotWithInput(
                 Array.isArray(input) ? input : [input],
                 resolvedOutput,
                 runnerError,
                 runner,
+                serializer,
+                snapshotContext,
               )
               expect(formattedSnapshot).toMatchSnapshot()
               return
@@ -508,7 +567,16 @@ function createBuilder(state: BuilderState = defaultState): any {
               } catch (e) {
                 error = e as Error
               }
-              const formattedSnapshot = formatSnapshotWithInput(input, result, error)
+              const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
+              const snapshotContext = { i: input, n: name, o: output, ...testContext }
+              const formattedSnapshot = formatSnapshotWithInput(
+                input,
+                result,
+                error,
+                undefined,
+                serializer,
+                snapshotContext,
+              )
               expect(formattedSnapshot).toMatchSnapshot()
             } else {
               // Non-snapshot mode - let errors propagate
@@ -544,9 +612,14 @@ function createBuilder(state: BuilderState = defaultState): any {
             const result = await customTest(input, output, context)
             // Auto-snapshot if result is returned
             if (result !== undefined) {
+              const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
               const formattedSnapshot = formatSnapshotWithInput(
                 Array.isArray(input) ? input : [input],
                 result,
+                undefined,
+                undefined,
+                serializer,
+                context,
               )
               expect(formattedSnapshot).toMatchSnapshot()
             }
@@ -597,6 +670,13 @@ function createBuilder(state: BuilderState = defaultState): any {
       return createBuilder({
         ...state,
         defaultOutputProvider: Option.some(provider),
+      })
+    },
+
+    snapshotSerializer(serializer: (value: any, context: any) => string) {
+      return createBuilder({
+        ...state,
+        snapshotSerializer: Option.some(serializer),
       })
     },
 

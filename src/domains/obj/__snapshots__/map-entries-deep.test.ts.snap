@@ -16,7 +16,7 @@ exports[`arrays > mapEntriesDeep({"numbers":[1,2,3],"strings":["a","b"]}, () => 
 }
 ────────────────────────────────────────────────────
 () => void 0
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "numbers": [
     1,
@@ -48,7 +48,7 @@ exports[`arrays > mapEntriesDeep({"users":[{"$id":1,"$name":"alice"},{"$id":2,"$
 }
 ────────────────────────────────────────────────────
 (key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "users": [
     {
@@ -79,7 +79,7 @@ exports[`combined transformations > mapEntriesDeep({"$name":"alice","age":25,"$e
   };
   return void 0;
 }
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "name": "ALICE",
   "age": 25,
@@ -94,7 +94,7 @@ exports[`empty objects > mapEntriesDeep({}, (key, value) => ({ key: key.toUpperC
 {}
 ────────────────────────────────────────────────────
 (key, value) => ({ key: key.toUpperCase(), value })
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {}
 ╚══════════════════════════════════════════════════╝"
 `;
@@ -113,7 +113,7 @@ exports[`key transformations > mapEntriesDeep({"$a":{"$b":{"$c":{"$d":"deep"}}}}
 }
 ────────────────────────────────────────────────────
 (key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "a": {
     "b": {
@@ -138,7 +138,7 @@ exports[`key transformations > mapEntriesDeep({"$foo":"a","bar":"b","$baz":{"nes
 }
 ────────────────────────────────────────────────────
 (key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "foo": "a",
   "bar": "b",
@@ -160,7 +160,7 @@ exports[`key transformations > mapEntriesDeep({"$foo":"bar","$baz":{"$nested":"v
 }
 ────────────────────────────────────────────────────
 (key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "foo": "bar",
   "baz": {
@@ -188,7 +188,7 @@ exports[`mixed structures > mapEntriesDeep({"str":"hello","arr":[1,"two",{"neste
 }
 ────────────────────────────────────────────────────
 (key, value) => typeof value === "string" ? { key, value: value.toUpperCase() } : void 0
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "str": "HELLO",
   "arr": [
@@ -208,11 +208,11 @@ exports[`mixed structures > mapEntriesDeep({"str":"hello","arr":[1,"two",{"neste
 exports[`primitives > mapEntriesDeep("hello", () => void 0) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"hello"
+hello
 ────────────────────────────────────────────────────
 () => void 0
-╠══════════════════════════════════════════════════╣ THEN RETURNS
-"hello"
+╠══════════════════════════════════════════════════╣ THEN RETURNS STRING
+hello
 ╚══════════════════════════════════════════════════╝"
 `;
 
@@ -222,7 +222,7 @@ exports[`primitives > mapEntriesDeep(42, () => void 0) 1`] = `
 42
 ────────────────────────────────────────────────────
 () => void 0
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS NUMBER
 42
 ╚══════════════════════════════════════════════════╝"
 `;
@@ -233,7 +233,7 @@ exports[`primitives > mapEntriesDeep(null, () => void 0) 1`] = `
 null
 ────────────────────────────────────────────────────
 () => void 0
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS NULL
 null
 ╚══════════════════════════════════════════════════╝"
 `;
@@ -244,7 +244,7 @@ exports[`primitives > mapEntriesDeep(true, () => void 0) 1`] = `
 true
 ────────────────────────────────────────────────────
 () => void 0
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS BOOLEAN
 true
 ╚══════════════════════════════════════════════════╝"
 `;
@@ -258,7 +258,7 @@ exports[`selective transformations > mapEntriesDeep({"keep":"me","transform":"th
 }
 ────────────────────────────────────────────────────
 (key, value) => key === "transform" ? { key, value: "TRANSFORMED" } : void 0
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "keep": "me",
   "transform": "TRANSFORMED"
@@ -277,7 +277,7 @@ exports[`value transformations > mapEntriesDeep({"name":"alice","address":{"city
 }
 ────────────────────────────────────────────────────
 (key, value) => typeof value === "string" ? { key, value: value.toUpperCase() } : void 0
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "name": "ALICE",
   "address": {
@@ -298,7 +298,7 @@ exports[`value transformations > mapEntriesDeep({"str":"hi","num":42,"bool":true
 }
 ────────────────────────────────────────────────────
 (key, value) => typeof value === "string" ? { key, value: value.toUpperCase() } : void 0
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "str": "HI",
   "num": 42,

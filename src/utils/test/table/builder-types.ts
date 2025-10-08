@@ -1241,6 +1241,47 @@ export interface TableBuilderBase<State extends BuilderTypeState>
     : TableBuilderBase<State>
 
   /**
+   * Set a custom snapshot serializer for formatting snapshot output.
+   *
+   * By default, snapshots use a smart serializer that:
+   * - Displays strings without JSON encoding (no quotes/escaping)
+   * - Uses .toString() for functions, RegExp, symbols, bigint
+   * - Uses Err.inspect() for Error objects
+   * - Uses JSON.stringify() for objects/arrays
+   *
+   * Custom serializers receive the value to serialize and the test context,
+   * allowing context-aware formatting.
+   *
+   * @param serializer - Function that takes (output, context) and returns formatted string
+   * @returns Builder with custom serializer configured
+   *
+   * @example
+   * ```ts
+   * // Format GraphQL queries without escaping newlines
+   * Test.on(buildQuery)
+   *   .snapshotSerializer((output, ctx) =>
+   *     typeof output === 'string' ? output : JSON.stringify(output, null, 2)
+   *   )
+   *   .cases([[{ query: { getUser: { id: true } } }]])
+   *   .test()
+   *
+   * // Context-aware formatting
+   * Test.describe()
+   *   .snapshotSerializer((output, ctx) =>
+   *     ctx.n.includes('compact')
+   *       ? JSON.stringify(output)
+   *       : JSON.stringify(output, null, 2)
+   *   )
+   * ```
+   */
+  snapshotSerializer(
+    serializer: (
+      output: any,
+      context: { i: State['i']; n: string; o: State['o'] } & State['context'],
+    ) => string,
+  ): TableBuilderBase<State>
+
+  /**
    * Set the context type for test cases.
    *
    * Context properties are additional fields that can be included in test cases

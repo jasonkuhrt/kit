@@ -3,18 +3,18 @@
 exports[`Test.table() builder > functional tests > casesAsArg helper > upperCase("hello") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"hello"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
-"HELLO"
+hello
+╠══════════════════════════════════════════════════╣ THEN RETURNS STRING
+HELLO
 ╚══════════════════════════════════════════════════╝"
 `;
 
 exports[`Test.table() builder > functional tests > casesAsArg helper > upperCase("world") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"world"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
-"WORLD"
+world
+╠══════════════════════════════════════════════════╣ THEN RETURNS STRING
+WORLD
 ╚══════════════════════════════════════════════════╝"
 `;
 
@@ -24,7 +24,7 @@ exports[`Test.table() builder > functional tests > multi-argument snapshots > ad
 1
 ────────────────────────────────────────────────────
 2
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS NUMBER
 3
 ╚══════════════════════════════════════════════════╝"
 `;
@@ -35,7 +35,7 @@ exports[`Test.table() builder > functional tests > multi-argument snapshots > ad
 10
 ────────────────────────────────────────────────────
 20
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS NUMBER
 30
 ╚══════════════════════════════════════════════════╝"
 `;

@@ -3,8 +3,8 @@
 exports[`AbsDir > .decodeSync > fn("/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"/"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+/
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [],
@@ -18,8 +18,8 @@ exports[`AbsDir > .decodeSync > fn("/") 1`] = `
 exports[`AbsDir > .decodeSync > fn("/a/b/c/d/e/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"/a/b/c/d/e/"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+/a/b/c/d/e/
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -39,8 +39,8 @@ exports[`AbsDir > .decodeSync > fn("/a/b/c/d/e/") 1`] = `
 exports[`AbsDir > .decodeSync > fn("/home") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"/home"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+/home
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -56,8 +56,8 @@ exports[`AbsDir > .decodeSync > fn("/home") 1`] = `
 exports[`AbsDir > .decodeSync > fn("/home/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"/home/"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+/home/
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -73,8 +73,8 @@ exports[`AbsDir > .decodeSync > fn("/home/") 1`] = `
 exports[`AbsDir > .decodeSync > fn("/my documents/projects/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"/my documents/projects/"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+/my documents/projects/
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -91,8 +91,8 @@ exports[`AbsDir > .decodeSync > fn("/my documents/projects/") 1`] = `
 exports[`AbsDir > .decodeSync > fn("/usr/local/bin/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"/usr/local/bin/"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+/usr/local/bin/
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -110,8 +110,8 @@ exports[`AbsDir > .decodeSync > fn("/usr/local/bin/") 1`] = `
 exports[`AbsFile > .decodeSync > fn("/.config.json") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"/.config.json"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+/.config.json
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [],
@@ -130,8 +130,8 @@ exports[`AbsFile > .decodeSync > fn("/.config.json") 1`] = `
 exports[`AbsFile > .decodeSync > fn("/a/b/c/d/e.js") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"/a/b/c/d/e.js"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+/a/b/c/d/e.js
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -155,8 +155,8 @@ exports[`AbsFile > .decodeSync > fn("/a/b/c/d/e.js") 1`] = `
 exports[`AbsFile > .decodeSync > fn("/archive.tar.gz") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"/archive.tar.gz"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+/archive.tar.gz
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [],
@@ -175,8 +175,8 @@ exports[`AbsFile > .decodeSync > fn("/archive.tar.gz") 1`] = `
 exports[`AbsFile > .decodeSync > fn("/file.txt") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"/file.txt"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+/file.txt
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [],
@@ -195,8 +195,8 @@ exports[`AbsFile > .decodeSync > fn("/file.txt") 1`] = `
 exports[`AbsFile > .decodeSync > fn("/home/user/doc.pdf") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"/home/user/doc.pdf"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+/home/user/doc.pdf
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -218,8 +218,8 @@ exports[`AbsFile > .decodeSync > fn("/home/user/doc.pdf") 1`] = `
 exports[`AbsFile > .decodeSync > fn("/my docs/file name.txt") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"/my docs/file name.txt"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+/my docs/file name.txt
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -240,8 +240,8 @@ exports[`AbsFile > .decodeSync > fn("/my docs/file name.txt") 1`] = `
 exports[`RelDir > .decodeSync > fn("../") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"../"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+../
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -257,8 +257,8 @@ exports[`RelDir > .decodeSync > fn("../") 1`] = `
 exports[`RelDir > .decodeSync > fn("../../lib/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"../../lib/"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+../../lib/
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -276,8 +276,8 @@ exports[`RelDir > .decodeSync > fn("../../lib/") 1`] = `
 exports[`RelDir > .decodeSync > fn("../src/lib/utils/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"../src/lib/utils/"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+../src/lib/utils/
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -296,8 +296,8 @@ exports[`RelDir > .decodeSync > fn("../src/lib/utils/") 1`] = `
 exports[`RelDir > .decodeSync > fn("./") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"./"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+./
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [],
@@ -311,8 +311,8 @@ exports[`RelDir > .decodeSync > fn("./") 1`] = `
 exports[`RelDir > .decodeSync > fn("./src/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"./src/"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+./src/
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -328,8 +328,8 @@ exports[`RelDir > .decodeSync > fn("./src/") 1`] = `
 exports[`RelDir > .decodeSync > fn("src") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"src"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+src
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -345,8 +345,8 @@ exports[`RelDir > .decodeSync > fn("src") 1`] = `
 exports[`RelDir > .decodeSync > fn("src/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"src/"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+src/
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -362,8 +362,8 @@ exports[`RelDir > .decodeSync > fn("src/") 1`] = `
 exports[`RelDir > .decodeSync > fn("src/components/") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"src/components/"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+src/components/
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -380,8 +380,8 @@ exports[`RelDir > .decodeSync > fn("src/components/") 1`] = `
 exports[`RelFile > .decodeSync > fn("../../lib/util.js") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"../../lib/util.js"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+../../lib/util.js
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -404,8 +404,8 @@ exports[`RelFile > .decodeSync > fn("../../lib/util.js") 1`] = `
 exports[`RelFile > .decodeSync > fn("../file.txt") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"../file.txt"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+../file.txt
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -426,8 +426,8 @@ exports[`RelFile > .decodeSync > fn("../file.txt") 1`] = `
 exports[`RelFile > .decodeSync > fn("./file.txt") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"./file.txt"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+./file.txt
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [],
@@ -446,8 +446,8 @@ exports[`RelFile > .decodeSync > fn("./file.txt") 1`] = `
 exports[`RelFile > .decodeSync > fn("./src/components/App.tsx") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"./src/components/App.tsx"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+./src/components/App.tsx
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [
@@ -469,8 +469,8 @@ exports[`RelFile > .decodeSync > fn("./src/components/App.tsx") 1`] = `
 exports[`RelFile > .decodeSync > fn("file.txt") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"file.txt"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+file.txt
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [],
@@ -489,8 +489,8 @@ exports[`RelFile > .decodeSync > fn("file.txt") 1`] = `
 exports[`RelFile > .decodeSync > fn("src/index.ts") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"src/index.ts"
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+src/index.ts
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "path": {
     "segments": [

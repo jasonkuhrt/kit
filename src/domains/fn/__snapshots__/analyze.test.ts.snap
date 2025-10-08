@@ -6,7 +6,7 @@ exports[`async functions > analyzeFunction(async (a) => { return a + 1; }) 1`] =
 async (a) => {
     return a + 1;
   }
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "body": "\\n    return a + 1;\\n  ",
   "parameters": [
@@ -23,7 +23,7 @@ exports[`async functions > analyzeFunction(async (a) => a + 1) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 async (a) => a + 1
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "body": "a + 1",
   "parameters": [
@@ -42,7 +42,7 @@ exports[`async functions > analyzeFunction(async function f2(a) { return a + 1; 
 async function f2(a) {
     return a + 1;
   }
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "body": "\\n    return a + 1;\\n  ",
   "parameters": [
@@ -63,7 +63,7 @@ exports[`body extraction > analyzeFunction((a) => { const b = a + 1; const c = b
     const c = b * 2;
     return c;
   }
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "body": "\\n    const b = a + 1;\\n    const c = b * 2;\\n    return c;\\n  ",
   "parameters": [
@@ -82,7 +82,7 @@ exports[`body extraction > analyzeFunction((a) => { return a + 1; }) 1`] = `
 (a) => {
     return a + 1;
   }
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "body": "\\n    return a + 1;\\n  ",
   "parameters": [
@@ -99,7 +99,7 @@ exports[`body extraction > analyzeFunction((a) => a + 1) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 (a) => a + 1
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "body": "a + 1",
   "parameters": [
@@ -118,7 +118,7 @@ exports[`body extraction > analyzeFunction(function f(a) { return a + 1; }) 1`] 
 function f(a) {
     return a + 1;
   }
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "body": "\\n    return a + 1;\\n  ",
   "parameters": [
@@ -134,8 +134,8 @@ function f(a) {
 exports[`error cases > analyzeFunction("not a function") 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-"not a function"
-╠══════════════════════════════════════════════════╣ THEN THROWS
+not a function
+╠══════════════════════════════════════════════════╣ THEN THROWS ERROR
 Error: Could not extract groups from function.
 ╚══════════════════════════════════════════════════╝"
 `;
@@ -144,7 +144,7 @@ exports[`parameters - destructured > analyzeFunction(({ a, b }) => [a, b]) 1`] =
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 ({ a, b }) => [a, b]
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "body": "[a, b]",
   "parameters": [
@@ -164,7 +164,7 @@ exports[`parameters - destructured > analyzeFunction((a, { b, c }) => [a, b, c])
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 (a, { b, c }) => [a, b, c]
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "body": "[a, b, c]",
   "parameters": [
@@ -188,7 +188,7 @@ exports[`parameters - named > analyzeFunction(() => 42) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 () => 42
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "body": "42",
   "parameters": []
@@ -200,7 +200,7 @@ exports[`parameters - named > analyzeFunction((...args) => args) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 (...args) => args
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "body": "args",
   "parameters": [
@@ -217,7 +217,7 @@ exports[`parameters - named > analyzeFunction((_a, __b) => _a) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 (_a, __b) => _a
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "body": "_a",
   "parameters": [
@@ -238,7 +238,7 @@ exports[`parameters - named > analyzeFunction((a) => a) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 (a) => a
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "body": "a",
   "parameters": [
@@ -255,7 +255,7 @@ exports[`parameters - named > analyzeFunction((a, b, c) => [a, b, c]) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 (a, b, c) => [a, b, c]
-╠══════════════════════════════════════════════════╣ THEN RETURNS
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   "body": "[a, b, c]",
   "parameters": [
