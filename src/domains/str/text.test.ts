@@ -47,7 +47,7 @@ describe('stripIndent', () => {
         '    d.resolve(2);'
       ], 'd.resolve(1);\n  nested();\nd.resolve(2);'],
     )
-    .test((actual, expected) => {
-      expect(actual).toBe(expected)
+    .test(({ result, output }) => {
+      expect(result).toBe(output)
     })
 })

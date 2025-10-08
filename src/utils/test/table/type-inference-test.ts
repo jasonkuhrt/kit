@@ -10,10 +10,10 @@ import { Test } from '../$.js'
       ['case 1', ['input'], 42],
       ['case 2', ['other'], 100],
     )
-    .test((i, o, ctx) => {
+    .test(({ input, output }) => {
       // These should infer correctly without annotation
-      expectTypeOf(i).toEqualTypeOf<string>()
-      expectTypeOf(o).toEqualTypeOf<number>()
+      expectTypeOf(input).toEqualTypeOf<string>()
+      expectTypeOf(output).toEqualTypeOf<number>()
       // expectTypeOf(ctx).toEqualTypeOf<{}>()
     })
 }
@@ -27,9 +27,9 @@ import { Test } from '../$.js'
       { n: 'case 1', i: 'input', o: 42 },
       { n: 'case 2', i: 'other', o: 100 },
     )
-    .test((i, o, ctx) => {
-      expectTypeOf(i).toEqualTypeOf<string>()
-      expectTypeOf(o).toEqualTypeOf<number>()
+    .test(({ input, output }) => {
+      expectTypeOf(input).toEqualTypeOf<string>()
+      expectTypeOf(output).toEqualTypeOf<number>()
       // expectTypeOf(ctx).toEqualTypeOf<{ i: string; o: number; n: string }>()
     })
 }
@@ -44,10 +44,10 @@ import { Test } from '../$.js'
       { n: 'case 1', i: 'input', o: 42, extra: true },
       { n: 'case 2', i: 'other', o: 100, extra: false },
     )
-    .test((i, o, ctx) => {
-      expectTypeOf(i).toEqualTypeOf<string>()
-      expectTypeOf(o).toEqualTypeOf<number>()
-      expectTypeOf(ctx.extra).toEqualTypeOf<boolean>()
+    .test(({ input, output, extra }) => {
+      expectTypeOf(input).toEqualTypeOf<string>()
+      expectTypeOf(output).toEqualTypeOf<number>()
+      expectTypeOf(extra).toEqualTypeOf<boolean>()
     })
 }
 
@@ -62,9 +62,9 @@ import { Test } from '../$.js'
       ['named', ['test'], 4], // named with output
       ['snapshot', ['foo']], // named without output
     )
-    .test((result, expected) => {
+    .test(({ result, output }) => {
       expectTypeOf(result).toEqualTypeOf<number>()
-      expectTypeOf(expected).toEqualTypeOf<number | undefined>()
+      expectTypeOf(output).toEqualTypeOf<number | undefined>()
     })
 }
 
@@ -84,9 +84,9 @@ import { Test } from '../$.js'
       [['input3'], 42], // input + output
       ['complete', ['input4'], 100], // name + input + output
     )
-    .test((i, o, ctx) => {
-      expectTypeOf(i).toEqualTypeOf<string>()
-      expectTypeOf(o).toEqualTypeOf<number>() // NOT undefined - output is required!
+    .test(({ input, output }) => {
+      expectTypeOf(input).toEqualTypeOf<string>()
+      expectTypeOf(output).toEqualTypeOf<number>() // NOT undefined - output is required!
       // expectTypeOf(ctx).toEqualTypeOf<{}>()
     })
   Test.describe('tuple formats with required output')
@@ -106,10 +106,10 @@ import { Test } from '../$.js'
     .cases(
       ['', [''], 0, { a: 0 }],
     )
-    .test((i, o, ctx) => {
-      expectTypeOf(i).toEqualTypeOf<string>()
-      expectTypeOf(o).toEqualTypeOf<number>()
-      expectTypeOf(ctx.a).toEqualTypeOf<0>()
+    .test(({ input, output, a }) => {
+      expectTypeOf(input).toEqualTypeOf<string>()
+      expectTypeOf(output).toEqualTypeOf<number>()
+      expectTypeOf(a).toEqualTypeOf<0>()
     })
 
   Test.describe('context')

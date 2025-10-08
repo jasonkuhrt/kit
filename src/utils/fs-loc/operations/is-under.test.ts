@@ -27,9 +27,9 @@ describe('isUnder', () => {
       ['same location not under',                     [{ child: l('/home/'), parent: l('/home/') }],                                      false],
       ['parent deeper than child',                    [{ child: l('/home/'), parent: l('/home/user/') }],                                 false],
     )
-    .test(( i, o ) => {
-      const result = FsLoc.isUnder(i.child, i.parent)
-      expect(result).toBe(o)
+    .test(({ input, output }) => {
+      const result = FsLoc.isUnder(input.child, input.parent)
+      expect(result).toBe(output)
     })
 
   describe('curried form', () => {

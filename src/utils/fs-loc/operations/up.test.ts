@@ -18,9 +18,9 @@ describe('up', () => {
       ['root stays at root',                           [FsLoc.Constants.absDirRoot],         '/'],
       ['file in root stays in root',                   [l('/file.txt')],                '/file.txt'],
     )
-    .test(( i, o ) => {
-      const result = FsLoc.up(i)
-      expect(result).toEncodeTo(o)
+    .test(({ input, output }) => {
+      const result = FsLoc.up(input)
+      expect(result).toEncodeTo(output)
     })
 
   describe('String literal support', () => {

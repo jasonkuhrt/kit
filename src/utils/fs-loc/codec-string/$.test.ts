@@ -32,27 +32,27 @@ describe('Analyzer', () => {
         ['absolute file path',            ['/path/file.txt'],   { _tag: 'file', pathType: 'absolute', file: { stem: 'file', extension: '.txt' } }],
         ['relative file path',            ['./path/file.txt'],  { _tag: 'file', pathType: 'relative', file: { stem: 'file', extension: '.txt' } }],
       )
-      .test(( i, o ) => {
-      const result = Analyzer.analyze(i)
+      .test(({ input, output }) => {
+      const result = Analyzer.analyze(input)
 
-      expect(result._tag).toBe(o._tag)
+      expect(result._tag).toBe(output._tag)
 
-      if (o.pathType) {
-        expect(result.pathType).toBe(o.pathType)
-        if (o.pathType === 'absolute') {
+      if (output.pathType) {
+        expect(result.pathType).toBe(output.pathType)
+        if (output.pathType === 'absolute') {
           expect(result.isPathAbsolute).toBe(true)
         } else {
           expect(result.isPathRelative).toBe(true)
         }
       }
 
-      if (o.path !== undefined) {
-        expect(result.path).toEqual(o.path)
+      if (output.path !== undefined) {
+        expect(result.path).toEqual(output.path)
       }
 
-      if (o.file && result._tag === 'file') {
-        expect(result.file.stem).toBe(o.file.stem)
-        expect(result.file.extension).toBe(o.file.extension)
+      if (output.file && result._tag === 'file') {
+        expect(result.file.stem).toBe(output.file.stem)
+        expect(result.file.extension).toBe(output.file.extension)
       }
       })
   })

@@ -88,14 +88,14 @@ Test.describe('.findFirstUnderDir')
       sink: () => undefined as any,
     })
   })
-  .testEffect((i, o) =>
+  .testEffect(({ input, output }) =>
     Effect.gen(function*() {
-      const result = yield* Fs.findFirstUnderDir(i.dir ?? absDirTest)(i.paths)
+      const result = yield* Fs.findFirstUnderDir(input.dir ?? absDirTest)(input.paths)
 
-      if (o) {
+      if (output) {
         expect(Option.isSome(result)).toBe(true)
         if (Option.isSome(result)) {
-          expect(result.value).toBeEquivalent(o, FsLoc.FsLoc)
+          expect(result.value).toBeEquivalent(output, FsLoc.FsLoc)
         }
       } else {
         expect(Option.isNone(result)).toBe(true)

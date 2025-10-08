@@ -21,11 +21,11 @@ describe('isRoot', () => {
       // Empty relative dir also has empty segments
       ['empty rel dir',                                [FsLoc.Constants.relDirCurrent],      true],
     )
-    .test(( i, o ) => {
-      if (o) {
-        expect(i).toBeRoot()
+    .test(({ input, output }) => {
+      if (output) {
+        expect(input).toBeRoot()
       } else {
-        expect(i).not.toBeRoot()
+        expect(input).not.toBeRoot()
       }
     })
 

@@ -115,38 +115,37 @@ type StateIOContext<T extends BuilderTypeState> = T extends { i: infer I; o: inf
 
 /**
  * Test function signature for generic mode (non-.on() mode).
- * Context includes i, n, o, setup, and all vitest TestContext properties.
+ * Receives destructured params with input, output, test name, setup context, and vitest TestContext.
  */
 type GenericTestFn<T extends BuilderTypeState> = StateIOContext<T> extends [infer I, infer O, infer Ctx] ? (
-    i: I,
-    o: O,
-    context: { i: I; n: string; o: O } & Ctx & TestContext,
+    params: { input: I; output: O; n: string } & Ctx & TestContext,
   ) => void | Promise<void>
   : never
 
 /**
  * Effect test function signature for generic mode.
+ * Receives destructured params with input, output, and user context.
  */
 type GenericEffectTestFn<T extends BuilderTypeState, R> = StateIOContext<T> extends [infer I, infer O, infer Ctx]
-  ? (i: I, o: O, ctx: Ctx) => Effect.Effect<void, any, R>
+  ? (params: { input: I; output: O; n: string } & Ctx) => Effect.Effect<void, any, R>
   : never
 
 /**
  * Test function signature for function mode (.on() mode).
- * Context includes i, n, o, setup, and all vitest TestContext properties.
+ * Receives destructured params with input, result, expected output, test name, setup context, and vitest TestContext.
  */
 type FunctionTestFn<State extends BuilderTypeState> = FnSignature<State> extends [infer P, infer R] ? (
-    result: R,
-    expected: R | undefined,
-    context: { i: P; n: string; o: R | undefined } & State['context'] & TestContext,
+    params: { input: P; output: R | undefined; result: R; n: string } & State['context'] & TestContext,
   ) => void | Promise<void>
   : never
 
 /**
  * Effect test function signature for function mode.
+ * Receives destructured params with input, result, expected output, test name, and user context.
  */
-type FunctionEffectTestFn<State extends BuilderTypeState, R> = FnSignature<State> extends [infer P, infer Ret]
-  ? (i: P, o: Ret | undefined, ctx: State['context']) => Effect.Effect<void, any, R>
+type FunctionEffectTestFn<State extends BuilderTypeState, R> = FnSignature<State> extends [infer P, infer Ret] ? (
+    params: { input: P; output: Ret | undefined; result: Ret; n: string } & State['context'],
+  ) => Effect.Effect<void, any, R>
   : never
 
 // ============================================================================
@@ -1099,11 +1098,11 @@ interface TerminalMethods<State extends BuilderTypeState> {
    * ```ts
    * Test.on(divide)
    *   .cases([[10, 2], 5], [[10, 0], Infinity])
-   *   .test((result, expected) => {
-   *     if (expected === Infinity) {
+   *   .test(({ result, output }) => {
+   *     if (output === Infinity) {
    *       expect(result).toBe(Infinity)
    *     } else {
-   *       expect(result).toBeCloseTo(expected, 2)
+   *       expect(result).toBeCloseTo(output, 2)
    *     }
    *   })
    * ```
@@ -1174,7 +1173,7 @@ interface EffectTerminalMethods<State extends BuilderTypeState, R> extends Termi
  *   .cases(
  *     { n: 'valid', i: 'test@example.com', o: true }
  *   )
- *   .test((input, output) => {
+ *   .test(({ input, output }) => {
  *     expect(validate(input)).toBe(output)
  *   })
  * ```
@@ -1632,8 +1631,8 @@ export interface TableBuilderWithMappedFunction<
    * Test.on(createUser)
    *   .onOutput((partial, context) => ({ ...defaultUser, name: context.i[0], ...partial }))
    *   .cases([['Alice'], { role: 'admin' }])
-   *   .test((result, mapped, context) => {
-   *     expect(mapped.name).toBe(context.i[0])
+   *   .test(({ result, output: mapped, input }) => {
+   *     expect(mapped.name).toBe(input[0])
    *     expect(mapped.role).toBe('admin')
    *   })
    * ```
@@ -1795,9 +1794,9 @@ export interface TableBuilderWithFunctionAndLayers<
  *     { n: 'valid email', i: 'user@example.com', o: true },
  *     { n: 'invalid', i: 'not-email', o: false }
  *   )
- *   .test((input, expected, ctx) => {
+ *   .test(({ input, output }) => {
  *     const result = validateEmail(input)
- *     expect(result).toBe(expected)
+ *     expect(result).toBe(output)
  *   })
  * ```
  */
@@ -1863,7 +1862,7 @@ export interface TableBuilderWithCases<T extends BuilderTypeState>
  *   .cases(
  *     { n: 'fetch user', i: 'user1', o: { name: 'Alice' } }
  *   )
- *   .test((input, expected, deps) => {
+ *   .test(({ input, output }) => {
  *     // Test implementation with dependencies
  *   })
  * ```

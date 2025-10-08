@@ -29,9 +29,9 @@ Test.describe('.name - get name of file or directory')
       ['empty rel dir returns empty',                  [FsLoc.Constants.relDirCurrent],      ''],
       ['directory with dots in name',                  [l('/my.folder.v2/')],                 'my.folder.v2'],
     )
-    .test(( i, o ) => {
-      const result = FsLoc.name(i)
-      expect(result).toBe(o)
+    .test(({ input, output }) => {
+      const result = FsLoc.name(input)
+      expect(result).toBe(output)
     })
 
 describe('String literal support', () => {

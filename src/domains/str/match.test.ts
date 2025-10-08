@@ -20,13 +20,13 @@ Test.on(match)
     [['HELLO', /hello/ ],   Option.none()],
     [['HELLO', /hello/i ],  Option.some(regExpMatchResult('HELLO')) as any],
   )
-  .test((actual, expected) => {
-    if (Option.isNone(expected!)) {
-      expect(Option.isNone(actual)).toBe(true)
+  .test(({ result, output }) => {
+    if (Option.isNone(output!)) {
+      expect(Option.isNone(result)).toBe(true)
     } else {
-      expect(Option.isSome(actual)).toBe(true)
-      expected!.value.forEach((group: string, idx: number) => {
-        expect(Option.getOrThrow(actual)[idx]).toBe(group)
+      expect(Option.isSome(result)).toBe(true)
+      output!.value.forEach((group: string, idx: number) => {
+        expect(Option.getOrThrow(result)[idx]).toBe(group)
       })
     }
   })

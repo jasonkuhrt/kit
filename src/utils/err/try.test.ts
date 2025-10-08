@@ -33,9 +33,9 @@ Test.describe('async tryCatch')
     ['returns thrown error', [fnAsync(e)], e],
     ['returns returned value', [fnAsync()], v],
   )
-  .test(async (i: () => Promise<any>, o: any) => {
-    const result = await Err.tryCatch(i)
-    expect(result).toBe(o)
+  .test(async ({ input, output }) => {
+    const result = await Err.tryCatch(input)
+    expect(result).toBe(output)
   })
 
 // Type-level test for async tryCatch
@@ -60,11 +60,11 @@ Test.describe('tryOrRethrow success cases')
       isAsync: true,
     },
   )
-  .test(async (i, o, ctx) => {
-    const result = ctx.isAsync
-      ? await tryOrRethrow(i.fn, i.wrapper)
-      : tryOrRethrow(i.fn, i.wrapper)
-    expect(result).toBe(o)
+  .test(async ({ input, output, isAsync }) => {
+    const result = isAsync
+      ? await tryOrRethrow(input.fn, input.wrapper)
+      : tryOrRethrow(input.fn, input.wrapper)
+    expect(result).toBe(output)
   })
 
 // Error wrapping cases
@@ -103,10 +103,9 @@ Test.describe('tryOrRethrow error wrapping')
       checkContext: { id: 123 },
     },
   )
-  .test((i, _o, ctx) => {
-    const { expectedMessage, expectedCauseMessage, checkContext } = ctx
+  .test(({ input, expectedMessage, expectedCauseMessage, checkContext }) => {
     try {
-      tryOrRethrow(i.fn, i.wrapper)
+      tryOrRethrow(input.fn, input.wrapper)
       throw new Error('Should have thrown')
     } catch (error: any) {
       expect(error.message).toBe(expectedMessage)
@@ -176,13 +175,12 @@ Test.describe('async tryOrRethrow errors')
       expectedMessage: 'Failed to fetch data',
     },
   )
-  .test(async (i, _o, ctx) => {
-    const { expectedMessage, expectedCauseMessage } = ctx
-    await expect(tryOrRethrow(i.fn, i.wrapper)).rejects.toThrow(expectedMessage)
+  .test(async ({ input, expectedMessage, expectedCauseMessage }) => {
+    await expect(tryOrRethrow(input.fn, input.wrapper)).rejects.toThrow(expectedMessage)
 
     if (expectedCauseMessage) {
       try {
-        await tryOrRethrow(i.fn, i.wrapper)
+        await tryOrRethrow(input.fn, input.wrapper)
       } catch (error: any) {
         expect(error.cause.message).toBe(expectedCauseMessage)
       }
@@ -208,9 +206,9 @@ Test.describe('sync tryOr variations')
       fallback: () => 'lazy fallback',
     }], 'lazy fallback'],
   )
-  .test((i, o) => {
-    const result = tryOr(i.fn, i.fallback)
-    expect(result).toBe(o)
+  .test(({ input, output }) => {
+    const result = tryOr(input.fn, input.fallback)
+    expect(result).toBe(output)
   })
 
 // Test async variations with Test.table
@@ -247,9 +245,9 @@ Test.describe('async tryOr variations')
       },
     }], 'async fallback'],
   )
-  .test(async (i, o) => {
-    const result = await tryOr(i.fn, i.fallback)
-    expect(result).toBe(o)
+  .test(async ({ input, output }) => {
+    const result = await tryOr(input.fn, input.fallback)
+    expect(result).toBe(output)
   })
 
 // tryOrAsync special cases (kept as individual tests since they test a different import)

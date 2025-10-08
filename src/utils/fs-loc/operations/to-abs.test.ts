@@ -24,10 +24,10 @@ describe('toAbs', () => {
       { n: 'parent ref file',                              i: l('../file.txt'),                    o: l('/home/file.txt'), base: l('/home/user/') },
       { n: 'parent ref dir',                               i: l('../lib/'),                        o: l('/home/lib/'), base: l('/home/user/') },
     )
-    .test((i, o, ctx) => {
-      const result = FsLoc.toAbs(i, ctx.base)
+    .test(({ input, output, base }) => {
+      const result = FsLoc.toAbs(input, base)
       expect(result).toBeAbs()
-      expect(result).toBeEquivalent(o, FsLoc.FsLoc)
+      expect(result).toBeEquivalent(output, FsLoc.FsLoc)
     })
 
   describe('String literal support', () => {

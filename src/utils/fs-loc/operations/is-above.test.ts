@@ -27,9 +27,9 @@ describe('isAbove', () => {
       ['same location not above',                     [{ parent: l('/home/'), child: l('/home/') }],                                      false],
       ['child deeper than parent',                    [{ parent: l('/home/user/'), child: l('/home/') }],                                 false],
     )
-    .test(( i, o ) => {
-      const result = FsLoc.isAbove(i.parent, i.child)
-      expect(result).toBe(o)
+    .test(({ input, output }) => {
+      const result = FsLoc.isAbove(input.parent, input.child)
+      expect(result).toBe(output)
     })
 
   describe('curried form', () => {

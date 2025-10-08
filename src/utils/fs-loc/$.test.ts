@@ -62,9 +62,9 @@ Test.describe('.FsLocLoose.decodeSync')
     // Files without extensions are treated as directories - changed to .js extension
     ['complex path',  ['/usr/local/bin/node.js'],   LocLoose({ path: P.Abs.make({ segments: ['usr', 'local', 'bin'] }), file: F.make({ stem: 'node', extension: '.js' }) })],
   )
-  .test((i: string, o: any) => {
-    const result = FsLoc.FsLocLoose.decodeSync(i)
-    expect(result).toBeEquivalent(o, FsLoc.FsLocLoose.FsLocLooseClass)
+  .test(({ input, output }) => {
+    const result = FsLoc.FsLocLoose.decodeSync(input)
+    expect(result).toBeEquivalent(output, FsLoc.FsLocLoose.FsLocLooseClass)
   })
 
 describe('.Constants', () => {
@@ -154,11 +154,11 @@ Test.describe('Groups *.assert')
     ['RelDir fails for /dir/',        ['/dir/'],      { assert: S.asserts(FsLoc.RelDir),   pass: false }],
     ['RelDir fails for file.txt',     ['file.txt'],   { assert: S.asserts(FsLoc.RelDir),   pass: false }],
   )
-  .test((i: string, o: any) => {
-    const loc = FsLoc.decodeSync(i)
-    if (o.pass) {
-      expect(() => o.assert(loc)).not.toThrow()
+  .test(({ input, output }) => {
+    const loc = FsLoc.decodeSync(input)
+    if (output.pass) {
+      expect(() => output.assert(loc)).not.toThrow()
     } else {
-      expect(() => o.assert(loc)).toThrow()
+      expect(() => output.assert(loc)).toThrow()
     }
   })

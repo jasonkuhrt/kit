@@ -25,9 +25,9 @@ describe('join', () => {
       ['parent refs with file',                        [{ base: l('../'),                            rel: l('lib/utils.js') }],                    './lib/utils.js'],
       ['parent refs in nested path',                   [{ base: l('src/'),                           rel: l('../test/file.ts') }],                 './test/file.ts'],
     )
-    .test(( i, o ) => {
-      const result = FsLoc.join(i.base, i.rel)
-      expect(result).toEncodeTo(o)
+    .test(({ input, output }) => {
+      const result = FsLoc.join(input.base, input.rel)
+      expect(result).toEncodeTo(output)
     })
 
   describe('String literal support', () => {

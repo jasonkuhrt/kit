@@ -23,9 +23,9 @@ describe('toRel', () => {
       { n: 'different roots',                              i: l('/var/log/app.log'),               o: l('./../../var/log/app.log'), base: l('/home/user/') },
       { n: 'same location dir',                            i: l('/home/user/'),                    o: l('./'), base: l('/home/user/') },
     )
-    .test((i, o, ctx) => {
-      const result = FsLoc.toRel(i, ctx.base)
-      expect(result).toBeEquivalent(o, FsLoc.FsLoc)
+    .test(({ input, output, base }) => {
+      const result = FsLoc.toRel(input, base)
+      expect(result).toBeEquivalent(output, FsLoc.FsLoc)
     })
 
   describe('String literal support', () => {

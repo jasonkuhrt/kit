@@ -34,9 +34,9 @@ Test.describe('.extension - get extension of file or null for directories')
       ['root directory',                               [FsLoc.Constants.absDirRoot],         null],
       ['current directory',                            [FsLoc.Constants.relDirCurrent],      null],
     )
-    .test(( i, o ) => {
-      const result = FsLoc.extension(i)
-      expect(result).toBe(o)
+    .test(({ input, output }) => {
+      const result = FsLoc.extension(input)
+      expect(result).toBe(output)
     })
 
 describe('String literal support', () => {

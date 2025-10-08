@@ -18,8 +18,8 @@ describe('policyFilter', () => {
       ['deny mode with empty keys',            [{ mode: 'deny',  keys: [] }],         { a: 1, b: 2, c: 3, d: 4 }],
       ['deny mode with non-existent key',      [{ mode: 'deny',  keys: ['z'] }],      { a: 1, b: 2, c: 3, d: 4 }],
     )
-    .test((i, o) => {
-      expect(Obj.policyFilter(i.mode, testObj, i.keys as any)).toEqual(o)
+    .test(({ input, output }) => {
+      expect(Obj.policyFilter(input.mode, testObj, input.keys as any)).toEqual(output)
     })
 
   test('preserves undefined values', () => {
@@ -43,9 +43,9 @@ describe('filter', () => {
       ['returns all when all true',       [{ testType: 'allTrue' }],   { a: 1, b: 2, c: 3, d: 4 }],
       ['handles empty object',            [{ testType: 'emptyObj' }],  {}],
     )
-    .test((i, o) => {
+    .test(({ input, output }) => {
       let result: any
-      switch (i.testType) {
+      switch (input.testType) {
         case 'byValue':
           result = Obj.filter(testObj, (k, v) => v > 2)
           break
@@ -68,7 +68,7 @@ describe('filter', () => {
           result = Obj.filter({}, () => true)
           break
       }
-      expect(result).toEqual(o)
+      expect(result).toEqual(output)
     })
 })
 

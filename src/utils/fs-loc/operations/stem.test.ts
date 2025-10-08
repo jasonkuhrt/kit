@@ -34,9 +34,9 @@ Test.describe('.stem - get stem (name without extension) of file or directory')
       ['single segment abs dir',                       [l('/home/')],                         'home'],
       ['empty rel dir returns empty',                  [FsLoc.Constants.relDirCurrent],      ''],
     )
-    .test(( i, o ) => {
-      const result = FsLoc.stem(i)
-      expect(result).toBe(o)
+    .test(({ input, output }) => {
+      const result = FsLoc.stem(input)
+      expect(result).toBe(output)
     })
 
 describe('String literal support', () => {

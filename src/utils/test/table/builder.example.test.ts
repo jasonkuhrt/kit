@@ -41,9 +41,9 @@ describe('Test.table() examples', () => {
       { n: 'valid email', i: 'user@example.com', o: true },
       { n: 'invalid email', i: 'not-an-email', o: false },
     )
-    .test((i, o) => {
-      const isValid = i.includes('@')
-      expect(isValid).toBe(o)
+    .test(({ input, output }) => {
+      const isValid = input.includes('@')
+      expect(isValid).toBe(output)
     })
 
   // Example 5: Snapshot testing (output omitted)

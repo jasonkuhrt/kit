@@ -34,8 +34,8 @@ describe('Test.table() builder', () => {
       .cases(
         [[42], 42],
       )
-      .test((actual, expected) => {
-        expect(actual).toBe(expected) // reference equality
+      .test(({ result, output }) => {
+        expect(result).toBe(output) // reference equality
       })
 
     // Test casesAsArg

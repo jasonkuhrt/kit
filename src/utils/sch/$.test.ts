@@ -22,7 +22,7 @@ Test.describe('.Union.makeMake')
     ['works with complex field types - Added',       [{ testType: 'complex', tag: 'ComplexAdded', data: { name: 'test', count: 42, nested: { value: 'nested-value' } } }], { expectedTag: 'ComplexAdded', expectedFields: { name: 'test', count: 42, nested: { value: 'nested-value' } } }],
     ['works with complex field types - Removed',     [{ testType: 'complex', tag: 'ComplexRemoved', data: { reason: 'test reason', timestamp: 123456 } }], { expectedTag: 'ComplexRemoved', expectedFields: { reason: 'test reason', timestamp: 123456 } }],
   )
-  .test((i, o) => {
+  .test(({ input, output }) => {
   // Define test schemas
   const Added = S.TaggedStruct('LifecycleEventAdded', {
     schema: S.Unknown,
@@ -39,19 +39,19 @@ Test.describe('.Union.makeMake')
   // Create the factory
   const make = Sch.Union.makeMake(LifecycleEvent)
 
-  if (i.testType === 'basic') {
-    const result = make(i.tag as any, i.data)
-    expect(result._tag).toBe(o?.expectedTag)
-    if (o?.expectedFields) {
-      Object.entries(o.expectedFields).forEach(([key, value]) => {
+  if (input.testType === 'basic') {
+    const result = make(input.tag as any, input.data)
+    expect(result._tag).toBe(output?.expectedTag)
+    if (output?.expectedFields) {
+      Object.entries(output.expectedFields).forEach(([key, value]) => {
         expect((result as any)[key]).toEqual(value)
       })
     }
-  } else if (i.testType === 'invalidTag') {
+  } else if (input.testType === 'invalidTag') {
     expect(() => {
-      make(i.tag as any, i.data)
+      make(input.tag as any, input.data)
     }).toThrow('Unknown tag: UnknownTag')
-  } else if (i.testType === 'complex') {
+  } else if (input.testType === 'complex') {
     const ComplexAdded = S.TaggedStruct('ComplexAdded', {
       name: S.String,
       count: S.Number,
@@ -68,10 +68,10 @@ Test.describe('.Union.makeMake')
     const ComplexUnion = S.Union(ComplexAdded, ComplexRemoved)
     const complexMake = Sch.Union.makeMake(ComplexUnion)
 
-    const result = complexMake(i.tag as any, i.data)
-    expect(result._tag).toBe(o?.expectedTag)
-    if (o?.expectedFields) {
-      Object.entries(o.expectedFields).forEach(([key, value]) => {
+    const result = complexMake(input.tag as any, input.data)
+    expect(result._tag).toBe(output?.expectedTag)
+    if (output?.expectedFields) {
+      Object.entries(output.expectedFields).forEach(([key, value]) => {
         expect((result as any)[key]).toEqual(value)
       })
     }
@@ -90,8 +90,8 @@ Test.describe('.Union.parse')
     ['CatalogVersioned -> null (only one member)',                                                [['CatalogVersioned']], null],
     ['empty array -> null',                                                                       [[]], null],
   )
-  .test((i, o) => {
-    expect(Sch.Union.parse(i)).toEqual(o)
+  .test(({ input, output }) => {
+    expect(Sch.Union.parse(input)).toEqual(output)
   })
 
 // dprint-ignore
@@ -105,8 +105,8 @@ Test.describe('.Union.isADTMember')
     ['CatalogVersioned in [CatalogVersioned] -> false (only one member)',                         [{ tag: 'CatalogVersioned', allTags: ['CatalogVersioned'] }], false],
     ['userProfile in [userProfile, userSettings] -> false (lowercase)',                           [{ tag: 'userProfile', allTags: ['userProfile', 'userSettings'] }], false],
   )
-  .test((i, o) => {
-    expect(Sch.Union.isADTMember(i.tag, i.allTags)).toBe(o)
+  .test(({ input, output }) => {
+    expect(Sch.Union.isADTMember(input.tag, input.allTags)).toBe(output)
   })
 
 // dprint-ignore
@@ -119,8 +119,8 @@ Test.describe('.Union.getADTInfo')
     ['User -> null (non-ADT)',                                                                    [{ tag: 'User', allTags: ['User', 'Post'] }], null],
     ['CatalogVersioned -> null (only one member)',                                                [{ tag: 'CatalogVersioned', allTags: ['CatalogVersioned'] }], null],
   )
-  .test((i, o) => {
-    expect(Sch.Union.getADTInfo(i.tag, i.allTags)).toEqual(o)
+  .test(({ input, output }) => {
+    expect(Sch.Union.getADTInfo(input.tag, input.allTags)).toEqual(output)
   })
 
 // dprint-ignore
@@ -132,6 +132,6 @@ Test.describe('.Union.formatADTTag')
     ['Schema + Unversioned -> SchemaUnversioned',                                                 [{ adtName: 'Schema', memberName: 'Unversioned' }], 'SchemaUnversioned'],
     ['Revision + Initial -> RevisionInitial',                                                     [{ adtName: 'Revision', memberName: 'Initial' }], 'RevisionInitial'],
   )
-  .test((i, o) => {
-    expect(Sch.Union.formatADTTag(i.adtName, i.memberName)).toBe(o)
+  .test(({ input, output }) => {
+    expect(Sch.Union.formatADTTag(input.adtName, input.memberName)).toBe(output)
   })

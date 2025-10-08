@@ -12,8 +12,8 @@ describe('onSetup', () => {
       ({ multiplier }) => [[5], { value: 5 * multiplier }],
       ({ multiplier }) => [[10], { value: 10 * multiplier }],
     )
-    .test((input, expected) => {
-      expect({ value: input * 2 }).toEqual(expected)
+    .test(({ input, output }) => {
+      expect({ value: input * 2 }).toEqual(output)
     })
 
   // dprint-ignore
@@ -37,7 +37,7 @@ describe('onSetup', () => {
     .cases(
       ({ a, b }) => [[a + b], a + b],
     )
-    .test((input, expected) => {
-      expect(input).toBe(expected)
+    .test(({ input, output }) => {
+      expect(input).toBe(output)
     })
 })

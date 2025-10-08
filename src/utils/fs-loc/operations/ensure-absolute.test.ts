@@ -16,11 +16,11 @@ describe('ensureAbsolute', () => {
       ['rel file without base uses cwd',               [l('file.txt')],                       undefined],
       ['rel dir without base uses cwd',                [l('src/')],                           undefined],
     )
-    .test((i, o) => {
-      const result = FsLoc.ensureAbsolute(i)
+    .test(({ input, output }) => {
+      const result = FsLoc.ensureAbsolute(input)
       expect(result).toBeAbs()
-      if (o) {
-        expect(result).toEncodeTo(o)
+      if (output) {
+        expect(result).toEncodeTo(output)
       }
     })
 
@@ -33,12 +33,11 @@ describe('ensureAbsolute', () => {
       { n: 'rel file with base',                           i: l('file.txt'),                       base: l('/home/'),                         o: '/home/file.txt' },
       { n: 'rel dir with base',                            i: l('src/'),                           base: l('/project/'),                      o: '/project/src/' },
     )
-    .test((i, o, ctx) => {
-      const base = ctx.base
-      const result = FsLoc.ensureAbsolute(i, base)
+    .test(({ input, output, base }) => {
+      const result = FsLoc.ensureAbsolute(input, base)
       expect(result).toBeAbs()
-      if (o) {
-        expect(result).toEncodeTo(o)
+      if (output) {
+        expect(result).toEncodeTo(output)
       }
     })
 })

@@ -15,10 +15,10 @@ describe('operations accumulation', () => {
       ['directory operations', [{ ops: (s: SpecBuilder) => s.dir('empty/').dir('nested/', (d: SpecBuilder) => d.file('inner.txt', 'nested')) }], { count: 2, types: ['dir', 'dir'] }],
       ['mixed operations',     [{ ops: (s: SpecBuilder) => s.file('a.txt', 'A').dir('b/').remove('c.txt').clear('d/').move('e.md', 'f.md') }], { count: 5, types: ['file', 'dir', 'remove', 'clear', 'move-file'] }],
     )
-    .test((i, o) => {
-      const s = i.ops(spec('/test/'))
-      expect(s.operations).toHaveLength(o.count)
-      expect(s.operations.map(op => op.type)).toEqual(o.types)
+    .test(({ input, output }) => {
+      const s = input.ops(spec('/test/'))
+      expect(s.operations).toHaveLength(output.count)
+      expect(s.operations.map(op => op.type)).toEqual(output.types)
     })
 })
 
@@ -30,10 +30,10 @@ describe('immutability', () => {
       ['file operation', [{ ops: (s: SpecBuilder) => s.file('a.txt', 'A') }]],
       ['dir operation', [{ ops: (s: SpecBuilder) => s.dir('a/') }]],
     )
-    .test((i) => {
+    .test(({ input }) => {
       const s1 = spec('/test/')
-      const s2 = i.ops(s1)
-      const s3 = i.ops(s2)
+      const s2 = input.ops(s1)
+      const s3 = input.ops(s2)
 
       expect(s1).not.toBe(s2)
       expect(s2).not.toBe(s3)
@@ -54,10 +54,10 @@ describe('conditional operations', () => {
       ['unless true',   [{ cond: true,  method: 'unless' }], { count: 0 }],
       ['unless false',  [{ cond: false, method: 'unless' }], { count: 1 }],
     )
-    .test((i, o) => {
-      const s = spec('/test/')[i.method](i.cond, d => d.file('conditional.txt', 'yes'))
-      expect(s.operations).toHaveLength(o.count)
-      if (o.count === 1) {
+    .test(({ input, output }) => {
+      const s = spec('/test/')[input.method](input.cond, d => d.file('conditional.txt', 'yes'))
+      expect(s.operations).toHaveLength(output.count)
+      if (output.count === 1) {
         expect(s.operations[0]).toMatchObject({ type: 'file', content: 'yes' })
       }
     })
@@ -72,13 +72,13 @@ describe('withBase', () => {
       ['root to subdir', [{ from: '/', to: '/subdir/' }]],
       ['subdir to root', [{ from: '/subdir/', to: '/' }]],
     )
-    .test((i) => {
-      const s1 = spec(i.from).file('test.txt', 'content')
-      const s2 = s1.withBase(i.to)
+    .test(({ input }) => {
+      const s1 = spec(input.from).file('test.txt', 'content')
+      const s2 = s1.withBase(input.to)
 
       expect(s1.base).not.toBe(s2.base)
-      expect(s1.base.path.segments).toEqual(i.from === '/' ? [] : [i.from.slice(1, -1)])
-      expect(s2.base.path.segments).toEqual(i.to === '/' ? [] : [i.to.slice(1, -1)])
+      expect(s1.base.path.segments).toEqual(input.from === '/' ? [] : [input.from.slice(1, -1)])
+      expect(s2.base.path.segments).toEqual(input.to === '/' ? [] : [input.to.slice(1, -1)])
       expect(s1.operations).toEqual(s2.operations)
     })
 })
@@ -92,12 +92,12 @@ describe('merge', () => {
       ['3 specs', [{ count: 3 }]],
       ['5 specs', [{ count: 5 }]],
     )
-    .test((i) => {
-      const specs = Array.from({ length: i.count }, (_, idx) => spec('/test/').file(`${idx}.txt`, `content${idx}`))
+    .test(({ input }) => {
+      const specs = Array.from({ length: input.count }, (_, idx) => spec('/test/').file(`${idx}.txt`, `content${idx}`))
 
       const merged = specs[0]!.merge(...specs.slice(1))
 
-      expect(merged.operations).toHaveLength(i.count)
+      expect(merged.operations).toHaveLength(input.count)
       merged.operations.forEach((op, idx) => {
         expect(op).toMatchObject({
           type: 'file',
@@ -116,17 +116,17 @@ describe('nested directories', () => {
       ['3 levels', [{ depth: 3 }]],
       ['5 levels', [{ depth: 5 }]],
     )
-    .test((i) => {
+    .test(({ input }) => {
       const buildNested = (depth: number): Fn.endo<SpecBuilder> =>
         depth === 0
           ? d => d.file('deep.txt', 'content')
           : d => d.dir(`level${depth}/`, buildNested(depth - 1))
 
-      const s = buildNested(i.depth)(spec('/test/'))
+      const s = buildNested(input.depth)(spec('/test/'))
 
       // Verify nesting structure
       let current: any = s.operations[0]
-      for (let level = i.depth; level > 0; level--) {
+      for (let level = input.depth; level > 0; level--) {
         expect(current.type).toBe('dir')
         expect(current.operations).toHaveLength(1)
         current = current.operations[0]
@@ -149,14 +149,14 @@ describe('path types', () => {
       ['dotfile',        [{ path: 'config.env' }],  { expectedType: 'file' }], // Changed to have extension
       ['directory',      [{ path: 'folder/' }],     { expectedType: 'dir' }],
     )
-    .test((i, o) => {
+    .test(({ input, output }) => {
       const s = spec('/test/')
-      const result = i.path.endsWith('/')
-        ? s.dir(i.path as `${string}/`)
-        : s.file(i.path as `${string}.${string}`, 'content')
+      const result = input.path.endsWith('/')
+        ? s.dir(input.path as `${string}/`)
+        : s.file(input.path as `${string}.${string}`, 'content')
 
       expect(result.operations).toHaveLength(1)
-      expect(result.operations[0]!.type).toBe((o as any).expectedType)
+      expect(result.operations[0]!.type).toBe((output as any).expectedType)
     })
 
   // dprint-ignore
@@ -167,10 +167,10 @@ describe('path types', () => {
       ['file to file',  [{ from: 'old.txt', to: 'new.txt' }],   { expectedType: 'move-file' }],
       ['dir to dir',    [{ from: 'old/',    to: 'new/' }],      { expectedType: 'move-dir' }],
     )
-    .test((i, o) => {
-      const s = spec('/test/').move(i.from as any, i.to as any)
+    .test(({ input, output }) => {
+      const s = spec('/test/').move(input.from as any, input.to as any)
       expect(s.operations).toHaveLength(1)
-      expect(s.operations[0]!.type).toBe((o as any).expectedType)
+      expect(s.operations[0]!.type).toBe((output as any).expectedType)
     })
 })
 
@@ -184,17 +184,17 @@ describe('add method', () => {
       ['empty directory',   [{ path: 'dir/' }],                                                { type: 'dir' }],
       ['dir with builder',  [{ path: 'dir/', builder: (d: SpecBuilder) => d.file('inner.txt', 'content') }], { type: 'dir' }],
     )
-    .test((i, o) => {
-      const s = i.builder
-        ? spec('/test/').add(i.path as any, i.builder)
-        : i.content !== undefined
-        ? spec('/test/').add(i.path as any, i.content)
-        : spec('/test/').add(i.path as any)
+    .test(({ input, output }) => {
+      const s = input.builder
+        ? spec('/test/').add(input.path as any, input.builder)
+        : input.content !== undefined
+        ? spec('/test/').add(input.path as any, input.content)
+        : spec('/test/').add(input.path as any)
 
       expect(s.operations).toHaveLength(1)
-      expect(s.operations[0]!.type).toBe(o.type)
+      expect(s.operations[0]!.type).toBe(output.type)
 
-      if (i.builder) {
+      if (input.builder) {
         expect((s.operations[0] as any).operations).toHaveLength(1)
       }
     })
@@ -210,10 +210,10 @@ describe('edge cases', () => {
       ['single segment',     [{ base: '/test/' }],    { segmentCount: 1 }],
       ['nested path',        [{ base: '/a/b/c/' }],   { segmentCount: 3 }],
     )
-    .test((i, o) => {
-      const s = spec(i.base)
+    .test(({ input, output }) => {
+      const s = spec(input.base)
       expect(s.operations).toHaveLength(0)
-      expect(s.base.path.segments).toHaveLength(o.segmentCount)
+      expect(s.base.path.segments).toHaveLength(output.segmentCount)
     })
 
   // dprint-ignore
@@ -226,8 +226,8 @@ describe('edge cases', () => {
       ['multiple dots',      [{ path: 'file.test.spec.txt' }]],
       ['space (quoted)',     [{ path: '"file with space.txt"' }]],
     )
-    .test((i) => {
-      expect(() => spec('/test/').file(i.path as any, 'content')).not.toThrow()
+    .test(({ input }) => {
+      expect(() => spec('/test/').file(input.path as any, 'content')).not.toThrow()
     })
 })
 
@@ -240,9 +240,9 @@ describe('JSON content inference', () => {
       ['string for .json', [{ file: 'data.json', content: '{"raw": "json"}' }]],
       ['string for other', [{ file: 'any.xyz', content: 'plain text' }]],
     )
-    .test((i) => {
-      const s = spec('/test/').file(i.file as any, i.content)
+    .test(({ input }) => {
+      const s = spec('/test/').file(input.file as any, input.content)
       expect(s.operations).toHaveLength(1)
-      expect((s.operations[0] as any).content).toEqual(i.content)
+      expect((s.operations[0] as any).content).toEqual(input.content)
     })
 })

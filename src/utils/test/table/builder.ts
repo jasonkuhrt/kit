@@ -90,6 +90,24 @@ const assertEffectEqual = (actual: any, expected: any) => {
 }
 
 /**
+ * Validate that user context doesn't contain reserved property names.
+ * Reserved names: input, output, result, n
+ */
+const validateContextKeys = (context: object, caseName: string): void => {
+  const reservedKeys = ['input', 'output', 'result', 'n']
+  const contextKeys = Object.keys(context)
+  const conflicts = contextKeys.filter((key) => reservedKeys.includes(key))
+
+  if (conflicts.length > 0) {
+    throw new Error(
+      `Test case "${caseName}" contains reserved context keys: ${conflicts.join(', ')}. `
+        + `Reserved keys are: ${reservedKeys.join(', ')}. `
+        + `Please rename these properties in your test context.`,
+    )
+  }
+}
+
+/**
  * Default snapshot serializer with smart handling for different value types.
  * - Strings: Display raw (no JSON quotes/escaping) for readability
  * - Functions: Use .toString()
@@ -301,7 +319,7 @@ function createBuilder(state: BuilderState = defaultState): any {
   // Recursive helper to execute nested describe groups
   const executeNestedGroup = (
     group: TestGroup,
-    customTest: ((i: any, o: any, ctx: any) => any) | undefined,
+    customTest: ((params: any) => any) | undefined,
   ): void => {
     const describeName = Option.getOrUndefined(group.describe)
 
@@ -329,7 +347,7 @@ function createBuilder(state: BuilderState = defaultState): any {
 
   // Terminal execution helper
   const executeTests = (
-    customTest: ((i: any, o: any, ctx: any) => any) | undefined,
+    customTest: ((params: any) => any) | undefined,
     describeBlock: string | undefined,
     cases: any[],
   ) => {
@@ -449,6 +467,9 @@ function createBuilder(state: BuilderState = defaultState): any {
           caseData,
         )
 
+        // Validate that user context doesn't contain reserved keys
+        validateContextKeys(testContext, name)
+
         if (todo) {
           testMethod.todo(name)
           continue
@@ -525,8 +546,15 @@ function createBuilder(state: BuilderState = defaultState): any {
               const result = fn(...input)
               if (customTest) {
                 // Merge vitest context into main context
-                const mergedContext = { ...context, ...setupContext, ...vitestContext }
-                await customTest(result, finalOutput, mergedContext)
+                await customTest({
+                  input,
+                  output: finalOutput,
+                  result,
+                  n: name,
+                  ...setupContext,
+                  ...testContext,
+                  ...vitestContext,
+                })
               } else {
                 if (state.config.matcher) {
                   ;(expect(result) as any)[state.config.matcher](finalOutput)
@@ -536,8 +564,14 @@ function createBuilder(state: BuilderState = defaultState): any {
               }
             } else if (customTest) {
               // Generic mode: call custom test with resolved output
-              const mergedContext = { ...context, ...setupContext, ...vitestContext }
-              await customTest(input, finalOutput, mergedContext)
+              await customTest({
+                input,
+                output: finalOutput,
+                n: name,
+                ...setupContext,
+                ...testContext,
+                ...vitestContext,
+              })
             }
             return
           }
@@ -589,8 +623,29 @@ function createBuilder(state: BuilderState = defaultState): any {
                   (acc, factory) => ({ ...acc, ...factory() }),
                   {} as object,
                 )
-                const mergedContext = { ...context, ...setupContext, ...vitestContext }
-                await customTest(result, transformedOutput, mergedContext)
+                const testResult = await customTest({
+                  input,
+                  output: transformedOutput,
+                  result,
+                  n: name,
+                  ...setupContext,
+                  ...testContext,
+                  ...vitestContext,
+                })
+                // Auto-snapshot if test returns a value
+                if (testResult !== undefined) {
+                  const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
+                  const snapshotContext = { i: input, n: name, o: output, ...setupContext, ...testContext }
+                  const formattedSnapshot = formatSnapshotWithInput(
+                    input,
+                    testResult,
+                    undefined,
+                    undefined,
+                    serializer,
+                    snapshotContext,
+                  )
+                  expect(formattedSnapshot).toMatchSnapshot()
+                }
               } else {
                 // Default assertion
                 if (state.config.matcher) {
@@ -608,8 +663,15 @@ function createBuilder(state: BuilderState = defaultState): any {
               (acc, factory) => ({ ...acc, ...factory() }),
               {} as object,
             )
-            const context = { i: input, n: name, o: output, ...setupContext, ...testContext, ...vitestContext }
-            const result = await customTest(input, output, context)
+            const result = await customTest({
+              input,
+              output,
+              n: name,
+              ...setupContext,
+              ...testContext,
+              ...vitestContext,
+            })
+            const context = { i: input, n: name, o: output, ...setupContext, ...testContext }
             // Auto-snapshot if result is returned
             if (result !== undefined) {
               const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
@@ -1021,7 +1083,7 @@ function createBuilder(state: BuilderState = defaultState): any {
       // Execute all accumulated groups (from .casesIn())
       for (const group of finalState.accumulatedGroups) {
         executeTests(
-          fn as ((i: any, o: any, ctx: any) => any) | undefined,
+          fn as ((params: any) => any) | undefined,
           Option.getOrUndefined(group.describe),
           group.cases,
         )
@@ -1029,7 +1091,7 @@ function createBuilder(state: BuilderState = defaultState): any {
 
       // Execute all nested describe groups (from .describe(name, callback))
       for (const nestedGroup of finalState.nestedDescribeGroups) {
-        executeNestedGroup(nestedGroup, fn as ((i: any, o: any, ctx: any) => any) | undefined)
+        executeNestedGroup(nestedGroup, fn as ((params: any) => any) | undefined)
       }
     },
 
@@ -1039,11 +1101,12 @@ function createBuilder(state: BuilderState = defaultState): any {
       const layerOrFactory = Option.getOrUndefined(finalState.layerOrFactory)
       const layerType = Option.getOrUndefined(finalState.layerType)
 
-      const effectWrapper = (i: any, o: any, ctx: any) => {
-        const effect = fn(i, o, ctx)
+      const effectWrapper = (params: any) => {
+        const { n, input, output, ...restCtx } = params
+        const effect = fn({ input, output, n, ...restCtx })
         const layer = layerType === 'static'
           ? layerOrFactory
-          : (layerOrFactory as (testCase: any) => Layer.Layer<any>)({ i, o, ...ctx })
+          : (layerOrFactory as (testCase: any) => Layer.Layer<any>)({ input, output, ...params })
 
         const effectWithLayer = Effect.provide(effect, layer as any) as Effect.Effect<any, any, never>
         return Effect.runPromise(effectWithLayer)

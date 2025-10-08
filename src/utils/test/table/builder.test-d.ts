@@ -10,9 +10,9 @@ import { Test } from '../$.js'
       ['case 1', ['input'], 42],
       ['case 2', ['other'], 100],
     )
-    .test((i, o) => {
-      expectTypeOf(i).toEqualTypeOf<string>()
-      expectTypeOf(o).toEqualTypeOf<number>()
+    .test(({ input, output }) => {
+      expectTypeOf(input).toEqualTypeOf<string>()
+      expectTypeOf(output).toEqualTypeOf<number>()
     })
 }
 
@@ -25,9 +25,9 @@ import { Test } from '../$.js'
       { n: 'case 1', i: 'input', o: 42 },
       { n: 'case 2', i: 'other', o: 100 },
     )
-    .test((i, o) => {
-      expectTypeOf(i).toEqualTypeOf<string>()
-      expectTypeOf(o).toEqualTypeOf<number>()
+    .test(({ input, output }) => {
+      expectTypeOf(input).toEqualTypeOf<string>()
+      expectTypeOf(output).toEqualTypeOf<number>()
     })
 }
 
@@ -41,10 +41,10 @@ import { Test } from '../$.js'
       { n: 'case 1', i: 'input', o: 42, extra: true },
       { n: 'case 2', i: 'other', o: 100, extra: false },
     )
-    .test((i, o, ctx) => {
-      expectTypeOf(i).toEqualTypeOf<string>()
-      expectTypeOf(o).toEqualTypeOf<number>()
-      expectTypeOf(ctx.extra).toEqualTypeOf<boolean>()
+    .test(({ input, output, extra }) => {
+      expectTypeOf(input).toEqualTypeOf<string>()
+      expectTypeOf(output).toEqualTypeOf<number>()
+      expectTypeOf(extra).toEqualTypeOf<boolean>()
     })
 }
 
@@ -71,10 +71,10 @@ import { Test } from '../$.js'
       { n: 'case 1', i: 'hello', o: 5, extra: 'metadata1', flag: true },
       { n: 'case 2', i: 'world', o: 10, extra: 'metadata2', flag: false },
     )
-    .test((i, o, ctx) => {
-      expectTypeOf(i).toEqualTypeOf<string>()
-      expectTypeOf(o).toEqualTypeOf<number>()
-      expectTypeOf(ctx.extra).toEqualTypeOf<string>()
-      expectTypeOf(ctx.flag).toEqualTypeOf<boolean>()
+    .test(({ input, output, extra, flag }) => {
+      expectTypeOf(input).toEqualTypeOf<string>()
+      expectTypeOf(output).toEqualTypeOf<number>()
+      expectTypeOf(extra).toEqualTypeOf<string>()
+      expectTypeOf(flag).toEqualTypeOf<boolean>()
     })
 }

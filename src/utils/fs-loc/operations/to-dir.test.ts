@@ -18,10 +18,10 @@ describe('toDir', () => {
       ['nested file to parent dir',                    [l('./a/b/c.md')],                      './a/b/'],
       ['abs nested file to parent',                    [l('/home/user/docs/file.txt')],        '/home/user/docs/'],
     )
-    .test(( i, o ) => {
-      const result = FsLoc.toDir(i)
+    .test(({ input, output }) => {
+      const result = FsLoc.toDir(input)
       expect(result).toBeDir()
-      expect(result).toEncodeTo(o)
+      expect(result).toEncodeTo(output)
     })
 
   describe('String literal support', () => {
