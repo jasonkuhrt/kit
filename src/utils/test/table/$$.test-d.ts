@@ -197,3 +197,40 @@ import { Test } from '../$.js'
     const _o: number = o
   })
 }
+
+// Test snapshot sugar methods type inference
+{
+  // .casesInput() with function mode
+  const testFn = (a: number, b: number): number => a + b
+
+  Test.on(testFn)
+    .casesInput([1, 2], [3, 4], [5, 6])
+    .test(({ input, result }) => {
+      expectTypeOf(input).toEqualTypeOf<[number, number]>()
+      expectTypeOf(result).toEqualTypeOf<number>()
+    })
+
+  // .casesInput() with generic mode
+  Test.describe()
+    .inputType<string>()
+    .casesInput('a', 'b', 'c')
+    .test(({ input }) => {
+      expectTypeOf(input).toEqualTypeOf<string>()
+    })
+
+  // .describeInputs() with function mode
+  Test.on(testFn)
+    .describeInputs('edge cases', [[0, 0], [1, 1]])
+    .test(({ input, result }) => {
+      expectTypeOf(input).toEqualTypeOf<[number, number]>()
+      expectTypeOf(result).toEqualTypeOf<number>()
+    })
+
+  // .describeInputs() with generic mode
+  Test.describe()
+    .inputType<number>()
+    .describeInputs('numbers', [1, 2, 3])
+    .test(({ input }) => {
+      expectTypeOf(input).toEqualTypeOf<number>()
+    })
+}

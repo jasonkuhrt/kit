@@ -579,6 +579,50 @@ export interface TestBuilder<State extends BuilderTypeState> {
   case$(caseObj: GenericCase<State['input'], State['output'], State['context']>): TestBuilder<State>
 
   /**
+   * Add multiple snapshot test cases (input-only).
+   *
+   * Sugar method for snapshot testing - accepts only inputs, no expected outputs.
+   * Each input is automatically wrapped in snapshot format.
+   *
+   * @param inputs - Input values for snapshot testing
+   *
+   * @example
+   * ```ts
+   * // Function mode
+   * Test.on(add).casesInput([1, 2], [3, 4], [5, 6])
+   *
+   * // Generic mode
+   * Test.describe().inputType<string>().casesInput('a', 'b', 'c')
+   * ```
+   */
+  casesInput(
+    ...inputs: EffectiveInput<State>[]
+  ): TestBuilder<State>
+
+  /**
+   * Create a nested describe block with snapshot test cases (input-only).
+   *
+   * Sugar method for snapshot testing - accepts only inputs array, no expected outputs.
+   * Each input is automatically wrapped in snapshot format.
+   *
+   * @param name - Name for the describe block
+   * @param inputs - Array of input values for snapshot testing
+   *
+   * @example
+   * ```ts
+   * // Function mode
+   * Test.on(add).describeInputs('edge cases', [[0, 0], [1, 1]])
+   *
+   * // Generic mode
+   * Test.describe().inputType<string>().describeInputs('examples', ['a', 'b', 'c'])
+   * ```
+   */
+  describeInputs(
+    name: string,
+    inputs: readonly EffectiveInput<State>[],
+  ): TestBuilder<State>
+
+  /**
    * Create a nested describe block with direct cases array.
    *
    * @param name - Name for the describe block

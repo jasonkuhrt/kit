@@ -667,6 +667,18 @@ export function create(state: State = defaultState): any {
       })
     },
 
+    casesInput(...inputs: any[]) {
+      // Wrap each input in snapshot tuple format [input]
+      const cases = inputs.map(input => [input])
+      return this.cases(...cases)
+    },
+
+    describeInputs(name: string, inputs: any[]) {
+      // Wrap each input in snapshot tuple format [input]
+      const cases = inputs.map(input => [input])
+      return this.describe(name, cases)
+    },
+
     // Configuration methods
     name(template: string) {
       return create({
