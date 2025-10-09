@@ -4,6 +4,39 @@
 export type DiscriminantPropertyValue = string | number | symbol
 
 /**
+ * Marker type to make forced union distribution explicit and self-documenting.
+ *
+ * TypeScript distributes unions in conditional types when the checked type is a naked type parameter.
+ * Using this marker in your conditional type makes the intent explicit to readers.
+ *
+ * @example
+ * ```ts
+ * // Without marker - unclear if distribution is intentional
+ * type Transform<T> = T extends string ? Uppercase<T> : T
+ *
+ * // With marker - explicitly documents that distribution is desired
+ * type Transform<T> = T extends __FORCE_DISTRIBUTION__ ? T extends string ? Uppercase<T> : T : never
+ *
+ * // More typical usage pattern
+ * type MapUnion<T> = T extends __FORCE_DISTRIBUTION__
+ *   ? TransformSingleMember<T>
+ *   : never
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Real-world example: mapping over union members
+ * type AddPrefix<T> = T extends __FORCE_DISTRIBUTION__
+ *   ? T extends string ? `prefix_${T}` : T
+ *   : never
+ *
+ * type Result = AddPrefix<'a' | 'b' | 'c'>
+ * // 'prefix_a' | 'prefix_b' | 'prefix_c'
+ * ```
+ */
+export type __FORCE_DISTRIBUTION__ = any
+
+/**
  * Include only types that extend a constraint (opposite of Exclude).
  * Filters a union type to only include members that extend the constraint.
  *
