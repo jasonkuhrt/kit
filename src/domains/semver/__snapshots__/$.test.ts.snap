@@ -1,0 +1,879 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`decodeSync > fn('1.2.3') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1.2.3
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: undefined,
+  version: Version {
+    raw: '1.2.3',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`decodeSync > fn('1.2.3-beta.1+build.123') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1.2.3-beta.1+build.123
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+PreRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  prerelease: [ 'beta', 1 ],
+  build: [ 'build', '123' ],
+  version: Version {
+    raw: '1.2.3-beta.1+build.123',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: [ 'beta', 1 ],
+    build: [ 'build', '123' ]
+  },
+  _tag: 'SemverPreRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`decodeSync > fn('invalid') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+invalid
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: (string <-> Semver)
+└─ Transformation process failure
+   └─ Invalid semver: SyntaxError: invalid version: no Major.minor.patch tuple present
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`discriminated union > decodeSync > fn('1.2.3') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1.2.3
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: undefined,
+  version: Version {
+    raw: '1.2.3',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`discriminated union > decodeSync > fn('1.2.3+build.123') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1.2.3+build.123
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: [ 'build', '123' ],
+  version: Version {
+    raw: '1.2.3+build.123',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: [ 'build', '123' ]
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`discriminated union > decodeSync > fn('1.2.3-beta') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1.2.3-beta
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+PreRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  prerelease: [ 'beta' ],
+  build: undefined,
+  version: Version {
+    raw: '1.2.3-beta',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: [ 'beta' ],
+    build: undefined
+  },
+  _tag: 'SemverPreRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`discriminated union > decodeSync > fn('1.2.3-beta+build.123') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1.2.3-beta+build.123
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+PreRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  prerelease: [ 'beta' ],
+  build: [ 'build', '123' ],
+  version: Version {
+    raw: '1.2.3-beta+build.123',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: [ 'beta' ],
+    build: [ 'build', '123' ]
+  },
+  _tag: 'SemverPreRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn('1.2.3') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1.2.3
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: undefined,
+  version: Version {
+    raw: '1.2.3',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn('1.2.3') 2`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1.2.3
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: undefined,
+  version: Version {
+    raw: '1.2.3',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn('1.2.3+build.123') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1.2.3+build.123
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: [ 'build', '123' ],
+  version: Version {
+    raw: '1.2.3+build.123',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: [ 'build', '123' ]
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn('1.2.3-beta') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1.2.3-beta
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+PreRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  prerelease: [ 'beta' ],
+  build: undefined,
+  version: Version {
+    raw: '1.2.3-beta',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: [ 'beta' ],
+    build: undefined
+  },
+  _tag: 'SemverPreRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn('1.2.3-beta+build.123') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1.2.3-beta+build.123
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+PreRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  prerelease: [ 'beta' ],
+  build: [ 'build', '123' ],
+  version: Version {
+    raw: '1.2.3-beta+build.123',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: [ 'beta' ],
+    build: [ 'build', '123' ]
+  },
+  _tag: 'SemverPreRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn('1.2.3-beta.1+build.123') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1.2.3-beta.1+build.123
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+PreRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  prerelease: [ 'beta', 1 ],
+  build: [ 'build', '123' ],
+  version: Version {
+    raw: '1.2.3-beta.1+build.123',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: [ 'beta', 1 ],
+    build: [ 'build', '123' ]
+  },
+  _tag: 'SemverPreRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn('invalid') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+invalid
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: (string <-> Semver)
+└─ Transformation process failure
+   └─ Invalid semver: SyntaxError: invalid version: no Major.minor.patch tuple present
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn(OfficialRelease { major: 1, minor: 0, patch: 0, build: undefined, version: Versi..., OfficialRelease { major: 2, minor: 0, patch: 0, build: undefined, version: Versi...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+OfficialRelease {
+  major: 1,
+  minor: 0,
+  patch: 0,
+  build: undefined,
+  version: Version {
+    raw: '1.0.0',
+    major: 1,
+    minor: 0,
+    patch: 0,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+────────────────────────────────────────────────────
+OfficialRelease {
+  major: 2,
+  minor: 0,
+  patch: 0,
+  build: undefined,
+  version: Version {
+    raw: '2.0.0',
+    major: 2,
+    minor: 0,
+    patch: 0,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 1,
+  minor: 0,
+  patch: 0,
+  build: undefined,
+  version: Version {
+    raw: '1.0.0',
+    major: 1,
+    minor: 0,
+    patch: 0,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn(OfficialRelease { major: 1, minor: 0, patch: 0, build: undefined, version: Versi..., OfficialRelease { major: 2, minor: 0, patch: 0, build: undefined, version: Versi...) 2`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+OfficialRelease {
+  major: 1,
+  minor: 0,
+  patch: 0,
+  build: undefined,
+  version: Version {
+    raw: '1.0.0',
+    major: 1,
+    minor: 0,
+    patch: 0,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+────────────────────────────────────────────────────
+OfficialRelease {
+  major: 2,
+  minor: 0,
+  patch: 0,
+  build: undefined,
+  version: Version {
+    raw: '2.0.0',
+    major: 2,
+    minor: 0,
+    patch: 0,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 2,
+  minor: 0,
+  patch: 0,
+  build: undefined,
+  version: Version {
+    raw: '2.0.0',
+    major: 2,
+    minor: 0,
+    patch: 0,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn(OfficialRelease { major: 1, minor: 2, patch: 3, build: undefined, version: Versi..., '>=1.0.0') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: undefined,
+  version: Version {
+    raw: '1.2.3',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+────────────────────────────────────────────────────
+>=1.0.0
+╠══════════════════════════════════════════════════╣ THEN RETURNS BOOLEAN
+true
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn(OfficialRelease { major: 1, minor: 2, patch: 3, build: undefined, version: Versi..., '^1.0.0') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: undefined,
+  version: Version {
+    raw: '1.2.3',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+────────────────────────────────────────────────────
+^1.0.0
+╠══════════════════════════════════════════════════╣ THEN RETURNS BOOLEAN
+true
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn(OfficialRelease { major: 1, minor: 2, patch: 3, build: undefined, version: Versi..., '~1.2.0') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: undefined,
+  version: Version {
+    raw: '1.2.3',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+────────────────────────────────────────────────────
+~1.2.0
+╠══════════════════════════════════════════════════╣ THEN RETURNS BOOLEAN
+true
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn(OfficialRelease { major: 1, minor: 2, patch: 3, build: undefined, version: Versi..., '2.x') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: undefined,
+  version: Version {
+    raw: '1.2.3',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+────────────────────────────────────────────────────
+2.x
+╠══════════════════════════════════════════════════╣ THEN RETURNS BOOLEAN
+false
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn(OfficialRelease { major: 1, minor: 2, patch: 3, build: undefined, version: Versi..., 'invalid') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: undefined,
+  version: Version {
+    raw: '1.2.3',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+────────────────────────────────────────────────────
+invalid
+╠══════════════════════════════════════════════════╣ THEN THROWS SYNTAXERROR
+SyntaxError: invalid comparator: 'invalid' major must be numeric or 'x', got: 'invalid'
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn(OfficialRelease { major: 2, minor: 0, patch: 0, build: undefined, version: Versi..., OfficialRelease { major: 1, minor: 0, patch: 0, build: undefined, version: Versi...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+OfficialRelease {
+  major: 2,
+  minor: 0,
+  patch: 0,
+  build: undefined,
+  version: Version {
+    raw: '2.0.0',
+    major: 2,
+    minor: 0,
+    patch: 0,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+────────────────────────────────────────────────────
+OfficialRelease {
+  major: 1,
+  minor: 0,
+  patch: 0,
+  build: undefined,
+  version: Version {
+    raw: '1.0.0',
+    major: 1,
+    minor: 0,
+    patch: 0,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 1,
+  minor: 0,
+  patch: 0,
+  build: undefined,
+  version: Version {
+    raw: '1.0.0',
+    major: 1,
+    minor: 0,
+    patch: 0,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`fn(OfficialRelease { major: 2, minor: 0, patch: 0, build: undefined, version: Versi..., OfficialRelease { major: 1, minor: 0, patch: 0, build: undefined, version: Versi...) 2`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+OfficialRelease {
+  major: 2,
+  minor: 0,
+  patch: 0,
+  build: undefined,
+  version: Version {
+    raw: '2.0.0',
+    major: 2,
+    minor: 0,
+    patch: 0,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+────────────────────────────────────────────────────
+OfficialRelease {
+  major: 1,
+  minor: 0,
+  patch: 0,
+  build: undefined,
+  version: Version {
+    raw: '1.0.0',
+    major: 1,
+    minor: 0,
+    patch: 0,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 2,
+  minor: 0,
+  patch: 0,
+  build: undefined,
+  version: Version {
+    raw: '2.0.0',
+    major: 2,
+    minor: 0,
+    patch: 0,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`major > increment(OfficialRelease { major: 1, minor: 2, patch: 3, build: undefined, version: Versi..., 'major') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: undefined,
+  version: Version {
+    raw: '1.2.3',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+────────────────────────────────────────────────────
+major
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 2,
+  minor: 0,
+  patch: 0,
+  build: undefined,
+  version: Version {
+    raw: '2.0.0',
+    major: 2,
+    minor: 0,
+    patch: 0,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`make(1, 2, 3) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1
+────────────────────────────────────────────────────
+2
+────────────────────────────────────────────────────
+3
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: undefined,
+  version: Version {
+    raw: '1.2.3',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`make(1, 2, 3, 'beta.1') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1
+────────────────────────────────────────────────────
+2
+────────────────────────────────────────────────────
+3
+────────────────────────────────────────────────────
+beta.1
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+PreRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  prerelease: [ 'beta', 1 ],
+  build: undefined,
+  version: Version {
+    raw: '1.2.3-beta.1',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: [ 'beta', 1 ],
+    build: undefined
+  },
+  _tag: 'SemverPreRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`make(1, 2, 3, 'beta.1', 'build.123') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1
+────────────────────────────────────────────────────
+2
+────────────────────────────────────────────────────
+3
+────────────────────────────────────────────────────
+beta.1
+────────────────────────────────────────────────────
+build.123
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+PreRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  prerelease: [ 'beta', 1 ],
+  build: [ 'build', '123' ],
+  version: Version {
+    raw: '1.2.3-beta.1+build.123',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: [ 'beta', 1 ],
+    build: [ 'build', '123' ]
+  },
+  _tag: 'SemverPreRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`make(1, 2, 3, undefined, 'build.123') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1
+────────────────────────────────────────────────────
+2
+────────────────────────────────────────────────────
+3
+────────────────────────────────────────────────────
+undefined
+────────────────────────────────────────────────────
+build.123
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: [ 'build', '123' ],
+  version: Version {
+    raw: '1.2.3+build.123',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: [ 'build', '123' ]
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`minor > increment(OfficialRelease { major: 1, minor: 2, patch: 3, build: undefined, version: Versi..., 'minor') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: undefined,
+  version: Version {
+    raw: '1.2.3',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+────────────────────────────────────────────────────
+minor
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 1,
+  minor: 3,
+  patch: 0,
+  build: undefined,
+  version: Version {
+    raw: '1.3.0',
+    major: 1,
+    minor: 3,
+    patch: 0,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`patch > increment(OfficialRelease { major: 1, minor: 2, patch: 3, build: undefined, version: Versi..., 'patch') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 3,
+  build: undefined,
+  version: Version {
+    raw: '1.2.3',
+    major: 1,
+    minor: 2,
+    patch: 3,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+────────────────────────────────────────────────────
+patch
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+OfficialRelease {
+  major: 1,
+  minor: 2,
+  patch: 4,
+  build: undefined,
+  version: Version {
+    raw: '1.2.4',
+    major: 1,
+    minor: 2,
+    patch: 4,
+    prerelease: undefined,
+    build: undefined
+  },
+  _tag: 'SemverOfficialRelease'
+}
+╚══════════════════════════════════════════════════╝"
+`;
