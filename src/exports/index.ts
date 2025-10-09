@@ -18,6 +18,7 @@ export * from '#prox'
 export * from '#rec'
 export * from '#str'
 export * from '#tree'
+export * from '#tup'
 export * from '#undefined'
 export * from '#url'
 
