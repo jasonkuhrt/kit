@@ -1,5 +1,6 @@
 import { FsLoc } from '#fs-loc'
 import { createSchemaResource, type Resource } from '#resource/resource'
+import { Semver } from '#semver'
 import { Effect, Option, Schema as S } from 'effect'
 import type { WritableDeep } from 'type-fest'
 
@@ -38,7 +39,7 @@ const Workspaces = S.Struct({
  */
 export class Manifest extends S.Class<Manifest>('Manifest')({
   name: S.optionalWith(S.String, { default: () => 'unnamed' }),
-  version: S.optionalWith(S.String, { default: () => '0.0.0' }),
+  version: S.optionalWith(Semver.Semver, { default: () => Semver.make(0, 0, 0) }),
   description: S.optional(S.String),
   main: S.optional(S.String),
   type: S.optional(S.Literal('module', 'commonjs')),
