@@ -1,0 +1,811 @@
+{
+  "name": "@wollybeard/kit",
+  "version": "0.0.0-dripip",
+  "entrypoints": [
+    {
+      "packagePath": "./test",
+      "resolvedPath": "./src/utils/test/$.ts",
+      "module": {
+        "name": "Test",
+        "description": "",
+        "exports": [
+          {
+            "_tag": "value",
+            "name": "Matchers",
+            "type": "namespace",
+            "signature": "export * as Matchers",
+            "description": "",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/test/$$.ts",
+              "line": 1
+            },
+            "module": {
+              "name": "Matchers",
+              "description": "",
+              "exports": []
+            }
+          },
+          {
+            "name": "property",
+            "signature": "property = <Ts extends [unknown, ...unknown[]]>(\n  ...args: [\n    description: string,\n    ...arbitraries: {\n      [K in keyof Ts]: fc.Arbitrary<Ts[K]>\n    },\n    predicate: (...args: Ts) => boolean | void,\n  ]\n) => {\n  const description = args[0]\n  const rest = args.slice(1) as Parameters<typeof fc.property>\n  Vitest.test('PROPERTY: ' + description, () => {\n    const result = fc.check(fc.property(...rest))\n\n    if (result.failed) {\n      // Extract just the useful parts from the fast-check error\n      const counterexample = result.counterexample?.map((x: unknown) =>\n        typeof x === 'string' ? `\"${x}\"` : JSON.stringify(x)\n      ).join(', ') || ''\n\n      // Get the original error if available\n      let assertionError = ''\n      const r = result as any\n      if (r.error && r.error.message) {\n        assertionError = r.error.message\n      } else if (r.errorInstance) {\n        assertionError = String(r.errorInstance)\n      }\n\n      const message = [\n        `Property failed: ${description}`,\n        `Counterexample: [${counterexample}]`,\n        assertionError && `\\n${assertionError}`,\n        `(seed: ${result.seed})`,\n      ].filter(Boolean).join('\\n')\n\n      throw new Error(message)\n    }\n  })\n}",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/test/property.ts",
+              "line": 38
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
+            "name": "on",
+            "signature": "export function on<$fn extends Fn.AnyAny>(\n  $fn: $fn,\n): Types.TestBuilder<Types.UpdateState<Types.BuilderTypeStateEmpty, { fn: $fn }>> {\n  const initialState = {\n    ...Builder.defaultState,\n    fn: Option.some($fn),\n  }\n  return Builder.create(initialState) as any\n}",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/test/table/constructors.ts",
+              "line": 117
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
+            "name": "describe",
+            "signature": "export function describe(\n  description?: string,\n): Types.TestBuilderEmpty {\n  const initialState = description\n    ? { ...Builder.defaultState, config: { description } }\n    : Builder.defaultState\n  return Builder.create(initialState)\n}",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/test/table/constructors.ts",
+              "line": 233
+            },
+            "_tag": "value",
+            "type": "function"
+          }
+        ]
+      }
+    },
+    {
+      "packagePath": "./ts",
+      "resolvedPath": "./src/utils/ts/$.ts",
+      "module": {
+        "name": "Ts",
+        "description": "",
+        "exports": [
+          {
+            "_tag": "value",
+            "name": "Kind",
+            "type": "namespace",
+            "signature": "export * as Kind",
+            "description": "",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/$$.ts",
+              "line": 1
+            },
+            "module": {
+              "name": "Kind",
+              "description": "",
+              "exports": [
+                {
+                  "name": "Apply",
+                  "signature": "export type Apply<$Kind, $Args> =\n  // @ts-expect-error - Intentional type manipulation for kind simulation\n  ($Kind & { parameters: $Args })['return']",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/kind.ts",
+                    "line": 32
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "Kind",
+                  "signature": "export interface Kind<$Params = unknown, $Return = unknown> {\n  readonly parameters: $Params\n  readonly return: $Return\n}",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/kind.ts",
+                    "line": 52
+                  },
+                  "_tag": "type",
+                  "type": "interface"
+                },
+                {
+                  "name": "Parameters",
+                  "signature": "export type Parameters<$Kind> = $Kind extends Kind<infer P, any> ? P : never",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/kind.ts",
+                    "line": 62
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "Return",
+                  "signature": "export type Return<$Kind> = $Kind extends Kind<any, infer R> ? R : never",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/kind.ts",
+                    "line": 69
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "Identity",
+                  "signature": "export interface Identity extends Kind {\n  // @ts-expect-error\n  return: this['parameters'][0]\n}",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/kind.ts",
+                    "line": 82
+                  },
+                  "_tag": "type",
+                  "type": "interface"
+                },
+                {
+                  "name": "Const",
+                  "signature": "export interface Const<$Const> extends Kind {\n  return: $Const\n}",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/kind.ts",
+                    "line": 99
+                  },
+                  "_tag": "type",
+                  "type": "interface"
+                },
+                {
+                  "name": "PrivateKindReturn",
+                  "signature": "PrivateKindReturn = Symbol()",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/kind.ts",
+                    "line": 114
+                  },
+                  "_tag": "value",
+                  "type": "const"
+                },
+                {
+                  "name": "PrivateKindParameters",
+                  "signature": "PrivateKindParameters = Symbol()",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/kind.ts",
+                    "line": 120
+                  },
+                  "_tag": "value",
+                  "type": "const"
+                },
+                {
+                  "name": "Private",
+                  "signature": "export interface Private {\n  [PrivateKindReturn]: unknown\n  [PrivateKindParameters]: unknown\n}",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/kind.ts",
+                    "line": 138
+                  },
+                  "_tag": "type",
+                  "type": "interface"
+                },
+                {
+                  "name": "PrivateApply",
+                  "signature": "export type PrivateApply<$Kind extends Private, $Args> = ($Kind & { [PrivateKindParameters]: $Args })[PrivateKindReturn]",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/kind.ts",
+                    "line": 154
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "MaybePrivateApplyOr",
+                  "signature": "export type MaybePrivateApplyOr<$MaybeKind, $Args, $Or> =\n  $MaybeKind extends Private\n    ? PrivateApply<$MaybeKind, $Args>\n    : $Or",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/kind.ts",
+                    "line": 157
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "IsPrivateKind",
+                  "signature": "export type IsPrivateKind<T> = T extends Private ? true : false",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/kind.ts",
+                    "line": 173
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                }
+              ]
+            }
+          },
+          {
+            "_tag": "value",
+            "name": "Test",
+            "type": "namespace",
+            "signature": "export * as Test",
+            "description": "",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/$$.ts",
+              "line": 2
+            },
+            "module": {
+              "name": "Test",
+              "description": "",
+              "exports": [
+                {
+                  "name": "exact",
+                  "signature": "export type exact<$Expected, $Actual> = (<T>() => T extends $Actual ? 1 : 2) extends\n  (<T>() => T extends $Expected ? 1 : 2) ? true\n  // If structural equality fails, check if bidirectional assignability passes\n  : $Actual extends $Expected ? $Expected extends $Actual ? StaticErrorAssertion<\n        'Types are mutually assignable but not structurally equal',\n        $Expected,\n        $Actual,\n        'Use bid() for mutual assignability OR apply Simplify<T> to normalize types'\n      >\n    : StaticErrorAssertion<'Types are not structurally equal', $Expected, $Actual>\n  : StaticErrorAssertion<'Types are not structurally equal', $Expected, $Actual>",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 65
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "bid",
+                  "signature": "export type bid<$Expected, $Actual> = $Actual extends $Expected ? $Expected extends $Actual\n    // Both directions pass - check if exact would also pass\n    ? (<T>() => T extends $Actual ? 1 : 2) extends (<T>() => T extends $Expected ? 1 : 2)\n      // Exact also passes - check if linting is enabled\n      ? GetTestSetting<'lintBidForExactPossibility'> extends true ? StaticErrorAssertion<\n          'Types are structurally equal',\n          $Expected,\n          $Actual,\n          'Use exact() instead - bid() is only needed when types are mutually assignable but not structurally equal'\n        >\n      : true // Linting disabled, allow it\n    : true // Only bid passes (not exact) - this is correct usage\n  : StaticErrorAssertion<\n    'Types are not bidirectionally assignable (Expected does not extend Actual)',\n    $Expected,\n    $Actual\n  >\n  : StaticErrorAssertion<\n    'Types are not bidirectionally assignable (Actual does not extend Expected)',\n    $Expected,\n    $Actual\n  >",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 132
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "sub",
+                  "signature": "export type sub<$Expected, $Actual> = $Actual extends $Expected ? true\n  : StaticErrorAssertion<\n    'Actual type does not extend expected type',\n    $Expected,\n    $Actual\n  >",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 205
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "subNoExcess",
+                  "signature": "export type subNoExcess<$Expected, $Actual> = $Actual extends $Expected\n  ? Exclude<keyof $Actual, keyof $Expected> extends never ? true\n  : StaticErrorAssertion<\n    'Type has excess properties not present in expected type',\n    $Expected,\n    $Actual\n  >\n  : StaticErrorAssertion<\n    'Actual type does not extend expected type',\n    $Expected,\n    $Actual\n  >",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 288
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "subNot",
+                  "signature": "export type subNot<$NotExpected, $Actual> = $Actual extends $NotExpected ? StaticErrorAssertion<\n    'Actual type extends type it should not extend',\n    $NotExpected,\n    $Actual\n  >\n  : true",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 368
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "equalNever",
+                  "signature": "export type equalNever<$Actual> = [$Actual] extends [never] ? true\n  : StaticErrorAssertion<'Type is not never', never, $Actual>",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 420
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "equalAny",
+                  "signature": "export type equalAny<$Actual> = 0 extends 1 & $Actual ? true\n  : StaticErrorAssertion<'Type is not any', never, $Actual>",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 458
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "equalUnknown",
+                  "signature": "export type equalUnknown<$Actual> = unknown extends $Actual ? (0 extends 1 & $Actual ? StaticErrorAssertion<\n      'Type is any, not unknown',\n      unknown,\n      $Actual\n    >\n    : true)\n  : StaticErrorAssertion<'Type is not unknown', never, $Actual>",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 494
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "equalEmptyObject",
+                  "signature": "export type equalEmptyObject<$Actual extends object> = Obj.IsEmpty<$Actual> extends true ? true\n  : StaticErrorAssertion<'Type is not an empty object (has keys)', Obj.Empty, $Actual>",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 543
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "sup",
+                  "signature": "export type sup<$Supertype, $Actual> = $Actual extends $Supertype ? true\n  : StaticErrorAssertion<'Actual type does not extend expected supertype', $Supertype, $Actual>",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 593
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "parameters",
+                  "signature": "export type parameters<$Expected extends readonly any[], $Function extends (...args: any[]) => any> = sub<\n  $Expected,\n  Parameters<$Function>\n>",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 643
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "promise",
+                  "signature": "export type promise<$Type, $Actual> = $Actual extends Promise<$Type> ? true\n  : StaticErrorAssertion<\n    'Type is not a Promise with expected element type',\n    Promise<$Type>,\n    $Actual\n  >",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 686
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "promiseNot",
+                  "signature": "export type promiseNot<$Actual> = $Actual extends Promise<any> ? StaticErrorAssertion<\n    'Type is a Promise but should not be',\n    never,\n    $Actual\n  >\n  : true",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 726
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "array",
+                  "signature": "export type array<$ElementType, $Actual> = $Actual extends $ElementType[] ? true\n  : StaticErrorAssertion<\n    'Type is not an array with expected element type',\n    $ElementType[],\n    $Actual\n  >",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 765
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "exactConst",
+                  "signature": "exactConst = <$Expected>() =>\n<const $Actual>(\n  _actual: (<T>() => T extends $Actual ? 1 : 2) extends (<T>() => T extends $Expected ? 1 : 2) ? $Actual\n    : StaticErrorAssertion<\n      'Actual value type is not exactly equal to expected type',\n      $Expected,\n      $Actual\n    >,\n): void => {}",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 825
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "subConst",
+                  "signature": "subConst = <$Expected>() =>\n<const $Actual>(\n  _actual: $Actual extends $Expected ? $Actual\n    : StaticErrorAssertion<\n      'Actual value type does not extend expected type',\n      $Expected,\n      $Actual\n    >,\n): void => {}",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 853
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "bidConst",
+                  "signature": "bidConst = <$Expected>() =>\n<const $Actual>(\n  _actual: $Actual extends $Expected ? $Expected extends $Actual ? $Actual\n    : StaticErrorAssertion<\n      'Types are not bidirectionally assignable (Expected does not extend Actual)',\n      $Expected,\n      $Actual\n    >\n    : StaticErrorAssertion<\n      'Types are not bidirectionally assignable (Actual does not extend Expected)',\n      $Expected,\n      $Actual\n    >,\n): void => {}",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 882
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "Case",
+                  "signature": "export type Case<$Result extends true> = $Result",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 917
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "Cases",
+                  "signature": "export type Cases<\n  _T1 extends true = true,\n  _T2 extends true = true,\n  _T3 extends true = true,\n  _T4 extends true = true,\n  _T5 extends true = true,\n  _T6 extends true = true,\n  _T7 extends true = true,\n  _T8 extends true = true,\n  _T9 extends true = true,\n  _T10 extends true = true,\n  _T11 extends true = true,\n  _T12 extends true = true,\n  _T13 extends true = true,\n  _T14 extends true = true,\n  _T15 extends true = true,\n  _T16 extends true = true,\n  _T17 extends true = true,\n  _T18 extends true = true,\n  _T19 extends true = true,\n  _T20 extends true = true,\n  _T21 extends true = true,\n  _T22 extends true = true,\n  _T23 extends true = true,\n  _T24 extends true = true,\n  _T25 extends true = true,\n  _T26 extends true = true,\n  _T27 extends true = true,\n  _T28 extends true = true,\n  _T29 extends true = true,\n  _T30 extends true = true,\n  _T31 extends true = true,\n  _T32 extends true = true,\n  _T33 extends true = true,\n  _T34 extends true = true,\n  _T35 extends true = true,\n  _T36 extends true = true,\n  _T37 extends true = true,\n  _T38 extends true = true,\n  _T39 extends true = true,\n  _T40 extends true = true,\n  _T41 extends true = true,\n  _T42 extends true = true,\n  _T43 extends true = true,\n  _T44 extends true = true,\n  _T45 extends true = true,\n  _T46 extends true = true,\n  _T47 extends true = true,\n  _T48 extends true = true,\n  _T49 extends true = true,\n  _T50 extends true = true,\n  _T51 extends true = true,\n  _T52 extends true = true,\n  _T53 extends true = true,\n  _T54 extends true = true,\n  _T55 extends true = true,\n  _T56 extends true = true,\n  _T57 extends true = true,\n  _T58 extends true = true,\n  _T59 extends true = true,\n  _T60 extends true = true,\n  _T61 extends true = true,\n  _T62 extends true = true,\n  _T63 extends true = true,\n  _T64 extends true = true,\n  _T65 extends true = true,\n  _T66 extends true = true,\n  _T67 extends true = true,\n  _T68 extends true = true,\n  _T69 extends true = true,\n  _T70 extends true = true,\n  _T71 extends true = true,\n  _T72 extends true = true,\n  _T73 extends true = true,\n  _T74 extends true = true,\n  _T75 extends true = true,\n  _T76 extends true = true,\n  _T77 extends true = true,\n  _T78 extends true = true,\n  _T79 extends true = true,\n  _T80 extends true = true,\n  _T81 extends true = true,\n  _T82 extends true = true,\n  _T83 extends true = true,\n  _T84 extends true = true,\n  _T85 extends true = true,\n  _T86 extends true = true,\n  _T87 extends true = true,\n  _T88 extends true = true,\n  _T89 extends true = true,\n  _T90 extends true = true,\n  _T91 extends true = true,\n  _T92 extends true = true,\n  _T93 extends true = true,\n  _T94 extends true = true,\n  _T95 extends true = true,\n  _T96 extends true = true,\n  _T97 extends true = true,\n  _T98 extends true = true,\n  _T99 extends true = true,\n  _T100 extends true = true,\n> = true",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": "src/utils/ts/test.ts",
+                    "line": 939
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                }
+              ]
+            }
+          },
+          {
+            "name": "as",
+            "signature": "as = <$value>(value?: unknown): $value => value as any",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 24
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
+            "name": "Interpolatable",
+            "signature": "export type Interpolatable =\n  | string\n  | number\n  | bigint\n  | boolean\n  | null\n  | undefined\n  | symbol\n  | object\n  | unknown\n  | any\n  | never",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 48
+            },
+            "_tag": "type",
+            "type": "union"
+          },
+          {
+            "name": "StaticError",
+            "signature": "export interface StaticError<\n  $Message extends string = string,\n  $Context extends object = {},\n  $Hint extends string = '(none)',\n> {\n  ERROR: $Message\n  CONTEXT: $Context\n  HINT: $Hint\n}",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 102
+            },
+            "_tag": "type",
+            "type": "interface"
+          },
+          {
+            "name": "StaticErrorAny",
+            "signature": "export type StaticErrorAny = StaticError<string, object, string>",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 112
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "StaticErrorAssertion",
+            "signature": "export interface StaticErrorAssertion<\n  $Message extends string = string,\n  $Expected = unknown,\n  $Actual = unknown,\n  $Tip extends string = never,\n> {\n  MESSAGE: $Message\n  EXPECTED: $Expected\n  ACTUAL: $Actual\n  TIP: $Tip\n}",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 142
+            },
+            "_tag": "type",
+            "type": "interface"
+          },
+          {
+            "name": "Show",
+            "signature": "export type Show<$Type> = `\\`${Print<$Type>}\\``",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 177
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "ShowInTemplate",
+            "signature": "export type ShowInTemplate<$Type> = `'${Print<$Type>}'`",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 206
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "Simplify",
+            "signature": "export type Simplify<$Type> =\n  & {\n    [_ in keyof $Type]: $Type[_]\n  }\n  & unknown",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 246
+            },
+            "_tag": "type",
+            "type": "intersection"
+          },
+          {
+            "name": "SimplifyNullable",
+            "signature": "export type SimplifyNullable<$T> = null extends $T ? (Simplify<$T> & {}) | null : Simplify<$T> & {}",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 261
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "ExtendsExact",
+            "signature": "export type ExtendsExact<$Input, $Constraint> =\n  $Input extends $Constraint\n    ? $Constraint extends $Input\n      ? $Input\n      : never\n    : never",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 301
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "NotExtends",
+            "signature": "export type NotExtends<$A, $B> = [$A] extends [$B] ? false : true",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 350
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "Covariant",
+            "signature": "export type Covariant<$T> = () => $T",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 379
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "Contravariant",
+            "signature": "export type Contravariant<$T> = (value: $T) => void",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 406
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "Invariant",
+            "signature": "export type Invariant<$T> = (value: $T) => $T",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 428
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "Bivariant",
+            "signature": "export type Bivariant<$T> = { bivariantHack(value: $T): void }['bivariantHack']",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 450
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "Writeable",
+            "signature": "export type Writeable<$Object> = {\n  -readonly [k in keyof $Object]: $Object[k]\n}",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 461
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "IfExtendsElse",
+            "signature": "export type IfExtendsElse<$Type, $Extends, $Then, $Else> = $Type extends $Extends ? $Then : $Else",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 527
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "IntersectionIgnoreNeverOrAny",
+            "signature": "export type IntersectionIgnoreNeverOrAny<$T> = IsAny<$T> extends true ? unknown : $T extends never ? unknown : $T",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 538
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "NeverOrAnyToUnknown",
+            "signature": "export type NeverOrAnyToUnknown<$T> = IsAny<$T> extends true ? unknown : $T extends never ? unknown : $T",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 543
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "Narrowable",
+            "signature": "export type Narrowable = string | number | bigint | boolean | []",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 548
+            },
+            "_tag": "type",
+            "type": "union"
+          },
+          {
+            "name": "AnyAndUnknownToNever",
+            "signature": "export type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never : IsUnknown<$T> extends true ? never : $T",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 557
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "Union",
+            "signature": "export namespace Union {\n  /**\n   * Valid values for discriminant properties in tagged unions.\n   */\n  export type DiscriminantPropertyValue = string | number | symbol\n\n  /**\n   * Include only types that extend a constraint (opposite of Exclude).\n   * Filters a union type to only include members that extend the constraint.\n   *\n   * @example\n   * ```ts\n   * type T = Union.Include<string | number | boolean, string | number>  // string | number\n   * type T2 = Union.Include<'a' | 'b' | 1 | 2, string>  // 'a' | 'b'\n   * ```\n   */\n  export type Include<$T, $U> = $T extends $U ? $T : never\n\n  /**\n   * Convert a union type to a tuple type.\n   *\n   * @example\n   * ```ts\n   * type T = Union.ToTuple<'a' | 'b' | 'c'>  // ['a', 'b', 'c']\n   * ```\n   */\n  export type ToTuple<\n    $Union,\n    ___L = LastOf<$Union>,\n    ___N = [$Union] extends [never] ? true : false,\n  > = true extends ___N ? []\n    : [...ToTuple<Exclude<$Union, ___L>>, ___L]\n\n  /**\n   * Convert a union type to an intersection type.\n   *\n   * @example\n   * ```ts\n   * type U = { a: string } | { b: number }\n   * type I = Union.ToIntersection<U>  // { a: string } & { b: number }\n   * ```\n   */\n  export type ToIntersection<$U> = ($U extends any ? (k: $U) => void : never) extends ((k: infer __i__) => void) ? __i__\n    : never\n\n  /**\n   * Get the last type in a union.\n   *\n   * @example\n   * ```ts\n   * type T = Union.LastOf<'a' | 'b' | 'c'>  // 'c'\n   * ```\n   */\n  export type LastOf<$T> = ToIntersection<$T extends any ? () => $T : never> extends () => infer __r__ ? __r__\n    : never\n\n  /**\n   * Force union distribution in conditional types.\n   *\n   * @example\n   * ```ts\n   * type T = Union.Expanded<'a' | 'b'>  // 'a' | 'b' (forced distribution)\n   * ```\n   */\n  export type Expanded<$Union> = $Union\n\n  /**\n   * Union that ignores any and unknown.\n   */\n  export type IgnoreAnyOrUnknown<$T> = unknown extends $T ? never : $T\n\n  /**\n   * Check if any member of a union extends a type.\n   *\n   * @example\n   * ```ts\n   * type T1 = Union.IsAnyMemberExtends<string | number, string>  // true\n   * type T2 = Union.IsAnyMemberExtends<number | boolean, string>  // false\n   * ```\n   */\n  export type IsAnyMemberExtends<$T, $U> = (\n    $T extends any ? ($T extends $U ? true : false) : never\n  ) extends false ? false\n    : true\n\n  /**\n   * Checks if a union type contains a specific type.\n   *\n   * Returns `true` if any member of the union type extends the target type,\n   * `false` otherwise. This is useful for conditional type logic based on\n   * union membership.\n   *\n   * @template $Type - The union type to search within\n   * @template $LookingFor - The type to search for\n   *\n   * @example\n   * ```ts\n   * type HasString = Union.IsHas<string | number | boolean, string>  // true\n   * type HasDate = Union.IsHas<string | number, Date>                // false\n   * type HasLiteral = Union.IsHas<'a' | 'b' | 'c', 'b'>             // true\n   *\n   * // Useful in conditional types\n   * type ProcessValue<T> = Union.IsHas<T, Promise<any>> extends true\n   *   ? 'async'\n   *   : 'sync'\n   *\n   * type R1 = ProcessValue<string | Promise<string>>  // 'async'\n   * type R2 = ProcessValue<string | number>           // 'sync'\n   * ```\n   *\n   * @example\n   * ```ts\n   * // Works with complex types\n   * type Events = { type: 'click' } | { type: 'hover' } | { type: 'focus' }\n   * type HasClick = Union.IsHas<Events, { type: 'click' }>  // true\n   *\n   * // Check for any promise in union\n   * type MaybeAsync<T> = Union.IsHas<T, Promise<any>>\n   * type R3 = MaybeAsync<string | Promise<number>>  // true\n   * type R4 = MaybeAsync<string | number>           // false\n   * ```\n   */\n  // dprint-ignore\n  export type IsHas<$Type, $LookingFor> =\n    _IsHas<$Type, $LookingFor> extends false\n      ? false\n      : true\n\n  // dprint-ignore\n  type _IsHas<$Type, $LookingFor> =\n    $Type extends $LookingFor\n      ? true\n      : false\n\n  /**\n   * Merge all members of a union into a single type.\n   *\n   * @example\n   * ```ts\n   * type U = { a: string } | { b: number }\n   * type M = Union.Merge<U>  // { a: string; b: number }\n   * ```\n   */\n  export type Merge<$U> = {\n    [\n      k in (\n        $U extends any ? keyof $U : never\n      )\n    ]: $U extends any ? (k extends keyof $U ? $U[k] : never) : never\n  }\n}",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/ts.ts",
+              "line": 564
+            },
+            "_tag": "value",
+            "type": "namespace",
+            "module": {
+              "name": "Union",
+              "description": "",
+              "exports": []
+            }
+          },
+          {
+            "name": "Print",
+            "signature": "export type Print<$Type, $Fallback extends string | undefined = undefined> =\n  // Language base category types\n    IsAny<$Type> extends true     ? 'any'\n  : IsUnknown<$Type> extends true ? 'unknown'\n  : IsNever<$Type> extends true   ? 'never'\n\n  // Special union type boolean which we display as boolean insead of true | false\n  : [$Type] extends [boolean]      ? ([boolean] extends [$Type] ? 'boolean' : `${$Type}`)\n\n  // General unions types\n  : UnionToTuple<$Type> extends ArrMut.Any2OrMoreRO ? _PrintUnion<UnionToTuple<$Type>>\n\n  // Primitive and literal types\n  : $Type extends true             ? 'true'\n  : $Type extends false            ? 'false'\n  : $Type extends void             ? ($Type extends undefined ? 'undefined' : 'void')\n  : $Type extends string           ? (string extends $Type    ? 'string'  : `'${$Type}'`)\n  : $Type extends number           ? (number extends $Type    ? 'number'  : `${$Type}`)\n  : $Type extends bigint           ? (bigint extends $Type    ? 'bigint'  : `${$Type}n`)\n  : $Type extends null             ? 'null'\n  : $Type extends undefined        ? 'undefined'\n\n  // User-provided fallback takes precedence if type is not a primitive\n  : $Fallback extends string       ? $Fallback\n\n  // Common object types and specific generic patterns\n  : $Type extends Promise<infer T> ? `Promise<${Print<T>}>`\n  : $Type extends (infer T)[]      ? `Array<${Print<T>}>`\n  : $Type extends readonly (infer T)[]      ? `ReadonlyArray<${Print<T>}>`\n  : $Type extends Date             ? 'Date'\n  : $Type extends RegExp           ? 'RegExp'\n  //\n  : $Type extends Function         ? 'Function'\n  : $Type extends symbol           ? 'symbol'\n\n  // General object fallback\n  : $Type extends object           ? 'object'\n\n  // Ultimate fallback\n  : '?'",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/print.ts",
+              "line": 6
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "_PrintUnion",
+            "signature": "export type _PrintUnion<$Type extends ArrMut.AnyRO> =\n    $Type extends readonly [infer __first__, ...infer __rest__ extends ArrMut.Any1OrMoreRO]\n      ? `${Print<__first__>} | ${_PrintUnion<__rest__>}`\n      : $Type extends readonly [infer __first__]\n        ? `${Print<__first__>}`\n        : $Type extends ArrMut.EmptyRO\n          ? ''\n          : never",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/print.ts",
+              "line": 48
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "isTypeWith",
+            "signature": "isTypeWith = <reference>(reference: reference) => {\n  return <valueGiven>(\n    value: ValidateIsSupertype<reference, valueGiven>,\n  ): value is reference extends valueGiven ? reference : never => {\n    return value === reference as any\n  }\n}",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/type-guards.ts",
+              "line": 18
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
+            "name": "isntTypeWith",
+            "signature": "isntTypeWith = <reference>(reference: reference) => {\n  return <valueGiven>(\n    value: ValidateIsSupertype<reference, valueGiven>,\n  ): value is reference extends valueGiven ? Exclude<valueGiven, reference> : never => {\n    return value !== reference as any\n  }\n}",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": "src/utils/ts/type-guards.ts",
+              "line": 41
+            },
+            "_tag": "value",
+            "type": "function"
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "extractedAt": "2025-10-09T01:19:51.660Z",
+    "extractorVersion": "0.1.0"
+  }
+}

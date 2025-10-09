@@ -56,6 +56,11 @@ export const extractModuleFromFile = (name: string, sourceFile: SourceFile): Mod
       continue
     }
 
+    // Skip namespace re-exports (they contain '* as' in the name)
+    if (exportName.includes('* as')) {
+      continue
+    }
+
     // Skip if already processed as namespace re-export
     if (moduleExports.some((e) => e.name === exportName)) {
       continue

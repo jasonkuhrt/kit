@@ -57,104 +57,31 @@ property = <Ts extends [unknown, ...unknown[]]>(
 }
 ```
 
-### describe
-
-```typescript
-export function describe(): TableBuilderBase<
-  { i: unknown; o: unknown; context: {}; fn: Fn.AnyAny }
->
-```
-
 ### on
 
 ```typescript
 export function on<$fn extends Fn.AnyAny>(
   $fn: $fn,
-): TableBuilderWithFunction<{ i: never; o: never; context: {}; fn: $fn }> {
-  const initialState: BuilderState = {
-    ...defaultState,
+): Types.TestBuilder<
+  Types.UpdateState<Types.BuilderTypeStateEmpty, { fn: $fn }>
+> {
+  const initialState = {
+    ...Builder.defaultState,
     fn: Option.some($fn),
   }
-  return createBuilder({
-    ...initialState,
-    typeState: { i: undefined, o: undefined, context: {}, fn: $fn },
-  }) as TableBuilderWithFunction<
-    { i: never; o: never; context: {}; fn: typeof $fn }
-  >
+  return Builder.create(initialState) as any
 }
 ```
 
-## Types
-
-### Case
+### describe
 
 ```typescript
-export type Case<$Input extends object = object> =
-  | (object extends $Input ? CaseFilled : (CaseFilled & $Input))
-  | CaseTodo
-```
-
-### CaseFilled
-
-```typescript
-export interface CaseFilled {
-  /** Descriptive name for the test case */
-  n: string
-  /** Skip this test case. If string, provides skip reason */
-  skip?: boolean | string
-  /** Conditionally skip this test case based on runtime condition */
-  skipIf?: () => boolean
-  /** Run only this test case (and other test cases marked with only) */
-  only?: boolean
-  /** Tags for categorizing and filtering test cases */
-  tags?: string[]
-  /** todo */
-  expected?: object
+export function describe(
+  description?: string,
+): Types.TestBuilderEmpty {
+  const initialState = description
+    ? { ...Builder.defaultState, config: { description } }
+    : Builder.defaultState
+  return Builder.create(initialState)
 }
-```
-
-### CaseTodo
-
-```typescript
-export interface CaseTodo {
-  /** Descriptive name for the test case */
-  n: string
-  /** Mark as todo. If string, provides todo reason */
-  todo: boolean | string
-}
-```
-
-### SuiteCaseBase
-
-```typescript
-export interface SuiteCaseBase {
-  /** Descriptive name for the test case */
-  n: string
-  /** Skip this test case. If string, provides skip reason */
-  skip?: boolean | string
-  /** Conditionally skip this test case based on runtime condition */
-  skipIf?: () => boolean
-  /** Run only this test case (and other test cases marked with only) */
-  only?: boolean
-  /** Tags for categorizing and filtering test cases */
-  tags?: string[]
-}
-```
-
-### SuiteCase
-
-```typescript
-export type SuiteCase<$I, $O, $Custom = {}> =
-  & SuiteCaseBase
-  & ($I extends void | never ? {} : { i: $I })
-  & ($O extends void | never ? {} : { o: $O })
-  & $Custom
-```
-
-### TestCase
-
-```typescript
-export type TestCase<$I, $O, $Custom = {}> =
-  | SuiteCase<$I, $O, $Custom>
-  | CaseTodo
 ```
