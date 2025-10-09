@@ -146,6 +146,25 @@ describe('matrix feature', () => {
       const result = input * matrix.multiplier + matrix.offset
       expect(result).toBe(output * matrix.multiplier + matrix.offset)
     })
+
+  // Test with large object to verify truncation
+  const largeObject = {
+    operations: { query: { field1: 'a', field2: 'b', field3: 'c', field4: 'd' } },
+    types: { Type1: 'x', Type2: 'y', Type3: 'z' },
+    config: { setting1: true, setting2: false },
+  }
+
+  Test
+    .describe('matrix with large objects')
+    .inputType<number>()
+    .outputType<number>()
+    .matrix({
+      config: [largeObject],
+    })
+    .cases([42, 42])
+    .test(({ input, output }) => {
+      expect(input).toBe(output)
+    })
 })
 
 describe('nested describe syntax', () => {

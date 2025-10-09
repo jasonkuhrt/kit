@@ -172,6 +172,20 @@ export function create(state: State = defaultState): any {
     const fn = Option.getOrUndefined(state.fn)
     const outputMapper = Option.getOrUndefined(state.outputMapper)
 
+    /**
+     * Stringify values for test names.
+     *
+     * - Functions: Use .toString() with whitespace compression
+     * - All other values: Use object-inspect (handles circular refs, special types, etc.)
+     */
+    const stringifyForTestName = (value: any, maxLength = 80): string => {
+      const str = typeof value === 'function'
+        ? value.toString().replace(/\s+/g, ' ').trim()
+        : objectInspect(value)
+
+      return str.length <= maxLength ? str : str.slice(0, maxLength) + '...'
+    }
+
     const parseCase = (caseData: any): {
       name: string
       input: any[]
@@ -184,20 +198,6 @@ export function create(state: State = defaultState): any {
       runner?: any
       isRunnerCase?: boolean
     } => {
-      /**
-       * Stringify values for test names.
-       *
-       * - Functions: Use .toString() with whitespace compression
-       * - All other values: Use object-inspect (handles circular refs, special types, etc.)
-       */
-      const stringifyForTestName = (value: any, maxLength = 80): string => {
-        const str = typeof value === 'function'
-          ? value.toString().replace(/\s+/g, ' ').trim()
-          : objectInspect(value)
-
-        return str.length <= maxLength ? str : str.slice(0, maxLength) + '...'
-      }
-
       const generateName = (input: any, output?: any): string => {
         const fnName = fn?.name || 'fn'
         const inputStr = Array.isArray(input)
@@ -303,7 +303,7 @@ export function create(state: State = defaultState): any {
           const name = Object.keys(matrixCombo).length > 0
             ? `${baseName} [matrix: ${
               Object.entries(matrixCombo)
-                .map(([k, v]) => `${k}=${objectInspect(v)}`)
+                .map(([k, v]) => `${k}=${stringifyForTestName(v, 40)}`)
                 .join(', ')
             }]`
             : baseName
