@@ -248,12 +248,37 @@ export type Simplify<$Type> =
   & unknown
 
 /**
- * Simplify a nullable type while preserving null.
+ * Simplify a type while preserving `| null` unions.
+ *
+ * This solves a subtle problem with {@link Simplify}: when you have `Type | null`,
+ * using `Simplify<Type | null>` can absorb or transform the `null` in unexpected ways
+ * due to the intersection with `& unknown` or `& {}`. This utility checks for null first,
+ * then explicitly reconstructs the union to ensure `| null` remains intact.
+ *
+ * **When to use:**
+ * - Use {@link SimplifyNullable} when simplifying types that may contain `| null` or `| undefined`
+ * - Use {@link Simplify} for non-nullable types or when null handling doesn't matter
+ *
+ * @template $T - The type to simplify
  *
  * @example
  * ```ts
- * type T1 = SimplifyNullable<{ a: 1 } | null>  // { a: 1 } | null
- * type T2 = SimplifyNullable<{ a: 1 }>  // { a: 1 }
+ * // Problem: Plain Simplify can mangle nullable unions
+ * type User = { name: string } & { age: number }
+ * type MaybeUser = User | null
+ * type Bad = Simplify<MaybeUser>  // May not preserve | null correctly
+ *
+ * // Solution: SimplifyNullable preserves the null union
+ * type Good = SimplifyNullable<MaybeUser>  // { name: string; age: number } | null
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Works with non-nullable types too
+ * type Simple = SimplifyNullable<{ a: 1 } & { b: 2 }>  // { a: 1; b: 2 }
+ *
+ * // Preserves null in unions
+ * type Nullable = SimplifyNullable<({ a: 1 } & { b: 2 }) | null>  // { a: 1; b: 2 } | null
  * ```
  */
 export type SimplifyNullable<$T> = null extends $T ? (Simplify<$T> & {}) | null : Simplify<$T> & {}
