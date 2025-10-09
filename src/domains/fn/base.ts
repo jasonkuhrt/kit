@@ -29,7 +29,22 @@ export type GuardedType<$T> = $T extends (x: any) => x is infer __u__ ? __u__ : 
 
 /**
  * Modify function such that it only returns the given type.
+ *
+ * Automatically handles async functions by unwrapping the Promise, extracting the type,
+ * and rewrapping in a Promise. For sync functions, the type is extracted directly.
+ *
  * Assumes that the given type is among the possible return types of the function.
+ *
+ * @example
+ * ```ts
+ * // Sync function
+ * type Fn1 = (x: number) => string | number
+ * type Result1 = ReturnExtract<string, Fn1>  // (x: number) => string
+ *
+ * // Async function - automatically unwraps and rewraps Promise
+ * type Fn2 = (x: number) => Promise<string | number>
+ * type Result2 = ReturnExtract<string, Fn2>  // (x: number) => Promise<string>
+ * ```
  */
 // dprint-ignore
 export type ReturnExtract<$Type, $Fn extends AnyAny> =
@@ -48,7 +63,22 @@ export type ReturnReplace<$Fn extends AnyAny, $Type> =
 
 /**
  * Modify function such that it does not return the given type.
+ *
+ * Automatically handles async functions by unwrapping the Promise, excluding the type,
+ * and rewrapping in a Promise. For sync functions, the type is excluded directly.
+ *
  * If function does not return the given the type, then this is effectively an identity function.
+ *
+ * @example
+ * ```ts
+ * // Sync function
+ * type Fn1 = (x: number) => string | null
+ * type Result1 = ReturnExclude<null, Fn1>  // (x: number) => string
+ *
+ * // Async function - automatically unwraps and rewraps Promise
+ * type Fn2 = (x: number) => Promise<string | null>
+ * type Result2 = ReturnExclude<null, Fn2>  // (x: number) => Promise<string>
+ * ```
  */
 // dprint-ignore
 export type ReturnExclude<$Type, $Fn extends AnyAny> =
@@ -64,7 +94,22 @@ export type ReturnExcludeNull<$Fn extends AnyAny> = ReturnExclude<null, $Fn>
 
 /**
  * Modify function such that it can return an additional type along with its original return types.
+ *
+ * Automatically handles async functions by unwrapping the Promise, adding the type to the union,
+ * and rewrapping in a Promise. For sync functions, the type is added directly to the return type union.
+ *
  * This is useful for functions that may return early with a specific type (like void).
+ *
+ * @example
+ * ```ts
+ * // Sync function
+ * type Fn1 = (x: number) => string
+ * type Result1 = ReturnInclude<null, Fn1>  // (x: number) => string | null
+ *
+ * // Async function - automatically unwraps and rewraps Promise
+ * type Fn2 = (x: number) => Promise<string>
+ * type Result2 = ReturnInclude<null, Fn2>  // (x: number) => Promise<string | null>
+ * ```
  */
 // dprint-ignore
 export type ReturnInclude<$Type, $Fn extends AnyAny> =

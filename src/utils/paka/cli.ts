@@ -30,7 +30,23 @@ const generateDocs = () => {
   // Extract interface model
   const model = extract({
     projectRoot,
-    entrypoints: ['./test', './ts'], // Start with these two
+    entrypoints: [
+      // Testing & TypeScript
+      './test',
+      './ts',
+      // Core data structures
+      './arr',
+      './obj',
+      './str',
+      './fn',
+      './num',
+      // Practical utilities
+      './err',
+      './prom',
+      './rec',
+      './json',
+      './value',
+    ],
   })
 
   console.log(`Extracted ${model.entrypoints.length} entrypoints`)
@@ -43,6 +59,7 @@ const generateDocs = () => {
   // Generate VitePress markdown
   generate(model, {
     outputDir: join(projectRoot, 'docs'),
+    githubUrl: 'https://github.com/jasonkuhrt/kit',
   })
 
   console.log('✅ Documentation generated successfully')

@@ -14,88 +14,77 @@ export default defineConfig({
       { text: 'API', link: '/api/' },
     ],
 
-    sidebar: [
-      {
-        text: 'Introduction',
-        items: [
-          { text: 'Getting Started', link: '/guide/' },
-          { text: 'Installation', link: '/guide/installation' },
-          { text: 'Philosophy', link: '/guide/philosophy' },
-        ],
-      },
-      {
-        text: 'Core Concepts',
-        items: [
-          { text: 'Module Structure', link: '/guide/module-structure' },
-          { text: 'Currying Pattern', link: '/guide/currying' },
-          { text: 'Type Safety', link: '/guide/type-safety' },
-        ],
-      },
-      {
-        text: 'API Reference',
-        items: [
-          {
-            text: 'Data Structures',
-            collapsed: false,
-            items: [
-              { text: 'Array (arr)', link: '/api/arr' },
-              { text: 'Object (obj)', link: '/api/obj' },
-              { text: 'String (str)', link: '/api/str' },
-              { text: 'Record (rec)', link: '/api/rec' },
-              { text: 'Group', link: '/api/group' },
-              { text: 'Index (idx)', link: '/api/idx' },
-              { text: 'Tree', link: '/api/tree' },
-            ],
-          },
-          {
-            text: 'Functional Programming',
-            collapsed: false,
-            items: [
-              { text: 'Function (fn)', link: '/api/fn' },
-              { text: 'Promise (prom)', link: '/api/prom' },
-              { text: 'Cache', link: '/api/cache' },
-            ],
-          },
-          {
-            text: 'Type/Value',
-            collapsed: false,
-            items: [
-              { text: 'Boolean (bool)', link: '/api/bool' },
-              { text: 'Number (num)', link: '/api/num' },
-              { text: 'Null', link: '/api/null' },
-              { text: 'Undefined', link: '/api/undefined' },
-              { text: 'Value', link: '/api/value' },
-              { text: 'Equality (eq)', link: '/api/eq' },
-            ],
-          },
-          {
-            text: 'I/O & External',
-            collapsed: false,
-            items: [
-              { text: 'File System (fs)', link: '/api/fs' },
-              { text: 'FS Layout', link: '/api/fs-layout' },
-              { text: 'FS Relative', link: '/api/fs-relative' },
-              { text: 'HTTP', link: '/api/http' },
-              { text: 'CLI', link: '/api/cli' },
-              { text: 'URL', link: '/api/url' },
-              { text: 'Path', link: '/api/path' },
-            ],
-          },
-          {
-            text: 'Development',
-            collapsed: false,
-            items: [
-              { text: 'Debug', link: '/api/debug' },
-              { text: 'TypeScript (ts)', link: '/api/ts' },
-              { text: 'Language', link: '/api/language' },
-              { text: 'Codec', link: '/api/codec' },
-              { text: 'JSON', link: '/api/json' },
-              { text: 'Error (err)', link: '/api/err' },
-            ],
-          },
-        ],
-      },
-    ],
+    outline: {
+      level: [2, 3], // Show h2 and h3 headings in the outline
+    },
+
+    sidebar: {
+      // Guide sidebar
+      '/guide/': [
+        {
+          text: 'Introduction',
+          items: [
+            { text: 'Getting Started', link: '/guide/' },
+            { text: 'Installation', link: '/guide/installation' },
+            { text: 'Philosophy', link: '/guide/philosophy' },
+          ],
+        },
+        {
+          text: 'Core Concepts',
+          items: [
+            { text: 'Module Structure', link: '/guide/module-structure' },
+            { text: 'Currying Pattern', link: '/guide/currying' },
+            { text: 'Type Safety', link: '/guide/type-safety' },
+          ],
+        },
+      ],
+
+      // API sidebar
+      '/api/': [
+        {
+          text: 'API Reference',
+          items: [
+            { text: 'Overview', link: '/api/' },
+          ],
+        },
+        {
+          text: 'Core Data Structures',
+          items: [
+            { text: 'Arr', link: '/api/arr' },
+            { text: 'Obj', link: '/api/obj' },
+            { text: 'Str', link: '/api/str' },
+            { text: 'Fn', link: '/api/fn' },
+            { text: 'Num', link: '/api/num' },
+          ],
+        },
+        {
+          text: 'Utilities',
+          items: [
+            { text: 'Err', link: '/api/err' },
+            { text: 'Prom', link: '/api/prom' },
+            { text: 'Rec', link: '/api/rec' },
+            { text: 'Json', link: '/api/json' },
+            { text: 'Value', link: '/api/value' },
+          ],
+        },
+        {
+          text: 'Development',
+          items: [
+            { text: 'Test', link: '/api/test' },
+            {
+              text: 'Ts',
+              link: '/api/ts',
+              items: [
+                { text: 'Kind', link: '/api/ts/kind' },
+                { text: 'Test', link: '/api/ts/test' },
+                { text: 'Union', link: '/api/ts/union' },
+                { text: 'Variance', link: '/api/ts/variance' },
+              ],
+            },
+          ],
+        },
+      ],
+    },
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/jasonkuhrt/kit' },

@@ -29,13 +29,23 @@ export const extractModuleFromFile = (name: string, sourceFile: SourceFile): Mod
         // Extract the referenced module
         const nestedModule = extractModuleFromFile(nsName, referencedFile)
 
+        // Get description from JSDoc on the export declaration itself
+        const jsdoc = parseJSDoc(exportDecl)
+
+        // Override nested module's description with the one from the export declaration
+        // This ensures user-friendly descriptions from $.ts take precedence over
+        // implementation details from $$.ts
+        if (jsdoc.description) {
+          nestedModule.description = jsdoc.description
+        }
+
         // Create a namespace export with the nested module
         moduleExports.push({
           _tag: 'value',
           name: nsName,
           type: 'namespace',
           signature: `export * as ${nsName}`,
-          description: nestedModule.description || '',
+          description: jsdoc.description || nestedModule.description,
           examples: [],
           deprecated: undefined,
           tags: {},
@@ -71,9 +81,30 @@ export const extractModuleFromFile = (name: string, sourceFile: SourceFile): Mod
     moduleExports.push(extractExport(exportName, decl))
   }
 
-  // Try to get module-level JSDoc from first statement (could be a comment or export)
-  const firstExportDecl = exportDeclarations[0]
-  const description = firstExportDecl ? parseJSDoc(firstExportDecl).description || '' : ''
+  // Try to get module-level JSDoc from file's leading comment block
+  let description = ''
+
+  // Get all comments at the start of the file (before any code)
+  const statements = sourceFile.getStatements()
+  if (statements.length > 0) {
+    const firstStatement = statements[0]!
+    const leadingComments = firstStatement.getLeadingCommentRanges()
+
+    for (const comment of leadingComments) {
+      const commentText = comment.getText()
+      // Check if it's a JSDoc comment (/** ... */)
+      if (commentText.startsWith('/**') && commentText.endsWith('*/')) {
+        // Remove /** and */ and trim
+        description = commentText
+          .slice(3, -2)
+          .split('\n')
+          .map(line => line.replace(/^\s*\*\s?/, ''))
+          .join('\n')
+          .trim()
+        break // Use the first JSDoc comment
+      }
+    }
+  }
 
   return {
     name,

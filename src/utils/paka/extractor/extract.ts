@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { Project } from 'ts-morph'
 import type { Entrypoint, InterfaceModel } from '../schema.js'
+import { parseJSDoc } from './nodes/jsdoc.js'
 import { extractModuleFromFile } from './nodes/module.js'
 
 /**
@@ -83,6 +84,7 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
     // Check if this is a namespace re-export pattern: export * as Name from './$$'
     // If so, resolve to the actual module file
     let actualSourceFile = sourceFile
+    let namespaceDescription: string | undefined
     const exportDeclarations = sourceFile.getExportDeclarations()
 
     for (const exportDecl of exportDeclarations) {
@@ -93,6 +95,24 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
         // This is a namespace re-export - resolve to the actual file
         const referencedFile = exportDecl.getModuleSpecifierSourceFile()
         if (referencedFile) {
+          // Extract JSDoc from the namespace export declaration before switching files
+          // ExportDeclaration nodes don't have getJsDocs(), so we need to extract from leading comments
+          const leadingComments = exportDecl.getLeadingCommentRanges()
+
+          for (const comment of leadingComments) {
+            const commentText = comment.getText()
+            // Check if it's a JSDoc comment (/** ... */)
+            if (commentText.startsWith('/**') && commentText.endsWith('*/')) {
+              // Remove /** and */ and trim
+              namespaceDescription = commentText
+                .slice(3, -2)
+                .split('\n')
+                .map(line => line.replace(/^\s*\*\s?/, ''))
+                .join('\n')
+                .trim()
+              break
+            }
+          }
           actualSourceFile = referencedFile
           break
         }
@@ -101,6 +121,11 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
 
     // Extract module
     const module = extractModuleFromFile(moduleName, actualSourceFile)
+
+    // Override module description with namespace export JSDoc if available
+    if (namespaceDescription) {
+      module.description = namespaceDescription
+    }
 
     extractedEntrypoints.push({
       packagePath,

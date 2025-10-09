@@ -18,7 +18,13 @@ export type JSDocInfo = {
  * @returns Parsed JSDoc information
  */
 export const parseJSDoc = (decl: Node): JSDocInfo => {
-  const jsDocs = decl.getChildrenOfKind(Node.isJSDoc as any) as JSDoc[]
+  // Try to get JSDoc using the proper API
+  let jsDocs: JSDoc[] = []
+
+  // Different node types have different ways to get JSDoc
+  if ('getJsDocs' in decl && typeof (decl as any).getJsDocs === 'function') {
+    jsDocs = (decl as any).getJsDocs()
+  }
 
   if (jsDocs.length === 0) {
     return {

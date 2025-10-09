@@ -11,6 +11,8 @@ export type VitePressConfig = {
   outputDir: string
   /** Base URL for the docs site */
   baseUrl?: string
+  /** GitHub repository URL for source links (e.g., 'https://github.com/owner/repo') */
+  githubUrl?: string
 }
 
 /**
@@ -25,22 +27,34 @@ type Page = {
 }
 
 /**
+ * Generation context passed through rendering functions.
+ */
+type Context = {
+  githubUrl?: string
+}
+
+/**
  * Generate VitePress documentation from interface model.
  *
  * @param model - The extracted interface model
  * @param config - VitePress generation configuration
  */
 export const generate = (model: InterfaceModel, config: VitePressConfig): void => {
-  const { outputDir } = config
+  const { outputDir, githubUrl } = config
+  const context: Context = githubUrl ? { githubUrl } : {}
 
   // Ensure output directory exists
   mkdirSync(join(outputDir, 'api'), { recursive: true })
+
+  // Generate API index page
+  const indexContent = generateApiIndex(model)
+  writeFileSync(join(outputDir, 'api/index.md'), indexContent, 'utf-8')
 
   // Generate pages for all modules and namespaces
   const pages = generatePages(model)
 
   for (const page of pages) {
-    const content = generatePageContent(page)
+    const content = generatePageContent(page, context)
     const filepath = join(outputDir, page.filepath)
 
     // Ensure directory exists
@@ -51,6 +65,29 @@ export const generate = (model: InterfaceModel, config: VitePressConfig): void =
   }
 
   console.log(`Generated ${pages.length} documentation pages`)
+}
+
+/**
+ * Generate API index page listing all modules.
+ */
+const generateApiIndex = (model: InterfaceModel): string => {
+  const modules = model.entrypoints.map((ep) => {
+    const module = ep.module as Module
+    const moduleName = module.name
+    const url = `/api/${kebab(moduleName)}`
+    const description = module.description || ''
+
+    return `- [**${moduleName}**](${url})${description ? ` - ${description}` : ''}`
+  })
+
+  return `# API Reference
+
+Browse the complete API documentation for @wollybeard/kit.
+
+## Modules
+
+${modules.join('\n')}
+`
 }
 
 /**
@@ -113,7 +150,7 @@ const generateNamespacePages = (module: Module, breadcrumbs: string[]): Page[] =
 /**
  * Generate markdown content for a page.
  */
-const generatePageContent = (page: Page): string => {
+const generatePageContent = (page: Page, context: Context): string => {
   const { module, breadcrumbs } = page
 
   // Breadcrumb navigation
@@ -135,7 +172,7 @@ const generatePageContent = (page: Page): string => {
     breadcrumbNav + (module.description || ''),
     renderImportSection(breadcrumbs),
     namespaceExports.length > 0 ? renderNamespacesSection(namespaceExports, breadcrumbs) : '',
-    renderExportsSection(regularExports),
+    renderExportsSection(regularExports, context),
   ].filter(Boolean)
 
   return sections.join('\n\n')
@@ -181,7 +218,7 @@ const renderNamespacesSection = (namespaces: Export[], breadcrumbs: string[]): s
 /**
  * Render all exports grouped by type.
  */
-const renderExportsSection = (exports: Export[]): string => {
+const renderExportsSection = (exports: Export[], context: Context): string => {
   // Group by type
   const functions = exports.filter((e: any) => e._tag === 'value' && e.type === 'function')
   const constants = exports.filter((e: any) => e._tag === 'value' && e.type === 'const')
@@ -189,26 +226,55 @@ const renderExportsSection = (exports: Export[]): string => {
   const types = exports.filter((e: any) => e._tag === 'type')
 
   const sections = [
-    functions.length > 0 ? `## Functions\n\n${functions.map(renderExport).join('\n\n')}` : '',
-    constants.length > 0 ? `## Constants\n\n${constants.map(renderExport).join('\n\n')}` : '',
-    classes.length > 0 ? `## Classes\n\n${classes.map(renderExport).join('\n\n')}` : '',
-    types.length > 0 ? `## Types\n\n${types.map(renderExport).join('\n\n')}` : '',
+    functions.length > 0 ? `## Functions\n\n${functions.map((e) => renderExport(e, context)).join('\n\n')}` : '',
+    constants.length > 0 ? `## Constants\n\n${constants.map((e) => renderExport(e, context)).join('\n\n')}` : '',
+    classes.length > 0 ? `## Classes\n\n${classes.map((e) => renderExport(e, context)).join('\n\n')}` : '',
+    types.length > 0 ? `## Types\n\n${types.map((e) => renderExport(e, context)).join('\n\n')}` : '',
   ].filter(Boolean)
 
   return sections.join('\n\n')
 }
 
 /**
+ * Demote markdown headings by adding a specified number of levels.
+ *
+ * This is used to ensure JSDoc descriptions don't break the document hierarchy.
+ * For example, if an export is h3, its description headings should be h4+.
+ *
+ * @param markdown - The markdown content to transform
+ * @param levels - Number of heading levels to add (e.g., 2 transforms ## to ####)
+ * @returns Transformed markdown with demoted headings
+ */
+const demoteHeadings = (markdown: string, levels: number): string => {
+  if (!markdown || levels === 0) return markdown
+
+  // Add 'levels' number of # to each heading
+  const prefix = '#'.repeat(levels)
+
+  // Replace headings while preserving content and whitespace
+  // Matches: start of line, one or more #, space, content
+  return markdown.replace(/^(#+)(\s)/gm, `$1${prefix}$2`)
+}
+
+/**
  * Render a single export.
  */
-const renderExport = (exp: Export): string => {
+const renderExport = (exp: Export, context: Context): string => {
   const deprecated = exp.deprecated ? `:::warning DEPRECATED\n${exp.deprecated}\n:::\n\n` : ''
+
+  // Demote headings in description by 2 levels (exports are h3, so description content becomes h4+)
+  const description = exp.description ? demoteHeadings(exp.description, 2) : ''
 
   const examples = exp.examples.length > 0 ? `\n\n**Examples:**\n\n${exp.examples.map(renderExample).join('\n\n')}` : ''
 
-  return `### ${exp.name}
+  // GitHub source link - inline icon on the right side
+  const sourceLink = context.githubUrl && exp.sourceLocation
+    ? ` <sub style="float: right;">[📄](${context.githubUrl}/blob/main/${exp.sourceLocation.file}#L${exp.sourceLocation.line})</sub>`
+    : ''
 
-${deprecated}${exp.description || ''}
+  return `### ${exp.name}${sourceLink}
+
+${deprecated}${description}
 
 \`\`\`typescript
 ${exp.signature}
