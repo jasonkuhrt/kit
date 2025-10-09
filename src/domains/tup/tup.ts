@@ -431,6 +431,7 @@ export type ReduceObjectsMergeShallow<$Objects extends readonly object[]> =
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 /**
- * Provide a default value if the type is undefined.
+ * Internal helper: Provide a default value if the type is `undefined`.
+ * Used by GetNextIndexOr and FindValueAfterOr.
  */
-type OrDefault<$T, $Default> = $T extends undefined ? $Default : $T
+type OrDefault<$Value, $Default> = $Value extends undefined ? $Default : $Value

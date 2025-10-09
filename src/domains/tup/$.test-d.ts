@@ -55,3 +55,9 @@ type _TakeValuesBefore = Ts.Test.Cases<
   Ts.Test.exact<Tup.TakeValuesBefore<'a', ['a', 'b', 'c']>, []>,
   Ts.Test.exact<Tup.TakeValuesBefore<'d', ['a', 'b', 'c', 'd']>, ['a', 'b', 'c']>
 >
+
+// GetNextIndexOr and FindValueAfterOr test OrDefault indirectly
+type _GetNextIndexOr = Ts.Test.Cases<
+  Ts.Test.exact<Tup.GetNextIndexOr<['a', 'b', 'c'], 0, 'default'>, 'b'>,
+  Ts.Test.exact<Tup.GetNextIndexOr<['a', 'b', 'c'], 2, 'default'>, 'default'>
+>
