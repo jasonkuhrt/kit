@@ -30,7 +30,7 @@ type _IsEmpty = Ts.Test.Cases<
 
 type Users = readonly [
   { id: 'alice'; name: 'Alice' },
-  { id: 'bob'; name: 'Bob' }
+  { id: 'bob'; name: 'Bob' },
 ]
 
 type _IndexBy = Ts.Test.Cases<

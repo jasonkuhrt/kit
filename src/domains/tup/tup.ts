@@ -322,8 +322,8 @@ export type GetLastValue<$T extends readonly [any, ...any[]]> = $T[Num.MinusOne<
  * type T2 = Tup.IsLastValue<2, [1, 2, 3]>  // false
  * ```
  */
-export type IsLastValue<$Value, $List extends readonly [any, ...any[]]> =
-  $Value extends GetLastValue<$List> ? true : false
+export type IsLastValue<$Value, $List extends readonly [any, ...any[]]> = $Value extends GetLastValue<$List> ? true
+  : false
 
 /**
  * Find the index of a value in a non-empty tuple.
@@ -397,8 +397,10 @@ export type TakeValuesBefore<$Value, $List extends readonly any[]> =
  * type T2 = Tup.FindValueAfterOr<'c', ['a', 'b', 'c'], 'default'>  // 'default'
  * ```
  */
-export type FindValueAfterOr<$Value, $List extends readonly [any, ...any[]], $OrValue> =
-  OrDefault<$List[Num.PlusOne<FindIndexForValue<$Value, $List>> & number], $OrValue>
+export type FindValueAfterOr<$Value, $List extends readonly [any, ...any[]], $OrValue> = OrDefault<
+  $List[Num.PlusOne<FindIndexForValue<$Value, $List>> & number],
+  $OrValue
+>
 
 /**
  * Shallow merge all objects in a tuple from left to right.
