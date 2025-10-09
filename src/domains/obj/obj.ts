@@ -199,18 +199,6 @@ export type PartialDeep<$Type> =
 //
 //
 
-// Note: PickWhereValueExtends moved to filter.ts
-
-// Note: ReplaceProperty moved to merge.ts
-
-// Note: ExactNonEmpty moved to type.ts
-
-// Note: KeysArray moved to get.ts
-
-// Note: KeysReadonlyArray moved to get.ts
-
-// Note: OnlyKeysInArray moved to filter.ts
-
 /**
  * Make all properties of an object writable (remove readonly modifiers).
  * @example
@@ -221,34 +209,6 @@ export type PartialDeep<$Type> =
  * ```
  */
 export type Writeable<$Obj extends object> = Writable<$Obj>
-
-// Note: Keyof, PolicyFilter moved to filter.ts
-
-// Note: Replace moved to merge.ts
-
-// Note: PrimitiveFieldKeys moved to get.ts
-
-// Note: GetKeyOr moved to get.ts
-
-// Note: SuffixKeyNames, OmitKeysWithPrefix moved to filter.ts
-
-// Note: PickRequiredProperties, RequireProperties, PartialOrUndefined moved to filter.ts
-
-// Note: UnionMerge moved to Ts.Union.Merge
-
-// Note: MergeAll moved to merge.ts
-
-// Note: PickOptionalPropertyOrFallback moved to filter.ts
-
-// Note: HasOptionalKey moved to predicates.ts
-
-// Note: IsKeyInObjectOptional renamed to IsKeyOptional and moved to predicates.ts
-
-// Note: IsKeyInObject renamed to HasKey and moved to predicates.ts
-
-// Note: StringKeyof moved to get.ts
-
-// Note: GetOrNever moved to get.ts
 
 /**
  * Convert an object to a parameters tuple.
@@ -262,8 +222,10 @@ export type ToParameters<$Params extends object | undefined> =
 /**
  * Convert an object to parameters tuple with exact matching.
  */
-export type ToParametersExact<$Input extends object, $Params extends object | undefined> = IsEmpty<$Input> extends true
-  ? []
+export type ToParametersExact<
+  $Input extends object,
+  $Params extends object | undefined,
+> = IsEmpty<$Input> extends true ? []
   : ToParameters<$Params>
 
 /**

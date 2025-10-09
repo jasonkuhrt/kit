@@ -4,7 +4,7 @@ import { test } from 'vitest'
  * Type-level tests for variance phantom types
  */
 
-import type { Bivariant, Contravariant, Covariant, Invariant } from './ts.js'
+import type * as Variance from './variance.ts'
 
 // Helper container type for testing
 interface Container<T> {
@@ -16,8 +16,8 @@ interface Container<T> {
 // ====================================================================
 
 test('Covariant - allows narrow → wide (subtype → supertype)', () => {
-  type Narrow = Container<Covariant<1>>
-  type Wide = Container<Covariant<number>>
+  type Narrow = Container<Variance.Co<1>>
+  type Wide = Container<Variance.Co<number>>
 
   let narrow: Narrow = {}
   let wide: Wide = {}
@@ -29,8 +29,8 @@ test('Covariant - allows narrow → wide (subtype → supertype)', () => {
 })
 
 test('Contravariant - allows wide → narrow (supertype → subtype)', () => {
-  type Narrow = Container<Contravariant<1>>
-  type Wide = Container<Contravariant<number>>
+  type Narrow = Container<Variance.Contra<1>>
+  type Wide = Container<Variance.Contra<number>>
 
   let narrow: Narrow = {}
   let wide: Wide = {}
@@ -42,8 +42,8 @@ test('Contravariant - allows wide → narrow (supertype → subtype)', () => {
 })
 
 test('Invariant - exact match only', () => {
-  type One = Container<Invariant<1>>
-  type Num = Container<Invariant<number>>
+  type One = Container<Variance.In<1>>
+  type Num = Container<Variance.In<number>>
 
   let one: One = {}
   let num: Num = {}
@@ -60,8 +60,8 @@ test('Invariant - exact match only', () => {
 })
 
 test('Bivariant - allows both directions (unsafe)', () => {
-  type Narrow = Container<Bivariant<1>>
-  type Wide = Container<Bivariant<number>>
+  type Narrow = Container<Variance.Bi<1>>
+  type Wide = Container<Variance.Bi<number>>
 
   let narrow: Narrow = {}
   let wide: Wide = {}
@@ -71,8 +71,8 @@ test('Bivariant - allows both directions (unsafe)', () => {
 })
 
 test('Covariant with string literals', () => {
-  type Hello = Container<Covariant<'hello'>>
-  type Str = Container<Covariant<string>>
+  type Hello = Container<Variance.Co<'hello'>>
+  type Str = Container<Variance.Co<string>>
 
   let hello: Hello = {}
   let str: Str = {}
@@ -84,8 +84,8 @@ test('Covariant with string literals', () => {
 })
 
 test('Contravariant with string literals', () => {
-  type Hello = Container<Contravariant<'hello'>>
-  type Str = Container<Contravariant<string>>
+  type Hello = Container<Variance.Contra<'hello'>>
+  type Str = Container<Variance.Contra<string>>
 
   let hello: Hello = {}
   let str: Str = {}
