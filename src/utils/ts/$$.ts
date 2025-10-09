@@ -1,4 +1,5 @@
 export * as Kind from './kind.js'
+export * from './print.js'
 export * as Test from './test.js'
 export * from './ts.js'
 export * from './type-guards.js'

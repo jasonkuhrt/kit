@@ -1,9 +1,5 @@
 import type { Print } from './print.js'
 
-export * from './test.js'
-
-export * from './print.js'
-
 /**
  * Cast any value to a specific type for testing purposes.
  * Useful for type-level testing where you need to create a value with a specific type.
