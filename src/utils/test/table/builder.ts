@@ -1,4 +1,5 @@
 import type { Fn } from '#fn'
+import { Prom } from '#prom'
 import { Array, Effect, Layer, Option } from 'effect'
 import objectInspect from 'object-inspect'
 import { expect, test } from 'vitest'
@@ -350,41 +351,47 @@ export function create(state: State = defaultState): any {
               // Snapshot mode detection: no output, no customTest, no function
               const isSnapshotMode = output === undefined && !customTest && !fn
 
-              // Execute runner with try-catch for snapshot mode
-              let runnerOutput: any
-              let runnerError: Error | undefined
-
               if (isSnapshotMode) {
-                try {
-                  runnerOutput = runner(runnerContext)
-                } catch (e) {
-                  runnerError = e as Error
-                }
+                // Execute runner and capture result/error in envelope
+                const runnerEnvelopeOrPromise = Prom.maybeAsyncEnvelope(() => runner(runnerContext))
+                const runnerEnvelope = await runnerEnvelopeOrPromise
 
-                // Resolve output: runner return → default provider → undefined
-                let resolvedOutput = runnerOutput
-                if (resolvedOutput === undefined && Option.isSome(state.defaultOutputProvider)) {
+                // Resolve final envelope: if runner succeeded with undefined, try fallback
+                let finalEnvelope = runnerEnvelope
+                if (
+                  !runnerEnvelope.fail && runnerEnvelope.value === undefined
+                  && Option.isSome(state.defaultOutputProvider)
+                ) {
                   const defaultProvider = Option.getOrUndefined(state.defaultOutputProvider)!
-                  resolvedOutput = defaultProvider(setupContext)
+                  const fallbackEnvelopeOrPromise = Prom.maybeAsyncEnvelope(() => defaultProvider(setupContext))
+                  const fallbackEnvelope = await fallbackEnvelopeOrPromise
+
+                  // Use fallback envelope if it succeeded
+                  if (!fallbackEnvelope.fail) {
+                    finalEnvelope = {
+                      fail: false,
+                      value: fallbackEnvelope.value,
+                      async: runnerEnvelope.async || fallbackEnvelope.async,
+                    }
+                  }
                 }
 
-                // Format and snapshot the result/error
+                // Format and snapshot the result
                 const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
-                const snapshotContext = { i: input, n: name, o: resolvedOutput, ...setupContext, ...fullContext }
+                const snapshotContext = { i: input, n: name, o: finalEnvelope.value, ...setupContext, ...fullContext }
                 const formattedSnapshot = formatSnapshotWithInput(
                   Array.isArray(input) ? input : [input],
-                  resolvedOutput,
-                  runnerError,
+                  finalEnvelope,
                   runner,
                   serializer,
                   snapshotContext,
                 )
                 expect(formattedSnapshot).toMatchSnapshot()
                 return
-              } else {
-                // Non-snapshot mode - let errors propagate
-                runnerOutput = runner(runnerContext)
               }
+
+              // Non-snapshot mode - let errors propagate
+              const runnerOutput = runner(runnerContext)
 
               // Resolve output: runner return → default provider → undefined
               let resolvedOutput = runnerOutput
@@ -450,19 +457,12 @@ export function create(state: State = defaultState): any {
               // Function mode (.on() was used)
               if (output === undefined && !customTest) {
                 // Snapshot mode - catch errors and snapshot them
-                let result: any
-                let error: Error | undefined
-                try {
-                  result = fn(...input)
-                } catch (e) {
-                  error = e as Error
-                }
+                const envelope = await Prom.maybeAsyncEnvelope(() => fn(...input))
                 const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
                 const snapshotContext = { i: input, n: name, o: output, ...fullContext }
                 const formattedSnapshot = formatSnapshotWithInput(
                   input,
-                  result,
-                  error,
+                  envelope,
                   undefined,
                   serializer,
                   snapshotContext,
@@ -490,12 +490,12 @@ export function create(state: State = defaultState): any {
                   })
                   // Auto-snapshot if test returns a value
                   if (testResult !== undefined) {
+                    const envelope = await Prom.maybeAsyncEnvelope(() => testResult)
                     const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
                     const snapshotContext = { i: input, n: name, o: output, ...setupContext, ...fullContext }
                     const formattedSnapshot = formatSnapshotWithInput(
                       input,
-                      testResult,
-                      undefined,
+                      envelope,
                       undefined,
                       serializer,
                       snapshotContext,
@@ -530,11 +530,11 @@ export function create(state: State = defaultState): any {
               const context = { i: input, n: name, o: output, ...setupContext, ...fullContext }
               // Auto-snapshot if result is returned
               if (result !== undefined) {
+                const envelope = await Prom.maybeAsyncEnvelope(() => result)
                 const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
                 const formattedSnapshot = formatSnapshotWithInput(
                   Array.isArray(input) ? input : [input],
-                  result,
-                  undefined,
+                  envelope,
                   undefined,
                   serializer,
                   context,

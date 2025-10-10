@@ -1,4 +1,7 @@
 import { Err } from '#err'
+import { Fn } from '#fn'
+import { Lang } from '#lang'
+import { Prom } from '#prom'
 import { Str } from '#str'
 import { Equal } from 'effect'
 import objectInspect from 'object-inspect'
@@ -134,7 +137,7 @@ export const generateMatrixCombinations = (
  * Uses specialized formatting for specific types:
  * - **Strings**: Raw display without JSON quotes for readability
  * - **Functions**: `.toString()` representation
- * - **Errors**: `Err.inspect()` for detailed stack traces and context
+ * - **Errors**: {@link Err.inspect} with `maxFrames: 0` for portable snapshots (no stack traces)
  *
  * All other values use `object-inspect` which provides:
  * - **Circular reference handling**: Shows `[Circular]` instead of throwing
@@ -153,7 +156,7 @@ export const defaultSnapshotSerializer = (value: any, _context: any): string => 
   if (typeof value === 'symbol') return value.toString()
   if (typeof value === 'bigint') return value.toString() + 'n'
   if (value instanceof RegExp) return value.toString()
-  if (value instanceof Error) return Err.inspect(value)
+  if (Err.is(value)) return Err.inspect(value, { maxFrames: 0, showHelp: false, color: false })
   return objectInspect(value, { indent: 2 })
 }
 
@@ -165,7 +168,7 @@ export const getTypeLabel = (value: any): string => {
   if (value === undefined) return `UNDEFINED`
 
   const type = typeof value
-  if (type === `string`) return `STRING`
+  if (type === `string`) return type.toUpperCase() // todo all like this
   if (type === `number`) return `NUMBER`
   if (type === `boolean`) return `BOOLEAN`
   if (type === `bigint`) return `BIGINT`
@@ -184,86 +187,181 @@ export const getTypeLabel = (value: any): string => {
   return `OBJECT`
 }
 
+// ============================================================================
+// Snapshot Box Building Helpers
+// ============================================================================
+
+type BoxPart =
+  | { _tag: 'section'; label: string; body?: string }
+  | { _tag: 'division'; body: string }
+
+const buildBox = ({ width, parts }: {
+  width: number
+  parts: BoxPart[]
+}) => {
+  const b = Str.Builder()
+  b('') // Leading newline
+
+  let sectionCount = 0
+  let previousPartTag: BoxPart['_tag'] | null = null
+
+  parts.forEach((part) => {
+    switch (part._tag) {
+      case 'section': {
+        sectionCount++
+        const isFirstSection = sectionCount === 1
+
+        // Add section divider with label
+        if (isFirstSection) {
+          b('╔' + '═'.repeat(width) + '╗' + part.label)
+        } else {
+          b('╠' + '═'.repeat(width) + '╣' + part.label)
+        }
+
+        // Add body if provided
+        if (part.body !== undefined) {
+          b(part.body)
+        }
+
+        previousPartTag = 'section'
+        break
+      }
+
+      case 'division': {
+        // Add separator line only between consecutive divisions
+        if (previousPartTag === 'division') {
+          b('─'.repeat(width + 2))
+        }
+        b(part.body)
+        previousPartTag = 'division'
+        break
+      }
+
+      default:
+        return Lang.neverCase(part)
+    }
+  })
+
+  // Closing border
+  b('╚' + '═'.repeat(width) + '╝')
+
+  return b.render()
+}
+
 /**
  * Format a snapshot with clear GIVEN/THEN sections showing arguments and return value or error.
- * Two modes:
- * - Function mode (has inputs): GIVEN ARGUMENTS → THEN RETURNS/THROWS
- * - Runner mode (no inputs): RUNNER → OUTPUTS RETURN/THROW
+ *
+ * ## Modes
+ *
+ * - **Function mode** (has inputs): `GIVEN ARGUMENTS → THEN RETURNS/THROWS`
+ * - **Runner mode** (no inputs): `RUNNER → OUTPUTS RETURN/THROW`
+ *
+ * ## Promise Handling
+ *
+ * The `result` envelope distinguishes between:
+ * - **Resolved promises**: Labeled as `THEN RETURNS PROMISE RESOLVING TO {TYPE}`
+ * - **Rejected promises**: Labeled as `THEN RETURNS PROMISE REJECTING TO {TYPE}`
+ * - **Sync returns**: Labeled as `THEN RETURNS {TYPE}`
+ * - **Sync throws**: Labeled as `THEN THROWS {TYPE}`
+ *
+ * @param input - Array of input arguments to display in GIVEN section
+ * @param result - Execution result envelope from {@link Prom.maybeAsyncEnvelope}
+ * @param runner - Optional runner function to display in RUNNER section
+ * @param serializer - Custom serializer for values (defaults to {@link defaultSnapshotSerializer})
+ * @param context - Test context passed to serializer
+ * @returns Formatted snapshot string with box-drawing characters
+ *
+ * @example
+ * ```ts
+ * // Sync result
+ * const envelope = Prom.maybeAsyncEnvelope(() => add(1, 2))
+ * formatSnapshotWithInput([1, 2], envelope)
+ * // ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+ * // 1
+ * // ────────────────────────────────────────────────────
+ * // 2
+ * // ╠══════════════════════════════════════════════════╣ THEN RETURNS NUMBER
+ * // 3
+ * // ╚══════════════════════════════════════════════════╝
+ * ```
+ *
+ * @category Snapshot Utilities
  */
 export const formatSnapshotWithInput = (
   input: any[],
-  result: any,
-  error?: Error,
-  runner?: Function,
+  result: Prom.Envelope,
+  runner?: Fn.AnyAny,
   serializer: (value: any, context: any) => string = defaultSnapshotSerializer,
   context: any = {},
 ): string => {
   // Fixed width for all boxes
   const width = 50
 
-  const isError = error !== undefined
-  const outputStr = isError
-    ? `${error.name}: ${error.message}`
-    : serializer(result, context)
+  const value = result.value
+  const valueSerialized = serializer(value, context)
 
   const hasInput = input.length > 0
 
   if (hasInput) {
-    // Function mode: GIVEN → THEN
-    // Format all inputs
     const formattedInputs = input.map((i) => serializer(i, context))
 
-    // Format input string
-    let inputStr: string
-    if (input.length === 1) {
-      inputStr = formattedInputs[0]!
-    } else {
-      // Separator should match box border width (width + 2 for the corner characters)
-      const separator = '─'.repeat(width + 2)
-      inputStr = formattedInputs.join('\n' + separator + '\n')
-    }
+    return buildBox({
+      width,
+      parts: [
+        { _tag: 'section', label: ' GIVEN ARGUMENTS' },
+        ...formattedInputs.map(body => ({ _tag: 'division' as const, body })),
+        { _tag: 'section', label: buildOutputLabel(result, 'function', value), body: valueSerialized },
+      ],
+    })
+  }
 
-    // Box drawing with titles at the end
-    const givenLabel = ' GIVEN ARGUMENTS'
-    const thenLabel = isError ? ` THEN THROWS ${getTypeLabel(error)}` : ` THEN RETURNS ${getTypeLabel(result)}`
+  // Runner mode: Show runner function and output
+  if (runner) {
+    const analyzed = Fn.analyzeFunction(runner)
 
-    return [
-      '', // Leading newline to force opening quote on own line
-      '╔' + '═'.repeat(width) + '╗' + givenLabel,
-      inputStr,
-      '╠' + '═'.repeat(width) + '╣' + thenLabel,
-      outputStr,
-      '╚' + '═'.repeat(width) + '╝',
-    ].join('\n')
-  } else {
-    // Runner mode: Show runner function and output
-    if (runner) {
-      // Extract just the function body (remove first and last lines)
-      const runnerLines = runner.toString().split('\n')
-      const bodyLines = runnerLines.slice(1, -1)
-      const bodyWithIndent = bodyLines.join('\n')
-      const runnerBody = Str.stripIndent(bodyWithIndent)
+    return buildBox({
+      width,
+      parts: [
+        { _tag: 'section', label: ' RUNNER', body: analyzed.body },
+        { _tag: 'section', label: buildOutputLabel(result, 'runner', value), body: valueSerialized },
+      ],
+    })
+  }
 
-      const outputLabel = isError ? ` OUTPUTS THROW ${getTypeLabel(error)}` : ` OUTPUTS RETURN ${getTypeLabel(result)}`
+  // Fallback: no runner function available
+  return buildBox({
+    width,
+    parts: [
+      { _tag: 'section', label: buildOutputLabel(result, 'runner', value), body: valueSerialized },
+    ],
+  })
+}
 
-      return [
-        '', // Leading newline to force opening quote on own line
-        '╔' + '═'.repeat(width) + '╗' + ' RUNNER',
-        runnerBody,
-        '╠' + '═'.repeat(width) + '╣' + outputLabel,
-        outputStr,
-        '╚' + '═'.repeat(width) + '╝',
-      ].join('\n')
-    } else {
-      // Fallback: no runner function available
-      const outputLabel = isError ? ` OUTPUTS THROW ${getTypeLabel(error)}` : ` OUTPUTS RETURN ${getTypeLabel(result)}`
+const buildOutputLabel = (result: Prom.Envelope, mode: 'function' | 'runner', valueToUse: any): string => {
+  const isFail = result.fail
+  const isAsync = result.async
+  const typeLabel = getTypeLabel(valueToUse)
 
-      return [
-        '', // Leading newline to force opening quote on own line
-        '╔' + '═'.repeat(width) + '╗' + outputLabel,
-        outputStr,
-        '╚' + '═'.repeat(width) + '╝',
-      ].join('\n')
-    }
+  const caseKey = `${mode}-${isFail}-${isAsync}` as const
+
+  switch (caseKey) {
+    case 'function-true-true':
+      return ` THEN RETURNS PROMISE REJECTING TO ${typeLabel}`
+    case 'function-true-false':
+      return ` THEN THROWS ${typeLabel}`
+    case 'function-false-true':
+      return ` THEN RETURNS PROMISE RESOLVING TO ${typeLabel}`
+    case 'function-false-false':
+      return ` THEN RETURNS ${typeLabel}`
+    case 'runner-true-true':
+      return ` OUTPUTS THROW PROMISE REJECTING TO ${typeLabel}`
+    case 'runner-true-false':
+      return ` OUTPUTS THROW ${typeLabel}`
+    case 'runner-false-true':
+      return ` OUTPUTS RETURN PROMISE RESOLVING TO ${typeLabel}`
+    case 'runner-false-false':
+      return ` OUTPUTS RETURN ${typeLabel}`
+    default:
+      return Lang.neverCase(caseKey)
   }
 }

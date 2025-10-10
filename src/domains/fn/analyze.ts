@@ -10,11 +10,14 @@ export type Parameter = { type: 'name'; value: string } | { type: 'destructured'
  *
  * Parses a function's string representation to extract:
  * - Parameter names (both regular and destructured parameters)
- * - Function body (both statement and expression forms)
+ * - Function body (both statement and expression forms, trimmed and dedented)
+ *
+ * The returned body is already cleaned: leading/trailing whitespace removed and
+ * common indentation stripped away for clean display in its isolated form.
  *
  * @category Introspection
  * @param fn - The function to analyze
- * @returns An object containing the function's body and parameters
+ * @returns An object containing the function's cleaned body and parameters
  * @throws {Error} If the function cannot be parsed or has invalid structure
  *
  * @example
@@ -22,14 +25,29 @@ export type Parameter = { type: 'name'; value: string } | { type: 'destructured'
  * const fn = (a, { b, c }) => a + b + c
  * const info = analyzeFunction(fn)
  * // info.parameters: [{ type: 'name', value: 'a' }, { type: 'destructured', names: ['b', 'c'] }]
+ * // info.body: "a + b + c" (already trimmed and dedented)
  * ```
  */
 export const analyzeFunction = (fn: (...args: [...any[]]) => unknown) => {
   const groups = fn.toString().match(functionPattern)?.groups
   if (!groups) throw new Error(`Could not extract groups from function.`)
 
-  const body = groups[`bodyStatement`] ?? groups[`bodyExpression`]
-  if (body === undefined) throw new Error(`Could not extract body from function.`)
+  const bodyRaw = groups[`bodyStatement`] ?? groups[`bodyExpression`]
+  if (bodyRaw === undefined) throw new Error(`Could not extract body from function.`)
+
+  // Clean the body: strip common indentation first, then trim
+  // Inlined stripIndent logic to avoid circular dependency with str module
+  const bodyLines = bodyRaw.split('\n')
+  const indents = bodyLines
+    .filter((line) => line.trim().length > 0)
+    .map((line) => {
+      const match = line.match(/^(\s*)/)
+      return match?.[1]?.length ?? 0
+    })
+
+  const minIndent = indents.length > 0 ? Math.min(...indents) : 0
+  const dedented = bodyLines.map((line) => line.slice(minIndent)).join('\n')
+  const body = dedented.trim()
 
   const parameters: Parameter[] = []
 

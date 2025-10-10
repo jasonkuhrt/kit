@@ -77,6 +77,93 @@ exports[`circular structure handling > identity2({ name: 'test', self: [Circular
 ╚══════════════════════════════════════════════════╝"
 `;
 
+exports[`promise auto-awaiting > run(() => { throw "error string"; }) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+() => {
+      throw "error string";
+    }
+╠══════════════════════════════════════════════════╣ THEN THROWS STRING
+error string
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`promise auto-awaiting > run(() => { throw 42; }) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+() => {
+      throw 42;
+    }
+╠══════════════════════════════════════════════════╣ THEN THROWS NUMBER
+42
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`promise auto-awaiting > run(() => { throw new Error("error"); }) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+() => {
+      throw new Error("error");
+    }
+╠══════════════════════════════════════════════════╣ THEN THROWS ERROR
+Error: error
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`promise auto-awaiting > run(() => 42) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+() => 42
+╠══════════════════════════════════════════════════╣ THEN RETURNS NUMBER
+42
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`promise auto-awaiting > run(() => Promise.reject("rejection string")) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+() => Promise.reject("rejection string")
+╠══════════════════════════════════════════════════╣ THEN RETURNS PROMISE REJECTING TO STRING
+rejection string
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`promise auto-awaiting > run(() => Promise.reject(100)) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+() => Promise.reject(100)
+╠══════════════════════════════════════════════════╣ THEN RETURNS PROMISE REJECTING TO NUMBER
+100
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`promise auto-awaiting > run(() => Promise.reject(new Error("rejection"))) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+() => Promise.reject(new Error("rejection"))
+╠══════════════════════════════════════════════════╣ THEN RETURNS PROMISE REJECTING TO ERROR
+Error: rejection
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`promise auto-awaiting > run(() => Promise.resolve("hello")) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+() => Promise.resolve("hello")
+╠══════════════════════════════════════════════════╣ THEN RETURNS PROMISE RESOLVING TO STRING
+hello
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`promise auto-awaiting > run(() => Promise.resolve(new Error("This is a value, not a rejection"))) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+() => Promise.resolve(new Error("This is a value, not a rejection"))
+╠══════════════════════════════════════════════════╣ THEN RETURNS PROMISE RESOLVING TO ERROR
+Error: This is a value, not a rejection
+╚══════════════════════════════════════════════════╝"
+`;
+
 exports[`snapshot sugar methods > .casesInput() > add(1, 2) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS

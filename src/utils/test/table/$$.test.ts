@@ -336,3 +336,34 @@ describe('circular structure handling', () => {
     .casesInput(circular)
     .test()
 })
+
+describe('promise auto-awaiting', () => {
+  // Function to execute input and return its result (sync or async)
+  const run = <T>(fn: () => T): T => fn()
+
+  // Test sync and async execution paths
+  Test
+    .on(run)
+    .casesInput(
+      [() => 42],
+      // dprint-ignore
+      [() => { throw new Error('error') }],
+      [() => Promise.resolve('hello')],
+      [() => Promise.reject(new Error('rejection'))],
+      [() => Promise.resolve(new Error('This is a value, not a rejection'))],
+    )
+    .test()
+
+  // Test non-Error throws and rejections
+  Test
+    .on(run)
+    .casesInput(
+      // dprint-ignore
+      [() => { throw 42 }],
+      // dprint-ignore
+      [() => { throw 'error string' }],
+      [() => Promise.reject(100)],
+      [() => Promise.reject('rejection string')],
+    )
+    .test()
+})

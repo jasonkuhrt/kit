@@ -125,6 +125,13 @@ const optionSpecs = define([
     parse: (envVarValue) => parseInt(envVarValue, 10),
   },
   {
+    name: 'maxFrames',
+    envVarNamePrefix: 'errorDisplay',
+    description: 'Maximum number of stack frames to show (0 to hide stack traces)',
+    default: 10,
+    parse: (envVarValue) => parseInt(envVarValue, 10),
+  },
+  {
     name: 'showHelp',
     envVarNamePrefix: 'errorDisplay',
     description: 'Show environment variable help section',
@@ -140,6 +147,7 @@ const optionSpecs = define([
  * @property color - Whether to use ANSI color codes for better readability (default: true, env: ERROR_DISPLAY_COLOR)
  * @property stackTraceColumns - Maximum column width before truncating stack trace lines (default: 120, env: ERROR_DISPLAY_STACK_TRACE_COLUMNS)
  * @property identColumns - Number of spaces to use for indentation (default: 4, env: ERROR_DISPLAY_IDENT_COLUMNS)
+ * @property maxFrames - Maximum number of stack frames to show; 0 to hide stack traces entirely (default: 10, env: ERROR_DISPLAY_MAX_FRAMES)
  * @property showHelp - Whether to display the environment variable help section (default: true, env: ERROR_DISPLAY_SHOW_HELP)
  *
  * @example
@@ -153,6 +161,9 @@ const optionSpecs = define([
  *   stackTraceColumns: 200,
  *   showHelp: false
  * })
+ *
+ * // Hide stack traces (useful for test snapshots)
+ * Err.inspect(error, { maxFrames: 0, showHelp: false, color: false })
  *
  * // Set via environment variables
  * process.env.ERROR_DISPLAY_COLOR = 'false'
@@ -393,10 +404,10 @@ const _inspectResursively = (
     const childIndent = contentIndent + contPrefix
 
     // Stack (compact)
-    if (error.stack) {
+    if (config.maxFrames.value > 0 && error.stack) {
       const cleanResult = cleanStackWithStats(error.stack, {
         removeInternal: true,
-        maxFrames: 3,
+        maxFrames: Math.min(config.maxFrames.value, 3),
         filterPatterns: ['node_modules', 'node:internal'],
       })
       const stackLines = Str.lines(cleanResult.stack).slice(1)
@@ -441,10 +452,10 @@ const _inspectResursively = (
           const childCont = isLastChild ? '   ' : '  │'
           const nestedIndent = childIndent + (config.color.value ? dim(childCont) : childCont)
 
-          if (err.stack) {
+          if (config.maxFrames.value > 0 && err.stack) {
             const cleanResult = cleanStackWithStats(err.stack, {
               removeInternal: true,
-              maxFrames: 1,
+              maxFrames: Math.min(config.maxFrames.value, 1),
               filterPatterns: ['node_modules', 'node:internal'],
             })
             const stackLines = Str.lines(cleanResult.stack).slice(1)
@@ -472,10 +483,10 @@ const _inspectResursively = (
   lines.push(formatLine(errorLine, parentIndent, config))
 
   // Stack - no indentation
-  if (error.stack) {
+  if (config.maxFrames.value > 0 && error.stack) {
     const cleanResult = cleanStackWithStats(error.stack, {
       removeInternal: true,
-      maxFrames: 10,
+      maxFrames: config.maxFrames.value,
       filterPatterns: ['node_modules', 'node:internal'],
     })
 

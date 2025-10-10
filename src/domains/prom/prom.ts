@@ -89,6 +89,84 @@ export type AwaitedUnion<$MaybePromise, $Additional> =
     : $MaybePromise | $Additional
 
 /**
+ * Envelope containing execution metadata.
+ *
+ * @category Types
+ */
+export type Envelope<T = unknown> = {
+  fail: boolean
+  value: T
+  async: boolean
+}
+
+/**
+ * Execute a function and return an envelope with metadata about the execution.
+ *
+ * Returns metadata indicating:
+ * - **channel**: Whether the function succeeded (`'succeed'`) or failed (`'fail'`)
+ * - **async**: Whether execution was asynchronous (promise) or synchronous
+ * - **value/error**: The result value or thrown/rejected error
+ *
+ * Never throws or rejects - all errors are captured in the envelope.
+ * Preserves sync/async distinction in both return type and metadata.
+ *
+ * Useful when you need to:
+ * - Distinguish `Promise.resolve(Error)` from `Promise.reject(Error)`
+ * - Know whether execution was sync or async
+ * - Handle errors without try/catch blocks
+ *
+ * @param fn - Function to execute
+ * @returns Envelope (sync) or Promise of envelope (async) with execution metadata
+ *
+ * @example
+ * ```ts
+ * // Sync success
+ * const result = maybeAsyncEnvelope(() => 42)
+ * // { channel: 'succeed', value: 42, async: false }
+ *
+ * // Sync failure
+ * const result = maybeAsyncEnvelope(() => { throw new Error('fail') })
+ * // { channel: 'fail', error: Error('fail'), async: false }
+ *
+ * // Async success
+ * const result = await maybeAsyncEnvelope(() => Promise.resolve('ok'))
+ * // { channel: 'succeed', value: 'ok', async: true }
+ *
+ * // Async failure
+ * const result = await maybeAsyncEnvelope(() => Promise.reject('error'))
+ * // { channel: 'fail', error: 'error', async: true }
+ *
+ * // Promise resolving to Error (not a rejection!)
+ * const result = await maybeAsyncEnvelope(() => Promise.resolve(new Error('value')))
+ * // { channel: 'succeed', value: Error('value'), async: true }
+ * ```
+ *
+ * @category Utilities
+ */
+// dprint-ignore
+export const maybeAsyncEnvelope = <$return>(fn: () => $return):
+  $return extends Promise<infer __awaited__>
+    ? Promise<Envelope<__awaited__>>
+    : Envelope<$return> => {
+  try {
+    const result = fn()
+
+    if (isShape(result)) {
+      // Async path - return promise of envelope
+      return result
+        .then((value) => ({ fail: false, value, async: true }))
+        .catch((value) => ({ fail: true, value, async: true })) as any
+    }
+
+    // Sync success path - return envelope directly
+    return { fail: false, value: result, async: false } as any
+  } catch (value) {
+    // Sync failure path - return envelope directly
+    return { fail: true, value, async: false } as any
+  }
+}
+
+/**
  * Options for handling values that might be promises.
  *
  * @category Utilities
@@ -110,6 +188,8 @@ export interface MaybeAsyncHandlers<T, R = T, E = unknown> {
 /**
  * Handle a function that might return a promise or a regular value,
  * with unified handlers for both sync and async cases.
+ *
+ * Implemented using {@link maybeAsyncEnvelope} internally.
  *
  * @param fn - Function to execute that might return a promise
  * @param handlers - Object with then/catch handlers
@@ -152,35 +232,35 @@ export function maybeAsync<T, R = T, E = unknown>(
   fn: () => T,
   handlers: MaybeAsyncHandlers<T extends Promise<infer U> ? U : T, R, E> = {},
 ): T extends Promise<infer U> ? Promise<R | U | E> : R | T | E {
-  try {
-    const result = fn()
+  const envelope = maybeAsyncEnvelope(fn)
 
-    if (isShape(result)) {
-      // Handle async result
-      let promiseChain = result as any
-
+  if (isShape(envelope)) {
+    // Async path
+    return envelope.then((env) => {
+      if (env.fail) {
+        if (handlers.catch) {
+          return handlers.catch(env.value, true)
+        }
+        throw env.value
+      }
       if (handlers.then) {
-        promiseChain = promiseChain.then(handlers.then)
+        return handlers.then(env.value as any)
       }
-
-      if (handlers.catch) {
-        promiseChain = promiseChain.catch((error: unknown) => handlers.catch!(error, true))
-      }
-
-      return promiseChain as any
-    }
-
-    // Handle sync result
-    if (handlers.then) {
-      return handlers.then(result as any) as any
-    }
-
-    return result as any
-  } catch (error) {
-    // Handle sync error
-    if (handlers.catch) {
-      return handlers.catch(error, false) as any
-    }
-    throw error
+      return env.value
+    }) as any
   }
+
+  // Sync path
+  if (envelope.fail) {
+    if (handlers.catch) {
+      return handlers.catch(envelope.value, false) as any
+    }
+    throw envelope.value
+  }
+
+  if (handlers.then) {
+    return handlers.then(envelope.value as any) as any
+  }
+
+  return envelope.value as any
 }

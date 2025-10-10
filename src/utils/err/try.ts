@@ -120,23 +120,18 @@ export function tryCatch<returned, thrown>(
     is as Bool.TypePredicate<thrown>,
   ],
 ): any {
-  // Check if input is a promise
-  if (Prom.isShape(fnOrPromise)) {
-    return fnOrPromise.catch((error) => ensure(error))
-  }
+  // Wrap promise in function if needed
+  const fn = Prom.isShape(fnOrPromise) ? () => fnOrPromise : fnOrPromise
 
-  // Otherwise treat as function
-  return Prom.maybeAsync(
-    fnOrPromise,
-    {
-      catch: (error, _isAsync) => {
-        if (predicates.some((predicate) => predicate(error))) {
-          return error
-        }
-        throw error
-      },
+  return Prom.maybeAsync(fn as any, {
+    catch(thrown) {
+      const error = ensure(thrown)
+      if (predicates.some((predicate) => predicate(error))) {
+        return error
+      }
+      throw error
     },
-  )
+  }) as any
 }
 
 /**
@@ -161,11 +156,7 @@ export function tryCatch<returned, thrown>(
  * @category Try-Catch
  */
 export const tryCatchIgnore = <$Return>(fn: () => $Return): $Return => {
-  const result = tryCatch(fn as any)
-  if (Prom.isShape(result)) {
-    return result.catch(Fn.noop) as any
-  }
-  return result as any
+  return Prom.maybeAsync(fn, { catch: () => undefined }) as any
 }
 
 /**
@@ -213,21 +204,7 @@ export const tryOr = <success, fallback>(
   fn: () => success,
   fallback: Value.LazyMaybe<fallback>,
 ): TryOrReturn<success, fallback> => {
-  try {
-    const result = fn()
-
-    // If main function returns a promise, handle everything async
-    if (Prom.isShape(result)) {
-      return result.catch(() => Value.resolveLazy(fallback)) as any
-    }
-
-    // Main function is sync - type system ensures fallback is also sync
-    return result as any
-  } catch {
-    // Main function threw synchronously
-    const fallbackValue = Value.resolveLazy(fallback)
-    return fallbackValue as any
-  }
+  return Prom.maybeAsync(fn, { catch: () => Value.resolveLazy(fallback) }) as any
 }
 
 /**

@@ -91,11 +91,37 @@ import * as Builder from './builder.ts'
  *   .test()
  * ```
  *
+ * ## Promise Auto-Awaiting
+ *
+ * Functions that return promises are automatically awaited in snapshot mode.
+ * The snapshot label indicates whether the promise resolved or rejected:
+ *
+ * @example
+ * ```ts
+ * // Async functions - promises are automatically awaited
+ * const asyncUpperCase = (s: string) => Promise.resolve(s.toUpperCase())
+ *
+ * Test.on(asyncUpperCase)
+ *   .cases([['hello']], [['world']])
+ *   .test()
+ * // Snapshot: "THEN RETURNS PROMISE RESOLVING TO STRING"
+ *
+ * // Async functions that reject
+ * const asyncFail = (s: string) => Promise.reject(new Error('Failed'))
+ *
+ * Test.on(asyncFail)
+ *   .cases([['test']])
+ *   .test()
+ * // Snapshot: "THEN RETURNS PROMISE REJECTING TO ERROR"
+ * ```
+ *
+ * ## Snapshot Format
+ *
  * Snapshot format shows arguments and results clearly:
  * ```
  * ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
  * 1
- * ╠══════════════════════════════════════════════════╣ THEN RETURNS
+ * ╠══════════════════════════════════════════════════╣ THEN RETURNS NUMBER
  * 1
  * ╚══════════════════════════════════════════════════╝
  * ```
@@ -104,8 +130,17 @@ import * as Builder from './builder.ts'
  * ```
  * ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
  * -1
- * ╠══════════════════════════════════════════════════╣ THEN THROWS
+ * ╠══════════════════════════════════════════════════╣ THEN THROWS ERROR
  * Error: Value must be positive
+ * ╚══════════════════════════════════════════════════╝
+ * ```
+ *
+ * For resolved promises:
+ * ```
+ * ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+ * hello
+ * ╠══════════════════════════════════════════════════╣ THEN RETURNS PROMISE RESOLVING TO STRING
+ * HELLO
  * ╚══════════════════════════════════════════════════╝
  * ```
  *

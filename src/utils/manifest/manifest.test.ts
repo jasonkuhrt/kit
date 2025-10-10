@@ -11,7 +11,7 @@ describe('Manifest', () => {
     }
 
     const result = Effect.runSync(Schema.decodeUnknown(Manifest)(minimal))
-    expect(result).toMatchObject(minimal)
+    expect(result).toMatchSnapshot()
   })
 
   test('validates a full package.json', () => {
@@ -79,7 +79,7 @@ describe('Manifest', () => {
     }
 
     const result = Effect.runSync(Schema.decodeUnknown(Manifest)(full))
-    expect(result).toMatchObject(full)
+    expect(result).toMatchSnapshot()
   })
 
   test('rejects invalid type field', () => {

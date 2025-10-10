@@ -8,7 +8,7 @@ async (a) => {
   }
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
-  body: '\\n    return a + 1;\\n  ',
+  body: 'return a + 1;',
   parameters: [
     {
       type: 'name',
@@ -44,7 +44,7 @@ async function f2(a) {
   }
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
-  body: '\\n    return a + 1;\\n  ',
+  body: 'return a + 1;',
   parameters: [
     {
       type: 'name',
@@ -65,7 +65,7 @@ exports[`body extraction > analyzeFunction((a) => { const b = a + 1; const c = b
   }
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
-  body: '\\n    const b = a + 1;\\n    const c = b * 2;\\n    return c;\\n  ',
+  body: 'const b = a + 1;\\nconst c = b * 2;\\nreturn c;',
   parameters: [
     {
       type: 'name',
@@ -84,7 +84,7 @@ exports[`body extraction > analyzeFunction((a) => { return a + 1; }) 1`] = `
   }
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
-  body: '\\n    return a + 1;\\n  ',
+  body: 'return a + 1;',
   parameters: [
     {
       type: 'name',
@@ -120,7 +120,7 @@ function f(a) {
   }
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
-  body: '\\n    return a + 1;\\n  ',
+  body: 'return a + 1;',
   parameters: [
     {
       type: 'name',

@@ -268,6 +268,22 @@ pnpm test               # Run tests
 - Do include type-level tests for complex generic types
 - Do _not_ write sprawling test code. _Do_ be as concise as possible.
 - Do _not_ use top-level `describe` blocks that repeat the module name. Instead, use `test` directly for each test case or group of related tests.
+- Do _not_ wrap `Test.describe()` or `Test.on()` calls inside Vitest `describe` blocks. The `Test` module creates its own describe blocks internally. Use `Test.describe()` directly at the top level.
+
+  ```typescript
+  // ✅ Correct - Test.describe() at top level
+  Test.describe('addition')
+    .on(add)
+    .cases([[1, 2], 3])
+    .test()
+
+  // ❌ Incorrect - wrapping Test in describe
+  describe('addition', () => {
+    Test.on(add)
+      .cases([[1, 2], 3])
+      .test()
+  })
+  ```
 - Prefer using `fast-check` for property-based runtime testing where applicable.
 
 ## Common Patterns
