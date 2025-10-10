@@ -1,5 +1,5 @@
-import { Version as VltVersion } from '@vltpkg/semver'
 import { S } from '#deps/effect'
+import { Version as VltVersion } from '@vltpkg/semver'
 
 export class PreRelease extends S.TaggedClass<PreRelease>('SemverPreRelease')('SemverPreRelease', {
   major: S.Number,

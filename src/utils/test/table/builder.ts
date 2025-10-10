@@ -16,6 +16,9 @@ import {
 // Configuration & State Types
 // ============================================================================
 
+/**
+ * @category Internal
+ */
 export interface Config {
   description?: string
   nameTemplate?: string
@@ -27,12 +30,18 @@ export interface Config {
   matcher?: string
 }
 
+/**
+ * @category Internal
+ */
 interface Group {
   describe: Option.Option<string>
   cases: any[] // Effect's Array module works with regular arrays
   nestedGroups?: Group[] // Nested describe blocks created via .describe(name, callback)
 }
 
+/**
+ * @category Internal
+ */
 export interface State {
   fn: Option.Option<Fn.AnyAny>
   config: Config
@@ -53,6 +62,9 @@ export interface State {
 // Default State
 // ============================================================================
 
+/**
+ * @category Internal
+ */
 export const defaultState: State = {
   fn: Option.none<Fn.AnyAny>(),
   config: {},
@@ -73,6 +85,9 @@ export const defaultState: State = {
 // Functional Builder Implementation
 // ============================================================================
 
+/**
+ * @category Internal
+ */
 export function create(state: State = defaultState): any {
   // Helper to flush current cases to accumulated groups
   const flushCases = (s: State): State => {

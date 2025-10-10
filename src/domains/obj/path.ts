@@ -11,6 +11,8 @@ export type PropertyPathInput = PropertyPathExpression | PropertyPath
  * Normalize a property path input to a consistent array format.
  * Accepts either a dot-notation string or an array of property names.
  *
+ * @category Path Utilities
+ *
  * @param pathInput - Either a dot-notation string or array of property names
  * @returns An array of property names representing the path
  *
@@ -51,6 +53,8 @@ export const PropertyPathSeparator = `.`
 
 /**
  * Parse a dot-notation property path expression into an array of property names.
+ *
+ * @category Path Utilities
  *
  * @param expression - A dot-notation string like 'user.address.city'
  * @returns An array of property names ['user', 'address', 'city']

@@ -17,6 +17,8 @@ export type DeepObject = { [key: string]: DeepObjectValue }
  * allowing you to transform both keys and values. The visitor can return undefined to leave
  * the entry unchanged, or return a new {key, value} pair to transform it.
  *
+ * @category Transformation
+ *
  * @param value - The value to traverse (can be primitive, object, or array)
  * @param visitor - Function called for each object entry. Return undefined to keep unchanged,
  *                  or return {key, value} to transform the entry.

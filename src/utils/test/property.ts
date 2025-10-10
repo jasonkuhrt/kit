@@ -34,6 +34,8 @@ import * as Vitest from 'vitest'
  *   }
  * )
  * ```
+ *
+ * @category Property Testing
  */
 export const property = <Ts extends [unknown, ...unknown[]]>(
   ...args: [

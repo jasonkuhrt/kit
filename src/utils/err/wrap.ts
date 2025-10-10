@@ -5,6 +5,8 @@ import type { Context } from './types.js'
 
 /**
  * Options for wrapping errors with additional context.
+ *
+ * @category Wrapping
  */
 export interface WrapOptions {
   /**
@@ -43,6 +45,8 @@ export interface WrapOptions {
  *   })
  * }
  * ```
+ *
+ * @category Wrapping
  */
 export const wrap = (cause: unknown, messageOrOptions: string | WrapOptions): Error => {
   const ensuredCause = ensure(cause)
@@ -73,6 +77,8 @@ export const wrap = (cause: unknown, messageOrOptions: string | WrapOptions): Er
  * const wrapFetchError = wrapOn(networkError)
  * throw wrapFetchError('Failed to fetch data')
  * ```
+ *
+ * @category Wrapping
  */
 export const wrapOn = Fn.curry(wrap)
 
@@ -96,5 +102,7 @@ export const wrapOn = Fn.curry(wrap)
  *   context: { operation: 'update' }
  * })
  * ```
+ *
+ * @category Wrapping
  */
 export const wrapWith = Fn.flipCurried(wrapOn)

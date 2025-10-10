@@ -4,9 +4,20 @@ _Test_ / **Matchers**
 
 ## Import
 
-```typescript
-import { Test } from '@wollybeard/kit/test'
+::: code-group
+
+```typescript [Namespace]
+import { Test } from '@wollybeard/kit'
 
 // Access via namespace
 Test.Matchers.someFunction()
 ```
+
+```typescript [Barrel]
+import * as Test from '@wollybeard/kit/test'
+
+// Access via namespace
+Test.Matchers.someFunction()
+```
+
+:::

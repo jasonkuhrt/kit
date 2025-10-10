@@ -8,6 +8,8 @@
  * is('not an error') // false
  * is(null) // false
  * ```
+ *
+ * @category Type Guards
  */
 export const is = (value: unknown): value is Error => {
   // TODO: use upcoming Error.isError() once its widely available.
@@ -17,6 +19,8 @@ export const is = (value: unknown): value is Error => {
 
 /**
  * Check if a value is an AggregateError instance.
+ *
+ * @category Type Guards
  */
 export const isAggregateError = (value: unknown): value is AggregateError => {
   return value instanceof AggregateError
@@ -40,6 +44,8 @@ export const isAggregateError = (value: unknown): value is AggregateError => {
  *   }
  * }
  * ```
+ *
+ * @category Type Guards
  */
 export const isAbortError = (error: any): error is DOMException & { name: 'AbortError' } => {
   return (
@@ -53,6 +59,8 @@ export const isAbortError = (error: any): error is DOMException & { name: 'Abort
 /**
  * Ensure that the given value is an error and return it. If it is not an error than
  * wrap it in one, passing the given value as the error message.
+ *
+ * @category Conversion
  */
 export const ensure = (value: unknown): Error => {
   if (value instanceof Error) return value

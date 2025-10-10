@@ -1,81 +1,27 @@
 # Prom
 
-Promise utilities for asynchronous operations.
-
-Provides utilities for working with Promises including deferred promise
-creation, promise combinators, and async control flow patterns.
+Promise utilities for asynchronous operations. Provides utilities for working with Promises including deferred promise creation, promise combinators, and async control flow patterns.
 
 ## Import
 
-```typescript
-import { Prom } from '@wollybeard/kit/prom'
+::: code-group
+
+```typescript [Namespace]
+import { Prom } from '@wollybeard/kit'
 ```
 
-## Functions
-
-### createDeferred <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/prom/deferred.ts#L82)</sub>
-
-```typescript
-;(<$T>(options?: { strict?: boolean } | undefined) => Deferred<$T>)
+```typescript [Barrel]
+import * as Prom from '@wollybeard/kit/prom'
 ```
 
-### maybeAsync <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/prom/prom.ts#L137)</sub>
+:::
 
-Handle a function that might return a promise or a regular value,
-with unified handlers for both sync and async cases.
+## Deferred
 
-```typescript
-export function maybeAsync<T, R = T, E = unknown>(
-  fn: () => T,
-  handlers: MaybeAsyncHandlers<T extends Promise<infer U> ? U : T, R, E> = {},
-): T extends Promise<infer U> ? Promise<R | E | U> : T | R | E
-```
-
-**Examples:**
-
-```ts twoslash
-const result = maybeAsync(
-  () => fetchData(),
-  {
-    then: (data) => processData(data),
-    catch: (error) => ({ success: false, error }),
-  },
-)
-
-// Just error handling
-const safeResult = maybeAsync(
-  () => riskyOperation(),
-  {
-    catch: (error, isAsync) => {
-      console.error(`Failed ${isAsync ? 'async' : 'sync'}:`, error)
-      return null
-    },
-  },
-)
-
-// Just success handling
-const transformed = maybeAsync(
-  () => getValue(),
-  {
-    then: (value) => value.toUpperCase(),
-  },
-)
-```
-
-### isShape <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/prom/prom.ts#L51)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Deferred`
 
 ```typescript
-(value: unknown) => value is AnyAny
-```
-
-## Types
-
-### Deferred <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/prom/deferred.ts#L28)</sub>
-
-A deferred promise with exposed resolve and reject functions.
-
-```typescript
-export interface Deferred<$Value> {
+interface Deferred<$Value> {
   /**
    * The promise that will be resolved or rejected.
    */
@@ -103,91 +49,257 @@ export interface Deferred<$Value> {
 }
 ```
 
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/deferred.ts#L30" />
+
+A deferred promise with exposed resolve and reject functions.
+
 **Examples:**
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Prom } from '@wollybeard/kit/prom'
+// ---cut---
+const deferred = createDeferred<number>()
+
 // Later resolve it
+// [!code word:resolve:1]
 deferred.resolve(42)
 
 // Or reject it
+// [!code word:reject:1]
 deferred.reject(new Error('failed'))
 
 // Use the promise
+// [!code word:promise:1]
 await deferred.promise // 42
 ```
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Prom } from '@wollybeard/kit/prom'
+// ---cut---
+// Check resolution state
 const deferred = createDeferred<number>()
+// [!code word:log:1]
+// [!code word:isResolved:1]
 console.log(deferred.isResolved) // false
+// [!code word:resolve:1]
 deferred.resolve(42)
+// [!code word:log:1]
+// [!code word:isResolved:1]
 console.log(deferred.isResolved) // true
+// [!code word:log:1]
+// [!code word:isSettled:1]
 console.log(deferred.isSettled) // true
 ```
 
-### Any <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/prom/prom.ts#L7)</sub>
-
-Type representing a Promise of unknown type.
-Useful for generic promise handling where the resolved type is not important.
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `createDeferred`
 
 ```typescript
-export type Any = Promise<unknown>
+;(<$T>(options?: { strict?: boolean } | undefined) => Deferred<$T>)
 ```
 
-### AnyAny <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/prom/prom.ts#L13)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/deferred.ts#L86" />
 
-Type representing a Promise of any type.
-Less type-safe than {@link Any}, use with caution.
-
-```typescript
-export type AnyAny = Promise<any>
-```
-
-### Maybe <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/prom/prom.ts#L29)</sub>
-
-Type representing a value that may or may not be wrapped in a Promise.
-
-```typescript
-export type Maybe<$Type> = $Type | Promise<$Type>
-```
+Create a deferred promise with exposed resolve and reject functions.
 
 **Examples:**
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Prom } from '@wollybeard/kit/prom'
+// ---cut---
+const deferred = createDeferred<number>()
+
+setTimeout(() => {
+  // [!code word:resolve:1]
+  deferred.resolve(42)
+}, 1000)
+
+// [!code word:promise:1]
+const result = await deferred.promise // 42
+```
+
+```typescript twoslash
+// @noErrors
+import { Prom } from '@wollybeard/kit/prom'
+// ---cut---
+// Strict mode prevents multiple resolutions
+const deferred = createDeferred<number>({ strict: true })
+
+// [!code word:resolve:1]
+deferred.resolve(1)
+// [!code word:resolve:1]
+deferred.resolve(2) // Throws error
+```
+
+## Type Guards
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isShape`
+
+```typescript
+(value: unknown) => value is AnyAny
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L59" />
+
+Check if a value has the shape of a Promise. Tests for the presence of then, catch, and finally methods.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Prom } from '@wollybeard/kit/prom'
+// ---cut---
+// with a promise
+// [!code word:isShape:1]
+// [!code word:resolve:1]
+Prom.isShape(Promise.resolve(42)) // true
+
+// with a thenable object
+// [!code word:isShape:1]
+Prom.isShape({ then: () => {}, catch: () => {}, finally: () => {} }) // true
+
+// with non-promise values
+// [!code word:isShape:1]
+Prom.isShape(42) // false
+// [!code word:isShape:1]
+Prom.isShape({}) // false
+```
+
+## Types
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Any`
+
+```typescript
+type Any = Promise<unknown>
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L9" />
+
+Type representing a Promise of unknown type. Useful for generic promise handling where the resolved type is not important.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAny`
+
+```typescript
+type AnyAny = Promise<any>
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L17" />
+
+Type representing a Promise of any type. Less type-safe than Any, use with caution.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Maybe`
+
+```typescript
+type Maybe<$Type> = $Type | Promise<$Type>
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L35" />
+
+Type representing a value that may or may not be wrapped in a Promise.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Prom } from '@wollybeard/kit/prom'
+// ---cut---
+// function that accepts sync or async values
 function process<T>(value: Maybe<T>): Promise<T> {
+  // [!code word:resolve:1]
   return Promise.resolve(value)
 }
 
 process(42) // accepts number
+// [!code word:resolve:1]
 process(Promise.resolve(42)) // accepts Promise<number>
 ```
 
-### AwaitedUnion <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/prom/prom.ts#L76)</sub>
-
-Type that adds an additional type to a potentially promised union.
-If the input is a Promise, the additional type is added to the promised value.
-If the input is not a Promise, creates a union with the additional type.
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AwaitedUnion`
 
 ```typescript
-export type AwaitedUnion<$MaybePromise, $Additional> = $MaybePromise extends
+type AwaitedUnion<$MaybePromise, $Additional> = $MaybePromise extends
   Promise<infer __promised__> ? Promise<Awaited<__promised__ | $Additional>>
   : $MaybePromise | $Additional
 ```
 
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L86" />
+
+Type that adds an additional type to a potentially promised union. If the input is a Promise, the additional type is added to the promised value. If the input is not a Promise, creates a union with the additional type.
+
 **Examples:**
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Prom } from '@wollybeard/kit/prom'
+// ---cut---
+// with promise input
 type Result1 = AwaitedUnion<Promise<string>, number> // Promise<string | number>
 
 // with non-promise input
 type Result2 = AwaitedUnion<string, number> // string | number
 ```
 
-### MaybeAsyncHandlers <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/prom/prom.ts#L84)</sub>
+## Utilities
 
-Options for handling values that might be promises.
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `maybeAsync`
 
 ```typescript
-export interface MaybeAsyncHandlers<T, R = T, E = unknown> {
+function maybeAsync<T, R = T, E = unknown>(
+  fn: () => T,
+  handlers: MaybeAsyncHandlers<T extends Promise<infer U> ? U : T, R, E> = {},
+): T extends Promise<infer U> ? Promise<R | E | U> : T | R | E
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L151" />
+
+Handle a function that might return a promise or a regular value, with unified handlers for both sync and async cases.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Prom } from '@wollybeard/kit/prom'
+// ---cut---
+// Basic usage
+// [!code word:maybeAsync:1]
+const result = Prom.maybeAsync(
+  () => fetchData(),
+  {
+    then: (data) => processData(data),
+    catch: (error) => ({ success: false, error }),
+  },
+)
+
+// Just error handling
+// [!code word:maybeAsync:1]
+const safeResult = Prom.maybeAsync(
+  () => riskyOperation(),
+  {
+    catch: (error, isAsync) => {
+      // [!code word:error:1]
+      console.error(`Failed ${isAsync ? 'async' : 'sync'}:`, error)
+      return null
+    },
+  },
+)
+
+// Just success handling
+// [!code word:maybeAsync:1]
+const transformed = Prom.maybeAsync(
+  () => getValue(),
+  {
+    // [!code word:toUpperCase:1]
+    then: (value) => value.toUpperCase(),
+  },
+)
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `MaybeAsyncHandlers`
+
+```typescript
+interface MaybeAsyncHandlers<T, R = T, E = unknown> {
   /**
    * Handler for successful values (sync or async).
    */
@@ -201,3 +313,7 @@ export interface MaybeAsyncHandlers<T, R = T, E = unknown> {
   catch?: (error: unknown, isAsync: boolean) => E
 }
 ```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L96" />
+
+Options for handling values that might be promises.

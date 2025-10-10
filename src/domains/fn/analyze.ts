@@ -1,5 +1,8 @@
 import { Lang } from '#lang'
 
+/**
+ * @category Introspection
+ */
 export type Parameter = { type: 'name'; value: string } | { type: 'destructured'; names: string[] }
 
 /**
@@ -9,6 +12,7 @@ export type Parameter = { type: 'name'; value: string } | { type: 'destructured'
  * - Parameter names (both regular and destructured parameters)
  * - Function body (both statement and expression forms)
  *
+ * @category Introspection
  * @param fn - The function to analyze
  * @returns An object containing the function's body and parameters
  * @throws {Error} If the function cannot be parsed or has invalid structure

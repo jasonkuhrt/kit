@@ -1,6 +1,8 @@
 /**
  * Create a new object with the same keys but with values transformed by a function.
  *
+ * @category Transformation
+ *
  * @param obj - The object to map values from
  * @param fn - Function to transform each value, receives the value and key
  * @returns A new object with transformed values

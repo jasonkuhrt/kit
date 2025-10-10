@@ -1,18 +1,33 @@
 import type { Lang } from '#lang'
 import { Obj } from '#obj'
 
+/**
+ * @category Types
+ */
 export type Any = AnyKeyTo<unknown>
 
+/**
+ * @category Types
+ */
 export type AnyReadonly = AnyReadonlyKeyTo<unknown>
 
+/**
+ * @category Types
+ */
 export type AnyKeyTo<$Value> = {
   [key: PropertyKey]: $Value
 }
 
+/**
+ * @category Types
+ */
 export type AnyReadonlyKeyTo<$Value> = {
   readonly [key: PropertyKey]: $Value
 }
 
+/**
+ * @category Types
+ */
 export type Value = {
   [key: PropertyKey]: Lang.Value
 }
@@ -46,6 +61,8 @@ export type Value = {
  *   }
  * }
  * ```
+ *
+ * @category Type Guards
  */
 export const is = (value: unknown): value is Any => {
   const proto = Obj.Type.is(value) ? Object.getPrototypeOf(value) : undefined
@@ -93,11 +110,16 @@ export const is = (value: unknown): value is Any => {
  * const merged = merge(config, overrides)
  * // merged is typed as Config & Overrides
  * ```
+ *
+ * @category Operations
  */
 export const merge = <rec1 extends Any, rec2 extends Any>(rec1: rec1, rec2: rec2): rec1 & rec2 => {
   return Obj.merge(rec1, rec2)
 }
 
+/**
+ * @category Types
+ */
 export type Optional<$Key extends PropertyKey, $Value> = {
   [K in $Key]?: $Value
 }
@@ -111,6 +133,8 @@ export type Optional<$Key extends PropertyKey, $Value> = {
  * type WithIndex = { a: string; b: number; [key: string]: any }
  * type WithoutIndex = RemoveIndex<WithIndex>  // { a: string; b: number }
  * ```
+ *
+ * @category Types
  */
 export type RemoveIndex<$T> = {
   [k in keyof $T as string extends k ? never : number extends k ? never : k]: $T[k]
@@ -125,6 +149,8 @@ export type RemoveIndex<$T> = {
  * type T2 = IsHasIndex<{ a: string }>  // false
  * type T3 = IsHasIndex<{ [key: number]: any }, number>  // true
  * ```
+ *
+ * @category Types
  */
 export type IsHasIndex<$T, $Key extends PropertyKey = string> = $Key extends keyof $T ? true : false
 
@@ -165,6 +191,8 @@ export type IsHasIndex<$T, $Key extends PropertyKey = string> = $Key extends key
  *   create<Item>()
  * )
  * ```
+ *
+ * @category Factories
  */
 export const create = <value>(): Record<PropertyKey, value> => {
   return {} as any

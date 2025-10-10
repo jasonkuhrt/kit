@@ -4,6 +4,7 @@
  * Unlike {@link identity}, this doesn't preserve the exact value,
  * just ensures the output type matches the input type.
  *
+ * @category Endomorphisms
  * @example
  * ```typescript
  * // Builder pattern
@@ -26,6 +27,7 @@ export type endo<$T = any> = ($value: $T) => $T
  * The identity endomorphism - returns the value unchanged.
  * This is both an endomorphism and the identity function.
  *
+ * @category Endomorphisms
  * @example
  * ```typescript
  * const result = endo(5) // returns 5

@@ -8,6 +8,8 @@ import { domain } from '../domain.js'
  * Provides deep structural equality for readonly arrays by recursively
  * comparing elements using their appropriate Eq implementations.
  *
+ * @category Traits
+ * @namespace
  * @example
  * ```ts
  * import { Arr } from '@wollybeard/kit'

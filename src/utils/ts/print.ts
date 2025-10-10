@@ -1,6 +1,11 @@
 import type { ArrMut } from '#arr-mut'
 import type { IsAny, IsNever, IsUnknown, UnionToTuple } from 'type-fest'
 
+/**
+ * Print a type as a readable string representation.
+ *
+ * @category Type Printing
+ */
 // TODO: I believe there is a library we can use for a very robust type printing solution.
 // dprint-ignore
 export type Print<$Type, $Fallback extends string | undefined = undefined> =

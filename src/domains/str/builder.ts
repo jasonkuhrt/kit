@@ -6,6 +6,7 @@ import { unlines } from './text.js'
 /**
  * Default render function for string builders.
  * Joins lines with newline characters.
+ * @category Builder
  * @see {@link unlines}
  */
 export const defaultRender = unlines
@@ -13,6 +14,7 @@ export const defaultRender = unlines
 /**
  * String builder interface for constructing multi-line strings.
  * Supports both function call syntax and template literal syntax.
+ * @category Builder
  */
 export interface Builder {
   /**
@@ -46,21 +48,25 @@ export interface Builder {
 
 /**
  * Input type for lines - allows null values which are filtered out.
+ * @category Builder
  */
 export type LinesInput = (Line | null)[]
 
 /**
  * Array of line strings.
+ * @category Builder
  */
 export type Lines = Line[]
 
 /**
  * A single line of text.
+ * @category Builder
  */
 export type Line = string
 
 /**
  * Internal state of the string builder.
+ * @category Builder
  */
 export interface State {
   /**
@@ -71,7 +77,7 @@ export interface State {
 
 /**
  * Create a new string builder for constructing multi-line strings.
- *
+ * @category Builder
  * @example
  * ```typescript
  * const b = Builder()

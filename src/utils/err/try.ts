@@ -20,6 +20,8 @@ type TryOrReturn<$Main, $Fallback> = $Main extends Promise<infer M>
 
 /**
  * Default error types caught by try/catch functions when no predicates are specified.
+ *
+ * @category Try-Catch
  */
 export type TryCatchDefaultPredicateTypes = Error
 
@@ -45,6 +47,8 @@ export type TryCatchDefaultPredicateTypes = Error
  * const fetchSafe = tryCatchify(fetch, [isNetworkError])
  * const response = await fetchSafe(url) // Response | NetworkError
  * ```
+ *
+ * @category Try-Catch
  */
 // dprint-ignore
 export const tryCatchify = <fn extends Fn.AnyAny, thrown>(
@@ -88,6 +92,8 @@ export const tryCatchify = <fn extends Fn.AnyAny, thrown>(
  *   [isNetworkError]
  * ) // Response | NetworkError
  * ```
+ *
+ * @category Try-Catch
  */
 // Overload for promise input
 // dprint-ignore
@@ -151,6 +157,8 @@ export function tryCatch<returned, thrown>(
  *   throw new Error('Network error')
  * }) // returns undefined, no rejection
  * ```
+ *
+ * @category Try-Catch
  */
 export const tryCatchIgnore = <$Return>(fn: () => $Return): $Return => {
   const result = tryCatch(fn as any)
@@ -198,6 +206,8 @@ export const tryCatchIgnore = <$Return>(fn: () => $Return): $Return => {
  * //   async () => 'fallback'       // async - not allowed!
  * // )
  * ```
+ *
+ * @category Try-Or
  */
 export const tryOr = <success, fallback>(
   fn: () => success,
@@ -246,6 +256,8 @@ export const tryOr = <success, fallback>(
  *   () => 'fallback'
  * ) // Always Promise<number | string>
  * ```
+ *
+ * @category Try-Or
  */
 export const tryOrAsync = async <success, fallback>(
   fn: () => success,
@@ -268,6 +280,8 @@ export const tryOrAsync = async <success, fallback>(
  * const parseJsonOrFetch = tryOrAsyncOn(() => JSON.parse(input))
  * const data = await parseJsonOrFetch(async () => fetchDefault())
  * ```
+ *
+ * @category Try-Or
  */
 // dprint-ignore
 export const tryOrAsyncOn =
@@ -285,6 +299,8 @@ export const tryOrAsyncOn =
  * const data1 = await orFetchDefault(() => localData())
  * const data2 = await orFetchDefault(() => cachedData())
  * ```
+ *
+ * @category Try-Or
  */
 // dprint-ignore
 export const tryOrAsyncWith =
@@ -303,6 +319,8 @@ export const tryOrAsyncWith =
  * const parseJsonOr = tryOrOn(() => JSON.parse(input))
  * const data = parseJsonOr({ error: 'Invalid JSON' })
  * ```
+ *
+ * @category Try-Or
  */
 // dprint-ignore
 export const tryOrOn =
@@ -323,6 +341,8 @@ export const tryOrOn =
  * const result1 = orDefault(() => fetchStatus())
  * const result2 = orDefault(() => getLatestData())
  * ```
+ *
+ * @category Try-Or
  */
 // dprint-ignore
 export const tryOrWith =
@@ -339,6 +359,8 @@ export const tryOrWith =
  * const data = tryOrUndefined(() => localStorage.getItem('key'))
  * // data is string | undefined
  * ```
+ *
+ * @category Try-Or
  */
 export const tryOrUndefined = tryOrWith(undefined)
 
@@ -351,6 +373,8 @@ export const tryOrUndefined = tryOrWith(undefined)
  * const user = await tryOrNull(async () => fetchUser(id))
  * // user is User | null
  * ```
+ *
+ * @category Try-Or
  */
 export const tryOrNull = tryOrWith(null)
 
@@ -389,6 +413,8 @@ export const tryOrNull = tryOrWith(null)
  *   (cause) => new ConfigError('Failed to load config', { cause })
  * )
  * ```
+ *
+ * @category Try-Or
  */
 // dprint-ignore
 export function tryOrRethrow<$Return>(
@@ -429,6 +455,8 @@ export function tryOrRethrow<$Return>(
  *   { message: 'Failed to initialize', context: { env: 'production' } }
  * )
  * ```
+ *
+ * @category Try-Or
  */
 export async function tryAllOrRethrow<
   $Fns extends readonly [() => any, ...Array<() => any>],

@@ -12,17 +12,23 @@ import { Schema } from 'effect'
 /**
  * JSON primitive type.
  * Matches: string, number, boolean, or null.
+ *
+ * @category Types
  */
 export type Primitive = string | number | boolean | null
 
 /**
  * JSON object type.
+ *
+ * @category Types
  */
 export type Obj = { [key in string]?: Value }
 
 /**
  * JSON value type.
  * Matches any valid JSON value: primitives, objects, or arrays (recursively).
+ *
+ * @category Types
  */
 export type Value = Primitive | Obj | Value[]
 
@@ -39,6 +45,8 @@ export { type Obj as Object }
 
 /**
  * Type guard to check if a value is a JSON primitive.
+ *
+ * @category Type Guards
  */
 export const isPrimitive = (value: unknown): value is Primitive => {
   return (
@@ -51,6 +59,8 @@ export const isPrimitive = (value: unknown): value is Primitive => {
 
 /**
  * Type guard to check if a value is a valid JSON value.
+ *
+ * @category Type Guards
  */
 export const isValue = (value: unknown): value is Value => {
   // Recursive implementation for JSON value checking
@@ -71,6 +81,8 @@ export const isValue = (value: unknown): value is Value => {
 
 /**
  * Type guard to check if a value is a JSON object.
+ *
+ * @category Type Guards
  */
 export const isObject = (value: unknown): value is Obj => {
   return (
@@ -92,6 +104,8 @@ export const isObject = (value: unknown): value is Obj => {
 /**
  * JSON primitive value schema.
  * Matches: string, number, boolean, or null.
+ *
+ * @category Schemas
  */
 export const PrimitiveSchema = Schema.Union(
   Schema.String,
@@ -103,6 +117,8 @@ export const PrimitiveSchema = Schema.Union(
 /**
  * JSON value schema.
  * Matches any valid JSON value: primitives, objects, or arrays (recursively).
+ *
+ * @category Schemas
  */
 // @ts-expect-error - Recursive type inference limitation
 export const ValueSchema: Schema.Schema<Value> = Schema.suspend(() =>
@@ -116,17 +132,23 @@ export const ValueSchema: Schema.Schema<Value> = Schema.suspend(() =>
 /**
  * JSON object schema.
  * Matches objects with string keys and JSON values.
+ *
+ * @category Schemas
  */
 export const ObjectSchema = Schema.Record({ key: Schema.String, value: ValueSchema })
 
 /**
  * Schema for parsing JSON strings to unknown values.
  * Uses Effect's parseJson for better error handling.
+ *
+ * @category Schemas
  */
 export const parseJsonSchema = Schema.parseJson()
 
 /**
  * Schema for parsing JSON with type validation.
+ *
+ * @category Schemas
  */
 export const parseJsonAs = <A>(schema: Schema.Schema<A>) => Schema.parseJson(schema)
 
@@ -141,6 +163,8 @@ export const parseJsonAs = <A>(schema: Schema.Schema<A>) => Schema.parseJson(sch
 /**
  * Codec for JSON values with pretty-printing.
  * Uses Effect's parseJson for decoding.
+ *
+ * @category Codec
  */
 export const codec = Codec.create<Value>({
   encode: (json) => JSON.stringify(json, null, 2),
@@ -157,12 +181,16 @@ export const codec = Codec.create<Value>({
 
 /**
  * Encode a JSON value to a pretty-printed string.
+ *
+ * @category Codec
  */
 export const encode = codec.encode
 
 /**
  * Parse a JSON string to a typed value.
  * Uses Effect's parseJson for better error messages.
+ *
+ * @category Codec
  */
 export const decode = codec.decode
 
@@ -177,15 +205,23 @@ export const decode = codec.decode
 /**
  * Exported schemas for parsing JSON types.
  * These are used in tests and provide parse methods.
+ *
+ * @category Schemas
  */
 export const Primitive = {
   parse: (value: unknown) => Schema.decodeUnknownSync(PrimitiveSchema)(value),
 }
 
+/**
+ * @category Schemas
+ */
 export const Value = {
   parse: (value: unknown) => Schema.decodeUnknownSync(ValueSchema)(value),
 }
 
+/**
+ * @category Schemas
+ */
 export const ObjectParser = {
   parse: (value: unknown) => Schema.decodeUnknownSync(ObjectSchema)(value),
 }

@@ -13,6 +13,8 @@ import type { Ts } from '#ts'
 /**
  * Create a new object with only the specified properties.
  *
+ * @category Filtering
+ *
  * @param obj - The object to pick properties from
  * @param keys - Array of property keys to include
  * @returns A new object containing only the specified properties
@@ -50,6 +52,8 @@ export const pick = <T extends object, K extends keyof T>(
 /**
  * Create a new object with the specified properties removed.
  *
+ * @category Filtering
+ *
  * @param obj - The object to omit properties from
  * @param keys - Array of property keys to exclude
  * @returns A new object without the specified properties
@@ -86,6 +90,8 @@ export const omit = <T extends object, K extends keyof T>(
 
 /**
  * Filter object properties based on a policy mode and set of keys.
+ *
+ * @category Filtering
  *
  * @param mode - 'allow' to keep only specified keys, 'deny' to remove specified keys
  * @param obj - The object to filter
@@ -135,6 +141,8 @@ export const policyFilter = <
 /**
  * Filter an object using a predicate function.
  *
+ * @category Filtering
+ *
  * @param obj - The object to filter
  * @param predicate - Function that returns true to keep a key/value pair
  * @returns A new object with only the key/value pairs where predicate returned true
@@ -161,6 +169,8 @@ export const filter = <$Object extends object>(
 
 /**
  * Partition an object into picked and omitted parts.
+ *
+ * @category Filtering
  *
  * @param obj - The object to partition
  * @param pickedKeys - The keys to pick
@@ -194,6 +204,8 @@ export const partition = <$Object extends object, $Key extends keyof $Object>(
 /**
  * Filter object properties by key pattern matching.
  * Useful for extracting properties that match a pattern like data attributes.
+ *
+ * @category Filtering
  *
  * @param obj - The object to filter
  * @param predicate - Function that returns true to keep a key
@@ -237,11 +249,16 @@ export const pickMatching = <T extends object>(
 /**
  * Like keyof but returns PropertyKey for object type.
  * Helper type for generic object key operations.
+ *
+ * @category Type Utilities
  */
 export type Keyof<$Object extends object> = object extends $Object ? PropertyKey : (keyof $Object)
 
 /**
  * Filter object properties based on a policy mode and set of keys.
+ *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type User = { id: number; name: string; email: string; password: string }
@@ -265,6 +282,9 @@ export type PolicyFilter<
 
 /**
  * Pick properties from an object where the values extend a given constraint.
+ *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type User = { name: string; age: number; isActive: boolean; flag: boolean }
@@ -279,6 +299,8 @@ export type PickWhereValueExtends<$Obj extends object, $Constraint> = {
 /**
  * Add a suffix to all property names in an object.
  *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type T = SuffixKeyNames<'_old', { a: string; b: number }>
@@ -291,6 +313,8 @@ export type SuffixKeyNames<$Suffix extends string, $Object extends object> = {
 
 /**
  * Omit all keys that start with a specific prefix.
+ *
+ * @category Type Utilities
  *
  * @example
  * ```ts
@@ -305,6 +329,8 @@ export type OmitKeysWithPrefix<$Object extends object, $Prefix extends string> =
 /**
  * Pick only the required (non-optional) properties from an object.
  *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type T = PickRequiredProperties<{ a: string; b?: number }>  // { a: string }
@@ -317,6 +343,8 @@ export type PickRequiredProperties<$T extends object> = {
 /**
  * Make specific properties required in an object.
  *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type T = RequireProperties<{ a?: string; b?: number }, 'a'>
@@ -327,6 +355,8 @@ export type RequireProperties<$O extends object, $K extends keyof $O> = Ts.Simpl
 
 /**
  * Make all properties optional and allow undefined values.
+ *
+ * @category Type Utilities
  *
  * @example
  * ```ts
@@ -341,6 +371,8 @@ export type PartialOrUndefined<$T> = {
 /**
  * Pick an optional property or use fallback if required.
  *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type T1 = PickOptionalPropertyOrFallback<{ a?: string }, 'a', never>  // string
@@ -352,6 +384,9 @@ export type PickOptionalPropertyOrFallback<$Object extends object, $Property ext
 
 /**
  * Pick only the properties from an object that exist in a provided array of keys.
+ *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type User = { id: number; name: string; age: number; email: string }

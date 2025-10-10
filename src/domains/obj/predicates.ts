@@ -3,6 +3,8 @@ import type { Undefined } from '#undefined'
 /**
  * Check if an interface has any optional properties.
  *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type T1 = HasOptionalKeys<{ a?: string }>  // true
@@ -13,6 +15,8 @@ export type HasOptionalKeys<$Obj extends object> = OptionalKeys<$Obj> extends ne
 
 /**
  * Extract keys that are optional in the interface.
+ *
+ * @category Type Utilities
  *
  * @example
  * ```ts
@@ -27,6 +31,8 @@ export type OptionalKeys<T> = {
 /**
  * Extract keys that are required in the interface.
  *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type Obj = { a: string; b?: number; c?: boolean }
@@ -37,6 +43,8 @@ export type RequiredKeys<T> = Exclude<keyof T, OptionalKeys<T>>
 
 /**
  * Check if an interface has any required properties.
+ *
+ * @category Type Utilities
  *
  * @example
  * ```ts
@@ -50,6 +58,8 @@ export type HasRequiredKeys<$Obj extends object> = RequiredKeys<$Obj> extends ne
 /**
  * Check if a key is optional in an object.
  *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type T1 = HasOptionalKey<{ a?: string }, 'a'>  // true
@@ -61,6 +71,8 @@ export type HasOptionalKey<$Object extends object, $Key extends keyof $Object> =
 
 /**
  * Check if a key is optional in an object.
+ *
+ * @category Type Utilities
  *
  * @example
  * ```ts
@@ -75,6 +87,8 @@ export type IsKeyOptional<$T extends Undefined.Maybe<object>, $K extends string>
 
 /**
  * Check if a key exists in an object.
+ *
+ * @category Type Utilities
  *
  * @example
  * ```ts

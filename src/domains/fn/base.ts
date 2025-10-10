@@ -2,23 +2,45 @@ import { Lang } from '#lang'
 import type { Obj } from '#obj'
 import type { Prom } from '#prom'
 
+/**
+ * @category Type Utilities
+ */
 export type AnyAny = (...args: any[]) => any
 
+/**
+ * @category Type Utilities
+ */
 export type AnyAnyParameters2 = (arg1: any, arg2: any) => any
 
+/**
+ * @category Type Utilities
+ */
 export type AnyAnyParametersMin1 = (...args: [any, ...any[]]) => any
 
+/**
+ * @category Type Utilities
+ */
 export type AnyAnyParametersMin2 = (...args: [any, any, ...any[]]) => any
 
+/**
+ * @category Type Utilities
+ */
 export type AnyAnyParametersMin3 = (...args: [any, any, any, ...any[]]) => any
 
+/**
+ * @category Type Guards
+ */
 export const is = Lang.typeGuard<AnyAny>(value => typeof value === Lang.TypeofTypesEnum.function)
 
+/**
+ * @category Type Utilities
+ */
 export type AnyAnyAsync = (...args: any[]) => Prom.AnyAny
 
 /**
  * Extract the guarded type from a type guard function.
  *
+ * @category Type Utilities
  * @example
  * ```ts
  * const isString = (x: any): x is string => typeof x === 'string'
@@ -35,6 +57,7 @@ export type GuardedType<$T> = $T extends (x: any) => x is infer __u__ ? __u__ : 
  *
  * Assumes that the given type is among the possible return types of the function.
  *
+ * @category Type Utilities
  * @example
  * ```ts
  * // Sync function
@@ -55,6 +78,9 @@ export type ReturnExtract<$Type, $Fn extends AnyAny> =
           : Extract<__return__, $Type>
 			: never
 
+/**
+ * @category Type Utilities
+ */
 // dprint-ignore
 export type ReturnReplace<$Fn extends AnyAny, $Type> =
   $Fn extends (...args: infer __args__) => infer __return__
@@ -69,6 +95,7 @@ export type ReturnReplace<$Fn extends AnyAny, $Type> =
  *
  * If function does not return the given the type, then this is effectively an identity function.
  *
+ * @category Type Utilities
  * @example
  * ```ts
  * // Sync function
@@ -90,6 +117,9 @@ export type ReturnExclude<$Type, $Fn extends AnyAny> =
     )
     : never
 
+/**
+ * @category Type Utilities
+ */
 export type ReturnExcludeNull<$Fn extends AnyAny> = ReturnExclude<null, $Fn>
 
 /**
@@ -100,6 +130,7 @@ export type ReturnExcludeNull<$Fn extends AnyAny> = ReturnExclude<null, $Fn>
  *
  * This is useful for functions that may return early with a specific type (like void).
  *
+ * @category Type Utilities
  * @example
  * ```ts
  * // Sync function
@@ -123,6 +154,9 @@ export type ReturnInclude<$Type, $Fn extends AnyAny> =
 
 // Binding
 
+/**
+ * @category Currying & Binding
+ */
 export const bind = <fn extends AnyAny>(
   fn: AnyAnyParametersMin1 extends fn ? fn
     : {
@@ -134,14 +168,23 @@ export const bind = <fn extends AnyAny>(
   return fn_.bind(null, arg) as any
 }
 
+/**
+ * @category Currying & Binding
+ */
 // dprint-ignore
 export type bind<$Fn extends AnyAnyParametersMin1> =
   $Fn extends (...args: [any, ...infer __args_tail__]) => infer __return__
     ? (...args: __args_tail__) => __return__
     : never
 
+/**
+ * @category Basic Functions
+ */
 export const noop = () => {}
 
+/**
+ * @category Basic Functions
+ */
 export const $identityPartial = <value>(value: Obj.PartialDeep<value>): value => value as any
 
 // Curried function utilities
@@ -150,6 +193,8 @@ export const $identityPartial = <value>(value: Obj.PartialDeep<value>): value =>
  * Apply the second parameter of a curried function.
  * For a function (a) => (b) => c and a value b, returns (a) => c
  * Useful for creating service interfaces from curried operations.
+ *
+ * @category Currying & Binding
  */
 export const applySecond = <fn extends (...args: any[]) => (arg: any) => any, arg>(
   fn: fn,
@@ -162,6 +207,8 @@ export const applySecond = <fn extends (...args: any[]) => (arg: any) => any, ar
  * Apply the second parameter of a curried function.
  * For a function (a) => (b) => c, returns (a) => c
  * Useful for creating service interfaces from curried operations.
+ *
+ * @category Currying & Binding
  */
 // dprint-ignore
 export type applySecond<$Fn, $Arg> =

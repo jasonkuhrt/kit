@@ -8,7 +8,7 @@ import { domain } from '../domain.js'
  *
  * Provides various string generators for property-based testing.
  * Generates strings of various lengths and character sets.
- *
+ * @category Traits
  * @example
  * ```ts
  * import { Str } from '@wollybeard/kit'

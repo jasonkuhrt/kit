@@ -1,145 +1,288 @@
 # Arr
 
-Array utilities for working with readonly and mutable arrays.
-
-Provides functional utilities for array operations including mapping, filtering,
-type guards, and conversions. Emphasizes immutable operations and type safety.
+Array utilities for working with readonly and mutable arrays. Provides functional utilities for array operations including mapping, filtering, type guards, and conversions. Emphasizes immutable operations and type safety.
 
 ## Import
 
-```typescript
-import { Arr } from '@wollybeard/kit/arr'
+::: code-group
+
+```typescript [Namespace]
+import { Arr } from '@wollybeard/kit'
 ```
 
-## Functions
+```typescript [Barrel]
+import * as Arr from '@wollybeard/kit/arr'
+```
 
-### assert <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/arr.ts#L113)</sub>
+:::
 
-Assert that a value is an array.
-Throws a TypeError if the value is not an array.
+## Constants
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `empty`
 
 ```typescript
-export function assert(value: unknown): void
+readonly[]
 ```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L78" />
+
+:::warning DEPRECATED
+Use Array.empty from Effect instead
+:::
+
+Empty array constant.
 
 **Examples:**
 
-```ts twoslash
-Arr.assert(value)
-  // value is now typed as unknown[]
-  value.forEach(item => console.log(item))
-}
+```typescript twoslash
+// @noErrors
+import { Arr } from '@wollybeard/kit'
+
+// [!code word:empty:1]
+const emptyArray = Arr.empty
+// [!code word:log:1]
+console.log(emptyArray) // []
 ```
 
-### includes <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/arr.ts#L136)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `emptyArray`
 
 ```typescript
-<$T>(array: $T[], value: unknown) => value is $T
+readonly[]
 ```
 
-### ensure <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/arr.ts#L156)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L90" />
+
+Empty array constant (frozen). Useful as a default value or sentinel.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Arr } from '@wollybeard/kit/arr'
+// ---cut---
+// [!code word:emptyArray:1]
+const arr = items ?? Arr.emptyArray
+```
+
+## Normalization
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `ensure`
 
 ```typescript
 <$T>(value: $T | $T[]) => $T[]
 ```
 
-## Constants
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L169" />
 
-### Eq <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/traits/eq.ts#L33)</sub>
+Ensure a value is an array. If the value is already an array, return it as-is. Otherwise, wrap it in an array.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Arr } from '@wollybeard/kit/arr'
+// ---cut---
+// [!code word:ensure:1]
+Arr.ensure('hello') // ['hello']
+// [!code word:ensure:1]
+Arr.ensure(['a', 'b']) // ['a', 'b']
+// [!code word:ensure:1]
+Arr.ensure(42) // [42]
+```
+
+## Search
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `includes`
+
+```typescript
+<$T>(array: $T[], value: unknown) => value is $T
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L148" />
+
+Type-safe array includes check that narrows the type of the value. Unlike the standard includes, this provides proper type narrowing.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Arr } from '@wollybeard/kit/arr'
+// ---cut---
+const fruits = ['apple', 'banana', 'orange'] as const
+const value: unknown = 'apple'
+
+// [!code word:includes:1]
+if (Arr.includes(fruits, value)) {
+  // value is now typed as 'apple' | 'banana' | 'orange'
+}
+```
+
+## Traits
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Eq`
 
 ```typescript
 Eq<Any>
 ```
 
-### Type <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/traits/type.ts#L20)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/traits/eq.ts#L35" />
+
+Eq trait implementation for immutable arrays.
+
+Provides deep structural equality for readonly arrays by recursively comparing elements using their appropriate Eq implementations.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Arr } from '@wollybeard/kit'
+
+// Basic array equality
+// [!code word:is:1]
+Arr.Eq.is([1, 2, 3], [1, 2, 3]) // true
+// [!code word:is:1]
+Arr.Eq.is([1, 2, 3], [1, 2, 4]) // false
+// [!code word:is:1]
+Arr.Eq.is([1, 2], [1, 2, 3]) // false (different lengths)
+
+// Nested arrays
+// [!code word:is:1]
+Arr.Eq.is(
+  [[1, 2], [3, 4]],
+  [[1, 2], [3, 4]],
+) // true
+
+// Mixed types
+// [!code word:is:1]
+Arr.Eq.is(
+  [1, 'hello', true],
+  [1, 'hello', true],
+) // true
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Type`
 
 ```typescript
 Type<Any>
 ```
 
-### empty <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/arr.ts#L71)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/traits/type.ts#L21" />
 
-```typescript
-readonly []
+Type trait implementation for immutable arrays.
+
+Provides type checking for readonly array values using Array.isArray.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Arr } from '@wollybeard/kit'
+
+// [!code word:is:1]
+Arr.Type.is([1, 2, 3]) // true
+// [!code word:is:1]
+Arr.Type.is([]) // true
+// [!code word:is:1]
+Arr.Type.is('not array') // false
+// [!code word:is:1]
+Arr.Type.is(null) // false
 ```
 
-### emptyArray <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/arr.ts#L82)</sub>
+## Type Guards
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `assert`
 
 ```typescript
-readonly []
+function assert(value: unknown): void
 ```
 
-## Types
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L124" />
 
-### Unknown <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/arr.ts#L9)</sub>
+Assert that a value is an array. Throws a TypeError if the value is not an array.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Arr } from '@wollybeard/kit/arr'
+// ---cut---
+function process(value: unknown) {
+  // [!code word:assert:1]
+  Arr.assert(value)
+  // value is now typed as unknown[]
+  // [!code word:forEach:1]
+  // [!code word:log:1]
+  value.forEach(item => console.log(item))
+}
+```
+
+## Type Utilities
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `All`
 
 ```typescript
-export type Unknown = readonly unknown[]
+type All<$Tuple extends [...boolean[]]> = $Tuple[number] extends true ? true
+  : false
 ```
 
-### Any <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/arr.ts#L11)</sub>
-
-```typescript
-export type Any = readonly any[]
-```
-
-### Empty <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/arr.ts#L13)</sub>
-
-```typescript
-export type Empty = readonly []
-```
-
-### All <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/arr.ts#L26)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L27" />
 
 Check if all booleans in a tuple are true.
 
-```typescript
-export type All<$Tuple extends [...boolean[]]> = $Tuple[number] extends true
-  ? true
-  : false
-```
-
 **Examples:**
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Arr } from '@wollybeard/kit/arr'
+// ---cut---
+type T1 = All<[true, true, true]> // true
 type T2 = All<[true, false, true]> // false
 ```
 
-### IsTupleMultiple <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/arr.ts#L37)</sub>
-
-Check if a tuple has multiple elements.
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsTupleMultiple`
 
 ```typescript
-export type IsTupleMultiple<$T> = $T extends [unknown, unknown, ...unknown[]]
-  ? true
+type IsTupleMultiple<$T> = $T extends [unknown, unknown, ...unknown[]] ? true
   : false
 ```
 
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L39" />
+
+Check if a tuple has multiple elements.
+
 **Examples:**
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Arr } from '@wollybeard/kit/arr'
+// ---cut---
+type T1 = IsTupleMultiple<[1, 2]> // true
 type T2 = IsTupleMultiple<[1]> // false
 ```
 
-### Push <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/arr.ts#L47)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Push`
+
+```typescript
+type Push<$T extends any[], $V> = [...$T, $V]
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L50" />
 
 Push a value onto a tuple.
 
-```typescript
-export type Push<$T extends any[], $V> = [...$T, $V]
-```
-
 **Examples:**
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Arr } from '@wollybeard/kit/arr'
+// ---cut---
+type T = Push<[1, 2], 3> // [1, 2, 3]
 ```
 
-### FirstNonUnknownNever <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/arr.ts#L52)</sub>
-
-Get the first non-unknown, non-never element from a tuple.
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `FirstNonUnknownNever`
 
 ```typescript
-export type FirstNonUnknownNever<$T extends any[]> = $T extends
+type FirstNonUnknownNever<$T extends any[]> = $T extends
   [infer __first__, ...infer __rest__]
   ? unknown extends __first__
     ? 0 extends 1 & __first__ ? FirstNonUnknownNever<__rest__> // is any
@@ -149,10 +292,42 @@ export type FirstNonUnknownNever<$T extends any[]> = $T extends
   : never
 ```
 
-### EmptyArray <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/arr/arr.ts#L87)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L57" />
+
+Get the first non-unknown, non-never element from a tuple.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `EmptyArray`
+
+```typescript
+type EmptyArray = typeof emptyArray
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L97" />
 
 Type for the empty array constant.
 
+## Other
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Unknown`
+
 ```typescript
-export type EmptyArray = typeof emptyArray
+type Unknown = readonly unknown[]
 ```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L9" />
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Any`
+
+```typescript
+type Any = readonly any[]
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L11" />
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Empty`
+
+```typescript
+type Empty = readonly []
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L13" />

@@ -1,16 +1,57 @@
-import { type ModuleDeclaration, Node, type SourceFile } from 'ts-morph'
-import type { Module } from '../../schema.js'
+import { FsLoc } from '#fs-loc'
+import { Schema as S } from 'effect'
+import { type ExportDeclaration, type ModuleDeclaration, Node, type SourceFile } from 'ts-morph'
+import { type Module, SourceLocation, ValueExport } from '../../schema.js'
+import { absoluteToRelative } from '../path-utils.js'
 import { extractExport } from './export.js'
-import { parseJSDoc } from './jsdoc.js'
+import { type JSDocInfo, parseJSDoc } from './jsdoc.js'
+
+/**
+ * Create a namespace export from an export declaration and its nested module.
+ *
+ * This helper consolidates the common logic for creating namespace exports
+ * from `export * as Name from './path'` declarations.
+ *
+ * @param exportDecl - The export declaration node
+ * @param nsName - The namespace name
+ * @param nestedModule - The extracted nested module
+ * @returns A ValueExport representing the namespace
+ */
+const createNamespaceExport = (
+  exportDecl: ExportDeclaration,
+  nsName: string,
+  nestedModule: Module,
+): ValueExport => {
+  const jsdoc = parseJSDoc(exportDecl)
+
+  return ValueExport.make({
+    _tag: 'value',
+    name: nsName,
+    type: 'namespace',
+    signature: `export * as ${nsName}`,
+    description: jsdoc.description || nestedModule.description,
+    examples: jsdoc.examples,
+    deprecated: jsdoc.deprecated,
+    category: jsdoc.category,
+    tags: jsdoc.tags,
+    sourceLocation: SourceLocation.make({
+      file: S.decodeSync(FsLoc.RelFile.String)(
+        absoluteToRelative(exportDecl.getSourceFile().getFilePath()),
+      ),
+      line: exportDecl.getStartLineNumber(),
+    }),
+    module: nestedModule,
+  })
+}
 
 /**
  * Extract a module from a source file.
  *
- * @param name - Module name
  * @param sourceFile - The source file to extract from
+ * @param location - Relative file path from project root
  * @returns Module with all exports
  */
-export const extractModuleFromFile = (name: string, sourceFile: SourceFile): Module => {
+export const extractModuleFromFile = (sourceFile: SourceFile, location: FsLoc.RelFile): Module => {
   const exports = sourceFile.getExportedDeclarations()
   const moduleExports = []
 
@@ -21,40 +62,45 @@ export const extractModuleFromFile = (name: string, sourceFile: SourceFile): Mod
     const namespaceExport = exportDecl.getNamespaceExport()
 
     if (namespaceExport) {
-      // This is a namespace re-export
+      // This is a namespace re-export: export * as Name from './path'
       const nsName = namespaceExport.getName()
       const referencedFile = exportDecl.getModuleSpecifierSourceFile()
 
       if (referencedFile) {
-        // Extract the referenced module
-        const nestedModule = extractModuleFromFile(nsName, referencedFile)
+        // Extract the referenced module with its file location
+        const nestedLocation = S.decodeSync(FsLoc.RelFile.String)(
+          absoluteToRelative(referencedFile.getFilePath()),
+        )
+        const nestedModule = extractModuleFromFile(referencedFile, nestedLocation)
 
-        // Get description from JSDoc on the export declaration itself
-        const jsdoc = parseJSDoc(exportDecl)
+        // Create namespace export using helper
+        moduleExports.push(createNamespaceExport(exportDecl, nsName, nestedModule))
+      }
+    } else if (!exportDecl.getModuleSpecifier()) {
+      // Skip export declarations without module specifier (not re-exports)
+      continue
+    } else {
+      // This is a wildcard re-export: export * from './path'
+      // Process namespace exports from the referenced file
+      const referencedFile = exportDecl.getModuleSpecifierSourceFile()
+      if (referencedFile) {
+        const nestedExportDecls = referencedFile.getExportDeclarations()
+        for (const nestedExportDecl of nestedExportDecls) {
+          const nestedNsExport = nestedExportDecl.getNamespaceExport()
+          if (nestedNsExport) {
+            const nsName = nestedNsExport.getName()
+            const nsFile = nestedExportDecl.getModuleSpecifierSourceFile()
+            if (nsFile) {
+              const nsLocation = S.decodeSync(FsLoc.RelFile.String)(
+                absoluteToRelative(nsFile.getFilePath()),
+              )
+              const nestedModule = extractModuleFromFile(nsFile, nsLocation)
 
-        // Override nested module's description with the one from the export declaration
-        // This ensures user-friendly descriptions from $.ts take precedence over
-        // implementation details from $$.ts
-        if (jsdoc.description) {
-          nestedModule.description = jsdoc.description
+              // Create namespace export using helper
+              moduleExports.push(createNamespaceExport(nestedExportDecl, nsName, nestedModule))
+            }
+          }
         }
-
-        // Create a namespace export with the nested module
-        moduleExports.push({
-          _tag: 'value',
-          name: nsName,
-          type: 'namespace',
-          signature: `export * as ${nsName}`,
-          description: jsdoc.description || nestedModule.description,
-          examples: [],
-          deprecated: undefined,
-          tags: {},
-          sourceLocation: {
-            file: exportDecl.getSourceFile().getFilePath().replace(process.cwd() + '/', ''),
-            line: exportDecl.getStartLineNumber(),
-          },
-          module: nestedModule,
-        } as any)
       }
     }
   }
@@ -78,37 +124,34 @@ export const extractModuleFromFile = (name: string, sourceFile: SourceFile): Mod
 
     // Use first declaration (typically there's only one)
     const decl = declarations[0]!
+
+    // Skip if this is a source file (namespace re-export from another file)
+    if (Node.isSourceFile(decl)) {
+      // This is a namespace re-exported from another file - skip it
+      // It should have been processed in the namespace re-export section
+      continue
+    }
+
     moduleExports.push(extractExport(exportName, decl))
   }
 
-  // Try to get module-level JSDoc from file's leading comment block
+  // Get module-level JSDoc from the first statement (typically an export declaration)
+  // The JSDoc comment above the first export is considered the module-level documentation
   let description = ''
+  let category: string | undefined
 
-  // Get all comments at the start of the file (before any code)
   const statements = sourceFile.getStatements()
   if (statements.length > 0) {
     const firstStatement = statements[0]!
-    const leadingComments = firstStatement.getLeadingCommentRanges()
-
-    for (const comment of leadingComments) {
-      const commentText = comment.getText()
-      // Check if it's a JSDoc comment (/** ... */)
-      if (commentText.startsWith('/**') && commentText.endsWith('*/')) {
-        // Remove /** and */ and trim
-        description = commentText
-          .slice(3, -2)
-          .split('\n')
-          .map(line => line.replace(/^\s*\*\s?/, ''))
-          .join('\n')
-          .trim()
-        break // Use the first JSDoc comment
-      }
-    }
+    const jsdoc = parseJSDoc(firstStatement)
+    description = jsdoc.description || ''
+    category = jsdoc.category
   }
 
   return {
-    name,
+    location,
     description,
+    ...(category ? { category } : {}),
     exports: moduleExports,
   }
 }
@@ -116,16 +159,16 @@ export const extractModuleFromFile = (name: string, sourceFile: SourceFile): Mod
 /**
  * Extract a module from a namespace declaration.
  *
- * @param name - Namespace name
  * @param moduleDecl - The module/namespace declaration
+ * @param location - Relative file path from project root
  * @returns Module with all namespace exports
  */
-export const extractModule = (name: string, moduleDecl: ModuleDeclaration): Module => {
+export const extractModule = (moduleDecl: ModuleDeclaration, location: FsLoc.RelFile): Module => {
   const body = moduleDecl.getBody()
 
   if (!body || !Node.isModuleBlock(body)) {
     return {
-      name,
+      location,
       description: '',
       exports: [],
     }
@@ -173,12 +216,15 @@ export const extractModule = (name: string, moduleDecl: ModuleDeclaration): Modu
     }
   }
 
-  // Get namespace description from JSDoc
-  const description = parseJSDoc(moduleDecl).description || ''
+  // Get namespace description and category from JSDoc
+  const jsdoc = parseJSDoc(moduleDecl)
+  const description = jsdoc.description || ''
+  const category = jsdoc.category
 
   return {
-    name,
+    location,
     description,
+    ...(category ? { category } : {}),
     exports,
   }
 }

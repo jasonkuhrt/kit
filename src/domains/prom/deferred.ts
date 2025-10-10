@@ -24,6 +24,8 @@
  * console.log(deferred.isResolved)  // true
  * console.log(deferred.isSettled)   // true
  * ```
+ *
+ * @category Deferred
  */
 export interface Deferred<$Value> {
   /**
@@ -78,6 +80,8 @@ export interface Deferred<$Value> {
  * deferred.resolve(1)
  * deferred.resolve(2)  // Throws error
  * ```
+ *
+ * @category Deferred
  */
 export const createDeferred = <$T>(options?: { strict?: boolean }): Deferred<$T> => {
   let resolve: ((value: $T) => void) | undefined

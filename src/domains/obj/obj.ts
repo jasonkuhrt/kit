@@ -17,6 +17,8 @@ export * from './type.js'
  * Assert that a value is an object.
  * Throws a TypeError if the value is not an object (including null).
  *
+ * @category Shape & Validation
+ *
  * @param value - The value to check
  * @throws {TypeError} If the value is not an object
  *
@@ -42,6 +44,8 @@ export function assert(value: unknown): asserts value is object {
 /**
  * Create a type predicate function that checks if a value matches a shape specification.
  * Uses JavaScript's `typeof` operator to validate property types.
+ *
+ * @category Shape & Validation
  *
  * @param spec - An object mapping property names to their expected typeof results
  * @returns A type predicate function that checks if a value matches the shape
@@ -83,6 +87,8 @@ const PrivateStateSymbol = Symbol('PrivateState')
  * Attach private state to an object using a non-enumerable Symbol property.
  * The state is immutable once set and cannot be discovered through enumeration.
  *
+ * @category State Management
+ *
  * @param obj - The object to attach private state to
  * @param value - The state object to attach
  * @returns The original object with private state attached
@@ -120,6 +126,8 @@ export const setPrivateState = <obj extends Any>(obj: obj, value: object): obj =
 /**
  * Retrieve private state previously attached to an object with setPrivateState.
  *
+ * @category State Management
+ *
  * @param obj - The object to retrieve private state from
  * @returns The private state object
  * @throws Error if no private state is found on the object
@@ -156,6 +164,8 @@ export const getPrivateState = <state extends Any>(obj: Any): state => {
 
 /**
  * Check if an object has any non-undefined values.
+ *
+ * @category Predicates
  *
  * @param object - The object to check
  * @returns True if at least one value is not undefined
@@ -201,6 +211,9 @@ export type PartialDeep<$Type> =
 
 /**
  * Make all properties of an object writable (remove readonly modifiers).
+ *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type ReadonlyUser = { readonly id: number; readonly name: string }
@@ -212,6 +225,8 @@ export type Writeable<$Obj extends object> = Writable<$Obj>
 
 /**
  * Convert an object to a parameters tuple.
+ *
+ * @category Type Utilities
  */
 // dprint-ignore
 export type ToParameters<$Params extends object | undefined> =
@@ -221,6 +236,8 @@ export type ToParameters<$Params extends object | undefined> =
 
 /**
  * Convert an object to parameters tuple with exact matching.
+ *
+ * @category Type Utilities
  */
 export type ToParametersExact<
   $Input extends object,
@@ -230,6 +247,8 @@ export type ToParametersExact<
 
 /**
  * Convert PropertyKey to string if possible.
+ *
+ * @category Type Utilities
  */
 export type PropertyKeyToString<$Key extends PropertyKey> = $Key extends string ? $Key
   : $Key extends number ? `${$Key}`

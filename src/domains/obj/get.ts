@@ -29,6 +29,8 @@ import { type Any } from './type.js'
  * Create a getter function for a specific property path.
  * Returns a function that extracts the value at that path from any compatible object.
  *
+ * @category Access
+ *
  * @param pathInput - A dot-notation string or array of property names
  * @returns A function that extracts the value at the specified path
  *
@@ -89,6 +91,8 @@ export type getWith<
  * Returns a function that can extract values from that object using any property path.
  * Inverse parameter order of {@link getWith}.
  *
+ * @category Access
+ *
  * @param obj - The object to extract values from
  * @returns A function that accepts a property path and returns the value at that path
  *
@@ -131,6 +135,8 @@ const _get = (propertyPath: PropertyPath, obj: Any): unknown => {
  * Get an array of key-value pairs from an object.
  * Preserves exact types including optional properties and undefined values.
  *
+ * @category Access
+ *
  * @param obj - The object to extract entries from
  * @returns An array of tuples containing [key, value] pairs
  *
@@ -164,6 +170,8 @@ export type entries<obj extends Any> = {
 /**
  * Get entries from an object with string keys only.
  *
+ * @category Access
+ *
  * @param obj - The object to extract entries from
  * @returns An array of [key, value] tuples where keys are strings
  * @example
@@ -178,6 +186,8 @@ export const stringKeyEntries = <$T extends object>(obj: $T): [string & keyof $T
 
 /**
  * Get entries from an object excluding undefined values.
+ *
+ * @category Access
  *
  * @param obj - The object to extract entries from
  * @returns An array of [key, value] tuples excluding undefined values
@@ -199,6 +209,8 @@ export const entriesStrict = <$T extends object>(
  * Get keys from an object with proper type inference.
  * Type-safe version of Object.keys.
  *
+ * @category Access
+ *
  * @param obj - The object to extract keys from
  * @returns An array of keys
  * @example
@@ -213,6 +225,9 @@ export const keysStrict = <$T extends object>(obj: $T): (keyof $T)[] => {
 
 /**
  * Get a random property value from an object
+ *
+ * @category Access
+ *
  * @param obj - The object to get a random value from
  * @returns A random value from the object, or undefined for empty objects
  *
@@ -239,6 +254,8 @@ const toKeys = <obj extends object>(obj: obj): (keyof obj)[] => Object.keys(obj)
 
 /**
  * Get a value at a path in an object.
+ *
+ * @category Access
  *
  * @param obj - The object to traverse
  * @param path - Array of property names representing the path
@@ -270,6 +287,8 @@ export const getValueAtPath = <$T, ___Path extends readonly string[]>(
  * Get an array of values from an object.
  * Type-safe version of Object.values.
  *
+ * @category Access
+ *
  * @param obj - The object to extract values from
  * @returns An array of values
  * @example
@@ -287,6 +306,8 @@ export type values<$Obj extends object> = $Obj[keyof $Obj][]
 /**
  * Get value at key, or return fallback if key doesn't exist.
  *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type T1 = GetKeyOr<{ a: string }, 'a', never>  // string
@@ -297,6 +318,8 @@ export type GetKeyOr<$T, $Key, $Or> = $Key extends keyof $T ? $T[$Key] : $Or
 
 /**
  * Get value at key or return never.
+ *
+ * @category Type Utilities
  *
  * @example
  * ```ts
@@ -313,6 +336,8 @@ export type GetOrNever<$O extends object, $P extends string> = $P extends keyof 
 /**
  * Get the union of all value types from an object, or return fallback if no keys.
  *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type T1 = keyofOr<{ a: string; b: number }, never>  // string | number
@@ -323,6 +348,9 @@ export type keyofOr<$Obj extends object, $Or> = [keyof $Obj] extends [never] ? $
 
 /**
  * Create an array type containing the keys of an object.
+ *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type User = { name: string; age: number; email: string }
@@ -334,6 +362,9 @@ export type KeysArray<$Obj extends object> = Array<keyof $Obj>
 
 /**
  * Create a readonly array type containing the keys of an object.
+ *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type User = { name: string; age: number; email: string }
@@ -346,6 +377,8 @@ export type KeysReadonlyArray<$Obj extends object> = ReadonlyArray<keyof $Obj>
 /**
  * Extract only string keys from an object.
  *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type T = StringKeyof<{ a: 1; [x: number]: 2 }>  // 'a'
@@ -356,6 +389,9 @@ export type StringKeyof<$T> = keyof $T & string
 /**
  * Extract keys from an object type that have primitive values.
  * Useful for serialization scenarios where only primitive values can be safely transferred.
+ *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type User = {

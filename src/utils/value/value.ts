@@ -3,6 +3,8 @@ import { Fn } from '#fn'
 /**
  * A lazy value that is computed when called.
  * @template $Value - The type of value that will be returned when the lazy function is invoked
+ *
+ * @category Lazy Values
  */
 export type Lazy<$Value> = () => $Value
 
@@ -19,12 +21,16 @@ export type Lazy<$Value> = () => $Value
  * const lazyObject = lazy({ foo: 'bar' })
  * console.log(lazyObject()) // { foo: 'bar' }
  * ```
+ *
+ * @category Lazy Values
  */
 export const lazy = <const value>(value: value): Lazy<typeof value> => () => value
 
 /**
  * A value that may be either immediate or lazy.
  * @template $Value - The type of the value, whether immediate or lazy
+ *
+ * @category Lazy Values
  */
 export type LazyMaybe<$Value = unknown> = $Value | Lazy<$Value>
 
@@ -32,6 +38,8 @@ export type LazyMaybe<$Value = unknown> = $Value | Lazy<$Value>
  * Type-level resolution of a LazyMaybe value.
  * Extracts the underlying value type whether it's lazy or immediate.
  * @template $LazyMaybeValue - A value that may be lazy or immediate
+ *
+ * @category Lazy Values
  */
 // dprint-ignore
 export type resolveLazy<$LazyMaybeValue extends LazyMaybe<any>> =
@@ -52,6 +60,8 @@ export type resolveLazy<$LazyMaybeValue extends LazyMaybe<any>> =
  * const lazyConfig = () => ({ port: 3000 })
  * console.log(resolveLazy(lazyConfig)) // { port: 3000 }
  * ```
+ *
+ * @category Lazy Values
  */
 export const resolveLazy = <lazyMaybeValue extends LazyMaybe>(
   lazyMaybeValue: lazyMaybeValue,
@@ -78,6 +88,8 @@ export const resolveLazy = <lazyMaybeValue extends LazyMaybe>(
  * const getConfig = resolveLazyFactory(() => ({ apiUrl: 'https://api.example.com' }))
  * console.log(getConfig()) // { apiUrl: 'https://api.example.com' }
  * ```
+ *
+ * @category Lazy Values
  */
 export const resolveLazyFactory = <value>(lazyMaybeValue: LazyMaybe<value>) => (): value =>
   resolveLazy(lazyMaybeValue) as any
@@ -95,6 +107,8 @@ export const resolveLazyFactory = <value>(lazyMaybeValue: LazyMaybe<value>) => (
  * identityProxy.foo.bar.baz  // Returns identityProxy
  * identityProxy.anything()  // Returns identityProxy
  * ```
+ *
+ * @category Utilities
  */
 export const identityProxy = new Proxy({}, {
   get: () => identityProxy,
@@ -110,6 +124,8 @@ export const identityProxy = new Proxy({}, {
  * isSymbol(Symbol('test'))  // true
  * isSymbol('test')  // false
  * ```
+ *
+ * @category Type Guards
  */
 export const isSymbol = (value: unknown): value is symbol => {
   return typeof value === 'symbol'
@@ -133,6 +149,8 @@ export const isSymbol = (value: unknown): value is symbol => {
  * isDate('2024-01-01')  // false
  * isDate(Date.now())  // false
  * ```
+ *
+ * @category Type Guards
  */
 export const isDate = (value: unknown): value is Date => {
   return value instanceof Date

@@ -113,6 +113,8 @@ import * as Builder from './builder.ts'
  * @returns A {@link TestBuilder} for configuring and running tests
  *
  * @see {@link describe} for creating tests with a describe block
+ *
+ * @category Test Builders
  */
 export function on<$fn extends Fn.AnyAny>(
   $fn: $fn,
@@ -127,6 +129,10 @@ export function on<$fn extends Fn.AnyAny>(
 /**
  * Creates a test table builder for property-based and example-based testing.
  *
+ * **CRITICAL**: Each call to `Test.describe()` creates a SEPARATE, INDEPENDENT test block.
+ * The builder is NOT reusable - you CANNOT chain multiple `.cases()` or `.describeInputs()` calls
+ * to add test cases to the same describe block. Each builder must end with `.test()`.
+ *
  * Test tables allow you to define multiple test cases with inputs and expected outputs,
  * reducing boilerplate and making tests more maintainable. The builder supports two modes:
  *
@@ -137,7 +143,7 @@ export function on<$fn extends Fn.AnyAny>(
  * - Test cases specify function arguments and expected return values
  * - Default assertion compares actual vs expected using Effect's equality
  *
- * **Generic Mode** - Define custom types with `.i<T>()` and `.o<T>()`:
+ * **Generic Mode** - Define custom types with `.i<T>` and `.o<T>`:
  * - Explicitly specify input and output types
  * - Provide custom test logic to validate cases
  * - Useful for testing complex behaviors beyond simple function calls
@@ -146,7 +152,7 @@ export function on<$fn extends Fn.AnyAny>(
  *
  * **Nested Describes** - Use ` > ` separator to create nested describe blocks:
  * - `Test.describe('Parent > Child')` creates `describe('Parent', () => describe('Child', ...))`
- * - Multiple tests with the same prefix share the outer describe block
+ * - Multiple SEPARATE Test.describe() calls with the same prefix share the outer describe block
  * - Supports any depth: `'API > Users > Create'` creates three levels
  *
  * **Matrix Testing** - Use `.matrix()` to run cases across parameter combinations:
@@ -157,6 +163,24 @@ export function on<$fn extends Fn.AnyAny>(
  *
  * @example
  * ```ts
+ * // ❌ WRONG - Trying to chain test cases (DOES NOT WORK)
+ * Test.describe('decodeSync > basic')
+ *   .on(decodeSync)
+ *   .cases([['1.2.3']])
+ *   .describeInputs('union', [['1.2.3-beta']])  // ❌ This creates a NESTED describe, not sibling!
+ *   .test()
+ *
+ * // ✅ CORRECT - Separate Test.describe() calls for separate test groups
+ * Test.describe('decodeSync > basic')
+ *   .on(decodeSync)
+ *   .cases([['1.2.3']], [['invalid']])
+ *   .test()
+ *
+ * Test.describe('decodeSync > union')  // Shares 'decodeSync' parent describe
+ *   .on(decodeSync)
+ *   .cases([['1.2.3-beta']], [['1.2.3+build']])
+ *   .test()
+ *
  * // Function mode - testing a math function
  * Test.describe('addition')
  *   .on(add)
@@ -190,7 +214,7 @@ export function on<$fn extends Fn.AnyAny>(
  *     expect(input.toUpperCase()).toBe(output)
  *   })
  *
- * Test.describe('Transform > Number')  // Shares 'Transform' parent describe
+ * Test.describe('Transform > Number')  // SEPARATE call - Shares 'Transform' parent describe
  *   .inputType<number>()
  *   .outputType<number>()
  *   .cases([42, 42])
@@ -229,6 +253,8 @@ export function on<$fn extends Fn.AnyAny>(
  *
  * @see {@link on} for function mode without a describe block
  * @see {@link TestBuilder.matrix matrix()} for matrix testing documentation
+ *
+ * @category Test Builders
  */
 export function describe(
   description?: string,

@@ -15,6 +15,8 @@ interface MergeOptions {
  * Create a customized merge function with specific merge behavior options.
  * Allows control over how undefined values, defaults, and arrays are handled.
  *
+ * @category Merging
+ *
  * @param mergers - Options to customize merge behavior
  * @returns A merge function with the specified behavior
  *
@@ -46,6 +48,8 @@ export const mergeWith =
 /**
  * Deep merge two objects, with properties from the second object overwriting the first.
  * Recursively merges nested objects, but arrays and other non-object values are replaced.
+ *
+ * @category Merging
  *
  * @param obj1 - The base object to merge into
  * @param obj2 - The object to merge from
@@ -80,6 +84,8 @@ export const merge: <obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2)
  * Deep merge two objects with special handling for arrays.
  * When both objects have an array at the same path, concatenates them instead of replacing.
  *
+ * @category Merging
+ *
  * @example
  * ```ts
  * mergeWithArrayPush(
@@ -108,6 +114,8 @@ export const mergeWithArrayPush = mergeWith({
 /**
  * Deep merge two objects with array concatenation and deduplication.
  * When both objects have an array at the same path, concatenates and removes duplicates.
+ *
+ * @category Merging
  *
  * @example
  * ```ts
@@ -138,6 +146,8 @@ export const mergeWithArrayPushDedupe = mergeWith({
 /**
  * Merge default values into an object, only filling in missing properties.
  * Existing properties in the base object are preserved, even if undefined.
+ *
+ * @category Merging
  *
  * @param obj1 - The base object with potentially missing properties
  * @param obj1Defaults - The default values to fill in
@@ -174,6 +184,8 @@ export const mergeDefaults: <
  * Shallow merge two objects with later values overriding earlier ones.
  * Useful for providing defaults that can be overridden.
  *
+ * @category Merging
+ *
  * @param defaults - The default values
  * @param input - The input values that override defaults
  * @returns Merged object
@@ -195,6 +207,8 @@ export const shallowMergeDefaults = <$Defaults extends object, $Input extends ob
  * Shallow merge objects while omitting undefined values.
  * Simplifies the common pattern of conditionally spreading objects
  * to avoid including undefined values that would override existing values.
+ *
+ * @category Merging
  *
  * @param objects - Objects to merge (later objects override earlier ones). Undefined objects are ignored.
  * @returns Merged object with undefined values omitted
@@ -261,6 +275,8 @@ export type MergeShallow<
  * Recursively merge an array of objects using shallow merge semantics.
  * Each object in the array overrides properties from previous objects.
  *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type T = MergeAllShallow<[{ a: string }, { b: number }, { c: boolean }]>
@@ -279,6 +295,8 @@ export type MergeAllShallow<$Objects extends readonly object[]> =
  * Merge an array of object types into a single type using deep merge semantics.
  * Uses TypeScript's intersection type (`&`) for merging.
  *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type T = MergeAll<[{ a: string }, { b: number }]>
@@ -291,6 +309,9 @@ export type MergeAll<$Objects extends object[]> = $Objects extends
 
 /**
  * Replace the type of a specific property in an object.
+ *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type User = { id: number; name: string; age: number }
@@ -307,6 +328,9 @@ export type ReplaceProperty<$Obj extends object, $Key extends keyof $Obj, $NewTy
 /**
  * Replace properties in an object type with new types.
  * Useful for overriding specific property types.
+ *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type User = { id: number; name: string; createdAt: Date }

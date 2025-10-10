@@ -1,113 +1,277 @@
 # Rec
 
-Record utilities for working with plain JavaScript objects as dictionaries.
-
-Provides type-safe operations for records (objects with PropertyKey indexes)
-including type guards, merging, creation, and index signature manipulation.
-Strictly validates plain objects, rejecting arrays and class instances.
+Record utilities for working with plain JavaScript objects as dictionaries. Provides type-safe operations for records (objects with PropertyKey indexes) including type guards, merging, creation, and index signature manipulation. Strictly validates plain objects, rejecting arrays and class instances.
 
 ## Import
 
-```typescript
-import { Rec } from '@wollybeard/kit/rec'
+::: code-group
+
+```typescript [Namespace]
+import { Rec } from '@wollybeard/kit'
 ```
 
-## Functions
-
-### is <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/rec/rec.ts#L50)</sub>
-
-```typescript
-(value: unknown) => value is Any
+```typescript [Barrel]
+import * as Rec from '@wollybeard/kit/rec'
 ```
 
-### merge <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/rec/rec.ts#L97)</sub>
+:::
 
-```typescript
-;(<rec1 extends Any, rec2 extends Any>(rec1: rec1, rec2: rec2) => rec1 & rec2)
-```
+## Factories
 
-### create <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/rec/rec.ts#L169)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `create`
 
 ```typescript
 ;(<value>() => Record<PropertyKey, value>)
 ```
 
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L197" />
+
+Create an empty record with a specific value type. Useful for initializing typed record collections.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Rec } from '@wollybeard/kit/rec'
+// ---cut---
+const scores = create<number>()
+scores['alice'] = 95
+scores['bob'] = 87
+// scores is typed as Record<PropertyKey, number>
+```
+
+```typescript twoslash
+// @noErrors
+import { Rec } from '@wollybeard/kit/rec'
+// ---cut---
+// Creating typed lookups
+interface User {
+  id: string
+  name: string
+}
+
+const userLookup = create<User>()
+userLookup['u123'] = { id: 'u123', name: 'Alice' }
+```
+
+```typescript twoslash
+// @noErrors
+import { Rec } from '@wollybeard/kit/rec'
+// ---cut---
+// Useful as accumulator in reduce operations
+// [!code word:reduce:1]
+const grouped = items.reduce(
+  (acc, item) => {
+    // [!code word:category:1]
+    acc[item.category] = item
+    return acc
+  },
+  create<Item>(),
+)
+```
+
+## Operations
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `merge`
+
+```typescript
+;(<rec1 extends Any, rec2 extends Any>(rec1: rec1, rec2: rec2) => rec1 & rec2)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L116" />
+
+Deep merge two records, with properties from the second record overwriting the first. This is an alias for Obj.merge that works specifically with record types.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Rec } from '@wollybeard/kit/rec'
+// ---cut---
+// [!code word:merge:1]
+Rec.merge({ a: 1, b: 2 }, { b: 3, c: 4 })
+// Returns: { a: 1, b: 3, c: 4 }
+```
+
+```typescript twoslash
+// @noErrors
+import { Rec } from '@wollybeard/kit/rec'
+// ---cut---
+// Deep merging of nested records
+// [!code word:merge:1]
+Rec.merge(
+  { user: { name: 'Alice', settings: { theme: 'dark' } } },
+  { user: { settings: { fontSize: 16 } } },
+)
+// Returns: { user: { name: 'Alice', settings: { theme: 'dark', fontSize: 16 } } }
+```
+
+```typescript twoslash
+// @noErrors
+import { Rec } from '@wollybeard/kit/rec'
+// ---cut---
+// Type-safe merging
+type Config = { api: { url: string }; timeout?: number }
+type Overrides = { api: { key: string }; timeout: number }
+
+const config: Config = { api: { url: 'https://api.com' } }
+const overrides: Overrides = { api: { key: 'secret' }, timeout: 5000 }
+// [!code word:merge:1]
+const merged = Rec.merge(config, overrides)
+// merged is typed as Config & Overrides
+```
+
+## Type Guards
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
+
+```typescript
+(value: unknown) => value is Any
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L67" />
+
+Check if a value is a record (plain object only, not class instances or arrays). This is a strict check that only accepts plain objects with Object.prototype.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Rec } from '@wollybeard/kit/rec'
+// ---cut---
+// [!code word:is:1]
+Rec.is({ a: 1, b: 2 }) // true
+// [!code word:is:1]
+Rec.is({}) // true
+// [!code word:is:1]
+Rec.is([1, 2, 3]) // false - arrays are not records
+// [!code word:is:1]
+Rec.is(null) // false
+// [!code word:is:1]
+Rec.is(new Date()) // false - class instances are not plain records
+// [!code word:is:1]
+// [!code word:create:1]
+Rec.is(Object.create(null)) // false - not plain Object.prototype
+```
+
+```typescript twoslash
+// @noErrors
+import { Rec } from '@wollybeard/kit/rec'
+// ---cut---
+// Type guard usage
+function processData(data: unknown) {
+  // [!code word:is:1]
+  if (Rec.is(data)) {
+    // data is typed as Rec.Any
+    // [!code word:keys:1]
+    Object.keys(data).forEach(key => {
+      // [!code word:log:1]
+      console.log(data[key])
+    })
+  }
+}
+```
+
 ## Types
 
-### Any <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/rec/rec.ts#L4)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Any`
 
 ```typescript
-export type Any = AnyKeyTo<unknown>
+type Any = AnyKeyTo<unknown>
 ```
 
-### AnyReadonly <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/rec/rec.ts#L6)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L7" />
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyReadonly`
 
 ```typescript
-export type AnyReadonly = AnyReadonlyKeyTo<unknown>
+type AnyReadonly = AnyReadonlyKeyTo<unknown>
 ```
 
-### AnyKeyTo <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/rec/rec.ts#L8)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L12" />
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyKeyTo`
 
 ```typescript
-export type AnyKeyTo<$Value> = {
+type AnyKeyTo<$Value> = {
   [key: PropertyKey]: $Value
 }
 ```
 
-### AnyReadonlyKeyTo <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/rec/rec.ts#L12)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L17" />
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyReadonlyKeyTo`
 
 ```typescript
-export type AnyReadonlyKeyTo<$Value> = {
+type AnyReadonlyKeyTo<$Value> = {
   readonly [key: PropertyKey]: $Value
 }
 ```
 
-### Value <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/rec/rec.ts#L16)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L24" />
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Value`
 
 ```typescript
-export type Value = {
+type Value = {
   [key: PropertyKey]: Lang.Value
 }
 ```
 
-### Optional <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/rec/rec.ts#L101)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L31" />
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Optional`
 
 ```typescript
-export type Optional<$Key extends PropertyKey, $Value> = {
+type Optional<$Key extends PropertyKey, $Value> = {
   [K in $Key]?: $Value
 }
 ```
 
-### RemoveIndex <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/rec/rec.ts#L115)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L123" />
 
-Remove index signatures from an object type.
-Useful for converting Record types to object types with only known keys.
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RemoveIndex`
 
 ```typescript
-export type RemoveIndex<$T> = {
+type RemoveIndex<$T> = {
   [k in keyof $T as string extends k ? never : number extends k ? never : k]:
     $T[k]
 }
 ```
 
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L139" />
+
+Remove index signatures from an object type. Useful for converting Record types to object types with only known keys.
+
 **Examples:**
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Rec } from '@wollybeard/kit/rec'
+// ---cut---
+type WithIndex = { a: string; b: number; [key: string]: any }
 type WithoutIndex = RemoveIndex<WithIndex> // { a: string; b: number }
 ```
 
-### IsHasIndex <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/rec/rec.ts#L129)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsHasIndex`
+
+```typescript
+type IsHasIndex<$T, $Key extends PropertyKey = string> = $Key extends keyof $T
+  ? true
+  : false
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L155" />
 
 Check if a type has an index signature.
 
-```typescript
-export type IsHasIndex<$T, $Key extends PropertyKey = string> = $Key extends
-  keyof $T ? true : false
-```
-
 **Examples:**
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Rec } from '@wollybeard/kit/rec'
+// ---cut---
+type T1 = IsHasIndex<{ [key: string]: any }> // true
 type T2 = IsHasIndex<{ a: string }> // false
 type T3 = IsHasIndex<{ [key: number]: any }, number> // true
 ```

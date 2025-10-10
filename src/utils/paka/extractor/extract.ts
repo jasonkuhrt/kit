@@ -1,9 +1,19 @@
+import { FsLoc } from '#fs-loc'
+import { Schema as S } from 'effect'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { Project } from 'ts-morph'
-import type { Entrypoint, InterfaceModel } from '../schema.js'
+import {
+  DrillableNamespaceEntrypoint,
+  type Entrypoint,
+  type InterfaceModel,
+  Package,
+  PackageMetadata,
+  SimpleEntrypoint,
+} from '../schema.js'
 import { parseJSDoc } from './nodes/jsdoc.js'
 import { extractModuleFromFile } from './nodes/module.js'
+import { buildToSourcePath } from './path-utils.js'
 
 /**
  * Configuration for extraction.
@@ -57,12 +67,7 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
 
   for (const [packagePath, buildPath] of entrypointsToExtract) {
     // Resolve build path to source path
-    // './build/utils/test/$.js' -> './src/utils/test/$.ts'
-    const sourcePath = buildPath
-      .replace(/^\.\/build\//, './src/')
-      .replace(/\$\$\.js$/, '$$.ts')
-      .replace(/\.js$/, '.ts')
-
+    const sourcePath = buildToSourcePath(buildPath)
     const absoluteSourcePath = join(projectRoot, sourcePath)
 
     // Get source file
@@ -72,19 +77,12 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
       continue
     }
 
-    // Determine module name from package path
-    // './test' -> 'Test'
-    // './ts' -> 'Ts'
-    const moduleName = packagePath
-      .replace(/^\.\//, '')
-      .split('-')
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-      .join('')
-
     // Check if this is a namespace re-export pattern: export * as Name from './$$'
-    // If so, resolve to the actual module file
+    // If so, this is a Drillable Namespace Pattern
     let actualSourceFile = sourceFile
     let namespaceDescription: string | undefined
+    let namespaceCategory: string | undefined
+    let isDrillableNamespace = false
     const exportDeclarations = sourceFile.getExportDeclarations()
 
     for (const exportDecl of exportDeclarations) {
@@ -92,55 +90,54 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
       const moduleSpecifier = exportDecl.getModuleSpecifierValue()
 
       if (namespaceExport && moduleSpecifier?.includes('$$')) {
-        // This is a namespace re-export - resolve to the actual file
+        // This is a drillable namespace - resolve to the actual file
+        isDrillableNamespace = true
         const referencedFile = exportDecl.getModuleSpecifierSourceFile()
         if (referencedFile) {
-          // Extract JSDoc from the namespace export declaration before switching files
-          // ExportDeclaration nodes don't have getJsDocs(), so we need to extract from leading comments
-          const leadingComments = exportDecl.getLeadingCommentRanges()
-
-          for (const comment of leadingComments) {
-            const commentText = comment.getText()
-            // Check if it's a JSDoc comment (/** ... */)
-            if (commentText.startsWith('/**') && commentText.endsWith('*/')) {
-              // Remove /** and */ and trim
-              namespaceDescription = commentText
-                .slice(3, -2)
-                .split('\n')
-                .map(line => line.replace(/^\s*\*\s?/, ''))
-                .join('\n')
-                .trim()
-              break
-            }
-          }
+          // Extract JSDoc from the namespace export declaration using parseJSDoc
+          // This properly separates description from examples and other tags
+          const jsdoc = parseJSDoc(exportDecl)
+          namespaceDescription = jsdoc.description
+          namespaceCategory = jsdoc.category
           actualSourceFile = referencedFile
           break
         }
       }
     }
 
-    // Extract module
-    const module = extractModuleFromFile(moduleName, actualSourceFile)
+    // Extract module (no longer needs module name)
+    let module = extractModuleFromFile(actualSourceFile, S.decodeSync(FsLoc.RelFile.String)(sourcePath))
 
-    // Override module description with namespace export JSDoc if available
-    if (namespaceDescription) {
-      module.description = namespaceDescription
+    // Override module description and category with namespace export JSDoc if available
+    if (namespaceDescription || namespaceCategory) {
+      module = {
+        ...module,
+        ...(namespaceDescription ? { description: namespaceDescription } : {}),
+        ...(namespaceCategory ? { category: namespaceCategory } : {}),
+      }
     }
 
-    extractedEntrypoints.push({
-      packagePath,
-      resolvedPath: sourcePath,
-      module,
-    })
+    // Create appropriate entrypoint type
+    if (isDrillableNamespace) {
+      extractedEntrypoints.push(DrillableNamespaceEntrypoint.make({
+        path: packagePath,
+        module,
+      }))
+    } else {
+      extractedEntrypoints.push(SimpleEntrypoint.make({
+        path: packagePath,
+        module,
+      }))
+    }
   }
 
-  return {
+  return Package.make({
     name: packageJson.name,
     version: packageJson.version,
     entrypoints: extractedEntrypoints,
-    metadata: {
+    metadata: PackageMetadata.make({
       extractedAt: new Date(),
       extractorVersion,
-    },
-  }
+    }),
+  })
 }

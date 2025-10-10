@@ -4,6 +4,7 @@ import { title } from './case/case.js'
 /**
  * Convert a URL slug to title case.
  * Replaces URL path separators with spaces and converts to title case.
+ * @category Transformation
  * @param str - The slug string to convert
  * @returns The title-cased string
  * @example
@@ -17,6 +18,13 @@ export const titlizeSlug = (str: string) => {
   return title(str.replace(Url.pathSeparator, ' '))
 }
 
+/**
+ * Ensure a string ends with a specific ending, adding it if not present.
+ * @category Transformation
+ * @param string - The string to check
+ * @param ending - The ending to ensure
+ * @returns The string with the ending ensured
+ */
 export const ensureEnd = (string: string, ending: string) => {
   if (string.endsWith(ending)) return string
   return string + ending

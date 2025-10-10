@@ -3,6 +3,7 @@ import { repeatOn } from './replace.js'
 
 /**
  * Format a key-value object as an aligned table string.
+ * @category Formatting
  * @param input - Configuration object
  * @param input.data - Key-value pairs to format as a table
  * @param input.separator - String to separate keys and values (default: ' → ')

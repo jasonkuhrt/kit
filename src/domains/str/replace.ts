@@ -14,7 +14,8 @@ import { Empty } from './type.js'
 
 /**
  * Remove whitespace from both ends of a string.
- * @deprecated Use `String.trim` from Effect instead
+ * @category Transformation
+ * @deprecated Use {@link String.trim} from Effect instead
  * @param value - The string to trim
  * @returns The trimmed string
  * @example
@@ -37,6 +38,7 @@ export const trim = (value: string): string => {
 
 /**
  * Replace the leading occurrence of a matcher string with a replacement.
+ * @category Transformation
  * @param replacement - The string to replace the matcher with
  * @param matcher - The string to match at the beginning
  * @param value - The string to operate on
@@ -54,6 +56,7 @@ export const replaceLeading = (replacement: string, matcher: string, value: stri
 
 /**
  * Curried version of {@link replaceLeading} with replacement first.
+ * @category Transformation
  * @param replacement - The string to replace the matcher with
  * @returns Function that takes matcher, then value
  */
@@ -63,6 +66,7 @@ export const replaceLeadingWith = (replacement: string) => (matcher: string) => 
 
 /**
  * Curried version of {@link replaceLeading} with value first.
+ * @category Transformation
  * @param value - The string to operate on
  * @returns Function that takes replacement, then matcher
  */
@@ -73,6 +77,7 @@ export const replaceLeadingOn = (value: string) => (replacement: string) => (mat
 /**
  * Remove the leading occurrence of a matcher string.
  * Alias for `replaceLeadingWith('')`.
+ * @category Transformation
  * @param matcher - The string to remove from the beginning
  * @returns Function that takes a value and returns the stripped string
  * @example
@@ -93,7 +98,8 @@ export const stripLeading = replaceLeadingWith(``)
 
 /**
  * Replace all occurrences of patterns with a replacement string.
- * @deprecated Use `String.replace` or `String.replaceAll` from Effect instead
+ * @category Transformation
+ * @deprecated Use {@link String.replace} or {@link String.replaceAll} from Effect instead
  * @param replacement - The string to replace matches with
  * @param matcher - String or RegExp pattern(s) to match
  * @param value - The string to operate on
@@ -114,6 +120,7 @@ export const replace = (replacement: string, matcher: PatternsInput, value: stri
 
 /**
  * Curried version of {@link replace} with replacement first.
+ * @category Transformation
  * @param replacement - The string to replace matches with
  * @returns Function that takes matcher, then value
  */
@@ -123,6 +130,7 @@ export const replaceWith = (replacement: string) => (matcher: PatternsInput) => 
 
 /**
  * Curried version of {@link replace} with value first.
+ * @category Transformation
  * @param value - The string to operate on
  * @returns Function that takes replacement, then matcher
  */
@@ -140,7 +148,8 @@ export const replaceOn = (value: string) => (replacement: string) => (matcher: P
 
 /**
  * Append a string to another string.
- * @deprecated Use `String.concat` from Effect instead
+ * @category Transformation
+ * @deprecated Use {@link String.concat} from Effect instead
  * @param value1 - The base string
  * @param value2 - The string to append
  * @returns The concatenated string
@@ -156,6 +165,7 @@ export const append = (value1: string, value2: string): string => {
 
 /**
  * Curried version of {@link append} with value1 first.
+ * @category Transformation
  * @param value1 - The base string
  * @returns Function that takes value2 and returns the concatenated string
  */
@@ -163,6 +173,7 @@ export const appendOn = curry(append)
 
 /**
  * Curried version of {@link append} with value2 first.
+ * @category Transformation
  * @param value2 - The string to append
  * @returns Function that takes value1 and returns the concatenated string
  * @example
@@ -177,7 +188,8 @@ export const appendWith = flipCurried(appendOn)
 
 /**
  * Prepend a string to another string.
- * @deprecated Use `String.concat` from Effect instead (with arguments swapped)
+ * @category Transformation
+ * @deprecated Use {@link String.concat} from Effect instead (with arguments swapped)
  * @param value1 - The string to prepend
  * @param value2 - The base string
  * @returns The concatenated string with value1 first
@@ -193,6 +205,7 @@ export const prepend = (value1: string, value2: string): string => {
 
 /**
  * Curried version of {@link prepend} with value1 first.
+ * @category Transformation
  * @param value1 - The string to prepend
  * @returns Function that takes value2 and returns the concatenated string
  */
@@ -200,6 +213,7 @@ export const prependOn = curry(prepend)
 
 /**
  * Curried version of {@link prepend} with value2 first.
+ * @category Transformation
  * @param value2 - The base string
  * @returns Function that takes value1 and returns the concatenated string
  * @example
@@ -220,7 +234,8 @@ export const prependWith = flipCurried(prependOn)
 
 /**
  * Repeat a string a specified number of times.
- * @deprecated Use `String.repeat` from Effect instead
+ * @category Transformation
+ * @deprecated Use {@link String.repeat} from Effect instead
  * @param value - The string to repeat
  * @param count - The number of times to repeat
  * @returns The repeated string
@@ -237,6 +252,7 @@ export const repeat = (value: string, count: number): string => {
 
 /**
  * Curried version of {@link repeat} with value first.
+ * @category Transformation
  * @param value - The string to repeat
  * @returns Function that takes count and returns the repeated string
  */
@@ -244,6 +260,7 @@ export const repeatOn = curry(repeat)
 
 /**
  * Curried version of {@link repeat} with count first.
+ * @category Transformation
  * @param count - The number of times to repeat
  * @returns Function that takes value and returns the repeated string
  * @example
@@ -264,6 +281,7 @@ export const repeatWith = flipCurried(repeatOn)
 
 /**
  * Remove all occurrences of a target character from the beginning and end of a string.
+ * @category Transformation
  * @param str - The string to process
  * @param target - The character to remove from both ends
  * @returns The string with surrounding target characters removed
@@ -296,6 +314,7 @@ export const removeSurrounding = (str: string, target: string): string => {
 
 /**
  * Curried version of {@link removeSurrounding} with str first.
+ * @category Transformation
  * @param str - The string to process
  * @returns Function that takes target and returns the processed string
  */
@@ -303,6 +322,7 @@ export const removeSurroundingOn = curry(removeSurrounding)
 
 /**
  * Curried version of {@link removeSurrounding} with target first.
+ * @category Transformation
  * @param target - The character to remove from both ends
  * @returns Function that takes str and returns the processed string
  */
@@ -318,6 +338,7 @@ export const removeSurroundingWith = flipCurried(removeSurroundingOn)
 
 /**
  * Truncate a string to a maximum length, adding ellipsis if truncated.
+ * @category Transformation
  * @param str - The string to truncate
  * @param maxLength - Maximum length of the result (default: 80)
  * @returns The truncated string with ellipsis if needed
@@ -338,6 +359,7 @@ export const truncate = (str: string, maxLength: number = 80): string => {
 
 /**
  * Curried version of {@link truncate} with str first.
+ * @category Transformation
  * @param str - The string to truncate
  * @returns Function that takes maxLength and returns the truncated string
  */
@@ -345,6 +367,7 @@ export const truncateOn = curry(truncate)
 
 /**
  * Curried version of {@link truncate} with maxLength first.
+ * @category Transformation
  * @param maxLength - Maximum length of the result
  * @returns Function that takes str and returns the truncated string
  * @example
@@ -366,6 +389,7 @@ export const truncateWith = flipCurried(truncateOn)
 /**
  * Remove all occurrences of patterns from a string.
  * Alias for `replaceWith('')`.
+ * @category Transformation
  * @param matcher - String or RegExp pattern(s) to remove
  * @returns Function that takes a value and returns the stripped string
  * @example
@@ -379,6 +403,7 @@ export const strip = replaceWith(Empty)
 /**
  * Remove regular spaces from the beginning and end of a string.
  * Pre-configured {@link removeSurroundingWith} for regular spaces.
+ * @category Transformation
  * @param str - The string to process
  * @returns The string with surrounding spaces removed
  */
@@ -387,6 +412,7 @@ export const removeSurroundingSpaceRegular = removeSurroundingWith(spaceRegular)
 /**
  * Remove non-breaking spaces from the beginning and end of a string.
  * Pre-configured {@link removeSurroundingWith} for non-breaking spaces.
+ * @category Transformation
  * @param str - The string to process
  * @returns The string with surrounding non-breaking spaces removed
  */

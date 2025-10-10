@@ -3,12 +3,16 @@
 /**
  * Type representing a Promise of unknown type.
  * Useful for generic promise handling where the resolved type is not important.
+ *
+ * @category Types
  */
 export type Any = Promise<unknown>
 
 /**
  * Type representing a Promise of any type.
  * Less type-safe than {@link Any}, use with caution.
+ *
+ * @category Types
  */
 export type AnyAny = Promise<any>
 
@@ -25,6 +29,8 @@ export type AnyAny = Promise<any>
  * process(42) // accepts number
  * process(Promise.resolve(42)) // accepts Promise<number>
  * ```
+ *
+ * @category Types
  */
 export type Maybe<$Type> = $Type | Promise<$Type>
 
@@ -47,6 +53,8 @@ export type Maybe<$Type> = $Type | Promise<$Type>
  * isShape(42) // false
  * isShape({}) // false
  * ```
+ *
+ * @category Type Guards
  */
 export const isShape = (value: unknown): value is AnyAny => {
   return (
@@ -71,6 +79,8 @@ export const isShape = (value: unknown): value is AnyAny => {
  * // with non-promise input
  * type Result2 = AwaitedUnion<string, number> // string | number
  * ```
+ *
+ * @category Types
  */
 // dprint-ignore
 export type AwaitedUnion<$MaybePromise, $Additional> =
@@ -80,6 +90,8 @@ export type AwaitedUnion<$MaybePromise, $Additional> =
 
 /**
  * Options for handling values that might be promises.
+ *
+ * @category Utilities
  */
 export interface MaybeAsyncHandlers<T, R = T, E = unknown> {
   /**
@@ -133,6 +145,8 @@ export interface MaybeAsyncHandlers<T, R = T, E = unknown> {
  *   }
  * )
  * ```
+ *
+ * @category Utilities
  */
 export function maybeAsync<T, R = T, E = unknown>(
   fn: () => T,

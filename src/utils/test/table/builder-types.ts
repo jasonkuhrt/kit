@@ -12,6 +12,8 @@ import type { TestContext } from 'vitest'
 /**
  * Type-level state for the builder.
  * Tracks what types have been set via builder methods.
+ *
+ * @category Type State
  */
 export interface BuilderTypeState {
   input: unknown
@@ -21,6 +23,9 @@ export interface BuilderTypeState {
   matrix: {} // Matrix configuration type (empty object when no matrix)
 }
 
+/**
+ * @category Type State
+ */
 export interface BuilderTypeStateEmpty extends BuilderTypeState {
   input: never
   output: never
@@ -36,6 +41,8 @@ export interface BuilderTypeStateEmpty extends BuilderTypeState {
 /**
  * Helper to update state with partial updates.
  * Preserves existing state values when updates are not provided.
+ *
+ * @category Type Utilities
  */
 export type UpdateState<State extends BuilderTypeState, Updates extends Partial<BuilderTypeState>> = {
   input: 'input' extends keyof Updates ? Updates['input'] : State['input']
@@ -47,12 +54,16 @@ export type UpdateState<State extends BuilderTypeState, Updates extends Partial<
 
 /**
  * Extract function parameters from state.
+ *
+ * @category Type Utilities
  */
 type FnParams<State extends BuilderTypeState> = State['fn'] extends Fn.AnyAny ? Parameters<State['fn']>
   : never
 
 /**
  * Extract function return type from state.
+ *
+ * @category Type Utilities
  */
 type FnReturn<State extends BuilderTypeState> = State['fn'] extends Fn.AnyAny ? ReturnType<State['fn']>
   : never
@@ -60,18 +71,24 @@ type FnReturn<State extends BuilderTypeState> = State['fn'] extends Fn.AnyAny ? 
 /**
  * Get effective input type - uses override if set, otherwise function params.
  * Uses [T] extends [never] trick to properly detect never type.
+ *
+ * @category Type Utilities
  */
 type EffectiveInput<State extends BuilderTypeState> = [State['input']] extends [never] ? FnParams<State>
   : State['input']
 
 /**
  * Get effective output type - uses override if set, otherwise function return.
+ *
+ * @category Type Utilities
  */
 type EffectiveOutput<State extends BuilderTypeState> = [State['output']] extends [never] ? FnReturn<State>
   : State['output']
 
 /**
  * Extract both parameters and return type from state.
+ *
+ * @category Type Utilities
  */
 type FnSignature<State extends BuilderTypeState> = State['fn'] extends Fn.AnyAny
   ? [Parameters<State['fn']>, ReturnType<State['fn']>]
@@ -79,6 +96,8 @@ type FnSignature<State extends BuilderTypeState> = State['fn'] extends Fn.AnyAny
 
 /**
  * Extract input, output, and context from state as a tuple.
+ *
+ * @category Type Utilities
  */
 type StateIOContext<T extends BuilderTypeState> = T extends { input: infer I; output: infer O; context: infer Ctx }
   ? [I, O, Ctx]
@@ -86,6 +105,8 @@ type StateIOContext<T extends BuilderTypeState> = T extends { input: infer I; ou
 
 /**
  * Add matrix to params if it exists (non-empty object).
+ *
+ * @category Type Utilities
  */
 type WithMatrix<Params, Matrix> = Obj.IsEmpty<Matrix & object> extends true ? Params
   : Params & { matrix: Matrix }
@@ -94,6 +115,8 @@ type WithMatrix<Params, Matrix> = Obj.IsEmpty<Matrix & object> extends true ? Pa
  * Test function signature for generic mode (non-.on() mode).
  * Receives destructured params with input, output, test name, setup context, and vitest TestContext.
  * Can return a value for auto-snapshot or void/undefined to skip snapshot.
+ *
+ * @category Type Utilities
  */
 type GenericTestFn<T extends BuilderTypeState> = StateIOContext<T> extends [infer I, infer O, infer Ctx] ? (
     params: WithMatrix<{ input: I; output: O; n: string } & Ctx & TestContext, T['matrix']>,
@@ -103,6 +126,8 @@ type GenericTestFn<T extends BuilderTypeState> = StateIOContext<T> extends [infe
 /**
  * Effect test function signature for generic mode.
  * Receives destructured params with input, output, and user context.
+ *
+ * @category Type Utilities
  */
 type GenericEffectTestFn<T extends BuilderTypeState, R> = StateIOContext<T> extends [infer I, infer O, infer Ctx]
   ? (params: WithMatrix<{ input: I; output: O; n: string } & Ctx, T['matrix']>) => Effect.Effect<void, any, R>
@@ -112,6 +137,8 @@ type GenericEffectTestFn<T extends BuilderTypeState, R> = StateIOContext<T> exte
  * Test function signature for function mode (.on() mode).
  * Receives destructured params with input, result, expected output, test name, setup context, and vitest TestContext.
  * Can return a value for auto-snapshot or void/undefined to skip snapshot.
+ *
+ * @category Type Utilities
  */
 type FunctionTestFn<State extends BuilderTypeState> = FnSignature<State> extends [infer P, infer R] ? (
     params: { input: P; output: R | undefined; result: R; n: string } & State['context'] & TestContext,
@@ -121,6 +148,8 @@ type FunctionTestFn<State extends BuilderTypeState> = FnSignature<State> extends
 /**
  * Effect test function signature for function mode.
  * Receives destructured params with input, result, expected output, test name, and user context.
+ *
+ * @category Type Utilities
  */
 type FunctionEffectTestFn<State extends BuilderTypeState, R> = FnSignature<State> extends [infer P, infer Ret] ? (
     params: { input: P; output: Ret | undefined; result: Ret; n: string } & State['context'],
@@ -136,6 +165,8 @@ type FunctionEffectTestFn<State extends BuilderTypeState, R> = FnSignature<State
  *
  * These properties can be used to control test execution and organization
  * on a per-case basis.
+ *
+ * @category Test Cases
  *
  * @example
  * ```ts
@@ -192,6 +223,8 @@ export interface CaseObjectBase {
  * The object form is more verbose but provides better readability
  * and access to all case configuration options.
  *
+ * @category Test Cases
+ *
  * @example
  * ```ts
  * // Function mode
@@ -219,6 +252,8 @@ export type CaseObject<I, O> =
  *
  * The tuple form is concise and natural for simple test cases.
  * Input is ALWAYS the first element.
+ *
+ * @category Test Cases
  *
  * @example
  * ```ts

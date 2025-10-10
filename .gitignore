@@ -7,3 +7,6 @@ build
 # VitePress
 docs/.vitepress/dist/
 docs/.vitepress/cache/
+
+# Playwright MCP
+.playwright-mcp/

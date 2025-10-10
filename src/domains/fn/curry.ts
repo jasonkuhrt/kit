@@ -1,8 +1,14 @@
 import type { ArrMut } from '#arr-mut'
 import type { AnyAny, AnyAnyParametersMin1 } from './base.js'
 
+/**
+ * @category Type Utilities
+ */
 export type AnyAny2Curried = (arg1: any) => (arg2: any) => any
 
+/**
+ * @category Currying & Binding
+ */
 export const curry = <fn extends AnyAny>(
   fn: AnyAnyParametersMin1 extends fn ? fn
     : {
@@ -14,6 +20,9 @@ export const curry = <fn extends AnyAny>(
   return curried as any
 }
 
+/**
+ * @category Currying & Binding
+ */
 // dprint-ignore
 export type curry<fn extends AnyAny> =
   fn extends (...args: infer __args__) => infer __return__
@@ -51,11 +60,17 @@ type LastAsTuple<$Array extends ArrMut.Unknown> =
 
 // uncurry
 
+/**
+ * @category Currying & Binding
+ */
 export const uncurry = <fn extends AnyAny2Curried>(fn: fn): uncurry<fn> => {
   const uncurried = (arg1: any) => (arg2: any) => fn(arg1)(arg2)
   return uncurried as any
 }
 
+/**
+ * @category Currying & Binding
+ */
 export type uncurry<$Fn extends AnyAny2Curried> = $Fn extends
   (...args: infer __arg1__) => (...args: infer __arg2__) => infer __return__
   ? (...args: [...__arg1__, ...__arg2__]) => __return__
@@ -63,11 +78,17 @@ export type uncurry<$Fn extends AnyAny2Curried> = $Fn extends
 
 // flip
 
+/**
+ * @category Currying & Binding
+ */
 export const flipCurried = <fn extends AnyAny2Curried>(fn: fn): flipCurried<fn> => {
   const flipped = (arg1: any) => (arg2: any) => fn(arg2)(arg1)
   return flipped as any
 }
 
+/**
+ * @category Currying & Binding
+ */
 export type flipCurried<$Fn extends AnyAny2Curried> = $Fn extends
   (...args: infer __args1__) => (...args: infer __args2__) => infer __return__
   ? (...args: __args2__) => (...args: __args1__) => __return__

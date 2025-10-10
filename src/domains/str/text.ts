@@ -5,17 +5,20 @@ import { joinWith, splitWith } from './split.js'
 
 /**
  * Default indentation size in characters.
+ * @category Text Formatting
  * @default 2
  */
 export const defaultIndentSize = 2
 
 /**
  * Default character used for indentation (non-breaking space).
+ * @category Text Formatting
  */
 export const defaultIndentCharacter = Char.spaceNoBreak
 
 /**
  * Default line separator character (newline).
+ * @category Text Formatting
  */
 export const defaultLineSeparator = Char.newline
 
@@ -24,6 +27,7 @@ export const defaultLineSeparator = Char.newline
 /**
  * Split text into an array of lines.
  * Pre-configured {@link splitWith} using newline separator.
+ * @category Text Formatting
  * @param text - The text to split into lines
  * @returns Array of lines
  * @example
@@ -37,6 +41,7 @@ export const lines = splitWith(defaultLineSeparator)
 /**
  * Join an array of lines into text.
  * Pre-configured {@link joinWith} using newline separator.
+ * @category Text Formatting
  * @param lines - Array of lines to join
  * @returns The joined text
  * @example
@@ -51,6 +56,7 @@ export const unlines = joinWith(defaultLineSeparator)
 
 /**
  * Indent each line of text by a specified number of spaces.
+ * @category Text Formatting
  * @param text - The text to indent
  * @param size - Number of spaces to indent (default: {@link defaultIndentSize})
  * @returns The indented text
@@ -67,6 +73,7 @@ export const indent = (text: string, size?: number | undefined) => {
 
 /**
  * Curried version of {@link indent} with text first.
+ * @category Text Formatting
  * @param text - The text to indent
  * @returns Function that takes size and returns the indented text
  */
@@ -74,6 +81,7 @@ export const indentOn = Fn.curry(indent)
 
 /**
  * Curried version of {@link indent} with size first.
+ * @category Text Formatting
  * @param size - Number of spaces to indent
  * @returns Function that takes text and returns the indented text
  * @example
@@ -88,6 +96,7 @@ export const indentWith = Fn.flipCurried(indentOn)
  * Remove common leading whitespace from all lines.
  * Finds the minimum indentation across all non-empty lines and removes that amount from every line.
  * This is useful for dedenting code blocks or template strings while preserving relative indentation.
+ * @category Text Formatting
  * @param text - The text to dedent
  * @returns The dedented text
  * @example

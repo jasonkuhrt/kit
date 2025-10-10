@@ -15,6 +15,9 @@ export type Any = object
 
 /**
  * Type-level check to determine if an object type has no keys.
+ *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type Empty = IsEmpty<{}> // true
@@ -25,12 +28,16 @@ export type IsEmpty<$Obj extends object> = keyof $Obj extends never ? true : fal
 
 /**
  * Type for an empty object.
+ *
+ * @category Type Utilities
  */
 export type Empty = Record<string, never>
 
 /**
  * Create an empty object with proper type.
  * Returns a frozen empty object typed as {@link Empty}.
+ *
+ * @category Predicates
  *
  * @returns An empty object with type `Record<string, never>`
  *
@@ -54,6 +61,8 @@ export const empty = (): Empty => Object.freeze({}) as Empty
  * This utility intersects the actual type with a record that marks all excess keys as `never`,
  * causing TypeScript to reject values with properties not present in the expected type.
  * Particularly useful in generic contexts where excess property checking is bypassed.
+ *
+ * @category Type Utilities
  *
  * @template $Expected - The type defining allowed properties
  * @template $Actual - The actual type to check for excess properties
@@ -106,6 +115,8 @@ export type NoExcess<$Expected, $Actual> = $Actual & Record<Exclude<keyof $Actua
  * 1. Object has at least one property (not empty)
  * 2. Object has no excess properties beyond the constraint
  *
+ * @category Type Utilities
+ *
  * @example
  * ```ts
  * type User = { name: string }
@@ -131,6 +142,8 @@ export type NoExcessNonEmpty<$Value extends object, $Constraint> = IsEmpty<$Valu
 /**
  * Check if an object has no enumerable properties.
  *
+ * @category Predicates
+ *
  * @param obj - The object to check
  * @returns True if the object has no enumerable properties
  *
@@ -155,6 +168,8 @@ export const isEmpty = (obj: object): boolean => {
 /**
  * Type predicate that checks if an object has no enumerable properties.
  * Narrows the type to an empty object type.
+ *
+ * @category Predicates
  *
  * @param obj - The object to check
  * @returns True if the object has no enumerable properties, with type narrowing to Empty

@@ -1,68 +1,28 @@
 # Test
 
-Enhanced test utilities for table-driven testing with Vitest.
-
-Provides builder API and type-safe utilities for parameterized tests with
-built-in support for todo, skip, and only cases.
-
-@example Basic table-driven testing with builder API
-
-```typescript
-const add = (a: number, b: number) => a + b
-
-Test.describe('addition')
-  .on(add)
-  .cases(
-    [[2, 3], 5],
-    [[0, 0], 0],
-    [[-1, 1], 0],
-  )
-  .test()
-```
-
-@example Custom test logic
-
-```typescript
-Test.describe('validation')
-  .i<string>()
-  .o<boolean>()
-  .cases(
-    { n: 'valid email', i: 'user@example.com', o: true },
-    { n: 'invalid', i: 'not-email', o: false },
-    { n: 'future feature', todo: 'Not implemented yet' },
-  )
-  .test((input, expected) => {
-    expect(isValid(input)).toBe(expected)
-  })
-```
-
-@example Property-based testing
-
-```typescript
-Test.property(
-  'reversing array twice returns original',
-  fc.array(fc.integer()),
-  (arr) => {
-    const reversed = arr.slice().reverse()
-    const reversedTwice = reversed.slice().reverse()
-    expect(reversedTwice).toEqual(arr)
-  },
-)
-```
+Enhanced test utilities for table-driven testing with Vitest. Provides builder API and type-safe utilities for parameterized tests with built-in support for todo, skip, and only cases.
 
 ## Import
 
-```typescript
-import { Test } from '@wollybeard/kit/test'
+::: code-group
+
+```typescript [Namespace]
+import { Test } from '@wollybeard/kit'
 ```
+
+```typescript [Barrel]
+import * as Test from '@wollybeard/kit/test'
+```
+
+:::
 
 ## Namespaces
 
-- [**Matchers**](/api/test/matchers)
+- [**`Matchers`**](/api/test/matchers) - Custom Vitest matchers for Effect Schema and equivalence testing.
 
-## Functions
+## Property Testing
 
-### property <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/test/property.ts#L38)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `property`
 
 ```typescript
 ;(<Ts extends [unknown, ...unknown[]]>(
@@ -74,23 +34,78 @@ import { Test } from '@wollybeard/kit/test'
 ) => void )
 ```
 
-### on <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/test/table/constructors.ts#L117)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/test/property.ts#L40" />
+
+Create a property-based test using fast-check within vitest.
+
+Ts
+
+- Tuple type of the arbitrary values.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Test } from '@wollybeard/kit/test'
+// ---cut---
+// test that array reverse twice returns original
+// [!code word:property:1]
+Test.property(
+  'reversing array twice returns original',
+  // [!code word:array:1]
+  // [!code word:integer:1]
+  fc.array(fc.integer()),
+  (arr) => {
+    // [!code word:slice:1]
+    const reversed = arr.slice().reverse()
+    // [!code word:slice:1]
+    const reversedTwice = reversed.slice().reverse()
+    expect(reversedTwice).toEqual(arr)
+  },
+)
+
+// test with multiple arbitraries
+// [!code word:property:1]
+Test.property(
+  'addition is commutative',
+  // [!code word:integer:1]
+  fc.integer(),
+  // [!code word:integer:1]
+  fc.integer(),
+  (a, b) => {
+    expect(a + b).toBe(b + a)
+  },
+)
+```
+
+## Test Builders
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `on`
+
+```typescript
+function on<$fn extends Fn.AnyAny>(
+  $fn: $fn,
+): TestBuilder<UpdateState<BuilderTypeStateEmpty, { fn: $fn }>>
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/test/table/constructors.ts#L119" />
 
 Creates a test table builder for testing a specific function.
 
-This is a shorthand for `describe().on(fn)` when you don't need a describe block.
-Types are automatically inferred from the function signature, making it ideal for
-quick function testing with minimal boilerplate.
+This is a shorthand for describe().on(fn) when you don't need a describe block. Types are automatically inferred from the function signature, making it ideal for quick function testing with minimal boilerplate.
 
-#### Case Formats
+## Case Formats
 
 Test cases can be specified in multiple formats:
 
 **Tuple Format** (most common):
 
-- `[[arg1, arg2], expected]` - Test with expected output
-- `['name', [arg1, arg2], expected]` - Named test case
-- `[[arg1, arg2]]` - Snapshot test (no expected value)
+- [[arg1, arg2], expected]
+- Test with expected output
+- ['name', [arg1, arg2], expected]
+- Named test case
+- `[[arg1, arg2]]`
+- Snapshot test (no expected value)
 
 **Object Format** (more verbose but clearer):
 
@@ -98,15 +113,16 @@ Test cases can be specified in multiple formats:
 - `{ input: [arg1, arg2], output: expected, skip: true, comment: 'name' }`
 - `{ todo: 'Not implemented yet', comment: 'name' }`
 
-```typescript
-export function on<$fn extends Fn.AnyAny>(
-  $fn: $fn,
-): TestBuilder<UpdateState<BuilderTypeStateEmpty, { fn: $fn }>>
-```
-
 **Examples:**
 
-```ts twoslash
+## Snapshot Mode with Error Handling
+
+```typescript twoslash
+// @noErrors
+import { Test } from '@wollybeard/kit/test'
+// ---cut---
+// Basic function testing
+// [!code word:on:1]
 Test.on(add)
   .cases(
     [[2, 3], 5], // add(2, 3) === 5
@@ -116,6 +132,7 @@ Test.on(add)
   .test()
 
 // Using different case formats
+// [!code word:on:1]
 Test.on(multiply)
   .cases(
     [[2, 3], 6], // Tuple format
@@ -126,6 +143,7 @@ Test.on(multiply)
   .test()
 
 // Custom assertions
+// [!code word:on:1]
 Test.on(divide)
   .cases([[10, 2], 5], [[10, 0], Infinity])
   .test(({ result, output }) => {
@@ -137,7 +155,9 @@ Test.on(divide)
   })
 
 // Output transformation - build full expectations from partials
+// [!code word:on:1]
 Test.on(createUser)
+  // [!code word:input:1]
   .onOutput((partial, context) => ({
     ...defaultUser,
     name: context.input[0],
@@ -150,70 +170,102 @@ Test.on(createUser)
   .test()
 ```
 
-```ts twoslash
-Test.on(parseInt)
-  .cases(
-    ['42'], // Returns: 42
-    ['hello'], // Returns: NaN
-  )
-  .test()
+Snapshot format shows arguments and results clearly:
 
-// Validation functions - errors documented in snapshots
-Test.on(Positive.from)
-  .cases(
-    [1],
-    [10],
-    [100], // THEN RETURNS the value
-    [0],
-    [-1],
-    [-10], // THEN THROWS "Value must be positive"
-  )
-  .test()
+```typescript twoslash
+// @noErrors
+import { Test } from '@wollybeard/kit/test'
+// ---cut---
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+  - 1
+╠══════════════════════════════════════════════════╣ THEN THROWS
+Error: Value must be positive
+╚══════════════════════════════════════════════════╝
 ```
 
-### describe <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/test/table/constructors.ts#L233)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `describe`
+
+```typescript
+function describe(description?: string): TestBuilderEmpty
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/test/table/constructors.ts#L259" />
 
 Creates a test table builder for property-based and example-based testing.
 
-Test tables allow you to define multiple test cases with inputs and expected outputs,
-reducing boilerplate and making tests more maintainable. The builder supports two modes:
+**CRITICAL**: Each call to Test.describe() creates a SEPARATE, INDEPENDENT test block. The builder is NOT reusable
 
-#### Modes
+- you CANNOT chain multiple .cases() or .describeInputs() calls to add test cases to the same describe block. Each builder must end with .test().
 
-**Function Mode** - Test a specific function with `.on(fn)`:
+Test tables allow you to define multiple test cases with inputs and expected outputs, reducing boilerplate and making tests more maintainable. The builder supports two modes:
 
+## Modes
+
+**Function Mode**
+
+- Test a specific function with .on(fn):
 - Types are automatically inferred from the function signature
 - Test cases specify function arguments and expected return values
 - Default assertion compares actual vs expected using Effect's equality
 
-**Generic Mode** - Define custom types with `.i<T>()` and `.o<T>()`:
+**Generic Mode**
 
+- Define custom types with .i&lt;T&gt; and .o&lt;T&gt;:
 - Explicitly specify input and output types
 - Provide custom test logic to validate cases
 - Useful for testing complex behaviors beyond simple function calls
 
-#### Features
+## Features
 
-**Nested Describes** - Use `>` separator to create nested describe blocks:
+**Nested Describes**
 
-- `Test.describe('Parent > Child')` creates `describe('Parent', () => describe('Child', ...))`
-- Multiple tests with the same prefix share the outer describe block
-- Supports any depth: `'API > Users > Create'` creates three levels
+- Use
 
-**Matrix Testing** - Use `.matrix()` to run cases across parameter combinations:
+&gt;
 
+separator to create nested describe blocks:
+
+- Test.describe('Parent &gt; Child') creates describe('Parent', () =&gt; describe('Child', ...))
+- Multiple SEPARATE Test.describe() calls with the same prefix share the outer describe block
+- Supports any depth: 'API &gt; Users &gt; Create' creates three levels
+
+**Matrix Testing**
+
+- Use .matrix() to run cases across parameter combinations:
 - Generates cartesian product of all matrix value arrays
 - Each test case runs once for each combination
-- Matrix values available as `matrix` in test context
+- Matrix values available as matrix in test context
 - Combines with nested describes for organized test suites
-
-```typescript
-export function describe(description?: string): TestBuilderEmpty
-```
 
 **Examples:**
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Test } from '@wollybeard/kit/test'
+// ---cut---
+// ❌ WRONG - Trying to chain test cases (DOES NOT WORK)
+// [!code word:describe:1]
+Test.describe('decodeSync > basic')
+  .on(decodeSync)
+  .cases([['1.2.3']])
+  .describeInputs('union', [['1.2.3-beta']]) // ❌ This creates a NESTED describe, not sibling!
+  .test()
+
+// ✅ CORRECT - Separate Test.describe() calls for separate test groups
+// [!code word:describe:1]
+Test.describe('decodeSync > basic')
+  .on(decodeSync)
+  .cases([['1.2.3']], [['invalid']])
+  .test()
+
+// [!code word:describe:1]
+Test.describe('decodeSync > union') // Shares 'decodeSync' parent describe
+  .on(decodeSync)
+  .cases([['1.2.3-beta']], [['1.2.3+build']])
+  .test()
+
+// Function mode - testing a math function
+// [!code word:describe:1]
 Test.describe('addition')
   .on(add)
   .cases(
@@ -224,6 +276,7 @@ Test.describe('addition')
   .test() // Uses default assertion (Effect's Equal.equals)
 
 // Generic mode - custom validation logic
+// [!code word:describe:1]
 Test.describe('email validation')
   .inputType<string>()
   .outputType<boolean>()
@@ -238,15 +291,18 @@ Test.describe('email validation')
   })
 
 // Nested describe blocks with ' > ' separator
+// [!code word:describe:1]
 Test.describe('Transform > String') // Creates nested: Transform -> String
   .inputType<string>()
   .outputType<string>()
   .cases(['hello', 'HELLO'])
   .test(({ input, output }) => {
+    // [!code word:toUpperCase:1]
     expect(input.toUpperCase()).toBe(output)
   })
 
-Test.describe('Transform > Number') // Shares 'Transform' parent describe
+// [!code word:describe:1]
+Test.describe('Transform > Number') // SEPARATE call - Shares 'Transform' parent describe
   .inputType<number>()
   .outputType<number>()
   .cases([42, 42])
@@ -255,6 +311,7 @@ Test.describe('Transform > Number') // Shares 'Transform' parent describe
   })
 
 // Matrix testing - runs each case for all parameter combinations
+// [!code word:describe:1]
 Test.describe('string transform')
   .inputType<string>()
   .outputType<string>()
@@ -269,11 +326,17 @@ Test.describe('string transform')
   .test(({ input, output, matrix }) => {
     // Runs 4 times (2 cases × 2 uppercase × 2 prefix = 8 tests)
     let result = input
+    // [!code word:prefix:1]
     if (matrix.prefix) result = matrix.prefix + result
+    // [!code word:uppercase:1]
+    // [!code word:toUpperCase:1]
     if (matrix.uppercase) result = result.toUpperCase()
 
     let expected = output
+    // [!code word:prefix:1]
     if (matrix.prefix) expected = matrix.prefix + expected
+    // [!code word:uppercase:1]
+    // [!code word:toUpperCase:1]
     if (matrix.uppercase) expected = expected.toUpperCase()
 
     expect(result).toBe(expected)

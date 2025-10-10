@@ -7,7 +7,7 @@ import { domain } from '../domain.js'
  *
  * Provides string equality comparison using strict equality (===).
  * String comparison is case-sensitive and considers all Unicode characters.
- *
+ * @category Traits
  * @example
  * ```ts
  * import { Str } from '@wollybeard/kit'

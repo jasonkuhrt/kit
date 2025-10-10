@@ -5,5 +5,7 @@
  * runtime validation, mathematical operations, range types, and specialized
  * numeric domains like Complex, Ratio, and BigInt. Includes type guards,
  * ordering, and equivalence utilities.
+ *
+ * @category Core Data Structures
  */
 export * as Num from './$$.js'

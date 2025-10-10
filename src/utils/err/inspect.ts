@@ -158,6 +158,8 @@ const optionSpecs = define([
  * process.env.ERROR_DISPLAY_COLOR = 'false'
  * process.env.ERROR_DISPLAY_SHOW_HELP = 'false'
  * ```
+ *
+ * @category Inspection
  */
 export type InspectOptions = InferOptions<typeof optionSpecs>
 
@@ -220,6 +222,8 @@ const getSectionPrefix = (section: 'type' | 'message' | 'stack' | 'context' | 'c
  * // Disable help section
  * console.log(Err.inspect(error, { showHelp: false }))
  * ```
+ *
+ * @category Inspection
  */
 export const inspect = (error: Error, options?: InspectOptions): string => {
   const config = resolve(optionSpecs, options ?? {})

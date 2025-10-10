@@ -1,83 +1,169 @@
 # Ts
 
-TypeScript type utilities and type-level programming helpers.
-
-Provides comprehensive type-level utilities including type printing, static
-errors, type guards, simplification utilities, exact type matching, and
-type testing tools. Features conditional types, type transformations, and
-type-level assertions for advanced TypeScript patterns.
+TypeScript type utilities and type-level programming helpers. Provides comprehensive type-level utilities including type printing, static errors, type guards, simplification utilities, exact type matching, and type testing tools. Features conditional types, type transformations, and type-level assertions for advanced TypeScript patterns.
 
 ## Import
 
-```typescript
-import { Ts } from '@wollybeard/kit/ts'
+::: code-group
+
+```typescript [Namespace]
+import { Ts } from '@wollybeard/kit'
 ```
+
+```typescript [Barrel]
+import * as Ts from '@wollybeard/kit/ts'
+```
+
+:::
 
 ## Namespaces
 
-- [**Kind**](/api/ts/kind) - Higher-kinded type utilities for TypeScript.
+- [**`Kind`**](/api/ts/kind) - Higher-kinded type utilities for TypeScript. Provides type-level functions and utilities for simulating higher-kinded types in TypeScript, enabling more advanced type-level programming patterns.
+- [**`Test`**](/api/ts/test)
+- [**`Union`**](/api/ts/union) - Valid values for discriminant properties in tagged unions.
+- [**`Variance`**](/api/ts/variance) - Phantom type helper that makes a type parameter covariant.
 
-Provides type-level functions and utilities for simulating higher-kinded
-types in TypeScript, enabling more advanced type-level programming patterns.
+## Error Messages
 
-@module
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `StaticError`
 
-- [**Test**](/api/ts/test)
-- [**Union**](/api/ts/union) - Valid values for discriminant properties in tagged unions.
-- [**Variance**](/api/ts/variance) - Phantom type helper that makes a type parameter covariant.
+```typescript
+interface StaticError<
+  $Message extends string = string,
+  $Context extends object = {},
+  $Hint extends string = '(none)',
+> {
+  ERROR: $Message
+  CONTEXT: $Context
+  HINT: $Hint
+}
+```
 
-@remarks
-Covariance allows subtypes to be assigned to supertypes (natural direction).
-Example: `Phantom<Covariant<1>>` can be assigned to `Phantom<Covariant<number>>`.
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L106" />
 
-Use this when you want narrower types to flow to wider types:
+Represents a type error that can be surfaced at the type level.
 
-- Literal types → base types (`1` → `number`, `'hello'` → `string`)
-- Subclasses → base classes
-- More specific → more general
+This is useful for providing more informative error messages directly in TypeScript's type checking, often used with conditional types or generic constraints. When TypeScript encounters this type, it will display the error information in a structured way.
 
-@example
+$Message
 
-```ts
-interface Container<T> {
-  readonly __type?: Covariant<T>
+- A string literal type describing the error
+
+$Context
+
+- An object type providing additional context about the error,
+
+often including the types involved
+
+$Hint
+
+- A string literal type providing a hint for resolving the error
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// Creating a custom type error
+type RequireString<T> = T extends string ? T : StaticError<
+  'Type must be a string',
+  { Received: T },
+  'Consider using string or a string literal type'
+>
+
+type Good = RequireString<'hello'> // 'hello'
+type Bad = RequireString<number> // StaticError<...>
+```
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// Using in function constraints
+function processString<T>(
+  value: T extends string ? T : StaticError<
+    'Argument must be a string',
+    { ProvidedType: T }
+  >,
+): void {
+  // Implementation
 }
 
-let narrow: Container<1> = {}
-let wide: Container<number> = {}
-
-wide = narrow // ✅ Allowed (1 extends number)
-narrow = wide // ❌ Error (number does not extend 1)
+processString('hello') // OK
+processString(42) // Type error with custom message
 ```
 
-@see {@link https://www.typescriptlang.org/docs/handbook/type-compatibility.html | TypeScript Type Compatibility}
-
-## Functions
-
-### as <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L22)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StaticErrorAny`
 
 ```typescript
-;(<$value>(value?: unknown) => $value)
+type StaticErrorAny = StaticError<string, object, string>
 ```
 
-### isTypeWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/type-guards.ts#L18)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L119" />
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `StaticErrorAssertion`
 
 ```typescript
-<reference>(reference: reference) => <valueGiven>(value: ValidateIsSupertype<reference, valueGiven>) => value is reference extends valueGiven ? reference : never
+interface StaticErrorAssertion<
+  $Message extends string = string,
+  $Expected = unknown,
+  $Actual = unknown,
+  $Tip extends string = never,
+> {
+  MESSAGE: $Message
+  EXPECTED: $Expected
+  ACTUAL: $Actual
+  TIP: $Tip
+}
 ```
 
-### isntTypeWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/type-guards.ts#L41)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L151" />
 
-```typescript
-<reference>(reference: reference) => <valueGiven>(value: ValidateIsSupertype<reference, valueGiven>) => value is reference extends valueGiven ? Exclude<valueGiven, reference> : never
+Represents a static assertion error at the type level, optimized for type testing.
+
+This is a simpler, more focused error type compared to StaticError. It's specifically designed for type assertions where you need to communicate expected vs. actual types.
+
+$Message
+
+- A string literal type describing the assertion failure
+
+$Expected
+
+- The expected type
+
+$Actual
+
+- The actual type that was provided
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// Using in parameter assertions
+function assertParameters<T extends readonly any[]>(
+  fn: Parameters<typeof fn> extends T ? typeof fn
+    : StaticErrorAssertion<
+      'Parameters mismatch',
+      T,
+      Parameters<typeof fn>
+    >,
+): void {}
+
+// Error shows:
+// MESSAGE: 'Parameters mismatch'
+// EXPECTED: [string, number]
+// ACTUAL: [number, string]
 ```
 
-## Types
+## Type Printing
 
-### Print <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/print.ts#L6)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Print`
 
 ```typescript
-export type Print<$Type, $Fallback extends string | undefined = undefined> =
+type Print<$Type, $Fallback extends string | undefined = undefined> =
   // Language base category types
   IsAny<$Type> extends true ? 'any'
     : IsUnknown<$Type> extends true ? 'unknown'
@@ -114,27 +200,87 @@ export type Print<$Type, $Fallback extends string | undefined = undefined> =
     : '?'
 ```
 
-### _PrintUnion <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/print.ts#L48)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/print.ts#L11" />
+
+Print a type as a readable string representation.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Show`
 
 ```typescript
-export type _PrintUnion<$Type extends ArrMut.AnyRO> = $Type extends
-  readonly [infer __first__, ...infer __rest__ extends ArrMut.Any1OrMoreRO]
-  ? `${Print<__first__>} | ${_PrintUnion<__rest__>}`
-  : $Type extends readonly [infer __first__] ? `${Print<__first__>}`
-  : $Type extends ArrMut.EmptyRO ? ''
-  : never
+type Show<$Type> = `\`${Print<$Type>}\``
 ```
 
-### Interpolatable <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L46)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L188" />
 
-Types that TypeScript accepts being interpolated into a Template Literal Type.
+Like Print but adds additional styling to display the rendered type in a sentence.
 
-These are the types that can be used within template literal types without causing
-a TypeScript error. When a value of one of these types is interpolated into a
-template literal type, TypeScript will properly convert it to its string representation.
+Useful for type-level error messages where you want to clearly distinguish type names from surrounding text. Wraps the printed type with backticks () like inline code in Markdown.
+
+$Type
+
+- The type to format and display
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+type Message1 = `Expected ${Show<string>} but got ${Show<number>}`
+// Result: "Expected `string` but got `number`"
+
+type Message2 = `The type ${Show<'hello' | 'world'>} is not assignable`
+// Result: "The type `'hello' | 'world'` is not assignable"
+
+// Using in error messages
+type TypeError<Expected, Actual> = StaticError<
+  `Type mismatch: expected ${Show<Expected>} but got ${Show<Actual>}`,
+  { Expected; Actual }
+>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ShowInTemplate`
 
 ```typescript
-export type Interpolatable =
+type ShowInTemplate<$Type> = `'${Print<$Type>}'`
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L219" />
+
+Version of Show but uses single quotes instead of backticks.
+
+This can be useful in template literal types where backticks would be rendered as "" which is not ideal for readability. Use this when the output will be used within another template literal type or when backticks cause display issues.
+
+Note that when working with TS-level errors, if TS can instantiate all the types involved then the result will be a string, not a string literal type. So when working with TS-level errors, only reach for this variant of Show if you think there is likelihood that types won't be instantiated.
+
+$Type
+
+- The type to format and display
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// When backticks would be escaped in output
+type ErrorInTemplate = `Error: ${ShowInTemplate<string>} is required`
+// Result: "Error: 'string' is required"
+
+// Comparing Show vs ShowInTemplate
+type WithShow = `Type is ${Show<number>}`
+// May display as: "Type is \`number\`" (escaped backticks)
+
+type WithShowInTemplate = `Type is ${ShowInTemplate<number>}`
+// Displays as: "Type is 'number'" (cleaner)
+```
+
+## Type Utilities
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Interpolatable`
+
+```typescript
+type Interpolatable =
   | string
   | number
   | bigint
@@ -148,9 +294,19 @@ export type Interpolatable =
   | never
 ```
 
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L50" />
+
+Types that TypeScript accepts being interpolated into a Template Literal Type.
+
+These are the types that can be used within template literal types without causing a TypeScript error. When a value of one of these types is interpolated into a template literal type, TypeScript will properly convert it to its string representation.
+
 **Examples:**
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// All these types can be interpolated:
 type Valid1 = `Value: ${string}`
 type Valid2 = `Count: ${number}`
 type Valid3 = `Flag: ${boolean}`
@@ -163,175 +319,37 @@ type Result2 = Stringify<true> // "true"
 type Result3 = Stringify<'hello'> // "hello"
 ```
 
-### StaticError <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L100)</sub>
-
-Represents a type error that can be surfaced at the type level.
-
-This is useful for providing more informative error messages directly in TypeScript's
-type checking, often used with conditional types or generic constraints. When TypeScript
-encounters this type, it will display the error information in a structured way.
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Simplify`
 
 ```typescript
-export interface StaticError<
-  $Message extends string = string,
-  $Context extends object = {},
-  $Hint extends string = '(none)',
-> {
-  ERROR: $Message
-  CONTEXT: $Context
-  HINT: $Hint
-}
-```
-
-**Examples:**
-
-```ts twoslash
-type RequireString<T> = T extends string ? T : StaticError<
-  'Type must be a string',
-  { Received: T },
-  'Consider using string or a string literal type'
->
-
-type Good = RequireString<'hello'> // 'hello'
-type Bad = RequireString<number> // StaticError<...>
-```
-
-```ts twoslash
-function processString<T>(
-  value: T extends string ? T : StaticError<
-    'Argument must be a string',
-    { ProvidedType: T }
-  >,
-): void {
-  // Implementation
-}
-
-processString('hello') // OK
-processString(42) // Type error with custom message
-```
-
-### StaticErrorAny <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L110)</sub>
-
-```typescript
-export type StaticErrorAny = StaticError<string, object, string>
-```
-
-### StaticErrorAssertion <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L140)</sub>
-
-Represents a static assertion error at the type level, optimized for type testing.
-
-This is a simpler, more focused error type compared to {@link StaticError}. It's specifically
-designed for type assertions where you need to communicate expected vs. actual types.
-
-```typescript
-export interface StaticErrorAssertion<
-  $Message extends string = string,
-  $Expected = unknown,
-  $Actual = unknown,
-  $Tip extends string = never,
-> {
-  MESSAGE: $Message
-  EXPECTED: $Expected
-  ACTUAL: $Actual
-  TIP: $Tip
-}
-```
-
-**Examples:**
-
-```ts twoslash
-function assertParameters<T extends readonly any[]>(
-  fn: Parameters<typeof fn> extends T ? typeof fn
-    : StaticErrorAssertion<
-      'Parameters mismatch',
-      T,
-      Parameters<typeof fn>
-    >,
-): void {}
-
-// Error shows:
-// MESSAGE: 'Parameters mismatch'
-// EXPECTED: [string, number]
-// ACTUAL: [number, string]
-```
-
-### Show <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L175)</sub>
-
-Like {@link Print} but adds additional styling to display the rendered type in a sentence.
-
-Useful for type-level error messages where you want to clearly distinguish type names
-from surrounding text. Wraps the printed type with backticks (\`) like inline code in Markdown.
-
-```typescript
-export type Show<$Type> = `\`${Print<$Type>}\``
-```
-
-**Examples:**
-
-```ts twoslash
-// Result: "Expected `string` but got `number`"
-
-type Message2 = `The type ${Show<'hello' | 'world'>} is not assignable`
-// Result: "The type `'hello' | 'world'` is not assignable"
-
-// Using in error messages
-type TypeError<Expected, Actual> = StaticError<
-  `Type mismatch: expected ${Show<Expected>} but got ${Show<Actual>}`,
-  { Expected; Actual }
->
-```
-
-### ShowInTemplate <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L204)</sub>
-
-Version of {@link Show} but uses single quotes instead of backticks.
-
-This can be useful in template literal types where backticks would be rendered as "\`"
-which is not ideal for readability. Use this when the output will be used within
-another template literal type or when backticks cause display issues.
-
-Note that when working with TS-level errors, if TS can instantiate all the types involved then
-the result will be a string, not a string literal type. So when working with TS-level errors,
-only reach for this variant of {@link Show} if you think there is likelihood that types won't be instantiated.
-
-```typescript
-export type ShowInTemplate<$Type> = `'${Print<$Type>}'`
-```
-
-**Examples:**
-
-```ts twoslash
-type ErrorInTemplate = `Error: ${ShowInTemplate<string>} is required`
-// Result: "Error: 'string' is required"
-
-// Comparing Show vs ShowInTemplate
-type WithShow = `Type is ${Show<number>}`
-// May display as: "Type is \`number\`" (escaped backticks)
-
-type WithShowInTemplate = `Type is ${ShowInTemplate<number>}`
-// Displays as: "Type is 'number'" (cleaner)
-```
-
-### Simplify <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L244)</sub>
-
-Simplifies complex type intersections and mapped types for better readability.
-
-Forces TypeScript to evaluate and flatten a type, which is especially useful for:
-
-- Intersection types that appear as `A & B & C` in tooltips
-- Complex mapped types that show their internal structure
-- Making type aliases more readable in IDE tooltips
-
-```typescript
-export type Simplify<$Type> =
+type Simplify<$Type> =
   & {
     [_ in keyof $Type]: $Type[_]
   }
   & unknown
 ```
 
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L261" />
+
+Simplifies complex type intersections and mapped types for better readability.
+
+Forces TypeScript to evaluate and flatten a type, which is especially useful for:
+
+- Intersection types that appear as A & B & C in tooltips
+- Complex mapped types that show their internal structure
+- Making type aliases more readable in IDE tooltips
+
+$Type
+
+- The type to simplify
+
 **Examples:**
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// Without Simplify
 type Complex = { a: string } & { b: number } & { c: boolean }
 // Tooltip shows: { a: string } & { b: number } & { c: boolean }
 
@@ -340,7 +358,11 @@ type Simple = Simplify<Complex>
 // Tooltip shows: { a: string; b: number; c: boolean }
 ```
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// Simplifying complex mapped types
 type UserPermissions =
   & { read: boolean }
   & { write: boolean }
@@ -355,28 +377,81 @@ function processUser<T extends Simplify<UserPermissions>>(user: T) {
 }
 ```
 
-### SimplifyNullable <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L284)</sub>
+## Utilities
 
-Simplify a type while preserving `| null` unions.
-
-This solves a subtle problem with {@link Simplify}: when you have `Type | null`,
-using `Simplify<Type | null>` can absorb or transform the `null` in unexpected ways
-due to the intersection with `& unknown` or `& {}`. This utility checks for null first,
-then explicitly reconstructs the union to ensure `| null` remains intact.
-
-**When to use:**
-
-- Use {@link SimplifyNullable} when simplifying types that may contain `| null` or `| undefined`
-- Use {@link Simplify} for non-nullable types or when null handling doesn't matter
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `as`
 
 ```typescript
-export type SimplifyNullable<$T> = null extends $T ? (Simplify<$T> & {}) | null
-  : Simplify<$T> & {}
+;(<$value>(value?: unknown) => $value)
 ```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L24" />
+
+Cast any value to a specific type for testing purposes. Useful for type-level testing where you need to create a value with a specific type.
+
+$value
+
+- The type to cast to
 
 **Examples:**
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// Creating typed test values
+const user = as<{ id: string; name: string }>({ id: '1', name: 'Alice' })
+
+// Testing type inference
+declare let _: any
+const result = someFunction()
+assertExtends<string>()(_ as typeof result)
+```
+
+## Other
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `_PrintUnion`
+
+```typescript
+type _PrintUnion<$Type extends ArrMut.AnyRO> = $Type extends
+  readonly [infer __first__, ...infer __rest__ extends ArrMut.Any1OrMoreRO]
+  ? `${Print<__first__>} | ${_PrintUnion<__rest__>}`
+  : $Type extends readonly [infer __first__] ? `${Print<__first__>}`
+  : $Type extends ArrMut.EmptyRO ? ''
+  : never
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/print.ts#L53" />
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SimplifyNullable`
+
+```typescript
+type SimplifyNullable<$T> = null extends $T ? (Simplify<$T> & {}) | null
+  : Simplify<$T> & {}
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L301" />
+
+Simplify a type while preserving | null unions.
+
+This solves a subtle problem with Simplify: when you have Type | null, using Simplify&lt;Type | null&gt; can absorb or transform the null in unexpected ways due to the intersection with & unknown or & {}. This utility checks for null first, then explicitly reconstructs the union to ensure | null remains intact.
+
+**When to use:**
+
+- Use SimplifyNullable when simplifying types that may contain | null or | undefined
+- Use Simplify for non-nullable types or when null handling doesn't matter
+
+$T
+
+- The type to simplify
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// Problem: Plain Simplify can mangle nullable unions
 type User = { name: string } & { age: number }
 type MaybeUser = User | null
 type Bad = Simplify<MaybeUser> // May not preserve | null correctly
@@ -385,45 +460,67 @@ type Bad = Simplify<MaybeUser> // May not preserve | null correctly
 type Good = SimplifyNullable<MaybeUser> // { name: string; age: number } | null
 ```
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// Works with non-nullable types too
 type Simple = SimplifyNullable<{ a: 1 } & { b: 2 }> // { a: 1; b: 2 }
 
 // Preserves null in unions
 type Nullable = SimplifyNullable<({ a: 1 } & { b: 2 }) | null> // { a: 1; b: 2 } | null
 ```
 
-### ExtendsExact <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L324)</sub>
-
-Utilities for working with union types at the type level.
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExtendsExact`
 
 ```typescript
-export type ExtendsExact<$Input, $Constraint> = $Input extends $Constraint
+type ExtendsExact<$Input, $Constraint> = $Input extends $Constraint
   ? $Constraint extends $Input ? $Input
   : never
   : never
 ```
 
-### NotExtends <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L373)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L341" />
+
+Utilities for working with union types at the type level.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `NotExtends`
+
+```typescript
+type NotExtends<$A, $B> = [$A] extends [$B] ? false : true
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L390" />
 
 Type-level utility that checks if a type does NOT extend another type.
 
-Returns `true` if type A does not extend type B, `false` otherwise.
-Useful for conditional type logic where you need to check the absence
-of a type relationship.
+Returns true if type A does not extend type B, false otherwise. Useful for conditional type logic where you need to check the absence of a type relationship.
 
-```typescript
-export type NotExtends<$A, $B> = [$A] extends [$B] ? false : true
-```
+$A
+
+- The type to check
+
+$B
+
+- The type to check against
 
 **Examples:**
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+type T1 = NotExtends<string, number> // true (string doesn't extend number)
 type T2 = NotExtends<'hello', string> // false ('hello' extends string)
 type T3 = NotExtends<42, number> // false (42 extends number)
 type T4 = NotExtends<{ a: 1 }, { b: 2 }> // true (different properties)
 ```
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// Using in conditional types for optional handling
 type VarBuilderToType<$Type, $VarBuilder> = $VarBuilder['required'] extends true
   ? Exclude<$Type, undefined>
   : NotExtends<$VarBuilder['default'], undefined> extends true
@@ -434,7 +531,11 @@ type VarBuilderToType<$Type, $VarBuilder> = $VarBuilder['required'] extends true
 // If default is not undefined, type is $Type | undefined
 ```
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// Checking for specific type exclusions
 type SafeDivide<T> = NotExtends<T, 0> extends true ? number
   : StaticError<'Cannot divide by zero'>
 
@@ -442,81 +543,133 @@ type Result1 = SafeDivide<5> // number
 type Result2 = SafeDivide<0> // StaticError<'Cannot divide by zero'>
 ```
 
-### Writeable <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L384)</sub>
-
-Make all properties in an object mutable (removes readonly modifiers).
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Writeable`
 
 ```typescript
-export type Writeable<$Object> = {
+type Writeable<$Object> = {
   -readonly [k in keyof $Object]: $Object[k]
 }
 ```
 
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L401" />
+
+Make all properties in an object mutable (removes readonly modifiers).
+
 **Examples:**
 
-```ts twoslash
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+type Readonly = { readonly x: number; readonly y: string }
 type Mutable = Writeable<Readonly> // { x: number; y: string }
 ```
 
-### IfExtendsElse <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L423)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IfExtendsElse`
+
+```typescript
+type IfExtendsElse<$Type, $Extends, $Then, $Else> = $Type extends $Extends
+  ? $Then
+  : $Else
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L440" />
 
 :::warning DEPRECATED
 
-- Commented out 2025-01-07
+- Commented out 2025-01-07 This utility was too strict - requires BIDIRECTIONAL extends, which rejects valid narrowed types (e.g., id: true for id: boolean ). Use Obj.NoExcess instead, which: - ✓ Rejects excess properties (what you want) - ✓ Allows valid subtypes/narrowing (what you need) If a use case for true bidirectional exact matching emerges, uncomment. Otherwise, remove after 3-6 months (target: ~2025-07-01). Original implementation:
+  :::
 
-This utility was too strict - requires BIDIRECTIONAL extends, which rejects
-valid narrowed types (e.g., { id: true } for { id: boolean }).
-
-Use Obj.NoExcess instead, which:
-
-- ✓ Rejects excess properties (what you want)
-- ✓ Allows valid subtypes/narrowing (what you need)
-
-If a use case for true bidirectional exact matching emerges, uncomment.
-Otherwise, remove after 3-6 months (target: ~2025-07-01).
-
-Original implementation:
-:::
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IntersectionIgnoreNeverOrAny`
 
 ```typescript
-export type IfExtendsElse<$Type, $Extends, $Then, $Else> = $Type extends
-  $Extends ? $Then : $Else
+type IntersectionIgnoreNeverOrAny<$T> = IsAny<$T> extends true ? unknown
+  : $T extends never ? unknown
+  : $T
 ```
 
-### IntersectionIgnoreNeverOrAny <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L428)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L445" />
 
 Intersection that ignores never and any.
 
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `NeverOrAnyToUnknown`
+
 ```typescript
-export type IntersectionIgnoreNeverOrAny<$T> = IsAny<$T> extends true ? unknown
+type NeverOrAnyToUnknown<$T> = IsAny<$T> extends true ? unknown
   : $T extends never ? unknown
   : $T
 ```
 
-### NeverOrAnyToUnknown <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L433)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L450" />
 
 Convert never or any to unknown.
 
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Narrowable`
+
 ```typescript
-export type NeverOrAnyToUnknown<$T> = IsAny<$T> extends true ? unknown
-  : $T extends never ? unknown
-  : $T
+type Narrowable = string | number | bigint | boolean | []
 ```
 
-### Narrowable <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L438)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L455" />
 
 Any narrowable primitive type.
 
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAndUnknownToNever`
+
 ```typescript
-export type Narrowable = string | number | bigint | boolean | []
+type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never
+  : IsUnknown<$T> extends true ? never
+  : $T
 ```
 
-### AnyAndUnknownToNever <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/utils/ts/ts.ts#L443)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L460" />
 
 Convert any and unknown to never.
 
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isTypeWith`
+
 ```typescript
-export type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never
-  : IsUnknown<$T> extends true ? never
-  : $T
+<reference>(reference: reference) => <valueGiven>(value: ValidateIsSupertype<reference, valueGiven>) => value is reference extends valueGiven ? reference : never
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/type-guards.ts#L18" />
+
+Create a type guard that checks if a value equals a reference value.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// [!code word:isTypeWith:1]
+const isNull = Ts.isTypeWith(null)
+const value: string | null = getString()
+if (isNull(value)) {
+  // value is narrowed to null
+}
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isntTypeWith`
+
+```typescript
+<reference>(reference: reference) => <valueGiven>(value: ValidateIsSupertype<reference, valueGiven>) => value is reference extends valueGiven ? Exclude<valueGiven, reference> : never
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/type-guards.ts#L41" />
+
+Create a type guard that checks if a value does not equal a reference value.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// [!code word:isntTypeWith:1]
+const isntNull = Ts.isntTypeWith(null)
+const value: string | null = getString()
+if (isntNull(value)) {
+  // value is narrowed to string
+}
 ```

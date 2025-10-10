@@ -37,6 +37,7 @@ interface Pattern<$Matches extends Matches> extends RegExp {
 /**
  * Create a typed pattern from a regular expression.
  * Enables type-safe capture groups when used with {@link match}.
+ * @category Pattern Matching
  * @param pattern - The regular expression pattern
  * @returns A typed pattern that preserves capture group information
  * @example
@@ -63,6 +64,7 @@ export type Matches = {
 
 /**
  * Match a string against a pattern with type-safe results.
+ * @category Pattern Matching
  * @param string - The string to match against
  * @param pattern - Regular expression or typed pattern
  * @returns Option of match result with typed capture groups, or None if no match
@@ -89,6 +91,7 @@ export type PatternInput = string | RegExp
 
 /**
  * Check if a string matches a pattern.
+ * @category Predicates
  * @param value - The string to test
  * @param pattern - String for exact match or RegExp for pattern match
  * @returns True if the value matches the pattern
@@ -108,6 +111,7 @@ export const isMatch = (value: string, pattern: PatternInput): boolean => {
 
 /**
  * Curried version of {@link isMatch} with value first.
+ * @category Predicates
  * @param value - The string to test
  * @returns Function that takes a pattern and returns boolean
  * @example
@@ -121,6 +125,7 @@ export const isMatchOn = Fn.curry(isMatch)
 
 /**
  * Curried version of {@link isMatch} with pattern first.
+ * @category Predicates
  * @param pattern - String for exact match or RegExp for pattern match
  * @returns Function that takes a value and returns boolean
  * @example
@@ -134,6 +139,7 @@ export const isMatchWith = Fn.flipCurried(isMatchOn)
 
 /**
  * Check if a string does not match a pattern.
+ * @category Predicates
  * @param pattern - String for exact match or RegExp for pattern match
  * @returns Function that takes a value and returns true if it doesn't match
  * @example
@@ -149,6 +155,7 @@ export const isntMatch = (pattern: PatternInput) => (value: string): boolean => 
 
 /**
  * Curried version of {@link isntMatch} with value first.
+ * @category Predicates
  * @param value - The string to test
  * @returns Function that takes a pattern and returns boolean
  */
@@ -156,6 +163,7 @@ export const isntMatchOn = Fn.curry(isntMatch)
 
 /**
  * Curried version of {@link isntMatch} with pattern first.
+ * @category Predicates
  * @param pattern - String for exact match or RegExp for pattern match
  * @returns Function that takes a value and returns boolean
  */
@@ -167,6 +175,7 @@ export type PatternsInput = ArrMut.Maybe<string | RegExp>
 
 /**
  * Check if a string matches any of the provided patterns.
+ * @category Predicates
  * @param value - The string to test
  * @param patterns - Array of strings or RegExp patterns (or a single pattern)
  * @returns True if the value matches any pattern
@@ -184,6 +193,7 @@ export const isMatchAny = (value: string, patterns: PatternsInput): boolean => {
 
 /**
  * Curried version of {@link isMatchAny} with value first.
+ * @category Predicates
  * @param value - The string to test
  * @returns Function that takes patterns and returns boolean
  */
@@ -191,6 +201,7 @@ export const isMatchAnyOn = Fn.curry(isMatchAny)
 
 /**
  * Curried version of {@link isMatchAny} with patterns first.
+ * @category Predicates
  * @param patterns - Array of strings or RegExp patterns (or a single pattern)
  * @returns Function that takes a value and returns boolean
  * @example
@@ -205,6 +216,7 @@ export const isMatchAnyWith = Fn.flipCurried(isMatchAnyOn)
 
 /**
  * Check if a string does not match any of the provided patterns.
+ * @category Predicates
  * @param patternOrPatterns - Array of strings or RegExp patterns (or a single pattern)
  * @returns Function that takes a value and returns true if it doesn't match any pattern
  * @example
@@ -220,6 +232,7 @@ export const isNotMatchAny = (patternOrPatterns: PatternsInput) => (value: strin
 
 /**
  * Curried version of {@link isNotMatchAny} with value first.
+ * @category Predicates
  * @param value - The string to test
  * @returns Function that takes patterns and returns boolean
  */
@@ -227,6 +240,7 @@ export const isNotMatchAnyOn = Fn.curry(isNotMatchAny)
 
 /**
  * Curried version of {@link isNotMatchAny} with patterns first.
+ * @category Predicates
  * @param patternOrPatterns - Array of strings or RegExp patterns (or a single pattern)
  * @returns Function that takes a value and returns boolean
  */

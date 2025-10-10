@@ -3,6 +3,7 @@ import { Obj } from '#obj'
 
 /**
  * Interpolate variables into a template string using ${variable} syntax.
+ * @category Template
  * @param template - Template string containing ${variable} placeholders
  * @returns Function that takes args object and returns interpolated string
  * @example
@@ -24,18 +25,21 @@ export const interpolate = (template: string) => (args: TemplateArgs) => {
 /**
  * Regular expression pattern to match template variables in ${variable} format.
  * Captures the variable name inside the braces.
+ * @category Template
  */
 export const templateVariablePattern = /\${([^}]+)}/g
 
 /**
  * Arguments object for template interpolation.
  * Maps variable names to their JSON-serializable values.
+ * @category Template
  */
 export type TemplateArgs = Record<string, Json.Value>
 
 /**
  * Type guard to check if a value is a TemplateStringsArray.
  * Used to detect when a function is called as a tagged template literal.
+ * @category Template
  * @param args - Value to check
  * @returns True if args is a TemplateStringsArray
  * @example

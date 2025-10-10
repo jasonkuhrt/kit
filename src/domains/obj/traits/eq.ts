@@ -8,6 +8,8 @@ import { domain } from '../domain.js'
  * Provides deep structural equality for objects by recursively
  * comparing properties using their appropriate Eq implementations.
  *
+ * @category Traits
+ *
  * @example
  * ```ts
  * import { Obj } from '@wollybeard/kit'

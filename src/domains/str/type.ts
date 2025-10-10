@@ -1,6 +1,7 @@
 /**
  * Type guard to check if a string is empty.
- * @deprecated Use `String.isEmpty` from Effect instead
+ * @category Type Guards
+ * @deprecated Use {@link String.isEmpty} from Effect instead
  * @param value - The string to check
  * @returns True if the string is empty
  * @example
@@ -14,11 +15,13 @@ export const isEmpty = (value: string): value is '' => value.length === 0
 
 /**
  * Type for an empty string.
+ * @category Type Utilities
  */
 export type Empty = ''
 
 /**
  * Empty string constant.
+ * @category Constants
  * @example
  * ```typescript
  * const result = someCondition ? 'hello' : Empty

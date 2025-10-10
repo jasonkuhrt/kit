@@ -1,7 +1,10 @@
+import { FsLoc } from '#fs-loc'
+import { Md } from '#md'
+import { Match } from 'effect'
 import { writeFileSync } from 'node:fs'
 import { mkdirSync } from 'node:fs'
 import { join } from 'node:path'
-import type { Example, Export, InterfaceModel, Module, ValueExport } from '../schema.js'
+import type { Entrypoint, Example, Export, InterfaceModel, Module, ValueExport } from '../schema.js'
 
 /**
  * Configuration for VitePress generation.
@@ -13,6 +16,23 @@ export type VitePressConfig = {
   baseUrl?: string
   /** GitHub repository URL for source links (e.g., 'https://github.com/owner/repo') */
   githubUrl?: string
+  /** Group exports by @category tag (auto-detects if undefined) */
+  groupByCategory?: boolean
+}
+
+/**
+ * Derive PascalCase module name from entrypoint path.
+ * Examples: './err' → 'Err', './package-manager' → 'PackageManager'
+ */
+const deriveModuleName = (path: string): string => {
+  // Extract stem (remove leading ./)
+  const withoutLeadingDot = path.replace(/^\.\//, '')
+
+  // Convert kebab-case to PascalCase
+  return withoutLeadingDot
+    .split('-')
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('')
 }
 
 /**
@@ -22,6 +42,7 @@ type Page = {
   url: string
   filepath: string
   title: string
+  entrypoint: Entrypoint
   module: Module
   breadcrumbs: string[]
 }
@@ -30,7 +51,10 @@ type Page = {
  * Generation context passed through rendering functions.
  */
 type Context = {
+  packageName: string
   githubUrl?: string
+  breadcrumbs?: string[]
+  groupByCategory?: boolean
 }
 
 /**
@@ -40,8 +64,12 @@ type Context = {
  * @param config - VitePress generation configuration
  */
 export const generate = (model: InterfaceModel, config: VitePressConfig): void => {
-  const { outputDir, githubUrl } = config
-  const context: Context = githubUrl ? { githubUrl } : {}
+  const { outputDir, githubUrl, groupByCategory } = config
+  const context: Context = {
+    packageName: model.name,
+    ...(githubUrl ? { githubUrl } : {}),
+    ...(groupByCategory !== undefined ? { groupByCategory } : {}),
+  }
 
   // Ensure output directory exists
   mkdirSync(join(outputDir, 'api'), { recursive: true })
@@ -71,23 +99,21 @@ export const generate = (model: InterfaceModel, config: VitePressConfig): void =
  * Generate API index page listing all modules.
  */
 const generateApiIndex = (model: InterfaceModel): string => {
-  const modules = model.entrypoints.map((ep) => {
-    const module = ep.module as Module
-    const moduleName = module.name
-    const url = `/api/${kebab(moduleName)}`
-    const description = module.description || ''
+  const modules = model.entrypoints.map((entrypoint) => {
+    const moduleName = deriveModuleName(entrypoint.path)
+    const url = `/api/${Md.kebab(moduleName)}`
+    const description = entrypoint.module.description || ''
 
-    return `- [**${moduleName}**](${url})${description ? ` - ${description}` : ''}`
+    return `## ${Md.link(moduleName, url)}
+
+${description}`
   })
 
-  return `# API Reference
-
-Browse the complete API documentation for @wollybeard/kit.
-
-## Modules
-
-${modules.join('\n')}
-`
+  return Md.sections(
+    Md.heading(1, 'API Reference'),
+    'Browse the complete API documentation for @wollybeard/kit.',
+    modules.join('\n\n'),
+  )
 }
 
 /**
@@ -97,20 +123,21 @@ const generatePages = (model: InterfaceModel): Page[] => {
   const pages: Page[] = []
 
   for (const entrypoint of model.entrypoints) {
-    const module = entrypoint.module as Module
-    const moduleName = module.name
+    const moduleName = deriveModuleName(entrypoint.path)
+    const module = entrypoint.module
 
     // Top-level module page
     pages.push({
-      url: `/api/${kebab(moduleName)}`,
-      filepath: `api/${kebab(moduleName)}.md`,
+      url: `/api/${Md.kebab(moduleName)}`,
+      filepath: `api/${Md.kebab(moduleName)}.md`,
       title: moduleName,
+      entrypoint,
       module,
       breadcrumbs: [moduleName],
     })
 
     // Namespace pages (recursive)
-    pages.push(...generateNamespacePages(module, [moduleName]))
+    pages.push(...generateNamespacePages(entrypoint, module, [moduleName]))
   }
 
   return pages
@@ -119,7 +146,7 @@ const generatePages = (model: InterfaceModel): Page[] => {
 /**
  * Recursively generate pages for namespace exports.
  */
-const generateNamespacePages = (module: Module, breadcrumbs: string[]): Page[] => {
+const generateNamespacePages = (entrypoint: Entrypoint, module: Module, breadcrumbs: string[]): Page[] => {
   const pages: Page[] = []
 
   const namespaceExports = module.exports.filter(
@@ -128,7 +155,7 @@ const generateNamespacePages = (module: Module, breadcrumbs: string[]): Page[] =
 
   for (const nsExport of namespaceExports) {
     const newBreadcrumbs = [...breadcrumbs, nsExport.name]
-    const urlPath = newBreadcrumbs.map(kebab).join('/')
+    const urlPath = newBreadcrumbs.map(Md.kebab).join('/')
 
     if (!nsExport.module) continue
 
@@ -136,12 +163,13 @@ const generateNamespacePages = (module: Module, breadcrumbs: string[]): Page[] =
       url: `/api/${urlPath}`,
       filepath: `api/${urlPath}.md`,
       title: newBreadcrumbs.join('.'),
+      entrypoint,
       module: nsExport.module,
       breadcrumbs: newBreadcrumbs,
     })
 
     // Recursively process nested namespaces
-    pages.push(...generateNamespacePages(nsExport.module, newBreadcrumbs))
+    pages.push(...generateNamespacePages(entrypoint, nsExport.module, newBreadcrumbs))
   }
 
   return pages
@@ -151,12 +179,12 @@ const generateNamespacePages = (module: Module, breadcrumbs: string[]): Page[] =
  * Generate markdown content for a page.
  */
 const generatePageContent = (page: Page, context: Context): string => {
-  const { module, breadcrumbs } = page
+  const { entrypoint, module, breadcrumbs } = page
 
   // Breadcrumb navigation
   const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1]
   const breadcrumbNav = breadcrumbs.length > 1 && lastBreadcrumb
-    ? `*${breadcrumbs.slice(0, -1).join('.')}* / **${lastBreadcrumb}**\n\n`
+    ? `*${breadcrumbs.slice(0, -1).join('.')}* / **${lastBreadcrumb}**`
     : ''
 
   // Separate namespace exports from regular exports
@@ -167,40 +195,70 @@ const generatePageContent = (page: Page, context: Context): string => {
     (exp: any) => !(exp._tag === 'value' && exp.type === 'namespace'),
   )
 
-  const sections = [
-    `# ${breadcrumbs.join('.')}`,
-    breadcrumbNav + (module.description || ''),
-    renderImportSection(breadcrumbs),
-    namespaceExports.length > 0 ? renderNamespacesSection(namespaceExports, breadcrumbs) : '',
-    renderExportsSection(regularExports, context),
-  ].filter(Boolean)
+  // Add breadcrumbs to context for namespace usage in examples
+  const contextWithBreadcrumbs = { ...context, breadcrumbs }
 
-  return sections.join('\n\n')
+  return Md.sections(
+    Md.heading(1, breadcrumbs.join('.')),
+    breadcrumbNav,
+    module.description || '',
+    renderImportSection(entrypoint, context.packageName, breadcrumbs),
+    namespaceExports.length > 0 ? renderNamespacesSection(namespaceExports, breadcrumbs) : '',
+    renderExportsSection(regularExports, contextWithBreadcrumbs),
+  )
 }
 
 /**
- * Render import examples.
+ * Render import examples based on entrypoint pattern.
  */
-const renderImportSection = (breadcrumbs: string[]): string => {
-  const first = breadcrumbs[0]
-  if (!first) return ''
+const renderImportSection = (
+  entrypoint: Entrypoint,
+  packageName: string,
+  breadcrumbs: string[],
+): string => {
+  const moduleName = breadcrumbs[0]
+  if (!moduleName) return ''
 
-  if (breadcrumbs.length === 1) {
-    return `## Import
+  const subpath = `${packageName}/${Md.kebab(moduleName)}`
 
-\`\`\`typescript
-import { ${first} } from '@wollybeard/kit/${kebab(first)}'
-\`\`\``
+  // For nested namespaces, show access pattern
+  if (breadcrumbs.length > 1) {
+    const accessExample = `// Access via namespace\n${breadcrumbs.join('.')}.someFunction()`
+
+    if (entrypoint._tag === 'DrillableNamespaceEntrypoint') {
+      return Md.sections(
+        Md.heading(2, 'Import'),
+        Md.codeGroup([
+          {
+            label: 'Namespace',
+            code: `import { ${moduleName} } from '${packageName}'\n\n${accessExample}`,
+          },
+          {
+            label: 'Barrel',
+            code: `import * as ${moduleName} from '${subpath}'\n\n${accessExample}`,
+          },
+        ]),
+      )
+    } else {
+      return Md.sections(
+        Md.heading(2, 'Import'),
+        Md.codeFence(`import { ${moduleName} } from '${subpath}'\n\n${accessExample}`),
+      )
+    }
   }
 
-  return `## Import
-
-\`\`\`typescript
-import { ${first} } from '@wollybeard/kit/${kebab(first)}'
-
-// Access via namespace
-${breadcrumbs.join('.')}.someFunction()
-\`\`\``
+  // Top-level module
+  if (entrypoint._tag === 'DrillableNamespaceEntrypoint') {
+    return Md.sections(
+      Md.heading(2, 'Import'),
+      Md.codeGroup([
+        { label: 'Namespace', code: `import { ${moduleName} } from '${packageName}'` },
+        { label: 'Barrel', code: `import * as ${moduleName} from '${subpath}'` },
+      ]),
+    )
+  } else {
+    return Md.sections(Md.heading(2, 'Import'), Md.codeFence(`import { ${moduleName} } from '${subpath}'`))
+  }
 }
 
 /**
@@ -208,94 +266,175 @@ ${breadcrumbs.join('.')}.someFunction()
  */
 const renderNamespacesSection = (namespaces: Export[], breadcrumbs: string[]): string => {
   const items = namespaces.map((ns) => {
-    const nsPath = `/api/${[...breadcrumbs, ns.name].map(kebab).join('/')}`
-    return `- [**${ns.name}**](${nsPath})${ns.description ? ` - ${ns.description}` : ''}`
+    const nsPath = `/api/${[...breadcrumbs, ns.name].map(Md.kebab).join('/')}`
+    const link = Md.boldCodeLink(ns.name, nsPath)
+    return Md.listItem(`${link}${ns.description ? ` - ${ns.description}` : ''}`)
   })
 
-  return `## Namespaces\n\n${items.join('\n')}`
+  return Md.sections(Md.heading(2, 'Namespaces'), items.join('\n'))
 }
 
 /**
- * Render all exports grouped by type.
+ * Render all exports grouped by type or category.
  */
 const renderExportsSection = (exports: Export[], context: Context): string => {
-  // Group by type
+  // Auto-detect category mode if not explicitly configured
+  const shouldGroupByCategory = context.groupByCategory ?? exports.some((e) => e.category != null)
+
+  if (shouldGroupByCategory) {
+    // Group by category with seamless interleaving
+    const categorized = new Map<string, Export[]>()
+
+    for (const exp of exports) {
+      const category = exp.category ?? 'Other'
+      const existing = categorized.get(category) ?? []
+      categorized.set(category, [...existing, exp])
+    }
+
+    // Sort categories alphabetically, with "Other" last
+    const sortedCategories = Array.from(categorized.keys()).sort((a, b) => {
+      if (a === 'Other') return 1
+      if (b === 'Other') return -1
+      return a.localeCompare(b)
+    })
+
+    // Render each category with seamlessly interleaved exports
+    const categorySection = sortedCategories.map((category) => {
+      const categoryExports = categorized.get(category) ?? []
+      return Md.sections(
+        Md.heading(2, category),
+        categoryExports.map((e) => renderExport(e, context)).join('\n\n'),
+      )
+    })
+
+    return Md.sections(...categorySection)
+  }
+
+  // Traditional type-based grouping
   const functions = exports.filter((e: any) => e._tag === 'value' && e.type === 'function')
   const constants = exports.filter((e: any) => e._tag === 'value' && e.type === 'const')
   const classes = exports.filter((e: any) => e._tag === 'value' && e.type === 'class')
   const types = exports.filter((e: any) => e._tag === 'type')
 
-  const sections = [
-    functions.length > 0 ? `## Functions\n\n${functions.map((e) => renderExport(e, context)).join('\n\n')}` : '',
-    constants.length > 0 ? `## Constants\n\n${constants.map((e) => renderExport(e, context)).join('\n\n')}` : '',
-    classes.length > 0 ? `## Classes\n\n${classes.map((e) => renderExport(e, context)).join('\n\n')}` : '',
-    types.length > 0 ? `## Types\n\n${types.map((e) => renderExport(e, context)).join('\n\n')}` : '',
-  ].filter(Boolean)
-
-  return sections.join('\n\n')
+  return Md.sections(
+    functions.length > 0
+      ? Md.sections(Md.heading(2, 'Functions'), functions.map((e) => renderExport(e, context)).join('\n\n'))
+      : '',
+    constants.length > 0
+      ? Md.sections(Md.heading(2, 'Constants'), constants.map((e) => renderExport(e, context)).join('\n\n'))
+      : '',
+    classes.length > 0
+      ? Md.sections(Md.heading(2, 'Classes'), classes.map((e) => renderExport(e, context)).join('\n\n'))
+      : '',
+    types.length > 0
+      ? Md.sections(Md.heading(2, 'Types'), types.map((e) => renderExport(e, context)).join('\n\n'))
+      : '',
+  )
 }
 
 /**
- * Demote markdown headings by adding a specified number of levels.
- *
- * This is used to ensure JSDoc descriptions don't break the document hierarchy.
- * For example, if an export is h3, its description headings should be h4+.
- *
- * @param markdown - The markdown content to transform
- * @param levels - Number of heading levels to add (e.g., 2 transforms ## to ####)
- * @returns Transformed markdown with demoted headings
+ * Get type icon/badge for an export.
  */
-const demoteHeadings = (markdown: string, levels: number): string => {
-  if (!markdown || levels === 0) return markdown
-
-  // Add 'levels' number of # to each heading
-  const prefix = '#'.repeat(levels)
-
-  // Replace headings while preserving content and whitespace
-  // Matches: start of line, one or more #, space, content
-  return markdown.replace(/^(#+)(\s)/gm, `$1${prefix}$2`)
+const getTypeIcon = (exp: Export): string => {
+  return Match.value(exp).pipe(
+    Match.tag('value', (valueExp) =>
+      Match.value(valueExp.type).pipe(
+        Match.when('function', () => 'F'),
+        Match.when('const', () => 'C'),
+        Match.when('class', () => 'Class'),
+        Match.when('namespace', () => 'NS'),
+        Match.exhaustive,
+      )),
+    Match.tag('type', (typeExp) =>
+      Match.value(typeExp.type).pipe(
+        Match.when('interface', () => 'I'),
+        Match.when('type-alias', () => 'T'),
+        Match.when('enum', () => 'E'),
+        Match.when('union', () => 'U'),
+        Match.when('intersection', () => '∩'),
+        Match.exhaustive,
+      )),
+    Match.exhaustive,
+  )
 }
 
 /**
  * Render a single export.
  */
 const renderExport = (exp: Export, context: Context): string => {
-  const deprecated = exp.deprecated ? `:::warning DEPRECATED\n${exp.deprecated}\n:::\n\n` : ''
+  // Deprecation warning with proper link conversion
+  const deprecated = exp.deprecated ? Md.deprecation(exp.deprecated) : ''
 
   // Demote headings in description by 2 levels (exports are h3, so description content becomes h4+)
-  const description = exp.description ? demoteHeadings(exp.description, 2) : ''
-
-  const examples = exp.examples.length > 0 ? `\n\n**Examples:**\n\n${exp.examples.map(renderExample).join('\n\n')}` : ''
-
-  // GitHub source link - inline icon on the right side
-  const sourceLink = context.githubUrl && exp.sourceLocation
-    ? ` <sub style="float: right;">[📄](${context.githubUrl}/blob/main/${exp.sourceLocation.file}#L${exp.sourceLocation.line})</sub>`
+  // Also convert {@link ...} tags to markdown links and HTML-escape angle brackets to prevent Vue parser errors
+  // Convert double-space paragraph separators to actual newlines
+  const description = exp.description
+    ? Md.convertJSDocLinks(Md.demoteHeadings(exp.description, 2))
+      .replace(/  /g, '\n\n') // Convert double-space paragraph separators to newlines
+      .replace(/ - /g, '\n- ') // Convert list item separators to proper markdown list items
+      // Wrap list items that start with code-like patterns in backticks
+      .replace(/^- (\[\[.*?\]\]|\{[^}]+\})/gm, '- `$1`')
+      .replace(/</g, '&lt;').replace(/>/g, '&gt;')
     : ''
 
-  return `### ${exp.name}${sourceLink}
+  const examples = exp.examples.length > 0
+    ? `**Examples:**\n\n${exp.examples.map((ex) => renderExample(ex, exp.name, context)).join('\n\n')}`
+    : ''
 
-${deprecated}${description}
+  // Build heading with type icon (using backticks for monospace)
+  const typeIcon = getTypeIcon(exp)
+  const heading = Md.heading(
+    3,
+    `<span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">\`[${typeIcon}]\`</span> ${
+      Md.inlineCode(exp.name)
+    }`,
+  )
 
-\`\`\`typescript
-${exp.signature}
-\`\`\`${examples}`
+  // Source link as info line (after signature) using custom Vue component
+  const sourceLink = context.githubUrl && exp.sourceLocation
+    ? `<SourceLink href="${context.githubUrl}/blob/main/${exp.sourceLocation.file}#L${exp.sourceLocation.line}" />`
+    : ''
+
+  return Md.sections(
+    heading,
+    Md.codeFence(exp.signature),
+    sourceLink,
+    deprecated,
+    description,
+    examples,
+  )
 }
 
 /**
- * Render a code example.
+ * Render a code example with Twoslash.
  */
-const renderExample = (example: any): string => {
-  const title = example.title ? `**${example.title}**\n\n` : ''
-  const fence = example.twoslashEnabled ? `${example.language} twoslash` : example.language
+const renderExample = (example: any, exportName: string, context: Context): string => {
+  // Don't wrap title in bold - it may already contain markdown formatting (e.g., headings)
+  const title = example.title || ''
 
-  return `${title}\`\`\`${fence}\n${example.code}\n\`\`\``
-}
+  let code = example.code
 
-/**
- * Convert string to kebab-case.
- */
-const kebab = (str: string): string => {
-  return str
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .toLowerCase()
+  // Transform code to use namespace notation
+  if (context.breadcrumbs && context.breadcrumbs.length > 0) {
+    const namespace = context.breadcrumbs.join('.')
+    const namespaceCall = `${namespace}.${exportName}`
+    const topLevelModule = context.breadcrumbs[0]
+
+    // Replace standalone function calls with namespace calls
+    const regex = new RegExp(`(?<!\\.)\\b${exportName}(?=\\(|\\.)`, 'g')
+    code = code.replace(regex, namespaceCall)
+
+    // Add Twoslash setup (import + @noErrors directive)
+    const hasImports = code.includes('import ')
+    if (topLevelModule) {
+      if (!hasImports) {
+        const importStatement = `import { ${topLevelModule} } from '${context.packageName}/${Md.kebab(topLevelModule)}'`
+        code = `// @noErrors\n${importStatement}\n// ---cut---\n${code}`
+      } else {
+        code = `// @noErrors\n${code}`
+      }
+    }
+  }
+
+  return Md.sections(title, Md.codeFence(code, example.language, 'twoslash'))
 }

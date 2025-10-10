@@ -3,6 +3,8 @@ import type { Context } from './types.js'
 
 /**
  * Options for cleaning and formatting stack traces.
+ *
+ * @category Stack Traces
  */
 export interface StackOptions {
   /**
@@ -38,6 +40,8 @@ export interface StackOptions {
 
 /**
  * Parsed stack frame information.
+ *
+ * @category Stack Traces
  */
 export interface StackFrame {
   /**
@@ -78,6 +82,8 @@ export interface StackFrame {
 
 /**
  * Parse a stack trace string into structured frames.
+ *
+ * @category Stack Traces
  */
 export const parseStack = (stack: string): StackFrame[] => {
   const lines = Str.lines(stack)
@@ -155,6 +161,8 @@ const isInternalFrame = (file: string): boolean => {
  * console.log(`Filtered ${result.stats.filteredFrames} frames`)
  * console.log(`Showing ${result.stats.shownFrames} of ${result.stats.totalFrames} total`)
  * ```
+ *
+ * @category Stack Traces
  */
 export interface StackCleanStats {
   /**
@@ -193,6 +201,8 @@ export interface StackCleanStats {
  * Contains both the cleaned stack string and statistics about what was filtered.
  *
  * @see {@link cleanStackWithStats}
+ *
+ * @category Stack Traces
  */
 export interface CleanStackResult {
   /**
@@ -226,6 +236,8 @@ export interface CleanStackResult {
  * console.log(result.stack) // Cleaned stack trace
  * console.log(`Filtered ${result.stats.nodeModulesFrames} node_modules frames`)
  * ```
+ *
+ * @category Stack Traces
  */
 export const cleanStackWithStats = (stack: string, options?: StackOptions): CleanStackResult => {
   const opts = {
@@ -299,6 +311,8 @@ export const cleanStackWithStats = (stack: string, options?: StackOptions): Clea
  * @param stack - The raw stack trace string to clean
  * @param options - Optional configuration for filtering
  * @returns The cleaned stack trace string
+ *
+ * @category Stack Traces
  */
 export const cleanStack = (stack: string, options?: StackOptions): string => {
   return cleanStackWithStats(stack, options).stack
@@ -306,6 +320,8 @@ export const cleanStack = (stack: string, options?: StackOptions): string => {
 
 /**
  * Format a stack frame for better readability.
+ *
+ * @category Stack Traces
  */
 export const formatFrame = (frame: StackFrame): string => {
   const location = `${frame.file}:${frame.line}:${frame.column}`
@@ -316,6 +332,8 @@ export const formatFrame = (frame: StackFrame): string => {
 
 /**
  * Enhanced Error class that automatically cleans stack traces.
+ *
+ * @category Stack Traces
  */
 export class CleanError extends Error {
   /**
@@ -350,6 +368,8 @@ export class CleanError extends Error {
 /**
  * Merge stack traces from multiple errors (useful for wrapped errors).
  * This preserves the full error chain while removing duplicates.
+ *
+ * @category Stack Traces
  */
 export const mergeStacks = (wrapper: Error, cause: Error): string => {
   if (!wrapper.stack || !cause.stack) {

@@ -1,305 +1,450 @@
 # Num
 
-Numeric types and utilities with branded types for mathematical constraints.
-
-Provides branded number types (Positive, Negative, Even, Odd, etc.) with
-runtime validation, mathematical operations, range types, and specialized
-numeric domains like Complex, Ratio, and BigInt. Includes type guards,
-ordering, and equivalence utilities.
+Numeric types and utilities with branded types for mathematical constraints. Provides branded number types (Positive, Negative, Even, Odd, etc.) with runtime validation, mathematical operations, range types, and specialized numeric domains like Complex, Ratio, and BigInt. Includes type guards, ordering, and equivalence utilities.
 
 ## Import
 
-```typescript
-import { Num } from '@wollybeard/kit/num'
+::: code-group
+
+```typescript [Namespace]
+import { Num } from '@wollybeard/kit'
 ```
 
-## Functions
-
-### add <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L27)</sub>
-
-```typescript
-;((a: number, b: number) => number)
+```typescript [Barrel]
+import * as Num from '@wollybeard/kit/num'
 ```
 
-### subtract <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L65)</sub>
+:::
 
-```typescript
-;((a: number, b: number) => number)
-```
+## Namespaces
 
-### multiply <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L106)</sub>
+- [**`Degrees`**](/api/num/degrees)
+- [**`Even`**](/api/num/even)
+- [**`Finite`**](/api/num/finite)
+- [**`Float`**](/api/num/float)
+- [**`InRange`**](/api/num/in-range)
+- [**`Int`**](/api/num/int)
+- [**`Natural`**](/api/num/natural)
+- [**`Negative`**](/api/num/negative)
+- [**`NonNegative`**](/api/num/non-negative)
+- [**`NonPositive`**](/api/num/non-positive)
+- [**`NonZero`**](/api/num/non-zero)
+- [**`Odd`**](/api/num/odd)
+- [**`Percentage`**](/api/num/percentage)
+- [**`Positive`**](/api/num/positive)
+- [**`Radians`**](/api/num/radians)
+- [**`SafeInt`**](/api/num/safe-int)
+- [**`Whole`**](/api/num/whole)
+- [**`Zero`**](/api/num/zero)
+- [**`Prime`**](/api/num/prime)
+- [**`Ratio`**](/api/num/ratio)
+- [**`Frac`**](/api/num/frac)
+- [**`Complex`**](/api/num/complex)
+- [**`BigInteger`**](/api/num/big-integer)
 
-```typescript
-;((a: number, b: number) => number)
-```
+## Angle Conversion
 
-### divide <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L151)</sub>
-
-```typescript
-;((dividend: number, divisor: NonZero) => number)
-```
-
-### divideWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L177)</sub>
-
-```typescript
-;((divisor: NonZero) => (dividend: number) => number)
-```
-
-### power <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L204)</sub>
-
-```typescript
-;((base: number, exponent: number) => number)
-```
-
-### round <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L258)</sub>
-
-```typescript
-;((value: number, precision?: number) => number)
-```
-
-### floor <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L319)</sub>
-
-```typescript
-;(<T extends Finite>(value: T) => Int)
-```
-
-### ceil <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L355)</sub>
-
-```typescript
-;(<T extends Finite>(value: T) => Int)
-```
-
-### trunc <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L390)</sub>
-
-```typescript
-;(<T extends Finite>(value: T) => Int)
-```
-
-### sqrt <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L429)</sub>
-
-```typescript
-;(<T extends NonNegative>(value: T) => Sqrt<T>)
-```
-
-### cbrt <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L451)</sub>
-
-```typescript
-;((value: number) => number)
-```
-
-### log <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L475)</sub>
-
-```typescript
-;((value: Positive) => number)
-```
-
-### log10 <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L502)</sub>
-
-```typescript
-;((value: Positive) => number)
-```
-
-### log2 <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L530)</sub>
-
-```typescript
-;((value: Positive) => number)
-```
-
-### sin <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L565)</sub>
-
-```typescript
-;(<T extends Finite>(radians: T) => Sin<_T>)
-```
-
-### cos <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L600)</sub>
-
-```typescript
-;(<T extends Finite>(radians: T) => Cos<_T>)
-```
-
-### tan <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L628)</sub>
-
-```typescript
-;((radians: Finite) => number)
-```
-
-### asin <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L658)</sub>
-
-```typescript
-;((value: InRange<-1, 1>) => Radians)
-```
-
-### acos <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L689)</sub>
-
-```typescript
-;((value: InRange<-1, 1>) => Radians)
-```
-
-### atan <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L718)</sub>
-
-```typescript
-;((value: Finite) => Radians)
-```
-
-### atan2 <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L749)</sub>
-
-```typescript
-;((y: Finite, x: Finite) => Radians)
-```
-
-### degToRad <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L790)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `degToRad`
 
 ```typescript
 ;((degrees: Degrees) => Radians)
 ```
 
-### radToDeg <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L820)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L790" />
+
+Convert degrees to radians. Most JavaScript math functions expect angles in radians, but humans often think in degrees. This converts from the familiar degree system (0-360) to radians (0-2π).
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `radToDeg`
 
 ```typescript
 ;((radians: Radians) => Degrees)
 ```
 
-### min <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L853)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L820" />
+
+Convert radians to degrees. Math functions return angles in radians, but you might want to display them in degrees. This converts from radians (0-2π) to the familiar degree system (0-360).
+
+## Arithmetic
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `add`
+
+```typescript
+;((a: number, b: number) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L27" />
+
+Add two numbers together.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
+
+```typescript
+;((a: number) => (b: number) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L48" />
+
+Create a function that adds a specific number to any other number. This is useful when you want to add the same number multiple times.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `subtract`
+
+```typescript
+;((a: number, b: number) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L65" />
+
+Subtract one number from another. Takes the second number away from the first number.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`
+
+```typescript
+;((a: number) => (b: number) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L88" />
+
+Create a function that subtracts other numbers from a specific number. This is useful when you have a starting value and want to subtract various amounts from it.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `multiply`
+
+```typescript
+;((a: number, b: number) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L106" />
+
+Multiply two numbers together. This gives you the result of adding a number to itself b times.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
+
+```typescript
+;((b: number) => (a: number) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L132" />
+
+Create a function that multiplies any number by a specific factor. This is useful for scaling values or converting units.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `divide`
+
+```typescript
+;((dividend: number, divisor: NonZero) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L151" />
+
+Divide one number by another. This splits the first number into equal parts based on the second number. The divisor must be non-zero.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `divideWith`
+
+```typescript
+;((divisor: NonZero) => (dividend: number) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L177" />
+
+Create a function that divides any number by a specific divisor. This is useful for splitting values into fixed portions.
+
+## Comparison
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `min`
 
 ```typescript
 ;(<A extends number, B extends number>(a: A, b: B) => Min<A, B>)
 ```
 
-### max <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L897)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L853" />
+
+Find the smaller of two numbers. Returns whichever number is less.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `minWith`
+
+```typescript
+;((a: number) => (b: number) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L866" />
+
+Create a function that finds the minimum with a fixed first value. Useful for clamping or limiting values.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `max`
 
 ```typescript
 ;(<A extends number, B extends number>(a: A, b: B) => Max<A, B>)
 ```
 
-### gcd <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L941)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L897" />
+
+Find the larger of two numbers. Returns whichever number is greater.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `maxWith`
 
 ```typescript
-;((a: Int, b: Int) => Natural)
+;((a: number) => (b: number) => number)
 ```
 
-### lcm <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L1002)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L910" />
+
+Create a function that finds the maximum with a fixed first value. Useful for ensuring minimum values.
+
+## Constants
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `PI`
 
 ```typescript
-;((a: Int, b: Int) => Whole)
+number
 ```
 
-### is <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L16)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L1039" />
+
+The mathematical constant pi (π). Pi is the ratio of a circle's circumference to its diameter. Approximately 3.14159...
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `E`
 
 ```typescript
-(value: unknown) => value is number
+number
 ```
 
-### isNaN <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L23)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L1059" />
+
+The mathematical constant e (Euler's number). The base of natural logarithms, approximately 2.71828... It appears naturally in exponential growth and compound interest.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `TAU`
 
 ```typescript
-(value: unknown) => value is number
+number
 ```
 
-### abs <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L50)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L1081" />
+
+The mathematical constant tau (τ). Tau is 2π, representing a full circle in radians. Some mathematicians prefer tau over pi for circular calculations. Approximately 6.28318...
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `GOLDEN_RATIO`
 
 ```typescript
-;(<T extends number>(value: T) => Abs<T>)
+number
 ```
 
-### sign <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L78)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L1105" />
+
+The golden ratio (φ, phi). A special number appearing in nature, art, and architecture. When a line is divided so that the whole length divided by the long part equals the long part divided by the short part. Approximately 1.61803...
+
+## Exponentiation
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `power`
 
 ```typescript
-;(<T extends number>(value: T) => Sign<T>)
+;((base: number, exponent: number) => number)
 ```
 
-### inc <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L85)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L204" />
+
+Raise a number to a power (exponentiation). This multiplies the base number by itself 'exponent' times. For best results, use finite numbers to avoid NaN/Infinity.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerWith`
 
 ```typescript
-;((value: number) => number)
+;((exponent: number) => (base: number) => number)
 ```
 
-### dec <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L92)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L230" />
 
-```typescript
-;((value: number) => number)
-```
+Create a function that raises any number to a specific power. This is useful for repeated exponentiations.
 
-### mod <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L123)</sub>
+## Interpolation
 
-```typescript
-;(<T extends number, U extends NonZero>(dividend: T, divisor: U) => NonNegative)
-```
-
-### modOn <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L141)</sub>
-
-```typescript
-;(<T extends number>(dividend: T) => <U extends NonZero>(divisor: U) =>
-  NonNegative)
-```
-
-### modWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L162)</sub>
-
-```typescript
-;(<U extends NonZero>(divisor: U) => <T extends number>(dividend: T) =>
-  NonNegative)
-```
-
-### range <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L43)</sub>
-
-```typescript
-(start: number, end: number, options?: RangeOptions | undefined) => number[]
-```
-
-### rangeFrom <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L96)</sub>
-
-```typescript
-(start: number) => (end: number, options?: RangeOptions | undefined) => number[]
-```
-
-### rangeTo <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L117)</sub>
-
-```typescript
-(end: number) => (start: number, options?: RangeOptions | undefined) => number[]
-```
-
-### rangeStep <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L136)</sub>
-
-```typescript
-(start: number, end: number, step: number) => number[]
-```
-
-### rangeStepWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L157)</sub>
-
-```typescript
-(step: number) => (start: number, end: number) => number[]
-```
-
-### rangeInclusive <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L175)</sub>
-
-```typescript
-(start: number, end: number) => number[]
-```
-
-### times <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L200)</sub>
-
-```typescript
-<T>(n: number, fn: (index: number) => T) => T[]
-```
-
-### timesWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L229)</sub>
-
-```typescript
-<T>(fn: (index: number) => T) => (n: number) => T[]
-```
-
-### lerp <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L259)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `lerp`
 
 ```typescript
 ;((start: number, end: number, t: number) => number)
 ```
 
-### lerpBetween <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L309)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L259" />
+
+Linear interpolation between two values. Calculates a value between start and end based on the interpolation factor t.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `lerpBetween`
 
 ```typescript
 ;((start: number, end: number) => (t: number) => number)
 ```
 
-### mapRange <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L339)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L309" />
+
+Create a function that linearly interpolates between two fixed values. Useful for creating reusable interpolation functions.
+
+## Iteration
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `times`
+
+```typescript
+<T>(n: number, fn: (index: number) => T) => T[]
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L200" />
+
+Execute a function n times and collect the results. The function receives the current index (0-based) as its argument.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `timesWith`
+
+```typescript
+<T>(fn: (index: number) => T) => (n: number) => T[]
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L229" />
+
+Create a function that executes another function n times. Useful for partial application of the times function.
+
+## Logarithms
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `log`
+
+```typescript
+;((value: Positive) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L475" />
+
+Calculate the natural logarithm (base e) of a number. The logarithm tells you what power you need to raise e (≈2.718) to get your number. It's the inverse operation of exponential (e^x).
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `log10`
+
+```typescript
+;((value: Positive) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L502" />
+
+Calculate the base-10 logarithm of a number. This tells you what power you need to raise 10 to get your number. It's commonly used for measuring orders of magnitude.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `log2`
+
+```typescript
+;((value: Positive) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L530" />
+
+Calculate the base-2 logarithm of a number. This tells you what power you need to raise 2 to get your number. It's commonly used in computer science for binary operations.
+
+## Number Theory
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `gcd`
+
+```typescript
+;((a: Int, b: Int) => Natural)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L941" />
+
+Find the greatest common divisor (GCD) of two integers. The GCD is the largest positive integer that divides both numbers evenly. Also known as the greatest common factor (GCF).
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `gcdWith`
+
+```typescript
+;((a: Int) => (b: Int) => Natural)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L971" />
+
+Create a function that finds the GCD with a fixed first value. Useful for finding common factors with a specific number.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `lcm`
+
+```typescript
+;((a: Int, b: Int) => Whole)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L1002" />
+
+Find the least common multiple (LCM) of two integers. The LCM is the smallest positive integer that is divisible by both numbers. Returns 0 if either input is 0.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `lcmWith`
+
+```typescript
+;((a: Int) => (b: Int) => Whole)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L1020" />
+
+Create a function that finds the LCM with a fixed first value. Useful for finding common multiples with a specific number.
+
+## Range Generation
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `range`
+
+```typescript
+(start: number, end: number, options?: RangeOptions | undefined) => number[]
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L43" />
+
+Generate an array of numbers in a range. By default, the range is exclusive of the end value and uses a step of 1.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `rangeFrom`
+
+```typescript
+(start: number) => (end: number, options?: RangeOptions | undefined) => number[]
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L96" />
+
+Create a function that generates a range from a specific start value. Useful for creating ranges with a fixed starting point.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `rangeTo`
+
+```typescript
+(end: number) => (start: number, options?: RangeOptions | undefined) => number[]
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L117" />
+
+Create a function that generates a range to a specific end value. Useful for creating ranges with a fixed ending point.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `rangeStep`
+
+```typescript
+(start: number, end: number, step: number) => number[]
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L136" />
+
+Generate a range with a specific step. A convenience function that makes the step explicit.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `rangeStepWith`
+
+```typescript
+(step: number) => (start: number, end: number) => number[]
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L157" />
+
+Create a function that generates ranges with a specific step. Useful for creating consistent stepped ranges.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `rangeInclusive`
+
+```typescript
+(start: number, end: number) => number[]
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L175" />
+
+Create an inclusive range. A convenience function that always includes the end value.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `sequence`
+
+```typescript
+(n: number) => number[]
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L440" />
+
+Generate a sequence of integers starting from 0. A convenience function equivalent to range(0, n).
+
+## Range Mapping
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapRange`
 
 ```typescript
 ;((
@@ -311,398 +456,490 @@ import { Num } from '@wollybeard/kit/num'
 ) => number)
 ```
 
-### mapRangeFrom <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L414)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L339" />
+
+Map a value from one range to another. Converts a value from the source range [fromMin, fromMax] to the target range [toMin, toMax].
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapRangeFrom`
 
 ```typescript
 ;((fromMin: number, fromMax: number, toMin: number, toMax: number) =>
 (value: number) => number)
 ```
 
-### sequence <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L440)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L414" />
 
-```typescript
-(n: number) => number[]
-```
+Create a function that maps values from one range to another. Useful for creating reusable range mapping functions.
 
-### wrap <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L471)</sub>
+## Range Operations
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `wrap`
 
 ```typescript
 ;((value: number, min: number, max: number) => number)
 ```
 
-### wrapWithin <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L534)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L471" />
+
+Constrain a value to be within a range, wrapping around if necessary. Unlike clamp which stops at boundaries, wrap continues from the other side.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `wrapWithin`
 
 ```typescript
 ;((min: number, max: number) => (value: number) => number)
 ```
 
-## Constants
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L534" />
 
-### Degrees <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/degrees/$$.ts#L1)</sub>
+Create a function that wraps values within a specific range.
 
-```typescript
-export * from './degrees.js'
-```
+## Roots
 
-### Even <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/even/$$.ts#L1)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `sqrt`
 
 ```typescript
-export * from './even.js'
+;(<T extends NonNegative>(value: T) => Sqrt<T>)
 ```
 
-### Finite <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/finite/$$.ts#L1)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L429" />
+
+Calculate the square root of a non-negative number. The square root is a number that, when multiplied by itself, gives the original number. For type safety, this requires a non-negative input to avoid NaN results.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `cbrt`
 
 ```typescript
-export * from './finite.js'
+;((value: number) => number)
 ```
 
-### Float <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/float/$$.ts#L1)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L451" />
+
+Calculate the cube root of a number. The cube root is a number that, when multiplied by itself three times, gives the original number.
+
+## Rounding
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `round`
 
 ```typescript
-export * from './float.js'
+;((value: number, precision?: number) => number)
 ```
 
-### InRange <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/in-range/$$.ts#L1)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L258" />
 
-```typescript
-export * from './in-range.js'
-```
+Round a number to the nearest integer or to a specific number of decimal places. Rounding follows standard rules: 0.5 and above rounds up, below 0.5 rounds down.
 
-### Int <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/int/$$.ts#L1)</sub>
-
-```typescript
-export * from './int.js'
-```
-
-### Natural <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/natural/$$.ts#L1)</sub>
-
-```typescript
-export * from './natural.js'
-```
-
-### Negative <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/negative/$$.ts#L1)</sub>
-
-```typescript
-export * from './negative.js'
-```
-
-### NonNegative <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/non-negative/$$.ts#L1)</sub>
-
-```typescript
-export * from './non-negative.js'
-```
-
-### NonPositive <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/non-positive/$$.ts#L1)</sub>
-
-```typescript
-export * from './non-positive.js'
-```
-
-### NonZero <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/non-zero/$$.ts#L1)</sub>
-
-```typescript
-export * from './non-zero.js'
-```
-
-### Odd <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/odd/$$.ts#L1)</sub>
-
-```typescript
-export * from './odd.js'
-```
-
-### Percentage <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/percentage/$$.ts#L1)</sub>
-
-```typescript
-export * from './percentage.js'
-```
-
-### Positive <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/positive/$$.ts#L1)</sub>
-
-```typescript
-export * from './positive.js'
-```
-
-### Radians <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/radians/$$.ts#L1)</sub>
-
-```typescript
-export * from './radians.js'
-```
-
-### SafeInt <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/safe-int/$$.ts#L1)</sub>
-
-```typescript
-export * from './safe-int.js'
-```
-
-### Whole <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/whole/$$.ts#L1)</sub>
-
-```typescript
-export * from './whole.js'
-```
-
-### Zero <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/zero/$$.ts#L1)</sub>
-
-```typescript
-export * from './zero.js'
-```
-
-### Prime <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/prime/$$.ts#L1)</sub>
-
-```typescript
-export * from './prime.js'
-```
-
-### Ratio <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/ratio/$$.ts#L1)</sub>
-
-```typescript
-export * from './ratio.js'
-```
-
-### Frac <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/frac/$$.ts#L1)</sub>
-
-```typescript
-export * from './frac.js'
-```
-
-### Complex <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/complex/$$.ts#L1)</sub>
-
-```typescript
-export * from './complex.js'
-```
-
-### BigInt <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/big-integer/$$.ts#L1)</sub>
-
-```typescript
-export * from './big-integer.js'
-```
-
-### Arb <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/traits/arb.ts#L34)</sub>
-
-```typescript
-Arb<number>
-```
-
-### Eq <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/traits/eq.ts#L21)</sub>
-
-```typescript
-Eq<number>
-```
-
-### Type <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/traits/type.ts#L20)</sub>
-
-```typescript
-Type<number>
-```
-
-### addWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L48)</sub>
-
-```typescript
-;((a: number) => (b: number) => number)
-```
-
-### subtractWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L88)</sub>
-
-```typescript
-;((a: number) => (b: number) => number)
-```
-
-### multiplyWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L132)</sub>
-
-```typescript
-;((b: number) => (a: number) => number)
-```
-
-### powerWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L230)</sub>
-
-```typescript
-;((exponent: number) => (base: number) => number)
-```
-
-### roundWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L286)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `roundWith`
 
 ```typescript
 ;((precision?: number | undefined) => (value: number) => number)
 ```
 
-### atan2With <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L762)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L286" />
+
+Create a function that rounds numbers to a specific number of decimal places. This is useful when you need consistent precision across multiple values.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `floor`
+
+```typescript
+;(<T extends Finite>(value: T) => Int)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L319" />
+
+Round a number down to the nearest integer. This always rounds towards negative infinity, removing any decimal part. The input must be finite to ensure a valid integer result.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `ceil`
+
+```typescript
+;(<T extends Finite>(value: T) => Int)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L355" />
+
+Round a number up to the nearest integer. This always rounds towards positive infinity. The input must be finite to ensure a valid integer result.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `trunc`
+
+```typescript
+;(<T extends Finite>(value: T) => Int)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L390" />
+
+Remove the decimal part of a number (truncate). This simply cuts off the decimal portion, always rounding towards zero. The input must be finite to ensure a valid integer result.
+
+## Trigonometry
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `sin`
+
+```typescript
+;(<T extends Finite>(radians: T) => Sin<_T>)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L565" />
+
+Calculate the sine of an angle. Sine is a trigonometric function that represents the ratio of the opposite side to the hypotenuse in a right triangle. The angle must be in radians and finite.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `cos`
+
+```typescript
+;(<T extends Finite>(radians: T) => Cos<_T>)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L600" />
+
+Calculate the cosine of an angle. Cosine is a trigonometric function that represents the ratio of the adjacent side to the hypotenuse in a right triangle. The angle must be in radians and finite.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tan`
+
+```typescript
+;((radians: Finite) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L628" />
+
+Calculate the tangent of an angle. Tangent is the ratio of sine to cosine, or the ratio of the opposite side to the adjacent side in a right triangle. The angle must be in radians and finite.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `asin`
+
+```typescript
+;((value: InRange<-1, 1>) => Radians)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L658" />
+
+Calculate the arcsine (inverse sine) of a value. This gives you the angle whose sine is the input value. The input must be in the range [-1, 1] to get a valid result. The result is in radians.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `acos`
+
+```typescript
+;((value: InRange<-1, 1>) => Radians)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L689" />
+
+Calculate the arccosine (inverse cosine) of a value. This gives you the angle whose cosine is the input value. The input must be in the range [-1, 1] to get a valid result. The result is in radians.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `atan`
+
+```typescript
+;((value: Finite) => Radians)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L718" />
+
+Calculate the arctangent (inverse tangent) of a value. This gives you the angle whose tangent is the input value. The input must be finite to get a meaningful angle. The result is in radians.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `atan2`
+
+```typescript
+;((y: Finite, x: Finite) => Radians)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L749" />
+
+Calculate the angle from the positive x-axis to a point (x, y). This is like atan(y/x) but handles all quadrants correctly and avoids division by zero. Both coordinates must be finite to get a meaningful angle. The result is in radians.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `atan2With`
 
 ```typescript
 ;((y: Finite) => (x: Finite) => Radians)
 ```
 
-### minWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L866)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L762" />
+
+Create a function that calculates atan2 with a fixed y value. Useful for repeated calculations with the same y offset.
+
+## Other
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Arb`
 
 ```typescript
-;((a: number) => (b: number) => number)
+Arb<number>
 ```
 
-### maxWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L910)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/traits/arb.ts#L34" />
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Eq`
 
 ```typescript
-;((a: number) => (b: number) => number)
+Eq<number>
 ```
 
-### gcdWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L971)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/traits/eq.ts#L21" />
 
-```typescript
-;((a: Int) => (b: Int) => Natural)
+Eq trait implementation for numbers.
+
+Provides number equality comparison using strict equality (===). Handles special cases like NaN, which is never equal to itself.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Num } from '@wollybeard/kit'
+
+// [!code word:is:1]
+Num.Eq.is(42, 42) // true
+// [!code word:is:1]
+Num.Eq.is(3.14, 3.14) // true
+// [!code word:is:1]
+Num.Eq.is(0, -0) // true (positive and negative zero are equal)
+// [!code word:is:1]
+Num.Eq.is(NaN, NaN) // false (NaN is never equal to itself)
 ```
 
-### lcmWith <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L1020)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Type`
 
 ```typescript
-;((a: Int) => (b: Int) => Whole)
+Type<number>
 ```
 
-### PI <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L1039)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/traits/type.ts#L20" />
 
-```typescript
-number
+Type trait implementation for numbers.
+
+Provides type checking for number values using typeof.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Num } from '@wollybeard/kit'
+
+// [!code word:is:1]
+Num.Type.is(42) // true
+// [!code word:is:1]
+Num.Type.is(3.14) // true
+// [!code word:is:1]
+Num.Type.is(NaN) // true (NaN is a number)
+// [!code word:is:1]
+Num.Type.is('42') // false
 ```
 
-### E <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L1059)</sub>
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Floor`
 
 ```typescript
-number
+type Floor<_T extends number> = Int
 ```
 
-### TAU <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L1081)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L292" />
+
+Type-level floor transformation. Floor always returns an integer.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Ceil`
 
 ```typescript
-number
+type Ceil<_T extends number> = Int
 ```
 
-### GOLDEN_RATIO <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L1105)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L327" />
+
+Type-level ceil transformation. Ceil always returns an integer.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Trunc`
 
 ```typescript
-number
+type Trunc<_T extends number> = Int
 ```
 
-## Types
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L363" />
 
-### Floor <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L292)</sub>
+Type-level trunc transformation. Trunc always returns an integer.
 
-Type-level floor transformation.
-Floor always returns an integer.
-
-```typescript
-export type Floor<_T extends number> = Int
-```
-
-### Ceil <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L327)</sub>
-
-Type-level ceil transformation.
-Ceil always returns an integer.
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Sqrt`
 
 ```typescript
-export type Ceil<_T extends number> = Int
-```
-
-### Trunc <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L363)</sub>
-
-Type-level trunc transformation.
-Trunc always returns an integer.
-
-```typescript
-export type Trunc<_T extends number> = Int
-```
-
-### Sqrt <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L399)</sub>
-
-Type-level sqrt transformation.
-Square root of non-negative returns non-negative.
-Square root of positive returns positive (except for 0).
-
-```typescript
-export type Sqrt<T extends number> = T extends Positive ? Positive
+type Sqrt<T extends number> = T extends Positive ? Positive
   : T extends NonNegative ? NonNegative
   : number
 ```
 
-### Sin <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L538)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L399" />
 
-Type-level sine transformation.
-Sine always returns a value in the range [-1, 1].
+Type-level sqrt transformation. Square root of non-negative returns non-negative. Square root of positive returns positive (except for 0).
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Sin`
 
 ```typescript
-export type Sin<_T extends number> = InRange<-1, 1>
+type Sin<_T extends number> = InRange<-1, 1>
 ```
 
-### Cos <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L573)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L538" />
 
-Type-level cosine transformation.
-Cosine always returns a value in the range [-1, 1].
+Type-level sine transformation. Sine always returns a value in the range [-1, 1].
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Cos`
 
 ```typescript
-export type Cos<_T extends number> = InRange<-1, 1>
+type Cos<_T extends number> = InRange<-1, 1>
 ```
 
-### Min <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L828)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L573" />
 
-Type-level min transformation.
-Returns the union of both input types (the more general type).
+Type-level cosine transformation. Cosine always returns a value in the range [-1, 1].
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Min`
 
 ```typescript
-export type Min<A extends number, B extends number> = A | B
+type Min<A extends number, B extends number> = A | B
 ```
 
-### Max <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/math.ts#L872)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L828" />
 
-Type-level max transformation.
-Returns the union of both input types (the more general type).
+Type-level min transformation. Returns the union of both input types (the more general type).
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Max`
 
 ```typescript
-export type Max<A extends number, B extends number> = A | B
+type Max<A extends number, B extends number> = A | B
 ```
 
-### Abs <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L31)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L872" />
 
-Type-level absolute value transformation.
-Maps number types to their absolute value types.
+Type-level max transformation. Returns the union of both input types (the more general type).
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
 
 ```typescript
-export type Abs<T extends number> = T extends Positive ? Positive
+(value: unknown) => value is number
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L16" />
+
+Type predicate to check if value is a number. Excludes NaN by default.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isNaN`
+
+```typescript
+(value: unknown) => value is number
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L23" />
+
+Type predicate to check if value is NaN.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Abs`
+
+```typescript
+type Abs<T extends number> = T extends Positive ? Positive
   : T extends Negative ? Positive
   : T extends NonPositive ? NonNegative
   : T extends Zero ? Zero
   : NonNegative
 ```
 
-### Sign <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L58)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L31" />
 
-Type-level sign transformation.
-Maps number types to their sign (-1, 0, 1).
+Type-level absolute value transformation. Maps number types to their absolute value types.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `abs`
 
 ```typescript
-export type Sign<T extends number> = T extends Positive ? 1
+;(<T extends number>(value: T) => Abs<T>)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L50" />
+
+Get absolute value. Returns the non-negative magnitude of a number.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Sign`
+
+```typescript
+type Sign<T extends number> = T extends Positive ? 1
   : T extends Negative ? -1
   : T extends Zero ? 0
   : -1 | 0 | 1
 ```
 
-### Mod <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L100)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L58" />
 
-Type-level modulo transformation.
-Modulo always returns a non-negative result.
+Type-level sign transformation. Maps number types to their sign (-1, 0, 1).
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `sign`
 
 ```typescript
-export type Mod<_T extends number, _U extends NonZero> = NonNegative
+;(<T extends number>(value: T) => Sign<T>)
 ```
 
-### NumberLiteral <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L169)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L78" />
+
+Get sign of number (-1, 0, 1). Returns -1 for negative numbers, 0 for zero, and 1 for positive numbers.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `inc`
+
+```typescript
+;((value: number) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L85" />
+
+Increment by 1.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `dec`
+
+```typescript
+;((value: number) => number)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L92" />
+
+Decrement by 1.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Mod`
+
+```typescript
+type Mod<_T extends number, _U extends NonZero> = NonNegative
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L100" />
+
+Type-level modulo transformation. Modulo always returns a non-negative result.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mod`
+
+```typescript
+;(<T extends number, U extends NonZero>(dividend: T, divisor: U) => NonNegative)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L123" />
+
+Modulo operation that always returns positive result. Unlike the % operator, this always returns a non-negative result. The divisor must be non-zero for a valid result.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `modOn`
+
+```typescript
+;(<T extends number>(dividend: T) => <U extends NonZero>(divisor: U) =>
+  NonNegative)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L141" />
+
+Create a function that calculates modulo with a fixed dividend.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `modWith`
+
+```typescript
+;(<U extends NonZero>(divisor: U) => <T extends number>(dividend: T) =>
+  NonNegative)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L162" />
+
+Create a function that calculates modulo with a fixed divisor. Useful for wrapping values in a fixed range.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `NumberLiteral`
+
+```typescript
+type NumberLiteral = number
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L169" />
 
 Number literal type.
 
-```typescript
-export type NumberLiteral = number
-```
-
-### PlusOne <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L174)</sub>
-
-Add one to a number literal type.
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PlusOne`
 
 ```typescript
-export type PlusOne<$n extends NumberLiteral> = [
+type PlusOne<$n extends NumberLiteral> = [
   1,
   2,
   3,
@@ -729,12 +966,14 @@ export type PlusOne<$n extends NumberLiteral> = [
 ]
 ```
 
-### MinusOne <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/operations.ts#L203)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L174" />
 
-Subtract one from a number literal type.
+Add one to a number literal type.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MinusOne`
 
 ```typescript
-export type MinusOne<$n extends NumberLiteral> = [
+type MinusOne<$n extends NumberLiteral> = [
   -1,
   0,
   1,
@@ -761,12 +1000,14 @@ export type MinusOne<$n extends NumberLiteral> = [
 ]
 ```
 
-### RangeOptions <sub style="float: right;">[📄](https://github.com/jasonkuhrt/kit/blob/main/src/domains/num/range.ts#L4)</sub>
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L203" />
 
-Options for generating numeric ranges.
+Subtract one from a number literal type.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `RangeOptions`
 
 ```typescript
-export interface RangeOptions {
+interface RangeOptions {
   /**
    * The step between each number in the range.
    * @default 1
@@ -779,3 +1020,7 @@ export interface RangeOptions {
   inclusive?: boolean
 }
 ```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/range.ts#L4" />
+
+Options for generating numeric ranges.

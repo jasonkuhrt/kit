@@ -15,6 +15,8 @@ export * from './wrap.js'
 
 /**
  * Log an error to console with nice formatting.
+ *
+ * @category Inspection
  */
 export const log = (error: Error, options?: InspectOptions): void => {
   console.log(inspect(error, options))
@@ -31,6 +33,8 @@ export const log = (error: Error, options?: InspectOptions): void => {
  * const result = throwNull(maybeNull) // throws if null
  * const safe = throwNull(maybeNull, 'Custom error message')
  * ```
+ *
+ * @category Utilities
  */
 export const throwNull = <V>(value: V, message?: string): Exclude<V, null> => {
   if (value === null) throw new Error(message ?? defaultThrowNullMessage)
@@ -40,6 +44,8 @@ export const throwNull = <V>(value: V, message?: string): Exclude<V, null> => {
 
 /**
  * Default error message used by {@link throwNull} when no custom message is provided.
+ *
+ * @category Utilities
  */
 export const defaultThrowNullMessage = 'Unexpected null value.'
 
@@ -55,6 +61,8 @@ export const defaultThrowNullMessage = 'Unexpected null value.'
  *
  * const item = findOrThrow('123') // throws if not found
  * ```
+ *
+ * @category Utilities
  */
 export const guardNull = <fn extends Fn.AnyAny>(
   fn: fn,

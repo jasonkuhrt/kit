@@ -34,7 +34,7 @@ yarn add @wollybeard/kit
 Kit exports all modules as namespaces, making it easy to use specific utilities:
 
 ```typescript
-// Import specific modules
+// Import specific modules from the main package
 import { Arr, Obj, Str } from '@wollybeard/kit'
 
 // Use array utilities
@@ -52,6 +52,23 @@ const title = 'hello world from kit'
 const formatted = Str.Case.title(title)
 // 'Hello World From Kit'
 ```
+
+### Alternative Import Forms
+
+Many modules support the [Drillable Namespace Pattern](./drillable-namespace-pattern), which allows you to import from subpaths as well:
+
+```typescript
+// Import from main package
+import { Err } from '@wollybeard/kit'
+
+// OR import from subpath
+import * as Err from '@wollybeard/kit/err'
+
+// Both provide the same API
+Err.fromUnknown(new Error('oops'))
+```
+
+This gives you flexibility in how you structure your imports based on your project's needs.
 
 ## Module Structure
 
@@ -123,5 +140,6 @@ processNumbers([1, -2, 3, -4, 5])
 - Learn about [Installation](./installation) options and configuration
 - Understand the [Philosophy](./philosophy) behind Kit
 - Explore the [Module Structure](./module-structure) in detail
+- Learn about the [Drillable Namespace Pattern](./drillable-namespace-pattern) for flexible imports
 - Master the [Currying Pattern](./currying) for function composition
 - Browse the complete [API Reference](/api/)

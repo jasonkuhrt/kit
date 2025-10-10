@@ -18,6 +18,8 @@ import type { Print } from './print.js'
  * const result = someFunction()
  * assertExtends<string>()(_ as typeof result)
  * ```
+ *
+ * @category Utilities
  */
 export const as = <$value>(value?: unknown): $value => value as any
 
@@ -42,6 +44,8 @@ export const as = <$value>(value?: unknown): $value => value as any
  * type Result2 = Stringify<true>      // "true"
  * type Result3 = Stringify<'hello'>   // "hello"
  * ```
+ *
+ * @category Type Utilities
  */
 export type Interpolatable =
   | string
@@ -96,6 +100,8 @@ export type Interpolatable =
  * processString('hello')  // OK
  * processString(42)       // Type error with custom message
  * ```
+ *
+ * @category Error Messages
  */
 export interface StaticError<
   $Message extends string = string,
@@ -107,6 +113,9 @@ export interface StaticError<
   HINT: $Hint
 }
 
+/**
+ * @category Error Messages
+ */
 export type StaticErrorAny = StaticError<string, object, string>
 
 /**
@@ -136,6 +145,8 @@ export type StaticErrorAny = StaticError<string, object, string>
  * // EXPECTED: [string, number]
  * // ACTUAL: [number, string]
  * ```
+ *
+ * @category Error Messages
  */
 export interface StaticErrorAssertion<
   $Message extends string = string,
@@ -171,6 +182,8 @@ export interface StaticErrorAssertion<
  *   { Expected, Actual }
  * >
  * ```
+ *
+ * @category Type Printing
  */
 export type Show<$Type> = `\`${Print<$Type>}\``
 
@@ -200,6 +213,8 @@ export type Show<$Type> = `\`${Print<$Type>}\``
  * type WithShowInTemplate = `Type is ${ShowInTemplate<number>}`
  * // Displays as: "Type is 'number'" (cleaner)
  * ```
+ *
+ * @category Type Printing
  */
 export type ShowInTemplate<$Type> = `'${Print<$Type>}'`
 
@@ -240,6 +255,8 @@ export type ShowInTemplate<$Type> = `'${Print<$Type>}'`
  *   // T will show flattened structure in errors and tooltips
  * }
  * ```
+ *
+ * @category Type Utilities
  */
 export type Simplify<$Type> =
   & {

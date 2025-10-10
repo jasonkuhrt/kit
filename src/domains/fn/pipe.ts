@@ -1,6 +1,7 @@
 /**
  * Pipe a value through a series of unary functions.
  *
+ * @category Composition
  * @param value - The initial value to pipe through the functions
  * @param fns - Functions to apply in sequence, each receiving the output of the previous
  * @returns The final transformed value

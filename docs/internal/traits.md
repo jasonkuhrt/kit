@@ -115,7 +115,7 @@
 
 ## Using Traits Directly
 
-- Once a domain implements a trait a developer can use the Trait directly on values of type <Domain>: `<Trait Namespace>.<Trait Method>(... <Domain Value>... )`
+- Once a domain implements a trait a developer can use the Trait directly on values of type `<Domain>`: `<Trait Namespace>.<Trait Method>(... <Domain Value>... )`
 - Example:
   ```typescript
   import { Eq } from '@wollybeard/kit'

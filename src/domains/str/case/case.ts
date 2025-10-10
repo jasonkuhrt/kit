@@ -1,5 +1,6 @@
 /**
  * Convert string to camelCase.
+ * @category Case Conversion
  * @example
  * ```typescript
  * camel('hello-world') // 'helloWorld'
@@ -10,6 +11,7 @@ export { camelCase as camel } from 'es-toolkit'
 
 /**
  * Convert string to kebab-case.
+ * @category Case Conversion
  * @example
  * ```typescript
  * kebab('helloWorld') // 'hello-world'
@@ -20,6 +22,7 @@ export { kebabCase as kebab } from 'es-toolkit'
 
 /**
  * Convert string to PascalCase.
+ * @category Case Conversion
  * @example
  * ```typescript
  * pascal('hello-world') // 'HelloWorld'
@@ -30,6 +33,7 @@ export { pascalCase as pascal } from 'es-toolkit'
 
 /**
  * Convert string to snake_case.
+ * @category Case Conversion
  * @example
  * ```typescript
  * snake('helloWorld') // 'hello_world'
@@ -41,6 +45,7 @@ export { snakeCase as snake } from 'es-toolkit'
 /**
  * Convert string to Title Case.
  * Replaces hyphens and underscores with spaces and capitalizes the first letter of each word.
+ * @category Case Conversion
  * @param str - The string to convert
  * @returns The title cased string
  * @example
@@ -59,7 +64,7 @@ export const title = (str: string) => {
 /**
  * Convert string to UPPERCASE with type-level transformation.
  * Preserves the uppercase type at the type level.
- *
+ * @category Case Conversion
  * @param str - The string to convert
  * @returns The uppercase string with Uppercase<S> type
  * @example
@@ -78,7 +83,7 @@ export const capAll = <$S extends string>(str: $S): Uppercase<$S> => {
 
 /**
  * Convert the first letter of a string to lowercase with type-level transformation.
- *
+ * @category Case Conversion
  * @param s - The string to convert
  * @returns The string with lowercase first letter and Uncapitalize<S> type
  * @example
@@ -94,7 +99,7 @@ export const uncapFirst = <$S extends string>(s: $S): Uncapitalize<$S> => {
 
 /**
  * Capitalize the first letter of a string with type-level transformation.
- *
+ * @category Case Conversion
  * @param string - The string to capitalize
  * @returns The string with capitalized first letter and Capitalize<S> type
  * @example

@@ -1,5 +1,6 @@
+import { TSDocConfiguration, TSDocParser, TSDocTagDefinition, TSDocTagSyntaxKind } from '@microsoft/tsdoc'
 import { JSDoc, Node } from 'ts-morph'
-import type { Example } from '../../schema.js'
+import { Example } from '../../schema.js'
 
 /**
  * Parsed JSDoc information.
@@ -8,7 +9,165 @@ export type JSDocInfo = {
   description: string | undefined
   examples: Example[]
   deprecated: string | undefined
+  category: string | undefined
   tags: Record<string, string>
+  /** Force this export to be treated as a namespace */
+  forceNamespace?: boolean
+}
+
+/**
+ * Helper to extract plain text from a TSDoc DocNode tree.
+ * Uses only public APIs from @microsoft/tsdoc.
+ */
+const extractTSDocText = (node: any): string => {
+  switch (node.kind) {
+    case 'PlainText':
+      return node.text || ''
+
+    case 'LinkTag': {
+      // Extract link destination as text
+      if (node.codeDestination) {
+        return node.codeDestination.emitAsTsdoc()
+      }
+      if (node.urlDestination) {
+        return node.urlDestination
+      }
+      if (node.linkText) {
+        return node.linkText
+      }
+      return ''
+    }
+
+    case 'FencedCode':
+      return `\`\`\`${node.language || ''}\n${node.code}\n\`\`\``
+
+    case 'CodeSpan':
+      return node.code || ''
+
+    case 'Paragraph':
+    case 'Section':
+    case 'Block':
+      // These are containers - recursively process their nodes
+      if ('nodes' in node && Array.isArray(node.nodes)) {
+        return node.nodes.map((child: any) => extractTSDocText(child)).join('')
+      }
+      return ''
+
+    case 'SoftBreak':
+      return ' '
+
+    default:
+      // For unknown node types, try to get child nodes
+      if ('nodes' in node && Array.isArray(node.nodes)) {
+        return node.nodes.map((child: any) => extractTSDocText(child)).join('')
+      }
+      return ''
+  }
+}
+
+/**
+ * Parse examples from TSDoc customBlocks.
+ */
+const parseExamplesFromTSDoc = (customBlocks: readonly any[]): Example[] => {
+  const examples: Example[] = []
+
+  for (const block of customBlocks) {
+    if (block.blockTag.tagName === '@example') {
+      const contentNodes = block.content.nodes
+
+      let title: string | undefined
+      let code: string | undefined
+      let language = 'typescript' // default
+      let twoslashEnabled = true // default
+
+      for (const node of contentNodes) {
+        if (node.kind === 'Paragraph' && !title) {
+          // Extract title from first paragraph if it's not empty
+          const text = extractTSDocText(node).trim()
+          if (text) {
+            title = text
+          }
+        } else if (node.kind === 'FencedCode') {
+          code = node.code
+          language = node.language === 'ts' ? 'typescript' : node.language || 'typescript'
+
+          // Check for twoslash disable
+          const codeContent = node.code || ''
+          twoslashEnabled = !codeContent.includes('// twoslash-disable')
+            && !codeContent.includes('// @twoslash-disable')
+        }
+      }
+
+      if (code) {
+        examples.push(Example.make({
+          code: code.trim(),
+          title,
+          twoslashEnabled,
+          language,
+        }))
+      }
+    }
+  }
+
+  return examples
+}
+
+/**
+ * Parse a raw JSDoc comment string using @microsoft/tsdoc.
+ * Returns parsed JSDoc information with proper structure.
+ */
+const parseJSDocWithTSDoc = (commentText: string): JSDocInfo => {
+  // Configure TSDoc to recognize @category as a valid block tag
+  const configuration = new TSDocConfiguration()
+  configuration.addTagDefinition(
+    new TSDocTagDefinition({
+      tagName: '@category',
+      syntaxKind: TSDocTagSyntaxKind.BlockTag,
+      allowMultiple: false,
+    }),
+  )
+
+  const tsdocParser = new TSDocParser(configuration)
+  const parserContext = tsdocParser.parseString(commentText)
+  const docComment = parserContext.docComment
+
+  // Extract description from summary section
+  const description = extractTSDocText(docComment.summarySection).trim() || undefined
+
+  // Extract examples from custom blocks
+  const examples = parseExamplesFromTSDoc(docComment.customBlocks)
+
+  // Extract deprecated message
+  const deprecated = docComment.deprecatedBlock
+    ? extractTSDocText(docComment.deprecatedBlock.content).trim() || undefined
+    : undefined
+
+  // Extract other tags
+  const tags: Record<string, string> = {}
+  let forceNamespace = false
+  let category: string | undefined
+
+  // Check for @namespace in modifier tags or custom blocks
+  for (const block of docComment.customBlocks) {
+    const tagName = block.blockTag.tagName
+    if (tagName === '@namespace') {
+      forceNamespace = true
+    } else if (tagName === '@category') {
+      category = extractTSDocText(block.content).trim() || undefined
+    } else if (tagName !== '@example') {
+      // Store other custom tags
+      tags[tagName.slice(1)] = extractTSDocText(block.content).trim()
+    }
+  }
+
+  return {
+    description,
+    examples,
+    deprecated,
+    category,
+    tags,
+    forceNamespace,
+  }
 }
 
 /**
@@ -21,9 +180,34 @@ export const parseJSDoc = (decl: Node): JSDocInfo => {
   // Try to get JSDoc using the proper API
   let jsDocs: JSDoc[] = []
 
+  // For VariableDeclaration, JSDoc is on the parent VariableStatement
+  let jsdocNode: Node = decl
+  if (Node.isVariableDeclaration(decl)) {
+    const parent = decl.getParent()
+    if (parent && Node.isVariableDeclarationList(parent)) {
+      const grandparent = parent.getParent()
+      if (grandparent && Node.isVariableStatement(grandparent)) {
+        jsdocNode = grandparent
+      }
+    }
+  }
+
   // Different node types have different ways to get JSDoc
-  if ('getJsDocs' in decl && typeof (decl as any).getJsDocs === 'function') {
-    jsDocs = (decl as any).getJsDocs()
+  if ('getJsDocs' in jsdocNode && typeof (jsdocNode as any).getJsDocs === 'function') {
+    jsDocs = (jsdocNode as any).getJsDocs()
+  }
+
+  // ExportDeclaration nodes don't have getJsDocs(), so parse from leading comments using TSDoc
+  if (jsDocs.length === 0 && Node.isExportDeclaration(jsdocNode)) {
+    const leadingComments = jsdocNode.getLeadingCommentRanges()
+    for (const comment of leadingComments) {
+      const commentText = comment.getText()
+      // Check if it's a JSDoc comment (/** ... */)
+      if (commentText.startsWith('/**') && commentText.endsWith('*/')) {
+        // Parse using TSDoc directly
+        return parseJSDocWithTSDoc(commentText)
+      }
+    }
   }
 
   if (jsDocs.length === 0) {
@@ -31,88 +215,16 @@ export const parseJSDoc = (decl: Node): JSDocInfo => {
       description: undefined,
       examples: [],
       deprecated: undefined,
+      category: undefined,
       tags: {},
+      forceNamespace: false,
     }
   }
 
   // Use the first JSDoc block (closest to declaration)
   const jsDoc = jsDocs[0]!
-  const description = jsDoc.getDescription().trim() || undefined
 
-  const examples: Example[] = []
-  const tags: Record<string, string> = {}
-  let deprecated: string | undefined
-
-  for (const tag of jsDoc.getTags()) {
-    const tagName = tag.getTagName()
-    const tagText = tag.getCommentText()?.trim() || ''
-
-    if (tagName === 'example') {
-      const example = parseExample(tagText)
-      if (example) {
-        examples.push(example)
-      }
-    } else if (tagName === 'deprecated') {
-      deprecated = tagText
-    } else {
-      tags[tagName] = tagText
-    }
-  }
-
-  return {
-    description,
-    examples,
-    deprecated,
-    tags,
-  }
-}
-
-/**
- * Parse an @example tag into an Example object.
- *
- * Supports:
- * - @example Basic usage
- * - @example-twoslash Disabled example
- * - Code fence detection
- */
-const parseExample = (text: string): any | null => {
-  // Extract title from first line if present
-  const lines = text.split('\n')
-  let title: string | undefined
-  let codeStart = 0
-
-  // Check if first line is a title (not a code fence)
-  if (lines[0] && !lines[0].startsWith('```')) {
-    title = lines[0].trim()
-    codeStart = 1
-  }
-
-  // Find code fence
-  const fenceMatch = text.match(/```(\w+)?\s*([^\n]*)\n([\s\S]*?)```/)
-  if (!fenceMatch) {
-    // No code fence - treat entire text as code
-    const code = lines.slice(codeStart).join('\n').trim()
-    return code
-      ? {
-        code,
-        title,
-        twoslashEnabled: true,
-        language: 'typescript',
-      }
-      : null
-  }
-
-  const [, language = 'typescript', fenceMeta = '', code = ''] = fenceMatch
-
-  // Check for twoslash disable in fence metadata or code
-  const twoslashDisabled = fenceMeta.includes('twoslash=false')
-    || code.includes('// twoslash-disable')
-    || code.includes('// @twoslash-disable')
-
-  return {
-    code: code.trim(),
-    title,
-    twoslashEnabled: !twoslashDisabled,
-    language,
-  }
+  // Get the full JSDoc comment text and parse with TSDoc
+  const fullText = jsDoc.getFullText()
+  return parseJSDocWithTSDoc(fullText)
 }

@@ -1,10 +1,23 @@
+import { transformerNotationWordHighlight } from '@shikijs/transformers'
+import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { defineConfig } from 'vitepress'
+import { generateApiSidebar } from './sidebar.js'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: '@wollybeard/kit',
   description: 'A TypeScript utility library with functional programming utilities',
   base: '/kit/', // Adjust this based on your deployment URL
+
+  srcExclude: ['**/internal/**'], // Exclude internal docs from build
+  ignoreDeadLinks: true, // Temporarily ignore dead links
+
+  markdown: {
+    codeTransformers: [
+      transformerNotationWordHighlight(),
+      transformerTwoslash(),
+    ],
+  },
 
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
@@ -33,13 +46,14 @@ export default defineConfig({
           text: 'Core Concepts',
           items: [
             { text: 'Module Structure', link: '/guide/module-structure' },
+            { text: 'Drillable Namespace Pattern', link: '/guide/drillable-namespace-pattern' },
             { text: 'Currying Pattern', link: '/guide/currying' },
             { text: 'Type Safety', link: '/guide/type-safety' },
           ],
         },
       ],
 
-      // API sidebar
+      // API sidebar - dynamically generated from interface model
       '/api/': [
         {
           text: 'API Reference',
@@ -47,42 +61,7 @@ export default defineConfig({
             { text: 'Overview', link: '/api/' },
           ],
         },
-        {
-          text: 'Core Data Structures',
-          items: [
-            { text: 'Arr', link: '/api/arr' },
-            { text: 'Obj', link: '/api/obj' },
-            { text: 'Str', link: '/api/str' },
-            { text: 'Fn', link: '/api/fn' },
-            { text: 'Num', link: '/api/num' },
-          ],
-        },
-        {
-          text: 'Utilities',
-          items: [
-            { text: 'Err', link: '/api/err' },
-            { text: 'Prom', link: '/api/prom' },
-            { text: 'Rec', link: '/api/rec' },
-            { text: 'Json', link: '/api/json' },
-            { text: 'Value', link: '/api/value' },
-          ],
-        },
-        {
-          text: 'Development',
-          items: [
-            { text: 'Test', link: '/api/test' },
-            {
-              text: 'Ts',
-              link: '/api/ts',
-              items: [
-                { text: 'Kind', link: '/api/ts/kind' },
-                { text: 'Test', link: '/api/ts/test' },
-                { text: 'Union', link: '/api/ts/union' },
-                { text: 'Variance', link: '/api/ts/variance' },
-              ],
-            },
-          ],
-        },
+        ...generateApiSidebar(),
       ],
     },
 

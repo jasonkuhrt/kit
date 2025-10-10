@@ -17,6 +17,7 @@ export type Empty = readonly []
 /**
  * Check if all booleans in a tuple are true.
  *
+ * @category Type Utilities
  * @example
  * ```ts
  * type T1 = All<[true, true, true]>  // true
@@ -28,6 +29,7 @@ export type All<$Tuple extends [...boolean[]]> = $Tuple[number] extends true ? t
 /**
  * Check if a tuple has multiple elements.
  *
+ * @category Type Utilities
  * @example
  * ```ts
  * type T1 = IsTupleMultiple<[1, 2]>  // true
@@ -39,6 +41,7 @@ export type IsTupleMultiple<$T> = $T extends [unknown, unknown, ...unknown[]] ? 
 /**
  * Push a value onto a tuple.
  *
+ * @category Type Utilities
  * @example
  * ```ts
  * type T = Push<[1, 2], 3>  // [1, 2, 3]
@@ -48,6 +51,8 @@ export type Push<$T extends any[], $V> = [...$T, $V]
 
 /**
  * Get the first non-unknown, non-never element from a tuple.
+ *
+ * @category Type Utilities
  */
 export type FirstNonUnknownNever<$T extends any[]> = $T extends [infer __first__, ...infer __rest__]
   ? unknown extends __first__ ? 0 extends 1 & __first__ ? FirstNonUnknownNever<__rest__> // is any
@@ -58,7 +63,9 @@ export type FirstNonUnknownNever<$T extends any[]> = $T extends [infer __first__
 
 /**
  * Empty array constant.
- * @deprecated Use `Array.empty` from Effect instead
+ *
+ * @category Constants
+ * @deprecated Use {@link Array.empty} from Effect instead
  *
  * @example
  * ```ts
@@ -74,6 +81,7 @@ export const empty: Empty = []
  * Empty array constant (frozen).
  * Useful as a default value or sentinel.
  *
+ * @category Constants
  * @example
  * ```ts
  * const arr = items ?? Arr.emptyArray
@@ -83,6 +91,8 @@ export const emptyArray = Object.freeze([] as const)
 
 /**
  * Type for the empty array constant.
+ *
+ * @category Type Utilities
  */
 export type EmptyArray = typeof emptyArray
 
@@ -98,6 +108,7 @@ export type EmptyArray = typeof emptyArray
  * Assert that a value is an array.
  * Throws a TypeError if the value is not an array.
  *
+ * @category Type Guards
  * @param value - The value to check
  * @throws {TypeError} If the value is not an array
  *
@@ -120,6 +131,7 @@ export function assert(value: unknown): asserts value is unknown[] {
  * Type-safe array includes check that narrows the type of the value.
  * Unlike the standard `includes`, this provides proper type narrowing.
  *
+ * @category Search
  * @param array - The array to search in
  * @param value - The unknown value to search for
  * @returns True if the value is in the array, with type narrowing
@@ -144,6 +156,7 @@ export const includes = <$T>(array: $T[], value: unknown): value is $T => {
  * If the value is already an array, return it as-is.
  * Otherwise, wrap it in an array.
  *
+ * @category Normalization
  * @param value - The value to ensure as array
  * @returns An array containing the value(s)
  * @example

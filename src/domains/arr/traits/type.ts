@@ -7,6 +7,7 @@ import { domain } from '../domain.js'
  *
  * Provides type checking for readonly array values using Array.isArray.
  *
+ * @category Traits
  * @example
  * ```ts
  * import { Arr } from '@wollybeard/kit'
