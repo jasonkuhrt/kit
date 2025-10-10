@@ -1,0 +1,349 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`error > fn(' ') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+ 
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+└─ Transformation process failure
+   └─ You must specify at least one name for your flag.
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`error > fn('') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+└─ Transformation process failure
+   └─ You must specify at least one name for your flag.
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`error > fn('--foo --foo') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+--foo --foo
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+└─ Transformation process failure
+   └─ Duplicate alias: "foo"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`error > fn('--v') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+--v
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+└─ Transformation process failure
+   └─ Long flag must be two or more characters: '--v'
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`error > fn('-v -v') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+-v -v
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+└─ Transformation process failure
+   └─ Duplicate alias: "v"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`error > fn('-vv') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+-vv
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+└─ Transformation process failure
+   └─ Short flag must be exactly one character: '-vv'
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`error > fromString(' ') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+ 
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+└─ Transformation process failure
+   └─ You must specify at least one name for your flag.
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`error > fromString('') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+└─ Transformation process failure
+   └─ You must specify at least one name for your flag.
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`error > fromString('--foo --foo') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+--foo --foo
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+└─ Transformation process failure
+   └─ Duplicate alias: "foo"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`error > fromString('--v') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+--v
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+└─ Transformation process failure
+   └─ Long flag must be two or more characters: '--v'
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`error > fromString('-v -v') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+-v -v
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+└─ Transformation process failure
+   └─ Duplicate alias: "v"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`error > fromString('-vv') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+-vv
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+└─ Transformation process failure
+   └─ Short flag must be exactly one character: '-vv'
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`success > fn('--foo-bar') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+--foo-bar
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+FlagName {
+  canonical: 'fooBar',
+  short: null,
+  long: 'fooBar',
+  aliases: {
+    short: [],
+    long: []
+  },
+  expression: '--foo-bar'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`success > fn('--verbose') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+--verbose
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+FlagName {
+  canonical: 'verbose',
+  short: null,
+  long: 'verbose',
+  aliases: {
+    short: [],
+    long: []
+  },
+  expression: '--verbose'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`success > fn('-v --verbose -x --extra') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+-v --verbose -x --extra
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+FlagName {
+  canonical: 'verbose',
+  short: 'v',
+  long: 'verbose',
+  aliases: {
+    short: [ 'x' ],
+    long: [ 'extra' ]
+  },
+  expression: '-v --verbose -x --extra'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`success > fn('-v --verbose') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+-v --verbose
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+FlagName {
+  canonical: 'verbose',
+  short: 'v',
+  long: 'verbose',
+  aliases: {
+    short: [],
+    long: []
+  },
+  expression: '-v --verbose'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`success > fn('-v') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+-v
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+FlagName {
+  canonical: 'v',
+  short: 'v',
+  long: null,
+  aliases: {
+    short: [],
+    long: []
+  },
+  expression: '-v'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`success > fn('v verbose x extra') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+v verbose x extra
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+FlagName {
+  canonical: 'verbose',
+  short: 'v',
+  long: 'verbose',
+  aliases: {
+    short: [ 'x' ],
+    long: [ 'extra' ]
+  },
+  expression: 'v verbose x extra'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`success > fromString('--foo-bar') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+--foo-bar
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+FlagName {
+  canonical: 'fooBar',
+  short: null,
+  long: 'fooBar',
+  aliases: {
+    short: [],
+    long: []
+  },
+  expression: '--foo-bar'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`success > fromString('--verbose') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+--verbose
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+FlagName {
+  canonical: 'verbose',
+  short: null,
+  long: 'verbose',
+  aliases: {
+    short: [],
+    long: []
+  },
+  expression: '--verbose'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`success > fromString('-v --verbose -x --extra') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+-v --verbose -x --extra
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+FlagName {
+  canonical: 'verbose',
+  short: 'v',
+  long: 'verbose',
+  aliases: {
+    short: [ 'x' ],
+    long: [ 'extra' ]
+  },
+  expression: '-v --verbose -x --extra'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`success > fromString('-v --verbose') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+-v --verbose
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+FlagName {
+  canonical: 'verbose',
+  short: 'v',
+  long: 'verbose',
+  aliases: {
+    short: [],
+    long: []
+  },
+  expression: '-v --verbose'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`success > fromString('-v') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+-v
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+FlagName {
+  canonical: 'v',
+  short: 'v',
+  long: null,
+  aliases: {
+    short: [],
+    long: []
+  },
+  expression: '-v'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`success > fromString('v verbose x extra') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+v verbose x extra
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+FlagName {
+  canonical: 'verbose',
+  short: 'v',
+  long: 'verbose',
+  aliases: {
+    short: [ 'x' ],
+    long: [ 'extra' ]
+  },
+  expression: 'v verbose x extra'
+}
+╚══════════════════════════════════════════════════╝"
+`;
