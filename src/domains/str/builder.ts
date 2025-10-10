@@ -1,7 +1,7 @@
 import { Fn } from '#fn'
 import { removeSurroundingSpaceRegular } from './replace.js'
-import { isTemplateStringsArray } from './template.js'
 import { unlines } from './text.js'
+import { Tpl } from './tpl/$.js'
 
 /**
  * Default render function for string builders.
@@ -101,21 +101,9 @@ export const Builder = (options?: {
   }
 
   const builder = ((...args: unknown[]) => {
-    if (isTemplateStringsArray(args)) {
+    if (Tpl.isCallInput(args)) {
       // Usage as template string
-
-      const strings = args[0] as string
-      const values = args.slice(1) as string[]
-
-      let code = ``
-      for (const string of strings) {
-        code += string
-        if (values.length > 0) {
-          code += values.shift()!
-        }
-      }
-
-      state.lines.push(removeSurroundingSpaceRegular(code))
+      state.lines.push(removeSurroundingSpaceRegular(Tpl.render(args)))
     } else {
       // Usage as function
 

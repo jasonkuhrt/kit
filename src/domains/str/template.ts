@@ -35,24 +35,3 @@ export const templateVariablePattern = /\${([^}]+)}/g
  * @category Template
  */
 export type TemplateArgs = Record<string, Json.Value>
-
-/**
- * Type guard to check if a value is a TemplateStringsArray.
- * Used to detect when a function is called as a tagged template literal.
- * @category Template
- * @param args - Value to check
- * @returns True if args is a TemplateStringsArray
- * @example
- * ```typescript
- * function tag(...args: unknown[]) {
- *   if (isTemplateStringsArray(args)) {
- *     // Called as tag`template`
- *   } else {
- *     // Called as tag()
- *   }
- * }
- * ```
- */
-export const isTemplateStringsArray = (args: unknown): args is TemplateStringsArray => {
-  return Array.isArray(args) && args.length > 0 && args[0] instanceof Object && `raw` in args[0] as any
-}
