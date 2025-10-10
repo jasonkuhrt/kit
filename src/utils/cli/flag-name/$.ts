@@ -1,1 +1,1 @@
-export * as FlagName from './$$.js'
+export { FlagName } from './flag-name.ts'

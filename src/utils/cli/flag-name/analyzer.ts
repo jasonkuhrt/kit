@@ -1,5 +1,5 @@
-import { camelCase } from 'es-toolkit'
-import type { NameParsed } from './analyzer.types.js'
+import { Str } from '#str'
+import type { FlagName } from './flag-name.ts'
 
 /**
  * Runtime analyzer for CLI flag expressions.
@@ -41,13 +41,13 @@ import type { NameParsed } from './analyzer.types.js'
  * // { expression: 'v verbose', canonical: 'verbose', short: 'v', long: 'verbose', aliases: { short: [], long: [] } }
  * ```
  */
-export function analyze<const $input extends string>($input: $input): NameParsed {
+export function analyze<const $input extends string>($input: $input): FlagName {
   const names = $input
     .trim()
     .split(` `)
     .map((_) => _.trim())
     .map(stripeDashPrefix)
-    .map(camelCase)
+    .map(Str.Case.camel)
     .filter((_) => _.length > 0)
 
   const longs = names.filter((name): name is string => name.length > 1)
