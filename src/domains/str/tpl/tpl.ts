@@ -33,7 +33,7 @@ export type Tpl = TemplateStringsArray
  * ```
  */
 export const is = (value: unknown): value is Tpl => {
-  return Array.isArray(value) && value.length > 0 && value[0] instanceof Object && `raw` in (value[0] as any)
+  return Array.isArray(value) && `raw` in value
 }
 
 /**
