@@ -1,6 +1,7 @@
 export * from './filter.js'
 export * from './get.js'
 export * from './map-entries-deep.js'
+export * from './map-values-deep.js'
 export * from './merge.js'
 export * from './obj.js'
 export * from './predicates.js'

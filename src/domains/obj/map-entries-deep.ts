@@ -1,5 +1,3 @@
-import { isPlainObject } from 'es-toolkit'
-
 /**
  * A deep object value can be any JSON-serializable value including nested objects and arrays.
  */
@@ -44,23 +42,36 @@ export const mapEntriesDeep = <$value extends DeepObjectValue>(
   value: $value,
   visitor: (key: string, value: DeepObjectValue) => undefined | { key: string; value: DeepObjectValue },
 ): $value => {
-  if (Array.isArray(value)) {
-    return value.map(item => mapEntriesDeep(item, visitor)) as $value
-  }
-
-  if (isPlainObject(value)) {
-    const newObject: DeepObject = {}
-    for (const currentKey in value) {
-      const currentValue = mapEntriesDeep(value[currentKey]!, visitor)
-      const visitorResult = visitor(currentKey, currentValue)
-      if (visitorResult) {
-        newObject[visitorResult.key] = visitorResult.value
-      } else {
-        newObject[currentKey] = currentValue
-      }
+  const impl = (val: any, visited = new WeakSet()): any => {
+    if (Array.isArray(val)) {
+      return val.map(item => impl(item, visited))
     }
-    return newObject as $value
+
+    if (typeof val === 'object' && val !== null) {
+      // Circular reference guard
+      if (visited.has(val)) return '[Circular]'
+      visited.add(val)
+
+      const newObject: DeepObject = {}
+      for (const currentKey in val) {
+        const currentValue = val[currentKey]!
+        // Visit BEFORE recursing (top-down traversal)
+        const visitorResult = visitor(currentKey, currentValue)
+        if (visitorResult) {
+          // Transform applied - recurse with transformed value
+          const recursedValue = impl(visitorResult.value, visited)
+          newObject[visitorResult.key] = recursedValue
+        } else {
+          // No transform - recurse with original value
+          const recursedValue = impl(currentValue, visited)
+          newObject[currentKey] = recursedValue
+        }
+      }
+      return newObject
+    }
+
+    return val
   }
 
-  return value
+  return impl(value) as $value
 }

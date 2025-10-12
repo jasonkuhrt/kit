@@ -21,35 +21,35 @@ const combinedTransform = (key: string, value: Obj.DeepObjectValue) => {
 
 // dprint-ignore
 Test.on(Obj.mapEntriesDeep)
-  .describe('primitives', [
-    [['hello',    () => undefined]],
-    [[42,         () => undefined]],
-    [[true,       () => undefined]],
-    [[null,       () => undefined]],
+  .describeInputs('primitives', [
+    ['hello',    () => undefined],
+    [42,         () => undefined],
+    [true,       () => undefined],
+    [null,       () => undefined],
   ])
-  .describe('empty objects', [
-    [[{},         uppercaseKeysTransform]],
+  .describeInputs('empty objects', [
+    [{},         uppercaseKeysTransform],
   ])
-  .describe('key transformations', [
-    [[{ $foo: 'bar', $baz: { $nested: 'value' } },       stripDollarPrefix]],
-    [[{ $a: { $b: { $c: { $d: 'deep' } } } },            stripDollarPrefix]],
-    [[{ $foo: 'a', bar: 'b', $baz: { nested: 'c' } },    stripDollarPrefix]],
+  .describeInputs('key transformations', [
+    [{ $foo: 'bar', $baz: { $nested: 'value' } },       stripDollarPrefix],
+    [{ $a: { $b: { $c: { $d: 'deep' } } } },            stripDollarPrefix],
+    [{ $foo: 'a', bar: 'b', $baz: { nested: 'c' } },    stripDollarPrefix],
   ])
-  .describe('value transformations', [
-    [[{ name: 'alice', address: { city: 'nyc' } },       uppercaseStrings]],
-    [[{ str: 'hi', num: 42, bool: true, nil: null },     uppercaseStrings]],
+  .describeInputs('value transformations', [
+    [{ name: 'alice', address: { city: 'nyc' } },       uppercaseStrings],
+    [{ str: 'hi', num: 42, bool: true, nil: null },     uppercaseStrings],
   ])
-  .describe('arrays', [
-    [[{ users: [{ $id: 1, $name: 'alice' }, { $id: 2, $name: 'bob' }] },  stripDollarPrefix]],
-    [[{ numbers: [1, 2, 3], strings: ['a', 'b'] },                        () => undefined]],
+  .describeInputs('arrays', [
+    [{ users: [{ $id: 1, $name: 'alice' }, { $id: 2, $name: 'bob' }] },  stripDollarPrefix],
+    [{ numbers: [1, 2, 3], strings: ['a', 'b'] },                        () => undefined],
   ])
-  .describe('mixed structures', [
-    [[{ str: 'hello', arr: [1, 'two', { nested: 'obj' }], obj: { inner: 'value' } }, uppercaseStrings]],
+  .describeInputs('mixed structures', [
+    [{ str: 'hello', arr: [1, 'two', { nested: 'obj' }], obj: { inner: 'value' } }, uppercaseStrings],
   ])
-  .describe('selective transformations', [
-    [[{ keep: 'me', transform: 'this' },  selectiveTransform]],
+  .describeInputs('selective transformations', [
+    [{ keep: 'me', transform: 'this' },  selectiveTransform],
   ])
-  .describe('combined transformations', [
-    [[{ $name: 'alice', age: 25, $email: 'alice@example.com' }, combinedTransform]],
+  .describeInputs('combined transformations', [
+    [{ $name: 'alice', age: 25, $email: 'alice@example.com' }, combinedTransform],
   ])
   .test()
