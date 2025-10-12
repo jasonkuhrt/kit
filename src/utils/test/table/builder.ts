@@ -206,6 +206,7 @@ export function create(state: State = defaultState): any {
       name: string
       input: any[]
       output?: any
+      hasOutput: boolean
       skip?: boolean | string
       skipIf?: () => boolean
       only?: boolean
@@ -229,6 +230,7 @@ export function create(state: State = defaultState): any {
         return {
           name: caseData.n,
           input: [], // Runner cases don't have static input
+          hasOutput: false, // Runner cases handle output dynamically
           runner: caseData.runner,
           isRunnerCase: true,
         }
@@ -249,6 +251,7 @@ export function create(state: State = defaultState): any {
           name,
           input: fn ? (input ?? []) : input, // Only default to [] for function mode
           output,
+          hasOutput: 'output' in obj,
           skip: skip as boolean | string | undefined,
           skipIf: skipIf as (() => boolean) | undefined,
           only: only as boolean | undefined,
@@ -262,6 +265,7 @@ export function create(state: State = defaultState): any {
       // Function mode and generic mode use same format for consistency
       const tuple = caseData as any[] // Use any[] to access optional 3rd element
       let input = tuple[0]
+      const hasOutput = tuple.length >= 2
       const output = tuple[1]
       const contextObj = tuple[2] // Context is 3rd element
 
@@ -280,6 +284,7 @@ export function create(state: State = defaultState): any {
         name: comment || generateName(input, output),
         input,
         output,
+        hasOutput,
         ...context,
       }
     }
@@ -297,6 +302,7 @@ export function create(state: State = defaultState): any {
             name: baseName,
             input,
             output,
+            hasOutput,
             skip,
             skipIf,
             only,
@@ -349,7 +355,7 @@ export function create(state: State = defaultState): any {
               }
 
               // Snapshot mode detection: no output, no customTest, no function
-              const isSnapshotMode = output === undefined && !customTest && !fn
+              const isSnapshotMode = !hasOutput && !customTest && !fn
 
               if (isSnapshotMode) {
                 // Execute runner and capture result/error in envelope
@@ -455,7 +461,7 @@ export function create(state: State = defaultState): any {
             // Run the test
             if (fn) {
               // Function mode (.on() was used)
-              if (output === undefined && !customTest) {
+              if (!hasOutput && !customTest) {
                 // Snapshot mode - catch errors and snapshot them
                 const envelope = await Prom.maybeAsyncEnvelope(() => fn(...input))
                 const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
@@ -489,7 +495,7 @@ export function create(state: State = defaultState): any {
                     ...vitestContext,
                   })
                   // Auto-snapshot if test returns a value AND no output was specified
-                  if (output === undefined && testResult !== undefined) {
+                  if (!hasOutput && testResult !== undefined) {
                     const envelope = await Prom.maybeAsyncEnvelope(() => testResult)
                     const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
                     const snapshotContext = { i: input, n: name, o: output, ...setupContext, ...fullContext }
@@ -529,7 +535,7 @@ export function create(state: State = defaultState): any {
               })
               const context = { i: input, n: name, o: output, ...setupContext, ...fullContext }
               // Auto-snapshot if result is returned AND no output was specified
-              if (output === undefined && result !== undefined) {
+              if (!hasOutput && result !== undefined) {
                 const envelope = await Prom.maybeAsyncEnvelope(() => result)
                 const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
                 const formattedSnapshot = formatSnapshotWithInput(
