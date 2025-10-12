@@ -241,3 +241,14 @@ import { Test } from '../$.js'
 
   Test.on(unary).casesInput(1, 2, 3) // Should work but doesn't
 }
+
+// BUG: Unwrapped unary form accepts incorrect nesting
+{
+  const fn = (x: unknown) => x
+
+  // @ts-expect-error - Should error: output inside args array
+  Test.on(fn).cases([[1, 2]])
+
+  // @ts-expect-error - Should error: output inside args array
+  Test.on(fn).cases([[[]], false])
+}
