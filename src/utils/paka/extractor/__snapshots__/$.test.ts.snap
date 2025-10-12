@@ -1,0 +1,157 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./bui...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./build/index.js","./a":"./build/a.js"}}',
+    '/src/index.ts': '',
+    '/src/a.ts': 'export const _ = 0'
+  },
+  entrypoints: [ '.' ]
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './src/index.ts',
+        description: '',
+        exports: []
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./bui...) 2`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./build/index.js"}}',
+    '/src/index.ts': '/** EX _ doc */ export const _ = () => 0'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './src/index.ts',
+        description: 'EX _ doc',
+        exports: [
+          {
+            name: '_',
+            signature: '() => number',
+            description: 'EX _ doc',
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './src/index.ts',
+              line: 1
+            },
+            _tag: 'value',
+            type: 'function'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./bui...) 3`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./build/index.js","./a":"./build/a.js"}}',
+    '/src/index.ts': '/** P doc */ export * as A from \\'./a.js\\'',
+    '/src/a.ts': '/** NS doc */ /** _ doc **/ export const _ = 0'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './src/index.ts',
+        description: 'P doc',
+        exports: [
+          {
+            name: '_',
+            signature: '0',
+            description: 'NS doc',
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './src/a.ts',
+              line: 1
+            },
+            _tag: 'value',
+            type: 'const'
+          }
+        ]
+      },
+      _tag: 'DrillableNamespaceEntrypoint'
+    },
+    {
+      path: './a',
+      module: {
+        location: './src/a.ts',
+        description: 'NS doc',
+        exports: [
+          {
+            name: '_',
+            signature: '0',
+            description: 'NS doc',
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './src/a.ts',
+              line: 1
+            },
+            _tag: 'value',
+            type: 'const'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;

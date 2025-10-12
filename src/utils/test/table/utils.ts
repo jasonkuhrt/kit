@@ -1,9 +1,10 @@
 import { Err } from '#err'
 import { Fn } from '#fn'
 import { Lang } from '#lang'
+import { Obj } from '#obj'
 import { Prom } from '#prom'
 import { Str } from '#str'
-import { Equal } from 'effect'
+import { Equal, Schema as S } from 'effect'
 import objectInspect from 'object-inspect'
 import { describe as vitestDescribe, expect } from 'vitest'
 
@@ -138,6 +139,7 @@ export const generateMatrixCombinations = (
  * - **Strings**: Raw display without JSON quotes for readability
  * - **Functions**: `.toString()` representation
  * - **Errors**: {@link Err.inspect} with `maxFrames: 0` for portable snapshots (no stack traces)
+ * - **Schema instances**: Encoded to their primitive representation
  *
  * All other values use `object-inspect` which provides:
  * - **Circular reference handling**: Shows `[Circular]` instead of throwing
@@ -147,17 +149,35 @@ export const generateMatrixCombinations = (
  *
  * @param value - The value to serialize
  * @param _context - Test context (unused by default serializer, available for custom serializers)
+ * @param schemas - Optional array of Effect schemas to check and encode
  * @returns Formatted string representation
  */
-export const defaultSnapshotSerializer = (value: any, _context: any): string => {
-  if (typeof value === 'string') return value
-  if (typeof value === 'function') return value.toString()
-  if (typeof value === 'undefined') return 'undefined'
-  if (typeof value === 'symbol') return value.toString()
-  if (typeof value === 'bigint') return value.toString() + 'n'
-  if (value instanceof RegExp) return value.toString()
-  if (Err.is(value)) return Err.inspect(value, { maxFrames: 0, showHelp: false, color: false })
-  return objectInspect(value, { indent: 2 })
+export const defaultSnapshotSerializer = (
+  value: any,
+  _context: any,
+  schemas: Array<S.Schema<any, any>> = [],
+): string => {
+  // Phase 1: Transform schema instances to encoded values
+  const transformed = schemas.length > 0
+    ? Obj.mapValuesDeep(value, (v) => {
+      for (const schema of schemas) {
+        if (S.is(schema)(v)) {
+          return S.encodeSync(schema)(v)
+        }
+      }
+      // Return undefined to continue recursing
+    })
+    : value
+
+  // Phase 2: Format (existing logic)
+  if (typeof transformed === 'string') return transformed
+  if (typeof transformed === 'function') return transformed.toString()
+  if (typeof transformed === 'undefined') return 'undefined'
+  if (typeof transformed === 'symbol') return transformed.toString()
+  if (typeof transformed === 'bigint') return transformed.toString() + 'n'
+  if (transformed instanceof RegExp) return transformed.toString()
+  if (Err.is(transformed)) return Err.inspect(transformed, { maxFrames: 0, showHelp: false, color: false })
+  return objectInspect(transformed, { indent: 2, depth: Infinity })
 }
 
 /**

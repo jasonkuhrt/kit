@@ -161,25 +161,62 @@ export type Export = S.Schema.Type<typeof Export>
 /**
  * Drillable Namespace Pattern entrypoint.
  *
- * Requirements:
- * - path stem (kebab-case) → namespace name (PascalCase)
- * - Example: path='./err' → stem='err' → namespace='Err'
+ * This pattern is detected ONLY for the main entrypoint ('.') when ALL conditions are met:
  *
- * Pattern enables two import forms:
- * - import { Err } from '@wollybeard/kit'
- * - import * as Err from '@wollybeard/kit/err'
+ * 1. The main entrypoint source file contains a namespace export: `export * as Name from './path'`
+ * 2. The namespace name (PascalCase, e.g., `A`) converts to kebab-case (e.g., `a`)
+ * 3. A subpath export exists in package.json with that kebab name (e.g., `./a`)
+ * 4. The file that the namespace export points to
+ * 5. AND the file that the subpath export points to
+ * 6. Must resolve to the SAME source file
+ *
+ * When detected, this enables two import forms:
+ * - `import { Name } from 'package'` - imports the namespace from main entrypoint
+ * - `import * as Name from 'package/kebab-name'` - imports the barrel directly
+ *
+ * @example
+ * ```typescript
+ * // package.json
+ * {
+ *   "exports": {
+ *     ".": "./build/index.js",
+ *     "./a": "./build/a.js"
+ *   }
+ * }
+ *
+ * // src/index.ts (main entrypoint)
+ * export * as A from './a.js'
+ *
+ * // src/a.ts (barrel implementation)
+ * export const foo = () => {}
+ * ```
+ *
+ * Both the namespace export and the subpath export resolve to `src/a.ts` → Drillable!
+ *
+ * @example Non-drillable case - different files
+ * ```typescript
+ * // package.json
+ * {
+ *   "exports": {
+ *     ".": "./build/index.js",
+ *     "./a": "./build/a.js"
+ *   }
+ * }
+ *
+ * // src/index.ts
+ * export * as A from './z.js'  // ← Points to z.js, not a.js
+ *
+ * // Namespace points to src/z.ts, subpath points to src/a.ts → NOT drillable (different files)
+ * ```
  */
 export class DrillableNamespaceEntrypoint extends S.TaggedClass<DrillableNamespaceEntrypoint>()(
   'DrillableNamespaceEntrypoint',
   {
     /**
-     * Package export path (key from package.json "exports").
-     * Module specifier without extension.
-     * The stem of this path is the kebab-case module name.
-     * Example: './err' or './test' (stem='err' → namespace='Err')
+     * Package export path - always '.' for drillable namespace (main entrypoint only).
      */
     path: S.String,
-    /** The extracted module interface */
+    /** The extracted module interface from the barrel file */
     module: Module,
   },
 ) {}

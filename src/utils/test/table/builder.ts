@@ -49,6 +49,7 @@ export interface State {
   outputMapper: Option.Option<Fn.AnyAny>
   defaultOutputProvider: Option.Option<Fn.AnyAny>
   snapshotSerializer: Option.Option<(value: any, context: any) => string>
+  snapshotSchemas: Array<any> // Schema<any, any>[] from Effect
   pendingDescribe: Option.Option<string>
   accumulatedGroups: Group[] // Effect's Array module works with regular arrays
   currentCases: any[] // Effect's Array module works with regular arrays
@@ -72,6 +73,7 @@ export const defaultState: State = {
   outputMapper: Option.none<Fn.AnyAny>(),
   defaultOutputProvider: Option.none<Fn.AnyAny>(),
   snapshotSerializer: Option.none(),
+  snapshotSchemas: [],
   pendingDescribe: Option.none(),
   accumulatedGroups: [],
   currentCases: [],
@@ -383,7 +385,10 @@ export function create(state: State = defaultState): any {
                 }
 
                 // Format and snapshot the result
-                const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
+                const serializer = Option.getOrElse(
+                  state.snapshotSerializer,
+                  () => (v: any, ctx: any) => defaultSnapshotSerializer(v, ctx, state.snapshotSchemas),
+                )
                 const snapshotContext = { i: input, n: name, o: finalEnvelope.value, ...setupContext, ...fullContext }
                 const formattedSnapshot = formatSnapshotWithInput(
                   Array.isArray(input) ? input : [input],
@@ -464,7 +469,10 @@ export function create(state: State = defaultState): any {
               if (!hasOutput && !customTest) {
                 // Snapshot mode - catch errors and snapshot them
                 const envelope = await Prom.maybeAsyncEnvelope(() => fn(...input))
-                const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
+                const serializer = Option.getOrElse(
+                  state.snapshotSerializer,
+                  () => (v: any, ctx: any) => defaultSnapshotSerializer(v, ctx, state.snapshotSchemas),
+                )
                 const snapshotContext = { i: input, n: name, o: output, ...fullContext }
                 const formattedSnapshot = formatSnapshotWithInput(
                   input,
@@ -497,7 +505,10 @@ export function create(state: State = defaultState): any {
                   // Auto-snapshot if test returns a value AND no output was specified
                   if (!hasOutput && testResult !== undefined) {
                     const envelope = await Prom.maybeAsyncEnvelope(() => testResult)
-                    const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
+                    const serializer = Option.getOrElse(
+                      state.snapshotSerializer,
+                      () => (v: any, ctx: any) => defaultSnapshotSerializer(v, ctx, state.snapshotSchemas),
+                    )
                     const snapshotContext = { i: input, n: name, o: output, ...setupContext, ...fullContext }
                     const formattedSnapshot = formatSnapshotWithInput(
                       input,
@@ -537,7 +548,10 @@ export function create(state: State = defaultState): any {
               // Auto-snapshot if result is returned AND no output was specified
               if (!hasOutput && result !== undefined) {
                 const envelope = await Prom.maybeAsyncEnvelope(() => result)
-                const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
+                const serializer = Option.getOrElse(
+                  state.snapshotSerializer,
+                  () => (v: any, ctx: any) => defaultSnapshotSerializer(v, ctx, state.snapshotSchemas),
+                )
                 const formattedSnapshot = formatSnapshotWithInput(
                   Array.isArray(input) ? input : [input],
                   envelope,
@@ -596,6 +610,13 @@ export function create(state: State = defaultState): any {
       return create({
         ...state,
         snapshotSerializer: Option.some(serializer),
+      })
+    },
+
+    snapshotSchemas(schemas: Array<any>) {
+      return create({
+        ...state,
+        snapshotSchemas: schemas,
       })
     },
 

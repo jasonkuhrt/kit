@@ -545,6 +545,24 @@ export interface TestBuilder<State extends BuilderTypeState> {
     ) => string,
   ): TestBuilder<State>
 
+  /**
+   * Register Effect schemas for automatic encoding in snapshots.
+   *
+   * Schema instances in snapshot values will be automatically encoded to their
+   * primitive representation using S.encodeSync().
+   *
+   * @param schemas - Array of Effect schemas to register
+   *
+   * @example
+   * ```ts
+   * Test.on(extractFromFiles)
+   *   .snapshotSchemas([FsLoc.FsLoc])
+   *   .cases(...)
+   *   .test()
+   * ```
+   */
+  snapshotSchemas(schemas: Array<any>): TestBuilder<State>
+
   // ============================================================================
   // Function Mode Methods
   // ============================================================================
