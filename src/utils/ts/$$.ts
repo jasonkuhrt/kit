@@ -33,10 +33,15 @@ export * as Union from './union.js'
 export namespace Union {}
 
 // @ts-expect-error Duplicate identifier
-export * as Variance from './variance.js'
+export * as VariancePhantom from './variance-phantom.js'
 /**
  * Phantom type helpers for controlling type variance (covariance, contravariance, invariance, bivariance).
  *
  * @category Variance
  */
-export namespace Variance {}
+export namespace VariancePhantom {}
+
+/**
+ * @deprecated Use {@link VariancePhantom} instead. This alias will be removed in a future version.
+ */
+export { VariancePhantom as Variance }

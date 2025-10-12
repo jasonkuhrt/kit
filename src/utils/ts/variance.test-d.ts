@@ -4,7 +4,7 @@ import { test } from 'vitest'
  * Type-level tests for variance phantom types
  */
 
-import type * as Variance from './variance.ts'
+import type * as Variance from './variance-phantom.js'
 
 // Helper container type for testing
 interface Container<T> {

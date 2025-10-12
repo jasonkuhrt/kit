@@ -31,6 +31,15 @@ import type { Obj } from '#obj'
 import type { GetTestSetting } from './test-settings.js'
 import type { StaticErrorAssertion } from './ts.js'
 
+/**
+ * Internal sentinel type used to detect whether an optional type parameter was provided.
+ * This is unexported and has an unpredictable internal name to ensure it can never
+ * accidentally match a real type being tested.
+ *
+ * @internal
+ */
+type ___NoValue___ = { readonly __kit_test_no_value_sentinel__: unique symbol }
+
 //
 //
 //
@@ -85,24 +94,41 @@ export type exact<$Expected, $Actual> = (<T>() => T extends $Actual ? 1 : 2) ext
  *
  * @example
  * ```ts
+ * // Value mode (provide value in second call)
  * Ts.Test.exact<string>()('hello') // OK - string exactly equals string
  * Ts.Test.exact<string | number>()('hello') // Error - string does not exactly equal string | number
  * Ts.Test.exact<{ a: 1 }>()({ a: 1 }) // OK
  * Ts.Test.exact<{ a: 1; b?: 2 }>()({ a: 1 }) // Error - not exactly equal
+ *
+ * // Type-only mode (provide type as second type parameter)
+ * Ts.Test.exact<string, string>() // OK
+ * Ts.Test.exact<string, number>() // Error - types not equal
+ * Ts.Test.exact<never, never>() // OK - can test never directly
  * ```
  */
-export const exact = <$Expected>() =>
-<$Actual>(
-  _actual: (<T>() => T extends $Actual ? 1 : 2) extends (<T>() => T extends $Expected ? 1 : 2) ? $Actual
-    : $Actual extends $Expected ? $Expected extends $Actual ? StaticErrorAssertion<
-          'Actual value types are mutually assignable but not structurally equal',
-          $Expected,
-          $Actual,
-          'Use bid() for mutual assignability OR apply Simplify<T> to normalize types'
-        >
-      : StaticErrorAssertion<'Actual value type is not structurally equal to expected type', $Expected, $Actual>
-    : StaticErrorAssertion<'Actual value type is not structurally equal to expected type', $Expected, $Actual>,
-): void => {}
+export const exact = <$Expected, $Actual = ___NoValue___>(): [$Actual] extends [___NoValue___] ? <$ActualValue>(
+    _actual: (<T>() => T extends $ActualValue ? 1 : 2) extends (<T>() => T extends $Expected ? 1 : 2) ? $ActualValue
+      : $ActualValue extends $Expected ? $Expected extends $ActualValue ? StaticErrorAssertion<
+            'Actual value types are mutually assignable but not structurally equal',
+            $Expected,
+            $ActualValue,
+            'Use bid() for mutual assignability OR apply Simplify<T> to normalize types'
+          >
+        : StaticErrorAssertion<'Actual value type is not structurally equal to expected type', $Expected, $ActualValue>
+      : StaticErrorAssertion<'Actual value type is not structurally equal to expected type', $Expected, $ActualValue>,
+  ) => void
+  : (<T>() => T extends $Actual ? 1 : 2) extends (<T>() => T extends $Expected ? 1 : 2) ? void
+  : $Actual extends $Expected ? $Expected extends $Actual ? StaticErrorAssertion<
+        'Actual types are mutually assignable but not structurally equal',
+        $Expected,
+        $Actual,
+        'Use bid() for mutual assignability OR apply Simplify<T> to normalize types'
+      >
+    : StaticErrorAssertion<'Actual type is not structurally equal to expected type', $Expected, $Actual>
+  : StaticErrorAssertion<'Actual type is not structurally equal to expected type', $Expected, $Actual> =>
+{
+  return (() => {}) as any
+}
 
 /**
  * Assert that two types are bidirectionally assignable (mutually assignable).
@@ -164,25 +190,55 @@ export type bid<$Expected, $Actual> = $Actual extends $Expected ? $Expected exte
  *
  * @example
  * ```ts
+ * // Value mode (provide value in second call)
  * Ts.Test.bid<string>()('hello') // OK (or error if linting enabled - should use exact)
  * Ts.Test.bid<string | number>()(Math.random() > 0.5 ? 'hello' : 42) // OK - mutually assignable
  * Ts.Test.bid<number>()('hello') // Error
+ *
+ * // Type-only mode (provide type as second type parameter)
+ * Ts.Test.bid<string, string>() // OK
+ * Ts.Test.bid<1 | 2, 2 | 1>() // OK - mutually assignable
+ * Ts.Test.bid<string, number>() // Error
  * ```
  *
  * @see Module documentation for how to enable strict linting
  */
-export const bid = <$Expected>() =>
-<$Actual>(
-  // For value-level, we just need $Actual extends $Expected (subtype check)
-  // The bidirectional check is conceptual - we're checking if the value's type
-  // is compatible with the expected type
-  _actual: $Actual extends $Expected ? $Actual
+export const bid = <$Expected, $Actual = ___NoValue___>(): [$Actual] extends [___NoValue___] ? <$ActualValue>(
+    // For value-level, we just need $ActualValue extends $Expected (subtype check)
+    // The bidirectional check is conceptual - we're checking if the value's type
+    // is compatible with the expected type
+    _actual: $ActualValue extends $Expected ? $ActualValue
+      : StaticErrorAssertion<
+        'Actual value type is not assignable to expected type',
+        $Expected,
+        $ActualValue
+      >,
+  ) => void
+  : $Actual extends $Expected ? $Expected extends $Actual
+      // Both directions pass - check if exact would also pass
+      ? (<T>() => T extends $Actual ? 1 : 2) extends (<T>() => T extends $Expected ? 1 : 2)
+        // Exact also passes - check if linting is enabled
+        ? GetTestSetting<'lintBidForExactPossibility'> extends true ? StaticErrorAssertion<
+            'Types are structurally equal',
+            $Expected,
+            $Actual,
+            'Use exact() instead - bid() is only needed when types are mutually assignable but not structurally equal'
+          >
+        : void // Linting disabled, allow it
+      : void // Only bid passes (not exact) - this is correct usage
     : StaticErrorAssertion<
-      'Actual value type is not assignable to expected type',
+      'Types are not bidirectionally assignable (Expected does not extend Actual)',
       $Expected,
       $Actual
-    >,
-): void => {}
+    >
+  : StaticErrorAssertion<
+    'Types are not bidirectionally assignable (Actual does not extend Expected)',
+    $Expected,
+    $Actual
+  > =>
+{
+  return (() => {}) as any
+}
 
 /**
  * Assert that a type extends (is a subtype of) another type.
@@ -223,11 +279,16 @@ export type sub<$Expected, $Actual> = $Actual extends $Expected ? true
  *
  * @example
  * ```ts
- * // Type checks happen at compile time
+ * // Value mode (provide value in second call)
  * Ts.Test.sub<string>()('hello')       // OK - 'hello' extends string
  * Ts.Test.sub<'hello'>()('hello')      // OK - 'hello' extends 'hello'
  * Ts.Test.sub<'hello'>()('world')      // Error - 'world' doesn't extend 'hello'
  * Ts.Test.sub<number>()('hello')       // Error - string doesn't extend number
+ *
+ * // Type-only mode (provide type as second type parameter)
+ * Ts.Test.sub<string, 'hello'>() // OK - 'hello' extends string
+ * Ts.Test.sub<object, { a: 1 }>() // OK - { a: 1 } extends object
+ * Ts.Test.sub<'hello', string>() // Error - string doesn't extend 'hello'
  *
  * // Validating narrowed types
  * if (isPositive(value)) {
@@ -239,15 +300,23 @@ export type sub<$Expected, $Actual> = $Actual extends $Expected ? true
  * Ts.Test.sub<BaseType>()(result)      // OK if result extends BaseType
  * ```
  */
-export const sub = <$Expected>() =>
-<$Actual>(
-  _actual: $Actual extends $Expected ? $Actual
-    : StaticErrorAssertion<
-      'Actual value type does not extend expected type',
-      $Expected,
-      $Actual
-    >,
-): void => {}
+export const sub = <$Expected, $Actual = ___NoValue___>(): [$Actual] extends [___NoValue___] ? <$ActualValue>(
+    _actual: $ActualValue extends $Expected ? $ActualValue
+      : StaticErrorAssertion<
+        'Actual value type does not extend expected type',
+        $Expected,
+        $ActualValue
+      >,
+  ) => void
+  : $Actual extends $Expected ? void
+  : StaticErrorAssertion<
+    'Actual type does not extend expected type',
+    $Expected,
+    $Actual
+  > =>
+{
+  return (() => {}) as any
+}
 
 /**
  * Assert that a type extends the expected type AND has no excess properties.
@@ -316,16 +385,19 @@ export type subNoExcess<$Expected, $Actual> = $Actual extends $Expected
  * ```ts
  * type Config = { id: boolean; name?: string }
  *
- * // These pass:
+ * // Value mode (provide value in second call)
  * Ts.Test.subNoExcess<Config>()({ id: true })
  * Ts.Test.subNoExcess<Config>()({ id: true, name: 'test' })
  *
- * // These fail:
  * // @ts-expect-error - Excess property
  * Ts.Test.subNoExcess<Config>()({ id: true, $skip: true })
  *
  * // @ts-expect-error - Wrong type
  * Ts.Test.subNoExcess<Config>()({ id: 'wrong' })
+ *
+ * // Type-only mode (provide type as second type parameter)
+ * Ts.Test.subNoExcess<Config, { id: true }>() // OK
+ * Ts.Test.subNoExcess<Config, { id: true; extra: 1 }>() // Error - excess property
  * ```
  *
  * @example
@@ -344,15 +416,28 @@ export type subNoExcess<$Expected, $Actual> = $Actual extends $Expected
  * @see {@link sub} for standard subtype checking (allows excess properties)
  * @see {@link exact} for exact structural equality
  */
-export const subNoExcess = <$Expected>() =>
-<$Actual>(
-  _actual: $Actual extends $Expected ? Obj.NoExcess<$Expected, $Actual>
+export const subNoExcess = <$Expected, $Actual = ___NoValue___>(): [$Actual] extends [___NoValue___] ? <$ActualValue>(
+    _actual: $ActualValue extends $Expected ? Obj.NoExcess<$Expected, $ActualValue>
+      : StaticErrorAssertion<
+        'Actual value type does not extend expected type',
+        $Expected,
+        $ActualValue
+      >,
+  ) => void
+  : $Actual extends $Expected ? Exclude<keyof $Actual, keyof $Expected> extends never ? void
     : StaticErrorAssertion<
-      'Actual value type does not extend expected type',
+      'Type has excess properties not present in expected type',
       $Expected,
       $Actual
-    >,
-): void => {}
+    >
+  : StaticErrorAssertion<
+    'Actual type does not extend expected type',
+    $Expected,
+    $Actual
+  > =>
+{
+  return (() => {}) as any
+}
 
 /**
  * Assert that a type does NOT extend another type.
@@ -384,10 +469,14 @@ export type subNot<$NotExpected, $Actual> = $Actual extends $NotExpected ? Stati
  *
  * @example
  * ```ts
- * // Type checks happen at compile time
+ * // Value mode (provide value in second call)
  * Ts.Test.subNot<number>()('hello')    // OK - string doesn't extend number
  * Ts.Test.subNot<string>()('hello')    // Error - 'hello' extends string
  * Ts.Test.subNot<string>()(42)         // OK - number doesn't extend string
+ *
+ * // Type-only mode (provide type as second type parameter)
+ * Ts.Test.subNot<number, string>() // OK - string doesn't extend number
+ * Ts.Test.subNot<string, 'hello'>() // Error - 'hello' extends string
  *
  * // Validating mutually exclusive types
  * type Positive = number & { __positive: true }
@@ -396,15 +485,23 @@ export type subNot<$NotExpected, $Actual> = $Actual extends $NotExpected ? Stati
  * Ts.Test.subNot<Positive>()(neg)      // OK - Negative doesn't extend Positive
  * ```
  */
-export const subNot = <$NotExpected>() =>
-<$Actual>(
-  _actual: $Actual extends $NotExpected ? StaticErrorAssertion<
-      'Actual value type extends type it should not extend',
+export const subNot = <$NotExpected, $Actual = ___NoValue___>(): [$Actual] extends [___NoValue___] ? <$ActualValue>(
+    _actual: $ActualValue extends $NotExpected ? StaticErrorAssertion<
+        'Actual value type extends type it should not extend',
+        $NotExpected,
+        $ActualValue
+      >
+      : $ActualValue,
+  ) => void
+  : $Actual extends $NotExpected ? StaticErrorAssertion<
+      'Actual type extends type it should not extend',
       $NotExpected,
       $Actual
     >
-    : $Actual,
-): void => {}
+  : void =>
+{
+  return (() => {}) as any
+}
 
 /**
  * Assert that a type is exactly `never`.
@@ -609,23 +706,32 @@ export type sup<$Supertype, $Actual> = $Actual extends $Supertype ? true
  * interface Base { id: string }
  * interface Extended extends Base { name: string }
  *
+ * // Value mode (provide value in second call)
  * const extended: Extended = { id: '1', name: 'test' }
  * Ts.Test.sup<Base>()(extended)     // OK - Extended extends Base
  * Ts.Test.sup<Extended>()(extended) // OK - Extended extends Extended
  *
  * const base: Base = { id: '1' }
  * Ts.Test.sup<Extended>()(base)     // Error - Base doesn't extend Extended
+ *
+ * // Type-only mode (provide type as second type parameter)
+ * Ts.Test.sup<object, { a: 1 }>() // OK - { a: 1 } extends object
+ * Ts.Test.sup<string, 'hello'>() // OK - 'hello' extends string
  * ```
  */
-export const sup = <$Supertype>() =>
-<$Actual>(
-  _actual: $Actual extends $Supertype ? $Actual
-    : StaticErrorAssertion<
-      'Actual value type does not extend expected supertype',
-      $Supertype,
-      $Actual
-    >,
-): void => {}
+export const sup = <$Supertype, $Actual = ___NoValue___>(): [$Actual] extends [___NoValue___] ? <$ActualValue>(
+    _actual: $ActualValue extends $Supertype ? $ActualValue
+      : StaticErrorAssertion<
+        'Actual value type does not extend expected supertype',
+        $Supertype,
+        $ActualValue
+      >,
+  ) => void
+  : $Actual extends $Supertype ? void
+  : StaticErrorAssertion<'Actual type does not extend expected supertype', $Supertype, $Actual> =>
+{
+  return (() => {}) as any
+}
 
 /**
  * Assert that a function's parameters match the expected type.
@@ -657,19 +763,40 @@ export type parameters<$Expected extends readonly any[], $Function extends (...a
  * @example
  * ```ts
  * function add(a: number, b: number) { return a + b }
- * Parameters<[number, number]>()(add) // ✓ Pass
- * Parameters<[string, string]>()(add) // ✗ Fail - Type error
+ *
+ * // Value mode (provide function in second call)
+ * Ts.Test.parameters<[number, number]>()(add) // ✓ Pass
+ * Ts.Test.parameters<[string, string]>()(add) // ✗ Fail - Type error
+ *
+ * // Type-only mode (provide type as second type parameter)
+ * type AddParams = Parameters<typeof add>
+ * Ts.Test.parameters<[number, number], AddParams>() // ✓ Pass
+ * Ts.Test.parameters<[string, string], AddParams>() // ✗ Fail - Type error
+ *
+ * // Your original example
+ * type i1 = Interceptor.InferFromPipeline<typeof p1>
+ * Ts.Test.parameters<[steps: { a: any; b: any; c: any }], i1>()
  * ```
  */
-export const parameters = <$Expected extends readonly any[]>() =>
-<$Function extends Fn.AnyAny>(
-  _fn: Parameters<$Function> extends $Expected ? $Function
-    : StaticErrorAssertion<
-      'Actual function parameters do not match expected parameters',
-      $Expected,
-      Parameters<$Function>
-    >,
-): void => {}
+export const parameters = <$Expected extends readonly any[], $Actual = ___NoValue___>(): [$Actual] extends [
+  ___NoValue___,
+] ? <$Function extends Fn.AnyAny>(
+    _fn: Parameters<$Function> extends $Expected ? $Function
+      : StaticErrorAssertion<
+        'Actual function parameters do not match expected parameters',
+        $Expected,
+        Parameters<$Function>
+      >,
+  ) => void
+  : $Actual extends $Expected ? void
+  : StaticErrorAssertion<
+    'Actual parameters do not match expected parameters',
+    $Expected,
+    $Actual
+  > =>
+{
+  return (() => {}) as any
+}
 
 /**
  * Assert that a type is a Promise with specific element type.
@@ -698,19 +825,34 @@ export type promise<$Type, $Actual> = $Actual extends Promise<$Type> ? true
  * @example
  * ```ts
  * const result = async () => 42
- * Promise<number>()(await result()) // OK
- * Promise<string>()(42) // Error - not a Promise<string>
+ *
+ * // Value mode (provide value in second call)
+ * Ts.Test.promise<number>()(await result()) // OK
+ * Ts.Test.promise<string>()(42) // Error - not a Promise<string>
+ *
+ * // Type-only mode (provide type as second type parameter)
+ * Ts.Test.promise<number, Promise<number>>() // OK
+ * Ts.Test.promise<string, Promise<number>>() // Error - wrong type
+ * Ts.Test.promise<number, number>() // Error - not a Promise
  * ```
  */
-export const promise = <$Type>() =>
-<$Actual>(
-  _actual: $Actual extends Promise<$Type> ? $Actual
-    : StaticErrorAssertion<
-      'Actual value type is not a Promise with expected element type',
-      Promise<$Type>,
-      $Actual
-    >,
-): void => {}
+export const promise = <$Type, $Actual = ___NoValue___>(): [$Actual] extends [___NoValue___] ? <$ActualValue>(
+    _actual: $ActualValue extends Promise<$Type> ? $ActualValue
+      : StaticErrorAssertion<
+        'Actual value type is not a Promise with expected element type',
+        Promise<$Type>,
+        $ActualValue
+      >,
+  ) => void
+  : $Actual extends Promise<$Type> ? void
+  : StaticErrorAssertion<
+    'Type is not a Promise with expected element type',
+    Promise<$Type>,
+    $Actual
+  > =>
+{
+  return (() => {}) as any
+}
 
 /**
  * Assert that a type is NOT a Promise.
@@ -776,20 +918,34 @@ export type array<$ElementType, $Actual> = $Actual extends $ElementType[] ? true
  *
  * @example
  * ```ts
- * Array<string>()(strings) // OK if strings is string[]
- * Array<number>()([1, 2, 3]) // OK
- * Array<string>()([1, 2, 3]) // Error - not string[]
+ * //Value mode (provide value in second call)
+ * Ts.Test.array<string>()(strings) // OK if strings is string[]
+ * Ts.Test.array<number>()([1, 2, 3]) // OK
+ * Ts.Test.array<string>()([1, 2, 3]) // Error - not string[]
+ *
+ * // Type-only mode (provide type as second type parameter)
+ * Ts.Test.array<string, string[]>() // OK
+ * Ts.Test.array<number, string[]>() // Error - wrong element type
+ * Ts.Test.array<string, string>() // Error - not an array
  * ```
  */
-export const array = <$ElementType>() =>
-<$Actual>(
-  _actual: $Actual extends $ElementType[] ? $Actual
-    : StaticErrorAssertion<
-      'Actual value type is not an array with expected element type',
-      $ElementType[],
-      $Actual
-    >,
-): void => {}
+export const array = <$ElementType, $Actual = ___NoValue___>(): [$Actual] extends [___NoValue___] ? <$ActualValue>(
+    _actual: $ActualValue extends $ElementType[] ? $ActualValue
+      : StaticErrorAssertion<
+        'Actual value type is not an array with expected element type',
+        $ElementType[],
+        $ActualValue
+      >,
+  ) => void
+  : $Actual extends $ElementType[] ? void
+  : StaticErrorAssertion<
+    'Type is not an array with expected element type',
+    $ElementType[],
+    $Actual
+  > =>
+{
+  return (() => {}) as any
+}
 
 //
 //

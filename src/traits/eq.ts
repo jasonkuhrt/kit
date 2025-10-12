@@ -72,7 +72,7 @@ export interface Eq<$A = any> extends
  * Validate that two types can be meaningfully compared for equality.
  * Prevents comparing disjoint types (no overlap).
  */
-type ValidateComparable<A, B> = Ts.GetVariance<A, B> extends 'disjoint' ? Ts.Simplify<ErrorDisjointTypes<A, B>> : B
+type ValidateComparable<A, B> = Ts.GetRelation<A, B> extends 'disjoint' ? Ts.Simplify<ErrorDisjointTypes<A, B>> : B
 
 /**
  * Error type for comparing types with no overlap.

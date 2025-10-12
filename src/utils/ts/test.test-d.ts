@@ -335,3 +335,108 @@ test('parameters runtime', () => {
   // @ts-expect-error - Wrong parameter type
   Ts.Test.parameters<[number]>()(greet)
 })
+
+// === Test type-only mode for all assertions ===
+
+test('type-only mode - exact', () => {
+  // Should pass
+  Ts.Test.exact<string, string>()
+  Ts.Test.exact<number, number>()
+  Ts.Test.exact<{ a: 1 }, { a: 1 }>()
+  Ts.Test.exact<never, never>() // Can test never directly!
+
+  // Types don't match - should error
+  Ts.Test.exact<string, number>()
+  // Too narrow - should error
+  Ts.Test.exact<string | number, string>()
+})
+
+test('type-only mode - bid', () => {
+  // Should pass
+  Ts.Test.bid<string, string>()
+  Ts.Test.bid<1 | 2, 2 | 1>() // Mutually assignable
+  Ts.Test.bid<string & {}, string>() // Both compute to string
+
+  // @ts-expect-error - Not mutually assignable
+  Ts.Test.bid<string, number>()
+})
+
+test('type-only mode - sub', () => {
+  // Should pass
+  Ts.Test.sub<string, 'hello'>() // 'hello' extends string
+  Ts.Test.sub<object, { a: 1 }>() // { a: 1 } extends object
+  Ts.Test.sub<number, 42>()
+
+  // @ts-expect-error - Doesn't extend
+  Ts.Test.sub<'hello', string>() // string doesn't extend 'hello'
+})
+
+test('type-only mode - subNoExcess', () => {
+  type Config = { id: boolean; name?: string }
+
+  // Should pass
+  Ts.Test.subNoExcess<Config, { id: true }>()
+  Ts.Test.subNoExcess<Config, { id: true; name: 'test' }>()
+
+  // @ts-expect-error - Excess property
+  Ts.Test.subNoExcess<Config, { id: true; extra: 1 }>()
+})
+
+test('type-only mode - subNot', () => {
+  // Should pass
+  Ts.Test.subNot<number, string>()
+  Ts.Test.subNot<string, number>()
+
+  // @ts-expect-error - 'hello' extends string
+  Ts.Test.subNot<string, 'hello'>()
+})
+
+test('type-only mode - sup', () => {
+  // Should pass
+  Ts.Test.sup<object, { a: 1 }>() // { a: 1 } extends object
+  Ts.Test.sup<string, 'hello'>() // 'hello' extends string
+
+  // @ts-expect-error - object doesn't extend { a: 1 }
+  Ts.Test.sup<{ a: 1 }, object>()
+})
+
+test('type-only mode - parameters (the original use case!)', () => {
+  function add(a: number, b: number): number {
+    return a + b
+  }
+  type AddParams = Parameters<typeof add>
+
+  // Should pass
+  Ts.Test.parameters<[number, number], AddParams>()
+  Ts.Test.parameters<[number, number], [number, number]>()
+
+  // @ts-expect-error - Wrong types
+  Ts.Test.parameters<[string, string], AddParams>()
+
+  // Real-world example from user's code
+  // type i1 = Interceptor.InferFromPipeline<typeof p1>
+  // Ts.Test.parameters<[steps: { a: any; b: any; c: any }], i1>()
+})
+
+test('type-only mode - promise', () => {
+  // Should pass
+  Ts.Test.promise<number, Promise<number>>()
+  Ts.Test.promise<string, Promise<string>>()
+
+  // @ts-expect-error - Wrong type
+  Ts.Test.promise<string, Promise<number>>()
+  // @ts-expect-error - Not a Promise
+  Ts.Test.promise<number, number>()
+})
+
+test('type-only mode - array', () => {
+  // Should pass
+  Ts.Test.array<string, string[]>()
+  Ts.Test.array<number, number[]>()
+  Ts.Test.array<{ a: 1 }, Array<{ a: 1 }>>()
+
+  // @ts-expect-error - Wrong element type
+  Ts.Test.array<number, string[]>()
+  // @ts-expect-error - Not an array
+  Ts.Test.array<string, string>()
+})

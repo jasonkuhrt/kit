@@ -463,41 +463,49 @@ export type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never : IsUnknow
  * Classify how the SECOND type parameter relates to the FIRST type parameter.
  *
  * Returns one of:
- * - 'covariant' - B is a subtype of A (B extends A, B is narrower than A)
- * - 'contravariant' - B is a supertype of A (A extends B, B is wider than A)
- * - 'invariant' - Neither extends the other but they share structure
- * - 'bivariant' - Both A extends B and B extends A (identical types)
+ * - 'subtype' - B is a subtype of A (B extends A, B is narrower than A)
+ * - 'supertype' - B is a supertype of A (A extends B, B is wider than A)
+ * - 'overlapping' - Neither extends the other but they share structure
+ * - 'equivalent' - Both A extends B and B extends A (identical types)
  * - 'disjoint' - No relationship between A and B
  *
  * @example
  * ```ts
  * // Read as: "How does the second type relate to the first?"
- * type T1 = GetVariance<string, string> // 'bivariant'
- * type T2 = GetVariance<1, 1> // 'bivariant'
- * type T3 = GetVariance<string, number> // 'disjoint'
- * type T4 = GetVariance<{a: 1}, {b: 2}> // 'invariant' (objects can have both properties)
- * type T5 = GetVariance<{a: 1, id: 1}, {b: 2, id: 1}> // 'invariant'
- * type T6 = GetVariance<{a: 1}, {a: 1}> // 'bivariant'
- * type T7 = GetVariance<'a' | 'b', 'a'> // 'covariant' ('a' is narrower than 'a' | 'b')
- * type T8 = GetVariance<'a', 'a' | 'b'> // 'contravariant' ('a' | 'b' is wider than 'a')
+ * type T1 = GetRelation<string, string> // 'equivalent'
+ * type T2 = GetRelation<1, 1> // 'equivalent'
+ * type T3 = GetRelation<string, number> // 'disjoint'
+ * type T4 = GetRelation<{a: 1}, {b: 2}> // 'overlapping' (objects can have both properties)
+ * type T5 = GetRelation<{a: 1, id: 1}, {b: 2, id: 1}> // 'overlapping'
+ * type T6 = GetRelation<{a: 1}, {a: 1}> // 'equivalent'
+ * type T7 = GetRelation<'a' | 'b', 'a'> // 'subtype' ('a' is narrower than 'a' | 'b')
+ * type T8 = GetRelation<'a', 'a' | 'b'> // 'supertype' ('a' | 'b' is wider than 'a')
  * ```
  */
 // dprint-ignore
-export type GetVariance<A, B> =
-  // Check if types are identical (bivariant)
+export type GetRelation<A, B> =
+  // Check if types are equivalent
   [A] extends [B] ? [B] extends [A] ?
-    'bivariant' // Both extend each other - identical types
-  // A extends B but B doesn't extend A - contravariant
-  : 'contravariant'
+    'equivalent' // Both extend each other - equivalent types
+  // A extends B but B doesn't extend A - B is supertype
+  : 'supertype'
   // A doesn't extend B, check if B extends A
-  : [B] extends [A] ? 'covariant'
+  : [B] extends [A] ? 'subtype'
   // Neither extends the other - check special cases
   : A extends Primitive ?
       B extends Primitive ?
-        [A & B] extends [never] ? 'disjoint' : 'invariant'  // Both primitives
+        [A & B] extends [never] ? 'disjoint' : 'overlapping'  // Both primitives
       : 'disjoint'  // Primitive vs non-primitive = always disjoint
     : B extends Primitive ? 'disjoint'  // Non-primitive vs primitive = always disjoint
-    : [A & B] extends [never] ? 'disjoint' : 'invariant' // Both non-primitives
+    : [A & B] extends [never] ? 'disjoint' : 'overlapping' // Both non-primitives
+
+/**
+ * @deprecated Use {@link GetRelation} instead. This alias will be removed in a future version.
+ *
+ * Legacy name for GetRelation. The name "GetVariance" was misleading as this utility
+ * checks type relations, not variance positions.
+ */
+export type GetVariance<A, B> = GetRelation<A, B>
 
 // Type-fest imports (used by some types above)
 type IsAny<T> = 0 extends 1 & T ? true : false
