@@ -383,7 +383,7 @@ describe('promise auto-awaiting', () => {
 describe('no snapshots when output is specified (issue #6)', () => {
   // Function mode - when output is specified, custom test should NOT create snapshot
   // even if it returns a value
-  Test.describe('function mode with output')
+  Test.describe('function mode with output and custom test')
     .on(add)
     .cases([[1, 2], 3], [[5, 5], 10])
     .test(({ result, output }) => {
@@ -393,7 +393,7 @@ describe('no snapshots when output is specified (issue #6)', () => {
     })
 
   // Generic mode - when output is specified, custom test should NOT create snapshot
-  Test.describe('generic mode with output')
+  Test.describe('generic mode with output and custom test')
     .inputType<string>()
     .outputType<string>()
     .cases(['hello', 'HELLO'], ['world', 'WORLD'])
@@ -402,4 +402,34 @@ describe('no snapshots when output is specified (issue #6)', () => {
       // Returning a value should NOT create snapshot because output is specified
       return { thisValueShouldBeIgnored: 'no snapshot should be created' }
     })
+
+  // CRITICAL: Test default behavior (no custom test function)
+  // This is the bug that keeps recurring - snapshots being created even with outputs specified
+  describe('with default test behavior (no custom test function)', () => {
+    const isEven = (n: number): boolean => n % 2 === 0
+    const isPositive = (n: number): boolean => n > 0
+
+    // Function mode with default test - should use toEqual assertion, NOT create snapshots
+    Test.describe('function mode default test')
+      .on(isEven)
+      .cases(
+        [[2], true],
+        [[3], false],
+        [[0], true],
+        [[-1], false],
+      )
+      .test() // No custom test - should use default toEqual, NOT create snapshots
+
+    // Generic mode with default test - should use toEqual assertion, NOT create snapshots
+    Test.describe('generic mode default test')
+      .inputType<number>()
+      .outputType<boolean>()
+      .cases(
+        [5, true],
+        [-5, false],
+      )
+      .test(({ input, output }) => {
+        expect(isPositive(input)).toEqual(output)
+      })
+  })
 })

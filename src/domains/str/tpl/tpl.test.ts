@@ -12,11 +12,11 @@ Test.on(Tpl.is)
     [[getTpl`hello ${'x'}`],    true],
 
     // False cases
-    [[[],                       false]],
-    [[([`a`, `b`] as any),      false]],
-    [[({ raw: [`test`] }),      false]],
-    [[null,                     false]],
-    [[42,                       false]],
+    [[[]], false],
+    [[([`a`, `b`] as any)], false],
+    [[({ raw: [`test`] })], false],
+    [[null], false],
+    [[42], false],
   )
   .test()
 
@@ -24,13 +24,13 @@ Test.on(Tpl.is)
 Test.on(Tpl.isCallInput)
   .cases(
     // True cases
-    [[getCallInput`test`,            true]],
-    [[getCallInput`hello ${1}`,      true]],
+    [[getCallInput`test`], true],
+    [[getCallInput`hello ${1}`], true],
 
     // False cases
-    [[null,                     false]],
-    [[[],                       false]],
-    [[[[`not`, `template`]],    false]],
+    [[null], false],
+    [[[]],  false],
+    [[[[`not`, `template`]]], false],
   )
   .test()
 
