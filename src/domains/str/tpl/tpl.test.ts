@@ -181,6 +181,94 @@ describe(`passthrough`, () => {
   })
 })
 
+describe(`dedent`, () => {
+  test(`removes common indentation`, () => {
+    const result = Tpl.dedent`
+      line 1
+      line 2
+        line 3
+    `
+    expect(result).toBe(`line 1\nline 2\n  line 3`)
+  })
+
+  test(`trims leading and trailing blank lines`, () => {
+    const result = Tpl.dedent`
+
+      content
+
+    `
+    expect(result).toBe(`content`)
+  })
+
+  test(`handles interpolated values`, () => {
+    const name = `world`
+    const result = Tpl.dedent`
+      Hello ${name}
+      How are you?
+    `
+    expect(result).toBe(`Hello world\nHow are you?`)
+  })
+
+  test(`auto-indents multi-line interpolated values`, () => {
+    const inner = `line1\nline2\nline3`
+    const result = Tpl.dedent`
+      outer:
+        ${inner}
+    `
+    expect(result).toBe(`outer:\n  line1\n  line2\n  line3`)
+  })
+
+  test(`preserves escape sequences using raw strings`, () => {
+    const result = Tpl.dedent`
+      C:\\Users\\name\\Documents
+    `
+    // When using .raw, \\ in the template stays as \\ (which displays as single \)
+    expect(result).toBe(`C:\\\\Users\\\\name\\\\Documents`)
+  })
+
+  test(`handles code with nested indentation`, () => {
+    const result = Tpl.dedent`
+      function greet() {
+        if (true) {
+          console.log('hello')
+        }
+      }
+    `
+    expect(result).toBe(`function greet() {\n  if (true) {\n    console.log('hello')\n  }\n}`)
+  })
+
+  test(`handles empty template`, () => {
+    const result = Tpl.dedent``
+    expect(result).toBe(``)
+  })
+
+  test(`handles template with only whitespace`, () => {
+    const result = Tpl.dedent`
+
+    `
+    expect(result).toBe(``)
+  })
+
+  test(`preserves blank lines within content`, () => {
+    const result = Tpl.dedent`
+      line 1
+
+      line 3
+    `
+    expect(result).toBe(`line 1\n\nline 3`)
+  })
+
+  test(`handles multi-line value at different indentation levels`, () => {
+    const value = `a\nb\nc`
+    const result = Tpl.dedent`
+      start
+        indented: ${value}
+      end
+    `
+    expect(result).toBe(`start\n  indented: a\n  b\n  c\nend`)
+  })
+})
+
 describe(`highlight`, () => {
   test(`returns interpolated string with destructured tag`, () => {
     const { ts } = Tpl.highlight
