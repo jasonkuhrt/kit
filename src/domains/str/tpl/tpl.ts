@@ -254,7 +254,11 @@ export type HighlightTag = typeof passthrough
  * Each property is a tagged template function that provides editor syntax highlighting
  * for that language (when supported by the editor).
  *
- * Implemented as a Proxy that returns the same passthrough function for all properties,
+ * **Automatically dedents content** - Removes common indentation and trims blank lines,
+ * allowing you to write naturally indented template literals in your source code while
+ * producing clean output. Relative indentation is preserved.
+ *
+ * Implemented as a Proxy that returns the same dedent function for all properties,
  * allowing destructuring and property access to work seamlessly.
  *
  * Supported languages are based on common supported editor injection patterns:
@@ -269,22 +273,30 @@ export type HighlightTag = typeof passthrough
  *
  * const { ts, html, sql } = Str.Tpl.highlight
  *
+ * // Source indentation is automatically removed
  * const code = ts`
- *   export const add = (a: number, b: number) => a + b
- * ` // Gets TypeScript syntax highlighting in editor
+ *   export const add = (a: number, b: number) => {
+ *     return a + b
+ *   }
+ * `
+ * // Result: "export const add = (a: number, b: number) => {\n  return a + b\n}"
+ * // ^ Clean output with relative indentation preserved
  *
  * const markup = html`
- *   <div class="container">Hello</div>
- * ` // Gets HTML syntax highlighting
+ *   <div class="container">
+ *     <h1>Title</h1>
+ *   </div>
+ * ` // Gets HTML syntax highlighting, auto-dedented
  *
  * const query = sql`
- *   SELECT * FROM users WHERE id = ${userId}
- * ` // Gets SQL syntax highlighting
+ *   SELECT * FROM users
+ *   WHERE id = ${userId}
+ * ` // Gets SQL syntax highlighting, auto-dedented
  * ```
  */
 export const highlight: {
   /**
-   * Passthrough template literal with TypeScript syntax highlighting.
+   * Template literal with TypeScript syntax highlighting and automatic dedenting.
    * @example
    * ```typescript
    * const { ts } = Str.Tpl.highlight
@@ -293,11 +305,12 @@ export const highlight: {
    *     return a + b
    *   }
    * `
+   * // Result: "export const add = (a: number, b: number): number => {\n  return a + b\n}"
    * ```
    */
   ts: HighlightTag
   /**
-   * Passthrough template literal with JavaScript syntax highlighting.
+   * Template literal with JavaScript syntax highlighting and automatic dedenting.
    * @example
    * ```typescript
    * const { js } = Str.Tpl.highlight
@@ -306,11 +319,12 @@ export const highlight: {
    *     return 'Hello ' + name
    *   }
    * `
+   * // Result: "function greet(name) {\n  return 'Hello ' + name\n}"
    * ```
    */
   js: HighlightTag
   /**
-   * Passthrough template literal with HTML syntax highlighting.
+   * Template literal with HTML syntax highlighting and automatic dedenting.
    * @example
    * ```typescript
    * const { html } = Str.Tpl.highlight
@@ -324,7 +338,7 @@ export const highlight: {
    */
   html: HighlightTag
   /**
-   * Passthrough template literal with CSS syntax highlighting.
+   * Template literal with CSS syntax highlighting and automatic dedenting.
    * @example
    * ```typescript
    * const { css } = Str.Tpl.highlight
@@ -338,7 +352,7 @@ export const highlight: {
    */
   css: HighlightTag
   /**
-   * Passthrough template literal with SQL syntax highlighting.
+   * Template literal with SQL syntax highlighting and automatic dedenting.
    * @example
    * ```typescript
    * const { sql } = Str.Tpl.highlight
@@ -352,7 +366,7 @@ export const highlight: {
    */
   sql: HighlightTag
   /**
-   * Passthrough template literal with JSON syntax highlighting.
+   * Template literal with JSON syntax highlighting and automatic dedenting.
    * @example
    * ```typescript
    * const { json } = Str.Tpl.highlight
@@ -367,7 +381,7 @@ export const highlight: {
    */
   json: HighlightTag
   /**
-   * Passthrough template literal with YAML syntax highlighting.
+   * Template literal with YAML syntax highlighting and automatic dedenting.
    * @example
    * ```typescript
    * const { yaml } = Str.Tpl.highlight
@@ -382,7 +396,7 @@ export const highlight: {
    */
   yaml: HighlightTag
   /**
-   * Passthrough template literal with YAML syntax highlighting (alias for `yaml`).
+   * Template literal with YAML syntax highlighting and automatic dedenting (alias for `yaml`).
    * @example
    * ```typescript
    * const { yml } = Str.Tpl.highlight
@@ -394,7 +408,7 @@ export const highlight: {
    */
   yml: HighlightTag
   /**
-   * Passthrough template literal with GraphQL syntax highlighting.
+   * Template literal with GraphQL syntax highlighting and automatic dedenting.
    * @example
    * ```typescript
    * const { graphql } = Str.Tpl.highlight
@@ -410,7 +424,7 @@ export const highlight: {
    */
   graphql: HighlightTag
   /**
-   * Passthrough template literal with GraphQL syntax highlighting (alias for `graphql`).
+   * Template literal with GraphQL syntax highlighting and automatic dedenting (alias for `graphql`).
    * @example
    * ```typescript
    * const { gql } = Str.Tpl.highlight
@@ -425,7 +439,7 @@ export const highlight: {
    */
   gql: HighlightTag
   /**
-   * Passthrough template literal with Isograph syntax highlighting.
+   * Template literal with Isograph syntax highlighting and automatic dedenting.
    * @example
    * ```typescript
    * const { iso } = Str.Tpl.highlight
@@ -436,4 +450,4 @@ export const highlight: {
    * ```
    */
   iso: HighlightTag
-} = Prox.createCachedGetProxy(() => passthrough)
+} = Prox.createCachedGetProxy(() => dedent)

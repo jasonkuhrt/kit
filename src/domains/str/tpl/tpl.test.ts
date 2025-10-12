@@ -93,9 +93,39 @@ Test.describe(`highlight`)
   .inputType<string>()
   .outputType<string>()
   .cases(
+    // Simple single-line cases (no dedenting needed)
     [Tpl.highlight.ts`const x = ${100}`,    `const x = 100`],
     [Tpl.highlight.html`test`,              `test`],
     [Tpl.highlight.sql`test`,               `test`],
+
+    // Multi-line cases with dedenting
+    [Tpl.highlight.ts`
+      export const add = (a: number, b: number) => {
+        return a + b
+      }
+    `, `export const add = (a: number, b: number) => {\n  return a + b\n}`],
+
+    [Tpl.highlight.html`
+      <div class="container">
+        <h1>Title</h1>
+      </div>
+    `, `<div class="container">\n  <h1>Title</h1>\n</div>`],
+
+    [Tpl.highlight.sql`
+      SELECT id, name
+      FROM users
+      WHERE status = 'active'
+    `, `SELECT id, name\nFROM users\nWHERE status = 'active'`],
+
+    // Multi-line with interpolation
+    [Tpl.highlight.graphql`
+      query GetUser($id: ID!) {
+        user(id: $id) {
+          name
+          email
+        }
+      }
+    `, `query GetUser($id: ID!) {\n  user(id: $id) {\n    name\n    email\n  }\n}`],
   )
   .test()
 
