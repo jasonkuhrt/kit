@@ -642,19 +642,25 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * Sugar method for snapshot testing - accepts only inputs, no expected outputs.
    * Each input is automatically wrapped in snapshot format.
    *
-   * For unary functions, arguments can be passed directly without tuple wrapping.
+   * **Special handling for unary functions:**
+   * - Concrete types (e.g., `number`, `string`, custom types): Arguments can be passed directly without tuple wrapping
+   * - `any`, `unknown`, `never`, and array types: **MUST** use tuple wrapping to avoid ambiguity
    *
    * @param inputs - Input values for snapshot testing
    *
    * @example
    * ```ts
-   * // Function mode - unary function
+   * // Unary function with concrete type - unwrapped form allowed
    * const double = (x: number) => x * 2
-   * Test.on(double).casesInput(1, 2, 3)  // No tuple wrapping needed
+   * Test.on(double).casesInput(1, 2, 3)
    *
-   * // Function mode - multi-argument function
+   * // Unary function with any/unknown - wrapped form required
+   * const identity = (x: any) => x
+   * Test.on(identity).casesInput([1], [2], [3])  // Must wrap
+   *
+   * // Multi-argument function - tuple wrapping always required
    * const add = (a: number, b: number) => a + b
-   * Test.on(add).casesInput([1, 2], [3, 4], [5, 6])  // Tuple wrapping required
+   * Test.on(add).casesInput([1, 2], [3, 4], [5, 6])
    *
    * // Generic mode
    * Test.describe().inputType<string>().casesInput('a', 'b', 'c')
@@ -670,18 +676,24 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * Sugar method for snapshot testing - accepts only inputs array, no expected outputs.
    * Each input is automatically wrapped in snapshot format.
    *
-   * For unary functions, arguments can be passed directly without tuple wrapping.
+   * **Special handling for unary functions:**
+   * - Concrete types (e.g., `number`, `string`, custom types): Arguments can be passed directly without tuple wrapping
+   * - `any`, `unknown`, `never`, and array types: **MUST** use tuple wrapping to avoid ambiguity
    *
    * @param name - Name for the describe block
    * @param inputs - Array of input values for snapshot testing
    *
    * @example
    * ```ts
-   * // Function mode - unary function
+   * // Unary function with concrete type - unwrapped form allowed
    * const double = (x: number) => x * 2
    * Test.on(double).describeInputs('edge cases', [0, 1, -1])
    *
-   * // Function mode - multi-argument function
+   * // Unary function with any/unknown - wrapped form required
+   * const identity = (x: any) => x
+   * Test.on(identity).describeInputs('edge cases', [[1], [2], [3]])  // Must wrap
+   *
+   * // Multi-argument function - tuple wrapping always required
    * const add = (a: number, b: number) => a + b
    * Test.on(add).describeInputs('edge cases', [[0, 0], [1, 1]])
    *
