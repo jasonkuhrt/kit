@@ -1,12 +1,10 @@
 import { Test } from '#test'
-import { describe, expect, test } from 'vitest'
+import { describe, expect } from 'vitest'
 
 // Test functions for testing
 const add = (a: number, b: number): number => a + b
-const multiply = (a: number, b: number): number => a * b
 const upperCase = (s: string): string => s.toUpperCase()
 const identity = <T>(x: T): T => x
-const constant = () => 42
 
 describe('Test.table() builder', () => {
   describe('basic functionality', () => {
@@ -359,12 +357,12 @@ describe('promise auto-awaiting', () => {
   Test
     .on(run)
     .casesInput(
-      [() => 42],
+      () => 42,
       // dprint-ignore
-      [() => { throw new Error('error') }],
-      [() => Promise.resolve('hello')],
-      [() => Promise.reject(new Error('rejection'))],
-      [() => Promise.resolve(new Error('This is a value, not a rejection'))],
+      () => { throw new Error('error') },
+      () => Promise.resolve('hello'),
+      () => Promise.reject(new Error('rejection')),
+      () => Promise.resolve(new Error('This is a value, not a rejection')),
     )
     .test()
 
@@ -373,11 +371,11 @@ describe('promise auto-awaiting', () => {
     .on(run)
     .casesInput(
       // dprint-ignore
-      [() => { throw 42 }],
+      () => { throw 42 },
       // dprint-ignore
-      [() => { throw 'error string' }],
-      [() => Promise.reject(100)],
-      [() => Promise.reject('rejection string')],
+      () => { throw 'error string' },
+      () => Promise.reject(100),
+      () => Promise.reject('rejection string'),
     )
     .test()
 })
