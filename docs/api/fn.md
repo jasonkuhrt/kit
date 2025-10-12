@@ -214,6 +214,34 @@ const info = Fn.analyzeFunction(fn)
 // info.body: "a + b + c" (already trimmed and dedented)
 ```
 
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isUnary`
+
+```typescript
+;((fn: (...args: any[]) => unknown) => boolean)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/analyze.ts#L110" />
+
+Check if a function is unary (has exactly one parameter).
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Fn } from '@wollybeard/kit/fn'
+// ---cut---
+const unary = (x: number) => x * 2
+const binary = (a: number, b: number) => a + b
+const nullary = () => 42
+
+// [!code word:isUnary:1]
+Fn.isUnary(unary) // true
+// [!code word:isUnary:1]
+Fn.isUnary(binary) // false
+// [!code word:isUnary:1]
+Fn.isUnary(nullary) // false
+```
+
 ## Partial Application
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `_`

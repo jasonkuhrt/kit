@@ -14,6 +14,10 @@ Error handling utilities for robust error management. Provides utilities for err
 
 Function utilities for functional programming patterns. Provides utilities for function composition, currying, partial application, piping, and common functional patterns like identity and constant functions. Includes function analysis tools and endomorphism utilities.
 
+## [Html](/api/html)
+
+HTML utility functions for escaping and working with HTML content.
+
 ## [Json](/api/json)
 
 JSON utilities with Effect Schema integration. Provides type-safe JSON operations including type guards, parsing, encoding, and validation using Effect Schema. Supports JSON primitives, objects, and recursive value structures with comprehensive error handling.

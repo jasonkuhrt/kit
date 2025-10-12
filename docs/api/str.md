@@ -20,7 +20,7 @@ import * as Str from '@wollybeard/kit/str'
 
 - [**`Case`**](/api/str/case) - Convert string to camelCase.
 - [**`Char`**](/api/str/char) - Uppercase letter.
-- [**`Tpl`**](/api/str/tpl) - Convenience re-export of the built-in TemplateStringsArray type. Contains the string parts of a tagged template literal along with a raw property.
+- [**`Tpl`**](/api/str/tpl)
 
 ## Builder
 

@@ -2,8 +2,6 @@
 
 _Str_ / **Tpl**
 
-Convenience re-export of the built-in TemplateStringsArray type. Contains the string parts of a tagged template literal along with a raw property.
-
 ## Import
 
 ::: code-group
@@ -32,7 +30,7 @@ Str.Tpl.someFunction()
 type Tpl = TemplateStringsArray
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L16" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L19" />
 
 Convenience re-export of the built-in TemplateStringsArray type. Contains the string parts of a tagged template literal along with a raw property.
 
@@ -57,7 +55,7 @@ tag`Hello ${name}!`
 (value: unknown) => value is TemplateStringsArray
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L35" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L38" />
 
 Type guard to check if a value is a TemplateStringsArray. Used to detect when a function is called as a tagged template literal.
 
@@ -82,7 +80,7 @@ function tag(...args: unknown[]) {
 type CallInput = [Tpl, ...unknown[]]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L54" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L57" />
 
 Tagged template literal arguments tuple. First element is the template strings array, followed by interpolated values.
 
@@ -107,7 +105,7 @@ tag`Hello ${name}!`
 (value: unknown) => value is CallInput
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L72" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L75" />
 
 Type guard to check if function arguments are from a tagged template literal.
 
@@ -132,7 +130,7 @@ tag`Hello ${name}!`
 ;((callInput: CallInput) => Call)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L99" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L102" />
 
 Parse tagged template literal arguments into structured parts and values.
 
@@ -159,7 +157,7 @@ tag`Hello ${name}!`
 ;((mapper: (value: unknown) => string) => (callInput: CallInput) => string)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L122" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L125" />
 
 Render tagged template literal arguments using a custom value renderer.
 
@@ -189,7 +187,7 @@ const renderPrefixed = Str.Tpl.renderWith(v => `[${v}]`)
 ;((callInput: CallInput) => string)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L147" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L150" />
 
 Render tagged template literal arguments to a string. Interpolated values are converted using plain String() coercion.
 
@@ -209,6 +207,146 @@ tag`Hello ${name}!` // "Hello World!"
 tag`Count: ${42}` // "Count: 42"
 ```
 
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `passthrough`
+
+```typescript
+;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L166" />
+
+A passthrough tagged template literal that returns the interpolated string as-is. Useful for semantic clarity in code without any processing.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+const template = passthrough
+const message = template`Hello ${name}, you have ${count} items.`
+// Result: "Hello Alice, you have 5 items."
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `dedent`
+
+```typescript
+;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L209" />
+
+Tagged template literal that removes common indentation from all lines. Automatically indents multi-line interpolated values to match their context.
+
+Uses the raw template strings to preserve escape sequences (e.g., \n stays as backslash-n). Trims leading and trailing blank lines from the result.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+const code = dedent`
+  function greet() {
+    console.log('Hello')
+  }
+`
+// Result: "function greet() {\n  console.log('Hello')\n}"
+```
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+// Multi-line values are auto-indented
+const inner = 'line1\nline2'
+const code = dedent`
+  outer:
+    ${inner}
+`
+// Result: "outer:\n  line1\n  line2"
+```
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+// Escape sequences are preserved
+const path = dedent`
+  C:\Users\name\Documents
+`
+// Result: "C:\\Users\\name\\Documents" (backslashes preserved)
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HighlightTag`
+
+```typescript
+type HighlightTag = typeof passthrough
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L250" />
+
+Type for a tagged template literal function used for syntax highlighting.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `highlight`
+
+```typescript
+{
+  ts: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  js: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  html: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  css: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  sql: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  json: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  yaml: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  yml: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  graphql: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  gql: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  iso: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+}
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L285" />
+
+Object containing language-specific template tag functions for syntax highlighting. Each property is a tagged template function that provides editor syntax highlighting for that language (when supported by the editor).
+
+Implemented as a Proxy that returns the same passthrough function for all properties, allowing destructuring and property access to work seamlessly.
+
+Supported languages are based on common supported editor injection patterns:
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit'
+
+// [!code word:highlight:1]
+const { ts, html, sql } = Str.Tpl.highlight
+
+const code = ts`
+  export const add = (a: number, b: number) => a + b
+` // Gets TypeScript syntax highlighting in editor
+
+const markup = html`
+  <div class="container">Hello</div>
+` // Gets HTML syntax highlighting
+
+const query = sql`
+  SELECT * FROM users WHERE id = ${userId}
+` // Gets SQL syntax highlighting
+```
+
 ## Other
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Call`
@@ -220,4 +358,4 @@ interface Call {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L76" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L79" />
