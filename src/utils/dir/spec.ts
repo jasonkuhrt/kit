@@ -2,6 +2,15 @@ import { Fs } from '#fs'
 import { FsLoc } from '#fs-loc'
 import type { Json } from '#json'
 import { Schema as S } from 'effect'
+import { join } from 'node:path'
+
+/**
+ * Flat filesystem layout representation.
+ * Maps absolute file paths to their contents.
+ */
+export interface Layout {
+  [absolutePath: string]: string | Uint8Array
+}
 
 /**
  * Represents a single file system operation to be executed.
@@ -232,11 +241,79 @@ export interface SpecBuilder {
    */
   merge(...specs: SpecBuilder[]): SpecBuilder
 
+  /**
+   * Convert spec to flat layout representation.
+   *
+   * Walks the operations tree and builds a flat object mapping absolute paths to file contents.
+   * Automatically stringifies objects to JSON for `.json` files.
+   *
+   * @returns Flat layout object
+   *
+   * @example
+   * ```ts
+   * const layout = spec('/')
+   *   .add('package.json', { name: 'x' })
+   *   .add('src/index.ts', 'export {}')
+   *   .toLayout()
+   * // { '/package.json': '{"name":"x"}', '/src/index.ts': 'export {}' }
+   * ```
+   */
+  toLayout(): Layout
+
   // TODO: Add import feature
   // Import would read from absolute paths outside the sandbox to seed the spec
   // Signature: import(source: FsLoc.AbsFile | FsLoc.AbsDir, dest?: string): SpecBuilder
   // This would be a chain-only operation (not in spec) that executes immediately
   // Alternative: Dir.specFromDisk('/absolute/path') to create a spec from existing filesystem
+}
+
+/**
+ * Convert spec to flat layout representation.
+ *
+ * Walks the operations tree and builds a flat object mapping absolute paths to file contents.
+ * Automatically stringifies objects to JSON for `.json` files.
+ *
+ * @param spec - The spec to convert
+ * @returns Flat layout object
+ *
+ * @example
+ * ```ts
+ * const mySpec = Dir.spec('/').add('package.json', { name: 'x' })
+ * const layout = Dir.toLayout(mySpec)
+ * // { '/package.json': '{"name":"x"}' }
+ * ```
+ */
+export const toLayout = (spec: SpecBuilder): Layout => {
+  const result: Layout = {}
+
+  const processOp = (basePath: string, op: Operation): void => {
+    switch (op.type) {
+      case 'file': {
+        const fullPath = join(basePath, op.path.toString())
+        // Auto-stringify JSON objects for .json files
+        if (
+          typeof op.content === 'object'
+          && op.content !== null
+          && !ArrayBuffer.isView(op.content)
+          && fullPath.endsWith('.json')
+        ) {
+          result[fullPath] = JSON.stringify(op.content)
+        } else {
+          result[fullPath] = op.content
+        }
+        break
+      }
+      case 'dir': {
+        const dirPath = join(basePath, op.path.toString())
+        op.operations.forEach(subOp => processOp(dirPath, subOp))
+        break
+      }
+        // Ignore remove, clear, move operations - only extract file structure
+    }
+  }
+
+  spec.operations.forEach(op => processOp(spec.base.toString(), op))
+  return result
 }
 
 /**
@@ -447,6 +524,10 @@ export const spec = (
           allOps.push(...(spec.operations as Operation[]))
         }
         return createSpec(baseDir, allOps)
+      },
+
+      toLayout(): Layout {
+        return toLayout(self)
       },
     }
 
