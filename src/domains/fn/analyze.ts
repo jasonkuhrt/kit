@@ -90,6 +90,29 @@ export const analyzeFunction = (fn: (...args: [...any[]]) => unknown) => {
 }
 
 /**
+ * Check if a function is unary (has exactly one parameter).
+ *
+ * @category Introspection
+ * @param fn - The function to check
+ * @returns True if the function has exactly one parameter, false otherwise
+ *
+ * @example
+ * ```ts
+ * const unary = (x: number) => x * 2
+ * const binary = (a: number, b: number) => a + b
+ * const nullary = () => 42
+ *
+ * isUnary(unary)   // true
+ * isUnary(binary)  // false
+ * isUnary(nullary) // false
+ * ```
+ */
+export const isUnary = (fn: (...args: [...any[]]) => unknown): boolean => {
+  const { parameters } = analyzeFunction(fn)
+  return parameters.length === 1
+}
+
+/**
  * @see https://regex101.com/r/U0JtfS/1
  */
 const functionPattern =
