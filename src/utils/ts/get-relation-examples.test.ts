@@ -47,9 +47,3 @@ test('GetRelation additional examples for clarity', () => {
   expectTypeOf<Ts.GetRelation<string, { x: 1 }>>().toEqualTypeOf<'disjoint'>()
   expectTypeOf<Ts.GetRelation<number, []>>().toEqualTypeOf<'disjoint'>()
 })
-
-test('GetVariance deprecated alias still works', () => {
-  // Test that the deprecated alias still functions
-  expectTypeOf<Ts.GetVariance<string, string>>().toEqualTypeOf<'equivalent'>()
-  expectTypeOf<Ts.GetVariance<'a' | 'b', 'a'>>().toEqualTypeOf<'subtype'>()
-})

@@ -463,11 +463,31 @@ export type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never : IsUnknow
  * Classify how the SECOND type parameter relates to the FIRST type parameter.
  *
  * Returns one of:
- * - 'subtype' - B is a subtype of A (B extends A, B is narrower than A)
- * - 'supertype' - B is a supertype of A (A extends B, B is wider than A)
- * - 'overlapping' - Neither extends the other but they share structure
- * - 'equivalent' - Both A extends B and B extends A (identical types)
- * - 'disjoint' - No relationship between A and B
+ * - `'subtype'` - B is a subtype of A (B extends A, B is narrower/more specific than A).
+ *   See: {@link https://en.wikipedia.org/wiki/Subtyping | Subtyping on Wikipedia}
+ *
+ * - `'supertype'` - B is a supertype of A (A extends B, B is wider/more general than A).
+ *   This is the inverse of subtyping. See: {@link https://en.wikipedia.org/wiki/Subtyping#Subsumption | Subsumption}
+ *
+ * - `'equivalent'` - A and B are mutually assignable (both extend each other).
+ *   Also known as type equality in structural type systems.
+ *   See: {@link https://en.wikipedia.org/wiki/Type_system#Type_equivalence | Type Equivalence}
+ *
+ * - `'overlapping'` - Types share some possible values but neither is a subtype of the other.
+ *   Common in structural typing where types can share properties without a subtype relationship.
+ *   See: {@link https://www.typescriptlang.org/docs/handbook/type-compatibility.html | TypeScript Type Compatibility}
+ *
+ * - `'disjoint'` - Types have no values in common (their intersection is empty/never).
+ *   See: {@link https://en.wikipedia.org/wiki/Disjoint_union | Disjoint Sets Theory}
+ *
+ * @remarks
+ * This utility analyzes type relationships based on TypeScript's structural type system,
+ * where type compatibility is determined by structure rather than declaration.
+ *
+ * For more on type relations in programming languages, see:
+ * - {@link https://en.wikipedia.org/wiki/Type_theory | Type Theory on Wikipedia}
+ * - {@link https://www.cs.cornell.edu/courses/cs4110/2012fa/lectures/lecture25.pdf | Cornell CS - Subtyping}
+ * - {@link https://www.typescriptlang.org/docs/handbook/type-compatibility.html | TypeScript Handbook}
  *
  * @example
  * ```ts
@@ -498,14 +518,6 @@ export type GetRelation<A, B> =
       : 'disjoint'  // Primitive vs non-primitive = always disjoint
     : B extends Primitive ? 'disjoint'  // Non-primitive vs primitive = always disjoint
     : [A & B] extends [never] ? 'disjoint' : 'overlapping' // Both non-primitives
-
-/**
- * @deprecated Use {@link GetRelation} instead. This alias will be removed in a future version.
- *
- * Legacy name for GetRelation. The name "GetVariance" was misleading as this utility
- * checks type relations, not variance positions.
- */
-export type GetVariance<A, B> = GetRelation<A, B>
 
 // Type-fest imports (used by some types above)
 type IsAny<T> = 0 extends 1 & T ? true : false

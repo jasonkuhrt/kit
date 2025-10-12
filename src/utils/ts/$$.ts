@@ -40,8 +40,3 @@ export * as VariancePhantom from './variance-phantom.js'
  * @category Variance
  */
 export namespace VariancePhantom {}
-
-/**
- * @deprecated Use {@link VariancePhantom} instead. This alias will be removed in a future version.
- */
-export { VariancePhantom as Variance }
