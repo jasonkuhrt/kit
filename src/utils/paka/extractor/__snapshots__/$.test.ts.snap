@@ -100,7 +100,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
     {
       path: '.',
       module: {
-        location: './src/index.ts',
+        location: './src/a.ts',
         description: 'P doc',
         exports: [
           {

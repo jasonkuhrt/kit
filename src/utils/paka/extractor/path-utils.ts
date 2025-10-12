@@ -31,13 +31,30 @@ export const buildToSourcePath = (buildPath: string): string => {
 /**
  * Convert an absolute file path to a relative path from project root.
  *
- * Removes the current working directory prefix to create a portable
- * relative path that works across different environments.
+ * Handles both real filesystem paths (with cwd prefix) and virtual
+ * in-memory filesystem paths (starting with /).
  *
  * @example
+ * // Real filesystem
  * absoluteToRelative('/Users/foo/project/src/index.ts')
- * // => './src/index.ts' (if cwd is /Users/foo/project)
+ * // => 'src/index.ts' (if cwd is /Users/foo/project)
+ *
+ * @example
+ * // Virtual filesystem (in-memory ts-morph)
+ * absoluteToRelative('/src/index.ts')
+ * // => 'src/index.ts'
  */
 export const absoluteToRelative = (absolutePath: string): string => {
-  return absolutePath.replace(process.cwd() + '/', './')
+  // Try to make it relative to cwd (for real filesystem)
+  const relative = absolutePath.replace(process.cwd() + '/', '')
+  if (relative !== absolutePath) {
+    // Successfully made relative to cwd
+    return relative
+  }
+  // If that didn't work, assume it's a virtual absolute path (starts with /)
+  // Strip leading / to make it relative
+  if (absolutePath.startsWith('/')) {
+    return absolutePath.slice(1)
+  }
+  return absolutePath
 }

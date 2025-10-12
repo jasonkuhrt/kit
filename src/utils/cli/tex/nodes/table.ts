@@ -1,4 +1,4 @@
-import { invertTable } from '../_local/helpers.js'
+import { Arr } from '#arr'
 import * as Text from '../_local/text.js'
 import type { Block } from './block.js'
 import type { RenderContext } from './helpers.js'
@@ -73,7 +73,7 @@ export class Table extends Node {
     })
     const headers = this.headers.map((cell) => cell.render(context).value)
     const rowsAndHeaders = this.headers.length > 0 ? [headers, ...rows] : rows
-    const maxWidthOfEachColumn = invertTable(rowsAndHeaders).map((col) =>
+    const maxWidthOfEachColumn = Arr.transpose(rowsAndHeaders).map((col) =>
       Math.max(...col.flatMap(Text.toLines).map((_) => Text.getLength(_)))
     )
     const rowsWithCellWidthsNormalized = rowsAndHeaders.map((row) => {

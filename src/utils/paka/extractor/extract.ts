@@ -1,4 +1,6 @@
+import type { Dir } from '#dir'
 import { FsLoc } from '#fs-loc'
+import { Str } from '#str'
 import { Schema as S } from 'effect'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -14,6 +16,188 @@ import {
 import { parseJSDoc } from './nodes/jsdoc.js'
 import { extractModuleFromFile } from './nodes/module.js'
 import { buildToSourcePath } from './path-utils.js'
+
+/**
+ * Pure extraction function that processes files without I/O.
+ * Takes all files as input and returns the extracted model.
+ *
+ * @param params - Extraction parameters including files layout
+ * @returns Complete interface model
+ *
+ * @example
+ * ```ts
+ * const layout = Dir.spec('/')
+ *   .add('package.json', { name: 'x', exports: { './foo': './build/foo/$.js' } })
+ *   .add('src/foo/$.ts', 'export const bar = () => {}')
+ *   .toLayout()
+ *
+ * const model = extractFromFiles({ files: layout })
+ * ```
+ */
+export const extractFromFiles = (params: {
+  projectRoot?: string
+  files: Dir.Layout
+  entrypoints?: string[]
+  extractorVersion?: string
+}): InterfaceModel => {
+  const {
+    projectRoot = '/',
+    files,
+    entrypoints: targetEntrypoints,
+    extractorVersion = '0.1.0',
+  } = params
+
+  // Load package.json
+  const packageJsonPath = join(projectRoot, 'package.json')
+  const packageJsonContent = files[packageJsonPath]
+  if (!packageJsonContent) {
+    throw new Error(`package.json not found at ${packageJsonPath}`)
+  }
+  const packageJson = JSON.parse(
+    typeof packageJsonContent === 'string' ? packageJsonContent : new TextDecoder().decode(packageJsonContent),
+  )
+
+  // Create in-memory TypeScript project
+  const project = new Project({
+    useInMemoryFileSystem: true,
+    compilerOptions: {
+      target: 99, // ESNext
+      module: 99, // ESNext
+      moduleResolution: 3, // Bundler
+    },
+  })
+
+  // Load all files into ts-morph
+  for (const [filePath, content] of Object.entries(files)) {
+    if (filePath.endsWith('.ts') || filePath.endsWith('.js')) {
+      const contentStr = typeof content === 'string' ? content : new TextDecoder().decode(content)
+      project.createSourceFile(filePath, contentStr)
+    }
+  }
+
+  // Determine which entrypoints to extract
+  const exportsField = packageJson.exports as Record<string, string> | undefined
+  if (!exportsField) {
+    throw new Error('package.json missing "exports" field')
+  }
+
+  const entrypointsToExtract = targetEntrypoints
+    ? Object.entries(exportsField).filter(([key]) => targetEntrypoints.includes(key))
+    : Object.entries(exportsField) // Extract ALL by default
+
+  // Extract each entrypoint
+  const extractedEntrypoints: Entrypoint[] = []
+
+  for (const [packagePath, buildPath] of entrypointsToExtract) {
+    // Resolve build path to source path
+    const sourcePath = buildToSourcePath(buildPath)
+    const absoluteSourcePath = join(projectRoot, sourcePath)
+
+    // Get source file
+    const sourceFile = project.getSourceFile(absoluteSourcePath)
+    if (!sourceFile) {
+      console.warn(`Warning: Could not find source file for ${packagePath} at ${sourcePath}`)
+      continue
+    }
+
+    // Check for Drillable Namespace Pattern (ONLY for main entrypoint '.')
+    // Detection criteria:
+    // 1. Main entrypoint has namespace export: export * as Name from './path'
+    // 2. Namespace name (PascalCase) converts to kebab-case
+    // 3. Subpath export ./kebab-name exists in package.json
+    // 4. Both namespace export and subpath export resolve to same source file
+    let actualSourceFile = sourceFile
+    let namespaceDescription: string | undefined
+    let namespaceCategory: string | undefined
+    let isDrillableNamespace = false
+
+    if (packagePath === '.') {
+      const exportDeclarations = sourceFile.getExportDeclarations()
+
+      for (const exportDecl of exportDeclarations) {
+        const namespaceExport = exportDecl.getNamespaceExport()
+        if (!namespaceExport) continue
+
+        // Get namespace name (PascalCase, e.g., 'A')
+        const nsName = namespaceExport.getName()
+
+        // Convert to kebab-case (e.g., 'A' -> 'a', 'FooBar' -> 'foo-bar')
+        const kebabName = Str.Case.kebab(nsName)
+        const subpathKey = `./${kebabName}`
+
+        // Check if matching subpath exists in exports
+        if (!(subpathKey in exportsField)) continue
+
+        // Resolve the file that the namespace export points to
+        const nsReferencedFile = exportDecl.getModuleSpecifierSourceFile()
+        if (!nsReferencedFile) continue
+
+        const nsFilePath = nsReferencedFile.getFilePath()
+
+        // Resolve the file that the subpath export points to
+        const subpathBuildPath = exportsField[subpathKey]
+        if (!subpathBuildPath) continue
+        const subpathSourcePath = buildToSourcePath(subpathBuildPath)
+        const subpathAbsolutePath = join(projectRoot, subpathSourcePath)
+        const subpathFile = project.getSourceFile(subpathAbsolutePath)
+        if (!subpathFile) continue
+
+        const subpathFilePath = subpathFile.getFilePath()
+
+        // If both resolve to the same file, it's drillable!
+        if (nsFilePath === subpathFilePath) {
+          isDrillableNamespace = true
+          actualSourceFile = nsReferencedFile
+          // Extract JSDoc from the namespace export declaration
+          const jsdoc = parseJSDoc(exportDecl)
+          namespaceDescription = jsdoc.description
+          namespaceCategory = jsdoc.category
+          break
+        }
+      }
+    }
+
+    // Extract module
+    // For drillable namespaces, use the barrel file path; otherwise use the main entrypoint path
+    const locationPath = isDrillableNamespace
+      ? actualSourceFile.getFilePath().replace(projectRoot, '').replace(/^\//, '')
+      : sourcePath
+    const relativeSourcePath = locationPath.replace(/^\.\//, '')
+    let module = extractModuleFromFile(actualSourceFile, S.decodeSync(FsLoc.RelFile.String)(relativeSourcePath))
+
+    // Override module description and category with namespace export JSDoc if available
+    if (namespaceDescription || namespaceCategory) {
+      module = {
+        ...module,
+        ...(namespaceDescription ? { description: namespaceDescription } : {}),
+        ...(namespaceCategory ? { category: namespaceCategory } : {}),
+      }
+    }
+
+    // Create appropriate entrypoint type
+    if (isDrillableNamespace) {
+      extractedEntrypoints.push(DrillableNamespaceEntrypoint.make({
+        path: packagePath,
+        module,
+      }))
+    } else {
+      extractedEntrypoints.push(SimpleEntrypoint.make({
+        path: packagePath,
+        module,
+      }))
+    }
+  }
+
+  return Package.make({
+    name: packageJson.name,
+    version: packageJson.version,
+    entrypoints: extractedEntrypoints,
+    metadata: PackageMetadata.make({
+      extractedAt: new Date(),
+      extractorVersion,
+    }),
+  })
+}
 
 /**
  * Configuration for extraction.
@@ -60,7 +244,7 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
 
   const entrypointsToExtract = targetEntrypoints
     ? Object.entries(exportsField).filter(([key]) => targetEntrypoints.includes(key))
-    : Object.entries(exportsField).filter(([key]) => key.startsWith('./') && key !== '.')
+    : Object.entries(exportsField) // Extract ALL by default
 
   // Extract each entrypoint
   const extractedEntrypoints: Entrypoint[] = []
@@ -77,36 +261,70 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
       continue
     }
 
-    // Check if this is a namespace re-export pattern: export * as Name from './$$'
-    // If so, this is a Drillable Namespace Pattern
+    // Check for Drillable Namespace Pattern (ONLY for main entrypoint '.')
+    // Detection criteria:
+    // 1. Main entrypoint has namespace export: export * as Name from './path'
+    // 2. Namespace name (PascalCase) converts to kebab-case
+    // 3. Subpath export ./kebab-name exists in package.json
+    // 4. Both namespace export and subpath export resolve to same source file
     let actualSourceFile = sourceFile
     let namespaceDescription: string | undefined
     let namespaceCategory: string | undefined
     let isDrillableNamespace = false
-    const exportDeclarations = sourceFile.getExportDeclarations()
 
-    for (const exportDecl of exportDeclarations) {
-      const namespaceExport = exportDecl.getNamespaceExport()
-      const moduleSpecifier = exportDecl.getModuleSpecifierValue()
+    if (packagePath === '.') {
+      const exportDeclarations = sourceFile.getExportDeclarations()
 
-      if (namespaceExport && moduleSpecifier?.includes('$$')) {
-        // This is a drillable namespace - resolve to the actual file
-        isDrillableNamespace = true
-        const referencedFile = exportDecl.getModuleSpecifierSourceFile()
-        if (referencedFile) {
-          // Extract JSDoc from the namespace export declaration using parseJSDoc
-          // This properly separates description from examples and other tags
+      for (const exportDecl of exportDeclarations) {
+        const namespaceExport = exportDecl.getNamespaceExport()
+        if (!namespaceExport) continue
+
+        // Get namespace name (PascalCase, e.g., 'A')
+        const nsName = namespaceExport.getName()
+
+        // Convert to kebab-case (e.g., 'A' -> 'a', 'FooBar' -> 'foo-bar')
+        const kebabName = Str.Case.kebab(nsName)
+        const subpathKey = `./${kebabName}`
+
+        // Check if matching subpath exists in exports
+        if (!(subpathKey in exportsField)) continue
+
+        // Resolve the file that the namespace export points to
+        const nsReferencedFile = exportDecl.getModuleSpecifierSourceFile()
+        if (!nsReferencedFile) continue
+
+        const nsFilePath = nsReferencedFile.getFilePath()
+
+        // Resolve the file that the subpath export points to
+        const subpathBuildPath = exportsField[subpathKey]
+        if (!subpathBuildPath) continue
+        const subpathSourcePath = buildToSourcePath(subpathBuildPath)
+        const subpathAbsolutePath = join(projectRoot, subpathSourcePath)
+        const subpathFile = project.getSourceFile(subpathAbsolutePath)
+        if (!subpathFile) continue
+
+        const subpathFilePath = subpathFile.getFilePath()
+
+        // If both resolve to the same file, it's drillable!
+        if (nsFilePath === subpathFilePath) {
+          isDrillableNamespace = true
+          actualSourceFile = nsReferencedFile
+          // Extract JSDoc from the namespace export declaration
           const jsdoc = parseJSDoc(exportDecl)
           namespaceDescription = jsdoc.description
           namespaceCategory = jsdoc.category
-          actualSourceFile = referencedFile
           break
         }
       }
     }
 
     // Extract module (no longer needs module name)
-    let module = extractModuleFromFile(actualSourceFile, S.decodeSync(FsLoc.RelFile.String)(sourcePath))
+    // For drillable namespaces, use the barrel file path; otherwise use the main entrypoint path
+    const locationPath = isDrillableNamespace
+      ? actualSourceFile.getFilePath().replace(projectRoot, '').replace(/^\//, '')
+      : sourcePath
+    const relativeSourcePath = locationPath.replace(/^\.\//, '')
+    let module = extractModuleFromFile(actualSourceFile, S.decodeSync(FsLoc.RelFile.String)(relativeSourcePath))
 
     // Override module description and category with namespace export JSDoc if available
     if (namespaceDescription || namespaceCategory) {
