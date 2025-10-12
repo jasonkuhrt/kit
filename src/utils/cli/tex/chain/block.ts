@@ -13,6 +13,33 @@ import { resolveTableMethodArgs } from './table.js'
 type Childish = string | null | BlockBuilder | Block
 type Childrenish = Childish | Childish[]
 
+/**
+ * Add a block child to the current container.
+ * Blocks can be nested, have borders, padding, and flow control.
+ *
+ * @category CLI/Text Rendering
+ *
+ * @example
+ * ```typescript
+ * // Simple string block
+ * .block('Hello World')
+ *
+ * // Block with parameters
+ * .block({ border: { top: '-' }, padding: { left: 2 } }, 'Content')
+ *
+ * // Nested blocks using builder function
+ * .block(($) => $
+ *   .text('Parent')
+ *   .block('Child')
+ * )
+ *
+ * // Block with parameters and builder
+ * .block({ border: { left: '|' } }, ($) => $
+ *   .text('Line 1')
+ *   .text('Line 2')
+ * )
+ * ```
+ */
 export interface BlockMethod<Chain> {
   (builder: ($: BlockBuilder) => null | BlockBuilder): Chain
   (child: Childrenish): Chain
@@ -20,11 +47,61 @@ export interface BlockMethod<Chain> {
   (parameters: BlockParameters, builder: ($: BlockBuilder) => null | BlockBuilder): Chain
 }
 
+/**
+ * Block builder interface for creating text layout containers.
+ * Blocks can contain text, nested blocks, tables, and lists.
+ *
+ * @category CLI/Text Rendering
+ */
 export interface BlockBuilder<Chain = null> {
+  /**
+   * Add a child block.
+   * {@link BlockMethod}
+   */
   block: BlockMethod<Chain extends null ? BlockBuilder : Chain>
+
+  /**
+   * Add a table.
+   * {@link TableMethod}
+   */
   table: TableMethod<Chain extends null ? BlockBuilder : Chain>
+
+  /**
+   * Add a list.
+   * {@link ListMethod}
+   */
   list: ListMethod<Chain extends null ? BlockBuilder : Chain>
+
+  /**
+   * Add text content.
+   *
+   * @param text - Text to add
+   * @returns Builder for chaining
+   *
+   * @example
+   * ```typescript
+   * Tex.Tex()
+   *   .text('Hello')
+   *   .text('World')
+   *   .render()
+   * ```
+   */
   text(text: string): Chain extends null ? BlockBuilder : Chain
+
+  /**
+   * Set block parameters (borders, padding, flow, etc.).
+   *
+   * @param parameters - Block configuration {@link BlockParameters}
+   * @returns Builder for chaining
+   *
+   * @example
+   * ```typescript
+   * Tex.Tex()
+   *   .set({ border: { top: '-' }, padding: { left: 2 } })
+   *   .text('Content')
+   *   .render()
+   * ```
+   */
   set(parameters: BlockParameters): Chain extends null ? BlockBuilder : Chain
 }
 

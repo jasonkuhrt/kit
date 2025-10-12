@@ -4,9 +4,53 @@ import type { Block } from './block.js'
 import type { RenderContext } from './helpers.js'
 import { Node } from './node.js'
 
+/**
+ * Table layout and separator configuration.
+ *
+ * @category CLI/Text Rendering
+ */
 export interface TableParameters {
+  /**
+   * Separators between rows and columns.
+   */
   separators?: {
+    /**
+     * Row separator string.
+     * - `string` - Character(s) repeated across table width between rows
+     * - `null` - No separator, just a newline
+     * - `undefined` - Default separator (`'-'`)
+     *
+     * @example
+     * ```typescript
+     * // Dash separator (default)
+     * { row: '-' }
+     *
+     * // No separator
+     * { row: null }
+     *
+     * // Custom separator
+     * { row: '=' }
+     * ```
+     */
     row?: string | null
+
+    /**
+     * Column separator string placed between cells.
+     *
+     * @default `' | '`
+     *
+     * @example
+     * ```typescript
+     * // Pipe separator (default)
+     * { column: ' | ' }
+     *
+     * // Space separator
+     * { column: ' ' }
+     *
+     * // Tab separator
+     * { column: '\t' }
+     * ```
+     */
     column?: string
   }
 }

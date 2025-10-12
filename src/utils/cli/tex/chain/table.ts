@@ -10,6 +10,35 @@ import { toInternalBuilder } from './helpers.js'
 type Childish = BlockBuilder | Block | string | null
 type NonNullChildish = Exclude<Childish, null>
 
+/**
+ * Add a table to the current container.
+ * Tables automatically calculate column widths and align content.
+ *
+ * @category CLI/Text Rendering
+ *
+ * @example
+ * ```typescript
+ * // Table from array of rows
+ * .table([
+ *   ['Name', 'Age', 'City'],
+ *   ['Alice', '30', 'NYC'],
+ *   ['Bob', '25', 'LA']
+ * ])
+ *
+ * // Table with builder for headers
+ * .table(($) => $
+ *   .headers(['Name', 'Age'])
+ *   .row('Alice', '30')
+ *   .row('Bob', '25')
+ * )
+ *
+ * // Table with custom separators
+ * .table({ separators: { column: ' | ' } }, ($) => $
+ *   .headers(['Col1', 'Col2'])
+ *   .row('A', 'B')
+ * )
+ * ```
+ */
 export interface TableMethod<Chain> {
   (rows: (Childish[] | null)[]): Chain
   (builder: NodeImplementor<TableBuilder>): Chain
@@ -51,12 +80,93 @@ const resolveChildrenish = (childrenish: (Childish[] | null)[]): Block[][] => {
   return resolved
 }
 
+/**
+ * Table builder interface for creating aligned column layouts.
+ * Tables automatically calculate column widths based on content.
+ *
+ * @category CLI/Text Rendering
+ */
 export interface TableBuilder {
+  /**
+   * Set table parameters (separators, etc.).
+   *
+   * @param parameters - Table configuration {@link TableParameters}
+   * @returns Builder for chaining
+   */
   set(parameters: TableParameters): TableBuilder
+
+  /**
+   * Add a single row with cells.
+   * Null cells are filtered out.
+   *
+   * @param cells - Cell content (strings, blocks, or null)
+   * @returns Builder for chaining
+   *
+   * @example
+   * ```typescript
+   * .table(($) => $
+   *   .row('Alice', '30', 'NYC')
+   *   .row('Bob', '25', 'LA')
+   * )
+   * ```
+   */
   row(...cells: Childish[]): TableBuilder
+
+  /**
+   * Add multiple rows.
+   * Can be called with individual row arguments or a single array of rows.
+   * Null rows are filtered out.
+   *
+   * @param rows - Rows to add
+   * @returns Builder for chaining
+   *
+   * @example
+   * ```typescript
+   * // Multiple arguments
+   * .rows(['Alice', '30'], ['Bob', '25'])
+   *
+   * // Single array
+   * .rows([['Alice', '30'], ['Bob', '25']])
+   *
+   * // With null filtering
+   * .rows(['A', 'B'], null, ['C', 'D'])
+   * ```
+   */
   rows(...rows: (Childish[] | null)[]): TableBuilder
   rows(rows: (Childish[] | null)[]): TableBuilder
+
+  /**
+   * Set header row for the table.
+   * Headers are typically rendered with different styling.
+   *
+   * @param headers - Header cell content
+   * @returns Builder for chaining
+   *
+   * @example
+   * ```typescript
+   * .table(($) => $
+   *   .headers(['Name', 'Age', 'City'])
+   *   .row('Alice', '30', 'NYC')
+   * )
+   * ```
+   */
   headers(headers: (string | Block)[]): TableBuilder
+
+  /**
+   * Add a single header cell with full block control.
+   * Allows applying borders, padding, etc. to individual headers.
+   *
+   * @returns Builder for chaining
+   *
+   * @example
+   * ```typescript
+   * .table(($) => $
+   *   .header(new Tex.Block({ border: { bottom: '~' } }, 'Name'))
+   *   .header('Age')
+   *   .row('Alice', '30')
+   * )
+   * ```
+   */
   header: BlockMethod<TableBuilder>
 }
 

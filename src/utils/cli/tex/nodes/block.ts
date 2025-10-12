@@ -4,31 +4,114 @@ import { applyPadding } from './helpers.js'
 import { Leaf } from './leaf.js'
 import { Node } from './node.js'
 
+/**
+ * Block layout and styling parameters.
+ *
+ * @category CLI/Text Rendering
+ */
 export interface BlockParameters {
+  /**
+   * How child blocks are arranged.
+   * - `'vertical'` - Stack children top to bottom (default)
+   * - `'horizontal'` - Place children side by side
+   */
   flow?: 'vertical' | 'horizontal'
+
+  /**
+   * Minimum width in characters.
+   * Content is padded to reach this width.
+   */
   minWidth?: number
+
+  /**
+   * Maximum width in characters.
+   * Content is wrapped or truncated to fit.
+   */
   maxWidth?: number
+
+  /**
+   * Width as percentage of parent container.
+   * @example `'50%'`, `'100%'`
+   */
   width?: `${number}%`
+
+  /**
+   * Color/style function applied to the entire rendered block.
+   * @example `(text) => ansis.red(text)`
+   */
   color?: (text: string) => string
+
+  /**
+   * Border configuration for block edges.
+   * Each side can be a fixed string or a function for dynamic characters.
+   */
   border?: {
+    /**
+     * Character used for corner positions.
+     * @example `'+'`, `'o'`
+     */
     corners?: string
+
+    /**
+     * Top border character(s).
+     * Function receives column index for dynamic borders.
+     * @example `'-'`, `(col) => col % 2 ? '=' : '-'`
+     */
     top?: string | ((columnNumber: number) => string)
+
+    /**
+     * Left border character(s).
+     * Function receives line index for dynamic borders.
+     * @example `'|'`
+     */
     left?: string | ((lineNumber: number) => string)
+
+    /**
+     * Bottom border character(s).
+     * Function receives column index for dynamic borders.
+     * @example `'-'`
+     */
     bottom?: string | ((columnNumber: number) => string)
+
+    /**
+     * Right border character(s).
+     * Function receives line index for dynamic borders.
+     * @example `'|'`
+     */
     right?: string | ((lineNumber: number) => string)
   }
+
+  /**
+   * Padding space inside the block borders.
+   * Values are in character count.
+   */
   padding?: {
+    /** Space above content */
     top?: number
+    /** Space between child blocks (vertical flow) */
     topBetween?: number
+    /** Space to the left of content */
     left?: number
+    /** Space below content */
     bottom?: number
+    /** Space between child blocks (vertical flow) */
     bottomBetween?: number
+    /** Space to the right of content */
     right?: number
   }
+
+  /**
+   * Margin space outside the block borders.
+   * Currently not fully implemented.
+   */
   margin?: {
+    /** Space above block */
     top?: number
+    /** Space to the left of block */
     left?: number
+    /** Space below block */
     bottom?: number
+    /** Space to the right of block */
     right?: number
   }
 }
