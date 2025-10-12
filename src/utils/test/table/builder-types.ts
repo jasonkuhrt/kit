@@ -546,20 +546,122 @@ export interface TestBuilder<State extends BuilderTypeState> {
   ): TestBuilder<State>
 
   /**
-   * Register Effect schemas for automatic encoding in snapshots.
+   * Register Effect schemas for automatic encoding in test snapshots.
    *
-   * Schema instances in snapshot values will be automatically encoded to their
-   * primitive representation using S.encodeSync().
+   * When schema instances appear in snapshot values (return values, errors, or nested data),
+   * they are automatically detected and encoded to their primitive representation using
+   * `S.encodeSync()` BEFORE snapshot serialization. This produces clean, readable snapshots
+   * instead of verbose schema instance objects.
    *
-   * @param schemas - Array of Effect schemas to register
+   * ## How It Works
+   *
+   * 1. **Detection**: Uses {@link Obj.mapValuesDeep} to recursively traverse snapshot values
+   * 2. **Type checking**: For each value, checks if `S.is(schema)(value)` matches any registered schema
+   * 3. **Encoding**: When matched, replaces the schema instance with `S.encodeSync(schema)(value)`
+   * 4. **Recursion**: Continues into nested structures for comprehensive transformation
+   * 5. **Serialization**: The transformed value is then formatted with `object-inspect`
+   *
+   * ## Benefits
+   *
+   * - **Readable snapshots**: See `'./src/index.ts'` instead of `{ _tag: 'RelFile', path: [...] }`
+   * - **Stable snapshots**: Encoded primitives are less brittle than internal schema representations
+   * - **Automatic**: No manual encoding needed in test cases
+   * - **Composable**: Works with nested schemas and complex data structures
+   * - **Type-safe**: Leverages Effect Schema's built-in type checking and encoding
+   *
+   * ## Union Schemas
+   *
+   * When using union schemas (e.g., `FsLoc.FsLoc` which is `RelFile | AbsFile | RelDir | AbsDir`),
+   * the schema automatically dispatches to the correct member schema during encoding.
+   * You only need to register the union type, not each member individually.
+   *
+   * ## Error Handling
+   *
+   * Uses `S.encodeSync()` which throws on encoding errors. If a schema instance cannot be
+   * encoded, the test will fail with a clear error message indicating the problem.
+   *
+   * ## Performance
+   *
+   * Schema detection and encoding adds minimal overhead:
+   * - Only runs during snapshot generation (not for regular assertions)
+   * - Early exit optimization: stops recursing once schema is matched and encoded
+   * - Circular reference safe: automatically handles circular structures
+   *
+   * @param schemas - Array of Effect schemas to register for automatic encoding.
+   *                  Typically union types that cover all possible schema variants.
    *
    * @example
+   * **Basic usage** - Encode filesystem location schemas:
    * ```ts
+   * import { FsLoc } from '@wollybeard/kit'
+   *
    * Test.on(extractFromFiles)
-   *   .snapshotSchemas([FsLoc.FsLoc])
-   *   .cases(...)
+   *   .snapshotSchemas([FsLoc.FsLoc])  // Union of RelFile | AbsFile | RelDir | AbsDir
+   *   .casesInput(
+   *     { files: { '/src/index.ts': 'export {}' } }
+   *   )
+   *   .test()
+   *
+   * // Snapshot shows:
+   * // location: './src/index.ts'
+   * // Instead of:
+   * // location: { _tag: 'RelFile', path: ['src', 'index.ts'], file: 'index.ts' }
+   * ```
+   *
+   * @example
+   * **Multiple schemas** - Register several schema types:
+   * ```ts
+   * Test.on(processUserData)
+   *   .snapshotSchemas([
+   *     User.User,        // User schema
+   *     FsLoc.FsLoc,     // Filesystem location schema
+   *     DateTime.DateTime // DateTime schema
+   *   ])
+   *   .casesInput(...)
    *   .test()
    * ```
+   *
+   * @example
+   * **Nested schemas** - Automatically encodes deeply nested instances:
+   * ```ts
+   * const data = {
+   *   users: [
+   *     { name: 'Alice', location: FsLoc.RelFile.make(['src', 'alice.ts']) },
+   *     { name: 'Bob', location: FsLoc.RelFile.make(['src', 'bob.ts']) }
+   *   ],
+   *   config: {
+   *     rootDir: FsLoc.AbsDir.make(['Users', 'project'])
+   *   }
+   * }
+   *
+   * Test.on(transform)
+   *   .snapshotSchemas([FsLoc.FsLoc])
+   *   .casesInput([data])
+   *   .test()
+   *
+   * // All nested FsLoc instances are automatically encoded
+   * ```
+   *
+   * @example
+   * **Comparison with custom serializer**:
+   * ```ts
+   * // ❌ Manual approach - verbose and error-prone
+   * Test.on(fn)
+   *   .snapshotSerializer((value) => {
+   *     if (FsLoc.is(value)) return FsLoc.encode(value)
+   *     if (User.is(value)) return User.encode(value)
+   *     // ... manual encoding for each type
+   *     return JSON.stringify(value)
+   *   })
+   *
+   * // ✅ Declarative approach - automatic and composable
+   * Test.on(fn)
+   *   .snapshotSchemas([FsLoc.FsLoc, User.User])
+   *   .test()
+   * ```
+   *
+   * @see {@link Obj.mapValuesDeep} for the recursive transformation implementation
+   * @see {@link snapshotSerializer} for fully custom snapshot serialization
    */
   snapshotSchemas(schemas: Array<any>): TestBuilder<State>
 
