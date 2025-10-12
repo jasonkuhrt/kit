@@ -1,4 +1,5 @@
 import { Prox } from '#prox'
+import { stripIndent } from '../text.js'
 
 /**
  * Convenience re-export of the built-in TemplateStringsArray type.
@@ -164,6 +165,82 @@ export const render = renderWith(String)
  */
 export const passthrough = (strings: TemplateStringsArray, ...values: unknown[]): string => {
   return render([strings, ...values])
+}
+
+/**
+ * Tagged template literal that removes common indentation from all lines.
+ * Automatically indents multi-line interpolated values to match their context.
+ *
+ * Uses the raw template strings to preserve escape sequences (e.g., `\n` stays as backslash-n).
+ * Trims leading and trailing blank lines from the result.
+ *
+ * @category Template
+ * @param strings - Template string parts (uses raw strings to preserve escapes)
+ * @param values - Interpolated values
+ * @returns Dedented string with common indentation removed
+ * @example
+ * ```typescript
+ * const code = dedent`
+ *   function greet() {
+ *     console.log('Hello')
+ *   }
+ * `
+ * // Result: "function greet() {\n  console.log('Hello')\n}"
+ * ```
+ * @example
+ * ```typescript
+ * // Multi-line values are auto-indented
+ * const inner = 'line1\nline2'
+ * const code = dedent`
+ *   outer:
+ *     ${inner}
+ * `
+ * // Result: "outer:\n  line1\n  line2"
+ * ```
+ * @example
+ * ```typescript
+ * // Escape sequences are preserved
+ * const path = dedent`
+ *   C:\Users\name\Documents
+ * `
+ * // Result: "C:\\Users\\name\\Documents" (backslashes preserved)
+ * ```
+ */
+export const dedent = (strings: TemplateStringsArray, ...values: unknown[]): string => {
+  const raw = strings.raw
+
+  // Build the interpolated string first
+  let result = ``
+  for (let i = 0; i < raw.length; i++) {
+    result += raw[i]
+
+    if (i < values.length) {
+      const value = String(values[i])
+
+      // If value contains newlines, indent subsequent lines to match current position
+      if (value.includes(`\n`)) {
+        // Find the indentation of the current line (last line in result so far)
+        const lines = result.split(`\n`)
+        const currentLine = lines[lines.length - 1]
+        const match = currentLine.match(/^(\s*)/)
+        const indent = match ? match[1] : ``
+
+        // Add value with indented continuation lines
+        const valueLines = value.split(`\n`)
+        result += valueLines
+          .map((line, index) => (index === 0 ? line : indent + line))
+          .join(`\n`)
+      } else {
+        result += value
+      }
+    }
+  }
+
+  // Strip common indentation using existing utility
+  const dedented = stripIndent(result)
+
+  // Trim leading and trailing blank lines/whitespace
+  return dedented.replace(/^\n+/, ``).replace(/\s+$/, ``)
 }
 
 /**
