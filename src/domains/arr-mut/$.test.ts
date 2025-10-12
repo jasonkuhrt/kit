@@ -1,89 +1,63 @@
-import { describe, expect, test } from 'vitest'
+import { Test } from '#test'
 import { ArrMut } from './$.js'
 
-describe('Type.is', () => {
-  test('returns true for arrays', () => {
-    expect(ArrMut.Type.is([])).toBe(true)
-    expect(ArrMut.Type.is([1, 2, 3])).toBe(true)
-  })
+Test.on(ArrMut.Type.is)
+  .cases(
+    [[[]], true],
+    [[[1, 2, 3]], true],
+    [[{}], false],
+    [[`string`], false],
+    [[null], false],
+    [[undefined], false],
+  )
+  .test()
 
-  test('returns false for non-arrays', () => {
-    expect(ArrMut.Type.is({})).toBe(false)
-    expect(ArrMut.Type.is('string')).toBe(false)
-    expect(ArrMut.Type.is(null)).toBe(false)
-    expect(ArrMut.Type.is(undefined)).toBe(false)
-  })
-})
+Test.on(ArrMut.create)
+  .cases([[], []])
+  .test()
 
-describe('create', () => {
-  test('creates empty array when no arguments provided', () => {
-    expect(ArrMut.create()).toEqual([])
-  })
-})
+Test.on(ArrMut.map<number[], number>)
+  .cases(
+    [[[1, 2, 3], (x: number) => x * 2], [2, 4, 6]],
+    [[[], (x: number) => x], []],
+  )
+  .test()
 
-describe('map', () => {
-  test('maps over array elements', () => {
-    const result = ArrMut.map([1, 2, 3], x => x * 2)
-    expect(result).toEqual([2, 4, 6])
-  })
+Test.on(ArrMut.find<number>)
+  .cases(
+    [[[1, 2, 3], (x: number) => x > 2], 3],
+    [[[1, 2, 3], (x: number) => x > 10], undefined],
+  )
+  .test()
 
-  test('works with empty array', () => {
-    expect(ArrMut.map([], x => x)).toEqual([])
-  })
-})
+Test.on(ArrMut.join)
+  .cases(
+    [[['a', 'b', 'c'], ','], 'a,b,c'],
+    [[[1, 2, 3], ' - '], '1 - 2 - 3'],
+  )
+  .test()
 
-describe('find', () => {
-  test('finds element matching predicate', () => {
-    const result = ArrMut.find([1, 2, 3], x => x > 2)
-    expect(result).toBe(3)
-  })
+Test.on(ArrMut.merge<number>)
+  .cases([[[1, 2], [3, 4]], [1, 2, 3, 4]])
+  .test()
 
-  test('returns undefined when no match', () => {
-    const result = ArrMut.find([1, 2, 3], x => x > 10)
-    expect(result).toBeUndefined()
-  })
-})
+Test.on(ArrMut.isEmpty)
+  .cases(
+    [[[]], true],
+    [[[1]], false],
+  )
+  .test()
 
-describe('join', () => {
-  test('joins array elements with separator', () => {
-    expect(ArrMut.join(['a', 'b', 'c'], ',')).toBe('a,b,c')
-    expect(ArrMut.join([1, 2, 3], ' - ')).toBe('1 - 2 - 3')
-  })
-})
+Test.on(ArrMut.getFirst<number>)
+  .cases(
+    [[[1, 2, 3]], 1],
+    [[[]], undefined],
+  )
+  .test()
 
-describe('merge', () => {
-  test('merges two arrays', () => {
-    const result = ArrMut.merge([1, 2], [3, 4])
-    expect(result).toEqual([1, 2, 3, 4])
-  })
-})
-
-describe('isEmpty', () => {
-  test('returns true for empty arrays', () => {
-    expect(ArrMut.isEmpty([])).toBe(true)
-  })
-
-  test('returns false for non-empty arrays', () => {
-    expect(ArrMut.isEmpty([1])).toBe(false)
-  })
-})
-
-describe('getFirst', () => {
-  test('returns first element', () => {
-    expect(ArrMut.getFirst([1, 2, 3])).toBe(1)
-  })
-
-  test('returns undefined for empty array', () => {
-    expect(ArrMut.getFirst([])).toBeUndefined()
-  })
-})
-
-describe('getLast', () => {
-  test('returns last element', () => {
-    expect(ArrMut.getLast([1, 2, 3])).toBe(3)
-  })
-
-  test('returns undefined for empty array', () => {
-    expect(ArrMut.getLast([])).toBeUndefined()
-  })
-})
+Test.on(ArrMut.getLast<number>)
+  .cases(
+    [[[1, 2, 3]], 3],
+    [[[]], undefined],
+  )
+  .test()

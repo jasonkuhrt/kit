@@ -367,3 +367,27 @@ describe('promise auto-awaiting', () => {
     )
     .test()
 })
+
+describe('no snapshots when output is specified (issue #6)', () => {
+  // Function mode - when output is specified, custom test should NOT create snapshot
+  // even if it returns a value
+  Test.describe('function mode with output')
+    .on(add)
+    .cases([[1, 2], 3], [[5, 5], 10])
+    .test(({ result, output }) => {
+      expect(result).toBe(output)
+      // Returning a value should NOT create snapshot because output is specified
+      return { thisValueShouldBeIgnored: 'no snapshot should be created' }
+    })
+
+  // Generic mode - when output is specified, custom test should NOT create snapshot
+  Test.describe('generic mode with output')
+    .inputType<string>()
+    .outputType<string>()
+    .cases(['hello', 'HELLO'], ['world', 'WORLD'])
+    .test(({ input, output }) => {
+      expect(input.toUpperCase()).toBe(output)
+      // Returning a value should NOT create snapshot because output is specified
+      return { thisValueShouldBeIgnored: 'no snapshot should be created' }
+    })
+})

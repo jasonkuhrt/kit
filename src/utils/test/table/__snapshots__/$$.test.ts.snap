@@ -77,6 +77,54 @@ exports[`circular structure handling > identity2({ name: 'test', self: [Circular
 ╚══════════════════════════════════════════════════╝"
 `;
 
+exports[`no snapshots when output is specified (issue #6) > function mode with output > add(1, 2) → 3 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1
+────────────────────────────────────────────────────
+2
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  thisValueShouldBeIgnored: 'no snapshot should be created'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`no snapshots when output is specified (issue #6) > function mode with output > add(5, 5) → 10 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+5
+────────────────────────────────────────────────────
+5
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  thisValueShouldBeIgnored: 'no snapshot should be created'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`no snapshots when output is specified (issue #6) > generic mode with output > fn('hello') → 'HELLO' 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+hello
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  thisValueShouldBeIgnored: 'no snapshot should be created'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`no snapshots when output is specified (issue #6) > generic mode with output > fn('world') → 'WORLD' 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+world
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  thisValueShouldBeIgnored: 'no snapshot should be created'
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
 exports[`promise auto-awaiting > run(() => { throw "error string"; }) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS

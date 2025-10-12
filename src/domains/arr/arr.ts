@@ -170,4 +170,42 @@ export const ensure = <$T>(value: $T | $T[]): $T[] => {
   return Array.isArray(value) ? value : [value]
 }
 
+/**
+ * Transpose a 2D array (convert rows to columns and vice versa).
+ * This is a classic matrix transpose operation.
+ *
+ * @category Transformation
+ * @param rows - The 2D array to transpose
+ * @returns The transposed 2D array
+ * @example
+ * ```ts
+ * const rows = [
+ *   [1, 2, 3],
+ *   [4, 5, 6]
+ * ]
+ * Arr.transpose(rows)
+ * // [[1, 4], [2, 5], [3, 6]]
+ *
+ * const table = [
+ *   ['Alice', 'Engineer', '100k'],
+ *   ['Bob', 'Designer', '90k']
+ * ]
+ * Arr.transpose(table)
+ * // [['Alice', 'Bob'], ['Engineer', 'Designer'], ['100k', '90k']]
+ * ```
+ */
+export const transpose = <$T>(rows: readonly (readonly $T[])[]): $T[][] => {
+  const columns: $T[][] = []
+  for (const row of rows) {
+    let i = 0
+    for (const cell of row) {
+      const column = columns[i] || []
+      column.push(cell)
+      columns[i] = column
+      i++
+    }
+  }
+  return columns
+}
+
 // TODO: Add immutable array operations that wrap ArrMut with copy semantics

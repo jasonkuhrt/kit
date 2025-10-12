@@ -488,8 +488,8 @@ export function create(state: State = defaultState): any {
                     ...fullContext,
                     ...vitestContext,
                   })
-                  // Auto-snapshot if test returns a value
-                  if (testResult !== undefined) {
+                  // Auto-snapshot if test returns a value AND no output was specified
+                  if (output === undefined && testResult !== undefined) {
                     const envelope = await Prom.maybeAsyncEnvelope(() => testResult)
                     const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
                     const snapshotContext = { i: input, n: name, o: output, ...setupContext, ...fullContext }
@@ -528,8 +528,8 @@ export function create(state: State = defaultState): any {
                 ...vitestContext,
               })
               const context = { i: input, n: name, o: output, ...setupContext, ...fullContext }
-              // Auto-snapshot if result is returned
-              if (result !== undefined) {
+              // Auto-snapshot if result is returned AND no output was specified
+              if (output === undefined && result !== undefined) {
                 const envelope = await Prom.maybeAsyncEnvelope(() => result)
                 const serializer = Option.getOrElse(state.snapshotSerializer, () => defaultSnapshotSerializer)
                 const formattedSnapshot = formatSnapshotWithInput(

@@ -1,0 +1,306 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`basic > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `"foo"`;
+
+exports[`basic > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `""`;
+
+exports[`basic > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 3`] = `
+"foo
+bar"
+`;
+
+exports[`block > flow > ansi does not contribute to column width calculation 1`] = `
+"1a2aaaa 
+[31m1b[39m2b    
+1c2ccccc"
+`;
+
+exports[`border > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"---
+foo"
+`;
+
+exports[`border > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+"foo|                    
+alpha                  |
+bravo bravo            |
+charlie charlie charlie|"
+`;
+
+exports[`border > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 3`] = `
+"foo
+---"
+`;
+
+exports[`border > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 4`] = `"|foo"`;
+
+exports[`border > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 5`] = `
+"----
+|abc"
+`;
+
+exports[`border > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 6`] = `
+"----
+abc|"
+`;
+
+exports[`border > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 7`] = `
+"|abc
+----"
+`;
+
+exports[`border > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 8`] = `
+"abc|
+----"
+`;
+
+exports[`border > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 9`] = `
+"-----
+|abc|
+-----"
+`;
+
+exports[`border > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 10`] = `
+"-------
+|-----|
+||abc||
+|-----|
+-------"
+`;
+
+exports[`border > corners > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"foo
+o-o"
+`;
+
+exports[`border > corners > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `"foo|"`;
+
+exports[`border > corners > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 3`] = `
+"foo
+o-o"
+`;
+
+exports[`border > corners > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 4`] = `"|foo"`;
+
+exports[`border > corners > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 5`] = `
+"o---o
+|foo|
+o---o"
+`;
+
+exports[`border > corners > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 6`] = `
+"o-----o
+|o---o|
+||abc||
+|o---o|
+o-----o"
+`;
+
+exports[`builder > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `"foo"`;
+
+exports[`builder > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `""`;
+
+exports[`builder > row > table > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"alpha | bravo
+-------------
+a     | b    "
+`;
+
+exports[`builder > row > table > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+"alpha | bravo
+-----------------
+a     | b     | c"
+`;
+
+exports[`builder > row > table > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 3`] = `
+"a1 | b1
+-------
+a3 | b3"
+`;
+
+exports[`builder > row > table > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 4`] = `
+"a1 | b1
+-------
+a2 | c2"
+`;
+
+exports[`builder > rows > table > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"a1 | b1
+-------
+a3 | b3"
+`;
+
+exports[`builder > rows > table > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+"a1 | b1
+-------
+a3 | b3"
+`;
+
+exports[`can render text > text > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `"foo"`;
+
+exports[`column width > table > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"alpha            | bravo               | charlieeeeeeeeeeeeeeeeeee | delta
+--------------------------------------------------------------------------
+a1               | b1                  | c1                        | d1   
+--------------------------------------------------------------------------
+a222222222222222 | b2                  | c2                        | d2   
+--------------------------------------------------------------------------
+a3               | b333333333333333333 | c3                        | d3   "
+`;
+
+exports[`column width > table > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+"alpha            | bravo               | charlieeeeeeeeeeeeeeeeeee | delta
+--------------------------------------------------------------------------
+a1               | b1                  | c1                        | d1   
+--------------------------------------------------------------------------
+a222222222222222 | b2                  | c2                        | d2   
+a2               |                     |                           |      
+--------------------------------------------------------------------------
+a3               | b333333333333333333 | c3                        | d3   "
+`;
+
+exports[`column width > table > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 3`] = `
+"alpha | beta  
+apple | banana
+ankle |       "
+`;
+
+exports[`flow > can flow horizontally > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"1aaaaa2aaaa 
+1b    2b    
+1ccccc2ccccc"
+`;
+
+exports[`headers > table > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `"alpha | bravo"`;
+
+exports[`headers > table > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+"alpha | bravo | charlie
+-----------------------
+a     | b    "
+`;
+
+exports[`headers > table > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 3`] = `
+"alpha           | bravo
+                | ~~~~~
+-----------------------
+a               | b    "
+`;
+
+exports[`list > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"* foo
+* bar"
+`;
+
+exports[`list > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+"* foo
+* bar
+  baz
+  qux
+* zod"
+`;
+
+exports[`list > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 3`] = `
+"- foo
+- zod"
+`;
+
+exports[`list > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 4`] = `
+"(0) foo
+(1) zod"
+`;
+
+exports[`list > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 5`] = `
+"0  a
+1  b
+2  c
+3  d
+4  e
+5  f
+6  g
+7  h
+8  i
+9  j
+10 k
+11 l
+12 m
+13 n
+14 o
+15 p
+16 q
+17 r
+18 s
+19 t
+20 u
+21 v
+22 w
+23 x
+24 y
+25 z"
+`;
+
+exports[`list > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 6`] = `
+" 0 a
+ 1 b
+ 2 c
+ 3 d
+ 4 e
+ 5 f
+ 6 g
+ 7 h
+ 8 i
+ 9 j
+10 k
+11 l
+12 m
+13 n
+14 o
+15 p
+16 q
+17 r
+18 s
+19 t
+20 u
+21 v
+22 w
+23 x
+24 y
+25 z"
+`;
+
+exports[`padding > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"
+
+foo"
+`;
+
+exports[`padding > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+"foo
+
+"
+`;
+
+exports[`padding > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 3`] = `"  foo"`;
+
+exports[`padding > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 4`] = `
+"  foo
+  bar
+  qux"
+`;
+
+exports[`set > table > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"alpha | bravo | charlie
+                       
+a     | b    "
+`;
+
+exports[`set > table > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+"alpha bravo charlie
+-------------------
+a     b    "
+`;
+
+exports[`width > % > 100% > block > fn({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"foo bar                                                                                             
+----------------------------------------------------------------------------------------------------
+foo                                                                                                 "
+`;
