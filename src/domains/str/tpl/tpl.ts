@@ -1,3 +1,5 @@
+import { Prox } from '#prox'
+
 /**
  * Convenience re-export of the built-in TemplateStringsArray type.
  * Contains the string parts of a tagged template literal along with a `raw` property.
@@ -145,3 +147,216 @@ export const renderWith = (mapper: (value: unknown) => string) => (callInput: Ca
  * ```
  */
 export const render = renderWith(String)
+
+/**
+ * A passthrough tagged template literal that returns the interpolated string as-is.
+ * Useful for semantic clarity in code without any processing.
+ * @category Template
+ * @param strings - Template string parts
+ * @param values - Interpolated values
+ * @returns The composed string with values interpolated
+ * @example
+ * ```typescript
+ * const template = passthrough
+ * const message = template`Hello ${name}, you have ${count} items.`
+ * // Result: "Hello Alice, you have 5 items."
+ * ```
+ */
+export const passthrough = (strings: TemplateStringsArray, ...values: unknown[]): string => {
+  return render([strings, ...values])
+}
+
+/**
+ * Type for a tagged template literal function used for syntax highlighting.
+ * @category Template
+ */
+export type HighlightTag = typeof passthrough
+
+/**
+ * Object containing language-specific template tag functions for syntax highlighting.
+ * Each property is a tagged template function that provides editor syntax highlighting
+ * for that language (when supported by the editor).
+ *
+ * Implemented as a Proxy that returns the same passthrough function for all properties,
+ * allowing destructuring and property access to work seamlessly.
+ *
+ * Supported languages are based on common supported editor injection patterns:
+ *
+ * @see {@link https://github.com/zed-industries/zed/blob/main/crates/languages/src/typescript/injections.scm Zed Editor - TypeScript Injections}
+ * @see {@link https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide VS Code - Syntax Highlighting Guide}
+ *
+ * @category Template
+ * @example
+ * ```typescript
+ * import { Str } from '@wollybeard/kit'
+ *
+ * const { ts, html, sql } = Str.Tpl.highlight
+ *
+ * const code = ts`
+ *   export const add = (a: number, b: number) => a + b
+ * ` // Gets TypeScript syntax highlighting in editor
+ *
+ * const markup = html`
+ *   <div class="container">Hello</div>
+ * ` // Gets HTML syntax highlighting
+ *
+ * const query = sql`
+ *   SELECT * FROM users WHERE id = ${userId}
+ * ` // Gets SQL syntax highlighting
+ * ```
+ */
+export const highlight: {
+  /**
+   * Passthrough template literal with TypeScript syntax highlighting.
+   * @example
+   * ```typescript
+   * const { ts } = Str.Tpl.highlight
+   * const code = ts`
+   *   export const add = (a: number, b: number): number => {
+   *     return a + b
+   *   }
+   * `
+   * ```
+   */
+  ts: HighlightTag
+  /**
+   * Passthrough template literal with JavaScript syntax highlighting.
+   * @example
+   * ```typescript
+   * const { js } = Str.Tpl.highlight
+   * const code = js`
+   *   function greet(name) {
+   *     return 'Hello ' + name
+   *   }
+   * `
+   * ```
+   */
+  js: HighlightTag
+  /**
+   * Passthrough template literal with HTML syntax highlighting.
+   * @example
+   * ```typescript
+   * const { html } = Str.Tpl.highlight
+   * const markup = html`
+   *   <div class="container">
+   *     <h1>Welcome</h1>
+   *     <p>Hello ${user.name}</p>
+   *   </div>
+   * `
+   * ```
+   */
+  html: HighlightTag
+  /**
+   * Passthrough template literal with CSS syntax highlighting.
+   * @example
+   * ```typescript
+   * const { css } = Str.Tpl.highlight
+   * const styles = css`
+   *   .button {
+   *     background: hotpink;
+   *     border-radius: 4px;
+   *   }
+   * `
+   * ```
+   */
+  css: HighlightTag
+  /**
+   * Passthrough template literal with SQL syntax highlighting.
+   * @example
+   * ```typescript
+   * const { sql } = Str.Tpl.highlight
+   * const query = sql`
+   *   SELECT id, name, email
+   *   FROM users
+   *   WHERE status = 'active'
+   *   ORDER BY created_at DESC
+   * `
+   * ```
+   */
+  sql: HighlightTag
+  /**
+   * Passthrough template literal with JSON syntax highlighting.
+   * @example
+   * ```typescript
+   * const { json } = Str.Tpl.highlight
+   * const data = json`
+   *   {
+   *     "name": "Alice",
+   *     "age": 30,
+   *     "active": true
+   *   }
+   * `
+   * ```
+   */
+  json: HighlightTag
+  /**
+   * Passthrough template literal with YAML syntax highlighting.
+   * @example
+   * ```typescript
+   * const { yaml } = Str.Tpl.highlight
+   * const config = yaml`
+   *   name: my-app
+   *   version: 1.0.0
+   *   dependencies:
+   *     - react
+   *     - typescript
+   * `
+   * ```
+   */
+  yaml: HighlightTag
+  /**
+   * Passthrough template literal with YAML syntax highlighting (alias for `yaml`).
+   * @example
+   * ```typescript
+   * const { yml } = Str.Tpl.highlight
+   * const config = yml`
+   *   port: 3000
+   *   host: localhost
+   * `
+   * ```
+   */
+  yml: HighlightTag
+  /**
+   * Passthrough template literal with GraphQL syntax highlighting.
+   * @example
+   * ```typescript
+   * const { graphql } = Str.Tpl.highlight
+   * const query = graphql`
+   *   query GetUser($id: ID!) {
+   *     user(id: $id) {
+   *       name
+   *       email
+   *     }
+   *   }
+   * `
+   * ```
+   */
+  graphql: HighlightTag
+  /**
+   * Passthrough template literal with GraphQL syntax highlighting (alias for `graphql`).
+   * @example
+   * ```typescript
+   * const { gql } = Str.Tpl.highlight
+   * const mutation = gql`
+   *   mutation UpdateUser($id: ID!, $name: String!) {
+   *     updateUser(id: $id, name: $name) {
+   *       id
+   *     }
+   *   }
+   * `
+   * ```
+   */
+  gql: HighlightTag
+  /**
+   * Passthrough template literal with Isograph syntax highlighting.
+   * @example
+   * ```typescript
+   * const { iso } = Str.Tpl.highlight
+   * const query = iso`
+   *   field User.name
+   *   field User.email
+   * `
+   * ```
+   */
+  iso: HighlightTag
+} = Prox.createCachedGetProxy(() => passthrough)

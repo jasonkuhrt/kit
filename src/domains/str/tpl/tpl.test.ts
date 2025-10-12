@@ -3,7 +3,7 @@ import * as Tpl from './tpl.js'
 
 describe(`is`, () => {
   test(`returns true for TemplateStringsArray`, () => {
-    const result = ((strings: TemplateStringsArray, ...values: unknown[]) => {
+    const result = ((strings: TemplateStringsArray, ..._values: unknown[]) => {
       return Tpl.is(strings)
     })`test ${42}`
 
@@ -147,5 +147,50 @@ describe(`renderWith`, () => {
     })`Items: ${1}, ${2}, ${3}`
 
     expect(renderPrefixed(input)).toBe(`Items: [1], [2], [3]`)
+  })
+})
+
+describe(`passthrough`, () => {
+  test(`returns string as-is with interpolated values`, () => {
+    const name = `World`
+    const result = Tpl.passthrough`Hello ${name}!`
+    expect(result).toBe(`Hello World!`)
+  })
+
+  test(`works with multiple interpolations`, () => {
+    const a = 1
+    const b = 2
+    const result = Tpl.passthrough`Sum: ${a} + ${b} = ${a + b}`
+    expect(result).toBe(`Sum: 1 + 2 = 3`)
+  })
+
+  test(`preserves whitespace and newlines`, () => {
+    const value = 42
+    const result = Tpl.passthrough`
+      export const foo = ${value}
+    `
+    expect(result).toBe(`
+      export const foo = 42
+    `)
+  })
+
+  test(`works as aliased function`, () => {
+    const ts = Tpl.passthrough
+    const code = ts`const x = ${100}`
+    expect(code).toBe(`const x = 100`)
+  })
+})
+
+describe(`highlight`, () => {
+  test(`returns interpolated string with destructured tag`, () => {
+    const { ts } = Tpl.highlight
+    expect(ts`const x = ${100}`).toBe(`const x = 100`)
+  })
+
+  test(`all language tags work identically`, () => {
+    const { ts, html, sql } = Tpl.highlight
+    expect(ts`test`).toBe(`test`)
+    expect(html`test`).toBe(`test`)
+    expect(sql`test`).toBe(`test`)
   })
 })
