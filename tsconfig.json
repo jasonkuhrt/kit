@@ -88,6 +88,8 @@
       "#fs-relative/fs-relative": ["./src/utils/fs-relative/$$.ts"],
       "#glo": ["./src/utils/glo/$.ts"],
       "#glo/glo": ["./src/utils/glo/$$.ts"],
+      "#html": ["./src/utils/html/$.ts"],
+      "#html/html": ["./src/utils/html/$$.ts"],
       "#http": ["./src/utils/http/$.ts"],
       "#http/http": ["./src/utils/http/$$.ts"],
       "#json": ["./src/utils/json/$.ts"],

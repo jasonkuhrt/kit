@@ -91,9 +91,10 @@ const generateDocs = async () => {
       './num',
       // Practical utilities
       './err',
+      './html',
+      './json',
       './prom',
       './rec',
-      './json',
       './value',
     ],
   })

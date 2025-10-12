@@ -2121,6 +2121,41 @@
             "type": "function"
           },
           {
+            "name": "isUnary",
+            "signature": "(fn: (...args: any[]) => unknown) => boolean",
+            "description": "Check if a function is unary (has exactly one parameter).",
+            "examples": [
+              {
+                "code": "const unary = (x: number) => x * 2\nconst binary = (a: number, b: number) => a + b\nconst nullary = () => 42\n\nisUnary(unary)   // true\nisUnary(binary)  // false\nisUnary(nullary) // false",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Introspection",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "fn"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "analyze",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 110
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
             "name": "AnyAny",
             "signature": "type AnyAny = (...args: any[]) => any",
             "examples": [],
@@ -3063,6 +3098,65 @@
                 "_tag": "LocRelFile"
               },
               "line": 26
+            },
+            "_tag": "value",
+            "type": "function"
+          }
+        ]
+      },
+      "_tag": "DrillableNamespaceEntrypoint"
+    },
+    {
+      "path": "./html",
+      "module": {
+        "location": {
+          "path": {
+            "segments": [
+              "src",
+              "utils",
+              "html"
+            ],
+            "_tag": "PathRelative"
+          },
+          "file": {
+            "stem": "$",
+            "extension": ".ts",
+            "_tag": "File"
+          },
+          "_tag": "LocRelFile"
+        },
+        "description": "HTML utility functions for escaping and working with HTML content.",
+        "exports": [
+          {
+            "name": "escape",
+            "signature": "(string: unknown) => string",
+            "description": "Escape HTML special characters to prevent XSS vulnerabilities.  Converts the following characters to their HTML entity equivalents: - \" → &quot; - ' → &#39; - & → &amp; - < → &lt; - > → &gt;",
+            "examples": [
+              {
+                "code": "escape('Use Array<T> or Record<K, V>')\n// => 'Use Array&lt;T&gt; or Record&lt;K, V&gt;'\n\nescape('<script>alert(\"xss\")</script>')\n// => '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "html"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "html",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 37
             },
             "_tag": "value",
             "type": "function"
@@ -18515,7 +18609,7 @@
           {
             "name": "Tpl",
             "signature": "export * as Tpl",
-            "description": "Convenience re-export of the built-in TemplateStringsArray type. Contains the string parts of a tagged template literal along with a raw property.",
+            "description": "",
             "examples": [],
             "tags": {},
             "sourceLocation": {
@@ -18558,8 +18652,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "description": "Convenience re-export of the built-in TemplateStringsArray type. Contains the string parts of a tagged template literal along with a raw property.",
-              "category": "Template",
+              "description": "",
               "exports": [
                 {
                   "name": "Tpl",
@@ -18592,7 +18685,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 16
+                    "line": 19
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -18628,7 +18721,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 35
+                    "line": 38
                   },
                   "_tag": "value",
                   "type": "function"
@@ -18664,7 +18757,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 54
+                    "line": 57
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -18700,7 +18793,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 72
+                    "line": 75
                   },
                   "_tag": "value",
                   "type": "function"
@@ -18728,7 +18821,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 76
+                    "line": 79
                   },
                   "_tag": "type",
                   "type": "interface"
@@ -18764,7 +18857,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 99
+                    "line": 102
                   },
                   "_tag": "value",
                   "type": "function"
@@ -18800,7 +18893,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 122
+                    "line": 125
                   },
                   "_tag": "value",
                   "type": "function"
@@ -18836,7 +18929,155 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 147
+                    "line": 150
+                  },
+                  "_tag": "value",
+                  "type": "const"
+                },
+                {
+                  "name": "passthrough",
+                  "signature": "(strings: TemplateStringsArray, ...values: unknown[]) => string",
+                  "description": "A passthrough tagged template literal that returns the interpolated string as-is. Useful for semantic clarity in code without any processing.",
+                  "examples": [
+                    {
+                      "code": "const template = passthrough\nconst message = template`Hello ${name}, you have ${count} items.`\n// Result: \"Hello Alice, you have 5 items.\"",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "category": "Template",
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "domains",
+                          "str",
+                          "tpl"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "tpl",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 166
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "dedent",
+                  "signature": "(strings: TemplateStringsArray, ...values: unknown[]) => string",
+                  "description": "Tagged template literal that removes common indentation from all lines. Automatically indents multi-line interpolated values to match their context.  Uses the raw template strings to preserve escape sequences (e.g., \\n stays as backslash-n). Trims leading and trailing blank lines from the result.",
+                  "examples": [
+                    {
+                      "code": "const code = dedent`\n  function greet() {\n    console.log('Hello')\n  }\n`\n// Result: \"function greet() {\\n  console.log('Hello')\\n}\"",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    },
+                    {
+                      "code": "// Multi-line values are auto-indented\nconst inner = 'line1\\nline2'\nconst code = dedent`\n  outer:\n    ${inner}\n`\n// Result: \"outer:\\n  line1\\n  line2\"",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    },
+                    {
+                      "code": "// Escape sequences are preserved\nconst path = dedent`\n  C:\\Users\\name\\Documents\n`\n// Result: \"C:\\\\Users\\\\name\\\\Documents\" (backslashes preserved)",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "category": "Template",
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "domains",
+                          "str",
+                          "tpl"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "tpl",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 209
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "HighlightTag",
+                  "signature": "type HighlightTag = typeof passthrough",
+                  "description": "Type for a tagged template literal function used for syntax highlighting.",
+                  "examples": [],
+                  "category": "Template",
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "domains",
+                          "str",
+                          "tpl"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "tpl",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 250
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "highlight",
+                  "signature": "{ ts: (strings: TemplateStringsArray, ...values: unknown[]) => string; js: (strings: TemplateStringsArray, ...values: unknown[]) => string; html: (strings: TemplateStringsArray, ...values: unknown[]) => string; css: (strings: TemplateStringsArray, ...values: unknown[]) => string; sql: (strings: TemplateStringsArray, ...values: unknown[]) => string; json: (strings: TemplateStringsArray, ...values: unknown[]) => string; yaml: (strings: TemplateStringsArray, ...values: unknown[]) => string; yml: (strings: TemplateStringsArray, ...values: unknown[]) => string; graphql: (strings: TemplateStringsArray, ...values: unknown[]) => string; gql: (strings: TemplateStringsArray, ...values: unknown[]) => string; iso: (strings: TemplateStringsArray, ...values: unknown[]) => string; }",
+                  "description": "Object containing language-specific template tag functions for syntax highlighting. Each property is a tagged template function that provides editor syntax highlighting for that language (when supported by the editor).  Implemented as a Proxy that returns the same passthrough function for all properties, allowing destructuring and property access to work seamlessly.  Supported languages are based on common supported editor injection patterns:",
+                  "examples": [
+                    {
+                      "code": "import { Str } from '@wollybeard/kit'\n\nconst { ts, html, sql } = Str.Tpl.highlight\n\nconst code = ts`\n  export const add = (a: number, b: number) => a + b\n` // Gets TypeScript syntax highlighting in editor\n\nconst markup = html`\n  <div class=\"container\">Hello</div>\n` // Gets HTML syntax highlighting\n\nconst query = sql`\n  SELECT * FROM users WHERE id = ${userId}\n` // Gets SQL syntax highlighting",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "category": "Template",
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "domains",
+                          "str",
+                          "tpl"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "tpl",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 285
                   },
                   "_tag": "value",
                   "type": "const"
@@ -25003,7 +25244,7 @@
     }
   ],
   "metadata": {
-    "extractedAt": "2025-10-12T14:02:00.788Z",
+    "extractedAt": "2025-10-12T18:50:20.661Z",
     "extractorVersion": "0.1.0"
   }
 }
