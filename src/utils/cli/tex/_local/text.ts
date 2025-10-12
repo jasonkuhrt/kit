@@ -1,5 +1,5 @@
-import ansis from 'ansis'
 import { Str } from '#str'
+import ansis from 'ansis'
 
 export type Line = string
 
@@ -26,9 +26,7 @@ const visualLength = (text: string): number => {
 
 export const getLength = visualLength
 
-export const mapLines = (text: string, fn: (line: string, index: number) => string): string => {
-  return fromLines(toLines(text).map(fn))
-}
+export const mapLines = Str.mapLines
 
 export const joinColumns = (cols: Row, separator: string): string => {
   const maxLineCountAmongColumns = Math.max(...cols.map((_) => _.length))
@@ -41,26 +39,22 @@ export const joinColumns = (cols: Row, separator: string): string => {
       .join(separator)
     linesSpanningColumns.push(line)
   }
-  return fromLines(linesSpanningColumns)
+  return Str.unlines(linesSpanningColumns)
 }
 
 export const minSpan = (alignContent: 'left' | 'right', width: number, content: string): string => {
-  return pad(
-    alignContent === `left` ? `right` : `left`,
-    Math.max(0, width - getLength(content)),
-    chars.space,
+  return Str.pad(
     content,
+    Math.max(0, width - getLength(content)),
+    alignContent === `left` ? `right` : `left`,
+    chars.space,
   )
 }
 
 export const padWithin = (side: 'left' | 'right', size: number, char: string, text: string): string => {
   const padSize = size - visualLength(text)
   if (padSize <= 0) return text
-  return pad(side, padSize, char, text)
-}
-
-export const pad = (side: 'left' | 'right', size: number, char: string, text: string): string => {
-  return side === `left` ? char.repeat(size) + text : text + char.repeat(size)
+  return Str.pad(text, padSize, side, char)
 }
 
 export const underline = (string: string): string => {
@@ -108,19 +102,19 @@ export const row = (columns: ColSpec[]): string => {
     lines.push(line)
     currentLine++
   }
-  return lines.join(chars.newline)
+  return Str.unlines(lines)
 }
 
 export const toEnvarNameCase = (name: string) => Str.Case.snake(name).toUpperCase()
 
 export const lines = (width: number, text: string): string[] => {
-  const lines: string[] = text.split(`\n`)
+  const lines: string[] = Str.lines(text)
   const linesFitted = lines.flatMap((text) => {
     const lines = []
     let textToConsume = text
     while (textToConsume.length > 0) {
       const result = visualStringTakeWords(textToConsume, width)
-      const textLines = result.taken.replace(/\n$/, ``).split(chars.newline)
+      const textLines = Str.lines(result.taken.replace(/\n$/, ``))
       lines.push(...textLines)
       textToConsume = result.remaining
     }
@@ -149,34 +143,23 @@ export const chars = {
   pipe: `|`,
 } as const
 
-export const indentBlock = (text: string, symbol = `  `): string => {
-  return indentColumn(text.split(chars.newline), symbol).join(chars.newline)
-}
+export const indentBlock = Str.indentBy
 
-export const fromLines = (column: Column): string => {
-  return column.join(chars.newline)
-}
+export const fromLines = Str.unlines
 
-export const toLines = (text: string): Column => {
-  return text.split(chars.newline)
-}
+export const toLines = Str.lines
 
 export const indentColumn = (
   column: Column,
-  symbolOrSymbolMaker: string | ((lineNumber: number) => string) = ` `,
+  symbolOrSymbolMaker: string | ((line: string, lineNumber: number) => string) = ` `,
 ): Column => {
-  return column.map(
-    (line, index) =>
-      (typeof symbolOrSymbolMaker === `string` ? symbolOrSymbolMaker : symbolOrSymbolMaker(index)) + line,
-  )
+  return Str.lines(Str.indentBy(Str.unlines(column), symbolOrSymbolMaker))
 }
 
-export const indentBlockWith = (text: string, indenter: (line: Line, index: number) => Line): string => {
-  return indentColumnWith(text.split(chars.newline), indenter).join(chars.newline)
-}
+export const indentBlockWith = Str.indentByWith
 
 export const indentColumnWith = (column: Column, indenter: (line: Line, index: number) => Line): Column => {
-  return column.map((line, index) => indenter(line, index) + line)
+  return Str.lines(Str.indentBy(Str.unlines(column), indenter))
 }
 
 export const defaultColumnSeparator = chars.space.repeat(3)
@@ -193,11 +176,11 @@ export const visualStringTake = (string: string, size: number): string => {
 }
 
 export const maxWidth = (string: string): number => {
-  return Math.max(...toLines(string).map((_) => getLength(_)))
+  return Math.max(...Str.lines(string).map((_) => getLength(_)))
 }
 
 export const measure = (string: string) => {
-  const lines = toLines(string)
+  const lines = Str.lines(string)
   const maxWidth = Math.max(...lines.map((_) => getLength(_)))
   const height = lines.length
   return {
