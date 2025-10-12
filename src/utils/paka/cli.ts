@@ -101,7 +101,7 @@ const generateDocs = async () => {
   console.log(`Extracted ${model.entrypoints.length} entrypoints`)
 
   // Save intermediate JSON model
-  const modelPath = join(projectRoot, 'docs/.generated/interface-model.json')
+  const modelPath = join(projectRoot, 'docs/.generated/interface.json')
   writeFileSync(modelPath, JSON.stringify(model, null, 2), 'utf-8')
   console.log(`Saved interface model to ${modelPath}`)
 

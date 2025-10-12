@@ -3,7 +3,6 @@
   "version": "0.0.0-dripip",
   "entrypoints": [
     {
-      "_tag": "DrillableNamespaceEntrypoint",
       "path": "./arr",
       "module": {
         "location": {
@@ -23,6 +22,7 @@
           "_tag": "LocRelFile"
         },
         "description": "Array utilities for working with readonly and mutable arrays.  Provides functional utilities for array operations including mapping, filtering, type guards, and conversions. Emphasizes immutable operations and type safety.",
+        "category": "Core Data Structures",
         "exports": [
           {
             "name": "Eq",
@@ -517,13 +517,47 @@
             },
             "_tag": "value",
             "type": "function"
+          },
+          {
+            "name": "transpose",
+            "signature": "<$T>(rows: readonly (readonly $T[])[]) => $T[][]",
+            "description": "Transpose a 2D array (convert rows to columns and vice versa). This is a classic matrix transpose operation.  Handles ragged arrays (rows with different lengths) by creating columns that only contain elements from rows that had values at that position.",
+            "examples": [
+              {
+                "code": "const rows = [\n  [1, 2, 3],\n  [4, 5, 6]\n]\nArr.transpose(rows)\n// [[1, 4], [2, 5], [3, 6]]\n\nconst table = [\n  ['Alice', 'Engineer', '100k'],\n  ['Bob', 'Designer', '90k']\n]\nArr.transpose(table)\n// [['Alice', 'Bob'], ['Engineer', 'Designer'], ['100k', '90k']]\n\n// Ragged array (uneven row lengths)\nconst ragged = [[1, 2, 3], [4, 5]]\nArr.transpose(ragged)\n// [[1, 4], [2, 5], [3]]",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Transformation",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "arr"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "arr",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 205
+            },
+            "_tag": "value",
+            "type": "function"
           }
-        ],
-        "category": "Core Data Structures"
-      }
+        ]
+      },
+      "_tag": "DrillableNamespaceEntrypoint"
     },
     {
-      "_tag": "DrillableNamespaceEntrypoint",
       "path": "./err",
       "module": {
         "location": {
@@ -543,10 +577,11 @@
           "_tag": "LocRelFile"
         },
         "description": "Error handling utilities for robust error management.  Provides utilities for error inspection, stack trace manipulation, try-catch wrappers, type guards, and null safety. Features formatted error logging and error wrapping utilities.",
+        "category": "Error Handling & Values",
         "exports": [
           {
             "name": "log",
-            "signature": "(error: Error, options?: { color?: boolean; stackTraceColumns?: number; identColumns?: number; showHelp?: boolean; } | undefined) => void",
+            "signature": "(error: Error, options?: { color?: boolean; stackTraceColumns?: number; identColumns?: number; maxFrames?: number; showHelp?: boolean; } | undefined) => void",
             "description": "Log an error to console with nice formatting.",
             "examples": [],
             "category": "Inspection",
@@ -732,10 +767,10 @@
           {
             "name": "InspectOptions",
             "signature": "type InspectOptions = InferOptions<typeof optionSpecs>",
-            "description": "Options for configuring error inspection output. All options can be overridden via environment variables.   color - Whether to use ANSI color codes for better readability (default: true, env: ERROR_DISPLAY_COLOR)  stackTraceColumns - Maximum column width before truncating stack trace lines (default: 120, env: ERROR_DISPLAY_STACK_TRACE_COLUMNS)  identColumns - Number of spaces to use for indentation (default: 4, env: ERROR_DISPLAY_IDENT_COLUMNS)  showHelp - Whether to display the environment variable help section (default: true, env: ERROR_DISPLAY_SHOW_HELP)",
+            "description": "Options for configuring error inspection output. All options can be overridden via environment variables.   color - Whether to use ANSI color codes for better readability (default: true, env: ERROR_DISPLAY_COLOR)  stackTraceColumns - Maximum column width before truncating stack trace lines (default: 120, env: ERROR_DISPLAY_STACK_TRACE_COLUMNS)  identColumns - Number of spaces to use for indentation (default: 4, env: ERROR_DISPLAY_IDENT_COLUMNS)  maxFrames - Maximum number of stack frames to show; 0 to hide stack traces entirely (default: 10, env: ERROR_DISPLAY_MAX_FRAMES)  showHelp - Whether to display the environment variable help section (default: true, env: ERROR_DISPLAY_SHOW_HELP)",
             "examples": [
               {
-                "code": "// Use default options\nErr.inspect(error)\n\n// Customize options\nErr.inspect(error, {\n  color: false,\n  stackTraceColumns: 200,\n  showHelp: false\n})\n\n// Set via environment variables\nprocess.env.ERROR_DISPLAY_COLOR = 'false'\nprocess.env.ERROR_DISPLAY_SHOW_HELP = 'false'",
+                "code": "// Use default options\nErr.inspect(error)\n\n// Customize options\nErr.inspect(error, {\n  color: false,\n  stackTraceColumns: 200,\n  showHelp: false\n})\n\n// Hide stack traces (useful for test snapshots)\nErr.inspect(error, { maxFrames: 0, showHelp: false, color: false })\n\n// Set via environment variables\nprocess.env.ERROR_DISPLAY_COLOR = 'false'\nprocess.env.ERROR_DISPLAY_SHOW_HELP = 'false'",
                 "twoslashEnabled": true,
                 "language": "typescript"
               }
@@ -759,7 +794,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 164
+              "line": 175
             },
             "_tag": "type",
             "type": "type-alias"
@@ -787,14 +822,14 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 172
+              "line": 183
             },
             "_tag": "type",
             "type": "type-alias"
           },
           {
             "name": "inspect",
-            "signature": "(error: Error, options?: { color?: boolean; stackTraceColumns?: number; identColumns?: number; showHelp?: boolean; } | undefined) => string",
+            "signature": "(error: Error, options?: { color?: boolean; stackTraceColumns?: number; identColumns?: number; maxFrames?: number; showHelp?: boolean; } | undefined) => string",
             "description": "Render an error to a string with detailed formatting.  Features: - Nested error support (causes and aggregate errors) - Context object formatting - Stack trace cleaning with filtering indicators - Tree-like visual guides for nested structures - Configurable via options or environment variables",
             "examples": [
               {
@@ -822,7 +857,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 228
+              "line": 239
             },
             "_tag": "value",
             "type": "function"
@@ -1253,7 +1288,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 420
+              "line": 397
             },
             "_tag": "value",
             "type": "function"
@@ -1290,7 +1325,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 461
+              "line": 438
             },
             "_tag": "value",
             "type": "function"
@@ -1389,7 +1424,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 163
+              "line": 158
             },
             "_tag": "value",
             "type": "function"
@@ -1424,7 +1459,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 212
+              "line": 203
             },
             "_tag": "value",
             "type": "function"
@@ -1459,7 +1494,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 262
+              "line": 239
             },
             "_tag": "value",
             "type": "function"
@@ -1494,7 +1529,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 287
+              "line": 264
             },
             "_tag": "value",
             "type": "function"
@@ -1529,7 +1564,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 306
+              "line": 283
             },
             "_tag": "value",
             "type": "function"
@@ -1564,7 +1599,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 326
+              "line": 303
             },
             "_tag": "value",
             "type": "function"
@@ -1599,7 +1634,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 348
+              "line": 325
             },
             "_tag": "value",
             "type": "function"
@@ -1634,7 +1669,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 365
+              "line": 342
             },
             "_tag": "value",
             "type": "const"
@@ -1669,7 +1704,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 379
+              "line": 356
             },
             "_tag": "value",
             "type": "const"
@@ -1994,12 +2029,11 @@
             "_tag": "value",
             "type": "const"
           }
-        ],
-        "category": "Error Handling & Values"
-      }
+        ]
+      },
+      "_tag": "DrillableNamespaceEntrypoint"
     },
     {
-      "_tag": "DrillableNamespaceEntrypoint",
       "path": "./fn",
       "module": {
         "location": {
@@ -2019,6 +2053,7 @@
           "_tag": "LocRelFile"
         },
         "description": "Function utilities for functional programming patterns.  Provides utilities for function composition, currying, partial application, piping, and common functional patterns like identity and constant functions. Includes function analysis tools and endomorphism utilities.",
+        "category": "Core Data Structures",
         "exports": [
           {
             "name": "Parameter",
@@ -2051,10 +2086,10 @@
           {
             "name": "analyzeFunction",
             "signature": "(fn: (...args: any[]) => unknown) => { body: string; parameters: Parameter[]; }",
-            "description": "Analyze a function to extract its parameter information and body.  Parses a function's string representation to extract: - Parameter names (both regular and destructured parameters) - Function body (both statement and expression forms)",
+            "description": "Analyze a function to extract its parameter information and body.  Parses a function's string representation to extract: - Parameter names (both regular and destructured parameters) - Function body (both statement and expression forms, trimmed and dedented)  The returned body is already cleaned: leading/trailing whitespace removed and common indentation stripped away for clean display in its isolated form.",
             "examples": [
               {
-                "code": "const fn = (a, { b, c }) => a + b + c\nconst info = analyzeFunction(fn)\n// info.parameters: [{ type: 'name', value: 'a' }, { type: 'destructured', names: ['b', 'c'] }]",
+                "code": "const fn = (a, { b, c }) => a + b + c\nconst info = analyzeFunction(fn)\n// info.parameters: [{ type: 'name', value: 'a' }, { type: 'destructured', names: ['b', 'c'] }]\n// info.body: \"a + b + c\" (already trimmed and dedented)",
                 "twoslashEnabled": true,
                 "language": "typescript"
               }
@@ -2080,7 +2115,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 27
+              "line": 31
             },
             "_tag": "value",
             "type": "function"
@@ -3032,12 +3067,11 @@
             "_tag": "value",
             "type": "function"
           }
-        ],
-        "category": "Core Data Structures"
-      }
+        ]
+      },
+      "_tag": "DrillableNamespaceEntrypoint"
     },
     {
-      "_tag": "DrillableNamespaceEntrypoint",
       "path": "./json",
       "module": {
         "location": {
@@ -3057,6 +3091,7 @@
           "_tag": "LocRelFile"
         },
         "description": "JSON utilities with Effect Schema integration.  Provides type-safe JSON operations including type guards, parsing, encoding, and validation using Effect Schema. Supports JSON primitives, objects, and recursive value structures with comprehensive error handling.",
+        "category": "Serialization & Network",
         "exports": [
           {
             "name": "Primitive",
@@ -3521,12 +3556,11 @@
             "_tag": "value",
             "type": "const"
           }
-        ],
-        "category": "Serialization & Network"
-      }
+        ]
+      },
+      "_tag": "DrillableNamespaceEntrypoint"
     },
     {
-      "_tag": "DrillableNamespaceEntrypoint",
       "path": "./num",
       "module": {
         "location": {
@@ -3546,11 +3580,10 @@
           "_tag": "LocRelFile"
         },
         "description": "Numeric types and utilities with branded types for mathematical constraints.  Provides branded number types (Positive, Negative, Even, Odd, etc.) with runtime validation, mathematical operations, range types, and specialized numeric domains like Complex, Ratio, and BigInt. Includes type guards, ordering, and equivalence utilities.",
+        "category": "Core Data Structures",
         "exports": [
           {
-            "_tag": "value",
             "name": "Degrees",
-            "type": "namespace",
             "signature": "export * as Degrees",
             "description": "",
             "examples": [],
@@ -3575,6 +3608,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -3802,9 +3837,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Even",
-            "type": "namespace",
             "signature": "export * as Even",
             "description": "",
             "examples": [],
@@ -3829,6 +3862,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -4029,9 +4064,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Finite",
-            "type": "namespace",
             "signature": "export * as Finite",
             "description": "",
             "examples": [],
@@ -4056,6 +4089,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -4196,9 +4231,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Float",
-            "type": "namespace",
             "signature": "export * as Float",
             "description": "",
             "examples": [],
@@ -4223,6 +4256,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -4392,9 +4427,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "InRange",
-            "type": "namespace",
             "signature": "export * as InRange",
             "description": "",
             "examples": [],
@@ -4419,6 +4452,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -4729,9 +4764,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Int",
-            "type": "namespace",
             "signature": "export * as Int",
             "description": "",
             "examples": [],
@@ -4756,6 +4789,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -4956,9 +4991,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Natural",
-            "type": "namespace",
             "signature": "export * as Natural",
             "description": "",
             "examples": [],
@@ -4983,6 +5016,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -5212,9 +5247,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Negative",
-            "type": "namespace",
             "signature": "export * as Negative",
             "description": "",
             "examples": [],
@@ -5239,6 +5272,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -5408,9 +5443,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "NonNegative",
-            "type": "namespace",
             "signature": "export * as NonNegative",
             "description": "",
             "examples": [],
@@ -5435,6 +5468,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -5575,9 +5610,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "NonPositive",
-            "type": "namespace",
             "signature": "export * as NonPositive",
             "description": "",
             "examples": [],
@@ -5602,6 +5635,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -5742,9 +5777,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "NonZero",
-            "type": "namespace",
             "signature": "export * as NonZero",
             "description": "",
             "examples": [],
@@ -5769,6 +5802,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -6027,9 +6062,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Odd",
-            "type": "namespace",
             "signature": "export * as Odd",
             "description": "",
             "examples": [],
@@ -6054,6 +6087,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -6252,9 +6287,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Percentage",
-            "type": "namespace",
             "signature": "export * as Percentage",
             "description": "",
             "examples": [],
@@ -6279,6 +6312,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -6506,9 +6541,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Positive",
-            "type": "namespace",
             "signature": "export * as Positive",
             "description": "",
             "examples": [],
@@ -6533,6 +6566,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -6675,9 +6710,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Radians",
-            "type": "namespace",
             "signature": "export * as Radians",
             "description": "",
             "examples": [],
@@ -6702,6 +6735,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -6929,9 +6964,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "SafeInt",
-            "type": "namespace",
             "signature": "export * as SafeInt",
             "description": "",
             "examples": [],
@@ -6956,6 +6989,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -7154,9 +7189,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Whole",
-            "type": "namespace",
             "signature": "export * as Whole",
             "description": "",
             "examples": [],
@@ -7181,6 +7214,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -7410,9 +7445,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Zero",
-            "type": "namespace",
             "signature": "export * as Zero",
             "description": "",
             "examples": [],
@@ -7437,6 +7470,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -7606,9 +7641,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Prime",
-            "type": "namespace",
             "signature": "export * as Prime",
             "description": "",
             "examples": [],
@@ -7633,6 +7666,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -7895,9 +7930,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Ratio",
-            "type": "namespace",
             "signature": "export * as Ratio",
             "description": "",
             "examples": [],
@@ -7922,6 +7955,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -8675,9 +8710,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Frac",
-            "type": "namespace",
             "signature": "export * as Frac",
             "description": "",
             "examples": [],
@@ -8702,6 +8735,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -9281,9 +9316,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Complex",
-            "type": "namespace",
             "signature": "export * as Complex",
             "description": "",
             "examples": [],
@@ -9308,6 +9341,8 @@
               },
               "line": 1
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -10411,9 +10446,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "BigInteger",
-            "type": "namespace",
             "signature": "export * as BigInteger",
             "description": "",
             "examples": [],
@@ -10438,6 +10471,8 @@
               },
               "line": 1
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -13905,12 +13940,11 @@
             "_tag": "value",
             "type": "function"
           }
-        ],
-        "category": "Core Data Structures"
-      }
+        ]
+      },
+      "_tag": "DrillableNamespaceEntrypoint"
     },
     {
-      "_tag": "DrillableNamespaceEntrypoint",
       "path": "./obj",
       "module": {
         "location": {
@@ -13930,6 +13964,7 @@
           "_tag": "LocRelFile"
         },
         "description": "Object utilities for working with plain JavaScript objects.  Provides type-safe utilities for object operations including property access, manipulation, merging, filtering, and transformations. Supports both value-level and type-level operations with strong type inference.",
+        "category": "Core Data Structures",
         "exports": [
           {
             "name": "Eq",
@@ -16866,12 +16901,11 @@
             "_tag": "value",
             "type": "function"
           }
-        ],
-        "category": "Core Data Structures"
-      }
+        ]
+      },
+      "_tag": "DrillableNamespaceEntrypoint"
     },
     {
-      "_tag": "DrillableNamespaceEntrypoint",
       "path": "./prom",
       "module": {
         "location": {
@@ -16891,6 +16925,7 @@
           "_tag": "LocRelFile"
         },
         "description": "Promise utilities for asynchronous operations.  Provides utilities for working with Promises including deferred promise creation, promise combinators, and async control flow patterns.",
+        "category": "Error Handling & Values",
         "exports": [
           {
             "name": "Deferred",
@@ -16975,7 +17010,7 @@
           {
             "name": "maybeAsync",
             "signature": "function maybeAsync<T, R = T, E = unknown>(fn: () => T, handlers: MaybeAsyncHandlers<T extends Promise<infer U> ? U : T, R, E> = {}): T extends Promise<infer U> ? Promise<R | E | U> : T | R | E",
-            "description": "Handle a function that might return a promise or a regular value, with unified handlers for both sync and async cases.",
+            "description": "Handle a function that might return a promise or a regular value, with unified handlers for both sync and async cases.  Implemented using maybeAsyncEnvelope internally.",
             "examples": [
               {
                 "code": "// Basic usage\nconst result = maybeAsync(\n  () => fetchData(),\n  {\n    then: (data) => processData(data),\n    catch: (error) => ({ success: false, error })\n  }\n)\n\n// Just error handling\nconst safeResult = maybeAsync(\n  () => riskyOperation(),\n  {\n    catch: (error, isAsync) => {\n      console.error(`Failed ${isAsync ? 'async' : 'sync'}:`, error)\n      return null\n    }\n  }\n)\n\n// Just success handling\nconst transformed = maybeAsync(\n  () => getValue(),\n  {\n    then: (value) => value.toUpperCase()\n  }\n)",
@@ -17002,7 +17037,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 151
+              "line": 231
             },
             "_tag": "value",
             "type": "function"
@@ -17171,6 +17206,70 @@
             "type": "type-alias"
           },
           {
+            "name": "Envelope",
+            "signature": "type Envelope<T = unknown> = {\n  fail: boolean\n  value: T\n  async: boolean\n}",
+            "description": "Envelope containing execution metadata.",
+            "examples": [],
+            "category": "Types",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "prom"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "prom",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 96
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "maybeAsyncEnvelope",
+            "signature": "<$return>(fn: () => $return) => $return extends Promise<infer __awaited__> ? Promise<Envelope<__awaited__>> : Envelope<$return>",
+            "description": "Execute a function and return an envelope with metadata about the execution.  Returns metadata indicating: - **channel**: Whether the function succeeded ('succeed') or failed ('fail') - **async**: Whether execution was asynchronous (promise) or synchronous - **value/error**: The result value or thrown/rejected error  Never throws or rejects - all errors are captured in the envelope. Preserves sync/async distinction in both return type and metadata.  Useful when you need to: - Distinguish Promise.resolve(Error) from Promise.reject(Error) - Know whether execution was sync or async - Handle errors without try/catch blocks",
+            "examples": [
+              {
+                "code": "// Sync success\nconst result = maybeAsyncEnvelope(() => 42)\n// { channel: 'succeed', value: 42, async: false }\n\n// Sync failure\nconst result = maybeAsyncEnvelope(() => { throw new Error('fail') })\n// { channel: 'fail', error: Error('fail'), async: false }\n\n// Async success\nconst result = await maybeAsyncEnvelope(() => Promise.resolve('ok'))\n// { channel: 'succeed', value: 'ok', async: true }\n\n// Async failure\nconst result = await maybeAsyncEnvelope(() => Promise.reject('error'))\n// { channel: 'fail', error: 'error', async: true }\n\n// Promise resolving to Error (not a rejection!)\nconst result = await maybeAsyncEnvelope(() => Promise.resolve(new Error('value')))\n// { channel: 'succeed', value: Error('value'), async: true }",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Utilities",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "prom"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "prom",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 147
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
             "name": "MaybeAsyncHandlers",
             "signature": "interface MaybeAsyncHandlers<T, R = T, E = unknown> {\n  /**\n   * Handler for successful values (sync or async).\n   */\n  then?: (value: T) => R\n\n  /**\n   * Handler for errors (sync or async).\n   * @param error - The caught error\n   * @param isAsync - Whether the error occurred asynchronously\n   */\n  catch?: (error: unknown, isAsync: boolean) => E\n}",
             "description": "Options for handling values that might be promises.",
@@ -17194,17 +17293,16 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 96
+              "line": 174
             },
             "_tag": "type",
             "type": "interface"
           }
-        ],
-        "category": "Error Handling & Values"
-      }
+        ]
+      },
+      "_tag": "DrillableNamespaceEntrypoint"
     },
     {
-      "_tag": "DrillableNamespaceEntrypoint",
       "path": "./rec",
       "module": {
         "location": {
@@ -17224,6 +17322,7 @@
           "_tag": "LocRelFile"
         },
         "description": "Record utilities for working with plain JavaScript objects as dictionaries.  Provides type-safe operations for records (objects with PropertyKey indexes) including type guards, merging, creation, and index signature manipulation. Strictly validates plain objects, rejecting arrays and class instances.",
+        "category": "Collections",
         "exports": [
           {
             "name": "Any",
@@ -17593,12 +17692,11 @@
             "_tag": "value",
             "type": "function"
           }
-        ],
-        "category": "Collections"
-      }
+        ]
+      },
+      "_tag": "DrillableNamespaceEntrypoint"
     },
     {
-      "_tag": "DrillableNamespaceEntrypoint",
       "path": "./str",
       "module": {
         "location": {
@@ -17618,11 +17716,10 @@
           "_tag": "LocRelFile"
         },
         "description": "String utilities for text manipulation and analysis.  Provides comprehensive string operations including case conversion, splitting, matching, replacement, templating, and character utilities. Features type-safe APIs with strong inference for string literals and patterns.",
+        "category": "Core Data Structures",
         "exports": [
           {
-            "_tag": "value",
             "name": "Case",
-            "type": "namespace",
             "signature": "export * as Case",
             "description": "Convert string to camelCase.",
             "examples": [],
@@ -17647,6 +17744,8 @@
               },
               "line": 1
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -17944,9 +18043,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Char",
-            "type": "namespace",
             "signature": "export * as Char",
             "description": "Uppercase letter.",
             "examples": [],
@@ -17971,6 +18068,8 @@
               },
               "line": 1
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -18406,6 +18505,338 @@
                       "_tag": "LocRelFile"
                     },
                     "line": 173
+                  },
+                  "_tag": "value",
+                  "type": "const"
+                }
+              ]
+            }
+          },
+          {
+            "name": "Tpl",
+            "signature": "export * as Tpl",
+            "description": "Convenience re-export of the built-in TemplateStringsArray type. Contains the string parts of a tagged template literal along with a raw property.",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str",
+                    "tpl"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "$",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 1
+            },
+            "_tag": "value",
+            "type": "namespace",
+            "module": {
+              "location": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str",
+                    "tpl"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "tpl",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "description": "Convenience re-export of the built-in TemplateStringsArray type. Contains the string parts of a tagged template literal along with a raw property.",
+              "category": "Template",
+              "exports": [
+                {
+                  "name": "Tpl",
+                  "signature": "type Tpl = TemplateStringsArray",
+                  "description": "Convenience re-export of the built-in TemplateStringsArray type. Contains the string parts of a tagged template literal along with a raw property.",
+                  "examples": [
+                    {
+                      "code": "function tag(strings: Tpl.Array, ...values: unknown[]) {\n  // strings is TemplateStringsArray\n  // strings[0] = \"Hello \"\n  // strings[1] = \"!\"\n  // strings.raw contains raw string values\n}\ntag`Hello ${name}!`",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "category": "Template",
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "domains",
+                          "str",
+                          "tpl"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "tpl",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 16
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "is",
+                  "signature": "(value: unknown) => value is TemplateStringsArray",
+                  "description": "Type guard to check if a value is a TemplateStringsArray. Used to detect when a function is called as a tagged template literal.",
+                  "examples": [
+                    {
+                      "code": "function tag(...args: unknown[]) {\n  if (isArray(args[0])) {\n    // Called as tag`template`\n  } else {\n    // Called as tag()\n  }\n}",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "category": "Template",
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "domains",
+                          "str",
+                          "tpl"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "tpl",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 35
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "CallInput",
+                  "signature": "type CallInput = [Tpl, ...unknown[]]",
+                  "description": "Tagged template literal arguments tuple. First element is the template strings array, followed by interpolated values.",
+                  "examples": [
+                    {
+                      "code": "function tag(...args: unknown[]) {\n  if (isArgs(args)) {\n    const [strings, ...values] = args\n    // Process template literal\n  }\n}\ntag`Hello ${name}!`",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "category": "Template",
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "domains",
+                          "str",
+                          "tpl"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "tpl",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 54
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "isCallInput",
+                  "signature": "(value: unknown) => value is CallInput",
+                  "description": "Type guard to check if function arguments are from a tagged template literal.",
+                  "examples": [
+                    {
+                      "code": "function tag(...args: unknown[]) {\n  if (isArgs(args)) {\n    const [strings, ...values] = args\n    // Process as template literal\n  }\n}\ntag`Hello ${name}!`",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "category": "Template",
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "domains",
+                          "str",
+                          "tpl"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "tpl",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 72
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "Call",
+                  "signature": "interface Call {\n  template: Tpl\n  args: unknown[]\n}",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "domains",
+                          "str",
+                          "tpl"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "tpl",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 76
+                  },
+                  "_tag": "type",
+                  "type": "interface"
+                },
+                {
+                  "name": "normalizeCall",
+                  "signature": "(callInput: CallInput) => Call",
+                  "description": "Parse tagged template literal arguments into structured parts and values.",
+                  "examples": [
+                    {
+                      "code": "function tag(...args: unknown[]) {\n  if (isArgs(args)) {\n    const { parts, values } = parse(args)\n    // parts[0] = \"Hello \"\n    // parts[1] = \"!\"\n    // values[0] = name\n  }\n}\ntag`Hello ${name}!`",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "category": "Template",
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "domains",
+                          "str",
+                          "tpl"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "tpl",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 99
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "renderWith",
+                  "signature": "(mapper: (value: unknown) => string) => (callInput: CallInput) => string",
+                  "description": "Render tagged template literal arguments using a custom value renderer.",
+                  "examples": [
+                    {
+                      "code": "// Custom renderer for JSON values\nconst renderJson = renderWith(v => JSON.stringify(v))\nfunction tag(...args: unknown[]) {\n  if (isArgs(args)) return renderJson(args)\n}\ntag`Value: ${{ foo: 'bar' }}` // \"Value: {\\\"foo\\\":\\\"bar\\\"}\"\n\n// Custom renderer that prefixes values\nconst renderPrefixed = renderWith(v => `[${v}]`)",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "category": "Template",
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "domains",
+                          "str",
+                          "tpl"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "tpl",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 122
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "render",
+                  "signature": "(callInput: CallInput) => string",
+                  "description": "Render tagged template literal arguments to a string. Interpolated values are converted using plain String() coercion.",
+                  "examples": [
+                    {
+                      "code": "function tag(...args: unknown[]) {\n  if (isArgs(args)) {\n    return render(args)\n  }\n}\ntag`Hello ${name}!` // \"Hello World!\"\ntag`Count: ${42}` // \"Count: 42\"",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "category": "Template",
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "domains",
+                          "str",
+                          "tpl"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "tpl",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 147
                   },
                   "_tag": "value",
                   "type": "const"
@@ -20627,41 +21058,6 @@
             "type": "type-alias"
           },
           {
-            "name": "isTemplateStringsArray",
-            "signature": "(args: unknown) => args is TemplateStringsArray",
-            "description": "Type guard to check if a value is a TemplateStringsArray. Used to detect when a function is called as a tagged template literal.",
-            "examples": [
-              {
-                "code": "function tag(...args: unknown[]) {\n  if (isTemplateStringsArray(args)) {\n    // Called as tag`template`\n  } else {\n    // Called as tag()\n  }\n}",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Template",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "template",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 56
-            },
-            "_tag": "value",
-            "type": "function"
-          },
-          {
             "name": "defaultIndentSize",
             "signature": "2",
             "description": "Default indentation size in characters.",
@@ -20918,6 +21314,105 @@
             "type": "const"
           },
           {
+            "name": "indentBy",
+            "signature": "(text: string, prefixOrFn: string | ((line: string, lineIndex: number) => string)) => string",
+            "description": "Indent each line using a custom prefix string or function. When given a function, it receives both the line content and index, allowing for content-aware indentation.",
+            "examples": [
+              {
+                "code": "// Fixed string prefix\nindentBy('hello\\nworld', '>>> ') // '>>> hello\\n>>> world'\n\n// Dynamic prefix based on line index (ignore line content with _)\nindentBy('line1\\nline2\\nline3', (_, i) => `${i + 1}. `)\n// '1. line1\\n2. line2\\n3. line3'\n\n// Content-aware indentation\nindentBy('title\\nitem', (line, i) => line === 'title' ? '' : '  ')\n// 'title\\n  item'",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 116
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
+            "name": "indentByOn",
+            "signature": "(text: string) => (prefixOrFn: string | ((line: string, lineIndex: number) => string)) => string",
+            "description": "Curried version of indentBy with text first.",
+            "examples": [],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 131
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "indentByWith",
+            "signature": "(prefixOrFn: string | ((line: string, lineIndex: number) => string)) => (text: string) => string",
+            "description": "Curried version of indentBy with prefix first.",
+            "examples": [
+              {
+                "code": "const addArrow = indentByWith('→ ')\naddArrow('hello\\nworld') // '→ hello\\n→ world'\n\nconst numbered = indentByWith((_, i) => `${i}. `)\nnumbered('first\\nsecond') // '0. first\\n1. second'\n\nconst conditionalIndent = indentByWith((line, i) =>\n  line.startsWith('#') ? '' : '  '\n)\nconditionalIndent('# Title\\nContent') // '# Title\\n  Content'",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 152
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
             "name": "stripIndent",
             "signature": "(text: string) => string",
             "description": "Remove common leading whitespace from all lines. Finds the minimum indentation across all non-empty lines and removes that amount from every line. This is useful for dedenting code blocks or template strings while preserving relative indentation.",
@@ -20947,10 +21442,429 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 115
+              "line": 174
             },
             "_tag": "value",
             "type": "function"
+          },
+          {
+            "name": "defaultPadCharacter",
+            "signature": "\" \"",
+            "description": "Default character used for padding.",
+            "examples": [],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 200
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "pad",
+            "signature": "(text: string, size: number, side?: \"left\" | \"right\", char?: string) => string",
+            "description": "Add padding characters to text.",
+            "examples": [
+              {
+                "code": "pad('hello', 3, 'left') // '   hello'\npad('hello', 3, 'right') // 'hello   '\npad('hello', 2, 'left', '-') // '--hello'",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 217
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
+            "name": "padOn",
+            "signature": "(text: string) => (size: number) => (side?: \"left\" | \"right\" | undefined) => (char?: string | undefined) => string",
+            "description": "Curried version of pad with text first.",
+            "examples": [],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 232
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "padWith",
+            "signature": "(size: number) => (text: string) => (side?: \"left\" | \"right\" | undefined) => (char?: string | undefined) => string",
+            "description": "Curried version of pad with size first.",
+            "examples": [],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 240
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "padLeft",
+            "signature": "(text: string, size: number, char?: string) => string",
+            "description": "Add left padding to text.",
+            "examples": [
+              {
+                "code": "padLeft('hello', 3) // '   hello'\npadLeft('hello', 2, '0') // '00hello'",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 255
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
+            "name": "padLeftOn",
+            "signature": "(text: string) => (size: number) => (char?: string | undefined) => string",
+            "description": "Curried version of padLeft with text first.",
+            "examples": [],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 265
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "padLeftWith",
+            "signature": "(size: number) => (text: string) => (char?: string | undefined) => string",
+            "description": "Curried version of padLeft with size first.",
+            "examples": [
+              {
+                "code": "const pad3 = padLeftWith(3)\npad3('hi') // '   hi'",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 278
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "padRight",
+            "signature": "(text: string, size: number, char?: string) => string",
+            "description": "Add right padding to text.",
+            "examples": [
+              {
+                "code": "padRight('hello', 3) // 'hello   '\npadRight('hello', 2, '.') // 'hello..'",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 293
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
+            "name": "padRightOn",
+            "signature": "(text: string) => (size: number) => (char?: string | undefined) => string",
+            "description": "Curried version of padRight with text first.",
+            "examples": [],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 303
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "padRightWith",
+            "signature": "(size: number) => (text: string) => (char?: string | undefined) => string",
+            "description": "Curried version of padRight with size first.",
+            "examples": [
+              {
+                "code": "const pad3 = padRightWith(3)\npad3('hi') // 'hi   '",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 316
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "mapLines",
+            "signature": "(text: string, fn: (line: string, index: number) => string) => string",
+            "description": "Map a transformation function over each line of text.",
+            "examples": [
+              {
+                "code": "mapLines('hello\\nworld', (line) => line.toUpperCase())\n// 'HELLO\\nWORLD'\n\nmapLines('a\\nb\\nc', (line, i) => `${i}: ${line}`)\n// '0: a\\n1: b\\n2: c'",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 333
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
+            "name": "mapLinesOn",
+            "signature": "(text: string) => (fn: (line: string, index: number) => string) => string",
+            "description": "Curried version of mapLines with text first.",
+            "examples": [],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 343
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "mapLinesWith",
+            "signature": "(fn: (line: string, index: number) => string) => (text: string) => string",
+            "description": "Curried version of mapLines with function first.",
+            "examples": [
+              {
+                "code": "const uppercase = mapLinesWith((line) => line.toUpperCase())\nuppercase('hello\\nworld') // 'HELLO\\nWORLD'",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Text Formatting",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "text",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 356
+            },
+            "_tag": "value",
+            "type": "const"
           },
           {
             "name": "EndsWith",
@@ -21155,12 +22069,11 @@
             "_tag": "type",
             "type": "type-alias"
           }
-        ],
-        "category": "Core Data Structures"
-      }
+        ]
+      },
+      "_tag": "DrillableNamespaceEntrypoint"
     },
     {
-      "_tag": "DrillableNamespaceEntrypoint",
       "path": "./test",
       "module": {
         "location": {
@@ -21183,9 +22096,7 @@
         "category": "Development",
         "exports": [
           {
-            "_tag": "value",
             "name": "Matchers",
-            "type": "namespace",
             "signature": "export * as Matchers",
             "description": "Custom Vitest matchers for Effect Schema and equivalence testing.",
             "examples": [],
@@ -21210,6 +22121,8 @@
               },
               "line": 6
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -21279,8 +22192,14 @@
                 "language": "typescript"
               },
               {
-                "code": "╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS\n-1\n╠══════════════════════════════════════════════════╣ THEN THROWS\nError: Value must be positive\n╚══════════════════════════════════════════════════╝",
-                "title": "Snapshot format shows arguments and results clearly:",
+                "code": "// Mix successful and error cases - errors are captured automatically\nTest.on(parseInt)\n  .cases(\n    ['42'],      // Returns: 42\n    ['hello'],   // Returns: NaN\n  )\n  .test()\n\n// Validation functions - errors documented in snapshots\nTest.on(Positive.from)\n  .cases(\n    [1], [10], [100],        // THEN RETURNS the value\n    [0], [-1], [-10],        // THEN THROWS \"Value must be positive\"\n  )\n  .test()",
+                "title": "## Promise Auto-Awaiting",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              },
+              {
+                "code": "╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS\nhello\n╠══════════════════════════════════════════════════╣ THEN RETURNS PROMISE RESOLVING TO STRING\nHELLO\n╚══════════════════════════════════════════════════╝",
+                "title": "## Snapshot Format",
                 "twoslashEnabled": true,
                 "language": "typescript"
               }
@@ -21305,7 +22224,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 119
+              "line": 154
             },
             "_tag": "value",
             "type": "function"
@@ -21341,16 +22260,16 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 259
+              "line": 294
             },
             "_tag": "value",
             "type": "function"
           }
         ]
-      }
+      },
+      "_tag": "DrillableNamespaceEntrypoint"
     },
     {
-      "_tag": "DrillableNamespaceEntrypoint",
       "path": "./ts",
       "module": {
         "location": {
@@ -21370,11 +22289,10 @@
           "_tag": "LocRelFile"
         },
         "description": "TypeScript type utilities and type-level programming helpers.  Provides comprehensive type-level utilities including type printing, static errors, type guards, simplification utilities, exact type matching, and type testing tools. Features conditional types, type transformations, and type-level assertions for advanced TypeScript patterns.",
+        "category": "Development",
         "exports": [
           {
-            "_tag": "value",
             "name": "Kind",
-            "type": "namespace",
             "signature": "export * as Kind",
             "description": "Higher-kinded type utilities for TypeScript.  Provides type-level functions and utilities for simulating higher-kinded types in TypeScript, enabling more advanced type-level programming patterns.",
             "examples": [],
@@ -21398,6 +22316,8 @@
               },
               "line": 2
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -21792,9 +22712,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Test",
-            "type": "namespace",
             "signature": "export * as Test",
             "description": "",
             "examples": [],
@@ -21818,6 +22736,8 @@
               },
               "line": 14
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -22492,9 +23412,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Union",
-            "type": "namespace",
             "signature": "export * as Union",
             "description": "Valid values for discriminant properties in tagged unions.",
             "examples": [],
@@ -22518,6 +23436,8 @@
               },
               "line": 27
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -22913,9 +23833,7 @@
             }
           },
           {
-            "_tag": "value",
             "name": "Variance",
-            "type": "namespace",
             "signature": "export * as Variance",
             "description": "Phantom type helper that makes a type parameter covariant.",
             "examples": [],
@@ -22939,6 +23857,8 @@
               },
               "line": 36
             },
+            "_tag": "value",
+            "type": "namespace",
             "module": {
               "location": {
                 "path": {
@@ -23789,12 +24709,11 @@
             "_tag": "value",
             "type": "function"
           }
-        ],
-        "category": "Development"
-      }
+        ]
+      },
+      "_tag": "DrillableNamespaceEntrypoint"
     },
     {
-      "_tag": "DrillableNamespaceEntrypoint",
       "path": "./value",
       "module": {
         "location": {
@@ -23814,6 +24733,7 @@
           "_tag": "LocRelFile"
         },
         "description": "General value utilities for common JavaScript values and patterns.  Provides utilities for lazy values, type guards for symbols and dates, identity proxies, and lazy value resolution. Includes helpers for working with deferred computations and value type checking.",
+        "category": "Error Handling & Values",
         "exports": [
           {
             "name": "Lazy",
@@ -24077,13 +24997,13 @@
             "_tag": "value",
             "type": "function"
           }
-        ],
-        "category": "Error Handling & Values"
-      }
+        ]
+      },
+      "_tag": "DrillableNamespaceEntrypoint"
     }
   ],
   "metadata": {
-    "extractedAt": "2025-10-10T04:04:04.150Z",
+    "extractedAt": "2025-10-12T14:02:00.788Z",
     "extractorVersion": "0.1.0"
   }
 }

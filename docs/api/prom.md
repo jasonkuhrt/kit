@@ -241,6 +241,20 @@ type Result1 = AwaitedUnion<Promise<string>, number> // Promise<string | number>
 type Result2 = AwaitedUnion<string, number> // string | number
 ```
 
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Envelope`
+
+```typescript
+type Envelope<T = unknown> = {
+  fail: boolean
+  value: T
+  async: boolean
+}
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L96" />
+
+Envelope containing execution metadata.
+
 ## Utilities
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `maybeAsync`
@@ -252,9 +266,11 @@ function maybeAsync<T, R = T, E = unknown>(
 ): T extends Promise<infer U> ? Promise<R | E | U> : T | R | E
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L151" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L231" />
 
 Handle a function that might return a promise or a regular value, with unified handlers for both sync and async cases.
+
+Implemented using maybeAsyncEnvelope internally.
 
 **Examples:**
 
@@ -296,6 +312,71 @@ const transformed = Prom.maybeAsync(
 )
 ```
 
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `maybeAsyncEnvelope`
+
+```typescript
+<$return>(fn: () => $return) => $return extends Promise<infer __awaited__> ? Promise<Envelope<__awaited__>> : Envelope<$return>
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L147" />
+
+Execute a function and return an envelope with metadata about the execution.
+
+Returns metadata indicating:
+
+- **channel**: Whether the function succeeded ('succeed') or failed ('fail')
+- **async**: Whether execution was asynchronous (promise) or synchronous
+- **value/error**: The result value or thrown/rejected error
+
+Never throws or rejects
+
+- all errors are captured in the envelope. Preserves sync/async distinction in both return type and metadata.
+
+Useful when you need to:
+
+- Distinguish Promise.resolve(Error) from Promise.reject(Error)
+- Know whether execution was sync or async
+- Handle errors without try/catch blocks
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Prom } from '@wollybeard/kit/prom'
+// ---cut---
+// Sync success
+// [!code word:maybeAsyncEnvelope:1]
+const result = Prom.maybeAsyncEnvelope(() => 42)
+// { channel: 'succeed', value: 42, async: false }
+
+// Sync failure
+// [!code word:maybeAsyncEnvelope:1]
+const result = Prom.maybeAsyncEnvelope(() => {
+  throw new Error('fail')
+})
+// { channel: 'fail', error: Error('fail'), async: false }
+
+// Async success
+// [!code word:maybeAsyncEnvelope:1]
+// [!code word:resolve:1]
+const result = await Prom.maybeAsyncEnvelope(() => Promise.resolve('ok'))
+// { channel: 'succeed', value: 'ok', async: true }
+
+// Async failure
+// [!code word:maybeAsyncEnvelope:1]
+// [!code word:reject:1]
+const result = await Prom.maybeAsyncEnvelope(() => Promise.reject('error'))
+// { channel: 'fail', error: 'error', async: true }
+
+// Promise resolving to Error (not a rejection!)
+// [!code word:maybeAsyncEnvelope:1]
+// [!code word:resolve:1]
+const result = await Prom.maybeAsyncEnvelope(() =>
+  Promise.resolve(new Error('value'))
+)
+// { channel: 'succeed', value: Error('value'), async: true }
+```
+
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `MaybeAsyncHandlers`
 
 ```typescript
@@ -314,6 +395,6 @@ interface MaybeAsyncHandlers<T, R = T, E = unknown> {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L96" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L174" />
 
 Options for handling values that might be promises.

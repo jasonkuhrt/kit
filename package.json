@@ -219,7 +219,9 @@
     "fix": "pnpm run '/fix:.*/'",
     "prebuild": "pnpm build:clean",
     "prepare": "husky",
-    "docs:dev": "vitepress dev docs",
+    "docs:dev": "pnpm run '/docs:dev:.*/'",
+    "docs:dev:generate": "tsx watch --watch-path=src --exclude '**/*.test.ts' --exclude '**/*.test-d.ts' src/utils/paka/cli.ts generate",
+    "docs:dev:serve": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "docs:generate": "tsx src/utils/paka/cli.ts generate"

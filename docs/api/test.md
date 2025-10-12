@@ -88,13 +88,13 @@ function on<$fn extends Fn.AnyAny>(
 ): TestBuilder<UpdateState<BuilderTypeStateEmpty, { fn: $fn }>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/test/table/constructors.ts#L119" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/test/table/constructors.ts#L154" />
 
 Creates a test table builder for testing a specific function.
 
 This is a shorthand for describe().on(fn) when you don't need a describe block. Types are automatically inferred from the function signature, making it ideal for quick function testing with minimal boilerplate.
 
-## Case Formats
+#### Case Formats
 
 Test cases can be specified in multiple formats:
 
@@ -170,16 +170,46 @@ Test.on(createUser)
   .test()
 ```
 
-Snapshot format shows arguments and results clearly:
+## Promise Auto-Awaiting
+
+```typescript twoslash
+// @noErrors
+import { Test } from '@wollybeard/kit/test'
+// ---cut---
+// Mix successful and error cases - errors are captured automatically
+// [!code word:on:1]
+Test.on(parseInt)
+  .cases(
+    ['42'], // Returns: 42
+    ['hello'], // Returns: NaN
+  )
+  .test()
+
+// Validation functions - errors documented in snapshots
+// [!code word:on:1]
+// [!code word:from:1]
+Test.on(Positive.from)
+  .cases(
+    [1],
+    [10],
+    [100], // THEN RETURNS the value
+    [0],
+    [-1],
+    [-10], // THEN THROWS "Value must be positive"
+  )
+  .test()
+```
+
+## Snapshot Format
 
 ```typescript twoslash
 // @noErrors
 import { Test } from '@wollybeard/kit/test'
 // ---cut---
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
-  - 1
-╠══════════════════════════════════════════════════╣ THEN THROWS
-Error: Value must be positive
+hello
+╠══════════════════════════════════════════════════╣ THEN RETURNS PROMISE RESOLVING TO STRING
+HELLO
 ╚══════════════════════════════════════════════════╝
 ```
 
@@ -189,7 +219,7 @@ Error: Value must be positive
 function describe(description?: string): TestBuilderEmpty
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/test/table/constructors.ts#L259" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/test/table/constructors.ts#L294" />
 
 Creates a test table builder for property-based and example-based testing.
 
@@ -199,7 +229,7 @@ Creates a test table builder for property-based and example-based testing.
 
 Test tables allow you to define multiple test cases with inputs and expected outputs, reducing boilerplate and making tests more maintainable. The builder supports two modes:
 
-## Modes
+#### Modes
 
 **Function Mode**
 
@@ -215,7 +245,7 @@ Test tables allow you to define multiple test cases with inputs and expected out
 - Provide custom test logic to validate cases
 - Useful for testing complex behaviors beyond simple function calls
 
-## Features
+#### Features
 
 **Nested Describes**
 

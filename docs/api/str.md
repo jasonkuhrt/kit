@@ -20,6 +20,7 @@ import * as Str from '@wollybeard/kit/str'
 
 - [**`Case`**](/api/str/case) - Convert string to camelCase.
 - [**`Char`**](/api/str/char) - Uppercase letter.
+- [**`Tpl`**](/api/str/tpl) - Convenience re-export of the built-in TemplateStringsArray type. Contains the string parts of a tagged template literal along with a raw property.
 
 ## Builder
 
@@ -483,32 +484,6 @@ type TemplateArgs = Record<string, Json.Value>
 
 Arguments object for template interpolation. Maps variable names to their JSON-serializable values.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isTemplateStringsArray`
-
-```typescript
-(args: unknown) => args is TemplateStringsArray
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/template.ts#L56" />
-
-Type guard to check if a value is a TemplateStringsArray. Used to detect when a function is called as a tagged template literal.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-function tag(...args: unknown[]) {
-  // [!code word:isTemplateStringsArray:1]
-  if (Str.isTemplateStringsArray(args)) {
-    // Called as tag`template`
-  } else {
-    // Called as tag()
-  }
-}
-```
-
 ## Text Formatting
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultIndentCharacter`
@@ -628,13 +603,91 @@ const indent4 = Str.indentWith(4)
 indent4('hello\nworld') // '    hello\n    world'
 ```
 
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `indentBy`
+
+```typescript
+;((
+  text: string,
+  prefixOrFn: string | ((line: string, lineIndex: number) => string),
+) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L116" />
+
+Indent each line using a custom prefix string or function. When given a function, it receives both the line content and index, allowing for content-aware indentation.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+// Fixed string prefix
+// [!code word:indentBy:1]
+Str.indentBy('hello\nworld', '>>> ') // '>>> hello\n>>> world'
+
+// Dynamic prefix based on line index (ignore line content with _)
+// [!code word:indentBy:1]
+Str.indentBy('line1\nline2\nline3', (_, i) => `${i + 1}. `)
+// '1. line1\n2. line2\n3. line3'
+
+// Content-aware indentation
+// [!code word:indentBy:1]
+Str.indentBy('title\nitem', (line, i) => line === 'title' ? '' : '  ')
+// 'title\n  item'
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentByOn`
+
+```typescript
+;((text: string) =>
+(prefixOrFn: string | ((line: string, lineIndex: number) => string)) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L131" />
+
+Curried version of indentBy with text first.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentByWith`
+
+```typescript
+;((prefixOrFn: string | ((line: string, lineIndex: number) => string)) =>
+(text: string) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L152" />
+
+Curried version of indentBy with prefix first.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+// [!code word:indentByWith:1]
+const addArrow = Str.indentByWith('→ ')
+addArrow('hello\nworld') // '→ hello\n→ world'
+
+// [!code word:indentByWith:1]
+const numbered = Str.indentByWith((_, i) => `${i}. `)
+numbered('first\nsecond') // '0. first\n1. second'
+
+// [!code word:indentByWith:1]
+const conditionalIndent = Str.indentByWith((line, i) =>
+  // [!code word:startsWith:1]
+  line.startsWith('#') ? '' : '  '
+)
+conditionalIndent('# Title\nContent') // '# Title\n  Content'
+```
+
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `stripIndent`
 
 ```typescript
 ;((text: string) => string)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L115" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L174" />
 
 Remove common leading whitespace from all lines. Finds the minimum indentation across all non-empty lines and removes that amount from every line. This is useful for dedenting code blocks or template strings while preserving relative indentation.
 
@@ -656,6 +709,231 @@ Str.stripIndent('  code\n    nested\n  code')
 // [!code word:stripIndent:1]
 Str.stripIndent('    line1\n\n    line2')
 // 'line1\n\nline2'
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultPadCharacter`
+
+```typescript
+' '
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L200" />
+
+Default character used for padding.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pad`
+
+```typescript
+;((text: string, size: number, side?: 'left' | 'right', char?: string) =>
+  string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L217" />
+
+Add padding characters to text.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+// [!code word:pad:1]
+Str.pad('hello', 3, 'left') // '   hello'
+// [!code word:pad:1]
+Str.pad('hello', 3, 'right') // 'hello   '
+// [!code word:pad:1]
+Str.pad('hello', 2, 'left', '-') // '--hello'
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padOn`
+
+```typescript
+;((text: string) =>
+(size: number) =>
+(side?: 'left' | 'right' | undefined) =>
+(char?: string | undefined) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L232" />
+
+Curried version of pad with text first.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padWith`
+
+```typescript
+;((size: number) =>
+(text: string) =>
+(side?: 'left' | 'right' | undefined) =>
+(char?: string | undefined) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L240" />
+
+Curried version of pad with size first.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `padLeft`
+
+```typescript
+;((text: string, size: number, char?: string) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L255" />
+
+Add left padding to text.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+// [!code word:padLeft:1]
+Str.padLeft('hello', 3) // '   hello'
+// [!code word:padLeft:1]
+Str.padLeft('hello', 2, '0') // '00hello'
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padLeftOn`
+
+```typescript
+;((text: string) => (size: number) => (char?: string | undefined) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L265" />
+
+Curried version of padLeft with text first.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padLeftWith`
+
+```typescript
+;((size: number) => (text: string) => (char?: string | undefined) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L278" />
+
+Curried version of padLeft with size first.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+// [!code word:padLeftWith:1]
+const pad3 = Str.padLeftWith(3)
+pad3('hi') // '   hi'
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `padRight`
+
+```typescript
+;((text: string, size: number, char?: string) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L293" />
+
+Add right padding to text.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+// [!code word:padRight:1]
+Str.padRight('hello', 3) // 'hello   '
+// [!code word:padRight:1]
+Str.padRight('hello', 2, '.') // 'hello..'
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padRightOn`
+
+```typescript
+;((text: string) => (size: number) => (char?: string | undefined) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L303" />
+
+Curried version of padRight with text first.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padRightWith`
+
+```typescript
+;((size: number) => (text: string) => (char?: string | undefined) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L316" />
+
+Curried version of padRight with size first.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+// [!code word:padRightWith:1]
+const pad3 = Str.padRightWith(3)
+pad3('hi') // 'hi   '
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapLines`
+
+```typescript
+;((text: string, fn: (line: string, index: number) => string) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L333" />
+
+Map a transformation function over each line of text.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+// [!code word:mapLines:1]
+// [!code word:toUpperCase:1]
+Str.mapLines('hello\nworld', (line) => line.toUpperCase())
+// 'HELLO\nWORLD'
+
+// [!code word:mapLines:1]
+Str.mapLines('a\nb\nc', (line, i) => `${i}: ${line}`)
+// '0: a\n1: b\n2: c'
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mapLinesOn`
+
+```typescript
+;((text: string) => (fn: (line: string, index: number) => string) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L343" />
+
+Curried version of mapLines with text first.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mapLinesWith`
+
+```typescript
+;((fn: (line: string, index: number) => string) => (text: string) => string)
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L356" />
+
+Curried version of mapLines with function first.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+// [!code word:mapLinesWith:1]
+// [!code word:toUpperCase:1]
+const uppercase = Str.mapLinesWith((line) => line.toUpperCase())
+uppercase('hello\nworld') // 'HELLO\nWORLD'
 ```
 
 ## Text Formatting 2

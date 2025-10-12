@@ -3,9 +3,9 @@
 layout: home
 
 hero:
-  name: "@wollybeard/kit"
-  text: "TypeScript Utility Library"
-  tagline: Functional programming utilities with consistent APIs and strong type safety
+  name: "Kit"
+  text: "TypeScript Standard Library"
+  tagline: Data structures, utilities, primitives, and domains with consistent APIs and strong type safety
   actions:
     - theme: brand
       text: Get Started

@@ -190,14 +190,16 @@ type Parameter = { type: 'name'; value: string } | {
 (fn: (...args: any[]) => unknown) => { body: string; parameters: Parameter[]; }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/analyze.ts#L27" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/analyze.ts#L31" />
 
 Analyze a function to extract its parameter information and body.
 
 Parses a function's string representation to extract:
 
 - Parameter names (both regular and destructured parameters)
-- Function body (both statement and expression forms)
+- Function body (both statement and expression forms, trimmed and dedented)
+
+The returned body is already cleaned: leading/trailing whitespace removed and common indentation stripped away for clean display in its isolated form.
 
 **Examples:**
 
@@ -209,6 +211,7 @@ const fn = (a, { b, c }) => a + b + c
 // [!code word:analyzeFunction:1]
 const info = Fn.analyzeFunction(fn)
 // info.parameters: [{ type: 'name', value: 'a' }, { type: 'destructured', names: ['b', 'c'] }]
+// info.body: "a + b + c" (already trimmed and dedented)
 ```
 
 ## Partial Application

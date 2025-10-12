@@ -365,15 +365,21 @@ const renderExport = (exp: Export, context: Context): string => {
   // Deprecation warning with proper link conversion
   const deprecated = exp.deprecated ? Md.deprecation(exp.deprecated) : ''
 
-  // Demote headings in description by 2 levels (exports are h3, so description content becomes h4+)
-  // Also convert {@link ...} tags to markdown links and HTML-escape angle brackets to prevent Vue parser errors
-  // Convert double-space paragraph separators to actual newlines
+  // Transform description: normalize whitespace, demote headings, convert links, escape HTML
+  // CRITICAL: Must convert double-space separators to newlines BEFORE demoting headings,
+  // since demoteHeadings requires actual line breaks to match ^## patterns
   const description = exp.description
-    ? Md.convertJSDocLinks(Md.demoteHeadings(exp.description, 2))
-      .replace(/  /g, '\n\n') // Convert double-space paragraph separators to newlines
-      .replace(/ - /g, '\n- ') // Convert list item separators to proper markdown list items
+    ? Md.demoteHeadings(
+      Md.convertJSDocLinks(
+        exp.description
+          .replace(/  /g, '\n\n') // Convert double-space paragraph separators to newlines FIRST
+          .replace(/ - /g, '\n- '), // Convert list item separators to proper markdown list items
+      ),
+      2, // Demote headings AFTER newlines are added (exports are h3, so description content becomes h4+)
+    )
       // Wrap list items that start with code-like patterns in backticks
       .replace(/^- (\[\[.*?\]\]|\{[^}]+\})/gm, '- `$1`')
+      // HTML-escape angle brackets to prevent Vue parser errors
       .replace(/</g, '&lt;').replace(/>/g, '&gt;')
     : ''
 

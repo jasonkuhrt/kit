@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Kit (`@wollybeard/kit`) is a TypeScript utility library providing functional programming utilities and data structure operations. The project emphasizes type safety, consistent APIs, and modular architecture.
+Kit (`@wollybeard/kit`) is a TypeScript standard library providing data structures, utilities, primitives, and domains. The project emphasizes type safety, consistent APIs, and modular architecture.
 
 ## Code Quality Checks
 

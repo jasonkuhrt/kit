@@ -188,6 +188,49 @@ Arr.Type.is('not array') // false
 Arr.Type.is(null) // false
 ```
 
+## Transformation
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `transpose`
+
+```typescript
+<$T>(rows: readonly (readonly $T[])[]) => $T[][]
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L205" />
+
+Transpose a 2D array (convert rows to columns and vice versa). This is a classic matrix transpose operation.
+
+Handles ragged arrays (rows with different lengths) by creating columns that only contain elements from rows that had values at that position.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Arr } from '@wollybeard/kit/arr'
+// ---cut---
+const rows = [
+  [1, 2, 3],
+  [4, 5, 6],
+]
+// [!code word:transpose:1]
+Arr.transpose(rows)
+// [[1, 4], [2, 5], [3, 6]]
+
+const table = [
+  ['Alice', 'Engineer', '100k'],
+  ['Bob', 'Designer', '90k'],
+]
+// [!code word:transpose:1]
+Arr.transpose(table)
+// [['Alice', 'Bob'], ['Engineer', 'Designer'], ['100k', '90k']]
+
+// Ragged array (uneven row lengths)
+const ragged = [[1, 2, 3], [4, 5]]
+// [!code word:transpose:1]
+Arr.transpose(ragged)
+// [[1, 4], [2, 5], [3]]
+```
+
 ## Type Guards
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `assert`

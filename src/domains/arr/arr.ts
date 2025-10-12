@@ -174,6 +174,9 @@ export const ensure = <$T>(value: $T | $T[]): $T[] => {
  * Transpose a 2D array (convert rows to columns and vice versa).
  * This is a classic matrix transpose operation.
  *
+ * Handles ragged arrays (rows with different lengths) by creating columns
+ * that only contain elements from rows that had values at that position.
+ *
  * @category Transformation
  * @param rows - The 2D array to transpose
  * @returns The transposed 2D array
@@ -192,6 +195,11 @@ export const ensure = <$T>(value: $T | $T[]): $T[] => {
  * ]
  * Arr.transpose(table)
  * // [['Alice', 'Bob'], ['Engineer', 'Designer'], ['100k', '90k']]
+ *
+ * // Ragged array (uneven row lengths)
+ * const ragged = [[1, 2, 3], [4, 5]]
+ * Arr.transpose(ragged)
+ * // [[1, 4], [2, 5], [3]]
  * ```
  */
 export const transpose = <$T>(rows: readonly (readonly $T[])[]): $T[][] => {

@@ -33,7 +33,7 @@ Ensure that the given value is an error and return it. If it is not an error tha
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `log`
 
 ```typescript
-(error: Error, options?: { color?: boolean; stackTraceColumns?: number; identColumns?: number; showHelp?: boolean; } | undefined) => void
+(error: Error, options?: { color?: boolean; stackTraceColumns?: number; identColumns?: number; maxFrames?: number; showHelp?: boolean; } | undefined) => void
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/$$.ts#L21" />
@@ -46,7 +46,7 @@ Log an error to console with nice formatting.
 type InspectOptions = InferOptions<typeof optionSpecs>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L164" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L175" />
 
 Options for configuring error inspection output. All options can be overridden via environment variables.
 
@@ -61,6 +61,10 @@ stackTraceColumns
 identColumns
 
 - Number of spaces to use for indentation (default: 4, env: ERROR_DISPLAY_IDENT_COLUMNS)
+
+maxFrames
+
+- Maximum number of stack frames to show; 0 to hide stack traces entirely (default: 10, env: ERROR_DISPLAY_MAX_FRAMES)
 
 showHelp
 
@@ -84,6 +88,10 @@ Err.inspect(error, {
   showHelp: false,
 })
 
+// Hide stack traces (useful for test snapshots)
+// [!code word:inspect:1]
+Err.inspect(error, { maxFrames: 0, showHelp: false, color: false })
+
 // Set via environment variables
 // [!code word:ERROR_DISPLAY_COLOR:1]
 process.env.ERROR_DISPLAY_COLOR = 'false'
@@ -100,12 +108,13 @@ process.env.ERROR_DISPLAY_SHOW_HELP = 'false'
     color?: boolean
     stackTraceColumns?: number
     identColumns?: number
+    maxFrames?: number
     showHelp?: boolean
   } | undefined,
 ) => string)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L228" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L239" />
 
 Render an error to a string with detailed formatting.
 
@@ -541,7 +550,7 @@ const response = await fetchSafe(url) // Response | NetworkError
 ;(<$Return>(fn: () => $Return) => $Return)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L163" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L158" />
 
 Try to execute a function and silently ignore any errors. Returns the result if successful, or undefined if it throws. For async functions, errors are silently caught without rejection.
 
@@ -574,7 +583,7 @@ function tryOrRethrow<$Return>(
 ): $Return extends Promise<any> ? $Return : $Return
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L420" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L397" />
 
 Try to execute a function and wrap any thrown errors with a higher-level message. Handles both synchronous and asynchronous functions automatically.
 
@@ -624,7 +633,7 @@ function tryAllOrRethrow<
 ): Promise<{ [K in keyof $Fns]: Awaited<ReturnType<$Fns[K]>> }>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L461" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L438" />
 
 Try multiple functions and wrap any errors with a higher-level message. If any function throws, all errors are collected into an AggregateError.
 
@@ -655,7 +664,7 @@ const [config, schema, data] = await Err.tryAllOrRethrow(
   TryOrReturn<success, fallback>)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L212" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L203" />
 
 Try to execute a function and return a fallback value if it throws.
 
@@ -707,7 +716,7 @@ const data = await Err.tryOr(
   Promise<Awaited<success> | Awaited<fallback>>)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L262" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L239" />
 
 Try to execute a function and return a fallback value if it throws. Always returns a Promise, allowing async fallbacks for sync functions.
 
@@ -744,7 +753,7 @@ const result = await Err.tryOrAsync(
   Promise<Awaited<success> | Awaited<fallback>>)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L287" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L264" />
 
 Curried version of tryOrAsync that takes the function first. Useful for creating reusable async error handlers.
 
@@ -767,7 +776,7 @@ const data = await parseJsonOrFetch(async () => fetchDefault())
   Promise<Awaited<success> | Awaited<fallback>>)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L306" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L283" />
 
 Curried version of tryOrAsync that takes the fallback first. Always returns a Promise regardless of input types.
 
@@ -790,7 +799,7 @@ const data2 = await orFetchDefault(() => cachedData())
   TryOrReturn<success, fallback>)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L326" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L303" />
 
 Curried version of tryOr that takes the function first. Useful for creating reusable error handlers.
 
@@ -817,7 +826,7 @@ const data = parseJsonOr({ error: 'Invalid JSON' })
   TryOrReturn<success, fallback>)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L348" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L325" />
 
 Curried version of tryOr that takes the fallback first. Useful for creating reusable fallback patterns.
 
@@ -844,7 +853,7 @@ const result2 = orDefault(() => getLatestData())
 ;(<success>(fn: () => success) => TryOrReturn<success, undefined>)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L365" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L342" />
 
 Try to execute a function and return undefined if it throws. Shorthand for tryOrWith(undefined).
 
@@ -866,7 +875,7 @@ const data = Err.tryOrUndefined(() => localStorage.getItem('key'))
 ;(<success>(fn: () => success) => TryOrReturn<success, null>)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L379" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L356" />
 
 Try to execute a function and return null if it throws. Shorthand for tryOrWith(null).
 
@@ -1188,7 +1197,7 @@ type _InferOptions<
 type InspectConfig = Resolve<typeof optionSpecs>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L172" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L183" />
 
 Resolved configuration for error inspection with values and sources. Contains the final values after merging defaults, user options, and environment variables.
 
