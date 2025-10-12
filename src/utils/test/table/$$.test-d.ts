@@ -235,20 +235,32 @@ import { Test } from '../$.js'
     })
 }
 
-// BUG: .casesInput() should accept unwrapped arguments for unary functions
+// unary
+
 {
-  const unary = (x: number) => x * 2
+  const unaryNum = (x: number) => x
+  const unaryUnknown = (x: unknown) => x
+  const unaryAny = (x: any) => x
 
-  Test.on(unary).casesInput(1, 2, 3) // Should work but doesn't
-}
+  // Concrete type - unwrapped form allowed
+  Test.on(unaryNum).casesInput(1, 2, 3)
 
-// BUG: Unwrapped unary form accepts incorrect nesting
-{
-  const fn = (x: unknown) => x
+  // Unknown type - MUST use wrapped form
+  Test.on(unaryUnknown).casesInput([1], [2], [3])
 
-  // @ts-expect-error - Should error: output inside args array
-  Test.on(fn).cases([[1, 2]])
+  // @ts-expect-error - Should error: array wrapped when scalar expected
+  Test.on(unaryNum).casesInput([1], [2], [3])
 
-  // @ts-expect-error - Should error: output inside args array
-  Test.on(fn).cases([[[]], false])
+  // Special handling for unknown/any - force wrapped
+
+  Test.on(unaryAny).casesInput([1], [2], [3])
+  Test.on(unaryUnknown).casesInput([1], [2], [3])
+  // @ts-expect-error - Should error: unknown requires wrapped form
+  Test.on(unaryUnknown).casesInput(1, 2, 3)
+  // @ts-expect-error - Should error: unknown requires wrapped form
+  Test.on(unaryUnknown).casesInput([1, 1], [2, 2], [3, 3])
+  // @ts-expect-error - Should error: unknown requires wrapped form
+  Test.on(unaryAny).casesInput(1, 2, 3)
+  // @ts-expect-error - Should error: unknown requires wrapped form
+  Test.on(unaryAny).casesInput([1, 1], [2, 2], [3, 3])
 }

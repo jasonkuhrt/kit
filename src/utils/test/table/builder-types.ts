@@ -3,6 +3,7 @@ import type { Fn } from '#fn'
 import type { Obj } from '#obj'
 import type { Rec } from '#rec'
 import type { Effect, Layer } from 'effect'
+import type { IsAny, IsNever, IsUnknown } from 'type-fest'
 import type { TestContext } from 'vitest'
 
 // ============================================================================
@@ -79,11 +80,14 @@ type EffectiveInput<State extends BuilderTypeState> = [State['input']] extends [
 
 /**
  * Unwrap unary function parameters for casesInput/describeInputs sugar methods.
- * For unary functions, users can pass arguments directly without tuple wrapping.
+ * For unary functions with concrete types, users can pass arguments directly without tuple wrapping.
+ * For unknown/any/never parameters, force wrapped form to avoid ambiguity.
  *
  * @category Type Utilities
  */
-type UnwrappedInput<State extends BuilderTypeState> = EffectiveInput<State> extends [infer Single] ? Single
+type UnwrappedInput<State extends BuilderTypeState> = EffectiveInput<State> extends [infer Single]
+  ? AllowUnwrapped<Single> extends true ? Single // Unwrap for concrete types
+  : [Single] // Keep wrapped for unknown/any/never/arrays
   : EffectiveInput<State>
 
 /**
@@ -257,6 +261,16 @@ export type CaseObject<I, O> =
   | (Omit<CaseObjectBase, 'todo'> & { todo: boolean | string })
 
 /**
+ * Check if unwrapped unary form should be allowed for a given type.
+ * Rejects: unknown, any, never, and arrays to prevent ambiguity.
+ */
+type AllowUnwrapped<Single> = IsUnknown<Single> extends true ? false
+  : IsAny<Single> extends true ? false
+  : IsNever<Single> extends true ? false
+  : Single extends any[] ? false
+  : true
+
+/**
  * Test case in tuple form for function testing.
  *
  * The tuple form is concise and natural for simple test cases.
@@ -276,11 +290,11 @@ export type CaseObject<I, O> =
 export type CaseTuple<I extends any[], O, Context = {}> =
   // Context is optional (either {} or has no required keys)
   | [I] // Wrapped tuple
-  | (I extends [infer Single] ? [Single] : never) // Unwrapped scalar (unary)
+  | (I extends [infer Single] ? AllowUnwrapped<Single> extends true ? [Single] : never : never) // Unwrapped scalar (unary) - only for concrete types
   | [I, O] // Wrapped tuple + output
-  | (I extends [infer Single] ? [Single, O] : never) // Unwrapped scalar + output (unary)
+  | (I extends [infer Single] ? AllowUnwrapped<Single> extends true ? [Single, O] : never : never) // Unwrapped scalar + output (unary) - only for concrete types
   | [I, O, Context] // Wrapped tuple + output + context (always optional)
-  | (I extends [infer Single] ? [Single, O, Context] : never) // Unwrapped scalar + output + context (unary)
+  | (I extends [infer Single] ? AllowUnwrapped<Single> extends true ? [Single, O, Context] : never : never) // Unwrapped scalar + output + context (unary) - only for concrete types
 
 /**
  * Combined case type for function mode.
