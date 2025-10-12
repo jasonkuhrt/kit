@@ -206,9 +206,9 @@ type ValidateIsReference<T> = T extends Lang.Primitive ?
 
 // dprint-ignore
 type ValidateIsComparable<A, B> =
-    Lang.GetVariance<A, B> extends 'covariant' | 'contravariant' | 'invariant' ? B
-  : Lang.GetVariance<A, B> extends 'bivariant' ?
+    Ts.GetVariance<A, B> extends 'covariant' | 'contravariant' | 'invariant' ? B
+  : Ts.GetVariance<A, B> extends 'bivariant' ?
         A extends Lang.Primitive ? ErrorNotComparableSamePrimitive<A>
       : B  // Allow bivariant comparison for non-primitives
-  : Lang.GetVariance<A, B> extends 'disjoint' ? ErrorNotComparableOverlap<A, B>
+  : Ts.GetVariance<A, B> extends 'disjoint' ? ErrorNotComparableOverlap<A, B>
   : never

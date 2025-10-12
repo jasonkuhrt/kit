@@ -143,48 +143,6 @@ export const isPrimitive = (value: unknown): value is Primitive => {
  */
 export type ExtractPredicateType<T> = T extends (x: any) => x is infer U ? U : never
 
-// Type comparability
-
-/**
- * Classify how the SECOND type parameter relates to the FIRST type parameter.
- *
- * Returns one of:
- * - 'covariant' - B is a subtype of A (B extends A, B is narrower than A)
- * - 'contravariant' - B is a supertype of A (A extends B, B is wider than A)
- * - 'invariant' - Neither extends the other but they share structure
- * - 'bivariant' - Both A extends B and B extends A (identical types)
- * - 'disjoint' - No relationship between A and B
- *
- * @example
- * ```ts
- * // Read as: "How does the second type relate to the first?"
- * type T1 = GetVariance<string, string> // 'bivariant'
- * type T2 = GetVariance<1, 1> // 'bivariant'
- * type T3 = GetVariance<string, number> // 'disjoint'
- * type T4 = GetVariance<{a: 1}, {b: 2}> // 'invariant' (objects can have both properties)
- * type T5 = GetVariance<{a: 1, id: 1}, {b: 2, id: 1}> // 'invariant'
- * type T6 = GetVariance<{a: 1}, {a: 1}> // 'bivariant'
- * type T7 = GetVariance<'a' | 'b', 'a'> // 'covariant' ('a' is narrower than 'a' | 'b')
- * type T8 = GetVariance<'a', 'a' | 'b'> // 'contravariant' ('a' | 'b' is wider than 'a')
- * ```
- */
-// dprint-ignore
-export type GetVariance<A, B> =
-  // Check if types are identical (bivariant)
-  [A] extends [B] ? [B] extends [A] ?
-    'bivariant' // Both extend each other - identical types
-  // A extends B but B doesn't extend A - contravariant
-  : 'contravariant'
-  // A doesn't extend B, check if B extends A
-  : [B] extends [A] ? 'covariant'
-  // Neither extends the other - check special cases
-  : A extends Primitive ?
-      B extends Primitive ?
-        [A & B] extends [never] ? 'disjoint' : 'invariant'  // Both primitives
-      : 'disjoint'  // Primitive vs non-primitive = always disjoint
-    : B extends Primitive ? 'disjoint'  // Non-primitive vs primitive = always disjoint
-    : [A & B] extends [never] ? 'disjoint' : 'invariant' // Both non-primitives
-
 // Testing utilities
 
 /**
