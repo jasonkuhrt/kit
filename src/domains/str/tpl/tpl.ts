@@ -221,7 +221,7 @@ export const dedent = (strings: TemplateStringsArray, ...values: unknown[]): str
       if (value.includes(`\n`)) {
         // Find the indentation of the current line (last line in result so far)
         const lines = result.split(`\n`)
-        const currentLine = lines[lines.length - 1]
+        const currentLine = lines[lines.length - 1] ?? ``
         const match = currentLine.match(/^(\s*)/)
         const indent = match ? match[1] : ``
 

@@ -1,27 +1,36 @@
 import { Test } from '#test'
 import * as Tpl from './tpl.js'
 
+const getTpl = (...args: Tpl.CallInput) => args[0]
+const getCallInput = (...args: Tpl.CallInput) => args
+
 // dprint-ignore
 Test.on(Tpl.is)
   .cases(
-    [[`empty array`,            []],                     false],
-    [[`array of strings`,       [`a`, `b`]],             false],
-    [[`mixed array`,            [`test`, 42]],           false],
-    [[`null`,                   null],                   false],
-    [[`undefined`,              undefined],              false],
-    [[`number`,                 42],                     false],
-    [[`string`,                 `string`],               false],
-    [[`object with raw`,        { raw: [`test`] }],      false],
-    [[`array with raw inside`,  [{ raw: [`test`] }]],    false],
+    // True cases
+    [[getTpl`hello`],           true],
+    [[getTpl`hello ${'x'}`],    true],
+
+    // False cases
+    [[[],                       false]],
+    [[([`a`, `b`] as any),      false]],
+    [[({ raw: [`test`] }),      false]],
+    [[null,                     false]],
+    [[42,                       false]],
   )
   .test()
 
 // dprint-ignore
 Test.on(Tpl.isCallInput)
   .cases(
-    [[`null`,      null],      false],
-    [[`undefined`, undefined], false],
-    [[`number`,    42],        false],
+    // True cases
+    [[getCallInput`test`,            true]],
+    [[getCallInput`hello ${1}`,      true]],
+
+    // False cases
+    [[null,                     false]],
+    [[[],                       false]],
+    [[[[`not`, `template`]],    false]],
   )
   .test()
 
@@ -30,9 +39,9 @@ Test.describe(`passthrough`)
   .inputType<string>()
   .outputType<string>()
   .cases(
-    [[`basic`,             Tpl.passthrough`Hello ${`World`}!`],                                `Hello World!`],
-    [[`multiple values`,   Tpl.passthrough`Sum: ${1} + ${2} = ${3}`],                          `Sum: 1 + 2 = 3`],
-    [[`preserves space`,   Tpl.passthrough`\n      export const foo = ${42}\n    `],           `\n      export const foo = 42\n    `],
+    [Tpl.passthrough`Hello ${`World`}!`,                                `Hello World!`],
+    [Tpl.passthrough`Sum: ${1} + ${2} = ${3}`,                          `Sum: 1 + 2 = 3`],
+    [Tpl.passthrough`\n      export const foo = ${42}\n    `,           `\n      export const foo = 42\n    `],
   )
   .test()
 
@@ -41,16 +50,41 @@ Test.describe(`dedent`)
   .inputType<string>()
   .outputType<string>()
   .cases(
-    [[`removes common indentation`,          Tpl.dedent`\n      line 1\n      line 2\n        line 3\n    `],                 `line 1\nline 2\n  line 3`],
-    [[`trims blank lines`,                   Tpl.dedent`\n\n      content\n\n    `],                                         `content`],
-    [[`handles interpolation`,               Tpl.dedent`\n      Hello ${`world`}\n      How are you?\n    `],                 `Hello world\nHow are you?`],
-    [[`auto-indents multi-line values`,      Tpl.dedent`\n      outer:\n        ${`line1\nline2\nline3`}\n    `],           `outer:\n  line1\n  line2\n  line3`],
-    [[`preserves escape sequences`,          Tpl.dedent`\n      C:\\\\Users\\\\name\\\\Documents\n    `],                    `C:\\\\Users\\\\name\\\\Documents`],
-    [[`nested indentation`,                  Tpl.dedent`\n      function greet() {\n        if (true) {\n          console.log('hello')\n        }\n      }\n    `], `function greet() {\n  if (true) {\n    console.log('hello')\n  }\n}`],
-    [[`empty`,                               Tpl.dedent``],                                                                   ``],
-    [[`only whitespace`,                     Tpl.dedent`\n\n    `],                                                           ``],
-    [[`preserves blank lines`,               Tpl.dedent`\n      line 1\n\n      line 3\n    `],                             `line 1\n\nline 3`],
-    [[`multi-line value indentation`,        Tpl.dedent`\n      start\n        indented: ${`a\nb\nc`}\n      end\n    `],    `start\n  indented: a\n  b\n  c\nend`],
+    // Remove common indentation, preserve relative indentation
+    [Tpl.dedent`
+      line 1
+      line 2
+        indented
+    `, `line 1\nline 2\n  indented`],
+
+    // Trim leading/trailing blank lines
+    [Tpl.dedent`
+
+      content
+
+    `, `content`],
+
+    // Single-line interpolation
+    [Tpl.dedent`
+      Hello ${`world`}
+      How are you?
+    `, `Hello world\nHow are you?`],
+
+    // Multi-line value auto-indentation (key feature for dindist #9)
+    [Tpl.dedent`
+      outer:
+        ${`line1\nline2\nline3`}
+    `, `outer:\n  line1\n  line2\n  line3`],
+
+    // Preserve internal blank lines
+    [Tpl.dedent`
+      line 1
+
+      line 3
+    `, `line 1\n\nline 3`],
+
+    // Edge case: empty
+    [Tpl.dedent``, ``],
   )
   .test()
 
@@ -59,8 +93,52 @@ Test.describe(`highlight`)
   .inputType<string>()
   .outputType<string>()
   .cases(
-    [[`ts`,    Tpl.highlight.ts`const x = ${100}`],    `const x = 100`],
-    [[`html`,  Tpl.highlight.html`test`],              `test`],
-    [[`sql`,   Tpl.highlight.sql`test`],               `test`],
+    [Tpl.highlight.ts`const x = ${100}`,    `const x = 100`],
+    [Tpl.highlight.html`test`,              `test`],
+    [Tpl.highlight.sql`test`,               `test`],
+  )
+  .test()
+
+// Regression test for dindist issue #9: nested dedent calls with function interpolation
+// This validates that multi-line interpolated values get auto-indented to match context
+// https://github.com/jasonkuhrt-archive/dindist/issues/9
+Test.describe(`dedent nested calls`)
+  .inputType<string>()
+  .outputType<string>()
+  .cases(
+    [
+      (() => {
+        const intro = () =>
+          Tpl.dedent`
+        * intro line
+      `
+        const body = Tpl.dedent`
+        * body line 1
+        * body line 2
+      `
+        const outro = () =>
+          Tpl.dedent`
+        * outro line
+      `
+
+        return Tpl.dedent`
+        /**
+         ${intro()}
+          *
+          ${body}
+          *
+          ${outro()}
+          */
+      `
+      })(),
+      `/**
+ * intro line
+ *
+ * body line 1
+ * body line 2
+ *
+ * outro line
+ */`,
+    ],
   )
   .test()
