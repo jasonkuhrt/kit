@@ -234,3 +234,10 @@ import { Test } from '../$.js'
       expectTypeOf(input).toEqualTypeOf<number>()
     })
 }
+
+// BUG: .casesInput() should accept unwrapped arguments for unary functions
+{
+  const unary = (x: number) => x * 2
+
+  Test.on(unary).casesInput(1, 2, 3) // Should work but doesn't
+}

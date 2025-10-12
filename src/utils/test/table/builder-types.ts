@@ -78,6 +78,15 @@ type EffectiveInput<State extends BuilderTypeState> = [State['input']] extends [
   : State['input']
 
 /**
+ * Unwrap unary function parameters for casesInput/describeInputs sugar methods.
+ * For unary functions, users can pass arguments directly without tuple wrapping.
+ *
+ * @category Type Utilities
+ */
+type UnwrappedInput<State extends BuilderTypeState> = EffectiveInput<State> extends [infer Single] ? Single
+  : EffectiveInput<State>
+
+/**
  * Get effective output type - uses override if set, otherwise function return.
  *
  * @category Type Utilities
@@ -619,19 +628,26 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * Sugar method for snapshot testing - accepts only inputs, no expected outputs.
    * Each input is automatically wrapped in snapshot format.
    *
+   * For unary functions, arguments can be passed directly without tuple wrapping.
+   *
    * @param inputs - Input values for snapshot testing
    *
    * @example
    * ```ts
-   * // Function mode
-   * Test.on(add).casesInput([1, 2], [3, 4], [5, 6])
+   * // Function mode - unary function
+   * const double = (x: number) => x * 2
+   * Test.on(double).casesInput(1, 2, 3)  // No tuple wrapping needed
+   *
+   * // Function mode - multi-argument function
+   * const add = (a: number, b: number) => a + b
+   * Test.on(add).casesInput([1, 2], [3, 4], [5, 6])  // Tuple wrapping required
    *
    * // Generic mode
    * Test.describe().inputType<string>().casesInput('a', 'b', 'c')
    * ```
    */
   casesInput(
-    ...inputs: EffectiveInput<State>[]
+    ...inputs: UnwrappedInput<State>[]
   ): TestBuilder<State>
 
   /**
@@ -640,12 +656,19 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * Sugar method for snapshot testing - accepts only inputs array, no expected outputs.
    * Each input is automatically wrapped in snapshot format.
    *
+   * For unary functions, arguments can be passed directly without tuple wrapping.
+   *
    * @param name - Name for the describe block
    * @param inputs - Array of input values for snapshot testing
    *
    * @example
    * ```ts
-   * // Function mode
+   * // Function mode - unary function
+   * const double = (x: number) => x * 2
+   * Test.on(double).describeInputs('edge cases', [0, 1, -1])
+   *
+   * // Function mode - multi-argument function
+   * const add = (a: number, b: number) => a + b
    * Test.on(add).describeInputs('edge cases', [[0, 0], [1, 1]])
    *
    * // Generic mode
@@ -654,7 +677,7 @@ export interface TestBuilder<State extends BuilderTypeState> {
    */
   describeInputs(
     name: string,
-    inputs: readonly EffectiveInput<State>[],
+    inputs: readonly UnwrappedInput<State>[],
   ): TestBuilder<State>
 
   /**

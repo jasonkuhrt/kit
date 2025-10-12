@@ -175,6 +175,33 @@ exports[`snapshot sugar methods > .casesInput() > add(5, 6) 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
+exports[`snapshot sugar methods > .casesInput() > double(1) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1
+╠══════════════════════════════════════════════════╣ THEN RETURNS NUMBER
+2
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`snapshot sugar methods > .casesInput() > double(2) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+2
+╠══════════════════════════════════════════════════╣ THEN RETURNS NUMBER
+4
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`snapshot sugar methods > .casesInput() > double(3) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+3
+╠══════════════════════════════════════════════════╣ THEN RETURNS NUMBER
+6
+╚══════════════════════════════════════════════════╝"
+`;
+
 exports[`snapshot sugar methods > .describeInputs() > edge cases > add(-1, 1) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
@@ -205,5 +232,32 @@ exports[`snapshot sugar methods > .describeInputs() > edge cases > add(1, 1) 1`]
 1
 ╠══════════════════════════════════════════════════╣ THEN RETURNS NUMBER
 2
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`snapshot sugar methods > .describeInputs() > unary cases > double(1) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+1
+╠══════════════════════════════════════════════════╣ THEN RETURNS NUMBER
+2
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`snapshot sugar methods > .describeInputs() > unary cases > double(2) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+2
+╠══════════════════════════════════════════════════╣ THEN RETURNS NUMBER
+4
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`snapshot sugar methods > .describeInputs() > unary cases > double(3) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+3
+╠══════════════════════════════════════════════════╣ THEN RETURNS NUMBER
+6
 ╚══════════════════════════════════════════════════╝"
 `;

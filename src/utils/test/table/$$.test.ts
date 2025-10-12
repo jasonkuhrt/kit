@@ -293,10 +293,17 @@ describe('nested describe syntax', () => {
 
 describe('snapshot sugar methods', () => {
   describe('.casesInput()', () => {
-    // Function mode
+    // Function mode - multi-argument
     Test
       .on(add)
       .casesInput([1, 2], [3, 4], [5, 6])
+      .test()
+
+    // Function mode - unary (unwrapped arguments)
+    const double = (x: number) => x * 2
+    Test
+      .on(double)
+      .casesInput(1, 2, 3)
       .test()
 
     // Generic mode
@@ -308,10 +315,17 @@ describe('snapshot sugar methods', () => {
   })
 
   describe('.describeInputs()', () => {
-    // Function mode
+    // Function mode - multi-argument
     Test
       .on(add)
       .describeInputs('edge cases', [[0, 0], [1, 1], [-1, 1]])
+      .test()
+
+    // Function mode - unary (unwrapped arguments)
+    const double = (x: number) => x * 2
+    Test
+      .on(double)
+      .describeInputs('unary cases', [1, 2, 3])
       .test()
 
     // Generic mode
