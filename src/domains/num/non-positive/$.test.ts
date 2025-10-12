@@ -3,7 +3,7 @@ import { NonPositive } from './$.js'
 
 Test.describe('is')
   .on(NonPositive.is)
-  .cases(
+  .casesInput(
     // Valid cases - non-positive numbers (<= 0)
     [0],
     [-1],
@@ -30,7 +30,7 @@ Test.describe('tryFrom')
     [-1],
     [-100],
     [-0.5],
-    [[-Number.MAX_VALUE]],
+    [-Number.MAX_VALUE],
     [-Infinity],
     // Invalid cases - should return null
     [1],

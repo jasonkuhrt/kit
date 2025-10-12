@@ -3,7 +3,7 @@ import { Zero } from './$.js'
 
 Test.describe('is')
   .on(Zero.is)
-  .cases(
+  .casesInput(
     // Valid cases - only 0 is zero
     [0],
     [-0], // -0 === 0 in JavaScript

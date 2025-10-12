@@ -3,7 +3,7 @@ import { Percentage } from './$.js'
 
 Test.describe('is')
   .on(Percentage.is)
-  .cases(
+  .casesInput(
     // Valid cases - values between 0 and 1 inclusive
     [0],
     [0.5],

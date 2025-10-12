@@ -3,7 +3,7 @@ import { Finite } from './$.js'
 
 Test.describe('is')
   .on(Finite.is)
-  .cases(
+  .casesInput(
     // Valid cases - finite numbers
     [0],
     [1],

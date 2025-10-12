@@ -3,7 +3,7 @@ import { NonZero } from './$.js'
 
 Test.describe('is')
   .on(NonZero.is)
-  .cases(
+  .casesInput(
     // Valid cases - any non-zero number
     [1],
     [-1],

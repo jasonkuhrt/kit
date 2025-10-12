@@ -3,7 +3,7 @@ import { Float } from './$.js'
 
 Test.describe('is')
   .on(Float.is)
-  .cases(
+  .casesInput(
     // Valid cases - non-integer numbers
     [1.5],
     [0.1],

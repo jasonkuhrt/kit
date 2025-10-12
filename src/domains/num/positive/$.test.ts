@@ -3,7 +3,7 @@ import { Positive } from './$.js'
 
 Test.describe('is')
   .on(Positive.is)
-  .cases(
+  .casesInput(
     // Valid cases - positive numbers
     [1],
     [0.1],

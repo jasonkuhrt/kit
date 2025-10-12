@@ -3,7 +3,7 @@ import { Degrees } from './$.js'
 
 Test.describe('is')
   .on(Degrees.is)
-  .cases(
+  .casesInput(
     // Valid cases - any finite number is a valid degree
     [0],
     [90],

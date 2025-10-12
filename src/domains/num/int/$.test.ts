@@ -3,7 +3,7 @@ import { Int } from './$.js'
 
 Test.describe('is')
   .on(Int.is)
-  .cases(
+  .casesInput(
     // Valid cases - integers
     [0],
     [1],

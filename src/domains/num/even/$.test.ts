@@ -3,7 +3,7 @@ import { Even } from './$.js'
 
 Test.describe('is')
   .on(Even.is)
-  .cases(
+  .casesInput(
     // Valid cases - even integers
     [0],
     [2],

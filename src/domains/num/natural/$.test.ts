@@ -3,7 +3,7 @@ import { Natural } from './$.js'
 
 Test.describe('is')
   .on(Natural.is)
-  .cases(
+  .casesInput(
     // Valid cases - positive integers
     [1],
     [2],

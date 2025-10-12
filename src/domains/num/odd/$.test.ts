@@ -3,7 +3,7 @@ import { Odd } from './$.js'
 
 Test.describe('is')
   .on(Odd.is)
-  .cases(
+  .casesInput(
     // Valid cases - odd integers
     [1],
     [3],

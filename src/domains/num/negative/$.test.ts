@@ -3,7 +3,7 @@ import { Negative } from './$.js'
 
 Test.describe('is')
   .on(Negative.is)
-  .cases(
+  .casesInput(
     // Valid cases - negative numbers
     [-1],
     [-0.1],
