@@ -171,6 +171,23 @@ export const ensure = <$T>(value: $T | $T[]): $T[] => {
 }
 
 /**
+ * Get the last element of an array.
+ *
+ * @category Access
+ * @param array - The array to get the last element from
+ * @returns The last element, or `undefined` if the array is empty
+ * @example
+ * ```ts
+ * Arr.last([1, 2, 3])  // 3
+ * Arr.last(['a'])  // 'a'
+ * Arr.last([])  // undefined
+ * ```
+ */
+export const last = <$T>(array: readonly $T[]): $T | undefined => {
+  return array[array.length - 1]
+}
+
+/**
  * Transpose a 2D array (convert rows to columns and vice versa).
  * This is a classic matrix transpose operation.
  *
