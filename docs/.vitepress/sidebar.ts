@@ -1,5 +1,5 @@
 import type { DefaultTheme } from 'vitepress'
-import interfaceModel from '../.generated/interface-model.json'
+import interfaceModel from '../.generated/interface.json'
 
 /**
  * Generate VitePress sidebar items from the interface model.

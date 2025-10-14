@@ -1,5 +1,5 @@
 import { ArrMut } from '#arr-mut'
-import { Fn } from '#fn'
+import { CoreFn as Fn } from '#fn/core'
 import type { Undefined } from '#undefined'
 import { Option } from 'effect'
 

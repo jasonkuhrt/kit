@@ -27,102 +27,191 @@ Num.Ratio.someFunction()
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
 
 ```typescript
-(value: unknown) => value is Ratio
+(value: unknown): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L47" />
+
+**Parameters:**
+
+- `value` - The value to check
+
+**Returns:** True if value is a Ratio
 
 Type predicate to check if value is a Ratio.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
 
 ```typescript
-;((numerator: Int, denominator: NonZero) => Ratio)
+(numerator: Int, denominator: NonZero): Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L79" />
 
-Construct a Ratio from numerator and denominator. Automatically simplifies to lowest terms and normalizes sign.
+**Parameters:**
+
+- `numerator` - The top number
+- `denominator` - The bottom number (non-zero)
+
+**Returns:** The simplified ratio
+
+Construct a Ratio from numerator and denominator.
+
+Automatically simplifies to lowest terms and normalizes sign.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fromDecimal`
 
 ```typescript
-;((value: number, maxDenominator?: number) => Ratio)
+(value: number, maxDenominator?: number = 10000): Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L145" />
 
-Convert a decimal number to a Ratio with specified precision. Useful for converting floats to exact ratios.
+**Parameters:**
+
+- `value` - The decimal number
+- `maxDenominator` - Maximum denominator to use (default: 10000)
+
+**Returns:** The ratio approximation
+
+Convert a decimal number to a Ratio with specified precision.
+
+Useful for converting floats to exact ratios.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `simplify`
 
 ```typescript
-;((ratio: Ratio) => Ratio)
+(ratio: Ratio): Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L202" />
 
-Simplify a ratio to lowest terms. Note: from() already does this, but this is useful for ratios from other sources.
+**Parameters:**
+
+- `ratio` - The ratio to simplify
+
+**Returns:** The simplified ratio
+
+Simplify a ratio to lowest terms.
+
+Note: from() already does this, but this is useful for ratios from other sources.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `toDecimal`
 
 ```typescript
-;((ratio: Ratio) => number)
+(ratio: Ratio): number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L219" />
 
-Convert ratio to decimal number. Note: This may lose precision for ratios like 1/3.
+**Parameters:**
+
+- `ratio` - The ratio to convert
+
+**Returns:** The decimal representation
+
+Convert ratio to decimal number.
+
+Note: This may lose precision for ratios like 1/3.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `add`
 
 ```typescript
-;((a: Ratio, b: Ratio) => Ratio)
+(a: Ratio, b: Ratio): Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L239" />
 
-Add two ratios. Result is automatically simplified.
+**Parameters:**
+
+- `a` - First ratio
+- `b` - Second ratio
+
+**Returns:** The sum as a simplified ratio
+
+Add two ratios.
+
+Result is automatically simplified.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `subtract`
 
 ```typescript
-;((a: Ratio, b: Ratio) => Ratio)
+(a: Ratio, b: Ratio): Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L286" />
 
-Subtract two ratios. Result is automatically simplified.
+**Parameters:**
+
+- `a` - First ratio
+- `b` - Second ratio
+
+**Returns:** The difference as a simplified ratio
+
+Subtract two ratios.
+
+Result is automatically simplified.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `multiply`
 
 ```typescript
-;((a: Ratio, b: Ratio) => Ratio)
+(a: Ratio, b: Ratio): Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L337" />
 
-Multiply two ratios. Result is automatically simplified.
+**Parameters:**
+
+- `a` - First ratio
+- `b` - Second ratio
+
+**Returns:** The product as a simplified ratio
+
+Multiply two ratios.
+
+Result is automatically simplified.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `divide`
 
 ```typescript
-;((a: Ratio, b: Ratio) => Ratio)
+(a: Ratio, b: Ratio): Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L387" />
 
-Divide two ratios. Result is automatically simplified.
+**Parameters:**
+
+- `a` - First ratio (dividend)
+- `b` - Second ratio (divisor, must be non-zero)
+
+**Returns:** The quotient as a simplified ratio
+
+**Throws:**
+
+- Error if b is zero
+
+Divide two ratios.
+
+Result is automatically simplified.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `compare`
 
 ```typescript
-;((a: Ratio, b: Ratio) => 0 | 1 | -1)
+(a: Ratio, b: Ratio): 0 | 1 | -1
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L437" />
 
-Compare two ratios. Returns -1 if a
+**Parameters:**
+
+- `a` - First ratio
+- `b` - Second ratio
+
+**Returns:** -1, 0, or 1
+
+Compare two ratios.
+
+Returns -1 if a
 
 b, 0 if a = b, 1 if a
 
@@ -131,25 +220,40 @@ b.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `reciprocal`
 
 ```typescript
-;((ratio: Ratio) => Ratio)
+(ratio: Ratio): Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L487" />
+
+**Parameters:**
+
+- `ratio` - The ratio to invert
+
+**Returns:** The reciprocal
+
+**Throws:**
+
+- Error if ratio is zero
 
 Get the reciprocal (inverse) of a ratio.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `toMixedNumber`
 
 ```typescript
-;((ratio: Ratio) => {
-  whole: Int
-  fraction: Ratio
-})
+(ratio: Ratio): { whole: Int; fraction: Ratio; }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L507" />
 
-Convert ratio to mixed number representation. Returns whole part and fractional part.
+**Parameters:**
+
+- `ratio` - The ratio to convert
+
+**Returns:** Object with whole and fractional parts
+
+Convert ratio to mixed number representation.
+
+Returns whole part and fractional part.
 
 ## Constants
 
@@ -161,7 +265,9 @@ Convert ratio to mixed number representation. Returns whole part and fractional 
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L110" />
 
-Create a function that constructs ratios with a fixed numerator. Useful for creating unit fractions.
+Create a function that constructs ratios with a fixed numerator.
+
+Useful for creating unit fractions.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`
 
@@ -171,7 +277,9 @@ Create a function that constructs ratios with a fixed numerator. Useful for crea
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L125" />
 
-Create a function that constructs ratios with a fixed denominator. Useful for working with common denominators.
+Create a function that constructs ratios with a fixed denominator.
+
+Useful for working with common denominators.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`
 
@@ -181,7 +289,9 @@ Create a function that constructs ratios with a fixed denominator. Useful for wo
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L257" />
 
-Create a function that adds a specific ratio. Useful for repeated additions.
+Create a function that adds a specific ratio.
+
+Useful for repeated additions.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
 
@@ -191,7 +301,9 @@ Create a function that adds a specific ratio. Useful for repeated additions.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L271" />
 
-Create a function that adds to a specific ratio. Useful for accumulating values.
+Create a function that adds to a specific ratio.
+
+Useful for accumulating values.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`
 
@@ -201,7 +313,9 @@ Create a function that adds to a specific ratio. Useful for accumulating values.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L304" />
 
-Create a function that subtracts from a specific ratio. Useful for calculating remainders.
+Create a function that subtracts from a specific ratio.
+
+Useful for calculating remainders.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractOn`
 
@@ -211,7 +325,9 @@ Create a function that subtracts from a specific ratio. Useful for calculating r
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L318" />
 
-Create a function that subtracts a specific ratio. Useful for repeated subtractions.
+Create a function that subtracts a specific ratio.
+
+Useful for repeated subtractions.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`
 
@@ -221,7 +337,9 @@ Create a function that subtracts a specific ratio. Useful for repeated subtracti
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L355" />
 
-Create a function that multiplies by a specific ratio. Useful for scaling.
+Create a function that multiplies by a specific ratio.
+
+Useful for scaling.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
 
@@ -231,7 +349,9 @@ Create a function that multiplies by a specific ratio. Useful for scaling.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L369" />
 
-Create a function that multiplies a specific ratio. Useful for applying ratios to values.
+Create a function that multiplies a specific ratio.
+
+Useful for applying ratios to values.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideWith`
 
@@ -241,7 +361,9 @@ Create a function that multiplies a specific ratio. Useful for applying ratios t
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L408" />
 
-Create a function that divides from a specific ratio. Useful for finding proportions.
+Create a function that divides from a specific ratio.
+
+Useful for finding proportions.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideOn`
 
@@ -251,7 +373,9 @@ Create a function that divides from a specific ratio. Useful for finding proport
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L422" />
 
-Create a function that divides by a specific ratio. Useful for repeated divisions.
+Create a function that divides by a specific ratio.
+
+Useful for repeated divisions.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareOn`
 
@@ -261,7 +385,9 @@ Create a function that divides by a specific ratio. Useful for repeated division
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L459" />
 
-Create a function that compares against a specific ratio. Useful for filtering or sorting.
+Create a function that compares against a specific ratio.
+
+Useful for filtering or sorting.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareWith`
 
@@ -271,7 +397,9 @@ Create a function that compares against a specific ratio. Useful for filtering o
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L473" />
 
-Create a function that compares a specific ratio. Useful for finding where a ratio fits in a range.
+Create a function that compares a specific ratio.
+
+Useful for finding where a ratio fits in a range.
 
 ## Types
 
@@ -293,7 +421,11 @@ Ratio (rational number)
 Ratios provide exact arithmetic without floating-point errors, making them ideal for:
 
 - Financial calculations (no lost pennies)
+
 - Music theory (frequency ratios like 3:2 for perfect fifth)
+
 - Aspect ratios and proportions
+
 - Probability calculations
+
 - Any domain requiring exact fractional values

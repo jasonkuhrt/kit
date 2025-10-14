@@ -1,4 +1,4 @@
-import { Lang } from '#lang'
+import { CoreLang as Lang } from '#lang/core'
 import type { Obj } from '#obj'
 import type { Prom } from '#prom'
 

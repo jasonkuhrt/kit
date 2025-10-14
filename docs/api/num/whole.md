@@ -27,62 +27,116 @@ Num.Whole.someFunction()
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
 
 ```typescript
-(value: unknown) => value is number & { [WholeBrand]: true; } & { [IntBrand]: true; } & { [NonNegativeBrand]: true; }
+(value: unknown): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/whole/whole.ts#L46" />
 
-Type predicate to check if value is a whole number. Returns true for non-negative integers (0, 1, 2, 3, ...).
+**Parameters:**
+
+- `value` - The value to check
+
+**Returns:** True if value is a whole number
+
+Type predicate to check if value is a whole number.
+
+Returns true for non-negative integers (0, 1, 2, 3, ...).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
 
 ```typescript
-(value: number) => number & { [WholeBrand]: true; } & { [IntBrand]: true; } & { [NonNegativeBrand]: true; }
+(value: number): number & { [WholeBrand]: true; } & { [IntBrand]: true; } & { [NonNegativeBrand]: true; }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/whole/whole.ts#L66" />
 
-Construct a Whole number. Throws if the value is not a non-negative integer.
+**Parameters:**
+
+- `value` - The number to convert to Whole
+
+**Returns:** The value as a Whole number
+
+**Throws:**
+
+- Error if value is not a non-negative integer
+
+Construct a Whole number.
+
+Throws if the value is not a non-negative integer.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
 ```typescript
-(value: number) => (number & { [WholeBrand]: true; } & { [IntBrand]: true; } & { [NonNegativeBrand]: true; }) | null
+(value: number): (number & { [WholeBrand]: true; } & { [IntBrand]: true; } & { [NonNegativeBrand]: true; }) | null
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/whole/whole.ts#L89" />
 
-Try to construct a Whole number. Returns null if the value is not a non-negative integer.
+**Parameters:**
+
+- `value` - The number to try converting
+
+**Returns:** The Whole number or null
+
+Try to construct a Whole number.
+
+Returns null if the value is not a non-negative integer.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `parseAsWhole`
 
 ```typescript
-(value: string) => (number & { [WholeBrand]: true; } & { [IntBrand]: true; } & { [NonNegativeBrand]: true; }) | null
+(value: string): (number & { [WholeBrand]: true; } & { [IntBrand]: true; } & { [NonNegativeBrand]: true; }) | null
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/whole/whole.ts#L107" />
 
-Parse a string as a whole number. Returns null if the string doesn't represent a non-negative integer.
+**Parameters:**
+
+- `value` - The string to parse
+
+**Returns:** The parsed whole number or null
+
+Parse a string as a whole number.
+
+Returns null if the string doesn't represent a non-negative integer.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `next`
 
 ```typescript
-(value: number) => number & { [WholeBrand]: true; } & { [IntBrand]: true; } & { [NonNegativeBrand]: true; }
+(value: number): number & { [WholeBrand]: true; } & { [IntBrand]: true; } & { [NonNegativeBrand]: true; }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/whole/whole.ts#L127" />
 
-Get the next whole number. For any number, returns the smallest whole number greater than the input.
+**Parameters:**
+
+- `value` - The number to get the next whole from
+
+**Returns:** The next whole number
+
+Get the next whole number.
+
+For any number, returns the smallest whole number greater than the input.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `prev`
 
 ```typescript
-(value: number) => (number & { [WholeBrand]: true; } & { [IntBrand]: true; } & { [NonNegativeBrand]: true; }) | null
+(value: number): (number & { [WholeBrand]: true; } & { [IntBrand]: true; } & { [NonNegativeBrand]: true; }) | null
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/whole/whole.ts#L146" />
 
-Get the previous whole number. Returns null if there is no previous whole (i.e., for values = 0).
+**Parameters:**
+
+- `value` - The number to get the previous whole from
+
+**Returns:** The previous whole number or null
+
+Get the previous whole number.
+
+Returns null if there is no previous whole (i.e., for values
+
+= 0).
 
 ## Types
 
@@ -94,6 +148,10 @@ type Whole = number & { [WholeBrand]: true }
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/whole/whole.ts#L30" />
 
-Whole number (non-negative integer: 0, 1, 2, 3, ...). These are the natural numbers plus zero.
+Whole number (non-negative integer: 0, 1, 2, 3, ...).
 
-Whole numbers are both integers and non-negative, so they combine both brands for maximum type safety.
+These are the natural numbers plus zero.
+
+Whole numbers are both integers and non-negative, so they combine
+
+both brands for maximum type safety.

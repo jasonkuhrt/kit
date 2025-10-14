@@ -1,6 +1,12 @@
 # Json
 
-JSON utilities with Effect Schema integration. Provides type-safe JSON operations including type guards, parsing, encoding, and validation using Effect Schema. Supports JSON primitives, objects, and recursive value structures with comprehensive error handling.
+JSON utilities with Effect Schema integration.
+
+Provides type-safe JSON operations including type guards, parsing, encoding,
+
+and validation using Effect Schema. Supports JSON primitives, objects, and
+
+recursive value structures with comprehensive error handling.
 
 ## Import
 
@@ -26,7 +32,9 @@ Codec<Value>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L169" />
 
-Codec for JSON values with pretty-printing. Uses Effect's parseJson for decoding.
+Codec for JSON values with pretty-printing.
+
+Uses Effect's parseJson for decoding.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `encode`
 
@@ -46,7 +54,9 @@ Decode<Value>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L195" />
 
-Parse a JSON string to a typed value. Uses Effect's parseJson for better error messages.
+Parse a JSON string to a typed value.
+
+Uses Effect's parseJson for better error messages.
 
 ## Schemas
 
@@ -58,7 +68,9 @@ Union<[typeof String, typeof Number, typeof Boolean, typeof Null]>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L110" />
 
-JSON primitive value schema. Matches: string, number, boolean, or null.
+JSON primitive value schema.
+
+Matches: string, number, boolean, or null.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ValueSchema`
 
@@ -68,7 +80,9 @@ Schema<Value, Value, never>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L124" />
 
-JSON value schema. Matches any valid JSON value: primitives, objects, or arrays (recursively).
+JSON value schema.
+
+Matches any valid JSON value: primitives, objects, or arrays (recursively).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ObjectSchema`
 
@@ -78,7 +92,9 @@ Record$<typeof String, Schema<Value, Value, never>>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L138" />
 
-JSON object schema. Matches objects with string keys and JSON values.
+JSON object schema.
+
+Matches objects with string keys and JSON values.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parseJsonSchema`
 
@@ -88,13 +104,14 @@ SchemaClass<unknown, string, never>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L146" />
 
-Schema for parsing JSON strings to unknown values. Uses Effect's parseJson for better error handling.
+Schema for parsing JSON strings to unknown values.
+
+Uses Effect's parseJson for better error handling.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `parseJsonAs`
 
 ```typescript
-;(<A>(schema: Schema<A, A, never>) =>
-  transform<SchemaClass<unknown, string, never>, Schema<A, A, never>>)
+<A>(schema: Schema<A, A, never>): transform<SchemaClass<unknown, string, never>, Schema<A, A, never>>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L153" />
@@ -104,7 +121,7 @@ Schema for parsing JSON with type validation.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ObjectParser`
 
 ```typescript
-{ parse: (value: unknown) => { readonly[x: string]: Value; }; }
+{ parse: (value: unknown) => { readonly [x: string]: Value; }; }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L225" />
@@ -114,7 +131,7 @@ Schema for parsing JSON with type validation.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isPrimitive`
 
 ```typescript
-(value: unknown) => value is Primitive
+(value: unknown): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L51" />
@@ -124,7 +141,7 @@ Type guard to check if a value is a JSON primitive.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isValue`
 
 ```typescript
-(value: unknown) => value is Value
+(value: unknown): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L65" />
@@ -134,7 +151,7 @@ Type guard to check if a value is a valid JSON value.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isObject`
 
 ```typescript
-(value: unknown) => value is Obj
+(value: unknown): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L87" />
@@ -151,7 +168,9 @@ type Primitive = string | number | boolean | null
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L18" />
 
-JSON primitive type. Matches: string, number, boolean, or null.
+JSON primitive type.
+
+Matches: string, number, boolean, or null.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Obj`
 
@@ -171,7 +190,9 @@ type Value = Primitive | Obj | Value[]
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L33" />
 
-JSON value type. Matches any valid JSON value: primitives, objects, or arrays (recursively).
+JSON value type.
+
+Matches any valid JSON value: primitives, objects, or arrays (recursively).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Object`
 

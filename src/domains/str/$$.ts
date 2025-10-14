@@ -9,7 +9,6 @@ export * from './replace.js'
 export * from './split.js'
 export * from './table.js'
 export * from './template.js'
-export * from './text.js'
 export * from './tpl/$.js'
 export { Arb } from './traits/arb.js'
 export { Eq } from './traits/eq.js'
@@ -32,10 +31,19 @@ export namespace Code {}
 // @ts-expect-error Duplicate identifier
 export * as Text from './text.js'
 /**
- * Text formatting and manipulation utilities.
+ * Multi-line text formatting and layout utilities.
  *
- * Provides functions for working with multi-line text, indentation, padding,
- * line-by-line transformations, and block formatting with prefixes.
+ * Provides functions specifically for working with multi-line strings treated as text content:
+ * - **Line operations**: Split into lines, join lines, map transformations per line
+ * - **Indentation**: Add/remove indentation, strip common leading whitespace
+ * - **Alignment**: Pad text, span to width, fit to exact width
+ * - **Block formatting**: Format blocks with prefixes, styled borders
+ *
+ * **Use Text for**: Operations that treat strings as multi-line content with visual layout
+ * (indentation, padding for tables, line-by-line transformations).
+ *
+ * **Use root Str for**: Primitive string operations (split, join, replace, match, trim)
+ * that work on strings as atomic values.
  *
  * @category Text Formatting
  */

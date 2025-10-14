@@ -27,32 +27,38 @@ Num.NonNegative.someFunction()
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
 
 ```typescript
-(value: unknown) => value is NonNegative
+(value: unknown): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-negative/non-negative.ts#L16" />
 
-Type predicate to check if value is non-negative (= 0).
+Type predicate to check if value is non-negative (
+
+= 0).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
 
 ```typescript
-;((value: number) => NonNegative)
+(value: number): NonNegative
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-negative/non-negative.ts#L24" />
 
-Construct a NonNegative number. Throws if the value is negative.
+Construct a NonNegative number.
+
+Throws if the value is negative.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
 ```typescript
-;((value: number) => NonNegative | null)
+(value: number): NonNegative | null
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-negative/non-negative.ts#L35" />
 
-Try to construct a NonNegative number. Returns null if the value is negative.
+Try to construct a NonNegative number.
+
+Returns null if the value is negative.
 
 ## Types
 
@@ -64,4 +70,6 @@ type NonNegative = number & { [NonNegativeBrand]: true }
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-negative/non-negative.ts#L11" />
 
-Non-negative number (= 0).
+Non-negative number (
+
+= 0).

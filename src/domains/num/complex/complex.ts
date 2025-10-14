@@ -3,7 +3,7 @@
  * A complex number is a number that can be expressed as a + bi where a and b are real numbers and i is the imaginary unit.
  */
 
-import { Fn } from '#fn'
+import { CoreFn as Fn } from '#fn/core'
 
 declare const ComplexBrand: unique symbol
 

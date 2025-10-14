@@ -27,7 +27,7 @@ Num.Float.someFunction()
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
 
 ```typescript
-(value: unknown) => value is Float
+(value: unknown): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/float/float.ts#L18" />
@@ -37,27 +37,31 @@ Type predicate to check if value is a float (non-integer number).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
 
 ```typescript
-(value: number) => number & { [FloatBrand]: true; } & { [FiniteBrand]: true; }
+(value: number): number & { [FloatBrand]: true; } & { [FiniteBrand]: true; }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/float/float.ts#L26" />
 
-Construct a Float. Throws if the value is not a float.
+Construct a Float.
+
+Throws if the value is not a float.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
 ```typescript
-(value: number) => (number & { [FloatBrand]: true; } & { [FiniteBrand]: true; }) | null
+(value: number): (number & { [FloatBrand]: true; } & { [FiniteBrand]: true; }) | null
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/float/float.ts#L40" />
 
-Try to construct a Float. Returns null if the value is not a float.
+Try to construct a Float.
+
+Returns null if the value is not a float.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `toFloat`
 
 ```typescript
-(value: number) => number & { [FloatBrand]: true; } & { [FiniteBrand]: true; }
+(value: number): number & { [FloatBrand]: true; } & { [FiniteBrand]: true; }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/float/float.ts#L47" />

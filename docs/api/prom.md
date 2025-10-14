@@ -1,6 +1,10 @@
 # Prom
 
-Promise utilities for asynchronous operations. Provides utilities for working with Promises including deferred promise creation, promise combinators, and async control flow patterns.
+Promise utilities for asynchronous operations.
+
+Provides utilities for working with Promises including deferred promise
+
+creation, promise combinators, and async control flow patterns.
 
 ## Import
 
@@ -62,15 +66,12 @@ import { Prom } from '@wollybeard/kit/prom'
 const deferred = createDeferred<number>()
 
 // Later resolve it
-// [!code word:resolve:1]
 deferred.resolve(42)
 
 // Or reject it
-// [!code word:reject:1]
 deferred.reject(new Error('failed'))
 
 // Use the promise
-// [!code word:promise:1]
 await deferred.promise // 42
 ```
 
@@ -80,26 +81,25 @@ import { Prom } from '@wollybeard/kit/prom'
 // ---cut---
 // Check resolution state
 const deferred = createDeferred<number>()
-// [!code word:log:1]
-// [!code word:isResolved:1]
 console.log(deferred.isResolved) // false
-// [!code word:resolve:1]
 deferred.resolve(42)
-// [!code word:log:1]
-// [!code word:isResolved:1]
 console.log(deferred.isResolved) // true
-// [!code word:log:1]
-// [!code word:isSettled:1]
 console.log(deferred.isSettled) // true
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `createDeferred`
 
 ```typescript
-;(<$T>(options?: { strict?: boolean } | undefined) => Deferred<$T>)
+<$T>(options?: { strict?: boolean; } | undefined): Deferred<$T>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/deferred.ts#L86" />
+
+**Parameters:**
+
+- `options` - Configuration options
+
+**Returns:** A deferred promise object
 
 Create a deferred promise with exposed resolve and reject functions.
 
@@ -112,11 +112,9 @@ import { Prom } from '@wollybeard/kit/prom'
 const deferred = createDeferred<number>()
 
 setTimeout(() => {
-  // [!code word:resolve:1]
   deferred.resolve(42)
 }, 1000)
 
-// [!code word:promise:1]
 const result = await deferred.promise // 42
 ```
 
@@ -127,9 +125,7 @@ import { Prom } from '@wollybeard/kit/prom'
 // Strict mode prevents multiple resolutions
 const deferred = createDeferred<number>({ strict: true })
 
-// [!code word:resolve:1]
 deferred.resolve(1)
-// [!code word:resolve:1]
 deferred.resolve(2) // Throws error
 ```
 
@@ -138,12 +134,20 @@ deferred.resolve(2) // Throws error
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isShape`
 
 ```typescript
-(value: unknown) => value is AnyAny
+(value: unknown): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L59" />
 
-Check if a value has the shape of a Promise. Tests for the presence of then, catch, and finally methods.
+**Parameters:**
+
+- `value` - The value to test.
+
+**Returns:** True if the value has Promise-like shape.
+
+Check if a value has the shape of a Promise.
+
+Tests for the presence of then, catch, and finally methods.
 
 **Examples:**
 
@@ -152,18 +156,13 @@ Check if a value has the shape of a Promise. Tests for the presence of then, cat
 import { Prom } from '@wollybeard/kit/prom'
 // ---cut---
 // with a promise
-// [!code word:isShape:1]
-// [!code word:resolve:1]
 Prom.isShape(Promise.resolve(42)) // true
 
 // with a thenable object
-// [!code word:isShape:1]
 Prom.isShape({ then: () => {}, catch: () => {}, finally: () => {} }) // true
 
 // with non-promise values
-// [!code word:isShape:1]
 Prom.isShape(42) // false
-// [!code word:isShape:1]
 Prom.isShape({}) // false
 ```
 
@@ -177,7 +176,9 @@ type Any = Promise<unknown>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L9" />
 
-Type representing a Promise of unknown type. Useful for generic promise handling where the resolved type is not important.
+Type representing a Promise of unknown type.
+
+Useful for generic promise handling where the resolved type is not important.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAny`
 
@@ -187,7 +188,13 @@ type AnyAny = Promise<any>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L17" />
 
-Type representing a Promise of any type. Less type-safe than Any, use with caution.
+Type representing a Promise of any type.
+
+Less type-safe than
+
+Any
+
+, use with caution.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Maybe`
 
@@ -207,12 +214,10 @@ import { Prom } from '@wollybeard/kit/prom'
 // ---cut---
 // function that accepts sync or async values
 function process<T>(value: Maybe<T>): Promise<T> {
-  // [!code word:resolve:1]
   return Promise.resolve(value)
 }
 
 process(42) // accepts number
-// [!code word:resolve:1]
 process(Promise.resolve(42)) // accepts Promise<number>
 ```
 
@@ -226,7 +231,11 @@ type AwaitedUnion<$MaybePromise, $Additional> = $MaybePromise extends
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L86" />
 
-Type that adds an additional type to a potentially promised union. If the input is a Promise, the additional type is added to the promised value. If the input is not a Promise, creates a union with the additional type.
+Type that adds an additional type to a potentially promised union.
+
+If the input is a Promise, the additional type is added to the promised value.
+
+If the input is not a Promise, creates a union with the additional type.
 
 **Examples:**
 
@@ -260,17 +269,27 @@ Envelope containing execution metadata.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `maybeAsync`
 
 ```typescript
-function maybeAsync<T, R = T, E = unknown>(
-  fn: () => T,
-  handlers: MaybeAsyncHandlers<T extends Promise<infer U> ? U : T, R, E> = {},
-): T extends Promise<infer U> ? Promise<R | E | U> : T | R | E
+<T, R = T, E = unknown>(fn: () => T, handlers?: MaybeAsyncHandlers<T extends Promise<infer U> ? U : T, R, E> = {}): T extends Promise<infer U> ? Promise<R | E | U> : T | R | E
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L231" />
 
-Handle a function that might return a promise or a regular value, with unified handlers for both sync and async cases.
+**Parameters:**
 
-Implemented using maybeAsyncEnvelope internally.
+- `fn` - Function to execute that might return a promise
+- `handlers` - Object with then/catch handlers
+
+**Returns:** The result, potentially wrapped in a Promise
+
+Handle a function that might return a promise or a regular value,
+
+with unified handlers for both sync and async cases.
+
+Implemented using
+
+maybeAsyncEnvelope
+
+internally.
 
 **Examples:**
 
@@ -279,7 +298,6 @@ Implemented using maybeAsyncEnvelope internally.
 import { Prom } from '@wollybeard/kit/prom'
 // ---cut---
 // Basic usage
-// [!code word:maybeAsync:1]
 const result = Prom.maybeAsync(
   () => fetchData(),
   {
@@ -289,12 +307,10 @@ const result = Prom.maybeAsync(
 )
 
 // Just error handling
-// [!code word:maybeAsync:1]
 const safeResult = Prom.maybeAsync(
   () => riskyOperation(),
   {
     catch: (error, isAsync) => {
-      // [!code word:error:1]
       console.error(`Failed ${isAsync ? 'async' : 'sync'}:`, error)
       return null
     },
@@ -302,11 +318,9 @@ const safeResult = Prom.maybeAsync(
 )
 
 // Just success handling
-// [!code word:maybeAsync:1]
 const transformed = Prom.maybeAsync(
   () => getValue(),
   {
-    // [!code word:toUpperCase:1]
     then: (value) => value.toUpperCase(),
   },
 )
@@ -315,27 +329,53 @@ const transformed = Prom.maybeAsync(
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `maybeAsyncEnvelope`
 
 ```typescript
-<$return>(fn: () => $return) => $return extends Promise<infer __awaited__> ? Promise<Envelope<__awaited__>> : Envelope<$return>
+<$return>(fn: () => $return): $return extends Promise<infer __awaited__> ? Promise<Envelope<__awaited__>> : Envelope<$return>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L147" />
+
+**Parameters:**
+
+- `fn` - Function to execute
+
+**Returns:** Envelope (sync) or Promise of envelope (async) with execution metadata
 
 Execute a function and return an envelope with metadata about the execution.
 
 Returns metadata indicating:
 
-- **channel**: Whether the function succeeded ('succeed') or failed ('fail')
+- **channel**: Whether the function succeeded (
+
+'succeed'
+
+) or failed (
+
+'fail'
+
+)
+
 - **async**: Whether execution was asynchronous (promise) or synchronous
+
 - **value/error**: The result value or thrown/rejected error
 
 Never throws or rejects
 
-- all errors are captured in the envelope. Preserves sync/async distinction in both return type and metadata.
+- all errors are captured in the envelope.
+
+Preserves sync/async distinction in both return type and metadata.
 
 Useful when you need to:
 
-- Distinguish Promise.resolve(Error) from Promise.reject(Error)
+- Distinguish
+
+Promise.resolve(Error)
+
+from
+
+Promise.reject(Error)
+
 - Know whether execution was sync or async
+
 - Handle errors without try/catch blocks
 
 **Examples:**
@@ -345,32 +385,24 @@ Useful when you need to:
 import { Prom } from '@wollybeard/kit/prom'
 // ---cut---
 // Sync success
-// [!code word:maybeAsyncEnvelope:1]
 const result = Prom.maybeAsyncEnvelope(() => 42)
 // { channel: 'succeed', value: 42, async: false }
 
 // Sync failure
-// [!code word:maybeAsyncEnvelope:1]
 const result = Prom.maybeAsyncEnvelope(() => {
   throw new Error('fail')
 })
 // { channel: 'fail', error: Error('fail'), async: false }
 
 // Async success
-// [!code word:maybeAsyncEnvelope:1]
-// [!code word:resolve:1]
 const result = await Prom.maybeAsyncEnvelope(() => Promise.resolve('ok'))
 // { channel: 'succeed', value: 'ok', async: true }
 
 // Async failure
-// [!code word:maybeAsyncEnvelope:1]
-// [!code word:reject:1]
 const result = await Prom.maybeAsyncEnvelope(() => Promise.reject('error'))
 // { channel: 'fail', error: 'error', async: true }
 
 // Promise resolving to Error (not a rejection!)
-// [!code word:maybeAsyncEnvelope:1]
-// [!code word:resolve:1]
 const result = await Prom.maybeAsyncEnvelope(() =>
   Promise.resolve(new Error('value'))
 )

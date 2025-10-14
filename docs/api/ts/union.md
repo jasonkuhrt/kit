@@ -46,7 +46,9 @@ type __FORCE_DISTRIBUTION__ = any
 
 Marker type to make forced union distribution explicit and self-documenting.
 
-TypeScript distributes unions in conditional types when the checked type is a naked type parameter. Using this marker in your conditional type makes the intent explicit to readers.
+TypeScript distributes unions in conditional types when the checked type is a naked type parameter.
+
+Using this marker in your conditional type makes the intent explicit to readers.
 
 **Examples:**
 
@@ -88,7 +90,9 @@ type Include<$T, $U> = $T extends $U ? $T : never
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L49" />
 
-Include only types that extend a constraint (opposite of Exclude). Filters a union type to only include members that extend the constraint.
+Include only types that extend a constraint (opposite of Exclude).
+
+Filters a union type to only include members that extend the constraint.
 
 **Examples:**
 
@@ -233,7 +237,17 @@ type IsHas<$Type, $LookingFor> = _IsHas<$Type, $LookingFor> extends false
 
 Checks if a union type contains a specific type.
 
-Returns true if any member of the union type extends the target type, false otherwise. This is useful for conditional type logic based on union membership.
+Returns
+
+true
+
+if any member of the union type extends the target type,
+
+false
+
+otherwise. This is useful for conditional type logic based on
+
+union membership.
 
 $Type
 

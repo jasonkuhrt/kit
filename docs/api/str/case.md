@@ -2,8 +2,6 @@
 
 _Str_ / **Case**
 
-Convert string to camelCase.
-
 ## Import
 
 ::: code-group
@@ -26,15 +24,23 @@ Str.Case.someFunction()
 
 ## Case Conversion
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `title`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `constant`
 
 ```typescript
-;((str: string) => string)
+(name: string): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L58" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L60" />
 
-Convert string to Title Case. Replaces hyphens and underscores with spaces and capitalizes the first letter of each word.
+**Parameters:**
+
+- `name` - The string to convert
+
+**Returns:** The constant cased string
+
+Convert string to CONSTANT_CASE (SCREAMING_SNAKE_CASE).
+
+Commonly used for environment variables and constants.
 
 **Examples:**
 
@@ -42,23 +48,59 @@ Convert string to Title Case. Replaces hyphens and underscores with spaces and c
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
-// [!code word:title:1]
+Str.Case.constant('helloWorld') // 'HELLO_WORLD'
+Str.Case.constant('foo-bar') // 'FOO_BAR'
+Str.Case.constant('myEnvVar') // 'MY_ENV_VAR'
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `title`
+
+```typescript
+(str: string): string
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L75" />
+
+**Parameters:**
+
+- `str` - The string to convert
+
+**Returns:** The title cased string
+
+Convert string to Title Case.
+
+Replaces hyphens and underscores with spaces and capitalizes the first letter of each word.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
 Str.Case.title('hello-world') // 'Hello World'
-// [!code word:title:1]
 Str.Case.title('foo_bar') // 'Foo Bar'
-// [!code word:title:1]
 Str.Case.title('the quick brown fox') // 'The Quick Brown Fox'
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `capAll`
 
 ```typescript
-;(<$S extends string>(str: $S) => Uppercase<$S>)
+<$S extends string>(str: $S): Uppercase<$S>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L80" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L97" />
 
-Convert string to UPPERCASE with type-level transformation. Preserves the uppercase type at the type level.
+**Parameters:**
+
+- `str` - The string to convert
+
+**Returns:** The uppercase string with Uppercase
+
+type
+
+Convert string to UPPERCASE with type-level transformation.
+
+Preserves the uppercase type at the type level.
 
 **Examples:**
 
@@ -77,10 +119,18 @@ uppercase('FooBar') // 'FOOBAR'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `uncapFirst`
 
 ```typescript
-;(<$S extends string>(s: $S) => Uncapitalize<$S>)
+<$S extends string>(s: $S): Uncapitalize<$S>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L96" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L113" />
+
+**Parameters:**
+
+- `s` - The string to convert
+
+**Returns:** The string with lowercase first letter and Uncapitalize
+
+type
 
 Convert the first letter of a string to lowercase with type-level transformation.
 
@@ -98,10 +148,18 @@ lowerCaseFirst('HELLO') // Type: "hELLO"
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `capFirst`
 
 ```typescript
-;(<$S extends string>(string: $S) => Capitalize<$S>)
+<$S extends string>(string: $S): Capitalize<$S>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L112" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L129" />
+
+**Parameters:**
+
+- `string` - The string to capitalize
+
+**Returns:** The string with capitalized first letter and Capitalize
+
+type
 
 Capitalize the first letter of a string with type-level transformation.
 
@@ -121,22 +179,42 @@ capitalizeFirst('foo bar') // Type: "Foo bar"
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `camel`
 
 ```typescript
-function camelCase(str: string): string
+(str: string): string
+(str: string): string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./node_modules/.pnpm/es-toolkit@1.39.10/node_modules/es-toolkit/dist/string/camelCase.d.ts#L17" />
 
+**Parameters:**
+
+- `str` - The string that is to be changed to camel case.
+
+**Returns:** string
+
+- The converted string to camel case.
+
 Converts a string to camel case.
 
-Camel case is the naming convention in which the first word is written in lowercase and each subsequent word begins with a capital letter, concatenated without any separator characters.
+Camel case is the naming convention in which the first word is written in lowercase and
+
+each subsequent word begins with a capital letter, concatenated without any separator characters.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `kebab`
 
 ```typescript
-function kebabCase(str: string): string
+(str: string): string
+(str: string): string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./node_modules/.pnpm/es-toolkit@1.39.10/node_modules/es-toolkit/dist/string/kebabCase.d.ts#L15" />
+
+**Parameters:**
+
+- `str` - The string that is to be changed to kebab case.
+
+**Returns:** string
+
+- The converted string to kebab case.
 
 Converts a string to kebab case.
 
@@ -145,10 +223,19 @@ Kebab case is the naming convention in which each word is written in lowercase a
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pascal`
 
 ```typescript
-function pascalCase(str: string): string
+(str: string): string
+(str: string): string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./node_modules/.pnpm/es-toolkit@1.39.10/node_modules/es-toolkit/dist/string/pascalCase.d.ts#L15" />
+
+**Parameters:**
+
+- `str` - The string that is to be changed to pascal case.
+
+**Returns:** string
+
+- The converted string to Pascal case.
 
 Converts a string to Pascal case.
 
@@ -157,10 +244,19 @@ Pascal case is the naming convention in which each word is capitalized and conca
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `snake`
 
 ```typescript
-function snakeCase(str: string): string
+(str: string): string
+(str: string): string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./node_modules/.pnpm/es-toolkit@1.39.10/node_modules/es-toolkit/dist/string/snakeCase.d.ts#L15" />
+
+**Parameters:**
+
+- `str` - The string that is to be changed to snake case.
+
+**Returns:** string
+
+- The converted string to snake case.
 
 Converts a string to snake case.
 

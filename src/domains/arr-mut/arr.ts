@@ -1,5 +1,5 @@
 import { Bool } from '#bool'
-import { Fn } from '#fn'
+import { CoreFn as Fn } from '#fn/core'
 import { Pat } from '#pat'
 import { Type } from './traits/type.js'
 

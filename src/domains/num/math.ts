@@ -1,4 +1,4 @@
-import { Fn } from '#fn'
+import { CoreFn as Fn } from '#fn/core'
 import type { Degrees } from './degrees/$$.js'
 import type { Finite } from './finite/$$.js'
 import type { InRange } from './in-range/$$.js'

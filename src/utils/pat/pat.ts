@@ -1,4 +1,4 @@
-import { Fn } from '#fn'
+import { CoreFn as Fn } from '#fn/core'
 import { Rec } from '#rec'
 
 /**

@@ -99,26 +99,26 @@ export class Table extends Node {
     const headers = this.headers.map((cell) => cell.render(context).value)
     const rowsAndHeaders = this.headers.length > 0 ? [headers, ...rows] : rows
     const maxWidthOfEachColumn = Arr.transpose(rowsAndHeaders).map((col) =>
-      Math.max(...col.flatMap(Str.lines).map((_) => Str.Visual.width(_)))
+      Math.max(...col.flatMap(Str.Text.lines).map((_) => Str.Visual.width(_)))
     )
     const rowsWithCellWidthsNormalized = rowsAndHeaders.map((row) => {
-      const maxNumberOfLinesAmongColumns = Math.max(...row.map(Str.lines).map((lines) => lines.length))
+      const maxNumberOfLinesAmongColumns = Math.max(...row.map(Str.Text.lines).map((lines) => lines.length))
       const row_ = row.map((col) => {
-        const numberOfLines = Str.lines(col).length
+        const numberOfLines = Str.Text.lines(col).length
         if (numberOfLines < maxNumberOfLinesAmongColumns) {
           return col + Str.Char.newline.repeat(maxNumberOfLinesAmongColumns - numberOfLines)
         }
         return col
       })
       const row__ = row_.map((col, i) =>
-        Str.mapLines(col, (line) => Str.Visual.pad(line, maxWidthOfEachColumn[i] ?? 0, `right`))
+        Str.Text.mapLines(col, (line) => Str.Visual.pad(line, maxWidthOfEachColumn[i] ?? 0, `right`))
       )
       return row__
     })
     const rowsWithCellsJoined = rowsWithCellWidthsNormalized.map((r) =>
-      Str.Visual.Table.render(Arr.transpose(r.map(Str.lines)), { separator: separators.column, align: `left` })
+      Str.Visual.Table.render(Arr.transpose(r.map(Str.Text.lines)), { separator: separators.column, align: `left` })
     )
-    const width = Math.max(...rowsWithCellsJoined.flatMap(Str.lines).map((_) => Str.Visual.width(_)))
+    const width = Math.max(...rowsWithCellsJoined.flatMap(Str.Text.lines).map((_) => Str.Visual.width(_)))
     const value = rowsWithCellsJoined.join(separators.row(width))
 
     return {

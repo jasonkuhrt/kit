@@ -36,6 +36,7 @@ export const table = (input: {
 }) => {
   const separator = input.separator ?? ` ${Char.rightwardsArrow} `
   const separatorAlignment = input.separatorAlignment ?? true
+  const padding = repeatOn(Char.spaceNoBreak)
 
   const entries = Object.entries(input.data)
   const keyMaxLength = Math.max(...entries.map(([key]) => key.length))
@@ -49,8 +50,6 @@ export const table = (input: {
     return `${key}${gap}${value}`
   }).join(`\n`)
 }
-
-const padding = repeatOn(Char.spaceNoBreak)
 
 // const isOdd = (value: number) => value % 2 !== 0
 

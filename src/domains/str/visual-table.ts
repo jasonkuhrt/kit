@@ -1,5 +1,5 @@
 import { Arr } from '#arr'
-import { Fn } from '#fn'
+import { CoreFn as Fn } from '#fn/core'
 import { unlines } from './text.js'
 import { span, width } from './visual.js'
 

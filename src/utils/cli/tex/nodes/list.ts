@@ -65,16 +65,16 @@ export class List extends Node {
       .map((_, index) => {
         // Manually align bullet within gutter width
         const alignedBullet = Str.Visual.span(bullets[index]!, gutterWidth, bullet.align.horizontal)
-        const contentLines = Str.lines(_)
+        const contentLines = Str.Text.lines(_)
         // Create bullet column with empty strings for continuation lines
         const bulletColumn = [alignedBullet, ...Array(contentLines.length - 1).fill('')]
         return Str.Visual.Table.render(Arr.transpose([bulletColumn, contentLines]), { separator: ` `, align: 'left' })
       })
       .join(separator)
 
-    const lines = items.flatMap(Str.lines)
+    const lines = items.flatMap(Str.Text.lines)
     const intrinsicWidth = Math.max(...lines.map((_) => Str.Visual.width(_)))
-    const intrinsicHeight = Str.lines(value).length
+    const intrinsicHeight = Str.Text.lines(value).length
     return {
       shape: {
         intrinsicWidth,

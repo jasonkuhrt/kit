@@ -27,32 +27,38 @@ Num.Finite.someFunction()
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
 
 ```typescript
-(value: unknown) => value is Finite
+(value: unknown): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/finite/finite.ts#L17" />
 
-Type predicate to check if value is a finite number. Excludes NaN, Infinity, and -Infinity.
+Type predicate to check if value is a finite number.
+
+Excludes NaN, Infinity, and -Infinity.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
 
 ```typescript
-;((value: number) => Finite)
+(value: number): Finite
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/finite/finite.ts#L25" />
 
-Construct a Finite number. Throws if the value is not finite.
+Construct a Finite number.
+
+Throws if the value is not finite.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
 ```typescript
-;((value: number) => Finite | null)
+(value: number): Finite | null
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/finite/finite.ts#L36" />
 
-Try to construct a Finite number. Returns null if the value is not finite.
+Try to construct a Finite number.
+
+Returns null if the value is not finite.
 
 ## Types
 

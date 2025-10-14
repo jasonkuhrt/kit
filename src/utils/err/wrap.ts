@@ -1,4 +1,4 @@
-import { Fn } from '#fn'
+import { CoreFn as Fn } from '#fn/core'
 import { mergeStacks } from './stack.js'
 import { ensure } from './type.js'
 import type { Context } from './types.js'

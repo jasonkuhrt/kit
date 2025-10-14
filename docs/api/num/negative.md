@@ -27,37 +27,43 @@ Num.Negative.someFunction()
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
 
 ```typescript
-(value: unknown) => value is Negative
+(value: unknown): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/negative/negative.ts#L16" />
 
-Type predicate to check if value is negative ( 0).
+Type predicate to check if value is negative (
+
+0).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
 
 ```typescript
-;((value: number) => Negative)
+(value: number): Negative
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/negative/negative.ts#L24" />
 
-Construct a Negative number. Throws if the value is not negative.
+Construct a Negative number.
+
+Throws if the value is not negative.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
 ```typescript
-;((value: number) => Negative | null)
+(value: number): Negative | null
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/negative/negative.ts#L35" />
 
-Try to construct a Negative number. Returns null if the value is not negative.
+Try to construct a Negative number.
+
+Returns null if the value is not negative.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `negate`
 
 ```typescript
-;((value: number) => Negative)
+(value: number): Negative
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/negative/negative.ts#L42" />
@@ -74,4 +80,6 @@ type Negative = number & { [NegativeBrand]: true }
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/negative/negative.ts#L11" />
 
-Negative number ( 0).
+Negative number (
+
+0).

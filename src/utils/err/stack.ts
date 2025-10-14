@@ -86,7 +86,7 @@ export interface StackFrame {
  * @category Stack Traces
  */
 export const parseStack = (stack: string): StackFrame[] => {
-  const lines = Str.lines(stack)
+  const lines = Str.Text.lines(stack)
   const frames: StackFrame[] = []
 
   // Skip first line (error message)
@@ -285,7 +285,8 @@ export const cleanStackWithStats = (stack: string, options?: StackOptions): Clea
   }
 
   // Limit frames
-  const beforeTruncation = filteredFrames.length
+  // const beforeTruncation = filteredFrames.length
+
   if (opts.maxFrames > 0 && filteredFrames.length > opts.maxFrames) {
     filteredFrames = filteredFrames.slice(0, opts.maxFrames)
     stats.wasTruncated = true
@@ -296,7 +297,7 @@ export const cleanStackWithStats = (stack: string, options?: StackOptions): Clea
   const cleanedLines = filteredFrames.map(frame => frame.raw)
 
   // Get the error message (first line)
-  const firstLine = Str.lines(stack)[0] || 'Error'
+  const firstLine = Str.Text.lines(stack)[0] || 'Error'
 
   return {
     stack: [firstLine, ...cleanedLines].join('\n'),
@@ -400,8 +401,8 @@ export const mergeStacks = (wrapper: Error, cause: Error): string => {
   })
 
   // Get error messages
-  const wrapperMessage = Str.lines(wrapper.stack)[0]!
-  const causeMessage = Str.lines(cause.stack)[0]!
+  const wrapperMessage = Str.Text.lines(wrapper.stack)[0]!
+  const causeMessage = Str.Text.lines(cause.stack)[0]!
 
   // Build merged stack
   const frames = unique.map(frame => frame.raw)

@@ -3,7 +3,7 @@
  * A fraction represents a positive proper fraction where 0 < numerator < denominator.
  */
 
-import { Fn } from '#fn'
+import { CoreFn as Fn } from '#fn/core'
 import type { Int } from '../int/$$.js'
 import type { Natural } from '../natural/$$.js'
 import type { NonZero } from '../non-zero/$$.js'

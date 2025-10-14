@@ -1,6 +1,12 @@
 # Obj
 
-Object utilities for working with plain JavaScript objects. Provides type-safe utilities for object operations including property access, manipulation, merging, filtering, and transformations. Supports both value-level and type-level operations with strong type inference.
+Object utilities for working with plain JavaScript objects.
+
+Provides type-safe utilities for object operations including property access,
+
+manipulation, merging, filtering, and transformations. Supports both value-level
+
+and type-level operations with strong type inference.
 
 ## Import
 
@@ -16,20 +22,55 @@ import * as Obj from '@wollybeard/kit/obj'
 
 :::
 
+## Namespaces
+
+- [**`Union`**](/api/obj/union) - Union operations on objects.
+
+This module provides utilities for working with unions of object types,
+
+solving common TypeScript limitations when dealing with union types:
+
+-
+
+keyof (A | B)
+
+returns only common keys (intersection), not all keys (union)
+
+-
+
+(A | B)['key']
+
+returns
+
+any
+
+for keys not in all members
+
+- No built-in way to merge union members while preserving value unions per key
+
+These utilities use distributive conditional types to properly handle each
+
+union member separately, then combine the results.
+
 ## Access
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getWith`
 
 ```typescript
-;(<pathInput extends PropertyPathInput>(pathInput: pathInput) =>
-<obj extends InferShapeFromPropertyPath<normalizePropertyPathInput<pathInput>>>(
-  obj: obj,
-) => getWith<normalizePropertyPathInput<pathInput>, obj>)
+<pathInput extends PropertyPathInput>(pathInput: pathInput): <obj extends InferShapeFromPropertyPath<normalizePropertyPathInput<pathInput>>>(obj: obj) => getWith<normalizePropertyPathInput<pathInput>, obj>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L63" />
 
-Create a getter function for a specific property path. Returns a function that extracts the value at that path from any compatible object.
+**Parameters:**
+
+- `pathInput` - A dot-notation string or array of property names
+
+**Returns:** A function that extracts the value at the specified path
+
+Create a getter function for a specific property path.
+
+Returns a function that extracts the value at that path from any compatible object.
 
 **Examples:**
 
@@ -37,7 +78,6 @@ Create a getter function for a specific property path. Returns a function that e
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:getWith:1]
 const getCityName = Obj.getWith('address.city')
 getCityName({ address: { city: 'NYC' } }) // 'NYC'
 getCityName({ address: { city: 'LA' } }) // 'LA'
@@ -48,7 +88,6 @@ getCityName({ address: { city: 'LA' } }) // 'LA'
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Type-safe property access
-// [!code word:getWith:1]
 const getAge = Obj.getWith(['user', 'profile', 'age'])
 const data = { user: { profile: { age: 30 } } }
 const age = getAge(data) // number
@@ -63,20 +102,32 @@ const users = [
   { name: 'Alice', score: 95 },
   { name: 'Bob', score: 87 },
 ]
-// [!code word:map:1]
-// [!code word:getWith:1]
 users.map(Obj.getWith('score')) // [95, 87]
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getOn`
 
 ```typescript
-;((obj: object) => (pathInput: PropertyPathInput) => unknown)
+(obj: object): (pathInput: PropertyPathInput) => unknown
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L122" />
 
-Create a getter function bound to a specific object. Returns a function that can extract values from that object using any property path. Inverse parameter order of getWith.
+**Parameters:**
+
+- `obj` - The object to extract values from
+
+**Returns:** A function that accepts a property path and returns the value at that path
+
+Create a getter function bound to a specific object.
+
+Returns a function that can extract values from that object using any property path.
+
+Inverse parameter order of
+
+getWith
+
+.
 
 **Examples:**
 
@@ -89,7 +140,6 @@ const user = {
   address: { city: 'NYC', zip: '10001' },
 }
 
-// [!code word:getOn:1]
 const getUserProp = Obj.getOn(user)
 getUserProp('name') // 'Alice'
 getUserProp('address.city') // 'NYC'
@@ -102,7 +152,6 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Useful for extracting multiple properties
 const config = { api: { url: 'https://api.com', key: 'secret' } }
-// [!code word:getOn:1]
 const getConfig = Obj.getOn(config)
 
 const apiUrl = getConfig('api.url')
@@ -112,12 +161,20 @@ const apiKey = getConfig('api.key')
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `entries`
 
 ```typescript
-<obj extends Any>(obj: obj) => { [K in keyof obj] -?: undefined extends obj[K] ? {} extends Pick<obj, K> ? [K, Exclude<obj[K]>] : [K, obj[K]] : [K, obj[K]]; }[keyof obj][]
+<obj extends Any>(obj: obj): { [K in keyof obj]-?: undefined extends obj[K] ? {} extends Pick<obj, K> ? [K, Exclude<obj[K]>] : [K, obj[K]] : [K, obj[K]]; }[keyof obj][]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L156" />
 
-Get an array of key-value pairs from an object. Preserves exact types including optional properties and undefined values.
+**Parameters:**
+
+- `obj` - The object to extract entries from
+
+**Returns:** An array of tuples containing [key, value] pairs
+
+Get an array of key-value pairs from an object.
+
+Preserves exact types including optional properties and undefined values.
 
 **Examples:**
 
@@ -125,7 +182,6 @@ Get an array of key-value pairs from an object. Preserves exact types including 
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:entries:1]
 Obj.entries({ a: 1, b: 'hello', c: true })
 // Returns: [['a', 1], ['b', 'hello'], ['c', true]]
 ```
@@ -135,7 +191,6 @@ Obj.entries({ a: 1, b: 'hello', c: true })
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Handles optional properties and undefined values
-// [!code word:entries:1]
 Obj.entries({ a: 1, b?: 2, c: undefined })
 // Returns proper types preserving optionality
 ```
@@ -143,10 +198,16 @@ Obj.entries({ a: 1, b?: 2, c: undefined })
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `stringKeyEntries`
 
 ```typescript
-<$T extends object>(obj: $T) => [string & keyof $T, $T[keyof $T]][]
+<$T extends object>(obj: $T): [string & keyof $T, $T[keyof $T]][]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L183" />
+
+**Parameters:**
+
+- `obj` - The object to extract entries from
+
+**Returns:** An array of [key, value] tuples where keys are strings
 
 Get entries from an object with string keys only.
 
@@ -157,17 +218,22 @@ Get entries from an object with string keys only.
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const obj = { a: 1, b: 2 }
-// [!code word:stringKeyEntries:1]
 Obj.stringKeyEntries(obj) // [['a', 1], ['b', 2]]
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `entriesStrict`
 
 ```typescript
-<$T extends object>(obj: $T) => { [k in keyof $T]: [k, Exclude<$T[k], undefined>]; }[keyof $T][]
+<$T extends object>(obj: $T): { [k in keyof $T]: [k, Exclude<$T[k], undefined>]; }[keyof $T][]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L200" />
+
+**Parameters:**
+
+- `obj` - The object to extract entries from
+
+**Returns:** An array of [key, value] tuples excluding undefined values
 
 Get entries from an object excluding undefined values.
 
@@ -178,19 +244,26 @@ Get entries from an object excluding undefined values.
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const obj = { a: 1, b: undefined, c: 2 }
-// [!code word:entriesStrict:1]
 Obj.entriesStrict(obj) // [['a', 1], ['c', 2]]
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `keysStrict`
 
 ```typescript
-<$T extends object>(obj: $T) => (keyof $T)[]
+<$T extends object>(obj: $T): (keyof $T)[]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L222" />
 
-Get keys from an object with proper type inference. Type-safe version of Object.keys.
+**Parameters:**
+
+- `obj` - The object to extract keys from
+
+**Returns:** An array of keys
+
+Get keys from an object with proper type inference.
+
+Type-safe version of Object.keys.
 
 **Examples:**
 
@@ -199,17 +272,22 @@ Get keys from an object with proper type inference. Type-safe version of Object.
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const obj = { a: 1, b: 2 }
-// [!code word:keysStrict:1]
 Obj.keysStrict(obj) // ['a', 'b'] with type ('a' | 'b')[]
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getRandomly`
 
 ```typescript
-<obj extends Any>(obj: obj) => keyof obj extends never ? undefined : obj[keyof obj]
+<obj extends Any>(obj: obj): keyof obj extends never ? undefined : obj[keyof obj]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L241" />
+
+**Parameters:**
+
+- `obj` - The object to get a random value from
+
+**Returns:** A random value from the object, or undefined for empty objects
 
 Get a random property value from an object
 
@@ -219,21 +297,25 @@ Get a random property value from an object
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:getRandomly:1]
 Obj.getRandomly({ a: 1, b: 2, c: 3 }) // Could return 1, 2, or 3
-// [!code word:getRandomly:1]
 Obj.getRandomly({ a: 1, b: undefined }) // Could return 1 or undefined
-// [!code word:getRandomly:1]
 Obj.getRandomly({}) // Returns undefined
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getValueAtPath`
 
 ```typescript
-;(<$T, ___Path extends readonly string[]>(obj: $T, path: ___Path) => any)
+<$T, ___Path extends readonly string[]>(obj: $T, path: ___Path): any
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L270" />
+
+**Parameters:**
+
+- `obj` - The object to traverse
+- `path` - Array of property names representing the path
+
+**Returns:** The value at the path, or undefined if not found
 
 Get a value at a path in an object.
 
@@ -244,21 +326,27 @@ Get a value at a path in an object.
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const obj = { a: { b: { c: 42 } } }
-// [!code word:getValueAtPath:1]
 Obj.getValueAtPath(obj, ['a', 'b', 'c']) // 42
-// [!code word:getValueAtPath:1]
 Obj.getValueAtPath(obj, ['a', 'x']) // undefined
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `values`
 
 ```typescript
-;(<$T extends object>(obj: $T) => values<$T>)
+<$T extends object>(obj: $T): values<$T>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L300" />
 
-Get an array of values from an object. Type-safe version of Object.values.
+**Parameters:**
+
+- `obj` - The object to extract values from
+
+**Returns:** An array of values
+
+Get an array of values from an object.
+
+Type-safe version of Object.values.
 
 **Examples:**
 
@@ -267,7 +355,6 @@ Get an array of values from an object. Type-safe version of Object.values.
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const obj = { a: 1, b: 'hello', c: true }
-// [!code word:values:1]
 Obj.values(obj) // [1, 'hello', true] with type (string | number | boolean)[]
 ```
 
@@ -276,11 +363,17 @@ Obj.values(obj) // [1, 'hello', true] with type (string | number | boolean)[]
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pick`
 
 ```typescript
-;(<T extends object, K extends keyof T>(obj: T, keys: readonly K[]) =>
-  Pick<T, K>)
+<T extends object, K extends keyof T>(obj: T, keys: readonly K[]): Pick<T, K>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L45" />
+
+**Parameters:**
+
+- `obj` - The object to pick properties from
+- `keys` - Array of property keys to include
+
+**Returns:** A new object containing only the specified properties
 
 Create a new object with only the specified properties.
 
@@ -291,7 +384,6 @@ Create a new object with only the specified properties.
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const user = { name: 'Alice', age: 30, email: 'alice@example.com' }
-// [!code word:pick:1]
 const publicInfo = Obj.pick(user, ['name', 'email'])
 // Result: { name: 'Alice', email: 'alice@example.com' }
 ```
@@ -309,7 +401,6 @@ interface User {
 }
 
 function getPublicUser(user: User) {
-  // [!code word:pick:1]
   return Obj.pick(user, ['id', 'name', 'email'])
   // Type: Pick<User, 'id' | 'name' | 'email'>
 }
@@ -318,11 +409,17 @@ function getPublicUser(user: User) {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `omit`
 
 ```typescript
-;(<T extends object, K extends keyof T>(obj: T, keys: readonly K[]) =>
-  Omit<T, K>)
+<T extends object, K extends keyof T>(obj: T, keys: readonly K[]): Omit<T, K>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L84" />
+
+**Parameters:**
+
+- `obj` - The object to omit properties from
+- `keys` - Array of property keys to exclude
+
+**Returns:** A new object without the specified properties
 
 Create a new object with the specified properties removed.
 
@@ -333,7 +430,6 @@ Create a new object with the specified properties removed.
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const user = { name: 'Alice', age: 30, password: 'secret' }
-// [!code word:omit:1]
 const safeUser = Obj.omit(user, ['password'])
 // Result: { name: 'Alice', age: 30 }
 ```
@@ -351,7 +447,6 @@ interface User {
 }
 
 function sanitizeUser(user: User) {
-  // [!code word:omit:1]
   return Obj.omit(user, ['password', 'apiKey'])
   // Type: Omit<User, 'password' | 'apiKey'>
 }
@@ -360,15 +455,18 @@ function sanitizeUser(user: User) {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `policyFilter`
 
 ```typescript
-;(<
-  $Object extends object,
-  $Key extends Keyof<$Object>,
-  $Mode extends 'allow' | 'deny',
->(mode: $Mode, obj: $Object, keys: readonly $Key[]) =>
-  PolicyFilter<$Object, $Key, $Mode>)
+<$Object extends object, $Key extends Keyof<$Object>, $Mode extends 'allow' | 'deny'>(mode: $Mode, obj: $Object, keys: readonly $Key[]): PolicyFilter<$Object, $Key, $Mode>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L112" />
+
+**Parameters:**
+
+- `mode` - 'allow' to keep only specified keys, 'deny' to remove specified keys
+- `obj` - The object to filter
+- `keys` - The keys to process
+
+**Returns:** A filtered object with proper type inference
 
 Filter object properties based on a policy mode and set of keys.
 
@@ -381,28 +479,26 @@ import { Obj } from '@wollybeard/kit/obj'
 const obj = { a: 1, b: 2, c: 3 }
 
 // Allow mode: keep only 'a' and 'c'
-// [!code word:policyFilter:1]
 Obj.policyFilter('allow', obj, ['a', 'c']) // { a: 1, c: 3 }
 
 // Deny mode: remove 'a' and 'c'
-// [!code word:policyFilter:1]
 Obj.policyFilter('deny', obj, ['a', 'c']) // { b: 2 }
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `filter`
 
 ```typescript
-;(<$Object extends object>(
-  obj: $Object,
-  predicate: (
-    key: keyof $Object,
-    value: $Object[keyof $Object],
-    obj: $Object,
-  ) => boolean,
-) => Partial<$Object>)
+<$Object extends object>(obj: $Object, predicate: (key: keyof $Object, value: $Object[keyof $Object], obj: $Object) => boolean): Partial<$Object>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L157" />
+
+**Parameters:**
+
+- `obj` - The object to filter
+- `predicate` - Function that returns true to keep a key/value pair
+
+**Returns:** A new object with only the key/value pairs where predicate returned true
 
 Filter an object using a predicate function.
 
@@ -413,25 +509,72 @@ Filter an object using a predicate function.
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const obj = { a: 1, b: 2, c: 3 }
-// [!code word:filter:1]
 Obj.filter(obj, (k, v) => v > 1) // { b: 2, c: 3 }
-// [!code word:filter:1]
 Obj.filter(obj, k => k !== 'b') // { a: 1, c: 3 }
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `omitUndefined`
+
+```typescript
+<$Object extends Record<string, unknown>>(obj: $Object): $Object
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L196" />
+
+**Parameters:**
+
+- `obj` - The object to filter
+
+**Returns:** A new object without properties that had
+
+undefined
+
+values
+
+Remove all properties with
+
+undefined
+
+values from an object.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+const obj = { a: 1, b: undefined, c: 'hello', d: undefined }
+Obj.omitUndefined(obj) // { a: 1, c: 'hello' }
+```
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+// Useful for cleaning up optional parameters
+const config = {
+  host: 'localhost',
+  port: options.port, // might be undefined
+  timeout: options.timeout, // might be undefined
+}
+const cleanConfig = Obj.omitUndefined(config)
+// Only includes properties that have actual values
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `partition`
 
 ```typescript
-;(<$Object extends object, $Key extends keyof $Object>(
-  obj: $Object,
-  pickedKeys: readonly $Key[],
-) => {
-  omitted: Omit<$Object, $Key>
-  picked: Pick<$Object, $Key>
-})
+<$Object extends object, $Key extends keyof $Object>(obj: $Object, pickedKeys: readonly $Key[]): { omitted: Omit<$Object, $Key>; picked: Pick<$Object, $Key>; }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L187" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L217" />
+
+**Parameters:**
+
+- `obj` - The object to partition
+- `pickedKeys` - The keys to pick
+
+**Returns:** An object with picked and omitted properties
 
 Partition an object into picked and omitted parts.
 
@@ -442,7 +585,6 @@ Partition an object into picked and omitted parts.
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const obj = { a: 1, b: 2, c: 3 }
-// [!code word:partition:1]
 const { picked, omitted } = Obj.partition(obj, ['a', 'c'])
 // picked: { a: 1, c: 3 }
 // omitted: { b: 2 }
@@ -451,12 +593,21 @@ const { picked, omitted } = Obj.partition(obj, ['a', 'c'])
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pickMatching`
 
 ```typescript
-;(<T extends object>(obj: T, predicate: (key: string) => boolean) => Partial<T>)
+<T extends object>(obj: T, predicate: (key: string) => boolean): Partial<T>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L226" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L256" />
 
-Filter object properties by key pattern matching. Useful for extracting properties that match a pattern like data attributes.
+**Parameters:**
+
+- `obj` - The object to filter
+- `predicate` - Function that returns true to keep a key
+
+**Returns:** A new object with only the key/value pairs where key predicate returned true
+
+Filter object properties by key pattern matching.
+
+Useful for extracting properties that match a pattern like data attributes.
 
 **Examples:**
 
@@ -470,8 +621,6 @@ const props = {
   onClick: fn,
   className: 'btn',
 }
-// [!code word:pickMatching:1]
-// [!code word:startsWith:1]
 const dataAttrs = Obj.pickMatching(props, key => key.startsWith('data-'))
 // Result: { 'data-type': 'button', 'data-current': true }
 ```
@@ -481,13 +630,20 @@ const dataAttrs = Obj.pickMatching(props, key => key.startsWith('data-'))
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mergeWith`
 
 ```typescript
-;((mergers?: MergeOptions | undefined) =>
-<obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2) => obj1 & obj2)
+(mergers?: MergeOptions | undefined): <obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2) => obj1 & obj2
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L43" />
 
-Create a customized merge function with specific merge behavior options. Allows control over how undefined values, defaults, and arrays are handled.
+**Parameters:**
+
+- `mergers` - Options to customize merge behavior
+
+**Returns:** A merge function with the specified behavior
+
+Create a customized merge function with specific merge behavior options.
+
+Allows control over how undefined values, defaults, and arrays are handled.
 
 **Examples:**
 
@@ -496,7 +652,6 @@ Create a customized merge function with specific merge behavior options. Allows 
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Create a merger that ignores undefined values
-// [!code word:mergeWith:1]
 const mergeIgnoreUndefined = Obj.mergeWith({ undefined: false })
 mergeIgnoreUndefined({ a: 1 }, { a: undefined, b: 2 })
 // Returns: { a: 1, b: 2 }
@@ -507,9 +662,7 @@ mergeIgnoreUndefined({ a: 1 }, { a: undefined, b: 2 })
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Create a merger that concatenates arrays
-// [!code word:mergeWith:1]
 const mergeArrays = Obj.mergeWith({
-  // [!code word:push:1]
   array: (a, b) => {
     a.push(...b)
   },
@@ -526,7 +679,9 @@ mergeArrays({ items: [1, 2] }, { items: [3, 4] })
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L81" />
 
-Deep merge two objects, with properties from the second object overwriting the first. Recursively merges nested objects, but arrays and other non-object values are replaced.
+Deep merge two objects, with properties from the second object overwriting the first.
+
+Recursively merges nested objects, but arrays and other non-object values are replaced.
 
 **Examples:**
 
@@ -534,7 +689,6 @@ Deep merge two objects, with properties from the second object overwriting the f
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:merge:1]
 Obj.merge({ a: 1, b: 2 }, { b: 3, c: 4 })
 // Returns: { a: 1, b: 3, c: 4 }
 ```
@@ -544,7 +698,6 @@ Obj.merge({ a: 1, b: 2 }, { b: 3, c: 4 })
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Deep merging of nested objects
-// [!code word:merge:1]
 Obj.merge(
   { user: { name: 'Alice', age: 30 } },
   { user: { age: 31, city: 'NYC' } },
@@ -557,7 +710,6 @@ Obj.merge(
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Arrays are replaced, not merged
-// [!code word:merge:1]
 Obj.merge({ tags: ['a', 'b'] }, { tags: ['c', 'd'] })
 // Returns: { tags: ['c', 'd'] }
 ```
@@ -570,7 +722,9 @@ Obj.merge({ tags: ['a', 'b'] }, { tags: ['c', 'd'] })
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L108" />
 
-Deep merge two objects with special handling for arrays. When both objects have an array at the same path, concatenates them instead of replacing.
+Deep merge two objects with special handling for arrays.
+
+When both objects have an array at the same path, concatenates them instead of replacing.
 
 **Examples:**
 
@@ -578,7 +732,6 @@ Deep merge two objects with special handling for arrays. When both objects have 
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:mergeWithArrayPush:1]
 Obj.mergeWithArrayPush(
   { tags: ['react', 'typescript'] },
   { tags: ['nodejs', 'express'] },
@@ -591,7 +744,6 @@ Obj.mergeWithArrayPush(
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Works with nested arrays
-// [!code word:mergeWithArrayPush:1]
 Obj.mergeWithArrayPush(
   { user: { skills: ['js'] } },
   { user: { skills: ['ts'] } },
@@ -607,7 +759,9 @@ Obj.mergeWithArrayPush(
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L139" />
 
-Deep merge two objects with array concatenation and deduplication. When both objects have an array at the same path, concatenates and removes duplicates.
+Deep merge two objects with array concatenation and deduplication.
+
+When both objects have an array at the same path, concatenates and removes duplicates.
 
 **Examples:**
 
@@ -615,7 +769,6 @@ Deep merge two objects with array concatenation and deduplication. When both obj
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:mergeWithArrayPushDedupe:1]
 Obj.mergeWithArrayPushDedupe(
   { tags: ['react', 'vue', 'react'] },
   { tags: ['react', 'angular'] },
@@ -628,7 +781,6 @@ Obj.mergeWithArrayPushDedupe(
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Preserves order with first occurrence kept
-// [!code word:mergeWithArrayPushDedupe:1]
 Obj.mergeWithArrayPushDedupe(
   { ids: [1, 2, 3] },
   { ids: [3, 4, 2, 5] },
@@ -639,12 +791,14 @@ Obj.mergeWithArrayPushDedupe(
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mergeDefaults`
 
 ```typescript
-<obj1 extends Any, obj1Defaults extends Partial<obj1>>(obj1: obj1, obj1Defaults: obj1Defaults) => { [_ in keyof(obj1 & obj1Defaults)]: (obj1 & obj1Defaults)[_]; }
+<obj1 extends Any, obj1Defaults extends Partial<obj1>>(obj1: obj1, obj1Defaults: obj1Defaults) => { [_ in keyof (obj1 & obj1Defaults)]: (obj1 & obj1Defaults)[_]; }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L175" />
 
-Merge default values into an object, only filling in missing properties. Existing properties in the base object are preserved, even if undefined.
+Merge default values into an object, only filling in missing properties.
+
+Existing properties in the base object are preserved, even if undefined.
 
 **Examples:**
 
@@ -652,7 +806,6 @@ Merge default values into an object, only filling in missing properties. Existin
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:mergeDefaults:1]
 Obj.mergeDefaults(
   { name: 'Alice', age: undefined },
   { name: 'Unknown', age: 0, city: 'NYC' },
@@ -668,7 +821,6 @@ import { Obj } from '@wollybeard/kit/obj'
 // Useful for configuration objects
 const config = { port: 3000 }
 const defaults = { port: 8080, host: 'localhost', debug: false }
-// [!code word:mergeDefaults:1]
 Obj.mergeDefaults(config, defaults)
 // Returns: { port: 3000, host: 'localhost', debug: false }
 ```
@@ -676,15 +828,21 @@ Obj.mergeDefaults(config, defaults)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `shallowMergeDefaults`
 
 ```typescript
-;(<$Defaults extends object, $Input extends object>(
-  defaults: $Defaults,
-  input: $Input,
-) => $Defaults & $Input)
+<$Defaults extends object, $Input extends object>(defaults: $Defaults, input: $Input): $Defaults & $Input
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L199" />
 
-Shallow merge two objects with later values overriding earlier ones. Useful for providing defaults that can be overridden.
+**Parameters:**
+
+- `defaults` - The default values
+- `input` - The input values that override defaults
+
+**Returns:** Merged object
+
+Shallow merge two objects with later values overriding earlier ones.
+
+Useful for providing defaults that can be overridden.
 
 **Examples:**
 
@@ -694,21 +852,28 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const defaults = { a: 1, b: 2, c: 3 }
 const input = { b: 20 }
-// [!code word:shallowMergeDefaults:1]
 Obj.shallowMergeDefaults(defaults, input) // { a: 1, b: 20, c: 3 }
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `spreadShallow`
 
 ```typescript
-;(<$Objects extends readonly (object | undefined)[]>(
-  ...objects: $Objects
-) => {})
+<$Objects extends readonly (object | undefined)[]>(...objects?: $Objects): {}
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L234" />
 
-Shallow merge objects while omitting undefined values. Simplifies the common pattern of conditionally spreading objects to avoid including undefined values that would override existing values.
+**Parameters:**
+
+- `objects` - Objects to merge (later objects override earlier ones). Undefined objects are ignored.
+
+**Returns:** Merged object with undefined values omitted
+
+Shallow merge objects while omitting undefined values.
+
+Simplifies the common pattern of conditionally spreading objects
+
+to avoid including undefined values that would override existing values.
 
 **Examples:**
 
@@ -724,7 +889,6 @@ const config = {
 }
 
 // Use:
-// [!code word:spreadShallow:1]
 const config = Obj.spreadShallow(
   defaultConfig,
   userConfig,
@@ -738,13 +902,20 @@ const config = Obj.spreadShallow(
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `normalizePropertyPathInput`
 
 ```typescript
-;(<pathInput extends PropertyPathInput>(pathInput: pathInput) =>
-  normalizePropertyPathInput<pathInput>)
+<pathInput extends PropertyPathInput>(pathInput: pathInput): normalizePropertyPathInput<pathInput>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L31" />
 
-Normalize a property path input to a consistent array format. Accepts either a dot-notation string or an array of property names.
+**Parameters:**
+
+- `pathInput` - Either a dot-notation string or array of property names
+
+**Returns:** An array of property names representing the path
+
+Normalize a property path input to a consistent array format.
+
+Accepts either a dot-notation string or an array of property names.
 
 **Examples:**
 
@@ -752,7 +923,6 @@ Normalize a property path input to a consistent array format. Accepts either a d
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:normalizePropertyPathInput:1]
 Obj.normalizePropertyPathInput('user.address.city')
 // Returns: ['user', 'address', 'city']
 ```
@@ -761,7 +931,6 @@ Obj.normalizePropertyPathInput('user.address.city')
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:normalizePropertyPathInput:1]
 Obj.normalizePropertyPathInput(['user', 'address', 'city'])
 // Returns: ['user', 'address', 'city'] (unchanged)
 ```
@@ -783,7 +952,6 @@ Parse a dot-notation property path expression into an array of property names.
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:parsePropertyPathExpression:1]
 Obj.parsePropertyPathExpression('user.name')
 // Returns: ['user', 'name']
 ```
@@ -792,7 +960,6 @@ Obj.parsePropertyPathExpression('user.name')
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:parsePropertyPathExpression:1]
 Obj.parsePropertyPathExpression('config.server.port')
 // Returns: ['config', 'server', 'port']
 ```
@@ -801,7 +968,6 @@ Obj.parsePropertyPathExpression('config.server.port')
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:parsePropertyPathExpression:1]
 Obj.parsePropertyPathExpression('singleProperty')
 // Returns: ['singleProperty']
 ```
@@ -811,10 +977,16 @@ Obj.parsePropertyPathExpression('singleProperty')
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `hasNonUndefinedKeys`
 
 ```typescript
-;((object: object) => boolean)
+(object: object): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L179" />
+
+**Parameters:**
+
+- `object` - The object to check
+
+**Returns:** True if at least one value is not undefined
 
 Check if an object has any non-undefined values.
 
@@ -824,23 +996,30 @@ Check if an object has any non-undefined values.
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:hasNonUndefinedKeys:1]
 Obj.hasNonUndefinedKeys({ a: undefined, b: undefined }) // false
-// [!code word:hasNonUndefinedKeys:1]
 Obj.hasNonUndefinedKeys({ a: undefined, b: 1 }) // true
-// [!code word:hasNonUndefinedKeys:1]
 Obj.hasNonUndefinedKeys({}) // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `empty`
 
 ```typescript
-;(() => Empty)
+(): Empty
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L56" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L87" />
 
-Create an empty object with proper type. Returns a frozen empty object typed as Empty.
+**Returns:** An empty object with type
+
+Record<string, never>
+
+Create an empty object with proper type.
+
+Returns a frozen empty object typed as
+
+Empty
+
+.
 
 **Examples:**
 
@@ -848,7 +1027,6 @@ Create an empty object with proper type. Returns a frozen empty object typed as 
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:empty:1]
 const opts = options ?? Obj.empty()
 ```
 
@@ -857,7 +1035,6 @@ const opts = options ?? Obj.empty()
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Type is properly inferred as Empty
-// [!code word:empty:1]
 const emptyObj = Obj.empty()
 type T = typeof emptyObj // Record<string, never>
 ```
@@ -865,10 +1042,16 @@ type T = typeof emptyObj // Record<string, never>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isEmpty`
 
 ```typescript
-;((obj: object) => boolean)
+(obj: object): boolean
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L164" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L195" />
+
+**Parameters:**
+
+- `obj` - The object to check
+
+**Returns:** True if the object has no enumerable properties
 
 Check if an object has no enumerable properties.
 
@@ -878,9 +1061,7 @@ Check if an object has no enumerable properties.
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// [!code word:isEmpty:1]
 Obj.isEmpty({}) // true
-// [!code word:isEmpty:1]
 Obj.isEmpty({ a: 1 }) // false
 ```
 
@@ -890,21 +1071,27 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Non-enumerable properties are ignored
 const obj = {}
-// [!code word:defineProperty:1]
 Object.defineProperty(obj, 'hidden', { value: 1, enumerable: false })
-// [!code word:isEmpty:1]
 Obj.isEmpty(obj) // true - non-enumerable properties are ignored
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isEmpty$`
 
 ```typescript
-<$T extends object>(obj: $T) => obj is $T & Empty
+<$T extends object>(obj: $T): boolean
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L197" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L228" />
 
-Type predicate that checks if an object has no enumerable properties. Narrows the type to an empty object type.
+**Parameters:**
+
+- `obj` - The object to check
+
+**Returns:** True if the object has no enumerable properties, with type narrowing to Empty
+
+Type predicate that checks if an object has no enumerable properties.
+
+Narrows the type to an empty object type.
 
 **Examples:**
 
@@ -937,12 +1124,24 @@ function processObject<T extends object>(obj: T) {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `assert`
 
 ```typescript
-function assert(value: unknown): void
+(value: unknown): void
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L34" />
 
-Assert that a value is an object. Throws a TypeError if the value is not an object (including null).
+**Parameters:**
+
+- `value` - The value to check
+
+**Throws:**
+
+- TypeError
+
+If the value is not an object
+
+Assert that a value is an object.
+
+Throws a TypeError if the value is not an object (including null).
 
 **Examples:**
 
@@ -951,11 +1150,8 @@ Assert that a value is an object. Throws a TypeError if the value is not an obje
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 function process(value: unknown) {
-  // [!code word:assert:1]
   Obj.assert(value)
   // value is now typed as object
-  // [!code word:log:1]
-  // [!code word:keys:1]
   console.log(Object.keys(value))
 }
 ```
@@ -963,12 +1159,24 @@ function process(value: unknown) {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isShape`
 
 ```typescript
-<type>(spec: Record<PropertyKey, "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function">) => (value: unknown) => value is type
+<type>(spec: Record<PropertyKey, "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function">): (value: unknown) => value is type
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L73" />
 
-Create a type predicate function that checks if a value matches a shape specification. Uses JavaScript's typeof operator to validate property types.
+**Parameters:**
+
+- `spec` - An object mapping property names to their expected typeof results
+
+**Returns:** A type predicate function that checks if a value matches the shape
+
+Create a type predicate function that checks if a value matches a shape specification.
+
+Uses JavaScript's
+
+typeof
+
+operator to validate property types.
 
 **Examples:**
 
@@ -1001,12 +1209,21 @@ const isCallback = isShape<{ fn: Function }>({
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `setPrivateState`
 
 ```typescript
-;(<obj extends Any>(obj: obj, value: object) => obj)
+<obj extends Any>(obj: obj, value: object): obj
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L116" />
 
-Attach private state to an object using a non-enumerable Symbol property. The state is immutable once set and cannot be discovered through enumeration.
+**Parameters:**
+
+- `obj` - The object to attach private state to
+- `value` - The state object to attach
+
+**Returns:** The original object with private state attached
+
+Attach private state to an object using a non-enumerable Symbol property.
+
+The state is immutable once set and cannot be discovered through enumeration.
 
 **Examples:**
 
@@ -1017,7 +1234,6 @@ import { Obj } from '@wollybeard/kit/obj'
 const user = { name: 'Alice' }
 const privateData = { password: 'secret123' }
 
-// [!code word:setPrivateState:1]
 Obj.setPrivateState(user, privateData)
 // user still appears as { name: 'Alice' } when logged
 // but has hidden private state accessible via getPrivateState
@@ -1029,10 +1245,8 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Useful for attaching metadata without polluting the object
 const config = { timeout: 5000 }
-// [!code word:setPrivateState:1]
 Obj.setPrivateState(config, {
   source: 'environment',
-  // [!code word:now:1]
   timestamp: Date.now(),
 })
 ```
@@ -1040,10 +1254,20 @@ Obj.setPrivateState(config, {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getPrivateState`
 
 ```typescript
-;(<state extends Any>(obj: object) => state)
+<state extends Any>(obj: object): state
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L159" />
+
+**Parameters:**
+
+- `obj` - The object to retrieve private state from
+
+**Returns:** The private state object
+
+**Throws:**
+
+- Error if no private state is found on the object
 
 Retrieve private state previously attached to an object with setPrivateState.
 
@@ -1057,8 +1281,6 @@ const user = { name: 'Alice' }
 setPrivateState(user, { role: 'admin' })
 
 const privateData = getPrivateState<{ role: string }>(user)
-// [!code word:log:1]
-// [!code word:role:1]
 console.log(privateData.role) // 'admin'
 ```
 
@@ -1073,7 +1295,6 @@ interface Metadata {
 }
 
 const doc = { title: 'Report' }
-// [!code word:now:1]
 setPrivateState(doc, { createdAt: Date.now(), createdBy: 'system' })
 
 const meta = getPrivateState<Metadata>(doc)
@@ -1090,9 +1311,13 @@ Eq<object>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/traits/eq.ts#L35" />
 
-Eq trait implementation for objects.
+Eq
 
-Provides deep structural equality for objects by recursively comparing properties using their appropriate Eq implementations.
+trait implementation for objects.
+
+Provides deep structural equality for objects by recursively
+
+comparing properties using their appropriate Eq implementations.
 
 **Examples:**
 
@@ -1101,22 +1326,17 @@ Provides deep structural equality for objects by recursively comparing propertie
 import { Obj } from '@wollybeard/kit'
 
 // Basic object equality
-// [!code word:is:1]
 Obj.Eq.is({ a: 1, b: 2 }, { a: 1, b: 2 }) // true
-// [!code word:is:1]
 Obj.Eq.is({ a: 1, b: 2 }, { a: 1, b: 3 }) // false
-// [!code word:is:1]
 Obj.Eq.is({ a: 1 }, { a: 1, b: 2 }) // false (different keys)
 
 // Nested objects
-// [!code word:is:1]
 Obj.Eq.is(
   { a: 1, b: { c: 2 } },
   { a: 1, b: { c: 2 } },
 ) // true
 
 // Mixed types in properties
-// [!code word:is:1]
 Obj.Eq.is(
   { a: 1, b: 'hello', c: true },
   { a: 1, b: 'hello', c: true },
@@ -1128,56 +1348,348 @@ Obj.Eq.is(
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapEntriesDeep`
 
 ```typescript
-;(<$value extends DeepObjectValue>(
-  value: $value,
-  visitor: (
-    key: string,
-    value: DeepObjectValue,
-  ) => { key: string; value: DeepObjectValue } | undefined,
-) => $value)
+<$value extends DeepObjectValue>(value: $value, visitor: (key: string, value: DeepObjectValue) => { key: string; value: DeepObjectValue; } | undefined): $value
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-entries-deep.ts#L43" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-entries-deep.ts#L132" />
 
-Recursively traverse a nested object structure and transform key-value pairs.
+**Parameters:**
 
-This utility applies a visitor function to every object entry in a deeply nested structure, allowing you to transform both keys and values. The visitor can return undefined to leave the entry unchanged, or return a new key, value pair to transform it.
+- `value` - The value to traverse (can be primitive, object, or array)
+- `visitor` - Function called for each object entry.
+
+      Return
+
+undefined
+
+to keep unchanged, or
+
+{key, value}
+
+to transform.
+
+**Returns:** A new structure with entry transformations applied
+
+Recursively traverse nested object structures and transform key-value pairs (entries).
+
+Performs **top-down traversal**: The visitor function is called for each object entry BEFORE
+
+recursing into the value's children. This allows transforming both keys and values while
+
+maintaining consistent traversal semantics with
+
+mapValuesDeep
+
+.
+
+#### Visitor Pattern
+
+The visitor receives both the key and value for each object entry:
+
+- **Return
+
+undefined
+
+**: Keep the entry unchanged and recurse into the value's children
+
+- **Return
+
+{key, value}
+
+**: Replace the entry and recurse into the NEW value's children
+
+**Note**: Unlike
+
+mapValuesDeep
+
+, this function does NOT support early exit.
+
+The visitor result is always recursed into, whether it's the original or transformed value.
+
+#### Features
+
+- **Key transformations**: Rename object keys throughout nested structures
+
+- **Value transformations**: Transform values based on their keys
+
+- **Combined transformations**: Change both key and value simultaneously
+
+- **Circular reference safe**: Automatically detects and marks circular references as
+
+'[Circular]'
+
+- **Type preservation**: Maintains array and object structures during traversal
+
+#### Common Use Cases
+
+- Normalizing key naming conventions (e.g., stripping prefixes, camelCase conversion)
+
+- Transforming values based on key patterns
+
+- Sanitizing or filtering object properties recursively
+
+- Renaming keys while preserving nested structure
+
+#### Comparison with mapValuesDeep
+
+Use **mapEntriesDeep** when you need to:
+
+- Transform object keys
+
+- Access both key and value in the visitor
+
+- Transform entries at the object level
+
+Use **
+
+mapValuesDeep
+
+** when you need to:
+
+- Only transform values (keys unchanged)
+
+- Early exit optimization (stop recursing after match)
+
+- Transform any value type (not just object entries)
 
 **Examples:**
 
-```typescript twoslash
-// @noErrors
-import { Obj } from '@wollybeard/kit/obj'
-// ---cut---
-// Strip dollar signs from all object keys
-// [!code word:mapEntriesDeep:1]
-Obj.mapEntriesDeep(data, (key, value) =>
-  // [!code word:startsWith:1]
-  // [!code word:slice:1]
-  key.startsWith('$') ? { key: key.slice(1), value } : undefined)
-```
+**Key normalization** - Strip prefix from keys:
 
 ```typescript twoslash
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-// Convert all string values to uppercase
-// [!code word:mapEntriesDeep:1]
-Obj.mapEntriesDeep(data, (key, value) =>
-  // [!code word:toUpperCase:1]
-  typeof value === 'string' ? { key, value: value.toUpperCase() } : undefined)
+const data = {
+  $name: 'Alice',
+  $age: 30,
+  $address: {
+    $city: 'NYC',
+    $zip: '10001',
+  },
+}
+
+Obj.mapEntriesDeep(
+  data,
+  (key, value) =>
+    key.startsWith('$') ? { key: key.slice(1), value } : undefined,
+)
+// { name: 'Alice', age: 30, address: { city: 'NYC', zip: '10001' } }
+```
+
+**Value transformation** - Uppercase all string values:
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+const data = {
+  name: 'alice',
+  location: {
+    city: 'nyc',
+    country: 'usa',
+  },
+}
+
+Obj.mapEntriesDeep(
+  data,
+  (key, value) =>
+    typeof value === 'string' ? { key, value: value.toUpperCase() } : undefined,
+)
+// { name: 'ALICE', location: { city: 'NYC', country: 'USA' } }
+```
+
+**Combined transformation** - Strip prefix AND uppercase string values:
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+Obj.mapEntriesDeep(data, (key, value) => {
+  if (key.startsWith('$')) {
+    const newKey = key.slice(1)
+    const newValue = typeof value === 'string' ? value.toUpperCase() : value
+    return { key: newKey, value: newValue }
+  }
+})
+```
+
+**Selective transformation** - Only transform specific keys:
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+Obj.mapEntriesDeep(data, (key, value) => {
+  if (key === 'password' || key === 'apiKey') {
+    return { key, value: '[REDACTED]' }
+  }
+})
+```
+
+**Works with arrays** - Transforms entries in nested arrays:
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+const users = [
+  { $id: 1, $name: 'Alice' },
+  { $id: 2, $name: 'Bob' },
+]
+
+Obj.mapEntriesDeep(
+  users,
+  (key, value) =>
+    key.startsWith('$') ? { key: key.slice(1), value } : undefined,
+)
+// [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapValuesDeep`
+
+```typescript
+(value: any, visitor: (value: any) => any, visited?: WeakSet<WeakKey> = new WeakSet()): any
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-values-deep.ts#L89" />
+
+**Parameters:**
+
+- `value` - Any value to traverse (primitive, object, or array)
+- `visitor` - Transformation function called for each value.
+
+      Return
+
+undefined
+
+to continue recursing, or any other value to replace and stop.
+
+**Returns:** Transformed structure with visitor transformations applied
+
+Recursively traverse and transform values in nested data structures with early exit optimization.
+
+Performs **top-down traversal**: The visitor function is called for each value BEFORE recursing
+
+into its children. This enables the visitor to transform a value and prevent further recursion,
+
+which is useful for replacing complex objects with primitives or handling special types.
+
+#### Early Exit Pattern
+
+The visitor function controls recursion through its return value:
+
+- **Return
+
+undefined
+
+**: Continue recursing into the original value's children
+
+- **Return any other value**: Use as replacement and STOP recursing into that branch
+
+#### Features
+
+- **Handles all structures**: Works with primitives, objects, arrays, and nested combinations
+
+- **Circular reference safe**: Automatically detects and marks circular references as
+
+'[Circular]'
+
+- **Type preservation**: Maintains array and object structures during traversal
+
+- **Performance**: Early exit allows stopping recursion when a match is found
+
+#### Common Use Cases
+
+- Encoding schema instances to primitives (e.g., for snapshots)
+
+- Replacing Error objects with error messages
+
+- Sanitizing sensitive data in nested structures
+
+- Truncating or formatting string values deeply
+
+- Converting special objects to JSON-serializable forms
+
+**Examples:**
+
+**Schema encoding** - Transform schema instances to encoded primitives:
+
+```typescript twoslash
+// @noErrors
+import { Schema as S } from 'effect'
+
+Obj.mapValuesDeep(testData, (v) => {
+  for (const schema of [FsLoc.FsLoc, User.User]) {
+    if (S.is(schema)(v)) {
+      return S.encodeSync(schema)(v) // Replace and stop recursing
+    }
+  }
+  // Return undefined to continue into children
+})
+// Before: { location: FsLocInstance { ... } }
+// After:  { location: './src/index.ts' }
+```
+
+**Error sanitization** - Replace Error objects with messages:
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+const data = {
+  result: 'success',
+  errors: [new Error('Failed'), new Error('Timeout')],
+  nested: { err: new Error('Deep error') },
+}
+
+Obj.mapValuesDeep(data, (v) => {
+  if (v instanceof Error) return v.message
+})
+// { result: 'success', errors: ['Failed', 'Timeout'], nested: { err: 'Deep error' } }
+```
+
+**String truncation** - Limit string lengths throughout a structure:
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+Obj.mapValuesDeep(data, (v) => {
+  if (typeof v === 'string' && v.length > 100) {
+    return v.slice(0, 100) + '...'
+  }
+})
+```
+
+**Conditional replacement** - Replace specific objects entirely:
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+Obj.mapValuesDeep(data, (v) => {
+  // Replace Buffer objects with their base64 representation
+  if (Buffer.isBuffer(v)) {
+    return v.toString('base64')
+  }
+})
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapValues`
 
 ```typescript
-;(<rec extends Record<PropertyKey, any>, newValue>(
-  obj: rec,
-  fn: (value: rec[keyof rec], key: keyof rec) => newValue,
-) => Record<keyof rec, newValue>)
+<rec extends Record<PropertyKey, any>, newValue>(obj: rec, fn: (value: rec[keyof rec], key: keyof rec) => newValue): Record<keyof rec, newValue>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/update.ts#L25" />
+
+**Parameters:**
+
+- `obj` - The object to map values from
+- `fn` - Function to transform each value, receives the value and key
+
+**Returns:** A new object with transformed values
 
 Create a new object with the same keys but with values transformed by a function.
 
@@ -1188,7 +1700,6 @@ Create a new object with the same keys but with values transformed by a function
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const prices = { apple: 1.5, banana: 0.75, orange: 2 }
-// [!code word:mapValues:1]
 const doublePrices = Obj.mapValues(prices, (price) => price * 2)
 // Result: { apple: 3, banana: 1.5, orange: 4 }
 ```
@@ -1199,7 +1710,6 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Using the key parameter
 const data = { a: 1, b: 2, c: 3 }
-// [!code word:mapValues:1]
 const withKeys = Obj.mapValues(data, (value, key) => `${key}: ${value}`)
 // Result: { a: 'a: 1', b: 'b: 2', c: 'c: 3' }
 ```
@@ -1213,9 +1723,11 @@ type Keyof<$Object extends object> = object extends $Object ? PropertyKey
   : (keyof $Object)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L255" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L285" />
 
-Like keyof but returns PropertyKey for object type. Helper type for generic object key operations.
+Like keyof but returns PropertyKey for object type.
+
+Helper type for generic object key operations.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PolicyFilter`
 
@@ -1228,7 +1740,7 @@ type PolicyFilter<
   : Omit<$Object, Extract<$Key, keyof $Object>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L275" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L305" />
 
 Filter object properties based on a policy mode and set of keys.
 
@@ -1256,7 +1768,7 @@ type PickWhereValueExtends<$Obj extends object, $Constraint> = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L295" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L325" />
 
 Pick properties from an object where the values extend a given constraint.
 
@@ -1279,7 +1791,7 @@ type SuffixKeyNames<$Suffix extends string, $Object extends object> = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L310" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L340" />
 
 Add a suffix to all property names in an object.
 
@@ -1302,7 +1814,7 @@ type OmitKeysWithPrefix<$Object extends object, $Prefix extends string> = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L325" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L355" />
 
 Omit all keys that start with a specific prefix.
 
@@ -1324,7 +1836,7 @@ type PickRequiredProperties<$T extends object> = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L339" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L369" />
 
 Pick only the required (non-optional) properties from an object.
 
@@ -1345,7 +1857,7 @@ type RequireProperties<$O extends object, $K extends keyof $O> = Ts.Simplify<
 >
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L354" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L384" />
 
 Make specific properties required in an object.
 
@@ -1367,7 +1879,7 @@ type PartialOrUndefined<$T> = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L367" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L397" />
 
 Make all properties optional and allow undefined values.
 
@@ -1391,7 +1903,7 @@ type PickOptionalPropertyOrFallback<
 > = {} extends Pick<$Object, $Property> ? $Object[$Property] : $Fallback
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L382" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L412" />
 
 Pick an optional property or use fallback if required.
 
@@ -1416,7 +1928,7 @@ type OnlyKeysInArray<
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L397" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L427" />
 
 Pick only the properties from an object that exist in a provided array of keys.
 
@@ -1571,7 +2083,9 @@ type PrimitiveFieldKeys<$T> = {
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L409" />
 
-Extract keys from an object type that have primitive values. Useful for serialization scenarios where only primitive values can be safely transferred.
+Extract keys from an object type that have primitive values.
+
+Useful for serialization scenarios where only primitive values can be safely transferred.
 
 **Examples:**
 
@@ -1603,7 +2117,9 @@ type MergeAllShallow<$Objects extends readonly object[]> = $Objects extends
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L287" />
 
-Recursively merge an array of objects using shallow merge semantics. Each object in the array overrides properties from previous objects.
+Recursively merge an array of objects using shallow merge semantics.
+
+Each object in the array overrides properties from previous objects.
 
 **Examples:**
 
@@ -1626,7 +2142,13 @@ type MergeAll<$Objects extends object[]> = $Objects extends
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L306" />
 
-Merge an array of object types into a single type using deep merge semantics. Uses TypeScript's intersection type (&) for merging.
+Merge an array of object types into a single type using deep merge semantics.
+
+Uses TypeScript's intersection type (
+
+&
+
+) for merging.
 
 **Examples:**
 
@@ -1671,7 +2193,9 @@ type Replace<$Object1, $Object2> = Omit<$Object1, keyof $Object2> & $Object2
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L341" />
 
-Replace properties in an object type with new types. Useful for overriding specific property types.
+Replace properties in an object type with new types.
+
+Useful for overriding specific property types.
 
 **Examples:**
 
@@ -1782,11 +2306,19 @@ type NoExcessNonEmpty<$Value extends object, $Constraint> =
     : NoExcess<$Constraint, $Value>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L129" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L160" />
 
-Like NoExcess but also requires the object to be non-empty.
+Like
 
-Enforces that: 1. Object has at least one property (not empty) 2. Object has no excess properties beyond the constraint
+NoExcess
+
+but also requires the object to be non-empty.
+
+Enforces that:
+
+1. Object has at least one property (not empty)
+
+2. Object has no excess properties beyond the constraint
 
 **Examples:**
 
@@ -1954,7 +2486,59 @@ type T1 = HasKey<{ a: string }, 'a'> // true
 type T2 = HasKey<{ a: string }, 'b'> // false
 ```
 
-## Type Utilities $Expected - The type defining allowed properties $Actual - The actual type to check for excess properties
+## Type Utilities
+
+$A - The object type to subtract from
+
+$B - The object type whose properties to remove
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SubtractShallow`
+
+```typescript
+type SubtractShallow<$A, $B> = Omit<$A, keyof $B>
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L65" />
+
+Subtract properties present in $B from $A (shallow operation).
+
+Returns a new object type containing only properties that exist in $A but not in $B.
+
+This is equivalent to
+
+Omit&lt;$A, keyof $B&gt;
+
+but expresses the operation as subtraction.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+type User = { name: string; age: number; email: string }
+type Public = { name: string; age: number }
+
+type Private = Obj.SubtractShallow<User, Public> // { email: string }
+type Same = Obj.SubtractShallow<User, User> // {}
+```
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+// Finding what's different between two object types
+type Config = { id: string; debug?: boolean }
+type Provided = { id: string; invalid: true; typo: string }
+
+type Extra = Obj.SubtractShallow<Provided, Config> // { invalid: true; typo: string }
+```
+
+## Type Utilities
+
+$Expected - The type defining allowed properties
+
+$Actual - The actual type to check for excess properties
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `NoExcess`
 
@@ -1964,11 +2548,19 @@ type NoExcess<$Expected, $Actual> =
   & Record<Exclude<keyof $Actual, keyof $Expected>, never>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L109" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L140" />
 
 Enforces that a type has no excess properties beyond those defined in the expected type.
 
-This utility intersects the actual type with a record that marks all excess keys as never, causing TypeScript to reject values with properties not present in the expected type. Particularly useful in generic contexts where excess property checking is bypassed.
+This utility intersects the actual type with a record that marks all excess keys as
+
+never
+
+,
+
+causing TypeScript to reject values with properties not present in the expected type.
+
+Particularly useful in generic contexts where excess property checking is bypassed.
 
 **Examples:**
 
@@ -2024,7 +2616,7 @@ type DeepObjectValue =
   | DeepObjectValue[]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-entries-deep.ts#L6" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-entries-deep.ts#L4" />
 
 A deep object value can be any JSON-serializable value including nested objects and arrays.
 
@@ -2034,7 +2626,7 @@ A deep object value can be any JSON-serializable value including nested objects 
 type DeepObject = { [key: string]: DeepObjectValue }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-entries-deep.ts#L11" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-entries-deep.ts#L9" />
 
 A deep object is a plain object with string keys and deep object values.
 
@@ -2109,7 +2701,9 @@ type PropertyPathInput = PropertyPathExpression | PropertyPath
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L52" />
 
-The separator character used in property path expressions. Used to split dot-notation paths like 'user.address.city'.
+The separator character used in property path expressions.
+
+Used to split dot-notation paths like 'user.address.city'.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `InferShapeFromPropertyPath`
 

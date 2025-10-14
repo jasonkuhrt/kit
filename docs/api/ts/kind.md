@@ -2,7 +2,11 @@
 
 _Ts_ / **Kind**
 
-Higher-kinded type utilities for TypeScript. Provides type-level functions and utilities for simulating higher-kinded types in TypeScript, enabling more advanced type-level programming patterns.
+Higher-kinded type utilities for TypeScript.
+
+Provides type-level functions and utilities for simulating higher-kinded
+
+types in TypeScript, enabling more advanced type-level programming patterns.
 
 ## Import
 
@@ -60,7 +64,9 @@ type Apply<$Kind, $Args> =
 
 Higher-kinded type utilities for TypeScript.
 
-Provides type-level functions and utilities for simulating higher-kinded types in TypeScript, enabling more advanced type-level programming patterns.
+Provides type-level functions and utilities for simulating higher-kinded
+
+types in TypeScript, enabling more advanced type-level programming patterns.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Kind`
 
@@ -75,7 +81,9 @@ interface Kind<$Params = unknown, $Return = unknown> {
 
 Define a kind (higher-kinded type) function interface.
 
-Provides a standard structure for defining type-level functions that can be applied using the Apply utility.
+Provides a standard structure for defining type-level functions
+
+that can be applied using the Apply utility.
 
 $Params
 
@@ -137,7 +145,9 @@ interface Identity extends Kind {
 
 Create a type-level identity function.
 
-Returns the input type unchanged. Useful as a default or placeholder in kind compositions.
+Returns the input type unchanged. Useful as a default or
+
+placeholder in kind compositions.
 
 **Examples:**
 
@@ -188,7 +198,9 @@ interface Private {
 
 Private kind interface using symbols instead of string keys.
 
-This provides a more secure way to define higher-kinded types as the symbols cannot be accessed outside the module.
+This provides a more secure way to define higher-kinded types
+
+as the symbols cannot be accessed outside the module.
 
 **Examples:**
 

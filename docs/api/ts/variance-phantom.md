@@ -1,6 +1,6 @@
-# Ts.Variance
+# Ts.VariancePhantom
 
-_Ts_ / **Variance**
+_Ts_ / **VariancePhantom**
 
 Phantom type helper that makes a type parameter covariant.
 
@@ -12,14 +12,14 @@ Phantom type helper that makes a type parameter covariant.
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Variance.someFunction()
+Ts.VariancePhantom.someFunction()
 ```
 
 ```typescript [Barrel]
 import * as Ts from '@wollybeard/kit/ts'
 
 // Access via namespace
-Ts.Variance.someFunction()
+Ts.VariancePhantom.someFunction()
 ```
 
 :::
@@ -32,7 +32,7 @@ Ts.Variance.someFunction()
 type Co<$T> = () => $T
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance.ts#L28" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L28" />
 
 Phantom type helper that makes a type parameter covariant.
 
@@ -59,7 +59,7 @@ narrow = wide // ❌ Error (number does not extend 1)
 type Contra<$T> = (value: $T) => void
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance.ts#L55" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L55" />
 
 Phantom type helper that makes a type parameter contravariant.
 
@@ -86,7 +86,7 @@ wide = narrow // ❌ Error
 type In<$T> = (value: $T) => $T
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance.ts#L77" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L77" />
 
 Phantom type helper that makes a type parameter invariant.
 
@@ -113,7 +113,7 @@ one = num // ❌ Error (no direction works)
 type Bi<$T> = { bivariantHack(value: $T): void }['bivariantHack']
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance.ts#L99" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L99" />
 
 Phantom type helper that makes a type parameter bivariant (unsafe).
 

@@ -1,4 +1,4 @@
-import { Fn } from '#fn'
+import { CoreFn as Fn } from '#fn/core'
 import ansis from 'ansis'
 import { Char } from './char/$.js'
 import { defaultPadCharacter, lines, unlines } from './text.js'

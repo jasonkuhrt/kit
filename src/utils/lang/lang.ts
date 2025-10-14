@@ -1,60 +1,18 @@
 import type { Prom } from '#prom'
 import * as fc from 'fast-check'
 
-// typeof
+// Import from core for local use and re-export
+import type {
+  Primitive,
+  TypeGuard,
+  TypeGuardImplementation,
+  TypeGuardImplementationInput,
+  TypeofTypes,
+} from './core/$$.js'
+import { typeGuard, TypeofTypesEnum } from './core/$$.js'
 
-/**
- * Enumeration of JavaScript typeof operator results.
- */
-export const TypeofTypesEnum = {
-  string: 'string',
-  number: 'number',
-  bigint: 'bigint',
-  boolean: 'boolean',
-  symbol: 'symbol',
-  undefined: 'undefined',
-  object: 'object',
-  function: 'function',
-}
-
-/**
- * Union type of all possible typeof operator results.
- */
-export type TypeofTypes = keyof typeof TypeofTypesEnum
-
-// Type Guard
-
-/**
- * A function that narrows the type of a value.
- */
-export type TypeGuard<$Type> = (value: unknown) => value is $Type
-
-/**
- * A function that checks if a value matches a type (without type narrowing).
- */
-export type TypeGuardImplementation = (value: unknown) => boolean
-
-/**
- * Input type for creating type guards - either a guard function or a primitive value to check against.
- */
-export type TypeGuardImplementationInput = TypeGuardImplementation | Primitive
-
-/**
- * Create a type guard from a guard function or primitive value.
- *
- * @param typeGuard - A guard function or primitive value to check against.
- * @returns A type guard function.
- *
- * @example
- * ```ts
- * const isString = typeGuard<string>('string')
- * const isCustom = typeGuard<MyType>(value => value instanceof MyType)
- * ```
- */
-export const typeGuard = <type>(typeGuard: TypeGuardImplementationInput): TypeGuard<type> => {
-  if (typeof typeGuard === TypeofTypesEnum.function) return typeGuard as any
-  return (value): value is type => value === typeGuard
-}
+export type { Primitive, TypeGuard, TypeGuardImplementation, TypeGuardImplementationInput, TypeofTypes }
+export { typeGuard, TypeofTypesEnum }
 
 /**
  * A type guard that excludes a specific type.
@@ -107,11 +65,6 @@ export type SideEffectAsyncMaybe = Prom.Maybe<void>
  * Any JavaScript value (primitive or object).
  */
 export type Value = Primitive | object
-
-/**
- * JavaScript primitive types.
- */
-export type Primitive = string | number | bigint | boolean | symbol | null | undefined
 
 /**
  * Check if a value is a JavaScript primitive.

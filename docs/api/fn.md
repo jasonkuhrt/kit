@@ -1,6 +1,12 @@
 # Fn
 
-Function utilities for functional programming patterns. Provides utilities for function composition, currying, partial application, piping, and common functional patterns like identity and constant functions. Includes function analysis tools and endomorphism utilities.
+Function utilities for functional programming patterns.
+
+Provides utilities for function composition, currying, partial application,
+
+piping, and common functional patterns like identity and constant functions.
+
+Includes function analysis tools and endomorphism utilities.
 
 ## Import
 
@@ -21,7 +27,7 @@ import * as Fn from '@wollybeard/kit/fn'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `noop`
 
 ```typescript
-() => void
+(): void
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L183" />
@@ -29,7 +35,7 @@ import * as Fn from '@wollybeard/kit/fn'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `$identityPartial`
 
 ```typescript
-;(<value>(value: PartialDeep<value>) => value)
+<value>(value: PartialDeep<value>): value
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L188" />
@@ -37,7 +43,7 @@ import * as Fn from '@wollybeard/kit/fn'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `constant`
 
 ```typescript
-;(<value>(value: value) => () => value)
+<value>(value: value): () => value
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/constant.ts#L4" />
@@ -45,7 +51,7 @@ import * as Fn from '@wollybeard/kit/fn'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `identity`
 
 ```typescript
-identity<any>
+(value: $value): $value
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/identity.ts#L4" />
@@ -55,10 +61,27 @@ identity<any>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pipe`
 
 ```typescript
-function pipe<value>(value: value): value
+<value>(value: value): value
+<value, f1 extends (value: value) => any>(value: value, f1: f1): ReturnType<f1>
+<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any>(value: value, f1: f1, f2: f2): ReturnType<f2>
+<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any>(value: value, f1: f1, f2: f2, f3: f3): ReturnType<f3>
+<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any>(value: value, f1: f1, f2: f2, f3: f3, f4: f4): ReturnType<f4>
+<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any>(value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5): ReturnType<f5>
+<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any>(value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6): ReturnType<f6>
+<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any, f7 extends (value: ReturnType<f6>) => any>(value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6, f7: f7): ReturnType<f7>
+<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any, f7 extends (value: ReturnType<f6>) => any, f8 extends (value: ReturnType<f7>) => any>(value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6, f7: f7, f8: f8): ReturnType<f8>
+<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any, f7 extends (value: ReturnType<f6>) => any, f8 extends (value: ReturnType<f7>) => any, f9 extends (value: ReturnType<f8>) => any>(value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6, f7: f7, f8: f8, f9: f9): ReturnType<f9>
+<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any, f7 extends (value: ReturnType<f6>) => any, f8 extends (value: ReturnType<f7>) => any, f9 extends (value: ReturnType<f8>) => any, f10 extends (value: ReturnType<f9>) => any>(value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6, f7: f7, f8: f8, f9: f9, f10: f10): ReturnType<f10>
+(value: any, ...fns?: (value: any) => any)[]): any
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/pipe.ts#L26" />
+
+**Parameters:**
+
+- `value` - The initial value to pipe through the functions
+
+**Returns:** The final transformed value
 
 Pipe a value through a series of unary functions.
 
@@ -70,12 +93,9 @@ import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 const add1 = (x: number) => x + 1
 const double = (x: number) => x * 2
-// [!code word:toString:1]
 const toString = (x: number) => x.toString()
 
-// [!code word:pipe:1]
 Fn.pipe(5, add1, double) // 12
-// [!code word:pipe:1]
 Fn.pipe(5, add1, double, toString) // "12"
 ```
 
@@ -84,11 +104,7 @@ Fn.pipe(5, add1, double, toString) // "12"
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `bind`
 
 ```typescript
-;(<fn extends AnyAny>(
-  fn: AnyAnyParametersMin1 extends fn ? fn
-    : { Error: 'Given function must have at least one parameter' },
-  arg: Parameters<fn>[0],
-) => bind<fn>)
+<fn extends AnyAny>(fn: AnyAnyParametersMin1 extends fn ? fn : { Error: "Given function must have at least one parameter"; }, arg: Parameters<fn>[0]): bind<fn>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L160" />
@@ -96,21 +112,27 @@ Fn.pipe(5, add1, double, toString) // "12"
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `applySecond`
 
 ```typescript
-;(<fn extends (...args: any[]) => (arg: any) => any, arg>(fn: fn, arg: arg) =>
-  applySecond<fn, arg>)
+<fn extends (...args: any[]) => (arg: any) => any, arg>(fn: fn, arg: arg): applySecond<fn, arg>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L199" />
 
-Apply the second parameter of a curried function. For a function (a) = (b) = c and a value b, returns (a) = c Useful for creating service interfaces from curried operations.
+Apply the second parameter of a curried function.
+
+For a function (a) =
+
+(b) =
+
+c and a value b, returns (a) =
+
+c
+
+Useful for creating service interfaces from curried operations.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `curry`
 
 ```typescript
-;(<fn extends AnyAny>(
-  fn: AnyAnyParametersMin1 extends fn ? fn
-    : { Error: 'Given function must have at least one parameter' },
-) => curry<fn>)
+<fn extends AnyAny>(fn: AnyAnyParametersMin1 extends fn ? fn : { Error: "Given function must have at least one parameter"; }): curry<fn>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/curry.ts#L12" />
@@ -118,7 +140,7 @@ Apply the second parameter of a curried function. For a function (a) = (b) = c a
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `uncurry`
 
 ```typescript
-;(<fn extends AnyAny2Curried>(fn: fn) => uncurry<fn>)
+<fn extends AnyAny2Curried>(fn: fn): uncurry<fn>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/curry.ts#L66" />
@@ -126,7 +148,7 @@ Apply the second parameter of a curried function. For a function (a) = (b) = c a
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `flipCurried`
 
 ```typescript
-;(<fn extends AnyAny2Curried>(fn: fn) => flipCurried<fn>)
+<fn extends AnyAny2Curried>(fn: fn): flipCurried<fn>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/curry.ts#L84" />
@@ -145,7 +167,13 @@ Endomorphism
 
 - a function from a type to itself.
 
-Unlike identity, this doesn't preserve the exact value, just ensures the output type matches the input type.
+Unlike
+
+identity
+
+, this doesn't preserve the exact value,
+
+just ensures the output type matches the input type.
 
 **Examples:**
 
@@ -155,19 +183,15 @@ import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 // Builder pattern
 type BuilderOp = Fn.endo<StringBuilder>
-// [!code word:append:1]
 const addText: BuilderOp = sb => sb.append('text')
 
 // Transformations
 type StringTransform = Fn.endo<string>
-// [!code word:toUpperCase:1]
 const uppercase: StringTransform = s => s.toUpperCase()
-// [!code word:trim:1]
 const trim: StringTransform = s => s.trim()
 
 // Chainable operations
 type ChainOp = Fn.endo<ChainableAPI>
-// [!code word:setOption:1]
 const configure: ChainOp = api => api.setOption('key', 'value')
 ```
 
@@ -187,19 +211,34 @@ type Parameter = { type: 'name'; value: string } | {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `analyzeFunction`
 
 ```typescript
-(fn: (...args: any[]) => unknown) => { body: string; parameters: Parameter[]; }
+(fn: (...args: any[]) => unknown): { body: string; parameters: Parameter[]; }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/analyze.ts#L31" />
+
+**Parameters:**
+
+- `fn` - The function to analyze
+
+**Returns:** An object containing the function's cleaned body and parameters
+
+**Throws:**
+
+- Error
+
+If the function cannot be parsed or has invalid structure
 
 Analyze a function to extract its parameter information and body.
 
 Parses a function's string representation to extract:
 
 - Parameter names (both regular and destructured parameters)
+
 - Function body (both statement and expression forms, trimmed and dedented)
 
-The returned body is already cleaned: leading/trailing whitespace removed and common indentation stripped away for clean display in its isolated form.
+The returned body is already cleaned: leading/trailing whitespace removed and
+
+common indentation stripped away for clean display in its isolated form.
 
 **Examples:**
 
@@ -208,7 +247,6 @@ The returned body is already cleaned: leading/trailing whitespace removed and co
 import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 const fn = (a, { b, c }) => a + b + c
-// [!code word:analyzeFunction:1]
 const info = Fn.analyzeFunction(fn)
 // info.parameters: [{ type: 'name', value: 'a' }, { type: 'destructured', names: ['b', 'c'] }]
 // info.body: "a + b + c" (already trimmed and dedented)
@@ -217,10 +255,16 @@ const info = Fn.analyzeFunction(fn)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isUnary`
 
 ```typescript
-;((fn: (...args: any[]) => unknown) => boolean)
+(fn: (...args: any[]) => unknown): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/analyze.ts#L110" />
+
+**Parameters:**
+
+- `fn` - The function to check
+
+**Returns:** True if the function has exactly one parameter, false otherwise
 
 Check if a function is unary (has exactly one parameter).
 
@@ -234,11 +278,8 @@ const unary = (x: number) => x * 2
 const binary = (a: number, b: number) => a + b
 const nullary = () => 42
 
-// [!code word:isUnary:1]
 Fn.isUnary(unary) // true
-// [!code word:isUnary:1]
 Fn.isUnary(binary) // false
-// [!code word:isUnary:1]
 Fn.isUnary(nullary) // false
 ```
 
@@ -252,7 +293,9 @@ typeof _
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/partial/runtime.ts#L15" />
 
-Symbol used to represent a hole in partial application. When used as an argument, indicates that the parameter should be deferred.
+Symbol used to represent a hole in partial application.
+
+When used as an argument, indicates that the parameter should be deferred.
 
 **Examples:**
 
@@ -268,7 +311,7 @@ addOne(5) // 6
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isHole`
 
 ```typescript
-(value: unknown) => value is typeof _
+(value: unknown): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/partial/runtime.ts#L27" />
@@ -278,15 +321,21 @@ Type guard to check if a value is a hole.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `partial`
 
 ```typescript
-;(<$Fn extends Fn.AnyAny, const $Args extends readonly unknown[]>(
-  fn: $Fn,
-  ...args: $Args
-) => any)
+<$Fn extends Fn.AnyAny, $Args extends readonly unknown[]>(fn: $Fn, ...args?: $Args): any
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/partial/runtime.ts#L55" />
 
-Create a partially applied function by providing some arguments upfront. Use the hole symbol (_) to defer parameters.
+**Parameters:**
+
+- `fn` - The function to partially apply
+- `args` - Arguments with holes (_) for deferred parameters
+
+**Returns:** A new function accepting the remaining arguments, or the result if all arguments are provided
+
+Create a partially applied function by providing some arguments upfront.
+
+Use the hole symbol (_) to defer parameters.
 
 **Examples:**
 
@@ -296,19 +345,16 @@ import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 // Basic usage
 const add = (a: number, b: number) => a + b
-// [!code word:partial:1]
 const addOne = Fn.partial(add, _, 1)
 addOne(5) // 6
 
 // Multiple holes
 const greet = (greeting: string, name: string, punctuation: string) =>
   `${greeting}, ${name}${punctuation}`
-// [!code word:partial:1]
 const casualGreet = Fn.partial(greet, 'Hey', _, '!')
 casualGreet('Alice') // 'Hey, Alice!'
 
 // All arguments provided - executes immediately
-// [!code word:partial:1]
 const result = Fn.partial(add, 1, 2) // 3
 ```
 
@@ -323,7 +369,13 @@ const result = Fn.partial(add, 1, 2) // 3
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/partial/runtime.ts#L97" />
 
-Type-safe partial application with automatic type inference. This is an alias for partial with a more explicit name.
+Type-safe partial application with automatic type inference.
+
+This is an alias for
+
+partial
+
+with a more explicit name.
 
 **Examples:**
 
@@ -332,7 +384,6 @@ Type-safe partial application with automatic type inference. This is an alias fo
 import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 const multiply = (a: number, b: number, c: number) => a * b * c
-// [!code word:apply:1]
 const double = Fn.apply(multiply, 2, _, 1)
 double(5) // 10
 ```
@@ -340,13 +391,14 @@ double(5) // 10
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `defer`
 
 ```typescript
-;(<$Fn extends Fn.AnyAny>(fn: $Fn, ...args: Parameters<$Fn>) => () =>
-  ReturnType<$Fn>)
+<$Fn extends Fn.AnyAny>(fn: $Fn, ...args?: Parameters<$Fn>): () => ReturnType<$Fn>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/partial/runtime.ts#L118" />
 
-Helper to create a deferred computation using partial application. Useful for creating thunks or delayed evaluations.
+Helper to create a deferred computation using partial application.
+
+Useful for creating thunks or delayed evaluations.
 
 **Examples:**
 
@@ -355,12 +407,10 @@ Helper to create a deferred computation using partial application. Useful for cr
 import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 const expensiveComputation = (a: number, b: number) => {
-  // [!code word:log:1]
   console.log('Computing...')
   return a * b
 }
 
-// [!code word:defer:1]
 const deferred = Fn.defer(expensiveComputation, 5, 10)
 // Nothing logged yet
 
@@ -371,12 +421,14 @@ const result = deferred() // Logs: 'Computing...'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isPartialArg`
 
 ```typescript
-(_value: unknown) => _value is unknown
+(_value: unknown): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/partial/runtime.ts#L131" />
 
-Check if a value is potentially a partially applicable argument (either a hole or a regular value).
+Check if a value is potentially a partially applicable argument
+
+(either a hole or a regular value).
 
 ## Type Guards
 
@@ -474,7 +526,9 @@ type ReturnExtract<$Type, $Fn extends AnyAny> = $Fn extends
 
 Modify function such that it only returns the given type.
 
-Automatically handles async functions by unwrapping the Promise, extracting the type, and rewrapping in a Promise. For sync functions, the type is extracted directly.
+Automatically handles async functions by unwrapping the Promise, extracting the type,
+
+and rewrapping in a Promise. For sync functions, the type is extracted directly.
 
 Assumes that the given type is among the possible return types of the function.
 
@@ -519,7 +573,9 @@ type ReturnExclude<$Type, $Fn extends AnyAny> = $Fn extends
 
 Modify function such that it does not return the given type.
 
-Automatically handles async functions by unwrapping the Promise, excluding the type, and rewrapping in a Promise. For sync functions, the type is excluded directly.
+Automatically handles async functions by unwrapping the Promise, excluding the type,
+
+and rewrapping in a Promise. For sync functions, the type is excluded directly.
 
 If function does not return the given the type, then this is effectively an identity function.
 
@@ -561,7 +617,9 @@ type ReturnInclude<$Type, $Fn extends AnyAny> = $Fn extends
 
 Modify function such that it can return an additional type along with its original return types.
 
-Automatically handles async functions by unwrapping the Promise, adding the type to the union, and rewrapping in a Promise. For sync functions, the type is added directly to the return type union.
+Automatically handles async functions by unwrapping the Promise, adding the type to the union,
+
+and rewrapping in a Promise. For sync functions, the type is added directly to the return type union.
 
 This is useful for functions that may return early with a specific type (like void).
 

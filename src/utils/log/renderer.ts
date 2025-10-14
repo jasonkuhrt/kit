@@ -111,11 +111,11 @@ export const render = (opts: Options, logRecord: Logger.LogRecord): string => {
     const elapsed = Time.format(stopWatch.lap())
 
     if (elapsed.unit === `ms`) {
-      timeDiff = `${Str.fit(String(elapsed.value), 4, 'right')} `
+      timeDiff = `${Str.Text.fit(String(elapsed.value), 4, 'right')} `
     } else if (elapsed.unit === `max`) {
       timeDiff = ` ∞ `
     } else {
-      timeDiff = `${elapsed.unit} ${Str.fit(String(elapsed.value), 2, 'right')} `
+      timeDiff = `${elapsed.unit} ${Str.Text.fit(String(elapsed.value), 2, 'right')} `
     }
     timeDiffRendered = Lang.colorize('gray', timeDiff)
   }
@@ -124,7 +124,7 @@ export const render = (opts: Options, logRecord: Logger.LogRecord): string => {
   // render gutter
   //
 
-  const levelLabelSized = opts.levelLabel ? ` ` + Str.fit(levelLabel, 5, 'left') + ` ` : ` `
+  const levelLabelSized = opts.levelLabel ? ` ` + Str.Text.fit(levelLabel, 5, 'left') + ` ` : ` `
 
   const gutterRendered = `${timeDiffRendered}${style.color(`${style.badge}${levelLabelSized}`)}`
 
@@ -201,7 +201,7 @@ export const render = (opts: Options, logRecord: Logger.LogRecord): string => {
         + contextEntriesRendered
           .map(
             ([key, value]) =>
-              `${Lang.colorize('gray', Str.fit(key ?? '', widestKey, 'left'))}${
+              `${Lang.colorize('gray', Str.Text.fit(key ?? '', widestKey, 'left'))}${
                 renderEl(
                   separators.contextKeyVal.multiline,
                 )

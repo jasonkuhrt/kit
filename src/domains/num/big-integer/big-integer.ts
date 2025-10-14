@@ -3,7 +3,7 @@
  * Wraps JavaScript's native BigInt with branded type safety and functional operations.
  */
 
-import { Fn } from '#fn'
+import { CoreFn as Fn } from '#fn/core'
 
 declare const BigIntegerBrand: unique symbol
 

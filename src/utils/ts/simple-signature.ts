@@ -57,7 +57,9 @@ export const symbol = Symbol.for('__simpleSignature')
  * }
  * ```
  */
-export interface SimpleSignature<$Overloads extends readonly [(...args: any[]) => any, ...Array<(...args: any[]) => any>]> {
+export interface SimpleSignature<
+  $Overloads extends readonly [(...args: any[]) => any, ...Array<(...args: any[]) => any>],
+> {
   [symbol]: $Overloads[number]
 }
 
@@ -102,8 +104,7 @@ export type GetSignature<$fn> = $fn extends { [symbol]: infer $sig } ? $sig : $f
  * type Params2 = GetParameters<typeof partition>  // [obj: object, keys: string[]]
  * ```
  */
-export type GetParameters<$fn> = GetSignature<$fn> extends (...args: any) => any
-  ? Parameters<GetSignature<$fn>>
+export type GetParameters<$fn> = GetSignature<$fn> extends (...args: any) => any ? Parameters<GetSignature<$fn>>
   : never
 
 /**
@@ -123,8 +124,7 @@ export type GetParameters<$fn> = GetSignature<$fn> extends (...args: any) => any
  * type Return2 = GetReturnType<typeof partition>  // { picked: object; omitted: object }
  * ```
  */
-export type GetReturnType<$fn> = GetSignature<$fn> extends (...args: any) => any
-  ? ReturnType<GetSignature<$fn>>
+export type GetReturnType<$fn> = GetSignature<$fn> extends (...args: any) => any ? ReturnType<GetSignature<$fn>>
   : never
 
 /**

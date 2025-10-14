@@ -410,7 +410,7 @@ const _inspectResursively = (
         maxFrames: Math.min(config.maxFrames.value, 3),
         filterPatterns: ['node_modules', 'node:internal'],
       })
-      const stackLines = Str.lines(cleanResult.stack).slice(1)
+      const stackLines = Str.Text.lines(cleanResult.stack).slice(1)
       if (stackLines.length > 0) {
         const formattedFrames = formatStackFrames(stackLines)
         for (const line of formattedFrames) {
@@ -423,7 +423,7 @@ const _inspectResursively = (
     if ('context' in error && error.context !== undefined) {
       const context = (error as Error & { context: Context }).context
       const jsonString = formatContext(context)
-      const jsonLines = Str.lines(jsonString)
+      const jsonLines = Str.Text.lines(jsonString)
       for (let i = 0; i < jsonLines.length; i++) {
         const line = jsonLines[i]!
         // Don't add extra indent for JSON lines that already have indent from JSON.stringify
@@ -458,7 +458,7 @@ const _inspectResursively = (
               maxFrames: Math.min(config.maxFrames.value, 1),
               filterPatterns: ['node_modules', 'node:internal'],
             })
-            const stackLines = Str.lines(cleanResult.stack).slice(1)
+            const stackLines = Str.Text.lines(cleanResult.stack).slice(1)
             if (stackLines.length > 0) {
               const formattedFrames = formatStackFrames(stackLines)
               lines.push(`${nestedIndent}${formattedFrames[0]}`)
@@ -473,7 +473,7 @@ const _inspectResursively = (
       }
     }
 
-    return Str.unlines(lines)
+    return Str.Text.unlines(lines)
   }
 
   // Root or non-aggregate nested error
@@ -490,7 +490,7 @@ const _inspectResursively = (
       filterPatterns: ['node_modules', 'node:internal'],
     })
 
-    const stackLines = Str.lines(cleanResult.stack).slice(1)
+    const stackLines = Str.Text.lines(cleanResult.stack).slice(1)
     if (cleanResult.stats.shownFrames === 0) {
       const frameWord = cleanResult.stats.totalFrames === 1 ? 'frame' : 'frames'
       const paddedLocation = '...'.padEnd(15)
@@ -531,7 +531,7 @@ const _inspectResursively = (
   if ('context' in error && error.context !== undefined) {
     const context = (error as Error & { context: Context }).context
     const jsonString = formatContext(context)
-    const jsonLines = Str.lines(jsonString)
+    const jsonLines = Str.Text.lines(jsonString)
 
     for (let i = 0; i < jsonLines.length; i++) {
       lines.push(formatLine(jsonLines[i]!, parentIndent, config))
@@ -576,5 +576,5 @@ const _inspectResursively = (
     }
   }
 
-  return Str.unlines(lines)
+  return Str.Text.unlines(lines)
 }

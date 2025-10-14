@@ -1,6 +1,12 @@
 # Rec
 
-Record utilities for working with plain JavaScript objects as dictionaries. Provides type-safe operations for records (objects with PropertyKey indexes) including type guards, merging, creation, and index signature manipulation. Strictly validates plain objects, rejecting arrays and class instances.
+Record utilities for working with plain JavaScript objects as dictionaries.
+
+Provides type-safe operations for records (objects with PropertyKey indexes)
+
+including type guards, merging, creation, and index signature manipulation.
+
+Strictly validates plain objects, rejecting arrays and class instances.
 
 ## Import
 
@@ -21,12 +27,16 @@ import * as Rec from '@wollybeard/kit/rec'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `create`
 
 ```typescript
-;(<value>() => Record<PropertyKey, value>)
+<value>(): Record<PropertyKey, value>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L197" />
 
-Create an empty record with a specific value type. Useful for initializing typed record collections.
+**Returns:** An empty record typed to hold values of the specified type
+
+Create an empty record with a specific value type.
+
+Useful for initializing typed record collections.
 
 **Examples:**
 
@@ -59,10 +69,8 @@ userLookup['u123'] = { id: 'u123', name: 'Alice' }
 import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
 // Useful as accumulator in reduce operations
-// [!code word:reduce:1]
 const grouped = items.reduce(
   (acc, item) => {
-    // [!code word:category:1]
     acc[item.category] = item
     return acc
   },
@@ -75,12 +83,21 @@ const grouped = items.reduce(
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `merge`
 
 ```typescript
-;(<rec1 extends Any, rec2 extends Any>(rec1: rec1, rec2: rec2) => rec1 & rec2)
+<rec1 extends Any, rec2 extends Any>(rec1: rec1, rec2: rec2): rec1 & rec2
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L116" />
 
-Deep merge two records, with properties from the second record overwriting the first. This is an alias for Obj.merge that works specifically with record types.
+**Parameters:**
+
+- `rec1` - The base record to merge into
+- `rec2` - The record to merge from
+
+**Returns:** A new record with properties from both records merged
+
+Deep merge two records, with properties from the second record overwriting the first.
+
+This is an alias for Obj.merge that works specifically with record types.
 
 **Examples:**
 
@@ -88,7 +105,6 @@ Deep merge two records, with properties from the second record overwriting the f
 // @noErrors
 import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
-// [!code word:merge:1]
 Rec.merge({ a: 1, b: 2 }, { b: 3, c: 4 })
 // Returns: { a: 1, b: 3, c: 4 }
 ```
@@ -98,7 +114,6 @@ Rec.merge({ a: 1, b: 2 }, { b: 3, c: 4 })
 import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
 // Deep merging of nested records
-// [!code word:merge:1]
 Rec.merge(
   { user: { name: 'Alice', settings: { theme: 'dark' } } },
   { user: { settings: { fontSize: 16 } } },
@@ -116,7 +131,6 @@ type Overrides = { api: { key: string }; timeout: number }
 
 const config: Config = { api: { url: 'https://api.com' } }
 const overrides: Overrides = { api: { key: 'secret' }, timeout: 5000 }
-// [!code word:merge:1]
 const merged = Rec.merge(config, overrides)
 // merged is typed as Config & Overrides
 ```
@@ -126,12 +140,20 @@ const merged = Rec.merge(config, overrides)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
 
 ```typescript
-(value: unknown) => value is Any
+(value: unknown): boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L67" />
 
-Check if a value is a record (plain object only, not class instances or arrays). This is a strict check that only accepts plain objects with Object.prototype.
+**Parameters:**
+
+- `value` - The value to check
+
+**Returns:** True if the value is a plain record object
+
+Check if a value is a record (plain object only, not class instances or arrays).
+
+This is a strict check that only accepts plain objects with Object.prototype.
 
 **Examples:**
 
@@ -139,18 +161,11 @@ Check if a value is a record (plain object only, not class instances or arrays).
 // @noErrors
 import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
-// [!code word:is:1]
 Rec.is({ a: 1, b: 2 }) // true
-// [!code word:is:1]
 Rec.is({}) // true
-// [!code word:is:1]
 Rec.is([1, 2, 3]) // false - arrays are not records
-// [!code word:is:1]
 Rec.is(null) // false
-// [!code word:is:1]
 Rec.is(new Date()) // false - class instances are not plain records
-// [!code word:is:1]
-// [!code word:create:1]
 Rec.is(Object.create(null)) // false - not plain Object.prototype
 ```
 
@@ -160,12 +175,9 @@ import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
 // Type guard usage
 function processData(data: unknown) {
-  // [!code word:is:1]
   if (Rec.is(data)) {
     // data is typed as Rec.Any
-    // [!code word:keys:1]
     Object.keys(data).forEach(key => {
-      // [!code word:log:1]
       console.log(data[key])
     })
   }
@@ -241,7 +253,9 @@ type RemoveIndex<$T> = {
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L139" />
 
-Remove index signatures from an object type. Useful for converting Record types to object types with only known keys.
+Remove index signatures from an object type.
+
+Useful for converting Record types to object types with only known keys.
 
 **Examples:**
 
