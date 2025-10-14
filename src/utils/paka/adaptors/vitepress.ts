@@ -1,10 +1,13 @@
 import { FsLoc } from '#fs-loc'
-import { Md } from '#md'
+import { Str } from '#str'
 import { Match } from 'effect'
 import { writeFileSync } from 'node:fs'
 import { mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import type { Entrypoint, Example, Export, InterfaceModel, Module, SignatureModel, ValueExport } from '../schema.js'
+
+// Convenient alias for markdown utilities
+const Md = Str.Code.Md
 
 /**
  * Configuration for VitePress generation.
@@ -102,9 +105,11 @@ const generateApiIndex = (model: InterfaceModel): string => {
   const modules = model.entrypoints.map((entrypoint) => {
     const moduleName = deriveModuleName(entrypoint.path)
     const url = `/api/${Md.kebab(moduleName)}`
-    const description = entrypoint.module.description || ''
+    // Module.description is required in schema, but TypeScript doesn't trust Effect Schema types
+    // @ts-ignore - Effect Schema types have different runtime behavior
+    const description = entrypoint.module.description.split('\n\n')[0].replace(/\n/g, ' ').trim()
 
-    return `## ${Md.link(moduleName, url)}
+    return `## ${Md.link(url, moduleName)}
 
 ${description}`
   })
@@ -267,7 +272,7 @@ const renderImportSection = (
 const renderNamespacesSection = (namespaces: Export[], breadcrumbs: string[]): string => {
   const items = namespaces.map((ns) => {
     const nsPath = `/api/${[...breadcrumbs, ns.name].map(Md.kebab).join('/')}`
-    const link = Md.boldCodeLink(ns.name, nsPath)
+    const link = Md.link(nsPath, `**${Md.code(ns.name)}**`)
     return Md.listItem(`${link}${ns.description ? ` - ${ns.description}` : ''}`)
   })
 
@@ -393,9 +398,7 @@ const renderExport = (exp: Export, context: Context): string => {
   const typeIcon = getTypeIcon(exp)
   const heading = Md.heading(
     3,
-    `<span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">\`[${typeIcon}]\`</span> ${
-      Md.inlineCode(exp.name)
-    }`,
+    `<span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">\`[${typeIcon}]\`</span> ${Md.code(exp.name)}`,
   )
 
   // Source link as info line (after signature) using custom Vue component

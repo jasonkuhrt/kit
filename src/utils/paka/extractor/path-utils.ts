@@ -24,7 +24,7 @@
 export const buildToSourcePath = (buildPath: string): string => {
   return buildPath
     .replace(/^\.\/build\//, './src/')
-    .replace(/\$\$\.js$/, '$$.ts')
+    .replace(/\$\$\.js$/, '$$$$.ts') // $$$$ = two literal $ chars in replacement
     .replace(/\.js$/, '.ts')
 }
 

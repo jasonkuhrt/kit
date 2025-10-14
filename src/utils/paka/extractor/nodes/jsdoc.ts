@@ -56,8 +56,9 @@ const extractTSDocText = (node: any): string => {
     case 'Section':
     case 'Block':
       // These are containers - recursively process their nodes
+      // Join with double newlines to ensure proper spacing between block-level markdown elements
       if ('nodes' in node && Array.isArray(node.nodes)) {
-        return node.nodes.map((child: any) => extractTSDocText(child)).join('')
+        return node.nodes.map((child: any) => extractTSDocText(child)).join('\n\n')
       }
       return ''
 
