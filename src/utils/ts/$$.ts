@@ -11,6 +11,16 @@ export namespace Kind {}
 export * from './print.js'
 
 // @ts-expect-error Duplicate identifier
+export * as SimpleSignature from './simple-signature.js'
+/**
+ * Utilities for working with the `__simpleSignature` phantom type pattern.
+ * Allows complex generic functions to provide simpler signatures for type inference.
+ *
+ * @category SimpleSignature
+ */
+export namespace SimpleSignature {}
+
+// @ts-expect-error Duplicate identifier
 export * as Test from './test/$$.js'
 /**
  * Type-level assertion utilities for testing type correctness.
