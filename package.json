@@ -60,8 +60,6 @@
     "#lang/lang": "./build/utils/lang/$$.js",
     "#mask": "./build/utils/mask/$.js",
     "#mask/mask": "./build/utils/mask/$$.js",
-    "#md": "./build/utils/md/$.js",
-    "#md/md": "./build/utils/md/$$.js",
     "#group": "./build/domains/group/$.js",
     "#group/group": "./build/domains/group/$$.js",
     "#prom": "./build/domains/prom/$.js",
@@ -146,6 +144,8 @@
     "#fs-loc/fs-loc": "./build/utils/fs-loc/$$.js",
     "#paka": "./build/utils/paka/$.js",
     "#paka/paka": "./build/utils/paka/$$.js",
+    "#log": "./build/utils/log/$.js",
+    "#log/log": "./build/utils/log/$$.js",
     "#*": {
       "default": "./build/*.js"
     }
@@ -175,7 +175,6 @@
     "./lang": "./build/utils/lang/$$.js",
     "./manifest": "./build/utils/manifest/$$.js",
     "./mask": "./build/utils/mask/$$.js",
-    "./md": "./build/utils/md/$$.js",
     "./name": "./build/utils/name/$$.js",
     "./null": "./build/domains/null/$$.js",
     "./num": "./build/domains/num/$$.js",
@@ -200,7 +199,8 @@
     "./value": "./build/utils/value/$$.js",
     "./fs-memory": "./build/utils/fs-memory/$$.js",
     "./fs-loc": "./build/utils/fs-loc/$$.js",
-    "./paka": "./build/utils/paka/$$.js"
+    "./paka": "./build/utils/paka/$$.js",
+    "./log": "./build/utils/log/$$.js"
   },
   "scripts": {
     "r": "libra refresh && pnpm fix:format",
@@ -232,7 +232,8 @@
     "docs:dev:serve": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "docs:generate": "tsx src/utils/paka/cli.ts generate"
+    "docs:generate": "tsx src/utils/paka/cli.ts generate",
+    "toggle:precommit": "if [ -f .husky/pre-commit ]; then mv .husky/pre-commit .husky/pre-commit.disabled && echo '✗ Pre-commit hook disabled'; else mv .husky/pre-commit.disabled .husky/pre-commit && echo '✓ Pre-commit hook enabled'; fi"
   },
   "devDependencies": {
     "@dprint/formatter": "^0.4.1",
@@ -256,6 +257,7 @@
     "ts-morph": "^27.0.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
+    "vite-tsconfig-paths": "^5.1.4",
     "vitepress": "^1.6.4",
     "vitest": "^3.2.4"
   },

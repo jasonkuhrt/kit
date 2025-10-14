@@ -80,6 +80,8 @@
       "#codec/codec": ["./src/utils/codec/$$.ts"],
       "#color": ["./src/domains/color/$.ts"],
       "#color/color": ["./src/domains/color/$$.ts"],
+      "#log": ["./src/utils/log/$.ts"],
+      "#log/log": ["./src/utils/log/$$.ts"],
       "#debug": ["./src/utils/debug/$.ts"],
       "#debug/debug": ["./src/utils/debug/$$.ts"],
       "#dir": ["./src/utils/dir/$.ts"],
