@@ -42,6 +42,23 @@ export { pascalCase as pascal } from 'es-toolkit'
  */
 export { snakeCase as snake } from 'es-toolkit'
 
+import { snakeCase as snake } from 'es-toolkit'
+
+/**
+ * Convert string to CONSTANT_CASE (SCREAMING_SNAKE_CASE).
+ * Commonly used for environment variables and constants.
+ * @category Case Conversion
+ * @param name - The string to convert
+ * @returns The constant cased string
+ * @example
+ * ```typescript
+ * constant('helloWorld') // 'HELLO_WORLD'
+ * constant('foo-bar') // 'FOO_BAR'
+ * constant('myEnvVar') // 'MY_ENV_VAR'
+ * ```
+ */
+export const constant = (name: string): string => snake(name).toUpperCase()
+
 /**
  * Convert string to Title Case.
  * Replaces hyphens and underscores with spaces and capitalizes the first letter of each word.

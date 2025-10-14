@@ -11,7 +11,7 @@ export namespace Kind {}
 export * from './print.js'
 
 // @ts-expect-error Duplicate identifier
-export * as Test from './test.js'
+export * as Test from './test/$$.js'
 /**
  * Type-level assertion utilities for testing type correctness.
  * Provides compile-time type checking and assertions for tests.

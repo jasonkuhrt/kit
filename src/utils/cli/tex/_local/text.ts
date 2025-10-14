@@ -1,5 +1,5 @@
+import { Arr } from '#arr'
 import { Str } from '#str'
-import ansis from 'ansis'
 
 export type Line = string
 
@@ -9,52 +9,17 @@ export type Row = Column[]
 
 export const line = (text = ``): string => `${text}\n`
 
-const segmenter = new Intl.Segmenter()
-
-/**
- * Get the visual length of a string, ignoring ANSI escape codes and correctly counting grapheme clusters.
- */
-const visualLength = (text: string): number => {
-  const stripped = ansis.strip(text)
-  if (stripped === ``) return 0
-  let count = 0
-  for (const _ of segmenter.segment(stripped)) {
-    count++
-  }
-  return count
-}
-
-export const getLength = visualLength
-
-export const mapLines = Str.mapLines
-
-export const joinColumns = (cols: Row, separator: string): string => {
-  const maxLineCountAmongColumns = Math.max(...cols.map((_) => _.length))
-  const linesSpanningColumns = []
-  const colWidths = cols.map((col) => Math.max(...col.map((_) => getLength(_))))
-  for (let lineNumber = 0; lineNumber < maxLineCountAmongColumns; lineNumber++) {
-    const targetLinesAcrossColumns = cols.map((col) => col[lineNumber] ?? ``)
-    const line = targetLinesAcrossColumns
-      .map((line, i) => minSpan(`left`, colWidths[i] ?? 0, line))
-      .join(separator)
-    linesSpanningColumns.push(line)
-  }
-  return Str.unlines(linesSpanningColumns)
+export const joinColumns = (cols: Str.Column[], separator: string): string => {
+  const grid = Arr.transpose(cols)
+  return Str.Visual.Grid.join(grid, { separator, align: 'left' })
 }
 
 export const minSpan = (alignContent: 'left' | 'right', width: number, content: string): string => {
-  return Str.pad(
-    content,
-    Math.max(0, width - getLength(content)),
-    alignContent === `left` ? `right` : `left`,
-    chars.space,
-  )
+  return Str.Visual.span(content, width, alignContent, Str.Char.spaceRegular)
 }
 
 export const padWithin = (side: 'left' | 'right', size: number, char: string, text: string): string => {
-  const padSize = size - visualLength(text)
-  if (padSize <= 0) return text
-  return Str.pad(text, padSize, side, char)
+  return Str.Visual.pad(text, size, side, char)
 }
 
 export const underline = (string: string): string => {
@@ -113,7 +78,7 @@ export const lines = (width: number, text: string): string[] => {
     const lines = []
     let textToConsume = text
     while (textToConsume.length > 0) {
-      const result = visualStringTakeWords(textToConsume, width)
+      const result = Str.Visual.takeWords(textToConsume, width)
       const textLines = Str.lines(result.taken.replace(/\n$/, ``))
       lines.push(...textLines)
       textToConsume = result.remaining

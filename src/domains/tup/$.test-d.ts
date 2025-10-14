@@ -68,7 +68,7 @@ type _TakeValuesBefore = Ts.Test.Cases<
 >
 
 type _ToIndexByObjectKey = Ts.Test.Cases<
-  Ts.Test.bid<Tup.ToIndexByObjectKey<[{ name: 'a' }, { name: 'b' }], 'name'>, { a: { name: 'a' }; b: { name: 'b' } }>,
+  Ts.Test.equiv<Tup.ToIndexByObjectKey<[{ name: 'a' }, { name: 'b' }], 'name'>, { a: { name: 'a' }; b: { name: 'b' } }>,
   Ts.Test.exact<Tup.ToIndexByObjectKey<[], 'name'>, {}>
 >
 

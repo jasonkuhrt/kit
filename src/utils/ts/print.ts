@@ -1,5 +1,7 @@
 import type { ArrMut } from '#arr-mut'
-import type { IsAny, IsNever, IsUnknown, UnionToTuple } from 'type-fest'
+import type { IsNever } from './ts.js'
+import type { IsAny, IsUnknown } from './ts.js'
+import type * as Union from './union.js'
 
 /**
  * Print a type as a readable string representation.
@@ -18,7 +20,7 @@ export type Print<$Type, $Fallback extends string | undefined = undefined> =
   : [$Type] extends [boolean]      ? ([boolean] extends [$Type] ? 'boolean' : `${$Type}`)
 
   // General unions types
-  : UnionToTuple<$Type> extends ArrMut.Any2OrMoreRO ? _PrintUnion<UnionToTuple<$Type>>
+  : Union.ToTuple<$Type> extends ArrMut.Any2OrMoreRO ? _PrintUnion<Union.ToTuple<$Type>>
 
   // Primitive and literal types
   : $Type extends true             ? 'true'

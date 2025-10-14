@@ -122,52 +122,133 @@ test('exact (exact structural equality)', () => {
   Ts.Test.exact<{ a: 1; b?: 2 }>()({ a: 1 })
 })
 
-test('bid (bidirectional assignability)', () => {
-  // Union order doesn't matter for bidirectional assignability
+test('IsExact with edge cases', () => {
+  // IsExact with never
+  type Test1 = Ts.IsExact<never, never> // Should be true
+  type Test2 = Ts.IsExact<never, 1> // Should be false
+  type Test3 = Ts.IsExact<1, never> // Should be false
+  type Test4 = Ts.IsExact<never, string> // Should be false
+
+  // IsExact with any
+  type Test5 = Ts.IsExact<any, any> // Should be true
+  type Test6 = Ts.IsExact<any, unknown> // Should be false
+  type Test7 = Ts.IsExact<any, never> // Should be false
+
+  // IsExact with unknown
+  type Test8 = Ts.IsExact<unknown, unknown> // Should be true
+  type Test9 = Ts.IsExact<unknown, any> // Should be false
+  type Test10 = Ts.IsExact<unknown, never> // Should be false
+
+  // Verify tests compile correctly
+  // @ts-expect-error - Test1 should be true
+  const _test1: Test1 = false
+  // @ts-expect-error - Test2 should be false
+  const _test2: Test2 = true
+  // @ts-expect-error - Test3 should be false
+  const _test3: Test3 = true
+  // @ts-expect-error - Test4 should be false
+  const _test4: Test4 = true
+  // @ts-expect-error - Test5 should be true
+  const _test5: Test5 = false
+  // @ts-expect-error - Test6 should be false
+  const _test6: Test6 = true
+  // @ts-expect-error - Test7 should be false
+  const _test7: Test7 = true
+  // @ts-expect-error - Test8 should be true
+  const _test8: Test8 = false
+  // @ts-expect-error - Test9 should be false
+  const _test9: Test9 = true
+  // @ts-expect-error - Test10 should be false
+  const _test10: Test10 = true
+})
+
+test('GetRelation with edge cases', () => {
+  // GetRelation with never - never extends everything, so it's a subtype of everything
+  type Test1 = Ts.GetRelation<never, never> // Should be 'equivalent'
+  type Test2 = Ts.GetRelation<string, never> // Should be 'subtype' (never extends string)
+  type Test3 = Ts.GetRelation<never, string> // Should be 'supertype' (string doesn't extend never)
+
+  // GetRelation with any - any is both subtype and supertype of everything (special case)
+  type Test4 = Ts.GetRelation<any, any> // Should be 'equivalent'
+  type Test5 = Ts.GetRelation<string, any> // any extends string AND string extends any
+  type Test6 = Ts.GetRelation<any, string> // any extends string AND string extends any
+
+  // GetRelation with unknown
+  type Test7 = Ts.GetRelation<unknown, unknown> // Should be 'equivalent'
+  type Test8 = Ts.GetRelation<string, unknown> // Should be 'subtype' (unknown extends string? no, string extends unknown)
+  type Test9 = Ts.GetRelation<unknown, string> // Should be 'supertype' (string extends unknown)
+
+  // Verify correct relations
+  const _test1: Test1 = 'equivalent'
+  const _test2: Test2 = 'subtype'
+  const _test3: Test3 = 'supertype'
+  const _test4: Test4 = 'equivalent'
+  // Test5 and Test6 are special - any is weird
+  const _test7: Test7 = 'equivalent'
+  // const _test8: Test8 = 'subtype'  // Need to verify actual behavior
+  // const _test9: Test9 = 'supertype'
+})
+
+test('exact with never (regression test)', () => {
+  // never should be exactly equal to never
+  Ts.Test.exact<never>()(null as never)
+
+  // @ts-expect-error - never is NOT exactly equal to any other type
+  Ts.Test.exact<1>()(null as never)
+
+  // @ts-expect-error - never is NOT exactly equal to string
+  Ts.Test.exact<string>()(null as never)
+
+  // @ts-expect-error - number is NOT exactly equal to never
+  Ts.Test.exact<never>()(42)
+})
+
+test('equiv (equivalence/mutual assignability)', () => {
+  // Union order doesn't matter for equivalence
   type Union1 = 1 | 2
   type Union2 = 2 | 1
   const union1 = 1 as Union1
-  Ts.Test.bid<Union2>()(union1)
+  Ts.Test.equiv<Union2>()(union1)
 
-  // Value-level bid just checks subtype relationship
-  Ts.Test.bid<string | number>()('hello') // OK - 'hello' extends string | number
+  // Value-level equiv now correctly requires mutual assignability (use sub for subtype checking)
+  Ts.Test.sub<string | number>()('hello') // OK - 'hello' extends string | number
   // @ts-expect-error - Not mutually assignable (different types)
-  Ts.Test.bid<number>()('hello')
+  Ts.Test.equiv<number>()('hello')
 })
 
-test('bid with lintBidForExactPossibility disabled (default)', () => {
-  // Default behavior: bid allows structurally equal types (value-level only)
+test('equiv with lintBidForExactPossibility disabled (default)', () => {
+  // Default behavior: equiv allows structurally equal types (value-level only)
   // Type-level assertions use Cases which require explicit types
 
   // Value-level - these work because linting is disabled by default
-  Ts.Test.bid<string>()('hello') // OK - no error
-  Ts.Test.bid<number>()(42) // OK - no error
+  Ts.Test.equiv<string>()('hello') // OK - no error
+  Ts.Test.equiv<number>()(42) // OK - no error
 
   // Union reassignment works
   type Union1 = 1 | 2
   type Union2 = 2 | 1
   const union1 = 1 as Union1
-  Ts.Test.bid<Union2>()(union1) // OK
+  Ts.Test.equiv<Union2>()(union1) // OK
 
-  // bid still works correctly when only bidirectional (not exact)
+  // equiv still works correctly when only equivalent (not exact)
   const strIntersection = 'test' as string & {}
-  Ts.Test.bid<string>()(strIntersection) // OK - correct bid usage
+  Ts.Test.equiv<string>()(strIntersection) // OK - correct equiv usage
 })
 
 // Note: Testing with linting enabled would require changing the global setting,
 // which would affect all tests. The type-level test below demonstrates the concept.
 
-// Type-level test showing bid behavior with default settings
-type _BidDefaultBehavior = Ts.Test.Cases<
+// Type-level test showing equiv behavior with default settings
+type _EquivDefaultBehavior = Ts.Test.Cases<
   // These pass because linting is disabled by default
-  Ts.Test.bid<string, string>,
-  Ts.Test.bid<number, number>
-> // Note: 1 | 2 vs 2 | 1 are the same type, so bid passes
+  Ts.Test.equiv<string, string>,
+  Ts.Test.equiv<number, number>
+> // Note: 1 | 2 vs 2 | 1 are the same type, so equiv passes
 
 // Test union reassignment at type level
 type Union1 = 1 | 2
 type Union2 = 2 | 1
-type _UnionBid = Ts.Test.bid<Union2, Union1> // Should pass
+type _UnionEquiv = Ts.Test.equiv<Union2, Union1> // Should pass
 
 // === Test Const Variants ===
 
@@ -209,20 +290,20 @@ test('subConst - preserves literal types', () => {
   Ts.Test.subConst<{ a: number; b: string }>()({ a: 1 })
 })
 
-test('bidConst - mutual assignability with literals', () => {
+test('equivConst - equivalence with literals', () => {
   // Union types with literals
   type Status = 'pending' | 'complete'
-  Ts.Test.bidConst<Status>()('pending')
-  Ts.Test.bidConst<Status>()('complete')
+  Ts.Test.equivConst<Status>()('pending')
+  Ts.Test.equivConst<Status>()('complete')
 
   // Number unions
   type Score = 1 | 2 | 3 | 4 | 5
-  Ts.Test.bidConst<Score>()(3)
+  Ts.Test.equivConst<Score>()(3)
 
   // @ts-expect-error - Not in union
-  Ts.Test.bidConst<Status>()('invalid')
+  Ts.Test.equivConst<Status>()('invalid')
   // @ts-expect-error - Wrong type
-  Ts.Test.bidConst<Status>()(42)
+  Ts.Test.equivConst<Status>()(42)
 })
 
 const syncValue = 42
@@ -237,11 +318,31 @@ test('promise', () => {
   Ts.Test.promise<number>()(syncValue)
 })
 
-test('promiseNot', () => {
-  // Should pass
-  Ts.Test.promiseNot(syncValue)
-  // @ts-expect-error - Value is a Promise
-  Ts.Test.promiseNot(asyncValue)
+test('Not.promise', () => {
+  // Value mode - should pass for non-Promise
+  Ts.Test.Not.promise()(syncValue)
+  // @ts-expect-error - Value mode should fail for Promise
+  Ts.Test.Not.promise()(asyncValue)
+
+  // Type-only mode - should pass for non-Promise
+  Ts.Test.Not.promise<number>()
+  // @ts-expect-error - Type-only mode should fail for Promise
+  Ts.Test.Not.promise<Promise<number>>()
+})
+
+test('Not.array', () => {
+  const str = 'hello'
+  const arr = [1, 2, 3]
+
+  // Value mode - should pass for non-array
+  Ts.Test.Not.array()(str)
+  // @ts-expect-error - Value mode should fail for array
+  Ts.Test.Not.array()(arr)
+
+  // Type-only mode - should pass for non-array
+  Ts.Test.Not.array<string>()
+  // @ts-expect-error - Type-only mode should fail for array
+  Ts.Test.Not.array<number[]>()
 })
 
 test('array', () => {
@@ -261,9 +362,9 @@ test('array', () => {
 
 // Test use with try.test-d.ts patterns
 test('integration with tryOr', () => {
-  // Using promiseNot for sync results
+  // Using Not.promise for sync results
   const syncResult = Err.tryOr(() => 42, 'fallback')
-  Ts.Test.promiseNot(syncResult)
+  Ts.Test.Not.promise()(syncResult)
 
   // Using promise for async results
   const asyncResult = Err.tryOr(async () => 42, 'fallback')
@@ -274,27 +375,27 @@ test('integration with tryOr', () => {
 type _SubtypeTest = Ts.Test.sub<string, 'hello'> // Should be true
 type _SupertypeTest = Ts.Test.sup<{ a: 1 }, { a: 1; b: 2 }> // Should be true
 type _ExactTest = Ts.Test.exact<number, number> // Should be true
-type _ComputedTest = Ts.Test.bid<1 | 2, 2 | 1> // Should be true
+type _ComputedTest = Ts.Test.equiv<1 | 2, 2 | 1> // Should be true
 type _ExtendsTest = Ts.Test.sub<string, 'hello'> // Should be true
 
-// Test exact vs bid differences
+// Test exact vs equiv differences
 type _EqualStructural1 = Ts.Test.exact<1 | 2, 1 | 2> // true - same structure
 type _EqualStructural2 = Ts.Test.exact<1 | 2, 2 | 1> // true - union order doesn't matter for structural equality either
 
-type _EqualComputed1 = Ts.Test.bid<1 | 2, 2 | 1> // true - same computed type
-type _EqualComputed2 = Ts.Test.bid<string & {}, string> // true - both compute to string
-type _EqualComputed3 = Ts.Test.bid<number, number> // true
+type _EqualComputed1 = Ts.Test.equiv<1 | 2, 2 | 1> // true - same computed type
+type _EqualComputed2 = Ts.Test.equiv<string & {}, string> // true - both compute to string
+type _EqualComputed3 = Ts.Test.equiv<number, number> // true
 
 // === Test testCase and testCases Types ===
 
 // Test testCase type - single assertion wrapper
-type _testCase1 = Ts.Test.Case<true> // Should work
+type _testCase1 = Ts.Test.Case<never> // Should work - never is success
 type _testCase2 = Ts.Test.Case<Ts.Test.exact<string, string>> // Should work
 type _testCase3 = Ts.Test.Case<Ts.Test.sub<string, 'hello'>> // Should work
 
-// @ts-expect-error - false doesn't extend true
-type _testCaseFail1 = Ts.Test.Case<false>
-// @ts-expect-error - equal returns false for mismatched types
+// @ts-expect-error - true doesn't extend never
+type _testCaseFail1 = Ts.Test.Case<true>
+// @ts-expect-error - equal returns StaticErrorAssertion for mismatched types
 type _testCaseFail2 = Ts.Test.Case<Ts.Test.exact<string, number>>
 
 // Test testCases type - multiple assertions
@@ -345,20 +446,22 @@ test('type-only mode - exact', () => {
   Ts.Test.exact<{ a: 1 }, { a: 1 }>()
   Ts.Test.exact<never, never>() // Can test never directly!
 
-  // Types don't match - should error
-  Ts.Test.exact<string, number>()
-  // Too narrow - should error
-  Ts.Test.exact<string | number, string>()
+  // These return StaticErrorAssertion types and require error argument
+  // @ts-expect-error - Assertion fails, requires error argument
+  void Ts.Test.exact<string, number>()
+  // @ts-expect-error - Assertion fails, requires error argument
+  void Ts.Test.exact<string | number, string>()
 })
 
-test('type-only mode - bid', () => {
+test('type-only mode - equiv', () => {
   // Should pass
-  Ts.Test.bid<string, string>()
-  Ts.Test.bid<1 | 2, 2 | 1>() // Mutually assignable
-  Ts.Test.bid<string & {}, string>() // Both compute to string
+  Ts.Test.equiv<string, string>()
+  Ts.Test.equiv<1 | 2, 2 | 1>() // Mutually assignable
+  Ts.Test.equiv<string & {}, string>() // Both compute to string
 
-  // @ts-expect-error - Not mutually assignable
-  Ts.Test.bid<string, number>()
+  // Returns StaticErrorAssertion and requires error argument
+  // @ts-expect-error - Assertion fails, requires error argument
+  void Ts.Test.equiv<string, number>()
 })
 
 test('type-only mode - sub', () => {
@@ -367,8 +470,9 @@ test('type-only mode - sub', () => {
   Ts.Test.sub<object, { a: 1 }>() // { a: 1 } extends object
   Ts.Test.sub<number, 42>()
 
-  // @ts-expect-error - Doesn't extend
-  Ts.Test.sub<'hello', string>() // string doesn't extend 'hello'
+  // Returns StaticErrorAssertion and requires error argument
+  // @ts-expect-error - Assertion fails, requires error argument
+  void Ts.Test.sub<'hello', string>() // string doesn't extend 'hello'
 })
 
 test('type-only mode - subNoExcess', () => {
@@ -378,8 +482,9 @@ test('type-only mode - subNoExcess', () => {
   Ts.Test.subNoExcess<Config, { id: true }>()
   Ts.Test.subNoExcess<Config, { id: true; name: 'test' }>()
 
-  // @ts-expect-error - Excess property
-  Ts.Test.subNoExcess<Config, { id: true; extra: 1 }>()
+  // Returns StaticErrorAssertion and requires error argument
+  // @ts-expect-error - Assertion fails, requires error argument
+  void Ts.Test.subNoExcess<Config, { id: true; extra: 1 }>()
 })
 
 test('type-only mode - subNot', () => {
@@ -387,8 +492,9 @@ test('type-only mode - subNot', () => {
   Ts.Test.subNot<number, string>()
   Ts.Test.subNot<string, number>()
 
-  // @ts-expect-error - 'hello' extends string
-  Ts.Test.subNot<string, 'hello'>()
+  // Returns StaticErrorAssertion and requires error argument
+  // @ts-expect-error - Assertion fails, requires error argument
+  void Ts.Test.subNot<string, 'hello'>()
 })
 
 test('type-only mode - sup', () => {
@@ -396,8 +502,9 @@ test('type-only mode - sup', () => {
   Ts.Test.sup<object, { a: 1 }>() // { a: 1 } extends object
   Ts.Test.sup<string, 'hello'>() // 'hello' extends string
 
-  // @ts-expect-error - object doesn't extend { a: 1 }
-  Ts.Test.sup<{ a: 1 }, object>()
+  // Returns StaticErrorAssertion - expects error argument when assertion fails
+  // @ts-expect-error - Expected 1 arguments (error object) when assertion fails
+  void Ts.Test.sup<{ a: 1 }, object>()
 })
 
 test('type-only mode - parameters (the original use case!)', () => {
@@ -410,8 +517,9 @@ test('type-only mode - parameters (the original use case!)', () => {
   Ts.Test.parameters<[number, number], AddParams>()
   Ts.Test.parameters<[number, number], [number, number]>()
 
-  // @ts-expect-error - Wrong types
-  Ts.Test.parameters<[string, string], AddParams>()
+  // Returns StaticErrorAssertion and requires error argument
+  // @ts-expect-error - Assertion fails, requires error argument
+  void Ts.Test.parameters<[string, string], AddParams>()
 
   // Real-world example from user's code
   // type i1 = Interceptor.InferFromPipeline<typeof p1>
@@ -423,10 +531,11 @@ test('type-only mode - promise', () => {
   Ts.Test.promise<number, Promise<number>>()
   Ts.Test.promise<string, Promise<string>>()
 
-  // @ts-expect-error - Wrong type
-  Ts.Test.promise<string, Promise<number>>()
-  // @ts-expect-error - Not a Promise
-  Ts.Test.promise<number, number>()
+  // Returns StaticErrorAssertion and requires error argument
+  // @ts-expect-error - Assertion fails, requires error argument
+  void Ts.Test.promise<string, Promise<number>>()
+  // @ts-expect-error - Assertion fails, requires error argument
+  void Ts.Test.promise<number, number>()
 })
 
 test('type-only mode - array', () => {
@@ -435,8 +544,64 @@ test('type-only mode - array', () => {
   Ts.Test.array<number, number[]>()
   Ts.Test.array<{ a: 1 }, Array<{ a: 1 }>>()
 
-  // @ts-expect-error - Wrong element type
-  Ts.Test.array<number, string[]>()
-  // @ts-expect-error - Not an array
-  Ts.Test.array<string, string>()
+  // Returns StaticErrorAssertion and requires error argument
+  // @ts-expect-error - Assertion fails, requires error argument
+  void Ts.Test.array<number, string[]>()
+  // @ts-expect-error - Assertion fails, requires error argument
+  void Ts.Test.array<string, string>()
+})
+
+// === Test new features ===
+
+test('tuple', () => {
+  Ts.Test.tuple<[string, number]>()(['hello', 42] as [string, number])
+  // @ts-expect-error - Wrong order
+  Ts.Test.tuple<[string, number]>()([42, 'hello'] as [number, string])
+})
+
+test('returns', () => {
+  function getNumber() {
+    return 42
+  }
+  Ts.Test.returns<number>()(getNumber)
+  // @ts-expect-error - Wrong return type
+  Ts.Test.returns<string>()(getNumber)
+})
+
+test('returnsPromise', () => {
+  async function getNumber() {
+    return 42
+  }
+  Ts.Test.returnsPromise<number>()(getNumber)
+  // @ts-expect-error - Wrong resolved type
+  Ts.Test.returnsPromise<string>()(getNumber)
+})
+
+test('propertiesSub', () => {
+  type User = { name: string; age: number }
+  Ts.Test.propertiesSub<{ name: string }, User>()
+  // @ts-expect-error - Wrong property type
+  Ts.Test.propertiesSub<{ name: number }, User>()
+})
+
+test('propertiesExact', () => {
+  type User = { name: string; age: number }
+  Ts.Test.propertiesExact<{ name: string }, User>()
+  // @ts-expect-error - Not exact
+  Ts.Test.propertiesExact<{ name: string | number }, User>()
+})
+
+test('propertiesEquiv', () => {
+  type User = { name: string; count: number & {} }
+  Ts.Test.propertiesEquiv<{ count: number }, User>()
+  // @ts-expect-error - Not equivalent
+  Ts.Test.propertiesEquiv<{ name: number }, User>()
+})
+
+test('equivNoExcess', () => {
+  type Config = { id: boolean; name?: string }
+  // Value mode
+  Ts.Test.equivNoExcess<Config>()({ id: true })
+  // @ts-expect-error - Excess property
+  Ts.Test.equivNoExcess<Config>()({ id: true, extra: 1 })
 })

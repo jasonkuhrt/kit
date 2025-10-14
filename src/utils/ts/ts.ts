@@ -119,48 +119,6 @@ export interface StaticError<
 export type StaticErrorAny = StaticError<string, object, string>
 
 /**
- * Represents a static assertion error at the type level, optimized for type testing.
- *
- * This is a simpler, more focused error type compared to {@link StaticError}. It's specifically
- * designed for type assertions where you need to communicate expected vs. actual types.
- *
- * @template $Message - A string literal type describing the assertion failure
- * @template $Expected - The expected type
- * @template $Actual - The actual type that was provided
- *
- * @example
- * ```ts
- * // Using in parameter assertions
- * function assertParameters<T extends readonly any[]>(
- *   fn: Parameters<typeof fn> extends T ? typeof fn
- *     : StaticErrorAssertion<
- *       'Parameters mismatch',
- *       T,
- *       Parameters<typeof fn>
- *     >
- * ): void {}
- *
- * // Error shows:
- * // MESSAGE: 'Parameters mismatch'
- * // EXPECTED: [string, number]
- * // ACTUAL: [number, string]
- * ```
- *
- * @category Error Messages
- */
-export interface StaticErrorAssertion<
-  $Message extends string = string,
-  $Expected = unknown,
-  $Actual = unknown,
-  $Tip extends string = never,
-> {
-  MESSAGE: $Message
-  EXPECTED: $Expected
-  ACTUAL: $Actual
-  TIP: $Tip
-}
-
-/**
  * Like {@link Print} but adds additional styling to display the rendered type in a sentence.
  *
  * Useful for type-level error messages where you want to clearly distinguish type names
@@ -439,6 +397,8 @@ export type Writeable<$Object> = {
  */
 export type IfExtendsElse<$Type, $Extends, $Then, $Else> = $Type extends $Extends ? $Then : $Else
 
+export type IsNever<$Type> = [$Type] extends [never] ? true : false
+
 /**
  * Intersection that ignores never and any.
  */
@@ -460,69 +420,37 @@ export type Narrowable = string | number | bigint | boolean | []
 export type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never : IsUnknown<$T> extends true ? never : $T
 
 /**
- * Classify how the SECOND type parameter relates to the FIRST type parameter.
+ * Check if a type is `any`.
  *
- * Returns one of:
- * - `'subtype'` - B is a subtype of A (B extends A, B is narrower/more specific than A).
- *   See: {@link https://en.wikipedia.org/wiki/Subtyping | Subtyping on Wikipedia}
- *
- * - `'supertype'` - B is a supertype of A (A extends B, B is wider/more general than A).
- *   This is the inverse of subtyping. See: {@link https://en.wikipedia.org/wiki/Subtyping#Subsumption | Subsumption}
- *
- * - `'equivalent'` - A and B are mutually assignable (both extend each other).
- *   Also known as type equality in structural type systems.
- *   See: {@link https://en.wikipedia.org/wiki/Type_system#Type_equivalence | Type Equivalence}
- *
- * - `'overlapping'` - Types share some possible values but neither is a subtype of the other.
- *   Common in structural typing where types can share properties without a subtype relationship.
- *   See: {@link https://www.typescriptlang.org/docs/handbook/type-compatibility.html | TypeScript Type Compatibility}
- *
- * - `'disjoint'` - Types have no values in common (their intersection is empty/never).
- *   See: {@link https://en.wikipedia.org/wiki/Disjoint_union | Disjoint Sets Theory}
- *
- * @remarks
- * This utility analyzes type relationships based on TypeScript's structural type system,
- * where type compatibility is determined by structure rather than declaration.
- *
- * For more on type relations in programming languages, see:
- * - {@link https://en.wikipedia.org/wiki/Type_theory | Type Theory on Wikipedia}
- * - {@link https://www.cs.cornell.edu/courses/cs4110/2012fa/lectures/lecture25.pdf | Cornell CS - Subtyping}
- * - {@link https://www.typescriptlang.org/docs/handbook/type-compatibility.html | TypeScript Handbook}
+ * Uses the fact that `any` is the only type where `0 extends (1 & T)` is true,
+ * since `any` absorbs all type operations including impossible intersections.
  *
  * @example
  * ```ts
- * // Read as: "How does the second type relate to the first?"
- * type T1 = GetRelation<string, string> // 'equivalent'
- * type T2 = GetRelation<1, 1> // 'equivalent'
- * type T3 = GetRelation<string, number> // 'disjoint'
- * type T4 = GetRelation<{a: 1}, {b: 2}> // 'overlapping' (objects can have both properties)
- * type T5 = GetRelation<{a: 1, id: 1}, {b: 2, id: 1}> // 'overlapping'
- * type T6 = GetRelation<{a: 1}, {a: 1}> // 'equivalent'
- * type T7 = GetRelation<'a' | 'b', 'a'> // 'subtype' ('a' is narrower than 'a' | 'b')
- * type T8 = GetRelation<'a', 'a' | 'b'> // 'supertype' ('a' | 'b' is wider than 'a')
+ * type T1 = IsAny<any>      // true
+ * type T2 = IsAny<unknown>  // false
+ * type T3 = IsAny<string>   // false
+ * type T4 = IsAny<never>    // false
  * ```
  */
-// dprint-ignore
-export type GetRelation<A, B> =
-  // Check if types are equivalent
-  [A] extends [B] ? [B] extends [A] ?
-    'equivalent' // Both extend each other - equivalent types
-  // A extends B but B doesn't extend A - B is supertype
-  : 'supertype'
-  // A doesn't extend B, check if B extends A
-  : [B] extends [A] ? 'subtype'
-  // Neither extends the other - check special cases
-  : A extends Primitive ?
-      B extends Primitive ?
-        [A & B] extends [never] ? 'disjoint' : 'overlapping'  // Both primitives
-      : 'disjoint'  // Primitive vs non-primitive = always disjoint
-    : B extends Primitive ? 'disjoint'  // Non-primitive vs primitive = always disjoint
-    : [A & B] extends [never] ? 'disjoint' : 'overlapping' // Both non-primitives
+export type IsAny<T> = 0 extends 1 & T ? true : false
 
-// Type-fest imports (used by some types above)
-type IsAny<T> = 0 extends 1 & T ? true : false
+/**
+ * Check if a type is `unknown`.
+ *
+ * Unknown is the top type - everything extends unknown (except any, which is special).
+ * So we check if unknown extends the type (only true for unknown and any),
+ * then exclude any using IsAny.
+ *
+ * @example
+ * ```ts
+ * type T1 = IsUnknown<unknown>  // true
+ * type T2 = IsUnknown<any>      // false
+ * type T3 = IsUnknown<string>   // false
+ * type T4 = IsUnknown<never>    // false
+ * ```
+ */
+export type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true) : false
 
-type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true) : false
-
-// Import from lang namespace
-type Primitive = string | number | bigint | boolean | symbol | null | undefined
+// Export relation utilities
+export * from './relation.js'

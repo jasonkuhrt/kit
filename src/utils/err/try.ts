@@ -3,6 +3,7 @@ import type { Bool } from '#bool'
 import { Fn } from '#fn'
 import { Prom } from '#prom'
 import type { AwaitedUnion } from '#prom/prom'
+import type { Ts } from '#ts'
 import { Value } from '#value'
 import type { IsUnknown } from 'type-fest'
 import { ensure, is } from './type.js'
@@ -12,11 +13,19 @@ import { wrap, type WrapOptions } from './wrap.js'
  * Helper type for tryOr that enforces sync fallback when main is sync.
  * If main function returns Promise, fallback can be sync or async.
  * If main function is sync, fallback must be sync.
+ *
+ * Special handling for never: Since `never` extends everything (including `Promise<any>`),
+ * we must check for it explicitly before checking for Promise. When the return type is `never`,
+ * the function always throws, so the result type is just the fallback.
  */
-type TryOrReturn<$Main, $Fallback> = $Main extends Promise<infer M>
-  ? Promise<Awaited<M> | Awaited<Value.resolveLazy<$Fallback>>>
-  : Value.resolveLazy<$Fallback> extends Promise<any> ? never
-  : $Main | Value.resolveLazy<$Fallback>
+// dprint-ignore
+type TryOrReturn<$Main, $Fallback> =
+  Ts.IsNever<$Main> extends true
+    ? Value.resolveLazy<$Fallback>  // Function always throws -> just return fallback type
+    : [$Main] extends [Promise<infer M>]
+      ? Promise<Awaited<M> | Awaited<Value.resolveLazy<$Fallback>>>
+      : Value.resolveLazy<$Fallback> extends Promise<any> ? never
+      : $Main | Value.resolveLazy<$Fallback>
 
 /**
  * Default error types caught by try/catch functions when no predicates are specified.
