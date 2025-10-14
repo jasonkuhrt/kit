@@ -149,6 +149,7 @@ import * as Builder from './builder.ts'
  *
  * @see {@link describe} for creating tests with a describe block
  *
+ * @builder
  * @category Test Builders
  */
 export function on<$fn extends Fn.AnyAny>(
@@ -289,6 +290,7 @@ export function on<$fn extends Fn.AnyAny>(
  * @see {@link on} for function mode without a describe block
  * @see {@link TestBuilder.matrix matrix()} for matrix testing documentation
  *
+ * @builder
  * @category Test Builders
  */
 export function describe(
