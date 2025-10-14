@@ -1,13 +1,22 @@
-import * as Text from '../_local/text.js'
+import { Arr } from '#arr'
+import { Str } from '#str'
 import type { BlockParameters } from './block.js'
 import { Block } from './block.js'
 import type { RenderContext } from './helpers.js'
-import { applyPadding } from './helpers.js'
 import { Leaf } from './leaf.js'
 import { Node } from './node.js'
 
 export interface ListParameters {
-  padding?: BlockParameters['padding']
+  /**
+   * Space between list items (container property).
+   * - `number` - Newlines between items in vertical orientation
+   *
+   * @example
+   * ```typescript
+   * gap: 1  // One blank line between items
+   * ```
+   */
+  gap?: number
   bullet?: {
     graphic?: string | ((index: number) => string)
     align?: {
@@ -40,29 +49,32 @@ export class List extends Node {
       .repeat(this.items.length)
       .split(` `)
       .map((_, index) => (typeof bullet.graphic === `function` ? bullet.graphic(index) : bullet.graphic))
-    const gutterWidth = Math.max(...bullets.map((_) => Text.getLength(_)))
+    const gutterWidth = Math.max(...bullets.map((_) => Str.Visual.width(_)))
     const gutterWidthWithSpacing = gutterWidth + 1
     const context_ = {
       ...context,
       maxWidth: (context.maxWidth ?? 1000) - gutterWidthWithSpacing,
     }
     const items = this.items.map((item) => item.render(context_).value)
+
+    // Apply gap between items
+    const gap = this.parameters.gap ?? 0
+    const separator = Str.Char.newline.repeat(1 + gap)
+
     let value = items
       .map((_, index) => {
-        return Text.joinColumns(
-          [[Text.minSpan(bullet.align.horizontal, gutterWidth, bullets[index]!)], Text.toLines(_)],
-          ` `,
-        )
+        // Manually align bullet within gutter width
+        const alignedBullet = Str.Visual.span(bullets[index]!, gutterWidth, bullet.align.horizontal)
+        const contentLines = Str.lines(_)
+        // Create bullet column with empty strings for continuation lines
+        const bulletColumn = [alignedBullet, ...Array(contentLines.length - 1).fill('')]
+        return Str.Visual.Table.render(Arr.transpose([bulletColumn, contentLines]), { separator: ` `, align: 'left' })
       })
-      .join(Text.chars.newline)
+      .join(separator)
 
-    if (this.parameters.padding) {
-      value = applyPadding(value, this.parameters.padding, context)
-    }
-
-    const lines = items.flatMap(Text.toLines)
-    const intrinsicWidth = Math.max(...lines.map((_) => Text.getLength(_)))
-    const intrinsicHeight = lines.length
+    const lines = items.flatMap(Str.lines)
+    const intrinsicWidth = Math.max(...lines.map((_) => Str.Visual.width(_)))
+    const intrinsicHeight = Str.lines(value).length
     return {
       shape: {
         intrinsicWidth,

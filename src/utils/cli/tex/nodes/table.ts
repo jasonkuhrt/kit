@@ -1,5 +1,5 @@
 import { Arr } from '#arr'
-import * as Text from '../_local/text.js'
+import { Str } from '#str'
 import type { Block } from './block.js'
 import type { RenderContext } from './helpers.js'
 import { Node } from './node.js'
@@ -71,73 +71,54 @@ export class Table extends Node {
   }
   render(context: RenderContext) {
     const separators = {
-      column: this.parameters.separators?.column ?? ` ${Text.chars.pipe} `,
+      column: this.parameters.separators?.column ?? ` ${Str.Char.pipe} `,
       row: (width: number) => {
         const separator = this.parameters.separators?.row === undefined ? `-` : this.parameters.separators?.row
         if (separator === null) {
-          return Text.chars.newline
+          return Str.Char.newline
         }
-        return `${Text.chars.newline}${separator.repeat(width)}${Text.chars.newline}`
+        return `${Str.Char.newline}${separator.repeat(width)}${Str.Char.newline}`
       },
     }
+    // Render all cells
     const rows = this.rows.map((row) => {
-      const total = row.length
-      const rowsInner = row.map((cell, index) => {
-        const r1 = cell.render({
-          phase: `inner`,
+      return row.map((cell, index) => {
+        return cell.render({
           color: context.color,
           maxWidth: context.maxWidth,
           height: context.height,
           index: {
-            total,
+            total: row.length,
             isFirst: index === 0,
-            isLast: index === total - 1,
+            isLast: index === row.length - 1,
             position: index,
           },
-        })
-        return r1
+        }).value
       })
-      const maxCellHeight = Math.max(...rowsInner.map((_) => _.shape.intrinsicHeight))
-      const rowsOuter = row.map((cell, index) => {
-        const r2 = cell.render({
-          phase: `outer`,
-          color: context.color,
-          maxWidth: context.maxWidth,
-          height: maxCellHeight,
-          index: {
-            total,
-            isFirst: index === 0,
-            isLast: index === total - 1,
-            position: index,
-          },
-        })
-        return r2
-      })
-      return rowsOuter.map((_) => _.value)
     })
     const headers = this.headers.map((cell) => cell.render(context).value)
     const rowsAndHeaders = this.headers.length > 0 ? [headers, ...rows] : rows
     const maxWidthOfEachColumn = Arr.transpose(rowsAndHeaders).map((col) =>
-      Math.max(...col.flatMap(Text.toLines).map((_) => Text.getLength(_)))
+      Math.max(...col.flatMap(Str.lines).map((_) => Str.Visual.width(_)))
     )
     const rowsWithCellWidthsNormalized = rowsAndHeaders.map((row) => {
-      const maxNumberOfLinesAmongColumns = Math.max(...row.map(Text.toLines).map((lines) => lines.length))
+      const maxNumberOfLinesAmongColumns = Math.max(...row.map(Str.lines).map((lines) => lines.length))
       const row_ = row.map((col) => {
-        const numberOfLines = Text.toLines(col).length
+        const numberOfLines = Str.lines(col).length
         if (numberOfLines < maxNumberOfLinesAmongColumns) {
-          return col + Text.chars.newline.repeat(maxNumberOfLinesAmongColumns - numberOfLines)
+          return col + Str.Char.newline.repeat(maxNumberOfLinesAmongColumns - numberOfLines)
         }
         return col
       })
       const row__ = row_.map((col, i) =>
-        Text.mapLines(col, (line) => Text.padWithin(`right`, maxWidthOfEachColumn[i] ?? 0, ` `, line))
+        Str.mapLines(col, (line) => Str.Visual.pad(line, maxWidthOfEachColumn[i] ?? 0, `right`))
       )
       return row__
     })
     const rowsWithCellsJoined = rowsWithCellWidthsNormalized.map((r) =>
-      Text.joinColumns(r.map(Text.toLines), separators.column)
+      Str.Visual.Table.render(Arr.transpose(r.map(Str.lines)), { separator: separators.column, align: `left` })
     )
-    const width = Math.max(...rowsWithCellsJoined.flatMap(Text.toLines).map((_) => Text.getLength(_)))
+    const width = Math.max(...rowsWithCellsJoined.flatMap(Str.lines).map((_) => Str.Visual.width(_)))
     const value = rowsWithCellsJoined.join(separators.row(width))
 
     return {

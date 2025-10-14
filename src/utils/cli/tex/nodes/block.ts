@@ -1,39 +1,72 @@
-import * as Text from '../_local/text.js'
+import { Str } from '#str'
 import type { RenderContext } from './helpers.js'
-import { applyPadding } from './helpers.js'
 import { Leaf } from './leaf.js'
 import { Node } from './node.js'
 
 /**
- * Block layout and styling parameters.
+ * Block layout and styling parameters using logical properties.
+ * Logical properties adapt to the orientation (flow direction) of the block.
  *
  * @category CLI/Text Rendering
  */
 export interface BlockParameters {
   /**
-   * How child blocks are arranged.
-   * - `'vertical'` - Stack children top to bottom (default)
-   * - `'horizontal'` - Place children side by side
+   * How child blocks are arranged (orientation of the main axis).
+   * - `'vertical'` - Stack children top to bottom (default) - main axis is vertical
+   * - `'horizontal'` - Place children side by side - main axis is horizontal
    */
-  flow?: 'vertical' | 'horizontal'
+  orientation?: 'vertical' | 'horizontal'
 
   /**
-   * Minimum width in characters.
-   * Content is padded to reach this width.
+   * Size constraints along main and cross axes.
+   * Use AxisHand notation for flow-relative sizing.
+   *
+   * Values can be:
+   * - `number` - Absolute size in characters
+   * - `bigint` - Percentage of parent (e.g., `50n` = 50%)
+   *
+   * @example
+   * ```typescript
+   * // 50% of parent's cross span (width in vertical orientation)
+   * span: { cross: 50n }
+   *
+   * // Exact main span (height in vertical orientation)
+   * span: { main: 10 }
+   *
+   * // Both axes
+   * span: { main: 10, cross: 50n }
+   * ```
    */
-  minWidth?: number
+  span?: Str.SpanInput
 
   /**
-   * Maximum width in characters.
-   * Content is wrapped or truncated to fit.
+   * Min/max size constraints along main and cross axes.
+   *
+   * @example
+   * ```typescript
+   * // Max width constraint (cross axis in vertical orientation)
+   * spanRange: { cross: { max: 80 } }
+   *
+   * // Min and max for main axis
+   * spanRange: { main: { min: 5, max: 20 } }
+   * ```
    */
-  maxWidth?: number
+  spanRange?: Str.SpanRange
 
   /**
-   * Width as percentage of parent container.
-   * @example `'50%'`, `'100%'`
+   * Space between child blocks (container property).
+   * Applied between items in array content.
+   *
+   * @example
+   * ```typescript
+   * // 1 character/line gap between items
+   * gap: 1
+   *
+   * // Different gaps for main and cross axes
+   * gap: { main: 2, cross: 1 }
+   * ```
    */
-  width?: `${number}%`
+  gap?: Str.GapInput
 
   /**
    * Color/style function applied to the entire rendered block.
@@ -42,95 +75,84 @@ export interface BlockParameters {
   color?: (text: string) => string
 
   /**
-   * Border configuration for block edges.
-   * Each side can be a fixed string or a function for dynamic characters.
+   * Border configuration using Box's border system.
+   * Supports colors, styles, and dynamic hook functions.
+   *
+   * @example
+   * ```typescript
+   * // Simple string borders
+   * border: { edges: { top: '-', left: '|' } }
+   *
+   * // Preset styles
+   * border: { style: 'single' }
+   *
+   * // Colored borders
+   * border: {
+   *   edges: {
+   *     top: { char: '─', color: { foreground: 'blue' }, bold: true }
+   *   }
+   * }
+   *
+   * // Dynamic borders with hooks (context has colIndex/lineIndex, totalCols/totalLines, char)
+   * border: {
+   *   edges: {
+   *     top: (ctx) => ctx.colIndex % 2 ? '=' : '-'
+   *   }
+   * }
+   * ```
    */
-  border?: {
-    /**
-     * Character used for corner positions.
-     * @example `'+'`, `'o'`
-     */
-    corners?: string
-
-    /**
-     * Top border character(s).
-     * Function receives column index for dynamic borders.
-     * @example `'-'`, `(col) => col % 2 ? '=' : '-'`
-     */
-    top?: string | ((columnNumber: number) => string)
-
-    /**
-     * Left border character(s).
-     * Function receives line index for dynamic borders.
-     * @example `'|'`
-     */
-    left?: string | ((lineNumber: number) => string)
-
-    /**
-     * Bottom border character(s).
-     * Function receives column index for dynamic borders.
-     * @example `'-'`
-     */
-    bottom?: string | ((columnNumber: number) => string)
-
-    /**
-     * Right border character(s).
-     * Function receives line index for dynamic borders.
-     * @example `'|'`
-     */
-    right?: string | ((lineNumber: number) => string)
-  }
+  border?: Str.BorderInput
 
   /**
-   * Padding space inside the block borders.
-   * Values are in character count.
+   * Padding space inside the block borders using logical properties.
+   * Use AxisHand notation for flow-relative padding.
+   *
+   * @example
+   * ```typescript
+   * // Shorthand: [main, cross] - same value for start/end
+   * padding: [1, 2]  // 1 on main axis, 2 on cross axis
+   *
+   * // Binary axis: [[mainStart, mainEnd], [crossStart, crossEnd]]
+   * padding: [[1, 2], [3, 4]]
+   *
+   * // Explicit logical properties
+   * padding: { mainStart: 1, crossEnd: 2 }
+   *
+   * // All sides equal
+   * padding: 2
+   * ```
    */
-  padding?: {
-    /** Space above content */
-    top?: number
-    /** Space between child blocks (vertical flow) */
-    topBetween?: number
-    /** Space to the left of content */
-    left?: number
-    /** Space below content */
-    bottom?: number
-    /** Space between child blocks (vertical flow) */
-    bottomBetween?: number
-    /** Space to the right of content */
-    right?: number
-  }
+  padding?: Str.AxisHand.Input
 
   /**
-   * Margin space outside the block borders.
-   * Currently not fully implemented.
+   * Margin space outside the block borders using logical properties.
+   * Use AxisHand notation for flow-relative margins.
+   *
+   * Follows CSS box model: margin → border → padding → content
+   * Note: Unlike CSS, margins are additive (don't collapse).
+   *
+   * @example
+   * ```typescript
+   * // Indent entire bordered box (cross-axis start)
+   * Tex.Tex().block({
+   *   border: { left: '|', right: '|' },
+   *   margin: { crossStart: 4 }
+   * }, 'Content')
+   *
+   * // Space between sections (main-axis end)
+   * Tex.Tex()
+   *   .block({ margin: { mainEnd: 2 } }, 'Section 1')
+   *   .block('Section 2')
+   * ```
    */
-  margin?: {
-    /** Space above block */
-    top?: number
-    /** Space to the left of block */
-    left?: number
-    /** Space below block */
-    bottom?: number
-    /** Space to the right of block */
-    right?: number
-  }
+  margin?: Str.AxisHand.Input
 }
 
 export class Block extends Node {
   children: Node[]
   parameters: BlockParameters
-  renderings: {
-    inner: {
-      width: number
-      height: number
-      result: string
-    } | null
-    outer: {
-      width: number
-      height: number
-      result: string
-    } | null
-  }
+  private box: Str.Box | null = null
+
   constructor(parameters: BlockParameters, node: Node)
   constructor(parameters: BlockParameters, nodes: Node[])
   constructor(parameters: BlockParameters, text: string)
@@ -152,209 +174,88 @@ export class Block extends Node {
     } else {
       this.children = [children]
     }
-    this.renderings = {
-      inner: null,
-      outer: null,
-    }
   }
+
   addChild(node: Node) {
     this.children.push(node)
     return this
   }
+
   setParameters(parameters: BlockParameters) {
     this.parameters = parameters
     return this
   }
+
   render(context: RenderContext) {
-    const flow = this.parameters.flow ?? `vertical`
+    const orientation = this.parameters.orientation ?? `vertical`
 
-    if (context.phase === `inner` || !context.phase) {
-      const widthOwn = typeof this.parameters.width === `number`
-        ? { type: `absolute` as const, value: this.parameters.width }
-        : typeof this.parameters.width === `string`
-        ? this.parameters.width.match(/(\d+)%/)
-          ? {
-            type: `percentage` as const,
-            value: parseInt(this.parameters.width.match(/(\d+)%/)![1]!) / 100,
-          }
-          : null
-        : null
-      const widthOwnResolved = widthOwn
-        ? widthOwn.type === `absolute`
-          ? widthOwn.value
-          : widthOwn.value * (context.maxWidth ?? 1000)
-        : null
-      const maxWidthOwn = this.parameters.maxWidth ?? Infinity
-      const paddingLeftOwn = this.parameters.padding?.left ?? 0
-      const maxWidthResolved = Math.min(widthOwnResolved ?? Infinity, maxWidthOwn, context.maxWidth ?? 1000)
-        - paddingLeftOwn
-      let intrinsicWidth = 0
-
-      let renderings: string[] = []
-      let index = 0
-      for (const child of this.children) {
-        const rendered = child.render({
-          maxWidth: maxWidthResolved,
-          height: context.height,
-          color: this.parameters.color,
-          index: {
-            total: this.children.length,
-            isFirst: index === 0,
-            isLast: index === this.children.length - 1,
-            position: index,
-          },
-        })
-
-        // TODO minWidth should be passed down to children?
-        if (this.parameters.minWidth !== undefined) {
-          rendered.value = Text.mapLines(rendered.value, (_) => Text.minSpan(`left`, this.parameters.minWidth!, _))
-        }
-        intrinsicWidth = Math.max(intrinsicWidth, rendered.shape.intrinsicWidth)
-        renderings.push(rendered.value)
-        index++
-      }
-
-      let joined = ``
-      let width = 0
-
-      if (flow === `horizontal`) {
-        joined = Text.row(
-          renderings.map((_) => ({
-            lines: _.split(`\n`),
-            separator: ``,
-          })),
-        )
-
-        width = Text.measure(joined).maxWidth
-      } else {
-        width = widthOwnResolved === null ? intrinsicWidth : maxWidthResolved
-        // each line must span the width of the box
-        renderings = renderings.map((_) => Text.minSpan(`left`, width, _))
-        joined = renderings.join(Text.chars.newline)
-      }
-
-      let value = joined
-
-      if (this.parameters.padding) {
-        value = applyPadding(value, this.parameters.padding, context)
-      }
-
-      const intrinsicHeight = Text.toLines(value).length
-
-      this.renderings.inner = {
-        result: value,
-        width,
-        height: intrinsicHeight,
-      }
-
-      if (context.phase) {
-        return {
-          shape: {
-            intrinsicWidth,
-            intrinsicHeight,
-            desiredWidth: 0,
-          },
-          value,
-        }
-      }
-    }
-
-    if (context.phase === `outer` || !context.phase) {
-      const height = context.height ?? this.renderings.inner!.height
-      let value = this.renderings.inner!.result
-      const lineIndexes = [...Array(height).keys()]
-
-      const lines = Text.toLines(value)
-      const linesWithBorders: string[] = []
-      for (const index of lineIndexes) {
-        let line = lines[index] ?? ` `.repeat(this.renderings.inner!.width)
-
-        if (this.parameters.border?.left) {
-          const spec = this.parameters.border.left
-          const symbol = typeof spec === `string` ? spec : spec(index)
-          line = symbol + line
-        }
-        if (this.parameters.border?.right) {
-          const spec = this.parameters.border.right
-          const symbol = typeof spec === `string` ? spec : spec(index)
-          line = line + symbol
-        }
-        linesWithBorders.push(line)
-      }
-
-      /**
-       * The horizontal borders (top, bottom) span to the corners of the box.
-       *
-       * If left/right borders have been added that will affect the width of these
-       * horizontal borders.
-       *
-       * TODO in the future we should have granular corner control. Then, this
-       * current behavior can become the default.
-       */
-      const hadVerticalBorders = this.parameters.border?.left || this.parameters.border?.right
-      const selfMeasure = hadVerticalBorders
-        ? Text.measure(Text.fromLines(linesWithBorders))
-        : { height: this.renderings.inner!.height, maxWidth: this.renderings.inner!.width }
-      const widthIndexes = [...Array(selfMeasure.maxWidth).keys()]
-      const corners = this.parameters.border?.corners ?? ``
-      const width = selfMeasure.maxWidth - Text.getLength(corners) * 2
-      const borderTop = this.parameters.border?.top
-        ? corners
-          + (typeof this.parameters.border.top === `string`
-            ? this.parameters.border.top.repeat(width)
-            : widthIndexes.map(this.parameters.border.top).join(``))
-          + corners
-        : null
-      const borderBottom = this.parameters.border?.bottom
-        ? corners
-          + (typeof this.parameters.border?.bottom === `string`
-            ? this.parameters.border.bottom.repeat(width)
-            : widthIndexes.map(this.parameters.border.bottom).join(``))
-          + corners
-        : null
-      const linesRendered = [borderTop, linesWithBorders.join(Text.chars.newline), borderBottom]
-        .filter(Boolean)
-        .join(Text.chars.newline)
-
-      value = linesRendered
-
-      // todo
-      // value = this.parameters.margin?.top
-      //   ? Text.chars.newline.repeat(this.parameters.margin.top) + value
-      //   : value
-      // value = this.parameters.margin?.left
-      //   ? Text.indentBlock(value, Text.chars.space.repeat(this.parameters.margin.left))
-      //   : value
-      // value = this.parameters.margin?.bottom
-      //   ? value + Text.chars.newline.repeat(this.parameters.margin.bottom)
-      //   : value
-      // value = this.parameters.margin?.right
-      //   ? Text.fromLines(
-      //       Text.toLines(value).map((_) => _ + Text.chars.space.repeat(this.parameters.margin!.right!))
-      //     )
-      //   : value
-
-      const color = this.parameters.color ?? ((text: string) => text)
-      value = color(value)
-
-      const { maxWidth: intrinsicWidth, height: intrinsicHeight } = Text.measure(value)
-
-      this.renderings.outer = {
-        result: value,
-        width: intrinsicWidth,
-        height: intrinsicHeight,
-      }
-
-      return {
-        shape: {
-          intrinsicWidth,
-          intrinsicHeight,
-          desiredWidth: 0,
+    // Render all children first
+    const renderedChildren: string[] = []
+    for (let index = 0; index < this.children.length; index++) {
+      const child = this.children[index]!
+      const rendered = child.render({
+        maxWidth: context.maxWidth,
+        height: context.height,
+        color: this.parameters.color,
+        index: {
+          total: this.children.length,
+          isFirst: index === 0,
+          isLast: index === this.children.length - 1,
+          position: index,
         },
-        value,
-      }
+      })
+      renderedChildren.push(rendered.value)
     }
 
-    throw new Error(`Invalid phase`)
+    // Create Box with rendered children
+    this.box = Str.Box.make({
+      content: renderedChildren.length === 0
+        ? ``
+        : renderedChildren.length === 1
+        ? renderedChildren[0]!
+        : renderedChildren,
+      orientation,
+    })
+
+    // Apply parameters to Box using static methods
+    if (this.parameters.padding) {
+      this.box = Str.Box.pad(this.box, this.parameters.padding)
+    }
+    if (this.parameters.margin) {
+      this.box = Str.Box.margin(this.box, this.parameters.margin)
+    }
+    if (this.parameters.span) {
+      this.box = Str.Box.span(this.box, this.parameters.span)
+    }
+    if (this.parameters.spanRange) {
+      this.box = Str.Box.spanRange(this.box, this.parameters.spanRange)
+    }
+    if (this.parameters.gap) {
+      this.box = Str.Box.gap(this.box, this.parameters.gap)
+    }
+
+    // Apply border using Box's border system (supports colors and dynamic hooks)
+    if (this.parameters.border) {
+      this.box = Str.Box.border(this.box, this.parameters.border)
+    }
+
+    // Get Box rendering
+    let value = this.box.toString()
+
+    // Apply color
+    if (this.parameters.color) {
+      value = this.parameters.color(value)
+    }
+
+    const { maxWidth: intrinsicWidth, height: intrinsicHeight } = Str.Visual.size(value)
+
+    return {
+      shape: {
+        intrinsicWidth,
+        intrinsicHeight,
+        desiredWidth: 0,
+      },
+      value,
+    }
   }
 }

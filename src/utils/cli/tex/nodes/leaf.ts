@@ -1,4 +1,4 @@
-import * as Text from '../_local/text.js'
+import { Str } from '#str'
 import type { RenderContext } from './helpers.js'
 import { Node } from './node.js'
 
@@ -9,9 +9,9 @@ export class Leaf extends Node {
     this.value = value
   }
   render(context: RenderContext) {
-    const lines = Text.lines(context.maxWidth ?? 1000, this.value)
-    const value = lines.join(Text.chars.newline)
-    const intrinsicWidth = Math.max(...lines.map((_) => Text.getLength(_)))
+    const lines = Str.Visual.wrap(this.value, context.maxWidth ?? 1000)
+    const value = lines.join(Str.Char.newline)
+    const intrinsicWidth = Math.max(...lines.map((_) => Str.Visual.width(_)))
     const intrinsicHeight = lines.length
     const valueColored = context.color ? context.color(value) : value
     return {

@@ -12,7 +12,7 @@ export const createRootBuilder = (parameters?: BlockParameters): RootBuilder => 
   const builder = createBlockBuilder({ getSuperChain: () => builder }) as RootBuilder
   const builderInternal = toInternalBuilder(builder)
   builderInternal._.node.setParameters({
-    maxWidth: process.stdout.columns,
+    spanRange: { cross: { max: process.stdout.columns } },
     ...parameters,
   })
 

@@ -25,7 +25,7 @@ type Childrenish = Childish | Childish[]
  * .block('Hello World')
  *
  * // Block with parameters
- * .block({ border: { top: '-' }, padding: { left: 2 } }, 'Content')
+ * .block({ border: { edges: { top: '-' } }, padding: { left: 2 } }, 'Content')
  *
  * // Nested blocks using builder function
  * .block(($) => $
@@ -34,7 +34,7 @@ type Childrenish = Childish | Childish[]
  * )
  *
  * // Block with parameters and builder
- * .block({ border: { left: '|' } }, ($) => $
+ * .block({ border: { edges: { left: '|' } } }, ($) => $
  *   .text('Line 1')
  *   .text('Line 2')
  * )
@@ -97,7 +97,7 @@ export interface BlockBuilder<Chain = null> {
    * @example
    * ```typescript
    * Tex.Tex()
-   *   .set({ border: { top: '-' }, padding: { left: 2 } })
+   *   .set({ border: { edges: { top: '-' } }, padding: { left: 2 } })
    *   .text('Content')
    *   .render()
    * ```

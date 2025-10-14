@@ -24,69 +24,96 @@ Test.describe(`block`)
     Tex.Tex().block(() => null),
   ])
   .describeInputs(`padding`, [
-    Tex.Tex().block({ padding: { top: 2 } }, `foo`),
-    Tex.Tex().block({ padding: { bottom: 2 } }, `foo`),
-    Tex.Tex().block(($) => $.set({ padding: { left: 2 } }).text(`foo`)),
+    Tex.Tex().block({ padding: { mainStart: 2 } }, `foo`),
+    Tex.Tex().block({ padding: { mainEnd: 2 } }, `foo`),
+    Tex.Tex().block(($) => $.set({ padding: { crossStart: 2 } }).text(`foo`)),
     Tex.Tex().block(($) =>
-      $.set({ padding: { left: 2 } })
+      $.set({ padding: { crossStart: 2 } })
         .block(`foo`)
         .block(`bar`)
         .block(`qux`)
     ),
   ])
+  .describeInputs(`margin`, [
+    Tex.Tex().block({ margin: { mainStart: 2 } }, `foo`),
+    Tex.Tex().block({ margin: { mainEnd: 2 } }, `foo`),
+    Tex.Tex().block({ margin: { crossStart: 3 } }, `foo`),
+    Tex.Tex().block({ margin: { crossEnd: 3 } }, `foo`),
+    Tex.Tex().block({ margin: { mainStart: 1, mainEnd: 1, crossStart: 2, crossEnd: 2 } }, `foo`),
+    Tex.Tex().block({ margin: { crossStart: 2 } }, `foo\nbar\nbaz`),
+  ])
+  .describeInputs(`margin > with border`, [
+    Tex.Tex().block({ margin: { crossStart: 3 }, border: { edges: { left: `|`, right: `|` } } }, `foo`),
+    Tex.Tex().block({ margin: { mainStart: 1, crossStart: 2 }, border: { edges: { top: `-`, bottom: `-` } } }, `foo`),
+    Tex.Tex().block({
+      margin: { mainStart: 1, crossStart: 3, mainEnd: 1 },
+      border: { edges: { top: `-`, right: `|`, bottom: `-`, left: `|` } },
+    }, `foo`),
+  ])
+  .describeInputs(`margin > with padding`, [
+    Tex.Tex().block({ margin: { crossStart: 2 }, padding: { crossStart: 1 } }, `foo`),
+    Tex.Tex().block({ margin: { mainStart: 1, mainEnd: 1 }, padding: { mainStart: 1, mainEnd: 1 } }, `foo`),
+  ])
+  .describeInputs(`margin > with padding and border`, [
+    Tex.Tex().block({
+      margin: { crossStart: 2, mainStart: 1 },
+      border: { edges: { left: `|`, right: `|`, top: `-`, bottom: `-` } },
+      padding: { crossStart: 1, crossEnd: 1 },
+    }, `content`),
+  ])
   .describeInputs(`border`, [
-    Tex.Tex().block({ border: { top: `-` } }, `foo`),
+    Tex.Tex().block({ border: { edges: { top: `-` } } }, `foo`),
     Tex.Tex()
-      .block({ border: { right: `|` } }, `foo`)
+      .block({ border: { edges: { right: `|` } } }, `foo`)
       .block(($) =>
-        $.set({ border: { right: `|` } })
+        $.set({ border: { edges: { right: `|` } } })
           .block(`alpha`)
           .block(`bravo bravo`)
           .block(`charlie charlie charlie`)
       ),
-    Tex.Tex().block({ border: { bottom: `-` } }, `foo`),
-    Tex.Tex().block({ border: { left: `|` } }, `foo`),
-    Tex.Tex().block({ border: { left: `|`, top: `-` } }, `abc`),
-    Tex.Tex().block({ border: { right: `|`, top: `-` } }, `abc`),
-    Tex.Tex().block({ border: { left: `|`, bottom: `-` } }, `abc`),
-    Tex.Tex().block({ border: { right: `|`, bottom: `-` } }, `abc`),
-    Tex.Tex().block({ border: { right: `|`, left: `|`, top: `-`, bottom: `-` } }, `abc`),
+    Tex.Tex().block({ border: { edges: { bottom: `-` } } }, `foo`),
+    Tex.Tex().block({ border: { edges: { left: `|` } } }, `foo`),
+    Tex.Tex().block({ border: { edges: { left: `|`, top: `-` } } }, `abc`),
+    Tex.Tex().block({ border: { edges: { right: `|`, top: `-` } } }, `abc`),
+    Tex.Tex().block({ border: { edges: { left: `|`, bottom: `-` } } }, `abc`),
+    Tex.Tex().block({ border: { edges: { right: `|`, bottom: `-` } } }, `abc`),
+    Tex.Tex().block({ border: { edges: { right: `|`, left: `|`, top: `-`, bottom: `-` } } }, `abc`),
     Tex.Tex().block(($) =>
-      $.set({ border: { right: `|`, left: `|`, top: `-`, bottom: `-` } }).block(
-        { border: { right: `|`, left: `|`, top: `-`, bottom: `-` } },
+      $.set({ border: { edges: { right: `|`, left: `|`, top: `-`, bottom: `-` } } }).block(
+        { border: { edges: { right: `|`, left: `|`, top: `-`, bottom: `-` } } },
         `abc`,
       )
     ),
   ])
   .describeInputs(`border > corners`, [
-    Tex.Tex().block({ border: { corners: `o`, bottom: `-` } }, `foo`),
-    Tex.Tex().block({ border: { corners: `o`, right: `|` } }, `foo`),
-    Tex.Tex().block({ border: { corners: `o`, bottom: `-` } }, `foo`),
-    Tex.Tex().block({ border: { corners: `o`, left: `|` } }, `foo`),
-    Tex.Tex().block({ border: { corners: `o`, top: `-`, right: `|`, bottom: `-`, left: `|` } }, `foo`),
+    Tex.Tex().block({ border: { edges: { bottom: `-` }, corners: `o` } }, `foo`),
+    Tex.Tex().block({ border: { edges: { right: `|` }, corners: `o` } }, `foo`),
+    Tex.Tex().block({ border: { edges: { bottom: `-` }, corners: `o` } }, `foo`),
+    Tex.Tex().block({ border: { edges: { left: `|` }, corners: `o` } }, `foo`),
+    Tex.Tex().block({ border: { edges: { top: `-`, right: `|`, bottom: `-`, left: `|` }, corners: `o` } }, `foo`),
     Tex.Tex().block(($) =>
-      $.set({ border: { corners: `o`, right: `|`, left: `|`, top: `-`, bottom: `-` } }).block(
-        { border: { corners: `o`, right: `|`, left: `|`, top: `-`, bottom: `-` } },
+      $.set({ border: { edges: { right: `|`, left: `|`, top: `-`, bottom: `-` }, corners: `o` } }).block(
+        { border: { edges: { right: `|`, left: `|`, top: `-`, bottom: `-` }, corners: `o` } },
         `abc`,
       )
     ),
   ])
-  .describeInputs(`flow > can flow horizontally`, [
-    Tex.Tex({ flow: `horizontal` })
+  .describeInputs(`orientation > can flow horizontally`, [
+    Tex.Tex({ orientation: `horizontal` })
       .block(($) => $.block(`1aaaaa`).block(`1b`).block(`1ccccc`))
       .block(($) => $.block(`2aaaa`).block(`2b`).block(`2ccccc`)),
   ])
-  .describeInputs(`width > % > 100%`, [
-    Tex.Tex({ maxWidth: 100 })
+  .describeInputs(`span > % > 100%`, [
+    Tex.Tex({ spanRange: { cross: { max: 100 } } })
       .block(`foo bar`)
-      .block({ border: { top: `-` }, width: `100%` }, `foo`),
+      .block({ border: { edges: { top: `-` } }, span: { cross: 100n } }, `foo`),
   ])
   .test(({ input }) => {
     expect(renderTex(input)).toMatchSnapshot()
   })
 
-it(`block > flow > ansi does not contribute to column width calculation`, () => {
-  const builder = Tex.Tex({ flow: `horizontal` })
+it(`block > orientation > ansi does not contribute to column width calculation`, () => {
+  const builder = Tex.Tex({ orientation: `horizontal` })
     .block(($) => $.block(`1a`).block(ansis.red(`1b`)).block(`1c`))
     .block(($) => $.block(`2aaaa`).block(`2b`).block(`2ccccc`))
   // Skip ANSI snapshots in CI due to environment differences
@@ -98,16 +125,16 @@ it(`block > flow > ansi does not contribute to column width calculation`, () => 
 it(`block > set > can be at method or builder level`, () => {
   const a = Tex.Tex()
     .block(($) =>
-      $.set({ border: { corners: `o`, right: `|`, left: `|`, top: `-`, bottom: `-` } }).block(
-        { border: { corners: `o`, right: `|`, left: `|`, top: `-`, bottom: `-` } },
+      $.set({ border: { edges: { right: `|`, left: `|`, top: `-`, bottom: `-` }, corners: `o` } }).block(
+        { border: { edges: { right: `|`, left: `|`, top: `-`, bottom: `-` }, corners: `o` } },
         `abc`,
       )
     )
     .render()
   const b = Tex.Tex()
     .block(
-      { border: { corners: `o`, right: `|`, left: `|`, top: `-`, bottom: `-` } },
-      ($) => $.block({ border: { corners: `o`, right: `|`, left: `|`, top: `-`, bottom: `-` } }, `abc`),
+      { border: { edges: { right: `|`, left: `|`, top: `-`, bottom: `-` }, corners: `o` } },
+      ($) => $.block({ border: { edges: { right: `|`, left: `|`, top: `-`, bottom: `-` }, corners: `o` } }, `abc`),
     )
     .render()
   expect(a).toEqual(b)
@@ -170,8 +197,8 @@ Test.describe(`table`)
     Tex.Tex().table(($) => $.headers([`alpha`, `bravo`, `charlie`]).row(`a`, `b`)),
     Tex.Tex().block(($) =>
       $.table(($) =>
-        $.header(new Tex.Block({ padding: { right: 10 } }, `alpha`))
-          .header(new Tex.Block({ border: { bottom: `~` } }, `bravo`))
+        $.header(new Tex.Block({ padding: { crossEnd: 10 } }, `alpha`))
+          .header(new Tex.Block({ border: { edges: { bottom: `~` } } }, `bravo`))
           .row(`a`, `b`)
       )
     ),

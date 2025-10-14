@@ -161,7 +161,7 @@ export interface TableBuilder {
    * @example
    * ```typescript
    * .table(($) => $
-   *   .header(new Tex.Block({ border: { bottom: '~' } }, 'Name'))
+   *   .header(new Tex.Block({ border: { edges: { bottom: '~' } } }, 'Name'))
    *   .header('Age')
    *   .row('Alice', '30')
    * )
