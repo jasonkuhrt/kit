@@ -1,6 +1,8 @@
 import { Fn } from '#fn'
 import { inspect, type InspectOptions } from './inspect.js'
 
+export * from './contextual.js'
+
 export * from './inspect.js'
 
 export * from './stack.js'
