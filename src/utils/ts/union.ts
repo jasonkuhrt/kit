@@ -186,3 +186,49 @@ export type Merge<$U> = {
     )
   ]: $U extends any ? (k extends keyof $U ? $U[k] : never) : never
 }
+
+/**
+ * Check if a type is a union type.
+ *
+ * Returns `true` if the type is a union with multiple members, `false` if it's
+ * a single type or `never`. This is useful for conditional type logic that needs
+ * to handle unions differently from single types.
+ *
+ * The check works by:
+ * 1. First checking if the type is `never` (not a union)
+ * 2. Then checking if converting the type to an intersection yields the same type
+ *    (single types remain unchanged when converted to intersection, unions do not)
+ *
+ * @example
+ * ```ts
+ * // Union types return true
+ * type T1 = Union.Is<string | number>              // true
+ * type T2 = Union.Is<'a' | 'b' | 'c'>             // true
+ * type T3 = Union.Is<{ a: 1 } | { b: 2 }>         // true
+ *
+ * // Single types return false
+ * type T4 = Union.Is<string>                       // false
+ * type T5 = Union.Is<number>                       // false
+ * type T6 = Union.Is<{ a: string }>               // false
+ *
+ * // Special cases
+ * type T7 = Union.Is<never>                        // false
+ * type T8 = Union.Is<any>                          // false
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Conditional logic based on union detection
+ * type ProcessType<T> = Union.Is<T> extends true
+ *   ? 'multiple options'
+ *   : 'single option'
+ *
+ * type R1 = ProcessType<string | number>  // 'multiple options'
+ * type R2 = ProcessType<string>           // 'single option'
+ * ```
+ */
+// dprint-ignore
+export type Is<$Type> =
+  [$Type] extends [never]                   ? false :
+  [$Type] extends [ToIntersection<$Type>]   ? false :
+                                              true
