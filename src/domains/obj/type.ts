@@ -34,6 +34,37 @@ export type IsEmpty<$Obj extends object> = keyof $Obj extends never ? true : fal
 export type Empty = Record<string, never>
 
 /**
+ * Subtract properties present in $B from $A (shallow operation).
+ *
+ * Returns a new object type containing only properties that exist in $A but not in $B.
+ * This is equivalent to `Omit<$A, keyof $B>` but expresses the operation as subtraction.
+ *
+ * @category Type Utilities
+ *
+ * @template $A - The object type to subtract from
+ * @template $B - The object type whose properties to remove
+ *
+ * @example
+ * ```ts
+ * type User = { name: string; age: number; email: string }
+ * type Public = { name: string; age: number }
+ *
+ * type Private = Obj.SubtractShallow<User, Public>  // { email: string }
+ * type Same = Obj.SubtractShallow<User, User>        // {}
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Finding what's different between two object types
+ * type Config = { id: string; debug?: boolean }
+ * type Provided = { id: string; invalid: true; typo: string }
+ *
+ * type Extra = Obj.SubtractShallow<Provided, Config>  // { invalid: true; typo: string }
+ * ```
+ */
+export type SubtractShallow<$A, $B> = Omit<$A, keyof $B>
+
+/**
  * Create an empty object with proper type.
  * Returns a frozen empty object typed as {@link Empty}.
  *
