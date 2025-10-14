@@ -13,6 +13,14 @@ export type JSDocInfo = {
   tags: Record<string, string>
   /** Force this export to be treated as a namespace */
   forceNamespace?: boolean
+  /** Mark this export as a builder pattern entry point */
+  isBuilder?: boolean
+  /** Parameter descriptions from @param tags (name -> description) */
+  params: Record<string, string>
+  /** Return value description from @returns tag */
+  returns: string | undefined
+  /** Error descriptions from @throws tags */
+  throws: string[]
 }
 
 /**
@@ -117,12 +125,20 @@ const parseExamplesFromTSDoc = (customBlocks: readonly any[]): Example[] => {
  * Returns parsed JSDoc information with proper structure.
  */
 const parseJSDocWithTSDoc = (commentText: string): JSDocInfo => {
-  // Configure TSDoc to recognize @category as a valid block tag
+  // Configure TSDoc to recognize custom tags
+  // Note: @throws is already a standard TSDoc tag, no need to add it
   const configuration = new TSDocConfiguration()
   configuration.addTagDefinition(
     new TSDocTagDefinition({
       tagName: '@category',
       syntaxKind: TSDocTagSyntaxKind.BlockTag,
+      allowMultiple: false,
+    }),
+  )
+  configuration.addTagDefinition(
+    new TSDocTagDefinition({
+      tagName: '@builder',
+      syntaxKind: TSDocTagSyntaxKind.ModifierTag,
       allowMultiple: false,
     }),
   )
@@ -145,7 +161,16 @@ const parseJSDocWithTSDoc = (commentText: string): JSDocInfo => {
   // Extract other tags
   const tags: Record<string, string> = {}
   let forceNamespace = false
+  let isBuilder = false
   let category: string | undefined
+
+  // Check for @builder in modifier tags
+  for (const tag of docComment.modifierTagSet.nodes) {
+    if (tag.tagName === '@builder') {
+      isBuilder = true
+      break
+    }
+  }
 
   // Check for @namespace in modifier tags or custom blocks
   for (const block of docComment.customBlocks) {
@@ -160,6 +185,32 @@ const parseJSDocWithTSDoc = (commentText: string): JSDocInfo => {
     }
   }
 
+  // Extract @param tags
+  const params: Record<string, string> = {}
+  for (const paramBlock of docComment.params.blocks) {
+    const paramName = paramBlock.parameterName
+    const paramDesc = extractTSDocText(paramBlock.content).trim()
+    if (paramName && paramDesc) {
+      params[paramName] = paramDesc
+    }
+  }
+
+  // Extract @returns tag
+  const returns = docComment.returnsBlock
+    ? extractTSDocText(docComment.returnsBlock.content).trim() || undefined
+    : undefined
+
+  // Extract @throws tags
+  const throws: string[] = []
+  for (const block of docComment.customBlocks) {
+    if (block.blockTag.tagName === '@throws') {
+      const throwsDesc = extractTSDocText(block.content).trim()
+      if (throwsDesc) {
+        throws.push(throwsDesc)
+      }
+    }
+  }
+
   return {
     description,
     examples,
@@ -167,6 +218,10 @@ const parseJSDocWithTSDoc = (commentText: string): JSDocInfo => {
     category,
     tags,
     forceNamespace,
+    isBuilder,
+    params,
+    returns,
+    throws,
   }
 }
 
@@ -218,6 +273,10 @@ export const parseJSDoc = (decl: Node): JSDocInfo => {
       category: undefined,
       tags: {},
       forceNamespace: false,
+      isBuilder: false,
+      params: {},
+      returns: undefined,
+      throws: [],
     }
   }
 

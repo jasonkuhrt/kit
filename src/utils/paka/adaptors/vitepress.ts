@@ -4,7 +4,7 @@ import { Match } from 'effect'
 import { writeFileSync } from 'node:fs'
 import { mkdirSync } from 'node:fs'
 import { join } from 'node:path'
-import type { Entrypoint, Example, Export, InterfaceModel, Module, ValueExport } from '../schema.js'
+import type { Entrypoint, Example, Export, InterfaceModel, Module, SignatureModel, ValueExport } from '../schema.js'
 
 /**
  * Configuration for VitePress generation.
@@ -337,23 +337,25 @@ const renderExportsSection = (exports: Export[], context: Context): string => {
  */
 const getTypeIcon = (exp: Export): string => {
   return Match.value(exp).pipe(
-    Match.tag('value', (valueExp) =>
-      Match.value(valueExp.type).pipe(
-        Match.when('function', () => 'F'),
-        Match.when('const', () => 'C'),
-        Match.when('class', () => 'Class'),
-        Match.when('namespace', () => 'NS'),
-        Match.exhaustive,
-      )),
-    Match.tag('type', (typeExp) =>
-      Match.value(typeExp.type).pipe(
-        Match.when('interface', () => 'I'),
-        Match.when('type-alias', () => 'T'),
-        Match.when('enum', () => 'E'),
-        Match.when('union', () => 'U'),
-        Match.when('intersection', () => '∩'),
-        Match.exhaustive,
-      )),
+    Match.tags({
+      value: (valueExp) =>
+        Match.value(valueExp.type).pipe(
+          Match.when('function', () => 'F'),
+          Match.when('const', () => 'C'),
+          Match.when('class', () => 'Class'),
+          Match.when('namespace', () => 'NS'),
+          Match.exhaustive,
+        ),
+      type: (typeExp) =>
+        Match.value(typeExp.type).pipe(
+          Match.when('interface', () => 'I'),
+          Match.when('type-alias', () => 'T'),
+          Match.when('enum', () => 'E'),
+          Match.when('union', () => 'U'),
+          Match.when('intersection', () => '∩'),
+          Match.exhaustive,
+        ),
+    }),
     Match.exhaustive,
   )
 }
@@ -401,13 +403,280 @@ const renderExport = (exp: Export, context: Context): string => {
     ? `<SourceLink href="${context.githubUrl}/blob/main/${exp.sourceLocation.file}#L${exp.sourceLocation.line}" />`
     : ''
 
+  const signatureText = renderSignature(exp.signature)
+  const signatureDetails = renderSignatureDetails(exp.signature)
+
   return Md.sections(
     heading,
-    Md.codeFence(exp.signature),
+    Md.codeFence(signatureText),
     sourceLink,
+    signatureDetails,
     deprecated,
     description,
     examples,
+  )
+}
+
+/**
+ * Render signature details (parameter descriptions, return documentation, throws).
+ */
+const renderSignatureDetails = (sig: SignatureModel): string => {
+  return Match.value(sig).pipe(
+    Match.tags({
+      FunctionSignatureModel: (fnSig) => {
+        // Collect documentation from all overloads
+        const allParams = new Map<string, string>()
+        let returnDoc: string | undefined
+        const allThrows: string[] = []
+
+        for (const overload of fnSig.overloads) {
+          // Collect parameter descriptions
+          for (const param of overload.parameters) {
+            if (param.description && !allParams.has(param.name)) {
+              allParams.set(param.name, param.description)
+            }
+          }
+
+          // Use first non-empty return doc
+          if (overload.returnDoc && !returnDoc) {
+            returnDoc = overload.returnDoc
+          }
+
+          // Collect all throws
+          for (const throwsDesc of overload.throws) {
+            if (!allThrows.includes(throwsDesc)) {
+              allThrows.push(throwsDesc)
+            }
+          }
+        }
+
+        // Build sections
+        const sections: string[] = []
+
+        if (allParams.size > 0) {
+          const paramsList = Array.from(allParams.entries())
+            .map(([name, desc]) => `- \`${name}\` - ${desc}`)
+            .join('\n')
+          sections.push(`**Parameters:**\n\n${paramsList}`)
+        }
+
+        if (returnDoc) {
+          sections.push(`**Returns:** ${returnDoc}`)
+        }
+
+        if (allThrows.length > 0) {
+          const throwsList = allThrows.map((desc) => `- ${desc}`).join('\n')
+          sections.push(`**Throws:**\n\n${throwsList}`)
+        }
+
+        return sections.length > 0 ? sections.join('\n\n') : ''
+      },
+      BuilderSignatureModel: (builderSig) => {
+        // Render docs for entry point
+        const entryPoint = builderSig.entryPoint
+        const sections: string[] = []
+
+        // Entry point parameters
+        if (entryPoint.parameters.some((p) => p.description)) {
+          const paramsList = entryPoint.parameters
+            .filter((p) => p.description)
+            .map((p) => `- \`${p.name}\` - ${p.description}`)
+            .join('\n')
+          sections.push(`**Parameters:**\n\n${paramsList}`)
+        }
+
+        // Entry point return doc
+        if (entryPoint.returnDoc) {
+          sections.push(`**Returns:** ${entryPoint.returnDoc}`)
+        }
+
+        // Entry point throws
+        if (entryPoint.throws.length > 0) {
+          const throwsList = entryPoint.throws.map((desc) => `- ${desc}`).join('\n')
+          sections.push(`**Throws:**\n\n${throwsList}`)
+        }
+
+        return sections.length > 0 ? sections.join('\n\n') : ''
+      },
+      ClassSignatureModel: (classSig) => {
+        const sections: string[] = []
+
+        // Constructor documentation
+        if (classSig.ctor) {
+          // Constructor parameters
+          if (classSig.ctor.parameters.some((p) => p.description)) {
+            const paramsList = classSig.ctor.parameters
+              .filter((p) => p.description)
+              .map((p) => `- \`${p.name}\` - ${p.description}`)
+              .join('\n')
+            sections.push(`**Constructor Parameters:**\n\n${paramsList}`)
+          }
+
+          // Constructor throws
+          if (classSig.ctor.throws.length > 0) {
+            const throwsList = classSig.ctor.throws.map((desc) => `- ${desc}`).join('\n')
+            sections.push(`**Constructor Throws:**\n\n${throwsList}`)
+          }
+        }
+
+        // Property descriptions
+        const propsWithDesc = classSig.properties.filter((p) => p.description)
+        if (propsWithDesc.length > 0) {
+          const propsList = propsWithDesc
+            .map((p) => `- \`${p.name}\` - ${p.description}`)
+            .join('\n')
+          sections.push(`**Properties:**\n\n${propsList}`)
+        }
+
+        return sections.length > 0 ? sections.join('\n\n') : ''
+      },
+      TypeSignatureModel: () => '',
+      ValueSignatureModel: () => '',
+    }),
+    Match.exhaustive,
+  )
+}
+
+/**
+ * Render type parameters to string (e.g., "<T, U extends string>").
+ */
+const renderTypeParameters = (typeParams: readonly typeof import('../schema.js').TypeParameter.Type[]): string => {
+  if (typeParams.length === 0) return ''
+
+  const rendered = typeParams.map((tp) => {
+    let text = tp.name
+    if (tp.constraint) text += ` extends ${tp.constraint}`
+    if (tp.default) text += ` = ${tp.default}`
+    return text
+  }).join(', ')
+
+  return `<${rendered}>`
+}
+
+/**
+ * Render function parameters to string (e.g., "a: number, b?: string").
+ */
+const renderParameters = (params: readonly typeof import('../schema.js').Parameter.Type[]): string => {
+  return params.map((param) => {
+    let text = ''
+    if (param.rest) text += '...'
+    text += param.name
+    if (param.optional) text += '?'
+    text += `: ${param.type}`
+    if (param.defaultValue) text += ` = ${param.defaultValue}`
+    return text
+  }).join(', ')
+}
+
+/**
+ * Render SignatureModel to string for display in code fence.
+ */
+const renderSignature = (sig: SignatureModel): string => {
+  return Match.value(sig).pipe(
+    Match.tags({
+      FunctionSignatureModel: (fnSig) => {
+        // Render all overloads
+        return fnSig.overloads.map((overload) => {
+          const typeParams = renderTypeParameters(overload.typeParameters)
+          const params = renderParameters(overload.parameters)
+          return `${typeParams}(${params}): ${overload.returnType}`
+        }).join('\n')
+      },
+      BuilderSignatureModel: (builderSig) => {
+        // Render builder entry point
+        const entryPoint = builderSig.entryPoint
+        const typeParams = renderTypeParameters(entryPoint.typeParameters)
+        const params = renderParameters(entryPoint.parameters)
+        let result = `${typeParams}(${params}): ${builderSig.typeName}\n`
+
+        // Render chainable methods
+        if (builderSig.chainableMethods.length > 0) {
+          result += '\n// Chainable methods:\n'
+          for (const method of builderSig.chainableMethods) {
+            // Render all overloads for this method
+            for (const overload of method.overloads) {
+              const methodTypeParams = renderTypeParameters(overload.typeParameters)
+              const methodParams = renderParameters(overload.parameters)
+              result += `  .${method.name}${methodTypeParams}(${methodParams}): ${builderSig.typeName}\n`
+            }
+          }
+        }
+
+        // Render terminal methods
+        if (builderSig.terminalMethods.length > 0) {
+          result += '\n// Terminal methods:\n'
+          for (const method of builderSig.terminalMethods) {
+            // Render all overloads for this method
+            for (const overload of method.overloads) {
+              const methodTypeParams = renderTypeParameters(overload.typeParameters)
+              const methodParams = renderParameters(overload.parameters)
+              result += `  .${method.name}${methodTypeParams}(${methodParams}): ${overload.returnType}\n`
+            }
+          }
+        }
+
+        // Render transform methods
+        if (builderSig.transformMethods.length > 0) {
+          result += '\n// Transform methods:\n'
+          for (const method of builderSig.transformMethods) {
+            // Render all overloads for this method
+            for (const overload of method.overloads) {
+              const methodTypeParams = renderTypeParameters(overload.typeParameters)
+              const methodParams = renderParameters(overload.parameters)
+              const returnType = method.transformsTo || overload.returnType
+              result += `  .${method.name}${methodTypeParams}(${methodParams}): ${returnType}\n`
+            }
+          }
+        }
+
+        return result
+      },
+      ClassSignatureModel: (classSig) => {
+        let result = 'class {\n'
+
+        // Render constructor
+        if (classSig.ctor) {
+          const typeParams = renderTypeParameters(classSig.ctor.typeParameters)
+          const params = renderParameters(classSig.ctor.parameters)
+          result += `  constructor${typeParams}(${params})\n`
+        }
+
+        // Render properties
+        if (classSig.properties.length > 0) {
+          result += '\n  // Properties\n'
+          for (const prop of classSig.properties) {
+            let propLine = '  '
+            if (prop.static) propLine += 'static '
+            if (prop.readonly) propLine += 'readonly '
+            propLine += prop.name
+            if (prop.optional) propLine += '?'
+            propLine += `: ${prop.type}\n`
+            result += propLine
+          }
+        }
+
+        // Render methods
+        if (classSig.methods.length > 0) {
+          result += '\n  // Methods\n'
+          for (const method of classSig.methods) {
+            for (const overload of method.overloads) {
+              let methodLine = '  '
+              if (method.static) methodLine += 'static '
+              const typeParams = renderTypeParameters(overload.typeParameters)
+              const params = renderParameters(overload.parameters)
+              methodLine += `${method.name}${typeParams}(${params}): ${overload.returnType}\n`
+              result += methodLine
+            }
+          }
+        }
+
+        result += '}'
+        return result
+      },
+      TypeSignatureModel: (typeSig) => typeSig.text,
+      ValueSignatureModel: (valSig) => valSig.type,
+    }),
+    Match.exhaustive,
   )
 }
 

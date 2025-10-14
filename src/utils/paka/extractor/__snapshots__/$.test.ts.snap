@@ -56,7 +56,18 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
         exports: [
           {
             name: '_',
-            signature: '() => number',
+            signature: {
+              overloads: [
+                {
+                  typeParameters: [],
+                  parameters: [],
+                  returnType: 'number',
+                  returnDoc: undefined,
+                  throws: []
+                }
+              ],
+              _tag: 'FunctionSignatureModel'
+            },
             description: 'EX _ doc',
             examples: [],
             deprecated: undefined,
@@ -105,7 +116,10 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
         exports: [
           {
             name: '_',
-            signature: '0',
+            signature: {
+              type: '0',
+              _tag: 'ValueSignatureModel'
+            },
             description: 'NS doc',
             examples: [],
             deprecated: undefined,
@@ -130,7 +144,10 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
         exports: [
           {
             name: '_',
-            signature: '0',
+            signature: {
+              type: '0',
+              _tag: 'ValueSignatureModel'
+            },
             description: 'NS doc',
             examples: [],
             deprecated: undefined,

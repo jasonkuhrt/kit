@@ -1,7 +1,7 @@
 import { FsLoc } from '#fs-loc'
 import { Schema as S } from 'effect'
 import { type ExportDeclaration, type ModuleDeclaration, Node, type SourceFile } from 'ts-morph'
-import { type Module, SourceLocation, ValueExport } from '../../schema.js'
+import { type Module, SourceLocation, TypeSignatureModel, ValueExport } from '../../schema.js'
 import { absoluteToRelative } from '../path-utils.js'
 import { extractExport } from './export.js'
 import { type JSDocInfo, parseJSDoc } from './jsdoc.js'
@@ -28,7 +28,9 @@ const createNamespaceExport = (
     _tag: 'value',
     name: nsName,
     type: 'namespace',
-    signature: `export * as ${nsName}`,
+    signature: TypeSignatureModel.make({
+      text: `export * as ${nsName}`,
+    }),
     description: jsdoc.description || nestedModule.description,
     examples: jsdoc.examples,
     deprecated: jsdoc.deprecated,

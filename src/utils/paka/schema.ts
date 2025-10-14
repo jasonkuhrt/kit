@@ -38,6 +38,22 @@ export const TypeExportType = S.Enums(
 )
 export type TypeExportType = typeof TypeExportType.Type
 
+/**
+ * Builder method classification based on return type.
+ *
+ * - `chainable` - Returns the same builder type (for method chaining)
+ * - `terminal` - Returns void (ends the builder chain)
+ * - `transform` - Returns a different builder type (transforms to another builder)
+ */
+export const BuilderMethodCategory = S.Enums(
+  {
+    chainable: 'chainable',
+    terminal: 'terminal',
+    transform: 'transform',
+  } as const,
+)
+export type BuilderMethodCategory = typeof BuilderMethodCategory.Type
+
 // ============================================================================
 // Core Models
 // ============================================================================
@@ -66,14 +82,384 @@ export class SourceLocation extends S.Class<SourceLocation>('SourceLocation')({
   line: S.Number,
 }) {}
 
+// ============================================================================
+// Signature Models
+// ============================================================================
+
+/**
+ * Type parameter for generic functions/classes.
+ * Captures type parameter name, constraint, and default value.
+ *
+ * @example
+ * ```typescript
+ * // <T extends string = 'default'>
+ * { name: 'T', constraint: 'string', default: "'default'" }
+ * ```
+ */
+export class TypeParameter extends S.Class<TypeParameter>('TypeParameter')({
+  /** Type parameter name (e.g., 'T', 'U', 'Result') */
+  name: S.String,
+  /** Optional constraint (e.g., 'extends string') */
+  constraint: S.optional(S.String),
+  /** Optional default value (e.g., '= unknown') */
+  default: S.optional(S.String),
+}) {}
+
+/**
+ * Function/method parameter.
+ * Captures parameter name, type, modifiers, and JSDoc description.
+ *
+ * @example
+ * ```typescript
+ * // (items: T[], fn?: (item: T) => U, ...rest: unknown[])
+ * [
+ *   { name: 'items', type: 'T[]', optional: false, rest: false, description: 'Array of items to process' },
+ *   { name: 'fn', type: '(item: T) => U', optional: true, rest: false, description: 'Transform function' },
+ *   { name: 'rest', type: 'unknown[]', optional: false, rest: true }
+ * ]
+ * ```
+ */
+export class Parameter extends S.Class<Parameter>('Parameter')({
+  /** Parameter name */
+  name: S.String,
+  /** Parameter type (as string) */
+  type: S.String,
+  /** Whether parameter is optional (foo?: T) */
+  optional: S.Boolean,
+  /** Whether parameter is rest (...args: T[]) */
+  rest: S.Boolean,
+  /** Optional default value expression */
+  defaultValue: S.optional(S.String),
+  /** Parameter description from @param JSDoc tag */
+  description: S.optional(S.String),
+}) {}
+
+/**
+ * Single function signature (one overload).
+ * Captures type parameters, parameters, return type, and JSDoc documentation.
+ *
+ * Used within FunctionSignatureModel to support multiple overloads.
+ *
+ * @example
+ * ```typescript
+ * {
+ *   typeParameters: [{ name: 'T', constraint: 'string' }],
+ *   parameters: [{ name: 'value', type: 'T', description: 'Input value' }],
+ *   returnType: 'T',
+ *   returnDoc: 'The processed value',
+ *   throws: ['Error if value is invalid']
+ * }
+ * ```
+ */
+export class FunctionSignature extends S.Class<FunctionSignature>('FunctionSignature')({
+  /** Generic type parameters */
+  typeParameters: S.Array(TypeParameter),
+  /** Function parameters */
+  parameters: S.Array(Parameter),
+  /** Return type (as string) */
+  returnType: S.String,
+  /** Return value description from @returns JSDoc tag */
+  returnDoc: S.optional(S.String),
+  /** Error descriptions from @throws JSDoc tags */
+  throws: S.Array(S.String),
+}) {}
+
+/**
+ * Function signature model supporting multiple overloads.
+ *
+ * Structured representation of function signatures with full parameter,
+ * type parameter, and return type information.
+ *
+ * @example
+ * ```typescript
+ * // function parse(input: string): Config
+ * // function parse(input: Buffer): Config
+ * {
+ *   _tag: 'FunctionSignatureModel',
+ *   overloads: [
+ *     { typeParameters: [], parameters: [{ name: 'input', type: 'string', ... }], returnType: 'Config' },
+ *     { typeParameters: [], parameters: [{ name: 'input', type: 'Buffer', ... }], returnType: 'Config' }
+ *   ]
+ * }
+ * ```
+ */
+export class FunctionSignatureModel extends S.TaggedClass<FunctionSignatureModel>()(
+  'FunctionSignatureModel',
+  {
+    /** Function overloads (multiple signatures for same function) */
+    overloads: S.Array(FunctionSignature),
+  },
+) {}
+
+/**
+ * Builder method on a builder interface.
+ *
+ * Captures method name, overloads, and classification based on return type.
+ * Methods are classified during extraction by analyzing their return types.
+ *
+ * @example
+ * ```typescript
+ * // inputType<I>(): TestBuilder<State & { input: I }>
+ * {
+ *   name: 'inputType',
+ *   overloads: [...],
+ *   category: 'chainable',
+ *   transformsTo: undefined
+ * }
+ *
+ * // test(): void
+ * {
+ *   name: 'test',
+ *   overloads: [...],
+ *   category: 'terminal',
+ *   transformsTo: undefined
+ * }
+ *
+ * // layer<R>(layer: any): OtherBuilder<State, R>
+ * {
+ *   name: 'layer',
+ *   overloads: [...],
+ *   category: 'transform',
+ *   transformsTo: 'OtherBuilder'
+ * }
+ * ```
+ */
+export class BuilderMethod extends S.Class<BuilderMethod>('BuilderMethod')({
+  /** Method name */
+  name: S.String,
+  /** Method overloads (same structure as function overloads) */
+  overloads: S.Array(FunctionSignature),
+  /** Method classification based on return type */
+  category: BuilderMethodCategory,
+  /** For transform methods, the name of the returned builder type */
+  transformsTo: S.optional(S.String),
+}) {}
+
+/**
+ * Builder signature model for fluent/builder pattern APIs.
+ *
+ * Builder patterns are detected when a function is marked with `@builder` JSDoc tag.
+ * The extractor automatically crawls the returned builder type interface and
+ * classifies methods based on their return types:
+ *
+ * - **Chainable**: Returns the same builder type (enables method chaining)
+ * - **Terminal**: Returns void (ends the builder chain)
+ * - **Transform**: Returns a different builder type (transforms to another builder)
+ *
+ * @example
+ * ```typescript
+ * // Entry point marked with @builder
+ * // @builder
+ * export function on<Fn>(fn: Fn): TestBuilder<{ fn: Fn }> {
+ *   return null as any
+ * }
+ *
+ * // Builder interface (automatically crawled)
+ * interface TestBuilder<State> {
+ *   inputType<I>(): TestBuilder<State & { input: I }>  // chainable
+ *   cases(...cases: any[]): TestBuilder<State>         // chainable
+ *   test(): void                                        // terminal
+ *   test(fn: (params: any) => void): void             // terminal (overload)
+ *   layer<R>(layer: any): OtherBuilder<State, R>      // transform
+ * }
+ * ```
+ *
+ * Extracted as:
+ * ```typescript
+ * {
+ *   _tag: 'BuilderSignatureModel',
+ *   typeName: 'TestBuilder',
+ *   entryPoint: FunctionSignature { ... },
+ *   chainableMethods: [
+ *     { name: 'inputType', category: 'chainable', ... },
+ *     { name: 'cases', category: 'chainable', ... }
+ *   ],
+ *   terminalMethods: [
+ *     { name: 'test', category: 'terminal', overloads: [...2 overloads] }
+ *   ],
+ *   transformMethods: [
+ *     { name: 'layer', category: 'transform', transformsTo: 'OtherBuilder', ... }
+ *   ]
+ * }
+ * ```
+ */
+export class BuilderSignatureModel extends S.TaggedClass<BuilderSignatureModel>()(
+  'BuilderSignatureModel',
+  {
+    /** The builder type name (e.g., "TestBuilder") */
+    typeName: S.String,
+    /** Entry point signature (the function marked with @builder) */
+    entryPoint: FunctionSignature,
+    /** Methods that return the same builder (for chaining) */
+    chainableMethods: S.Array(BuilderMethod),
+    /** Methods that end the chain (return void) */
+    terminalMethods: S.Array(BuilderMethod),
+    /** Methods that transform to a different builder type */
+    transformMethods: S.Array(BuilderMethod),
+  },
+) {}
+
+/**
+ * Type signature model (interfaces, type aliases, etc).
+ *
+ * For now, these are kept as plain text since parsing TypeScript type
+ * definitions into structured form is complex with diminishing returns.
+ *
+ * Future: Could be expanded to structured form (properties, methods, etc).
+ */
+export class TypeSignatureModel extends S.TaggedClass<TypeSignatureModel>()(
+  'TypeSignatureModel',
+  {
+    /** Full type text */
+    text: S.String,
+  },
+) {}
+
+/**
+ * Value signature model (simple const values, primitives).
+ *
+ * Used for exports that are simple constant values (not functions/classes).
+ * Stores the inferred type as text.
+ *
+ * @example
+ * ```typescript
+ * // export const PI = 3.14159
+ * { _tag: 'ValueSignatureModel', type: 'number' }
+ * ```
+ */
+export class ValueSignatureModel extends S.TaggedClass<ValueSignatureModel>()(
+  'ValueSignatureModel',
+  {
+    /** Inferred type of the value */
+    type: S.String,
+  },
+) {}
+
+/**
+ * Class property.
+ * Captures property name, type, modifiers, and JSDoc description.
+ *
+ * @example
+ * ```typescript
+ * // class User {
+ * //   readonly id: string
+ * //   name?: string
+ * //   static count: number
+ * // }
+ * [
+ *   { name: 'id', type: 'string', optional: false, readonly: true, static: false },
+ *   { name: 'name', type: 'string', optional: true, readonly: false, static: false },
+ *   { name: 'count', type: 'number', optional: false, readonly: false, static: true }
+ * ]
+ * ```
+ */
+export class ClassProperty extends S.Class<ClassProperty>('ClassProperty')({
+  /** Property name */
+  name: S.String,
+  /** Property type (as string) */
+  type: S.String,
+  /** Whether property is optional (foo?: T) */
+  optional: S.Boolean,
+  /** Whether property is readonly */
+  readonly: S.Boolean,
+  /** Whether property is static */
+  static: S.Boolean,
+  /** Property description from JSDoc */
+  description: S.optional(S.String),
+}) {}
+
+/**
+ * Class method.
+ * Captures method name, overloads, and modifiers.
+ *
+ * @example
+ * ```typescript
+ * // class User {
+ * //   getName(): string
+ * //   static create(name: string): User
+ * // }
+ * [
+ *   { name: 'getName', overloads: [...], static: false },
+ *   { name: 'create', overloads: [...], static: true }
+ * ]
+ * ```
+ */
+export class ClassMethod extends S.Class<ClassMethod>('ClassMethod')({
+  /** Method name */
+  name: S.String,
+  /** Method overloads (same structure as function overloads) */
+  overloads: S.Array(FunctionSignature),
+  /** Whether method is static */
+  static: S.Boolean,
+}) {}
+
+/**
+ * Class signature model with structured class information.
+ *
+ * Structured representation of class with constructor, properties, and methods.
+ *
+ * @example
+ * ```typescript
+ * // export class User {
+ * //   readonly id: string
+ * //   name: string
+ * //   constructor(id: string, name: string) { ... }
+ * //   getName(): string { return this.name }
+ * //   static create(name: string): User { return new User(crypto.randomUUID(), name) }
+ * // }
+ * {
+ *   _tag: 'ClassSignatureModel',
+ *   ctor: { typeParameters: [], parameters: [...], returnType: 'User' },
+ *   properties: [
+ *     { name: 'id', type: 'string', readonly: true, ... },
+ *     { name: 'name', type: 'string', readonly: false, ... }
+ *   ],
+ *   methods: [
+ *     { name: 'getName', overloads: [...], static: false },
+ *     { name: 'create', overloads: [...], static: true }
+ *   ]
+ * }
+ * ```
+ */
+export class ClassSignatureModel extends S.TaggedClass<ClassSignatureModel>()(
+  'ClassSignatureModel',
+  {
+    /** Constructor signature (optional - may be implicit) */
+    ctor: S.optional(FunctionSignature),
+    /** Class properties */
+    properties: S.Array(ClassProperty),
+    /** Class methods */
+    methods: S.Array(ClassMethod),
+  },
+) {}
+
+/**
+ * Signature model - tagged union of all signature types.
+ *
+ * Discriminated by _tag field:
+ * - `FunctionSignatureModel` - Functions with structured overloads
+ * - `BuilderSignatureModel` - Builder pattern APIs with chainable/terminal methods
+ * - `ClassSignatureModel` - Classes with constructor, properties, methods
+ * - `TypeSignatureModel` - Types, interfaces, type aliases (text)
+ * - `ValueSignatureModel` - Const values (type as text)
+ */
+export const SignatureModel = S.Union(
+  FunctionSignatureModel,
+  BuilderSignatureModel,
+  ClassSignatureModel,
+  TypeSignatureModel,
+  ValueSignatureModel,
+)
+export type SignatureModel = S.Schema.Type<typeof SignatureModel>
+
 /**
  * Base properties shared by all exports.
  */
 const BaseExportFields = {
   /** Export name as it appears in code */
   name: S.String,
-  /** Full type signature extracted from source */
-  signature: S.String,
+  /** Structured signature model */
+  signature: SignatureModel,
   /** Description from JSDoc */
   description: S.optional(S.String),
   /** Code examples from @example tags */

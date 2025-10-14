@@ -1,6 +1,13 @@
 import { FsLoc } from '#fs-loc'
 import { expect, test } from 'vitest'
-import { SourceLocation, ValueExport } from '../schema.js'
+import {
+  FunctionSignature,
+  FunctionSignatureModel,
+  Parameter,
+  SourceLocation,
+  TypeParameter,
+  ValueExport,
+} from '../schema.js'
 
 test('demotes H2 headings in JSDoc descriptions to H4', () => {
   // Regression test for: JSDoc descriptions use double-space separators, not newlines.
@@ -11,7 +18,17 @@ test('demotes H2 headings in JSDoc descriptions to H4', () => {
     _tag: 'value',
     type: 'function',
     name: 'on',
-    signature: 'function on<$fn>($fn: $fn): TestBuilder',
+    signature: FunctionSignatureModel.make({
+      overloads: [
+        FunctionSignature.make({
+          typeParameters: [TypeParameter.make({ name: '$fn' })],
+          parameters: [Parameter.make({ name: '$fn', type: '$fn', optional: false, rest: false })],
+          returnType: 'TestBuilder',
+          returnDoc: undefined,
+          throws: [],
+        }),
+      ],
+    }),
     description: 'Creates a test table builder.  ## Case Formats  Test cases can be specified in multiple formats.',
     examples: [],
     tags: {},
@@ -29,4 +46,101 @@ test('demotes H2 headings in JSDoc descriptions to H4', () => {
 
   // After conversion, headings should be present as actual line-start patterns
   expect(transformed).toContain('\n\n## Case Formats\n\n')
+})
+
+test('renders @param documentation', () => {
+  const sig = FunctionSignatureModel.make({
+    overloads: [
+      FunctionSignature.make({
+        typeParameters: [],
+        parameters: [
+          Parameter.make({ name: 'items', type: 'T[]', optional: false, rest: false, description: 'Array of items' }),
+          Parameter.make({
+            name: 'fn',
+            type: '(item: T) => U',
+            optional: false,
+            rest: false,
+            description: 'Transform function',
+          }),
+        ],
+        returnType: 'U[]',
+        returnDoc: undefined,
+        throws: [],
+      }),
+    ],
+  })
+
+  const mockExport = ValueExport.make({
+    _tag: 'value',
+    type: 'function',
+    name: 'map',
+    signature: sig,
+    description: '',
+    examples: [],
+    tags: {},
+    sourceLocation: SourceLocation.make({ file: FsLoc.fromString('./test.ts'), line: 1 }),
+  })
+
+  const fnSig = mockExport.signature as typeof FunctionSignatureModel.Type
+  expect(fnSig.overloads[0]?.parameters[0]?.description).toBe('Array of items')
+  expect(fnSig.overloads[0]?.parameters[1]?.description).toBe('Transform function')
+})
+
+test('renders @returns documentation', () => {
+  const sig = FunctionSignatureModel.make({
+    overloads: [
+      FunctionSignature.make({
+        typeParameters: [],
+        parameters: [Parameter.make({ name: 'value', type: 'number', optional: false, rest: false })],
+        returnType: 'number',
+        returnDoc: 'The doubled value',
+        throws: [],
+      }),
+    ],
+  })
+
+  const mockExport = ValueExport.make({
+    _tag: 'value',
+    type: 'function',
+    name: 'double',
+    signature: sig,
+    description: '',
+    examples: [],
+    tags: {},
+    sourceLocation: SourceLocation.make({ file: FsLoc.fromString('./test.ts'), line: 1 }),
+  })
+
+  const fnSig = mockExport.signature as typeof FunctionSignatureModel.Type
+  expect(fnSig.overloads[0]?.returnDoc).toBe('The doubled value')
+})
+
+test('renders @throws documentation', () => {
+  const sig = FunctionSignatureModel.make({
+    overloads: [
+      FunctionSignature.make({
+        typeParameters: [],
+        parameters: [Parameter.make({ name: 'value', type: 'number', optional: false, rest: false })],
+        returnType: 'number',
+        returnDoc: undefined,
+        throws: ['Error if value is negative', 'TypeError if value is not a number'],
+      }),
+    ],
+  })
+
+  const mockExport = ValueExport.make({
+    _tag: 'value',
+    type: 'function',
+    name: 'process',
+    signature: sig,
+    description: '',
+    examples: [],
+    tags: {},
+    sourceLocation: SourceLocation.make({ file: FsLoc.fromString('./test.ts'), line: 1 }),
+  })
+
+  const fnSig = mockExport.signature as typeof FunctionSignatureModel.Type
+  expect(fnSig.overloads[0]?.throws).toEqual([
+    'Error if value is negative',
+    'TypeError if value is not a number',
+  ])
 })
