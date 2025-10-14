@@ -17,9 +17,9 @@ declare const testObj: TestObj
   expectTypeOf(result).toEqualTypeOf<{ b: number; d: string[] }>()
 }
 
-// Test 3: filter returns Partial<T>
+// Test 3: pick with predicate returns Partial<T>
 {
-  const result = Obj.filter(testObj, (key, value) => value !== 'hello')
+  const result = Obj.pick(testObj, (key, value) => value !== 'hello')
   expectTypeOf(result).toEqualTypeOf<Partial<TestObj>>()
 
   // All properties are optional
@@ -57,21 +57,21 @@ declare const testObj: TestObj
   const empty = {}
   const allowEmpty = Obj.policyFilter('allow', empty, [])
   const denyEmpty = Obj.policyFilter('deny', empty, [])
-  const filterEmpty = Obj.filter(empty, () => true)
+  const pickEmpty = Obj.pick(empty, () => true)
 
   expectTypeOf(allowEmpty).toEqualTypeOf<{}>()
   expectTypeOf(denyEmpty).toEqualTypeOf<{}>()
-  expectTypeOf(filterEmpty).toEqualTypeOf<{}>()
+  expectTypeOf(pickEmpty).toEqualTypeOf<{}>()
 
   // Single property object
   const single = { a: 1 }
   const allowSingle = Obj.policyFilter('allow', single, ['a'] as const)
   const denySingle = Obj.policyFilter('deny', single, ['a'] as const)
-  const filterSingle = Obj.filter(single, () => true)
+  const pickSingle = Obj.pick(single, () => true)
 
   expectTypeOf(allowSingle).toEqualTypeOf<{ a: number }>()
   expectTypeOf(denySingle).toEqualTypeOf<{}>()
-  expectTypeOf(filterSingle).toEqualTypeOf<{ a?: number | undefined }>()
+  expectTypeOf(pickSingle).toEqualTypeOf<{ a?: number | undefined }>()
 }
 
 // Test 7: Complex nested object
@@ -90,8 +90,8 @@ declare const testObj: TestObj
   const omitted = Obj.policyFilter('deny', complexObj, ['nested', 'optional'] as const)
   expectTypeOf(omitted).toEqualTypeOf<{ array: string[]; readonly ro: string }>()
 
-  const filtered = Obj.filter(complexObj, (key) => key !== 'array')
-  expectTypeOf(filtered).toEqualTypeOf<Partial<ComplexObj>>()
+  const pickedFiltered = Obj.pick(complexObj, (key) => key !== 'array')
+  expectTypeOf(pickedFiltered).toEqualTypeOf<Partial<ComplexObj>>()
 }
 
 // Test 8: Keys parameter type inference

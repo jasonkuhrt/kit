@@ -1,4 +1,5 @@
-import type { Ts } from '#ts'
+import { Ts } from '#ts'
+import { Undefined } from '#undefined'
 
 //
 //
@@ -16,11 +17,12 @@ import type { Ts } from '#ts'
  * @category Filtering
  *
  * @param obj - The object to pick properties from
- * @param keys - Array of property keys to include
+ * @param keysOrPredicateOrFilter - Array of property keys to include, a predicate function `(key) => boolean`, or a filter function `(key, value, obj) => boolean`
  * @returns A new object containing only the specified properties
  *
  * @example
  * ```ts
+ * // Using array of keys
  * const user = { name: 'Alice', age: 30, email: 'alice@example.com' }
  * const publicInfo = pick(user, ['name', 'email'])
  * // Result: { name: 'Alice', email: 'alice@example.com' }
@@ -41,12 +43,72 @@ import type { Ts } from '#ts'
  *   // Type: Pick<User, 'id' | 'name' | 'email'>
  * }
  * ```
+ *
+ * @example
+ * ```ts
+ * // Using a predicate function (key only)
+ * const obj = { a: 1, b: 2, c: 3 }
+ * pick(obj, k => k !== 'b') // { a: 1, c: 3 }
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Using a filter function (key, value, obj)
+ * const obj = { a: 1, b: 2, c: 3 }
+ * pick(obj, (k, v) => v > 1) // { b: 2, c: 3 }
+ * pick(obj, (k, v, o) => v > average(o)) // picks above-average values
+ * ```
  */
-export const pick = <T extends object, K extends keyof T>(
+export function pick<T extends object, K extends keyof T>(
   obj: T,
   keys: readonly K[],
-): Pick<T, K> => {
-  return policyFilter('allow', obj, keys) as any
+): Pick<T, K>
+export function pick<$Object extends object>(
+  obj: $Object,
+  predicate: (key: keyof $Object, value?: never, obj?: never) => boolean,
+): Partial<$Object>
+export function pick<$Object extends object>(
+  obj: $Object,
+  predicate: (key: keyof $Object, value: $Object[keyof $Object], obj?: $Object) => boolean,
+): Partial<$Object>
+export function pick<T extends object, K extends keyof T>(
+  obj: T,
+  keysOrPredicate:
+    | readonly K[]
+    | ((key: keyof T, value?: any, obj?: any) => boolean),
+): Pick<T, K> | Partial<T> {
+  if (typeof keysOrPredicate === 'function') {
+    return filter(obj, keysOrPredicate as any)
+  }
+  return policyFilter('allow', obj, keysOrPredicate) as any
+}
+
+/**
+ * Curried version of pick - takes keys/predicate first, then object.
+ *
+ * @category Filtering
+ */
+export const pickWith = <K extends PropertyKey>(
+  keysOrPredicate:
+    | readonly K[]
+    | ((key: PropertyKey, value?: any, obj?: any) => boolean),
+) =>
+<T extends object>(obj: T): any => {
+  return pick(obj, keysOrPredicate as any)
+}
+
+/**
+ * Curried version of pick - takes object first, then keys/predicate.
+ *
+ * @category Filtering
+ */
+export const pickOn = <T extends object>(obj: T) =>
+<K extends keyof T>(
+  keysOrPredicate:
+    | readonly K[]
+    | ((key: keyof T, value?: any, obj?: any) => boolean),
+): any => {
+  return pick(obj, keysOrPredicate as any)
 }
 
 /**
@@ -55,11 +117,12 @@ export const pick = <T extends object, K extends keyof T>(
  * @category Filtering
  *
  * @param obj - The object to omit properties from
- * @param keys - Array of property keys to exclude
+ * @param keysOrPredicateOrFilter - Array of property keys to exclude, a predicate function `(key) => boolean` (keys matching are excluded), or a filter function `(key, value, obj) => boolean` (keys matching are excluded)
  * @returns A new object without the specified properties
  *
  * @example
  * ```ts
+ * // Using array of keys
  * const user = { name: 'Alice', age: 30, password: 'secret' }
  * const safeUser = omit(user, ['password'])
  * // Result: { name: 'Alice', age: 30 }
@@ -80,12 +143,73 @@ export const pick = <T extends object, K extends keyof T>(
  *   // Type: Omit<User, 'password' | 'apiKey'>
  * }
  * ```
+ *
+ * @example
+ * ```ts
+ * // Using a predicate function (key only)
+ * const obj = { a: 1, b: 2, c: 3 }
+ * omit(obj, k => k === 'b') // { a: 1, c: 3 } (excludes b)
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Using a filter function (key, value, obj)
+ * const obj = { a: 1, b: 2, c: 3 }
+ * omit(obj, (k, v) => v > 1) // { a: 1 } (excludes b and c where value > 1)
+ * omit(obj, (k, v, o) => v > average(o)) // excludes above-average values
+ * ```
  */
-export const omit = <T extends object, K extends keyof T>(
+export function omit<T extends object, K extends keyof T>(
   obj: T,
   keys: readonly K[],
-): Omit<T, K> => {
-  return policyFilter('deny', obj, keys) as any
+): Omit<T, K>
+export function omit<$Object extends object>(
+  obj: $Object,
+  predicate: (key: keyof $Object, value?: never, obj?: never) => boolean,
+): Partial<$Object>
+export function omit<$Object extends object>(
+  obj: $Object,
+  predicate: (key: keyof $Object, value: $Object[keyof $Object], obj?: $Object) => boolean,
+): Partial<$Object>
+export function omit<T extends object, K extends keyof T>(
+  obj: T,
+  keysOrPredicate:
+    | readonly K[]
+    | ((key: keyof T, value?: any, obj?: any) => boolean),
+): Omit<T, K> | Partial<T> {
+  if (typeof keysOrPredicate === 'function') {
+    // Invert the predicate - omit removes keys where predicate is true
+    return filter(obj, (k, v, o) => !(keysOrPredicate as any)(k, v, o))
+  }
+  return policyFilter('deny', obj, keysOrPredicate) as any
+}
+
+/**
+ * Curried version of omit - takes keys/predicate first, then object.
+ *
+ * @category Filtering
+ */
+export const omitWith = <K extends PropertyKey>(
+  keysOrPredicate:
+    | readonly K[]
+    | ((key: PropertyKey, value?: any, obj?: any) => boolean),
+) =>
+<T extends object>(obj: T): any => {
+  return omit(obj, keysOrPredicate as any)
+}
+
+/**
+ * Curried version of omit - takes object first, then keys/predicate.
+ *
+ * @category Filtering
+ */
+export const omitOn = <T extends object>(obj: T) =>
+<K extends keyof T>(
+  keysOrPredicate:
+    | readonly K[]
+    | ((key: keyof T, value?: any, obj?: any) => boolean),
+): any => {
+  return omit(obj, keysOrPredicate as any)
 }
 
 /**
@@ -139,32 +263,42 @@ export const policyFilter = <
 }
 
 /**
- * Filter an object using a predicate function.
+ * Remove all properties with `undefined` values from an object.
  *
  * @category Filtering
  *
  * @param obj - The object to filter
- * @param predicate - Function that returns true to keep a key/value pair
- * @returns A new object with only the key/value pairs where predicate returned true
+ * @returns A new object without properties that had `undefined` values
  *
  * @example
  * ```ts
- * const obj = { a: 1, b: 2, c: 3 }
- * filter(obj, (k, v) => v > 1) // { b: 2, c: 3 }
- * filter(obj, k => k !== 'b') // { a: 1, c: 3 }
+ * const obj = { a: 1, b: undefined, c: 'hello', d: undefined }
+ * omitUndefined(obj) // { a: 1, c: 'hello' }
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Useful for cleaning up optional parameters
+ * const config = {
+ *   host: 'localhost',
+ *   port: options.port,      // might be undefined
+ *   timeout: options.timeout  // might be undefined
+ * }
+ * const cleanConfig = omitUndefined(config)
+ * // Only includes properties that have actual values
  * ```
  */
-export const filter = <$Object extends object>(
-  obj: $Object,
-  predicate: (key: keyof $Object, value: $Object[keyof $Object], obj: $Object) => boolean,
-): Partial<$Object> => {
-  const result = {} as Partial<$Object>
-  for (const key in obj) {
-    if (predicate(key, obj[key], obj)) {
-      result[key] = obj[key]
-    }
-  }
-  return result
+export const omitUndefined = omitWith(Undefined.Type.isnt)
+
+export interface partition extends
+  Ts.SimpleSignature.SimpleSignature<[
+    (obj: object, pickedKeys: readonly string[]) => { picked: object; omitted: object },
+  ]>
+{
+  <$Object extends object, $Key extends keyof $Object>(
+    obj: $Object,
+    pickedKeys: readonly $Key[],
+  ): { omitted: Omit<$Object, $Key>; picked: Pick<$Object, $Key> }
 }
 
 /**
@@ -184,22 +318,19 @@ export const filter = <$Object extends object>(
  * // omitted: { b: 2 }
  * ```
  */
-export const partition = <$Object extends object, $Key extends keyof $Object>(
-  obj: $Object,
-  pickedKeys: readonly $Key[],
-): { omitted: Omit<$Object, $Key>; picked: Pick<$Object, $Key> } => {
+export const partition = Ts.SimpleSignature.implement<partition>((obj, pickedKeys) => {
+  // dprint-ignore
   return pickedKeys.reduce((acc, key) => {
     if (key in acc.omitted) {
-      // @ts-expect-error omitted already at type level
       delete acc.omitted[key]
-      acc.picked[key] = obj[key]
+      ;(acc.picked as any)[key] = (obj as any)[key]
     }
     return acc
   }, {
-    omitted: { ...obj } as Omit<$Object, $Key>,
-    picked: {} as Pick<$Object, $Key>,
-  })
-}
+    omitted: { ...obj },
+    picked: {},
+  } as any)
+})
 
 /**
  * Filter object properties by key pattern matching.
@@ -227,13 +358,7 @@ export const pickMatching = <T extends object>(
   obj: T,
   predicate: (key: string) => boolean,
 ): Partial<T> => {
-  const result = {} as Partial<T>
-  for (const key of Object.keys(obj)) {
-    if (predicate(key)) {
-      result[key as keyof T] = obj[key as keyof T]
-    }
-  }
-  return result
+  return pick(obj, (key) => predicate(key as string))
 }
 
 //
@@ -396,4 +521,23 @@ export type PickOptionalPropertyOrFallback<$Object extends object, $Property ext
  */
 export type OnlyKeysInArray<$Obj extends object, $KeysArray extends readonly string[]> = {
   [k in keyof $Obj as k extends $KeysArray[number] ? k : never]: $Obj[k]
+}
+
+/**
+ * Filter an object using a predicate function.
+ * Internal helper used by `pick` and `omit`.
+ *
+ * @internal
+ */
+const filter = <$Object extends object>(
+  obj: $Object,
+  predicate: (key: keyof $Object, value: $Object[keyof $Object], obj: $Object) => boolean,
+): Partial<$Object> => {
+  const result = {} as Partial<$Object>
+  for (const key in obj) {
+    if (predicate(key, obj[key], obj)) {
+      result[key] = obj[key]
+    }
+  }
+  return result
 }
