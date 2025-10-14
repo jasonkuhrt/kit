@@ -15,6 +15,12 @@ import { domain } from '../domain.js'
  * Null.Type.is(undefined)   // false
  * Null.Type.is(0)           // false
  * Null.Type.is('')          // false
+ *
+ * // Using isnt to narrow away null
+ * const value: string | null = getValue()
+ * if (Null.Type.isnt(value)) {
+ *   value.toUpperCase()  // value is string
+ * }
  * ```
  */
 export const Type = Traitor.implement(TypeTrait, domain, {

@@ -54,9 +54,36 @@ export interface Type<$Value = any> extends
        * ```
        */
       is(value: unknown): value is $Value
+
+      /**
+       * Check if a value does NOT belong to this domain/type.
+       *
+       * This is a type guard that narrows away the type when it returns true.
+       * It is the logical inverse of `is`.
+       *
+       * @param value - The value to type check
+       * @returns `true` if the value does NOT belong to this type, `false` otherwise
+       *
+       * @example
+       * ```ts
+       * // Type narrowing away undefined
+       * const value: string | undefined = getValue()
+       * if (Undefined.Type.isnt(value)) {
+       *   // value is now typed as string
+       *   value.toUpperCase()
+       * }
+       *
+       * // Filtering out values
+       * const mixed = ['hello', undefined, 'world', undefined]
+       * const defined = mixed.filter(Undefined.Type.isnt)
+       * // defined is typed as string[]
+       * ```
+       */
+      isnt(value: unknown): value is Exclude<unknown, $Value>
     },
     { // Internal interface
       is(value: unknown): boolean
+      isnt?(value: unknown): boolean
     }
   >,
   Ts.Kind.Private
@@ -74,4 +101,8 @@ export interface Type<$Value = any> extends
 //
 //
 
-export const Type = Traitor.define<Type>('Type')
+export const Type = Traitor.define<Type>('Type', {
+  isnt: {
+    defaultWith: ({ trait }) => (value: unknown) => !trait.is(value),
+  },
+})
