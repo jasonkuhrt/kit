@@ -82,6 +82,51 @@ export type Letter = LetterLower | LetterUpper
  */
 export type Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
 
+/**
+ * Hexadecimal letter (uppercase).
+ *
+ * Represents hex digits A-F in base-16 (values 10-15 in decimal).
+ *
+ * @category Character Types
+ * @see https://en.wikipedia.org/wiki/Hexadecimal - Overview of hexadecimal number system
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString - JavaScript hex conversion
+ */
+export type HexLetterUpper = 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
+
+/**
+ * Hexadecimal letter (lowercase).
+ *
+ * Represents hex digits a-f in base-16 (values 10-15 in decimal).
+ *
+ * @category Character Types
+ * @see https://en.wikipedia.org/wiki/Hexadecimal - Overview of hexadecimal number system
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString - JavaScript hex conversion
+ */
+export type HexLetterLower = 'a' | 'b' | 'c' | 'd' | 'e' | 'f'
+
+/**
+ * Hexadecimal letter (uppercase or lowercase).
+ *
+ * Represents hex digits A-F or a-f in base-16 (values 10-15 in decimal).
+ *
+ * @category Character Types
+ * @see https://en.wikipedia.org/wiki/Hexadecimal - Overview of hexadecimal number system
+ */
+export type HexLetter = HexLetterUpper | HexLetterLower
+
+/**
+ * Hexadecimal digit (0-9, A-F, a-f).
+ *
+ * Represents a single character in base-16 (hexadecimal) number system.
+ * Used for colors (#FF5733), memory addresses, data encoding, etc.
+ *
+ * @category Character Types
+ * @see https://en.wikipedia.org/wiki/Hexadecimal - Overview of hexadecimal number system
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString - JavaScript hex conversion
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt - Parsing hex strings
+ */
+export type HexDigit = Digit | HexLetter
+
 //
 //
 //
@@ -171,3 +216,91 @@ export const squareWithLeftHalfBlack = `\u25E7`
  * @see https://unicode-explorer.com/c/2192
  */
 export const rightwardsArrow = `\u2192`
+
+/**
+ * Vertical bar (pipe) character (U+007C).
+ * Vertical line symbol: |
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/007C
+ */
+export const pipe = `|`
+
+/**
+ * Box drawing horizontal line character (U+2500).
+ * Horizontal line symbol: ─
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/2500
+ */
+export const boxDrawingHorizontal = `\u2500`
+
+/**
+ * Box drawing heavy horizontal line character (U+2501).
+ * Bold horizontal line symbol: ━
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/2501
+ */
+export const boxDrawingHorizontalHeavy = `\u2501`
+
+/**
+ * Box drawing vertical line character (U+2502).
+ * Vertical line symbol: │
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/2502
+ */
+export const boxDrawingVertical = `\u2502`
+
+/**
+ * Box drawing down and right character (U+250C).
+ * Top-left corner symbol: ┌
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/250C
+ */
+export const boxDrawingDownRight = `\u250C`
+
+/**
+ * Box drawing down and left character (U+2510).
+ * Top-right corner symbol: ┐
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/2510
+ */
+export const boxDrawingDownLeft = `\u2510`
+
+/**
+ * Box drawing up and right character (U+2514).
+ * Bottom-left corner symbol: └
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/2514
+ */
+export const boxDrawingUpRight = `\u2514`
+
+/**
+ * Box drawing up and left character (U+2518).
+ * Bottom-right corner symbol: ┘
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/2518
+ */
+export const boxDrawingUpLeft = `\u2518`
+
+/**
+ * Ballot X character (U+2717).
+ * X mark symbol: ✗
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/2717
+ */
+export const ballotX = `\u2717`
+
+/**
+ * Multiplication X character (U+2715).
+ * Multiplication X symbol: ✕
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/2715
+ */
+export const multiplicationX = `\u2715`
+
+/**
+ * Check mark character (U+2713).
+ * Check symbol: ✓
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/2713
+ */
+export const checkMark = `\u2713`

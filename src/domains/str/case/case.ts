@@ -1,3 +1,5 @@
+import { snakeCase } from 'es-toolkit'
+
 /**
  * Convert string to camelCase.
  * @category Case Conversion
@@ -42,8 +44,6 @@ export { pascalCase as pascal } from 'es-toolkit'
  */
 export { snakeCase as snake } from 'es-toolkit'
 
-import { snakeCase as snake } from 'es-toolkit'
-
 /**
  * Convert string to CONSTANT_CASE (SCREAMING_SNAKE_CASE).
  * Commonly used for environment variables and constants.
@@ -57,7 +57,7 @@ import { snakeCase as snake } from 'es-toolkit'
  * constant('myEnvVar') // 'MY_ENV_VAR'
  * ```
  */
-export const constant = (name: string): string => snake(name).toUpperCase()
+export const constant = (name: string): string => snakeCase(name).toUpperCase()
 
 /**
  * Convert string to Title Case.

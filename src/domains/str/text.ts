@@ -22,6 +22,14 @@ export const defaultIndentCharacter = Char.spaceNoBreak
  */
 export const defaultLineSeparator = Char.newline
 
+// Types
+
+/**
+ * A column is a vertical stack of lines.
+ * @category Text Formatting
+ */
+export type Column = string[]
+
 // Lines
 
 /**
@@ -314,6 +322,144 @@ export const padRightOn = Fn.curry(padRight)
  * ```
  */
 export const padRightWith = Fn.flipCurried(padRightOn)
+
+/**
+ * Align text within a specified width by adding padding.
+ *
+ * This ensures text spans exactly the target width, aligning content to the left or right.
+ * If the text is already wider than the target width, no padding is added.
+ *
+ * @category Text Formatting
+ * @param text - The text to align
+ * @param width - Target width (in characters)
+ * @param align - Content alignment ('left' or 'right')
+ * @param char - Character to use for padding (default: space)
+ * @returns The aligned text
+ *
+ * @example
+ * ```typescript
+ * // Left-align (pad right)
+ * Str.span('hi', 5, 'left')     // 'hi   '
+ *
+ * // Right-align (pad left)
+ * Str.span('hi', 5, 'right')    // '   hi'
+ *
+ * // Text already wider - no padding added
+ * Str.span('hello world', 5, 'left')  // 'hello world' (unchanged)
+ * ```
+ */
+export const span = (
+  text: string,
+  width: number,
+  align: `left` | `right` = `left`,
+  char: string = defaultPadCharacter,
+): string => {
+  const padSize = width - text.length
+  if (padSize <= 0) return text
+  return align === `left` ? text + char.repeat(padSize) : char.repeat(padSize) + text
+}
+
+/**
+ * Curried version of {@link span} with text first.
+ * @category Text Formatting
+ * @param text - The text to align
+ * @returns Function that takes width, align, and char
+ */
+export const spanOn = Fn.curry(span)
+
+/**
+ * Curried version of {@link span} with width first.
+ * @category Text Formatting
+ * @param width - Target width
+ * @returns Function that takes text, align, and char
+ *
+ * @example
+ * ```typescript
+ * const span8 = Str.spanWith(8)
+ * span8('Name', 'left')   // 'Name    '
+ * span8('Age', 'right')   // '     Age'
+ * ```
+ */
+export const spanWith = Fn.flipCurried(spanOn)
+
+/**
+ * Constrain text to exact width by cropping and/or padding.
+ *
+ * Unlike {@link span} which only pads (leaving text unchanged if too long),
+ * this function guarantees the exact width by:
+ * - Cropping text if it exceeds the target width
+ * - Padding text if it's shorter than the target width
+ *
+ * This is useful for fixed-width layouts where column widths must be exact,
+ * such as table columns, CSV files, and fixed-format text files.
+ *
+ * @category Text Formatting
+ * @param text - The text to constrain
+ * @param width - Exact target width (in characters)
+ * @param align - Content alignment ('left' or 'right')
+ * @param char - Character to use for padding (default: space)
+ * @returns Text constrained to exact width
+ *
+ * @example
+ * ```typescript
+ * // Text too long - gets cropped
+ * Str.fit('hello world', 5, 'left')  // 'hello'
+ *
+ * // Text too short - gets padded
+ * Str.fit('hi', 5, 'left')           // 'hi   '
+ * Str.fit('hi', 5, 'right')          // '   hi'
+ *
+ * // Perfect fit - unchanged
+ * Str.fit('exact', 5, 'left')        // 'exact'
+ *
+ * // Use case: Fixed-width table columns
+ * const columns = ['Name', 'Email', 'Status'].map(
+ *   (header, i) => Str.fit(header, [10, 20, 8][i], 'left')
+ * )
+ * // ['Name      ', 'Email               ', 'Status  ']
+ *
+ * // CSV formatting with fixed columns
+ * const row = [name, email, status].map((val, i) =>
+ *   Str.fit(val, [20, 30, 10][i], 'left')
+ * ).join(',')
+ * ```
+ */
+export const fit = (
+  text: string,
+  width: number,
+  align: `left` | `right` = `left`,
+  char: string = defaultPadCharacter,
+): string => {
+  const cropped = text.slice(0, width)
+  return span(cropped, width, align, char)
+}
+
+/**
+ * Curried version of {@link fit} with text first.
+ * @category Text Formatting
+ * @param text - The text to constrain
+ * @returns Function that takes width, align, and char
+ */
+export const fitOn = Fn.curry(fit)
+
+/**
+ * Curried version of {@link fit} with width first.
+ * @category Text Formatting
+ * @param width - Exact target width
+ * @returns Function that takes text, align, and char
+ *
+ * @example
+ * ```typescript
+ * // Create fixed-width formatters
+ * const nameColumn = Str.fitWith(20)
+ * const statusColumn = Str.fitWith(10)
+ *
+ * nameColumn('John Doe', 'left')         // 'John Doe            '
+ * statusColumn('Active', 'left')         // 'Active    '
+ * statusColumn('Very Long Status', 'left') // 'Very Long '
+ * ```
+ */
+export const fitWith = Fn.flipCurried(fitOn)
 
 /**
  * Map a transformation function over each line of text.
