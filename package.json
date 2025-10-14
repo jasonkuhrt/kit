@@ -108,6 +108,8 @@
     "#num/safe-int/safe-int": "./build/domains/num/safe-int/$$.js",
     "#num/zero": "./build/domains/num/zero/$.js",
     "#num/zero/zero": "./build/domains/num/zero/$$.js",
+    "#time": "./build/domains/time/$.js",
+    "#time/time": "./build/domains/time/$$.js",
     "#tree": "./build/domains/tree/$.js",
     "#tree/tree": "./build/domains/tree/$$.js",
     "#tup": "./build/domains/tup/$.js",

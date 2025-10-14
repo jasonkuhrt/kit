@@ -62,6 +62,8 @@
       "#str/str": ["./src/domains/str/$$.ts"],
       "#tree": ["./src/domains/tree/$.ts"],
       "#tree/tree": ["./src/domains/tree/$$.ts"],
+      "#time": ["./src/domains/time/$.ts"],
+      "#time/time": ["./src/domains/time/$$.ts"],
       "#tup": ["./src/domains/tup/$.ts"],
       "#tup/tup": ["./src/domains/tup/$$.ts"],
       "#undefined": ["./src/domains/undefined/$.ts"],
