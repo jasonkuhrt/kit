@@ -2,6 +2,7 @@ import type { Arr } from '#arr'
 import type { Fn } from '#fn'
 import type { Obj } from '#obj'
 import type { Rec } from '#rec'
+import type { Ts } from '#ts'
 import type { Effect, Layer } from 'effect'
 import type { IsAny, IsNever, IsUnknown } from 'type-fest'
 import type { TestContext } from 'vitest'
@@ -58,7 +59,8 @@ export type UpdateState<State extends BuilderTypeState, Updates extends Partial<
  *
  * @category Type Utilities
  */
-type FnParams<State extends BuilderTypeState> = State['fn'] extends Fn.AnyAny ? Parameters<State['fn']>
+type FnParams<State extends BuilderTypeState> = State['fn'] extends Fn.AnyAny
+  ? Ts.SimpleSignature.GetParameters<State['fn']>
   : never
 
 /**
@@ -66,7 +68,8 @@ type FnParams<State extends BuilderTypeState> = State['fn'] extends Fn.AnyAny ? 
  *
  * @category Type Utilities
  */
-type FnReturn<State extends BuilderTypeState> = State['fn'] extends Fn.AnyAny ? ReturnType<State['fn']>
+type FnReturn<State extends BuilderTypeState> = State['fn'] extends Fn.AnyAny
+  ? Ts.SimpleSignature.GetReturnType<State['fn']>
   : never
 
 /**

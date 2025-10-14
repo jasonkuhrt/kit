@@ -30,6 +30,18 @@ export * as Code from './code/$$.js'
 export namespace Code {}
 
 // @ts-expect-error Duplicate identifier
+export * as Text from './text.js'
+/**
+ * Text formatting and manipulation utilities.
+ *
+ * Provides functions for working with multi-line text, indentation, padding,
+ * line-by-line transformations, and block formatting with prefixes.
+ *
+ * @category Text Formatting
+ */
+export namespace Text {}
+
+// @ts-expect-error Duplicate identifier
 export * as Visual from './visual.js'
 /**
  * Visual-aware string utilities that handle ANSI escape codes and grapheme clusters.

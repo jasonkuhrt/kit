@@ -500,3 +500,113 @@ export const mapLinesOn = Fn.curry(mapLines)
  * ```
  */
 export const mapLinesWith = Fn.flipCurried(mapLinesOn)
+
+// Prefix
+
+/**
+ * Styled prefix that can have an optional color function.
+ * Used with {@link formatBlock} for colored line prefixes.
+ *
+ * @category Text Formatting
+ */
+export type StyledPrefix = {
+  /**
+   * The prefix text/symbol to display.
+   */
+  symbol: string
+  /**
+   * Optional function to colorize the prefix.
+   */
+  color?: (text: string) => string
+}
+
+/**
+ * Format a multi-line text block with line-by-line transformations.
+ *
+ * Processes each line of text, adding a prefix and optional indentation.
+ * Supports excluding the first line and styled prefixes with colors.
+ *
+ * @category Text Formatting
+ * @param block - The text block to format
+ * @param opts - Formatting options
+ * @param opts.prefix - Prefix to add to each line (string or styled with color)
+ * @param opts.indent - Number of spaces to indent after prefix
+ * @param opts.excludeFirstLine - Skip formatting the first line (default: false)
+ * @returns Formatted text block
+ *
+ * @example
+ * ```typescript
+ * // Simple string prefix
+ * formatBlock('line1\nline2\nline3', { prefix: '> ' })
+ * // '> line1\n> line2\n> line3'
+ *
+ * // With indentation
+ * formatBlock('line1\nline2', { prefix: '| ', indent: 2 })
+ * // '|   line1\n|   line2'
+ *
+ * // Exclude first line (useful for continuing indentation)
+ * formatBlock('header\nline1\nline2', { prefix: '  ', excludeFirstLine: true })
+ * // 'header\n  line1\n  line2'
+ *
+ * // Single line - returned as-is
+ * formatBlock('single', { prefix: '> ' })
+ * // 'single'
+ *
+ * // Styled prefix with color function
+ * formatBlock('data\nmore data', {
+ *   prefix: {
+ *     symbol: '│ ',
+ *     color: (text) => `\x1b[90m${text}\x1b[0m` // gray color
+ *   },
+ *   indent: 2
+ * })
+ * // '\x1b[90m│ \x1b[0m  data\n\x1b[90m│ \x1b[0m  more data'
+ * ```
+ */
+export const formatBlock = (
+  block: string,
+  opts: {
+    prefix?: string | StyledPrefix
+    indent?: number
+    excludeFirstLine?: boolean
+  },
+): string => {
+  const [first, ...rest] = lines(block)
+  if (rest.length === 0) return first!
+
+  const linesToProcess = opts.excludeFirstLine === true ? rest : (rest.unshift(first!), rest)
+  const prefixText = typeof opts.prefix === `string` ? opts.prefix : opts.prefix?.symbol ?? ``
+  const indentText = opts.indent !== undefined ? Char.spaceRegular.repeat(opts.indent) : ``
+  const linesProcessed = opts.excludeFirstLine === true ? [first] : []
+
+  for (const line of linesToProcess) {
+    const prefixRendered = typeof opts.prefix === `object`
+      ? opts.prefix?.color?.(prefixText) ?? prefixText
+      : prefixText
+    linesProcessed.push(prefixRendered + indentText + line)
+  }
+
+  return unlines(linesProcessed.filter((line): line is string => line !== undefined))
+}
+
+/**
+ * Curried version of {@link formatBlock} with block first.
+ * @category Text Formatting
+ * @param block - The text block to format
+ * @returns Function that takes formatting options
+ */
+export const formatBlockOn = Fn.curry(formatBlock)
+
+/**
+ * Curried version of {@link formatBlock} with options first.
+ * @category Text Formatting
+ * @param opts - Formatting options
+ * @returns Function that takes the text block
+ * @example
+ * ```typescript
+ * const addSpine = formatBlockWith({ prefix: '│ ', indent: 2 })
+ * addSpine('line1\nline2\nline3')
+ * // '│   line1\n│   line2\n│   line3'
+ * ```
+ */
+export const formatBlockWith = Fn.flipCurried(formatBlockOn)

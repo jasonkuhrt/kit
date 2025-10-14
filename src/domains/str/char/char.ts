@@ -304,3 +304,84 @@ export const multiplicationX = `\u2715`
  * @see https://unicode-explorer.com/c/2713
  */
 export const checkMark = `\u2713`
+
+/**
+ * Black square character (U+25A0).
+ * Filled square symbol: ■
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/25A0
+ */
+export const blackSquare = `\u25A0`
+
+/**
+ * White circle character (U+25CB).
+ * Hollow circle symbol: ○
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/25CB
+ */
+export const whiteCircle = `\u25CB`
+
+/**
+ * Black up-pointing triangle character (U+25B2).
+ * Filled upward triangle symbol: ▲
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/25B2
+ */
+export const blackUpPointingTriangle = `\u25B2`
+
+/**
+ * Em dash character (U+2014).
+ * Long dash symbol: —
+ * @category Character Constants
+ * @see https://unicode-explorer.com/c/2014
+ */
+export const emDash = `\u2014`
+
+/**
+ * Exclamation mark character.
+ * Often used for negation or emphasis: !
+ * @category Character Constants
+ */
+export const exclamation = `!`
+
+/**
+ * Colon character.
+ * Often used as a separator or delimiter: :
+ * @category Character Constants
+ */
+export const colon = `:`
+
+/**
+ * Comma character.
+ * Often used as a list separator: ,
+ * @category Character Constants
+ */
+export const comma = `,`
+
+/**
+ * Asterisk character.
+ * Often used as a wildcard or multiplication symbol: *
+ * @category Character Constants
+ */
+export const asterisk = `*`
+
+/**
+ * At sign character.
+ * Often used in email addresses and mentions: @
+ * @category Character Constants
+ */
+export const at = `@`
+
+/**
+ * Plus sign character.
+ * Used for addition or positive values: +
+ * @category Character Constants
+ */
+export const plus = `+`
+
+/**
+ * Hyphen/minus character.
+ * Used for subtraction, ranges, or negative values: -
+ * @category Character Constants
+ */
+export const hyphen = `-`

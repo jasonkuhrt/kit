@@ -15,6 +15,12 @@ import { domain } from '../domain.js'
  * Undefined.Type.is(null)        // false
  * Undefined.Type.is(0)           // false
  * Undefined.Type.is('')          // false
+ *
+ * // Using isnt to narrow away undefined
+ * const value: string | undefined = getValue()
+ * if (Undefined.Type.isnt(value)) {
+ *   value.toUpperCase()  // value is string
+ * }
  * ```
  */
 export const Type = Traitor.implement(TypeTrait, domain, {
