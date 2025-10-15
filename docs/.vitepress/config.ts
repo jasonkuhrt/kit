@@ -8,8 +8,8 @@ export default defineConfig({
   title: '@wollybeard/kit',
   description: 'A TypeScript utility library with functional programming utilities',
 
-  // Use /kit/ base for production (GitHub Pages), / for development
-  base: process.env.NODE_ENV === 'production' ? '/kit/' : '/',
+  // Use / when deployed on Netlify, /kit/ for local development
+  base: process.env.NETLIFY ? '/' : '/kit/',
 
   // Remove .html from URLs
   cleanUrls: true,
