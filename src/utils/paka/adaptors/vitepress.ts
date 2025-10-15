@@ -432,6 +432,26 @@ const getTypeIcon = (exp: Export): string => {
 }
 
 /**
+ * Escape HTML angle brackets while preserving backtick-wrapped inline code.
+ */
+const escapeHtmlPreservingCode = (text: string): string => {
+  // Extract all backtick-wrapped content and replace with placeholders
+  const codeBlocks: string[] = []
+  const withPlaceholders = text.replace(/`([^`]+)`/g, (_, code) => {
+    codeBlocks.push(code)
+    return `%%CODE_${codeBlocks.length - 1}%%`
+  })
+
+  // Escape angle brackets in non-code content
+  const escaped = withPlaceholders.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
+  // Restore backtick-wrapped content (unescaped)
+  return escaped.replace(/%%CODE_(\d+)%%/g, (_, index) => {
+    return `\`${codeBlocks[Number(index)]}\``
+  })
+}
+
+/**
  * Render a single export.
  */
 const renderExport = (exp: Export, context: Context): string => {
@@ -442,18 +462,18 @@ const renderExport = (exp: Export, context: Context): string => {
   // CRITICAL: Must convert double-space separators to newlines BEFORE demoting headings,
   // since demoteHeadings requires actual line breaks to match ^## patterns
   const description = exp.description
-    ? Md.demoteHeadings(
-      Md.convertJSDocLinks(
-        exp.description
-          .replace(/  /g, '\n\n') // Convert double-space paragraph separators to newlines FIRST
-          .replace(/ - /g, '\n- '), // Convert list item separators to proper markdown list items
-      ),
-      2, // Demote headings AFTER newlines are added (exports are h3, so description content becomes h4+)
+    ? escapeHtmlPreservingCode(
+      Md.demoteHeadings(
+        Md.convertJSDocLinks(
+          exp.description
+            .replace(/  /g, '\n\n') // Convert double-space paragraph separators to newlines FIRST
+            .replace(/ - /g, '\n- '), // Convert list item separators to proper markdown list items
+        ),
+        2, // Demote headings AFTER newlines are added (exports are h3, so description content becomes h4+)
+      )
+        // Wrap list items that start with code-like patterns in backticks
+        .replace(/^- (\[\[.*?\]\]|\{[^}]+\})/gm, '- `$1`'),
     )
-      // Wrap list items that start with code-like patterns in backticks
-      .replace(/^- (\[\[.*?\]\]|\{[^}]+\})/gm, '- `$1`')
-      // HTML-escape angle brackets to prevent Vue parser errors
-      .replace(/</g, '&lt;').replace(/>/g, '&gt;')
     : ''
 
   const examples = exp.examples.length > 0

@@ -39,8 +39,8 @@ Converts the following characters to their HTML entity equivalents:
 - `"` → `&quot;`
 - `'` → `&#39;`
 - `&` → `&amp;`
-- `&lt;` → `&lt;`
-- `&gt;` → `&gt;`
+- `<` → `&lt;`
+- `>` → `&gt;`
 
 **Examples:**
 

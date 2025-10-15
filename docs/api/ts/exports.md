@@ -376,7 +376,7 @@ type SimplifyNullable<$T> = null extends $T ? (Simplify<$T> & {}) | null : Simpl
 
 Simplify a type while preserving `| null` unions.
 
-This solves a subtle problem with Simplify: when you have `Type | null`, using `Simplify&lt;Type | null&gt;` can absorb or transform the `null` in unexpected ways due to the intersection with `& unknown` or `& {}`. This utility checks for null first, then explicitly reconstructs the union to ensure `| null` remains intact.
+This solves a subtle problem with Simplify: when you have `Type | null`, using `Simplify<Type | null>` can absorb or transform the `null` in unexpected ways due to the intersection with `& unknown` or `& {}`. This utility checks for null first, then explicitly reconstructs the union to ensure `| null` remains intact.
 
 **When to use:**
 

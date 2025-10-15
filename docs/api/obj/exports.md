@@ -2414,7 +2414,7 @@ type SubtractShallow<$A, $B> = Omit<$A, keyof $B>
 
 Subtract properties present in $B from $A (shallow operation).
 
-Returns a new object type containing only properties that exist in $A but not in $B. This is equivalent to `Omit&lt;$A, keyof $B&gt;` but expresses the operation as subtraction.
+Returns a new object type containing only properties that exist in $A but not in $B. This is equivalent to `Omit<$A, keyof $B>` but expresses the operation as subtraction.
 
 **Examples:**
 

@@ -110,9 +110,9 @@ This is a simpler, more focused error type compared to StaticError. It's specifi
 
 Supports three forms of tips:
 
-- Single string: `StaticErrorAssertion&lt;'msg', E, A, 'tip'&gt;`
-- Tuple of strings: `StaticErrorAssertion&lt;'msg', E, A, ['tip1', 'tip2']&gt;`
-- Metadata object: `StaticErrorAssertion&lt;'msg', E, A, never, { custom: 'data' }&gt;`
+- Single string: `StaticErrorAssertion<'msg', E, A, 'tip'>`
+- Tuple of strings: `StaticErrorAssertion<'msg', E, A, ['tip1', 'tip2']>`
+- Metadata object: `StaticErrorAssertion<'msg', E, A, never, { custom: 'data' }>`
 
 $Message
 
@@ -920,7 +920,7 @@ type parameters<$Expected extends readonly any[], $Actual extends readonly any[]
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/parameters.ts#L46" />
 
-Assert that a function's parameters match the expected type. Combines `Parameters&lt;typeof fn&gt;` with assertion in one step.
+Assert that a function's parameters match the expected type. Combines `Parameters<typeof fn>` with assertion in one step.
 
 **Examples:**
 
@@ -946,7 +946,7 @@ type parameters<$Expected extends readonly any[], $Actual extends readonly any[]
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/parameters.ts#L46" />
 
-Assert that a function's parameters match the expected type. Combines `Parameters&lt;typeof fn&gt;` with assertion in one step.
+Assert that a function's parameters match the expected type. Combines `Parameters<typeof fn>` with assertion in one step.
 
 **Examples:**
 
@@ -969,7 +969,7 @@ type returns<$Expected, $Actual> = Apply<ReturnsAssertionKind, [$Expected, $Actu
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/returns.ts#L62" />
 
-Assert that a function's return type matches the expected type. Combines `ReturnType&lt;typeof fn&gt;` with assertion in one step.
+Assert that a function's return type matches the expected type. Combines `ReturnType<typeof fn>` with assertion in one step.
 
 **Examples:**
 
@@ -992,7 +992,7 @@ type returns<$Expected, $Actual> = Apply<ReturnsAssertionKind, [$Expected, $Actu
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/returns.ts#L62" />
 
-Assert that a function's return type matches the expected type. Combines `ReturnType&lt;typeof fn&gt;` with assertion in one step.
+Assert that a function's return type matches the expected type. Combines `ReturnType<typeof fn>` with assertion in one step.
 
 **Examples:**
 
@@ -1015,7 +1015,7 @@ type returnsPromise<$Expected, $Actual> = Apply<ReturnsPromiseAssertionKind, [$E
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/returns-promise.ts#L62" />
 
-Assert that an async function's resolved return type matches the expected type. Combines `Awaited&lt;ReturnType&lt;typeof fn&gt;&gt;` with assertion in one step.
+Assert that an async function's resolved return type matches the expected type. Combines `Awaited<ReturnType<typeof fn>>` with assertion in one step.
 
 **Examples:**
 
@@ -1038,7 +1038,7 @@ type returnsPromise<$Expected, $Actual> = Apply<ReturnsPromiseAssertionKind, [$E
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/returns-promise.ts#L62" />
 
-Assert that an async function's resolved return type matches the expected type. Combines `Awaited&lt;ReturnType&lt;typeof fn&gt;&gt;` with assertion in one step.
+Assert that an async function's resolved return type matches the expected type. Combines `Awaited<ReturnType<typeof fn>>` with assertion in one step.
 
 **Examples:**
 

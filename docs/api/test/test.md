@@ -343,7 +343,7 @@ Test tables allow you to define multiple test cases with inputs and expected out
 
 **Generic Mode**
 
-- Define custom types with `.i&lt;T&gt;` and `.o&lt;T&gt;`:
+- Define custom types with `.i<T>` and `.o<T>`:
 - Explicitly specify input and output types
 - Provide custom test logic to validate cases
 - Useful for testing complex behaviors beyond simple function calls
@@ -352,10 +352,10 @@ Test tables allow you to define multiple test cases with inputs and expected out
 
 **Nested Describes**
 
-- Use `&gt;` separator to create nested describe blocks:
-- `Test.describe('Parent &gt; Child')` creates `describe('Parent', () => describe('Child', ...))`
+- Use `>` separator to create nested describe blocks:
+- `Test.describe('Parent > Child')` creates `describe('Parent', () => describe('Child', ...))`
 - Multiple SEPARATE Test.describe() calls with the same prefix share the outer describe block
-- Supports any depth: `'API &gt; Users &gt; Create'` creates three levels
+- Supports any depth: `'API > Users > Create'` creates three levels
 
 **Matrix Testing**
 
