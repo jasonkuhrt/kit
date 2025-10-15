@@ -39,6 +39,14 @@ const deriveModuleName = (path: string): string => {
 }
 
 /**
+ * Check if module has substantial README content warranting overview/exports split.
+ */
+const hasSubstantialReadme = (description: string): boolean => {
+  // Has markdown headings or is substantial length
+  return description.includes('\n## ') || description.length > 200
+}
+
+/**
  * Page metadata for a generated page.
  */
 type Page = {
@@ -48,6 +56,7 @@ type Page = {
   entrypoint: Entrypoint
   module: Module
   breadcrumbs: string[]
+  pageType?: 'overview' | 'exports' | 'namespace'
 }
 
 /**
@@ -131,15 +140,42 @@ const generatePages = (model: InterfaceModel): Page[] => {
     const moduleName = deriveModuleName(entrypoint.path)
     const module = entrypoint.module
 
-    // Top-level module page
-    pages.push({
-      url: `/api/${Md.kebab(moduleName)}`,
-      filepath: `api/${Md.kebab(moduleName)}.md`,
-      title: moduleName,
-      entrypoint,
-      module,
-      breadcrumbs: [moduleName],
-    })
+    // Check if module has substantial README
+    if (hasSubstantialReadme(module.description)) {
+      // Split into overview + exports pages
+
+      // Overview page (just README)
+      pages.push({
+        url: `/api/${Md.kebab(moduleName)}`,
+        filepath: `api/${Md.kebab(moduleName)}.md`,
+        title: moduleName,
+        entrypoint,
+        module,
+        breadcrumbs: [moduleName],
+        pageType: 'overview',
+      })
+
+      // Exports page (imports + exports, no README)
+      pages.push({
+        url: `/api/${Md.kebab(moduleName)}/exports`,
+        filepath: `api/${Md.kebab(moduleName)}/exports.md`,
+        title: moduleName,
+        entrypoint,
+        module,
+        breadcrumbs: [moduleName, 'Exports'],
+        pageType: 'exports',
+      })
+    } else {
+      // Single page with everything (current behavior)
+      pages.push({
+        url: `/api/${Md.kebab(moduleName)}`,
+        filepath: `api/${Md.kebab(moduleName)}.md`,
+        title: moduleName,
+        entrypoint,
+        module,
+        breadcrumbs: [moduleName],
+      })
+    }
 
     // Namespace pages (recursive)
     pages.push(...generateNamespacePages(entrypoint, module, [moduleName]))
@@ -184,7 +220,7 @@ const generateNamespacePages = (entrypoint: Entrypoint, module: Module, breadcru
  * Generate markdown content for a page.
  */
 const generatePageContent = (page: Page, context: Context): string => {
-  const { entrypoint, module, breadcrumbs } = page
+  const { entrypoint, module, breadcrumbs, pageType } = page
 
   // Breadcrumb navigation
   const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1]
@@ -192,7 +228,37 @@ const generatePageContent = (page: Page, context: Context): string => {
     ? `*${breadcrumbs.slice(0, -1).join('.')}* / **${lastBreadcrumb}**`
     : ''
 
-  // Separate namespace exports from regular exports
+  // Handle overview pages (just README)
+  if (pageType === 'overview') {
+    return Md.sections(
+      Md.heading(1, breadcrumbs.join('.')),
+      module.description || '',
+    )
+  }
+
+  // Handle exports pages (skip README)
+  if (pageType === 'exports') {
+    // Separate namespace exports from regular exports
+    const namespaceExports = module.exports.filter(
+      (exp: any) => exp._tag === 'value' && exp.type === 'namespace',
+    )
+    const regularExports = module.exports.filter(
+      (exp: any) => !(exp._tag === 'value' && exp.type === 'namespace'),
+    )
+
+    // Add breadcrumbs to context for namespace usage in examples
+    const contextWithBreadcrumbs = { ...context, breadcrumbs }
+
+    return Md.sections(
+      Md.heading(1, breadcrumbs.join('.')),
+      breadcrumbNav,
+      renderImportSection(entrypoint, context.packageName, [breadcrumbs[0]!]), // Use module name only
+      namespaceExports.length > 0 ? renderNamespacesSection(namespaceExports, [breadcrumbs[0]!]) : '',
+      renderExportsSection(regularExports, contextWithBreadcrumbs),
+    )
+  }
+
+  // Default behavior for single-page modules
   const namespaceExports = module.exports.filter(
     (exp: any) => exp._tag === 'value' && exp.type === 'namespace',
   )

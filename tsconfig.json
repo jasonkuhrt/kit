@@ -110,6 +110,8 @@
       "#name/name": ["./src/utils/name/$$.ts"],
       "#package-manager": ["./src/utils/package-manager/$.ts"],
       "#package-manager/package-manager": ["./src/utils/package-manager/$$.ts"],
+      "#paka": ["./src/utils/paka/$.ts"],
+      "#paka/paka": ["./src/utils/paka/$$.ts"],
       "#pat": ["./src/utils/pat/$.ts"],
       "#pat/pat": ["./src/utils/pat/$$.ts"],
       "#ref": ["./src/utils/ref/$.ts"],

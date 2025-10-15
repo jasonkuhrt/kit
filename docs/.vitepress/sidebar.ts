@@ -2,6 +2,14 @@ import type { DefaultTheme } from 'vitepress'
 import interfaceModel from '../.generated/interface.json'
 
 /**
+ * Check if module has substantial README content warranting overview/exports split.
+ */
+const hasSubstantialReadme = (description: string): boolean => {
+  // Has markdown headings or is substantial length
+  return description.includes('\n## ') || description.length > 200
+}
+
+/**
  * Generate VitePress sidebar items from the interface model.
  * Automatically includes nested namespaces as collapsible items.
  */
@@ -25,14 +33,23 @@ export function generateApiSidebar(): DefaultTheme.SidebarItem[] {
       }))
       .sort((a, b) => a.text.localeCompare(b.text))
 
+    // Check if module has substantial README
+    const hasReadme = hasSubstantialReadme(entrypoint.module.description)
+
     // Create sidebar item
     const item: DefaultTheme.SidebarItem = {
       text: displayName,
       link: `/api/${moduleName}`,
     }
 
-    // Add nested namespace items if any exist
-    if (namespaceExports.length > 0) {
+    // If has substantial README, create nested structure with Exports + namespaces
+    if (hasReadme) {
+      item.items = [
+        { text: 'Exports', link: `/api/${moduleName}/exports` },
+        ...namespaceExports,
+      ]
+    } else if (namespaceExports.length > 0) {
+      // Otherwise, just add namespace items if any exist
       item.items = namespaceExports
     }
 

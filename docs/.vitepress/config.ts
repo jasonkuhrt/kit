@@ -7,7 +7,12 @@ import { generateApiSidebar } from './sidebar.js'
 export default defineConfig({
   title: '@wollybeard/kit',
   description: 'A TypeScript utility library with functional programming utilities',
-  base: '/kit/', // Adjust this based on your deployment URL
+
+  // Use /kit/ base for production (GitHub Pages), / for development
+  base: process.env.NODE_ENV === 'production' ? '/kit/' : '/',
+
+  // Remove .html from URLs
+  cleanUrls: true,
 
   srcExclude: ['**/internal/**'], // Exclude internal docs from build
   ignoreDeadLinks: true, // Temporarily ignore dead links

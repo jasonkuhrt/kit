@@ -1,0 +1,270 @@
+# Paka
+
+# Paka Documentation Extractor
+
+Paka is a TypeScript documentation extraction tool that generates structured API documentation from your TypeScript source code. It analyzes your codebase using `ts-morph`, extracts type information and JSDoc comments, and outputs a comprehensive interface model that can be rendered into documentation websites.
+
+## Features
+
+### JSDoc Tag Support
+
+Paka extracts and processes standard JSDoc tags:
+
+- **`@param`** - Parameter descriptions for functions and methods
+- **`@returns`** - Return value descriptions
+- **`@throws`** - Error conditions and exceptions
+- **`@example`** - Code examples (supports multiple examples per export)
+- **`@deprecated`** - Deprecation notices
+- **`@category`** - Group exports by category in documentation
+- **`@internal`** - Mark exports as internal (filtered from public docs)
+
+### Documentation Patterns
+
+#### Module-level Documentation
+
+**External Markdown Files** (#17 - Just Implemented!)
+
+Paka supports external markdown files for module documentation:
+
+1. **Sibling `.md` file**: `kind.ts` → `kind.md`
+2. **Directory `README.md`**: Applies to any module in that directory
+
+Precedence: Sibling `.md` > `README.md` > JSDoc module comment
+
+**JSDoc Module Comments**
+
+Place a JSDoc comment at the top of your module file:
+
+```typescript
+/**
+ * Higher-kinded type utilities for TypeScript.
+ *
+ * Provides type-level functions for simulating higher-kinded types.
+ *
+ * @module
+ */
+export type Apply<$Kind, $Args> = ...
+```
+
+#### Namespace Documentation Patterns
+
+**TypeScript Namespace Shadow**
+
+Add JSDoc to ESM namespace re-exports using a TypeScript namespace shadow:
+
+```typescript
+// @ts-expect-error Duplicate identifier
+export * as Utils from './utils.js'
+/**
+ * Utility functions for common operations.
+ *
+ * @category Utilities
+ */
+export namespace Utils { }
+```
+
+The shadow's JSDoc overrides the nested module's documentation.
+
+**Wrapper File Markdown** (Pure Wrapper Pattern)
+
+For files containing ONLY a namespace export and NO other exports:
+
+```typescript
+// parent.ts - contains ONLY this export
+export * as Utils from './utils.js'
+```
+
+Create `parent.md` to override the nested module's description. This is useful for namespace wrapper files like `$.ts`.
+
+**Precedence**: TypeScript shadow > Wrapper markdown > Nested module markdown > Nested module JSDoc
+
+### Export Filtering
+
+**`@internal` Tag**
+
+Mark exports as internal to exclude them from public documentation:
+
+```typescript
+/**
+ * Internal helper function
+ * @internal
+ */
+export const _internalHelper = () => { }
+```
+
+Always filtered when `filterInternal: true` (default in production).
+
+**Underscore Prefix Convention**
+
+Optionally filter exports starting with `_`:
+
+```typescript
+export const _privateHelper = () => { } // Filtered when filterUnderscoreExports: true
+```
+
+Enable with `filterUnderscoreExports` option (default: `false` for backward compatibility).
+
+### Builder Pattern Detection
+
+Mark functions with `@builder` to enable builder pattern documentation:
+
+```typescript
+/**
+ * Create a test builder
+ * @builder
+ */
+export const on = <Fn>(fn: Fn): TestBuilder<{ fn: Fn }> => ...
+
+  interface TestBuilder<State>{
+    cases(...cases: any[]): TestBuilder<State>  // chainable
+  test(): void                                 // terminal
+  }
+```
+
+Paka automatically crawls the returned builder type and classifies methods:
+
+- **Chainable**: Returns same builder type
+- **Terminal**: Returns void
+- **Transform**: Returns different builder type
+
+### Drillable Namespace Pattern
+
+Support multiple import styles for the same module:
+
+**Package.json setup:**
+
+```json
+{
+  "exports": {
+    ".": "./build/index.js",
+    "./arr": "./build/arr/$$.js"
+  }
+}
+```
+
+**Source structure:**
+
+```typescript
+// src/index.ts
+export * as Arr from './arr/$$.js'
+
+// src/arr/$$.ts
+export const map = ...
+export const filter = ...
+```
+
+Both import styles work:
+
+```typescript
+import { Arr } from '@pkg' // Namespace import
+import * as Arr from '@pkg/arr' // Direct barrel import
+```
+
+### Code Examples
+
+**Twoslash Integration**
+
+Examples support TypeScript's Twoslash for inline type display:
+
+````typescript
+/**
+ * @example
+ * 
+```ts
+ * const result = add(1, 2)  // hover shows: const result: number
+ * ```
+ */
+````
+
+Disable per-example with `@twoslash-disable`:
+
+````typescript
+/**
+ * @example
+ * 
+```ts
+ * // @twoslash-disable
+ * const pseudocode = "not real TypeScript"
+ * ```
+ */
+````
+
+### Type Signature Extraction
+
+Paka extracts structured type information:
+
+**Functions**: Overloads, type parameters, parameters, return types
+**Classes**: Constructor, properties, methods
+**Types**: Interfaces, type aliases, enums
+**Builders**: Entry point + chainable/terminal/transform methods
+
+## Usage
+
+### Extract from Files (Pure Function)
+
+```typescript
+import { Dir } from '@wollybeard/kit/dir'
+import { extractFromFiles } from '@wollybeard/kit/paka'
+
+// [!code word:spec:1]
+const files = Dir.spec('/')
+  .add('package.json', { name: 'my-pkg', exports: { '.': './build/index.js' } })
+  .add('src/index.ts', 'export const foo = () => {}')
+  .toLayout()
+
+const model = extractFromFiles({
+  files,
+  filterUnderscoreExports: false, // Optional
+})
+```
+
+### Extract from Filesystem
+
+```typescript
+import { extract } from '@wollybeard/kit/paka'
+
+const model = extract({
+  projectRoot: '/path/to/project',
+  tsconfigPath: '/path/to/tsconfig.json', // Optional
+  entrypoints: ['.', './arr'], // Optional (defaults to all)
+  filterUnderscoreExports: false, // Optional
+})
+```
+
+### Output
+
+The extracted model follows the `InterfaceModel` schema:
+
+```typescript
+{
+  name: 'package-name',
+    version: '1.0.0',
+      entrypoints: [
+        {
+          _tag: 'SimpleEntrypoint',
+          path: '.',
+          module: {
+            location: 'src/index.ts',
+            description: '...',
+            exports: [...]
+          }
+        }
+      ],
+        metadata: {
+    extractedAt: Date,
+      extractorVersion: '0.1.0'
+  }
+}
+```
+
+## Future Enhancements
+
+- **Export-level README** (#18): `kind.Apply.md` for individual exports
+- **Structured Markdown** (#19): Heading sections map to exports
+- **Package-level Extractor** (#16): `extractPackage()` with package README support
+- **Frontmatter Parsing**: Extract metadata from markdown frontmatter
+
+## Learn More
+
+- **GitHub Issues**: [jasonkuhrt/kit#17](https://github.com/jasonkuhrt/kit/issues/17)
+- **Schema Documentation**: See `src/utils/paka/schema.ts` for the complete interface model

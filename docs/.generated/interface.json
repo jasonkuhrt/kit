@@ -30183,8 +30183,9 @@
               "text": "export * as Code",
               "_tag": "TypeSignatureModel"
             },
-            "description": "",
+            "description": "Code generation and documentation utilities.\n\n \n\n \n\nProvides tools for generating markdown, TSDoc/JSDoc, and TypeScript code.\n\n \n\nIncludes safe JSDoc generation with escaping, builder API, and structured tag helpers.",
             "examples": [],
+            "category": "Code Generation",
             "tags": {},
             "sourceLocation": {
               "file": {
@@ -30233,7 +30234,7 @@
                     "text": "export * as Md",
                     "_tag": "TypeSignatureModel"
                   },
-                  "description": "",
+                  "description": "Markdown string utilities for code documentation.\n\n \n\n \n\nProvides functions for generating markdown elements like inline code,\n\n \n\nlinks, and tables.",
                   "examples": [],
                   "tags": {},
                   "sourceLocation": {
@@ -31327,7 +31328,7 @@
                     "text": "export * as TSDoc",
                     "_tag": "TypeSignatureModel"
                   },
-                  "description": "",
+                  "description": "TSDoc/JSDoc string utilities for code documentation.\n\n \n\n \n\nProvides safe JSDoc generation with automatic escaping, builder API,\n\n \n\nand structured tag helpers.",
                   "examples": [],
                   "tags": {},
                   "sourceLocation": {
@@ -31796,7 +31797,7 @@
                     "text": "export * as TS",
                     "_tag": "TypeSignatureModel"
                   },
-                  "description": "",
+                  "description": "TypeScript code generation utilities.\n\n \n\n \n\nProvides functions for generating TypeScript syntax elements like\n\n \n\ntypes, interfaces, imports, and exports.",
                   "examples": [],
                   "tags": {},
                   "sourceLocation": {
@@ -32618,8 +32619,9 @@
               "text": "export * as Text",
               "_tag": "TypeSignatureModel"
             },
-            "description": "",
+            "description": "Multi-line text formatting and layout utilities.\n\n \n\n \n\nProvides functions specifically for working with multi-line strings treated as text content:\n\n \n\n- **Line operations**: Split into lines, join lines, map transformations per line\n\n \n\n- **Indentation**: Add/remove indentation, strip common leading whitespace\n\n \n\n- **Alignment**: Pad text, span to width, fit to exact width\n\n \n\n- **Block formatting**: Format blocks with prefixes, styled borders\n\n \n\n \n\n**Use Text for**: Operations that treat strings as multi-line content with visual layout\n\n \n\n(indentation, padding for tables, line-by-line transformations).\n\n \n\n \n\n**Use root Str for**: Primitive string operations (split, join, replace, match, trim)\n\n \n\nthat work on strings as atomic values.",
             "examples": [],
+            "category": "Text Formatting",
             "tags": {},
             "sourceLocation": {
               "file": {
@@ -34229,8 +34231,9 @@
               "text": "export * as Visual",
               "_tag": "TypeSignatureModel"
             },
-            "description": "",
+            "description": "Visual-aware string utilities that handle ANSI escape codes and grapheme clusters.\n\n \n\n \n\nThese functions measure and manipulate strings based on their visual appearance,\n\n \n\nnot raw character count. Useful for terminal output, tables, and formatted text.",
             "examples": [],
+            "category": "Text Formatting",
             "tags": {},
             "sourceLocation": {
               "file": {
@@ -34278,8 +34281,9 @@
                     "text": "export * as Table",
                     "_tag": "TypeSignatureModel"
                   },
-                  "description": "",
+                  "description": "Visual-aware table operations for multi-column text layout.",
                   "examples": [],
+                  "category": "Text Formatting",
                   "tags": {},
                   "sourceLocation": {
                     "file": {
@@ -42207,8 +42211,9 @@
               "text": "export * as Kind",
               "_tag": "TypeSignatureModel"
             },
-            "description": "Higher-kinded type utilities for TypeScript.\n\n \n\n \n\nProvides type-level functions and utilities for simulating higher-kinded\n\n \n\ntypes in TypeScript, enabling more advanced type-level programming patterns.",
+            "description": "Higher-kinded type utilities for type-level programming.\n\n \n\nProvides type-level functions and utilities for simulating higher-kinded types in TypeScript.",
             "examples": [],
+            "category": "Higher-Kinded Types",
             "tags": {},
             "sourceLocation": {
               "file": {
@@ -42666,8 +42671,9 @@
               "text": "export * as SimpleSignature",
               "_tag": "TypeSignatureModel"
             },
-            "description": "Utilities for working with the \n\n__simpleSignature\n\n phantom type pattern.\n\n \n\n \n\nThis pattern allows functions with complex generic signatures to provide\n\n \n\na simpler signature for type inference in contexts like testing or documentation.\n\n \n\n \n\n\n\n SimpleSignature",
+            "description": "Utilities for working with the \n\n__simpleSignature\n\n phantom type pattern.\n\n \n\nAllows complex generic functions to provide simpler signatures for type inference.",
             "examples": [],
+            "category": "SimpleSignature",
             "tags": {},
             "sourceLocation": {
               "file": {
@@ -42959,8 +42965,9 @@
               "text": "export * as Test",
               "_tag": "TypeSignatureModel"
             },
-            "description": "Type-level assertion utilities for testing type correctness.\n\n \n\n \n\n## Choosing the Right Assertion\n\n \n\n \n\n**Structural Equality (\n\nexact\n\n)**: Use when types must be structurally identical\n\n \n\n```ts\nexact<string, string>           // ✓ Pass\nexact<1 | 2, 2 | 1>             // ✓ Pass (union order doesn't affect structure)\nexact<string & {}, string>      // ✗ Fail (different structure)\n\n```\n\n \n\n**Mutual Assignability (\n\nequiv\n\n)**: Use for semantically equal types\n\n \n\n```ts\nequiv<1 | 2, 2 | 1>             // ✓ Pass (same computed type)\nequiv<string & {}, string>      // ✓ Pass (both compute to string)\nequiv<string, number>           // ✗ Fail (not mutually assignable)\n\n```\n\n \n\n**Subtype Checking (\n\nsub\n\n)**: Use when actual must extend expected\n\n \n\n```ts\nsub<string, 'hello'>            // ✓ Pass ('hello' extends string)\nsub<object, { a: 1 }>           // ✓ Pass (more specific extends less specific)\nsub<'hello', string>            // ✗ Fail (string doesn't extend 'hello')\n\n```\n\n \n\n**Excess Property Detection**: Add \n\nNoExcess\n\n suffix to catch typos\n\n \n\n```ts\nsub<Config>()({ id: true, extra: 1 })         // ✓ Pass (sub allows excess)\nsubNoExcess<Config>()({ id: true, extra: 1 }) // ✗ Fail (catches typo!)\n\n```\n\n \n\n**Negative Assertions (\n\nNot\n\n)**: Assert types are NOT related\n\n \n\n```ts\nNot.exact<string, number>       // ✓ Pass (they're different)\nNot.sub<number, string>         // ✓ Pass (string doesn't extend number)\nNot.promise<number>             // ✓ Pass (number is not a Promise)\n\n```\n\n \n\n## Configuration\n\n \n\n \n\nAssertion behavior can be configured via global settings.\n\n \n\nSee \n\nKitLibrarySettings.Ts.Test.Settings\n\n for available options.",
+            "description": "Type-level assertion utilities for testing type correctness.\n\n \n\nProvides compile-time type checking and assertions for tests.",
             "examples": [],
+            "category": "Type Testing",
             "tags": {},
             "sourceLocation": {
               "file": {
@@ -43042,44 +43049,6 @@
                   "type": "type-alias"
                 },
                 {
-                  "name": "exactConst",
-                  "signature": {
-                    "type": "ConstAssertionFn<ExactKind>",
-                    "_tag": "ValueSignatureModel"
-                  },
-                  "description": "Assert that a value exactly equals the expected type, using const to preserve literal types.\n\n \n\nThis eliminates the need for \n\nas\n\n casts when testing with literal values.\n\n \n\n \n\nRelated: \n\nexact\n\n (non-const variant)",
-                  "examples": [
-                    {
-                      "code": "// Without const - requires cast\nTs.Test.exact<{ a: 1 }>()({ a: 1 } as { a: 1 })\n\n// With const - no cast needed!\nTs.Test.exactConst<{ a: 1 }>()({ a: 1 })\n\n// Works with any literal type\nTs.Test.exactConst<'hello'>()('hello')\nTs.Test.exactConst<42>()(42)\nTs.Test.exactConst<true>()(true)",
-                      "twoslashEnabled": true,
-                      "language": "typescript"
-                    }
-                  ],
-                  "tags": {},
-                  "sourceLocation": {
-                    "file": {
-                      "path": {
-                        "segments": [
-                          "src",
-                          "utils",
-                          "ts",
-                          "test"
-                        ],
-                        "_tag": "PathRelative"
-                      },
-                      "file": {
-                        "stem": "exact",
-                        "extension": ".ts",
-                        "_tag": "File"
-                      },
-                      "_tag": "LocRelFile"
-                    },
-                    "line": 114
-                  },
-                  "_tag": "value",
-                  "type": "const"
-                },
-                {
                   "name": "exactType",
                   "signature": {
                     "text": "type exact<$Expected, $Actual> = Apply<ExactKind, [$Expected, $Actual]>",
@@ -43156,44 +43125,6 @@
                   "type": "type-alias"
                 },
                 {
-                  "name": "equivConst",
-                  "signature": {
-                    "type": "ConstAssertionFn<EquivConstKind>",
-                    "_tag": "ValueSignatureModel"
-                  },
-                  "description": "Assert that a value is equivalent (mutually assignable) with the expected type, using const to preserve literal types.\n\n \n\nThis eliminates the need for \n\nas\n\n casts when testing with literal values.\n\n \n\n \n\nUnlike \n\nequiv\n\n, this also accepts subtypes, which is needed for const assertions\n\n \n\nwith literals (e.g., literal 1 is a subtype of union 1 | 2).\n\n \n\n \n\nRelated: \n\nequiv\n\n (non-const variant)",
-                  "examples": [
-                    {
-                      "code": "// Without const - requires cast for exact match\nTs.Test.equiv<1 | 2>()(1 as 1 | 2)\n\n// With const - no cast needed\nTs.Test.equivConst<1 | 2>()(1)  // preserves literal 1\n\n// Useful for union types\ntype Status = 'pending' | 'complete'\nTs.Test.equivConst<Status>()('pending')  // keeps 'pending' literal",
-                      "twoslashEnabled": true,
-                      "language": "typescript"
-                    }
-                  ],
-                  "tags": {},
-                  "sourceLocation": {
-                    "file": {
-                      "path": {
-                        "segments": [
-                          "src",
-                          "utils",
-                          "ts",
-                          "test"
-                        ],
-                        "_tag": "PathRelative"
-                      },
-                      "file": {
-                        "stem": "equiv",
-                        "extension": ".ts",
-                        "_tag": "File"
-                      },
-                      "_tag": "LocRelFile"
-                    },
-                    "line": 194
-                  },
-                  "_tag": "value",
-                  "type": "const"
-                },
-                {
                   "name": "equivNoExcess",
                   "signature": {
                     "text": "type equivNoExcess<$Expected, $Actual> = Apply<EquivNoExcessKind, [$Expected, $Actual]>",
@@ -43226,7 +43157,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 267
+                    "line": 195
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -43302,7 +43233,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 267
+                    "line": 195
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -43344,44 +43275,6 @@
                   },
                   "_tag": "type",
                   "type": "type-alias"
-                },
-                {
-                  "name": "subConst",
-                  "signature": {
-                    "type": "ConstAssertionFn<SubKind>",
-                    "_tag": "ValueSignatureModel"
-                  },
-                  "description": "Assert that a value extends the expected type, using const to preserve literal types.\n\n \n\nThis eliminates the need for \n\nas\n\n casts when testing with literal values.\n\n \n\n \n\nRelated: \n\nsub\n\n (non-const variant)",
-                  "examples": [
-                    {
-                      "code": "// Without const - type may widen\nsub<string>()('hello')  // 'hello' widens to string\n\n// With const - preserves literal\nsubConst<string>()('hello')  // keeps 'hello' literal type\n\n// Useful for object literals\nsubConst<{ a: number }>()({ a: 1 })  // preserves { readonly a: 1 }",
-                      "twoslashEnabled": true,
-                      "language": "typescript"
-                    }
-                  ],
-                  "tags": {},
-                  "sourceLocation": {
-                    "file": {
-                      "path": {
-                        "segments": [
-                          "src",
-                          "utils",
-                          "ts",
-                          "test"
-                        ],
-                        "_tag": "PathRelative"
-                      },
-                      "file": {
-                        "stem": "sub",
-                        "extension": ".ts",
-                        "_tag": "File"
-                      },
-                      "_tag": "LocRelFile"
-                    },
-                    "line": 314
-                  },
-                  "_tag": "value",
-                  "type": "const"
                 },
                 {
                   "name": "subNoExcess",
@@ -44830,8 +44723,9 @@
               "text": "export * as Union",
               "_tag": "TypeSignatureModel"
             },
-            "description": "Valid values for discriminant properties in tagged unions.",
+            "description": "Utilities for working with union types at the type level.",
             "examples": [],
+            "category": "Union Types",
             "tags": {},
             "sourceLocation": {
               "file": {
@@ -45329,8 +45223,9 @@
               "text": "export * as VariancePhantom",
               "_tag": "TypeSignatureModel"
             },
-            "description": "Phantom type helper that makes a type parameter covariant.",
+            "description": "Phantom type helpers for controlling type variance (covariance, contravariance, invariance, bivariance).",
             "examples": [],
+            "category": "Variance",
             "tags": {},
             "sourceLocation": {
               "file": {
@@ -47020,10 +46915,1788 @@
         ]
       },
       "_tag": "DrillableNamespaceEntrypoint"
+    },
+    {
+      "path": "./paka",
+      "module": {
+        "location": {
+          "path": {
+            "segments": [
+              "src",
+              "utils",
+              "paka"
+            ],
+            "_tag": "PathRelative"
+          },
+          "file": {
+            "stem": "$$",
+            "extension": ".ts",
+            "_tag": "File"
+          },
+          "_tag": "LocRelFile"
+        },
+        "description": "# Paka Documentation Extractor\n\nPaka is a TypeScript documentation extraction tool that generates structured API documentation from your TypeScript source code. It analyzes your codebase using `ts-morph`, extracts type information and JSDoc comments, and outputs a comprehensive interface model that can be rendered into documentation websites.\n\n## Features\n\n### JSDoc Tag Support\n\nPaka extracts and processes standard JSDoc tags:\n\n- **`@param`** - Parameter descriptions for functions and methods\n- **`@returns`** - Return value descriptions\n- **`@throws`** - Error conditions and exceptions\n- **`@example`** - Code examples (supports multiple examples per export)\n- **`@deprecated`** - Deprecation notices\n- **`@category`** - Group exports by category in documentation\n- **`@internal`** - Mark exports as internal (filtered from public docs)\n\n### Documentation Patterns\n\n#### Module-level Documentation\n\n**External Markdown Files** (#17 - Just Implemented!)\n\nPaka supports external markdown files for module documentation:\n\n1. **Sibling `.md` file**: `kind.ts` → `kind.md`\n2. **Directory `README.md`**: Applies to any module in that directory\n\nPrecedence: Sibling `.md` > `README.md` > JSDoc module comment\n\n**JSDoc Module Comments**\n\nPlace a JSDoc comment at the top of your module file:\n\n```typescript\n/**\n * Higher-kinded type utilities for TypeScript.\n *\n * Provides type-level functions for simulating higher-kinded types.\n *\n * @module\n */\nexport type Apply<$Kind, $Args> = ...\n```\n\n#### Namespace Documentation Patterns\n\n**TypeScript Namespace Shadow**\n\nAdd JSDoc to ESM namespace re-exports using a TypeScript namespace shadow:\n\n```typescript\n// @ts-expect-error Duplicate identifier\nexport * as Utils from './utils.js'\n/**\n * Utility functions for common operations.\n *\n * @category Utilities\n */\nexport namespace Utils {}\n```\n\nThe shadow's JSDoc overrides the nested module's documentation.\n\n**Wrapper File Markdown** (Pure Wrapper Pattern)\n\nFor files containing ONLY a namespace export and NO other exports:\n\n```typescript\n// parent.ts - contains ONLY this export\nexport * as Utils from './utils.js'\n```\n\nCreate `parent.md` to override the nested module's description. This is useful for namespace wrapper files like `$.ts`.\n\n**Precedence**: TypeScript shadow > Wrapper markdown > Nested module markdown > Nested module JSDoc\n\n### Export Filtering\n\n**`@internal` Tag**\n\nMark exports as internal to exclude them from public documentation:\n\n```typescript\n/**\n * Internal helper function\n * @internal\n */\nexport const _internalHelper = () => {}\n```\n\nAlways filtered when `filterInternal: true` (default in production).\n\n**Underscore Prefix Convention**\n\nOptionally filter exports starting with `_`:\n\n```typescript\nexport const _privateHelper = () => {} // Filtered when filterUnderscoreExports: true\n```\n\nEnable with `filterUnderscoreExports` option (default: `false` for backward compatibility).\n\n### Builder Pattern Detection\n\nMark functions with `@builder` to enable builder pattern documentation:\n\n```typescript\n/**\n * Create a test builder\n * @builder\n */\nexport const on = <Fn>(fn: Fn): TestBuilder<{fn: Fn}> => ...\n\ninterface TestBuilder<State> {\n  cases(...cases: any[]): TestBuilder<State>  // chainable\n  test(): void                                 // terminal\n}\n```\n\nPaka automatically crawls the returned builder type and classifies methods:\n\n- **Chainable**: Returns same builder type\n- **Terminal**: Returns void\n- **Transform**: Returns different builder type\n\n### Drillable Namespace Pattern\n\nSupport multiple import styles for the same module:\n\n**Package.json setup:**\n\n```json\n{\n  \"exports\": {\n    \".\": \"./build/index.js\",\n    \"./arr\": \"./build/arr/$$.js\"\n  }\n}\n```\n\n**Source structure:**\n\n```typescript\n// src/index.ts\nexport * as Arr from './arr/$$.js'\n\n// src/arr/$$.ts\nexport const map = ...\nexport const filter = ...\n```\n\nBoth import styles work:\n\n```typescript\nimport { Arr } from '@pkg' // Namespace import\nimport * as Arr from '@pkg/arr' // Direct barrel import\n```\n\n### Code Examples\n\n**Twoslash Integration**\n\nExamples support TypeScript's Twoslash for inline type display:\n\n````typescript\n/**\n * @example\n * ```ts\n * const result = add(1, 2)  // hover shows: const result: number\n * ```\n */\n````\n\nDisable per-example with `@twoslash-disable`:\n\n````typescript\n/**\n * @example\n * ```ts\n * // @twoslash-disable\n * const pseudocode = \"not real TypeScript\"\n * ```\n */\n````\n\n### Type Signature Extraction\n\nPaka extracts structured type information:\n\n**Functions**: Overloads, type parameters, parameters, return types\n**Classes**: Constructor, properties, methods\n**Types**: Interfaces, type aliases, enums\n**Builders**: Entry point + chainable/terminal/transform methods\n\n## Usage\n\n### Extract from Files (Pure Function)\n\n```typescript\nimport { Dir } from '@wollybeard/kit/dir'\nimport { extractFromFiles } from '@wollybeard/kit/paka'\n\nconst files = Dir.spec('/')\n  .add('package.json', { name: 'my-pkg', exports: { '.': './build/index.js' } })\n  .add('src/index.ts', 'export const foo = () => {}')\n  .toLayout()\n\nconst model = extractFromFiles({\n  files,\n  filterUnderscoreExports: false, // Optional\n})\n```\n\n### Extract from Filesystem\n\n```typescript\nimport { extract } from '@wollybeard/kit/paka'\n\nconst model = extract({\n  projectRoot: '/path/to/project',\n  tsconfigPath: '/path/to/tsconfig.json', // Optional\n  entrypoints: ['.', './arr'], // Optional (defaults to all)\n  filterUnderscoreExports: false, // Optional\n})\n```\n\n### Output\n\nThe extracted model follows the `InterfaceModel` schema:\n\n```typescript\n{\n  name: 'package-name',\n  version: '1.0.0',\n  entrypoints: [\n    {\n      _tag: 'SimpleEntrypoint',\n      path: '.',\n      module: {\n        location: 'src/index.ts',\n        description: '...',\n        exports: [...]\n      }\n    }\n  ],\n  metadata: {\n    extractedAt: Date,\n    extractorVersion: '0.1.0'\n  }\n}\n```\n\n## Future Enhancements\n\n- **Export-level README** (#18): `kind.Apply.md` for individual exports\n- **Structured Markdown** (#19): Heading sections map to exports\n- **Package-level Extractor** (#16): `extractPackage()` with package README support\n- **Frontmatter Parsing**: Extract metadata from markdown frontmatter\n\n## Learn More\n\n- **GitHub Issues**: [jasonkuhrt/kit#17](https://github.com/jasonkuhrt/kit/issues/17)\n- **Schema Documentation**: See `src/utils/paka/schema.ts` for the complete interface model\n",
+        "exports": [
+          {
+            "name": "Adaptors",
+            "signature": {
+              "text": "export * as Adaptors",
+              "_tag": "TypeSignatureModel"
+            },
+            "description": "",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "$$",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 1
+            },
+            "_tag": "value",
+            "type": "namespace",
+            "module": {
+              "location": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka",
+                    "adaptors"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "$$",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "description": "",
+              "exports": [
+                {
+                  "name": "VitePress",
+                  "signature": {
+                    "text": "export * as VitePress",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "paka",
+                          "adaptors"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "$$",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 1
+                  },
+                  "_tag": "value",
+                  "type": "namespace",
+                  "module": {
+                    "location": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "paka",
+                          "adaptors"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "vitepress",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "description": "",
+                    "exports": [
+                      {
+                        "name": "VitePressConfig",
+                        "signature": {
+                          "text": "type VitePressConfig = {\n  /** Output directory for generated markdown files */\n  outputDir: string\n  /** Base URL for the docs site */\n  baseUrl?: string\n  /** GitHub repository URL for source links (e.g., 'https://github.com/owner/repo') */\n  githubUrl?: string\n  /** Group exports by @category tag (auto-detects if undefined) */\n  groupByCategory?: boolean\n}",
+                          "_tag": "TypeSignatureModel"
+                        },
+                        "description": "Configuration for VitePress generation.",
+                        "examples": [],
+                        "tags": {},
+                        "sourceLocation": {
+                          "file": {
+                            "path": {
+                              "segments": [
+                                "src",
+                                "utils",
+                                "paka",
+                                "adaptors"
+                              ],
+                              "_tag": "PathRelative"
+                            },
+                            "file": {
+                              "stem": "vitepress",
+                              "extension": ".ts",
+                              "_tag": "File"
+                            },
+                            "_tag": "LocRelFile"
+                          },
+                          "line": 15
+                        },
+                        "_tag": "type",
+                        "type": "type-alias"
+                      },
+                      {
+                        "name": "generate",
+                        "signature": {
+                          "overloads": [
+                            {
+                              "typeParameters": [],
+                              "parameters": [
+                                {
+                                  "name": "model",
+                                  "type": "Package",
+                                  "optional": false,
+                                  "rest": false,
+                                  "description": "The extracted interface model"
+                                },
+                                {
+                                  "name": "config",
+                                  "type": "VitePressConfig",
+                                  "optional": false,
+                                  "rest": false,
+                                  "description": "VitePress generation configuration"
+                                }
+                              ],
+                              "returnType": "void",
+                              "throws": []
+                            }
+                          ],
+                          "_tag": "FunctionSignatureModel"
+                        },
+                        "description": "Generate VitePress documentation from interface model.",
+                        "examples": [],
+                        "tags": {},
+                        "sourceLocation": {
+                          "file": {
+                            "path": {
+                              "segments": [
+                                "src",
+                                "utils",
+                                "paka",
+                                "adaptors"
+                              ],
+                              "_tag": "PathRelative"
+                            },
+                            "file": {
+                              "stem": "vitepress",
+                              "extension": ".ts",
+                              "_tag": "File"
+                            },
+                            "_tag": "LocRelFile"
+                          },
+                          "line": 78
+                        },
+                        "_tag": "value",
+                        "type": "function"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "Extractor",
+            "signature": {
+              "text": "export * as Extractor",
+              "_tag": "TypeSignatureModel"
+            },
+            "description": "",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "$$",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 2
+            },
+            "_tag": "value",
+            "type": "namespace",
+            "module": {
+              "location": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka",
+                    "extractor"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "$$",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "description": "",
+              "exports": [
+                {
+                  "name": "extractFromFiles",
+                  "signature": {
+                    "overloads": [
+                      {
+                        "typeParameters": [],
+                        "parameters": [
+                          {
+                            "name": "params",
+                            "type": "{ projectRoot?: string; files: Layout; entrypoints?: string[]; extractorVersion?: string; filterUnderscoreExports?: boolean; }",
+                            "optional": false,
+                            "rest": false,
+                            "description": "Extraction parameters including files layout"
+                          }
+                        ],
+                        "returnType": "Package",
+                        "returnDoc": "Complete interface model",
+                        "throws": []
+                      }
+                    ],
+                    "_tag": "FunctionSignatureModel"
+                  },
+                  "description": "Pure extraction function that processes files without I/O.\n\n \n\nTakes all files as input and returns the extracted model.",
+                  "examples": [
+                    {
+                      "code": "const layout = Dir.spec('/')\n  .add('package.json', { name: 'x', exports: { './foo': './build/foo/$.js' } })\n  .add('src/foo/$.ts', 'export const bar = () => {}')\n  .toLayout()\n\nconst model = extractFromFiles({ files: layout })",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "paka",
+                          "extractor"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "extract",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 37
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "ExtractConfig",
+                  "signature": {
+                    "text": "type ExtractConfig = {\n  /** Project root directory */\n  projectRoot: string\n  /** Path to tsconfig.json */\n  tsconfigPath?: string\n  /** Specific entrypoints to extract (if not specified, extracts all from package.json) */\n  entrypoints?: string[]\n  /** Extractor version */\n  extractorVersion?: string\n  /** Filter exports that start with underscore `_` prefix (default: false) */\n  filterUnderscoreExports?: boolean\n}",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "Configuration for extraction.",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "paka",
+                          "extractor"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "extract",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 261
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "extract",
+                  "signature": {
+                    "overloads": [
+                      {
+                        "typeParameters": [],
+                        "parameters": [
+                          {
+                            "name": "config",
+                            "type": "ExtractConfig",
+                            "optional": false,
+                            "rest": false,
+                            "description": "Extraction configuration"
+                          }
+                        ],
+                        "returnType": "Package",
+                        "returnDoc": "Complete interface model",
+                        "throws": []
+                      }
+                    ],
+                    "_tag": "FunctionSignatureModel"
+                  },
+                  "description": "Extract documentation model from TypeScript source files.",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "paka",
+                          "extractor"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "extract",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 280
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "Category",
+                  "signature": {
+                    "text": "type Category = {\n  level: ExportLevel\n  type: ValueExportType | TypeExportType\n}",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "Categorization result for a declaration node.",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "paka",
+                          "extractor",
+                          "nodes"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "categorize",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 7
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "categorize",
+                  "signature": {
+                    "overloads": [
+                      {
+                        "typeParameters": [],
+                        "parameters": [
+                          {
+                            "name": "decl",
+                            "type": "Node<ts.Node>",
+                            "optional": false,
+                            "rest": false,
+                            "description": "The declaration node to categorize"
+                          }
+                        ],
+                        "returnType": "Category",
+                        "returnDoc": "Category with level (value/type) and specific type",
+                        "throws": []
+                      }
+                    ],
+                    "_tag": "FunctionSignatureModel"
+                  },
+                  "description": "Categorize a TypeScript declaration node into export level and type.",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "paka",
+                          "extractor",
+                          "nodes"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "categorize",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 18
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "extractExport",
+                  "signature": {
+                    "overloads": [
+                      {
+                        "typeParameters": [],
+                        "parameters": [
+                          {
+                            "name": "name",
+                            "type": "string",
+                            "optional": false,
+                            "rest": false,
+                            "description": "The export name"
+                          },
+                          {
+                            "name": "decl",
+                            "type": "ExportedDeclarations",
+                            "optional": false,
+                            "rest": false,
+                            "description": "The declaration node"
+                          }
+                        ],
+                        "returnType": "ValueExport | TypeExport",
+                        "returnDoc": "Export object with all metadata",
+                        "throws": []
+                      }
+                    ],
+                    "_tag": "FunctionSignatureModel"
+                  },
+                  "description": "Extract export information from a declaration node.",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "paka",
+                          "extractor",
+                          "nodes"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "export",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 18
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "JSDocInfo",
+                  "signature": {
+                    "text": "type JSDocInfo = {\n  description: string | undefined\n  examples: Example[]\n  deprecated: string | undefined\n  category: string | undefined\n  tags: Record<string, string>\n  /** Force this export to be treated as a namespace */\n  forceNamespace?: boolean\n  /** Mark this export as a builder pattern entry point */\n  isBuilder?: boolean\n  /** Mark this export as internal (should not appear in public documentation) */\n  internal?: boolean\n  /** Parameter descriptions from @param tags (name -> description) */\n  params: Record<string, string>\n  /** Return value description from @returns tag */\n  returns: string | undefined\n  /** Error descriptions from @throws tags */\n  throws: string[]\n}",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "Parsed JSDoc information.",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "paka",
+                          "extractor",
+                          "nodes"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "jsdoc",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 8
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "parseJSDoc",
+                  "signature": {
+                    "overloads": [
+                      {
+                        "typeParameters": [],
+                        "parameters": [
+                          {
+                            "name": "decl",
+                            "type": "Node<ts.Node>",
+                            "optional": false,
+                            "rest": false,
+                            "description": "The declaration node to extract JSDoc from"
+                          }
+                        ],
+                        "returnType": "JSDocInfo",
+                        "returnDoc": "Parsed JSDoc information",
+                        "throws": []
+                      }
+                    ],
+                    "_tag": "FunctionSignatureModel"
+                  },
+                  "description": "Parse JSDoc from a declaration node.",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "paka",
+                          "extractor",
+                          "nodes"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "jsdoc",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 240
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "ModuleExtractionOptions",
+                  "signature": {
+                    "text": "type ModuleExtractionOptions = {\n  /** Filter exports marked with @internal */\n  filterInternal?: boolean\n  /** Filter exports starting with underscore _ prefix */\n  filterUnderscoreExports?: boolean\n}",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "Options for module extraction.",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "paka",
+                          "extractor",
+                          "nodes"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "module",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 143
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "extractModuleFromFile",
+                  "signature": {
+                    "overloads": [
+                      {
+                        "typeParameters": [],
+                        "parameters": [
+                          {
+                            "name": "sourceFile",
+                            "type": "SourceFile",
+                            "optional": false,
+                            "rest": false,
+                            "description": "The source file to extract from"
+                          },
+                          {
+                            "name": "location",
+                            "type": "RelFile",
+                            "optional": false,
+                            "rest": false,
+                            "description": "Relative file path from project root"
+                          },
+                          {
+                            "name": "options",
+                            "type": "ModuleExtractionOptions",
+                            "optional": true,
+                            "rest": false,
+                            "defaultValue": "{}",
+                            "description": "Extraction options for filtering"
+                          }
+                        ],
+                        "returnType": "Module",
+                        "returnDoc": "Module with all exports",
+                        "throws": []
+                      }
+                    ],
+                    "_tag": "FunctionSignatureModel"
+                  },
+                  "description": "Extract a module from a source file.",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "paka",
+                          "extractor",
+                          "nodes"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "module",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 175
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                },
+                {
+                  "name": "extractModule",
+                  "signature": {
+                    "overloads": [
+                      {
+                        "typeParameters": [],
+                        "parameters": [
+                          {
+                            "name": "moduleDecl",
+                            "type": "ModuleDeclaration",
+                            "optional": false,
+                            "rest": false,
+                            "description": "The module/namespace declaration"
+                          },
+                          {
+                            "name": "location",
+                            "type": "RelFile",
+                            "optional": false,
+                            "rest": false,
+                            "description": "Relative file path from project root"
+                          },
+                          {
+                            "name": "options",
+                            "type": "ModuleExtractionOptions",
+                            "optional": true,
+                            "rest": false,
+                            "defaultValue": "{}",
+                            "description": "Extraction options for filtering"
+                          }
+                        ],
+                        "returnType": "Module",
+                        "returnDoc": "Module with all namespace exports",
+                        "throws": []
+                      }
+                    ],
+                    "_tag": "FunctionSignatureModel"
+                  },
+                  "description": "Extract a module from a namespace declaration.",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "paka",
+                          "extractor",
+                          "nodes"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "module",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 327
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                }
+              ]
+            }
+          },
+          {
+            "name": "ExportLevel",
+            "signature": {
+              "type": "Enums<{ readonly value: \"value\"; readonly type: \"type\"; }>",
+              "_tag": "ValueSignatureModel"
+            },
+            "description": "Export level distinguishes between runtime values and type-only exports.",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 11
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "ValueExportType",
+            "signature": {
+              "type": "Enums<{ readonly function: \"function\"; readonly const: \"const\"; readonly class: \"class\"; readonly namespace: \"namespace\"; }>",
+              "_tag": "ValueSignatureModel"
+            },
+            "description": "Value export types - exports that exist at runtime.",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 17
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "TypeExportType",
+            "signature": {
+              "type": "Enums<{ readonly interface: \"interface\"; readonly 'type-alias': \"type-alias\"; readonly enum: \"enum\"; readonly union: \"union\"; readonly intersection: \"intersection\"; }>",
+              "_tag": "ValueSignatureModel"
+            },
+            "description": "Type export types - exports that only exist in TypeScript's type system.",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 30
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "BuilderMethodCategory",
+            "signature": {
+              "type": "Enums<{ readonly chainable: \"chainable\"; readonly terminal: \"terminal\"; readonly transform: \"transform\"; }>",
+              "_tag": "ValueSignatureModel"
+            },
+            "description": "Builder method classification based on return type.\n\n \n\n \n\n- \n\nchainable\n\n - Returns the same builder type (for method chaining)\n\n \n\n- \n\nterminal\n\n - Returns void (ends the builder chain)\n\n \n\n- \n\ntransform\n\n - Returns a different builder type (transforms to another builder)",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 48
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "Example",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Code example extracted from JSDoc",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 64
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "SourceLocation",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Source location for \"View source\" links.",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 78
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "TypeParameter",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Type parameter for generic functions/classes.\n\n \n\nCaptures type parameter name, constraint, and default value.",
+            "examples": [
+              {
+                "code": "// <T extends string = 'default'>\n{ name: 'T', constraint: 'string', default: \"'default'\" }",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 99
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "Parameter",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Function/method parameter.\n\n \n\nCaptures parameter name, type, modifiers, and JSDoc description.",
+            "examples": [
+              {
+                "code": "// (items: T[], fn?: (item: T) => U, ...rest: unknown[])\n[\n  { name: 'items', type: 'T[]', optional: false, rest: false, description: 'Array of items to process' },\n  { name: 'fn', type: '(item: T) => U', optional: true, rest: false, description: 'Transform function' },\n  { name: 'rest', type: 'unknown[]', optional: false, rest: true }\n]",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 122
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "FunctionSignature",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Single function signature (one overload).\n\n \n\nCaptures type parameters, parameters, return type, and JSDoc documentation.\n\n \n\n \n\nUsed within FunctionSignatureModel to support multiple overloads.",
+            "examples": [
+              {
+                "code": "{\n  typeParameters: [{ name: 'T', constraint: 'string' }],\n  parameters: [{ name: 'value', type: 'T', description: 'Input value' }],\n  returnType: 'T',\n  returnDoc: 'The processed value',\n  throws: ['Error if value is invalid']\n}",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 154
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "FunctionSignatureModel",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Function signature model supporting multiple overloads.\n\n \n\n \n\nStructured representation of function signatures with full parameter,\n\n \n\ntype parameter, and return type information.",
+            "examples": [
+              {
+                "code": "// function parse(input: string): Config\n// function parse(input: Buffer): Config\n{\n  _tag: 'FunctionSignatureModel',\n  overloads: [\n    { typeParameters: [], parameters: [{ name: 'input', type: 'string', ... }], returnType: 'Config' },\n    { typeParameters: [], parameters: [{ name: 'input', type: 'Buffer', ... }], returnType: 'Config' }\n  ]\n}",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 186
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "BuilderMethod",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Builder method on a builder interface.\n\n \n\n \n\nCaptures method name, overloads, and classification based on return type.\n\n \n\nMethods are classified during extraction by analyzing their return types.",
+            "examples": [
+              {
+                "code": "// inputType<I>(): TestBuilder<State & { input: I }>\n{\n  name: 'inputType',\n  overloads: [...],\n  category: 'chainable',\n  transformsTo: undefined\n}\n\n// test(): void\n{\n  name: 'test',\n  overloads: [...],\n  category: 'terminal',\n  transformsTo: undefined\n}\n\n// layer<R>(layer: any): OtherBuilder<State, R>\n{\n  name: 'layer',\n  overloads: [...],\n  category: 'transform',\n  transformsTo: 'OtherBuilder'\n}",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 227
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "BuilderSignatureModel",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Builder signature model for fluent/builder pattern APIs.\n\n \n\n \n\nBuilder patterns are detected when a function is marked with \n\n@builder\n\n JSDoc tag.\n\n \n\nThe extractor automatically crawls the returned builder type interface and\n\n \n\nclassifies methods based on their return types:\n\n \n\n \n\n- **Chainable**: Returns the same builder type (enables method chaining)\n\n \n\n- **Terminal**: Returns void (ends the builder chain)\n\n \n\n- **Transform**: Returns a different builder type (transforms to another builder)",
+            "examples": [
+              {
+                "code": "{\n  _tag: 'BuilderSignatureModel',\n  typeName: 'TestBuilder',\n  entryPoint: FunctionSignature { ... },\n  chainableMethods: [\n    { name: 'inputType', category: 'chainable', ... },\n    { name: 'cases', category: 'chainable', ... }\n  ],\n  terminalMethods: [\n    { name: 'test', category: 'terminal', overloads: [...2 overloads] }\n  ],\n  transformMethods: [\n    { name: 'layer', category: 'transform', transformsTo: 'OtherBuilder', ... }\n  ]\n}",
+                "title": "Extracted as:",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 286
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "TypeSignatureModel",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Type signature model (interfaces, type aliases, etc).\n\n \n\n \n\nFor now, these are kept as plain text since parsing TypeScript type\n\n \n\ndefinitions into structured form is complex with diminishing returns.\n\n \n\n \n\nFuture: Could be expanded to structured form (properties, methods, etc).",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 310
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "ValueSignatureModel",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Value signature model (simple const values, primitives).\n\n \n\n \n\nUsed for exports that are simple constant values (not functions/classes).\n\n \n\nStores the inferred type as text.",
+            "examples": [
+              {
+                "code": "// export const PI = 3.14159\n{ _tag: 'ValueSignatureModel', type: 'number' }",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 330
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "ClassProperty",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Class property.\n\n \n\nCaptures property name, type, modifiers, and JSDoc description.",
+            "examples": [
+              {
+                "code": "// class User {\n//   readonly id: string\n//   name?: string\n//   static count: number\n// }\n[\n  { name: 'id', type: 'string', optional: false, readonly: true, static: false },\n  { name: 'name', type: 'string', optional: true, readonly: false, static: false },\n  { name: 'count', type: 'number', optional: false, readonly: false, static: true }\n]",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 356
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "ClassMethod",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Class method.\n\n \n\nCaptures method name, overloads, and modifiers.",
+            "examples": [
+              {
+                "code": "// class User {\n//   getName(): string\n//   static create(name: string): User\n// }\n[\n  { name: 'getName', overloads: [...], static: false },\n  { name: 'create', overloads: [...], static: true }\n]",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 387
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "ClassSignatureModel",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Class signature model with structured class information.\n\n \n\n \n\nStructured representation of class with constructor, properties, and methods.",
+            "examples": [
+              {
+                "code": "// export class User {\n//   readonly id: string\n//   name: string\n//   constructor(id: string, name: string) { ... }\n//   getName(): string { return this.name }\n//   static create(name: string): User { return new User(crypto.randomUUID(), name) }\n// }\n{\n  _tag: 'ClassSignatureModel',\n  ctor: { typeParameters: [], parameters: [...], returnType: 'User' },\n  properties: [\n    { name: 'id', type: 'string', readonly: true, ... },\n    { name: 'name', type: 'string', readonly: false, ... }\n  ],\n  methods: [\n    { name: 'getName', overloads: [...], static: false },\n    { name: 'create', overloads: [...], static: true }\n  ]\n}",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 424
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "SignatureModel",
+            "signature": {
+              "type": "Union<[typeof FunctionSignatureModel, typeof BuilderSignatureModel, typeof ClassSignatureModel, typeof TypeSignatureModel, typeof ValueSignatureModel]>",
+              "_tag": "ValueSignatureModel"
+            },
+            "description": "Signature model - tagged union of all signature types.\n\n \n\n \n\nDiscriminated by _tag field:\n\n \n\n- \n\nFunctionSignatureModel\n\n - Functions with structured overloads\n\n \n\n- \n\nBuilderSignatureModel\n\n - Builder pattern APIs with chainable/terminal methods\n\n \n\n- \n\nClassSignatureModel\n\n - Classes with constructor, properties, methods\n\n \n\n- \n\nTypeSignatureModel\n\n - Types, interfaces, type aliases (text)\n\n \n\n- \n\nValueSignatureModel\n\n - Const values (type as text)",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 446
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "Module",
+            "signature": {
+              "text": "interface Module {\n  readonly location: typeof FsLoc.RelFile.Type\n  readonly description: string\n  readonly category?: string\n  readonly exports: ReadonlyArray<Export>\n}",
+              "_tag": "TypeSignatureModel"
+            },
+            "description": "Module type definition.",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 480
+            },
+            "_tag": "type",
+            "type": "interface"
+          },
+          {
+            "name": "ModuleEncoded",
+            "signature": {
+              "text": "interface ModuleEncoded extends Module {}",
+              "_tag": "TypeSignatureModel"
+            },
+            "description": "Module encoded type (same as Module since no transformations).",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 490
+            },
+            "_tag": "type",
+            "type": "interface"
+          },
+          {
+            "name": "ValueExport",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Value export - represents a runtime export.\n\n \n\nNamespace exports include a nested module.",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 524
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "TypeExport",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Type export - represents a type-only export.",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 535
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "Export",
+            "signature": {
+              "type": "Union<[typeof ValueExport, typeof TypeExport]>",
+              "_tag": "ValueSignatureModel"
+            },
+            "description": "Export is a tagged union of value and type exports.",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 544
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "DrillableNamespaceEntrypoint",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Drillable Namespace Pattern entrypoint.\n\n \n\n \n\nThis pattern is detected ONLY for the main entrypoint ('.') when ALL conditions are met:\n\n \n\n \n\n1. The main entrypoint source file contains a namespace export: \n\nexport * as Name from './path'\n\n \n\n2. The namespace name (PascalCase, e.g., \n\nA\n\n) converts to kebab-case (e.g., \n\na\n\n)\n\n \n\n3. A subpath export exists in package.json with that kebab name (e.g., \n\n./a\n\n)\n\n \n\n4. The file that the namespace export points to\n\n \n\n5. AND the file that the subpath export points to\n\n \n\n6. Must resolve to the SAME source file\n\n \n\n \n\nWhen detected, this enables two import forms:\n\n \n\n- \n\nimport { Name } from 'package'\n\n - imports the namespace from main entrypoint\n\n \n\n- \n\nimport * as Name from 'package/kebab-name'\n\n - imports the barrel directly",
+            "examples": [
+              {
+                "code": "// package.json\n{\n  \"exports\": {\n    \".\": \"./build/index.js\",\n    \"./a\": \"./build/a.js\"\n  }\n}\n\n// src/index.ts (main entrypoint)\nexport * as A from './a.js'\n\n// src/a.ts (barrel implementation)\nexport const foo = () => {}",
+                "title": "Both the namespace export and the subpath export resolve to \n\nsrc/a.ts\n\n → Drillable!",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              },
+              {
+                "code": "// package.json\n{\n  \"exports\": {\n    \".\": \"./build/index.js\",\n    \"./a\": \"./build/a.js\"\n  }\n}\n\n// src/index.ts\nexport * as A from './z.js'  // ← Points to z.js, not a.js\n\n// Namespace points to src/z.ts, subpath points to src/a.ts → NOT drillable (different files)",
+                "title": "Non-drillable case - different files",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 598
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "SimpleEntrypoint",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Simple entrypoint without special import pattern.",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 613
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "Entrypoint",
+            "signature": {
+              "type": "Union<[typeof DrillableNamespaceEntrypoint, typeof SimpleEntrypoint]>",
+              "_tag": "ValueSignatureModel"
+            },
+            "description": "Entrypoint union - all patterns.",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 630
+            },
+            "_tag": "value",
+            "type": "const"
+          },
+          {
+            "name": "PackageMetadata",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Package metadata.",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 639
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "Package",
+            "signature": {
+              "properties": [],
+              "methods": [],
+              "_tag": "ClassSignatureModel"
+            },
+            "description": "Package represents the complete extracted documentation model.",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 649
+            },
+            "_tag": "value",
+            "type": "class"
+          },
+          {
+            "name": "InterfaceModel",
+            "signature": {
+              "type": "typeof Package",
+              "_tag": "ValueSignatureModel"
+            },
+            "description": "The complete interface model output.",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "paka"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "schema",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 663
+            },
+            "_tag": "value",
+            "type": "const"
+          }
+        ]
+      },
+      "_tag": "DrillableNamespaceEntrypoint"
     }
   ],
   "metadata": {
-    "extractedAt": "2025-10-15T13:53:22.133Z",
+    "extractedAt": "2025-10-15T15:53:01.734Z",
     "extractorVersion": "0.1.0"
   }
 }

@@ -71,13 +71,11 @@ Test
         .add(
           'src/index.ts',
           ts`
-          /** Public export */
-          export const publicFn = () => 1
+          /** a */
+          export const a = () => 1
 
-          /** Internal export
-           * @internal
-           */
-          export const internalFn = () => 2
+          /** b @internal */
+          export const b = () => 2
         `,
         )
         .toLayout(),
@@ -88,11 +86,11 @@ Test
         .add(
           'src/index.ts',
           ts`
-          /** Public export */
-          export const publicFn = () => 1
+          /** a */
+          export const a = () => 1
 
-          /** Internal helper */
-          export const _internalHelper = () => 2
+          /** b */
+          export const _b = () => 2
         `,
         )
         .toLayout(),
@@ -104,15 +102,14 @@ Test
         .add(
           'src/index.ts',
           ts`
-          /** Public export */
-          export const publicFn = () => 1
+          /** a */
+          export const a = () => 1
 
-          /** Internal helper */
-          export const _internalHelper = () => 2
+          /** b */
+          export const _b = () => 2
         `,
         )
         .toLayout(),
-      // filterUnderscoreExports defaults to false
     },
     // Mixed: @internal and underscore filtering
     {
@@ -120,25 +117,192 @@ Test
         .add(
           'src/index.ts',
           ts`
-          /** Public export */
-          export const publicFn = () => 1
+          /** a */
+          export const a = () => 1
 
-          /** Internal with tag
-           * @internal
-           */
-          export const internalFn = () => 2
+          /** b @internal */
+          export const b = () => 2
 
-          /** Internal with underscore */
-          export const _internalHelper = () => 3
+          /** c */
+          export const _c = () => 3
 
-          /** Internal with both
-           * @internal
-           */
-          export const _superInternal = () => 4
+          /** d @internal */
+          export const _d = () => 4
         `,
         )
         .toLayout(),
       filterUnderscoreExports: true,
+    },
+    // ESM namespace with TypeScript shadow - JSDoc from shadow is used
+    {
+      files: project
+        .add(
+          'src/index.ts',
+          ts`
+          // @ts-expect-error Duplicate identifier
+          export * as U from './u.js'
+          /** Shadow @category C */
+          export namespace U {}
+        `,
+        )
+        .add(
+          'src/u.ts',
+          ts`
+          /** Nested */
+
+          /** a */
+          export const a = () => 1
+        `,
+        )
+        .toLayout(),
+    },
+    // ESM namespace without TypeScript shadow - falls back to module-level JSDoc
+    {
+      files: project
+        .add(
+          'src/index.ts',
+          ts`
+          export * as U from './u.js'
+        `,
+        )
+        .add(
+          'src/u.ts',
+          ts`
+          /** Nested */
+
+          /** a */
+          export const a = () => 1
+        `,
+        )
+        .toLayout(),
+    },
+    // TypeScript namespace shadow is not added as a separate export
+    {
+      files: project
+        .add(
+          'src/index.ts',
+          ts`
+          // @ts-expect-error Duplicate identifier
+          export * as U from './u.js'
+          /** Shadow @category C */
+          export namespace U {}
+
+          /** b */
+          export const b = () => 1
+        `,
+        )
+        .add(
+          'src/u.ts',
+          ts`
+          /** Nested */
+
+          /** a */
+          export const a = () => 1
+        `,
+        )
+        .toLayout(),
+    },
+    // Module-level README: Sibling .md file
+    {
+      files: project
+        .add(
+          'src/index.ts',
+          ts`
+          /** JSDoc */
+          export const a = () => 1
+        `,
+        )
+        .add('src/index.md', 'M')
+        .toLayout(),
+    },
+    // Module-level README: README.md in directory
+    {
+      files: project
+        .add(
+          'src/index.ts',
+          ts`
+          /** JSDoc */
+          export const a = () => 1
+        `,
+        )
+        .add('src/README.md', 'R')
+        .toLayout(),
+    },
+    // Module-level README: Sibling .md takes precedence over README.md
+    {
+      files: project
+        .add(
+          'src/index.ts',
+          ts`
+          export const a = () => 1
+        `,
+        )
+        .add('src/index.md', 'M')
+        .add('src/README.md', 'R')
+        .toLayout(),
+    },
+    // Namespace wrapper with .md (pure wrapper) - overrides nested module
+    {
+      files: project
+        .add(
+          'src/index.ts',
+          ts`
+          export * as U from './u.js'
+        `,
+        )
+        .add('src/index.md', 'W')
+        .add(
+          'src/u.ts',
+          ts`
+          /** N */
+          export const a = () => 1
+        `,
+        )
+        .toLayout(),
+    },
+    // Namespace wrapper with other exports - .md NOT used as override
+    {
+      files: project
+        .add(
+          'src/index.ts',
+          ts`
+          export * as U from './u.js'
+
+          /** b */
+          export const b = () => 2
+        `,
+        )
+        .add('src/index.md', 'M')
+        .add(
+          'src/u.ts',
+          ts`
+          /** N */
+          export const a = () => 1
+        `,
+        )
+        .toLayout(),
+    },
+    // TypeScript shadow + wrapper .md - shadow wins
+    {
+      files: project
+        .add(
+          'src/index.ts',
+          ts`
+          // @ts-expect-error Duplicate identifier
+          export * as U from './u.js'
+          /** S @category C */
+          export namespace U {}
+        `,
+        )
+        .add('src/index.md', 'M')
+        .add(
+          'src/u.ts',
+          ts`
+          /** N */
+          export const a = () => 1
+        `,
+        )
+        .toLayout(),
     },
   )
   .test()

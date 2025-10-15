@@ -1,5 +1,7 @@
 import { FsLoc } from '#fs-loc'
 import { Schema as S } from 'effect'
+import { existsSync, readFileSync } from 'node:fs'
+import { basename, dirname, extname, join } from 'node:path'
 import { type ExportDeclaration, type ModuleDeclaration, Node, type SourceFile } from 'ts-morph'
 import { type Module, SourceLocation, TypeSignatureModel, ValueExport } from '../../schema.js'
 import { absoluteToRelative } from '../path-utils.js'
@@ -7,22 +9,56 @@ import { extractExport } from './export.js'
 import { type JSDocInfo, parseJSDoc } from './jsdoc.js'
 
 /**
+ * Find external markdown documentation for a module file.
+ *
+ * Supports two naming conventions (checked in order):
+ * 1. Sibling .md file with same base name (e.g., `kind.ts` → `kind.md`)
+ * 2. README.md in same directory (applies to any module in that directory)
+ *
+ * @param sourceFilePath - Absolute path to the source file
+ * @returns Markdown content if found, undefined otherwise
+ */
+const findModuleReadme = (sourceFilePath: string): string | undefined => {
+  const dir = dirname(sourceFilePath)
+  const base = basename(sourceFilePath, extname(sourceFilePath))
+
+  // Convention 1: Sibling .md file
+  const siblingMd = join(dir, `${base}.md`)
+  if (existsSync(siblingMd)) {
+    return readFileSync(siblingMd, 'utf-8')
+  }
+
+  // Convention 2: README.md in same directory
+  const readmeMd = join(dir, 'README.md')
+  if (existsSync(readmeMd)) {
+    return readFileSync(readmeMd, 'utf-8')
+  }
+
+  return undefined
+}
+
+/**
  * Create a namespace export from an export declaration and its nested module.
  *
  * This helper consolidates the common logic for creating namespace exports
  * from `export * as Name from './path'` declarations.
  *
+ * Supports the TypeScript namespace shadow pattern where a TypeScript namespace
+ * declaration with the same name provides JSDoc that overrides the module-level JSDoc.
+ *
  * @param exportDecl - The export declaration node
  * @param nsName - The namespace name
  * @param nestedModule - The extracted nested module
+ * @param overrideJsdoc - Optional JSDoc from a TypeScript namespace shadow
  * @returns A ValueExport representing the namespace
  */
 const createNamespaceExport = (
   exportDecl: ExportDeclaration,
   nsName: string,
   nestedModule: Module,
+  overrideJsdoc?: JSDocInfo,
 ): ValueExport => {
-  const jsdoc = parseJSDoc(exportDecl)
+  const jsdoc = overrideJsdoc ?? parseJSDoc(exportDecl)
 
   return ValueExport.make({
     _tag: 'value',
@@ -44,6 +80,61 @@ const createNamespaceExport = (
     }),
     module: nestedModule,
   })
+}
+
+/**
+ * Find documentation override for an ESM namespace re-export.
+ *
+ * Supports two patterns (checked in order):
+ * 1. TypeScript namespace shadow: `export namespace X {}` with JSDoc
+ * 2. Wrapper file markdown: External .md file for a pure wrapper file
+ *    (file with EXACTLY ONE namespace export and NO other exports)
+ *
+ * @param sourceFile - The source file to search in
+ * @param nsName - The namespace name to look for
+ * @returns JSDoc override if found, undefined otherwise
+ */
+const findNamespaceOverrideJSDoc = (
+  sourceFile: SourceFile,
+  nsName: string,
+): JSDocInfo | undefined => {
+  // First: Check for TypeScript namespace shadow (existing pattern)
+  for (const statement of sourceFile.getStatements()) {
+    if (Node.isModuleDeclaration(statement)) {
+      if (statement.getName() === nsName) {
+        // Found a TypeScript namespace with the same name
+        return parseJSDoc(statement)
+      }
+    }
+  }
+
+  // Second: Check if this is a pure wrapper file
+  // A pure wrapper has exactly 1 namespace export and no other exports
+  const exportDecls = sourceFile.getExportDeclarations()
+  const exports = sourceFile.getExportedDeclarations()
+
+  const namespaceExports = exportDecls.filter(d => d.getNamespaceExport())
+  const isPureWrapper = namespaceExports.length === 1 && exports.size === 0
+
+  if (isPureWrapper) {
+    // Check for external markdown documentation
+    const markdown = findModuleReadme(sourceFile.getFilePath())
+    if (markdown) {
+      // Convert markdown to JSDocInfo structure
+      return {
+        description: markdown,
+        examples: [],
+        deprecated: undefined,
+        category: undefined,
+        tags: {},
+        params: {},
+        returns: undefined,
+        throws: [],
+      }
+    }
+  }
+
+  return undefined
 }
 
 /**
@@ -114,8 +205,11 @@ export const extractModuleFromFile = (
           continue
         }
 
+        // Look for documentation override (TypeScript namespace shadow or wrapper markdown)
+        const overrideJsdoc = findNamespaceOverrideJSDoc(sourceFile, nsName)
+
         // Create namespace export using helper
-        moduleExports.push(createNamespaceExport(exportDecl, nsName, nestedModule))
+        moduleExports.push(createNamespaceExport(exportDecl, nsName, nestedModule, overrideJsdoc))
       }
     } else if (!exportDecl.getModuleSpecifier()) {
       // Skip export declarations without module specifier (not re-exports)
@@ -143,8 +237,11 @@ export const extractModuleFromFile = (
                 continue
               }
 
+              // Look for documentation override (TypeScript namespace shadow or wrapper markdown)
+              const overrideJsdoc = findNamespaceOverrideJSDoc(referencedFile, nsName)
+
               // Create namespace export using helper
-              moduleExports.push(createNamespaceExport(nestedExportDecl, nsName, nestedModule))
+              moduleExports.push(createNamespaceExport(nestedExportDecl, nsName, nestedModule, overrideJsdoc))
             }
           }
         }
@@ -188,17 +285,27 @@ export const extractModuleFromFile = (
     moduleExports.push(extractExport(exportName, decl))
   }
 
-  // Get module-level JSDoc from the first statement (typically an export declaration)
-  // The JSDoc comment above the first export is considered the module-level documentation
+  // Get module-level description from external markdown or JSDoc fallback
   let description = ''
   let category: string | undefined
 
-  const statements = sourceFile.getStatements()
-  if (statements.length > 0) {
-    const firstStatement = statements[0]!
-    const jsdoc = parseJSDoc(firstStatement)
-    description = jsdoc.description || ''
-    category = jsdoc.category
+  // First: Check for external markdown documentation
+  const sourceFilePath = sourceFile.getFilePath()
+  const markdownContent = findModuleReadme(sourceFilePath)
+
+  if (markdownContent) {
+    // Use markdown content directly
+    description = markdownContent
+    // Category would need to be parsed from frontmatter (future enhancement)
+  } else {
+    // Fallback: Use JSDoc from first statement
+    const statements = sourceFile.getStatements()
+    if (statements.length > 0) {
+      const firstStatement = statements[0]!
+      const jsdoc = parseJSDoc(firstStatement)
+      description = jsdoc.description || ''
+      category = jsdoc.category
+    }
   }
 
   return {

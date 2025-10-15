@@ -93,6 +93,7 @@ const generateDocs = async () => {
       './err',
       './html',
       './json',
+      './paka',
       './prom',
       './rec',
       './value',
