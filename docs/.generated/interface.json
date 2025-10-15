@@ -1087,37 +1087,6 @@
             "type": "function"
           },
           {
-            "name": "InferOptions",
-            "signature": {
-              "text": "type InferOptions<$EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[]> = Ts.Simplify<\n  ArrMut.ReduceWithIntersection<_InferOptions<$EnvironmentConfigurableOptions>>\n>",
-              "_tag": "TypeSignatureModel"
-            },
-            "description": "Type helper for inferring option types from environment configurable option specifications.\n\n \n\nTransforms an array of option specs into a typed options object.\n\n \n\n \n\n\n\n $EnvironmentConfigurableOptions - Array of option specifications",
-            "examples": [],
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "utils",
-                    "err"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "inspect",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 34
-            },
-            "_tag": "type",
-            "type": "type-alias"
-          },
-          {
             "name": "_InferOptions",
             "signature": {
               "text": "type _InferOptions<$EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[]> = {\n  [i in keyof $EnvironmentConfigurableOptions]: {\n    [_ in $EnvironmentConfigurableOptions[i]['name']]?: ReturnType<$EnvironmentConfigurableOptions[i]['parse']>\n  }\n}",
@@ -1181,37 +1150,6 @@
                 "_tag": "LocRelFile"
               },
               "line": 175
-            },
-            "_tag": "type",
-            "type": "type-alias"
-          },
-          {
-            "name": "InspectConfig",
-            "signature": {
-              "text": "type InspectConfig = Resolve<typeof optionSpecs>",
-              "_tag": "TypeSignatureModel"
-            },
-            "description": "Resolved configuration for error inspection with values and sources.\n\n \n\nContains the final values after merging defaults, user options, and environment variables.",
-            "examples": [],
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "utils",
-                    "err"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "inspect",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 183
             },
             "_tag": "type",
             "type": "type-alias"
@@ -1569,7 +1507,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 317
+              "line": 318
             },
             "_tag": "value",
             "type": "function"
@@ -1615,7 +1553,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 326
+              "line": 327
             },
             "_tag": "value",
             "type": "function"
@@ -1684,7 +1622,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 338
+              "line": 339
             },
             "_tag": "value",
             "type": "class"
@@ -1736,7 +1674,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 374
+              "line": 375
             },
             "_tag": "value",
             "type": "function"
@@ -1782,7 +1720,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 422
+              "line": 423
             },
             "_tag": "value",
             "type": "function"
@@ -1828,7 +1766,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 431
+              "line": 432
             },
             "_tag": "value",
             "type": "function"
@@ -3292,6 +3230,55 @@
             "type": "function"
           },
           {
+            "name": "constant",
+            "signature": {
+              "overloads": [
+                {
+                  "typeParameters": [
+                    {
+                      "name": "value"
+                    }
+                  ],
+                  "parameters": [
+                    {
+                      "name": "value",
+                      "type": "value",
+                      "optional": false,
+                      "rest": false
+                    }
+                  ],
+                  "returnType": "() => value",
+                  "throws": []
+                }
+              ],
+              "_tag": "FunctionSignatureModel"
+            },
+            "examples": [],
+            "category": "Basic Functions",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "fn"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "constant",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 4
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
             "name": "AnyAny",
             "signature": {
               "text": "type AnyAny = (...args: any[]) => any",
@@ -3306,7 +3293,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3337,7 +3325,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3368,7 +3357,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3399,7 +3389,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3430,7 +3421,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3461,7 +3453,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3492,7 +3485,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3530,7 +3524,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3568,7 +3563,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3599,7 +3595,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3637,7 +3634,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3668,7 +3666,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3706,7 +3705,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3762,7 +3762,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3800,7 +3801,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3849,7 +3851,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3909,7 +3912,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -3921,55 +3925,6 @@
                 "_tag": "LocRelFile"
               },
               "line": 199
-            },
-            "_tag": "value",
-            "type": "function"
-          },
-          {
-            "name": "constant",
-            "signature": {
-              "overloads": [
-                {
-                  "typeParameters": [
-                    {
-                      "name": "value"
-                    }
-                  ],
-                  "parameters": [
-                    {
-                      "name": "value",
-                      "type": "value",
-                      "optional": false,
-                      "rest": false
-                    }
-                  ],
-                  "returnType": "() => value",
-                  "throws": []
-                }
-              ],
-              "_tag": "FunctionSignatureModel"
-            },
-            "examples": [],
-            "category": "Basic Functions",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "fn"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "constant",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 4
             },
             "_tag": "value",
             "type": "function"
@@ -3989,7 +3944,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -4039,7 +3995,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -4089,7 +4046,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -4139,7 +4097,8 @@
                   "segments": [
                     "src",
                     "domains",
-                    "fn"
+                    "fn",
+                    "core"
                   ],
                   "_tag": "PathRelative"
                 },
@@ -21563,12 +21522,87 @@
                       "name": "keys",
                       "type": "readonly K[]",
                       "optional": false,
-                      "rest": false,
-                      "description": "Array of property keys to include"
+                      "rest": false
                     }
                   ],
                   "returnType": "Pick<T, K>",
                   "returnDoc": "A new object containing only the specified properties",
+                  "throws": []
+                },
+                {
+                  "typeParameters": [
+                    {
+                      "name": "$Object",
+                      "constraint": "object"
+                    }
+                  ],
+                  "parameters": [
+                    {
+                      "name": "obj",
+                      "type": "$Object",
+                      "optional": false,
+                      "rest": false
+                    },
+                    {
+                      "name": "predicate",
+                      "type": "(key: keyof $Object, value?: undefined, obj?: undefined) => boolean",
+                      "optional": false,
+                      "rest": false
+                    }
+                  ],
+                  "returnType": "Partial<$Object>",
+                  "throws": []
+                },
+                {
+                  "typeParameters": [
+                    {
+                      "name": "$Object",
+                      "constraint": "object"
+                    }
+                  ],
+                  "parameters": [
+                    {
+                      "name": "obj",
+                      "type": "$Object",
+                      "optional": false,
+                      "rest": false
+                    },
+                    {
+                      "name": "predicate",
+                      "type": "(key: keyof $Object, value: $Object[keyof $Object], obj?: $Object | undefined) => boolean",
+                      "optional": false,
+                      "rest": false
+                    }
+                  ],
+                  "returnType": "Partial<$Object>",
+                  "throws": []
+                },
+                {
+                  "typeParameters": [
+                    {
+                      "name": "T",
+                      "constraint": "object"
+                    },
+                    {
+                      "name": "K",
+                      "constraint": "keyof T"
+                    }
+                  ],
+                  "parameters": [
+                    {
+                      "name": "obj",
+                      "type": "T",
+                      "optional": false,
+                      "rest": false
+                    },
+                    {
+                      "name": "keysOrPredicate",
+                      "type": "readonly K[] | ((key: keyof T, value?: any, obj?: any) => boolean)",
+                      "optional": false,
+                      "rest": false
+                    }
+                  ],
+                  "returnType": "Pick<T, K> | Partial<T>",
                   "throws": []
                 }
               ],
@@ -21577,12 +21611,22 @@
             "description": "Create a new object with only the specified properties.",
             "examples": [
               {
-                "code": "const user = { name: 'Alice', age: 30, email: 'alice@example.com' }\nconst publicInfo = pick(user, ['name', 'email'])\n// Result: { name: 'Alice', email: 'alice@example.com' }",
+                "code": "// Using array of keys\nconst user = { name: 'Alice', age: 30, email: 'alice@example.com' }\nconst publicInfo = pick(user, ['name', 'email'])\n// Result: { name: 'Alice', email: 'alice@example.com' }",
                 "twoslashEnabled": true,
                 "language": "typescript"
               },
               {
                 "code": "// Type-safe property selection\ninterface User {\n  id: number\n  name: string\n  password: string\n  email: string\n}\n\nfunction getPublicUser(user: User) {\n  return pick(user, ['id', 'name', 'email'])\n  // Type: Pick<User, 'id' | 'name' | 'email'>\n}",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              },
+              {
+                "code": "// Using a predicate function (key only)\nconst obj = { a: 1, b: 2, c: 3 }\npick(obj, k => k !== 'b') // { a: 1, c: 3 }",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              },
+              {
+                "code": "// Using a filter function (key, value, obj)\nconst obj = { a: 1, b: 2, c: 3 }\npick(obj, (k, v) => v > 1) // { b: 2, c: 3 }\npick(obj, (k, v, o) => v > average(o)) // picks above-average values",
                 "twoslashEnabled": true,
                 "language": "typescript"
               }
@@ -21606,7 +21650,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 45
+              "line": 62
             },
             "_tag": "value",
             "type": "function"
@@ -21638,12 +21682,87 @@
                       "name": "keys",
                       "type": "readonly K[]",
                       "optional": false,
-                      "rest": false,
-                      "description": "Array of property keys to exclude"
+                      "rest": false
                     }
                   ],
                   "returnType": "Omit<T, K>",
                   "returnDoc": "A new object without the specified properties",
+                  "throws": []
+                },
+                {
+                  "typeParameters": [
+                    {
+                      "name": "$Object",
+                      "constraint": "object"
+                    }
+                  ],
+                  "parameters": [
+                    {
+                      "name": "obj",
+                      "type": "$Object",
+                      "optional": false,
+                      "rest": false
+                    },
+                    {
+                      "name": "predicate",
+                      "type": "(key: keyof $Object, value?: undefined, obj?: undefined) => boolean",
+                      "optional": false,
+                      "rest": false
+                    }
+                  ],
+                  "returnType": "Partial<$Object>",
+                  "throws": []
+                },
+                {
+                  "typeParameters": [
+                    {
+                      "name": "$Object",
+                      "constraint": "object"
+                    }
+                  ],
+                  "parameters": [
+                    {
+                      "name": "obj",
+                      "type": "$Object",
+                      "optional": false,
+                      "rest": false
+                    },
+                    {
+                      "name": "predicate",
+                      "type": "(key: keyof $Object, value: $Object[keyof $Object], obj?: $Object | undefined) => boolean",
+                      "optional": false,
+                      "rest": false
+                    }
+                  ],
+                  "returnType": "Partial<$Object>",
+                  "throws": []
+                },
+                {
+                  "typeParameters": [
+                    {
+                      "name": "T",
+                      "constraint": "object"
+                    },
+                    {
+                      "name": "K",
+                      "constraint": "keyof T"
+                    }
+                  ],
+                  "parameters": [
+                    {
+                      "name": "obj",
+                      "type": "T",
+                      "optional": false,
+                      "rest": false
+                    },
+                    {
+                      "name": "keysOrPredicate",
+                      "type": "readonly K[] | ((key: keyof T, value?: any, obj?: any) => boolean)",
+                      "optional": false,
+                      "rest": false
+                    }
+                  ],
+                  "returnType": "Omit<T, K> | Partial<T>",
                   "throws": []
                 }
               ],
@@ -21652,12 +21771,22 @@
             "description": "Create a new object with the specified properties removed.",
             "examples": [
               {
-                "code": "const user = { name: 'Alice', age: 30, password: 'secret' }\nconst safeUser = omit(user, ['password'])\n// Result: { name: 'Alice', age: 30 }",
+                "code": "// Using array of keys\nconst user = { name: 'Alice', age: 30, password: 'secret' }\nconst safeUser = omit(user, ['password'])\n// Result: { name: 'Alice', age: 30 }",
                 "twoslashEnabled": true,
                 "language": "typescript"
               },
               {
                 "code": "// Remove sensitive fields\ninterface User {\n  id: number\n  name: string\n  password: string\n  apiKey: string\n}\n\nfunction sanitizeUser(user: User) {\n  return omit(user, ['password', 'apiKey'])\n  // Type: Omit<User, 'password' | 'apiKey'>\n}",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              },
+              {
+                "code": "// Using a predicate function (key only)\nconst obj = { a: 1, b: 2, c: 3 }\nomit(obj, k => k === 'b') // { a: 1, c: 3 } (excludes b)",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              },
+              {
+                "code": "// Using a filter function (key, value, obj)\nconst obj = { a: 1, b: 2, c: 3 }\nomit(obj, (k, v) => v > 1) // { a: 1 } (excludes b and c where value > 1)\nomit(obj, (k, v, o) => v > average(o)) // excludes above-average values",
                 "twoslashEnabled": true,
                 "language": "typescript"
               }
@@ -21681,7 +21810,211 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 84
+              "line": 162
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
+            "name": "pickWith",
+            "signature": {
+              "overloads": [
+                {
+                  "typeParameters": [
+                    {
+                      "name": "K",
+                      "constraint": "PropertyKey"
+                    }
+                  ],
+                  "parameters": [
+                    {
+                      "name": "keysOrPredicate",
+                      "type": "readonly K[] | ((key: PropertyKey, value?: any, obj?: any) => boolean)",
+                      "optional": false,
+                      "rest": false
+                    }
+                  ],
+                  "returnType": "<T extends object>(obj: T) => any",
+                  "throws": []
+                }
+              ],
+              "_tag": "FunctionSignatureModel"
+            },
+            "description": "Curried version of pick - takes keys/predicate first, then object.",
+            "examples": [],
+            "category": "Filtering",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "obj"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "filter",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 91
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
+            "name": "pickOn",
+            "signature": {
+              "overloads": [
+                {
+                  "typeParameters": [
+                    {
+                      "name": "T",
+                      "constraint": "object"
+                    }
+                  ],
+                  "parameters": [
+                    {
+                      "name": "obj",
+                      "type": "T",
+                      "optional": false,
+                      "rest": false
+                    }
+                  ],
+                  "returnType": "<K extends keyof T>(keysOrPredicate: readonly K[] | ((key: keyof T, value?: any, obj?: any) => boolean)) => any",
+                  "throws": []
+                }
+              ],
+              "_tag": "FunctionSignatureModel"
+            },
+            "description": "Curried version of pick - takes object first, then keys/predicate.",
+            "examples": [],
+            "category": "Filtering",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "obj"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "filter",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 105
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
+            "name": "omitWith",
+            "signature": {
+              "overloads": [
+                {
+                  "typeParameters": [
+                    {
+                      "name": "K",
+                      "constraint": "PropertyKey"
+                    }
+                  ],
+                  "parameters": [
+                    {
+                      "name": "keysOrPredicate",
+                      "type": "readonly K[] | ((key: PropertyKey, value?: any, obj?: any) => boolean)",
+                      "optional": false,
+                      "rest": false
+                    }
+                  ],
+                  "returnType": "<T extends object>(obj: T) => any",
+                  "throws": []
+                }
+              ],
+              "_tag": "FunctionSignatureModel"
+            },
+            "description": "Curried version of omit - takes keys/predicate first, then object.",
+            "examples": [],
+            "category": "Filtering",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "obj"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "filter",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 192
+            },
+            "_tag": "value",
+            "type": "function"
+          },
+          {
+            "name": "omitOn",
+            "signature": {
+              "overloads": [
+                {
+                  "typeParameters": [
+                    {
+                      "name": "T",
+                      "constraint": "object"
+                    }
+                  ],
+                  "parameters": [
+                    {
+                      "name": "obj",
+                      "type": "T",
+                      "optional": false,
+                      "rest": false
+                    }
+                  ],
+                  "returnType": "<K extends keyof T>(keysOrPredicate: readonly K[] | ((key: keyof T, value?: any, obj?: any) => boolean)) => any",
+                  "throws": []
+                }
+              ],
+              "_tag": "FunctionSignatureModel"
+            },
+            "description": "Curried version of omit - takes object first, then keys/predicate.",
+            "examples": [],
+            "category": "Filtering",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "obj"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "filter",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 206
             },
             "_tag": "value",
             "type": "function"
@@ -21762,73 +22095,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 112
-            },
-            "_tag": "value",
-            "type": "function"
-          },
-          {
-            "name": "filter",
-            "signature": {
-              "overloads": [
-                {
-                  "typeParameters": [
-                    {
-                      "name": "$Object",
-                      "constraint": "object"
-                    }
-                  ],
-                  "parameters": [
-                    {
-                      "name": "obj",
-                      "type": "$Object",
-                      "optional": false,
-                      "rest": false,
-                      "description": "The object to filter"
-                    },
-                    {
-                      "name": "predicate",
-                      "type": "(key: keyof $Object, value: $Object[keyof $Object], obj: $Object) => boolean",
-                      "optional": false,
-                      "rest": false,
-                      "description": "Function that returns true to keep a key/value pair"
-                    }
-                  ],
-                  "returnType": "Partial<$Object>",
-                  "returnDoc": "A new object with only the key/value pairs where predicate returned true",
-                  "throws": []
-                }
-              ],
-              "_tag": "FunctionSignatureModel"
-            },
-            "description": "Filter an object using a predicate function.",
-            "examples": [
-              {
-                "code": "const obj = { a: 1, b: 2, c: 3 }\nfilter(obj, (k, v) => v > 1) // { b: 2, c: 3 }\nfilter(obj, k => k !== 'b') // { a: 1, c: 3 }",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Filtering",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "obj"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "filter",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 157
+              "line": 236
             },
             "_tag": "value",
             "type": "function"
@@ -21836,29 +22103,8 @@
           {
             "name": "omitUndefined",
             "signature": {
-              "overloads": [
-                {
-                  "typeParameters": [
-                    {
-                      "name": "$Object",
-                      "constraint": "Record<string, unknown>"
-                    }
-                  ],
-                  "parameters": [
-                    {
-                      "name": "obj",
-                      "type": "$Object",
-                      "optional": false,
-                      "rest": false,
-                      "description": "The object to filter"
-                    }
-                  ],
-                  "returnType": "$Object",
-                  "returnDoc": "A new object without properties that had \n\nundefined\n\n values",
-                  "throws": []
-                }
-              ],
-              "_tag": "FunctionSignatureModel"
+              "type": "<T>(obj: T) => any",
+              "_tag": "ValueSignatureModel"
             },
             "description": "Remove all properties with \n\nundefined\n\n values from an object.",
             "examples": [
@@ -21892,58 +22138,18 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 196
+              "line": 291
             },
             "_tag": "value",
-            "type": "function"
+            "type": "const"
           },
           {
             "name": "partition",
             "signature": {
-              "overloads": [
-                {
-                  "typeParameters": [
-                    {
-                      "name": "$Object",
-                      "constraint": "object"
-                    },
-                    {
-                      "name": "$Key",
-                      "constraint": "keyof $Object"
-                    }
-                  ],
-                  "parameters": [
-                    {
-                      "name": "obj",
-                      "type": "$Object",
-                      "optional": false,
-                      "rest": false,
-                      "description": "The object to partition"
-                    },
-                    {
-                      "name": "pickedKeys",
-                      "type": "readonly $Key[]",
-                      "optional": false,
-                      "rest": false,
-                      "description": "The keys to pick"
-                    }
-                  ],
-                  "returnType": "{ omitted: Omit<$Object, $Key>; picked: Pick<$Object, $Key>; }",
-                  "returnDoc": "An object with picked and omitted properties",
-                  "throws": []
-                }
-              ],
-              "_tag": "FunctionSignatureModel"
+              "text": "interface partition extends\n  Ts.SimpleSignature.SimpleSignature<[\n    (obj: object, pickedKeys: readonly string[]) => { picked: object; omitted: object },\n  ]>\n{\n  <$Object extends object, $Key extends keyof $Object>(\n    obj: $Object,\n    pickedKeys: readonly $Key[],\n  ): { omitted: Omit<$Object, $Key>; picked: Pick<$Object, $Key> }\n}",
+              "_tag": "TypeSignatureModel"
             },
-            "description": "Partition an object into picked and omitted parts.",
-            "examples": [
-              {
-                "code": "const obj = { a: 1, b: 2, c: 3 }\nconst { picked, omitted } = partition(obj, ['a', 'c'])\n// picked: { a: 1, c: 3 }\n// omitted: { b: 2 }",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Filtering",
+            "examples": [],
             "tags": {},
             "sourceLocation": {
               "file": {
@@ -21962,10 +22168,10 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 217
+              "line": 293
             },
-            "_tag": "value",
-            "type": "function"
+            "_tag": "type",
+            "type": "interface"
           },
           {
             "name": "pickMatching",
@@ -22028,7 +22234,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 256
+              "line": 357
             },
             "_tag": "value",
             "type": "function"
@@ -22060,7 +22266,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 285
+              "line": 380
             },
             "_tag": "type",
             "type": "type-alias"
@@ -22098,7 +22304,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 305
+              "line": 400
             },
             "_tag": "type",
             "type": "type-alias"
@@ -22136,7 +22342,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 325
+              "line": 420
             },
             "_tag": "type",
             "type": "type-alias"
@@ -22174,7 +22380,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 340
+              "line": 435
             },
             "_tag": "type",
             "type": "type-alias"
@@ -22212,7 +22418,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 355
+              "line": 450
             },
             "_tag": "type",
             "type": "type-alias"
@@ -22250,7 +22456,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 369
+              "line": 464
             },
             "_tag": "type",
             "type": "type-alias"
@@ -22288,7 +22494,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 384
+              "line": 479
             },
             "_tag": "type",
             "type": "type-alias"
@@ -22326,7 +22532,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 397
+              "line": 492
             },
             "_tag": "type",
             "type": "type-alias"
@@ -22364,7 +22570,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 412
+              "line": 507
             },
             "_tag": "type",
             "type": "type-alias"
@@ -22402,7 +22608,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 427
+              "line": 522
             },
             "_tag": "type",
             "type": "type-alias"
@@ -24752,36 +24958,6 @@
                 "_tag": "LocRelFile"
               },
               "line": 92
-            },
-            "_tag": "type",
-            "type": "type-alias"
-          },
-          {
-            "name": "_InferShapeFromPropertyPath",
-            "signature": {
-              "text": "type _InferShapeFromPropertyPath<$PropertyPath extends PropertyPath> =\n  $PropertyPath extends readonly [infer __key__ extends string, ...infer __tail__ extends readonly string[]]\n    ? { [_ in __key__]?: InferShapeFromPropertyPath<__tail__> }\n    : unknown",
-              "_tag": "TypeSignatureModel"
-            },
-            "examples": [],
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "obj"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "path",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 98
             },
             "_tag": "type",
             "type": "type-alias"
@@ -30027,7 +30203,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 21
+              "line": 20
             },
             "_tag": "value",
             "type": "namespace",
@@ -32462,7 +32638,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 33
+              "line": 32
             },
             "_tag": "value",
             "type": "namespace",
@@ -34073,7 +34249,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 45
+              "line": 53
             },
             "_tag": "value",
             "type": "namespace",
@@ -40106,1565 +40282,6 @@
             "type": "type-alias"
           },
           {
-            "name": "defaultIndentSize",
-            "signature": {
-              "type": "2",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Default indentation size in characters.",
-            "examples": [],
-            "category": "Text Formatting\n\n \n\n\n\n 2",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 11
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "defaultIndentCharacter",
-            "signature": {
-              "type": "\" \"",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Default character used for indentation (non-breaking space).",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 17
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "defaultLineSeparator",
-            "signature": {
-              "type": "\"\\n\"",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Default line separator character (newline).",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 23
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "Column",
-            "signature": {
-              "text": "type Column = string[]",
-              "_tag": "TypeSignatureModel"
-            },
-            "description": "A column is a vertical stack of lines.",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 31
-            },
-            "_tag": "type",
-            "type": "type-alias"
-          },
-          {
-            "name": "lines",
-            "signature": {
-              "type": "(value: string) => string[]",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Split text into an array of lines.\n\n \n\nPre-configured \n\nsplitWith\n\n using newline separator.",
-            "examples": [
-              {
-                "code": "lines('hello\\nworld\\n!') // ['hello', 'world', '!']\nlines('single line') // ['single line']",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 47
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "unlines",
-            "signature": {
-              "type": "(value: string[]) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Join an array of lines into text.\n\n \n\nPre-configured \n\njoinWith\n\n using newline separator.",
-            "examples": [
-              {
-                "code": "unlines(['hello', 'world', '!']) // 'hello\\nworld\\n!'\nunlines(['single line']) // 'single line'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 61
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "indent",
-            "signature": {
-              "overloads": [
-                {
-                  "typeParameters": [],
-                  "parameters": [
-                    {
-                      "name": "text",
-                      "type": "string",
-                      "optional": false,
-                      "rest": false,
-                      "description": "The text to indent"
-                    },
-                    {
-                      "name": "size",
-                      "type": "number | undefined",
-                      "optional": true,
-                      "rest": false,
-                      "description": "Number of spaces to indent (default: \n\ndefaultIndentSize\n\n)"
-                    }
-                  ],
-                  "returnType": "string",
-                  "returnDoc": "The indented text",
-                  "throws": []
-                }
-              ],
-              "_tag": "FunctionSignatureModel"
-            },
-            "description": "Indent each line of text by a specified number of spaces.",
-            "examples": [
-              {
-                "code": "indent('hello\\nworld') // '  hello\\n  world'\nindent('line1\\nline2', 4) // '    line1\\n    line2'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 77
-            },
-            "_tag": "value",
-            "type": "function"
-          },
-          {
-            "name": "indentOn",
-            "signature": {
-              "type": "(text: string) => (size?: number | undefined) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\nindent\n\n with text first.",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 88
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "indentWith",
-            "signature": {
-              "type": "(size?: number | undefined) => (text: string) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\nindent\n\n with size first.",
-            "examples": [
-              {
-                "code": "const indent4 = indentWith(4)\nindent4('hello\\nworld') // '    hello\\n    world'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 101
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "indentBy",
-            "signature": {
-              "overloads": [
-                {
-                  "typeParameters": [],
-                  "parameters": [
-                    {
-                      "name": "text",
-                      "type": "string",
-                      "optional": false,
-                      "rest": false,
-                      "description": "The text to indent"
-                    },
-                    {
-                      "name": "prefixOrFn",
-                      "type": "string | ((line: string, lineIndex: number) => string)",
-                      "optional": false,
-                      "rest": false,
-                      "description": "String to prepend to each line, or function \n\n(line: string, lineIndex: number) => string"
-                    }
-                  ],
-                  "returnType": "string",
-                  "returnDoc": "The indented text",
-                  "throws": []
-                }
-              ],
-              "_tag": "FunctionSignatureModel"
-            },
-            "description": "Indent each line using a custom prefix string or function.\n\n \n\nWhen given a function, it receives both the line content and index, allowing for content-aware indentation.",
-            "examples": [
-              {
-                "code": "// Fixed string prefix\nindentBy('hello\\nworld', '>>> ') // '>>> hello\\n>>> world'\n\n// Dynamic prefix based on line index (ignore line content with _)\nindentBy('line1\\nline2\\nline3', (_, i) => `${i + 1}. `)\n// '1. line1\\n2. line2\\n3. line3'\n\n// Content-aware indentation\nindentBy('title\\nitem', (line, i) => line === 'title' ? '' : '  ')\n// 'title\\n  item'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 124
-            },
-            "_tag": "value",
-            "type": "function"
-          },
-          {
-            "name": "indentByOn",
-            "signature": {
-              "type": "(text: string) => (prefixOrFn: string | ((line: string, lineIndex: number) => string)) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\nindentBy\n\n with text first.",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 139
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "indentByWith",
-            "signature": {
-              "type": "(prefixOrFn: string | ((line: string, lineIndex: number) => string)) => (text: string) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\nindentBy\n\n with prefix first.",
-            "examples": [
-              {
-                "code": "const addArrow = indentByWith('→ ')\naddArrow('hello\\nworld') // '→ hello\\n→ world'\n\nconst numbered = indentByWith((_, i) => `${i}. `)\nnumbered('first\\nsecond') // '0. first\\n1. second'\n\nconst conditionalIndent = indentByWith((line, i) =>\n  line.startsWith('#') ? '' : '  '\n)\nconditionalIndent('# Title\\nContent') // '# Title\\n  Content'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 160
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "stripIndent",
-            "signature": {
-              "overloads": [
-                {
-                  "typeParameters": [],
-                  "parameters": [
-                    {
-                      "name": "text",
-                      "type": "string",
-                      "optional": false,
-                      "rest": false,
-                      "description": "The text to dedent"
-                    }
-                  ],
-                  "returnType": "string",
-                  "returnDoc": "The dedented text",
-                  "throws": []
-                }
-              ],
-              "_tag": "FunctionSignatureModel"
-            },
-            "description": "Remove common leading whitespace from all lines.\n\n \n\nFinds the minimum indentation across all non-empty lines and removes that amount from every line.\n\n \n\nThis is useful for dedenting code blocks or template strings while preserving relative indentation.",
-            "examples": [
-              {
-                "code": "stripIndent('    line1\\n      line2\\n    line3')\n// 'line1\\n  line2\\nline3'\n\nstripIndent('  code\\n    nested\\n  code')\n// 'code\\n  nested\\ncode'\n\n// Empty lines are ignored when calculating minimum indent\nstripIndent('    line1\\n\\n    line2')\n// 'line1\\n\\nline2'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 182
-            },
-            "_tag": "value",
-            "type": "function"
-          },
-          {
-            "name": "defaultPadCharacter",
-            "signature": {
-              "type": "\" \"",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Default character used for padding.",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 208
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "pad",
-            "signature": {
-              "overloads": [
-                {
-                  "typeParameters": [],
-                  "parameters": [
-                    {
-                      "name": "text",
-                      "type": "string",
-                      "optional": false,
-                      "rest": false,
-                      "description": "The text to pad"
-                    },
-                    {
-                      "name": "size",
-                      "type": "number",
-                      "optional": false,
-                      "rest": false,
-                      "description": "Number of padding characters to add"
-                    },
-                    {
-                      "name": "side",
-                      "type": "\"left\" | \"right\"",
-                      "optional": true,
-                      "rest": false,
-                      "defaultValue": "`left`",
-                      "description": "Which side to add padding ('left' or 'right')"
-                    },
-                    {
-                      "name": "char",
-                      "type": "string",
-                      "optional": true,
-                      "rest": false,
-                      "defaultValue": "defaultPadCharacter",
-                      "description": "Character to use for padding (default: space)"
-                    }
-                  ],
-                  "returnType": "string",
-                  "returnDoc": "The padded text",
-                  "throws": []
-                }
-              ],
-              "_tag": "FunctionSignatureModel"
-            },
-            "description": "Add padding characters to text.",
-            "examples": [
-              {
-                "code": "pad('hello', 3, 'left') // '   hello'\npad('hello', 3, 'right') // 'hello   '\npad('hello', 2, 'left', '-') // '--hello'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 225
-            },
-            "_tag": "value",
-            "type": "function"
-          },
-          {
-            "name": "padOn",
-            "signature": {
-              "type": "(text: string) => (size: number) => (side?: \"left\" | \"right\" | undefined) => (char?: string | undefined) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\npad\n\n with text first.",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 240
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "padWith",
-            "signature": {
-              "type": "(size: number) => (text: string) => (side?: \"left\" | \"right\" | undefined) => (char?: string | undefined) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\npad\n\n with size first.",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 248
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "padLeft",
-            "signature": {
-              "overloads": [
-                {
-                  "typeParameters": [],
-                  "parameters": [
-                    {
-                      "name": "text",
-                      "type": "string",
-                      "optional": false,
-                      "rest": false,
-                      "description": "The text to pad"
-                    },
-                    {
-                      "name": "size",
-                      "type": "number",
-                      "optional": false,
-                      "rest": false,
-                      "description": "Number of padding characters to add"
-                    },
-                    {
-                      "name": "char",
-                      "type": "string",
-                      "optional": true,
-                      "rest": false,
-                      "defaultValue": "defaultPadCharacter",
-                      "description": "Character to use for padding (default: space)"
-                    }
-                  ],
-                  "returnType": "string",
-                  "returnDoc": "The left-padded text",
-                  "throws": []
-                }
-              ],
-              "_tag": "FunctionSignatureModel"
-            },
-            "description": "Add left padding to text.",
-            "examples": [
-              {
-                "code": "padLeft('hello', 3) // '   hello'\npadLeft('hello', 2, '0') // '00hello'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 263
-            },
-            "_tag": "value",
-            "type": "function"
-          },
-          {
-            "name": "padLeftOn",
-            "signature": {
-              "type": "(text: string) => (size: number) => (char?: string | undefined) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\npadLeft\n\n with text first.",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 273
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "padLeftWith",
-            "signature": {
-              "type": "(size: number) => (text: string) => (char?: string | undefined) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\npadLeft\n\n with size first.",
-            "examples": [
-              {
-                "code": "const pad3 = padLeftWith(3)\npad3('hi') // '   hi'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 286
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "padRight",
-            "signature": {
-              "overloads": [
-                {
-                  "typeParameters": [],
-                  "parameters": [
-                    {
-                      "name": "text",
-                      "type": "string",
-                      "optional": false,
-                      "rest": false,
-                      "description": "The text to pad"
-                    },
-                    {
-                      "name": "size",
-                      "type": "number",
-                      "optional": false,
-                      "rest": false,
-                      "description": "Number of padding characters to add"
-                    },
-                    {
-                      "name": "char",
-                      "type": "string",
-                      "optional": true,
-                      "rest": false,
-                      "defaultValue": "defaultPadCharacter",
-                      "description": "Character to use for padding (default: space)"
-                    }
-                  ],
-                  "returnType": "string",
-                  "returnDoc": "The right-padded text",
-                  "throws": []
-                }
-              ],
-              "_tag": "FunctionSignatureModel"
-            },
-            "description": "Add right padding to text.",
-            "examples": [
-              {
-                "code": "padRight('hello', 3) // 'hello   '\npadRight('hello', 2, '.') // 'hello..'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 301
-            },
-            "_tag": "value",
-            "type": "function"
-          },
-          {
-            "name": "padRightOn",
-            "signature": {
-              "type": "(text: string) => (size: number) => (char?: string | undefined) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\npadRight\n\n with text first.",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 311
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "padRightWith",
-            "signature": {
-              "type": "(size: number) => (text: string) => (char?: string | undefined) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\npadRight\n\n with size first.",
-            "examples": [
-              {
-                "code": "const pad3 = padRightWith(3)\npad3('hi') // 'hi   '",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 324
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "span",
-            "signature": {
-              "overloads": [
-                {
-                  "typeParameters": [],
-                  "parameters": [
-                    {
-                      "name": "text",
-                      "type": "string",
-                      "optional": false,
-                      "rest": false,
-                      "description": "The text to align"
-                    },
-                    {
-                      "name": "width",
-                      "type": "number",
-                      "optional": false,
-                      "rest": false,
-                      "description": "Target width (in characters)"
-                    },
-                    {
-                      "name": "align",
-                      "type": "\"left\" | \"right\"",
-                      "optional": true,
-                      "rest": false,
-                      "defaultValue": "`left`",
-                      "description": "Content alignment ('left' or 'right')"
-                    },
-                    {
-                      "name": "char",
-                      "type": "string",
-                      "optional": true,
-                      "rest": false,
-                      "defaultValue": "defaultPadCharacter",
-                      "description": "Character to use for padding (default: space)"
-                    }
-                  ],
-                  "returnType": "string",
-                  "returnDoc": "The aligned text",
-                  "throws": []
-                }
-              ],
-              "_tag": "FunctionSignatureModel"
-            },
-            "description": "Align text within a specified width by adding padding.\n\n \n\n \n\nThis ensures text spans exactly the target width, aligning content to the left or right.\n\n \n\nIf the text is already wider than the target width, no padding is added.",
-            "examples": [
-              {
-                "code": "// Left-align (pad right)\nStr.span('hi', 5, 'left')     // 'hi   '\n\n// Right-align (pad left)\nStr.span('hi', 5, 'right')    // '   hi'\n\n// Text already wider - no padding added\nStr.span('hello world', 5, 'left')  // 'hello world' (unchanged)",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 351
-            },
-            "_tag": "value",
-            "type": "function"
-          },
-          {
-            "name": "spanOn",
-            "signature": {
-              "type": "(text: string) => (width: number) => (align?: \"left\" | \"right\" | undefined) => (char?: string | undefined) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\nspan\n\n with text first.",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 368
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "spanWith",
-            "signature": {
-              "type": "(width: number) => (text: string) => (align?: \"left\" | \"right\" | undefined) => (char?: string | undefined) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\nspan\n\n with width first.",
-            "examples": [
-              {
-                "code": "const span8 = Str.spanWith(8)\nspan8('Name', 'left')   // 'Name    '\nspan8('Age', 'right')   // '     Age'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 383
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "fit",
-            "signature": {
-              "overloads": [
-                {
-                  "typeParameters": [],
-                  "parameters": [
-                    {
-                      "name": "text",
-                      "type": "string",
-                      "optional": false,
-                      "rest": false,
-                      "description": "The text to constrain"
-                    },
-                    {
-                      "name": "width",
-                      "type": "number",
-                      "optional": false,
-                      "rest": false,
-                      "description": "Exact target width (in characters)"
-                    },
-                    {
-                      "name": "align",
-                      "type": "\"left\" | \"right\"",
-                      "optional": true,
-                      "rest": false,
-                      "defaultValue": "`left`",
-                      "description": "Content alignment ('left' or 'right')"
-                    },
-                    {
-                      "name": "char",
-                      "type": "string",
-                      "optional": true,
-                      "rest": false,
-                      "defaultValue": "defaultPadCharacter",
-                      "description": "Character to use for padding (default: space)"
-                    }
-                  ],
-                  "returnType": "string",
-                  "returnDoc": "Text constrained to exact width",
-                  "throws": []
-                }
-              ],
-              "_tag": "FunctionSignatureModel"
-            },
-            "description": "Constrain text to exact width by cropping and/or padding.\n\n \n\n \n\nUnlike \n\nspan\n\n which only pads (leaving text unchanged if too long),\n\n \n\nthis function guarantees the exact width by:\n\n \n\n- Cropping text if it exceeds the target width\n\n \n\n- Padding text if it's shorter than the target width\n\n \n\n \n\nThis is useful for fixed-width layouts where column widths must be exact,\n\n \n\nsuch as table columns, CSV files, and fixed-format text files.",
-            "examples": [
-              {
-                "code": "// Text too long - gets cropped\nStr.fit('hello world', 5, 'left')  // 'hello'\n\n// Text too short - gets padded\nStr.fit('hi', 5, 'left')           // 'hi   '\nStr.fit('hi', 5, 'right')          // '   hi'\n\n// Perfect fit - unchanged\nStr.fit('exact', 5, 'left')        // 'exact'\n\n// Use case: Fixed-width table columns\nconst columns = ['Name', 'Email', 'Status'].map(\n  (header, i) => Str.fit(header, [10, 20, 8][i], 'left')\n)\n// ['Name      ', 'Email               ', 'Status  ']\n\n// CSV formatting with fixed columns\nconst row = [name, email, status].map((val, i) =>\n  Str.fit(val, [20, 30, 10][i], 'left')\n).join(',')",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 427
-            },
-            "_tag": "value",
-            "type": "function"
-          },
-          {
-            "name": "fitOn",
-            "signature": {
-              "type": "(text: string) => (width: number) => (align?: \"left\" | \"right\" | undefined) => (char?: string | undefined) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\nfit\n\n with text first.",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 443
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "fitWith",
-            "signature": {
-              "type": "(width: number) => (text: string) => (align?: \"left\" | \"right\" | undefined) => (char?: string | undefined) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\nfit\n\n with width first.",
-            "examples": [
-              {
-                "code": "// Create fixed-width formatters\nconst nameColumn = Str.fitWith(20)\nconst statusColumn = Str.fitWith(10)\n\nnameColumn('John Doe', 'left')         // 'John Doe            '\nstatusColumn('Active', 'left')         // 'Active    '\nstatusColumn('Very Long Status', 'left') // 'Very Long '",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 462
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "mapLines",
-            "signature": {
-              "overloads": [
-                {
-                  "typeParameters": [],
-                  "parameters": [
-                    {
-                      "name": "text",
-                      "type": "string",
-                      "optional": false,
-                      "rest": false,
-                      "description": "The text to transform"
-                    },
-                    {
-                      "name": "fn",
-                      "type": "(line: string, index: number) => string",
-                      "optional": false,
-                      "rest": false,
-                      "description": "Function to apply to each line, receiving the line and its index"
-                    }
-                  ],
-                  "returnType": "string",
-                  "returnDoc": "The transformed text",
-                  "throws": []
-                }
-              ],
-              "_tag": "FunctionSignatureModel"
-            },
-            "description": "Map a transformation function over each line of text.",
-            "examples": [
-              {
-                "code": "mapLines('hello\\nworld', (line) => line.toUpperCase())\n// 'HELLO\\nWORLD'\n\nmapLines('a\\nb\\nc', (line, i) => `${i}: ${line}`)\n// '0: a\\n1: b\\n2: c'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 479
-            },
-            "_tag": "value",
-            "type": "function"
-          },
-          {
-            "name": "mapLinesOn",
-            "signature": {
-              "type": "(text: string) => (fn: (line: string, index: number) => string) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\nmapLines\n\n with text first.",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 489
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "mapLinesWith",
-            "signature": {
-              "type": "(fn: (line: string, index: number) => string) => (text: string) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\nmapLines\n\n with function first.",
-            "examples": [
-              {
-                "code": "const uppercase = mapLinesWith((line) => line.toUpperCase())\nuppercase('hello\\nworld') // 'HELLO\\nWORLD'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 502
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "StyledPrefix",
-            "signature": {
-              "text": "type StyledPrefix = {\n  /**\n   * The prefix text/symbol to display.\n   */\n  symbol: string\n  /**\n   * Optional function to colorize the prefix.\n   */\n  color?: (text: string) => string\n}",
-              "_tag": "TypeSignatureModel"
-            },
-            "description": "Styled prefix that can have an optional color function.\n\n \n\nUsed with \n\nformatBlock\n\n for colored line prefixes.",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 512
-            },
-            "_tag": "type",
-            "type": "type-alias"
-          },
-          {
-            "name": "formatBlock",
-            "signature": {
-              "overloads": [
-                {
-                  "typeParameters": [],
-                  "parameters": [
-                    {
-                      "name": "block",
-                      "type": "string",
-                      "optional": false,
-                      "rest": false,
-                      "description": "The text block to format"
-                    },
-                    {
-                      "name": "opts",
-                      "type": "{ prefix?: string | StyledPrefix; indent?: number; excludeFirstLine?: boolean; }",
-                      "optional": false,
-                      "rest": false,
-                      "description": "Formatting options"
-                    }
-                  ],
-                  "returnType": "string",
-                  "returnDoc": "Formatted text block",
-                  "throws": []
-                }
-              ],
-              "_tag": "FunctionSignatureModel"
-            },
-            "description": "Format a multi-line text block with line-by-line transformations.\n\n \n\n \n\nProcesses each line of text, adding a prefix and optional indentation.\n\n \n\nSupports excluding the first line and styled prefixes with colors.",
-            "examples": [
-              {
-                "code": "// Simple string prefix\nformatBlock('line1\\nline2\\nline3', { prefix: '> ' })\n// '> line1\\n> line2\\n> line3'\n\n// With indentation\nformatBlock('line1\\nline2', { prefix: '| ', indent: 2 })\n// '|   line1\\n|   line2'\n\n// Exclude first line (useful for continuing indentation)\nformatBlock('header\\nline1\\nline2', { prefix: '  ', excludeFirstLine: true })\n// 'header\\n  line1\\n  line2'\n\n// Single line - returned as-is\nformatBlock('single', { prefix: '> ' })\n// 'single'\n\n// Styled prefix with color function\nformatBlock('data\\nmore data', {\n  prefix: {\n    symbol: '│ ',\n    color: (text) => `\\x1b[90m${text}\\x1b[0m` // gray color\n  },\n  indent: 2\n})\n// '\\x1b[90m│ \\x1b[0m  data\\n\\x1b[90m│ \\x1b[0m  more data'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 566
-            },
-            "_tag": "value",
-            "type": "function"
-          },
-          {
-            "name": "formatBlockOn",
-            "signature": {
-              "type": "(block: string) => (opts: { prefix?: string | StyledPrefix; indent?: number; excludeFirstLine?: boolean; }) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\nformatBlock\n\n with block first.",
-            "examples": [],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 598
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
-            "name": "formatBlockWith",
-            "signature": {
-              "type": "(opts: { prefix?: string | StyledPrefix; indent?: number; excludeFirstLine?: boolean; }) => (block: string) => string",
-              "_tag": "ValueSignatureModel"
-            },
-            "description": "Curried version of \n\nformatBlock\n\n with options first.",
-            "examples": [
-              {
-                "code": "const addSpine = formatBlockWith({ prefix: '│ ', indent: 2 })\naddSpine('line1\\nline2\\nline3')\n// '│   line1\\n│   line2\\n│   line3'",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "category": "Text Formatting",
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "domains",
-                    "str"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "text",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 612
-            },
-            "_tag": "value",
-            "type": "const"
-          },
-          {
             "name": "EndsWith",
             "signature": {
               "text": "type EndsWith<S extends string, T extends string> = S extends `${string}${T}` ? true : false",
@@ -41884,6 +40501,120 @@
                 "_tag": "LocRelFile"
               },
               "line": 60
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "Length",
+            "signature": {
+              "text": "type Length<$S extends string, $Acc extends 0[] = []> = $S extends `${string}${infer __rest__}`\n  ? Length<__rest__, [...$Acc, 0]>\n  : $Acc['length']",
+              "_tag": "TypeSignatureModel"
+            },
+            "description": "Get the length of a string type using tuple counting.\n\n \n\n \n\nUses recursive template literal parsing with tuple accumulation to count characters.\n\n \n\nLimited by TypeScript's recursion depth (typically ~50 levels).",
+            "examples": [
+              {
+                "code": "type L1 = Str.Length<'hello'> // 5\ntype L2 = Str.Length<''> // 0\ntype L3 = Str.Length<'a'> // 1",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Type-Level Utilities\n\n \n\n\n\n $S - The string to measure\n\n \n\n\n\n $Acc - Accumulator tuple for counting (internal)",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "type-level",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 87
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "PadEnd",
+            "signature": {
+              "text": "type PadEnd<\n  $S extends string,\n  $TargetLen extends number,\n  $Fill extends string = '_',\n  $Acc extends 0[] = [],\n> = Length<$S> extends $TargetLen ? $S\n  : $Acc['length'] extends 50 // Recursion limit safety\n    ? $S\n    : PadEnd<`${$S}${$Fill}`, $TargetLen, $Fill, [...$Acc, 0]>",
+              "_tag": "TypeSignatureModel"
+            },
+            "description": "Pad a string to a target length by appending a fill character.\n\n \n\n \n\nIf the string is already at or exceeds the target length, returns it unchanged.\n\n \n\nLimited by TypeScript's recursion depth (~50 iterations).",
+            "examples": [
+              {
+                "code": "type P1 = Str.PadEnd<'foo', 10, '_'> // 'foo_______'\ntype P2 = Str.PadEnd<'hello', 3, '_'> // 'hello' (already longer)\ntype P3 = Str.PadEnd<'abc', 5, '0'> // 'abc00'",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Type-Level Utilities\n\n \n\n\n\n $S - The string to pad\n\n \n\n\n\n $TargetLen - The desired final length\n\n \n\n\n\n $Fill - The character to use for padding (default: '_')\n\n \n\n\n\n $Acc - Accumulator for recursion depth tracking (internal)",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "type-level",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 111
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "PadStart",
+            "signature": {
+              "text": "type PadStart<\n  $S extends string,\n  $TargetLen extends number,\n  $Fill extends string = '0',\n  $Acc extends 0[] = [],\n> = Length<$S> extends $TargetLen ? $S\n  : $Acc['length'] extends 50 // Recursion limit safety\n    ? $S\n    : PadStart<`${$Fill}${$S}`, $TargetLen, $Fill, [...$Acc, 0]>",
+              "_tag": "TypeSignatureModel"
+            },
+            "description": "Pad a string to a target length by prepending a fill character.\n\n \n\n \n\nIf the string is already at or exceeds the target length, returns it unchanged.\n\n \n\nLimited by TypeScript's recursion depth (~50 iterations).",
+            "examples": [
+              {
+                "code": "type P1 = Str.PadStart<'42', 5, '0'> // '00042'\ntype P2 = Str.PadStart<'hello', 3, '0'> // 'hello' (already longer)\ntype P3 = Str.PadStart<'x', 3, ' '> // '  x'",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Type-Level Utilities\n\n \n\n\n\n $S - The string to pad\n\n \n\n\n\n $TargetLen - The desired final length\n\n \n\n\n\n $Fill - The character to use for padding (default: '0')\n\n \n\n\n\n $Acc - Accumulator for recursion depth tracking (internal)",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "str"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "type-level",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 141
             },
             "_tag": "type",
             "type": "type-alias"
@@ -43930,6 +42661,299 @@
             }
           },
           {
+            "name": "SimpleSignature",
+            "signature": {
+              "text": "export * as SimpleSignature",
+              "_tag": "TypeSignatureModel"
+            },
+            "description": "Utilities for working with the \n\n__simpleSignature\n\n phantom type pattern.\n\n \n\n \n\nThis pattern allows functions with complex generic signatures to provide\n\n \n\na simpler signature for type inference in contexts like testing or documentation.\n\n \n\n \n\n\n\n SimpleSignature",
+            "examples": [],
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "ts"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "$$",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 14
+            },
+            "_tag": "value",
+            "type": "namespace",
+            "module": {
+              "location": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "utils",
+                    "ts"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "simple-signature",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "description": "Utilities for working with the \n\n__simpleSignature\n\n phantom type pattern.\n\n \n\n \n\nThis pattern allows functions with complex generic signatures to provide\n\n \n\na simpler signature for type inference in contexts like testing or documentation.\n\n \n\n \n\n\n\n SimpleSignature",
+              "exports": [
+                {
+                  "name": "symbol",
+                  "signature": {
+                    "type": "typeof symbol",
+                    "_tag": "ValueSignatureModel"
+                  },
+                  "description": "Utilities for working with the \n\n__simpleSignature\n\n phantom type pattern.\n\n \n\n \n\nThis pattern allows functions with complex generic signatures to provide\n\n \n\na simpler signature for type inference in contexts like testing or documentation.\n\n \n\n \n\n\n\n SimpleSignature",
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "ts"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "simple-signature",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 25
+                  },
+                  "_tag": "value",
+                  "type": "const"
+                },
+                {
+                  "name": "SimpleSignature",
+                  "signature": {
+                    "text": "interface SimpleSignature<\n  $Overloads extends readonly [(...args: any[]) => any, ...Array<(...args: any[]) => any>],\n> {\n  [symbol]: $Overloads[number]\n}",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "Helper interface for defining simple signatures with overloads.\n\n \n\n \n\nUse this to define multiple overload signatures in a type-safe way.\n\n \n\nThe type parameter accepts a tuple of function signatures.\n\n \n\n \n\n\n\n $Overloads - Tuple of function signature types",
+                  "examples": [
+                    {
+                      "code": "interface MyFunctionType extends SimpleSignature<[\n  (x: string) => number,\n  (x: number) => string,\n  (x: boolean) => boolean\n]> {\n  // Your complex generic signature\n  <T extends string | number | boolean>(x: T): ComplexType<T>\n}",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    },
+                    {
+                      "code": "// Single overload (most common case)\ninterface PartitionFn extends SimpleSignature<[\n  (obj: object, keys: string[]) => { picked: object; omitted: object }\n]> {\n  <T extends object, K extends keyof T>(\n    obj: T,\n    keys: K[]\n  ): { picked: Pick<T, K>; omitted: Omit<T, K> }\n}",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "ts"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "simple-signature",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 60
+                  },
+                  "_tag": "type",
+                  "type": "interface"
+                },
+                {
+                  "name": "GetSignature",
+                  "signature": {
+                    "text": "type GetSignature<$fn> = $fn extends { [symbol]: infer $sig } ? $sig : $fn",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "Extract the signature from a function, preferring \n\n__simpleSignature\n\n if available.\n\n \n\n \n\nIf the function has a \n\n__simpleSignature\n\n property, returns that type.\n\n \n\nOtherwise, returns the function's actual type unchanged.\n\n \n\n \n\n\n\n $fn - The function type to extract from",
+                  "examples": [
+                    {
+                      "code": "// Function without __simpleSignature\ntype Fn1 = (a: string, b: number) => boolean\ntype Result1 = GetSignature<Fn1>  // (a: string, b: number) => boolean\n\n// Function with __simpleSignature\ndeclare const partition: {\n  <T extends object, K extends keyof T>(obj: T, keys: K[]): { picked: Pick<T, K>; omitted: Omit<T, K> }\n  [__simpleSignature]: (obj: object, keys: string[]) => { picked: object; omitted: object }\n}\ntype Result2 = GetSignature<typeof partition>  // (obj: object, keys: string[]) => { picked: object; omitted: object }",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "ts"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "simple-signature",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 88
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "GetParameters",
+                  "signature": {
+                    "text": "type GetParameters<$fn> = GetSignature<$fn> extends (...args: any) => any ? Parameters<GetSignature<$fn>>\n  : never",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "Extract parameters from a function, using \n\n__simpleSignature\n\n if available.\n\n \n\n \n\n\n\n $fn - The function type to extract parameters from",
+                  "examples": [
+                    {
+                      "code": "type Params1 = GetParameters<(a: string, b: number) => void>  // [a: string, b: number]\n\n// With __simpleSignature\ndeclare const partition: {\n  <T extends object, K extends keyof T>(obj: T, keys: K[]): any\n  [__simpleSignature]: (obj: object, keys: string[]) => any\n}\ntype Params2 = GetParameters<typeof partition>  // [obj: object, keys: string[]]",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "ts"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "simple-signature",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 107
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "GetReturnType",
+                  "signature": {
+                    "text": "type GetReturnType<$fn> = GetSignature<$fn> extends (...args: any) => any ? ReturnType<GetSignature<$fn>>\n  : never",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "Extract return type from a function, using \n\n__simpleSignature\n\n if available.\n\n \n\n \n\n\n\n $fn - The function type to extract return type from",
+                  "examples": [
+                    {
+                      "code": "type Return1 = GetReturnType<(a: string) => number>  // number\n\n// With __simpleSignature\ndeclare const partition: {\n  <T extends object, K extends keyof T>(obj: T, keys: K[]): { picked: Pick<T, K>; omitted: Omit<T, K> }\n  [__simpleSignature]: (obj: object, keys: string[]) => { picked: object; omitted: object }\n}\ntype Return2 = GetReturnType<typeof partition>  // { picked: object; omitted: object }",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "ts"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "simple-signature",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 127
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "implement",
+                  "signature": {
+                    "overloads": [
+                      {
+                        "typeParameters": [
+                          {
+                            "name": "$Fn"
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "impl",
+                            "type": "GetSignature<$Fn>",
+                            "optional": false,
+                            "rest": false,
+                            "description": "Implementation function typed with the simple signature"
+                          }
+                        ],
+                        "returnType": "$Fn",
+                        "returnDoc": "The implementation cast to the full function type",
+                        "throws": []
+                      }
+                    ],
+                    "_tag": "FunctionSignatureModel"
+                  },
+                  "description": "Helper to implement a function with a simple signature for inference.\n\n \n\n \n\nThis allows you to write the implementation using the simple signature types\n\n \n\nwhile the returned function has the full complex signature.\n\n \n\n \n\n\n\n $Fn - The full function interface (with complex generics)",
+                  "examples": [
+                    {
+                      "code": "interface PartitionFn extends SimpleSignature<[\n  (obj: object, keys: string[]) => { picked: object; omitted: object }\n]> {\n  <T extends object, K extends keyof T>(\n    obj: T,\n    keys: K[]\n  ): { picked: Pick<T, K>; omitted: Omit<T, K> }\n}\n\nexport const partition = implement<PartitionFn>((obj, pickedKeys) => {\n  // Implementation typed with simple signature: object and string[]\n  return { picked: {}, omitted: { ...obj } }\n})",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "ts"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "simple-signature",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 157
+                  },
+                  "_tag": "value",
+                  "type": "function"
+                }
+              ]
+            }
+          },
+          {
             "name": "Test",
             "signature": {
               "text": "export * as Test",
@@ -43955,7 +42979,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 14
+              "line": 24
             },
             "_tag": "value",
             "type": "namespace",
@@ -44012,7 +43036,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 64
+                    "line": 65
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -44050,7 +43074,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 113
+                    "line": 114
                   },
                   "_tag": "value",
                   "type": "const"
@@ -44088,7 +43112,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 64
+                    "line": 65
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -45715,7 +44739,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 36
+                    "line": 39
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -45753,7 +44777,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 58
+                    "line": 61
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -45761,13 +44785,13 @@
                 {
                   "name": "StaticErrorAssertion",
                   "signature": {
-                    "text": "interface StaticErrorAssertion<\n  $Message extends string = string,\n  $Expected = unknown,\n  $Actual = unknown,\n  $Tip extends string = never,\n> {\n  MESSAGE: $Message\n  EXPECTED: $Expected\n  ACTUAL: $Actual\n  TIP: $Tip\n}",
+                    "text": "type StaticErrorAssertion<\n  $Message extends string = string,\n  $Expected = unknown,\n  $Actual = unknown,\n  $Tip extends string | readonly string[] = never,\n  $Meta extends Record<string, any> = {},\n> =\n  // Check if we have tips or metadata - if not, skip Simplify to avoid {} collapse\n  [keyof $Meta] extends [never]\n    ? [$Tip] extends [never]\n      ? {\n          [k in keyof { ERROR: $Message; expected: $Expected; actual: $Actual } as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:\n            { ERROR: $Message; expected: $Expected; actual: $Actual }[k]\n        }\n      : Simplify<{\n          [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & ([$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip })) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:\n            ({ ERROR: $Message; expected: $Expected; actual: $Actual } & ([$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip }))[k]\n        }>\n    : Simplify<{\n        [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta & ([$Tip] extends [never] ? {} : [$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip })) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:\n          ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta & ([$Tip] extends [never] ? {} : [$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip }))[k]\n      }>",
                     "_tag": "TypeSignatureModel"
                   },
-                  "description": "Represents a static assertion error at the type level, optimized for type testing.\n\n \n\n \n\nThis is a simpler, more focused error type compared to \n\nStaticError\n\n. It's specifically\n\n \n\ndesigned for type assertions where you need to communicate expected vs. actual types.\n\n \n\n \n\n\n\n $Message - A string literal type describing the assertion failure\n\n \n\n\n\n $Expected - The expected type\n\n \n\n\n\n $Actual - The actual type that was provided\n\n \n\n\n\n $Tip - Optional tip for resolving the error",
+                  "description": "Represents a static assertion error at the type level, optimized for type testing.\n\n \n\n \n\nThis is a simpler, more focused error type compared to \n\nStaticError\n\n. It's specifically\n\n \n\ndesigned for type assertions where you need to communicate expected vs. actual types.\n\n \n\n \n\nSupports three forms of tips:\n\n \n\n- Single string: \n\nStaticErrorAssertion<'msg', E, A, 'tip'>\n\n \n\n- Tuple of strings: \n\nStaticErrorAssertion<'msg', E, A, ['tip1', 'tip2']>\n\n \n\n- Metadata object: \n\nStaticErrorAssertion<'msg', E, A, never, { custom: 'data' }>\n\n \n\n \n\n\n\n $Message - A string literal type describing the assertion failure\n\n \n\n\n\n $Expected - The expected type\n\n \n\n\n\n $Actual - The actual type that was provided\n\n \n\n\n\n $Tip - Optional tip string or tuple of tip strings\n\n \n\n\n\n $Meta - Optional metadata object for additional context",
                   "examples": [
                     {
-                      "code": "// Using in parameter assertions\nfunction assertParameters<T extends readonly any[]>(\n  fn: Parameters<typeof fn> extends T ? typeof fn\n    : StaticErrorAssertion<\n      'Parameters mismatch',\n      T,\n      Parameters<typeof fn>\n    >\n): void {}\n\n// Error shows:\n// MESSAGE: 'Parameters mismatch'\n// EXPECTED: [string, number]\n// ACTUAL: [number, string]",
+                      "code": "// Simple error with message only\ntype E1 = StaticErrorAssertion<'Types mismatch', string, number>\n\n// With a single tip\ntype E2 = StaticErrorAssertion<'Types mismatch', string, number, 'Use String() to convert'>\n\n// With multiple tips\ntype E3 = StaticErrorAssertion<'Types mismatch', string, number, ['Tip 1', 'Tip 2']>\n\n// With metadata object\ntype E4 = StaticErrorAssertion<'Types mismatch', string, number, never, { operation: 'concat' }>",
                       "twoslashEnabled": true,
                       "language": "typescript"
                     }
@@ -45792,39 +44816,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 192
-                  },
-                  "_tag": "type",
-                  "type": "interface"
-                },
-                {
-                  "name": "_ExactError",
-                  "signature": {
-                    "text": "type _ExactError<\n  $Expected,\n  $Actual,\n  ___Relation = GetRelation<$Expected, $Actual>\n> =\n  ___Relation extends 'equivalent' ? StaticErrorAssertion<\n    'Types are mutually assignable but not structurally equal',\n    $Expected,\n    $Actual,\n    'Use equiv() for mutual assignability OR apply Simplify<T> to normalize types'\n  > :\n  ___Relation extends 'subtype' ? StaticErrorAssertion<\n    'Actual type is a subtype of expected type but not structurally equal',\n    $Expected,\n    $Actual,\n    'Actual is narrower than expected - types don\\'t match exactly'\n  > :\n  ___Relation extends 'supertype' ? StaticErrorAssertion<\n    'Actual type is a supertype of expected type but not structurally equal',\n    $Expected,\n    $Actual,\n    'Actual is wider than expected - types don\\'t match exactly'\n  > :\n  ___Relation extends 'overlapping' ? StaticErrorAssertion<\n    'Types have overlapping values but are not structurally equal',\n    $Expected,\n    $Actual,\n    'Types share some possible values but are different'\n  > :\n  ___Relation extends 'disjoint' ? StaticErrorAssertion<\n    'Types are completely disjoint (no common values)',\n    $Expected,\n    $Actual,\n    'These types have no overlap and will never be equal'\n  > :\n  never",
-                    "_tag": "TypeSignatureModel"
-                  },
-                  "description": "Internal utility for generating appropriate error messages when exact equality fails\n\n \n\ndue to types being equivalent but not structurally equal.\n\n \n\n \n\nIn the hybrid error approach, this is primarily used when GetRelation returns 'equivalent',\n\n \n\nproviding a helpful suggestion to use equiv() for mutual assignability or apply Simplify\n\n\n\n \n\nto normalize types. For other type mismatches, TypeScript's native error messages are\n\n \n\npreferred as they show specific structural differences in complex objects.",
-                  "examples": [],
-                  "tags": {},
-                  "sourceLocation": {
-                    "file": {
-                      "path": {
-                        "segments": [
-                          "src",
-                          "utils",
-                          "ts",
-                          "test"
-                        ],
-                        "_tag": "PathRelative"
-                      },
-                      "file": {
-                        "stem": "shared",
-                        "extension": ".ts",
-                        "_tag": "File"
-                      },
-                      "_tag": "LocRelFile"
-                    },
-                    "line": 55
+                    "line": 328
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -45858,7 +44850,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 27
+              "line": 37
             },
             "_tag": "value",
             "type": "namespace",
@@ -46285,6 +45277,48 @@
                   },
                   "_tag": "type",
                   "type": "type-alias"
+                },
+                {
+                  "name": "Is",
+                  "signature": {
+                    "text": "type Is<$Type> =\n  [$Type] extends [never]                   ? false :\n  [$Type] extends [ToIntersection<$Type>]   ? false :\n                                              true",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "Check if a type is a union type.\n\n \n\n \n\nReturns \n\ntrue\n\n if the type is a union with multiple members, \n\nfalse\n\n if it's\n\n \n\na single type or \n\nnever\n\n. This is useful for conditional type logic that needs\n\n \n\nto handle unions differently from single types.\n\n \n\n \n\nThe check works by:\n\n \n\n1. First checking if the type is \n\nnever\n\n (not a union)\n\n \n\n2. Then checking if converting the type to an intersection yields the same type\n\n \n\n   (single types remain unchanged when converted to intersection, unions do not)",
+                  "examples": [
+                    {
+                      "code": "// Union types return true\ntype T1 = Union.Is<string | number>              // true\ntype T2 = Union.Is<'a' | 'b' | 'c'>             // true\ntype T3 = Union.Is<{ a: 1 } | { b: 2 }>         // true\n\n// Single types return false\ntype T4 = Union.Is<string>                       // false\ntype T5 = Union.Is<number>                       // false\ntype T6 = Union.Is<{ a: string }>               // false\n\n// Special cases\ntype T7 = Union.Is<never>                        // false\ntype T8 = Union.Is<any>                          // false",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    },
+                    {
+                      "code": "// Conditional logic based on union detection\ntype ProcessType<T> = Union.Is<T> extends true\n  ? 'multiple options'\n  : 'single option'\n\ntype R1 = ProcessType<string | number>  // 'multiple options'\ntype R2 = ProcessType<string>           // 'single option'",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "ts"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "union",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 231
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
                 }
               ]
             }
@@ -46315,7 +45349,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 36
+              "line": 46
             },
             "_tag": "value",
             "type": "namespace",
@@ -46517,36 +45551,6 @@
                 "_tag": "LocRelFile"
               },
               "line": 13
-            },
-            "_tag": "type",
-            "type": "type-alias"
-          },
-          {
-            "name": "_PrintUnion",
-            "signature": {
-              "text": "type _PrintUnion<$Type extends ArrMut.AnyRO> =\n    $Type extends readonly [infer __first__, ...infer __rest__ extends ArrMut.Any1OrMoreRO]\n      ? `${Print<__first__>} | ${_PrintUnion<__rest__>}`\n      : $Type extends readonly [infer __first__]\n        ? `${Print<__first__>}`\n        : $Type extends ArrMut.EmptyRO\n          ? ''\n          : never",
-              "_tag": "TypeSignatureModel"
-            },
-            "examples": [],
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "utils",
-                    "ts"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "print",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 55
             },
             "_tag": "type",
             "type": "type-alias"
@@ -48019,7 +47023,7 @@
     }
   ],
   "metadata": {
-    "extractedAt": "2025-10-14T12:40:21.605Z",
+    "extractedAt": "2025-10-15T13:53:22.133Z",
     "extractorVersion": "0.1.0"
   }
 }

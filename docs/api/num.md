@@ -114,7 +114,7 @@ Add two numbers together.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
 
 ```typescript
-;((a: number) => (b: number) => number)
+(a: number) => (b: number) => number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L48" />
@@ -145,7 +145,7 @@ Takes the second number away from the first number.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`
 
 ```typescript
-;((a: number) => (b: number) => number)
+(a: number) => (b: number) => number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L88" />
@@ -176,7 +176,7 @@ This gives you the result of adding a number to itself b times.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
 
 ```typescript
-;((b: number) => (a: number) => number)
+(b: number) => (a: number) => number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L132" />
@@ -229,7 +229,7 @@ This is useful for splitting values into fixed portions.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `min`
 
 ```typescript
-<A extends number, B extends number>(a: A, b: B): Min<A, B>
+<A extends number, B extends number > (a: A, b: B): Min<A, B>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L853" />
@@ -248,7 +248,7 @@ Returns whichever number is less.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `minWith`
 
 ```typescript
-;((a: number) => (b: number) => number)
+(a: number) => (b: number) => number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L866" />
@@ -260,7 +260,7 @@ Useful for clamping or limiting values.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `max`
 
 ```typescript
-<A extends number, B extends number>(a: A, b: B): Max<A, B>
+<A extends number, B extends number > (a: A, b: B): Max<A, B>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L897" />
@@ -279,7 +279,7 @@ Returns whichever number is greater.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `maxWith`
 
 ```typescript
-;((a: number) => (b: number) => number)
+(a: number) => (b: number) => number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L910" />
@@ -378,7 +378,7 @@ For best results, use finite numbers to avoid NaN/Infinity.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerWith`
 
 ```typescript
-;((exponent: number) => (base: number) => number)
+(exponent: number) => (base: number) => number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L230" />
@@ -555,7 +555,7 @@ Also known as the greatest common factor (GCF).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `gcdWith`
 
 ```typescript
-;((a: Int) => (b: Int) => Natural)
+(a: Int) => (b: Int) => Natural
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L971" />
@@ -588,7 +588,7 @@ Returns 0 if either input is 0.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `lcmWith`
 
 ```typescript
-;((a: Int) => (b: Int) => Whole)
+(a: Int) => (b: Int) => Whole
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L1020" />
@@ -878,7 +878,7 @@ Rounding follows standard rules: 0.5 and above rounds up, below 0.5 rounds down.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `roundWith`
 
 ```typescript
-;((precision?: number | undefined) => (value: number) => number)
+(precision?: number | undefined) => (value: number) => number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L286" />
@@ -1101,7 +1101,7 @@ The result is in radians.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `atan2With`
 
 ```typescript
-;((y: Finite) => (x: Finite) => Radians)
+(y: Finite) => (x: Finite) => Radians
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L762" />
@@ -1142,10 +1142,14 @@ Handles special cases like NaN, which is never equal to itself.
 // @noErrors
 import { Num } from '@wollybeard/kit'
 
-Num.Eq.is(42, 42) // true
-Num.Eq.is(3.14, 3.14) // true
-Num.Eq.is(0, -0) // true (positive and negative zero are equal)
-Num.Eq.is(NaN, NaN) // false (NaN is never equal to itself)
+// [!code word:is:1]
+Num.Eq.is(42, 42)           // true
+// [!code word:is:1]
+Num.Eq.is(3.14, 3.14)       // true
+// [!code word:is:1]
+Num.Eq.is(0, -0)            // true (positive and negative zero are equal)
+// [!code word:is:1]
+Num.Eq.is(NaN, NaN)         // false (NaN is never equal to itself)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Type`
@@ -1168,10 +1172,14 @@ Provides type checking for number values using typeof.
 // @noErrors
 import { Num } from '@wollybeard/kit'
 
-Num.Type.is(42) // true
-Num.Type.is(3.14) // true
-Num.Type.is(NaN) // true (NaN is a number)
-Num.Type.is('42') // false
+// [!code word:is:1]
+Num.Type.is(42)            // true
+// [!code word:is:1]
+Num.Type.is(3.14)          // true
+// [!code word:is:1]
+Num.Type.is(NaN)           // true (NaN is a number)
+// [!code word:is:1]
+Num.Type.is('42')          // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Floor`
@@ -1398,7 +1406,7 @@ Modulo always returns a non-negative result.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mod`
 
 ```typescript
-<T extends number, U extends NonZero>(dividend: T, divisor: U): NonNegative
+<T extends number, U extends NonZero > (dividend: T, divisor: U): NonNegative
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L123" />

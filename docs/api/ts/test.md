@@ -13,9 +13,9 @@ exact
 )**: Use when types must be structurally identical
 
 ```ts
-exact<string, string> // ✓ Pass
-exact<1 | 2, 2 | 1> // ✓ Pass (union order doesn't affect structure)
-exact<string & {}, string> // ✗ Fail (different structure)
+exact<string, string>           // ✓ Pass
+exact<1 | 2, 2 | 1>             // ✓ Pass (union order doesn't affect structure)
+exact<string & {}, string>      // ✗ Fail (different structure)
 ```
 
 **Mutual Assignability (
@@ -25,9 +25,9 @@ equiv
 )**: Use for semantically equal types
 
 ```ts
-equiv<1 | 2, 2 | 1> // ✓ Pass (same computed type)
-equiv<string & {}, string> // ✓ Pass (both compute to string)
-equiv<string, number> // ✗ Fail (not mutually assignable)
+equiv<1 | 2, 2 | 1>             // ✓ Pass (same computed type)
+equiv<string & {}, string>      // ✓ Pass (both compute to string)
+equiv<string, number>           // ✗ Fail (not mutually assignable)
 ```
 
 **Subtype Checking (
@@ -37,9 +37,9 @@ sub
 )**: Use when actual must extend expected
 
 ```ts
-sub<string, 'hello'> // ✓ Pass ('hello' extends string)
-sub<object, { a: 1 }> // ✓ Pass (more specific extends less specific)
-sub<'hello', string> // ✗ Fail (string doesn't extend 'hello')
+sub<string, 'hello'>            // ✓ Pass ('hello' extends string)
+sub<object, { a: 1 }>           // ✓ Pass (more specific extends less specific)
+sub<'hello', string>            // ✗ Fail (string doesn't extend 'hello')
 ```
 
 **Excess Property Detection**: Add
@@ -49,7 +49,7 @@ NoExcess
 suffix to catch typos
 
 ```ts
-sub<Config>()({ id: true, extra: 1 }) // ✓ Pass (sub allows excess)
+sub<Config>()({ id: true, extra: 1 })         // ✓ Pass (sub allows excess)
 subNoExcess<Config>()({ id: true, extra: 1 }) // ✗ Fail (catches typo!)
 ```
 
@@ -60,9 +60,9 @@ Not
 )**: Assert types are NOT related
 
 ```ts
-Not.exact<string, number> // ✓ Pass (they're different)
-Not.sub<number, string> // ✓ Pass (string doesn't extend number)
-Not.promise<number> // ✓ Pass (number is not a Promise)
+Not.exact<string, number>       // ✓ Pass (they're different)
+Not.sub<number, string>         // ✓ Pass (string doesn't extend number)
+Not.promise<number>             // ✓ Pass (number is not a Promise)
 ```
 
 ## Configuration
@@ -101,23 +101,34 @@ Ts.Test.someFunction()
 
 ## Error Messages
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `StaticErrorAssertion`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StaticErrorAssertion`
 
 ```typescript
-interface StaticErrorAssertion<
+type StaticErrorAssertion<
   $Message extends string = string,
   $Expected = unknown,
   $Actual = unknown,
-  $Tip extends string = never,
-> {
-  MESSAGE: $Message
-  EXPECTED: $Expected
-  ACTUAL: $Actual
-  TIP: $Tip
-}
+  $Tip extends string | readonly string[] = never,
+  $Meta extends Record<string, any> = {},
+> =
+  // Check if we have tips or metadata - if not, skip Simplify to avoid {} collapse
+  [keyof $Meta] extends [never]
+  ? [$Tip] extends [never]
+  ? {
+    [k in keyof { ERROR: $Message; expected: $Expected; actual: $Actual } as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
+    { ERROR: $Message; expected: $Expected; actual: $Actual }[k]
+  }
+  : Simplify<{
+    [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & ([$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip })) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
+    ({ ERROR: $Message; expected: $Expected; actual: $Actual } & ([$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip }))[k]
+  }>
+  : Simplify<{
+    [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta & ([$Tip] extends [never] ? {} : [$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip })) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
+    ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta & ([$Tip] extends [never] ? {} : [$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip }))[k]
+  }>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/helpers.ts#L192" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/helpers.ts#L328" />
 
 Represents a static assertion error at the type level, optimized for type testing.
 
@@ -128,6 +139,20 @@ StaticError
 . It's specifically
 
 designed for type assertions where you need to communicate expected vs. actual types.
+
+Supports three forms of tips:
+
+- Single string:
+
+StaticErrorAssertion&lt;'msg', E, A, 'tip'&gt;
+
+- Tuple of strings:
+
+StaticErrorAssertion&lt;'msg', E, A, ['tip1', 'tip2']&gt;
+
+- Metadata object:
+
+StaticErrorAssertion&lt;'msg', E, A, never, { custom: 'data' }&gt;
 
 $Message
 
@@ -143,7 +168,11 @@ $Actual
 
 $Tip
 
-- Optional tip for resolving the error
+- Optional tip string or tuple of tip strings
+
+$Meta
+
+- Optional metadata object for additional context
 
 **Examples:**
 
@@ -151,20 +180,17 @@ $Tip
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-// Using in parameter assertions
-function assertParameters<T extends readonly any[]>(
-  fn: Parameters<typeof fn> extends T ? typeof fn
-    : StaticErrorAssertion<
-      'Parameters mismatch',
-      T,
-      Parameters<typeof fn>
-    >,
-): void {}
+// Simple error with message only
+type E1 = StaticErrorAssertion<'Types mismatch', string, number>
 
-// Error shows:
-// MESSAGE: 'Parameters mismatch'
-// EXPECTED: [string, number]
-// ACTUAL: [number, string]
+// With a single tip
+type E2 = StaticErrorAssertion<'Types mismatch', string, number, 'Use String() to convert'>
+
+// With multiple tips
+type E3 = StaticErrorAssertion<'Types mismatch', string, number, ['Tip 1', 'Tip 2']>
+
+// With metadata object
+type E4 = StaticErrorAssertion<'Types mismatch', string, number, never, { operation: 'concat' }>
 ```
 
 ## Other
@@ -175,7 +201,7 @@ function assertParameters<T extends readonly any[]>(
 type exact<$Expected, $Actual> = Apply<ExactKind, [$Expected, $Actual]>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/exact.ts#L64" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/exact.ts#L65" />
 
 Assert that two types are exactly equal (structurally).
 
@@ -206,11 +232,11 @@ messages show the specific structural differences.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.exact<string, string>, // ✓ Pass
-  Ts.Test.exact<string | number, string>, // ✗ Fail - TypeScript shows mismatch
-  Ts.Test.exact<{ a: 1 }, { a: 1 }>, // ✓ Pass
-  Ts.Test.exact<any, unknown>, // ✗ Fail - TypeScript shows mismatch
-  Ts.Test.exact<1 | 2, 2 | 1> // ✗ Fail with tip - types are equivalent but not structurally equal
+  Ts.Test.exact<string, string>,           // ✓ Pass
+  Ts.Test.exact<string | number, string>,  // ✗ Fail - TypeScript shows mismatch
+  Ts.Test.exact<{ a: 1 }, { a: 1 }>,       // ✓ Pass
+  Ts.Test.exact<any, unknown>,             // ✗ Fail - TypeScript shows mismatch
+  Ts.Test.exact<1 | 2, 2 | 1>              // ✗ Fail with tip - types are equivalent but not structurally equal
 >
 ```
 
@@ -220,7 +246,7 @@ type _ = Ts.Test.Cases<
 ConstAssertionFn<ExactKind>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/exact.ts#L113" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/exact.ts#L114" />
 
 Assert that a value exactly equals the expected type, using const to preserve literal types.
 
@@ -243,14 +269,19 @@ exact
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Without const - requires cast
+// [!code word:exact:1]
 Ts.Test.exact<{ a: 1 }>()({ a: 1 } as { a: 1 })
 
 // With const - no cast needed!
+// [!code word:exactConst:1]
 Ts.Test.exactConst<{ a: 1 }>()({ a: 1 })
 
 // Works with any literal type
+// [!code word:exactConst:1]
 Ts.Test.exactConst<'hello'>()('hello')
+// [!code word:exactConst:1]
 Ts.Test.exactConst<42>()(42)
+// [!code word:exactConst:1]
 Ts.Test.exactConst<true>()(true)
 ```
 
@@ -260,7 +291,7 @@ Ts.Test.exactConst<true>()(true)
 type exact<$Expected, $Actual> = Apply<ExactKind, [$Expected, $Actual]>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/exact.ts#L64" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/exact.ts#L65" />
 
 Assert that two types are exactly equal (structurally).
 
@@ -291,11 +322,11 @@ messages show the specific structural differences.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.exact<string, string>, // ✓ Pass
-  Ts.Test.exact<string | number, string>, // ✗ Fail - TypeScript shows mismatch
-  Ts.Test.exact<{ a: 1 }, { a: 1 }>, // ✓ Pass
-  Ts.Test.exact<any, unknown>, // ✗ Fail - TypeScript shows mismatch
-  Ts.Test.exact<1 | 2, 2 | 1> // ✗ Fail with tip - types are equivalent but not structurally equal
+  Ts.Test.exact<string, string>,           // ✓ Pass
+  Ts.Test.exact<string | number, string>,  // ✗ Fail - TypeScript shows mismatch
+  Ts.Test.exact<{ a: 1 }, { a: 1 }>,       // ✓ Pass
+  Ts.Test.exact<any, unknown>,             // ✗ Fail - TypeScript shows mismatch
+  Ts.Test.exact<1 | 2, 2 | 1>              // ✗ Fail with tip - types are equivalent but not structurally equal
 >
 ```
 
@@ -346,10 +377,10 @@ See module documentation for configuration example.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.equiv<string, string>, // ✓ Pass (or error if linting enabled - should use exact)
-  Ts.Test.equiv<1 | 2, 2 | 1>, // ✓ Pass (or error if linting enabled - should use exact)
+  Ts.Test.equiv<string, string>,      // ✓ Pass (or error if linting enabled - should use exact)
+  Ts.Test.equiv<1 | 2, 2 | 1>,        // ✓ Pass (or error if linting enabled - should use exact)
   Ts.Test.equiv<string & {}, string>, // ✓ Pass - both compute to string (exact would fail)
-  Ts.Test.equiv<string, number> // ✗ Fail - Type error
+  Ts.Test.equiv<string, number>       // ✗ Fail - Type error
 >
 ```
 
@@ -390,23 +421,23 @@ equiv
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Without const - requires cast for exact match
+// [!code word:equiv:1]
 Ts.Test.equiv<1 | 2>()(1 as 1 | 2)
 
 // With const - no cast needed
-Ts.Test.equivConst<1 | 2>()(1) // preserves literal 1
+// [!code word:equivConst:1]
+Ts.Test.equivConst<1 | 2>()(1)  // preserves literal 1
 
 // Useful for union types
 type Status = 'pending' | 'complete'
-Ts.Test.equivConst<Status>()('pending') // keeps 'pending' literal
+// [!code word:equivConst:1]
+Ts.Test.equivConst<Status>()('pending')  // keeps 'pending' literal
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `equivNoExcess`
 
 ```typescript
-type equivNoExcess<$Expected, $Actual> = Apply<
-  EquivNoExcessKind,
-  [$Expected, $Actual]
->
+type equivNoExcess<$Expected, $Actual> = Apply<EquivNoExcessKind, [$Expected, $Actual]>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/equiv.ts#L267" />
@@ -432,9 +463,9 @@ import { Ts } from '@wollybeard/kit/ts'
 type Config = { id: boolean; name?: string }
 
 type _ = Ts.Test.Cases<
-  Ts.Test.equivNoExcess<Config, { id: true }>, // ✓ Pass
+  Ts.Test.equivNoExcess<Config, { id: true }>,               // ✓ Pass
   Ts.Test.equivNoExcess<Config, { id: true; name: 'test' }>, // ✓ Pass - optional included
-  Ts.Test.equivNoExcess<Config, { id: true; extra: 1 }> // ✗ Fail - excess property
+  Ts.Test.equivNoExcess<Config, { id: true; extra: 1 }>,     // ✗ Fail - excess property
 >
 ```
 
@@ -485,20 +516,17 @@ See module documentation for configuration example.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.equiv<string, string>, // ✓ Pass (or error if linting enabled - should use exact)
-  Ts.Test.equiv<1 | 2, 2 | 1>, // ✓ Pass (or error if linting enabled - should use exact)
+  Ts.Test.equiv<string, string>,      // ✓ Pass (or error if linting enabled - should use exact)
+  Ts.Test.equiv<1 | 2, 2 | 1>,        // ✓ Pass (or error if linting enabled - should use exact)
   Ts.Test.equiv<string & {}, string>, // ✓ Pass - both compute to string (exact would fail)
-  Ts.Test.equiv<string, number> // ✗ Fail - Type error
+  Ts.Test.equiv<string, number>       // ✗ Fail - Type error
 >
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `equivNoExcessType`
 
 ```typescript
-type equivNoExcess<$Expected, $Actual> = Apply<
-  EquivNoExcessKind,
-  [$Expected, $Actual]
->
+type equivNoExcess<$Expected, $Actual> = Apply<EquivNoExcessKind, [$Expected, $Actual]>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/equiv.ts#L267" />
@@ -524,9 +552,9 @@ import { Ts } from '@wollybeard/kit/ts'
 type Config = { id: boolean; name?: string }
 
 type _ = Ts.Test.Cases<
-  Ts.Test.equivNoExcess<Config, { id: true }>, // ✓ Pass
+  Ts.Test.equivNoExcess<Config, { id: true }>,               // ✓ Pass
   Ts.Test.equivNoExcess<Config, { id: true; name: 'test' }>, // ✓ Pass - optional included
-  Ts.Test.equivNoExcess<Config, { id: true; extra: 1 }> // ✗ Fail - excess property
+  Ts.Test.equivNoExcess<Config, { id: true; extra: 1 }>,     // ✗ Fail - excess property
 >
 ```
 
@@ -565,10 +593,10 @@ instead.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.sub<string, 'hello'>, // ✓ Pass - 'hello' extends string
-  Ts.Test.sub<'hello', string>, // ✗ Fail - string doesn't extend 'hello'
-  Ts.Test.sub<{ a: 1 }, { a: 1; b: 2 }>, // ✓ Pass - more specific extends less specific
-  Ts.Test.sub<object, { a: 1 }> // ✓ Pass - { a: 1 } extends object
+  Ts.Test.sub<string, 'hello'>,           // ✓ Pass - 'hello' extends string
+  Ts.Test.sub<'hello', string>,           // ✗ Fail - string doesn't extend 'hello'
+  Ts.Test.sub<{ a: 1 }, { a: 1; b: 2 }>,  // ✓ Pass - more specific extends less specific
+  Ts.Test.sub<object, { a: 1 }>           // ✓ Pass - { a: 1 } extends object
 >
 ```
 
@@ -601,22 +629,19 @@ sub
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Without const - type may widen
-sub<string>()('hello') // 'hello' widens to string
+sub<string>()('hello')  // 'hello' widens to string
 
 // With const - preserves literal
-subConst<string>()('hello') // keeps 'hello' literal type
+subConst<string>()('hello')  // keeps 'hello' literal type
 
 // Useful for object literals
-subConst<{ a: number }>()({ a: 1 }) // preserves { readonly a: 1 }
+subConst<{ a: number }>()({ a: 1 })  // preserves { readonly a: 1 }
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `subNoExcess`
 
 ```typescript
-type subNoExcess<$Expected, $Actual> = Apply<
-  SubNoExcessKind,
-  [$Expected, $Actual]
->
+type subNoExcess<$Expected, $Actual> = Apply<SubNoExcessKind, [$Expected, $Actual]>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/sub.ts#L169" />
@@ -650,10 +675,10 @@ import { Ts } from '@wollybeard/kit/ts'
 type Config = { id: boolean; name?: string }
 
 type _ = Ts.Test.Cases<
-  Ts.Test.subNoExcess<Config, { id: true }>, // ✓ Pass
+  Ts.Test.subNoExcess<Config, { id: true }>,               // ✓ Pass
   Ts.Test.subNoExcess<Config, { id: true; name: 'test' }>, // ✓ Pass - optional included
-  Ts.Test.subNoExcess<Config, { id: true; $skip: true }>, // ✗ Fail - excess property
-  Ts.Test.subNoExcess<Config, { id: 'wrong' }> // ✗ Fail - wrong type
+  Ts.Test.subNoExcess<Config, { id: true; $skip: true }>,  // ✗ Fail - excess property
+  Ts.Test.subNoExcess<Config, { id: 'wrong' }>             // ✗ Fail - wrong type
 >
 ```
 
@@ -664,7 +689,7 @@ import { Ts } from '@wollybeard/kit/ts'
 // Compare with .sub (allows excess):
 type Q = { id: boolean }
 
-type T1 = Ts.Test.sub<Q, { id: true; extra: 1 }> // ✓ Pass (sub allows excess)
+type T1 = Ts.Test.sub<Q, { id: true; extra: 1 }>         // ✓ Pass (sub allows excess)
 type T2 = Ts.Test.subNoExcess<Q, { id: true; extra: 1 }> // ✗ Fail (subNoExcess rejects)
 ```
 
@@ -685,8 +710,8 @@ Assert that a type does NOT extend another type.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.subNot<number, string>, // ✓ Pass
-  Ts.Test.subNot<string, 'hello'> // ✗ Fail - 'hello' extends string
+  Ts.Test.subNot<number, string>,  // ✓ Pass
+  Ts.Test.subNot<string, 'hello'>  // ✗ Fail - 'hello' extends string
 >
 ```
 
@@ -725,20 +750,17 @@ instead.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.sub<string, 'hello'>, // ✓ Pass - 'hello' extends string
-  Ts.Test.sub<'hello', string>, // ✗ Fail - string doesn't extend 'hello'
-  Ts.Test.sub<{ a: 1 }, { a: 1; b: 2 }>, // ✓ Pass - more specific extends less specific
-  Ts.Test.sub<object, { a: 1 }> // ✓ Pass - { a: 1 } extends object
+  Ts.Test.sub<string, 'hello'>,           // ✓ Pass - 'hello' extends string
+  Ts.Test.sub<'hello', string>,           // ✗ Fail - string doesn't extend 'hello'
+  Ts.Test.sub<{ a: 1 }, { a: 1; b: 2 }>,  // ✓ Pass - more specific extends less specific
+  Ts.Test.sub<object, { a: 1 }>           // ✓ Pass - { a: 1 } extends object
 >
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `subNoExcessType`
 
 ```typescript
-type subNoExcess<$Expected, $Actual> = Apply<
-  SubNoExcessKind,
-  [$Expected, $Actual]
->
+type subNoExcess<$Expected, $Actual> = Apply<SubNoExcessKind, [$Expected, $Actual]>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/sub.ts#L169" />
@@ -772,10 +794,10 @@ import { Ts } from '@wollybeard/kit/ts'
 type Config = { id: boolean; name?: string }
 
 type _ = Ts.Test.Cases<
-  Ts.Test.subNoExcess<Config, { id: true }>, // ✓ Pass
+  Ts.Test.subNoExcess<Config, { id: true }>,               // ✓ Pass
   Ts.Test.subNoExcess<Config, { id: true; name: 'test' }>, // ✓ Pass - optional included
-  Ts.Test.subNoExcess<Config, { id: true; $skip: true }>, // ✗ Fail - excess property
-  Ts.Test.subNoExcess<Config, { id: 'wrong' }> // ✗ Fail - wrong type
+  Ts.Test.subNoExcess<Config, { id: true; $skip: true }>,  // ✗ Fail - excess property
+  Ts.Test.subNoExcess<Config, { id: 'wrong' }>             // ✗ Fail - wrong type
 >
 ```
 
@@ -786,7 +808,7 @@ import { Ts } from '@wollybeard/kit/ts'
 // Compare with .sub (allows excess):
 type Q = { id: boolean }
 
-type T1 = Ts.Test.sub<Q, { id: true; extra: 1 }> // ✓ Pass (sub allows excess)
+type T1 = Ts.Test.sub<Q, { id: true; extra: 1 }>         // ✓ Pass (sub allows excess)
 type T2 = Ts.Test.subNoExcess<Q, { id: true; extra: 1 }> // ✗ Fail (subNoExcess rejects)
 ```
 
@@ -807,8 +829,8 @@ Assert that a type does NOT extend another type.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.subNot<number, string>, // ✓ Pass
-  Ts.Test.subNot<string, 'hello'> // ✗ Fail - 'hello' extends string
+  Ts.Test.subNot<number, string>,  // ✓ Pass
+  Ts.Test.subNot<string, 'hello'>  // ✗ Fail - 'hello' extends string
 >
 ```
 
@@ -855,9 +877,9 @@ with reversed parameters for clarity.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.sup<object, { a: 1 }>, // ✓ Pass - { a: 1 } extends object (object is supertype)
-  Ts.Test.sup<{ a: 1 }, object>, // ✗ Fail - object doesn't extend { a: 1 }
-  Ts.Test.sup<string, 'hello'> // ✓ Pass - 'hello' extends string (string is supertype)
+  Ts.Test.sup<object, { a: 1 }>,  // ✓ Pass - { a: 1 } extends object (object is supertype)
+  Ts.Test.sup<{ a: 1 }, object>,  // ✗ Fail - object doesn't extend { a: 1 }
+  Ts.Test.sup<string, 'hello'>    // ✓ Pass - 'hello' extends string (string is supertype)
 >
 ```
 
@@ -904,9 +926,9 @@ with reversed parameters for clarity.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.sup<object, { a: 1 }>, // ✓ Pass - { a: 1 } extends object (object is supertype)
-  Ts.Test.sup<{ a: 1 }, object>, // ✗ Fail - object doesn't extend { a: 1 }
-  Ts.Test.sup<string, 'hello'> // ✓ Pass - 'hello' extends string (string is supertype)
+  Ts.Test.sup<object, { a: 1 }>,  // ✓ Pass - { a: 1 } extends object (object is supertype)
+  Ts.Test.sup<{ a: 1 }, object>,  // ✗ Fail - object doesn't extend { a: 1 }
+  Ts.Test.sup<string, 'hello'>    // ✓ Pass - 'hello' extends string (string is supertype)
 >
 ```
 
@@ -941,19 +963,16 @@ any
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.equalAny<any>, // ✓ Pass
-  Ts.Test.equalAny<unknown>, // ✗ Fail - Type error
-  Ts.Test.equalAny<string> // ✗ Fail - Type error
+  Ts.Test.equalAny<any>,      // ✓ Pass
+  Ts.Test.equalAny<unknown>,  // ✗ Fail - Type error
+  Ts.Test.equalAny<string>    // ✗ Fail - Type error
 >
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `equalEmptyObject`
 
 ```typescript
-type equalEmptyObject<$Actual extends object> = Apply<
-  EqualEmptyObjectKind,
-  [$Actual]
->
+type equalEmptyObject<$Actual extends object> = Apply<EqualEmptyObjectKind, [$Actual]>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/special-types.ts#L183" />
@@ -979,9 +998,9 @@ in TypeScript means "any non-nullish value", not an empty object.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.equalEmptyObject<Record<string, never>>, // ✓ Pass
-  Ts.Test.equalEmptyObject<{}>, // ✗ Fail - {} is not empty
-  Ts.Test.equalEmptyObject<{ a: 1 }> // ✗ Fail - has properties
+  Ts.Test.equalEmptyObject<Record<string, never>>,  // ✓ Pass
+  Ts.Test.equalEmptyObject<{}>,                      // ✗ Fail - {} is not empty
+  Ts.Test.equalEmptyObject<{ a: 1 }>                 // ✗ Fail - has properties
 >
 ```
 
@@ -1006,8 +1025,8 @@ never
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.equalNever<never>, // ✓ Pass
-  Ts.Test.equalNever<string> // ✗ Fail - Type error
+  Ts.Test.equalNever<never>,  // ✓ Pass
+  Ts.Test.equalNever<string>  // ✗ Fail - Type error
 >
 ```
 
@@ -1032,9 +1051,9 @@ unknown
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.equalUnknown<unknown>, // ✓ Pass
-  Ts.Test.equalUnknown<any>, // ✗ Fail - Type error
-  Ts.Test.equalUnknown<string> // ✗ Fail - Type error
+  Ts.Test.equalUnknown<unknown>,  // ✓ Pass
+  Ts.Test.equalUnknown<any>,      // ✗ Fail - Type error
+  Ts.Test.equalUnknown<string>    // ✗ Fail - Type error
 >
 ```
 
@@ -1069,19 +1088,16 @@ any
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.equalAny<any>, // ✓ Pass
-  Ts.Test.equalAny<unknown>, // ✗ Fail - Type error
-  Ts.Test.equalAny<string> // ✗ Fail - Type error
+  Ts.Test.equalAny<any>,      // ✓ Pass
+  Ts.Test.equalAny<unknown>,  // ✗ Fail - Type error
+  Ts.Test.equalAny<string>    // ✗ Fail - Type error
 >
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `equalEmptyObjectType`
 
 ```typescript
-type equalEmptyObject<$Actual extends object> = Apply<
-  EqualEmptyObjectKind,
-  [$Actual]
->
+type equalEmptyObject<$Actual extends object> = Apply<EqualEmptyObjectKind, [$Actual]>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/special-types.ts#L183" />
@@ -1107,9 +1123,9 @@ in TypeScript means "any non-nullish value", not an empty object.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.equalEmptyObject<Record<string, never>>, // ✓ Pass
-  Ts.Test.equalEmptyObject<{}>, // ✗ Fail - {} is not empty
-  Ts.Test.equalEmptyObject<{ a: 1 }> // ✗ Fail - has properties
+  Ts.Test.equalEmptyObject<Record<string, never>>,  // ✓ Pass
+  Ts.Test.equalEmptyObject<{}>,                      // ✗ Fail - {} is not empty
+  Ts.Test.equalEmptyObject<{ a: 1 }>                 // ✗ Fail - has properties
 >
 ```
 
@@ -1134,8 +1150,8 @@ never
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.equalNever<never>, // ✓ Pass
-  Ts.Test.equalNever<string> // ✗ Fail - Type error
+  Ts.Test.equalNever<never>,  // ✓ Pass
+  Ts.Test.equalNever<string>  // ✗ Fail - Type error
 >
 ```
 
@@ -1160,19 +1176,16 @@ unknown
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.equalUnknown<unknown>, // ✓ Pass
-  Ts.Test.equalUnknown<any>, // ✗ Fail - Type error
-  Ts.Test.equalUnknown<string> // ✗ Fail - Type error
+  Ts.Test.equalUnknown<unknown>,  // ✓ Pass
+  Ts.Test.equalUnknown<any>,      // ✗ Fail - Type error
+  Ts.Test.equalUnknown<string>    // ✗ Fail - Type error
 >
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `tuple`
 
 ```typescript
-type tuple<$Expected extends readonly any[], $Actual> = Apply<
-  TupleKind,
-  [$Expected, $Actual]
->
+type tuple<$Expected extends readonly any[], $Actual> = Apply<TupleKind, [$Expected, $Actual]>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/tuple.ts#L47" />
@@ -1186,19 +1199,16 @@ Assert that a type is a tuple with specific element types.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.tuple<[string, number], [string, number]>, // ✓ Pass
-  Ts.Test.tuple<[string, number], [number, string]>, // ✗ Fail - Type error
-  Ts.Test.tuple<[string], string> // ✗ Fail - Type error
+  Ts.Test.tuple<[string, number], [string, number]>,  // ✓ Pass
+  Ts.Test.tuple<[string, number], [number, string]>,  // ✗ Fail - Type error
+  Ts.Test.tuple<[string], string>                     // ✗ Fail - Type error
 >
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `tupleType`
 
 ```typescript
-type tuple<$Expected extends readonly any[], $Actual> = Apply<
-  TupleKind,
-  [$Expected, $Actual]
->
+type tuple<$Expected extends readonly any[], $Actual> = Apply<TupleKind, [$Expected, $Actual]>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/tuple.ts#L47" />
@@ -1212,9 +1222,9 @@ Assert that a type is a tuple with specific element types.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.tuple<[string, number], [string, number]>, // ✓ Pass
-  Ts.Test.tuple<[string, number], [number, string]>, // ✗ Fail - Type error
-  Ts.Test.tuple<[string], string> // ✗ Fail - Type error
+  Ts.Test.tuple<[string, number], [string, number]>,  // ✓ Pass
+  Ts.Test.tuple<[string, number], [number, string]>,  // ✗ Fail - Type error
+  Ts.Test.tuple<[string], string>                     // ✗ Fail - Type error
 >
 ```
 
@@ -1235,9 +1245,9 @@ Assert that a type is an array with specific element type.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.array<string, string[]>, // ✓ Pass
-  Ts.Test.array<number, string[]>, // ✗ Fail - Type error
-  Ts.Test.array<string, string> // ✗ Fail - Type error
+  Ts.Test.array<string, string[]>,  // ✓ Pass
+  Ts.Test.array<number, string[]>,  // ✗ Fail - Type error
+  Ts.Test.array<string, string>     // ✗ Fail - Type error
 >
 ```
 
@@ -1258,9 +1268,9 @@ Assert that a type is an array with specific element type.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.array<string, string[]>, // ✓ Pass
-  Ts.Test.array<number, string[]>, // ✗ Fail - Type error
-  Ts.Test.array<string, string> // ✗ Fail - Type error
+  Ts.Test.array<string, string[]>,  // ✓ Pass
+  Ts.Test.array<number, string[]>,  // ✗ Fail - Type error
+  Ts.Test.array<string, string>     // ✗ Fail - Type error
 >
 ```
 
@@ -1281,9 +1291,9 @@ Assert that a type is a Promise with specific element type.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.promise<number, Promise<number>>, // ✓ Pass
-  Ts.Test.promise<string, Promise<number>>, // ✗ Fail - Type error
-  Ts.Test.promise<number, number> // ✗ Fail - Type error
+  Ts.Test.promise<number, Promise<number>>,  // ✓ Pass
+  Ts.Test.promise<string, Promise<number>>,  // ✗ Fail - Type error
+  Ts.Test.promise<number, number>            // ✗ Fail - Type error
 >
 ```
 
@@ -1304,19 +1314,16 @@ Assert that a type is a Promise with specific element type.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Ts.Test.promise<number, Promise<number>>, // ✓ Pass
-  Ts.Test.promise<string, Promise<number>>, // ✗ Fail - Type error
-  Ts.Test.promise<number, number> // ✗ Fail - Type error
+  Ts.Test.promise<number, Promise<number>>,  // ✓ Pass
+  Ts.Test.promise<string, Promise<number>>,  // ✗ Fail - Type error
+  Ts.Test.promise<number, number>            // ✗ Fail - Type error
 >
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `parameters`
 
 ```typescript
-type parameters<
-  $Expected extends readonly any[],
-  $Actual extends readonly any[],
-> = Apply<
+type parameters<$Expected extends readonly any[], $Actual extends readonly any[]> = Apply<
   ParametersKind,
   [$Expected, $Actual]
 >
@@ -1338,22 +1345,17 @@ with assertion in one step.
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-function add(a: number, b: number): number {
-  return a + b
-}
+function add(a: number, b: number): number { return a + b }
 type _ = Ts.Test.Cases<
-  Ts.Test.parameters<[number, number], Parameters<typeof add>>, // ✓ Pass
-  Ts.Test.parameters<[string, string], Parameters<typeof add>> // ✗ Fail - Type error
+  Ts.Test.parameters<[number, number], Parameters<typeof add>>,  // ✓ Pass
+  Ts.Test.parameters<[string, string], Parameters<typeof add>>   // ✗ Fail - Type error
 >
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `parametersType`
 
 ```typescript
-type parameters<
-  $Expected extends readonly any[],
-  $Actual extends readonly any[],
-> = Apply<
+type parameters<$Expected extends readonly any[], $Actual extends readonly any[]> = Apply<
   ParametersKind,
   [$Expected, $Actual]
 >
@@ -1375,22 +1377,17 @@ with assertion in one step.
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-function add(a: number, b: number): number {
-  return a + b
-}
+function add(a: number, b: number): number { return a + b }
 type _ = Ts.Test.Cases<
-  Ts.Test.parameters<[number, number], Parameters<typeof add>>, // ✓ Pass
-  Ts.Test.parameters<[string, string], Parameters<typeof add>> // ✗ Fail - Type error
+  Ts.Test.parameters<[number, number], Parameters<typeof add>>,  // ✓ Pass
+  Ts.Test.parameters<[string, string], Parameters<typeof add>>   // ✗ Fail - Type error
 >
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `returns`
 
 ```typescript
-type returns<$Expected, $Actual> = Apply<
-  ReturnsAssertionKind,
-  [$Expected, $Actual]
->
+type returns<$Expected, $Actual> = Apply<ReturnsAssertionKind, [$Expected, $Actual]>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/returns.ts#L62" />
@@ -1409,22 +1406,17 @@ with assertion in one step.
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-function getUser() {
-  return { name: 'John', age: 30 }
-}
+function getUser() { return { name: 'John', age: 30 } }
 type _ = Ts.Test.Cases<
-  Ts.Test.returns<{ name: string; age: number }, ReturnType<typeof getUser>>, // ✓ Pass
-  Ts.Test.returns<{ name: string }, ReturnType<typeof getUser>> // ✗ Fail - Type error
+  Ts.Test.returns<{ name: string; age: number }, ReturnType<typeof getUser>>,  // ✓ Pass
+  Ts.Test.returns<{ name: string }, ReturnType<typeof getUser>>                // ✗ Fail - Type error
 >
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `returnsType`
 
 ```typescript
-type returns<$Expected, $Actual> = Apply<
-  ReturnsAssertionKind,
-  [$Expected, $Actual]
->
+type returns<$Expected, $Actual> = Apply<ReturnsAssertionKind, [$Expected, $Actual]>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/returns.ts#L62" />
@@ -1443,22 +1435,17 @@ with assertion in one step.
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-function getUser() {
-  return { name: 'John', age: 30 }
-}
+function getUser() { return { name: 'John', age: 30 } }
 type _ = Ts.Test.Cases<
-  Ts.Test.returns<{ name: string; age: number }, ReturnType<typeof getUser>>, // ✓ Pass
-  Ts.Test.returns<{ name: string }, ReturnType<typeof getUser>> // ✗ Fail - Type error
+  Ts.Test.returns<{ name: string; age: number }, ReturnType<typeof getUser>>,  // ✓ Pass
+  Ts.Test.returns<{ name: string }, ReturnType<typeof getUser>>                // ✗ Fail - Type error
 >
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `returnsPromise`
 
 ```typescript
-type returnsPromise<$Expected, $Actual> = Apply<
-  ReturnsPromiseAssertionKind,
-  [$Expected, $Actual]
->
+type returnsPromise<$Expected, $Actual> = Apply<ReturnsPromiseAssertionKind, [$Expected, $Actual]>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/returns-promise.ts#L62" />
@@ -1477,25 +1464,17 @@ with assertion in one step.
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-async function getUser() {
-  return { name: 'John', age: 30 }
-}
+async function getUser() { return { name: 'John', age: 30 } }
 type _ = Ts.Test.Cases<
-  Ts.Test.returnsPromise<
-    { name: string; age: number },
-    Awaited<ReturnType<typeof getUser>>
-  >, // ✓ Pass
-  Ts.Test.returnsPromise<{ name: string }, Awaited<ReturnType<typeof getUser>>> // ✗ Fail - Type error
+  Ts.Test.returnsPromise<{ name: string; age: number }, Awaited<ReturnType<typeof getUser>>>,  // ✓ Pass
+  Ts.Test.returnsPromise<{ name: string }, Awaited<ReturnType<typeof getUser>>>                // ✗ Fail - Type error
 >
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `returnsPromiseType`
 
 ```typescript
-type returnsPromise<$Expected, $Actual> = Apply<
-  ReturnsPromiseAssertionKind,
-  [$Expected, $Actual]
->
+type returnsPromise<$Expected, $Actual> = Apply<ReturnsPromiseAssertionKind, [$Expected, $Actual]>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/returns-promise.ts#L62" />
@@ -1514,15 +1493,10 @@ with assertion in one step.
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-async function getUser() {
-  return { name: 'John', age: 30 }
-}
+async function getUser() { return { name: 'John', age: 30 } }
 type _ = Ts.Test.Cases<
-  Ts.Test.returnsPromise<
-    { name: string; age: number },
-    Awaited<ReturnType<typeof getUser>>
-  >, // ✓ Pass
-  Ts.Test.returnsPromise<{ name: string }, Awaited<ReturnType<typeof getUser>>> // ✗ Fail - Type error
+  Ts.Test.returnsPromise<{ name: string; age: number }, Awaited<ReturnType<typeof getUser>>>,  // ✓ Pass
+  Ts.Test.returnsPromise<{ name: string }, Awaited<ReturnType<typeof getUser>>>                // ✗ Fail - Type error
 >
 ```
 
@@ -1554,9 +1528,9 @@ import { Ts } from '@wollybeard/kit/ts'
 type User = { name: string; count: number & {} }
 
 type _ = Ts.Test.Cases<
-  Ts.Test.propertiesEquiv<{ name: string }, User>, // ✓ Pass
-  Ts.Test.propertiesEquiv<{ count: number }, User>, // ✓ Pass - number & {} equiv to number
-  Ts.Test.propertiesEquiv<{ name: number }, User> // ✗ Fail - not equivalent
+  Ts.Test.propertiesEquiv<{ name: string }, User>,     // ✓ Pass
+  Ts.Test.propertiesEquiv<{ count: number }, User>,    // ✓ Pass - number & {} equiv to number
+  Ts.Test.propertiesEquiv<{ name: number }, User>      // ✗ Fail - not equivalent
 >
 ```
 
@@ -1590,9 +1564,9 @@ import { Ts } from '@wollybeard/kit/ts'
 type User = { name: string; age: number; role: 'admin' | 'user' }
 
 type _ = Ts.Test.Cases<
-  Ts.Test.propertiesExact<{ name: string }, User>, // ✓ Pass
-  Ts.Test.propertiesExact<{ role: 'admin' | 'user' }, User>, // ✓ Pass
-  Ts.Test.propertiesExact<{ role: 'admin' }, User> // ✗ Fail - not exact
+  Ts.Test.propertiesExact<{ name: string }, User>,             // ✓ Pass
+  Ts.Test.propertiesExact<{ role: 'admin' | 'user' }, User>,   // ✓ Pass
+  Ts.Test.propertiesExact<{ role: 'admin' }, User>             // ✗ Fail - not exact
 >
 ```
 
@@ -1626,9 +1600,9 @@ import { Ts } from '@wollybeard/kit/ts'
 type User = { name: string; age: number; email?: string }
 
 type _ = Ts.Test.Cases<
-  Ts.Test.propertiesSub<{ name: string }, User>, // ✓ Pass
+  Ts.Test.propertiesSub<{ name: string }, User>,              // ✓ Pass
   Ts.Test.propertiesSub<{ name: string; age: number }, User>, // ✓ Pass
-  Ts.Test.propertiesSub<{ name: number }, User> // ✗ Fail - wrong type
+  Ts.Test.propertiesSub<{ name: number }, User>               // ✗ Fail - wrong type
 >
 ```
 
@@ -1660,9 +1634,9 @@ import { Ts } from '@wollybeard/kit/ts'
 type User = { name: string; count: number & {} }
 
 type _ = Ts.Test.Cases<
-  Ts.Test.propertiesEquiv<{ name: string }, User>, // ✓ Pass
-  Ts.Test.propertiesEquiv<{ count: number }, User>, // ✓ Pass - number & {} equiv to number
-  Ts.Test.propertiesEquiv<{ name: number }, User> // ✗ Fail - not equivalent
+  Ts.Test.propertiesEquiv<{ name: string }, User>,     // ✓ Pass
+  Ts.Test.propertiesEquiv<{ count: number }, User>,    // ✓ Pass - number & {} equiv to number
+  Ts.Test.propertiesEquiv<{ name: number }, User>      // ✗ Fail - not equivalent
 >
 ```
 
@@ -1696,9 +1670,9 @@ import { Ts } from '@wollybeard/kit/ts'
 type User = { name: string; age: number; role: 'admin' | 'user' }
 
 type _ = Ts.Test.Cases<
-  Ts.Test.propertiesExact<{ name: string }, User>, // ✓ Pass
-  Ts.Test.propertiesExact<{ role: 'admin' | 'user' }, User>, // ✓ Pass
-  Ts.Test.propertiesExact<{ role: 'admin' }, User> // ✗ Fail - not exact
+  Ts.Test.propertiesExact<{ name: string }, User>,             // ✓ Pass
+  Ts.Test.propertiesExact<{ role: 'admin' | 'user' }, User>,   // ✓ Pass
+  Ts.Test.propertiesExact<{ role: 'admin' }, User>             // ✗ Fail - not exact
 >
 ```
 
@@ -1732,9 +1706,9 @@ import { Ts } from '@wollybeard/kit/ts'
 type User = { name: string; age: number; email?: string }
 
 type _ = Ts.Test.Cases<
-  Ts.Test.propertiesSub<{ name: string }, User>, // ✓ Pass
+  Ts.Test.propertiesSub<{ name: string }, User>,              // ✓ Pass
   Ts.Test.propertiesSub<{ name: string; age: number }, User>, // ✓ Pass
-  Ts.Test.propertiesSub<{ name: number }, User> // ✗ Fail - wrong type
+  Ts.Test.propertiesSub<{ name: number }, User>               // ✗ Fail - wrong type
 >
 ```
 
@@ -1744,7 +1718,7 @@ type _ = Ts.Test.Cases<
 type Case<$Result extends never> = $Result
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/helpers.ts#L36" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/helpers.ts#L39" />
 
 Type-level test assertion that requires the result to be never (no error).
 
@@ -1757,8 +1731,8 @@ Used in type-level test suites to ensure a type evaluates to never (success).
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type MyTests = [
-  Ts.Test.Case<Equal<string, string>>, // OK - evaluates to never (success)
-  Ts.Test.Case<Equal<string, number>>, // Error - doesn't extend never (returns error)
+  Ts.Test.Case<Equal<string, string>>,  // OK - evaluates to never (success)
+  Ts.Test.Case<Equal<string, number>>,  // Error - doesn't extend never (returns error)
 ]
 ```
 
@@ -1869,7 +1843,7 @@ type Cases<
 > = true
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/helpers.ts#L58" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/helpers.ts#L61" />
 
 Type-level batch assertion helper that accepts multiple assertions.
 
@@ -1882,69 +1856,15 @@ Each type parameter must extend never (no error), allowing batch type assertions
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Test.Cases<
-  Equal<string, string>, // ✓ Pass (returns never)
-  Extends<string, 'hello'>, // ✓ Pass (returns never)
-  Never<never> // ✓ Pass (returns never)
+  Equal<string, string>,     // ✓ Pass (returns never)
+  Extends<string, 'hello'>,  // ✓ Pass (returns never)
+  Never<never>               // ✓ Pass (returns never)
 >
 
 // Type error if any assertion fails
 type _ = Ts.Test.Cases<
-  Equal<string, string>, // ✓ Pass (returns never)
-  Equal<string, number>, // ✗ Fail - Type error here (returns StaticErrorAssertion)
-  Extends<string, 'hello'> // ✓ Pass (returns never)
+  Equal<string, string>,     // ✓ Pass (returns never)
+  Equal<string, number>,     // ✗ Fail - Type error here (returns StaticErrorAssertion)
+  Extends<string, 'hello'>   // ✓ Pass (returns never)
 >
 ```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `_ExactError`
-
-```typescript
-type _ExactError<
-  $Expected,
-  $Actual,
-  ___Relation = GetRelation<$Expected, $Actual>,
-> = ___Relation extends 'equivalent' ? StaticErrorAssertion<
-    'Types are mutually assignable but not structurally equal',
-    $Expected,
-    $Actual,
-    'Use equiv() for mutual assignability OR apply Simplify<T> to normalize types'
-  >
-  : ___Relation extends 'subtype' ? StaticErrorAssertion<
-      'Actual type is a subtype of expected type but not structurally equal',
-      $Expected,
-      $Actual,
-      "Actual is narrower than expected - types don't match exactly"
-    >
-  : ___Relation extends 'supertype' ? StaticErrorAssertion<
-      'Actual type is a supertype of expected type but not structurally equal',
-      $Expected,
-      $Actual,
-      "Actual is wider than expected - types don't match exactly"
-    >
-  : ___Relation extends 'overlapping' ? StaticErrorAssertion<
-      'Types have overlapping values but are not structurally equal',
-      $Expected,
-      $Actual,
-      'Types share some possible values but are different'
-    >
-  : ___Relation extends 'disjoint' ? StaticErrorAssertion<
-      'Types are completely disjoint (no common values)',
-      $Expected,
-      $Actual,
-      'These types have no overlap and will never be equal'
-    >
-  : never
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/shared.ts#L55" />
-
-Internal utility for generating appropriate error messages when exact equality fails
-
-due to types being equivalent but not structurally equal.
-
-In the hybrid error approach, this is primarily used when GetRelation returns 'equivalent',
-
-providing a helpful suggestion to use equiv() for mutual assignability or apply Simplify
-
-to normalize types. For other type mismatches, TypeScript's native error messages are
-
-preferred as they show specific structural differences in complex objects.

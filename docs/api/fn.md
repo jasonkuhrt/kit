@@ -24,22 +24,6 @@ import * as Fn from '@wollybeard/kit/fn'
 
 ## Basic Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `noop`
-
-```typescript
-(): void
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L183" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `$identityPartial`
-
-```typescript
-<value>(value: PartialDeep<value>): value
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L188" />
-
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `constant`
 
 ```typescript
@@ -47,6 +31,22 @@ import * as Fn from '@wollybeard/kit/fn'
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/constant.ts#L4" />
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `noop`
+
+```typescript
+(): void
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L183" />
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `$identityPartial`
+
+```typescript
+<value>(value: PartialDeep<value>): value
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L188" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `identity`
 
@@ -62,17 +62,17 @@ import * as Fn from '@wollybeard/kit/fn'
 
 ```typescript
 <value>(value: value): value
-<value, f1 extends (value: value) => any>(value: value, f1: f1): ReturnType<f1>
-<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any>(value: value, f1: f1, f2: f2): ReturnType<f2>
-<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any>(value: value, f1: f1, f2: f2, f3: f3): ReturnType<f3>
-<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any>(value: value, f1: f1, f2: f2, f3: f3, f4: f4): ReturnType<f4>
-<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any>(value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5): ReturnType<f5>
-<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any>(value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6): ReturnType<f6>
-<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any, f7 extends (value: ReturnType<f6>) => any>(value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6, f7: f7): ReturnType<f7>
-<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any, f7 extends (value: ReturnType<f6>) => any, f8 extends (value: ReturnType<f7>) => any>(value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6, f7: f7, f8: f8): ReturnType<f8>
-<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any, f7 extends (value: ReturnType<f6>) => any, f8 extends (value: ReturnType<f7>) => any, f9 extends (value: ReturnType<f8>) => any>(value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6, f7: f7, f8: f8, f9: f9): ReturnType<f9>
-<value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any, f7 extends (value: ReturnType<f6>) => any, f8 extends (value: ReturnType<f7>) => any, f9 extends (value: ReturnType<f8>) => any, f10 extends (value: ReturnType<f9>) => any>(value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6, f7: f7, f8: f8, f9: f9, f10: f10): ReturnType<f10>
-(value: any, ...fns?: (value: any) => any)[]): any
+  <value, f1 extends (value: value) => any>(value: value, f1: f1): ReturnType < f1 >
+    <value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any > (value: value, f1: f1, f2: f2): ReturnType < f2 >
+      <value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any > (value: value, f1: f1, f2: f2, f3: f3): ReturnType < f3 >
+        <value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any > (value: value, f1: f1, f2: f2, f3: f3, f4: f4): ReturnType < f4 >
+          <value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any > (value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5): ReturnType < f5 >
+            <value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any > (value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6): ReturnType < f6 >
+              <value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any, f7 extends (value: ReturnType<f6>) => any > (value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6, f7: f7): ReturnType < f7 >
+                <value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any, f7 extends (value: ReturnType<f6>) => any, f8 extends (value: ReturnType<f7>) => any > (value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6, f7: f7, f8: f8): ReturnType < f8 >
+                  <value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any, f7 extends (value: ReturnType<f6>) => any, f8 extends (value: ReturnType<f7>) => any, f9 extends (value: ReturnType<f8>) => any > (value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6, f7: f7, f8: f8, f9: f9): ReturnType < f9 >
+                    <value, f1 extends (value: value) => any, f2 extends (value: ReturnType<f1>) => any, f3 extends (value: ReturnType<f2>) => any, f4 extends (value: ReturnType<f3>) => any, f5 extends (value: ReturnType<f4>) => any, f6 extends (value: ReturnType<f5>) => any, f7 extends (value: ReturnType<f6>) => any, f8 extends (value: ReturnType<f7>) => any, f9 extends (value: ReturnType<f8>) => any, f10 extends (value: ReturnType<f9>) => any > (value: value, f1: f1, f2: f2, f3: f3, f4: f4, f5: f5, f6: f6, f7: f7, f8: f8, f9: f9, f10: f10): ReturnType<f10>
+                      (value: any, ...fns ?: (value: any) => any)[]): any
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/pipe.ts#L26" />
@@ -93,9 +93,12 @@ import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 const add1 = (x: number) => x + 1
 const double = (x: number) => x * 2
+// [!code word:toString:1]
 const toString = (x: number) => x.toString()
 
+// [!code word:pipe:1]
 Fn.pipe(5, add1, double) // 12
+// [!code word:pipe:1]
 Fn.pipe(5, add1, double, toString) // "12"
 ```
 
@@ -104,18 +107,18 @@ Fn.pipe(5, add1, double, toString) // "12"
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `bind`
 
 ```typescript
-<fn extends AnyAny>(fn: AnyAnyParametersMin1 extends fn ? fn : { Error: "Given function must have at least one parameter"; }, arg: Parameters<fn>[0]): bind<fn>
+<fn extends AnyAny>(fn: AnyAnyParametersMin1 extends fn ? fn : { Error: "Given function must have at least one parameter"; }, arg: Parameters < fn > [0]): bind<fn>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L160" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L160" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `applySecond`
 
 ```typescript
-<fn extends (...args: any[]) => (arg: any) => any, arg>(fn: fn, arg: arg): applySecond<fn, arg>
+<fn extends (...args: any[]) => (arg: any) => any, arg > (fn: fn, arg: arg): applySecond<fn, arg>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L199" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L199" />
 
 Apply the second parameter of a curried function.
 
@@ -135,7 +138,7 @@ Useful for creating service interfaces from curried operations.
 <fn extends AnyAny>(fn: AnyAnyParametersMin1 extends fn ? fn : { Error: "Given function must have at least one parameter"; }): curry<fn>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/curry.ts#L12" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/curry.ts#L12" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `uncurry`
 
@@ -143,7 +146,7 @@ Useful for creating service interfaces from curried operations.
 <fn extends AnyAny2Curried>(fn: fn): uncurry<fn>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/curry.ts#L66" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/curry.ts#L66" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `flipCurried`
 
@@ -151,7 +154,7 @@ Useful for creating service interfaces from curried operations.
 <fn extends AnyAny2Curried>(fn: fn): flipCurried<fn>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/curry.ts#L84" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/curry.ts#L84" />
 
 ## Endomorphisms
 
@@ -183,15 +186,19 @@ import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 // Builder pattern
 type BuilderOp = Fn.endo<StringBuilder>
+// [!code word:append:1]
 const addText: BuilderOp = sb => sb.append('text')
 
 // Transformations
 type StringTransform = Fn.endo<string>
+// [!code word:toUpperCase:1]
 const uppercase: StringTransform = s => s.toUpperCase()
+// [!code word:trim:1]
 const trim: StringTransform = s => s.trim()
 
 // Chainable operations
 type ChainOp = Fn.endo<ChainableAPI>
+// [!code word:setOption:1]
 const configure: ChainOp = api => api.setOption('key', 'value')
 ```
 
@@ -200,10 +207,7 @@ const configure: ChainOp = api => api.setOption('key', 'value')
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Parameter`
 
 ```typescript
-type Parameter = { type: 'name'; value: string } | {
-  type: 'destructured'
-  names: string[]
-}
+type Parameter = { type: 'name'; value: string } | { type: 'destructured'; names: string[] }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/analyze.ts#L6" />
@@ -247,6 +251,7 @@ common indentation stripped away for clean display in its isolated form.
 import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 const fn = (a, { b, c }) => a + b + c
+// [!code word:analyzeFunction:1]
 const info = Fn.analyzeFunction(fn)
 // info.parameters: [{ type: 'name', value: 'a' }, { type: 'destructured', names: ['b', 'c'] }]
 // info.body: "a + b + c" (already trimmed and dedented)
@@ -278,8 +283,11 @@ const unary = (x: number) => x * 2
 const binary = (a: number, b: number) => a + b
 const nullary = () => 42
 
-Fn.isUnary(unary) // true
-Fn.isUnary(binary) // false
+// [!code word:isUnary:1]
+Fn.isUnary(unary)   // true
+// [!code word:isUnary:1]
+Fn.isUnary(binary)  // false
+// [!code word:isUnary:1]
 Fn.isUnary(nullary) // false
 ```
 
@@ -321,7 +329,7 @@ Type guard to check if a value is a hole.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `partial`
 
 ```typescript
-<$Fn extends Fn.AnyAny, $Args extends readonly unknown[]>(fn: $Fn, ...args?: $Args): any
+<$Fn extends Fn.AnyAny, $Args extends readonly unknown[] > (fn: $Fn, ...args ?: $Args): any
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/partial/runtime.ts#L55" />
@@ -345,26 +353,26 @@ import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 // Basic usage
 const add = (a: number, b: number) => a + b
+// [!code word:partial:1]
 const addOne = Fn.partial(add, _, 1)
 addOne(5) // 6
 
 // Multiple holes
 const greet = (greeting: string, name: string, punctuation: string) =>
   `${greeting}, ${name}${punctuation}`
+// [!code word:partial:1]
 const casualGreet = Fn.partial(greet, 'Hey', _, '!')
 casualGreet('Alice') // 'Hey, Alice!'
 
 // All arguments provided - executes immediately
+// [!code word:partial:1]
 const result = Fn.partial(add, 1, 2) // 3
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `apply`
 
 ```typescript
-;(<$Fn extends Fn.AnyAny, const $Args extends readonly unknown[]>(
-  fn: $Fn,
-  ...args: $Args
-) => any)
+<$Fn extends Fn.AnyAny, const $Args extends readonly unknown[]>(fn: $Fn, ...args: $Args) => any
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/partial/runtime.ts#L97" />
@@ -384,6 +392,7 @@ with a more explicit name.
 import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 const multiply = (a: number, b: number, c: number) => a * b * c
+// [!code word:apply:1]
 const double = Fn.apply(multiply, 2, _, 1)
 double(5) // 10
 ```
@@ -391,7 +400,7 @@ double(5) // 10
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `defer`
 
 ```typescript
-<$Fn extends Fn.AnyAny>(fn: $Fn, ...args?: Parameters<$Fn>): () => ReturnType<$Fn>
+<$Fn extends Fn.AnyAny>(fn: $Fn, ...args ?: Parameters<$Fn>): () => ReturnType<$Fn>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/partial/runtime.ts#L118" />
@@ -407,10 +416,12 @@ Useful for creating thunks or delayed evaluations.
 import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 const expensiveComputation = (a: number, b: number) => {
+// [!code word:log:1]
   console.log('Computing...')
   return a * b
 }
 
+// [!code word:defer:1]
 const deferred = Fn.defer(expensiveComputation, 5, 10)
 // Nothing logged yet
 
@@ -438,7 +449,7 @@ Check if a value is potentially a partially applicable argument
 TypeGuard<AnyAny>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L33" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L33" />
 
 ## Type Utilities
 
@@ -448,7 +459,7 @@ TypeGuard<AnyAny>
 type AnyAny = (...args: any[]) => any
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L8" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L8" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAnyParameters2`
 
@@ -456,7 +467,7 @@ type AnyAny = (...args: any[]) => any
 type AnyAnyParameters2 = (arg1: any, arg2: any) => any
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L13" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L13" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAnyParametersMin1`
 
@@ -464,7 +475,7 @@ type AnyAnyParameters2 = (arg1: any, arg2: any) => any
 type AnyAnyParametersMin1 = (...args: [any, ...any[]]) => any
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L18" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L18" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAnyParametersMin2`
 
@@ -472,7 +483,7 @@ type AnyAnyParametersMin1 = (...args: [any, ...any[]]) => any
 type AnyAnyParametersMin2 = (...args: [any, any, ...any[]]) => any
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L23" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L23" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAnyParametersMin3`
 
@@ -480,7 +491,7 @@ type AnyAnyParametersMin2 = (...args: [any, any, ...any[]]) => any
 type AnyAnyParametersMin3 = (...args: [any, any, any, ...any[]]) => any
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L28" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L28" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAnyAsync`
 
@@ -488,7 +499,7 @@ type AnyAnyParametersMin3 = (...args: [any, any, any, ...any[]]) => any
 type AnyAnyAsync = (...args: any[]) => Prom.AnyAny
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L38" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L38" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GuardedType`
 
@@ -496,7 +507,7 @@ type AnyAnyAsync = (...args: any[]) => Prom.AnyAny
 type GuardedType<$T> = $T extends (x: any) => x is infer __u__ ? __u__ : never
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L50" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L50" />
 
 Extract the guarded type from a type guard function.
 
@@ -507,22 +518,22 @@ Extract the guarded type from a type guard function.
 import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 const isString = (x: any): x is string => typeof x === 'string'
-type T = GuardedType<typeof isString> // string
+type T = GuardedType<typeof isString>  // string
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ReturnExtract`
 
 ```typescript
-type ReturnExtract<$Type, $Fn extends AnyAny> = $Fn extends
-  (...args: infer __args__) => infer __return__ ? (
-    ...args: __args__
-  ) => __return__ extends Prom.AnyAny
+type ReturnExtract<$Type, $Fn extends AnyAny> =
+  $Fn extends (...args: infer __args__) => infer __return__
+  ? (...args: __args__) =>
+    __return__ extends Prom.AnyAny
     ? Promise<Extract<Awaited<__return__>, $Type>>
     : Extract<__return__, $Type>
   : never
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L73" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L73" />
 
 Modify function such that it only returns the given type.
 
@@ -540,36 +551,38 @@ import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 // Sync function
 type Fn1 = (x: number) => string | number
-type Result1 = ReturnExtract<string, Fn1> // (x: number) => string
+type Result1 = ReturnExtract<string, Fn1>  // (x: number) => string
 
 // Async function - automatically unwraps and rewraps Promise
 type Fn2 = (x: number) => Promise<string | number>
-type Result2 = ReturnExtract<string, Fn2> // (x: number) => Promise<string>
+type Result2 = ReturnExtract<string, Fn2>  // (x: number) => Promise<string>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ReturnReplace`
 
 ```typescript
-type ReturnReplace<$Fn extends AnyAny, $Type> = $Fn extends
-  (...args: infer __args__) => infer __return__ ? (...args: __args__) => $Type
+type ReturnReplace<$Fn extends AnyAny, $Type> =
+  $Fn extends (...args: infer __args__) => infer __return__
+  ? (...args: __args__) => $Type
   : never
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L85" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L85" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ReturnExclude`
 
 ```typescript
-type ReturnExclude<$Type, $Fn extends AnyAny> = $Fn extends
-  (...args: infer __args__) => infer __return__ ? (
-    ...args: __args__
-  ) => __return__ extends Prom.AnyAny
+type ReturnExclude<$Type, $Fn extends AnyAny> =
+  $Fn extends (...args: infer __args__) => infer __return__
+  ? (...args: __args__) => (
+    __return__ extends Prom.AnyAny
     ? Promise<Exclude<Awaited<__return__>, $Type>>
     : Exclude<__return__, $Type>
+  )
   : never
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L111" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L111" />
 
 Modify function such that it does not return the given type.
 
@@ -587,11 +600,11 @@ import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 // Sync function
 type Fn1 = (x: number) => string | null
-type Result1 = ReturnExclude<null, Fn1> // (x: number) => string
+type Result1 = ReturnExclude<null, Fn1>  // (x: number) => string
 
 // Async function - automatically unwraps and rewraps Promise
 type Fn2 = (x: number) => Promise<string | null>
-type Result2 = ReturnExclude<null, Fn2> // (x: number) => Promise<string>
+type Result2 = ReturnExclude<null, Fn2>  // (x: number) => Promise<string>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ReturnExcludeNull`
@@ -600,20 +613,22 @@ type Result2 = ReturnExclude<null, Fn2> // (x: number) => Promise<string>
 type ReturnExcludeNull<$Fn extends AnyAny> = ReturnExclude<null, $Fn>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L123" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L123" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ReturnInclude`
 
 ```typescript
-type ReturnInclude<$Type, $Fn extends AnyAny> = $Fn extends
-  (...args: infer __args__) => infer __return__ ? (
-    ...args: __args__
-  ) => __return__ extends Prom.AnyAny ? Promise<$Type | Awaited<__return__>>
+type ReturnInclude<$Type, $Fn extends AnyAny> =
+  $Fn extends (...args: infer __args__) => infer __return__
+  ? (...args: __args__) => (
+    __return__ extends Prom.AnyAny
+    ? Promise<$Type | Awaited<__return__>>
     : $Type | __return__
+  )
   : never
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/base.ts#L146" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L146" />
 
 Modify function such that it can return an additional type along with its original return types.
 
@@ -631,11 +646,11 @@ import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 // Sync function
 type Fn1 = (x: number) => string
-type Result1 = ReturnInclude<null, Fn1> // (x: number) => string | null
+type Result1 = ReturnInclude<null, Fn1>  // (x: number) => string | null
 
 // Async function - automatically unwraps and rewraps Promise
 type Fn2 = (x: number) => Promise<string>
-type Result2 = ReturnInclude<null, Fn2> // (x: number) => Promise<string | null>
+type Result2 = ReturnInclude<null, Fn2>  // (x: number) => Promise<string | null>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAny2Curried`
@@ -644,4 +659,4 @@ type Result2 = ReturnInclude<null, Fn2> // (x: number) => Promise<string | null>
 type AnyAny2Curried = (arg1: any) => (arg2: any) => any
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/curry.ts#L7" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/curry.ts#L7" />

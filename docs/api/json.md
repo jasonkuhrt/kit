@@ -121,7 +121,7 @@ Schema for parsing JSON with type validation.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ObjectParser`
 
 ```typescript
-{ parse: (value: unknown) => { readonly [x: string]: Value; }; }
+{ parse: (value: unknown) => { readonly[x: string]: Value; }; }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L225" />

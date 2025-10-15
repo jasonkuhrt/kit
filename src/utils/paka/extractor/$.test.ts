@@ -65,5 +65,80 @@ Test
         .add('src/a.ts', ts`/** NS doc */ /** _ doc **/ export const _ = 0`)
         .toLayout(),
     },
+    // Filter @internal exports
+    {
+      files: project
+        .add(
+          'src/index.ts',
+          ts`
+          /** Public export */
+          export const publicFn = () => 1
+
+          /** Internal export
+           * @internal
+           */
+          export const internalFn = () => 2
+        `,
+        )
+        .toLayout(),
+    },
+    // Filter underscore exports when option enabled
+    {
+      files: project
+        .add(
+          'src/index.ts',
+          ts`
+          /** Public export */
+          export const publicFn = () => 1
+
+          /** Internal helper */
+          export const _internalHelper = () => 2
+        `,
+        )
+        .toLayout(),
+      filterUnderscoreExports: true,
+    },
+    // Don't filter underscore exports by default
+    {
+      files: project
+        .add(
+          'src/index.ts',
+          ts`
+          /** Public export */
+          export const publicFn = () => 1
+
+          /** Internal helper */
+          export const _internalHelper = () => 2
+        `,
+        )
+        .toLayout(),
+      // filterUnderscoreExports defaults to false
+    },
+    // Mixed: @internal and underscore filtering
+    {
+      files: project
+        .add(
+          'src/index.ts',
+          ts`
+          /** Public export */
+          export const publicFn = () => 1
+
+          /** Internal with tag
+           * @internal
+           */
+          export const internalFn = () => 2
+
+          /** Internal with underscore */
+          export const _internalHelper = () => 3
+
+          /** Internal with both
+           * @internal
+           */
+          export const _superInternal = () => 4
+        `,
+        )
+        .toLayout(),
+      filterUnderscoreExports: true,
+    },
   )
   .test()

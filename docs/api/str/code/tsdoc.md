@@ -78,9 +78,11 @@ at line start
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:escape:1]
 Str.Code.TSDoc.escape('Hello * / World')
 // 'Hello * / World'
 
+// [!code word:escape:1]
 Str.Code.TSDoc.escape('@deprecated use new API')
 // '\\@deprecated use new API'
 ```
@@ -113,12 +115,14 @@ Returns empty string if content is null.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:format:1]
 Str.Code.TSDoc.format('Hello\nWorld')
 // /**
 //  * Hello
 //  * World
 //  *\/
 
+// [!code word:format:1]
 Str.Code.TSDoc.format('Single line')
 // /**
 //  * Single line
@@ -144,6 +148,7 @@ Use this for JSDoc tags, links, and other special syntax that should NOT be esca
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Link will not be escaped
+// [!code word:raw:1]
 const link = Str.Code.TSDoc.raw(`{@link MyType}`)
 const doc = tag\`Type: ${link}\`
 
@@ -170,6 +175,7 @@ Perfect for JSDoc generation with conditionals, loops, and complex logic.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:builder:1]
 const doc = Str.Code.TSDoc.builder()
 
 doc\`Access to ${typeLink} root methods.\`
@@ -218,7 +224,9 @@ import { Str } from '@wollybeard/kit/str'
 const doc = tag\`
   Main description here
 
+// [!code word:deprecated:1]
   ${tag.deprecated('Use newMethod()')}
+// [!code word:see:1]
   ${tag.see('https://example.com', 'Documentation')}
 \`
 
@@ -262,16 +270,14 @@ interface Builder {
    * Add a line to the JSDoc. Automatically escapes user content.
    * Use empty template for blank lines: `doc\`\``
    */
-  (
-    strings: TemplateStringsArray,
-    ...values: Array<string | number | Raw | null | undefined>
-  ): Builder
+  (strings: TemplateStringsArray, ...values: Array<string | number | Raw | null | undefined>): Builder
 
-  /**
-   * Add content with auto-escaping. Skips if null/undefined.
-   * Perfect for chaining with optional content.
-   * @example
-   * ```ts
+/**
+ * Add content with auto-escaping. Skips if null/undefined.
+ * Perfect for chaining with optional content.
+ * @example
+ * 
+```ts
    * doc
    *   .add(field.description)  // skips if null/undefined
    *   .add('# Info')
@@ -323,9 +329,7 @@ interface Builder {
    * })
    * ```
    */
-  table(
-    rows: Record<string, string | Raw | Array<string | Raw> | undefined | null>,
-  ): Builder
+  table(rows: Record<string, string | Raw | Array<string | Raw> | undefined | null>): Builder
 
   /**
    * Add a markdown code block with language syntax highlighting.
@@ -366,10 +370,7 @@ interface Builder {
    * doc.$example('Basic usage', 'ts', code)
    * ```
    */
-  $example(
-    label?: string,
-    lang?: string,
-  ): (strings: TemplateStringsArray, ...values: any[]) => Builder
+  $example(label?: string, lang?: string): (strings: TemplateStringsArray, ...values: any[]) => Builder
   $example(label: string | undefined, lang: string, code: string): Builder
 
   /**
@@ -427,14 +428,15 @@ return doc.build()
 
 ````typescript
 interface Template {
-  /**
-   * Tagged template for building JSDoc content with automatic escaping.
-   *
-   * By default, interpolated values are escaped to prevent JSDoc injection.
-   * Use {@link raw} to inject pre-escaped or intentionally raw content.
-   *
-   * @example
-   * ```ts
+/**
+ * Tagged template for building JSDoc content with automatic escaping.
+ *
+ * By default, interpolated values are escaped to prevent JSDoc injection.
+ * Use {@link raw} to inject pre-escaped or intentionally raw content.
+ *
+ * @example
+ * 
+```ts
    * // User content is automatically escaped
    * const doc = tag\`
    *   ${field.description}
@@ -450,10 +452,7 @@ interface Template {
    * \`
    * ```
    */
-  (
-    strings: TemplateStringsArray,
-    ...values: Array<string | number | Raw | null | undefined>
-  ): string
+  (strings: TemplateStringsArray, ...values: Array<string | number | Raw | null | undefined>): string
 
   /**
    * Create a new JSDoc builder for imperative construction.
@@ -480,9 +479,7 @@ interface Template {
    * // Usage: getFieldDoc(field, parentType) -> string
    * ```
    */
-  factory: <$Args extends any[]>(
-    fn: (doc: Builder, ...args: $Args) => void,
-  ) => (...args: $Args) => string
+  factory: <$Args extends any[]>(fn: (doc: Builder, ...args: $Args) => void) => (...args: $Args) => string
 
   /**
    * JSDoc tag helpers for generating properly formatted tags.

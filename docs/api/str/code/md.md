@@ -58,6 +58,7 @@ Use this for pre-formatted markdown syntax that should be injected as-is.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:raw:1]
 const formattedLink = Str.Code.Md.raw('[Example](https://example.com)')
 const doc = builder()
 doc`Check out ${formattedLink}`
@@ -79,7 +80,9 @@ Wrap value in markdown inline code (backticks).
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:code:1]
 Str.Code.Md.code('hello') // '`hello`'
+// [!code word:code:1]
 Str.Code.Md.code('Array<T>') // '`Array<T>`'
 ```
 
@@ -101,13 +104,16 @@ If text is not provided, the URL is used as both the link text and target.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:link:1]
 Str.Code.Md.link('https://example.com', 'Example')
 // '[Example](https://example.com)'
 
+// [!code word:link:1]
 Str.Code.Md.link('https://example.com')
 // '[https://example.com](https://example.com)'
 
 // Compose for bold code links:
+// [!code word:link:1]
 Str.Code.Md.link('/api/foo', `**${code('Foo')}**`)
 // '[**`Foo`**](/api/foo)'
 ```
@@ -148,9 +154,10 @@ Create a VitePress code group with multiple tabs.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:codeGroup:1]
 Str.Code.Md.codeGroup([
   { label: 'npm', code: 'npm install foo', language: 'bash' },
-  { label: 'pnpm', code: 'pnpm add foo', language: 'bash' },
+  { label: 'pnpm', code: 'pnpm add foo', language: 'bash' }
 ])
 ```
 
@@ -285,10 +292,11 @@ Returns empty string if no valid entries remain after filtering.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:table:1]
 Str.Code.Md.table({
   'Name': 'Alice',
   'Age': '30',
-  'City': undefined, // filtered out
+  'City': undefined  // filtered out
 })
 // | | |
 // | - | - |
@@ -314,16 +322,20 @@ Perfect for markdown generation with conditionals, loops, and complex logic.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:builder:1]
 const doc = Str.Code.Md.builder()
 
 doc`# ${title}`
+// [!code word:blank:1]
 doc.blank()
 doc`Main description`
 
 if (showExample) {
+// [!code word:codeFence:1]
   doc.codeFence('const x = 1', 'ts')
 }
 
+// [!code word:build:1]
 return doc.build()
 ```
 
@@ -361,16 +373,22 @@ const doc = template`
 
   ${description}
 
+// [!code word:link:1]
   ${Str.Code.Md.template.md.link('Docs', 'https://example.com')}
 `
 
 // Builder mode for complex logic
+// [!code word:builder:1]
 const doc = Str.Code.Md.template.builder()
+// [!code word:heading:1]
 doc.heading(1, 'API Reference')
+// [!code word:blank:1]
 doc.blank()
 if (hasDescription) {
+// [!code word:add:1]
   doc.add(description)
 }
+// [!code word:build:1]
 return doc.build()
 ```
 
@@ -403,17 +421,15 @@ interface Builder {
    * Add a line to the markdown via tagged template.
    * Use empty template for blank lines: `doc\`\``
    */
-  (
-    strings: TemplateStringsArray,
-    ...values: Array<string | number | Raw | null | undefined>
-  ): Builder
+  (strings: TemplateStringsArray, ...values: Array<string | number | Raw | null | undefined>): Builder
 
-  /**
-   * Add content directly. Skips if null/undefined.
-   * Perfect for chaining with optional content.
-   *
-   * @example
-   * ```ts
+/**
+ * Add content directly. Skips if null/undefined.
+ * Perfect for chaining with optional content.
+ *
+ * @example
+ * 
+```ts
    * doc
    *   .add(description)  // skips if null/undefined
    *   .add('## Info')
@@ -476,11 +492,7 @@ interface Builder {
    * doc.codeFence('const x = 1', 'typescript')
    * ```
    */
-  codeFence(
-    code: string | null | undefined,
-    language?: string,
-    modifiers?: string,
-  ): Builder
+  codeFence(code: string | null | undefined, language?: string, modifiers?: string): Builder
 
   /**
    * Add a VitePress code group with multiple tabs.
@@ -493,11 +505,7 @@ interface Builder {
    * ])
    * ```
    */
-  codeGroup(
-    tabs: Array<
-      { label: string; code: string; language?: string; modifiers?: string }
-    >,
-  ): Builder
+  codeGroup(tabs: Array<{ label: string; code: string; language?: string; modifiers?: string }>): Builder
 
   /**
    * Add a list item.
@@ -532,11 +540,7 @@ interface Builder {
    * doc.container('warning', 'Deprecated', 'Use newMethod() instead')
    * ```
    */
-  container(
-    type: 'warning' | 'tip' | 'info' | 'danger',
-    title: string,
-    content: string,
-  ): Builder
+  container(type: 'warning' | 'tip' | 'info' | 'danger', title: string, content: string): Builder
 
   /**
    * Build the final markdown string with whitespace normalization.
@@ -560,15 +564,19 @@ import { Str } from '@wollybeard/kit/str'
 const doc = builder()
 
 doc`# API Reference`
+// [!code word:blank:1]
 doc.blank()
 doc`Main description here.`
 
 if (showTable) {
+// [!code word:table:1]
   doc.table({ 'Type': 'string', 'Required': 'Yes' })
 }
 
+// [!code word:codeFence:1]
 doc.codeFence('const x = 1', 'typescript')
 
+// [!code word:build:1]
 return doc.build()
 ```
 
@@ -576,11 +584,12 @@ return doc.build()
 
 ````typescript
 interface Template {
-  /**
-   * Tagged template for building markdown content.
-   *
-   * @example
-   * ```ts
+/**
+ * Tagged template for building markdown content.
+ *
+ * @example
+ * 
+```ts
    * const doc = template`
    *   # ${title}
    *
@@ -590,10 +599,7 @@ interface Template {
    * `
    * ```
    */
-  (
-    strings: TemplateStringsArray,
-    ...values: Array<string | number | Raw | null | undefined>
-  ): string
+  (strings: TemplateStringsArray, ...values: Array<string | number | Raw | null | undefined>): string
 
   /**
    * Create a new markdown builder for imperative construction.
@@ -615,9 +621,7 @@ interface Template {
    * // Usage: getDoc('My Title', ['item1', 'item2']) -> string
    * ```
    */
-  factory: <$Args extends any[]>(
-    fn: (doc: Builder, ...args: $Args) => void,
-  ) => (...args: $Args) => string
+  factory: <$Args extends any[]>(fn: (doc: Builder, ...args: $Args) => void) => (...args: $Args) => string
 
   /**
    * Markdown element helpers for generating formatted elements.

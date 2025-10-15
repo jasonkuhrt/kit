@@ -37,7 +37,7 @@ Str.AxisHand.AxisHand.someFunction()
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `parse`
 
 ```typescript
-<$value = number>(input: Input<$value>): Partial<Logical<$value>>
+<$value = number > (input: Input<$value>): Partial<Logical<$value>>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/axishand/axishand.ts#L102" />
@@ -84,26 +84,32 @@ Each axis has **start** and **end** positions, creating a coordinate system that
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Global number - all sides
+// [!code word:parse:1]
 AxisHand.parse(2)
 // → { mainStart: 2, mainEnd: 2, crossStart: 2, crossEnd: 2 }
 
 // Axis shorthands
+// [!code word:parse:1]
 AxisHand.parse([2, 4])
 // → { mainStart: 2, mainEnd: 2, crossStart: 4, crossEnd: 4 }
 
 // Binary axis - nested arrays
+// [!code word:parse:1]
 AxisHand.parse([[1, 2], [3, 4]])
 // → { mainStart: 1, mainEnd: 2, crossStart: 3, crossEnd: 4 }
 
 // Per-axis array with shorthand
+// [!code word:parse:1]
 AxisHand.parse([[1, 2], 4])
 // → { mainStart: 1, mainEnd: 2, crossStart: 4, crossEnd: 4 }
 
 // Object syntax
+// [!code word:parse:1]
 AxisHand.parse({ main: [1, 2], cross: 4 })
 // → { mainStart: 1, mainEnd: 2, crossStart: 4, crossEnd: 4 }
 
 // Sparse values
+// [!code word:parse:1]
 AxisHand.parse([[2], [, 4]])
 // → { mainStart: 2, crossEnd: 4 }
 ```

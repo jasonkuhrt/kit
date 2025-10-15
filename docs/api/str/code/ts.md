@@ -40,6 +40,7 @@ Quote a string value for TypeScript code.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:string:1]
 Str.Code.TS.string('hello')
 // '"hello"'
 ```
@@ -60,6 +61,7 @@ Generate an array literal.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:list:1]
 Str.Code.TS.list(['a', 'b', 'c'])
 // '[a, b, c]'
 ```
@@ -80,6 +82,7 @@ Wrap content in curly braces.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:block:1]
 Str.Code.TS.block('a: string')
 // '{\na: string\n}'
 ```
@@ -100,6 +103,7 @@ Generate an object literal from entries.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:object:1]
 Str.Code.TS.object([['name', '"Alice"'], ['age', '30']])
 // '{\nname: "Alice",\nage: 30\n}'
 ```
@@ -127,9 +131,11 @@ Generate a type alias.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:typeAlias:1]
 Str.Code.TS.typeAlias('UserId', 'string')
 // 'type UserId = string'
 
+// [!code word:typeAlias:1]
 Str.Code.TS.typeAlias('Point', '{ x: number; y: number }')
 // 'type Point = { x: number; y: number }'
 ```
@@ -150,12 +156,13 @@ Generate a type alias with optional JSDoc and type parameters.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:typeAliasWithOptions:1]
 Str.Code.TS.typeAliasWithOptions({
   name: 'Result',
   type: 'T | Error',
   parameters: ['T'],
   tsDoc: 'A result that may be successful or an error',
-  export: true,
+  export: true
 })
 // /**
 //  * A result that may be successful or an error
@@ -179,11 +186,12 @@ Generate an interface declaration.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:interfaceDecl:1]
 Str.Code.TS.interfaceDecl({
   name: 'User',
   block: 'id: string\nname: string',
   tsDoc: 'Represents a user',
-  export: true,
+  export: true
 })
 // /**
 //  * Represents a user
@@ -210,6 +218,7 @@ Generate an export declaration.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:exportDecl:1]
 Str.Code.TS.exportDecl('const foo = 1')
 // 'export const foo = 1'
 ```
@@ -230,9 +239,11 @@ Re-export all exports from a module.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:reexportAll:1]
 Str.Code.TS.reexportAll({ from: './path' })
 // 'export * from './path''
 
+// [!code word:reexportAll:1]
 Str.Code.TS.reexportAll({ from: './path', type: true })
 // 'export type * from './path''
 ```
@@ -253,9 +264,11 @@ Re-export all exports as a namespace.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:reexportNamespace:1]
 Str.Code.TS.reexportNamespace({ as: 'Name', from: './path' })
 // 'export * as Name from './path''
 
+// [!code word:reexportNamespace:1]
 Str.Code.TS.reexportNamespace({ as: 'Name', from: './path', type: true })
 // 'export type * as Name from './path''
 ```
@@ -279,15 +292,19 @@ Supports simple names, arrays, and aliased names.
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // export { Name } from './path'
+// [!code word:reexportNamed:1]
 Str.Code.TS.reexportNamed({ names: 'Name', from: './path' })
 
 // export { a, b, c } from './path'
+// [!code word:reexportNamed:1]
 Str.Code.TS.reexportNamed({ names: ['a', 'b', 'c'], from: './path' })
 
 // export { oldName as newName } from './path'
+// [!code word:reexportNamed:1]
 Str.Code.TS.reexportNamed({ names: { oldName: 'newName' }, from: './path' })
 
 // export type { Name } from './path'
+// [!code word:reexportNamed:1]
 Str.Code.TS.reexportNamed({ names: 'Name', from: './path', type: true })
 ```
 
@@ -305,9 +322,11 @@ Import all exports as a namespace.
 
 ```typescript twoslash
 // @noErrors
+// [!code word:importAll:1]
 Str.Code.TS.importAll({ as: 'Name', from: './path' })
 // 'import * as Name from './path''
 
+// [!code word:importAll:1]
 Str.Code.TS.importAll({ as: 'Name', from: './path', type: true })
 // 'import type * as Name from './path''
 ```
@@ -329,15 +348,19 @@ Supports simple names, arrays, and aliased names.
 ```typescript twoslash
 // @noErrors
 // import { Name } from './path'
+// [!code word:importNamed:1]
 Str.Code.TS.importNamed({ names: 'Name', from: './path' })
 
 // import { a, b, c } from './path'
+// [!code word:importNamed:1]
 Str.Code.TS.importNamed({ names: ['a', 'b', 'c'], from: './path' })
 
 // import { oldName as newName } from './path'
+// [!code word:importNamed:1]
 Str.Code.TS.importNamed({ names: { oldName: 'newName' }, from: './path' })
 
 // import type { Name } from './path'
+// [!code word:importNamed:1]
 Str.Code.TS.importNamed({ names: 'Name', from: './path', type: true })
 ```
 

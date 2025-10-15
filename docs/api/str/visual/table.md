@@ -51,16 +51,18 @@ import { Str } from '@wollybeard/kit'
 // Create table from row data
 const table = [
   ['Name', 'Age'],
-  ['Alice', '30'],
+  ['Alice', '30']
 ]
 
 // Render with visual alignment
+// [!code word:render:1]
 Str.Visual.Table.render(table)
 // "Name   Age"
 // "Alice  30"
 
 // With ANSI codes
 const colored = [['\x1b[31mRed\x1b[0m', 'Normal']]
+// [!code word:render:1]
 Str.Visual.Table.render(colored, { separator: ' | ' })
 // "Red | Normal"  (correctly aligned despite ANSI)
 ```
@@ -149,14 +151,16 @@ import { Str } from '@wollybeard/kit/str'
 const table = [
   ['Name', 'Age', 'City'],
   ['Alice', '30', 'NYC'],
-  ['Bob', '25', 'LA'],
+  ['Bob', '25', 'LA']
 ]
 
+// [!code word:render:1]
 Str.Visual.Table.render(table)
 // "Name   Age  City"
 // "Alice  30   NYC"
 // "Bob    25   LA"
 
+// [!code word:render:1]
 Str.Visual.Table.render(table, { separator: ' | ', align: 'right' })
 // " Name | Age | City"
 // "Alice |  30 |  NYC"
@@ -166,7 +170,7 @@ Str.Visual.Table.render(table, { separator: ' | ', align: 'right' })
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderOn`
 
 ```typescript
-;((table: Table) => (options?: RenderOptions | undefined) => string)
+(table: Table) => (options?: RenderOptions | undefined) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L136" />
@@ -180,7 +184,7 @@ with table first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderWith`
 
 ```typescript
-;((options?: RenderOptions | undefined) => (table: Table) => string)
+(options?: RenderOptions | undefined) => (table: Table) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L142" />
@@ -222,10 +226,11 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Column-oriented data
 const columns = [
-  ['Name', 'Alice', 'Bob'], // Column 1
-  ['Age', '30', '25'], // Column 2
+  ['Name', 'Alice', 'Bob'],    // Column 1
+  ['Age', '30', '25']           // Column 2
 ]
 
+// [!code word:renderColumns:1]
 Str.Visual.Table.renderColumns(columns)
 // "Name   Age"
 // "Alice  30"
@@ -234,8 +239,9 @@ Str.Visual.Table.renderColumns(columns)
 // Handles jagged arrays
 const jagged = [
   ['A', 'B'],
-  ['X', 'Y', 'Z'],
+  ['X', 'Y', 'Z']
 ]
+// [!code word:renderColumns:1]
 Str.Visual.Table.renderColumns(jagged)
 // "A  X"
 // "B  Y"
@@ -245,7 +251,7 @@ Str.Visual.Table.renderColumns(jagged)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderColumnsOn`
 
 ```typescript
-;((columns: string[][]) => (options?: RenderOptions | undefined) => string)
+(columns: string[][]) => (options?: RenderOptions | undefined) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L190" />
@@ -259,7 +265,7 @@ with columns first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderColumnsWith`
 
 ```typescript
-;((options?: RenderOptions | undefined) => (columns: string[][]) => string)
+(options?: RenderOptions | undefined) => (columns: string[][]) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L196" />
@@ -298,9 +304,10 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 const table = [
   ['hi', 'world'],
-  ['hello', 'x'],
+  ['hello', 'x']
 ]
 
+// [!code word:columnWidths:1]
 Str.Visual.Table.columnWidths(table)
 // [5, 5]  (max of 'hi'/'hello', max of 'world'/'x')
 ```
@@ -328,6 +335,7 @@ Get the dimensions of a table.
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 const table = [['a', 'b'], ['c']]
+// [!code word:dimensions:1]
 Str.Visual.Table.dimensions(table)
 // { rows: 2, columns: 2 }
 ```
@@ -357,6 +365,7 @@ Fills missing cells with empty strings so all rows have the same length.
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 const jagged = [['a', 'b'], ['c']]
+// [!code word:normalize:1]
 Str.Visual.Table.normalize(jagged)
 // [['a', 'b'], ['c', '']]
 ```

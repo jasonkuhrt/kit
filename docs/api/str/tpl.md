@@ -202,6 +202,8 @@ Render tagged template literal arguments using a custom value renderer.
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Custom renderer for JSON values
+// [!code word:renderWith:1]
+// [!code word:stringify:1]
 const renderJson = Str.Tpl.renderWith(v => JSON.stringify(v))
 function tag(...args: unknown[]) {
   if (isArgs(args)) return renderJson(args)
@@ -209,13 +211,14 @@ function tag(...args: unknown[]) {
 tag`Value: ${{ foo: 'bar' }}` // "Value: {\"foo\":\"bar\"}"
 
 // Custom renderer that prefixes values
+// [!code word:renderWith:1]
 const renderPrefixed = Str.Tpl.renderWith(v => `[${v}]`)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `render`
 
 ```typescript
-;((callInput: CallInput) => string)
+(callInput: CallInput) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L150" />
@@ -236,6 +239,7 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 function tag(...args: unknown[]) {
   if (isArgs(args)) {
+// [!code word:render:1]
     return Str.Tpl.render(args)
   }
 }
@@ -351,30 +355,7 @@ Type for a tagged template literal function used for syntax highlighting.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `highlight`
 
 ```typescript
-{
-  ts: ;
-  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
-  js: ;
-  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
-  html: ;
-  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
-  css: ;
-  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
-  sql: ;
-  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
-  json: ;
-  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
-  yaml: ;
-  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
-  yml: ;
-  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
-  graphql: ;
-  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
-  gql: ;
-  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
-  iso: ;
-  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
-}
+{ ts: (strings: TemplateStringsArray, ...values: unknown[]) => string; js: (strings: TemplateStringsArray, ...values: unknown[]) => string; html: (strings: TemplateStringsArray, ...values: unknown[]) => string; css: (strings: TemplateStringsArray, ...values: unknown[]) => string; sql: (strings: TemplateStringsArray, ...values: unknown[]) => string; json: (strings: TemplateStringsArray, ...values: unknown[]) => string; yaml: (strings: TemplateStringsArray, ...values: unknown[]) => string; yml: (strings: TemplateStringsArray, ...values: unknown[]) => string; graphql: (strings: TemplateStringsArray, ...values: unknown[]) => string; gql: (strings: TemplateStringsArray, ...values: unknown[]) => string; iso: (strings: TemplateStringsArray, ...values: unknown[]) => string; }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L297" />
@@ -405,6 +386,7 @@ Supported languages are based on common supported editor injection patterns:
 // @noErrors
 import { Str } from '@wollybeard/kit'
 
+// [!code word:highlight:1]
 const { ts, html, sql } = Str.Tpl.highlight
 
 // Source indentation is automatically removed

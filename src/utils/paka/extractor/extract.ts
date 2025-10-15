@@ -39,12 +39,14 @@ export const extractFromFiles = (params: {
   files: Dir.Layout
   entrypoints?: string[]
   extractorVersion?: string
+  filterUnderscoreExports?: boolean
 }): InterfaceModel => {
   const {
     projectRoot = '/',
     files,
     entrypoints: targetEntrypoints,
     extractorVersion = '0.1.0',
+    filterUnderscoreExports = false,
   } = params
 
   // Load package.json
@@ -213,7 +215,11 @@ export const extractFromFiles = (params: {
       ? actualSourceFile.getFilePath().replace(projectRoot, '').replace(/^\//, '')
       : sourcePath
     const relativeSourcePath = locationPath.replace(/^\.\//, '')
-    let module = extractModuleFromFile(actualSourceFile, S.decodeSync(FsLoc.RelFile.String)(relativeSourcePath))
+    let module = extractModuleFromFile(
+      actualSourceFile,
+      S.decodeSync(FsLoc.RelFile.String)(relativeSourcePath),
+      { filterInternal: true, filterUnderscoreExports },
+    )
 
     // Override module description and category with namespace export JSDoc if available
     if (namespaceDescription || namespaceCategory) {
@@ -261,6 +267,8 @@ export type ExtractConfig = {
   entrypoints?: string[]
   /** Extractor version */
   extractorVersion?: string
+  /** Filter exports that start with underscore `_` prefix (default: false) */
+  filterUnderscoreExports?: boolean
 }
 
 /**
@@ -275,6 +283,7 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
     tsconfigPath = join(projectRoot, 'tsconfig.json'),
     entrypoints: targetEntrypoints,
     extractorVersion = '0.1.0',
+    filterUnderscoreExports = false,
   } = config
 
   // Load package.json
@@ -424,7 +433,11 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
       ? actualSourceFile.getFilePath().replace(projectRoot, '').replace(/^\//, '')
       : sourcePath
     const relativeSourcePath = locationPath.replace(/^\.\//, '')
-    let module = extractModuleFromFile(actualSourceFile, S.decodeSync(FsLoc.RelFile.String)(relativeSourcePath))
+    let module = extractModuleFromFile(
+      actualSourceFile,
+      S.decodeSync(FsLoc.RelFile.String)(relativeSourcePath),
+      { filterInternal: true, filterUnderscoreExports },
+    )
 
     // Override module description and category with namespace export JSDoc if available
     if (namespaceDescription || namespaceCategory) {

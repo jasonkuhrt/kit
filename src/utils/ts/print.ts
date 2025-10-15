@@ -51,6 +51,10 @@ export type Print<$Type, $Fallback extends string | undefined = undefined> =
   // Ultimate fallback
   : '?'
 
+/**
+ * Helper type for printing union types.
+ * @internal
+ */
 // dprint-ignore
 export type _PrintUnion<$Type extends ArrMut.AnyRO> =
     $Type extends readonly [infer __first__, ...infer __rest__ extends ArrMut.Any1OrMoreRO]

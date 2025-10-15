@@ -8,5 +8,6 @@ _Test.Test_ / **Matchers**
 import { Test } from '@wollybeard/kit/test'
 
 // Access via namespace
+// [!code word:someFunction:1]
 Test.Test.Matchers.someFunction()
 ```

@@ -236,7 +236,7 @@ Compare two fractions.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromWith`
 
 ```typescript
-;((numerator: Natural) => (denominator: Natural) => Frac)
+(numerator: Natural) => (denominator: Natural) => Frac
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L100" />
@@ -248,7 +248,7 @@ Useful for creating series of fractions.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`
 
 ```typescript
-;((denominator: Natural) => (numerator: Natural) => Frac)
+(denominator: Natural) => (numerator: Natural) => Frac
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L115" />
@@ -260,7 +260,7 @@ Useful for working with common denominators.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`
 
 ```typescript
-;((a: Frac) => (b: Frac) => Ratio)
+(a: Frac) => (b: Frac) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L260" />
@@ -272,7 +272,7 @@ Data-first pattern: fix the first argument.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
 
 ```typescript
-;((b: Frac) => (a: Frac) => Ratio)
+(b: Frac) => (a: Frac) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L274" />
@@ -284,7 +284,7 @@ Data-second pattern: fix the second argument.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`
 
 ```typescript
-;((a: Frac) => (b: Frac) => Frac)
+(a: Frac) => (b: Frac) => Frac
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L311" />
@@ -296,7 +296,7 @@ Data-first pattern: fix the first argument.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
 
 ```typescript
-;((b: Frac) => (a: Frac) => Frac)
+(b: Frac) => (a: Frac) => Frac
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L325" />
@@ -308,7 +308,7 @@ Data-second pattern: fix the second argument.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareOn`
 
 ```typescript
-;((a: Frac) => (b: Frac) => 0 | 1 | -1)
+(a: Frac) => (b: Frac) => 0 | 1 | -1
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L355" />
@@ -320,7 +320,7 @@ Data-first pattern: fix the first argument.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareWith`
 
 ```typescript
-;((b: Frac) => (a: Frac) => 0 | 1 | -1)
+(b: Frac) => (a: Frac) => 0 | 1 | -1
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L369" />

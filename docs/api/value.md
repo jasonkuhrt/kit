@@ -64,10 +64,14 @@ value
 // @noErrors
 import { Value } from '@wollybeard/kit/value'
 // ---cut---
+// [!code word:lazy:1]
 const lazyNumber = Value.lazy(42)
+// [!code word:log:1]
 console.log(lazyNumber()) // 42
 
+// [!code word:lazy:1]
 const lazyObject = Value.lazy({ foo: 'bar' })
+// [!code word:log:1]
 console.log(lazyObject()) // { foo: 'bar' }
 ```
 
@@ -130,16 +134,20 @@ value
 // @noErrors
 import { Value } from '@wollybeard/kit/value'
 // ---cut---
+// [!code word:resolveLazyFactory:1]
 const getValue = Value.resolveLazyFactory(42)
+// [!code word:log:1]
 console.log(getValue()) // 42
 
+// [!code word:resolveLazyFactory:1]
 const getLazyValue = Value.resolveLazyFactory(() => 42)
+// [!code word:log:1]
 console.log(getLazyValue()) // 42
 
 // Useful for configuration that may be lazy
-const getConfig = Value.resolveLazyFactory(() => ({
-  apiUrl: 'https://api.example.com',
-}))
+// [!code word:resolveLazyFactory:1]
+const getConfig = Value.resolveLazyFactory(() => ({ apiUrl: 'https://api.example.com' }))
+// [!code word:log:1]
 console.log(getConfig()) // { apiUrl: 'https://api.example.com' }
 ```
 
@@ -167,8 +175,10 @@ Type guard to check if a value is a symbol.
 // @noErrors
 import { Value } from '@wollybeard/kit/value'
 // ---cut---
-Value.isSymbol(Symbol('test')) // true
-Value.isSymbol('test') // false
+// [!code word:isSymbol:1]
+Value.isSymbol(Symbol('test'))  // true
+// [!code word:isSymbol:1]
+Value.isSymbol('test')  // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isDate`
@@ -193,9 +203,13 @@ Type guard to check if a value is a Date instance.
 // @noErrors
 import { Value } from '@wollybeard/kit/value'
 // ---cut---
-Value.isDate(new Date()) // true
-Value.isDate('2024-01-01') // false
-Value.isDate(Date.now()) // false
+// [!code word:isDate:1]
+Value.isDate(new Date())  // true
+// [!code word:isDate:1]
+Value.isDate('2024-01-01')  // false
+// [!code word:isDate:1]
+// [!code word:now:1]
+Value.isDate(Date.now())  // false
 ```
 
 ## Utilities
@@ -203,7 +217,7 @@ Value.isDate(Date.now()) // false
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `identityProxy`
 
 ```typescript
-{}
+{ }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/value/value.ts#L113" />
@@ -218,6 +232,8 @@ Useful for default values or chaining patterns.
 // @noErrors
 import { Value } from '@wollybeard/kit/value'
 // ---cut---
-Value.identityProxy.foo.bar.baz // Returns identityProxy
-Value.identityProxy.anything() // Returns identityProxy
+// [!code word:baz:1]
+Value.identityProxy.foo.bar.baz  // Returns identityProxy
+// [!code word:anything:1]
+Value.identityProxy.anything()  // Returns identityProxy
 ```

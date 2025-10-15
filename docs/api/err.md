@@ -85,20 +85,25 @@ showHelp
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
 // Use default options
+// [!code word:inspect:1]
 Err.inspect(error)
 
 // Customize options
+// [!code word:inspect:1]
 Err.inspect(error, {
   color: false,
   stackTraceColumns: 200,
-  showHelp: false,
+  showHelp: false
 })
 
 // Hide stack traces (useful for test snapshots)
+// [!code word:inspect:1]
 Err.inspect(error, { maxFrames: 0, showHelp: false, color: false })
 
 // Set via environment variables
+// [!code word:ERROR_DISPLAY_COLOR:1]
 process.env.ERROR_DISPLAY_COLOR = 'false'
+// [!code word:ERROR_DISPLAY_SHOW_HELP:1]
 process.env.ERROR_DISPLAY_SHOW_HELP = 'false'
 ```
 
@@ -139,22 +144,31 @@ import { Err } from '@wollybeard/kit/err'
 // ---cut---
 // Simple error
 const error = new Error('Something went wrong')
+// [!code word:log:1]
+// [!code word:inspect:1]
 console.log(Err.inspect(error))
 
 // Error with context
 const contextError = new Error('API failed')
+// [!code word:context:1]
 contextError.context = { userId: 123, endpoint: '/api/users' }
+// [!code word:log:1]
+// [!code word:inspect:1]
 console.log(Err.inspect(contextError))
 
 // Aggregate error with multiple failures
 const errors = [
   new Error('Database connection failed'),
-  new Error('Redis timeout'),
+  new Error('Redis timeout')
 ]
 const aggregate = new AggregateError(errors, 'Multiple services failed')
+// [!code word:log:1]
+// [!code word:inspect:1]
 console.log(Err.inspect(aggregate))
 
 // Disable help section
+// [!code word:log:1]
+// [!code word:inspect:1]
 console.log(Err.inspect(error, { showHelp: false }))
 ```
 
@@ -303,11 +317,15 @@ Provides detailed information about what was filtered during stack cleaning.
 // @noErrors
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
+// [!code word:stack:1]
 const result = cleanStackWithStats(error.stack)
+// [!code word:log:1]
+// [!code word:filteredFrames:1]
 console.log(`Filtered ${result.stats.filteredFrames} frames`)
-console.log(
-  `Showing ${result.stats.shownFrames} of ${result.stats.totalFrames} total`,
-)
+// [!code word:log:1]
+// [!code word:shownFrames:1]
+// [!code word:totalFrames:1]
+console.log(`Showing ${result.stats.shownFrames} of ${result.stats.totalFrames} total`)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `CleanStackResult`
@@ -358,13 +376,19 @@ Returns both the cleaned stack and detailed statistics about filtering.
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
 const error = new Error('Something failed')
+// [!code word:cleanStackWithStats:1]
+// [!code word:stack:1]
 const result = Err.cleanStackWithStats(error.stack, {
   removeInternal: true,
   filterPatterns: ['node_modules'],
-  maxFrames: 10,
+  maxFrames: 10
 })
 
+// [!code word:log:1]
+// [!code word:stack:1]
 console.log(result.stack) // Cleaned stack trace
+// [!code word:log:1]
+// [!code word:nodeModulesFrames:1]
 console.log(`Filtered ${result.stats.nodeModulesFrames} node_modules frames`)
 ```
 
@@ -374,7 +398,7 @@ console.log(`Filtered ${result.stats.nodeModulesFrames} node_modules frames`)
 (stack: string, options?: StackOptions | undefined): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L317" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L318" />
 
 **Parameters:**
 
@@ -399,7 +423,7 @@ Clean a stack trace by removing internal frames and applying filters.
 (frame: StackFrame): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L326" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L327" />
 
 Format a stack frame for better readability.
 
@@ -415,7 +439,7 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L338" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L339" />
 
 **Properties:**
 
@@ -430,7 +454,7 @@ Enhanced Error class that automatically cleans stack traces.
 (wrapper: Error, cause: Error): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L374" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L375" />
 
 Merge stack traces from multiple errors (useful for wrapped errors).
 
@@ -441,11 +465,11 @@ This preserves the full error chain while removing duplicates.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryCatch`
 
 ```typescript
-<returned, thrown>(promise: Promise<returned>, predicates?: readonly [TypePredicate<thrown>, ...TypePredicate<thrown>[]] | undefined): Promise<returned | (IsUnknown<thrown> extends true ? Error : thrown)>
-<returned, thrown>(fn: () => returned, predicates?: readonly [TypePredicate<thrown>, ...TypePredicate<thrown>[]] | undefined): AwaitedUnion<returned, IsUnknown<thrown> extends true ? Error : thrown>
-<returned, thrown>(fnOrPromise: Promise<any> | (() => returned), predicates?: readonly [TypePredicate<thrown>, ...TypePredicate<thrown>[]] = [
-    is as Bool.TypePredicate<thrown>,
-  ]): any
+<returned, thrown > (promise: Promise<returned>, predicates ?: readonly[TypePredicate<thrown>, ...TypePredicate < thrown > []] | undefined): Promise < returned | (IsUnknown<thrown> extends true ? Error : thrown)>
+  <returned, thrown > (fn: () => returned, predicates ?: readonly[TypePredicate<thrown>, ...TypePredicate < thrown > []] | undefined): AwaitedUnion < returned, IsUnknown<thrown> extends true ? Error : thrown >
+    <returned, thrown > (fnOrPromise: Promise<any> | (() => returned), predicates ?: readonly[TypePredicate<thrown>, ...TypePredicate < thrown > []] =[
+      is as Bool.TypePredicate<thrown>,
+    ]): any
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L109" />
@@ -467,18 +491,23 @@ Returns either the successful result or the caught error.
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
 // With function
+// [!code word:tryCatch:1]
+// [!code word:parse:1]
 const result = Err.tryCatch(() => JSON.parse(input)) // parsed value | Error
 
 // With promise
+// [!code word:tryCatch:1]
 const data = await Err.tryCatch(fetch(url)) // Response | Error
 
 // With custom predicates
 const isNetworkError = (e: unknown): e is NetworkError =>
+// [!code word:name:1]
   e instanceof Error && e.name === 'NetworkError'
 
+// [!code word:tryCatch:1]
 const response = Err.tryCatch(
   () => fetch(url),
-  [isNetworkError],
+  [isNetworkError]
 ) // Response | NetworkError
 ```
 
@@ -495,7 +524,7 @@ Default error types caught by try/catch functions when no predicates are specifi
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryCatchify`
 
 ```typescript
-<fn extends Fn.AnyAny, thrown>(fn: fn, predicates?: readonly [TypePredicate<thrown>, ...TypePredicate<thrown>[]] = [is as Bool.TypePredicate<thrown>]): (...args: Parameters<fn>) => AwaitedUnion<ReturnType<fn>, IsUnknown<thrown> extends true ? Error : thrown>
+<fn extends Fn.AnyAny, thrown > (fn: fn, predicates ?: readonly[TypePredicate<thrown>, ...TypePredicate < thrown > []] =[is as Bool.TypePredicate<thrown>]): (...args: Parameters<fn>) => AwaitedUnion<ReturnType<fn>, IsUnknown<thrown> extends true ? Error : thrown>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L63" />
@@ -518,14 +547,18 @@ The transformed function will return either the result or the caught error.
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
 // Transform a throwing function
+// [!code word:tryCatchify:1]
+// [!code word:parse:1]
 const parseJsonSafe = Err.tryCatchify(JSON.parse)
 const result = parseJsonSafe('{"valid": true}') // { valid: true }
 const error = parseJsonSafe('invalid') // SyntaxError
 
 // With custom error predicates
 const isNetworkError = (e: unknown): e is NetworkError =>
+// [!code word:name:1]
   e instanceof Error && e.name === 'NetworkError'
 
+// [!code word:tryCatchify:1]
 const fetchSafe = Err.tryCatchify(fetch, [isNetworkError])
 const response = await fetchSafe(url) // Response | NetworkError
 ```
@@ -557,9 +590,12 @@ For async functions, errors are silently caught without rejection.
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
 // Sync function
+// [!code word:tryCatchIgnore:1]
+// [!code word:parse:1]
 Err.tryCatchIgnore(() => JSON.parse(invalidJson)) // returns undefined
 
 // Async function
+// [!code word:tryCatchIgnore:1]
 await Err.tryCatchIgnore(async () => {
   throw new Error('Network error')
 }) // returns undefined, no rejection
@@ -597,27 +633,31 @@ Handles both synchronous and asynchronous functions automatically.
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
 // Simple string message
+// [!code word:tryOrRethrow:1]
 const data = await Err.tryOrRethrow(
   fetchData,
-  'Failed to fetch data',
+  'Failed to fetch data'
 )
 
 // With options
+// [!code word:tryOrRethrow:1]
 const user = await Err.tryOrRethrow(
   () => fetchUser(userId),
-  { message: 'Failed to fetch user', context: { userId } },
+  { message: 'Failed to fetch user', context: { userId } }
 )
 
 // With wrapper function
+// [!code word:tryOrRethrow:1]
 const result = await Err.tryOrRethrow(
   riskyOperation,
-  wrapWith('Operation failed'),
+  wrapWith('Operation failed')
 )
 
 // Custom error wrapper
+// [!code word:tryOrRethrow:1]
 const config = await Err.tryOrRethrow(
   loadConfig,
-  (cause) => new ConfigError('Failed to load config', { cause }),
+  (cause) => new ConfigError('Failed to load config', { cause })
 )
 ```
 
@@ -650,22 +690,24 @@ If any function throws, all errors are collected into an AggregateError.
 // @noErrors
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
+// [!code word:tryAllOrRethrow:1]
 const [users, posts] = await Err.tryAllOrRethrow(
   [fetchUsers, fetchPosts],
-  'Failed to load data',
+  'Failed to load data'
 )
 
 // With context
+// [!code word:tryAllOrRethrow:1]
 const [config, schema, data] = await Err.tryAllOrRethrow(
   [loadConfig, loadSchema, loadData],
-  { message: 'Failed to initialize', context: { env: 'production' } },
+  { message: 'Failed to initialize', context: { env: 'production' } }
 )
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOr`
 
 ```typescript
-<success, fallback>(fn: () => success, fallback: LazyMaybe<fallback>): TryOrReturn<success, fallback>
+<success, fallback > (fn: () => success, fallback: LazyMaybe<fallback>): TryOrReturn<success, fallback>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L212" />
@@ -714,21 +756,25 @@ instead
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
 // Sync function with sync fallback
+// [!code word:tryOr:1]
 const data = Err.tryOr(
+// [!code word:parse:1]
   () => JSON.parse(input),
-  { error: 'Invalid JSON' },
+  { error: 'Invalid JSON' }
 )
 
 // Async function with sync fallback
+// [!code word:tryOr:1]
 const config = await Err.tryOr(
   async () => loadConfig(),
-  () => getDefaultConfig(),
+  () => getDefaultConfig()
 )
 
 // Async function with async fallback
+// [!code word:tryOr:1]
 const data = await Err.tryOr(
   async () => fetchFromPrimary(),
-  async () => fetchFromSecondary(),
+  async () => fetchFromSecondary()
 )
 
 // This would be a TYPE ERROR:
@@ -741,7 +787,7 @@ const data = await Err.tryOr(
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOrAsync`
 
 ```typescript
-<success, fallback>(fn: () => success, fallback: LazyMaybe<fallback>): Promise<Awaited<success> | Awaited<fallback>>
+<success, fallback > (fn: () => success, fallback: LazyMaybe<fallback>): Promise<Awaited<success> | Awaited<fallback>>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L248" />
@@ -770,15 +816,17 @@ Use this when:
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
 // Sync function with async fallback
+// [!code word:tryOrAsync:1]
 const data = await Err.tryOrAsync(
   () => readFileSync('config.json'),
-  async () => fetchDefaultConfig(),
+  async () => fetchDefaultConfig()
 )
 
 // Ensures consistent Promise return
+// [!code word:tryOrAsync:1]
 const result = await Err.tryOrAsync(
   () => 42,
-  () => 'fallback',
+  () => 'fallback'
 ) // Always Promise<number | string>
 ```
 
@@ -804,6 +852,8 @@ Useful for creating reusable async error handlers.
 // @noErrors
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
+// [!code word:tryOrAsyncOn:1]
+// [!code word:parse:1]
 const parseJsonOrFetch = Err.tryOrAsyncOn(() => JSON.parse(input))
 const data = await parseJsonOrFetch(async () => fetchDefault())
 ```
@@ -830,6 +880,7 @@ Always returns a Promise regardless of input types.
 // @noErrors
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
+// [!code word:tryOrAsyncWith:1]
 const orFetchDefault = Err.tryOrAsyncWith(async () => fetchDefault())
 const data1 = await orFetchDefault(() => localData())
 const data2 = await orFetchDefault(() => cachedData())
@@ -865,6 +916,8 @@ apply
 // @noErrors
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
+// [!code word:tryOrOn:1]
+// [!code word:parse:1]
 const parseJsonOr = Err.tryOrOn(() => JSON.parse(input))
 const data = parseJsonOr({ error: 'Invalid JSON' })
 ```
@@ -899,6 +952,7 @@ apply
 // @noErrors
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
+// [!code word:tryOrWith:1]
 const orDefault = Err.tryOrWith({ status: 'unknown', data: null })
 
 const result1 = orDefault(() => fetchStatus())
@@ -908,7 +962,7 @@ const result2 = orDefault(() => getLatestData())
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `tryOrUndefined`
 
 ```typescript
-;(<success>(fn: () => success) => TryOrReturn<success, undefined>)
+<success>(fn: () => success) => TryOrReturn<success, undefined>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L351" />
@@ -927,6 +981,8 @@ tryOrWith(undefined)
 // @noErrors
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
+// [!code word:tryOrUndefined:1]
+// [!code word:getItem:1]
 const data = Err.tryOrUndefined(() => localStorage.getItem('key'))
 // data is string | undefined
 ```
@@ -934,7 +990,7 @@ const data = Err.tryOrUndefined(() => localStorage.getItem('key'))
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `tryOrNull`
 
 ```typescript
-;(<success>(fn: () => success) => TryOrReturn<success, null>)
+<success>(fn: () => success) => TryOrReturn<success, null>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L365" />
@@ -953,6 +1009,7 @@ tryOrWith(null)
 // @noErrors
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
+// [!code word:tryOrNull:1]
 const user = await Err.tryOrNull(async () => fetchUser(id))
 // user is User | null
 ```
@@ -981,8 +1038,11 @@ Type predicate to check if a value is an Error instance.
 // @noErrors
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
+// [!code word:is:1]
 Err.is(new Error('test')) // true
+// [!code word:is:1]
 Err.is('not an error') // false
+// [!code word:is:1]
 Err.is(null) // false
 ```
 
@@ -1019,12 +1079,16 @@ Check if an error is an AbortError (from AbortController/AbortSignal).
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
 const controller = new AbortController()
+// [!code word:abort:1]
 controller.abort()
 
 try {
+// [!code word:signal:1]
   await fetch(url, { signal: controller.signal })
 } catch (error) {
+// [!code word:isAbortError:1]
   if (Err.isAbortError(error)) {
+// [!code word:log:1]
     console.log('Request was aborted')
   }
 }
@@ -1035,9 +1099,7 @@ try {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `ContextualError`
 
 ```typescript
-type ContextualError<
-  $Context extends Record<string, unknown> = Record<string, unknown>,
-> = Error & {
+type ContextualError<$Context extends Record<string, unknown> = Record<string, unknown>> = Error & {
   context: $Context
 }
 ```
@@ -1086,7 +1148,7 @@ An error that includes additional context information.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `throwNull`
 
 ```typescript
-<V>(value: V, message?: string | undefined): Exclude<V, null>
+<V>(value: V, message ?: string | undefined): Exclude<V, null>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/$$.ts#L41" />
@@ -1110,14 +1172,16 @@ Throw an error if the value is null, otherwise return the non-null value.
 // @noErrors
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
+// [!code word:throwNull:1]
 const result = Err.throwNull(maybeNull) // throws if null
+// [!code word:throwNull:1]
 const safe = Err.throwNull(maybeNull, 'Custom error message')
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultThrowNullMessage`
 
 ```typescript
-'Unexpected null value.'
+"Unexpected null value."
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/$$.ts#L52" />
@@ -1131,7 +1195,7 @@ when no custom message is provided.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `guardNull`
 
 ```typescript
-<fn extends Fn.AnyAny>(fn: fn, message?: string | undefined): ReturnExclude<null, fn>
+<fn extends Fn.AnyAny>(fn: fn, message ?: string | undefined): ReturnExclude<null, fn>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/$$.ts#L69" />
@@ -1151,7 +1215,10 @@ Wrap a function to throw an error if it returns null.
 // @noErrors
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
+// [!code word:find:1]
+// [!code word:id:1]
 const find = (id: string) => items.find(item => item.id === id) ?? null
+// [!code word:guardNull:1]
 const findOrThrow = Err.guardNull(find, 'Item not found')
 
 const item = findOrThrow('123') // throws if not found
@@ -1184,12 +1251,15 @@ is made enumerable for better debugging experience.
 // @noErrors
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
+// [!code word:createContextualError:1]
 const error = Err.createContextualError('Failed to fetch user', {
   userId: '123',
   endpoint: '/api/users',
-  statusCode: 404,
+  statusCode: 404
 })
 
+// [!code word:log:1]
+// [!code word:userId:1]
 console.log(error.context.userId) // '123'
 ```
 
@@ -1246,6 +1316,7 @@ import { Err } from '@wollybeard/kit/err'
 try {
   await fetchData()
 } catch (error) {
+// [!code word:wrap:1]
   throw Err.wrap(error, 'Failed to fetch data')
 }
 
@@ -1253,9 +1324,10 @@ try {
 try {
   await fetchUser(userId)
 } catch (error) {
+// [!code word:wrap:1]
   throw Err.wrap(error, {
     message: 'Failed to fetch user',
-    context: { userId },
+    context: { userId }
   })
 }
 ```
@@ -1263,7 +1335,7 @@ try {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapOn`
 
 ```typescript
-;((cause: unknown) => (messageOrOptions: string | WrapOptions) => Error)
+(cause: unknown) => (messageOrOptions: string | WrapOptions) => Error
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/wrap.ts#L83" />
@@ -1282,6 +1354,7 @@ Useful for error handling pipelines.
 // @noErrors
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
+// [!code word:wrapOn:1]
 const wrapFetchError = Err.wrapOn(networkError)
 throw wrapFetchError('Failed to fetch data')
 ```
@@ -1289,7 +1362,7 @@ throw wrapFetchError('Failed to fetch data')
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapWith`
 
 ```typescript
-;((messageOrOptions: string | WrapOptions) => (cause: unknown) => Error)
+(messageOrOptions: string | WrapOptions) => (cause: unknown) => Error
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/wrap.ts#L108" />
@@ -1308,6 +1381,7 @@ Useful for creating reusable error wrappers.
 // @noErrors
 import { Err } from '@wollybeard/kit/err'
 // ---cut---
+// [!code word:wrapWith:1]
 const wrapAsFetchError = Err.wrapWith('Failed to fetch data')
 
 try {
@@ -1317,61 +1391,26 @@ try {
 }
 
 // With context
+// [!code word:wrapWith:1]
 const wrapAsUserError = Err.wrapWith({
   message: 'Failed to process user',
-  context: { operation: 'update' },
+  context: { operation: 'update' }
 })
 ```
 
 ## Other
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `InferOptions`
-
-```typescript
-type InferOptions<
-  $EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[],
-> = Ts.Simplify<
-  ArrMut.ReduceWithIntersection<_InferOptions<$EnvironmentConfigurableOptions>>
->
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L34" />
-
-Type helper for inferring option types from environment configurable option specifications.
-
-Transforms an array of option specs into a typed options object.
-
-$EnvironmentConfigurableOptions
-
-- Array of option specifications
-
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `_InferOptions`
 
 ```typescript
-type _InferOptions<
-  $EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[],
-> = {
+type _InferOptions<$EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[]> = {
   [i in keyof $EnvironmentConfigurableOptions]: {
-    [_ in $EnvironmentConfigurableOptions[i]['name']]?: ReturnType<
-      $EnvironmentConfigurableOptions[i]['parse']
-    >
+    [_ in $EnvironmentConfigurableOptions[i]['name']]?: ReturnType<$EnvironmentConfigurableOptions[i]['parse']>
   }
 }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L38" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `InspectConfig`
-
-```typescript
-type InspectConfig = Resolve<typeof optionSpecs>
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L183" />
-
-Resolved configuration for error inspection with values and sources.
-
-Contains the final values after merging defaults, user options, and environment variables.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `captureStackTrace`
 
@@ -1379,7 +1418,7 @@ Contains the final values after merging defaults, user options, and environment 
 (message?: string = 'Captured stack'): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L422" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L423" />
 
 Capture the current stack trace at a specific point.
 
@@ -1391,6 +1430,6 @@ Useful for adding trace information without throwing.
 (depth?: number = 1): StackFrame | undefined
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L431" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L432" />
 
 Get the caller information from the current stack.

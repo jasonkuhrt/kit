@@ -46,9 +46,13 @@ Format an array as an English list with commas and "or".
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:list:1]
 Str.Nat.list([]) // ''
+// [!code word:list:1]
 Str.Nat.list(['a']) // 'a'
+// [!code word:list:1]
 Str.Nat.list(['a', 'b']) // 'a or b'
+// [!code word:list:1]
 Str.Nat.list(['a', 'b', 'c']) // 'a, b, or c'
 ```
 
@@ -74,11 +78,17 @@ Convert a number to its ordinal string representation.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:ordinal:1]
 Str.Nat.ordinal(1) // '1st'
+// [!code word:ordinal:1]
 Str.Nat.ordinal(2) // '2nd'
+// [!code word:ordinal:1]
 Str.Nat.ordinal(3) // '3rd'
+// [!code word:ordinal:1]
 Str.Nat.ordinal(11) // '11th'
+// [!code word:ordinal:1]
 Str.Nat.ordinal(21) // '21st'
+// [!code word:ordinal:1]
 Str.Nat.ordinal(42) // '42nd'
 ```
 
@@ -104,10 +114,15 @@ Determine the correct indefinite article ("a" or "an") for a word.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:article:1]
 Str.Nat.article('apple') // 'an'
+// [!code word:article:1]
 Str.Nat.article('banana') // 'a'
+// [!code word:article:1]
 Str.Nat.article('hour') // 'an' (irregular)
+// [!code word:article:1]
 Str.Nat.article('unicorn') // 'a' (irregular)
+// [!code word:article:1]
 Str.Nat.article('university') // 'a' (irregular)
 ```
 
@@ -124,7 +139,7 @@ Str.Nat.article('university') // 'a' (irregular)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `plural`
 
 ```typescript
-;((word: string) => string)
+(word: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L5" />
@@ -132,7 +147,7 @@ Str.Nat.article('university') // 'a' (irregular)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `singular`
 
 ```typescript
-;((word: string) => string)
+(word: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L6" />
@@ -140,7 +155,7 @@ Str.Nat.article('university') // 'a' (irregular)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isPlural`
 
 ```typescript
-;((word: string) => boolean)
+(word: string) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L7" />
@@ -148,7 +163,7 @@ Str.Nat.article('university') // 'a' (irregular)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isSingular`
 
 ```typescript
-;((word: string) => boolean)
+(word: string) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L8" />

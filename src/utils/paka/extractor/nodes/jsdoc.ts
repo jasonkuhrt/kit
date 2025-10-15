@@ -15,6 +15,8 @@ export type JSDocInfo = {
   forceNamespace?: boolean
   /** Mark this export as a builder pattern entry point */
   isBuilder?: boolean
+  /** Mark this export as internal (should not appear in public documentation) */
+  internal?: boolean
   /** Parameter descriptions from @param tags (name -> description) */
   params: Record<string, string>
   /** Return value description from @returns tag */
@@ -127,7 +129,7 @@ const parseExamplesFromTSDoc = (customBlocks: readonly any[]): Example[] => {
  */
 const parseJSDocWithTSDoc = (commentText: string): JSDocInfo => {
   // Configure TSDoc to recognize custom tags
-  // Note: @throws is already a standard TSDoc tag, no need to add it
+  // Note: @throws and @internal are already standard TSDoc tags, no need to add them
   const configuration = new TSDocConfiguration()
   configuration.addTagDefinition(
     new TSDocTagDefinition({
@@ -163,13 +165,15 @@ const parseJSDocWithTSDoc = (commentText: string): JSDocInfo => {
   const tags: Record<string, string> = {}
   let forceNamespace = false
   let isBuilder = false
+  let internal = false
   let category: string | undefined
 
-  // Check for @builder in modifier tags
+  // Check for @builder and @internal in modifier tags
   for (const tag of docComment.modifierTagSet.nodes) {
     if (tag.tagName === '@builder') {
       isBuilder = true
-      break
+    } else if (tag.tagName === '@internal') {
+      internal = true
     }
   }
 
@@ -220,6 +224,7 @@ const parseJSDocWithTSDoc = (commentText: string): JSDocInfo => {
     tags,
     forceNamespace,
     isBuilder,
+    internal,
     params,
     returns,
     throws,
@@ -275,6 +280,7 @@ export const parseJSDoc = (decl: Node): JSDocInfo => {
       tags: {},
       forceNamespace: false,
       isBuilder: false,
+      internal: false,
       params: {},
       returns: undefined,
       throws: [],

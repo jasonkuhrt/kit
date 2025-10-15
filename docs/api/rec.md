@@ -69,12 +69,14 @@ userLookup['u123'] = { id: 'u123', name: 'Alice' }
 import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
 // Useful as accumulator in reduce operations
+// [!code word:reduce:1]
 const grouped = items.reduce(
   (acc, item) => {
+// [!code word:category:1]
     acc[item.category] = item
     return acc
   },
-  create<Item>(),
+  create<Item>()
 )
 ```
 
@@ -83,7 +85,7 @@ const grouped = items.reduce(
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `merge`
 
 ```typescript
-<rec1 extends Any, rec2 extends Any>(rec1: rec1, rec2: rec2): rec1 & rec2
+<rec1 extends Any, rec2 extends Any > (rec1: rec1, rec2: rec2): rec1 & rec2
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L116" />
@@ -105,6 +107,7 @@ This is an alias for Obj.merge that works specifically with record types.
 // @noErrors
 import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
+// [!code word:merge:1]
 Rec.merge({ a: 1, b: 2 }, { b: 3, c: 4 })
 // Returns: { a: 1, b: 3, c: 4 }
 ```
@@ -114,9 +117,10 @@ Rec.merge({ a: 1, b: 2 }, { b: 3, c: 4 })
 import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
 // Deep merging of nested records
+// [!code word:merge:1]
 Rec.merge(
   { user: { name: 'Alice', settings: { theme: 'dark' } } },
-  { user: { settings: { fontSize: 16 } } },
+  { user: { settings: { fontSize: 16 } } }
 )
 // Returns: { user: { name: 'Alice', settings: { theme: 'dark', fontSize: 16 } } }
 ```
@@ -131,6 +135,7 @@ type Overrides = { api: { key: string }; timeout: number }
 
 const config: Config = { api: { url: 'https://api.com' } }
 const overrides: Overrides = { api: { key: 'secret' }, timeout: 5000 }
+// [!code word:merge:1]
 const merged = Rec.merge(config, overrides)
 // merged is typed as Config & Overrides
 ```
@@ -161,11 +166,18 @@ This is a strict check that only accepts plain objects with Object.prototype.
 // @noErrors
 import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
+// [!code word:is:1]
 Rec.is({ a: 1, b: 2 }) // true
+// [!code word:is:1]
 Rec.is({}) // true
+// [!code word:is:1]
 Rec.is([1, 2, 3]) // false - arrays are not records
+// [!code word:is:1]
 Rec.is(null) // false
+// [!code word:is:1]
 Rec.is(new Date()) // false - class instances are not plain records
+// [!code word:is:1]
+// [!code word:create:1]
 Rec.is(Object.create(null)) // false - not plain Object.prototype
 ```
 
@@ -175,9 +187,12 @@ import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
 // Type guard usage
 function processData(data: unknown) {
+// [!code word:is:1]
   if (Rec.is(data)) {
     // data is typed as Rec.Any
+// [!code word:keys:1]
     Object.keys(data).forEach(key => {
+// [!code word:log:1]
       console.log(data[key])
     })
   }
@@ -246,8 +261,7 @@ type Optional<$Key extends PropertyKey, $Value> = {
 
 ```typescript
 type RemoveIndex<$T> = {
-  [k in keyof $T as string extends k ? never : number extends k ? never : k]:
-    $T[k]
+  [k in keyof $T as string extends k ? never : number extends k ? never : k]: $T[k]
 }
 ```
 
@@ -263,16 +277,14 @@ Useful for converting Record types to object types with only known keys.
 // @noErrors
 import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
-type WithIndex = { a: string; b: number; [key: string]: any }
-type WithoutIndex = RemoveIndex<WithIndex> // { a: string; b: number }
+type WithIndex = { a: string; b: number;[key: string]: any }
+type WithoutIndex = RemoveIndex<WithIndex>  // { a: string; b: number }
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsHasIndex`
 
 ```typescript
-type IsHasIndex<$T, $Key extends PropertyKey = string> = $Key extends keyof $T
-  ? true
-  : false
+type IsHasIndex<$T, $Key extends PropertyKey = string> = $Key extends keyof $T ? true : false
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L155" />
@@ -285,7 +297,7 @@ Check if a type has an index signature.
 // @noErrors
 import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
-type T1 = IsHasIndex<{ [key: string]: any }> // true
-type T2 = IsHasIndex<{ a: string }> // false
-type T3 = IsHasIndex<{ [key: number]: any }, number> // true
+type T1 = IsHasIndex<{ [key: string]: any }>  // true
+type T2 = IsHasIndex<{ a: string }>  // false
+type T3 = IsHasIndex<{ [key: number]: any }, number>  // true
 ```

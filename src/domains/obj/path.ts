@@ -94,6 +94,10 @@ export type InferShapeFromPropertyPath<$PropertyPath extends PropertyPath> =
 		? {}
 		: _InferShapeFromPropertyPath<$PropertyPath>
 
+/**
+ * Helper type for inferring object shape from property path.
+ * @internal
+ */
 // dprint-ignore
 export type _InferShapeFromPropertyPath<$PropertyPath extends PropertyPath> =
   $PropertyPath extends readonly [infer __key__ extends string, ...infer __tail__ extends readonly string[]]

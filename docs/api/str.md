@@ -38,7 +38,7 @@ import * as Str from '@wollybeard/kit/str'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultRender`
 
 ```typescript
-;((value: string[]) => string)
+(value: string[]) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/builder.ts#L12" />
@@ -158,18 +158,20 @@ Format a key-value object as an aligned table string.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:table:1]
 Str.table({
-  data: { name: 'John', age: '25', city: 'NYC' },
+  data: { name: 'John', age: '25', city: 'NYC' }
 })
 // Returns:
 // name → John
 // age  → 25
 // city → NYC
 
+// [!code word:table:1]
 Str.table({
   data: { foo: 'bar', hello: 'world' },
   separator: ' = ',
-  separatorAlignment: false,
+  separatorAlignment: false
 })
 // Returns:
 // foo =   bar
@@ -208,8 +210,13 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 const p = pattern<{ groups: ['name', 'age'] }>(/(?<name>\w+) is (?<age>\d+)/)
 const result = match('John is 25', p)
+// [!code word:isSome:1]
 if (Option.isSome(result)) {
+// [!code word:log:1]
+// [!code word:name:1]
   console.log(result.value.groups.name) // 'John' (typed)
+// [!code word:log:1]
+// [!code word:age:1]
   console.log(result.value.groups.age) // '25' (typed)
 }
 ```
@@ -237,9 +244,15 @@ Match a string against a pattern with type-safe results.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:match:1]
 const result = Str.match('hello world', /hello (\w+)/)
+// [!code word:isSome:1]
 if (Option.isSome(result)) {
+// [!code word:log:1]
+// [!code word:value:1]
   console.log(result.value[0]) // 'hello world'
+// [!code word:log:1]
+// [!code word:value:1]
   console.log(result.value[1]) // 'world'
 }
 ```
@@ -269,15 +282,18 @@ Check if a string matches a pattern.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:isMatch:1]
 Str.isMatch('hello', 'hello') // true
+// [!code word:isMatch:1]
 Str.isMatch('hello', /^h.*o$/) // true
+// [!code word:isMatch:1]
 Str.isMatch('world', 'hello') // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isMatchOn`
 
 ```typescript
-;((value: string) => (pattern: PatternInput) => boolean)
+(value: string) => (pattern: PatternInput) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L124" />
@@ -294,6 +310,7 @@ with value first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:isMatchOn:1]
 const isHello = Str.isMatchOn('hello')
 isHello('hello') // true
 isHello(/^h.*o$/) // true
@@ -302,7 +319,7 @@ isHello(/^h.*o$/) // true
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isMatchWith`
 
 ```typescript
-;((pattern: PatternInput) => (value: string) => boolean)
+(pattern: PatternInput) => (value: string) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L138" />
@@ -319,6 +336,7 @@ with pattern first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:isMatchWith:1]
 const matchesHello = Str.isMatchWith('hello')
 matchesHello('hello') // true
 matchesHello('world') // false
@@ -346,6 +364,7 @@ Check if a string does not match a pattern.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:isntMatch:1]
 const notHello = Str.isntMatch('hello')
 notHello('world') // true
 notHello('hello') // false
@@ -354,7 +373,7 @@ notHello('hello') // false
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isntMatchOn`
 
 ```typescript
-;((pattern: PatternInput) => (value: string) => boolean)
+(pattern: PatternInput) => (value: string) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L162" />
@@ -368,7 +387,7 @@ with value first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isntMatchWith`
 
 ```typescript
-;((value: string) => (pattern: PatternInput) => boolean)
+(value: string) => (pattern: PatternInput) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L170" />
@@ -402,15 +421,18 @@ Check if a string matches any of the provided patterns.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:isMatchAny:1]
 Str.isMatchAny('hello', ['hello', 'world']) // true
+// [!code word:isMatchAny:1]
 Str.isMatchAny('hello', [/^h/, /o$/]) // true
+// [!code word:isMatchAny:1]
 Str.isMatchAny('foo', ['hello', 'world']) // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isMatchAnyOn`
 
 ```typescript
-;((value: string) => (patterns: PatternsInput) => boolean)
+(value: string) => (patterns: PatternsInput) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L200" />
@@ -424,7 +446,7 @@ with value first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isMatchAnyWith`
 
 ```typescript
-;((patterns: PatternsInput) => (value: string) => boolean)
+(patterns: PatternsInput) => (value: string) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L215" />
@@ -441,6 +463,7 @@ with patterns first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:isMatchAnyWith:1]
 const matchesGreeting = Str.isMatchAnyWith(['hello', 'hi', /^hey/])
 matchesGreeting('hello') // true
 matchesGreeting('hey there') // true
@@ -469,6 +492,7 @@ Check if a string does not match any of the provided patterns.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:isNotMatchAny:1]
 const notGreeting = Str.isNotMatchAny(['hello', 'hi'])
 notGreeting('goodbye') // true
 notGreeting('hello') // false
@@ -477,7 +501,7 @@ notGreeting('hello') // false
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isNotMatchAnyOn`
 
 ```typescript
-;((patternOrPatterns: PatternsInput) => (value: string) => boolean)
+(patternOrPatterns: PatternsInput) => (value: string) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L239" />
@@ -491,7 +515,7 @@ with value first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isNotMatchAnyWith`
 
 ```typescript
-;((value: string) => (patternOrPatterns: PatternsInput) => boolean)
+(value: string) => (patternOrPatterns: PatternsInput) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L247" />
@@ -534,9 +558,11 @@ syntax.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:interpolate:1]
 const greeting = Str.interpolate('Hello ${name}, you are ${age} years old')
 greeting({ name: 'John', age: 25 }) // 'Hello John, you are 25 years old'
 
+// [!code word:interpolate:1]
 const template = Str.interpolate('${greeting} ${name}!')
 template({ greeting: 'Hi', name: 'Alice' }) // 'Hi Alice!'
 ```
@@ -620,7 +646,7 @@ Box structure with content and optional styling.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `OrientationSchema`
 
 ```typescript
-Literal<['vertical', 'horizontal']>
+Literal<["vertical", "horizontal"]>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L137" />
@@ -652,14 +678,7 @@ Orientation type.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `PaddingSchema`
 
 ```typescript
-Struct<
-  {
-    mainStart: optional<typeof Number>
-    mainEnd: optional<typeof Number>
-    crossStart: optional<typeof Number>
-    crossEnd: optional<typeof Number>
-  }
->
+Struct<{ mainStart: optional<typeof Number>; mainEnd: optional<typeof Number>; crossStart: optional<typeof Number>; crossEnd: optional<typeof Number>; }>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L155" />
@@ -745,14 +764,7 @@ Supports AxisHand patterns:
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `MarginSchema`
 
 ```typescript
-Struct<
-  {
-    mainStart: optional<typeof Number>
-    mainEnd: optional<typeof Number>
-    crossStart: optional<typeof Number>
-    crossEnd: optional<typeof Number>
-  }
->
+Struct<{ mainStart: optional<typeof Number>; mainEnd: optional<typeof Number>; crossStart: optional<typeof Number>; crossEnd: optional<typeof Number>; }>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L214" />
@@ -816,12 +828,7 @@ bigint
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `SpanSchema`
 
 ```typescript
-Struct<
-  {
-    main: optional<Union<[typeof Number, typeof BigIntFromSelf]>>
-    cross: optional<Union<[typeof Number, typeof BigIntFromSelf]>>
-  }
->
+Struct<{ main: optional<Union<[typeof Number, typeof BigIntFromSelf]>>; cross: optional<Union<[typeof Number, typeof BigIntFromSelf]>>; }>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L281" />
@@ -897,16 +904,7 @@ Supports AxisHand patterns with SpanValue (number | bigint):
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `SpanRangeSchema`
 
 ```typescript
-Struct<
-  {
-    main: optional<
-      Struct<{ min: optional<typeof Number>; max: optional<typeof Number> }>
-    >
-    cross: optional<
-      Struct<{ min: optional<typeof Number>; max: optional<typeof Number> }>
-    >
-  }
->
+Struct<{ main: optional<Struct<{ min: optional<typeof Number>; max: optional<typeof Number>; }>>; cross: optional<Struct<{ min: optional<typeof Number>; max: optional<typeof Number>; }>>; }>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L327" />
@@ -926,7 +924,7 @@ Span range configuration type.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `GapSchema`
 
 ```typescript
-Struct<{ main: optional<typeof Number>; cross: optional<typeof Number> }>
+Struct<{ main: optional<typeof Number>; cross: optional<typeof Number>; }>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L361" />
@@ -974,7 +972,7 @@ number
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BorderStyleSchema`
 
 ```typescript
-Literal<['single', 'double', 'rounded', 'bold', 'ascii']>
+Literal<["single", "double", "rounded", "bold", "ascii"]>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L399" />
@@ -994,14 +992,7 @@ Border style preset type.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BorderEdgesSchema`
 
 ```typescript
-Struct<
-  {
-    top: optional<typeof String>
-    right: optional<typeof String>
-    bottom: optional<typeof String>
-    left: optional<typeof String>
-  }
->
+Struct<{ top: optional<typeof String>; right: optional<typeof String>; bottom: optional<typeof String>; left: optional<typeof String>; }>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L413" />
@@ -1021,14 +1012,7 @@ Border edge configuration type.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BorderCornersSchema`
 
 ```typescript
-Struct<
-  {
-    topLeft: optional<typeof String>
-    topRight: optional<typeof String>
-    bottomRight: optional<typeof String>
-    bottomLeft: optional<typeof String>
-  }
->
+Struct<{ topLeft: optional<typeof String>; topRight: optional<typeof String>; bottomRight: optional<typeof String>; bottomLeft: optional<typeof String>; }>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L447" />
@@ -1053,12 +1037,9 @@ type BorderEdgesInput =
   | WithHooks<BorderEdges, 'border.edges'>
   | {
     [K in keyof BorderEdges]?:
-      | string
-      | CharStyle
-      | WithHook<
-        string | undefined,
-        StyleCategoryMap[`border.edges.${K & string}`]
-      >
+    | string
+    | CharStyle
+    | WithHook<string | undefined, StyleCategoryMap[`border.edges.${K & string}`]>
   }
 ```
 
@@ -1106,12 +1087,9 @@ type BorderCornersInput =
   | WithHooks<BorderCorners, 'border.corners'>
   | {
     [K in keyof BorderCorners]?:
-      | string
-      | CharStyle
-      | WithHook<
-        string | undefined,
-        StyleCategoryMap[`border.corners.${K & string}`]
-      >
+    | string
+    | CharStyle
+    | WithHook<string | undefined, StyleCategoryMap[`border.corners.${K & string}`]>
   }
 ```
 
@@ -1167,31 +1145,7 @@ Border character configuration input with nested edges/corners.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BorderSchema`
 
 ```typescript
-Struct<
-  {
-    style: optional<Literal<['single', 'double', 'rounded', 'bold', 'ascii']>>
-    edges: optional<
-      Struct<
-        {
-          top: optional<typeof String>
-          right: optional<typeof String>
-          bottom: optional<typeof String>
-          left: optional<typeof String>
-        }
-      >
-    >
-    corners: optional<
-      Struct<
-        {
-          topLeft: optional<typeof String>
-          topRight: optional<typeof String>
-          bottomRight: optional<typeof String>
-          bottomLeft: optional<typeof String>
-        }
-      >
-    >
-  }
->
+Struct<{ style: optional<Literal<["single", "double", "rounded", "bold", "ascii"]>>; edges: optional<Struct<{ top: optional<typeof String>; right: optional<typeof String>; bottom: optional<typeof String>; left: optional<typeof String>; }>>; corners: optional<Struct<{ topLeft: optional<typeof String>; topRight: optional<typeof String>; bottomRight: optional<typeof String>; bottomLeft: optional<typeof String>; }>>; }>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L540" />
@@ -1274,900 +1228,6 @@ Supports:
 
 ['Header', { text: 'Body', color: { foreground: 'green' } }, Box.make(...)]
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultIndentCharacter`
-
-```typescript
-' '
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L17" />
-
-Default character used for indentation (non-breaking space).
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultLineSeparator`
-
-```typescript
-'\n'
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L23" />
-
-Default line separator character (newline).
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Column`
-
-```typescript
-type Column = string[]
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L31" />
-
-A column is a vertical stack of lines.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `lines`
-
-```typescript
-(value: string) => string[]
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L47" />
-
-Split text into an array of lines.
-
-Pre-configured
-
-splitWith
-
-using newline separator.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-Str.Text.lines('hello\nworld\n!') // ['hello', 'world', '!']
-Str.Text.lines('single line') // ['single line']
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `unlines`
-
-```typescript
-;((value: string[]) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L61" />
-
-Join an array of lines into text.
-
-Pre-configured
-
-joinWith
-
-using newline separator.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-Str.Text.unlines(['hello', 'world', '!']) // 'hello\nworld\n!'
-Str.Text.unlines(['single line']) // 'single line'
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `indent`
-
-```typescript
-(text: string, size?: number | undefined): string
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L77" />
-
-**Parameters:**
-
-- `text` - The text to indent
-- `size` - Number of spaces to indent (default:
-
-defaultIndentSize
-
-)
-
-**Returns:** The indented text
-
-Indent each line of text by a specified number of spaces.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-Str.indent('hello\nworld') // '  hello\n  world'
-Str.indent('line1\nline2', 4) // '    line1\n    line2'
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentOn`
-
-```typescript
-;((text: string) => (size?: number | undefined) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L88" />
-
-Curried version of
-
-indent
-
-with text first.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentWith`
-
-```typescript
-;((size?: number | undefined) => (text: string) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L101" />
-
-Curried version of
-
-indent
-
-with size first.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-const indent4 = Str.indentWith(4)
-indent4('hello\nworld') // '    hello\n    world'
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `indentBy`
-
-```typescript
-(text: string, prefixOrFn: string | ((line: string, lineIndex: number) => string)): string
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L124" />
-
-**Parameters:**
-
-- `text` - The text to indent
-- `prefixOrFn` - String to prepend to each line, or function
-
-(line: string, lineIndex: number) => string
-
-**Returns:** The indented text
-
-Indent each line using a custom prefix string or function.
-
-When given a function, it receives both the line content and index, allowing for content-aware indentation.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-// Fixed string prefix
-Str.indentBy('hello\nworld', '>>> ') // '>>> hello\n>>> world'
-
-// Dynamic prefix based on line index (ignore line content with _)
-Str.indentBy('line1\nline2\nline3', (_, i) => `${i + 1}. `)
-// '1. line1\n2. line2\n3. line3'
-
-// Content-aware indentation
-Str.indentBy('title\nitem', (line, i) => line === 'title' ? '' : '  ')
-// 'title\n  item'
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentByOn`
-
-```typescript
-;((text: string) =>
-(prefixOrFn: string | ((line: string, lineIndex: number) => string)) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L139" />
-
-Curried version of
-
-indentBy
-
-with text first.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentByWith`
-
-```typescript
-;((prefixOrFn: string | ((line: string, lineIndex: number) => string)) =>
-(text: string) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L160" />
-
-Curried version of
-
-indentBy
-
-with prefix first.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-const addArrow = Str.indentByWith('→ ')
-addArrow('hello\nworld') // '→ hello\n→ world'
-
-const numbered = Str.indentByWith((_, i) => `${i}. `)
-numbered('first\nsecond') // '0. first\n1. second'
-
-const conditionalIndent = Str.indentByWith((line, i) =>
-  line.startsWith('#') ? '' : '  '
-)
-conditionalIndent('# Title\nContent') // '# Title\n  Content'
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `stripIndent`
-
-```typescript
-(text: string): string
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L182" />
-
-**Parameters:**
-
-- `text` - The text to dedent
-
-**Returns:** The dedented text
-
-Remove common leading whitespace from all lines.
-
-Finds the minimum indentation across all non-empty lines and removes that amount from every line.
-
-This is useful for dedenting code blocks or template strings while preserving relative indentation.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-Str.stripIndent('    line1\n      line2\n    line3')
-// 'line1\n  line2\nline3'
-
-Str.stripIndent('  code\n    nested\n  code')
-// 'code\n  nested\ncode'
-
-// Empty lines are ignored when calculating minimum indent
-Str.stripIndent('    line1\n\n    line2')
-// 'line1\n\nline2'
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultPadCharacter`
-
-```typescript
-' '
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L208" />
-
-Default character used for padding.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pad`
-
-```typescript
-(text: string, size: number, side?: "left" | "right" = `left`, char?: string = defaultPadCharacter): string
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L225" />
-
-**Parameters:**
-
-- `text` - The text to pad
-- `size` - Number of padding characters to add
-- `side` - Which side to add padding ('left' or 'right')
-- `char` - Character to use for padding (default: space)
-
-**Returns:** The padded text
-
-Add padding characters to text.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-Str.pad('hello', 3, 'left') // '   hello'
-Str.pad('hello', 3, 'right') // 'hello   '
-Str.pad('hello', 2, 'left', '-') // '--hello'
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padOn`
-
-```typescript
-;((text: string) =>
-(size: number) =>
-(side?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L240" />
-
-Curried version of
-
-pad
-
-with text first.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padWith`
-
-```typescript
-;((size: number) =>
-(text: string) =>
-(side?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L248" />
-
-Curried version of
-
-pad
-
-with size first.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `padLeft`
-
-```typescript
-(text: string, size: number, char?: string = defaultPadCharacter): string
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L263" />
-
-**Parameters:**
-
-- `text` - The text to pad
-- `size` - Number of padding characters to add
-- `char` - Character to use for padding (default: space)
-
-**Returns:** The left-padded text
-
-Add left padding to text.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-Str.padLeft('hello', 3) // '   hello'
-Str.padLeft('hello', 2, '0') // '00hello'
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padLeftOn`
-
-```typescript
-;((text: string) => (size: number) => (char?: string | undefined) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L273" />
-
-Curried version of
-
-padLeft
-
-with text first.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padLeftWith`
-
-```typescript
-;((size: number) => (text: string) => (char?: string | undefined) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L286" />
-
-Curried version of
-
-padLeft
-
-with size first.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-const pad3 = Str.padLeftWith(3)
-pad3('hi') // '   hi'
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `padRight`
-
-```typescript
-(text: string, size: number, char?: string = defaultPadCharacter): string
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L301" />
-
-**Parameters:**
-
-- `text` - The text to pad
-- `size` - Number of padding characters to add
-- `char` - Character to use for padding (default: space)
-
-**Returns:** The right-padded text
-
-Add right padding to text.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-Str.padRight('hello', 3) // 'hello   '
-Str.padRight('hello', 2, '.') // 'hello..'
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padRightOn`
-
-```typescript
-;((text: string) => (size: number) => (char?: string | undefined) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L311" />
-
-Curried version of
-
-padRight
-
-with text first.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padRightWith`
-
-```typescript
-;((size: number) => (text: string) => (char?: string | undefined) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L324" />
-
-Curried version of
-
-padRight
-
-with size first.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-const pad3 = Str.padRightWith(3)
-pad3('hi') // 'hi   '
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `span`
-
-```typescript
-(text: string, width: number, align?: "left" | "right" = `left`, char?: string = defaultPadCharacter): string
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L351" />
-
-**Parameters:**
-
-- `text` - The text to align
-- `width` - Target width (in characters)
-- `align` - Content alignment ('left' or 'right')
-- `char` - Character to use for padding (default: space)
-
-**Returns:** The aligned text
-
-Align text within a specified width by adding padding.
-
-This ensures text spans exactly the target width, aligning content to the left or right.
-
-If the text is already wider than the target width, no padding is added.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-// Left-align (pad right)
-Str.span('hi', 5, 'left') // 'hi   '
-
-// Right-align (pad left)
-Str.span('hi', 5, 'right') // '   hi'
-
-// Text already wider - no padding added
-Str.span('hello world', 5, 'left') // 'hello world' (unchanged)
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanOn`
-
-```typescript
-;((text: string) =>
-(width: number) =>
-(align?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L368" />
-
-Curried version of
-
-span
-
-with text first.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanWith`
-
-```typescript
-;((width: number) =>
-(text: string) =>
-(align?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L383" />
-
-Curried version of
-
-span
-
-with width first.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-const span8 = Str.spanWith(8)
-span8('Name', 'left') // 'Name    '
-span8('Age', 'right') // '     Age'
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fit`
-
-```typescript
-(text: string, width: number, align?: "left" | "right" = `left`, char?: string = defaultPadCharacter): string
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L427" />
-
-**Parameters:**
-
-- `text` - The text to constrain
-- `width` - Exact target width (in characters)
-- `align` - Content alignment ('left' or 'right')
-- `char` - Character to use for padding (default: space)
-
-**Returns:** Text constrained to exact width
-
-Constrain text to exact width by cropping and/or padding.
-
-Unlike
-
-span
-
-which only pads (leaving text unchanged if too long),
-
-this function guarantees the exact width by:
-
-- Cropping text if it exceeds the target width
-
-- Padding text if it's shorter than the target width
-
-This is useful for fixed-width layouts where column widths must be exact,
-
-such as table columns, CSV files, and fixed-format text files.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-// Text too long - gets cropped
-Str.fit('hello world', 5, 'left') // 'hello'
-
-// Text too short - gets padded
-Str.fit('hi', 5, 'left') // 'hi   '
-Str.fit('hi', 5, 'right') // '   hi'
-
-// Perfect fit - unchanged
-Str.fit('exact', 5, 'left') // 'exact'
-
-// Use case: Fixed-width table columns
-const columns = ['Name', 'Email', 'Status'].map(
-  (header, i) => Str.fit(header, [10, 20, 8][i], 'left'),
-)
-// ['Name      ', 'Email               ', 'Status  ']
-
-// CSV formatting with fixed columns
-const row = [name, email, status].map((val, i) =>
-  Str.fit(val, [20, 30, 10][i], 'left')
-).join(',')
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitOn`
-
-```typescript
-;((text: string) =>
-(width: number) =>
-(align?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L443" />
-
-Curried version of
-
-fit
-
-with text first.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitWith`
-
-```typescript
-;((width: number) =>
-(text: string) =>
-(align?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L462" />
-
-Curried version of
-
-fit
-
-with width first.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-// Create fixed-width formatters
-const nameColumn = Str.fitWith(20)
-const statusColumn = Str.fitWith(10)
-
-nameColumn('John Doe', 'left') // 'John Doe            '
-statusColumn('Active', 'left') // 'Active    '
-statusColumn('Very Long Status', 'left') // 'Very Long '
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapLines`
-
-```typescript
-(text: string, fn: (line: string, index: number) => string): string
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L479" />
-
-**Parameters:**
-
-- `text` - The text to transform
-- `fn` - Function to apply to each line, receiving the line and its index
-
-**Returns:** The transformed text
-
-Map a transformation function over each line of text.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-Str.mapLines('hello\nworld', (line) => line.toUpperCase())
-// 'HELLO\nWORLD'
-
-Str.mapLines('a\nb\nc', (line, i) => `${i}: ${line}`)
-// '0: a\n1: b\n2: c'
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mapLinesOn`
-
-```typescript
-;((text: string) => (fn: (line: string, index: number) => string) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L489" />
-
-Curried version of
-
-mapLines
-
-with text first.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mapLinesWith`
-
-```typescript
-;((fn: (line: string, index: number) => string) => (text: string) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L502" />
-
-Curried version of
-
-mapLines
-
-with function first.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-const uppercase = Str.mapLinesWith((line) => line.toUpperCase())
-uppercase('hello\nworld') // 'HELLO\nWORLD'
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StyledPrefix`
-
-```typescript
-type StyledPrefix = {
-  /**
-   * The prefix text/symbol to display.
-   */
-  symbol: string
-  /**
-   * Optional function to colorize the prefix.
-   */
-  color?: (text: string) => string
-}
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L512" />
-
-Styled prefix that can have an optional color function.
-
-Used with
-
-formatBlock
-
-for colored line prefixes.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `formatBlock`
-
-```typescript
-(block: string, opts: { prefix?: string | StyledPrefix; indent?: number; excludeFirstLine?: boolean; }): string
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L566" />
-
-**Parameters:**
-
-- `block` - The text block to format
-- `opts` - Formatting options
-
-**Returns:** Formatted text block
-
-Format a multi-line text block with line-by-line transformations.
-
-Processes each line of text, adding a prefix and optional indentation.
-
-Supports excluding the first line and styled prefixes with colors.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-// Simple string prefix
-Str.formatBlock('line1\nline2\nline3', { prefix: '> ' })
-// '> line1\n> line2\n> line3'
-
-// With indentation
-Str.formatBlock('line1\nline2', { prefix: '| ', indent: 2 })
-// '|   line1\n|   line2'
-
-// Exclude first line (useful for continuing indentation)
-Str.formatBlock('header\nline1\nline2', {
-  prefix: '  ',
-  excludeFirstLine: true,
-})
-// 'header\n  line1\n  line2'
-
-// Single line - returned as-is
-Str.formatBlock('single', { prefix: '> ' })
-// 'single'
-
-// Styled prefix with color function
-Str.formatBlock('data\nmore data', {
-  prefix: {
-    symbol: '│ ',
-    color: (text) => `\x1b[90m${text}\x1b[0m`, // gray color
-  },
-  indent: 2,
-})
-// '\x1b[90m│ \x1b[0m  data\n\x1b[90m│ \x1b[0m  more data'
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `formatBlockOn`
-
-```typescript
-;((block: string) =>
-(
-  opts: {
-    prefix?: string | StyledPrefix
-    indent?: number
-    excludeFirstLine?: boolean
-  },
-) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L598" />
-
-Curried version of
-
-formatBlock
-
-with block first.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `formatBlockWith`
-
-```typescript
-;((
-  opts: {
-    prefix?: string | StyledPrefix
-    indent?: number
-    excludeFirstLine?: boolean
-  },
-) =>
-(block: string) => string)
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L612" />
-
-Curried version of
-
-formatBlock
-
-with options first.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Str } from '@wollybeard/kit/str'
-// ---cut---
-const addSpine = Str.formatBlockWith({ prefix: '│ ', indent: 2 })
-addSpine('line1\nline2\nline3')
-// '│   line1\n│   line2\n│   line3'
-```
-
-## Text Formatting
-
-2
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultIndentSize`
-
-```typescript
-2
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L11" />
-
-Default indentation size in characters.
-
 ## Traits
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Eq`
@@ -2192,9 +1252,12 @@ String comparison is case-sensitive and considers all Unicode characters.
 // @noErrors
 import { Str } from '@wollybeard/kit'
 
-Str.Eq.is('hello', 'hello') // true
-Str.Eq.is('hello', 'Hello') // false (case-sensitive)
-Str.Eq.is('', '') // true (empty strings)
+// [!code word:is:1]
+Str.Eq.is('hello', 'hello')     // true
+// [!code word:is:1]
+Str.Eq.is('hello', 'Hello')     // false (case-sensitive)
+// [!code word:is:1]
+Str.Eq.is('', '')               // true (empty strings)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Type`
@@ -2217,9 +1280,12 @@ Provides type guard for checking if a value is a string.
 // @noErrors
 import { Str } from '@wollybeard/kit'
 
-Str.Type.is('hello') // true
-Str.Type.is(123) // false
-Str.Type.is(null) // false
+// [!code word:is:1]
+Str.Type.is('hello')    // true
+// [!code word:is:1]
+Str.Type.is(123)        // false
+// [!code word:is:1]
+Str.Type.is(null)       // false
 ```
 
 ## Transformation
@@ -2248,8 +1314,11 @@ Replaces URL path separators with spaces and converts to title case.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:titlizeSlug:1]
 Str.titlizeSlug('foo/bar/baz') // 'Foo Bar Baz'
+// [!code word:titlizeSlug:1]
 Str.titlizeSlug('the/quick/brown/fox') // 'The Quick Brown Fox'
+// [!code word:titlizeSlug:1]
 Str.titlizeSlug('hello-world') // 'Hello-World' (hyphens are preserved)
 ```
 
@@ -2300,7 +1369,9 @@ Remove whitespace from both ends of a string.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:trim:1]
 Str.trim('  hello  ') // 'hello'
+// [!code word:trim:1]
 Str.trim('\n\thello\n\t') // 'hello'
 ```
 
@@ -2328,7 +1399,9 @@ Replace the leading occurrence of a matcher string with a replacement.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:replaceLeading:1]
 Str.replaceLeading('$', '//', '// comment') // '$ comment'
+// [!code word:replaceLeading:1]
 Str.replaceLeading('', 'www.', 'www.example.com') // 'example.com'
 ```
 
@@ -2375,7 +1448,7 @@ with value first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `stripLeading`
 
 ```typescript
-;((matcher: string) => (value: string) => string)
+(matcher: string) => (value: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L89" />
@@ -2394,6 +1467,7 @@ replaceLeadingWith('')
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:stripLeading:1]
 const removePrefix = Str.stripLeading('//')
 removePrefix('// comment') // ' comment'
 ```
@@ -2434,8 +1508,11 @@ Replace all occurrences of patterns with a replacement string.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:replace:1]
 Str.replace('_', ' ', 'hello world') // 'hello_world'
+// [!code word:replace:1]
 Str.replace('X', /[aeiou]/g, 'hello') // 'hXllX'
+// [!code word:replace:1]
 Str.replace('-', [' ', '_'], 'hello world_test') // 'hello-world-test'
 ```
 
@@ -2510,14 +1587,16 @@ Append a string to another string.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:append:1]
 Str.append('hello', ' world') // 'hello world'
+// [!code word:append:1]
 Str.append('foo', 'bar') // 'foobar'
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `appendOn`
 
 ```typescript
-;((value1: string) => (value2: string) => string)
+(value1: string) => (value2: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L172" />
@@ -2531,7 +1610,7 @@ with value1 first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `appendWith`
 
 ```typescript
-;((value2: string) => (value1: string) => string)
+(value2: string) => (value1: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L185" />
@@ -2548,6 +1627,7 @@ with value2 first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:appendWith:1]
 const addWorld = Str.appendWith(' world')
 addWorld('hello') // 'hello world'
 ```
@@ -2583,14 +1663,16 @@ Prepend a string to another string.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:prepend:1]
 Str.prepend('hello ', 'world') // 'hello world'
+// [!code word:prepend:1]
 Str.prepend('pre', 'fix') // 'prefix'
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `prependOn`
 
 ```typescript
-;((value1: string) => (value2: string) => string)
+(value1: string) => (value2: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L212" />
@@ -2604,7 +1686,7 @@ with value1 first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `prependWith`
 
 ```typescript
-;((value2: string) => (value1: string) => string)
+(value2: string) => (value1: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L225" />
@@ -2621,6 +1703,7 @@ with value2 first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:prependWith:1]
 const toWorld = Str.prependWith('world')
 toWorld('hello ') // 'hello world'
 ```
@@ -2656,15 +1739,18 @@ Repeat a string a specified number of times.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:repeat:1]
 Str.repeat('a', 3) // 'aaa'
+// [!code word:repeat:1]
 Str.repeat('hello', 2) // 'hellohello'
+// [!code word:repeat:1]
 Str.repeat('-', 10) // '----------'
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `repeatOn`
 
 ```typescript
-;((value: string) => (count: number) => string)
+(value: string) => (count: number) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L259" />
@@ -2678,7 +1764,7 @@ with value first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `repeatWith`
 
 ```typescript
-;((count: number) => (value: string) => string)
+(count: number) => (value: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L272" />
@@ -2695,6 +1781,7 @@ with count first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:repeatWith:1]
 const triple = Str.repeatWith(3)
 triple('ha') // 'hahaha'
 ```
@@ -2722,15 +1809,18 @@ Remove all occurrences of a target character from the beginning and end of a str
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:removeSurrounding:1]
 Str.removeSurrounding('   hello   ', ' ') // 'hello'
+// [!code word:removeSurrounding:1]
 Str.removeSurrounding('***test***', '*') // 'test'
+// [!code word:removeSurrounding:1]
 Str.removeSurrounding('aaa', 'a') // ''
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `removeSurroundingOn`
 
 ```typescript
-;((str: string) => (target: string) => string)
+(str: string) => (target: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L321" />
@@ -2744,7 +1834,7 @@ with str first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `removeSurroundingWith`
 
 ```typescript
-;((target: string) => (str: string) => string)
+(target: string) => (str: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L329" />
@@ -2778,15 +1868,18 @@ Truncate a string to a maximum length, adding ellipsis if truncated.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:truncate:1]
 Str.truncate('hello world', 8) // 'hello...'
+// [!code word:truncate:1]
 Str.truncate('short', 10) // 'short'
+// [!code word:truncate:1]
 Str.truncate('very long text that needs truncating') // 'very long text that needs truncating...' (if > 80 chars)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `truncateOn`
 
 ```typescript
-;((str: string) => (maxLength?: number | undefined) => string)
+(str: string) => (maxLength?: number | undefined) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L366" />
@@ -2800,7 +1893,7 @@ with str first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `truncateWith`
 
 ```typescript
-;((maxLength?: number | undefined) => (str: string) => string)
+(maxLength?: number | undefined) => (str: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L379" />
@@ -2817,6 +1910,7 @@ with maxLength first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:truncateWith:1]
 const truncate10 = Str.truncateWith(10)
 truncate10('hello world') // 'hello w...'
 ```
@@ -2824,7 +1918,7 @@ truncate10('hello world') // 'hello w...'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `strip`
 
 ```typescript
-;((matcher: PatternsInput) => (value: string) => string)
+(matcher: PatternsInput) => (value: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L401" />
@@ -2843,6 +1937,7 @@ replaceWith('')
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:strip:1]
 const removeVowels = Str.strip(/[aeiou]/g)
 removeVowels('hello world') // 'hll wrld'
 ```
@@ -2850,7 +1945,7 @@ removeVowels('hello world') // 'hll wrld'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `removeSurroundingSpaceRegular`
 
 ```typescript
-;((str: string) => string)
+(str: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L410" />
@@ -2866,7 +1961,7 @@ for regular spaces.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `removeSurroundingSpaceNoBreak`
 
 ```typescript
-;((str: string) => string)
+(str: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L419" />
@@ -2910,8 +2005,11 @@ Split a string into an array of substrings using a separator.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:split:1]
 Str.split('a,b,c', ',') // ['a', 'b', 'c']
+// [!code word:split:1]
 Str.split('hello world', ' ') // ['hello', 'world']
+// [!code word:split:1]
 Str.split('', ',') // []
 ```
 
@@ -2949,6 +2047,7 @@ with separator first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:splitWith:1]
 const splitByComma = Str.splitWith(',')
 splitByComma('a,b,c') // ['a', 'b', 'c']
 ```
@@ -2984,15 +2083,18 @@ Join an array of strings into a single string with a separator.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:join:1]
 Str.join(['a', 'b', 'c'], ',') // 'a,b,c'
+// [!code word:join:1]
 Str.join(['hello', 'world'], ' ') // 'hello world'
+// [!code word:join:1]
 Str.join([], ',') // ''
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `joinOn`
 
 ```typescript
-;((value: string[]) => (separator: string) => string)
+(value: string[]) => (separator: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/split.ts#L68" />
@@ -3006,7 +2108,7 @@ with value first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `joinWith`
 
 ```typescript
-;((separator: string) => (value: string[]) => string)
+(separator: string) => (value: string[]) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/split.ts#L81" />
@@ -3023,6 +2125,7 @@ with separator first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:joinWith:1]
 const joinWithComma = Str.joinWith(',')
 joinWithComma(['a', 'b', 'c']) // 'a,b,c'
 ```
@@ -3058,14 +2161,16 @@ Merge two strings together (concatenate).
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:merge:1]
 Str.merge('hello', ' world') // 'hello world'
+// [!code word:merge:1]
 Str.merge('foo', 'bar') // 'foobar'
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mergeOn`
 
 ```typescript
-;((string1: string) => (string2: string) => string)
+(string1: string) => (string2: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/split.ts#L111" />
@@ -3082,6 +2187,7 @@ with string1 first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:mergeOn:1]
 const mergeWithHello = Str.mergeOn('hello')
 mergeWithHello(' world') // 'hello world'
 ```
@@ -3118,8 +2224,11 @@ Type guard to check if a string is empty.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:isEmpty:1]
 Str.isEmpty('') // true
+// [!code word:isEmpty:1]
 Str.isEmpty('hello') // false
+// [!code word:isEmpty:1]
 Str.isEmpty(' ') // false
 ```
 
@@ -3140,9 +2249,7 @@ Type for an empty string.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `EndsWith`
 
 ```typescript
-type EndsWith<S extends string, T extends string> = S extends `${string}${T}`
-  ? true
-  : false
+type EndsWith<S extends string, T extends string> = S extends `${string}${T}` ? true : false
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/type-level.ts#L13" />
@@ -3152,9 +2259,7 @@ Check if a string ends with a specific suffix.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StartsWith`
 
 ```typescript
-type StartsWith<S extends string, T extends string> = S extends `${T}${string}`
-  ? true
-  : false
+type StartsWith<S extends string, T extends string> = S extends `${T}${string}` ? true : false
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/type-level.ts#L19" />
@@ -3164,8 +2269,7 @@ Check if a string starts with a specific prefix.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `LastSegment`
 
 ```typescript
-type LastSegment<S extends string> = S extends `${string}/${infer Rest}`
-  ? LastSegment<Rest>
+type LastSegment<S extends string> = S extends `${string}/${infer Rest}` ? LastSegment<Rest>
   : S
 ```
 
@@ -3176,8 +2280,7 @@ Extract the last segment from a path-like string (after the last '/').
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RemoveTrailingSlash`
 
 ```typescript
-type RemoveTrailingSlash<S extends string> = S extends `${infer Rest}/`
-  ? Rest extends '' ? '/' : Rest
+type RemoveTrailingSlash<S extends string> = S extends `${infer Rest}/` ? Rest extends '' ? '/' : Rest
   : S
 ```
 
@@ -3188,14 +2291,12 @@ Remove trailing slash from a string.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Split`
 
 ```typescript
-type Split<S extends string, D extends string, Acc extends string[] = []> =
-  S extends '' ? Acc
-    : S extends `${infer Segment}${D}${infer Rest}`
-      ? Segment extends '' ? Split<Rest, D, Acc>
-      : Segment extends '.' ? Split<Rest, D, Acc>
-      : Split<Rest, D, [...Acc, Segment]>
-    : S extends '.' ? Acc
-    : [...Acc, S]
+type Split<S extends string, D extends string, Acc extends string[] = []> = S extends '' ? Acc
+  : S extends `${infer Segment}${D}${infer Rest}` ? Segment extends '' ? Split<Rest, D, Acc>
+  : Segment extends '.' ? Split<Rest, D, Acc>
+  : Split<Rest, D, [...Acc, Segment]>
+  : S extends '.' ? Acc
+  : [...Acc, S]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/type-level.ts#L40" />
@@ -3207,13 +2308,131 @@ This is useful for path-like strings.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Contains`
 
 ```typescript
-type Contains<S extends string, C extends string> = S extends
-  `${string}${C}${string}` ? true : false
+type Contains<S extends string, C extends string> = S extends `${string}${C}${string}` ? true : false
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/type-level.ts#L51" />
 
 Check if string contains a character.
+
+## Type-Level Utilities
+
+$S - The string to measure
+
+$Acc - Accumulator tuple for counting (internal)
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Length`
+
+```typescript
+type Length<$S extends string, $Acc extends 0[] = []> = $S extends `${string}${infer __rest__}`
+  ? Length<__rest__, [...$Acc, 0]>
+  : $Acc['length']
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/type-level.ts#L87" />
+
+Get the length of a string type using tuple counting.
+
+Uses recursive template literal parsing with tuple accumulation to count characters.
+
+Limited by TypeScript's recursion depth (typically ~50 levels).
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+type L1 = Str.Length<'hello'> // 5
+type L2 = Str.Length<''> // 0
+type L3 = Str.Length<'a'> // 1
+```
+
+## Type-Level Utilities
+
+$S - The string to pad
+
+$TargetLen - The desired final length
+
+$Fill - The character to use for padding (default: '_')
+
+$Acc - Accumulator for recursion depth tracking (internal)
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PadEnd`
+
+```typescript
+type PadEnd<
+  $S extends string,
+  $TargetLen extends number,
+  $Fill extends string = '_',
+  $Acc extends 0[] = [],
+> = Length<$S> extends $TargetLen ? $S
+  : $Acc['length'] extends 50 // Recursion limit safety
+  ? $S
+  : PadEnd<`${$S}${$Fill}`, $TargetLen, $Fill, [...$Acc, 0]>
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/type-level.ts#L111" />
+
+Pad a string to a target length by appending a fill character.
+
+If the string is already at or exceeds the target length, returns it unchanged.
+
+Limited by TypeScript's recursion depth (~50 iterations).
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+type P1 = Str.PadEnd<'foo', 10, '_'> // 'foo_______'
+type P2 = Str.PadEnd<'hello', 3, '_'> // 'hello' (already longer)
+type P3 = Str.PadEnd<'abc', 5, '0'> // 'abc00'
+```
+
+## Type-Level Utilities
+
+$S - The string to pad
+
+$TargetLen - The desired final length
+
+$Fill - The character to use for padding (default: '0')
+
+$Acc - Accumulator for recursion depth tracking (internal)
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PadStart`
+
+```typescript
+type PadStart<
+  $S extends string,
+  $TargetLen extends number,
+  $Fill extends string = '0',
+  $Acc extends 0[] = [],
+> = Length<$S> extends $TargetLen ? $S
+  : $Acc['length'] extends 50 // Recursion limit safety
+  ? $S
+  : PadStart<`${$Fill}${$S}`, $TargetLen, $Fill, [...$Acc, 0]>
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/type-level.ts#L141" />
+
+Pad a string to a target length by prepending a fill character.
+
+If the string is already at or exceeds the target length, returns it unchanged.
+
+Limited by TypeScript's recursion depth (~50 iterations).
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+type P1 = Str.PadStart<'42', 5, '0'> // '00042'
+type P2 = Str.PadStart<'hello', 3, '0'> // 'hello' (already longer)
+type P3 = Str.PadStart<'x', 3, ' '> // '  x'
+```
 
 ## Type-Level Utilities
 
@@ -3228,10 +2447,10 @@ type LiteralOnly<
   T extends string,
   $ErrorMessage extends string = 'Expected a literal string',
 > = string extends T ? Ts.StaticError<
-    $ErrorMessage,
-    { ReceivedType: T },
-    'Use a string literal instead of string type'
-  >
+  $ErrorMessage,
+  { ReceivedType: T },
+  'Use a string literal instead of string type'
+>
   : T
 ```
 
@@ -3257,15 +2476,15 @@ Arb<string>
 type RegExpMatchResult<$Matches extends Matches> =
   & Omit<RegExpMatchArray, 'groups'>
   & {
-    groups: $Matches['groups'] extends
-      readonly [MatchItem, ...readonly MatchItem[]]
-      ? ArrMut.ReduceWithIntersection<ToGroupsProperties<$Matches['groups']>>
-      : undefined
+    groups:
+    $Matches['groups'] extends readonly [MatchItem, ...readonly MatchItem[]]
+    ? ArrMut.ReduceWithIntersection<ToGroupsProperties<$Matches['groups']>>
+    : undefined
   }
   & (
     $Matches extends { indicies: readonly [MatchItem, ...readonly MatchItem[]] }
-      ? [originalValue: string, ...$Matches['indicies']]
-      : [originalValue: string]
+    ? [originalValue: string, ...$Matches['indicies']]
+    : [originalValue: string]
   )
 ```
 

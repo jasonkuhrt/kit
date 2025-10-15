@@ -260,7 +260,7 @@ Returns whole part and fractional part.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromWith`
 
 ```typescript
-;((denominator: NonZero) => (numerator: Int) => Ratio)
+(denominator: NonZero) => (numerator: Int) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L110" />
@@ -272,7 +272,7 @@ Useful for creating unit fractions.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`
 
 ```typescript
-;((numerator: Int) => (denominator: NonZero) => Ratio)
+(numerator: Int) => (denominator: NonZero) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L125" />
@@ -284,7 +284,7 @@ Useful for working with common denominators.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`
 
 ```typescript
-;((a: Ratio) => (b: Ratio) => Ratio)
+(a: Ratio) => (b: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L257" />
@@ -296,7 +296,7 @@ Useful for repeated additions.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
 
 ```typescript
-;((b: Ratio) => (a: Ratio) => Ratio)
+(b: Ratio) => (a: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L271" />
@@ -308,7 +308,7 @@ Useful for accumulating values.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`
 
 ```typescript
-;((a: Ratio) => (b: Ratio) => Ratio)
+(a: Ratio) => (b: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L304" />
@@ -320,7 +320,7 @@ Useful for calculating remainders.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractOn`
 
 ```typescript
-;((a: Ratio) => (b: Ratio) => Ratio)
+(a: Ratio) => (b: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L318" />
@@ -332,7 +332,7 @@ Useful for repeated subtractions.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`
 
 ```typescript
-;((a: Ratio) => (b: Ratio) => Ratio)
+(a: Ratio) => (b: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L355" />
@@ -344,7 +344,7 @@ Useful for scaling.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
 
 ```typescript
-;((b: Ratio) => (a: Ratio) => Ratio)
+(b: Ratio) => (a: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L369" />
@@ -356,7 +356,7 @@ Useful for applying ratios to values.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideWith`
 
 ```typescript
-;((a: Ratio) => (b: Ratio) => Ratio)
+(a: Ratio) => (b: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L408" />
@@ -368,7 +368,7 @@ Useful for finding proportions.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideOn`
 
 ```typescript
-;((a: Ratio) => (b: Ratio) => Ratio)
+(a: Ratio) => (b: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L422" />
@@ -380,7 +380,7 @@ Useful for repeated divisions.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareOn`
 
 ```typescript
-;((a: Ratio) => (b: Ratio) => 0 | 1 | -1)
+(a: Ratio) => (b: Ratio) => 0 | 1 | -1
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L459" />
@@ -392,7 +392,7 @@ Useful for filtering or sorting.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareWith`
 
 ```typescript
-;((b: Ratio) => (a: Ratio) => 0 | 1 | -1)
+(b: Ratio) => (a: Ratio) => 0 | 1 | -1
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L473" />

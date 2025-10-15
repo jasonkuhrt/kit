@@ -48,8 +48,11 @@ Commonly used for environment variables and constants.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:constant:1]
 Str.Case.constant('helloWorld') // 'HELLO_WORLD'
+// [!code word:constant:1]
 Str.Case.constant('foo-bar') // 'FOO_BAR'
+// [!code word:constant:1]
 Str.Case.constant('myEnvVar') // 'MY_ENV_VAR'
 ```
 
@@ -77,8 +80,11 @@ Replaces hyphens and underscores with spaces and capitalizes the first letter of
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:title:1]
 Str.Case.title('hello-world') // 'Hello World'
+// [!code word:title:1]
 Str.Case.title('foo_bar') // 'Foo Bar'
+// [!code word:title:1]
 Str.Case.title('the quick brown fox') // 'The Quick Brown Fox'
 ```
 
@@ -108,8 +114,8 @@ Preserves the uppercase type at the type level.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
-uppercase('hello') // Type: "HELLO" (not string)
-uppercase('world') // Type: "WORLD"
+uppercase('hello')  // Type: "HELLO" (not string)
+uppercase('world')  // Type: "WORLD"
 
 // Works with plain strings too
 uppercase('hello world') // 'HELLO WORLD'
@@ -140,9 +146,9 @@ Convert the first letter of a string to lowercase with type-level transformation
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
-lowerCaseFirst('Hello') // Type: "hello"
-lowerCaseFirst('World') // Type: "world"
-lowerCaseFirst('HELLO') // Type: "hELLO"
+lowerCaseFirst('Hello')  // Type: "hello"
+lowerCaseFirst('World')  // Type: "world"
+lowerCaseFirst('HELLO')  // Type: "hELLO"
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `capFirst`
@@ -169,9 +175,9 @@ Capitalize the first letter of a string with type-level transformation.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
-capitalizeFirst('hello') // Type: "Hello"
-capitalizeFirst('world') // Type: "World"
-capitalizeFirst('foo bar') // Type: "Foo bar"
+capitalizeFirst('hello')  // Type: "Hello"
+capitalizeFirst('world')  // Type: "World"
+capitalizeFirst('foo bar')  // Type: "Foo bar"
 ```
 
 ## Other

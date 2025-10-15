@@ -172,3 +172,267 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
 }
 ╚══════════════════════════════════════════════════╝"
 `;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./bui...) 4`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./build/index.js"}}',
+    '/src/index.ts': '/** Public export */\\nexport const publicFn = () => 1\\n\\n/** Internal export\\n * @internal\\n */\\nexport const internalFn = () => 2'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './src/index.ts',
+        description: 'Public export',
+        exports: [
+          {
+            name: 'publicFn',
+            signature: {
+              overloads: [
+                {
+                  typeParameters: [],
+                  parameters: [],
+                  returnType: 'number',
+                  returnDoc: undefined,
+                  throws: []
+                }
+              ],
+              _tag: 'FunctionSignatureModel'
+            },
+            description: 'Public export',
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './src/index.ts',
+              line: 2
+            },
+            _tag: 'value',
+            type: 'function'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./bui...) 5`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./build/index.js"}}',
+    '/src/index.ts': '/** Public export */\\nexport const publicFn = () => 1\\n\\n/** Internal helper */\\nexport const _internalHelper = () => 2'
+  },
+  filterUnderscoreExports: true
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './src/index.ts',
+        description: 'Public export',
+        exports: [
+          {
+            name: 'publicFn',
+            signature: {
+              overloads: [
+                {
+                  typeParameters: [],
+                  parameters: [],
+                  returnType: 'number',
+                  returnDoc: undefined,
+                  throws: []
+                }
+              ],
+              _tag: 'FunctionSignatureModel'
+            },
+            description: 'Public export',
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './src/index.ts',
+              line: 2
+            },
+            _tag: 'value',
+            type: 'function'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./bui...) 6`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./build/index.js"}}',
+    '/src/index.ts': '/** Public export */\\nexport const publicFn = () => 1\\n\\n/** Internal helper */\\nexport const _internalHelper = () => 2'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './src/index.ts',
+        description: 'Public export',
+        exports: [
+          {
+            name: 'publicFn',
+            signature: {
+              overloads: [
+                {
+                  typeParameters: [],
+                  parameters: [],
+                  returnType: 'number',
+                  returnDoc: undefined,
+                  throws: []
+                }
+              ],
+              _tag: 'FunctionSignatureModel'
+            },
+            description: 'Public export',
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './src/index.ts',
+              line: 2
+            },
+            _tag: 'value',
+            type: 'function'
+          },
+          {
+            name: '_internalHelper',
+            signature: {
+              overloads: [
+                {
+                  typeParameters: [],
+                  parameters: [],
+                  returnType: 'number',
+                  returnDoc: undefined,
+                  throws: []
+                }
+              ],
+              _tag: 'FunctionSignatureModel'
+            },
+            description: 'Internal helper',
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './src/index.ts',
+              line: 5
+            },
+            _tag: 'value',
+            type: 'function'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./bui...) 7`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./build/index.js"}}',
+    '/src/index.ts': '/** Public export */\\nexport const publicFn = () => 1\\n\\n/** Internal with tag\\n * @internal\\n */\\nexport const internalFn = () => 2\\n\\n/** Internal with underscore */\\nexport const _internalHelper = () => 3\\n\\n/** Internal with both\\n * @internal\\n */\\nexport const _superInternal = () => 4'
+  },
+  filterUnderscoreExports: true
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './src/index.ts',
+        description: 'Public export',
+        exports: [
+          {
+            name: 'publicFn',
+            signature: {
+              overloads: [
+                {
+                  typeParameters: [],
+                  parameters: [],
+                  returnType: 'number',
+                  returnDoc: undefined,
+                  throws: []
+                }
+              ],
+              _tag: 'FunctionSignatureModel'
+            },
+            description: 'Public export',
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './src/index.ts',
+              line: 2
+            },
+            _tag: 'value',
+            type: 'function'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;

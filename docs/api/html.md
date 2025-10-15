@@ -82,9 +82,11 @@ Converts the following characters to their HTML entity equivalents:
 // @noErrors
 import { Html } from '@wollybeard/kit/html'
 // ---cut---
+// [!code word:escape:1]
 Html.escape('Use Array<T> or Record<K, V>')
 // => 'Use Array&lt;T&gt; or Record&lt;K, V&gt;'
 
+// [!code word:escape:1]
 Html.escape('<script>alert("xss")</script>')
 // => '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
 ```

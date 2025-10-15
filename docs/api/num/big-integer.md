@@ -369,7 +369,7 @@ BigInteger
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+(a: BigInteger) => (b: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L129" />
@@ -381,7 +381,7 @@ Data-first pattern: the fixed value is the first parameter.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+(b: BigInteger) => (a: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L147" />
@@ -393,7 +393,7 @@ Data-second pattern: the fixed value is the second parameter.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+(b: BigInteger) => (a: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L177" />
@@ -405,7 +405,7 @@ Data-second pattern: the fixed value is the second parameter (subtrahend).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractOn`
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+(a: BigInteger) => (b: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L191" />
@@ -417,7 +417,7 @@ Data-first pattern: the fixed value is the first parameter (minuend).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+(a: BigInteger) => (b: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L227" />
@@ -429,7 +429,7 @@ Data-first pattern: the fixed value is the first parameter.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+(b: BigInteger) => (a: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L244" />
@@ -441,7 +441,7 @@ Data-second pattern: the fixed value is the second parameter (multiplier).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideOn`
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+(a: BigInteger) => (b: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L281" />
@@ -453,7 +453,7 @@ Data-first pattern: the fixed value is the first parameter (dividend).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideWith`
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+(b: BigInteger) => (a: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L298" />
@@ -465,7 +465,7 @@ Data-second pattern: the fixed value is the second parameter (divisor).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `remainderOn`
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+(a: BigInteger) => (b: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L335" />
@@ -477,7 +477,7 @@ Data-first pattern: the fixed value is the first parameter (dividend).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `remainderWith`
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+(b: BigInteger) => (a: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L351" />
@@ -489,7 +489,7 @@ Data-second pattern: the fixed value is the second parameter (divisor).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerOn`
 
 ```typescript
-;((base: BigInteger) => (exponent: BigInteger) => BigInteger)
+(base: BigInteger) => (exponent: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L388" />
@@ -501,7 +501,7 @@ Data-first pattern: the fixed value is the first parameter (base).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerWith`
 
 ```typescript
-;((exponent: BigInteger) => (base: BigInteger) => BigInteger)
+(exponent: BigInteger) => (base: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L406" />
@@ -513,7 +513,7 @@ Data-second pattern: the fixed value is the second parameter (exponent).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareOn`
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => 0 | 1 | -1)
+(a: BigInteger) => (b: BigInteger) => 0 | 1 | -1
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L456" />
@@ -525,7 +525,7 @@ Data-first pattern: the fixed value is the first parameter.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareWith`
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => 0 | 1 | -1)
+(b: BigInteger) => (a: BigInteger) => 0 | 1 | -1
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L474" />

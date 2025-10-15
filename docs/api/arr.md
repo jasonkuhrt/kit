@@ -48,9 +48,12 @@ Get the last element of an array.
 // @noErrors
 import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
-Arr.last([1, 2, 3]) // 3
-Arr.last(['a']) // 'a'
-Arr.last([]) // undefined
+// [!code word:last:1]
+Arr.last([1, 2, 3])  // 3
+// [!code word:last:1]
+Arr.last(['a'])  // 'a'
+// [!code word:last:1]
+Arr.last([])  // undefined
 ```
 
 ## Constants
@@ -58,7 +61,7 @@ Arr.last([]) // undefined
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `empty`
 
 ```typescript
-readonly []
+readonly[]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L78" />
@@ -79,14 +82,16 @@ Empty array constant.
 // @noErrors
 import { Arr } from '@wollybeard/kit'
 
+// [!code word:empty:1]
 const emptyArray = Arr.empty
+// [!code word:log:1]
 console.log(emptyArray) // []
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `emptyArray`
 
 ```typescript
-readonly []
+readonly[]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L90" />
@@ -101,6 +106,7 @@ Useful as a default value or sentinel.
 // @noErrors
 import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
+// [!code word:emptyArray:1]
 const arr = items ?? Arr.emptyArray
 ```
 
@@ -132,9 +138,12 @@ Otherwise, wrap it in an array.
 // @noErrors
 import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
-Arr.ensure('hello') // ['hello']
-Arr.ensure(['a', 'b']) // ['a', 'b']
-Arr.ensure(42) // [42]
+// [!code word:ensure:1]
+Arr.ensure('hello')  // ['hello']
+// [!code word:ensure:1]
+Arr.ensure(['a', 'b'])  // ['a', 'b']
+// [!code word:ensure:1]
+Arr.ensure(42)  // [42]
 ```
 
 ## Search
@@ -171,6 +180,7 @@ import { Arr } from '@wollybeard/kit/arr'
 const fruits = ['apple', 'banana', 'orange'] as const
 const value: unknown = 'apple'
 
+// [!code word:includes:1]
 if (Arr.includes(fruits, value)) {
   // value is now typed as 'apple' | 'banana' | 'orange'
 }
@@ -201,20 +211,25 @@ comparing elements using their appropriate Eq implementations.
 import { Arr } from '@wollybeard/kit'
 
 // Basic array equality
+// [!code word:is:1]
 Arr.Eq.is([1, 2, 3], [1, 2, 3]) // true
+// [!code word:is:1]
 Arr.Eq.is([1, 2, 3], [1, 2, 4]) // false
+// [!code word:is:1]
 Arr.Eq.is([1, 2], [1, 2, 3]) // false (different lengths)
 
 // Nested arrays
+// [!code word:is:1]
 Arr.Eq.is(
   [[1, 2], [3, 4]],
-  [[1, 2], [3, 4]],
+  [[1, 2], [3, 4]]
 ) // true
 
 // Mixed types
+// [!code word:is:1]
 Arr.Eq.is(
   [1, 'hello', true],
-  [1, 'hello', true],
+  [1, 'hello', true]
 ) // true
 ```
 
@@ -238,10 +253,14 @@ Provides type checking for readonly array values using Array.isArray.
 // @noErrors
 import { Arr } from '@wollybeard/kit'
 
-Arr.Type.is([1, 2, 3]) // true
-Arr.Type.is([]) // true
-Arr.Type.is('not array') // false
-Arr.Type.is(null) // false
+// [!code word:is:1]
+Arr.Type.is([1, 2, 3])     // true
+// [!code word:is:1]
+Arr.Type.is([])            // true
+// [!code word:is:1]
+Arr.Type.is('not array')   // false
+// [!code word:is:1]
+Arr.Type.is(null)          // false
 ```
 
 ## Transformation
@@ -249,7 +268,7 @@ Arr.Type.is(null) // false
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `transpose`
 
 ```typescript
-<$T>(rows: readonly (readonly $T[])[]): $T[][]
+<$T>(rows: readonly(readonly $T[])[]): $T[][]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L222" />
@@ -276,20 +295,23 @@ import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
 const rows = [
   [1, 2, 3],
-  [4, 5, 6],
+  [4, 5, 6]
 ]
+// [!code word:transpose:1]
 Arr.transpose(rows)
 // [[1, 4], [2, 5], [3, 6]]
 
 const table = [
   ['Alice', 'Engineer', '100k'],
-  ['Bob', 'Designer', '90k'],
+  ['Bob', 'Designer', '90k']
 ]
+// [!code word:transpose:1]
 Arr.transpose(table)
 // [['Alice', 'Bob'], ['Engineer', 'Designer'], ['100k', '90k']]
 
 // Ragged array (uneven row lengths)
 const ragged = [[1, 2, 3], [4, 5]]
+// [!code word:transpose:1]
 Arr.transpose(ragged)
 // [[1, 4], [2, 5], [3]]
 ```
@@ -325,8 +347,11 @@ Throws a TypeError if the value is not an array.
 import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
 function process(value: unknown) {
+// [!code word:assert:1]
   Arr.assert(value)
   // value is now typed as unknown[]
+// [!code word:forEach:1]
+// [!code word:log:1]
   value.forEach(item => console.log(item))
 }
 ```
@@ -336,8 +361,7 @@ function process(value: unknown) {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `All`
 
 ```typescript
-type All<$Tuple extends [...boolean[]]> = $Tuple[number] extends true ? true
-  : false
+type All<$Tuple extends [...boolean[]]> = $Tuple[number] extends true ? true : false
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L27" />
@@ -350,15 +374,14 @@ Check if all booleans in a tuple are true.
 // @noErrors
 import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
-type T1 = All<[true, true, true]> // true
-type T2 = All<[true, false, true]> // false
+type T1 = All<[true, true, true]>  // true
+type T2 = All<[true, false, true]>  // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsTupleMultiple`
 
 ```typescript
-type IsTupleMultiple<$T> = $T extends [unknown, unknown, ...unknown[]] ? true
-  : false
+type IsTupleMultiple<$T> = $T extends [unknown, unknown, ...unknown[]] ? true : false
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L39" />
@@ -371,8 +394,8 @@ Check if a tuple has multiple elements.
 // @noErrors
 import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
-type T1 = IsTupleMultiple<[1, 2]> // true
-type T2 = IsTupleMultiple<[1]> // false
+type T1 = IsTupleMultiple<[1, 2]>  // true
+type T2 = IsTupleMultiple<[1]>  // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Push`
@@ -391,17 +414,15 @@ Push a value onto a tuple.
 // @noErrors
 import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
-type T = Push<[1, 2], 3> // [1, 2, 3]
+type T = Push<[1, 2], 3>  // [1, 2, 3]
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `FirstNonUnknownNever`
 
 ```typescript
-type FirstNonUnknownNever<$T extends any[]> = $T extends
-  [infer __first__, ...infer __rest__]
-  ? unknown extends __first__
-    ? 0 extends 1 & __first__ ? FirstNonUnknownNever<__rest__> // is any
-    : FirstNonUnknownNever<__rest__> // is unknown
+type FirstNonUnknownNever<$T extends any[]> = $T extends [infer __first__, ...infer __rest__]
+  ? unknown extends __first__ ? 0 extends 1 & __first__ ? FirstNonUnknownNever<__rest__> // is any
+  : FirstNonUnknownNever<__rest__> // is unknown
   : __first__ extends never ? FirstNonUnknownNever<__rest__>
   : __first__
   : never

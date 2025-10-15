@@ -29,7 +29,7 @@ Str.Char.someFunction()
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spaceNoBreak`
 
 ```typescript
-' '
+" "
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L144" />
@@ -41,7 +41,7 @@ A space character that prevents line breaks at its position.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spaceRegular`
 
 ```typescript
-' '
+" "
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L152" />
@@ -53,7 +53,7 @@ The standard space character.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `newline`
 
 ```typescript
-'\n'
+"\n"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L159" />
@@ -65,7 +65,7 @@ Used to create line breaks in text.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `bullet`
 
 ```typescript
-'•'
+"•"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L167" />
@@ -77,7 +77,7 @@ Standard bullet point symbol: •
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `middleDot`
 
 ```typescript
-'·'
+"·"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L175" />
@@ -89,7 +89,7 @@ Centered dot symbol: ·
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `whiteBullet`
 
 ```typescript
-'◦'
+"◦"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L194" />
@@ -101,7 +101,7 @@ Hollow circle symbol: ◦
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `inverseBullet`
 
 ```typescript
-'◘'
+"◘"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L202" />
@@ -113,7 +113,7 @@ Inverse white circle symbol: ◘
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `squareWithLeftHalfBlack`
 
 ```typescript
-'◧'
+"◧"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L210" />
@@ -125,7 +125,7 @@ Half-filled square symbol: ◧
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `rightwardsArrow`
 
 ```typescript
-'→'
+"→"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L218" />
@@ -137,7 +137,7 @@ Right-pointing arrow symbol: →
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `pipe`
 
 ```typescript
-'|'
+"|"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L226" />
@@ -149,7 +149,7 @@ Vertical line symbol: |
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boxDrawingHorizontal`
 
 ```typescript
-'─'
+"─"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L234" />
@@ -161,7 +161,7 @@ Horizontal line symbol: ─
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boxDrawingHorizontalHeavy`
 
 ```typescript
-'━'
+"━"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L242" />
@@ -173,7 +173,7 @@ Bold horizontal line symbol: ━
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boxDrawingVertical`
 
 ```typescript
-'│'
+"│"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L250" />
@@ -185,7 +185,7 @@ Vertical line symbol: │
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boxDrawingDownRight`
 
 ```typescript
-'┌'
+"┌"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L258" />
@@ -197,7 +197,7 @@ Top-left corner symbol: ┌
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boxDrawingDownLeft`
 
 ```typescript
-'┐'
+"┐"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L266" />
@@ -209,7 +209,7 @@ Top-right corner symbol: ┐
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boxDrawingUpRight`
 
 ```typescript
-'└'
+"└"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L274" />
@@ -221,7 +221,7 @@ Bottom-left corner symbol: └
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boxDrawingUpLeft`
 
 ```typescript
-'┘'
+"┘"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L282" />
@@ -233,7 +233,7 @@ Bottom-right corner symbol: ┘
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ballotX`
 
 ```typescript
-'✗'
+"✗"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L290" />
@@ -245,7 +245,7 @@ X mark symbol: ✗
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplicationX`
 
 ```typescript
-'✕'
+"✕"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L298" />
@@ -257,7 +257,7 @@ Multiplication X symbol: ✕
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `checkMark`
 
 ```typescript
-'✓'
+"✓"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L306" />
@@ -269,7 +269,7 @@ Check symbol: ✓
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `blackSquare`
 
 ```typescript
-'■'
+"■"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L314" />
@@ -281,7 +281,7 @@ Filled square symbol: ■
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `whiteCircle`
 
 ```typescript
-'○'
+"○"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L322" />
@@ -293,7 +293,7 @@ Hollow circle symbol: ○
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `blackUpPointingTriangle`
 
 ```typescript
-'▲'
+"▲"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L330" />
@@ -305,7 +305,7 @@ Filled upward triangle symbol: ▲
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `emDash`
 
 ```typescript
-'—'
+"—"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L338" />
@@ -317,7 +317,7 @@ Long dash symbol: —
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `exclamation`
 
 ```typescript
-'!'
+"!"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L345" />
@@ -329,7 +329,7 @@ Often used for negation or emphasis: !
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `colon`
 
 ```typescript
-':'
+":"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L352" />
@@ -341,7 +341,7 @@ Often used as a separator or delimiter: :
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `comma`
 
 ```typescript
-','
+","
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L359" />
@@ -353,7 +353,7 @@ Often used as a list separator: ,
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `asterisk`
 
 ```typescript
-'*'
+"*"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L366" />
@@ -365,7 +365,7 @@ Often used as a wildcard or multiplication symbol: *
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `at`
 
 ```typescript
-'@'
+"@"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L373" />
@@ -377,7 +377,7 @@ Often used in email addresses and mentions:
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `plus`
 
 ```typescript
-'+'
+"+"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L380" />
@@ -389,7 +389,7 @@ Used for addition or positive values: +
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `hyphen`
 
 ```typescript
-'-'
+"-"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L387" />
@@ -547,7 +547,7 @@ Used for colors (#FF5733), memory addresses, data encoding, etc.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `blackCircle`
 
 ```typescript
-'●'
+"●"
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/char/char.ts#L186" />

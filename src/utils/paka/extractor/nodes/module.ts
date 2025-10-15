@@ -47,13 +47,46 @@ const createNamespaceExport = (
 }
 
 /**
+ * Options for module extraction.
+ */
+export type ModuleExtractionOptions = {
+  /** Filter exports marked with @internal */
+  filterInternal?: boolean
+  /** Filter exports starting with underscore _ prefix */
+  filterUnderscoreExports?: boolean
+}
+
+/**
+ * Check if an export should be filtered based on JSDoc and naming conventions.
+ */
+const shouldFilterExport = (exportName: string, jsdoc: JSDocInfo, options: ModuleExtractionOptions): boolean => {
+  // Filter if marked as @internal
+  if (options.filterInternal && jsdoc.internal) {
+    return true
+  }
+
+  // Filter if starts with underscore and option is enabled
+  if (options.filterUnderscoreExports && exportName.startsWith('_')) {
+    return true
+  }
+
+  return false
+}
+
+/**
  * Extract a module from a source file.
  *
  * @param sourceFile - The source file to extract from
  * @param location - Relative file path from project root
+ * @param options - Extraction options for filtering
  * @returns Module with all exports
  */
-export const extractModuleFromFile = (sourceFile: SourceFile, location: FsLoc.RelFile): Module => {
+export const extractModuleFromFile = (
+  sourceFile: SourceFile,
+  location: FsLoc.RelFile,
+  options: ModuleExtractionOptions = {},
+): Module => {
+  const { filterInternal = true, filterUnderscoreExports = false } = options
   const exports = sourceFile.getExportedDeclarations()
   const moduleExports = []
 
@@ -73,7 +106,13 @@ export const extractModuleFromFile = (sourceFile: SourceFile, location: FsLoc.Re
         const nestedLocation = S.decodeSync(FsLoc.RelFile.String)(
           absoluteToRelative(referencedFile.getFilePath()),
         )
-        const nestedModule = extractModuleFromFile(referencedFile, nestedLocation)
+        const nestedModule = extractModuleFromFile(referencedFile, nestedLocation, options)
+
+        // Check if this namespace export should be filtered
+        const jsdoc = parseJSDoc(exportDecl)
+        if (shouldFilterExport(nsName, jsdoc, options)) {
+          continue
+        }
 
         // Create namespace export using helper
         moduleExports.push(createNamespaceExport(exportDecl, nsName, nestedModule))
@@ -96,7 +135,13 @@ export const extractModuleFromFile = (sourceFile: SourceFile, location: FsLoc.Re
               const nsLocation = S.decodeSync(FsLoc.RelFile.String)(
                 absoluteToRelative(nsFile.getFilePath()),
               )
-              const nestedModule = extractModuleFromFile(nsFile, nsLocation)
+              const nestedModule = extractModuleFromFile(nsFile, nsLocation, options)
+
+              // Check if this namespace export should be filtered
+              const jsdoc = parseJSDoc(nestedExportDecl)
+              if (shouldFilterExport(nsName, jsdoc, options)) {
+                continue
+              }
 
               // Create namespace export using helper
               moduleExports.push(createNamespaceExport(nestedExportDecl, nsName, nestedModule))
@@ -134,6 +179,12 @@ export const extractModuleFromFile = (sourceFile: SourceFile, location: FsLoc.Re
       continue
     }
 
+    // Check if this export should be filtered
+    const jsdoc = parseJSDoc(decl)
+    if (shouldFilterExport(exportName, jsdoc, options)) {
+      continue
+    }
+
     moduleExports.push(extractExport(exportName, decl))
   }
 
@@ -163,9 +214,14 @@ export const extractModuleFromFile = (sourceFile: SourceFile, location: FsLoc.Re
  *
  * @param moduleDecl - The module/namespace declaration
  * @param location - Relative file path from project root
+ * @param options - Extraction options for filtering
  * @returns Module with all namespace exports
  */
-export const extractModule = (moduleDecl: ModuleDeclaration, location: FsLoc.RelFile): Module => {
+export const extractModule = (
+  moduleDecl: ModuleDeclaration,
+  location: FsLoc.RelFile,
+  options: ModuleExtractionOptions = {},
+): Module => {
   const body = moduleDecl.getBody()
 
   if (!body || !Node.isModuleBlock(body)) {
@@ -214,7 +270,11 @@ export const extractModule = (moduleDecl: ModuleDeclaration, location: FsLoc.Rel
     }
 
     if (exportName && declNode) {
-      exports.push(extractExport(exportName, declNode as any))
+      // Check if this export should be filtered
+      const jsdoc = parseJSDoc(declNode)
+      if (!shouldFilterExport(exportName, jsdoc, options)) {
+        exports.push(extractExport(exportName, declNode as any))
+      }
     }
   }
 

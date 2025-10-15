@@ -57,16 +57,22 @@ This is the "true" visual width as it would appear in a terminal:
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // ANSI codes are stripped
-Str.Visual.width('\x1b[31mred\x1b[0m') // 3
+// [!code word:width:1]
+Str.Visual.width('\x1b[31mred\x1b[0m')  // 3
 
 // Grapheme clusters count as 1
-Str.Visual.width('👨‍👩‍👧‍👦') // 1 (family emoji)
-Str.Visual.width('é') // 1 (e + combining accent)
-Str.Visual.width('🇺🇸') // 1 (flag emoji)
+// [!code word:width:1]
+Str.Visual.width('👨‍👩‍👧‍👦')              // 1 (family emoji)
+// [!code word:width:1]
+Str.Visual.width('é')                   // 1 (e + combining accent)
+// [!code word:width:1]
+Str.Visual.width('🇺🇸')                  // 1 (flag emoji)
 
 // Empty string
-Str.Visual.width('') // 0
-Str.Visual.width('\x1b[31m\x1b[0m') // 0 (only ANSI codes)
+// [!code word:width:1]
+Str.Visual.width('')                    // 0
+// [!code word:width:1]
+Str.Visual.width('\x1b[31m\x1b[0m')     // 0 (only ANSI codes)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pad`
@@ -99,23 +105,23 @@ output has the desired visual width.
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Regular text
-Str.Visual.pad('hi', 5, 'right') // 'hi   ' (visual width 5)
+// [!code word:pad:1]
+Str.Visual.pad('hi', 5, 'right')  // 'hi   ' (visual width 5)
 
 // With ANSI codes - padding accounts for escape codes
 const colored = '\x1b[31mOK\x1b[0m'
-Str.Visual.pad(colored, 5, 'right') // Adds 3 spaces (visual: "OK   ")
+// [!code word:pad:1]
+Str.Visual.pad(colored, 5, 'right')  // Adds 3 spaces (visual: "OK   ")
 
 // Text already wider than target size
-Str.Visual.pad('hello', 3, 'left') // 'hello' (unchanged)
+// [!code word:pad:1]
+Str.Visual.pad('hello', 3, 'left')  // 'hello' (unchanged)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padOn`
 
 ```typescript
-;((text: string) =>
-(size: number) =>
-(side?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
+(text: string) => (size: number) => (side?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L119" />
@@ -129,10 +135,7 @@ with text first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padWith`
 
 ```typescript
-;((size: number) =>
-(text: string) =>
-(side?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
+(size: number) => (text: string) => (side?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L133" />
@@ -149,8 +152,9 @@ with size first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:padWith:1]
 const pad10 = Str.Visual.padWith(10)
-pad10('\x1b[32mSuccess\x1b[0m', 'right') // Visual width 10
+pad10('\x1b[32mSuccess\x1b[0m', 'right')  // Visual width 10
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `span`
@@ -183,23 +187,23 @@ If the text is already wider than the target width, no padding is added.
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Left-align (pad right)
-Str.Visual.span('hi', 5, 'left') // 'hi   '
+// [!code word:span:1]
+Str.Visual.span('hi', 5, 'left')     // 'hi   '
 
 // Right-align (pad left)
-Str.Visual.span('hi', 5, 'right') // '   hi'
+// [!code word:span:1]
+Str.Visual.span('hi', 5, 'right')    // '   hi'
 
 // With ANSI codes
 const colored = '\x1b[34mID\x1b[0m'
-Str.Visual.span(colored, 6, 'left') // Visual: "ID    "
+// [!code word:span:1]
+Str.Visual.span(colored, 6, 'left')  // Visual: "ID    "
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanOn`
 
 ```typescript
-;((text: string) =>
-(width: number) =>
-(align?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
+(text: string) => (width: number) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L176" />
@@ -213,10 +217,7 @@ with text first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanWith`
 
 ```typescript
-;((width: number) =>
-(text: string) =>
-(align?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
+(width: number) => (text: string) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L191" />
@@ -233,9 +234,10 @@ with width first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:spanWith:1]
 const span8 = Str.Visual.spanWith(8)
-span8('Name', 'left') // 'Name    '
-span8('Age', 'right') // '     Age'
+span8('Name', 'left')   // 'Name    '
+span8('Age', 'right')   // '     Age'
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fit`
@@ -280,22 +282,28 @@ such as table columns, status bars, and terminal UIs.
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Text too long - gets cropped
-Str.Visual.fit('hello world', 5, 'left') // 'hello'
+// [!code word:fit:1]
+Str.Visual.fit('hello world', 5, 'left')  // 'hello'
 
 // Text too short - gets padded
-Str.Visual.fit('hi', 5, 'left') // 'hi   '
-Str.Visual.fit('hi', 5, 'right') // '   hi'
+// [!code word:fit:1]
+Str.Visual.fit('hi', 5, 'left')           // 'hi   '
+// [!code word:fit:1]
+Str.Visual.fit('hi', 5, 'right')          // '   hi'
 
 // Perfect fit - unchanged
-Str.Visual.fit('exact', 5, 'left') // 'exact'
+// [!code word:fit:1]
+Str.Visual.fit('exact', 5, 'left')        // 'exact'
 
 // With ANSI codes
 const colored = '\x1b[31mvery long colored text\x1b[0m'
-Str.Visual.fit(colored, 8, 'left') // '\x1b[31mvery lon\x1b[0m' (visual: "very lon")
+// [!code word:fit:1]
+Str.Visual.fit(colored, 8, 'left')        // '\x1b[31mvery lon\x1b[0m' (visual: "very lon")
 
 // Use case: Fixed-width table columns
 const columns = ['Name', 'Email', 'Status'].map(
-  (header, i) => Str.Visual.fit(header, [10, 20, 8][i], 'left'),
+// [!code word:fit:1]
+  (header, i) => Str.Visual.fit(header, [10, 20, 8][i], 'left')
 )
 // ['Name      ', 'Email               ', 'Status  ']
 ```
@@ -303,10 +311,7 @@ const columns = ['Name', 'Email', 'Status'].map(
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitOn`
 
 ```typescript
-;((text: string) =>
-(width: number) =>
-(align?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
+(text: string) => (width: number) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L250" />
@@ -320,10 +325,7 @@ with text first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitWith`
 
 ```typescript
-;((width: number) =>
-(text: string) =>
-(align?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
+(width: number) => (text: string) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L269" />
@@ -341,11 +343,13 @@ with width first.
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Create fixed-width formatters
+// [!code word:fitWith:1]
 const nameColumn = Str.Visual.fitWith(20)
+// [!code word:fitWith:1]
 const statusColumn = Str.Visual.fitWith(10)
 
-nameColumn('John Doe', 'left') // 'John Doe            '
-statusColumn('Active', 'left') // 'Active    '
+nameColumn('John Doe', 'left')         // 'John Doe            '
+statusColumn('Active', 'left')         // 'Active    '
 statusColumn('Very Long Status', 'left') // 'Very Long '
 ```
 
@@ -377,20 +381,23 @@ Accounts for ANSI codes and grapheme clusters, so the result has the desired vis
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Regular text
-Str.Visual.take('hello', 3) // 'hel'
+// [!code word:take:1]
+Str.Visual.take('hello', 3)  // 'hel'
 
 // With ANSI codes
 const colored = '\x1b[31mhello\x1b[0m world'
-Str.Visual.take(colored, 5) // '\x1b[31mhello\x1b[0m' (visual: "hello")
+// [!code word:take:1]
+Str.Visual.take(colored, 5)  // '\x1b[31mhello\x1b[0m' (visual: "hello")
 
 // With emoji
-Str.Visual.take('👋 hello', 2) // '👋 ' (emoji + space)
+// [!code word:take:1]
+Str.Visual.take('👋 hello', 2)  // '👋 ' (emoji + space)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeOn`
 
 ```typescript
-;((text: string) => (size: number) => string)
+(text: string) => (size: number) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L312" />
@@ -404,7 +411,7 @@ with text first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWith`
 
 ```typescript
-;((size: number) => (text: string) => string)
+(size: number) => (text: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L326" />
@@ -421,8 +428,9 @@ with size first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:takeWith:1]
 const take10 = Str.Visual.takeWith(10)
-take10('a long string here') // First 10 visual chars
+take10('a long string here')  // First 10 visual chars
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `takeWords`
@@ -463,15 +471,18 @@ will be taken anyway).
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Splits at word boundaries
+// [!code word:takeWords:1]
 Str.Visual.takeWords('hello world here', 12)
 // { taken: 'hello world', remaining: 'here' }
 
 // Single word too long - takes it anyway
+// [!code word:takeWords:1]
 Str.Visual.takeWords('verylongword more', 8)
 // { taken: 'verylongword', remaining: 'more' }
 
 // With ANSI codes
 const colored = '\x1b[32mone\x1b[0m two three'
+// [!code word:takeWords:1]
 Str.Visual.takeWords(colored, 7)
 // { taken: '\x1b[32mone\x1b[0m two', remaining: 'three' }
 ```
@@ -479,10 +490,7 @@ Str.Visual.takeWords(colored, 7)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWordsOn`
 
 ```typescript
-;((text: string) => (size: number) => {
-  taken: string
-  remaining: string
-})
+(text: string) => (size: number) => { taken: string; remaining: string; }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L399" />
@@ -496,10 +504,7 @@ with text first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWordsWith`
 
 ```typescript
-;((size: number) => (text: string) => {
-  taken: string
-  remaining: string
-})
+(size: number) => (text: string) => { taken: string; remaining: string; }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L414" />
@@ -516,6 +521,7 @@ with size first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:takeWordsWith:1]
 const take20 = Str.Visual.takeWordsWith(20)
 take20('Lorem ipsum dolor sit amet')
 // { taken: 'Lorem ipsum dolor', remaining: 'sit amet' }
@@ -549,15 +555,18 @@ newlines in the input and breaks long lines at word boundaries when possible.
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Basic wrapping
+// [!code word:wrap:1]
 Str.Visual.wrap('hello world here', 10)
 // ['hello', 'world here']
 
 // Respects existing newlines
+// [!code word:wrap:1]
 Str.Visual.wrap('line one\nline two is long', 10)
 // ['line one', 'line two', 'is long']
 
 // With ANSI codes - visual width accounts for escape codes
 const colored = '\x1b[31mthis is red text\x1b[0m and normal'
+// [!code word:wrap:1]
 Str.Visual.wrap(colored, 12)
 // ['\x1b[31mthis is red\x1b[0m', 'text and', 'normal']
 ```
@@ -596,8 +605,9 @@ with width first.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:wrapWith:1]
 const wrap80 = Str.Visual.wrapWith(80)
-wrap80('long text here...') // Wraps to 80 columns
+wrap80('long text here...')  // Wraps to 80 columns
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `size`
@@ -634,15 +644,18 @@ Accounts for ANSI codes and grapheme clusters.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
+// [!code word:size:1]
 Str.Visual.size('hello\nworld')
 // { maxWidth: 5, height: 2 }
 
 // With ANSI codes
 const colored = '\x1b[31mred\x1b[0m\n\x1b[32mgreen!\x1b[0m'
+// [!code word:size:1]
 Str.Visual.size(colored)
 // { maxWidth: 6, height: 2 } (visual: "red" and "green!")
 
 // Empty string
+// [!code word:size:1]
 Str.Visual.size('')
 // { maxWidth: 0, height: 0 }
 ```
@@ -677,8 +690,10 @@ Useful when you only need width and not height.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
-Str.Visual.maxWidth('short\nlonger line\nhi') // 11
+// [!code word:maxWidth:1]
+Str.Visual.maxWidth('short\nlonger line\nhi')  // 11
 
 // With ANSI codes
-Str.Visual.maxWidth('\x1b[31mred\x1b[0m\n\x1b[32mgreen\x1b[0m') // 5
+// [!code word:maxWidth:1]
+Str.Visual.maxWidth('\x1b[31mred\x1b[0m\n\x1b[32mgreen\x1b[0m')  // 5
 ```

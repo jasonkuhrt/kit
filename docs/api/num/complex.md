@@ -445,7 +445,7 @@ and the imaginary unit to provide clean, readable output.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromWith`
 
 ```typescript
-;((real: number) => (imaginary?: number | undefined) => Complex)
+(real: number) => (imaginary?: number | undefined) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L107" />
@@ -457,7 +457,7 @@ Useful for creating pure imaginary numbers or series.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`
 
 ```typescript
-;((imaginary?: number | undefined) => (real: number) => Complex)
+(imaginary?: number | undefined) => (real: number) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L122" />
@@ -501,7 +501,7 @@ One complex number (1 + 0i).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`
 
 ```typescript
-;((a: Complex) => (b: Complex) => Complex)
+(a: Complex) => (b: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L217" />
@@ -515,7 +515,7 @@ Useful for operations where you want to add various numbers to a fixed base valu
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
 
 ```typescript
-;((b: Complex) => (a: Complex) => Complex)
+(b: Complex) => (a: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L242" />
@@ -529,7 +529,7 @@ Useful when you want to add the same complex number to many different values.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`
 
 ```typescript
-;((a: Complex) => (b: Complex) => Complex)
+(a: Complex) => (b: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L270" />
@@ -539,7 +539,7 @@ Create a function that subtracts from a specific complex number.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractOn`
 
 ```typescript
-;((a: Complex) => (b: Complex) => Complex)
+(a: Complex) => (b: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L286" />
@@ -553,7 +553,7 @@ Useful for operations where you want to subtract various numbers from a fixed va
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`
 
 ```typescript
-;((a: Complex) => (b: Complex) => Complex)
+(a: Complex) => (b: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L332" />
@@ -567,7 +567,7 @@ Useful for operations where you want to multiply a fixed base by various values.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
 
 ```typescript
-;((b: Complex) => (a: Complex) => Complex)
+(b: Complex) => (a: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L359" />
@@ -583,7 +583,7 @@ In 2D graphics, multiplying by a complex number rotates and scales points around
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideWith`
 
 ```typescript
-;((a: Complex) => (b: Complex) => Complex)
+(a: Complex) => (b: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L408" />
@@ -597,7 +597,7 @@ and the function's input becomes the divisor (denominator).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideOn`
 
 ```typescript
-;((a: Complex) => (b: Complex) => Complex)
+(a: Complex) => (b: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L430" />
@@ -611,7 +611,7 @@ Useful for operations where you want to divide a fixed dividend by various value
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerOn`
 
 ```typescript
-;((z: Complex) => (n: number) => Complex)
+(z: Complex) => (n: number) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L684" />
@@ -625,7 +625,7 @@ Useful for operations where you want to raise a fixed base to different powers.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerWith`
 
 ```typescript
-;((n: number) => (z: Complex) => Complex)
+(n: number) => (z: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L719" />
@@ -641,7 +641,7 @@ such as when processing arrays or in mathematical transformations.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `equalsOn`
 
 ```typescript
-;((a: Complex) => (b: Complex) => (tolerance?: number | undefined) => boolean)
+(a: Complex) => (b: Complex) => (tolerance?: number | undefined) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L898" />
@@ -655,7 +655,7 @@ Useful for checking if various numbers equal a fixed reference value.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `equalsWith`
 
 ```typescript
-;((b: Complex) => (a: Complex) => (tolerance?: number | undefined) => boolean)
+(b: Complex) => (a: Complex) => (tolerance?: number | undefined) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L932" />
