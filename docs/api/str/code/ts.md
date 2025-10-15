@@ -281,9 +281,7 @@ Str.Code.TS.reexportNamespace({ as: 'Name', from: './path', type: true })
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L303" />
 
-Re-export named exports from a module.
-
-Supports simple names, arrays, and aliased names.
+Re-export named exports from a module. Supports simple names, arrays, and aliased names.
 
 **Examples:**
 
@@ -339,9 +337,7 @@ Str.Code.TS.importAll({ as: 'Name', from: './path', type: true })
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L369" />
 
-Import named exports from a module.
-
-Supports simple names, arrays, and aliased names.
+Import named exports from a module. Supports simple names, arrays, and aliased names.
 
 **Examples:**
 

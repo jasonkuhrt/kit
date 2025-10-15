@@ -52,9 +52,15 @@ const extractTSDocText = (node: any): string => {
       return `\`\`\`${node.language || ''}\n${node.code}\n\`\`\``
 
     case 'CodeSpan':
-      return node.code || ''
+      return `\`${node.code || ''}\``
 
     case 'Paragraph':
+      // Paragraphs contain inline content that should flow together
+      if ('nodes' in node && Array.isArray(node.nodes)) {
+        return node.nodes.map((child: any) => extractTSDocText(child)).join('')
+      }
+      return ''
+
     case 'Section':
     case 'Block':
       // These are containers - recursively process their nodes

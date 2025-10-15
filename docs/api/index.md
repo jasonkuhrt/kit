@@ -53,3 +53,7 @@ TypeScript type utilities and type-level programming helpers.
 ## [Value](/api/value)
 
 General value utilities for common JavaScript values and patterns.
+
+## [Paka](/api/paka)
+
+# Paka Documentation Extractor

@@ -67,22 +67,11 @@ Enums<{ readonly chainable: "chainable"; readonly terminal: "terminal"; readonly
 
 Builder method classification based on return type.
 
--
-
-chainable
-
+- `chainable`
 - Returns the same builder type (for method chaining)
-
--
-
-terminal
-
+- `terminal`
 - Returns void (ends the builder chain)
-
--
-
-transform
-
+- `transform`
 - Returns a different builder type (transforms to another builder)
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `SignatureModel`
@@ -99,34 +88,15 @@ Signature model
 
 Discriminated by _tag field:
 
--
-
-FunctionSignatureModel
-
+- `FunctionSignatureModel`
 - Functions with structured overloads
-
--
-
-BuilderSignatureModel
-
+- `BuilderSignatureModel`
 - Builder pattern APIs with chainable/terminal methods
-
--
-
-ClassSignatureModel
-
+- `ClassSignatureModel`
 - Classes with constructor, properties, methods
-
--
-
-TypeSignatureModel
-
+- `TypeSignatureModel`
 - Types, interfaces, type aliases (text)
-
--
-
-ValueSignatureModel
-
+- `ValueSignatureModel`
 - Const values (type as text)
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Export`
@@ -194,9 +164,7 @@ class {
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L99" />
 
-Type parameter for generic functions/classes.
-
-Captures type parameter name, constraint, and default value.
+Type parameter for generic functions/classes. Captures type parameter name, constraint, and default value.
 
 **Examples:**
 
@@ -217,9 +185,7 @@ class {
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L122" />
 
-Function/method parameter.
-
-Captures parameter name, type, modifiers, and JSDoc description.
+Function/method parameter. Captures parameter name, type, modifiers, and JSDoc description.
 
 **Examples:**
 
@@ -244,9 +210,7 @@ class {
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L154" />
 
-Single function signature (one overload).
-
-Captures type parameters, parameters, return type, and JSDoc documentation.
+Single function signature (one overload). Captures type parameters, parameters, return type, and JSDoc documentation.
 
 Used within FunctionSignatureModel to support multiple overloads.
 
@@ -276,9 +240,7 @@ class {
 
 Function signature model supporting multiple overloads.
 
-Structured representation of function signatures with full parameter,
-
-type parameter, and return type information.
+Structured representation of function signatures with full parameter, type parameter, and return type information.
 
 **Examples:**
 
@@ -308,9 +270,7 @@ class {
 
 Builder method on a builder interface.
 
-Captures method name, overloads, and classification based on return type.
-
-Methods are classified during extraction by analyzing their return types.
+Captures method name, overloads, and classification based on return type. Methods are classified during extraction by analyzing their return types.
 
 **Examples:**
 
@@ -354,20 +314,10 @@ class {
 
 Builder signature model for fluent/builder pattern APIs.
 
-Builder patterns are detected when a function is marked with
-
-@builder
-
-JSDoc tag.
-
-The extractor automatically crawls the returned builder type interface and
-
-classifies methods based on their return types:
+Builder patterns are detected when a function is marked with `@builder` JSDoc tag. The extractor automatically crawls the returned builder type interface and classifies methods based on their return types:
 
 - **Chainable**: Returns the same builder type (enables method chaining)
-
 - **Terminal**: Returns void (ends the builder chain)
-
 - **Transform**: Returns a different builder type (transforms to another builder)
 
 **Examples:**
@@ -406,9 +356,7 @@ class {
 
 Type signature model (interfaces, type aliases, etc).
 
-For now, these are kept as plain text since parsing TypeScript type
-
-definitions into structured form is complex with diminishing returns.
+For now, these are kept as plain text since parsing TypeScript type definitions into structured form is complex with diminishing returns.
 
 Future: Could be expanded to structured form (properties, methods, etc).
 
@@ -423,9 +371,7 @@ class {
 
 Value signature model (simple const values, primitives).
 
-Used for exports that are simple constant values (not functions/classes).
-
-Stores the inferred type as text.
+Used for exports that are simple constant values (not functions/classes). Stores the inferred type as text.
 
 **Examples:**
 
@@ -446,9 +392,7 @@ class {
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L356" />
 
-Class property.
-
-Captures property name, type, modifiers, and JSDoc description.
+Class property. Captures property name, type, modifiers, and JSDoc description.
 
 **Examples:**
 
@@ -477,9 +421,7 @@ class {
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L387" />
 
-Class method.
-
-Captures method name, overloads, and modifiers.
+Class method. Captures method name, overloads, and modifiers.
 
 **Examples:**
 
@@ -548,9 +490,7 @@ class {
 
 Value export
 
-- represents a runtime export.
-
-Namespace exports include a nested module.
+- represents a runtime export. Namespace exports include a nested module.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `TypeExport`
 
@@ -578,53 +518,18 @@ Drillable Namespace Pattern entrypoint.
 
 This pattern is detected ONLY for the main entrypoint ('.') when ALL conditions are met:
 
-1. The main entrypoint source file contains a namespace export:
-
-export * as Name from './path'
-
-2. The namespace name (PascalCase, e.g.,
-
-A
-
-) converts to kebab-case (e.g.,
-
-a
-
-)
-
-3. A subpath export exists in package.json with that kebab name (e.g.,
-
-./a
-
-)
-
-4. The file that the namespace export points to
-
-5. AND the file that the subpath export points to
-
-6. Must resolve to the SAME source file
+1. The main entrypoint source file contains a namespace export: `export * as Name from './path'` 2. The namespace name (PascalCase, e.g., `A`) converts to kebab-case (e.g., `a`) 3. A subpath export exists in package.json with that kebab name (e.g., `./a`) 4. The file that the namespace export points to 5. AND the file that the subpath export points to 6. Must resolve to the SAME source file
 
 When detected, this enables two import forms:
 
--
-
-import { Name } from 'package'
-
+- `import { Name } from 'package'`
 - imports the namespace from main entrypoint
-
--
-
-import * as Name from 'package/kebab-name'
-
+- `import * as Name from 'package/kebab-name'`
 - imports the barrel directly
 
 **Examples:**
 
-Both the namespace export and the subpath export resolve to
-
-src/a.ts
-
-→ Drillable!
+Both the namespace export and the subpath export resolve to `src/a.ts` → Drillable!
 
 ```typescript twoslash
 // @noErrors

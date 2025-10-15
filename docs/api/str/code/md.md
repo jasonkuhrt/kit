@@ -26,17 +26,7 @@ Str.Code.Md.someFunction()
 
 - [**`md`**](/api/str/code/md/md) - Structured markdown helpers.
 
-These helpers generate properly formatted markdown elements.
-
-All helpers return
-
-Raw
-
-(already formatted) or
-
-null
-
-for graceful handling.
+These helpers generate properly formatted markdown elements. All helpers return `Raw` (already formatted) or `null` for graceful handling.
 
 ## Functions
 
@@ -215,17 +205,7 @@ tags to markdown links.
 
 Patterns:
 
--
-
-Identifier
-
-→ [
-
-Identifier
-
-](url)
-
--
+- Identifier → [`Identifier`](url) -
 
 → [description](url)
 
@@ -248,9 +228,7 @@ For Effect library references (String._, Array._, etc.), links to Effect documen
 
 Demote markdown headings by adding a specified number of levels.
 
-This is used to ensure JSDoc descriptions don't break the document hierarchy.
-
-For example, if an export is h3, its description headings should be h4+.
+This is used to ensure JSDoc descriptions don't break the document hierarchy. For example, if an export is h3, its description headings should be h4+.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `sections`
 
@@ -282,9 +260,7 @@ Convert string to kebab-case.
 
 Generate a markdown table from key-value pairs.
 
-Automatically filters out undefined and null values.
-
-Returns empty string if no valid entries remain after filtering.
+Automatically filters out undefined and null values. Returns empty string if no valid entries remain after filtering.
 
 **Examples:**
 
@@ -349,17 +325,7 @@ Template
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L759" />
 
-Tagged template for building markdown content.
-
-Also provides
-
-.builder()
-
-for imperative construction and
-
-.md
-
-for element helpers.
+Tagged template for building markdown content. Also provides `.builder()` for imperative construction and `.md` for element helpers.
 
 **Examples:**
 
@@ -407,11 +373,7 @@ interface Raw {
 
 Branded type for markdown content that's already formatted and safe.
 
-Use
-
-raw
-
-to create values of this type.
+Use raw to create values of this type.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Builder`
 

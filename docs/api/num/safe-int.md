@@ -42,9 +42,7 @@ Type predicate to check if value is a safe integer.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/safe-int/safe-int.ts#L26" />
 
-Construct a SafeInt.
-
-Throws if the value is not a safe integer.
+Construct a SafeInt. Throws if the value is not a safe integer.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
@@ -54,9 +52,7 @@ Throws if the value is not a safe integer.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/safe-int/safe-int.ts#L37" />
 
-Try to construct a SafeInt.
-
-Returns null if the value is not a safe integer.
+Try to construct a SafeInt. Returns null if the value is not a safe integer.
 
 ## Constants
 

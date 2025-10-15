@@ -36,11 +36,7 @@ Num.Frac.someFunction()
 
 - `value` - The value to check
 
-**Returns:** True if value is a proper fraction (0
-
-n/d
-
-1.
+**Returns:** True if value is a proper fraction (0 n/d 1)
 
 Type predicate to check if value is a proper fraction.
 
@@ -63,9 +59,7 @@ Type predicate to check if value is a proper fraction.
 
 - Error if not a proper fraction
 
-Construct a Fraction from numerator and denominator.
-
-Both must be positive and numerator must be less than denominator.
+Construct a Fraction from numerator and denominator. Both must be positive and numerator must be less than denominator.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
@@ -82,9 +76,7 @@ Both must be positive and numerator must be less than denominator.
 
 **Returns:** The fraction or null
 
-Try to construct a Fraction.
-
-Returns null if not a proper fraction.
+Try to construct a Fraction. Returns null if not a proper fraction.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fromDecimal`
 
@@ -96,12 +88,7 @@ Returns null if not a proper fraction.
 
 **Parameters:**
 
-- `value` - The decimal value (0
-
-value
-
-1.
-
+- `value` - The decimal value (0 value 1)
 - `maxDenominator` - Maximum denominator to use (default: 100)
 
 **Returns:** The fraction approximation
@@ -110,9 +97,7 @@ value
 
 - Error if value is not between 0 and 1
 
-Convert a decimal to a fraction.
-
-The decimal must be between 0 and 1 (exclusive).
+Convert a decimal to a fraction. The decimal must be between 0 and 1 (exclusive).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `toDecimal`
 
@@ -177,15 +162,9 @@ Get the complement of a fraction (1
 - `a` - First fraction
 - `b` - Second fraction
 
-**Returns:** The sum as a Ratio (might be
+**Returns:** The sum as a Ratio (might be = 1)
 
-= 1)
-
-Add two fractions.
-
-Note: The result might not be a fraction if the sum
-
-= 1.
+Add two fractions. Note: The result might not be a fraction if the sum = 1.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `multiply`
 
@@ -202,9 +181,7 @@ Note: The result might not be a fraction if the sum
 
 **Returns:** The product as a fraction
 
-Multiply two fractions.
-
-The result is always a fraction (product of two numbers
+Multiply two fractions. The result is always a fraction (product of two numbers
 
 1 is
 
@@ -223,11 +200,7 @@ The result is always a fraction (product of two numbers
 - `a` - First fraction
 - `b` - Second fraction
 
-**Returns:** -1 if a
-
-b, 0 if a = b, 1 if a
-
-b
+**Returns:** -1 if a b, 0 if a = b, 1 if a b
 
 Compare two fractions.
 
@@ -241,9 +214,7 @@ Compare two fractions.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L100" />
 
-Create a function that constructs fractions with a fixed numerator.
-
-Useful for creating series of fractions.
+Create a function that constructs fractions with a fixed numerator. Useful for creating series of fractions.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`
 
@@ -253,9 +224,7 @@ Useful for creating series of fractions.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L115" />
 
-Create a function that constructs fractions with a fixed denominator.
-
-Useful for working with common denominators.
+Create a function that constructs fractions with a fixed denominator. Useful for working with common denominators.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`
 
@@ -265,9 +234,7 @@ Useful for working with common denominators.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L260" />
 
-Create a function that adds to a specific fraction.
-
-Data-first pattern: fix the first argument.
+Create a function that adds to a specific fraction. Data-first pattern: fix the first argument.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
 
@@ -277,9 +244,7 @@ Data-first pattern: fix the first argument.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L274" />
 
-Create a function that adds with a specific fraction.
-
-Data-second pattern: fix the second argument.
+Create a function that adds with a specific fraction. Data-second pattern: fix the second argument.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`
 
@@ -289,9 +254,7 @@ Data-second pattern: fix the second argument.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L311" />
 
-Create a function that multiplies a specific fraction.
-
-Data-first pattern: fix the first argument.
+Create a function that multiplies a specific fraction. Data-first pattern: fix the first argument.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
 
@@ -301,9 +264,7 @@ Data-first pattern: fix the first argument.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L325" />
 
-Create a function that multiplies with a specific fraction.
-
-Data-second pattern: fix the second argument.
+Create a function that multiplies with a specific fraction. Data-second pattern: fix the second argument.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareOn`
 
@@ -313,9 +274,7 @@ Data-second pattern: fix the second argument.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L355" />
 
-Create a function that compares a specific fraction.
-
-Data-first pattern: fix the first argument.
+Create a function that compares a specific fraction. Data-first pattern: fix the first argument.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareWith`
 
@@ -325,9 +284,7 @@ Data-first pattern: fix the first argument.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L369" />
 
-Create a function that compares with a specific fraction.
-
-Data-second pattern: fix the second argument.
+Create a function that compares with a specific fraction. Data-second pattern: fix the second argument.
 
 ## Types
 
@@ -347,14 +304,9 @@ numerator
 
 denominator.
 
-Fractions represent parts of a whole, always between 0 and 1 (exclusive).
-
-They're ideal for:
+Fractions represent parts of a whole, always between 0 and 1 (exclusive). They're ideal for:
 
 - Probabilities (1/6 for dice roll)
-
 - Portions and percentages (3/4 of a pizza)
-
 - UI measurements (2/3 width)
-
 - Musical note durations (1/4 note, 1/8 note)

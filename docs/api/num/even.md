@@ -38,9 +38,7 @@ Num.Even.someFunction()
 
 **Returns:** True if value is an even integer
 
-Type predicate to check if value is even.
-
-Returns Even & Int when the value is an even integer.
+Type predicate to check if value is even. Returns Even & Int when the value is an even integer.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
 
@@ -60,9 +58,7 @@ Returns Even & Int when the value is an even integer.
 
 - Error if value is not an even integer
 
-Construct an Even integer.
-
-Throws if the value is not an even integer.
+Construct an Even integer. Throws if the value is not an even integer.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
@@ -78,9 +74,7 @@ Throws if the value is not an even integer.
 
 **Returns:** The Even & Int or null
 
-Try to construct an Even integer.
-
-Returns null if the value is not an even integer.
+Try to construct an Even integer. Returns null if the value is not an even integer.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `next`
 
@@ -96,9 +90,7 @@ Returns null if the value is not an even integer.
 
 **Returns:** The next even integer
 
-Get the next even number (rounds up if odd).
-
-For any number, returns the smallest even integer greater than or equal to it.
+Get the next even number (rounds up if odd). For any number, returns the smallest even integer greater than or equal to it.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `prev`
 
@@ -114,9 +106,7 @@ For any number, returns the smallest even integer greater than or equal to it.
 
 **Returns:** The previous even integer
 
-Get the previous even number (rounds down if odd).
-
-For any number, returns the largest even integer less than or equal to it.
+Get the previous even number (rounds down if odd). For any number, returns the largest even integer less than or equal to it.
 
 ## Types
 
@@ -130,8 +120,4 @@ type Even = number & { [EvenBrand]: true }
 
 Even integer.
 
-Even integers are whole numbers that are divisible by 2.
-
-They include zero and alternate with odd numbers on the number line.
-
-Note: This type combines with Int brand for maximum type safety.
+Even integers are whole numbers that are divisible by 2. They include zero and alternate with odd numbers on the number line. Note: This type combines with Int brand for maximum type safety.

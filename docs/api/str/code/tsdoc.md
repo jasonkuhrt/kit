@@ -26,17 +26,7 @@ Str.Code.TSDoc.someFunction()
 
 - [**`tag`**](/api/str/code/tsdoc/tag) - Structured JSDoc tag helpers.
 
-These helpers generate properly formatted JSDoc tags with automatic escaping.
-
-All helpers return
-
-Raw
-
-(safe for injection) or
-
-null
-
-for graceful handling.
+These helpers generate properly formatted JSDoc tags with automatic escaping. All helpers return `Raw` (safe for injection) or `null` for graceful handling.
 
 ## Functions
 
@@ -58,18 +48,9 @@ Escape user-provided content for safe inclusion in JSDoc comments.
 
 Escapes characters that could break JSDoc syntax:
 
--
-
-*\/
-
+- `*\/`
 - Ends the JSDoc comment prematurely
-
--
-
-@tag
-
-at line start
-
+- `@tag` at line start
 - Could be interpreted as JSDoc tags
 
 **Examples:**
@@ -103,11 +84,7 @@ Str.Code.TSDoc.escape('@deprecated use new API')
 
 Format content as JSDoc comment block.
 
-Takes text content and wraps it in JSDoc syntax with proper indentation.
-
-Lines are trimmed and prefixed with JSDoc comment markers.
-
-Returns empty string if content is null.
+Takes text content and wraps it in JSDoc syntax with proper indentation. Lines are trimmed and prefixed with JSDoc comment markers. Returns empty string if content is null.
 
 **Examples:**
 
@@ -202,17 +179,7 @@ Template
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L700" />
 
-Tagged template for building JSDoc content with automatic escaping.
-
-Also provides
-
-.builder()
-
-for imperative JSDoc construction and
-
-.tag
-
-for tag helpers.
+Tagged template for building JSDoc content with automatic escaping. Also provides `.builder()` for imperative JSDoc construction and `.tag` for tag helpers.
 
 **Examples:**
 
@@ -254,13 +221,7 @@ interface Raw {
 
 Branded type for content marked as safe for JSDoc injection.
 
-Use
-
-raw
-
-to create values of this type.
-
-This prevents accidental injection of unescaped user content.
+Use raw to create values of this type. This prevents accidental injection of unescaped user content.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Builder`
 

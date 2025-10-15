@@ -32,9 +32,7 @@ Num.Odd.someFunction()
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/odd/odd.ts#L21" />
 
-Type predicate to check if value is odd.
-
-Returns Odd & Int when the value is an odd integer.
+Type predicate to check if value is odd. Returns Odd & Int when the value is an odd integer.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
 
@@ -44,9 +42,7 @@ Returns Odd & Int when the value is an odd integer.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/odd/odd.ts#L29" />
 
-Construct an Odd integer.
-
-Throws if the value is not an odd integer.
+Construct an Odd integer. Throws if the value is not an odd integer.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
@@ -56,9 +52,7 @@ Throws if the value is not an odd integer.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/odd/odd.ts#L43" />
 
-Try to construct an Odd integer.
-
-Returns null if the value is not an odd integer.
+Try to construct an Odd integer. Returns null if the value is not an odd integer.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `next`
 
@@ -90,6 +84,4 @@ type Odd = number & { [OddBrand]: true }
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/odd/odd.ts#L15" />
 
-Odd integer.
-
-Note: This stacks with Int brand to allow Int & Odd.
+Odd integer. Note: This stacks with Int brand to allow Int & Odd.

@@ -30,13 +30,7 @@ Test.Test.someFunction()
 
 **Parameters:**
 
-- `args` - Test arguments in order:
-
-  - description: The test description
-
-  - arbitraries: Fast-check arbitraries for generating test values
-
-  - predicate: Function that should hold true for all generated values
+- `args` - Test arguments in order: - description: The test description - arbitraries: Fast-check arbitraries for generating test values - predicate: Function that should hold true for all generated values
 
 Create a property-based test using fast-check within vitest.
 
@@ -155,15 +149,7 @@ Test.Test.property(
 
 Creates a test table builder for testing a specific function.
 
-This is a shorthand for
-
-describe().on(fn)
-
-when you don't need a describe block.
-
-Types are automatically inferred from the function signature, making it ideal for
-
-quick function testing with minimal boilerplate.
+This is a shorthand for `describe().on(fn)` when you don't need a describe block. Types are automatically inferred from the function signature, making it ideal for quick function testing with minimal boilerplate.
 
 #### Case Formats
 
@@ -171,37 +157,18 @@ Test cases can be specified in multiple formats:
 
 **Tuple Format** (most common):
 
--
-
-[[arg1, arg2], expected]
-
+- `[[arg1, arg2], expected]`
 - Test with expected output
-
--
-
-['name', [arg1, arg2], expected]
-
+- `['name', [arg1, arg2], expected]`
 - Named test case
-
--
-
-[[arg1, arg2]]
-
+- `[[arg1, arg2]]`
 - Snapshot test (no expected value)
 
 **Object Format** (more verbose but clearer):
 
--
-
-{ input: [arg1, arg2], output: expected }
-
--
-
-{ input: [arg1, arg2], output: expected, skip: true, comment: 'name' }
-
--
-
-{ todo: 'Not implemented yet', comment: 'name' }
+- `{ input: [arg1, arg2], output: expected }`
+- `{ input: [arg1, arg2], output: expected, skip: true, comment: 'name' }`
+- `{ todo: 'Not implemented yet', comment: 'name' }`
 
 **Examples:**
 
@@ -359,112 +326,43 @@ HELLO
 
 Creates a test table builder for property-based and example-based testing.
 
-**CRITICAL**: Each call to
+**CRITICAL**: Each call to `Test.describe()` creates a SEPARATE, INDEPENDENT test block. The builder is NOT reusable
 
-Test.describe()
+- you CANNOT chain multiple `.cases()` or `.describeInputs()` calls to add test cases to the same describe block. Each builder must end with `.test()`.
 
-creates a SEPARATE, INDEPENDENT test block.
-
-The builder is NOT reusable
-
-- you CANNOT chain multiple
-
-.cases()
-
-or
-
-.describeInputs()
-
-calls
-
-to add test cases to the same describe block. Each builder must end with
-
-.test()
-
-.
-
-Test tables allow you to define multiple test cases with inputs and expected outputs,
-
-reducing boilerplate and making tests more maintainable. The builder supports two modes:
+Test tables allow you to define multiple test cases with inputs and expected outputs, reducing boilerplate and making tests more maintainable. The builder supports two modes:
 
 #### Modes
 
 **Function Mode**
 
-- Test a specific function with
-
-.on(fn)
-
-:
-
+- Test a specific function with `.on(fn)`:
 - Types are automatically inferred from the function signature
-
 - Test cases specify function arguments and expected return values
-
 - Default assertion compares actual vs expected using Effect's equality
 
 **Generic Mode**
 
-- Define custom types with
-
-.i&lt;T&gt;
-
-and
-
-.o&lt;T&gt;
-
-:
-
+- Define custom types with `.i&lt;T&gt;` and `.o&lt;T&gt;`:
 - Explicitly specify input and output types
-
 - Provide custom test logic to validate cases
-
 - Useful for testing complex behaviors beyond simple function calls
 
 #### Features
 
 **Nested Describes**
 
-- Use
-
-&gt;
-
-separator to create nested describe blocks:
-
--
-
-Test.describe('Parent &gt; Child')
-
-creates
-
-describe('Parent', () =&gt; describe('Child', ...))
-
+- Use `&gt;` separator to create nested describe blocks:
+- `Test.describe('Parent &gt; Child')` creates `describe('Parent', () => describe('Child', ...))`
 - Multiple SEPARATE Test.describe() calls with the same prefix share the outer describe block
-
-- Supports any depth:
-
-'API &gt; Users &gt; Create'
-
-creates three levels
+- Supports any depth: `'API &gt; Users &gt; Create'` creates three levels
 
 **Matrix Testing**
 
-- Use
-
-.matrix()
-
-to run cases across parameter combinations:
-
+- Use `.matrix()` to run cases across parameter combinations:
 - Generates cartesian product of all matrix value arrays
-
 - Each test case runs once for each combination
-
-- Matrix values available as
-
-matrix
-
-in test context
-
+- Matrix values available as `matrix` in test context
 - Combines with nested describes for organized test suites
 
 **Examples:**

@@ -62,13 +62,7 @@ A column is a vertical stack of lines.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L47" />
 
-Split text into an array of lines.
-
-Pre-configured
-
-splitWith
-
-using newline separator.
+Split text into an array of lines. Pre-configured splitWith using newline separator.
 
 **Examples:**
 
@@ -90,13 +84,7 @@ Str.Text.lines('single line') // ['single line']
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L61" />
 
-Join an array of lines into text.
-
-Pre-configured
-
-joinWith
-
-using newline separator.
+Join an array of lines into text. Pre-configured joinWith using newline separator.
 
 **Examples:**
 
@@ -121,11 +109,7 @@ Str.Text.unlines(['single line']) // 'single line'
 **Parameters:**
 
 - `text` - The text to indent
-- `size` - Number of spaces to indent (default:
-
-defaultIndentSize
-
-)
+- `size` - Number of spaces to indent (default: defaultIndentSize)
 
 **Returns:** The indented text
 
@@ -151,11 +135,7 @@ Str.Text.indent('line1\nline2', 4) // '    line1\n    line2'
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L88" />
 
-Curried version of
-
-indent
-
-with text first.
+Curried version of indent with text first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentWith`
 
@@ -165,11 +145,7 @@ with text first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L101" />
 
-Curried version of
-
-indent
-
-with size first.
+Curried version of indent with size first.
 
 **Examples:**
 
@@ -193,15 +169,11 @@ indent4('hello\nworld') // '    hello\n    world'
 **Parameters:**
 
 - `text` - The text to indent
-- `prefixOrFn` - String to prepend to each line, or function
-
-(line: string, lineIndex: number) => string
+- `prefixOrFn` - String to prepend to each line, or function `(line: string, lineIndex: number) => string`
 
 **Returns:** The indented text
 
-Indent each line using a custom prefix string or function.
-
-When given a function, it receives both the line content and index, allowing for content-aware indentation.
+Indent each line using a custom prefix string or function. When given a function, it receives both the line content and index, allowing for content-aware indentation.
 
 **Examples:**
 
@@ -232,11 +204,7 @@ Str.Text.indentBy('title\nitem', (line, i) => line === 'title' ? '' : '  ')
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L139" />
 
-Curried version of
-
-indentBy
-
-with text first.
+Curried version of indentBy with text first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentByWith`
 
@@ -246,11 +214,7 @@ with text first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L160" />
 
-Curried version of
-
-indentBy
-
-with prefix first.
+Curried version of indentBy with prefix first.
 
 **Examples:**
 
@@ -288,11 +252,7 @@ conditionalIndent('# Title\nContent') // '# Title\n  Content'
 
 **Returns:** The dedented text
 
-Remove common leading whitespace from all lines.
-
-Finds the minimum indentation across all non-empty lines and removes that amount from every line.
-
-This is useful for dedenting code blocks or template strings while preserving relative indentation.
+Remove common leading whitespace from all lines. Finds the minimum indentation across all non-empty lines and removes that amount from every line. This is useful for dedenting code blocks or template strings while preserving relative indentation.
 
 **Examples:**
 
@@ -365,11 +325,7 @@ Str.Text.pad('hello', 2, 'left', '-') // '--hello'
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L240" />
 
-Curried version of
-
-pad
-
-with text first.
+Curried version of pad with text first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padWith`
 
@@ -379,11 +335,7 @@ with text first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L248" />
 
-Curried version of
-
-pad
-
-with size first.
+Curried version of pad with size first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `padLeft`
 
@@ -423,11 +375,7 @@ Str.Text.padLeft('hello', 2, '0') // '00hello'
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L273" />
 
-Curried version of
-
-padLeft
-
-with text first.
+Curried version of padLeft with text first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padLeftWith`
 
@@ -437,11 +385,7 @@ with text first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L286" />
 
-Curried version of
-
-padLeft
-
-with size first.
+Curried version of padLeft with size first.
 
 **Examples:**
 
@@ -492,11 +436,7 @@ Str.Text.padRight('hello', 2, '.') // 'hello..'
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L311" />
 
-Curried version of
-
-padRight
-
-with text first.
+Curried version of padRight with text first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padRightWith`
 
@@ -506,11 +446,7 @@ with text first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L324" />
 
-Curried version of
-
-padRight
-
-with size first.
+Curried version of padRight with size first.
 
 **Examples:**
 
@@ -542,9 +478,7 @@ pad3('hi') // 'hi   '
 
 Align text within a specified width by adding padding.
 
-This ensures text spans exactly the target width, aligning content to the left or right.
-
-If the text is already wider than the target width, no padding is added.
+This ensures text spans exactly the target width, aligning content to the left or right. If the text is already wider than the target width, no padding is added.
 
 **Examples:**
 
@@ -573,11 +507,7 @@ Str.span('hello world', 5, 'left')  // 'hello world' (unchanged)
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L368" />
 
-Curried version of
-
-span
-
-with text first.
+Curried version of span with text first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanWith`
 
@@ -587,11 +517,7 @@ with text first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L383" />
 
-Curried version of
-
-span
-
-with width first.
+Curried version of span with width first.
 
 **Examples:**
 
@@ -624,21 +550,12 @@ span8('Age', 'right')   // '     Age'
 
 Constrain text to exact width by cropping and/or padding.
 
-Unlike
-
-span
-
-which only pads (leaving text unchanged if too long),
-
-this function guarantees the exact width by:
+Unlike span which only pads (leaving text unchanged if too long), this function guarantees the exact width by:
 
 - Cropping text if it exceeds the target width
-
 - Padding text if it's shorter than the target width
 
-This is useful for fixed-width layouts where column widths must be exact,
-
-such as table columns, CSV files, and fixed-format text files.
+This is useful for fixed-width layouts where column widths must be exact, such as table columns, CSV files, and fixed-format text files.
 
 **Examples:**
 
@@ -682,11 +599,7 @@ const row = [name, email, status].map((val, i) =>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L443" />
 
-Curried version of
-
-fit
-
-with text first.
+Curried version of fit with text first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitWith`
 
@@ -696,11 +609,7 @@ with text first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L462" />
 
-Curried version of
-
-fit
-
-with width first.
+Curried version of fit with width first.
 
 **Examples:**
 
@@ -760,11 +669,7 @@ Str.Text.mapLines('a\nb\nc', (line, i) => `${i}: ${line}`)
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L489" />
 
-Curried version of
-
-mapLines
-
-with text first.
+Curried version of mapLines with text first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mapLinesWith`
 
@@ -774,11 +679,7 @@ with text first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L502" />
 
-Curried version of
-
-mapLines
-
-with function first.
+Curried version of mapLines with function first.
 
 **Examples:**
 
@@ -809,13 +710,7 @@ type StyledPrefix = {
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L512" />
 
-Styled prefix that can have an optional color function.
-
-Used with
-
-formatBlock
-
-for colored line prefixes.
+Styled prefix that can have an optional color function. Used with formatBlock for colored line prefixes.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `formatBlock`
 
@@ -834,9 +729,7 @@ for colored line prefixes.
 
 Format a multi-line text block with line-by-line transformations.
 
-Processes each line of text, adding a prefix and optional indentation.
-
-Supports excluding the first line and styled prefixes with colors.
+Processes each line of text, adding a prefix and optional indentation. Supports excluding the first line and styled prefixes with colors.
 
 **Examples:**
 
@@ -884,11 +777,7 @@ Str.Text.formatBlock('data\nmore data', {
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L598" />
 
-Curried version of
-
-formatBlock
-
-with block first.
+Curried version of formatBlock with block first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `formatBlockWith`
 
@@ -898,11 +787,7 @@ with block first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L612" />
 
-Curried version of
-
-formatBlock
-
-with options first.
+Curried version of formatBlock with options first.
 
 **Examples:**
 
@@ -916,9 +801,7 @@ addSpine('line1\nline2\nline3')
 // '│   line1\n│   line2\n│   line3'
 ```
 
-## Text Formatting
-
-2
+## Text Formatting 2
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultIndentSize`
 

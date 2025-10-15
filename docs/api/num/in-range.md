@@ -42,9 +42,7 @@ Type predicate to check if value is within a specific range.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/in-range/in-range.ts#L30" />
 
-Construct an InRange number.
-
-Throws if the value is outside the range.
+Construct an InRange number. Throws if the value is outside the range.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
@@ -54,9 +52,7 @@ Throws if the value is outside the range.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/in-range/in-range.ts#L45" />
 
-Try to construct an InRange number.
-
-Returns null if the value is outside the range.
+Try to construct an InRange number. Returns null if the value is outside the range.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `clamp`
 
@@ -66,9 +62,7 @@ Returns null if the value is outside the range.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/in-range/in-range.ts#L63" />
 
-Clamp a number to a range.
-
-Forces the value to be within the specified minimum and maximum bounds.
+Clamp a number to a range. Forces the value to be within the specified minimum and maximum bounds.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `clampOn`
 
@@ -124,6 +118,4 @@ type Clamp<_T extends number, Min extends number, Max extends number> = InRange<
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/in-range/in-range.ts#L57" />
 
-Type-level clamp transformation.
-
-Ensures the result type is within the specified range.
+Type-level clamp transformation. Ensures the result type is within the specified range.

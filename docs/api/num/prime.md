@@ -38,9 +38,7 @@ Num.Prime.someFunction()
 
 **Returns:** True if value is a prime number
 
-Type predicate to check if value is a prime number.
-
-Uses trial division optimization up to sqrt(n).
+Type predicate to check if value is a prime number. Uses trial division optimization up to sqrt(n).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
 
@@ -60,9 +58,7 @@ Uses trial division optimization up to sqrt(n).
 
 - Error if value is not prime
 
-Construct a Prime number.
-
-Throws if the value is not prime.
+Construct a Prime number. Throws if the value is not prime.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
@@ -78,9 +74,7 @@ Throws if the value is not prime.
 
 **Returns:** The Prime number or null
 
-Try to construct a Prime number.
-
-Returns null if the value is not prime.
+Try to construct a Prime number. Returns null if the value is not prime.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `next`
 
@@ -112,11 +106,7 @@ Find the next prime number after the given value.
 
 **Returns:** The previous prime number or null
 
-Find the previous prime number before the given value.
-
-Returns null if no prime exists before the value (i.e., value
-
-= 2).
+Find the previous prime number before the given value. Returns null if no prime exists before the value (i.e., value = 2).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `nth`
 
@@ -134,13 +124,9 @@ Returns null if no prime exists before the value (i.e., value
 
 **Throws:**
 
-- Error if n
+- Error if n 1
 
-1
-
-Get the nth prime number (1-indexed).
-
-Uses a simple sieve for small n, trial division for larger.
+Get the nth prime number (1-indexed). Uses a simple sieve for small n, trial division for larger.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `factorize`
 
@@ -152,21 +138,15 @@ Uses a simple sieve for small n, trial division for larger.
 
 **Parameters:**
 
-- `value` - The number to factorize (must be
-
-= 2)
+- `value` - The number to factorize (must be = 2)
 
 **Returns:** Map of prime factors to exponents
 
 **Throws:**
 
-- Error if value
+- Error if value 2
 
-2
-
-Prime factorization of a number.
-
-Returns a map of prime factors to their exponents.
+Prime factorization of a number. Returns a map of prime factors to their exponents.
 
 ## Types
 
@@ -185,9 +165,6 @@ Prime number (natural number
 Prime numbers are fundamental in mathematics and essential for:
 
 - Cryptography (RSA keys, Diffie-Hellman)
-
 - Hash table sizing (reduces collisions)
-
 - Random number generation
-
 - Number theory algorithms

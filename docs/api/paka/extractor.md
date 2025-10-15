@@ -38,9 +38,7 @@ Paka.Extractor.someFunction()
 
 **Returns:** Complete interface model
 
-Pure extraction function that processes files without I/O.
-
-Takes all files as input and returns the extracted model.
+Pure extraction function that processes files without I/O. Takes all files as input and returns the extracted model.
 
 **Examples:**
 
@@ -113,7 +111,7 @@ Extract export information from a declaration node.
 (decl: Node<ts.Node>): JSDocInfo
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/jsdoc.ts#L240" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/jsdoc.ts#L246" />
 
 **Parameters:**
 

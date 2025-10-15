@@ -304,5 +304,23 @@ Test
         )
         .toLayout(),
     },
+    // Preserve backticks in JSDoc inline code examples (including nested structures)
+    {
+      files: project
+        .add(
+          'src/index.ts',
+          ts`
+          /**
+           * Input accepting various patterns:
+           * - Simple value: \`2\`
+           * - Simple object: \`{ foo: 1 }\`
+           * - Nested with arrow function: \`{ main: { start: (ctx) => 2 } }\`
+           * - Array: \`[1, 2, 3]\`
+           */
+          export type PaddingInput = string
+        `,
+        )
+        .toLayout(),
+    },
   )
   .test()

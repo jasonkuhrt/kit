@@ -32,9 +32,7 @@ Num.NonNegative.someFunction()
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-negative/non-negative.ts#L16" />
 
-Type predicate to check if value is non-negative (
-
-= 0).
+Type predicate to check if value is non-negative (= 0).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
 
@@ -44,9 +42,7 @@ Type predicate to check if value is non-negative (
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-negative/non-negative.ts#L24" />
 
-Construct a NonNegative number.
-
-Throws if the value is negative.
+Construct a NonNegative number. Throws if the value is negative.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
@@ -56,9 +52,7 @@ Throws if the value is negative.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-negative/non-negative.ts#L35" />
 
-Try to construct a NonNegative number.
-
-Returns null if the value is negative.
+Try to construct a NonNegative number. Returns null if the value is negative.
 
 ## Types
 
@@ -70,6 +64,4 @@ type NonNegative = number & { [NonNegativeBrand]: true }
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-negative/non-negative.ts#L11" />
 
-Non-negative number (
-
-= 0).
+Non-negative number (= 0).

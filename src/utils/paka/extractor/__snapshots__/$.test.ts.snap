@@ -1176,3 +1176,54 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
 }
 ╚══════════════════════════════════════════════════╝"
 `;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./bui...) 17`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./build/index.js"}}',
+    '/src/index.ts': '/**\\n * Input accepting various patterns:\\n * - Simple value: \\\\\`2\\\\\`\\n * - Simple object: \\\\\`{ foo: 1 }\\\\\`\\n * - Nested with arrow function: \\\\\`{ main: { start: (ctx) => 2 } }\\\\\`\\n * - Array: \\\\\`[1, 2, 3]\\\\\`\\n */\\nexport type PaddingInput = string'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './src/index.ts',
+        description: 'Input accepting various patterns: - Simple value: 2 - Simple object:  foo: 1  - Nested with arrow function:  main:  start: (ctx) = 2   - Array: [1, 2, 3]',
+        exports: [
+          {
+            name: 'PaddingInput',
+            signature: {
+              text: 'type PaddingInput = string',
+              _tag: 'TypeSignatureModel'
+            },
+            description: 'Input accepting various patterns: - Simple value: 2 - Simple object:  foo: 1  - Nested with arrow function:  main:  start: (ctx) = 2   - Array: [1, 2, 3]',
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './src/index.ts',
+              line: 8
+            },
+            _tag: 'type',
+            type: 'type-alias'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;

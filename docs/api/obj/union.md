@@ -4,31 +4,11 @@ _Obj_ / **Union**
 
 Union operations on objects.
 
-This module provides utilities for working with unions of object types,
+This module provides utilities for working with unions of object types, solving common TypeScript limitations when dealing with union types:
 
-solving common TypeScript limitations when dealing with union types:
+- `keyof (A | B)` returns only common keys (intersection), not all keys (union) - `(A | B)['key']` returns `any` for keys not in all members - No built-in way to merge union members while preserving value unions per key
 
--
-
-keyof (A | B)
-
-returns only common keys (intersection), not all keys (union)
-
--
-
-(A | B)['key']
-
-returns
-
-any
-
-for keys not in all members
-
-- No built-in way to merge union members while preserving value unions per key
-
-These utilities use distributive conditional types to properly handle each
-
-union member separately, then combine the results.
+These utilities use distributive conditional types to properly handle each union member separately, then combine the results.
 
 ## Import
 
@@ -64,31 +44,13 @@ type Merge<$Union extends object> = {
 
 Union operations on objects.
 
-This module provides utilities for working with unions of object types,
+This module provides utilities for working with unions of object types, solving common TypeScript limitations when dealing with union types:
 
-solving common TypeScript limitations when dealing with union types:
-
--
-
-keyof (A | B)
-
-returns only common keys (intersection), not all keys (union)
-
--
-
-(A | B)['key']
-
-returns
-
-any
-
-for keys not in all members
-
+- `keyof (A | B)` returns only common keys (intersection), not all keys (union)
+- `(A | B)['key']` returns `any` for keys not in all members
 - No built-in way to merge union members while preserving value unions per key
 
-These utilities use distributive conditional types to properly handle each
-
-union member separately, then combine the results.
+These utilities use distributive conditional types to properly handle each union member separately, then combine the results.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Keys`
 
@@ -107,26 +69,14 @@ type Keys<
 
 Collects all keys from all members of a union of objects into a single union of keys.
 
-**Problem:** TypeScript's built-in
+**Problem:** TypeScript's built-in `keyof` operator on a union type returns only the keys that are common to ALL union members (intersection behavior), not all possible keys (union behavior). This is often counterintuitive when working with union types.
 
-keyof
-
-operator on a union type returns only the
-
-keys that are common to ALL union members (intersection behavior), not all possible
-
-keys (union behavior). This is often counterintuitive when working with union types.
-
-**Solution:** This utility uses distributive conditional types to iterate over each
-
-union member separately, extract its keys, then union all the results together.
+**Solution:** This utility uses distributive conditional types to iterate over each union member separately, extract its keys, then union all the results together.
 
 Common use cases:
 
 - Type-safe property access across union members
-
 - Building generic utilities that work with any key from union types
-
 - Validating property names in discriminated unions
 
 **Examples:**
@@ -192,46 +142,20 @@ type ValueAt<
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/union.ts#L206" />
 
-Gets the union of all possible value types for a specific key across all members
+Gets the union of all possible value types for a specific key across all members of a union of objects.
 
-of a union of objects.
+**Problem:** TypeScript's indexed access `(A | B)['key']` has problematic behavior:
 
-**Problem:** TypeScript's indexed access
-
-(A | B)['key']
-
-has problematic behavior:
-
-- Returns
-
-any
-
-when the key doesn't exist in all union members
-
+- Returns `any` when the key doesn't exist in all union members
 - Loses type information in complex union scenarios
-
 - Doesn't handle optional properties correctly
 
-**Solution:** This utility uses distributive conditional types to:
-
-1. Check each union member separately for the key
-
-2. Collect the value type if present
-
-3. Return
-
-never
-
-for members without the key (which gets filtered from the union)
-
-4. Union all the collected value types together
+**Solution:** This utility uses distributive conditional types to: 1. Check each union member separately for the key 2. Collect the value type if present 3. Return `never` for members without the key (which gets filtered from the union) 4. Union all the collected value types together
 
 Common use cases:
 
 - Type-safe property getters for union types
-
 - Building mapped types over discriminated unions
-
 - Creating type-safe validators for specific properties
 
 **Examples:**

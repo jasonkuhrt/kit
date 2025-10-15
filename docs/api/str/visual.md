@@ -24,7 +24,7 @@ Str.Visual.someFunction()
 
 ## Namespaces
 
-- [**`Table`**](/api/str/visual/table)
+- [**`Table`**](/api/str/visual/table) - Visual-aware table operations for multi-column text layout.
 
 ## Text Formatting
 
@@ -47,7 +47,6 @@ Get the visual width of a string, ignoring ANSI escape codes and counting graphe
 This is the "true" visual width as it would appear in a terminal:
 
 - ANSI escape codes (colors, styles) are stripped before counting
-
 - Grapheme clusters (emojis, combining characters) count as single units
 
 **Examples:**
@@ -94,9 +93,7 @@ Str.Visual.width('\x1b[31m\x1b[0m')     // 0 (only ANSI codes)
 
 Add padding to text, calculated based on visual length.
 
-The padding size is adjusted to account for ANSI escape codes, so the final
-
-output has the desired visual width.
+The padding size is adjusted to account for ANSI escape codes, so the final output has the desired visual width.
 
 **Examples:**
 
@@ -126,11 +123,7 @@ Str.Visual.pad('hello', 3, 'left')  // 'hello' (unchanged)
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L119" />
 
-Curried version of
-
-pad
-
-with text first.
+Curried version of pad with text first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padWith`
 
@@ -140,11 +133,7 @@ with text first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L133" />
 
-Curried version of
-
-pad
-
-with size first.
+Curried version of pad with size first.
 
 **Examples:**
 
@@ -176,9 +165,7 @@ pad10('\x1b[32mSuccess\x1b[0m', 'right')  // Visual width 10
 
 Align text within a specified visual width by adding padding.
 
-This ensures text spans exactly the target width, aligning content to the left or right.
-
-If the text is already wider than the target width, no padding is added.
+This ensures text spans exactly the target width, aligning content to the left or right. If the text is already wider than the target width, no padding is added.
 
 **Examples:**
 
@@ -208,11 +195,7 @@ Str.Visual.span(colored, 6, 'left')  // Visual: "ID    "
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L176" />
 
-Curried version of
-
-span
-
-with text first.
+Curried version of span with text first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanWith`
 
@@ -222,11 +205,7 @@ with text first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L191" />
 
-Curried version of
-
-span
-
-with width first.
+Curried version of span with width first.
 
 **Examples:**
 
@@ -259,21 +238,12 @@ span8('Age', 'right')   // '     Age'
 
 Constrain text to exact visual width by cropping and/or padding.
 
-Unlike
-
-span
-
-which only pads (leaving text unchanged if too long),
-
-this function guarantees the exact width by:
+Unlike span which only pads (leaving text unchanged if too long), this function guarantees the exact width by:
 
 - Cropping text if it exceeds the target width
-
 - Padding text if it's shorter than the target width
 
-This is useful for fixed-width layouts where column widths must be exact,
-
-such as table columns, status bars, and terminal UIs.
+This is useful for fixed-width layouts where column widths must be exact, such as table columns, status bars, and terminal UIs.
 
 **Examples:**
 
@@ -316,11 +286,7 @@ const columns = ['Name', 'Email', 'Status'].map(
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L250" />
 
-Curried version of
-
-fit
-
-with text first.
+Curried version of fit with text first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitWith`
 
@@ -330,11 +296,7 @@ with text first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L269" />
 
-Curried version of
-
-fit
-
-with width first.
+Curried version of fit with width first.
 
 **Examples:**
 
@@ -370,9 +332,7 @@ statusColumn('Very Long Status', 'left') // 'Very Long '
 
 Take a substring by visual length.
 
-Extracts characters from the start of the string up to the specified visual width.
-
-Accounts for ANSI codes and grapheme clusters, so the result has the desired visual length.
+Extracts characters from the start of the string up to the specified visual width. Accounts for ANSI codes and grapheme clusters, so the result has the desired visual length.
 
 **Examples:**
 
@@ -402,11 +362,7 @@ Str.Visual.take('👋 hello', 2)  // '👋 ' (emoji + space)
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L312" />
 
-Curried version of
-
-take
-
-with text first.
+Curried version of take with text first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWith`
 
@@ -416,11 +372,7 @@ with text first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L326" />
 
-Curried version of
-
-take
-
-with size first.
+Curried version of take with size first.
 
 **Examples:**
 
@@ -446,23 +398,11 @@ take10('a long string here')  // First 10 visual chars
 - `text` - The text to split
 - `size` - Maximum visual length
 
-**Returns:** Object with
-
-taken
-
-words and
-
-remaining
-
-text
+**Returns:** Object with `taken` words and `remaining` text
 
 Split text into words by visual length, respecting word boundaries.
 
-Extracts words from the start of the string until reaching the visual width limit.
-
-Avoids breaking words mid-way when possible (though single words longer than size
-
-will be taken anyway).
+Extracts words from the start of the string until reaching the visual width limit. Avoids breaking words mid-way when possible (though single words longer than size will be taken anyway).
 
 **Examples:**
 
@@ -495,11 +435,7 @@ Str.Visual.takeWords(colored, 7)
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L399" />
 
-Curried version of
-
-takeWords
-
-with text first.
+Curried version of takeWords with text first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWordsWith`
 
@@ -509,11 +445,7 @@ with text first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L414" />
 
-Curried version of
-
-takeWords
-
-with size first.
+Curried version of takeWords with size first.
 
 **Examples:**
 
@@ -544,9 +476,7 @@ take20('Lorem ipsum dolor sit amet')
 
 Wrap text to fit within visual width, respecting word boundaries.
 
-Breaks text into lines that fit the specified visual width. Respects existing
-
-newlines in the input and breaks long lines at word boundaries when possible.
+Breaks text into lines that fit the specified visual width. Respects existing newlines in the input and breaks long lines at word boundaries when possible.
 
 **Examples:**
 
@@ -579,11 +509,7 @@ Str.Visual.wrap(colored, 12)
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L466" />
 
-Curried version of
-
-wrap
-
-with text first.
+Curried version of wrap with text first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapWith`
 
@@ -593,11 +519,7 @@ with text first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L480" />
 
-Curried version of
-
-wrap
-
-with width first.
+Curried version of wrap with width first.
 
 **Examples:**
 
@@ -622,21 +544,11 @@ wrap80('long text here...')  // Wraps to 80 columns
 
 - `text` - The text to measure
 
-**Returns:** Object with
-
-maxWidth
-
-and
-
-height
-
-properties
+**Returns:** Object with `maxWidth` and `height` properties
 
 Get the visual size (dimensions) of text.
 
-Returns the maximum visual width (longest line) and height (line count).
-
-Accounts for ANSI codes and grapheme clusters.
+Returns the maximum visual width (longest line) and height (line count). Accounts for ANSI codes and grapheme clusters.
 
 **Examples:**
 
@@ -676,13 +588,7 @@ Str.Visual.size('')
 
 Get the maximum visual width of text (longest line).
 
-Convenience function that returns just the width from
-
-size
-
-.
-
-Useful when you only need width and not height.
+Convenience function that returns just the width from size. Useful when you only need width and not height.
 
 **Examples:**
 

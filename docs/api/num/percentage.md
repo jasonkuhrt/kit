@@ -42,9 +42,7 @@ Type predicate for percentage (0-1).
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/percentage/percentage.ts#L27" />
 
-Construct a Percentage.
-
-Throws if the value is not between 0 and 1.
+Construct a Percentage. Throws if the value is not between 0 and 1.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
@@ -54,9 +52,7 @@ Throws if the value is not between 0 and 1.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/percentage/percentage.ts#L38" />
 
-Try to construct a Percentage.
-
-Returns null if the value is not between 0 and 1.
+Try to construct a Percentage. Returns null if the value is not between 0 and 1.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fromPercent`
 
@@ -98,6 +94,4 @@ type Percentage = InRange<0, 1> & { [PercentageBrand]: true }
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/percentage/percentage.ts#L14" />
 
-Percentage (0-1).
-
-Represents a value between 0% (0.0) and 100% (1.0).
+Percentage (0-1). Represents a value between 0% (0.0) and 100% (1.0).

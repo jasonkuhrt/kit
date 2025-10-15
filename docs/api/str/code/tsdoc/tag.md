@@ -4,17 +4,7 @@ _Str.Code.TSDoc_ / **tag**
 
 Structured JSDoc tag helpers.
 
-These helpers generate properly formatted JSDoc tags with automatic escaping.
-
-All helpers return
-
-Raw
-
-(safe for injection) or
-
-null
-
-for graceful handling.
+These helpers generate properly formatted JSDoc tags with automatic escaping. All helpers return `Raw` (safe for injection) or `null` for graceful handling.
 
 ## Import
 

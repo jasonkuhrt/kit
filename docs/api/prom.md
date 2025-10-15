@@ -2,9 +2,7 @@
 
 Promise utilities for asynchronous operations.
 
-Provides utilities for working with Promises including deferred promise
-
-creation, promise combinators, and async control flow patterns.
+Provides utilities for working with Promises including deferred promise creation, promise combinators, and async control flow patterns.
 
 ## Import
 
@@ -159,9 +157,7 @@ deferred.resolve(2)  // Throws error
 
 **Returns:** True if the value has Promise-like shape.
 
-Check if a value has the shape of a Promise.
-
-Tests for the presence of then, catch, and finally methods.
+Check if a value has the shape of a Promise. Tests for the presence of then, catch, and finally methods.
 
 **Examples:**
 
@@ -195,9 +191,7 @@ type Any = Promise<unknown>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L9" />
 
-Type representing a Promise of unknown type.
-
-Useful for generic promise handling where the resolved type is not important.
+Type representing a Promise of unknown type. Useful for generic promise handling where the resolved type is not important.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAny`
 
@@ -207,13 +201,7 @@ type AnyAny = Promise<any>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L17" />
 
-Type representing a Promise of any type.
-
-Less type-safe than
-
-Any
-
-, use with caution.
+Type representing a Promise of any type. Less type-safe than Any, use with caution.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Maybe`
 
@@ -253,11 +241,7 @@ type AwaitedUnion<$MaybePromise, $Additional> =
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L86" />
 
-Type that adds an additional type to a potentially promised union.
-
-If the input is a Promise, the additional type is added to the promised value.
-
-If the input is not a Promise, creates a union with the additional type.
+Type that adds an additional type to a potentially promised union. If the input is a Promise, the additional type is added to the promised value. If the input is not a Promise, creates a union with the additional type.
 
 **Examples:**
 
@@ -303,15 +287,9 @@ Envelope containing execution metadata.
 
 **Returns:** The result, potentially wrapped in a Promise
 
-Handle a function that might return a promise or a regular value,
+Handle a function that might return a promise or a regular value, with unified handlers for both sync and async cases.
 
-with unified handlers for both sync and async cases.
-
-Implemented using
-
-maybeAsyncEnvelope
-
-internally.
+Implemented using maybeAsyncEnvelope internally.
 
 **Examples:**
 
@@ -371,38 +349,18 @@ Execute a function and return an envelope with metadata about the execution.
 
 Returns metadata indicating:
 
-- **channel**: Whether the function succeeded (
-
-'succeed'
-
-) or failed (
-
-'fail'
-
-)
-
+- **channel**: Whether the function succeeded (`'succeed'`) or failed (`'fail'`)
 - **async**: Whether execution was asynchronous (promise) or synchronous
-
 - **value/error**: The result value or thrown/rejected error
 
 Never throws or rejects
 
-- all errors are captured in the envelope.
-
-Preserves sync/async distinction in both return type and metadata.
+- all errors are captured in the envelope. Preserves sync/async distinction in both return type and metadata.
 
 Useful when you need to:
 
-- Distinguish
-
-Promise.resolve(Error)
-
-from
-
-Promise.reject(Error)
-
+- Distinguish `Promise.resolve(Error)` from `Promise.reject(Error)`
 - Know whether execution was sync or async
-
 - Handle errors without try/catch blocks
 
 **Examples:**

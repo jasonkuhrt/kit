@@ -56,9 +56,7 @@ Type predicate to check if value is a BigInteger.
 
 Construct a BigInteger from various input types.
 
-Accepts numbers, strings, and existing bigints, providing a safe way
-
-to create arbitrary precision integers from different sources.
+Accepts numbers, strings, and existing bigints, providing a safe way to create arbitrary precision integers from different sources.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `add`
 
@@ -77,9 +75,7 @@ to create arbitrary precision integers from different sources.
 
 Add two BigIntegers together.
 
-Performs exact addition without precision loss, regardless of the size
-
-of the numbers involved.
+Performs exact addition without precision loss, regardless of the size of the numbers involved.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `subtract`
 
@@ -207,11 +203,7 @@ Get the absolute value of a BigInteger.
 - `a` - First BigInteger
 - `b` - Second BigInteger
 
-**Returns:** -1 if a
-
-b, 0 if a = b, 1 if a
-
-b
+**Returns:** -1 if a b, 0 if a = b, 1 if a b
 
 Compare two BigIntegers.
 
@@ -261,9 +253,7 @@ Check if a BigInteger is odd.
 
 **Returns:** True if the BigInteger is positive
 
-Check if a BigInteger is positive (
-
-0).
+Check if a BigInteger is positive ( 0).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isNegative`
 
@@ -279,9 +269,7 @@ Check if a BigInteger is positive (
 
 **Returns:** True if the BigInteger is negative
 
-Check if a BigInteger is negative (
-
-0).
+Check if a BigInteger is negative ( 0).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isZero`
 
@@ -374,9 +362,7 @@ BigInteger
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L129" />
 
-Create a function that operates on a specific BigInteger by adding to it.
-
-Data-first pattern: the fixed value is the first parameter.
+Create a function that operates on a specific BigInteger by adding to it. Data-first pattern: the fixed value is the first parameter.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
 
@@ -386,9 +372,7 @@ Data-first pattern: the fixed value is the first parameter.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L147" />
 
-Create a function that adds with a specific BigInteger value.
-
-Data-second pattern: the fixed value is the second parameter.
+Create a function that adds with a specific BigInteger value. Data-second pattern: the fixed value is the second parameter.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`
 
@@ -398,9 +382,7 @@ Data-second pattern: the fixed value is the second parameter.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L177" />
 
-Create a function that subtracts with a specific BigInteger.
-
-Data-second pattern: the fixed value is the second parameter (subtrahend).
+Create a function that subtracts with a specific BigInteger. Data-second pattern: the fixed value is the second parameter (subtrahend).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractOn`
 
@@ -410,9 +392,7 @@ Data-second pattern: the fixed value is the second parameter (subtrahend).
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L191" />
 
-Create a function that operates on a specific BigInteger by subtracting from it.
-
-Data-first pattern: the fixed value is the first parameter (minuend).
+Create a function that operates on a specific BigInteger by subtracting from it. Data-first pattern: the fixed value is the first parameter (minuend).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`
 
@@ -422,9 +402,7 @@ Data-first pattern: the fixed value is the first parameter (minuend).
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L227" />
 
-Create a function that operates on a specific BigInteger by multiplying it.
-
-Data-first pattern: the fixed value is the first parameter.
+Create a function that operates on a specific BigInteger by multiplying it. Data-first pattern: the fixed value is the first parameter.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
 
@@ -434,9 +412,7 @@ Data-first pattern: the fixed value is the first parameter.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L244" />
 
-Create a function that multiplies with a specific BigInteger.
-
-Data-second pattern: the fixed value is the second parameter (multiplier).
+Create a function that multiplies with a specific BigInteger. Data-second pattern: the fixed value is the second parameter (multiplier).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideOn`
 
@@ -446,9 +422,7 @@ Data-second pattern: the fixed value is the second parameter (multiplier).
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L281" />
 
-Create a function that operates on a specific BigInteger by dividing it.
-
-Data-first pattern: the fixed value is the first parameter (dividend).
+Create a function that operates on a specific BigInteger by dividing it. Data-first pattern: the fixed value is the first parameter (dividend).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideWith`
 
@@ -458,9 +432,7 @@ Data-first pattern: the fixed value is the first parameter (dividend).
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L298" />
 
-Create a function that divides by a specific BigInteger.
-
-Data-second pattern: the fixed value is the second parameter (divisor).
+Create a function that divides by a specific BigInteger. Data-second pattern: the fixed value is the second parameter (divisor).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `remainderOn`
 
@@ -470,9 +442,7 @@ Data-second pattern: the fixed value is the second parameter (divisor).
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L335" />
 
-Create a function that operates on a specific BigInteger to get its remainder.
-
-Data-first pattern: the fixed value is the first parameter (dividend).
+Create a function that operates on a specific BigInteger to get its remainder. Data-first pattern: the fixed value is the first parameter (dividend).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `remainderWith`
 
@@ -482,9 +452,7 @@ Data-first pattern: the fixed value is the first parameter (dividend).
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L351" />
 
-Create a function that gets remainder with a specific divisor.
-
-Data-second pattern: the fixed value is the second parameter (divisor).
+Create a function that gets remainder with a specific divisor. Data-second pattern: the fixed value is the second parameter (divisor).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerOn`
 
@@ -494,9 +462,7 @@ Data-second pattern: the fixed value is the second parameter (divisor).
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L388" />
 
-Create a function that operates on a specific BigInteger base by raising it to powers.
-
-Data-first pattern: the fixed value is the first parameter (base).
+Create a function that operates on a specific BigInteger base by raising it to powers. Data-first pattern: the fixed value is the first parameter (base).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerWith`
 
@@ -506,9 +472,7 @@ Data-first pattern: the fixed value is the first parameter (base).
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L406" />
 
-Create a function that raises to a specific power.
-
-Data-second pattern: the fixed value is the second parameter (exponent).
+Create a function that raises to a specific power. Data-second pattern: the fixed value is the second parameter (exponent).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareOn`
 
@@ -518,9 +482,7 @@ Data-second pattern: the fixed value is the second parameter (exponent).
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L456" />
 
-Create a function that operates on a specific BigInteger by comparing it.
-
-Data-first pattern: the fixed value is the first parameter.
+Create a function that operates on a specific BigInteger by comparing it. Data-first pattern: the fixed value is the first parameter.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareWith`
 
@@ -530,9 +492,7 @@ Data-first pattern: the fixed value is the first parameter.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L474" />
 
-Create a function that compares with a specific BigInteger.
-
-Data-second pattern: the fixed value is the second parameter.
+Create a function that compares with a specific BigInteger. Data-second pattern: the fixed value is the second parameter.
 
 ## Types
 
@@ -548,18 +508,12 @@ BigInteger
 
 - arbitrary precision integer with branded type safety.
 
-Provides exact arithmetic for integers of any size, without the limitations
-
-of JavaScript's Number type (which loses precision beyond 2^53-1).
+Provides exact arithmetic for integers of any size, without the limitations of JavaScript's Number type (which loses precision beyond 2^53-1).
 
 Common uses:
 
 - **Cryptography**: Large prime numbers, key generation, modular arithmetic
-
 - **Financial systems**: Precise monetary calculations without rounding errors
-
 - **Mathematical computing**: Factorials, combinatorics, number theory
-
 - **Blockchain**: Transaction values, block numbers, hash computations
-
 - **Scientific computing**: Large dataset indexing, ID generation

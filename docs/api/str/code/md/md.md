@@ -4,17 +4,7 @@ _Str.Code.Md_ / **md**
 
 Structured markdown helpers.
 
-These helpers generate properly formatted markdown elements.
-
-All helpers return
-
-Raw
-
-(already formatted) or
-
-null
-
-for graceful handling.
+These helpers generate properly formatted markdown elements. All helpers return `Raw` (already formatted) or `null` for graceful handling.
 
 ## Import
 

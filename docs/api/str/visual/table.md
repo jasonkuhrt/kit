@@ -34,13 +34,7 @@ type Cell = string
 
 Visual-aware table operations for multi-column text layout.
 
-Tables are row-major 2D arrays where
-
-table[row][col]
-
-accesses individual cells.
-
-All operations use visual width (ANSI-aware) for alignment and measurement.
+Tables are row-major 2D arrays where `table[row][col]` accesses individual cells. All operations use visual width (ANSI-aware) for alignment and measurement.
 
 **Examples:**
 
@@ -87,11 +81,7 @@ type Table = Row[]
 
 Row-major 2D table of text cells.
 
-Access pattern:
-
-table[rowIndex][columnIndex]
-
-Can be jagged (rows with different lengths).
+Access pattern: `table[rowIndex][columnIndex]` Can be jagged (rows with different lengths).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `RenderOptions`
 
@@ -138,9 +128,7 @@ Options for rendering tables into formatted text.
 
 Render table rows into a formatted multi-line string.
 
-Each column is aligned to its maximum visual width (or explicit width if provided).
-
-Missing cells in jagged arrays are treated as empty strings.
+Each column is aligned to its maximum visual width (or explicit width if provided). Missing cells in jagged arrays are treated as empty strings.
 
 **Examples:**
 
@@ -175,11 +163,7 @@ Str.Visual.Table.render(table, { separator: ' | ', align: 'right' })
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L136" />
 
-Curried version of
-
-render
-
-with table first.
+Curried version of render with table first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderWith`
 
@@ -189,11 +173,7 @@ with table first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L142" />
 
-Curried version of
-
-render
-
-with options first.
+Curried version of render with options first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `renderColumns`
 
@@ -212,11 +192,7 @@ with options first.
 
 Render columns of text as aligned output.
 
-Takes column-oriented data where each column can have multiple lines.
-
-Columns with different heights are padded with empty strings.
-
-Transposes the column data to row-oriented format before rendering.
+Takes column-oriented data where each column can have multiple lines. Columns with different heights are padded with empty strings. Transposes the column data to row-oriented format before rendering.
 
 **Examples:**
 
@@ -256,11 +232,7 @@ Str.Visual.Table.renderColumns(jagged)
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L190" />
 
-Curried version of
-
-renderColumns
-
-with columns first.
+Curried version of renderColumns with columns first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderColumnsWith`
 
@@ -270,11 +242,7 @@ with columns first.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L196" />
 
-Curried version of
-
-renderColumns
-
-with options first.
+Curried version of renderColumns with options first.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `columnWidths`
 
@@ -292,9 +260,7 @@ with options first.
 
 Calculate the visual width of each column.
 
-Returns an array where each element is the maximum visual width
-
-of cells in that column.
+Returns an array where each element is the maximum visual width of cells in that column.
 
 **Examples:**
 

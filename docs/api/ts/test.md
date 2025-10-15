@@ -6,11 +6,7 @@ Type-level assertion utilities for testing type correctness.
 
 ## Choosing the Right Assertion
 
-**Structural Equality (
-
-exact
-
-)**: Use when types must be structurally identical
+**Structural Equality (`exact`)**: Use when types must be structurally identical
 
 ```ts
 exact<string, string>           // ✓ Pass
@@ -18,11 +14,7 @@ exact<1 | 2, 2 | 1>             // ✓ Pass (union order doesn't affect structur
 exact<string & {}, string>      // ✗ Fail (different structure)
 ```
 
-**Mutual Assignability (
-
-equiv
-
-)**: Use for semantically equal types
+**Mutual Assignability (`equiv`)**: Use for semantically equal types
 
 ```ts
 equiv<1 | 2, 2 | 1>             // ✓ Pass (same computed type)
@@ -30,11 +22,7 @@ equiv<string & {}, string>      // ✓ Pass (both compute to string)
 equiv<string, number>           // ✗ Fail (not mutually assignable)
 ```
 
-**Subtype Checking (
-
-sub
-
-)**: Use when actual must extend expected
+**Subtype Checking (`sub`)**: Use when actual must extend expected
 
 ```ts
 sub<string, 'hello'>            // ✓ Pass ('hello' extends string)
@@ -42,22 +30,14 @@ sub<object, { a: 1 }>           // ✓ Pass (more specific extends less specific
 sub<'hello', string>            // ✗ Fail (string doesn't extend 'hello')
 ```
 
-**Excess Property Detection**: Add
-
-NoExcess
-
-suffix to catch typos
+**Excess Property Detection**: Add `NoExcess` suffix to catch typos
 
 ```ts
 sub<Config>()({ id: true, extra: 1 })         // ✓ Pass (sub allows excess)
 subNoExcess<Config>()({ id: true, extra: 1 }) // ✗ Fail (catches typo!)
 ```
 
-**Negative Assertions (
-
-Not
-
-)**: Assert types are NOT related
+**Negative Assertions (`Not`)**: Assert types are NOT related
 
 ```ts
 Not.exact<string, number>       // ✓ Pass (they're different)
@@ -67,13 +47,7 @@ Not.promise<number>             // ✓ Pass (number is not a Promise)
 
 ## Configuration
 
-Assertion behavior can be configured via global settings.
-
-See
-
-KitLibrarySettings.Ts.Test.Settings
-
-for available options.
+Assertion behavior can be configured via global settings. See KitLibrarySettings.Ts.Test.Settings for available options.
 
 ## Import
 
@@ -132,27 +106,13 @@ type StaticErrorAssertion<
 
 Represents a static assertion error at the type level, optimized for type testing.
 
-This is a simpler, more focused error type compared to
-
-StaticError
-
-. It's specifically
-
-designed for type assertions where you need to communicate expected vs. actual types.
+This is a simpler, more focused error type compared to StaticError. It's specifically designed for type assertions where you need to communicate expected vs. actual types.
 
 Supports three forms of tips:
 
-- Single string:
-
-StaticErrorAssertion&lt;'msg', E, A, 'tip'&gt;
-
-- Tuple of strings:
-
-StaticErrorAssertion&lt;'msg', E, A, ['tip1', 'tip2']&gt;
-
-- Metadata object:
-
-StaticErrorAssertion&lt;'msg', E, A, never, { custom: 'data' }&gt;
+- Single string: `StaticErrorAssertion&lt;'msg', E, A, 'tip'&gt;`
+- Tuple of strings: `StaticErrorAssertion&lt;'msg', E, A, ['tip1', 'tip2']&gt;`
+- Metadata object: `StaticErrorAssertion&lt;'msg', E, A, never, { custom: 'data' }&gt;`
 
 $Message
 
@@ -205,25 +165,13 @@ type exact<$Expected, $Actual> = Apply<ExactKind, [$Expected, $Actual]>
 
 Assert that two types are exactly equal (structurally).
 
-Uses a conditional type inference trick to check exact structural equality,
-
-correctly handling any, never, and unknown edge cases.
+Uses a conditional type inference trick to check exact structural equality, correctly handling any, never, and unknown edge cases.
 
 This checks for structural equality
 
-- types must have the same structure,
+- types must have the same structure, not just compute to the same result. For mutual assignability, use equiv.
 
-not just compute to the same result. For mutual assignability, use
-
-equiv
-
-.
-
-When types are equivalent but not exact (mutually assignable), provides a helpful
-
-error suggesting to use equiv(). For other mismatches, TypeScript's native error
-
-messages show the specific structural differences.
+When types are equivalent but not exact (mutually assignable), provides a helpful error suggesting to use equiv(). For other mismatches, TypeScript's native error messages show the specific structural differences.
 
 **Examples:**
 
@@ -240,51 +188,6 @@ type _ = Ts.Test.Cases<
 >
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `exactConst`
-
-```typescript
-ConstAssertionFn<ExactKind>
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/exact.ts#L114" />
-
-Assert that a value exactly equals the expected type, using const to preserve literal types.
-
-This eliminates the need for
-
-as
-
-casts when testing with literal values.
-
-Related:
-
-exact
-
-(non-const variant)
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Ts } from '@wollybeard/kit/ts'
-// ---cut---
-// Without const - requires cast
-// [!code word:exact:1]
-Ts.Test.exact<{ a: 1 }>()({ a: 1 } as { a: 1 })
-
-// With const - no cast needed!
-// [!code word:exactConst:1]
-Ts.Test.exactConst<{ a: 1 }>()({ a: 1 })
-
-// Works with any literal type
-// [!code word:exactConst:1]
-Ts.Test.exactConst<'hello'>()('hello')
-// [!code word:exactConst:1]
-Ts.Test.exactConst<42>()(42)
-// [!code word:exactConst:1]
-Ts.Test.exactConst<true>()(true)
-```
-
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `exactType`
 
 ```typescript
@@ -295,25 +198,13 @@ type exact<$Expected, $Actual> = Apply<ExactKind, [$Expected, $Actual]>
 
 Assert that two types are exactly equal (structurally).
 
-Uses a conditional type inference trick to check exact structural equality,
-
-correctly handling any, never, and unknown edge cases.
+Uses a conditional type inference trick to check exact structural equality, correctly handling any, never, and unknown edge cases.
 
 This checks for structural equality
 
-- types must have the same structure,
+- types must have the same structure, not just compute to the same result. For mutual assignability, use equiv.
 
-not just compute to the same result. For mutual assignability, use
-
-equiv
-
-.
-
-When types are equivalent but not exact (mutually assignable), provides a helpful
-
-error suggesting to use equiv(). For other mismatches, TypeScript's native error
-
-messages show the specific structural differences.
+When types are equivalent but not exact (mutually assignable), provides a helpful error suggesting to use equiv(). For other mismatches, TypeScript's native error messages show the specific structural differences.
 
 **Examples:**
 
@@ -340,35 +231,11 @@ type equiv<$Expected, $Actual> = Apply<EquivKind, [$Expected, $Actual]>
 
 Assert that two types are equivalent (mutually assignable).
 
-This checks that types are mutually assignable (A extends B and B extends A),
+This checks that types are mutually assignable (A extends B and B extends A), which means they compute to the same result even if their structure differs.
 
-which means they compute to the same result even if their structure differs.
+Use this when you care about semantic equality rather than structural equality. For strict structural equality, use exact.
 
-Use this when you care about semantic equality rather than structural equality.
-
-For strict structural equality, use
-
-exact
-
-.
-
-**Linting:** When
-
-KitLibrarySettings.Ts.Test.Settings.lintBidForExactPossibility
-
-is
-
-true
-
-,
-
-this will show an error if
-
-exact
-
-would work, encouraging use of the stricter assertion.
-
-See module documentation for configuration example.
+**Linting:** When `KitLibrarySettings.Ts.Test.Settings.lintBidForExactPossibility` is `true`, this will show an error if exact would work, encouraging use of the stricter assertion. See module documentation for configuration example.
 
 **Examples:**
 
@@ -384,75 +251,17 @@ type _ = Ts.Test.Cases<
 >
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `equivConst`
-
-```typescript
-ConstAssertionFn<EquivConstKind>
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/equiv.ts#L194" />
-
-Assert that a value is equivalent (mutually assignable) with the expected type, using const to preserve literal types.
-
-This eliminates the need for
-
-as
-
-casts when testing with literal values.
-
-Unlike
-
-equiv
-
-, this also accepts subtypes, which is needed for const assertions
-
-with literals (e.g., literal 1 is a subtype of union 1 | 2).
-
-Related:
-
-equiv
-
-(non-const variant)
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Ts } from '@wollybeard/kit/ts'
-// ---cut---
-// Without const - requires cast for exact match
-// [!code word:equiv:1]
-Ts.Test.equiv<1 | 2>()(1 as 1 | 2)
-
-// With const - no cast needed
-// [!code word:equivConst:1]
-Ts.Test.equivConst<1 | 2>()(1)  // preserves literal 1
-
-// Useful for union types
-type Status = 'pending' | 'complete'
-// [!code word:equivConst:1]
-Ts.Test.equivConst<Status>()('pending')  // keeps 'pending' literal
-```
-
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `equivNoExcess`
 
 ```typescript
 type equivNoExcess<$Expected, $Actual> = Apply<EquivNoExcessKind, [$Expected, $Actual]>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/equiv.ts#L267" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/equiv.ts#L195" />
 
 Assert that two types are equivalent (mutually assignable) AND have no excess properties.
 
-Similar to
-
-equiv
-
-but also rejects excess properties in the actual type.
-
-This is useful for catching typos or unintended properties in configuration objects
-
-while still allowing types that compute to the same result.
+Similar to equiv but also rejects excess properties in the actual type. This is useful for catching typos or unintended properties in configuration objects while still allowing types that compute to the same result.
 
 **Examples:**
 
@@ -479,35 +288,11 @@ type equiv<$Expected, $Actual> = Apply<EquivKind, [$Expected, $Actual]>
 
 Assert that two types are equivalent (mutually assignable).
 
-This checks that types are mutually assignable (A extends B and B extends A),
+This checks that types are mutually assignable (A extends B and B extends A), which means they compute to the same result even if their structure differs.
 
-which means they compute to the same result even if their structure differs.
+Use this when you care about semantic equality rather than structural equality. For strict structural equality, use exact.
 
-Use this when you care about semantic equality rather than structural equality.
-
-For strict structural equality, use
-
-exact
-
-.
-
-**Linting:** When
-
-KitLibrarySettings.Ts.Test.Settings.lintBidForExactPossibility
-
-is
-
-true
-
-,
-
-this will show an error if
-
-exact
-
-would work, encouraging use of the stricter assertion.
-
-See module documentation for configuration example.
+**Linting:** When `KitLibrarySettings.Ts.Test.Settings.lintBidForExactPossibility` is `true`, this will show an error if exact would work, encouraging use of the stricter assertion. See module documentation for configuration example.
 
 **Examples:**
 
@@ -529,19 +314,11 @@ type _ = Ts.Test.Cases<
 type equivNoExcess<$Expected, $Actual> = Apply<EquivNoExcessKind, [$Expected, $Actual]>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/equiv.ts#L267" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/equiv.ts#L195" />
 
 Assert that two types are equivalent (mutually assignable) AND have no excess properties.
 
-Similar to
-
-equiv
-
-but also rejects excess properties in the actual type.
-
-This is useful for catching typos or unintended properties in configuration objects
-
-while still allowing types that compute to the same result.
+Similar to equiv but also rejects excess properties in the actual type. This is useful for catching typos or unintended properties in configuration objects while still allowing types that compute to the same result.
 
 **Examples:**
 
@@ -568,23 +345,9 @@ type sub<$Expected, $Actual> = Apply<SubKind, [$Expected, $Actual]>
 
 Assert that a type extends (is a subtype of) another type.
 
-Equivalent to TypeScript's
+Equivalent to TypeScript's `extends` keyword: checks if `$Actual extends $Expected`. This is useful for validating type relationships and narrowing.
 
-extends
-
-keyword: checks if
-
-$Actual extends $Expected
-
-.
-
-This is useful for validating type relationships and narrowing.
-
-For exact type equality (not just subtyping), use
-
-exact
-
-instead.
+For exact type equality (not just subtyping), use exact instead.
 
 **Examples:**
 
@@ -600,44 +363,6 @@ type _ = Ts.Test.Cases<
 >
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subConst`
-
-```typescript
-ConstAssertionFn<SubKind>
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/sub.ts#L314" />
-
-Assert that a value extends the expected type, using const to preserve literal types.
-
-This eliminates the need for
-
-as
-
-casts when testing with literal values.
-
-Related:
-
-sub
-
-(non-const variant)
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Ts } from '@wollybeard/kit/ts'
-// ---cut---
-// Without const - type may widen
-sub<string>()('hello')  // 'hello' widens to string
-
-// With const - preserves literal
-subConst<string>()('hello')  // keeps 'hello' literal type
-
-// Useful for object literals
-subConst<{ a: number }>()({ a: 1 })  // preserves { readonly a: 1 }
-```
-
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `subNoExcess`
 
 ```typescript
@@ -648,22 +373,12 @@ type subNoExcess<$Expected, $Actual> = Apply<SubNoExcessKind, [$Expected, $Actua
 
 Assert that a type extends the expected type AND has no excess properties.
 
-Similar to
-
-sub
-
-but also rejects excess properties beyond those defined
-
-in the expected type. This catches common bugs like typos in configuration objects
-
-or accidentally passing extra properties.
+Similar to sub but also rejects excess properties beyond those defined in the expected type. This catches common bugs like typos in configuration objects or accidentally passing extra properties.
 
 This is particularly useful for:
 
 - Validating configuration objects
-
 - Checking function parameters that shouldn't have extra properties
-
 - Testing that types don't have unexpected fields
 
 **Examples:**
@@ -725,23 +440,9 @@ type sub<$Expected, $Actual> = Apply<SubKind, [$Expected, $Actual]>
 
 Assert that a type extends (is a subtype of) another type.
 
-Equivalent to TypeScript's
+Equivalent to TypeScript's `extends` keyword: checks if `$Actual extends $Expected`. This is useful for validating type relationships and narrowing.
 
-extends
-
-keyword: checks if
-
-$Actual extends $Expected
-
-.
-
-This is useful for validating type relationships and narrowing.
-
-For exact type equality (not just subtyping), use
-
-exact
-
-instead.
+For exact type equality (not just subtyping), use exact instead.
 
 **Examples:**
 
@@ -767,22 +468,12 @@ type subNoExcess<$Expected, $Actual> = Apply<SubNoExcessKind, [$Expected, $Actua
 
 Assert that a type extends the expected type AND has no excess properties.
 
-Similar to
-
-sub
-
-but also rejects excess properties beyond those defined
-
-in the expected type. This catches common bugs like typos in configuration objects
-
-or accidentally passing extra properties.
+Similar to sub but also rejects excess properties beyond those defined in the expected type. This catches common bugs like typos in configuration objects or accidentally passing extra properties.
 
 This is particularly useful for:
 
 - Validating configuration objects
-
 - Checking function parameters that shouldn't have extra properties
-
 - Testing that types don't have unexpected fields
 
 **Examples:**
@@ -844,31 +535,10 @@ type sup<$Supertype, $Actual> = Apply<SupKind, [$Supertype, $Actual]>
 
 Assert that a type is a supertype of (i.e., extended by) another type.
 
-Equivalent to TypeScript's
+Equivalent to TypeScript's `extends` keyword: checks if `$Actual extends $Supertype`. This is the reverse parameter order of sub
 
-extends
-
-keyword: checks if
-
-$Actual extends $Supertype
-
-.
-
-This is the reverse parameter order of
-
-sub
-
-- the expected type is the supertype.
-
-Less commonly used than
-
-sub
-
-- most cases should use
-
-sub
-
-with reversed parameters for clarity.
+- the expected type is the supertype. Less commonly used than `sub`
+- most cases should use `sub` with reversed parameters for clarity.
 
 **Examples:**
 
@@ -893,31 +563,10 @@ type sup<$Supertype, $Actual> = Apply<SupKind, [$Supertype, $Actual]>
 
 Assert that a type is a supertype of (i.e., extended by) another type.
 
-Equivalent to TypeScript's
+Equivalent to TypeScript's `extends` keyword: checks if `$Actual extends $Supertype`. This is the reverse parameter order of sub
 
-extends
-
-keyword: checks if
-
-$Actual extends $Supertype
-
-.
-
-This is the reverse parameter order of
-
-sub
-
-- the expected type is the supertype.
-
-Less commonly used than
-
-sub
-
-- most cases should use
-
-sub
-
-with reversed parameters for clarity.
+- the expected type is the supertype. Less commonly used than `sub`
+- most cases should use `sub` with reversed parameters for clarity.
 
 **Examples:**
 
@@ -940,21 +589,9 @@ type equalAny<$Actual> = Apply<EqualAnyKind, [$Actual]>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/special-types.ts#L82" />
 
-Assert that a type is exactly
+Assert that a type is exactly `any`.
 
-any
-
-.
-
-Uses the
-
-0 extends 1 & T
-
-trick to detect
-
-any
-
-.
+Uses the `0 extends 1 & T` trick to detect `any`.
 
 **Examples:**
 
@@ -979,17 +616,7 @@ type equalEmptyObject<$Actual extends object> = Apply<EqualEmptyObjectKind, [$Ac
 
 Assert that a type is an empty object (no properties).
 
-Uses
-
-Obj.IsEmpty
-
-from kit to check if the object has no keys.
-
-Note:
-
-{}
-
-in TypeScript means "any non-nullish value", not an empty object.
+Uses Obj.IsEmpty from kit to check if the object has no keys. Note: `{}` in TypeScript means "any non-nullish value", not an empty object.
 
 **Examples:**
 
@@ -1012,11 +639,7 @@ type equalNever<$Actual> = Apply<EqualNeverKind, [$Actual]>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/special-types.ts#L33" />
 
-Assert that a type is exactly
-
-never
-
-.
+Assert that a type is exactly `never`.
 
 **Examples:**
 
@@ -1038,11 +661,7 @@ type equalUnknown<$Actual> = Apply<EqualUnknownKind, [$Actual]>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/special-types.ts#L133" />
 
-Assert that a type is exactly
-
-unknown
-
-.
+Assert that a type is exactly `unknown`.
 
 **Examples:**
 
@@ -1065,21 +684,9 @@ type equalAny<$Actual> = Apply<EqualAnyKind, [$Actual]>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/special-types.ts#L82" />
 
-Assert that a type is exactly
+Assert that a type is exactly `any`.
 
-any
-
-.
-
-Uses the
-
-0 extends 1 & T
-
-trick to detect
-
-any
-
-.
+Uses the `0 extends 1 & T` trick to detect `any`.
 
 **Examples:**
 
@@ -1104,17 +711,7 @@ type equalEmptyObject<$Actual extends object> = Apply<EqualEmptyObjectKind, [$Ac
 
 Assert that a type is an empty object (no properties).
 
-Uses
-
-Obj.IsEmpty
-
-from kit to check if the object has no keys.
-
-Note:
-
-{}
-
-in TypeScript means "any non-nullish value", not an empty object.
+Uses Obj.IsEmpty from kit to check if the object has no keys. Note: `{}` in TypeScript means "any non-nullish value", not an empty object.
 
 **Examples:**
 
@@ -1137,11 +734,7 @@ type equalNever<$Actual> = Apply<EqualNeverKind, [$Actual]>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/special-types.ts#L33" />
 
-Assert that a type is exactly
-
-never
-
-.
+Assert that a type is exactly `never`.
 
 **Examples:**
 
@@ -1163,11 +756,7 @@ type equalUnknown<$Actual> = Apply<EqualUnknownKind, [$Actual]>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/special-types.ts#L133" />
 
-Assert that a type is exactly
-
-unknown
-
-.
+Assert that a type is exactly `unknown`.
 
 **Examples:**
 
@@ -1331,13 +920,7 @@ type parameters<$Expected extends readonly any[], $Actual extends readonly any[]
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/parameters.ts#L46" />
 
-Assert that a function's parameters match the expected type.
-
-Combines
-
-Parameters&lt;typeof fn&gt;
-
-with assertion in one step.
+Assert that a function's parameters match the expected type. Combines `Parameters&lt;typeof fn&gt;` with assertion in one step.
 
 **Examples:**
 
@@ -1363,13 +946,7 @@ type parameters<$Expected extends readonly any[], $Actual extends readonly any[]
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/parameters.ts#L46" />
 
-Assert that a function's parameters match the expected type.
-
-Combines
-
-Parameters&lt;typeof fn&gt;
-
-with assertion in one step.
+Assert that a function's parameters match the expected type. Combines `Parameters&lt;typeof fn&gt;` with assertion in one step.
 
 **Examples:**
 
@@ -1392,13 +969,7 @@ type returns<$Expected, $Actual> = Apply<ReturnsAssertionKind, [$Expected, $Actu
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/returns.ts#L62" />
 
-Assert that a function's return type matches the expected type.
-
-Combines
-
-ReturnType&lt;typeof fn&gt;
-
-with assertion in one step.
+Assert that a function's return type matches the expected type. Combines `ReturnType&lt;typeof fn&gt;` with assertion in one step.
 
 **Examples:**
 
@@ -1421,13 +992,7 @@ type returns<$Expected, $Actual> = Apply<ReturnsAssertionKind, [$Expected, $Actu
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/returns.ts#L62" />
 
-Assert that a function's return type matches the expected type.
-
-Combines
-
-ReturnType&lt;typeof fn&gt;
-
-with assertion in one step.
+Assert that a function's return type matches the expected type. Combines `ReturnType&lt;typeof fn&gt;` with assertion in one step.
 
 **Examples:**
 
@@ -1450,13 +1015,7 @@ type returnsPromise<$Expected, $Actual> = Apply<ReturnsPromiseAssertionKind, [$E
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/returns-promise.ts#L62" />
 
-Assert that an async function's resolved return type matches the expected type.
-
-Combines
-
-Awaited&lt;ReturnType&lt;typeof fn&gt;&gt;
-
-with assertion in one step.
+Assert that an async function's resolved return type matches the expected type. Combines `Awaited&lt;ReturnType&lt;typeof fn&gt;&gt;` with assertion in one step.
 
 **Examples:**
 
@@ -1479,13 +1038,7 @@ type returnsPromise<$Expected, $Actual> = Apply<ReturnsPromiseAssertionKind, [$E
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/returns-promise.ts#L62" />
 
-Assert that an async function's resolved return type matches the expected type.
-
-Combines
-
-Awaited&lt;ReturnType&lt;typeof fn&gt;&gt;
-
-with assertion in one step.
+Assert that an async function's resolved return type matches the expected type. Combines `Awaited&lt;ReturnType&lt;typeof fn&gt;&gt;` with assertion in one step.
 
 **Examples:**
 
@@ -1513,11 +1066,7 @@ type propertiesEquiv<$Expected extends object, $Actual extends object> = Apply<
 
 Assert that specified properties in an object are equivalent (mutually assignable) to expected types.
 
-Checks that for each property in the expected shape, the actual object has that property
-
-and its type is mutually assignable (equivalent but not necessarily structurally equal).
-
-Only checks properties explicitly listed in the expected shape.
+Checks that for each property in the expected shape, the actual object has that property and its type is mutually assignable (equivalent but not necessarily structurally equal). Only checks properties explicitly listed in the expected shape.
 
 **Examples:**
 
@@ -1547,11 +1096,7 @@ type propertiesExact<$Expected extends object, $Actual extends object> = Apply<
 
 Assert that specified properties in an object are exactly equal to expected types.
 
-Checks that for each property in the expected shape, the actual object has that property
-
-and its type is structurally identical. Only checks properties explicitly listed in
-
-the expected shape
+Checks that for each property in the expected shape, the actual object has that property and its type is structurally identical. Only checks properties explicitly listed in the expected shape
 
 - additional properties in the actual object are ignored.
 
@@ -1583,11 +1128,7 @@ type propertiesSub<$Expected extends object, $Actual extends object> = Apply<
 
 Assert that specified properties in an object are subtypes of expected types.
 
-Checks that for each property in the expected shape, the actual object has that property
-
-and its type extends the expected type. Only checks properties explicitly listed in
-
-the expected shape
+Checks that for each property in the expected shape, the actual object has that property and its type extends the expected type. Only checks properties explicitly listed in the expected shape
 
 - additional properties in the actual object are ignored.
 
@@ -1619,11 +1160,7 @@ type propertiesEquiv<$Expected extends object, $Actual extends object> = Apply<
 
 Assert that specified properties in an object are equivalent (mutually assignable) to expected types.
 
-Checks that for each property in the expected shape, the actual object has that property
-
-and its type is mutually assignable (equivalent but not necessarily structurally equal).
-
-Only checks properties explicitly listed in the expected shape.
+Checks that for each property in the expected shape, the actual object has that property and its type is mutually assignable (equivalent but not necessarily structurally equal). Only checks properties explicitly listed in the expected shape.
 
 **Examples:**
 
@@ -1653,11 +1190,7 @@ type propertiesExact<$Expected extends object, $Actual extends object> = Apply<
 
 Assert that specified properties in an object are exactly equal to expected types.
 
-Checks that for each property in the expected shape, the actual object has that property
-
-and its type is structurally identical. Only checks properties explicitly listed in
-
-the expected shape
+Checks that for each property in the expected shape, the actual object has that property and its type is structurally identical. Only checks properties explicitly listed in the expected shape
 
 - additional properties in the actual object are ignored.
 
@@ -1689,11 +1222,7 @@ type propertiesSub<$Expected extends object, $Actual extends object> = Apply<
 
 Assert that specified properties in an object are subtypes of expected types.
 
-Checks that for each property in the expected shape, the actual object has that property
-
-and its type extends the expected type. Only checks properties explicitly listed in
-
-the expected shape
+Checks that for each property in the expected shape, the actual object has that property and its type extends the expected type. Only checks properties explicitly listed in the expected shape
 
 - additional properties in the actual object are ignored.
 
@@ -1720,9 +1249,7 @@ type Case<$Result extends never> = $Result
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/helpers.ts#L39" />
 
-Type-level test assertion that requires the result to be never (no error).
-
-Used in type-level test suites to ensure a type evaluates to never (success).
+Type-level test assertion that requires the result to be never (no error). Used in type-level test suites to ensure a type evaluates to never (success).
 
 **Examples:**
 
@@ -1845,9 +1372,7 @@ type Cases<
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/helpers.ts#L61" />
 
-Type-level batch assertion helper that accepts multiple assertions.
-
-Each type parameter must extend never (no error), allowing batch type assertions.
+Type-level batch assertion helper that accepts multiple assertions. Each type parameter must extend never (no error), allowing batch type assertions.
 
 **Examples:**
 

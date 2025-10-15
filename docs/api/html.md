@@ -36,45 +36,11 @@ Escape HTML special characters to prevent XSS vulnerabilities.
 
 Converts the following characters to their HTML entity equivalents:
 
--
-
-"
-
-→
-
-&quot;
-
--
-
-'
-
-→
-
-&#39;
-
--
-
-&
-
-→
-
-&amp;
-
--
-
-&lt;
-
-→
-
-&lt;
-
--
-
-&gt;
-
-→
-
-&gt;
+- `"` → `&quot;`
+- `'` → `&#39;`
+- `&` → `&amp;`
+- `&lt;` → `&lt;`
+- `&gt;` → `&gt;`
 
 **Examples:**
 

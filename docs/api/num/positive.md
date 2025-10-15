@@ -38,9 +38,7 @@ Num.Positive.someFunction()
 
 **Returns:** True if value is a positive number
 
-Type predicate to check if value is positive (
-
-0).
+Type predicate to check if value is positive ( 0).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
 
@@ -58,13 +56,9 @@ Type predicate to check if value is positive (
 
 **Throws:**
 
-- Error if value is not positive (
+- Error if value is not positive ( 0)
 
-0.
-
-Construct a Positive number.
-
-Throws if the value is not positive.
+Construct a Positive number. Throws if the value is not positive.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
@@ -80,9 +74,7 @@ Throws if the value is not positive.
 
 **Returns:** The Positive number or null
 
-Try to construct a Positive number.
-
-Returns null if the value is not positive.
+Try to construct a Positive number. Returns null if the value is not positive.
 
 ## Types
 
@@ -94,10 +86,6 @@ type Positive = number & { [PositiveBrand]: true }
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/positive/positive.ts#L24" />
 
-Positive number (
+Positive number ( 0).
 
-0).
-
-Positive numbers are all numbers greater than zero. They represent
-
-quantities, counts, and measurements in the real world.
+Positive numbers are all numbers greater than zero. They represent quantities, counts, and measurements in the real world.

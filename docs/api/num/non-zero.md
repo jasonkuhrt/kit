@@ -58,9 +58,7 @@ Type predicate to check if value is non-zero.
 
 - Error if value is zero
 
-Construct a NonZero number.
-
-Throws if the value is zero.
+Construct a NonZero number. Throws if the value is zero.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
@@ -76,9 +74,7 @@ Throws if the value is zero.
 
 **Returns:** The NonZero number or null
 
-Try to construct a NonZero number.
-
-Returns null if the value is zero.
+Try to construct a NonZero number. Returns null if the value is zero.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `safeDivide`
 
@@ -95,9 +91,7 @@ Returns null if the value is zero.
 
 **Returns:** The result of the division
 
-Safely divide a number by a NonZero divisor.
-
-This operation is guaranteed to never throw.
+Safely divide a number by a NonZero divisor. This operation is guaranteed to never throw.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `safeDiv`
 
@@ -114,9 +108,7 @@ This operation is guaranteed to never throw.
 
 **Returns:** The result of the division or null
 
-Try to divide two numbers safely.
-
-Returns null if the divisor is zero.
+Try to divide two numbers safely. Returns null if the divisor is zero.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `safeDivOn`
 
@@ -162,8 +154,4 @@ type NonZero = number & { [NonZeroBrand]: true }
 
 Non-zero number (≠ 0).
 
-Non-zero numbers are all numbers except zero. They are essential
-
-for safe division operations and other mathematical contexts where
-
-zero would cause errors or undefined behavior.
+Non-zero numbers are all numbers except zero. They are essential for safe division operations and other mathematical contexts where zero would cause errors or undefined behavior.

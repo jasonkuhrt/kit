@@ -26,11 +26,7 @@ Str.AxisHand.someFunction()
 
 - [**`AxisHand`**](/api/str/axis-hand/axis-hand) - AxisHand provides a logical, orientation-aware coordinate system for box model properties.
 
-Unlike physical coordinates (top/left/etc), AxisHand uses logical properties relative to flow direction:
-
-- **main axis**: The primary flow direction (set by orientation)
-
-- **cross axis**: Perpendicular to the main axis
+Unlike physical coordinates (top/left/etc), AxisHand uses logical properties relative to flow direction: - **main axis**: The primary flow direction (set by orientation) - **cross axis**: Perpendicular to the main axis
 
 Each axis has **start** and **end** positions, creating a coordinate system that adapts to orientation.
 
@@ -74,7 +70,6 @@ AxisHand provides a logical, orientation-aware coordinate system for box model p
 Unlike physical coordinates (top/left/etc), AxisHand uses logical properties relative to flow direction:
 
 - **main axis**: The primary flow direction (set by orientation)
-
 - **cross axis**: Perpendicular to the main axis
 
 Each axis has **start** and **end** positions, creating a coordinate system that adapts to orientation.
@@ -135,28 +130,8 @@ Value specification for a single axis.
 Can be:
 
 - A value (shorthand for both start and end)
-
-- An array
-
-[start, end]
-
-or sparse
-
-[start]
-
-,
-
-[, end]
-
-- An object with explicit
-
-start
-
-and
-
-end
-
-properties
+- An array `[start, end]` or sparse `[start]`, `[, end]`
+- An object with explicit `start` and `end` properties
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Input`
 
@@ -174,36 +149,4 @@ type Input<$value = number> =
 
 Input format for AxisHand.
 
-Supports multiple syntaxes for progressive complexity:
-
-1. Global value:
-
-2
-
-→ all sides
-
-2. Axis shorthands:
-
-[2, 4]
-
-→ [main, cross]
-
-3. Binary axis:
-
-[[1, 2], [3, 4]]
-
-→ [[main], [cross]]
-
-4. Sparse binary:
-
-[[2]]
-
-→ main only
-
-5. Object syntax:
-
-{ main: [1, 2], cross: 4 }
-
-6. Explicit logical:
-
-{ mainStart: 1, mainEnd: 2, ... }
+Supports multiple syntaxes for progressive complexity: 1. Global value: `2` → all sides 2. Axis shorthands: `[2, 4]` → [main, cross] 3. Binary axis: `[[1, 2], [3, 4]]` → [[main], [cross]] 4. Sparse binary: `[[2]]` → main only 5. Object syntax: `{ main: [1, 2], cross: 4 }` 6. Explicit logical: `{ mainStart: 1, mainEnd: 2, ... }`

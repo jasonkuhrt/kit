@@ -2,15 +2,9 @@
 
 _Ts_ / **SimpleSignature**
 
-Utilities for working with the
+Utilities for working with the `__simpleSignature` phantom type pattern.
 
-__simpleSignature
-
-phantom type pattern.
-
-This pattern allows functions with complex generic signatures to provide
-
-a simpler signature for type inference in contexts like testing or documentation.
+This pattern allows functions with complex generic signatures to provide a simpler signature for type inference in contexts like testing or documentation.
 
 SimpleSignature
 
@@ -52,9 +46,7 @@ Ts.SimpleSignature.someFunction()
 
 Helper to implement a function with a simple signature for inference.
 
-This allows you to write the implementation using the simple signature types
-
-while the returned function has the full complex signature.
+This allows you to write the implementation using the simple signature types while the returned function has the full complex signature.
 
 $Fn
 
@@ -91,15 +83,9 @@ typeof symbol
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L25" />
 
-Utilities for working with the
+Utilities for working with the `__simpleSignature` phantom type pattern.
 
-__simpleSignature
-
-phantom type pattern.
-
-This pattern allows functions with complex generic signatures to provide
-
-a simpler signature for type inference in contexts like testing or documentation.
+This pattern allows functions with complex generic signatures to provide a simpler signature for type inference in contexts like testing or documentation.
 
 SimpleSignature
 
@@ -119,9 +105,7 @@ interface SimpleSignature<
 
 Helper interface for defining simple signatures with overloads.
 
-Use this to define multiple overload signatures in a type-safe way.
-
-The type parameter accepts a tuple of function signatures.
+Use this to define multiple overload signatures in a type-safe way. The type parameter accepts a tuple of function signatures.
 
 $Overloads
 
@@ -166,19 +150,9 @@ type GetSignature<$fn> = $fn extends { [symbol]: infer $sig } ? $sig : $fn
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L88" />
 
-Extract the signature from a function, preferring
+Extract the signature from a function, preferring `__simpleSignature` if available.
 
-__simpleSignature
-
-if available.
-
-If the function has a
-
-__simpleSignature
-
-property, returns that type.
-
-Otherwise, returns the function's actual type unchanged.
+If the function has a `__simpleSignature` property, returns that type. Otherwise, returns the function's actual type unchanged.
 
 $fn
 
@@ -211,11 +185,7 @@ type GetParameters<$fn> = GetSignature<$fn> extends (...args: any) => any ? Para
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L107" />
 
-Extract parameters from a function, using
-
-__simpleSignature
-
-if available.
+Extract parameters from a function, using `__simpleSignature` if available.
 
 $fn
 
@@ -246,11 +216,7 @@ type GetReturnType<$fn> = GetSignature<$fn> extends (...args: any) => any ? Retu
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L127" />
 
-Extract return type from a function, using
-
-__simpleSignature
-
-if available.
+Extract return type from a function, using `__simpleSignature` if available.
 
 $fn
 

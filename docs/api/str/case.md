@@ -38,9 +38,7 @@ Str.Case.someFunction()
 
 **Returns:** The constant cased string
 
-Convert string to CONSTANT_CASE (SCREAMING_SNAKE_CASE).
-
-Commonly used for environment variables and constants.
+Convert string to CONSTANT_CASE (SCREAMING_SNAKE_CASE). Commonly used for environment variables and constants.
 
 **Examples:**
 
@@ -70,9 +68,7 @@ Str.Case.constant('myEnvVar') // 'MY_ENV_VAR'
 
 **Returns:** The title cased string
 
-Convert string to Title Case.
-
-Replaces hyphens and underscores with spaces and capitalizes the first letter of each word.
+Convert string to Title Case. Replaces hyphens and underscores with spaces and capitalizes the first letter of each word.
 
 **Examples:**
 
@@ -100,13 +96,9 @@ Str.Case.title('the quick brown fox') // 'The Quick Brown Fox'
 
 - `str` - The string to convert
 
-**Returns:** The uppercase string with Uppercase
+**Returns:** The uppercase string with Uppercase type
 
-type
-
-Convert string to UPPERCASE with type-level transformation.
-
-Preserves the uppercase type at the type level.
+Convert string to UPPERCASE with type-level transformation. Preserves the uppercase type at the type level.
 
 **Examples:**
 
@@ -134,9 +126,7 @@ uppercase('FooBar') // 'FOOBAR'
 
 - `s` - The string to convert
 
-**Returns:** The string with lowercase first letter and Uncapitalize
-
-type
+**Returns:** The string with lowercase first letter and Uncapitalize type
 
 Convert the first letter of a string to lowercase with type-level transformation.
 
@@ -163,9 +153,7 @@ lowerCaseFirst('HELLO')  // Type: "hELLO"
 
 - `string` - The string to capitalize
 
-**Returns:** The string with capitalized first letter and Capitalize
-
-type
+**Returns:** The string with capitalized first letter and Capitalize type
 
 Capitalize the first letter of a string with type-level transformation.
 
@@ -195,15 +183,11 @@ capitalizeFirst('foo bar')  // Type: "Foo bar"
 
 - `str` - The string that is to be changed to camel case.
 
-**Returns:** string
-
-- The converted string to camel case.
+**Returns:** string - The converted string to camel case.
 
 Converts a string to camel case.
 
-Camel case is the naming convention in which the first word is written in lowercase and
-
-each subsequent word begins with a capital letter, concatenated without any separator characters.
+Camel case is the naming convention in which the first word is written in lowercase and each subsequent word begins with a capital letter, concatenated without any separator characters.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `kebab`
 
@@ -218,9 +202,7 @@ each subsequent word begins with a capital letter, concatenated without any sepa
 
 - `str` - The string that is to be changed to kebab case.
 
-**Returns:** string
-
-- The converted string to kebab case.
+**Returns:** string - The converted string to kebab case.
 
 Converts a string to kebab case.
 
@@ -239,9 +221,7 @@ Kebab case is the naming convention in which each word is written in lowercase a
 
 - `str` - The string that is to be changed to pascal case.
 
-**Returns:** string
-
-- The converted string to Pascal case.
+**Returns:** string - The converted string to Pascal case.
 
 Converts a string to Pascal case.
 
@@ -260,9 +240,7 @@ Pascal case is the naming convention in which each word is capitalized and conca
 
 - `str` - The string that is to be changed to snake case.
 
-**Returns:** string
-
-- The converted string to snake case.
+**Returns:** string - The converted string to snake case.
 
 Converts a string to snake case.
 

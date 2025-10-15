@@ -58,9 +58,7 @@ Type predicate to check if value is an integer.
 
 - Error if value is not an integer
 
-Construct an Int.
-
-Throws if the value is not an integer.
+Construct an Int. Throws if the value is not an integer.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
@@ -76,9 +74,7 @@ Throws if the value is not an integer.
 
 **Returns:** The Int or null
 
-Try to construct an Int.
-
-Returns null if the value is not an integer.
+Try to construct an Int. Returns null if the value is not an integer.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `parse`
 
@@ -94,9 +90,7 @@ Returns null if the value is not an integer.
 
 **Returns:** The parsed Int or null
 
-Parse a string to an Int.
-
-Uses parseInt with base 10.
+Parse a string to an Int. Uses parseInt with base 10.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `round`
 
@@ -112,9 +106,7 @@ Uses parseInt with base 10.
 
 **Returns:** The rounded integer
 
-Round a number to the nearest integer.
-
-Uses standard rounding rules (0.5 rounds up).
+Round a number to the nearest integer. Uses standard rounding rules (0.5 rounds up).
 
 ## Types
 
@@ -128,8 +120,4 @@ type Int = number & { [IntBrand]: true }
 
 Integer number.
 
-Integers are whole numbers without fractional parts. They can be
-
-positive, negative, or zero. In JavaScript, integers are represented
-
-as floating-point numbers but are guaranteed to have no decimal part.
+Integers are whole numbers without fractional parts. They can be positive, negative, or zero. In JavaScript, integers are represented as floating-point numbers but are guaranteed to have no decimal part.

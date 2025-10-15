@@ -32,9 +32,7 @@ Num.Degrees.someFunction()
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/degrees/degrees.ts#L20" />
 
-Type predicate to check if value is a valid degree angle.
-
-Note: Any finite number can represent an angle in degrees.
+Type predicate to check if value is a valid degree angle. Note: Any finite number can represent an angle in degrees.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
 
@@ -44,9 +42,7 @@ Note: Any finite number can represent an angle in degrees.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/degrees/degrees.ts#L28" />
 
-Construct a Degrees angle.
-
-Throws if the value is not finite.
+Construct a Degrees angle. Throws if the value is not finite.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
@@ -56,9 +52,7 @@ Throws if the value is not finite.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/degrees/degrees.ts#L39" />
 
-Try to construct a Degrees angle.
-
-Returns null if the value is not finite.
+Try to construct a Degrees angle. Returns null if the value is not finite.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fromRadians`
 

@@ -106,9 +106,7 @@ Create a pure imaginary complex number (real part = 0).
 
 Add two complex numbers together.
 
-When adding complex numbers, you add the real parts together and the imaginary parts together.
-
-Formula: (a + bi) + (c + di) = (a + c) + (b + d)i
+When adding complex numbers, you add the real parts together and the imaginary parts together. Formula: (a + bi) + (c + di) = (a + c) + (b + d)i
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `subtract`
 
@@ -125,9 +123,7 @@ Formula: (a + bi) + (c + di) = (a + c) + (b + d)i
 
 **Returns:** The difference
 
-Subtract two complex numbers.
-
-(a + bi)
+Subtract two complex numbers. (a + bi)
 
 - (c + di) = (a
 - c) + (b
@@ -148,9 +144,7 @@ Subtract two complex numbers.
 
 **Returns:** The product
 
-Multiply two complex numbers.
-
-(a + bi)(c + di) = (ac
+Multiply two complex numbers. (a + bi)(c + di) = (ac
 
 - bd) + (ad + bc)i
 
@@ -173,9 +167,7 @@ Multiply two complex numbers.
 
 - Error if divisor is zero
 
-Divide two complex numbers.
-
-(a + bi) / (c + di) = [(a + bi)(c
+Divide two complex numbers. (a + bi) / (c + di) = [(a + bi)(c
 
 - di)] / (c² + d²)
 
@@ -198,9 +190,7 @@ Get the complex conjugate by flipping the sign of the imaginary part.
 The complex conjugate is useful for:
 
 - Converting division into multiplication (z/w = z*w̄/|w|²)
-
 - Finding the magnitude squared (z*z̄ = |z|²)
-
 - Extracting real parts from complex expressions
 
 If z = a + bi, then z* = a
@@ -223,9 +213,7 @@ If z = a + bi, then z* = a
 
 Get the absolute value (magnitude/modulus) of a complex number.
 
-The magnitude represents the distance from the origin to the point in the complex plane.
-
-This is always a non-negative real number, calculated using the Pythagorean theorem.
+The magnitude represents the distance from the origin to the point in the complex plane. This is always a non-negative real number, calculated using the Pythagorean theorem.
 
 Formula: |a + bi| = √(a² + b²)
 
@@ -249,11 +237,7 @@ Formula: |a + bi| = √(a² + b²)
 
 Get the argument (phase/angle) of a complex number in radians.
 
-The argument is the angle from the positive real axis to the line connecting
-
-the origin to the complex number, measured counterclockwise.
-
-This is essential for polar form representation and rotation operations.
+The argument is the angle from the positive real axis to the line connecting the origin to the complex number, measured counterclockwise. This is essential for polar form representation and rotation operations.
 
 Formula: arg(a + bi) = atan2(b, a)
 
@@ -273,11 +257,7 @@ Formula: arg(a + bi) = atan2(b, a)
 
 Convert complex number to polar form (magnitude, angle).
 
-Polar form represents a complex number as r*e^(iθ) where r is the magnitude
-
-and θ is the angle. This form is especially useful for multiplication and
-
-power operations, as it turns them into simple arithmetic on the components.
+Polar form represents a complex number as r*e^(iθ) where r is the magnitude and θ is the angle. This form is especially useful for multiplication and power operations, as it turns them into simple arithmetic on the components.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fromPolar`
 
@@ -296,9 +276,7 @@ power operations, as it turns them into simple arithmetic on the components.
 
 Create complex number from polar form (magnitude, angle).
 
-This converts from polar coordinates (r, θ) to rectangular coordinates (a, bi)
-
-using Euler's formula: r*e^(iθ) = r(cos θ + i sin θ)
+This converts from polar coordinates (r, θ) to rectangular coordinates (a, bi) using Euler's formula: r*e^(iθ) = r(cos θ + i sin θ)
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `power`
 
@@ -317,11 +295,7 @@ using Euler's formula: r*e^(iθ) = r(cos θ + i sin θ)
 
 Raise a complex number to a real power using De Moivre's theorem.
 
-This uses the polar form to compute powers efficiently:
-
-If z = r*e^(iθ), then z^n = r^n * e^(inθ)
-
-This avoids the complexity of repeated multiplication for integer powers.
+This uses the polar form to compute powers efficiently: If z = r*e^(iθ), then z^n = r^n * e^(inθ) This avoids the complexity of repeated multiplication for integer powers.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `sqrt`
 
@@ -339,11 +313,7 @@ This avoids the complexity of repeated multiplication for integer powers.
 
 Get the square root of a complex number.
 
-Returns the principal (primary) square root using the power function.
-
-The principal root is the one with argument in the range (-π/2, π/2].
-
-Note that every non-zero complex number has exactly two square roots.
+Returns the principal (primary) square root using the power function. The principal root is the one with argument in the range (-π/2, π/2]. Note that every non-zero complex number has exactly two square roots.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `exp`
 
@@ -361,11 +331,7 @@ Note that every non-zero complex number has exactly two square roots.
 
 Natural exponential function for complex numbers.
 
-Uses Euler's formula: e^(a + bi) = e^a * (cos b + i sin b)
-
-This fundamental function connects exponentials with trigonometry and
-
-is essential for signal processing, quantum mechanics, and many areas of mathematics.
+Uses Euler's formula: e^(a + bi) = e^a * (cos b + i sin b) This fundamental function connects exponentials with trigonometry and is essential for signal processing, quantum mechanics, and many areas of mathematics.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `log`
 
@@ -387,11 +353,7 @@ is essential for signal processing, quantum mechanics, and many areas of mathema
 
 Natural logarithm for complex numbers.
 
-Uses the formula: log(z) = log|z| + i*arg(z)
-
-This gives the principal branch of the complex logarithm.
-
-Note that complex logarithms are multi-valued; this returns the principal value.
+Uses the formula: log(z) = log|z| + i*arg(z) This gives the principal branch of the complex logarithm. Note that complex logarithms are multi-valued; this returns the principal value.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `equals`
 
@@ -411,11 +373,7 @@ Note that complex logarithms are multi-valued; this returns the principal value.
 
 Check if two complex numbers are equal within a tolerance.
 
-Due to floating-point arithmetic limitations, exact equality is rarely achievable
-
-for computed complex numbers. This function allows for small differences that
-
-arise from numerical precision issues.
+Due to floating-point arithmetic limitations, exact equality is rarely achievable for computed complex numbers. This function allows for small differences that arise from numerical precision issues.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `toString`
 
@@ -434,11 +392,7 @@ arise from numerical precision issues.
 
 Convert complex number to string representation.
 
-Creates a human-readable string in standard mathematical notation (a + bi).
-
-Handles special cases like pure real numbers, pure imaginary numbers,
-
-and the imaginary unit to provide clean, readable output.
+Creates a human-readable string in standard mathematical notation (a + bi). Handles special cases like pure real numbers, pure imaginary numbers, and the imaginary unit to provide clean, readable output.
 
 ## Constants
 
@@ -450,9 +404,7 @@ and the imaginary unit to provide clean, readable output.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L107" />
 
-Create a function that constructs complex numbers with a fixed real part.
-
-Useful for creating pure imaginary numbers or series.
+Create a function that constructs complex numbers with a fixed real part. Useful for creating pure imaginary numbers or series.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`
 
@@ -462,9 +414,7 @@ Useful for creating pure imaginary numbers or series.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L122" />
 
-Create a function that constructs complex numbers with a fixed imaginary part.
-
-Useful for creating real numbers or series with constant imaginary component.
+Create a function that constructs complex numbers with a fixed imaginary part. Useful for creating real numbers or series with constant imaginary component.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `I`
 
@@ -474,9 +424,7 @@ Complex
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L158" />
 
-The imaginary unit i (0 + 1i).
-
-Satisfies i² = -1.
+The imaginary unit i (0 + 1i). Satisfies i² = -1.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ZERO`
 
@@ -508,9 +456,7 @@ One complex number (1 + 0i).
 
 Create a function that adds its input to a specific complex number.
 
-This is the data-first curried version where the input becomes the first parameter.
-
-Useful for operations where you want to add various numbers to a fixed base value.
+This is the data-first curried version where the input becomes the first parameter. Useful for operations where you want to add various numbers to a fixed base value.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
 
@@ -522,9 +468,7 @@ Useful for operations where you want to add various numbers to a fixed base valu
 
 Create a function that adds a specific complex number to other complex numbers.
 
-This is the data-second curried version where the fixed value is added to various inputs.
-
-Useful when you want to add the same complex number to many different values.
+This is the data-second curried version where the fixed value is added to various inputs. Useful when you want to add the same complex number to many different values.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`
 
@@ -546,9 +490,7 @@ Create a function that subtracts from a specific complex number.
 
 Create a function that subtracts from a specific complex number.
 
-This is the data-first curried version where the input becomes the subtrahend.
-
-Useful for operations where you want to subtract various numbers from a fixed value.
+This is the data-first curried version where the input becomes the subtrahend. Useful for operations where you want to subtract various numbers from a fixed value.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`
 
@@ -560,9 +502,7 @@ Useful for operations where you want to subtract various numbers from a fixed va
 
 Create a function that multiplies a specific complex number by others.
 
-This is the data-first curried version where the input becomes the second factor.
-
-Useful for operations where you want to multiply a fixed base by various values.
+This is the data-first curried version where the input becomes the second factor. Useful for operations where you want to multiply a fixed base by various values.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
 
@@ -574,11 +514,7 @@ Useful for operations where you want to multiply a fixed base by various values.
 
 Create a function that multiplies with a specific complex number.
 
-This is the data-second curried version where the fixed multiplier is applied to various inputs.
-
-Useful when you want to scale or rotate many complex numbers by the same amount.
-
-In 2D graphics, multiplying by a complex number rotates and scales points around the origin.
+This is the data-second curried version where the fixed multiplier is applied to various inputs. Useful when you want to scale or rotate many complex numbers by the same amount. In 2D graphics, multiplying by a complex number rotates and scales points around the origin.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideWith`
 
@@ -590,9 +526,7 @@ In 2D graphics, multiplying by a complex number rotates and scales points around
 
 Create a function that divides from a specific complex number.
 
-This creates a function where the provided complex number is the dividend (numerator)
-
-and the function's input becomes the divisor (denominator).
+This creates a function where the provided complex number is the dividend (numerator) and the function's input becomes the divisor (denominator).
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideOn`
 
@@ -604,9 +538,7 @@ and the function's input becomes the divisor (denominator).
 
 Create a function that divides a specific complex number by others.
 
-This is the data-first curried version where the input becomes the divisor.
-
-Useful for operations where you want to divide a fixed dividend by various values.
+This is the data-first curried version where the input becomes the divisor. Useful for operations where you want to divide a fixed dividend by various values.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerOn`
 
@@ -618,9 +550,7 @@ Useful for operations where you want to divide a fixed dividend by various value
 
 Create a function that raises a specific complex number to various powers.
 
-This is the data-first curried version where the input becomes the exponent.
-
-Useful for operations where you want to raise a fixed base to different powers.
+This is the data-first curried version where the input becomes the exponent. Useful for operations where you want to raise a fixed base to different powers.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerWith`
 
@@ -632,11 +562,7 @@ Useful for operations where you want to raise a fixed base to different powers.
 
 Create a function that raises complex numbers to a specific power.
 
-This is the data-second curried version where the fixed exponent is applied to various bases.
-
-Useful for applying the same power operation to multiple complex numbers,
-
-such as when processing arrays or in mathematical transformations.
+This is the data-second curried version where the fixed exponent is applied to various bases. Useful for applying the same power operation to multiple complex numbers, such as when processing arrays or in mathematical transformations.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `equalsOn`
 
@@ -648,9 +574,7 @@ such as when processing arrays or in mathematical transformations.
 
 Create a function that checks if its input equals a specific complex number.
 
-This is the data-first curried version where the reference value is the first parameter.
-
-Useful for checking if various numbers equal a fixed reference value.
+This is the data-first curried version where the reference value is the first parameter. Useful for checking if various numbers equal a fixed reference value.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `equalsWith`
 
@@ -662,11 +586,7 @@ Useful for checking if various numbers equal a fixed reference value.
 
 Create a function that checks equality with a specific complex number.
 
-This is the data-second curried version where the comparison value is fixed.
-
-Useful for filtering, validation, or when you need to check many numbers
-
-against the same reference value.
+This is the data-second curried version where the comparison value is fixed. Useful for filtering, validation, or when you need to check many numbers against the same reference value.
 
 ## Types
 
@@ -685,20 +605,12 @@ Complex number
 
 - a number with both real and imaginary parts, written as a + bi.
 
-The 'i' represents the imaginary unit, which is the square root of -1.
-
-Complex numbers extend regular numbers to solve problems that regular numbers can't,
-
-like finding the square root of negative numbers.
+The 'i' represents the imaginary unit, which is the square root of -1. Complex numbers extend regular numbers to solve problems that regular numbers can't, like finding the square root of negative numbers.
 
 Common uses:
 
 - **Signal processing**: Analyzing sound waves and digital signals
-
 - **Electrical engineering**: Calculating power in AC circuits
-
 - **Physics**: Describing quantum states and wave behavior
-
 - **Computer graphics**: Rotating points and creating fractals
-
 - **Control systems**: Analyzing system stability

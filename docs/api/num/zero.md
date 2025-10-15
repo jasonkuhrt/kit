@@ -42,9 +42,7 @@ Type predicate to check if value is zero.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/zero/zero.ts#L24" />
 
-Construct a Zero.
-
-Throws if the value is not zero.
+Construct a Zero. Throws if the value is not zero.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
 
@@ -54,9 +52,7 @@ Throws if the value is not zero.
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/zero/zero.ts#L35" />
 
-Try to construct a Zero.
-
-Returns null if the value is not zero.
+Try to construct a Zero. Returns null if the value is not zero.
 
 ## Constants
 
