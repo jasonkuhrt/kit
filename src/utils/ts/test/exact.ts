@@ -1,8 +1,9 @@
-import { Fn } from '#fn'
-import type { Apply, Kind } from '../kind.js'
+import type { Simplify } from 'type-fest'
+import type { Apply } from '../kind.js'
 import type { GetRelation, IsExact } from '../relation.js'
 import { type AssertionFn, type ConstAssertionFn, runtime, runtimeConst, type StaticErrorAssertion } from './helpers.js'
 import type { _ExactError } from './shared.js'
+import { WARNING } from './symbols.js'
 
 //
 //
@@ -31,7 +32,7 @@ interface ExactKind {
       : GetRelation<this['parameters'][0], this['parameters'][1]> extends 'equivalent'
         ? _ExactError<this['parameters'][0], this['parameters'][1]>
         : StaticErrorAssertion<
-            'Types are not exactly equal',
+            '⚠ Types are not exactly equal',
             this['parameters'][0],
             this['parameters'][1]
           >

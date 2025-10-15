@@ -225,6 +225,7 @@
     "prepack": "pnpm build",
     "test:unit": "vitest",
     "test": "vitest",
+    "test:type-errors": "pnpm test error-messages --run",
     "fixcheck": "pnpm run '/fix:.*/' && pnpm run '/check:.*/'",
     "check": "pnpm run '/check:.*/'",
     "fix": "pnpm run '/fix:.*/'",
@@ -239,6 +240,7 @@
     "toggle:precommit": "if [ -f .husky/pre-commit ]; then mv .husky/pre-commit .husky/pre-commit.disabled && echo '✗ Pre-commit hook disabled'; else mv .husky/pre-commit.disabled .husky/pre-commit && echo '✓ Pre-commit hook enabled'; fi"
   },
   "devDependencies": {
+    "@ark/attest": "^0.50.0",
     "@dprint/formatter": "^0.4.1",
     "@dprint/markdown": "^0.19.0",
     "@effect/platform": "^0.92.1",

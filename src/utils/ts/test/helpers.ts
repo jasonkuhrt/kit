@@ -1,4 +1,7 @@
+import type { Str } from '#str'
+import type { Simplify } from 'type-fest'
 import type { Apply, Kind } from '../kind.js'
+import type { GetPreservedTypes, GetTestSetting } from '../test-settings.js'
 import type { IsNever } from '../ts.js'
 import type { ___NoValue___, IsNoTypeArg } from './shared.js'
 
@@ -158,48 +161,192 @@ export type Cases<
   _T100 extends never = never,
 > = true
 
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Error Message Display
+//
+//
+//
+//
+
+/**
+ * Align object keys by padding with underscores to configured length.
+ *
+ * Pads keys with underscores (`_`) to match the `errorKeyLength` setting from global
+ * test configuration. Ensures consistent alignment of error message keys in IDE displays.
+ *
+ * @template $T - The type whose keys should be aligned
+ *
+ * @example
+ * ```ts
+ * // With errorKeyLength: 12
+ * type Input = { MESSAGE: string, EXPECTED: number }
+ * type Output = AlignKeys<Input>
+ * // { MESSAGE_____: string, EXPECTED____: number }
+ * ```
+ */
+export type AlignKeys<$T> = {
+  [k in keyof $T as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]: $T[k]
+}
+
+/**
+ * Smart type expansion for error displays.
+ *
+ * Expands user-defined types while preserving built-in primitives and registered types.
+ * Prevents error messages from expanding types like `Array`, `Promise`, `Record` into
+ * their raw structural definitions.
+ *
+ * Preserved types:
+ * - All primitives (string, number, boolean, etc.)
+ * - Built-in generics (Array, Promise, Record, etc.)
+ * - Types registered in {@link KitLibrarySettings.Ts.Test.PreserveTypes}
+ *
+ * @template $T - The type to selectively expand
+ *
+ * @example
+ * ```ts
+ * type Custom = { x: number }
+ * type A = DisplaySimplify<Custom>  // { x: number } - expands custom types
+ * type B = DisplaySimplify<Array<number>>  // number[] - preserves built-in
+ * type C = DisplaySimplify<Promise<string>>  // Promise<string> - preserves built-in
+ * ```
+ */
+// dprint-ignore
+export type DisplaySimplify<$T> =
+  $T extends GetPreservedTypes ? $T
+  : $T extends BuiltInTypes ? $T
+  : $T extends object
+    ? { [k in keyof $T]: DisplaySimplify<$T[k]> }
+    : $T
+
+/**
+ * Built-in types that should not be expanded in error messages.
+ * @internal
+ */
+// dprint-ignore
+type BuiltInTypes =
+  | string | number | boolean | symbol | bigint | null | undefined | void | never | unknown | any
+  | String | Number | Boolean | Symbol | BigInt
+  | Array<any> | ReadonlyArray<any>
+  | Promise<any>
+  | Record<any, any>
+  | Map<any, any> | Set<any> | WeakMap<any, any> | WeakSet<any>
+  | Date | RegExp | Error
+  | Function | ((...args: any[]) => any)
+
+/**
+ * Convert a tuple of tip strings into lettered tip fields.
+ *
+ * Transforms `[string, string, ...]` into `{ tip_a: string, tip_b: string, ... }`.
+ * Used to display multiple tips in error messages with alphabetic labels.
+ *
+ * @template $Tips - Readonly array of tip strings
+ *
+ * @example
+ * ```ts
+ * type T1 = TupleToTips<['First tip', 'Second tip']>
+ * // { tip_a: 'First tip', tip_b: 'Second tip' }
+ *
+ * type T2 = TupleToTips<['Only one']>
+ * // { tip_a: 'Only one' }
+ * ```
+ */
+export type TupleToTips<$Tips extends readonly string[]> = {
+  [i in keyof $Tips as i extends `${infer __n__ extends number}` ? `tip_${Letters[__n__]}` : never]: $Tips[i]
+}
+
+/**
+ * Alphabet mapping for tip indices.
+ * @internal
+ */
+type Letters = [
+  'a',
+  'b',
+  'c',
+  'd',
+  'e',
+  'f',
+  'g',
+  'h',
+  'i',
+  'j',
+  'k',
+  'l',
+  'm',
+  'n',
+  'o',
+  'p',
+  'q',
+  'r',
+  's',
+  't',
+  'u',
+  'v',
+  'w',
+  'x',
+  'y',
+  'z',
+]
+
 /**
  * Represents a static assertion error at the type level, optimized for type testing.
  *
  * This is a simpler, more focused error type compared to {@link StaticError}. It's specifically
  * designed for type assertions where you need to communicate expected vs. actual types.
  *
+ * Supports three forms of tips:
+ * - Single string: `StaticErrorAssertion<'msg', E, A, 'tip'>`
+ * - Tuple of strings: `StaticErrorAssertion<'msg', E, A, ['tip1', 'tip2']>`
+ * - Metadata object: `StaticErrorAssertion<'msg', E, A, never, { custom: 'data' }>`
+ *
  * @template $Message - A string literal type describing the assertion failure
  * @template $Expected - The expected type
  * @template $Actual - The actual type that was provided
- * @template $Tip - Optional tip for resolving the error
+ * @template $Tip - Optional tip string or tuple of tip strings
+ * @template $Meta - Optional metadata object for additional context
  *
  * @example
  * ```ts
- * // Using in parameter assertions
- * function assertParameters<T extends readonly any[]>(
- *   fn: Parameters<typeof fn> extends T ? typeof fn
- *     : StaticErrorAssertion<
- *       'Parameters mismatch',
- *       T,
- *       Parameters<typeof fn>
- *     >
- * ): void {}
+ * // Simple error with message only
+ * type E1 = StaticErrorAssertion<'Types mismatch', string, number>
  *
- * // Error shows:
- * // MESSAGE: 'Parameters mismatch'
- * // EXPECTED: [string, number]
- * // ACTUAL: [number, string]
+ * // With a single tip
+ * type E2 = StaticErrorAssertion<'Types mismatch', string, number, 'Use String() to convert'>
+ *
+ * // With multiple tips
+ * type E3 = StaticErrorAssertion<'Types mismatch', string, number, ['Tip 1', 'Tip 2']>
+ *
+ * // With metadata object
+ * type E4 = StaticErrorAssertion<'Types mismatch', string, number, never, { operation: 'concat' }>
  * ```
  *
  * @category Error Messages
  */
-export interface StaticErrorAssertion<
+// dprint-ignore
+export type StaticErrorAssertion<
   $Message extends string = string,
   $Expected = unknown,
   $Actual = unknown,
-  $Tip extends string = never,
-> {
-  MESSAGE: $Message
-  EXPECTED: $Expected
-  ACTUAL: $Actual
-  TIP: $Tip
-}
+  $Tip extends string | readonly string[] = never,
+  $Meta extends Record<string, any> = {},
+> =
+  // Check if we have tips or metadata - if not, skip Simplify to avoid {} collapse
+  [keyof $Meta] extends [never]
+    ? [$Tip] extends [never]
+      ? {
+          [k in keyof { ERROR: $Message; expected: $Expected; actual: $Actual } as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
+            { ERROR: $Message; expected: $Expected; actual: $Actual }[k]
+        }
+      : Simplify<{
+          [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & ([$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip })) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
+            ({ ERROR: $Message; expected: $Expected; actual: $Actual } & ([$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip }))[k]
+        }>
+    : Simplify<{
+        [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta & ([$Tip] extends [never] ? {} : [$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip })) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
+          ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta & ([$Tip] extends [never] ? {} : [$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip }))[k]
+      }>
 
 //
 //
