@@ -372,6 +372,24 @@ export type ResultToRestArgs<$Result> =
     : [error: $Result] // Fail - require error argument
 
 /**
+ * Convert assertion result to value-level error parameters for signature display.
+ * - If assertion passes (never), no error parameters
+ * - If assertion fails (StaticErrorAssertion), show error message and expected type
+ *
+ * This creates the multi-parameter error feedback pattern for value-level assertions.
+ *
+ * @template $Result - The assertion result (never | StaticErrorAssertion)
+ * @template $Expected - The expected type
+ */
+// dprint-ignore
+export type ResultToValueErrorParams<$Result, $Expected> =
+  [$Result] extends [never]  // Tuple wrapping prevents distributive conditional
+    ? []  // Pass - no error params
+    : $Result extends { ERROR_______: infer __ErrorMessage__ }
+      ? [error: __ErrorMessage__, expected: $Expected]  // Extract error message from StaticErrorAssertion
+      : [error: 'Assertion failed', expected: $Expected] // Fallback
+
+/**
  * Generic assertion function type that works for any assertion Kind.
  *
  * Supports two modes:
@@ -435,43 +453,13 @@ export type AssertionFn<$Assertion extends Kind> = <
 ) =>
   IsNoTypeArg<$Actual> extends true
     ? <$actual>(
-        actual:
-          [Apply<$Assertion, [$Expected, $actual]>] extends [never]  // Tuple wrapping prevents distributive conditional
-            ? $actual  // Assertion passes
-            : Apply<$Assertion, [$Expected, $actual]>,  // Assertion fails
-        ..._ERROR_never_only_allowed_when_expected_is_never: NeverErrorParams<$Expected, $actual>
+        actual: $actual,
+        ...errorInfo: [
+          ...ResultToValueErrorParams<Apply<$Assertion, [$Expected, $actual]>, $Expected>,
+          ...NeverErrorParams<$Expected, $actual>
+        ]
       ) => void
     : void // Type-only mode: return void
-
-/**
- * Generic assertion function type for *Const variants.
- *
- * Similar to {@link AssertionFn} but specialized for const assertions:
- * - Only supports value mode (no type-only mode)
- * - Uses `const` assertion to preserve literal types
- * - Takes `$Expected` type parameter first, returns function accepting value
- *
- * @template $Assertion - The assertion Kind defining the check logic
- *
- * @example
- * ```ts
- * // Define assertion using existing Kind
- * export const subConst: ConstAssertionFn<SubKind> = runtimeConst
- *
- * // Usage
- * subConst<string>()('hello')  // OK - preserves 'hello' literal
- * subConst<{ a: number }>()({ a: 1 })  // OK - preserves { readonly a: 1 }
- * ```
- */
-// dprint-ignore
-export type ConstAssertionFn<$Assertion extends Kind> = <$Expected>() =>
-  <const $Actual>(
-    _actual:
-      [Apply<$Assertion, [$Expected, $Actual]>] extends [never]  // Tuple wrapping prevents distributive conditional
-        ? $Actual  // Assertion passes
-        : Apply<$Assertion, [$Expected, $Actual]>,  // Assertion fails
-    ..._ERROR_never_only_allowed_when_expected_is_never: NeverErrorParams<$Expected, $Actual>
-  ) => void
 
 /**
  * Generic assertion function type for single-parameter (unary) assertions.
@@ -509,10 +497,13 @@ export type UnaryAssertionFn<$Assertion extends Kind> = <$Actual = ___NoValue___
 ) =>
   IsNoTypeArg<$Actual> extends true
     ? <$actual>(
-        _actual:
-          [Apply<$Assertion, [$actual]>] extends [never]  // Tuple wrapping prevents distributive conditional
-            ? $actual  // Assertion passes
-            : Apply<$Assertion, [$actual]>  // Assertion fails - show error
+        actual: $actual,
+        ...errorInfo: [$Actual extends { ERROR_______: infer __ErrorMessage__ }
+          ? __ErrorMessage__
+          : Apply<$Assertion, [$actual]>
+        ] extends [never]
+          ? []  // Pass - no error
+          : [error: Apply<$Assertion, [$actual]>]  // Fail - show full error object
       ) => void
     : void // Type-only mode: return void
 
@@ -558,15 +549,14 @@ export type ExtractorAssertionFn<$Extractor extends Kind, $Assertion extends Kin
 ) =>
   IsNoTypeArg<$Actual> extends true
     ? <$Container>(
-        _container:
-          [Apply<$Assertion, [$Expected, Apply<$Extractor, [$Container]>]>] extends [never]  // Tuple wrapping prevents distributive conditional
-            ? $Container  // Assertion passes
-            : Apply<$Assertion, [$Expected, Apply<$Extractor, [$Container]>]>,  // Assertion fails
-        ..._ERROR_never_only_allowed_when_expected_is_never: NeverErrorParams<$Expected, $Container>
+        container: $Container,
+        ...errorInfo: [
+          ...ResultToValueErrorParams<Apply<$Assertion, [$Expected, Apply<$Extractor, [$Container]>]>, $Expected>,
+          ...NeverErrorParams<$Expected, $Container>
+        ]
       ) => void
     : void // Type-only mode: return void
 
 export const runtime = () => ((..._args: any[]) => {}) as any
-export const runtimeConst = <$Expected>() => (..._args: any[]) => {}
 export const runtimeUnary = ((..._args: any[]) => {}) as any
 export const runtimeExtractor = runtime

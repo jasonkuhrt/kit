@@ -3,7 +3,7 @@ import type { Apply, Kind } from '../kind.js'
 import type { GetRelation, IsExact } from '../relation.js'
 import type { GetTestSetting } from '../test-settings.js'
 import type { ShowInTemplate } from '../ts.ts'
-import { type AssertionFn, type ConstAssertionFn, runtime, runtimeConst, type StaticErrorAssertion } from './helpers.js'
+import { type AssertionFn, runtime, type StaticErrorAssertion } from './helpers.js'
 
 //
 //
@@ -120,78 +120,6 @@ export type equiv<$Expected, $Actual> = Apply<EquivKind, [$Expected, $Actual]>
  * @see Module documentation for how to enable strict linting
  */
 export const equiv: AssertionFn<EquivKind> = runtime
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • EquivConst Assertion
-//
-//
-//
-//
-
-/**
- * EquivConst assertion kind - checks for equivalence OR subtype (for const variants).
- *
- * Part of the Higher-Kinded Types (HKT) pattern. See {@link helpers.ts} for detailed explanation.
- *
- * Similar to EquivKind but also accepts 'subtype' relation, which is needed when
- * using const assertions with literals (e.g., literal 1 is a subtype of union 1 | 2).
- *
- * Parameters: [$Expected, $Actual]
- * Returns: never if types are equivalent OR $Actual is subtype of $Expected, otherwise StaticErrorAssertion
- */
-interface EquivConstKind {
-  parameters: [$Expected: unknown, $Actual: unknown]
-  // dprint-ignore
-  return:
-    GetRelation<this['parameters'][0], this['parameters'][1]> extends infer ___Relation
-      ? ___Relation extends 'equivalent' | 'subtype'
-        ? never  // Accept both equivalent and subtype
-      : ___Relation extends 'supertype'
-        ? StaticErrorAssertion<
-            'Expected extends Actual, but Actual does not extend Expected',
-            this['parameters'][0],
-            this['parameters'][1]
-          >
-      : ___Relation extends 'overlapping'
-        ? StaticErrorAssertion<
-            'Types overlap but are not mutually assignable',
-            this['parameters'][0],
-            this['parameters'][1]
-          >
-        : StaticErrorAssertion<
-            'Types are disjoint (no common values)',
-            this['parameters'][0],
-            this['parameters'][1]
-          >
-      : never
-}
-
-/**
- * Assert that a value is equivalent (mutually assignable) with the expected type, using const to preserve literal types.
- * This eliminates the need for `as` casts when testing with literal values.
- *
- * Unlike {@link equiv}, this also accepts subtypes, which is needed for const assertions
- * with literals (e.g., literal 1 is a subtype of union 1 | 2).
- *
- * Related: {@link equiv} (non-const variant)
- *
- * @example
- * ```ts
- * // Without const - requires cast for exact match
- * Ts.Test.equiv<1 | 2>()(1 as 1 | 2)
- *
- * // With const - no cast needed
- * Ts.Test.equivConst<1 | 2>()(1)  // preserves literal 1
- *
- * // Useful for union types
- * type Status = 'pending' | 'complete'
- * Ts.Test.equivConst<Status>()('pending')  // keeps 'pending' literal
- * ```
- */
-export const equivConst: ConstAssertionFn<EquivConstKind> = runtimeConst
 
 //
 //

@@ -1,7 +1,7 @@
 import type { Simplify } from 'type-fest'
 import type { Apply } from '../kind.js'
 import type { GetRelation, IsExact } from '../relation.js'
-import { type AssertionFn, type ConstAssertionFn, runtime, runtimeConst, type StaticErrorAssertion } from './helpers.js'
+import { type AssertionFn, runtime, type StaticErrorAssertion } from './helpers.js'
 import type { _ExactError } from './shared.js'
 import { WARNING } from './symbols.js'
 
@@ -90,25 +90,3 @@ export type exact<$Expected, $Actual> = Apply<ExactKind, [$Expected, $Actual]>
  * ```
  */
 export const exact: AssertionFn<ExactKind> = runtime
-
-/**
- * Assert that a value exactly equals the expected type, using const to preserve literal types.
- * This eliminates the need for `as` casts when testing with literal values.
- *
- * Related: {@link exact} (non-const variant)
- *
- * @example
- * ```ts
- * // Without const - requires cast
- * Ts.Test.exact<{ a: 1 }>()({ a: 1 } as { a: 1 })
- *
- * // With const - no cast needed!
- * Ts.Test.exactConst<{ a: 1 }>()({ a: 1 })
- *
- * // Works with any literal type
- * Ts.Test.exactConst<'hello'>()('hello')
- * Ts.Test.exactConst<42>()(42)
- * Ts.Test.exactConst<true>()(true)
- * ```
- */
-export const exactConst: ConstAssertionFn<ExactKind> = runtimeConst

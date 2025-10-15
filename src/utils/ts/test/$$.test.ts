@@ -44,6 +44,95 @@ test('exact error - with built-in types preserved', () => {
 }`)
 })
 
+test('exact value mode - basic type mismatches', () => {
+  const fn = Ts.Test.exact<string>()<42>
+  attest(fn).type.toString.snap(`(
+  actual: 42,
+  error: "⚠ Types are not exactly equal",
+  expected: string
+) => void`)
+
+  const fn2 = Ts.Test.exact<{ a: string }>()<{ a: number; b: number }>
+  attest(fn2).type.toString.snap(`(
+  actual: { a: number; b: number },
+  error: "⚠ Types are not exactly equal",
+  expected: { a: string }
+) => void`)
+})
+
+test('exact value mode - never handling', () => {
+  const neverValue = null as never
+  Ts.Test.exact<never>()(neverValue)
+})
+
+test('exact value mode - parameter-based error feedback', () => {
+  type IsExact<Expected, Actual> = Expected extends Actual ? Actual extends Expected ? true
+    : false
+    : false
+
+  type ExactV1<Expected> = <Actual>(
+    actual: Actual,
+    ...errorInfo: IsExact<Expected, Actual> extends true ? []
+      : [error: '⚠ Types are not exactly equal', expected: Expected]
+  ) => void
+
+  const exactV1 = (() => {}) as ExactV1<string>
+
+  const fnError = exactV1<42>
+  attest(fnError).type.toString.snap(`(
+  actual: 42,
+  error: "⚠ Types are not exactly equal",
+  expected: string
+) => void`)
+
+  const fnSuccess = exactV1<string>
+  attest(fnSuccess).type.toString.snap('(actual: string) => void')
+
+  type ComplexA = {
+    id: string
+    user: { name: string; age: number }
+    tags: string[]
+  }
+
+  type ComplexB = {
+    id: string
+    user: { name: string; age: string }
+    tags: string[]
+    extra: boolean
+  }
+
+  const exactComplexA = (() => {}) as ExactV1<ComplexA>
+  const fnComplexError = exactComplexA<ComplexB>
+  attest(fnComplexError).type.toString.snap(`(
+  actual: ComplexB,
+  error: "⚠ Types are not exactly equal",
+  expected: ComplexA
+) => void`)
+})
+
+test('exact value mode - complex type aliases in signatures', () => {
+  type ComplexA = {
+    id: string
+    user: { name: string; age: number }
+    tags: string[]
+  }
+
+  type ComplexB = {
+    id: string
+    user: { name: string; age: string }
+    tags: string[]
+    extra: boolean
+  }
+
+  const exactComplexA = Ts.Test.exact<ComplexA>()
+  const fnComplexError = exactComplexA<ComplexB>
+  attest(fnComplexError).type.toString.snap(`(
+  actual: ComplexB,
+  error: "⚠ Types are not exactly equal",
+  expected: ComplexA
+) => void`)
+})
+
 //
 //
 //
@@ -121,7 +210,6 @@ test('error with tuple of tips', () => {
 //
 //
 
-// Example: User-defined types that should be preserved
 class Foo {
   constructor(public value: Date) {}
 }
@@ -133,11 +221,8 @@ class Bar {
   ) {}
 }
 
-// Make this file a module so the global declaration takes effect
 export {}
 
-// Configure custom types to be preserved (not expanded) in error messages
-// Multiple augmentations can be done independently (simulating different users/modules)
 declare global {
   namespace KitLibrarySettings {
     namespace Ts {
@@ -150,7 +235,6 @@ declare global {
   }
 }
 
-// Second augmentation (simulating another module/user adding their own type)
 declare global {
   namespace KitLibrarySettings {
     namespace Ts {
@@ -221,7 +305,8 @@ test('sub error - string does not extend hello', () => {
 
 test('subNoExcess error - excess property', () => {
   type Config = { id: boolean; name?: string }
-  attest({} as Ts.Test.subNoExcess<Config, { id: true; extra: number }>).type.toString.snap(`{
+  attest({} as Ts.Test.subNoExcess<Config, { id: true; extra: number }>).type
+    .toString.snap(`{
   ERROR_______: "Type has excess properties not present in expected type"
   expected____: Config
   actual______: { id: true; extra: number }
@@ -305,7 +390,12 @@ test('equiv error - expected extends actual but not vice versa', () => {
 
 test('equivNoExcess error - excess property', () => {
   type Config = { id: boolean; name?: string }
-  attest({} as Ts.Test.equivNoExcess<Config, { id: boolean; name?: string; extra: number }>).type.toString.snap(`{
+  attest(
+    {} as Ts.Test.equivNoExcess<
+      Config,
+      { id: boolean; name?: string; extra: number }
+    >,
+  ).type.toString.snap(`{
   ERROR_______: "Actual extends Expected, but Expected does not extend Actual"
   expected____: Config
   actual______: {

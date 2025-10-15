@@ -1,7 +1,7 @@
 import type { Obj } from '#obj'
 import type { Apply, Kind } from '../kind.ts'
 import type { ShowInTemplate } from '../ts.ts'
-import { type AssertionFn, type ConstAssertionFn, runtime, runtimeConst, type StaticErrorAssertion } from './helpers.ts'
+import { type AssertionFn, runtime, type StaticErrorAssertion } from './helpers.ts'
 import type { ___NoValue___ } from './shared.ts'
 
 //
@@ -292,23 +292,3 @@ export type subNot<$NotExpected, $Actual> = Apply<SubNotKind, [$NotExpected, $Ac
  * ```
  */
 export const subNot: AssertionFn<SubNotKind> = runtime
-
-/**
- * Assert that a value extends the expected type, using const to preserve literal types.
- * This eliminates the need for `as` casts when testing with literal values.
- *
- * Related: {@link sub} (non-const variant)
- *
- * @example
- * ```ts
- * // Without const - type may widen
- * sub<string>()('hello')  // 'hello' widens to string
- *
- * // With const - preserves literal
- * subConst<string>()('hello')  // keeps 'hello' literal type
- *
- * // Useful for object literals
- * subConst<{ a: number }>()({ a: 1 })  // preserves { readonly a: 1 }
- * ```
- */
-export const subConst: ConstAssertionFn<SubKind> = runtimeConst

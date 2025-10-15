@@ -250,62 +250,6 @@ type Union1 = 1 | 2
 type Union2 = 2 | 1
 type _UnionEquiv = Ts.Test.equiv<Union2, Union1> // Should pass
 
-// === Test Const Variants ===
-
-test('exactConst - preserves literal types without cast', () => {
-  // String literals
-  Ts.Test.exactConst<'hello'>()('hello')
-
-  // Number literals
-  Ts.Test.exactConst<42>()(42)
-
-  // Boolean literals
-  Ts.Test.exactConst<true>()(true)
-
-  // Object literals - no cast needed!
-  Ts.Test.exactConst<{ readonly a: 1 }>()({ a: 1 })
-  Ts.Test.exactConst<{ readonly name: 'Alice'; readonly age: 30 }>()({ name: 'Alice', age: 30 })
-
-  // Array literals
-  Ts.Test.exactConst<readonly [1, 2, 3]>()([1, 2, 3])
-
-  // @ts-expect-error - Types don't match
-  Ts.Test.exactConst<'hello'>()('world')
-  // @ts-expect-error - Wrong literal value
-  Ts.Test.exactConst<42>()(43)
-})
-
-test('subConst - preserves literal types', () => {
-  // Literal extends base type
-  Ts.Test.subConst<string>()('hello')
-  Ts.Test.subConst<number>()(42)
-
-  // Object literal extends interface
-  Ts.Test.subConst<{ a: number }>()({ a: 1 })
-  Ts.Test.subConst<{ a: number; b?: string }>()({ a: 1, b: 'test' })
-
-  // @ts-expect-error - Type mismatch
-  Ts.Test.subConst<string>()(42)
-  // @ts-expect-error - Missing required property
-  Ts.Test.subConst<{ a: number; b: string }>()({ a: 1 })
-})
-
-test('equivConst - equivalence with literals', () => {
-  // Union types with literals
-  type Status = 'pending' | 'complete'
-  Ts.Test.equivConst<Status>()('pending')
-  Ts.Test.equivConst<Status>()('complete')
-
-  // Number unions
-  type Score = 1 | 2 | 3 | 4 | 5
-  Ts.Test.equivConst<Score>()(3)
-
-  // @ts-expect-error - Not in union
-  Ts.Test.equivConst<Status>()('invalid')
-  // @ts-expect-error - Wrong type
-  Ts.Test.equivConst<Status>()(42)
-})
-
 const syncValue = 42
 const asyncValue = Promise.resolve(42)
 

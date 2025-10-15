@@ -67,19 +67,19 @@
 
 // Structural equality - types must have identical structure
 // Use when you need exact type matching (not just assignability)
-export { exact, exactConst } from './exact.js'
+export { exact } from './exact.js'
 export type { exact as exactType } from './exact.js'
 
 // Mutual assignability - types compute to the same result
 // Use when you care about semantic equality rather than structure
 // See also: exact (for structural equality), sub (for subtype checking)
-export { equiv, equivConst, equivNoExcess } from './equiv.js'
+export { equiv, equivNoExcess } from './equiv.js'
 export type { equiv as equivType, equivNoExcess as equivNoExcessType } from './equiv.js'
 
 // Subtype checking - actual extends expected
 // Use for validating that types satisfy minimum requirements
 // See also: exact (for equality), equiv (for mutual assignability), sup (reverse parameter order)
-export { sub, subConst, subNoExcess, subNot } from './sub.ts'
+export { sub, subNoExcess, subNot } from './sub.ts'
 export type { sub as subType, subNoExcess as subNoExcessType, subNot as subNotType } from './sub.ts'
 
 // Supertype checking - reverse parameter order of sub
