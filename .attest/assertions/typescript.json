@@ -1,19 +1,19 @@
 {
-    "src/utils/ts/test/error-messages.test.ts": [
+    "src/utils/ts/test/$$.test.ts": [
         {
             "location": {
                 "start": {
-                    "line": 21,
+                    "line": 20,
                     "char": 3
                 },
                 "end": {
-                    "line": 21,
+                    "line": 20,
                     "char": 46
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_______: \"⚠ Types are not exactly equal\"; expected____: string; actual______: number; }",
+                    "type": "{ ERROR_________: \"Types are completely disjoint (no common values)\"; expected______: string; actual________: number; tip___________: \"These types have no overlap and will never be equal\"; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -39,7 +39,7 @@
             },
             "args": [
                 {
-                    "type": "{ ERROR_______: \"⚠ Types are not exactly equal\"; expected____: A<{}>; actual______: B; }",
+                    "type": "{ ERROR_________: \"Types have overlapping values but are not structurally equal\"; expected______: A<{}>; actual________: B; diff_missing__: { query: {}; }; diff_excess___: { name: \"default\"; result: { a: string | null; }; }; tip___________: \"Types share some possible values but are different\"; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -55,17 +55,17 @@
         {
             "location": {
                 "start": {
-                    "line": 41,
+                    "line": 47,
                     "char": 3
                 },
                 "end": {
-                    "line": 41,
+                    "line": 47,
                     "char": 36
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_______: \"⚠ Types are not exactly equal\"; expected____: A; actual______: B; }",
+                    "type": "{ ERROR_________: \"Types have overlapping values but are not structurally equal\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: Date; actual: number; }; }; tip___________: \"Types share some possible values but are different\"; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -81,355 +81,17 @@
         {
             "location": {
                 "start": {
-                    "line": 51,
+                    "line": 67,
                     "char": 3
                 },
                 "end": {
-                    "line": 51,
-                    "char": 13
-                }
-            },
-            "args": [
-                {
-                    "type": "(actual: { ERROR_______: \"⚠ Types are not exactly equal\"; expected____: string; actual______: 42; }) => void",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 54,
-                    "char": 3
-                },
-                "end": {
-                    "line": 54,
-                    "char": 40
-                }
-            },
-            "args": [
-                {
-                    "type": "[actual: { ERROR_______: \"⚠ Types are not exactly equal\"; expected____: string; actual______: 1; }]",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 64,
-                    "char": 3
-                },
-                "end": {
-                    "line": 64,
-                    "char": 44
-                }
-            },
-            "args": [
-                {
-                    "type": "any",
-                    "relationships": {
-                        "args": [
-                            "none"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 89,
-                    "char": 3
-                },
-                "end": {
-                    "line": 89,
-                    "char": 38
-                }
-            },
-            "args": [
-                {
-                    "type": "any",
-                    "relationships": {
-                        "args": [
-                            "none"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 99,
-                    "char": 3
-                },
-                "end": {
-                    "line": 99,
-                    "char": 36
-                }
-            },
-            "args": [
-                {
-                    "type": "any",
-                    "relationships": {
-                        "args": [
-                            "none"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 109,
-                    "char": 3
-                },
-                "end": {
-                    "line": 109,
-                    "char": 45
-                }
-            },
-            "args": [
-                {
-                    "type": "any",
-                    "relationships": {
-                        "args": [
-                            "none"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 138,
-                    "char": 3
-                },
-                "end": {
-                    "line": 138,
-                    "char": 18
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_______: \"Custom validation failed\"; expected____: { a: string; }; actual______: { a: number; }; location____: \"src/file.ts:42\"; hint________: \"Use string\"; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 154,
-                    "char": 3
-                },
-                "end": {
-                    "line": 154,
-                    "char": 18
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_______: \"Type mismatch\"; expected____: string; actual______: number; tip_________: \"Use string\"; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 169,
-                    "char": 3
-                },
-                "end": {
-                    "line": 169,
-                    "char": 18
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_______: \"Type mismatch\"; expected____: string; actual______: number; tip_a_______: \"Use string\"; tip_b_______: \"Check docs\"; tip_c_______: \"See example\"; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 238,
-                    "char": 3
-                },
-                "end": {
-                    "line": 238,
-                    "char": 36
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_______: \"⚠ Types are not exactly equal\"; expected____: A; actual______: B; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 248,
-                    "char": 3
-                },
-                "end": {
-                    "line": 248,
-                    "char": 36
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_______: \"⚠ Types are not exactly equal\"; expected____: A; actual______: B; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 270,
-                    "char": 3
-                },
-                "end": {
-                    "line": 270,
-                    "char": 45
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_______: \"Actual type does not extend expected type\"; expected____: \"hello\"; actual______: string; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 293,
-                    "char": 3
-                },
-                "end": {
-                    "line": 293,
-                    "char": 73
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_______: \"Type has excess properties not present in expected type\"; expected____: Config; actual______: { id: true; extra: number; }; tip_________: \"Excess properties: ''extra''\"; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 316,
-                    "char": 3
-                },
-                "end": {
-                    "line": 316,
+                    "line": 67,
                     "char": 48
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_______: \"Actual type extends type it should not extend\"; expected____: string; actual______: \"hello\"; }",
+                    "type": "{ ERROR_________: \"Types have overlapping values but are not structurally equal\"; expected______: Expected; actual________: Actual; diff_missing__: { age: number; }; diff_excess___: { email: string; }; diff_mismatch_: { id: { expected: string; actual: number; }; }; tip___________: \"Types share some possible values but are different\"; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -445,17 +107,17 @@
         {
             "location": {
                 "start": {
-                    "line": 338,
+                    "line": 83,
                     "char": 3
                 },
                 "end": {
-                    "line": 338,
-                    "char": 46
+                    "line": 83,
+                    "char": 48
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_______: \"Types are disjoint (no common values)\"; expected____: string; actual______: number; }",
+                    "type": "{ ERROR_________: \"Actual type is a supertype of expected type but not structurally equal\"; expected______: Expected; actual________: Actual; diff_mismatch_: { x: { expected: 1; actual: 1 | undefined; }; }; tip___________: \"Actual is wider than expected - types don't match exactly\"; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -471,17 +133,17 @@
         {
             "location": {
                 "start": {
-                    "line": 346,
+                    "line": 96,
                     "char": 3
                 },
                 "end": {
-                    "line": 346,
-                    "char": 47
+                    "line": 96,
+                    "char": 13
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_______: \"Actual extends Expected, but Expected does not extend Actual\"; expected____: string; actual______: \"hello\"; }",
+                    "type": "(actual: 42, error: \"Types are completely disjoint (no common values)\", expected: string) => void",
                     "relationships": {
                         "args": [
                             "equality"
@@ -497,17 +159,17 @@
         {
             "location": {
                 "start": {
-                    "line": 354,
+                    "line": 103,
                     "char": 3
                 },
                 "end": {
-                    "line": 354,
-                    "char": 47
+                    "line": 103,
+                    "char": 14
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_______: \"Expected extends Actual, but Actual does not extend Expected\"; expected____: \"hello\"; actual______: string; }",
+                    "type": "(actual: { a: number; b: number; }, error: \"Types have overlapping values but are not structurally equal\", expected: { a: string; }) => void",
                     "relationships": {
                         "args": [
                             "equality"
@@ -523,17 +185,17 @@
         {
             "location": {
                 "start": {
-                    "line": 377,
+                    "line": 129,
                     "char": 3
                 },
                 "end": {
-                    "line": 377,
-                    "char": 93
+                    "line": 129,
+                    "char": 18
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_______: \"Actual extends Expected, but Expected does not extend Actual\"; expected____: Config; actual______: { id: boolean; name?: string; extra: number; }; }",
+                    "type": "(actual: 42, error: \"⚠ Types are not exactly equal\", expected: string) => void",
                     "relationships": {
                         "args": [
                             "equality"
@@ -549,17 +211,17 @@
         {
             "location": {
                 "start": {
-                    "line": 403,
+                    "line": 136,
                     "char": 3
                 },
                 "end": {
-                    "line": 403,
-                    "char": 43
+                    "line": 136,
+                    "char": 20
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_______: \"Type is not never\"; expected____: never; actual______: string; }",
+                    "type": "(actual: string) => void",
                     "relationships": {
                         "args": [
                             "equality"
@@ -575,17 +237,17 @@
         {
             "location": {
                 "start": {
-                    "line": 411,
+                    "line": 153,
                     "char": 3
                 },
                 "end": {
-                    "line": 411,
-                    "char": 42
+                    "line": 153,
+                    "char": 25
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_______: \"Type is not any\"; expected____: any; actual______: unknown; }",
+                    "type": "(actual: ComplexB, error: \"⚠ Types are not exactly equal\", expected: ComplexA) => void",
                     "relationships": {
                         "args": [
                             "equality"
@@ -601,17 +263,277 @@
         {
             "location": {
                 "start": {
-                    "line": 419,
+                    "line": 176,
                     "char": 3
                 },
                 "end": {
-                    "line": 419,
+                    "line": 176,
+                    "char": 25
+                }
+            },
+            "args": [
+                {
+                    "type": "(actual: ComplexB, error: \"Types have overlapping values but are not structurally equal\", expected: ComplexA) => void",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 204,
+                    "char": 3
+                },
+                "end": {
+                    "line": 204,
+                    "char": 18
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"Custom validation failed\"; expected______: { a: string; }; actual________: { a: number; }; location______: \"src/file.ts:42\"; hint__________: \"Use string\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 220,
+                    "char": 3
+                },
+                "end": {
+                    "line": 220,
+                    "char": 18
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"Type mismatch\"; expected______: string; actual________: number; tip___________: \"Use string\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 235,
+                    "char": 3
+                },
+                "end": {
+                    "line": 235,
+                    "char": 18
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"Type mismatch\"; expected______: string; actual________: number; tip_a_________: \"Use string\"; tip_b_________: \"Check docs\"; tip_c_________: \"See example\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 299,
+                    "char": 3
+                },
+                "end": {
+                    "line": 299,
+                    "char": 36
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"Types have overlapping values but are not structurally equal\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: { value: Date; }; actual: Date; }; }; tip___________: \"Types share some possible values but are different\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 313,
+                    "char": 3
+                },
+                "end": {
+                    "line": 313,
+                    "char": 36
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"Types have overlapping values but are not structurally equal\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: { a: string; b: number; }; actual: { a: number; b: number; }; }; }; tip___________: \"Types share some possible values but are different\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 342,
+                    "char": 3
+                },
+                "end": {
+                    "line": 342,
                     "char": 45
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_______: \"Type is not unknown\"; expected____: unknown; actual______: string; }",
+                    "type": "{ ERROR_________: \"Actual type does not extend expected type\"; expected______: \"hello\"; actual________: string; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 365,
+                    "char": 3
+                },
+                "end": {
+                    "line": 365,
+                    "char": 74
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"Type has excess properties not present in expected type\"; expected______: Config; actual________: { id: true; extra: number; }; tip___________: \"Excess properties: ''extra''\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 389,
+                    "char": 3
+                },
+                "end": {
+                    "line": 389,
+                    "char": 49
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"Type extends the type it should not extend\"; expected______: string; actual________: \"hello\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 411,
+                    "char": 3
+                },
+                "end": {
+                    "line": 411,
+                    "char": 46
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"Types are disjoint (no common values)\"; expected______: string; actual________: number; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 419,
+                    "char": 3
+                },
+                "end": {
+                    "line": 419,
+                    "char": 47
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"Actual extends Expected, but Expected does not extend Actual\"; expected______: string; actual________: \"hello\"; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -632,12 +554,12 @@
                 },
                 "end": {
                     "line": 427,
-                    "char": 42
+                    "char": 47
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_______: \"Type is any, not unknown\"; expected____: unknown; actual______: any; }",
+                    "type": "{ ERROR_________: \"Expected extends Actual, but Actual does not extend Expected\"; expected______: \"hello\"; actual________: string; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -653,17 +575,17 @@
         {
             "location": {
                 "start": {
-                    "line": 435,
+                    "line": 450,
                     "char": 3
                 },
                 "end": {
-                    "line": 435,
-                    "char": 56
+                    "line": 455,
+                    "char": 4
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_______: \"Type is not an empty object (has keys)\"; expected____: Empty; actual______: object & { a: number; }; }",
+                    "type": "{ ERROR_________: \"Actual extends Expected, but Expected does not extend Actual\"; expected______: Config; actual________: { id: boolean; name?: string; extra: number; }; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -675,18 +597,136 @@
             "typeArgs": [],
             "errors": [],
             "completions": {}
-        }
-    ],
-    "updates": [
+        },
         {
-            "position": {
-                "method": "",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/test/error-messages.test.ts",
-                "line": 51,
-                "char": 28
+            "location": {
+                "start": {
+                    "line": 481,
+                    "char": 3
+                },
+                "end": {
+                    "line": 481,
+                    "char": 44
+                }
             },
-            "serializedValue": "(actual: {\n  ERROR_______: \"⚠ Types are not exactly equal\"\n  expected____: string\n  actual______: 42\n}) => void",
-            "snapFunctionName": "snap"
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"Actual type is a supertype of expected type but not structurally equal\"; expected______: never; actual________: string; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 489,
+                    "char": 3
+                },
+                "end": {
+                    "line": 489,
+                    "char": 43
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"Types are mutually assignable but not structurally equal\"; expected______: any; actual________: unknown; tip___________: \"Use equiv() for mutual assignability OR apply Simplify<T> to normalize types\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 498,
+                    "char": 3
+                },
+                "end": {
+                    "line": 498,
+                    "char": 46
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"Actual type is a subtype of expected type but not structurally equal\"; expected______: unknown; actual________: string; tip___________: \"Actual is narrower than expected - types don't match exactly\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 507,
+                    "char": 3
+                },
+                "end": {
+                    "line": 507,
+                    "char": 43
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"Types are mutually assignable but not structurally equal\"; expected______: unknown; actual________: any; tip___________: \"Use equiv() for mutual assignability OR apply Simplify<T> to normalize types\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 516,
+                    "char": 3
+                },
+                "end": {
+                    "line": 516,
+                    "char": 51
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"Types are completely disjoint (no common values)\"; expected______: true; actual________: false; tip___________: \"These types have no overlap and will never be equal\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
         }
     ]
 }

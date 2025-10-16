@@ -7,46 +7,46 @@ import { Ref } from './$.js'
 
 declare const obj1: { a: 1 }
 declare const obj2: { a: 1 }
-Ts.Test.sub<boolean>()(Ref.is(obj1, obj2))
-Ts.Test.sub<boolean>()(Ref.is(obj1, obj1))
+Ts.Test.sub.is<boolean>()(Ref.is(obj1, obj2))
+Ts.Test.sub.is<boolean>()(Ref.is(obj1, obj1))
 
 declare const arr1: number[]
 declare const arr2: number[]
-Ts.Test.sub<boolean>()(Ref.is(arr1, arr2))
-Ts.Test.sub<boolean>()(Ref.is(arr1, arr1))
+Ts.Test.sub.is<boolean>()(Ref.is(arr1, arr2))
+Ts.Test.sub.is<boolean>()(Ref.is(arr1, arr1))
 
 declare const fn1: () => void
 declare const fn2: () => void
-Ts.Test.sub<boolean>()(Ref.is(fn1, fn2))
-Ts.Test.sub<boolean>()(Ref.is(fn1, fn1))
+Ts.Test.sub.is<boolean>()(Ref.is(fn1, fn2))
+Ts.Test.sub.is<boolean>()(Ref.is(fn1, fn1))
 
 // Union types with reference types
-Ts.Test.sub<boolean>()(Ref.is([] as [] | { a: 1 }, {} as { a: 1 } | []))
+Ts.Test.sub.is<boolean>()(Ref.is([] as [] | { a: 1 }, {} as { a: 1 } | []))
 
 // Comparing identical object types is valid (different instances)
 declare const sameTypeObj1: { a: 1 }
 declare const sameTypeObj2: { a: 1 }
-Ts.Test.sub<boolean>()(Ref.is(sameTypeObj1, sameTypeObj2))
+Ts.Test.sub.is<boolean>()(Ref.is(sameTypeObj1, sameTypeObj2))
 
 //
 // ─── Ref.isOn ─────────────────────────────────────────────────────────────
 //
 
 const isSameObj = Ref.isOn(obj1)
-Ts.Test.sub<(b: typeof obj1) => boolean>()(isSameObj)
-Ts.Test.sub<boolean>()(isSameObj(obj1))
-Ts.Test.sub<boolean>()(isSameObj(obj2))
+Ts.Test.sub.is<(b: typeof obj1) => boolean>()(isSameObj)
+Ts.Test.sub.is<boolean>()(isSameObj(obj1))
+Ts.Test.sub.is<boolean>()(isSameObj(obj2))
 
 //
 // ─── Ref.isnt & Ref.isntOn ────────────────────────────────────────────────
 //
 
-Ts.Test.sub<boolean>()(Ref.isnt(obj1, obj2))
+Ts.Test.sub.is<boolean>()(Ref.isnt(obj1, obj2))
 
 const isntArr1 = Ref.isntOn(arr1)
-Ts.Test.sub<(b: typeof arr1) => boolean>()(isntArr1)
-Ts.Test.sub<boolean>()(isntArr1(arr1))
-Ts.Test.sub<boolean>()(isntArr1(arr2))
+Ts.Test.sub.is<(b: typeof arr1) => boolean>()(isntArr1)
+Ts.Test.sub.is<boolean>()(isntArr1(arr1))
+Ts.Test.sub.is<boolean>()(isntArr1(arr2))
 
 //
 // ─── Ref.canDiffer & Ref.isImmutable ──────────────────────────────────────
@@ -56,9 +56,9 @@ declare const value: 1 | object
 
 if (Ref.isReferenceEquality(value)) {
   // Should be narrowed to object
-  Ts.Test.sub<object>()(value)
+  Ts.Test.sub.is<object>()(value)
   // Can use Ref operations on it
-  Ts.Test.sub<boolean>()(Ref.is(value, value))
+  Ts.Test.sub.is<boolean>()(Ref.is(value, value))
 } else {
   // Should be narrowed to primitive (not object)
   // @ts-expect-error - Ref operations only work with reference types
@@ -72,8 +72,8 @@ if (Ref.isValueEquality(value)) {
   Ref.is(value, value)
 } else {
   // Value is object, can use Ref
-  Ts.Test.sub<object>()(value)
-  Ts.Test.sub<boolean>()(Ref.is(value, value))
+  Ts.Test.sub.is<object>()(value)
+  Ts.Test.sub.is<boolean>()(Ref.is(value, value))
 }
 
 //
@@ -86,9 +86,9 @@ declare const a: a
 declare const b: b
 
 // Test that primitives produce ErrorPrimitiveType
-Ts.Test.parameters<[Ref.ErrorPrimitiveType<1>, Ref.ErrorNotComparableSamePrimitive<1>]>()(Ref.is<1, 1>)
-Ts.Test.parameters<[Ref.ErrorPrimitiveType<'a'>, Ref.ErrorNotComparableOverlap<'a', 'b'>]>()(Ref.is<'a', 'b'>)
-Ts.Test.parameters<[Ref.ErrorPrimitiveType<true>]>()(Ref.isOn<true>)
+type _1 = Ts.Test.exact.parameters<[Ref.ErrorPrimitiveType<1>, Ref.ErrorNotComparableSamePrimitive<1>], typeof Ref.is<1, 1>>
+type _2 = Ts.Test.exact.parameters<[Ref.ErrorPrimitiveType<'a'>, Ref.ErrorNotComparableOverlap<'a', 'b'>], typeof Ref.is<'a', 'b'>>
+type _3 = Ts.Test.exact.parameters<[Ref.ErrorPrimitiveType<true>], typeof Ref.isOn<true>>
 
 // Test that no overlap produces ErrorNoOverlap
-Ts.Test.parameters<[typeof a, Ref.ErrorNotComparableOverlap<a, b>]>()(Ref.is<a, b>)
+type _4 = Ts.Test.exact.parameters<[typeof a, Ref.ErrorNotComparableOverlap<a, b>], typeof Ref.is<a, b>>

@@ -52,6 +52,98 @@ export const simplifyTypeText = (typeText: string): string => {
 }
 
 /**
+ * Extract simple signature from a declaration if it has the __simpleSignature property.
+ *
+ * The __simpleSignature property is a phantom type marker (Symbol.for('__simpleSignature'))
+ * that provides a simplified signature for complex generic functions.
+ *
+ * @param decl - The declaration to check for simple signature
+ * @returns SignatureModel if simple signature exists, undefined otherwise
+ */
+export const extractSimpleSignature = (decl: ExportedDeclarations): SignatureModel | undefined => {
+  // Get the type of the declaration
+  const type = decl.getType()
+
+  // Look for the __simpleSignature property
+  // TypeScript represents Symbol.for('__simpleSignature') with a special name
+  const properties = type.getProperties()
+  const simpleSignatureProp = properties.find((prop) => prop.getName().includes('__simpleSignature'))
+
+  if (!simpleSignatureProp) {
+    return undefined
+  }
+
+  // Get the type of the __simpleSignature property
+  const simpleSignatureType = decl.getType().getPropertyOrThrow(simpleSignatureProp.getName()).getTypeAtLocation(decl)
+
+  // The simple signature is a function type - extract its call signatures
+  const callSignatures = simpleSignatureType.getCallSignatures()
+
+  if (callSignatures.length === 0) {
+    return undefined
+  }
+
+  // Extract all call signatures as function overloads
+  const overloads: typeof FunctionSignature.Type[] = []
+
+  for (const callSig of callSignatures) {
+    // Extract type parameters
+    // Note: Signature type parameters are from the TypeScript compiler API, not ts-morph declarations
+    const typeParameters: typeof TypeParameter.Type[] = []
+    for (const tp of callSig.getTypeParameters()) {
+      const symbol = tp.getSymbol()
+      const name = symbol ? symbol.getName() : tp.getText()
+      const constraint = tp.getConstraint()
+      const defaultType = tp.getDefault()
+
+      typeParameters.push(
+        TypeParameter.make({
+          name,
+          constraint: constraint ? simplifyTypeText(constraint.getText()) : undefined,
+          default: defaultType ? simplifyTypeText(defaultType.getText()) : undefined,
+        }),
+      )
+    }
+
+    // Extract parameters
+    const parameters: typeof Parameter.Type[] = []
+    for (const param of callSig.getParameters()) {
+      const paramDecl = param.getValueDeclaration()
+      const isOptional = paramDecl && Node.isParameterDeclaration(paramDecl) ? paramDecl.isOptional() : false
+      const isRest = paramDecl && Node.isParameterDeclaration(paramDecl) ? paramDecl.isRestParameter() : false
+
+      parameters.push(
+        Parameter.make({
+          name: param.getName(),
+          type: simplifyTypeText(param.getTypeAtLocation(decl).getText()),
+          optional: isOptional,
+          rest: isRest,
+          defaultValue: undefined,
+          description: undefined, // Simple signatures don't have JSDoc
+        }),
+      )
+    }
+
+    // Extract return type
+    const returnType = simplifyTypeText(callSig.getReturnType().getText())
+
+    overloads.push(
+      FunctionSignature.make({
+        typeParameters,
+        parameters,
+        returnType,
+        returnDoc: undefined,
+        throws: [],
+      }),
+    )
+  }
+
+  return FunctionSignatureModel.make({
+    overloads,
+  })
+}
+
+/**
  * Extract structured signature from a declaration.
  *
  * Returns a SignatureModel tagged union:

@@ -24,7 +24,7 @@ test('Type narrowing works correctly with isNonZero predicate', () => {
 
   // Predicate narrows to NonZero type
   if (isNonZero(value)) {
-    Ts.Test.sub<NonZero>()(value)
+    Ts.Test.sub.is<NonZero>()(value)
   }
 
   // Works with different numeric values
@@ -42,28 +42,28 @@ test('Type narrowing works correctly with isNonZero predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic non-zero constructor
   const nz1 = nonZero(5)
-  Ts.Test.exact<NonZero>()(nz1)
+  Ts.Test.exact.is<NonZero>()(nz1)
 
   // Negative non-zero
   const nz2 = nonZero(-10)
-  Ts.Test.exact<NonZero>()(nz2)
+  Ts.Test.exact.is<NonZero>()(nz2)
 
   // Small non-zero values
   const nz3 = nonZero(0.001)
-  Ts.Test.exact<NonZero>()(nz3)
+  Ts.Test.exact.is<NonZero>()(nz3)
 
   // Try constructor
   const try1 = tryNonZero(42)
-  Ts.Test.exact<NonZero | null>()(try1)
+  Ts.Test.exact.is<NonZero | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Ts.Test.exact<NonZero>()(try1)
+    Ts.Test.exact.is<NonZero>()(try1)
   }
 
   // Try with zero returns null
   const try2 = tryNonZero(0)
-  Ts.Test.exact<NonZero | null>()(try2)
+  Ts.Test.exact.is<NonZero | null>()(try2)
 })
 
 // === Safe Division Operations ===
@@ -73,18 +73,18 @@ test('Safe division operations have correct types', () => {
 
   // safeDivide requires NonZero divisor and returns number
   const result1 = safeDivide(10, divisor)
-  Ts.Test.sub<number>()(result1)
+  Ts.Test.sub.is<number>()(result1)
 
   // safeDiv accepts any number and returns number | null
   const result2 = safeDiv(10, 2)
-  Ts.Test.sub<number | null>()(result2)
+  Ts.Test.sub.is<number | null>()(result2)
 
   const result3 = safeDiv(10, 0)
-  Ts.Test.sub<number | null>()(result3)
+  Ts.Test.sub.is<number | null>()(result3)
 
   // Type narrowing with safeDiv
   if (result2 !== null) {
-    Ts.Test.sub<number>()(result2)
+    Ts.Test.sub.is<number>()(result2)
   }
 })
 
@@ -96,7 +96,7 @@ test('NonZero has correct relationship with Zero', () => {
 
   // NonZero can be assigned to number
   const asNumber: number = nonZeroVal
-  Ts.Test.sub<number>()(asNumber)
+  Ts.Test.sub.is<number>()(asNumber)
 
   // NonZero and Zero are mutually exclusive
   // @ts-expect-error - NonZero is not assignable to Zero
@@ -113,10 +113,10 @@ type _NonZeroRelationships = Ts.Test.Cases<
   // NonZero extends number
   Ts.Test.sub<number, NonZero>,
   // number does not extend NonZero
-  Ts.Test.subNot<NonZero, number>,
+  Ts.Test.not.sub<NonZero, number>,
   // NonZero is distinct from Zero
-  Ts.Test.subNot<NonZero, Zero>,
-  Ts.Test.subNot<Zero, NonZero>
+  Ts.Test.not.sub<NonZero, Zero>,
+  Ts.Test.not.sub<Zero, NonZero>
 >
 
 // Test constructor and operation return types
@@ -196,7 +196,7 @@ test('NonZero practical type safety examples', () => {
   // Usage
   const denom = getDenominator(4)
   const ratio = _calculateRatio(12, denom)
-  Ts.Test.sub<number>()(ratio)
+  Ts.Test.sub.is<number>()(ratio)
 })
 
 // Test combinations with other brands

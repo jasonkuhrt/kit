@@ -23,9 +23,9 @@ test('Type narrowing works correctly with isPercentage predicate', () => {
 
   // Predicate narrows to Percentage type
   if (isPercentage(value)) {
-    Ts.Test.sub<Percentage>()(value)
+    Ts.Test.sub.is<Percentage>()(value)
     // Percentage is also InRange<0, 1>
-    Ts.Test.sub<InRange<0, 1>>()(value)
+    Ts.Test.sub.is<InRange<0, 1>>()(value)
   }
 
   // Runtime check confirms the relationship
@@ -43,27 +43,27 @@ test('Type narrowing works correctly with isPercentage predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic percentage constructor
   const pct1 = percentage(0.5)
-  Ts.Test.exact<Percentage>()(pct1)
+  Ts.Test.exact.is<Percentage>()(pct1)
 
   // Edge cases
   const pct2 = percentage(0)
-  Ts.Test.exact<Percentage>()(pct2)
+  Ts.Test.exact.is<Percentage>()(pct2)
 
   const pct3 = percentage(1)
-  Ts.Test.exact<Percentage>()(pct3)
+  Ts.Test.exact.is<Percentage>()(pct3)
 
   // Try constructor
   const try1 = tryPercentage(0.75)
-  Ts.Test.exact<Percentage | null>()(try1)
+  Ts.Test.exact.is<Percentage | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Ts.Test.exact<Percentage>()(try1)
+    Ts.Test.exact.is<Percentage>()(try1)
   }
 
   // From percent conversion
   const pct4 = fromPercent(50) // 50% -> 0.5
-  Ts.Test.exact<Percentage>()(pct4)
+  Ts.Test.exact.is<Percentage>()(pct4)
 })
 
 // === Type Relationships ===
@@ -73,7 +73,7 @@ test('Percentage has correct relationship with InRange<0, 1>', () => {
 
   // Percentage can be assigned to InRange<0, 1>
   const range: InRange<0, 1> = pct
-  Ts.Test.sub<InRange<0, 1>>()(range)
+  Ts.Test.sub.is<InRange<0, 1>>()(range)
 
   // But InRange<0, 1> cannot be directly assigned to Percentage
   const _rangeValue = {} as InRange<0, 1>
@@ -88,18 +88,18 @@ test('Conversion operations have correct types', () => {
 
   // toPercent returns plain number
   const percent = toPercent(pct)
-  Ts.Test.exact<number>()(percent)
+  Ts.Test.exact.is<number>()(percent)
 
   // fromPercent returns Percentage
   const fromPct = fromPercent(75)
-  Ts.Test.exact<Percentage>()(fromPct)
+  Ts.Test.exact.is<Percentage>()(fromPct)
 
   // clampToPercentage always returns Percentage
   const clamped1 = clampToPercentage(1.5)
-  Ts.Test.exact<Percentage>()(clamped1)
+  Ts.Test.exact.is<Percentage>()(clamped1)
 
   const clamped2 = clampToPercentage(-0.5)
-  Ts.Test.exact<Percentage>()(clamped2)
+  Ts.Test.exact.is<Percentage>()(clamped2)
 })
 
 // === Type-Level Only Tests ===
@@ -111,10 +111,10 @@ type _PercentageRelationships = Ts.Test.Cases<
   // Percentage extends InRange<0, 1>
   Ts.Test.sub<InRange<0, 1>, Percentage>,
   // InRange<0, 1> does not extend Percentage (Percentage has additional brand)
-  Ts.Test.subNot<Percentage, InRange<0, 1>>,
+  Ts.Test.not.sub<Percentage, InRange<0, 1>>,
   // Percentage does not extend other ranges
-  Ts.Test.subNot<Percentage, InRange<0, 100>>,
-  Ts.Test.subNot<Percentage, InRange<-1, 1>>
+  Ts.Test.not.sub<Percentage, InRange<0, 100>>,
+  Ts.Test.not.sub<Percentage, InRange<-1, 1>>
 >
 
 // Test constructor return types

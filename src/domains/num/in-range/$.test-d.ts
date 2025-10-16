@@ -15,19 +15,19 @@ test('Type narrowing works correctly with inRange predicate', () => {
 
   // Single range check narrows type
   if (inRange(value, 0, 100)) {
-    Ts.Test.sub<InRange<0, 100>>()(value)
+    Ts.Test.sub.is<InRange<0, 100>>()(value)
   }
 
   // Different ranges create different types
   if (inRange(value, -10, 10)) {
-    Ts.Test.sub<InRange<-10, 10>>()(value)
+    Ts.Test.sub.is<InRange<-10, 10>>()(value)
   }
 
   // Nested ranges
   if (inRange(value, 0, 100) && inRange(value, 25, 75)) {
     // Value is both InRange<0, 100> and InRange<25, 75>
-    Ts.Test.sub<InRange<0, 100>>()(value)
-    Ts.Test.sub<InRange<25, 75>>()(value)
+    Ts.Test.sub.is<InRange<0, 100>>()(value)
+    Ts.Test.sub.is<InRange<25, 75>>()(value)
   }
 })
 
@@ -36,23 +36,23 @@ test('Type narrowing works correctly with inRange predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic range constructor
   const ranged1 = ranged(50, 0, 100)
-  Ts.Test.sub<InRange<0, 100>>()(ranged1)
+  Ts.Test.sub.is<InRange<0, 100>>()(ranged1)
 
   // Negative range
   const ranged2 = ranged(-5, -10, 0)
-  Ts.Test.sub<InRange<-10, 0>>()(ranged2)
+  Ts.Test.sub.is<InRange<-10, 0>>()(ranged2)
 
   // Decimal range
   const ranged3 = ranged(0.5, 0, 1)
-  Ts.Test.sub<InRange<0, 1>>()(ranged3)
+  Ts.Test.sub.is<InRange<0, 1>>()(ranged3)
 
   // Try constructor
   const try1 = tryRanged(50, 0, 100)
-  Ts.Test.sub<InRange<0, 100> | null>()(try1)
+  Ts.Test.sub.is<InRange<0, 100> | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Ts.Test.sub<InRange<0, 100>>()(try1)
+    Ts.Test.sub.is<InRange<0, 100>>()(try1)
   }
 })
 
@@ -61,18 +61,18 @@ test('Constructor functions produce correctly branded types', () => {
 test('Clamp operations produce correctly branded types', () => {
   // Clamp always returns InRange type
   const clamped1 = clamp(150, 0, 100)
-  Ts.Test.sub<InRange<0, 100>>()(clamped1)
+  Ts.Test.sub.is<InRange<0, 100>>()(clamped1)
 
   const clamped2 = clamp(-20, -10, 10)
-  Ts.Test.sub<InRange<-10, 10>>()(clamped2)
+  Ts.Test.sub.is<InRange<-10, 10>>()(clamped2)
 
   // Clamp with decimal bounds
   const clamped3 = clamp(2, 0, 1)
-  Ts.Test.sub<InRange<0, 1>>()(clamped3)
+  Ts.Test.sub.is<InRange<0, 1>>()(clamped3)
 
   // Clamp with same min/max
   const clamped4 = clamp(5, 42, 42)
-  Ts.Test.sub<InRange<42, 42>>()(clamped4)
+  Ts.Test.sub.is<InRange<42, 42>>()(clamped4)
 })
 
 // === Type-Level Only Tests ===
@@ -105,7 +105,7 @@ type _RangeTypeParameters = Ts.Test.Cases<
   Ts.Test.sub<number, InRange<0, 100>>,
   Ts.Test.sub<number, InRange<-50, 50>>,
   // Number does not extend specific InRange
-  Ts.Test.subNot<InRange<0, 100>, number>
+  Ts.Test.not.sub<InRange<0, 100>, number>
 >
 
 // Test clamp return type transformation

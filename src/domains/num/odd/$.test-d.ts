@@ -17,11 +17,11 @@ test('Type narrowing works correctly with isOdd predicate', () => {
 
   // Predicate narrows to Odd & Int intersection
   if (isOdd(value)) {
-    Ts.Test.sub<Odd & Int>()(value)
+    Ts.Test.sub.is<Odd & Int>()(value)
     // Can assign to Odd
-    Ts.Test.sub<Odd>()(value)
+    Ts.Test.sub.is<Odd>()(value)
     // Can assign to Int
-    Ts.Test.sub<Int>()(value)
+    Ts.Test.sub.is<Int>()(value)
   }
 
   // Multiple checks preserve all brands
@@ -40,31 +40,31 @@ test('Type narrowing works correctly with isOdd predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic odd constructor always returns Odd & Int
   const odd1 = odd(5)
-  Ts.Test.exact<Odd & Int>()(odd1)
+  Ts.Test.exact.is<Odd & Int>()(odd1)
 
   // Negative odd numbers
   const odd2 = odd(-3)
-  Ts.Test.exact<Odd & Int>()(odd2)
+  Ts.Test.exact.is<Odd & Int>()(odd2)
 
   // Large odd numbers
   const odd3 = odd(999)
-  Ts.Test.exact<Odd & Int>()(odd3)
+  Ts.Test.exact.is<Odd & Int>()(odd3)
 
   // Try constructor
   const try1 = tryOdd(7)
-  Ts.Test.exact<(Odd & Int) | null>()(try1)
+  Ts.Test.exact.is<(Odd & Int) | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Ts.Test.exact<Odd & Int>()(try1)
+    Ts.Test.exact.is<Odd & Int>()(try1)
   }
 
   // Next/prev odd operations
   const next = nextOdd(4.5) // Should be 5
-  Ts.Test.exact<Odd & Int>()(next)
+  Ts.Test.exact.is<Odd & Int>()(next)
 
   const prev = prevOdd(6.5) // Should be 5
-  Ts.Test.exact<Odd & Int>()(prev)
+  Ts.Test.exact.is<Odd & Int>()(prev)
 })
 
 // === Type Relationships ===
@@ -74,15 +74,15 @@ test('Odd has correct relationship with Int and Even', () => {
 
   // Odd & Int can be assigned to Odd
   const asOdd: Odd = oddNum
-  Ts.Test.sub<Odd>()(asOdd)
+  Ts.Test.sub.is<Odd>()(asOdd)
 
   // Odd & Int can be assigned to Int
   const asInt: Int = oddNum
-  Ts.Test.sub<Int>()(asInt)
+  Ts.Test.sub.is<Int>()(asInt)
 
   // Odd & Int can be assigned to number
   const asNumber: number = oddNum
-  Ts.Test.sub<number>()(asNumber)
+  Ts.Test.sub.is<number>()(asNumber)
 
   // Odd and Even are mutually exclusive
   const _oddVal = {} as Odd
@@ -108,19 +108,19 @@ type _OddRelationships = Ts.Test.Cases<
   Ts.Test.sub<Int, Odd & Int>,
   Ts.Test.sub<number, Odd & Int>,
   // Odd does not extend Int (not all Odd are Int in type system)
-  Ts.Test.subNot<Odd, Int>,
+  Ts.Test.not.sub<Odd, Int>,
   // Int does not extend Odd (not all Int are Odd)
-  Ts.Test.subNot<Int, Odd>,
+  Ts.Test.not.sub<Int, Odd>,
   // Odd & Int is more specific than either alone
-  Ts.Test.subNot<Odd & Int, Odd>,
-  Ts.Test.subNot<Odd & Int, Int>
+  Ts.Test.not.sub<Odd & Int, Odd>,
+  Ts.Test.not.sub<Odd & Int, Int>
 >
 
 // Test mutual exclusivity with Even
 type _OddEvenExclusive = Ts.Test.Cases<
   // Odd and Even don't extend each other
-  Ts.Test.subNot<Odd, Even>,
-  Ts.Test.subNot<Even, Odd>
+  Ts.Test.not.sub<Odd, Even>,
+  Ts.Test.not.sub<Even, Odd>
 > // The intersection Odd & Even would be never in practice
 // (though TypeScript won't reduce it to never automatically)
 

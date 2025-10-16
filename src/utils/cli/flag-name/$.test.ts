@@ -330,11 +330,11 @@ test('type-level validation: duplicate aliases', () => {
 
 test('type-level: fromString return types', () => {
   // Valid inputs - type inference works
-  Ts.Test.equiv<FlagName.Analyze<'-v'>>()(FlagName.fromString('-v'))
-  Ts.Test.equiv<FlagName.Analyze<'--verbose'>>()(FlagName.fromString('--verbose'))
-  Ts.Test.equiv<FlagName.Analyze<'-v --verbose'>>()(FlagName.fromString('-v --verbose'))
-  Ts.Test.equiv<FlagName.Analyze<'--foo-bar'>>()(FlagName.fromString('--foo-bar'))
-  Ts.Test.equiv<FlagName.Analyze<'-v --verbose -x --extra'>>()(FlagName.fromString('-v --verbose -x --extra'))
+  Ts.Test.equiv.is<FlagName.Analyze<'-v'>>()(FlagName.fromString('-v'))
+  Ts.Test.equiv.is<FlagName.Analyze<'--verbose'>>()(FlagName.fromString('--verbose'))
+  Ts.Test.equiv.is<FlagName.Analyze<'-v --verbose'>>()(FlagName.fromString('-v --verbose'))
+  Ts.Test.equiv.is<FlagName.Analyze<'--foo-bar'>>()(FlagName.fromString('--foo-bar'))
+  Ts.Test.equiv.is<FlagName.Analyze<'-v --verbose -x --extra'>>()(FlagName.fromString('-v --verbose -x --extra'))
 
   // Invalid inputs - input guard rejects with Ts.StaticError
   // These are type-only tests - they verify compile-time errors without executing

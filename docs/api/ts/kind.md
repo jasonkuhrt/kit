@@ -208,7 +208,8 @@ interface BoxKind extends PrivateKind {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PrivateApply`
 
 ```typescript
-type PrivateApply<$Kind extends Private, $Args> = ($Kind & { [PrivateKindParameters]: $Args })[PrivateKindReturn]
+type PrivateApply<$Kind extends Private, $Args> =
+  ($Kind & { [PrivateKindParameters]: $Args })[PrivateKindReturn]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L154" />
@@ -235,8 +236,7 @@ type BoxOfString = PrivateKindApply<BoxKind, [string]> // Box<string>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MaybePrivateApplyOr`
 
 ```typescript
-type MaybePrivateApplyOr<$MaybeKind, $Args, $Or> =
-  $MaybeKind extends Private
+type MaybePrivateApplyOr<$MaybeKind, $Args, $Or> = $MaybeKind extends Private
   ? PrivateApply<$MaybeKind, $Args>
   : $Or
 ```

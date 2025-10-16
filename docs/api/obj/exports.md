@@ -74,7 +74,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // Useful for mapping over arrays
 const users = [
   { name: 'Alice', score: 95 },
-  { name: 'Bob', score: 87 }
+  { name: 'Bob', score: 87 },
 ]
 // [!code word:map:1]
 // [!code word:getWith:1]
@@ -105,7 +105,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const user = {
   name: 'Alice',
-  address: { city: 'NYC', zip: '10001' }
+  address: { city: 'NYC', zip: '10001' },
 }
 
 // [!code word:getOn:1]
@@ -189,7 +189,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const obj = { a: 1, b: 2 }
 // [!code word:stringKeyEntries:1]
-Obj.Exports.stringKeyEntries(obj)  // [['a', 1], ['b', 2]]
+Obj.Exports.stringKeyEntries(obj) // [['a', 1], ['b', 2]]
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `entriesStrict`
@@ -216,7 +216,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const obj = { a: 1, b: undefined, c: 2 }
 // [!code word:entriesStrict:1]
-Obj.Exports.entriesStrict(obj)  // [['a', 1], ['c', 2]]
+Obj.Exports.entriesStrict(obj) // [['a', 1], ['c', 2]]
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `keysStrict`
@@ -243,7 +243,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const obj = { a: 1, b: 2 }
 // [!code word:keysStrict:1]
-Obj.Exports.keysStrict(obj)  // ['a', 'b'] with type ('a' | 'b')[]
+Obj.Exports.keysStrict(obj) // ['a', 'b'] with type ('a' | 'b')[]
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getRandomly`
@@ -301,9 +301,9 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const obj = { a: { b: { c: 42 } } }
 // [!code word:getValueAtPath:1]
-Obj.Exports.getValueAtPath(obj, ['a', 'b', 'c'])  // 42
+Obj.Exports.getValueAtPath(obj, ['a', 'b', 'c']) // 42
 // [!code word:getValueAtPath:1]
-Obj.Exports.getValueAtPath(obj, ['a', 'x'])  // undefined
+Obj.Exports.getValueAtPath(obj, ['a', 'x']) // undefined
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `values`
@@ -330,7 +330,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const obj = { a: 1, b: 'hello', c: true }
 // [!code word:values:1]
-Obj.Exports.values(obj)  // [1, 'hello', true] with type (string | number | boolean)[]
+Obj.Exports.values(obj) // [1, 'hello', true] with type (string | number | boolean)[]
 ```
 
 ## Filtering
@@ -380,7 +380,7 @@ interface User {
 }
 
 function getPublicUser(user: User) {
-// [!code word:pick:1]
+  // [!code word:pick:1]
   return Obj.Exports.pick(user, ['id', 'name', 'email'])
   // Type: Pick<User, 'id' | 'name' | 'email'>
 }
@@ -453,7 +453,7 @@ interface User {
 }
 
 function sanitizeUser(user: User) {
-// [!code word:omit:1]
+  // [!code word:omit:1]
   return Obj.Exports.omit(user, ['password', 'apiKey'])
   // Type: Omit<User, 'password' | 'apiKey'>
 }
@@ -567,7 +567,7 @@ Obj.Exports.policyFilter('deny', obj, ['a', 'c']) // { b: 2 }
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `omitUndefined`
 
 ```typescript
-<T>(obj: T) => any
+;(<T>(obj: T) => any)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L291" />
@@ -592,10 +592,10 @@ import { Obj } from '@wollybeard/kit/obj'
 // Useful for cleaning up optional parameters
 const config = {
   host: 'localhost',
-// [!code word:port:1]
-  port: options.port,      // might be undefined
-// [!code word:timeout:1]
-  timeout: options.timeout  // might be undefined
+  // [!code word:port:1]
+  port: options.port, // might be undefined
+  // [!code word:timeout:1]
+  timeout: options.timeout, // might be undefined
 }
 // [!code word:omitUndefined:1]
 const cleanConfig = Obj.Exports.omitUndefined(config)
@@ -629,11 +629,14 @@ const props = {
   'data-type': 'button',
   'data-current': true,
   onClick: fn,
-  className: 'btn'
+  className: 'btn',
 }
 // [!code word:pickMatching:1]
 // [!code word:startsWith:1]
-const dataAttrs = Obj.Exports.pickMatching(props, key => key.startsWith('data-'))
+const dataAttrs = Obj.Exports.pickMatching(
+  props,
+  key => key.startsWith('data-'),
+)
 // Result: { 'data-type': 'button', 'data-current': true }
 ```
 
@@ -675,8 +678,10 @@ import { Obj } from '@wollybeard/kit/obj'
 // Create a merger that concatenates arrays
 // [!code word:mergeWith:1]
 const mergeArrays = Obj.Exports.mergeWith({
-// [!code word:push:1]
-  array: (a, b) => { a.push(...b) }
+  // [!code word:push:1]
+  array: (a, b) => {
+    a.push(...b)
+  },
 })
 mergeArrays({ items: [1, 2] }, { items: [3, 4] })
 // Returns: { items: [1, 2, 3, 4] }
@@ -685,7 +690,7 @@ mergeArrays({ items: [1, 2] }, { items: [3, 4] })
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `merge`
 
 ```typescript
-<obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2) => obj1 & obj2
+;(<obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2) => obj1 & obj2)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L81" />
@@ -711,7 +716,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // [!code word:merge:1]
 Obj.Exports.merge(
   { user: { name: 'Alice', age: 30 } },
-  { user: { age: 31, city: 'NYC' } }
+  { user: { age: 31, city: 'NYC' } },
 )
 // Returns: { user: { name: 'Alice', age: 31, city: 'NYC' } }
 ```
@@ -729,7 +734,7 @@ Obj.Exports.merge({ tags: ['a', 'b'] }, { tags: ['c', 'd'] })
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mergeWithArrayPush`
 
 ```typescript
-<obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2) => obj1 & obj2
+;(<obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2) => obj1 & obj2)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L108" />
@@ -745,7 +750,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // [!code word:mergeWithArrayPush:1]
 Obj.Exports.mergeWithArrayPush(
   { tags: ['react', 'typescript'] },
-  { tags: ['nodejs', 'express'] }
+  { tags: ['nodejs', 'express'] },
 )
 // Returns: { tags: ['react', 'typescript', 'nodejs', 'express'] }
 ```
@@ -758,7 +763,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // [!code word:mergeWithArrayPush:1]
 Obj.Exports.mergeWithArrayPush(
   { user: { skills: ['js'] } },
-  { user: { skills: ['ts'] } }
+  { user: { skills: ['ts'] } },
 )
 // Returns: { user: { skills: ['js', 'ts'] } }
 ```
@@ -766,7 +771,7 @@ Obj.Exports.mergeWithArrayPush(
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mergeWithArrayPushDedupe`
 
 ```typescript
-<obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2) => obj1 & obj2
+;(<obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2) => obj1 & obj2)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L139" />
@@ -782,7 +787,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // [!code word:mergeWithArrayPushDedupe:1]
 Obj.Exports.mergeWithArrayPushDedupe(
   { tags: ['react', 'vue', 'react'] },
-  { tags: ['react', 'angular'] }
+  { tags: ['react', 'angular'] },
 )
 // Returns: { tags: ['react', 'vue', 'angular'] }
 ```
@@ -795,7 +800,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // [!code word:mergeWithArrayPushDedupe:1]
 Obj.Exports.mergeWithArrayPushDedupe(
   { ids: [1, 2, 3] },
-  { ids: [3, 4, 2, 5] }
+  { ids: [3, 4, 2, 5] },
 )
 // Returns: { ids: [1, 2, 3, 4, 5] }
 ```
@@ -819,7 +824,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // [!code word:mergeDefaults:1]
 Obj.Exports.mergeDefaults(
   { name: 'Alice', age: undefined },
-  { name: 'Unknown', age: 0, city: 'NYC' }
+  { name: 'Unknown', age: 0, city: 'NYC' },
 )
 // Returns: { name: 'Alice', age: undefined, city: 'NYC' }
 // Note: existing properties (even undefined) are not overwritten
@@ -863,7 +868,7 @@ import { Obj } from '@wollybeard/kit/obj'
 const defaults = { a: 1, b: 2, c: 3 }
 const input = { b: 20 }
 // [!code word:shallowMergeDefaults:1]
-Obj.Exports.shallowMergeDefaults(defaults, input)  // { a: 1, b: 20, c: 3 }
+Obj.Exports.shallowMergeDefaults(defaults, input) // { a: 1, b: 20, c: 3 }
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `spreadShallow`
@@ -900,7 +905,7 @@ const config = {
 const config = Obj.Exports.spreadShallow(
   defaultConfig,
   userConfig,
-  { debug: debug ? true : undefined }
+  { debug: debug ? true : undefined },
 )
 // undefined values won't override earlier values
 ```
@@ -946,7 +951,8 @@ Obj.Exports.normalizePropertyPathInput(['user', 'address', 'city'])
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parsePropertyPathExpression`
 
 ```typescript
-<expression extends string>(expression: expression) => parsePropertyPathExpression<expression>
+;(<expression extends string>(expression: expression) =>
+  parsePropertyPathExpression<expression>)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L81" />
@@ -1007,11 +1013,11 @@ Check if an object has any non-undefined values.
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // [!code word:hasNonUndefinedKeys:1]
-Obj.Exports.hasNonUndefinedKeys({ a: undefined, b: undefined })  // false
+Obj.Exports.hasNonUndefinedKeys({ a: undefined, b: undefined }) // false
 // [!code word:hasNonUndefinedKeys:1]
-Obj.Exports.hasNonUndefinedKeys({ a: undefined, b: 1 })  // true
+Obj.Exports.hasNonUndefinedKeys({ a: undefined, b: 1 }) // true
 // [!code word:hasNonUndefinedKeys:1]
-Obj.Exports.hasNonUndefinedKeys({})  // false
+Obj.Exports.hasNonUndefinedKeys({}) // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `empty`
@@ -1020,7 +1026,7 @@ Obj.Exports.hasNonUndefinedKeys({})  // false
 (): Empty
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L87" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L89" />
 
 **Returns:** An empty object with type `Record<string, never>`
 
@@ -1043,7 +1049,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // Type is properly inferred as Empty
 // [!code word:empty:1]
 const emptyObj = Obj.empty()
-type T = typeof emptyObj  // Record<string, never>
+type T = typeof emptyObj // Record<string, never>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isEmpty`
@@ -1052,7 +1058,7 @@ type T = typeof emptyObj  // Record<string, never>
 (obj: object): boolean
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L195" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L197" />
 
 **Parameters:**
 
@@ -1092,7 +1098,7 @@ Obj.Exports.isEmpty(obj) // true - non-enumerable properties are ignored
 <$T extends object>(obj: $T): boolean
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L228" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L230" />
 
 **Parameters:**
 
@@ -1155,11 +1161,11 @@ Assert that a value is an object. Throws a TypeError if the value is not an obje
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 function process(value: unknown) {
-// [!code word:assert:1]
+  // [!code word:assert:1]
   Obj.assert(value)
   // value is now typed as object
-// [!code word:log:1]
-// [!code word:keys:1]
+  // [!code word:log:1]
+  // [!code word:keys:1]
   console.log(Object.keys(value))
 }
 ```
@@ -1188,7 +1194,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const isUser = isShape<{ name: string; age: number }>({
   name: 'string',
-  age: 'number'
+  age: 'number',
 })
 
 isUser({ name: 'Alice', age: 30 }) // true
@@ -1202,7 +1208,7 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Can check for functions and other typeof types
 const isCallback = isShape<{ fn: Function }>({
-  fn: 'function'
+  fn: 'function',
 })
 ```
 
@@ -1249,8 +1255,8 @@ const config = { timeout: 5000 }
 // [!code word:setPrivateState:1]
 Obj.Exports.setPrivateState(config, {
   source: 'environment',
-// [!code word:now:1]
-  timestamp: Date.now()
+  // [!code word:now:1]
+  timestamp: Date.now(),
 })
 ```
 
@@ -1339,14 +1345,14 @@ Obj.Eq.is({ a: 1 }, { a: 1, b: 2 }) // false (different keys)
 // [!code word:is:1]
 Obj.Eq.is(
   { a: 1, b: { c: 2 } },
-  { a: 1, b: { c: 2 } }
+  { a: 1, b: { c: 2 } },
 ) // true
 
 // Mixed types in properties
 // [!code word:is:1]
 Obj.Eq.is(
   { a: 1, b: 'hello', c: true },
-  { a: 1, b: 'hello', c: true }
+  { a: 1, b: 'hello', c: true },
 ) // true
 ```
 
@@ -1422,16 +1428,15 @@ const data = {
   $age: 30,
   $address: {
     $city: 'NYC',
-    $zip: '10001'
-  }
+    $zip: '10001',
+  },
 }
 
 // [!code word:mapEntriesDeep:1]
 Obj.Exports.mapEntriesDeep(data, (key, value) =>
-// [!code word:startsWith:1]
-// [!code word:slice:1]
-  key.startsWith('$') ? { key: key.slice(1), value } : undefined
-)
+  // [!code word:startsWith:1]
+  // [!code word:slice:1]
+  key.startsWith('$') ? { key: key.slice(1), value } : undefined)
 // { name: 'Alice', age: 30, address: { city: 'NYC', zip: '10001' } }
 ```
 
@@ -1445,15 +1450,14 @@ const data = {
   name: 'alice',
   location: {
     city: 'nyc',
-    country: 'usa'
-  }
+    country: 'usa',
+  },
 }
 
 // [!code word:mapEntriesDeep:1]
 Obj.Exports.mapEntriesDeep(data, (key, value) =>
-// [!code word:toUpperCase:1]
-  typeof value === 'string' ? { key, value: value.toUpperCase() } : undefined
-)
+  // [!code word:toUpperCase:1]
+  typeof value === 'string' ? { key, value: value.toUpperCase() } : undefined)
 // { name: 'ALICE', location: { city: 'NYC', country: 'USA' } }
 ```
 
@@ -1465,11 +1469,11 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // [!code word:mapEntriesDeep:1]
 Obj.Exports.mapEntriesDeep(data, (key, value) => {
-// [!code word:startsWith:1]
+  // [!code word:startsWith:1]
   if (key.startsWith('$')) {
-// [!code word:slice:1]
+    // [!code word:slice:1]
     const newKey = key.slice(1)
-// [!code word:toUpperCase:1]
+    // [!code word:toUpperCase:1]
     const newValue = typeof value === 'string' ? value.toUpperCase() : value
     return { key: newKey, value: newValue }
   }
@@ -1498,15 +1502,14 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 const users = [
   { $id: 1, $name: 'Alice' },
-  { $id: 2, $name: 'Bob' }
+  { $id: 2, $name: 'Bob' },
 ]
 
 // [!code word:mapEntriesDeep:1]
 Obj.Exports.mapEntriesDeep(users, (key, value) =>
-// [!code word:startsWith:1]
-// [!code word:slice:1]
-  key.startsWith('$') ? { key: key.slice(1), value } : undefined
-)
+  // [!code word:startsWith:1]
+  // [!code word:slice:1]
+  key.startsWith('$') ? { key: key.slice(1), value } : undefined)
 // [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]
 ```
 
@@ -1561,13 +1564,13 @@ import { Schema as S } from 'effect'
 
 // [!code word:mapValuesDeep:1]
 Obj.Exports.mapValuesDeep(testData, (v) => {
-// [!code word:FsLoc:1]
-// [!code word:User:1]
+  // [!code word:FsLoc:1]
+  // [!code word:User:1]
   for (const schema of [FsLoc.FsLoc, User.User]) {
-// [!code word:is:1]
+    // [!code word:is:1]
     if (S.is(schema)(v)) {
-// [!code word:encodeSync:1]
-      return S.encodeSync(schema)(v)  // Replace and stop recursing
+      // [!code word:encodeSync:1]
+      return S.encodeSync(schema)(v) // Replace and stop recursing
     }
   }
   // Return undefined to continue into children
@@ -1585,12 +1588,12 @@ import { Obj } from '@wollybeard/kit/obj'
 const data = {
   result: 'success',
   errors: [new Error('Failed'), new Error('Timeout')],
-  nested: { err: new Error('Deep error') }
+  nested: { err: new Error('Deep error') },
 }
 
 // [!code word:mapValuesDeep:1]
 Obj.Exports.mapValuesDeep(data, (v) => {
-// [!code word:message:1]
+  // [!code word:message:1]
   if (v instanceof Error) return v.message
 })
 // { result: 'success', errors: ['Failed', 'Timeout'], nested: { err: 'Deep error' } }
@@ -1604,9 +1607,9 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // [!code word:mapValuesDeep:1]
 Obj.Exports.mapValuesDeep(data, (v) => {
-// [!code word:length:1]
+  // [!code word:length:1]
   if (typeof v === 'string' && v.length > 100) {
-// [!code word:slice:1]
+    // [!code word:slice:1]
     return v.slice(0, 100) + '...'
   }
 })
@@ -1621,9 +1624,9 @@ import { Obj } from '@wollybeard/kit/obj'
 // [!code word:mapValuesDeep:1]
 Obj.Exports.mapValuesDeep(data, (v) => {
   // Replace Buffer objects with their base64 representation
-// [!code word:isBuffer:1]
+  // [!code word:isBuffer:1]
   if (Buffer.isBuffer(v)) {
-// [!code word:toString:1]
+    // [!code word:toString:1]
     return v.toString('base64')
   }
 })
@@ -1674,7 +1677,8 @@ const withKeys = Obj.Exports.mapValues(data, (value, key) => `${key}: ${value}`)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Keyof`
 
 ```typescript
-type Keyof<$Object extends object> = object extends $Object ? PropertyKey : (keyof $Object)
+type Keyof<$Object extends object> = object extends $Object ? PropertyKey
+  : (keyof $Object)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L380" />
@@ -1688,8 +1692,7 @@ type PolicyFilter<
   $Object extends object,
   $Key extends Keyof<$Object>,
   $Mode extends 'allow' | 'deny',
-> = $Mode extends 'allow'
-  ? Pick<$Object, Extract<$Key, keyof $Object>>
+> = $Mode extends 'allow' ? Pick<$Object, Extract<$Key, keyof $Object>>
   : Omit<$Object, Extract<$Key, keyof $Object>>
 ```
 
@@ -1762,7 +1765,8 @@ type T = SuffixKeyNames<'_old', { a: string; b: number }>
 
 ```typescript
 type OmitKeysWithPrefix<$Object extends object, $Prefix extends string> = {
-  [k in keyof $Object as k extends `${$Prefix}${string}` ? never : k]: $Object[k]
+  [k in keyof $Object as k extends `${$Prefix}${string}` ? never : k]:
+    $Object[k]
 }
 ```
 
@@ -1798,13 +1802,15 @@ Pick only the required (non-optional) properties from an object.
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-type T = PickRequiredProperties<{ a: string; b?: number }>  // { a: string }
+type T = PickRequiredProperties<{ a: string; b?: number }> // { a: string }
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RequireProperties`
 
 ```typescript
-type RequireProperties<$O extends object, $K extends keyof $O> = Ts.Simplify<$O & { [k in $K]-?: $O[k] }>
+type RequireProperties<$O extends object, $K extends keyof $O> = Ts.Simplify<
+  $O & { [k in $K]-?: $O[k] }
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L479" />
@@ -1846,8 +1852,11 @@ type T = PartialOrUndefined<{ a: string; b: number }>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PickOptionalPropertyOrFallback`
 
 ```typescript
-type PickOptionalPropertyOrFallback<$Object extends object, $Property extends keyof $Object, $Fallback> =
-  {} extends Pick<$Object, $Property> ? $Object[$Property] : $Fallback
+type PickOptionalPropertyOrFallback<
+  $Object extends object,
+  $Property extends keyof $Object,
+  $Fallback,
+> = {} extends Pick<$Object, $Property> ? $Object[$Property] : $Fallback
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L507" />
@@ -1860,14 +1869,17 @@ Pick an optional property or use fallback if required.
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-type T1 = PickOptionalPropertyOrFallback<{ a?: string }, 'a', never>  // string
-type T2 = PickOptionalPropertyOrFallback<{ a: string }, 'a', never>  // never
+type T1 = PickOptionalPropertyOrFallback<{ a?: string }, 'a', never> // string
+type T2 = PickOptionalPropertyOrFallback<{ a: string }, 'a', never> // never
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `OnlyKeysInArray`
 
 ```typescript
-type OnlyKeysInArray<$Obj extends object, $KeysArray extends readonly string[]> = {
+type OnlyKeysInArray<
+  $Obj extends object,
+  $KeysArray extends readonly string[],
+> = {
   [k in keyof $Obj as k extends $KeysArray[number] ? k : never]: $Obj[k]
 }
 ```
@@ -1903,17 +1915,18 @@ Get value at key, or return fallback if key doesn't exist.
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-type T1 = GetKeyOr<{ a: string }, 'a', never>  // string
-type T2 = GetKeyOr<{ a: string }, 'b', never>  // never
+type T1 = GetKeyOr<{ a: string }, 'a', never> // string
+type T2 = GetKeyOr<{ a: string }, 'b', never> // never
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetOrNever`
 
 ```typescript
-type GetOrNever<$O extends object, $P extends string> = $P extends keyof $O ? $O[$P]
+type GetOrNever<$O extends object, $P extends string> = $P extends keyof $O
+  ? $O[$P]
   : $P extends `${infer __head__}.${infer __tail__}`
-  ? __head__ extends keyof $O ? GetOrNever<$O[__head__] & object, __tail__>
-  : never
+    ? __head__ extends keyof $O ? GetOrNever<$O[__head__] & object, __tail__>
+    : never
   : never
 ```
 
@@ -1927,14 +1940,15 @@ Get value at key or return never.
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-type T1 = GetOrNever<{ a: string }, 'a'>  // string
-type T2 = GetOrNever<{ a: string }, 'b'>  // never
+type T1 = GetOrNever<{ a: string }, 'a'> // string
+type T2 = GetOrNever<{ a: string }, 'b'> // never
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `keyofOr`
 
 ```typescript
-type keyofOr<$Obj extends object, $Or> = [keyof $Obj] extends [never] ? $Or : $Obj[keyof $Obj]
+type keyofOr<$Obj extends object, $Or> = [keyof $Obj] extends [never] ? $Or
+  : $Obj[keyof $Obj]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L347" />
@@ -1947,8 +1961,8 @@ Get the union of all value types from an object, or return fallback if no keys.
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-type T1 = keyofOr<{ a: string; b: number }, never>  // string | number
-type T2 = keyofOr<{}, 'fallback'>  // 'fallback'
+type T1 = keyofOr<{ a: string; b: number }, never> // string | number
+type T2 = keyofOr<{}, 'fallback'> // 'fallback'
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `KeysArray`
@@ -2009,16 +2023,17 @@ Extract only string keys from an object.
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-type T = StringKeyof<{ a: 1;[x: number]: 2 }>  // 'a'
+type T = StringKeyof<{ a: 1; [x: number]: 2 }> // 'a'
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PrimitiveFieldKeys`
 
 ```typescript
 type PrimitiveFieldKeys<$T> = {
-  [K in keyof $T]: $T[K] extends string | number | boolean | bigint | null | undefined ? K
-  : $T[K] extends Date ? K
-  : never
+  [K in keyof $T]: $T[K] extends
+    string | number | boolean | bigint | null | undefined ? K
+    : $T[K] extends Date ? K
+    : never
 }[keyof $T]
 ```
 
@@ -2047,10 +2062,9 @@ type SerializableKeys = PrimitiveFieldKeys<User>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MergeAllShallow`
 
 ```typescript
-type MergeAllShallow<$Objects extends readonly object[]> =
-  $Objects extends readonly [infer $First extends object, ...infer $Rest extends object[]]
-  ? $Rest extends readonly []
-  ? $First
+type MergeAllShallow<$Objects extends readonly object[]> = $Objects extends
+  readonly [infer $First extends object, ...infer $Rest extends object[]]
+  ? $Rest extends readonly [] ? $First
   : MergeShallow<$First, MergeAllShallow<$Rest>>
   : {}
 ```
@@ -2073,7 +2087,8 @@ type T = MergeAllShallow<[{ a: string }, { b: number }, { c: boolean }]>
 
 ```typescript
 type MergeAll<$Objects extends object[]> = $Objects extends
-  [infer __first__ extends object, ...infer __rest__ extends object[]] ? __first__ & MergeAll<__rest__>
+  [infer __first__ extends object, ...infer __rest__ extends object[]]
+  ? __first__ & MergeAll<__rest__>
   : {}
 ```
 
@@ -2161,10 +2176,10 @@ type WritableUser = Writeable<ReadonlyUser>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ToParameters`
 
 ```typescript
-type ToParameters<$Params extends object | undefined> =
-  undefined extends $Params ? [params?: $Params] :
-  $Params extends undefined ? [params?: $Params] :
-  [params: $Params]
+type ToParameters<$Params extends object | undefined> = undefined extends
+  $Params ? [params?: $Params]
+  : $Params extends undefined ? [params?: $Params]
+  : [params: $Params]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L232" />
@@ -2203,7 +2218,7 @@ Convert PropertyKey to string if possible.
 type IsEmpty<$Obj extends object> = keyof $Obj extends never ? true : false
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L27" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L29" />
 
 Type-level check to determine if an object type has no keys.
 
@@ -2223,18 +2238,19 @@ type NotEmpty = IsEmpty<{ a: 1 }> // false
 type Empty = Record<string, never>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L34" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L36" />
 
 Type for an empty object.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `NoExcessNonEmpty`
 
 ```typescript
-type NoExcessNonEmpty<$Value extends object, $Constraint> = IsEmpty<$Value> extends true ? never
-  : NoExcess<$Constraint, $Value>
+type NoExcessNonEmpty<$Value extends object, $Constraint> =
+  IsEmpty<$Value> extends true ? never
+    : NoExcess<$Constraint, $Value>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L160" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L162" />
 
 Like NoExcess but also requires the object to be non-empty.
 
@@ -2248,15 +2264,17 @@ import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 type User = { name: string }
 
-type T1 = NoExcessNonEmpty<{ name: 'Alice' }, User>        // ✓ Pass
-type T2 = NoExcessNonEmpty<{}, User>                       // ✗ Fail - empty
-type T3 = NoExcessNonEmpty<{ name: 'Bob', age: 30 }, User> // ✗ Fail - excess
+type T1 = NoExcessNonEmpty<{ name: 'Alice' }, User> // ✓ Pass
+type T2 = NoExcessNonEmpty<{}, User> // ✗ Fail - empty
+type T3 = NoExcessNonEmpty<{ name: 'Bob'; age: 30 }, User> // ✗ Fail - excess
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HasOptionalKeys`
 
 ```typescript
-type HasOptionalKeys<$Obj extends object> = OptionalKeys<$Obj> extends never ? false : true
+type HasOptionalKeys<$Obj extends object> = OptionalKeys<$Obj> extends never
+  ? false
+  : true
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L14" />
@@ -2269,8 +2287,8 @@ Check if an interface has any optional properties.
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-type T1 = HasOptionalKeys<{ a?: string }>  // true
-type T2 = HasOptionalKeys<{ a: string }>  // false
+type T1 = HasOptionalKeys<{ a?: string }> // true
+type T2 = HasOptionalKeys<{ a: string }> // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `OptionalKeys`
@@ -2292,7 +2310,7 @@ Extract keys that are optional in the interface.
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 type Obj = { a: string; b?: number; c?: boolean }
-type Optional = OptionalKeys<Obj>  // 'b' | 'c'
+type Optional = OptionalKeys<Obj> // 'b' | 'c'
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RequiredKeys`
@@ -2312,13 +2330,15 @@ Extract keys that are required in the interface.
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 type Obj = { a: string; b?: number; c?: boolean }
-type Required = RequiredKeys<Obj>  // 'a'
+type Required = RequiredKeys<Obj> // 'a'
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HasRequiredKeys`
 
 ```typescript
-type HasRequiredKeys<$Obj extends object> = RequiredKeys<$Obj> extends never ? false : true
+type HasRequiredKeys<$Obj extends object> = RequiredKeys<$Obj> extends never
+  ? false
+  : true
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L56" />
@@ -2331,16 +2351,17 @@ Check if an interface has any required properties.
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-type T1 = HasRequiredKeys<{ a: string }>  // true
-type T2 = HasRequiredKeys<{ a?: string }>  // false
-type T3 = HasRequiredKeys<{ a: string; b?: number }>  // true
+type T1 = HasRequiredKeys<{ a: string }> // true
+type T2 = HasRequiredKeys<{ a?: string }> // false
+type T3 = HasRequiredKeys<{ a: string; b?: number }> // true
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HasOptionalKey`
 
 ```typescript
-type HasOptionalKey<$Object extends object, $Key extends keyof $Object> = undefined extends $Object[$Key] ? true
-  : false
+type HasOptionalKey<$Object extends object, $Key extends keyof $Object> =
+  undefined extends $Object[$Key] ? true
+    : false
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L69" />
@@ -2353,16 +2374,16 @@ Check if a key is optional in an object.
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-type T1 = HasOptionalKey<{ a?: string }, 'a'>  // true
-type T2 = HasOptionalKey<{ a: string }, 'a'>  // false
+type T1 = HasOptionalKey<{ a?: string }, 'a'> // true
+type T2 = HasOptionalKey<{ a: string }, 'a'> // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsKeyOptional`
 
 ```typescript
-type IsKeyOptional<$T extends Undefined.Maybe<object>, $K extends string> = $K extends keyof $T
-  ? ({} extends Pick<$T, $K> ? true : false)
-  : false
+type IsKeyOptional<$T extends Undefined.Maybe<object>, $K extends string> =
+  $K extends keyof $T ? ({} extends Pick<$T, $K> ? true : false)
+    : false
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L84" />
@@ -2375,15 +2396,16 @@ Check if a key is optional in an object.
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-type T1 = IsKeyOptional<{ a?: string }, 'a'>  // true
-type T2 = IsKeyOptional<{ a: string }, 'a'>  // false
-type T3 = IsKeyOptional<{ a: string }, 'b'>  // false
+type T1 = IsKeyOptional<{ a?: string }, 'a'> // true
+type T2 = IsKeyOptional<{ a: string }, 'a'> // false
+type T3 = IsKeyOptional<{ a: string }, 'b'> // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HasKey`
 
 ```typescript
-type HasKey<$T extends object, $K extends string> = $K extends keyof $T ? true : false
+type HasKey<$T extends object, $K extends string> = $K extends keyof $T ? true
+  : false
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L99" />
@@ -2396,8 +2418,49 @@ Check if a key exists in an object.
 // @noErrors
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
-type T1 = HasKey<{ a: string }, 'a'>  // true
-type T2 = HasKey<{ a: string }, 'b'>  // false
+type T1 = HasKey<{ a: string }, 'a'> // true
+type T2 = HasKey<{ a: string }, 'b'> // false
+```
+
+## Type Utilities
+
+$A - First object type $B - Second object type
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SharedKeys`
+
+```typescript
+type SharedKeys<$A extends object, $B extends object> = O.IntersectKeys<$A, $B>
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L274" />
+
+Extract keys that are shared between two object types.
+
+Returns a union of keys that exist in both `$A` and `$B`. Useful for finding common properties when comparing object types.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+type A = { a: string; b: number; c: boolean }
+type B = { b: string; c: number; d: Date }
+
+type Shared = Obj.SharedKeys<A, B> // "b" | "c"
+```
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+// No shared keys
+type X = { a: string }
+type Y = { b: number }
+type None = Obj.SharedKeys<X, Y> // never
+
+// All keys shared
+type Same = Obj.SharedKeys<{ a: 1; b: 2 }, { a: 3; b: 4 }> // "a" | "b"
 ```
 
 ## Type Utilities
@@ -2410,7 +2473,7 @@ $A - The object type to subtract from $B - The object type whose properties to r
 type SubtractShallow<$A, $B> = Omit<$A, keyof $B>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L65" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L67" />
 
 Subtract properties present in $B from $A (shallow operation).
 
@@ -2425,8 +2488,8 @@ import { Obj } from '@wollybeard/kit/obj'
 type User = { name: string; age: number; email: string }
 type Public = { name: string; age: number }
 
-type Private = Obj.SubtractShallow<User, Public>  // { email: string }
-type Same = Obj.SubtractShallow<User, User>        // {}
+type Private = Obj.SubtractShallow<User, Public> // { email: string }
+type Same = Obj.SubtractShallow<User, User> // {}
 ```
 
 ```typescript twoslash
@@ -2437,7 +2500,61 @@ import { Obj } from '@wollybeard/kit/obj'
 type Config = { id: string; debug?: boolean }
 type Provided = { id: string; invalid: true; typo: string }
 
-type Extra = Obj.SubtractShallow<Provided, Config>  // { invalid: true; typo: string }
+type Extra = Obj.SubtractShallow<Provided, Config> // { invalid: true; typo: string }
+```
+
+## Type Utilities
+
+$Expected - The expected object type $Actual - The actual object type to compare
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Mismatched`
+
+```typescript
+type Mismatched<$Expected extends object, $Actual extends object> = {
+  [k in SharedKeys<$Expected, $Actual>]: k extends keyof $Expected
+    ? k extends keyof $Actual
+      ? $Expected[k] extends $Actual[k]
+        ? $Actual[k] extends $Expected[k] ? never
+        : { expected: $Expected[k]; actual: $Actual[k] }
+      : { expected: $Expected[k]; actual: $Actual[k] }
+    : never
+    : never
+}
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L346" />
+
+Find properties that exist in both object types but have different types.
+
+For each shared key, compares the types of the properties. If they differ, returns an object with `{ expected: TypeA, actual: TypeB }` for that key. If types match, returns `never` for that key (which can be filtered out with OmitNever).
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+type Expected = { id: string; name: string; count: number }
+type Actual = { id: number; name: string; count: string }
+
+type Diff = Obj.Mismatched<Expected, Actual>
+// {
+//   id: { expected: string; actual: number }
+//   name: never  // Types match
+//   count: { expected: number; actual: string }
+// }
+```
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+// Combined with OmitNever to get only mismatches
+type OnlyMismatches = Obj.OmitNever<Obj.Mismatched<Expected, Actual>>
+// {
+//   id: { expected: string; actual: number }
+//   count: { expected: number; actual: string }
+// }
 ```
 
 ## Type Utilities
@@ -2447,10 +2564,12 @@ $Expected - The type defining allowed properties $Actual - The actual type to ch
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `NoExcess`
 
 ```typescript
-type NoExcess<$Expected, $Actual> = $Actual & Record<Exclude<keyof $Actual, keyof $Expected>, never>
+type NoExcess<$Expected, $Actual> =
+  & $Actual
+  & Record<Exclude<keyof $Actual, keyof $Expected>, never>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L140" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L142" />
 
 Enforces that a type has no excess properties beyond those defined in the expected type.
 
@@ -2465,13 +2584,13 @@ import { Obj } from '@wollybeard/kit/obj'
 type User = { name: string; age: number }
 
 // Standard generic - allows excess properties
-function test1<T extends User>(input: T): void { }
-test1({ name: 'Alice', age: 30, extra: true })  // ✓ No error (excess allowed)
+function test1<T extends User>(input: T): void {}
+test1({ name: 'Alice', age: 30, extra: true }) // ✓ No error (excess allowed)
 
 // With NoExcess - rejects excess
-function test2<T extends User>(input: Obj.NoExcess<User, T>): void { }
-test2({ name: 'Alice', age: 30, extra: true })  // ✗ Error: 'extra' is never
-test2({ name: 'Alice', age: 30 })  // ✓ OK
+function test2<T extends User>(input: Obj.NoExcess<User, T>): void {}
+test2({ name: 'Alice', age: 30, extra: true }) // ✗ Error: 'extra' is never
+test2({ name: 'Alice', age: 30 }) // ✓ OK
 ```
 
 ```typescript twoslash
@@ -2481,11 +2600,135 @@ import { Obj } from '@wollybeard/kit/obj'
 // Using with optional properties
 type Config = { id: string; debug?: boolean }
 
-function configure<T extends Config>(config: Obj.NoExcess<Config, T>): void { }
+function configure<T extends Config>(config: Obj.NoExcess<Config, T>): void {}
 
-configure({ id: 'test' })  // ✓ OK - optional omitted
-configure({ id: 'test', debug: true })  // ✓ OK - optional included
-configure({ id: 'test', invalid: 'x' })  // ✗ Error: 'invalid' is never
+configure({ id: 'test' }) // ✓ OK - optional omitted
+configure({ id: 'test', debug: true }) // ✓ OK - optional included
+configure({ id: 'test', invalid: 'x' }) // ✗ Error: 'invalid' is never
+```
+
+## Type Utilities
+
+$T - The object type to filter
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `OmitNever`
+
+```typescript
+type OmitNever<$T> = {
+  [k in keyof $T as $T[k] extends never ? never : k]: $T[k]
+}
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L394" />
+
+Remove all properties with `never` type from an object type.
+
+Filters out object properties whose values are `never`, leaving only properties with concrete types. Useful for cleaning up conditional type results that use `never` as a sentinel value.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+type Mixed = {
+  keep1: string
+  remove: never
+  keep2: number
+  alsoRemove: never
+}
+
+type Clean = Obj.OmitNever<Mixed>
+// { keep1: string; keep2: number }
+```
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+// Common pattern: conditional properties
+type Conditional<T> = {
+  [K in keyof T]: T[K] extends string ? T[K] : never
+}
+
+type Input = { a: string; b: number; c: string }
+type OnlyStrings = Obj.OmitNever<Conditional<Input>>
+// { a: string; c: string }
+```
+
+## Type Utilities
+
+$T - The object type to remove keys from $Keys - Union of keys to remove
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExcludeKeys`
+
+```typescript
+type ExcludeKeys<$T, $Keys> = {
+  [k in Exclude<keyof $T, $Keys>]: $T[k]
+}
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L306" />
+
+Remove specified keys from an object type, with forced evaluation.
+
+Similar to TypeScript's built-in `Omit`, but ensures the resulting type is fully evaluated rather than showing as `Omit<T, K>` in error messages. This makes type errors more readable by displaying the actual resulting object type.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+type User = { id: string; name: string; email: string; password: string }
+
+type Public = Obj.ExcludeKeys<User, 'password'>
+// { id: string; name: string; email: string }
+
+type Minimal = Obj.ExcludeKeys<User, 'email' | 'password'>
+// { id: string; name: string }
+```
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+// Difference from Omit - better error messages
+type WithOmit = Omit<User, 'password'> // Displays as: Omit<User, "password">
+type WithExclude = Obj.ExcludeKeys<User, 'password'> // Displays as: { id: string; name: string; email: string }
+```
+
+## Type Utilities
+
+$T - The type whose keys should be aligned $Length - The target length for padded keys $Pad - The character to use for padding (defaults to '_')
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AlignKeys`
+
+```typescript
+type AlignKeys<$T, $Length extends number, $Pad extends string = '_'> = {
+  [k in keyof $T as k extends string ? Str.PadEnd<k, $Length, $Pad> : k]: $T[k]
+}
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L432" />
+
+Align object keys by padding with a character to a target length.
+
+Pads string keys to the specified length using the given fill character. Non-string keys (symbols, numbers) are left unchanged. Ensures consistent alignment of object keys in IDE displays.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Obj } from '@wollybeard/kit/obj'
+// ---cut---
+type Input = { MESSAGE: string; EXPECTED: number }
+type Output = Obj.AlignKeys<Input, 12>
+// { MESSAGE_____: string, EXPECTED____: number }
+
+// Custom padding character
+type Output2 = Obj.AlignKeys<Input, 12, '.'>
+// { MESSAGE.....: string, EXPECTED....: number }
 ```
 
 ## Other
@@ -2502,10 +2745,14 @@ Type<object>
 
 ```typescript
 interface partition extends
-// [!code word:SimpleSignature:1]
+  // [!code word:SimpleSignature:1]
   Ts.SimpleSignature.SimpleSignature<[
-    (obj: object, pickedKeys: readonly string[]) => { picked: object; omitted: object },
-  ]> {
+    (
+      obj: object,
+      pickedKeys: readonly string[],
+    ) => { picked: object; omitted: object },
+  ]>
+{
   <$Object extends object, $Key extends keyof $Object>(
     obj: $Object,
     pickedKeys: readonly $Key[],
@@ -2518,7 +2765,13 @@ interface partition extends
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `DeepObjectValue`
 
 ```typescript
-type DeepObjectValue = string | boolean | null | number | DeepObject | DeepObjectValue[]
+type DeepObjectValue =
+  | string
+  | boolean
+  | null
+  | number
+  | DeepObject
+  | DeepObjectValue[]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-entries-deep.ts#L4" />
@@ -2541,14 +2794,16 @@ A deep object is a plain object with string keys and deep object values.
 type MergeShallow<
   $Object1 extends Any,
   $Object2 extends Any,
-  __ =
-  {} extends $Object1
-  ? $Object2
-  : & $Object2
-  // Keys from $Object1 that are NOT in $Object2
-  & {
-    [__k__ in keyof $Object1 as __k__ extends keyof $Object2 ? never : __k__]: $Object1[__k__]
-  }
+  __ = {} extends $Object1 ? $Object2
+    :
+      & $Object2
+      // Keys from $Object1 that are NOT in $Object2
+      & {
+        [
+          __k__ in keyof $Object1 as __k__ extends keyof $Object2 ? never
+            : __k__
+        ]: $Object1[__k__]
+      },
 > = __
 ```
 
@@ -2557,16 +2812,17 @@ type MergeShallow<
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PartialDeep`
 
 ```typescript
-type PartialDeep<$Type> =
-  $Type extends Array<infer __inner__> ? Array<PartialDeep<__inner__>> :
-  $Type extends ReadonlyArray<infer __inner__> ? ReadonlyArray<PartialDeep<__inner__>> :
-  $Type extends Promise<infer __inner__> ? Promise<PartialDeep<__inner__>> :
-  $Type extends Function ? $Type :
-  $Type extends object ? {
-    [key in keyof $Type]?: PartialDeep<$Type[key]>
-  } :
+type PartialDeep<$Type> = $Type extends Array<infer __inner__>
+  ? Array<PartialDeep<__inner__>>
+  : $Type extends ReadonlyArray<infer __inner__>
+    ? ReadonlyArray<PartialDeep<__inner__>>
+  : $Type extends Promise<infer __inner__> ? Promise<PartialDeep<__inner__>>
+  : $Type extends Function ? $Type
+  : $Type extends object ? {
+      [key in keyof $Type]?: PartialDeep<$Type[key]>
+    }
   // else
-  $Type
+  : $Type
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L186" />
@@ -2598,7 +2854,7 @@ type PropertyPathInput = PropertyPathExpression | PropertyPath
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `PropertyPathSeparator`
 
 ```typescript
-"."
+'.'
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L52" />
@@ -2609,9 +2865,8 @@ The separator character used in property path expressions. Used to split dot-not
 
 ```typescript
 type InferShapeFromPropertyPath<$PropertyPath extends PropertyPath> =
-  $PropertyPath extends readonly []
-  ? {}
-  : _InferShapeFromPropertyPath<$PropertyPath>
+  $PropertyPath extends readonly [] ? {}
+    : _InferShapeFromPropertyPath<$PropertyPath>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L92" />
@@ -2622,7 +2877,7 @@ type InferShapeFromPropertyPath<$PropertyPath extends PropertyPath> =
 type Any = object
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L4" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L6" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PropertySignature`
 

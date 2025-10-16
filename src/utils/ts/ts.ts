@@ -452,5 +452,66 @@ export type IsAny<T> = 0 extends 1 & T ? true : false
  */
 export type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true) : false
 
+/**
+ * Sentinel type for detecting whether an optional type parameter was provided.
+ *
+ * Use as default value for optional type parameters when you need to distinguish
+ * between "user explicitly provided a type" vs "using default/inferring".
+ *
+ * Enables conditional behavior based on whether the caller provided an explicit type
+ * argument or is relying on inference/defaults.
+ *
+ * @example
+ * ```ts
+ * // Different behavior based on whether type arg provided
+ * function process<$T = SENTINEL>(...):
+ *   SENTINEL.Is<$T> extends true
+ *     ? // No type arg - infer from value
+ *     : // Type arg provided - use it
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Real-world usage in assertion functions
+ * type AssertFn<$Expected, $Actual = SENTINEL> =
+ *   SENTINEL.Is<$Actual> extends true
+ *     ? <$actual>(value: $actual) => void  // Value mode
+ *     : void                                // Type-only mode
+ * ```
+ *
+ * @category Type Utilities
+ */
+export type SENTINEL = { readonly __kit_ts_sentinel__: unique symbol }
+
+/**
+ * Utilities for working with the SENTINEL type.
+ *
+ * @category Type Utilities
+ */
+export namespace SENTINEL {
+  /**
+   * Check if a type is the SENTINEL (type parameter was omitted).
+   *
+   * Returns `true` if the type is `SENTINEL`, `false` otherwise.
+   * Uses tuple wrapping to prevent distributive conditional behavior.
+   *
+   * @example
+   * ```ts
+   * type T1 = SENTINEL.Is<SENTINEL>  // true
+   * type T2 = SENTINEL.Is<string>    // false
+   * type T3 = SENTINEL.Is<never>     // false
+   * ```
+   *
+   * @example
+   * ```ts
+   * // Using in conditional type logic
+   * type Mode<$T> = SENTINEL.Is<$T> extends true ? 'infer' : 'explicit'
+   * type M1 = Mode<SENTINEL>  // 'infer'
+   * type M2 = Mode<string>    // 'explicit'
+   * ```
+   */
+  export type Is<T> = [T] extends [SENTINEL] ? true : false
+}
+
 // Export relation utilities
 export * from './relation.js'

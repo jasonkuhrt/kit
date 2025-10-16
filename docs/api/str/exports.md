@@ -44,7 +44,7 @@ These functions measure and manipulate strings based on their visual appearance,
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultRender`
 
 ```typescript
-(value: string[]) => string
+;((value: string[]) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/builder.ts#L12" />
@@ -162,7 +162,7 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // [!code word:table:1]
 Str.Exports.table({
-  data: { name: 'John', age: '25', city: 'NYC' }
+  data: { name: 'John', age: '25', city: 'NYC' },
 })
 // Returns:
 // name → John
@@ -173,7 +173,7 @@ Str.Exports.table({
 Str.Exports.table({
   data: { foo: 'bar', hello: 'world' },
   separator: ' = ',
-  separatorAlignment: false
+  separatorAlignment: false,
 })
 // Returns:
 // foo =   bar
@@ -208,11 +208,11 @@ const p = pattern<{ groups: ['name', 'age'] }>(/(?<name>\w+) is (?<age>\d+)/)
 const result = match('John is 25', p)
 // [!code word:isSome:1]
 if (Option.isSome(result)) {
-// [!code word:log:1]
-// [!code word:name:1]
+  // [!code word:log:1]
+  // [!code word:name:1]
   console.log(result.value.groups.name) // 'John' (typed)
-// [!code word:log:1]
-// [!code word:age:1]
+  // [!code word:log:1]
+  // [!code word:age:1]
   console.log(result.value.groups.age) // '25' (typed)
 }
 ```
@@ -244,11 +244,11 @@ import { Str } from '@wollybeard/kit/str'
 const result = Str.Exports.match('hello world', /hello (\w+)/)
 // [!code word:isSome:1]
 if (Option.isSome(result)) {
-// [!code word:log:1]
-// [!code word:value:1]
+  // [!code word:log:1]
+  // [!code word:value:1]
   console.log(result.value[0]) // 'hello world'
-// [!code word:log:1]
-// [!code word:value:1]
+  // [!code word:log:1]
+  // [!code word:value:1]
   console.log(result.value[1]) // 'world'
 }
 ```
@@ -289,7 +289,7 @@ Str.Exports.isMatch('world', 'hello') // false
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isMatchOn`
 
 ```typescript
-(value: string) => (pattern: PatternInput) => boolean
+;((value: string) => (pattern: PatternInput) => boolean)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L124" />
@@ -311,7 +311,7 @@ isHello(/^h.*o$/) // true
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isMatchWith`
 
 ```typescript
-(pattern: PatternInput) => (value: string) => boolean
+;((pattern: PatternInput) => (value: string) => boolean)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L138" />
@@ -361,7 +361,7 @@ notHello('hello') // false
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isntMatchOn`
 
 ```typescript
-(pattern: PatternInput) => (value: string) => boolean
+;((pattern: PatternInput) => (value: string) => boolean)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L162" />
@@ -371,7 +371,7 @@ Curried version of isntMatch with value first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isntMatchWith`
 
 ```typescript
-(value: string) => (pattern: PatternInput) => boolean
+;((value: string) => (pattern: PatternInput) => boolean)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L170" />
@@ -412,7 +412,7 @@ Str.Exports.isMatchAny('foo', ['hello', 'world']) // false
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isMatchAnyOn`
 
 ```typescript
-(value: string) => (patterns: PatternsInput) => boolean
+;((value: string) => (patterns: PatternsInput) => boolean)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L200" />
@@ -422,7 +422,7 @@ Curried version of isMatchAny with value first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isMatchAnyWith`
 
 ```typescript
-(patterns: PatternsInput) => (value: string) => boolean
+;((patterns: PatternsInput) => (value: string) => boolean)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L215" />
@@ -473,7 +473,7 @@ notGreeting('hello') // false
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isNotMatchAnyOn`
 
 ```typescript
-(patternOrPatterns: PatternsInput) => (value: string) => boolean
+;((patternOrPatterns: PatternsInput) => (value: string) => boolean)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L239" />
@@ -483,7 +483,7 @@ Curried version of isNotMatchAny with value first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isNotMatchAnyWith`
 
 ```typescript
-(value: string) => (patternOrPatterns: PatternsInput) => boolean
+;((value: string) => (patternOrPatterns: PatternsInput) => boolean)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/match.ts#L247" />
@@ -515,7 +515,9 @@ Interpolate variables into a template string using $variable syntax.
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // [!code word:interpolate:1]
-const greeting = Str.Exports.interpolate('Hello ${name}, you are ${age} years old')
+const greeting = Str.Exports.interpolate(
+  'Hello ${name}, you are ${age} years old',
+)
 greeting({ name: 'John', age: 25 }) // 'Hello John, you are 25 years old'
 
 // [!code word:interpolate:1]
@@ -592,7 +594,7 @@ Box structure with content and optional styling.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `OrientationSchema`
 
 ```typescript
-Literal<["vertical", "horizontal"]>
+Literal<['vertical', 'horizontal']>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L137" />
@@ -615,7 +617,14 @@ Orientation type.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `PaddingSchema`
 
 ```typescript
-Struct<{ mainStart: optional<typeof Number>; mainEnd: optional<typeof Number>; crossStart: optional<typeof Number>; crossEnd: optional<typeof Number>; }>
+Struct<
+  {
+    mainStart: optional<typeof Number>
+    mainEnd: optional<typeof Number>
+    crossStart: optional<typeof Number>
+    crossEnd: optional<typeof Number>
+  }
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L155" />
@@ -659,7 +668,14 @@ Supports AxisHand patterns:
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `MarginSchema`
 
 ```typescript
-Struct<{ mainStart: optional<typeof Number>; mainEnd: optional<typeof Number>; crossStart: optional<typeof Number>; crossEnd: optional<typeof Number>; }>
+Struct<
+  {
+    mainStart: optional<typeof Number>
+    mainEnd: optional<typeof Number>
+    crossStart: optional<typeof Number>
+    crossEnd: optional<typeof Number>
+  }
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L214" />
@@ -708,7 +724,12 @@ Span value type
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `SpanSchema`
 
 ```typescript
-Struct<{ main: optional<Union<[typeof Number, typeof BigIntFromSelf]>>; cross: optional<Union<[typeof Number, typeof BigIntFromSelf]>>; }>
+Struct<
+  {
+    main: optional<Union<[typeof Number, typeof BigIntFromSelf]>>
+    cross: optional<Union<[typeof Number, typeof BigIntFromSelf]>>
+  }
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L281" />
@@ -753,7 +774,16 @@ Supports AxisHand patterns with SpanValue (number | bigint):
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `SpanRangeSchema`
 
 ```typescript
-Struct<{ main: optional<Struct<{ min: optional<typeof Number>; max: optional<typeof Number>; }>>; cross: optional<Struct<{ min: optional<typeof Number>; max: optional<typeof Number>; }>>; }>
+Struct<
+  {
+    main: optional<
+      Struct<{ min: optional<typeof Number>; max: optional<typeof Number> }>
+    >
+    cross: optional<
+      Struct<{ min: optional<typeof Number>; max: optional<typeof Number> }>
+    >
+  }
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L327" />
@@ -773,7 +803,7 @@ Span range configuration type.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `GapSchema`
 
 ```typescript
-Struct<{ main: optional<typeof Number>; cross: optional<typeof Number>; }>
+Struct<{ main: optional<typeof Number>; cross: optional<typeof Number> }>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L361" />
@@ -811,7 +841,7 @@ Gap input accepting number or object with logical properties.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BorderStyleSchema`
 
 ```typescript
-Literal<["single", "double", "rounded", "bold", "ascii"]>
+Literal<['single', 'double', 'rounded', 'bold', 'ascii']>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L399" />
@@ -831,7 +861,14 @@ Border style preset type.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BorderEdgesSchema`
 
 ```typescript
-Struct<{ top: optional<typeof String>; right: optional<typeof String>; bottom: optional<typeof String>; left: optional<typeof String>; }>
+Struct<
+  {
+    top: optional<typeof String>
+    right: optional<typeof String>
+    bottom: optional<typeof String>
+    left: optional<typeof String>
+  }
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L413" />
@@ -851,7 +888,14 @@ Border edge configuration type.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BorderCornersSchema`
 
 ```typescript
-Struct<{ topLeft: optional<typeof String>; topRight: optional<typeof String>; bottomRight: optional<typeof String>; bottomLeft: optional<typeof String>; }>
+Struct<
+  {
+    topLeft: optional<typeof String>
+    topRight: optional<typeof String>
+    bottomRight: optional<typeof String>
+    bottomLeft: optional<typeof String>
+  }
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L447" />
@@ -876,9 +920,12 @@ type BorderEdgesInput =
   | WithHooks<BorderEdges, 'border.edges'>
   | {
     [K in keyof BorderEdges]?:
-    | string
-    | CharStyle
-    | WithHook<string | undefined, StyleCategoryMap[`border.edges.${K & string}`]>
+      | string
+      | CharStyle
+      | WithHook<
+        string | undefined,
+        StyleCategoryMap[`border.edges.${K & string}`]
+      >
   }
 ```
 
@@ -903,9 +950,12 @@ type BorderCornersInput =
   | WithHooks<BorderCorners, 'border.corners'>
   | {
     [K in keyof BorderCorners]?:
-    | string
-    | CharStyle
-    | WithHook<string | undefined, StyleCategoryMap[`border.corners.${K & string}`]>
+      | string
+      | CharStyle
+      | WithHook<
+        string | undefined,
+        StyleCategoryMap[`border.corners.${K & string}`]
+      >
   }
 ```
 
@@ -938,7 +988,31 @@ Border character configuration input with nested edges/corners.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BorderSchema`
 
 ```typescript
-Struct<{ style: optional<Literal<["single", "double", "rounded", "bold", "ascii"]>>; edges: optional<Struct<{ top: optional<typeof String>; right: optional<typeof String>; bottom: optional<typeof String>; left: optional<typeof String>; }>>; corners: optional<Struct<{ topLeft: optional<typeof String>; topRight: optional<typeof String>; bottomRight: optional<typeof String>; bottomLeft: optional<typeof String>; }>>; }>
+Struct<
+  {
+    style: optional<Literal<['single', 'double', 'rounded', 'bold', 'ascii']>>
+    edges: optional<
+      Struct<
+        {
+          top: optional<typeof String>
+          right: optional<typeof String>
+          bottom: optional<typeof String>
+          left: optional<typeof String>
+        }
+      >
+    >
+    corners: optional<
+      Struct<
+        {
+          topLeft: optional<typeof String>
+          topRight: optional<typeof String>
+          bottomRight: optional<typeof String>
+          bottomLeft: optional<typeof String>
+        }
+      >
+    >
+  }
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/box.ts#L540" />
@@ -1018,11 +1092,11 @@ Provides string equality comparison using strict equality (===). String comparis
 import { Str } from '@wollybeard/kit'
 
 // [!code word:is:1]
-Str.Eq.is('hello', 'hello')     // true
+Str.Eq.is('hello', 'hello') // true
 // [!code word:is:1]
-Str.Eq.is('hello', 'Hello')     // false (case-sensitive)
+Str.Eq.is('hello', 'Hello') // false (case-sensitive)
 // [!code word:is:1]
-Str.Eq.is('', '')               // true (empty strings)
+Str.Eq.is('', '') // true (empty strings)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Type`
@@ -1044,11 +1118,11 @@ Provides type guard for checking if a value is a string.
 import { Str } from '@wollybeard/kit'
 
 // [!code word:is:1]
-Str.Type.is('hello')    // true
+Str.Type.is('hello') // true
 // [!code word:is:1]
-Str.Type.is(123)        // false
+Str.Type.is(123) // false
 // [!code word:is:1]
-Str.Type.is(null)       // false
+Str.Type.is(null) // false
 ```
 
 ## Transformation
@@ -1197,7 +1271,7 @@ Curried version of replaceLeading with value first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `stripLeading`
 
 ```typescript
-(matcher: string) => (value: string) => string
+;((matcher: string) => (value: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L89" />
@@ -1319,7 +1393,7 @@ Str.Exports.append('foo', 'bar') // 'foobar'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `appendOn`
 
 ```typescript
-(value1: string) => (value2: string) => string
+;((value1: string) => (value2: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L172" />
@@ -1329,7 +1403,7 @@ Curried version of append with value1 first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `appendWith`
 
 ```typescript
-(value2: string) => (value1: string) => string
+;((value2: string) => (value1: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L185" />
@@ -1383,7 +1457,7 @@ Str.Exports.prepend('pre', 'fix') // 'prefix'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `prependOn`
 
 ```typescript
-(value1: string) => (value2: string) => string
+;((value1: string) => (value2: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L212" />
@@ -1393,7 +1467,7 @@ Curried version of prepend with value1 first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `prependWith`
 
 ```typescript
-(value2: string) => (value1: string) => string
+;((value2: string) => (value1: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L225" />
@@ -1449,7 +1523,7 @@ Str.Exports.repeat('-', 10) // '----------'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `repeatOn`
 
 ```typescript
-(value: string) => (count: number) => string
+;((value: string) => (count: number) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L259" />
@@ -1459,7 +1533,7 @@ Curried version of repeat with value first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `repeatWith`
 
 ```typescript
-(count: number) => (value: string) => string
+;((count: number) => (value: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L272" />
@@ -1511,7 +1585,7 @@ Str.Exports.removeSurrounding('aaa', 'a') // ''
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `removeSurroundingOn`
 
 ```typescript
-(str: string) => (target: string) => string
+;((str: string) => (target: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L321" />
@@ -1521,7 +1595,7 @@ Curried version of removeSurrounding with str first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `removeSurroundingWith`
 
 ```typescript
-(target: string) => (str: string) => string
+;((target: string) => (str: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L329" />
@@ -1562,7 +1636,7 @@ Str.Exports.truncate('very long text that needs truncating') // 'very long text 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `truncateOn`
 
 ```typescript
-(str: string) => (maxLength?: number | undefined) => string
+;((str: string) => (maxLength?: number | undefined) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L366" />
@@ -1572,7 +1646,7 @@ Curried version of truncate with str first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `truncateWith`
 
 ```typescript
-(maxLength?: number | undefined) => (str: string) => string
+;((maxLength?: number | undefined) => (str: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L379" />
@@ -1593,7 +1667,7 @@ truncate10('hello world') // 'hello w...'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `strip`
 
 ```typescript
-(matcher: PatternsInput) => (value: string) => string
+;((matcher: PatternsInput) => (value: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L401" />
@@ -1614,7 +1688,7 @@ removeVowels('hello world') // 'hll wrld'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `removeSurroundingSpaceRegular`
 
 ```typescript
-(str: string) => string
+;((str: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L410" />
@@ -1624,7 +1698,7 @@ Remove regular spaces from the beginning and end of a string. Pre-configured rem
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `removeSurroundingSpaceNoBreak`
 
 ```typescript
-(str: string) => string
+;((str: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/replace.ts#L419" />
@@ -1735,7 +1809,7 @@ Str.Exports.join([], ',') // ''
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `joinOn`
 
 ```typescript
-(value: string[]) => (separator: string) => string
+;((value: string[]) => (separator: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/split.ts#L68" />
@@ -1745,7 +1819,7 @@ Curried version of join with value first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `joinWith`
 
 ```typescript
-(separator: string) => (value: string[]) => string
+;((separator: string) => (value: string[]) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/split.ts#L81" />
@@ -1799,7 +1873,7 @@ Str.Exports.merge('foo', 'bar') // 'foobar'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mergeOn`
 
 ```typescript
-(string1: string) => (string2: string) => string
+;((string1: string) => (string2: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/split.ts#L111" />
@@ -1870,7 +1944,9 @@ Type for an empty string.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `EndsWith`
 
 ```typescript
-type EndsWith<S extends string, T extends string> = S extends `${string}${T}` ? true : false
+type EndsWith<S extends string, T extends string> = S extends `${string}${T}`
+  ? true
+  : false
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/type-level.ts#L13" />
@@ -1880,7 +1956,9 @@ Check if a string ends with a specific suffix.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StartsWith`
 
 ```typescript
-type StartsWith<S extends string, T extends string> = S extends `${T}${string}` ? true : false
+type StartsWith<S extends string, T extends string> = S extends `${T}${string}`
+  ? true
+  : false
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/type-level.ts#L19" />
@@ -1890,7 +1968,8 @@ Check if a string starts with a specific prefix.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `LastSegment`
 
 ```typescript
-type LastSegment<S extends string> = S extends `${string}/${infer Rest}` ? LastSegment<Rest>
+type LastSegment<S extends string> = S extends `${string}/${infer Rest}`
+  ? LastSegment<Rest>
   : S
 ```
 
@@ -1901,7 +1980,8 @@ Extract the last segment from a path-like string (after the last '/').
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RemoveTrailingSlash`
 
 ```typescript
-type RemoveTrailingSlash<S extends string> = S extends `${infer Rest}/` ? Rest extends '' ? '/' : Rest
+type RemoveTrailingSlash<S extends string> = S extends `${infer Rest}/`
+  ? Rest extends '' ? '/' : Rest
   : S
 ```
 
@@ -1912,12 +1992,14 @@ Remove trailing slash from a string.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Split`
 
 ```typescript
-type Split<S extends string, D extends string, Acc extends string[] = []> = S extends '' ? Acc
-  : S extends `${infer Segment}${D}${infer Rest}` ? Segment extends '' ? Split<Rest, D, Acc>
-  : Segment extends '.' ? Split<Rest, D, Acc>
-  : Split<Rest, D, [...Acc, Segment]>
-  : S extends '.' ? Acc
-  : [...Acc, S]
+type Split<S extends string, D extends string, Acc extends string[] = []> =
+  S extends '' ? Acc
+    : S extends `${infer Segment}${D}${infer Rest}`
+      ? Segment extends '' ? Split<Rest, D, Acc>
+      : Segment extends '.' ? Split<Rest, D, Acc>
+      : Split<Rest, D, [...Acc, Segment]>
+    : S extends '.' ? Acc
+    : [...Acc, S]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/type-level.ts#L40" />
@@ -1927,7 +2009,8 @@ Split a string by a delimiter, filtering out empty segments and '.' segments. Th
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Contains`
 
 ```typescript
-type Contains<S extends string, C extends string> = S extends `${string}${C}${string}` ? true : false
+type Contains<S extends string, C extends string> = S extends
+  `${string}${C}${string}` ? true : false
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/type-level.ts#L51" />
@@ -1939,8 +2022,8 @@ Check if string contains a character.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Length`
 
 ```typescript
-type Length<$S extends string, $Acc extends 0[] = []> = $S extends `${string}${infer __rest__}`
-  ? Length<__rest__, [...$Acc, 0]>
+type Length<$S extends string, $Acc extends 0[] = []> = $S extends
+  `${string}${infer __rest__}` ? Length<__rest__, [...$Acc, 0]>
   : $Acc['length']
 ```
 
@@ -1973,7 +2056,7 @@ type PadEnd<
   $Acc extends 0[] = [],
 > = Length<$S> extends $TargetLen ? $S
   : $Acc['length'] extends 50 // Recursion limit safety
-  ? $S
+    ? $S
   : PadEnd<`${$S}${$Fill}`, $TargetLen, $Fill, [...$Acc, 0]>
 ```
 
@@ -2006,7 +2089,7 @@ type PadStart<
   $Acc extends 0[] = [],
 > = Length<$S> extends $TargetLen ? $S
   : $Acc['length'] extends 50 // Recursion limit safety
-  ? $S
+    ? $S
   : PadStart<`${$Fill}${$S}`, $TargetLen, $Fill, [...$Acc, 0]>
 ```
 
@@ -2036,10 +2119,10 @@ type LiteralOnly<
   T extends string,
   $ErrorMessage extends string = 'Expected a literal string',
 > = string extends T ? Ts.StaticError<
-  $ErrorMessage,
-  { ReceivedType: T },
-  'Use a string literal instead of string type'
->
+    $ErrorMessage,
+    { ReceivedType: T },
+    'Use a string literal instead of string type'
+  >
   : T
 ```
 
@@ -2063,15 +2146,15 @@ Arb<string>
 type RegExpMatchResult<$Matches extends Matches> =
   & Omit<RegExpMatchArray, 'groups'>
   & {
-    groups:
-    $Matches['groups'] extends readonly [MatchItem, ...readonly MatchItem[]]
-    ? ArrMut.ReduceWithIntersection<ToGroupsProperties<$Matches['groups']>>
-    : undefined
+    groups: $Matches['groups'] extends
+      readonly [MatchItem, ...readonly MatchItem[]]
+      ? ArrMut.ReduceWithIntersection<ToGroupsProperties<$Matches['groups']>>
+      : undefined
   }
   & (
     $Matches extends { indicies: readonly [MatchItem, ...readonly MatchItem[]] }
-    ? [originalValue: string, ...$Matches['indicies']]
-    : [originalValue: string]
+      ? [originalValue: string, ...$Matches['indicies']]
+      : [originalValue: string]
   )
 ```
 

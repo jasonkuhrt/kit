@@ -27,7 +27,7 @@ Str.Text.someFunction()
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultIndentCharacter`
 
 ```typescript
-" "
+' '
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L17" />
@@ -37,7 +37,7 @@ Default character used for indentation (non-breaking space).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultLineSeparator`
 
 ```typescript
-"\n"
+'\n'
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L23" />
@@ -79,7 +79,7 @@ Str.Text.lines('single line') // ['single line']
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `unlines`
 
 ```typescript
-(value: string[]) => string
+;((value: string[]) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L61" />
@@ -130,7 +130,7 @@ Str.Text.indent('line1\nline2', 4) // '    line1\n    line2'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentOn`
 
 ```typescript
-(text: string) => (size?: number | undefined) => string
+;((text: string) => (size?: number | undefined) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L88" />
@@ -140,7 +140,7 @@ Curried version of indent with text first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentWith`
 
 ```typescript
-(size?: number | undefined) => (text: string) => string
+;((size?: number | undefined) => (text: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L101" />
@@ -199,7 +199,8 @@ Str.Text.indentBy('title\nitem', (line, i) => line === 'title' ? '' : '  ')
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentByOn`
 
 ```typescript
-(text: string) => (prefixOrFn: string | ((line: string, lineIndex: number) => string)) => string
+;((text: string) =>
+(prefixOrFn: string | ((line: string, lineIndex: number) => string)) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L139" />
@@ -209,7 +210,8 @@ Curried version of indentBy with text first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentByWith`
 
 ```typescript
-(prefixOrFn: string | ((line: string, lineIndex: number) => string)) => (text: string) => string
+;((prefixOrFn: string | ((line: string, lineIndex: number) => string)) =>
+(text: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L160" />
@@ -232,7 +234,7 @@ numbered('first\nsecond') // '0. first\n1. second'
 
 // [!code word:indentByWith:1]
 const conditionalIndent = Str.Text.indentByWith((line, i) =>
-// [!code word:startsWith:1]
+  // [!code word:startsWith:1]
   line.startsWith('#') ? '' : '  '
 )
 conditionalIndent('# Title\nContent') // '# Title\n  Content'
@@ -277,7 +279,7 @@ Str.Text.stripIndent('    line1\n\n    line2')
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultPadCharacter`
 
 ```typescript
-" "
+' '
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L208" />
@@ -320,7 +322,10 @@ Str.Text.pad('hello', 2, 'left', '-') // '--hello'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padOn`
 
 ```typescript
-(text: string) => (size: number) => (side?: "left" | "right" | undefined) => (char?: string | undefined) => string
+;((text: string) =>
+(size: number) =>
+(side?: 'left' | 'right' | undefined) =>
+(char?: string | undefined) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L240" />
@@ -330,7 +335,10 @@ Curried version of pad with text first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padWith`
 
 ```typescript
-(size: number) => (text: string) => (side?: "left" | "right" | undefined) => (char?: string | undefined) => string
+;((size: number) =>
+(text: string) =>
+(side?: 'left' | 'right' | undefined) =>
+(char?: string | undefined) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L248" />
@@ -370,7 +378,7 @@ Str.Text.padLeft('hello', 2, '0') // '00hello'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padLeftOn`
 
 ```typescript
-(text: string) => (size: number) => (char?: string | undefined) => string
+;((text: string) => (size: number) => (char?: string | undefined) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L273" />
@@ -380,7 +388,7 @@ Curried version of padLeft with text first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padLeftWith`
 
 ```typescript
-(size: number) => (text: string) => (char?: string | undefined) => string
+;((size: number) => (text: string) => (char?: string | undefined) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L286" />
@@ -431,7 +439,7 @@ Str.Text.padRight('hello', 2, '.') // 'hello..'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padRightOn`
 
 ```typescript
-(text: string) => (size: number) => (char?: string | undefined) => string
+;((text: string) => (size: number) => (char?: string | undefined) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L311" />
@@ -441,7 +449,7 @@ Curried version of padRight with text first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padRightWith`
 
 ```typescript
-(size: number) => (text: string) => (char?: string | undefined) => string
+;((size: number) => (text: string) => (char?: string | undefined) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L324" />
@@ -488,21 +496,24 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Left-align (pad right)
 // [!code word:span:1]
-Str.span('hi', 5, 'left')     // 'hi   '
+Str.span('hi', 5, 'left') // 'hi   '
 
 // Right-align (pad left)
 // [!code word:span:1]
-Str.span('hi', 5, 'right')    // '   hi'
+Str.span('hi', 5, 'right') // '   hi'
 
 // Text already wider - no padding added
 // [!code word:span:1]
-Str.span('hello world', 5, 'left')  // 'hello world' (unchanged)
+Str.span('hello world', 5, 'left') // 'hello world' (unchanged)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanOn`
 
 ```typescript
-(text: string) => (width: number) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
+;((text: string) =>
+(width: number) =>
+(align?: 'left' | 'right' | undefined) =>
+(char?: string | undefined) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L368" />
@@ -512,7 +523,10 @@ Curried version of span with text first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanWith`
 
 ```typescript
-(width: number) => (text: string) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
+;((width: number) =>
+(text: string) =>
+(align?: 'left' | 'right' | undefined) =>
+(char?: string | undefined) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L383" />
@@ -527,8 +541,8 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // [!code word:spanWith:1]
 const span8 = Str.spanWith(8)
-span8('Name', 'left')   // 'Name    '
-span8('Age', 'right')   // '     Age'
+span8('Name', 'left') // 'Name    '
+span8('Age', 'right') // '     Age'
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fit`
@@ -565,28 +579,28 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Text too long - gets cropped
 // [!code word:fit:1]
-Str.fit('hello world', 5, 'left')  // 'hello'
+Str.fit('hello world', 5, 'left') // 'hello'
 
 // Text too short - gets padded
 // [!code word:fit:1]
-Str.fit('hi', 5, 'left')           // 'hi   '
+Str.fit('hi', 5, 'left') // 'hi   '
 // [!code word:fit:1]
-Str.fit('hi', 5, 'right')          // '   hi'
+Str.fit('hi', 5, 'right') // '   hi'
 
 // Perfect fit - unchanged
 // [!code word:fit:1]
-Str.fit('exact', 5, 'left')        // 'exact'
+Str.fit('exact', 5, 'left') // 'exact'
 
 // Use case: Fixed-width table columns
 const columns = ['Name', 'Email', 'Status'].map(
-// [!code word:fit:1]
-  (header, i) => Str.fit(header, [10, 20, 8][i], 'left')
+  // [!code word:fit:1]
+  (header, i) => Str.fit(header, [10, 20, 8][i], 'left'),
 )
 // ['Name      ', 'Email               ', 'Status  ']
 
 // CSV formatting with fixed columns
 const row = [name, email, status].map((val, i) =>
-// [!code word:fit:1]
+  // [!code word:fit:1]
   Str.fit(val, [20, 30, 10][i], 'left')
 ).join(',')
 ```
@@ -594,7 +608,10 @@ const row = [name, email, status].map((val, i) =>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitOn`
 
 ```typescript
-(text: string) => (width: number) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
+;((text: string) =>
+(width: number) =>
+(align?: 'left' | 'right' | undefined) =>
+(char?: string | undefined) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L443" />
@@ -604,7 +621,10 @@ Curried version of fit with text first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitWith`
 
 ```typescript
-(width: number) => (text: string) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
+;((width: number) =>
+(text: string) =>
+(align?: 'left' | 'right' | undefined) =>
+(char?: string | undefined) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L462" />
@@ -623,8 +643,8 @@ const nameColumn = Str.fitWith(20)
 // [!code word:fitWith:1]
 const statusColumn = Str.fitWith(10)
 
-nameColumn('John Doe', 'left')         // 'John Doe            '
-statusColumn('Active', 'left')         // 'Active    '
+nameColumn('John Doe', 'left') // 'John Doe            '
+statusColumn('Active', 'left') // 'Active    '
 statusColumn('Very Long Status', 'left') // 'Very Long '
 ```
 
@@ -664,7 +684,7 @@ Str.Text.mapLines('a\nb\nc', (line, i) => `${i}: ${line}`)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mapLinesOn`
 
 ```typescript
-(text: string) => (fn: (line: string, index: number) => string) => string
+;((text: string) => (fn: (line: string, index: number) => string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L489" />
@@ -674,7 +694,7 @@ Curried version of mapLines with text first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mapLinesWith`
 
 ```typescript
-(fn: (line: string, index: number) => string) => (text: string) => string
+;((fn: (line: string, index: number) => string) => (text: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L502" />
@@ -749,7 +769,10 @@ Str.Text.formatBlock('line1\nline2', { prefix: '| ', indent: 2 })
 
 // Exclude first line (useful for continuing indentation)
 // [!code word:formatBlock:1]
-Str.Text.formatBlock('header\nline1\nline2', { prefix: '  ', excludeFirstLine: true })
+Str.Text.formatBlock('header\nline1\nline2', {
+  prefix: '  ',
+  excludeFirstLine: true,
+})
 // 'header\n  line1\n  line2'
 
 // Single line - returned as-is
@@ -762,9 +785,9 @@ Str.Text.formatBlock('single', { prefix: '> ' })
 Str.Text.formatBlock('data\nmore data', {
   prefix: {
     symbol: '│ ',
-    color: (text) => `\x1b[90m${text}\x1b[0m` // gray color
+    color: (text) => `\x1b[90m${text}\x1b[0m`, // gray color
   },
-  indent: 2
+  indent: 2,
 })
 // '\x1b[90m│ \x1b[0m  data\n\x1b[90m│ \x1b[0m  more data'
 ```
@@ -772,7 +795,14 @@ Str.Text.formatBlock('data\nmore data', {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `formatBlockOn`
 
 ```typescript
-(block: string) => (opts: { prefix?: string | StyledPrefix; indent?: number; excludeFirstLine?: boolean; }) => string
+;((block: string) =>
+(
+  opts: {
+    prefix?: string | StyledPrefix
+    indent?: number
+    excludeFirstLine?: boolean
+  },
+) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L598" />
@@ -782,7 +812,14 @@ Curried version of formatBlock with block first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `formatBlockWith`
 
 ```typescript
-(opts: { prefix?: string | StyledPrefix; indent?: number; excludeFirstLine?: boolean; }) => (block: string) => string
+;((
+  opts: {
+    prefix?: string | StyledPrefix
+    indent?: number
+    excludeFirstLine?: boolean
+  },
+) =>
+(block: string) => string)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L612" />

@@ -460,6 +460,8 @@ const BaseExportFields = {
   name: S.String,
   /** Structured signature model */
   signature: SignatureModel,
+  /** Simple signature when __simpleSignature phantom type is present */
+  signatureSimple: S.optional(SignatureModel),
   /** Description from JSDoc */
   description: S.optional(S.String),
   /** Code examples from @example tags */

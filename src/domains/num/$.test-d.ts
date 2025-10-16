@@ -14,36 +14,36 @@ test('Type narrowing works correctly when combining predicates', () => {
 
   // Single predicate narrows type
   if (Num.Finite.is(value)) {
-    Ts.Test.sub<Num.Finite>()(value)
+    Ts.Test.sub.is<Num.Finite>()(value)
   }
 
   // Multiple predicates narrow to intersection
   if (Num.Positive.is(value) && Num.Int.is(value)) {
-    Ts.Test.sub<Num.Positive & Num.Int>()(value)
+    Ts.Test.sub.is<Num.Positive & Num.Int>()(value)
   }
 
   // Complex narrowing with multiple brands
   if (Num.Finite.is(value) && Num.Positive.is(value) && Num.Int.is(value) && Num.Odd.is(value)) {
-    Ts.Test.sub<Num.Finite & Num.Positive & Num.Int & Num.Odd>()(value)
+    Ts.Test.sub.is<Num.Finite & Num.Positive & Num.Int & Num.Odd>()(value)
   }
 
   // Narrowing with incompatible predicates
   if (Num.Zero.is(value)) {
-    Ts.Test.sub<Num.Zero>()(value)
+    Ts.Test.sub.is<Num.Zero>()(value)
     // @ts-expect-error - Zero cannot be Positive
-    Ts.Test.sub<Num.Positive>()(value)
+    Ts.Test.sub.is<Num.Positive>()(value)
   }
 
   // Range-based narrowing
   if (Num.InRange.is(value, 0, 100)) {
-    Ts.Test.sub<Num.InRange<0, 100>>()(value)
+    Ts.Test.sub.is<Num.InRange<0, 100>>()(value)
   }
 
   // Percentage narrowing
   if (Num.Percentage.is(value)) {
-    Ts.Test.sub<Num.Percentage>()(value)
+    Ts.Test.sub.is<Num.Percentage>()(value)
     // Percentage is InRange<0, 1> not InRange<0, 100>
-    Ts.Test.sub<Num.InRange<0, 1>>()(value)
+    Ts.Test.sub.is<Num.InRange<0, 1>>()(value)
   }
 })
 
@@ -52,55 +52,55 @@ test('Type narrowing works correctly when combining predicates', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Single brand constructors
   const pos = Num.Positive.from(5)
-  Ts.Test.exact<Num.Positive>()(pos)
+  Ts.Test.exact.is<Num.Positive>()(pos)
 
   const int = Num.Int.from(42)
-  Ts.Test.exact<Num.Int>()(int)
+  Ts.Test.exact.is<Num.Int>()(int)
 
   const finite = Num.Finite.from(3.14)
-  Ts.Test.exact<Num.Finite>()(finite)
+  Ts.Test.exact.is<Num.Finite>()(finite)
 
   const zero = Num.Zero.from(0)
-  Ts.Test.exact<Num.Zero>()(zero)
+  Ts.Test.exact.is<Num.Zero>()(zero)
 
   const nonZero = Num.NonZero.from(1)
-  Ts.Test.exact<Num.NonZero>()(nonZero)
+  Ts.Test.exact.is<Num.NonZero>()(nonZero)
 
   const neg = Num.Negative.from(-5)
-  Ts.Test.exact<Num.Negative>()(neg)
+  Ts.Test.exact.is<Num.Negative>()(neg)
 
   const nonNeg = Num.NonNegative.from(0)
-  Ts.Test.exact<Num.NonNegative>()(nonNeg)
+  Ts.Test.exact.is<Num.NonNegative>()(nonNeg)
 
   const nonPos = Num.NonPositive.from(0)
-  Ts.Test.exact<Num.NonPositive>()(nonPos)
+  Ts.Test.exact.is<Num.NonPositive>()(nonPos)
 
   const even = Num.Even.from(4)
-  Ts.Test.exact<Num.Even & Num.Int>()(even)
+  Ts.Test.exact.is<Num.Even & Num.Int>()(even)
 
   const odd = Num.Odd.from(3)
-  Ts.Test.exact<Num.Odd & Num.Int>()(odd)
+  Ts.Test.exact.is<Num.Odd & Num.Int>()(odd)
 
   const safeInt = Num.SafeInt.from(1000)
-  Ts.Test.exact<Num.SafeInt & Num.Int>()(safeInt)
+  Ts.Test.exact.is<Num.SafeInt & Num.Int>()(safeInt)
 
   const float = Num.Float.from(3.14)
-  Ts.Test.exact<Num.Float & Num.Finite>()(float)
+  Ts.Test.exact.is<Num.Float & Num.Finite>()(float)
 
   // Range constructor
   const inRange = Num.InRange.from(50, 0, 100)
-  Ts.Test.exact<Num.InRange<0, 100>>()(inRange)
+  Ts.Test.exact.is<Num.InRange<0, 100>>()(inRange)
 
   // Percentage constructor
   const pct = Num.Percentage.from(0.75)
-  Ts.Test.exact<Num.Percentage>()(pct)
+  Ts.Test.exact.is<Num.Percentage>()(pct)
 
   // Angle constructors
   const rad = Num.Radians.from(Math.PI)
-  Ts.Test.exact<Num.Radians & Num.Finite>()(rad)
+  Ts.Test.exact.is<Num.Radians & Num.Finite>()(rad)
 
   const deg = Num.Degrees.from(180)
-  Ts.Test.exact<Num.Degrees & Num.Finite>()(deg)
+  Ts.Test.exact.is<Num.Degrees & Num.Finite>()(deg)
 })
 
 // === Try Constructors ===
@@ -108,19 +108,19 @@ test('Constructor functions produce correctly branded types', () => {
 test('Try constructors return branded types or null', () => {
   // Try constructors have correct return types
   const tryPos = Num.Positive.tryFrom(5)
-  Ts.Test.exact<Num.Positive | null>()(tryPos)
+  Ts.Test.exact.is<Num.Positive | null>()(tryPos)
 
   const tryInt = Num.Int.tryFrom(42.5)
-  Ts.Test.exact<Num.Int | null>()(tryInt)
+  Ts.Test.exact.is<Num.Int | null>()(tryInt)
 
   const tryFinite = Num.Finite.tryFrom(Infinity)
-  Ts.Test.exact<Num.Finite | null>()(tryFinite)
+  Ts.Test.exact.is<Num.Finite | null>()(tryFinite)
 
   // Type narrowing with try constructors
   const value = 42
   const result = Num.Positive.tryFrom(value)
   if (result !== null) {
-    Ts.Test.exact<Num.Positive>()(result)
+    Ts.Test.exact.is<Num.Positive>()(result)
   }
 })
 
@@ -129,81 +129,81 @@ test('Try constructors return branded types or null', () => {
 test('Math operations enforce branded type constraints', () => {
   // Basic arithmetic preserves number type
   const sum = Num.add(5, 3)
-  Ts.Test.sub<number>()(sum)
+  Ts.Test.sub.is<number>()(sum)
 
   const diff = Num.subtract(10, 3)
-  Ts.Test.sub<number>()(diff)
+  Ts.Test.sub.is<number>()(diff)
 
   const product = Num.multiply(4, 5)
-  Ts.Test.sub<number>()(product)
+  Ts.Test.sub.is<number>()(product)
 
   const divisor = Num.NonZero.from(2)
   const quotient = Num.divide(10, divisor)
-  Ts.Test.sub<number>()(quotient)
+  Ts.Test.sub.is<number>()(quotient)
 
   // Power operations
   const squared = Num.power(3, 2)
-  Ts.Test.sub<number>()(squared)
+  Ts.Test.sub.is<number>()(squared)
 
   // Root operations
   const sqrtInput = Num.NonNegative.from(16)
   const sqrtResult = Num.sqrt(sqrtInput)
-  Ts.Test.sub<number>()(sqrtResult)
+  Ts.Test.sub.is<number>()(sqrtResult)
 
   // Modulo operations (mod doesn't exist, using % operator)
   const remainder = 10 % 3
-  Ts.Test.sub<number>()(remainder)
+  Ts.Test.sub.is<number>()(remainder)
 
   // Absolute value
   const absResult = Num.abs(-5)
-  Ts.Test.sub<number>()(absResult)
+  Ts.Test.sub.is<number>()(absResult)
 
   // Sign operations
   const signResult = Num.sign(-5)
-  Ts.Test.sub<number>()(signResult)
+  Ts.Test.sub.is<number>()(signResult)
 
   // Rounding operations
   const finiteValue = Num.Finite.from(3.7)
   const rounded = Num.round(finiteValue)
-  Ts.Test.sub<number>()(rounded)
+  Ts.Test.sub.is<number>()(rounded)
 
   const floored = Num.floor(finiteValue)
-  Ts.Test.sub<number>()(floored)
+  Ts.Test.sub.is<number>()(floored)
 
   const ceiled = Num.ceil(Num.Finite.from(3.2))
-  Ts.Test.sub<number>()(ceiled)
+  Ts.Test.sub.is<number>()(ceiled)
 
   const truncated = Num.trunc(finiteValue)
-  Ts.Test.sub<number>()(truncated)
+  Ts.Test.sub.is<number>()(truncated)
 
   // Comparison operations
   const minResult = Num.min(5, 3)
-  Ts.Test.sub<number>()(minResult)
+  Ts.Test.sub.is<number>()(minResult)
 
   const maxResult = Num.max(5, 3)
-  Ts.Test.sub<number>()(maxResult)
+  Ts.Test.sub.is<number>()(maxResult)
 
   const clamped = Num.InRange.clamp(10, 0, 5)
-  Ts.Test.sub<number>()(clamped)
+  Ts.Test.sub.is<number>()(clamped)
 
   // Trigonometric operations with Radians
   const rad = Num.Radians.from(Math.PI / 2)
   const sinResult = Num.sin(rad)
-  Ts.Test.sub<number>()(sinResult)
+  Ts.Test.sub.is<number>()(sinResult)
 
   const cosResult = Num.cos(rad)
-  Ts.Test.sub<number>()(cosResult)
+  Ts.Test.sub.is<number>()(cosResult)
 
   const tanResult = Num.tan(rad)
-  Ts.Test.sub<number>()(tanResult)
+  Ts.Test.sub.is<number>()(tanResult)
 
   // Angle conversions
   const deg: Num.Degrees = Num.Degrees.from(180)
   const toRad = Num.degToRad(deg)
-  Ts.Test.sub<Num.Radians>()(toRad)
+  Ts.Test.sub.is<Num.Radians>()(toRad)
 
   const toDeg = Num.radToDeg(rad)
-  Ts.Test.sub<Num.Degrees>()(toDeg)
+  Ts.Test.sub.is<Num.Degrees>()(toDeg)
 })
 
 // === Branded Type Intersections ===
@@ -218,19 +218,19 @@ test('Branded types can be properly intersected', () => {
   const value = 5
   if (Num.Positive.is(value) && Num.Int.is(value)) {
     const posInt: PositiveInt = value
-    Ts.Test.sub<PositiveInt>()(posInt)
+    Ts.Test.sub.is<PositiveInt>()(posInt)
   }
 
   // Complex intersection
   if (Num.Positive.is(value) && Num.Int.is(value) && Num.Odd.is(value)) {
     const posOddInt: PositiveOddInt = value
-    Ts.Test.sub<PositiveOddInt>()(posOddInt)
+    Ts.Test.sub.is<PositiveOddInt>()(posOddInt)
   }
 
   // Finite non-zero
   if (Num.Finite.is(value) && Num.NonZero.is(value)) {
     const finiteNonZero: FiniteNonZero = value
-    Ts.Test.sub<FiniteNonZero>()(finiteNonZero)
+    Ts.Test.sub.is<FiniteNonZero>()(finiteNonZero)
   }
 })
 

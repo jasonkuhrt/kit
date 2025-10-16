@@ -6,7 +6,7 @@ import { absoluteToRelative } from '../path-utils.js'
 import { categorize } from './categorize.js'
 import { parseJSDoc } from './jsdoc.js'
 import { extractModule } from './module.js'
-import { extractSignature } from './tsmorph-utils.js'
+import { extractSignature, extractSimpleSignature } from './tsmorph-utils.js'
 
 /**
  * Extract export information from a declaration node.
@@ -22,6 +22,9 @@ export const extractExport = (name: string, decl: ExportedDeclarations): Export 
   // Extract signature - type signature only, no implementation
   const signature = extractSignature(decl)
 
+  // Extract simple signature if present (from __simpleSignature phantom type)
+  const signatureSimple = extractSimpleSignature(decl)
+
   // Parse JSDoc - use the declaration node directly
   // ts-morph resolves re-exports to the original declaration
   const jsdoc = parseJSDoc(decl)
@@ -36,6 +39,7 @@ export const extractExport = (name: string, decl: ExportedDeclarations): Export 
   const baseExport = {
     name,
     signature,
+    signatureSimple,
     description: jsdoc.description,
     examples: jsdoc.examples,
     deprecated: jsdoc.deprecated,

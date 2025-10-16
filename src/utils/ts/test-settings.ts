@@ -63,7 +63,7 @@ declare global {
            * All keys in error messages will be padded with underscores to this length
            * for visual alignment.
            *
-           * @default 12
+           * @default 14
            *
            * @example
            * ```typescript
@@ -73,7 +73,7 @@ declare global {
            *     namespace Ts {
            *       namespace Test {
            *         interface Settings {
-           *           errorKeyLength: 15
+           *           errorKeyLength: 16
            *         }
            *       }
            *     }
@@ -82,7 +82,7 @@ declare global {
            * export {}
            * ```
            */
-          errorKeyLength: 12
+          errorKeyLength: 14
         }
 
         /**

@@ -136,7 +136,9 @@ console.log(getLazyValue()) // 42
 
 // Useful for configuration that may be lazy
 // [!code word:resolveLazyFactory:1]
-const getConfig = Value.Exports.resolveLazyFactory(() => ({ apiUrl: 'https://api.example.com' }))
+const getConfig = Value.Exports.resolveLazyFactory(() => ({
+  apiUrl: 'https://api.example.com',
+}))
 // [!code word:log:1]
 console.log(getConfig()) // { apiUrl: 'https://api.example.com' }
 ```
@@ -166,9 +168,9 @@ Type guard to check if a value is a symbol.
 import { Value } from '@wollybeard/kit/value'
 // ---cut---
 // [!code word:isSymbol:1]
-Value.Exports.isSymbol(Symbol('test'))  // true
+Value.Exports.isSymbol(Symbol('test')) // true
 // [!code word:isSymbol:1]
-Value.Exports.isSymbol('test')  // false
+Value.Exports.isSymbol('test') // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isDate`
@@ -194,12 +196,12 @@ Type guard to check if a value is a Date instance.
 import { Value } from '@wollybeard/kit/value'
 // ---cut---
 // [!code word:isDate:1]
-Value.Exports.isDate(new Date())  // true
+Value.Exports.isDate(new Date()) // true
 // [!code word:isDate:1]
-Value.Exports.isDate('2024-01-01')  // false
+Value.Exports.isDate('2024-01-01') // false
 // [!code word:isDate:1]
 // [!code word:now:1]
-Value.Exports.isDate(Date.now())  // false
+Value.Exports.isDate(Date.now()) // false
 ```
 
 ## Utilities
@@ -207,7 +209,7 @@ Value.Exports.isDate(Date.now())  // false
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `identityProxy`
 
 ```typescript
-{ }
+{}
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/value/value.ts#L113" />
@@ -221,7 +223,7 @@ A proxy that returns itself for any property access. Useful for default values o
 import { Value } from '@wollybeard/kit/value'
 // ---cut---
 // [!code word:baz:1]
-Value.Exports.identityProxy.foo.bar.baz  // Returns identityProxy
+Value.Exports.identityProxy.foo.bar.baz // Returns identityProxy
 // [!code word:anything:1]
-Value.Exports.identityProxy.anything()  // Returns identityProxy
+Value.Exports.identityProxy.anything() // Returns identityProxy
 ```

@@ -24987,7 +24987,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 4
+              "line": 6
             },
             "_tag": "type",
             "type": "type-alias"
@@ -25025,7 +25025,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 27
+              "line": 29
             },
             "_tag": "type",
             "type": "type-alias"
@@ -25057,7 +25057,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 34
+              "line": 36
             },
             "_tag": "type",
             "type": "type-alias"
@@ -25100,7 +25100,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 65
+              "line": 67
             },
             "_tag": "type",
             "type": "type-alias"
@@ -25151,7 +25151,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 87
+              "line": 89
             },
             "_tag": "value",
             "type": "function"
@@ -25194,7 +25194,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 140
+              "line": 142
             },
             "_tag": "type",
             "type": "intersection"
@@ -25232,7 +25232,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 160
+              "line": 162
             },
             "_tag": "type",
             "type": "type-alias"
@@ -25291,7 +25291,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 195
+              "line": 197
             },
             "_tag": "value",
             "type": "function"
@@ -25355,10 +25355,220 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 228
+              "line": 230
             },
             "_tag": "value",
             "type": "function"
+          },
+          {
+            "name": "SharedKeys",
+            "signature": {
+              "text": "type SharedKeys<$A extends object, $B extends object> = O.IntersectKeys<$A, $B>",
+              "_tag": "TypeSignatureModel"
+            },
+            "description": "Extract keys that are shared between two object types.  \n\nReturns a union of keys that exist in both `$A` and `$B`. Useful for finding common properties when comparing object types.",
+            "examples": [
+              {
+                "code": "type A = { a: string; b: number; c: boolean }\ntype B = { b: string; c: number; d: Date }\n\ntype Shared = Obj.SharedKeys<A, B>  // \"b\" | \"c\"",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              },
+              {
+                "code": "// No shared keys\ntype X = { a: string }\ntype Y = { b: number }\ntype None = Obj.SharedKeys<X, Y>  // never\n\n// All keys shared\ntype Same = Obj.SharedKeys<{ a: 1; b: 2 }, { a: 3; b: 4 }>  // \"a\" | \"b\"",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Type Utilities  \n\n $A - First object type  $B - Second object type",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "obj"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "type",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 274
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "ExcludeKeys",
+            "signature": {
+              "text": "type ExcludeKeys<$T, $Keys> = {\n  [k in Exclude<keyof $T, $Keys>]: $T[k]\n}",
+              "_tag": "TypeSignatureModel"
+            },
+            "description": "Remove specified keys from an object type, with forced evaluation.  \n\nSimilar to TypeScript's built-in `Omit`, but ensures the resulting type is fully evaluated rather than showing as `Omit<T, K>` in error messages. This makes type errors more readable by displaying the actual resulting object type.",
+            "examples": [
+              {
+                "code": "type User = { id: string; name: string; email: string; password: string }\n\ntype Public = Obj.ExcludeKeys<User, 'password'>\n// { id: string; name: string; email: string }\n\ntype Minimal = Obj.ExcludeKeys<User, 'email' | 'password'>\n// { id: string; name: string }",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              },
+              {
+                "code": "// Difference from Omit - better error messages\ntype WithOmit = Omit<User, 'password'>  // Displays as: Omit<User, \"password\">\ntype WithExclude = Obj.ExcludeKeys<User, 'password'>  // Displays as: { id: string; name: string; email: string }",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Type Utilities  \n\n $T - The object type to remove keys from  $Keys - Union of keys to remove",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "obj"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "type",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 306
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "Mismatched",
+            "signature": {
+              "text": "type Mismatched<$Expected extends object, $Actual extends object> = {\n  [k in SharedKeys<$Expected, $Actual>]: k extends keyof $Expected\n    ? k extends keyof $Actual\n      ? $Expected[k] extends $Actual[k]\n        ? $Actual[k] extends $Expected[k]\n          ? never\n          : { expected: $Expected[k]; actual: $Actual[k] }\n        : { expected: $Expected[k]; actual: $Actual[k] }\n      : never\n    : never\n}",
+              "_tag": "TypeSignatureModel"
+            },
+            "description": "Find properties that exist in both object types but have different types.  \n\nFor each shared key, compares the types of the properties. If they differ, returns an object with `{ expected: TypeA, actual: TypeB }` for that key. If types match, returns `never` for that key (which can be filtered out with OmitNever).",
+            "examples": [
+              {
+                "code": "type Expected = { id: string; name: string; count: number }\ntype Actual = { id: number; name: string; count: string }\n\ntype Diff = Obj.Mismatched<Expected, Actual>\n// {\n//   id: { expected: string; actual: number }\n//   name: never  // Types match\n//   count: { expected: number; actual: string }\n// }",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              },
+              {
+                "code": "// Combined with OmitNever to get only mismatches\ntype OnlyMismatches = Obj.OmitNever<Obj.Mismatched<Expected, Actual>>\n// {\n//   id: { expected: string; actual: number }\n//   count: { expected: number; actual: string }\n// }",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Type Utilities  \n\n $Expected - The expected object type  $Actual - The actual object type to compare",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "obj"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "type",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 346
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "OmitNever",
+            "signature": {
+              "text": "type OmitNever<$T> = {\n  [k in keyof $T as $T[k] extends never ? never : k]: $T[k]\n}",
+              "_tag": "TypeSignatureModel"
+            },
+            "description": "Remove all properties with `never` type from an object type.  \n\nFilters out object properties whose values are `never`, leaving only properties with concrete types. Useful for cleaning up conditional type results that use `never` as a sentinel value.",
+            "examples": [
+              {
+                "code": "type Mixed = {\n  keep1: string\n  remove: never\n  keep2: number\n  alsoRemove: never\n}\n\ntype Clean = Obj.OmitNever<Mixed>\n// { keep1: string; keep2: number }",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              },
+              {
+                "code": "// Common pattern: conditional properties\ntype Conditional<T> = {\n  [K in keyof T]: T[K] extends string ? T[K] : never\n}\n\ntype Input = { a: string; b: number; c: string }\ntype OnlyStrings = Obj.OmitNever<Conditional<Input>>\n// { a: string; c: string }",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Type Utilities  \n\n $T - The object type to filter",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "obj"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "type",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 394
+            },
+            "_tag": "type",
+            "type": "type-alias"
+          },
+          {
+            "name": "AlignKeys",
+            "signature": {
+              "text": "type AlignKeys<$T, $Length extends number, $Pad extends string = '_'> = {\n  [k in keyof $T as k extends string ? Str.PadEnd<k, $Length, $Pad> : k]: $T[k]\n}",
+              "_tag": "TypeSignatureModel"
+            },
+            "description": "Align object keys by padding with a character to a target length.  \n\nPads string keys to the specified length using the given fill character. Non-string keys (symbols, numbers) are left unchanged. Ensures consistent alignment of object keys in IDE displays.",
+            "examples": [
+              {
+                "code": "type Input = { MESSAGE: string, EXPECTED: number }\ntype Output = Obj.AlignKeys<Input, 12>\n// { MESSAGE_____: string, EXPECTED____: number }\n\n// Custom padding character\ntype Output2 = Obj.AlignKeys<Input, 12, '.'>\n// { MESSAGE.....: string, EXPECTED....: number }",
+                "twoslashEnabled": true,
+                "language": "typescript"
+              }
+            ],
+            "category": "Type Utilities  \n\n $T - The type whose keys should be aligned  $Length - The target length for padded keys  $Pad - The character to use for padding (defaults to '_')",
+            "tags": {},
+            "sourceLocation": {
+              "file": {
+                "path": {
+                  "segments": [
+                    "src",
+                    "domains",
+                    "obj"
+                  ],
+                  "_tag": "PathRelative"
+                },
+                "file": {
+                  "stem": "type",
+                  "extension": ".ts",
+                  "_tag": "File"
+                },
+                "_tag": "LocRelFile"
+              },
+              "line": 432
+            },
+            "_tag": "type",
+            "type": "type-alias"
           },
           {
             "name": "HasOptionalKeys",
@@ -27888,9 +28098,40 @@
                   "type": "union"
                 },
                 {
+                  "name": "LettersLower",
+                  "signature": {
+                    "text": "type LettersLower = [\n  'a',\n  'b',\n  'c',\n  'd',\n  'e',\n  'f',\n  'g',\n  'h',\n  'i',\n  'j',\n  'k',\n  'l',\n  'm',\n  'n',\n  'o',\n  'p',\n  'q',\n  'r',\n  's',\n  't',\n  'u',\n  'v',\n  'w',\n  'x',\n  'y',\n  'z',\n]",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "examples": [],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "domains",
+                          "str",
+                          "char"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "char",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 41
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
                   "name": "LetterLower",
                   "signature": {
-                    "text": "type LetterLower =\n  | 'a'\n  | 'b'\n  | 'c'\n  | 'd'\n  | 'e'\n  | 'f'\n  | 'g'\n  | 'h'\n  | 'i'\n  | 'j'\n  | 'k'\n  | 'l'\n  | 'm'\n  | 'n'\n  | 'o'\n  | 'p'\n  | 'q'\n  | 'r'\n  | 's'\n  | 't'\n  | 'u'\n  | 'v'\n  | 'w'\n  | 'x'\n  | 'y'\n  | 'z'",
+                    "text": "type LetterLower = LettersLower[number]",
                     "_tag": "TypeSignatureModel"
                   },
                   "description": "Lowercase letter.",
@@ -27915,10 +28156,10 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 45
+                    "line": 74
                   },
                   "_tag": "type",
-                  "type": "union"
+                  "type": "type-alias"
                 },
                 {
                   "name": "Letter",
@@ -27948,7 +28189,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 77
+                    "line": 80
                   },
                   "_tag": "type",
                   "type": "union"
@@ -27981,7 +28222,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 83
+                    "line": 86
                   },
                   "_tag": "type",
                   "type": "union"
@@ -28014,7 +28255,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 94
+                    "line": 97
                   },
                   "_tag": "type",
                   "type": "union"
@@ -28047,7 +28288,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 105
+                    "line": 108
                   },
                   "_tag": "type",
                   "type": "union"
@@ -28080,7 +28321,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 115
+                    "line": 118
                   },
                   "_tag": "type",
                   "type": "union"
@@ -28113,7 +28354,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 128
+                    "line": 131
                   },
                   "_tag": "type",
                   "type": "union"
@@ -28146,7 +28387,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 144
+                    "line": 147
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28179,7 +28420,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 152
+                    "line": 155
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28212,7 +28453,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 159
+                    "line": 162
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28245,7 +28486,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 167
+                    "line": 170
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28278,7 +28519,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 175
+                    "line": 178
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28309,7 +28550,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 186
+                    "line": 189
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28342,7 +28583,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 194
+                    "line": 197
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28375,7 +28616,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 202
+                    "line": 205
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28408,7 +28649,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 210
+                    "line": 213
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28441,7 +28682,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 218
+                    "line": 221
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28474,7 +28715,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 226
+                    "line": 229
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28507,7 +28748,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 234
+                    "line": 237
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28540,7 +28781,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 242
+                    "line": 245
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28573,7 +28814,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 250
+                    "line": 253
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28606,7 +28847,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 258
+                    "line": 261
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28639,7 +28880,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 266
+                    "line": 269
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28672,7 +28913,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 274
+                    "line": 277
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28705,7 +28946,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 282
+                    "line": 285
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28738,7 +28979,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 290
+                    "line": 293
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28771,7 +29012,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 298
+                    "line": 301
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28804,7 +29045,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 306
+                    "line": 309
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28837,7 +29078,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 314
+                    "line": 317
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28870,7 +29111,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 322
+                    "line": 325
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28903,7 +29144,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 330
+                    "line": 333
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28936,7 +29177,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 338
+                    "line": 341
                   },
                   "_tag": "value",
                   "type": "const"
@@ -28969,7 +29210,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 345
+                    "line": 348
                   },
                   "_tag": "value",
                   "type": "const"
@@ -29002,7 +29243,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 352
+                    "line": 355
                   },
                   "_tag": "value",
                   "type": "const"
@@ -29035,7 +29276,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 359
+                    "line": 362
                   },
                   "_tag": "value",
                   "type": "const"
@@ -29068,7 +29309,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 366
+                    "line": 369
                   },
                   "_tag": "value",
                   "type": "const"
@@ -29101,7 +29342,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 373
+                    "line": 376
                   },
                   "_tag": "value",
                   "type": "const"
@@ -29134,7 +29375,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 380
+                    "line": 383
                   },
                   "_tag": "value",
                   "type": "const"
@@ -29167,7 +29408,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 387
+                    "line": 390
                   },
                   "_tag": "value",
                   "type": "const"
@@ -43008,7 +43249,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "description": "Type-level assertion utilities for testing type correctness.  \n\n## Choosing the Right Assertion  \n\n**Structural Equality (`exact`)**: Use when types must be structurally identical \n\n```ts\nexact<string, string>           // ✓ Pass\nexact<1 | 2, 2 | 1>             // ✓ Pass (union order doesn't affect structure)\nexact<string & {}, string>      // ✗ Fail (different structure)\n\n```\n\n **Mutual Assignability (`equiv`)**: Use for semantically equal types \n\n```ts\nequiv<1 | 2, 2 | 1>             // ✓ Pass (same computed type)\nequiv<string & {}, string>      // ✓ Pass (both compute to string)\nequiv<string, number>           // ✗ Fail (not mutually assignable)\n\n```\n\n **Subtype Checking (`sub`)**: Use when actual must extend expected \n\n```ts\nsub<string, 'hello'>            // ✓ Pass ('hello' extends string)\nsub<object, { a: 1 }>           // ✓ Pass (more specific extends less specific)\nsub<'hello', string>            // ✗ Fail (string doesn't extend 'hello')\n\n```\n\n **Excess Property Detection**: Add `NoExcess` suffix to catch typos \n\n```ts\nsub<Config>()({ id: true, extra: 1 })         // ✓ Pass (sub allows excess)\nsubNoExcess<Config>()({ id: true, extra: 1 }) // ✗ Fail (catches typo!)\n\n```\n\n **Negative Assertions (`Not`)**: Assert types are NOT related \n\n```ts\nNot.exact<string, number>       // ✓ Pass (they're different)\nNot.sub<number, string>         // ✓ Pass (string doesn't extend number)\nNot.promise<number>             // ✓ Pass (number is not a Promise)\n\n```\n\n ## Configuration  \n\nAssertion behavior can be configured via global settings. See KitLibrarySettings.Ts.Test.Settings for available options.",
+              "description": "Type-level assertion utilities for testing type correctness.  \n\n## Choosing the Right Assertion  \n\n**Structural Equality (`exact`)**: Use when types must be structurally identical \n\n```ts\nexact<string, string>           // ✓ Pass\nexact<1 | 2, 2 | 1>             // ✓ Pass (union order doesn't affect structure)\nexact<string & {}, string>      // ✗ Fail (different structure)\n\n```\n\n **Mutual Assignability (`equiv`)**: Use for semantically equal types \n\n```ts\nequiv<1 | 2, 2 | 1>             // ✓ Pass (same computed type)\nequiv<string & {}, string>      // ✓ Pass (both compute to string)\nequiv<string, number>           // ✗ Fail (not mutually assignable)\n\n```\n\n **Subtype Checking (`sub`)**: Use when actual must extend expected \n\n```ts\nsub<string, 'hello'>            // ✓ Pass ('hello' extends string)\nsub<object, { a: 1 }>           // ✓ Pass (more specific extends less specific)\nsub<'hello', string>            // ✗ Fail (string doesn't extend 'hello')\n\n```\n\n **Excess Property Detection**: Add `NoExcess` suffix to catch typos \n\n```ts\nsub<Config>()({ id: true, extra: 1 })         // ✓ Pass (sub allows excess)\nsubNoExcess<Config>()({ id: true, extra: 1 }) // ✗ Fail (catches typo!)\n\n```\n\n **Negative Assertions (`Not`)**: Assert types are NOT related \n\n```ts\nNot.exact<string, number>       // ✓ Pass (they're different)\nNot.sub<number, string>         // ✓ Pass (string doesn't extend number)\nNot.promise<number>             // ✓ Pass (number is not a Promise)\n\n```\n\n ## Type-Level Diff  \n\nWhen comparing object types, failed assertions automatically include a `diff` field with structured information about the differences: - **missing** - Properties in Expected but not in Actual - **excess** - Properties in Actual but not in Expected - **mismatched** - Properties in both types but with different types  \n\n```ts\ntype Expected = {\n  id: string\n  name: string\n  age: number\n}\n\ntype Actual = {\n  id: number        // Mismatched - different type\n  name: string      // Same\n  email: string     // Excess - not in Expected\n}\n\nexact<Expected, Actual>() // Error includes:\n// diff: {\n//   missing: { age: number }\n//   excess: { email: string }\n//   mismatched: { id: { expected: string, actual: number } }\n// }\n\n```\n\n The diff helps identify exactly what's different without mentally comparing complex type structures. It clearly separates missing properties, excess properties, and properties that exist in both types but have incompatible types.  \n\n## Configuration  \n\nAssertion behavior can be configured via global settings. See KitLibrarySettings.Ts.Test.Settings for available options.",
               "exports": [
                 {
                   "name": "exact",
@@ -43016,10 +43257,10 @@
                     "text": "type exact<$Expected, $Actual> = Apply<ExactKind, [$Expected, $Actual]>",
                     "_tag": "TypeSignatureModel"
                   },
-                  "description": "Assert that two types are exactly equal (structurally).  \n\nUses a conditional type inference trick to check exact structural equality, correctly handling any, never, and unknown edge cases.  \n\nThis checks for structural equality - types must have the same structure, not just compute to the same result. For mutual assignability, use equiv.  \n\nWhen types are equivalent but not exact (mutually assignable), provides a helpful error suggesting to use equiv(). For other mismatches, TypeScript's native error messages show the specific structural differences.",
+                  "description": "Assert that two types are exactly equal (structurally).  \n\nUses a conditional type inference trick to check exact structural equality, correctly handling any, never, and unknown edge cases.  \n\nThis checks for structural equality - types must have the same structure, not just compute to the same result. For mutual assignability, use equiv.  \n\nWhen types are equivalent but not exact (mutually assignable), provides a helpful error suggesting to use equiv(). For object type mismatches, includes a `diff` field with `missing`, `excess`, and `mismatched` properties showing exactly what differs.",
                   "examples": [
                     {
-                      "code": "type _ = Ts.Test.Cases<\n  Ts.Test.exact<string, string>,           // ✓ Pass\n  Ts.Test.exact<string | number, string>,  // ✗ Fail - TypeScript shows mismatch\n  Ts.Test.exact<{ a: 1 }, { a: 1 }>,       // ✓ Pass\n  Ts.Test.exact<any, unknown>,             // ✗ Fail - TypeScript shows mismatch\n  Ts.Test.exact<1 | 2, 2 | 1>              // ✗ Fail with tip - types are equivalent but not structurally equal\n>",
+                      "code": "type _ = Ts.Test.Cases<\n  Ts.Test.exact<string, string>,           // ✓ Pass\n  Ts.Test.exact<string | number, string>,  // ✗ Fail - TypeScript shows mismatch\n  Ts.Test.exact<{ a: 1 }, { a: 1 }>,       // ✓ Pass\n  Ts.Test.exact<any, unknown>,             // ✗ Fail - TypeScript shows mismatch\n  Ts.Test.exact<1 | 2, 2 | 1>,             // ✗ Fail with tip - types are equivalent but not structurally equal\n  Ts.Test.exact<{ a: 1 }, { a: 2, b: 3 }>, // ✗ Fail - diff shows missing: { a: 1 }, excess: { a: 2, b: 3 }\n>",
                       "twoslashEnabled": true,
                       "language": "typescript"
                     }
@@ -43043,7 +43284,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 65
+                    "line": 66
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -43054,10 +43295,10 @@
                     "text": "type exact<$Expected, $Actual> = Apply<ExactKind, [$Expected, $Actual]>",
                     "_tag": "TypeSignatureModel"
                   },
-                  "description": "Assert that two types are exactly equal (structurally).  \n\nUses a conditional type inference trick to check exact structural equality, correctly handling any, never, and unknown edge cases.  \n\nThis checks for structural equality - types must have the same structure, not just compute to the same result. For mutual assignability, use equiv.  \n\nWhen types are equivalent but not exact (mutually assignable), provides a helpful error suggesting to use equiv(). For other mismatches, TypeScript's native error messages show the specific structural differences.",
+                  "description": "Assert that two types are exactly equal (structurally).  \n\nUses a conditional type inference trick to check exact structural equality, correctly handling any, never, and unknown edge cases.  \n\nThis checks for structural equality - types must have the same structure, not just compute to the same result. For mutual assignability, use equiv.  \n\nWhen types are equivalent but not exact (mutually assignable), provides a helpful error suggesting to use equiv(). For object type mismatches, includes a `diff` field with `missing`, `excess`, and `mismatched` properties showing exactly what differs.",
                   "examples": [
                     {
-                      "code": "type _ = Ts.Test.Cases<\n  Ts.Test.exact<string, string>,           // ✓ Pass\n  Ts.Test.exact<string | number, string>,  // ✗ Fail - TypeScript shows mismatch\n  Ts.Test.exact<{ a: 1 }, { a: 1 }>,       // ✓ Pass\n  Ts.Test.exact<any, unknown>,             // ✗ Fail - TypeScript shows mismatch\n  Ts.Test.exact<1 | 2, 2 | 1>              // ✗ Fail with tip - types are equivalent but not structurally equal\n>",
+                      "code": "type _ = Ts.Test.Cases<\n  Ts.Test.exact<string, string>,           // ✓ Pass\n  Ts.Test.exact<string | number, string>,  // ✗ Fail - TypeScript shows mismatch\n  Ts.Test.exact<{ a: 1 }, { a: 1 }>,       // ✓ Pass\n  Ts.Test.exact<any, unknown>,             // ✗ Fail - TypeScript shows mismatch\n  Ts.Test.exact<1 | 2, 2 | 1>,             // ✗ Fail with tip - types are equivalent but not structurally equal\n  Ts.Test.exact<{ a: 1 }, { a: 2, b: 3 }>, // ✗ Fail - diff shows missing: { a: 1 }, excess: { a: 2, b: 3 }\n>",
                       "twoslashEnabled": true,
                       "language": "typescript"
                     }
@@ -43081,7 +43322,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 65
+                    "line": 66
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -43553,6 +43794,82 @@
                   "type": "type-alias"
                 },
                 {
+                  "name": "equalNever",
+                  "signature": {
+                    "text": "type equalNever<$Actual> = Apply<EqualNeverKind, [$Actual]>",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "Assert that a type is exactly `never`.",
+                  "examples": [
+                    {
+                      "code": "type _ = Ts.Test.Cases<\n  Ts.Test.equalNever<never>,  // ✓ Pass\n  Ts.Test.equalNever<string>  // ✗ Fail - Type error\n>",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "ts",
+                          "test"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "never",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 32
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "equalNeverType",
+                  "signature": {
+                    "text": "type equalNever<$Actual> = Apply<EqualNeverKind, [$Actual]>",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "Assert that a type is exactly `never`.",
+                  "examples": [
+                    {
+                      "code": "type _ = Ts.Test.Cases<\n  Ts.Test.equalNever<never>,  // ✓ Pass\n  Ts.Test.equalNever<string>  // ✗ Fail - Type error\n>",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "ts",
+                          "test"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "never",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 32
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
                   "name": "equalAny",
                   "signature": {
                     "text": "type equalAny<$Actual> = Apply<EqualAnyKind, [$Actual]>",
@@ -43579,13 +43896,127 @@
                         "_tag": "PathRelative"
                       },
                       "file": {
-                        "stem": "special-types",
+                        "stem": "any",
                         "extension": ".ts",
                         "_tag": "File"
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 82
+                    "line": 37
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "equalAnyType",
+                  "signature": {
+                    "text": "type equalAny<$Actual> = Apply<EqualAnyKind, [$Actual]>",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "Assert that a type is exactly `any`.  \n\nUses the `0 extends 1 & T` trick to detect `any`.",
+                  "examples": [
+                    {
+                      "code": "type _ = Ts.Test.Cases<\n  Ts.Test.equalAny<any>,      // ✓ Pass\n  Ts.Test.equalAny<unknown>,  // ✗ Fail - Type error\n  Ts.Test.equalAny<string>    // ✗ Fail - Type error\n>",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "ts",
+                          "test"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "any",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 37
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "equalUnknown",
+                  "signature": {
+                    "text": "type equalUnknown<$Actual> = Apply<EqualUnknownKind, [$Actual]>",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "Assert that a type is exactly `unknown`.",
+                  "examples": [
+                    {
+                      "code": "type _ = Ts.Test.Cases<\n  Ts.Test.equalUnknown<unknown>,  // ✓ Pass\n  Ts.Test.equalUnknown<any>,      // ✗ Fail - Type error\n  Ts.Test.equalUnknown<string>    // ✗ Fail - Type error\n>",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "ts",
+                          "test"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "unknown",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 39
+                  },
+                  "_tag": "type",
+                  "type": "type-alias"
+                },
+                {
+                  "name": "equalUnknownType",
+                  "signature": {
+                    "text": "type equalUnknown<$Actual> = Apply<EqualUnknownKind, [$Actual]>",
+                    "_tag": "TypeSignatureModel"
+                  },
+                  "description": "Assert that a type is exactly `unknown`.",
+                  "examples": [
+                    {
+                      "code": "type _ = Ts.Test.Cases<\n  Ts.Test.equalUnknown<unknown>,  // ✓ Pass\n  Ts.Test.equalUnknown<any>,      // ✗ Fail - Type error\n  Ts.Test.equalUnknown<string>    // ✗ Fail - Type error\n>",
+                      "twoslashEnabled": true,
+                      "language": "typescript"
+                    }
+                  ],
+                  "tags": {},
+                  "sourceLocation": {
+                    "file": {
+                      "path": {
+                        "segments": [
+                          "src",
+                          "utils",
+                          "ts",
+                          "test"
+                        ],
+                        "_tag": "PathRelative"
+                      },
+                      "file": {
+                        "stem": "unknown",
+                        "extension": ".ts",
+                        "_tag": "File"
+                      },
+                      "_tag": "LocRelFile"
+                    },
+                    "line": 39
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -43623,121 +44054,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 183
-                  },
-                  "_tag": "type",
-                  "type": "type-alias"
-                },
-                {
-                  "name": "equalNever",
-                  "signature": {
-                    "text": "type equalNever<$Actual> = Apply<EqualNeverKind, [$Actual]>",
-                    "_tag": "TypeSignatureModel"
-                  },
-                  "description": "Assert that a type is exactly `never`.",
-                  "examples": [
-                    {
-                      "code": "type _ = Ts.Test.Cases<\n  Ts.Test.equalNever<never>,  // ✓ Pass\n  Ts.Test.equalNever<string>  // ✗ Fail - Type error\n>",
-                      "twoslashEnabled": true,
-                      "language": "typescript"
-                    }
-                  ],
-                  "tags": {},
-                  "sourceLocation": {
-                    "file": {
-                      "path": {
-                        "segments": [
-                          "src",
-                          "utils",
-                          "ts",
-                          "test"
-                        ],
-                        "_tag": "PathRelative"
-                      },
-                      "file": {
-                        "stem": "special-types",
-                        "extension": ".ts",
-                        "_tag": "File"
-                      },
-                      "_tag": "LocRelFile"
-                    },
-                    "line": 33
-                  },
-                  "_tag": "type",
-                  "type": "type-alias"
-                },
-                {
-                  "name": "equalUnknown",
-                  "signature": {
-                    "text": "type equalUnknown<$Actual> = Apply<EqualUnknownKind, [$Actual]>",
-                    "_tag": "TypeSignatureModel"
-                  },
-                  "description": "Assert that a type is exactly `unknown`.",
-                  "examples": [
-                    {
-                      "code": "type _ = Ts.Test.Cases<\n  Ts.Test.equalUnknown<unknown>,  // ✓ Pass\n  Ts.Test.equalUnknown<any>,      // ✗ Fail - Type error\n  Ts.Test.equalUnknown<string>    // ✗ Fail - Type error\n>",
-                      "twoslashEnabled": true,
-                      "language": "typescript"
-                    }
-                  ],
-                  "tags": {},
-                  "sourceLocation": {
-                    "file": {
-                      "path": {
-                        "segments": [
-                          "src",
-                          "utils",
-                          "ts",
-                          "test"
-                        ],
-                        "_tag": "PathRelative"
-                      },
-                      "file": {
-                        "stem": "special-types",
-                        "extension": ".ts",
-                        "_tag": "File"
-                      },
-                      "_tag": "LocRelFile"
-                    },
-                    "line": 133
-                  },
-                  "_tag": "type",
-                  "type": "type-alias"
-                },
-                {
-                  "name": "equalAnyType",
-                  "signature": {
-                    "text": "type equalAny<$Actual> = Apply<EqualAnyKind, [$Actual]>",
-                    "_tag": "TypeSignatureModel"
-                  },
-                  "description": "Assert that a type is exactly `any`.  \n\nUses the `0 extends 1 & T` trick to detect `any`.",
-                  "examples": [
-                    {
-                      "code": "type _ = Ts.Test.Cases<\n  Ts.Test.equalAny<any>,      // ✓ Pass\n  Ts.Test.equalAny<unknown>,  // ✗ Fail - Type error\n  Ts.Test.equalAny<string>    // ✗ Fail - Type error\n>",
-                      "twoslashEnabled": true,
-                      "language": "typescript"
-                    }
-                  ],
-                  "tags": {},
-                  "sourceLocation": {
-                    "file": {
-                      "path": {
-                        "segments": [
-                          "src",
-                          "utils",
-                          "ts",
-                          "test"
-                        ],
-                        "_tag": "PathRelative"
-                      },
-                      "file": {
-                        "stem": "special-types",
-                        "extension": ".ts",
-                        "_tag": "File"
-                      },
-                      "_tag": "LocRelFile"
-                    },
-                    "line": 82
+                    "line": 39
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -43775,83 +44092,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 183
-                  },
-                  "_tag": "type",
-                  "type": "type-alias"
-                },
-                {
-                  "name": "equalNeverType",
-                  "signature": {
-                    "text": "type equalNever<$Actual> = Apply<EqualNeverKind, [$Actual]>",
-                    "_tag": "TypeSignatureModel"
-                  },
-                  "description": "Assert that a type is exactly `never`.",
-                  "examples": [
-                    {
-                      "code": "type _ = Ts.Test.Cases<\n  Ts.Test.equalNever<never>,  // ✓ Pass\n  Ts.Test.equalNever<string>  // ✗ Fail - Type error\n>",
-                      "twoslashEnabled": true,
-                      "language": "typescript"
-                    }
-                  ],
-                  "tags": {},
-                  "sourceLocation": {
-                    "file": {
-                      "path": {
-                        "segments": [
-                          "src",
-                          "utils",
-                          "ts",
-                          "test"
-                        ],
-                        "_tag": "PathRelative"
-                      },
-                      "file": {
-                        "stem": "special-types",
-                        "extension": ".ts",
-                        "_tag": "File"
-                      },
-                      "_tag": "LocRelFile"
-                    },
-                    "line": 33
-                  },
-                  "_tag": "type",
-                  "type": "type-alias"
-                },
-                {
-                  "name": "equalUnknownType",
-                  "signature": {
-                    "text": "type equalUnknown<$Actual> = Apply<EqualUnknownKind, [$Actual]>",
-                    "_tag": "TypeSignatureModel"
-                  },
-                  "description": "Assert that a type is exactly `unknown`.",
-                  "examples": [
-                    {
-                      "code": "type _ = Ts.Test.Cases<\n  Ts.Test.equalUnknown<unknown>,  // ✓ Pass\n  Ts.Test.equalUnknown<any>,      // ✗ Fail - Type error\n  Ts.Test.equalUnknown<string>    // ✗ Fail - Type error\n>",
-                      "twoslashEnabled": true,
-                      "language": "typescript"
-                    }
-                  ],
-                  "tags": {},
-                  "sourceLocation": {
-                    "file": {
-                      "path": {
-                        "segments": [
-                          "src",
-                          "utils",
-                          "ts",
-                          "test"
-                        ],
-                        "_tag": "PathRelative"
-                      },
-                      "file": {
-                        "stem": "special-types",
-                        "extension": ".ts",
-                        "_tag": "File"
-                      },
-                      "_tag": "LocRelFile"
-                    },
-                    "line": 133
+                    "line": 39
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -44543,7 +44784,7 @@
                 {
                   "name": "Not",
                   "signature": {
-                    "text": "export namespace Not {\n  //\n  //\n  //\n  //\n  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • NotExact Assertion\n  //\n  //\n  //\n  //\n\n  /**\n   * NotExact assertion kind - checks that types are NOT exactly equal.\n   *\n   * Part of the Higher-Kinded Types (HKT) pattern. See {@link helpers.ts} for detailed explanation.\n   *\n   * Parameters: [$A, $B]\n   * Returns: never if types are NOT exactly equal, otherwise StaticErrorAssertion\n   */\n  interface NotExactKind {\n    parameters: [$A: unknown, $B: unknown]\n    // dprint-ignore\n    return:\n      IsExact<this['parameters'][0], this['parameters'][1]> extends true\n        ? StaticErrorAssertion<\n            'Types are exactly equal but should not be',\n            this['parameters'][0],\n            this['parameters'][1]\n          >\n        : never\n  }\n\n  /**\n   * Assert that two types are NOT exactly equal.\n   *\n   * @example\n   * ```ts\n   * type _ = Ts.Test.Cases<\n   *   Ts.Test.Not.exact<string, number>,          // ✓ Pass\n   *   Ts.Test.Not.exact<1 | 2, 2 | 1>,            // ✗ Fail - they are exactly equal\n   *   Ts.Test.Not.exact<string & {}, string>      // ✓ Pass - different structure\n   * >\n   * ```\n   */\n  export type exact<$A, $B> = Apply<NotExactKind, [$A, $B]>\n\n  /**\n   * Assert that two types are NOT exactly equal at runtime.\n   *\n   * Type-level equivalent: {@link exact}\n   *\n   * @example\n   * ```ts\n   * // Value mode\n   * const x: string = 'hello'\n   * const y: number = 42\n   * Ts.Test.Not.exact<typeof x, typeof y>()  // ✓ Pass\n   *\n   * // Type-only mode\n   * Ts.Test.Not.exact<string, number>()  // ✓ Pass\n   * ```\n   */\n  export const exact: AssertionFn<NotExactKind> = runtime\n\n  //\n  //\n  //\n  //\n  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • NotSub Assertion\n  //\n  //\n  //\n  //\n\n  /**\n   * NotSub assertion kind - checks that type does NOT extend another.\n   *\n   * Part of the Higher-Kinded Types (HKT) pattern. See {@link helpers.ts} for detailed explanation.\n   *\n   * Parameters: [$A, $B]\n   * Returns: never if $B does NOT extend $A, otherwise StaticErrorAssertion\n   */\n  interface NotSubKind {\n    parameters: [$A: unknown, $B: unknown]\n    // dprint-ignore\n    return:\n      this['parameters'][1] extends this['parameters'][0]\n        ? StaticErrorAssertion<\n            'Type extends the type it should not extend',\n            this['parameters'][0],\n            this['parameters'][1]\n          >\n        : never\n  }\n\n  /**\n   * Assert that a type does NOT extend another type.\n   *\n   * @example\n   * ```ts\n   * type _ = Ts.Test.Cases<\n   *   Ts.Test.Not.sub<string, number>,     // ✓ Pass - number doesn't extend string\n   *   Ts.Test.Not.sub<string, 'hello'>,    // ✗ Fail - 'hello' extends string\n   *   Ts.Test.Not.sub<object, { a: 1 }>    // ✗ Fail - { a: 1 } extends object\n   * >\n   * ```\n   */\n  export type sub<$A, $B> = Apply<NotSubKind, [$A, $B]>\n\n  /**\n   * Assert that a value's type does NOT extend another type at runtime.\n   *\n   * Type-level equivalent: {@link sub}\n   *\n   * @example\n   * ```ts\n   * // Value mode\n   * const x = 42\n   * Ts.Test.Not.sub<string>()(x)  // ✓ Pass - number doesn't extend string\n   *\n   * // Type-only mode\n   * Ts.Test.Not.sub<string, number>()  // ✓ Pass\n   * ```\n   */\n  export const sub: AssertionFn<NotSubKind> = runtime\n\n  //\n  //\n  //\n  //\n  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • NotEquiv Assertion\n  //\n  //\n  //\n  //\n\n  /**\n   * NotEquiv assertion kind - checks that types are NOT mutually assignable.\n   *\n   * Part of the Higher-Kinded Types (HKT) pattern. See {@link helpers.ts} for detailed explanation.\n   *\n   * Parameters: [$A, $B]\n   * Returns: never if types are NOT equivalent, otherwise StaticErrorAssertion\n   */\n  interface NotEquivKind {\n    parameters: [$A: unknown, $B: unknown]\n    // dprint-ignore\n    return:\n      GetRelation<this['parameters'][0], this['parameters'][1]> extends 'equivalent'\n        ? StaticErrorAssertion<\n            'Types are equivalent (mutually assignable) but should not be',\n            this['parameters'][0],\n            this['parameters'][1]\n          >\n        : never\n  }\n\n  /**\n   * Assert that two types are NOT equivalent (mutually assignable).\n   *\n   * @example\n   * ```ts\n   * type _ = Ts.Test.Cases<\n   *   Ts.Test.Not.equiv<string, number>,      // ✓ Pass\n   *   Ts.Test.Not.equiv<string, 'hello'>,     // ✓ Pass - 'hello' is subtype, not equivalent\n   *   Ts.Test.Not.equiv<string & {}, string>  // ✗ Fail - they are equivalent\n   * >\n   * ```\n   */\n  export type equiv<$A, $B> = Apply<NotEquivKind, [$A, $B]>\n\n  /**\n   * Assert that two types are NOT equivalent at runtime.\n   *\n   * Type-level equivalent: {@link equiv}\n   *\n   * @example\n   * ```ts\n   * // Value mode\n   * const x: string = 'hello'\n   * const y: number = 42\n   * Ts.Test.Not.equiv<typeof x, typeof y>()  // ✓ Pass\n   *\n   * // Type-only mode\n   * Ts.Test.Not.equiv<string, number>()  // ✓ Pass\n   * ```\n   */\n  export const equiv: AssertionFn<NotEquivKind> = runtime\n\n  //\n  //\n  //\n  //\n  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • NotPromise Assertion\n  //\n  //\n  //\n  //\n\n  /**\n   * NotPromise assertion kind - checks that type is NOT a Promise.\n   *\n   * Part of the Higher-Kinded Types (HKT) pattern. See {@link helpers.ts} for detailed explanation.\n   *\n   * Parameters: [$Actual]\n   * Returns: never if $Actual is NOT a Promise, otherwise StaticErrorAssertion\n   */\n  interface NotPromiseKind {\n    parameters: [$Actual: unknown]\n    // dprint-ignore\n    return:\n      this['parameters'][0] extends Promise<any>\n        ? StaticErrorAssertion<\n            'Type is a Promise but should not be',\n            'not a Promise',\n            this['parameters'][0]\n          >\n        : never\n  }\n\n  /**\n   * Assert that a type is NOT a Promise.\n   *\n   * @example\n   * ```ts\n   * type _ = Ts.Test.Cases<\n   *   Ts.Test.Not.promise<number>,          // ✓ Pass\n   *   Ts.Test.Not.promise<Promise<number>>  // ✗ Fail - Type error\n   * >\n   * ```\n   */\n  export type promise<$Actual> = Apply<NotPromiseKind, [$Actual]>\n\n  /**\n   * Assert that a value is NOT a Promise at runtime.\n   *\n   * Type-level equivalent: {@link promise}\n   *\n   * @example\n   * ```ts\n   * // Value mode\n   * Ts.Test.Not.promise()(42)  // ✓ Pass\n   * Ts.Test.Not.promise()(Promise.resolve(42))  // ✗ Fail\n   *\n   * // Type-only mode\n   * Ts.Test.Not.promise<number>()  // ✓ Pass\n   * Ts.Test.Not.promise<Promise<number>>()  // ✗ Fail\n   * ```\n   */\n  export const promise: UnaryAssertionFn<NotPromiseKind> = runtimeUnary\n\n  //\n  //\n  //\n  //\n  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • NotArray Assertion\n  //\n  //\n  //\n  //\n\n  /**\n   * NotArray assertion kind - checks that type is NOT an array.\n   *\n   * Part of the Higher-Kinded Types (HKT) pattern. See {@link helpers.ts} for detailed explanation.\n   *\n   * Parameters: [$Actual]\n   * Returns: never if $Actual is NOT an array, otherwise StaticErrorAssertion\n   */\n  interface NotArrayKind {\n    parameters: [$Actual: unknown]\n    // dprint-ignore\n    return:\n      this['parameters'][0] extends any[]\n        ? StaticErrorAssertion<\n            'Type is an array but should not be',\n            'not an array',\n            this['parameters'][0]\n          >\n        : never\n  }\n\n  /**\n   * Assert that a type is NOT an array.\n   *\n   * @example\n   * ```ts\n   * type _ = Ts.Test.Cases<\n   *   Ts.Test.Not.array<string>,       // ✓ Pass\n   *   Ts.Test.Not.array<string[]>      // ✗ Fail - Type error\n   * >\n   * ```\n   */\n  export type array<$Actual> = Apply<NotArrayKind, [$Actual]>\n\n  /**\n   * Assert that a value is NOT an array at runtime.\n   *\n   * Type-level equivalent: {@link array}\n   *\n   * @example\n   * ```ts\n   * // Value mode\n   * Ts.Test.Not.array()('hello')  // ✓ Pass\n   * Ts.Test.Not.array()([1, 2, 3])  // ✗ Fail\n   *\n   * // Type-only mode\n   * Ts.Test.Not.array<string>()  // ✓ Pass\n   * Ts.Test.Not.array<string[]>()  // ✗ Fail\n   * ```\n   */\n  export const array: UnaryAssertionFn<NotArrayKind> = runtimeUnary\n}",
+                    "text": "export namespace Not {\n  //\n  //\n  //\n  //\n  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • NotExact Assertion\n  //\n  //\n  //\n  //\n\n  /**\n   * NotExact assertion kind - checks that types are NOT exactly equal.\n   *\n   * Part of the Higher-Kinded Types (HKT) pattern. See {@link helpers.ts} for detailed explanation.\n   *\n   * Parameters: [$A, $B]\n   * Returns: never if types are NOT exactly equal, otherwise StaticErrorAssertion\n   */\n  interface NotExactKind {\n    parameters: [$A: unknown, $B: unknown]\n    // dprint-ignore\n    return:\n      Relation.IsExact<this['parameters'][0], this['parameters'][1]> extends true\n        ? StaticErrorAssertion<\n            'Types are exactly equal but should not be',\n            this['parameters'][0],\n            this['parameters'][1]\n          >\n        : never\n  }\n\n  /**\n   * Assert that two types are NOT exactly equal.\n   *\n   * @example\n   * ```ts\n   * type _ = Ts.Test.Cases<\n   *   Ts.Test.Not.exact<string, number>,          // ✓ Pass\n   *   Ts.Test.Not.exact<1 | 2, 2 | 1>,            // ✗ Fail - they are exactly equal\n   *   Ts.Test.Not.exact<string & {}, string>      // ✓ Pass - different structure\n   * >\n   * ```\n   */\n  export type exact<$A, $B> = Apply<NotExactKind, [$A, $B]>\n\n  /**\n   * Assert that two types are NOT exactly equal at runtime.\n   *\n   * Type-level equivalent: {@link exact}\n   *\n   * @example\n   * ```ts\n   * // Value mode\n   * const x: string = 'hello'\n   * const y: number = 42\n   * Ts.Test.Not.exact<typeof x, typeof y>()  // ✓ Pass\n   *\n   * // Type-only mode\n   * Ts.Test.Not.exact<string, number>()  // ✓ Pass\n   * ```\n   */\n  export const exact: AssertionFn<NotExactKind> = runtime\n\n  //\n  //\n  //\n  //\n  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • NotSub Assertion\n  //\n  //\n  //\n  //\n\n  /**\n   * NotSub assertion kind - checks that type does NOT extend another.\n   *\n   * Part of the Higher-Kinded Types (HKT) pattern. See {@link helpers.ts} for detailed explanation.\n   *\n   * Parameters: [$A, $B]\n   * Returns: never if $B does NOT extend $A, otherwise StaticErrorAssertion\n   */\n  interface NotSubKind {\n    parameters: [$A: unknown, $B: unknown]\n    // dprint-ignore\n    return:\n      this['parameters'][1] extends this['parameters'][0]\n        ? StaticErrorAssertion<\n            'Type extends the type it should not extend',\n            this['parameters'][0],\n            this['parameters'][1]\n          >\n        : never\n  }\n\n  /**\n   * Assert that a type does NOT extend another type.\n   *\n   * @example\n   * ```ts\n   * type _ = Ts.Test.Cases<\n   *   Ts.Test.Not.sub<string, number>,     // ✓ Pass - number doesn't extend string\n   *   Ts.Test.Not.sub<string, 'hello'>,    // ✗ Fail - 'hello' extends string\n   *   Ts.Test.Not.sub<object, { a: 1 }>    // ✗ Fail - { a: 1 } extends object\n   * >\n   * ```\n   */\n  export type sub<$A, $B> = Apply<NotSubKind, [$A, $B]>\n\n  /**\n   * Assert that a value's type does NOT extend another type at runtime.\n   *\n   * Type-level equivalent: {@link sub}\n   *\n   * @example\n   * ```ts\n   * // Value mode\n   * const x = 42\n   * Ts.Test.Not.sub<string>()(x)  // ✓ Pass - number doesn't extend string\n   *\n   * // Type-only mode\n   * Ts.Test.Not.sub<string, number>()  // ✓ Pass\n   * ```\n   */\n  export const sub: AssertionFn<NotSubKind> = runtime\n\n  //\n  //\n  //\n  //\n  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • NotEquiv Assertion\n  //\n  //\n  //\n  //\n\n  /**\n   * NotEquiv assertion kind - checks that types are NOT mutually assignable.\n   *\n   * Part of the Higher-Kinded Types (HKT) pattern. See {@link helpers.ts} for detailed explanation.\n   *\n   * Parameters: [$A, $B]\n   * Returns: never if types are NOT equivalent, otherwise StaticErrorAssertion\n   */\n  interface NotEquivKind {\n    parameters: [$A: unknown, $B: unknown]\n    // dprint-ignore\n    return:\n      Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent\n        ? StaticErrorAssertion<\n            'Types are equivalent (mutually assignable) but should not be',\n            this['parameters'][0],\n            this['parameters'][1]\n          >\n        : never\n  }\n\n  /**\n   * Assert that two types are NOT equivalent (mutually assignable).\n   *\n   * @example\n   * ```ts\n   * type _ = Ts.Test.Cases<\n   *   Ts.Test.Not.equiv<string, number>,      // ✓ Pass\n   *   Ts.Test.Not.equiv<string, 'hello'>,     // ✓ Pass - 'hello' is subtype, not equivalent\n   *   Ts.Test.Not.equiv<string & {}, string>  // ✗ Fail - they are equivalent\n   * >\n   * ```\n   */\n  export type equiv<$A, $B> = Apply<NotEquivKind, [$A, $B]>\n\n  /**\n   * Assert that two types are NOT equivalent at runtime.\n   *\n   * Type-level equivalent: {@link equiv}\n   *\n   * @example\n   * ```ts\n   * // Value mode\n   * const x: string = 'hello'\n   * const y: number = 42\n   * Ts.Test.Not.equiv<typeof x, typeof y>()  // ✓ Pass\n   *\n   * // Type-only mode\n   * Ts.Test.Not.equiv<string, number>()  // ✓ Pass\n   * ```\n   */\n  export const equiv: AssertionFn<NotEquivKind> = runtime\n\n  //\n  //\n  //\n  //\n  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • NotPromise Assertion\n  //\n  //\n  //\n  //\n\n  /**\n   * NotPromise assertion kind - checks that type is NOT a Promise.\n   *\n   * Part of the Higher-Kinded Types (HKT) pattern. See {@link helpers.ts} for detailed explanation.\n   *\n   * Parameters: [$Actual]\n   * Returns: never if $Actual is NOT a Promise, otherwise StaticErrorAssertion\n   */\n  interface NotPromiseKind {\n    parameters: [$Actual: unknown]\n    // dprint-ignore\n    return:\n      this['parameters'][0] extends Promise<any>\n        ? StaticErrorAssertion<\n            'Type is a Promise but should not be',\n            'not a Promise',\n            this['parameters'][0]\n          >\n        : never\n  }\n\n  /**\n   * Assert that a type is NOT a Promise.\n   *\n   * @example\n   * ```ts\n   * type _ = Ts.Test.Cases<\n   *   Ts.Test.Not.promise<number>,          // ✓ Pass\n   *   Ts.Test.Not.promise<Promise<number>>  // ✗ Fail - Type error\n   * >\n   * ```\n   */\n  export type promise<$Actual> = Apply<NotPromiseKind, [$Actual]>\n\n  /**\n   * Assert that a value is NOT a Promise at runtime.\n   *\n   * Type-level equivalent: {@link promise}\n   *\n   * @example\n   * ```ts\n   * // Value mode\n   * Ts.Test.Not.promise()(42)  // ✓ Pass\n   * Ts.Test.Not.promise()(Promise.resolve(42))  // ✗ Fail\n   *\n   * // Type-only mode\n   * Ts.Test.Not.promise<number>()  // ✓ Pass\n   * Ts.Test.Not.promise<Promise<number>>()  // ✗ Fail\n   * ```\n   */\n  export const promise: UnaryAssertionFn<NotPromiseKind> = runtimeUnary\n\n  //\n  //\n  //\n  //\n  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • NotArray Assertion\n  //\n  //\n  //\n  //\n\n  /**\n   * NotArray assertion kind - checks that type is NOT an array.\n   *\n   * Part of the Higher-Kinded Types (HKT) pattern. See {@link helpers.ts} for detailed explanation.\n   *\n   * Parameters: [$Actual]\n   * Returns: never if $Actual is NOT an array, otherwise StaticErrorAssertion\n   */\n  interface NotArrayKind {\n    parameters: [$Actual: unknown]\n    // dprint-ignore\n    return:\n      this['parameters'][0] extends any[]\n        ? StaticErrorAssertion<\n            'Type is an array but should not be',\n            'not an array',\n            this['parameters'][0]\n          >\n        : never\n  }\n\n  /**\n   * Assert that a type is NOT an array.\n   *\n   * @example\n   * ```ts\n   * type _ = Ts.Test.Cases<\n   *   Ts.Test.Not.array<string>,       // ✓ Pass\n   *   Ts.Test.Not.array<string[]>      // ✗ Fail - Type error\n   * >\n   * ```\n   */\n  export type array<$Actual> = Apply<NotArrayKind, [$Actual]>\n\n  /**\n   * Assert that a value is NOT an array at runtime.\n   *\n   * Type-level equivalent: {@link array}\n   *\n   * @example\n   * ```ts\n   * // Value mode\n   * Ts.Test.Not.array()('hello')  // ✓ Pass\n   * Ts.Test.Not.array()([1, 2, 3])  // ✗ Fail\n   *\n   * // Type-only mode\n   * Ts.Test.Not.array<string>()  // ✓ Pass\n   * Ts.Test.Not.array<string[]>()  // ✗ Fail\n   * ```\n   */\n  export const array: UnaryAssertionFn<NotArrayKind> = runtimeUnary\n}",
                     "_tag": "TypeSignatureModel"
                   },
                   "description": "Namespace for negative assertions - asserting that types are NOT related in specific ways.",
@@ -44632,7 +44873,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 39
+                    "line": 40
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -44670,7 +44911,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 61
+                    "line": 62
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -44678,13 +44919,13 @@
                 {
                   "name": "StaticErrorAssertion",
                   "signature": {
-                    "text": "type StaticErrorAssertion<\n  $Message extends string = string,\n  $Expected = unknown,\n  $Actual = unknown,\n  $Tip extends string | readonly string[] = never,\n  $Meta extends Record<string, any> = {},\n> =\n  // Check if we have tips or metadata - if not, skip Simplify to avoid {} collapse\n  [keyof $Meta] extends [never]\n    ? [$Tip] extends [never]\n      ? {\n          [k in keyof { ERROR: $Message; expected: $Expected; actual: $Actual } as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:\n            { ERROR: $Message; expected: $Expected; actual: $Actual }[k]\n        }\n      : Simplify<{\n          [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & ([$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip })) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:\n            ({ ERROR: $Message; expected: $Expected; actual: $Actual } & ([$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip }))[k]\n        }>\n    : Simplify<{\n        [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta & ([$Tip] extends [never] ? {} : [$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip })) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:\n          ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta & ([$Tip] extends [never] ? {} : [$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip }))[k]\n      }>",
+                    "text": "type StaticErrorAssertion<\n  $Message extends string = string,\n  $Expected = unknown,\n  $Actual = unknown,\n  $Meta extends string | readonly string[] | Record<string, any> = never,\n> =\n  // Check what kind of $Meta we have\n  [$Meta] extends [never]\n    ? // No meta - just error, expected, actual\n      {\n        [k in keyof { ERROR: $Message; expected: $Expected; actual: $Actual } as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:\n          { ERROR: $Message; expected: $Expected; actual: $Actual }[k]\n      }\n    : [$Meta] extends [string]\n      ? // String tip - render as { tip: $Meta }\n        Simplify<{\n          [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & { tip: $Meta }) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:\n            ({ ERROR: $Message; expected: $Expected; actual: $Actual } & { tip: $Meta })[k]\n        }>\n      : [$Meta] extends [readonly string[]]\n        ? // Tuple of tips - render as { tip_a, tip_b, ... }\n          Simplify<{\n            [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & TupleToTips<$Meta>) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:\n              ({ ERROR: $Message; expected: $Expected; actual: $Actual } & TupleToTips<$Meta>)[k]\n          }>\n        : // Object - spread $Meta directly\n          Simplify<{\n            [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:\n              ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta)[k]\n          }>",
                     "_tag": "TypeSignatureModel"
                   },
-                  "description": "Represents a static assertion error at the type level, optimized for type testing.  \n\nThis is a simpler, more focused error type compared to StaticError. It's specifically designed for type assertions where you need to communicate expected vs. actual types.  \n\nSupports three forms of tips: - Single string: `StaticErrorAssertion<'msg', E, A, 'tip'>` - Tuple of strings: `StaticErrorAssertion<'msg', E, A, ['tip1', 'tip2']>` - Metadata object: `StaticErrorAssertion<'msg', E, A, never, { custom: 'data' }>`  \n\n $Message - A string literal type describing the assertion failure  $Expected - The expected type  $Actual - The actual type that was provided  $Tip - Optional tip string or tuple of tip strings  $Meta - Optional metadata object for additional context",
+                  "description": "Represents a static assertion error at the type level, optimized for type testing.  \n\nThis is a simpler, more focused error type compared to StaticError. It's specifically designed for type assertions where you need to communicate expected vs. actual types.  \n\nSupports three forms of metadata: - Single string tip: `StaticErrorAssertion<'msg', E, A, 'tip'>` - Tuple of tips: `StaticErrorAssertion<'msg', E, A, ['tip1', 'tip2']>` - Metadata object: `StaticErrorAssertion<'msg', E, A, { custom: 'data' }>` - Object with tip: `StaticErrorAssertion<'msg', E, A, { tip: 'advice', ...meta }>`  \n\n $Message - A string literal type describing the assertion failure  $Expected - The expected type  $Actual - The actual type that was provided  $Meta - Optional metadata: string tip, tuple of tips, or object with custom fields",
                   "examples": [
                     {
-                      "code": "// Simple error with message only\ntype E1 = StaticErrorAssertion<'Types mismatch', string, number>\n\n// With a single tip\ntype E2 = StaticErrorAssertion<'Types mismatch', string, number, 'Use String() to convert'>\n\n// With multiple tips\ntype E3 = StaticErrorAssertion<'Types mismatch', string, number, ['Tip 1', 'Tip 2']>\n\n// With metadata object\ntype E4 = StaticErrorAssertion<'Types mismatch', string, number, never, { operation: 'concat' }>",
+                      "code": "// Simple error with message only\ntype E1 = StaticErrorAssertion<'Types mismatch', string, number>\n\n// With a single tip\ntype E2 = StaticErrorAssertion<'Types mismatch', string, number, 'Use String() to convert'>\n\n// With multiple tips\ntype E3 = StaticErrorAssertion<'Types mismatch', string, number, ['Tip 1', 'Tip 2']>\n\n// With metadata object\ntype E4 = StaticErrorAssertion<'Types mismatch', string, number, { operation: 'concat' }>\n\n// With tip and metadata\ntype E5 = StaticErrorAssertion<'Types mismatch', string, number, { tip: 'Use String()', diff_missing: { x: number } }>",
                       "twoslashEnabled": true,
                       "language": "typescript"
                     }
@@ -44709,7 +44950,7 @@
                       },
                       "_tag": "LocRelFile"
                     },
-                    "line": 328
+                    "line": 305
                   },
                   "_tag": "type",
                   "type": "type-alias"
@@ -46156,19 +46397,12 @@
             "type": "type-alias"
           },
           {
-            "name": "IsExact",
+            "name": "Relation",
             "signature": {
-              "text": "type IsExact<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false",
+              "text": "export namespace Relation {\n  /**\n   * Type constant for equivalent relation.\n   */\n  export type equivalent = 'equivalent'\n\n  /**\n   * Type constant for subtype relation.\n   */\n  export type subtype = 'subtype'\n\n  /**\n   * Type constant for supertype relation.\n   */\n  export type supertype = 'supertype'\n\n  /**\n   * Type constant for overlapping relation.\n   */\n  export type overlapping = 'overlapping'\n\n  /**\n   * Type constant for disjoint relation.\n   */\n  export type disjoint = 'disjoint'\n\n  /**\n   * Check if two types are structurally equal (exact match).\n   *\n   * Uses a conditional type inference trick to detect exact structural equality.\n   * This is more strict than bidirectional extends (mutual assignability) as it\n   * checks the actual structure, not just compatibility.\n   *\n   * Note: This is different from {@link IsEquivalent} which only checks mutual\n   * assignability. Two types can be mutually assignable without being structurally\n   * equal (e.g., `string & {}` and `string` are equivalent but not exact).\n   *\n   * @example\n   * ```ts\n   * type T1 = Relation.IsExact<string, string> // true\n   * type T2 = Relation.IsExact<1 | 2, 2 | 1> // true (union order doesn't matter)\n   * type T3 = Relation.IsExact<string & {}, string> // false (different structure)\n   * type T4 = Relation.IsExact<any, unknown> // false\n   * type T5 = Relation.IsExact<{ a: 1 }, { a: 1 }> // true\n   * ```\n   */\n  export type IsExact<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false\n\n  /**\n   * Check if types are mutually assignable (equivalent).\n   *\n   * Returns true if A extends B AND B extends A. This means the types\n   * can be used interchangeably in assignments, though they may not\n   * have the same structure.\n   *\n   * @example\n   * ```ts\n   * type T1 = Relation.IsEquivalent<string, string> // true\n   * type T2 = Relation.IsEquivalent<1 | 2, 2 | 1> // true\n   * type T3 = Relation.IsEquivalent<string & {}, string> // true (both compute to string)\n   * type T4 = Relation.IsEquivalent<string, number> // false\n   * ```\n   */\n  export type IsEquivalent<A, B> = [A] extends [B] ? [B] extends [A] ? true : false : false\n\n  /**\n   * Check if B is a subtype of A (B extends A, B is narrower than A).\n   *\n   * @example\n   * ```ts\n   * type T1 = Relation.IsSubtype<string, 'hello'> // true ('hello' extends string)\n   * type T2 = Relation.IsSubtype<'hello', string> // false (string doesn't extend 'hello')\n   * type T3 = Relation.IsSubtype<number | string, number> // true (number extends number | string)\n   * ```\n   */\n  export type IsSubtype<A, B> = [B] extends [A] ? true : false\n\n  /**\n   * Check if B is a supertype of A (A extends B, B is wider than A).\n   *\n   * @example\n   * ```ts\n   * type T1 = Relation.IsSupertype<'hello', string> // true (string is supertype of 'hello')\n   * type T2 = Relation.IsSupertype<string, 'hello'> // false ('hello' is not supertype of string)\n   * type T3 = Relation.IsSupertype<number, number | string> // true\n   * ```\n   */\n  export type IsSupertype<A, B> = [A] extends [B] ? true : false\n\n  /**\n   * Check if types have overlapping values (their intersection is not empty).\n   *\n   * @example\n   * ```ts\n   * type T1 = Relation.IsOverlapping<{ a: 1 }, { b: 2 }> // true (can have both properties)\n   * type T2 = Relation.IsOverlapping<string, number> // false (no overlap)\n   * type T3 = Relation.IsOverlapping<{ id: 1; a: 2 }, { id: 1; b: 3 }> // true (share id)\n   * ```\n   */\n  export type IsOverlapping<A, B> = [A & B] extends [never] ? false : true\n\n  /**\n   * Check if types are disjoint (no common values).\n   *\n   * @example\n   * ```ts\n   * type T1 = Relation.IsDisjoint<string, number> // true (no common values)\n   * type T2 = Relation.IsDisjoint<{ a: 1 }, { b: 2 }> // false (can have both properties)\n   * type T3 = Relation.IsDisjoint<'a', 'b'> // true (different literals)\n   * ```\n   */\n  export type IsDisjoint<A, B> = [A & B] extends [never] ? true : false\n\n  /**\n   * Classify how the SECOND type parameter relates to the FIRST type parameter.\n   *\n   * Returns one of:\n   * - `'subtype'` - B is a subtype of A (B extends A, B is narrower/more specific than A).\n   *   See: {@link https://en.wikipedia.org/wiki/Subtyping | Subtyping on Wikipedia}\n   *\n   * - `'supertype'` - B is a supertype of A (A extends B, B is wider/more general than A).\n   *   This is the inverse of subtyping. See: {@link https://en.wikipedia.org/wiki/Subtyping#Subsumption | Subsumption}\n   *\n   * - `'equivalent'` - A and B are mutually assignable (both extend each other).\n   *   Also known as type equality in structural type systems.\n   *   See: {@link https://en.wikipedia.org/wiki/Type_system#Type_equivalence | Type Equivalence}\n   *\n   * - `'overlapping'` - Types share some possible values but neither is a subtype of the other.\n   *   Common in structural typing where types can share properties without a subtype relationship.\n   *   See: {@link https://www.typescriptlang.org/docs/handbook/type-compatibility.html | TypeScript Type Compatibility}\n   *\n   * - `'disjoint'` - Types have no values in common (their intersection is empty/never).\n   *   See: {@link https://en.wikipedia.org/wiki/Disjoint_union | Disjoint Sets Theory}\n   *\n   * @remarks\n   * This utility analyzes type relationships based on TypeScript's structural type system,\n   * where type compatibility is determined by structure rather than declaration.\n   *\n   * For more on type relations in programming languages, see:\n   * - {@link https://en.wikipedia.org/wiki/Type_theory | Type Theory on Wikipedia}\n   * - {@link https://www.cs.cornell.edu/courses/cs4110/2012fa/lectures/lecture25.pdf | Cornell CS - Subtyping}\n   * - {@link https://www.typescriptlang.org/docs/handbook/type-compatibility.html | TypeScript Handbook}\n   *\n   * @example\n   * ```ts\n   * // Read as: \"How does the second type relate to the first?\"\n   * type T1 = Relation.GetRelation<string, string> // Relation.equivalent\n   * type T2 = Relation.GetRelation<1, 1> // Relation.equivalent\n   * type T3 = Relation.GetRelation<string, number> // Relation.disjoint\n   * type T4 = Relation.GetRelation<{a: 1}, {b: 2}> // Relation.overlapping (objects can have both properties)\n   * type T5 = Relation.GetRelation<{a: 1, id: 1}, {b: 2, id: 1}> // Relation.overlapping\n   * type T6 = Relation.GetRelation<{a: 1}, {a: 1}> // Relation.equivalent\n   * type T7 = Relation.GetRelation<'a' | 'b', 'a'> // Relation.subtype ('a' is narrower than 'a' | 'b')\n   * type T8 = Relation.GetRelation<'a', 'a' | 'b'> // Relation.supertype ('a' | 'b' is wider than 'a')\n   * ```\n   */\n  // dprint-ignore\n  export type GetRelation<A, B> =\n    // First check: Are types equivalent (mutually assignable)?\n    // Using [A] extends [B] with brackets prevents union distribution - we want to check\n    // the whole union type as a single unit, not distribute over union members.\n    // Without brackets, `('a' | 'b') extends 'a'` would distribute and check each member separately.\n    [A] extends [B] ? [B] extends [A] ?\n      equivalent // Both extend each other - types are mutually assignable\n    : supertype   // A extends B but not vice versa - B is wider/supertype of A\n\n    // Second check: Is B a subtype of A?\n    : [B] extends [A] ? subtype  // B extends A - B is narrower/subtype of A\n\n    // Neither extends the other - need special handling for edge cases.\n    // TypeScript's type system treats primitive and non-primitive as fundamentally different categories.\n    // A primitive can never be the same reference as an object, making them always disjoint.\n    : A extends Lang.Primitive ?\n        B extends Lang.Primitive ?\n          // Both are primitives - check if their intersection is empty.\n          // Primitives can only overlap if they share literal values.\n          // Examples:\n          // - 'a' & 'b' = never (disjoint literals)\n          // - string & 'hello' = 'hello' (overlapping - 'hello' is in string)\n          // - string & number = never (disjoint base types)\n          [A & B] extends [never] ? disjoint : overlapping\n        : disjoint  // Primitive vs object - always disjoint (no possible overlap between value and reference types)\n\n      : B extends Lang.Primitive ? disjoint  // Object vs primitive - always disjoint\n\n      // Both are non-primitives (objects/interfaces).\n      // Objects can have overlapping properties even if neither extends the other.\n      // Example: {a: 1} and {b: 2} don't extend each other, but {a: 1, b: 2} satisfies both.\n      // We check if their intersection is never to determine if they're completely incompatible.\n      : [A & B] extends [never] ? disjoint : overlapping\n}",
               "_tag": "TypeSignatureModel"
             },
-            "description": "Check if two types are structurally equal (exact match).  \n\nUses a conditional type inference trick to detect exact structural equality. This is more strict than bidirectional extends (mutual assignability) as it checks the actual structure, not just compatibility.  \n\nNote: This is different from IsEquivalent which only checks mutual assignability. Two types can be mutually assignable without being structurally equal (e.g., `string & {}` and `string` are equivalent but not exact).",
-            "examples": [
-              {
-                "code": "type T1 = IsExact<string, string> // true\ntype T2 = IsExact<1 | 2, 2 | 1> // true (union order doesn't matter)\ntype T3 = IsExact<string & {}, string> // false (different structure)\ntype T4 = IsExact<any, unknown> // false\ntype T5 = IsExact<{ a: 1 }, { a: 1 }> // true",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
+            "examples": [],
             "tags": {},
             "sourceLocation": {
               "file": {
@@ -46187,28 +46421,12 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 30
+              "line": 10
             },
-            "_tag": "type",
-            "type": "type-alias"
-          },
-          {
-            "name": "IsEquivalent",
-            "signature": {
-              "text": "type IsEquivalent<A, B> = [A] extends [B] ? [B] extends [A] ? true : false : false",
-              "_tag": "TypeSignatureModel"
-            },
-            "description": "Check if types are mutually assignable (equivalent).  \n\nReturns true if A extends B AND B extends A. This means the types can be used interchangeably in assignments, though they may not have the same structure.",
-            "examples": [
-              {
-                "code": "type T1 = IsEquivalent<string, string> // true\ntype T2 = IsEquivalent<1 | 2, 2 | 1> // true\ntype T3 = IsEquivalent<string & {}, string> // true (both compute to string)\ntype T4 = IsEquivalent<string, number> // false",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "tags": {},
-            "sourceLocation": {
-              "file": {
+            "_tag": "value",
+            "type": "namespace",
+            "module": {
+              "location": {
                 "path": {
                   "segments": [
                     "src",
@@ -46224,195 +46442,9 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 47
-            },
-            "_tag": "type",
-            "type": "type-alias"
-          },
-          {
-            "name": "IsSubtype",
-            "signature": {
-              "text": "type IsSubtype<A, B> = [B] extends [A] ? true : false",
-              "_tag": "TypeSignatureModel"
-            },
-            "description": "Check if B is a subtype of A (B extends A, B is narrower than A).",
-            "examples": [
-              {
-                "code": "type T1 = IsSubtype<string, 'hello'> // true ('hello' extends string)\ntype T2 = IsSubtype<'hello', string> // false (string doesn't extend 'hello')\ntype T3 = IsSubtype<number | string, number> // true (number extends number | string)",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "utils",
-                    "ts"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "relation",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 59
-            },
-            "_tag": "type",
-            "type": "type-alias"
-          },
-          {
-            "name": "IsSupertype",
-            "signature": {
-              "text": "type IsSupertype<A, B> = [A] extends [B] ? true : false",
-              "_tag": "TypeSignatureModel"
-            },
-            "description": "Check if B is a supertype of A (A extends B, B is wider than A).",
-            "examples": [
-              {
-                "code": "type T1 = IsSupertype<'hello', string> // true (string is supertype of 'hello')\ntype T2 = IsSupertype<string, 'hello'> // false ('hello' is not supertype of string)\ntype T3 = IsSupertype<number, number | string> // true",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "utils",
-                    "ts"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "relation",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 71
-            },
-            "_tag": "type",
-            "type": "type-alias"
-          },
-          {
-            "name": "IsOverlapping",
-            "signature": {
-              "text": "type IsOverlapping<A, B> = [A & B] extends [never] ? false : true",
-              "_tag": "TypeSignatureModel"
-            },
-            "description": "Check if types have overlapping values (their intersection is not empty).",
-            "examples": [
-              {
-                "code": "type T1 = IsOverlapping<{ a: 1 }, { b: 2 }> // true (can have both properties)\ntype T2 = IsOverlapping<string, number> // false (no overlap)\ntype T3 = IsOverlapping<{ id: 1; a: 2 }, { id: 1; b: 3 }> // true (share id)",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "utils",
-                    "ts"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "relation",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 83
-            },
-            "_tag": "type",
-            "type": "type-alias"
-          },
-          {
-            "name": "IsDisjoint",
-            "signature": {
-              "text": "type IsDisjoint<A, B> = [A & B] extends [never] ? true : false",
-              "_tag": "TypeSignatureModel"
-            },
-            "description": "Check if types are disjoint (no common values).",
-            "examples": [
-              {
-                "code": "type T1 = IsDisjoint<string, number> // true (no common values)\ntype T2 = IsDisjoint<{ a: 1 }, { b: 2 }> // false (can have both properties)\ntype T3 = IsDisjoint<'a', 'b'> // true (different literals)",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "utils",
-                    "ts"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "relation",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 95
-            },
-            "_tag": "type",
-            "type": "type-alias"
-          },
-          {
-            "name": "GetRelation",
-            "signature": {
-              "text": "type GetRelation<A, B> =\n  // First check: Are types equivalent (mutually assignable)?\n  // Using [A] extends [B] with brackets prevents union distribution - we want to check\n  // the whole union type as a single unit, not distribute over union members.\n  // Without brackets, `('a' | 'b') extends 'a'` would distribute and check each member separately.\n  [A] extends [B] ? [B] extends [A] ?\n    'equivalent' // Both extend each other - types are mutually assignable\n  : 'supertype'   // A extends B but not vice versa - B is wider/supertype of A\n\n  // Second check: Is B a subtype of A?\n  : [B] extends [A] ? 'subtype'  // B extends A - B is narrower/subtype of A\n\n  // Neither extends the other - need special handling for edge cases.\n  // TypeScript's type system treats primitive and non-primitive as fundamentally different categories.\n  // A primitive can never be the same reference as an object, making them always disjoint.\n  : A extends Lang.Primitive ?\n      B extends Lang.Primitive ?\n        // Both are primitives - check if their intersection is empty.\n        // Primitives can only overlap if they share literal values.\n        // Examples:\n        // - 'a' & 'b' = never (disjoint literals)\n        // - string & 'hello' = 'hello' (overlapping - 'hello' is in string)\n        // - string & number = never (disjoint base types)\n        [A & B] extends [never] ? 'disjoint' : 'overlapping'\n      : 'disjoint'  // Primitive vs object - always disjoint (no possible overlap between value and reference types)\n\n    : B extends Lang.Primitive ? 'disjoint'  // Object vs primitive - always disjoint\n\n    // Both are non-primitives (objects/interfaces).\n    // Objects can have overlapping properties even if neither extends the other.\n    // Example: {a: 1} and {b: 2} don't extend each other, but {a: 1, b: 2} satisfies both.\n    // We check if their intersection is never to determine if they're completely incompatible.\n    : [A & B] extends [never] ? 'disjoint' : 'overlapping'",
-              "_tag": "TypeSignatureModel"
-            },
-            "description": "Classify how the SECOND type parameter relates to the FIRST type parameter.  \n\nReturns one of: - `'subtype'` - B is a subtype of A (B extends A, B is narrower/more specific than A).   See: https://en.wikipedia.org/wiki/Subtyping  \n\n- `'supertype'` - B is a supertype of A (A extends B, B is wider/more general than A).   This is the inverse of subtyping. See: https://en.wikipedia.org/wiki/Subtyping#Subsumption  \n\n- `'equivalent'` - A and B are mutually assignable (both extend each other).   Also known as type equality in structural type systems.   See: https://en.wikipedia.org/wiki/Type_system#Type_equivalence  \n\n- `'overlapping'` - Types share some possible values but neither is a subtype of the other.   Common in structural typing where types can share properties without a subtype relationship.   See: https://www.typescriptlang.org/docs/handbook/type-compatibility.html  \n\n- `'disjoint'` - Types have no values in common (their intersection is empty/never).   See: https://en.wikipedia.org/wiki/Disjoint_union",
-            "examples": [
-              {
-                "code": "// Read as: \"How does the second type relate to the first?\"\ntype T1 = GetRelation<string, string> // 'equivalent'\ntype T2 = GetRelation<1, 1> // 'equivalent'\ntype T3 = GetRelation<string, number> // 'disjoint'\ntype T4 = GetRelation<{a: 1}, {b: 2}> // 'overlapping' (objects can have both properties)\ntype T5 = GetRelation<{a: 1, id: 1}, {b: 2, id: 1}> // 'overlapping'\ntype T6 = GetRelation<{a: 1}, {a: 1}> // 'equivalent'\ntype T7 = GetRelation<'a' | 'b', 'a'> // 'subtype' ('a' is narrower than 'a' | 'b')\ntype T8 = GetRelation<'a', 'a' | 'b'> // 'supertype' ('a' | 'b' is wider than 'a')",
-                "twoslashEnabled": true,
-                "language": "typescript"
-              }
-            ],
-            "tags": {},
-            "sourceLocation": {
-              "file": {
-                "path": {
-                  "segments": [
-                    "src",
-                    "utils",
-                    "ts"
-                  ],
-                  "_tag": "PathRelative"
-                },
-                "file": {
-                  "stem": "relation",
-                  "extension": ".ts",
-                  "_tag": "File"
-                },
-                "_tag": "LocRelFile"
-              },
-              "line": 141
-            },
-            "_tag": "type",
-            "type": "type-alias"
+              "description": "",
+              "exports": []
+            }
           },
           {
             "name": "isTypeWith",
@@ -48356,7 +48388,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 480
+              "line": 482
             },
             "_tag": "type",
             "type": "interface"
@@ -48387,7 +48419,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 490
+              "line": 492
             },
             "_tag": "type",
             "type": "interface"
@@ -48419,7 +48451,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 524
+              "line": 526
             },
             "_tag": "value",
             "type": "class"
@@ -48451,7 +48483,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 535
+              "line": 537
             },
             "_tag": "value",
             "type": "class"
@@ -48482,7 +48514,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 544
+              "line": 546
             },
             "_tag": "value",
             "type": "const"
@@ -48527,7 +48559,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 598
+              "line": 600
             },
             "_tag": "value",
             "type": "class"
@@ -48559,7 +48591,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 613
+              "line": 615
             },
             "_tag": "value",
             "type": "class"
@@ -48590,7 +48622,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 630
+              "line": 632
             },
             "_tag": "value",
             "type": "const"
@@ -48622,7 +48654,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 639
+              "line": 641
             },
             "_tag": "value",
             "type": "class"
@@ -48654,7 +48686,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 649
+              "line": 651
             },
             "_tag": "value",
             "type": "class"
@@ -48685,7 +48717,7 @@
                 },
                 "_tag": "LocRelFile"
               },
-              "line": 663
+              "line": 665
             },
             "_tag": "value",
             "type": "const"
@@ -48696,7 +48728,7 @@
     }
   ],
   "metadata": {
-    "extractedAt": "2025-10-15T16:41:21.002Z",
+    "extractedAt": "2025-10-16T01:36:14.274Z",
     "extractorVersion": "0.1.0"
   }
 }

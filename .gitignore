@@ -11,3 +11,6 @@ docs/.vitepress/cache/
 
 # Playwright MCP
 .playwright-mcp/
+
+# Local Netlify folder
+.netlify

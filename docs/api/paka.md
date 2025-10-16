@@ -60,7 +60,7 @@ export * as Utils from './utils.js'
  *
  * @category Utilities
  */
-export namespace Utils { }
+export namespace Utils {}
 ```
 
 The shadow's JSDoc overrides the nested module's documentation.
@@ -89,7 +89,7 @@ Mark exports as internal to exclude them from public documentation:
  * Internal helper function
  * @internal
  */
-export const _internalHelper = () => { }
+export const _internalHelper = () => {}
 ```
 
 Always filtered when `filterInternal: true` (default in production).
@@ -99,7 +99,7 @@ Always filtered when `filterInternal: true` (default in production).
 Optionally filter exports starting with `_`:
 
 ```typescript
-export const _privateHelper = () => { } // Filtered when filterUnderscoreExports: true
+export const _privateHelper = () => {} // Filtered when filterUnderscoreExports: true
 ```
 
 Enable with `filterUnderscoreExports` option (default: `false` for backward compatibility).
@@ -169,7 +169,7 @@ Examples support TypeScript's Twoslash for inline type display:
 ````typescript
 /**
  * @example
- * 
+ *
 ```ts
  * const result = add(1, 2)  // hover shows: const result: number
  * ```
@@ -181,7 +181,7 @@ Disable per-example with `@twoslash-disable`:
 ````typescript
 /**
  * @example
- * 
+ *
 ```ts
  * // @twoslash-disable
  * const pseudocode = "not real TypeScript"

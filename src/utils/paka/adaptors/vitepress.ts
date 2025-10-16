@@ -492,12 +492,37 @@ const renderExport = (exp: Export, context: Context): string => {
     ? `<SourceLink href="${context.githubUrl}/blob/main/${exp.sourceLocation.file}#L${exp.sourceLocation.line}" />`
     : ''
 
-  const signatureText = renderSignature(exp.signature)
-  const signatureDetails = renderSignatureDetails(exp.signature)
+  // Render signature - use simple signature if available, with full signature in toggle
+  let signatureSection: string
+  let signatureDetails: string
+
+  if (exp.signatureSimple) {
+    // Simple signature as primary
+    const simpleSignatureText = renderSignature(exp.signatureSimple)
+    const fullSignatureText = renderSignature(exp.signature)
+
+    signatureSection = Md.sections(
+      Md.codeFence(simpleSignatureText),
+      '<details>',
+      '<summary>Full Signature</summary>',
+      '',
+      Md.codeFence(fullSignatureText),
+      '',
+      '</details>',
+    )
+
+    // Use simple signature for parameter docs
+    signatureDetails = renderSignatureDetails(exp.signatureSimple)
+  } else {
+    // No simple signature - render normally
+    const signatureText = renderSignature(exp.signature)
+    signatureSection = Md.codeFence(signatureText)
+    signatureDetails = renderSignatureDetails(exp.signature)
+  }
 
   return Md.sections(
     heading,
-    Md.codeFence(signatureText),
+    signatureSection,
     sourceLink,
     signatureDetails,
     deprecated,

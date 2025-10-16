@@ -1,10 +1,63 @@
+import type { Obj } from '#obj'
 import type { Str } from '#str'
 import type { Simplify } from 'type-fest'
 import type { Apply, Kind } from '../kind.js'
 import type { GetPreservedTypes, GetTestSetting } from '../test-settings.js'
-import type { IsNever } from '../ts.js'
-import type { ___NoValue___, IsNoTypeArg } from './shared.js'
+import type { IsNever, SENTINEL } from '../ts.js'
 
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Unicode Symbols
+//
+//
+//
+//
+
+/**
+ * Unicode symbols for type-level error messages.
+ *
+ * These symbols provide visual cues in TypeScript error displays to quickly
+ * communicate the nature of type mismatches without relying on emoji.
+ *
+ * All symbols are text-based Unicode characters that render consistently
+ * across different environments and editors.
+ */
+
+/**
+ * Cross mark - indicates an error or type mismatch occurred.
+ * Used in error messages to denote failures or incompatibilities.
+ */
+export const CROSS = `✕`
+
+/**
+ * Warning sign - indicates a potential issue or cautionary note.
+ * Used when types are equivalent but not structurally exact.
+ */
+export const WARNING = `⚠`
+
+/**
+ * Lightning bolt - indicates type coercion or transformation.
+ * Used when automatic type conversions occur.
+ */
+export const LIGHTNING = `⚡`
+
+/**
+ * Exclusion symbol - indicates type exclusion or prohibition.
+ * Used when certain types are explicitly not allowed.
+ */
+export const EXCLUSION = `⊘`
+
+/**
+ * Empty set - indicates an empty type or no valid values.
+ * Used when a type has no inhabitants (like never in certain contexts).
+ */
+export const EMPTY_SET = `∅`
+
+//
+//
+//
 //
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Higher-Kinded Types (HKT) Pattern
 //
@@ -172,24 +225,30 @@ export type Cases<
 //
 
 /**
- * Align object keys by padding with underscores to configured length.
+ * Align object keys by padding with a character to configured length.
  *
- * Pads keys with underscores (`_`) to match the `errorKeyLength` setting from global
- * test configuration. Ensures consistent alignment of error message keys in IDE displays.
+ * Test-specific wrapper around {@link Obj.AlignKeys} that uses the `errorKeyLength`
+ * setting from global test configuration. Ensures consistent alignment of error
+ * message keys in IDE displays.
  *
  * @template $T - The type whose keys should be aligned
+ * @template $Pad - The character to use for padding (defaults to '_')
  *
  * @example
  * ```ts
- * // With errorKeyLength: 12
+ * // With errorKeyLength: 12, default padding
  * type Input = { MESSAGE: string, EXPECTED: number }
  * type Output = AlignKeys<Input>
  * // { MESSAGE_____: string, EXPECTED____: number }
+ *
+ * // Custom padding character
+ * type Output2 = AlignKeys<Input, '.'>
+ * // { MESSAGE.....: string, EXPECTED....: number }
  * ```
+ *
+ * @see {@link Obj.AlignKeys} for the general-purpose version
  */
-export type AlignKeys<$T> = {
-  [k in keyof $T as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]: $T[k]
-}
+export type AlignKeys<$T, $Pad extends string = '_'> = Obj.AlignKeys<$T, GetTestSetting<'errorKeyLength'>, $Pad>
 
 /**
  * Smart type expansion for error displays.
@@ -254,14 +313,9 @@ type BuiltInTypes =
  * ```
  */
 export type TupleToTips<$Tips extends readonly string[]> = {
-  [i in keyof $Tips as i extends `${infer __n__ extends number}` ? `tip_${Str.Char.LettersLower[__n__]}` : never]: $Tips[i]
+  [i in keyof $Tips as i extends `${infer __n__ extends number}` ? `tip_${Str.Char.LettersLower[__n__]}` : never]:
+    $Tips[i]
 }
-
-/**
- * Alphabet mapping for tip indices.
- * @internal
- */
-type Letters = Str.Char.Letter
 
 /**
  * Represents a static assertion error at the type level, optimized for type testing.
@@ -269,16 +323,16 @@ type Letters = Str.Char.Letter
  * This is a simpler, more focused error type compared to {@link StaticError}. It's specifically
  * designed for type assertions where you need to communicate expected vs. actual types.
  *
- * Supports three forms of tips:
- * - Single string: `StaticErrorAssertion<'msg', E, A, 'tip'>`
- * - Tuple of strings: `StaticErrorAssertion<'msg', E, A, ['tip1', 'tip2']>`
- * - Metadata object: `StaticErrorAssertion<'msg', E, A, never, { custom: 'data' }>`
+ * Supports three forms of metadata:
+ * - Single string tip: `StaticErrorAssertion<'msg', E, A, 'tip'>`
+ * - Tuple of tips: `StaticErrorAssertion<'msg', E, A, ['tip1', 'tip2']>`
+ * - Metadata object: `StaticErrorAssertion<'msg', E, A, { custom: 'data' }>`
+ * - Object with tip: `StaticErrorAssertion<'msg', E, A, { tip: 'advice', ...meta }>`
  *
  * @template $Message - A string literal type describing the assertion failure
  * @template $Expected - The expected type
  * @template $Actual - The actual type that was provided
- * @template $Tip - Optional tip string or tuple of tip strings
- * @template $Meta - Optional metadata object for additional context
+ * @template $Meta - Optional metadata: string tip, tuple of tips, or object with custom fields
  *
  * @example
  * ```ts
@@ -292,7 +346,10 @@ type Letters = Str.Char.Letter
  * type E3 = StaticErrorAssertion<'Types mismatch', string, number, ['Tip 1', 'Tip 2']>
  *
  * // With metadata object
- * type E4 = StaticErrorAssertion<'Types mismatch', string, number, never, { operation: 'concat' }>
+ * type E4 = StaticErrorAssertion<'Types mismatch', string, number, { operation: 'concat' }>
+ *
+ * // With tip and metadata
+ * type E5 = StaticErrorAssertion<'Types mismatch', string, number, { tip: 'Use String()', diff_missing: { x: number } }>
  * ```
  *
  * @category Error Messages
@@ -302,24 +359,32 @@ export type StaticErrorAssertion<
   $Message extends string = string,
   $Expected = unknown,
   $Actual = unknown,
-  $Tip extends string | readonly string[] = never,
-  $Meta extends Record<string, any> = {},
+  $Meta extends string | readonly string[] | Record<string, any> = never,
 > =
-  // Check if we have tips or metadata - if not, skip Simplify to avoid {} collapse
-  [keyof $Meta] extends [never]
-    ? [$Tip] extends [never]
-      ? {
-          [k in keyof { ERROR: $Message; expected: $Expected; actual: $Actual } as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
-            { ERROR: $Message; expected: $Expected; actual: $Actual }[k]
-        }
-      : Simplify<{
-          [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & ([$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip })) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
-            ({ ERROR: $Message; expected: $Expected; actual: $Actual } & ([$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip }))[k]
+  // Check what kind of $Meta we have
+  [$Meta] extends [never]
+    ? // No meta - just error, expected, actual
+      {
+        [k in keyof { ERROR: $Message; expected: $Expected; actual: $Actual } as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
+          { ERROR: $Message; expected: $Expected; actual: $Actual }[k]
+      }
+    : [$Meta] extends [string]
+      ? // String tip - render as { tip: $Meta }
+        Simplify<{
+          [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & { tip: $Meta }) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
+            ({ ERROR: $Message; expected: $Expected; actual: $Actual } & { tip: $Meta })[k]
         }>
-    : Simplify<{
-        [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta & ([$Tip] extends [never] ? {} : [$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip })) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
-          ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta & ([$Tip] extends [never] ? {} : [$Tip] extends [readonly string[]] ? TupleToTips<$Tip> : { tip: $Tip }))[k]
-      }>
+      : [$Meta] extends [readonly string[]]
+        ? // Tuple of tips - render as { tip_a, tip_b, ... }
+          Simplify<{
+            [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & TupleToTips<$Meta>) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
+              ({ ERROR: $Message; expected: $Expected; actual: $Actual } & TupleToTips<$Meta>)[k]
+          }>
+        : // Object - spread $Meta directly
+          Simplify<{
+            [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
+              ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta)[k]
+          }>
 
 //
 //
@@ -358,7 +423,7 @@ export type ResultToRestArgs<$Result> =
 export type ResultToValueErrorParams<$Result, $Expected> =
   [$Result] extends [never]  // Tuple wrapping prevents distributive conditional
     ? []  // Pass - no error params
-    : $Result extends { ERROR_______: infer __ErrorMessage__ }
+    : $Result extends { ERROR_________: infer __ErrorMessage__ }
       ? [error: __ErrorMessage__, expected: $Expected]  // Extract error message from StaticErrorAssertion
       : [error: 'Assertion failed', expected: $Expected] // Fallback
 
@@ -417,14 +482,14 @@ type NeverErrorParams<$Expected, $actual> =
 // dprint-ignore
 export type AssertionFn<$Assertion extends Kind> = <
   $Expected,
-  $Actual = ___NoValue___,
+  $Actual = SENTINEL,
 >(
   ..._:
-    IsNoTypeArg<$Actual> extends true
+    SENTINEL.Is<$Actual> extends true
       ? []  // Value mode - no args required
       : ResultToRestArgs<Apply<$Assertion, [$Expected, $Actual]>>
 ) =>
-  IsNoTypeArg<$Actual> extends true
+  SENTINEL.Is<$Actual> extends true
     ? <$actual>(
         actual: $actual,
         ...errorInfo: [
@@ -462,16 +527,16 @@ export type AssertionFn<$Assertion extends Kind> = <
  * ```
  */
 // dprint-ignore
-export type UnaryAssertionFn<$Assertion extends Kind> = <$Actual = ___NoValue___>(
+export type UnaryAssertionFn<$Assertion extends Kind> = <$Actual = SENTINEL>(
   ..._:
-    IsNoTypeArg<$Actual> extends true
+    SENTINEL.Is<$Actual> extends true
       ? []  // Value mode - no args required
       : ResultToRestArgs<Apply<$Assertion, [$Actual]>>
 ) =>
-  IsNoTypeArg<$Actual> extends true
+  SENTINEL.Is<$Actual> extends true
     ? <$actual>(
         actual: $actual,
-        ...errorInfo: [$Actual extends { ERROR_______: infer __ErrorMessage__ }
+        ...errorInfo: [$Actual extends { ERROR_________: infer __ErrorMessage__ }
           ? __ErrorMessage__
           : Apply<$Assertion, [$actual]>
         ] extends [never]
@@ -513,14 +578,14 @@ export type UnaryAssertionFn<$Assertion extends Kind> = <$Actual = ___NoValue___
 // dprint-ignore
 export type ExtractorAssertionFn<$Extractor extends Kind, $Assertion extends Kind> = <
   $Expected,
-  $Actual = ___NoValue___,
+  $Actual = SENTINEL,
 >(
   ..._:
-    IsNoTypeArg<$Actual> extends true
+    SENTINEL.Is<$Actual> extends true
       ? []  // Value mode - no args required
       : ResultToRestArgs<Apply<$Assertion, [$Expected, $Actual]>>
 ) =>
-  IsNoTypeArg<$Actual> extends true
+  SENTINEL.Is<$Actual> extends true
     ? <$Container>(
         container: $Container,
         ...errorInfo: [

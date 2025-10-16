@@ -23,6 +23,7 @@ import * as Ts from '@wollybeard/kit/ts'
 - [**`Test`**](/api/ts/test) - Type-level assertion utilities for testing type correctness. Provides compile-time type checking and assertions for tests.
 - [**`Union`**](/api/ts/union) - Utilities for working with union types at the type level.
 - [**`VariancePhantom`**](/api/ts/variance-phantom) - Phantom type helpers for controlling type variance (covariance, contravariance, invariance, bivariance).
+- [**`Relation`**](/api/ts/relation)
 
 ## Error Messages
 
@@ -73,8 +74,8 @@ type RequireString<T> = T extends string ? T : StaticError<
   'Consider using string or a string literal type'
 >
 
-type Good = RequireString<'hello'>  // 'hello'
-type Bad = RequireString<number>    // StaticError<...>
+type Good = RequireString<'hello'> // 'hello'
+type Bad = RequireString<number> // StaticError<...>
 ```
 
 ```typescript twoslash
@@ -86,13 +87,13 @@ function processString<T>(
   value: T extends string ? T : StaticError<
     'Argument must be a string',
     { ProvidedType: T }
-  >
+  >,
 ): void {
   // Implementation
 }
 
-processString('hello')  // OK
-processString(42)       // Type error with custom message
+processString('hello') // OK
+processString(42) // Type error with custom message
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StaticErrorAny`
@@ -111,43 +112,38 @@ type StaticErrorAny = StaticError<string, object, string>
 type Print<$Type, $Fallback extends string | undefined = undefined> =
   // Language base category types
   IsAny<$Type> extends true ? 'any'
-  : IsUnknown<$Type> extends true ? 'unknown'
-  : IsNever<$Type> extends true ? 'never'
-
-  // Special union type boolean which we display as boolean insead of true | false
-  : [$Type] extends [boolean] ? ([boolean] extends [$Type] ? 'boolean' : `${$Type}`)
-
-  // General unions types
-  : Union.ToTuple<$Type> extends ArrMut.Any2OrMoreRO ? _PrintUnion<Union.ToTuple<$Type>>
-
-  // Primitive and literal types
-  : $Type extends true ? 'true'
-  : $Type extends false ? 'false'
-  : $Type extends void ? ($Type extends undefined ? 'undefined' : 'void')
-  : $Type extends string ? (string extends $Type ? 'string' : `'${$Type}'`)
-  : $Type extends number ? (number extends $Type ? 'number' : `${$Type}`)
-  : $Type extends bigint ? (bigint extends $Type ? 'bigint' : `${$Type}n`)
-  : $Type extends null ? 'null'
-  : $Type extends undefined ? 'undefined'
-
-  // User-provided fallback takes precedence if type is not a primitive
-  : $Fallback extends string ? $Fallback
-
-  // Common object types and specific generic patterns
-  : $Type extends Promise<infer T> ? `Promise<${Print<T>}>`
-  : $Type extends (infer T)[] ? `Array<${Print<T>}>`
-  : $Type extends readonly (infer T)[] ? `ReadonlyArray<${Print<T>}>`
-  : $Type extends Date ? 'Date'
-  : $Type extends RegExp ? 'RegExp'
-  //
-  : $Type extends Function ? 'Function'
-  : $Type extends symbol ? 'symbol'
-
-  // General object fallback
-  : $Type extends object ? 'object'
-
-  // Ultimate fallback
-  : '?'
+    : IsUnknown<$Type> extends true ? 'unknown'
+    : IsNever<$Type> extends true ? 'never'
+    // Special union type boolean which we display as boolean insead of true | false
+    : [$Type] extends [boolean]
+      ? ([boolean] extends [$Type] ? 'boolean' : `${$Type}`)
+    // General unions types
+    : Union.ToTuple<$Type> extends ArrMut.Any2OrMoreRO
+      ? _PrintUnion<Union.ToTuple<$Type>>
+    // Primitive and literal types
+    : $Type extends true ? 'true'
+    : $Type extends false ? 'false'
+    : $Type extends void ? ($Type extends undefined ? 'undefined' : 'void')
+    : $Type extends string ? (string extends $Type ? 'string' : `'${$Type}'`)
+    : $Type extends number ? (number extends $Type ? 'number' : `${$Type}`)
+    : $Type extends bigint ? (bigint extends $Type ? 'bigint' : `${$Type}n`)
+    : $Type extends null ? 'null'
+    : $Type extends undefined ? 'undefined'
+    // User-provided fallback takes precedence if type is not a primitive
+    : $Fallback extends string ? $Fallback
+    // Common object types and specific generic patterns
+    : $Type extends Promise<infer T> ? `Promise<${Print<T>}>`
+    : $Type extends (infer T)[] ? `Array<${Print<T>}>`
+    : $Type extends readonly (infer T)[] ? `ReadonlyArray<${Print<T>}>`
+    : $Type extends Date ? 'Date'
+    : $Type extends RegExp ? 'RegExp'
+    //
+    : $Type extends Function ? 'Function'
+    : $Type extends symbol ? 'symbol'
+    // General object fallback
+    : $Type extends object ? 'object'
+    // Ultimate fallback
+    : '?'
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/print.ts#L13" />
@@ -185,7 +181,7 @@ type Message2 = `The type ${Show<'hello' | 'world'>} is not assignable`
 // Using in error messages
 type TypeError<Expected, Actual> = StaticError<
   `Type mismatch: expected ${Show<Expected>} but got ${Show<Actual>}`,
-  { Expected, Actual }
+  { Expected; Actual }
 >
 ```
 
@@ -264,9 +260,9 @@ type Valid4 = `ID: ${123n}`
 
 // Example usage in conditional types:
 type Stringify<T extends Interpolatable> = `${T}`
-type Result1 = Stringify<42>        // "42"
-type Result2 = Stringify<true>      // "true"
-type Result3 = Stringify<'hello'>   // "hello"
+type Result1 = Stringify<42> // "42"
+type Result2 = Stringify<true> // "true"
+type Result3 = Stringify<'hello'> // "hello"
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Simplify`
@@ -369,7 +365,8 @@ assertExtends<string>()(_ as typeof result)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SimplifyNullable`
 
 ```typescript
-type SimplifyNullable<$T> = null extends $T ? (Simplify<$T> & {}) | null : Simplify<$T> & {}
+type SimplifyNullable<$T> = null extends $T ? (Simplify<$T> & {}) | null
+  : Simplify<$T> & {}
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L259" />
@@ -396,10 +393,10 @@ import { Ts } from '@wollybeard/kit/ts'
 // Problem: Plain Simplify can mangle nullable unions
 type User = { name: string } & { age: number }
 type MaybeUser = User | null
-type Bad = Simplify<MaybeUser>  // May not preserve | null correctly
+type Bad = Simplify<MaybeUser> // May not preserve | null correctly
 
 // Solution: SimplifyNullable preserves the null union
-type Good = SimplifyNullable<MaybeUser>  // { name: string; age: number } | null
+type Good = SimplifyNullable<MaybeUser> // { name: string; age: number } | null
 ```
 
 ```typescript twoslash
@@ -407,19 +404,17 @@ type Good = SimplifyNullable<MaybeUser>  // { name: string; age: number } | null
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Works with non-nullable types too
-type Simple = SimplifyNullable<{ a: 1 } & { b: 2 }>  // { a: 1; b: 2 }
+type Simple = SimplifyNullable<{ a: 1 } & { b: 2 }> // { a: 1; b: 2 }
 
 // Preserves null in unions
-type Nullable = SimplifyNullable<({ a: 1 } & { b: 2 }) | null>  // { a: 1; b: 2 } | null
+type Nullable = SimplifyNullable<({ a: 1 } & { b: 2 }) | null> // { a: 1; b: 2 } | null
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExtendsExact`
 
 ```typescript
-type ExtendsExact<$Input, $Constraint> =
-  $Input extends $Constraint
-  ? $Constraint extends $Input
-  ? $Input
+type ExtendsExact<$Input, $Constraint> = $Input extends $Constraint
+  ? $Constraint extends $Input ? $Input
   : never
   : never
 ```
@@ -454,10 +449,10 @@ $B
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T1 = NotExtends<string, number>      // true (string doesn't extend number)
-type T2 = NotExtends<'hello', string>     // false ('hello' extends string)
-type T3 = NotExtends<42, number>          // false (42 extends number)
-type T4 = NotExtends<{ a: 1 }, { b: 2 }>  // true (different properties)
+type T1 = NotExtends<string, number> // true (string doesn't extend number)
+type T2 = NotExtends<'hello', string> // false ('hello' extends string)
+type T3 = NotExtends<42, number> // false (42 extends number)
+type T4 = NotExtends<{ a: 1 }, { b: 2 }> // true (different properties)
 ```
 
 ```typescript twoslash
@@ -465,10 +460,11 @@ type T4 = NotExtends<{ a: 1 }, { b: 2 }>  // true (different properties)
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Using in conditional types for optional handling
-type VarBuilderToType<$Type, $VarBuilder> =
-  $VarBuilder['required'] extends true ? Exclude<$Type, undefined> :
-  NotExtends<$VarBuilder['default'], undefined> extends true ? $Type | undefined :
-  $Type
+type VarBuilderToType<$Type, $VarBuilder> = $VarBuilder['required'] extends true
+  ? Exclude<$Type, undefined>
+  : NotExtends<$VarBuilder['default'], undefined> extends true
+    ? $Type | undefined
+  : $Type
 
 // If default is undefined, type is just $Type
 // If default is not undefined, type is $Type | undefined
@@ -479,12 +475,11 @@ type VarBuilderToType<$Type, $VarBuilder> =
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Checking for specific type exclusions
-type SafeDivide<T> = NotExtends<T, 0> extends true
-  ? number
+type SafeDivide<T> = NotExtends<T, 0> extends true ? number
   : StaticError<'Cannot divide by zero'>
 
-type Result1 = SafeDivide<5>   // number
-type Result2 = SafeDivide<0>   // StaticError<'Cannot divide by zero'>
+type Result1 = SafeDivide<5> // number
+type Result2 = SafeDivide<0> // StaticError<'Cannot divide by zero'>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Writeable`
@@ -506,13 +501,15 @@ Make all properties in an object mutable (removes readonly modifiers).
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type Readonly = { readonly x: number; readonly y: string }
-type Mutable = Writeable<Readonly>  // { x: number; y: string }
+type Mutable = Writeable<Readonly> // { x: number; y: string }
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IfExtendsElse`
 
 ```typescript
-type IfExtendsElse<$Type, $Extends, $Then, $Else> = $Type extends $Extends ? $Then : $Else
+type IfExtendsElse<$Type, $Extends, $Then, $Else> = $Type extends $Extends
+  ? $Then
+  : $Else
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L398" />
@@ -541,7 +538,9 @@ type IsNever<$Type> = [$Type] extends [never] ? true : false
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IntersectionIgnoreNeverOrAny`
 
 ```typescript
-type IntersectionIgnoreNeverOrAny<$T> = IsAny<$T> extends true ? unknown : $T extends never ? unknown : $T
+type IntersectionIgnoreNeverOrAny<$T> = IsAny<$T> extends true ? unknown
+  : $T extends never ? unknown
+  : $T
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L405" />
@@ -551,7 +550,9 @@ Intersection that ignores never and any.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `NeverOrAnyToUnknown`
 
 ```typescript
-type NeverOrAnyToUnknown<$T> = IsAny<$T> extends true ? unknown : $T extends never ? unknown : $T
+type NeverOrAnyToUnknown<$T> = IsAny<$T> extends true ? unknown
+  : $T extends never ? unknown
+  : $T
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L410" />
@@ -571,7 +572,9 @@ Any narrowable primitive type.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAndUnknownToNever`
 
 ```typescript
-type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never : IsUnknown<$T> extends true ? never : $T
+type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never
+  : IsUnknown<$T> extends true ? never
+  : $T
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L420" />
@@ -596,16 +599,17 @@ Uses the fact that `any` is the only type where `0 extends (1 & T)` is true, sin
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T1 = IsAny<any>      // true
-type T2 = IsAny<unknown>  // false
-type T3 = IsAny<string>   // false
-type T4 = IsAny<never>    // false
+type T1 = IsAny<any> // true
+type T2 = IsAny<unknown> // false
+type T3 = IsAny<string> // false
+type T4 = IsAny<never> // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsUnknown`
 
 ```typescript
-type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true) : false
+type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true)
+  : false
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L453" />
@@ -622,235 +626,10 @@ Unknown is the top type
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T1 = IsUnknown<unknown>  // true
-type T2 = IsUnknown<any>      // false
-type T3 = IsUnknown<string>   // false
-type T4 = IsUnknown<never>    // false
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsExact`
-
-```typescript
-type IsExact<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/relation.ts#L30" />
-
-Check if two types are structurally equal (exact match).
-
-Uses a conditional type inference trick to detect exact structural equality. This is more strict than bidirectional extends (mutual assignability) as it checks the actual structure, not just compatibility.
-
-Note: This is different from IsEquivalent which only checks mutual assignability. Two types can be mutually assignable without being structurally equal (e.g., `string & {}` and `string` are equivalent but not exact).
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Ts } from '@wollybeard/kit/ts'
-// ---cut---
-type T1 = IsExact<string, string> // true
-type T2 = IsExact<1 | 2, 2 | 1> // true (union order doesn't matter)
-type T3 = IsExact<string & {}, string> // false (different structure)
-type T4 = IsExact<any, unknown> // false
-type T5 = IsExact<{ a: 1 }, { a: 1 }> // true
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsEquivalent`
-
-```typescript
-type IsEquivalent<A, B> = [A] extends [B] ? [B] extends [A] ? true : false : false
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/relation.ts#L47" />
-
-Check if types are mutually assignable (equivalent).
-
-Returns true if A extends B AND B extends A. This means the types can be used interchangeably in assignments, though they may not have the same structure.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Ts } from '@wollybeard/kit/ts'
-// ---cut---
-type T1 = IsEquivalent<string, string> // true
-type T2 = IsEquivalent<1 | 2, 2 | 1> // true
-type T3 = IsEquivalent<string & {}, string> // true (both compute to string)
-type T4 = IsEquivalent<string, number> // false
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsSubtype`
-
-```typescript
-type IsSubtype<A, B> = [B] extends [A] ? true : false
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/relation.ts#L59" />
-
-Check if B is a subtype of A (B extends A, B is narrower than A).
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Ts } from '@wollybeard/kit/ts'
-// ---cut---
-type T1 = IsSubtype<string, 'hello'> // true ('hello' extends string)
-type T2 = IsSubtype<'hello', string> // false (string doesn't extend 'hello')
-type T3 = IsSubtype<number | string, number> // true (number extends number | string)
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsSupertype`
-
-```typescript
-type IsSupertype<A, B> = [A] extends [B] ? true : false
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/relation.ts#L71" />
-
-Check if B is a supertype of A (A extends B, B is wider than A).
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Ts } from '@wollybeard/kit/ts'
-// ---cut---
-type T1 = IsSupertype<'hello', string> // true (string is supertype of 'hello')
-type T2 = IsSupertype<string, 'hello'> // false ('hello' is not supertype of string)
-type T3 = IsSupertype<number, number | string> // true
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsOverlapping`
-
-```typescript
-type IsOverlapping<A, B> = [A & B] extends [never] ? false : true
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/relation.ts#L83" />
-
-Check if types have overlapping values (their intersection is not empty).
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Ts } from '@wollybeard/kit/ts'
-// ---cut---
-type T1 = IsOverlapping<{ a: 1 }, { b: 2 }> // true (can have both properties)
-type T2 = IsOverlapping<string, number> // false (no overlap)
-type T3 = IsOverlapping<{ id: 1; a: 2 }, { id: 1; b: 3 }> // true (share id)
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsDisjoint`
-
-```typescript
-type IsDisjoint<A, B> = [A & B] extends [never] ? true : false
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/relation.ts#L95" />
-
-Check if types are disjoint (no common values).
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Ts } from '@wollybeard/kit/ts'
-// ---cut---
-type T1 = IsDisjoint<string, number> // true (no common values)
-type T2 = IsDisjoint<{ a: 1 }, { b: 2 }> // false (can have both properties)
-type T3 = IsDisjoint<'a', 'b'> // true (different literals)
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetRelation`
-
-```typescript
-type GetRelation<A, B> =
-  // First check: Are types equivalent (mutually assignable)?
-  // Using [A] extends [B] with brackets prevents union distribution - we want to check
-  // the whole union type as a single unit, not distribute over union members.
-  // Without brackets, `('a' | 'b') extends 'a'` would distribute and check each member separately.
-  [A] extends [B] ? [B] extends [A] ?
-  'equivalent' // Both extend each other - types are mutually assignable
-  : 'supertype'   // A extends B but not vice versa - B is wider/supertype of A
-
-  // Second check: Is B a subtype of A?
-  : [B] extends [A] ? 'subtype'  // B extends A - B is narrower/subtype of A
-
-  // Neither extends the other - need special handling for edge cases.
-  // TypeScript's type system treats primitive and non-primitive as fundamentally different categories.
-  // A primitive can never be the same reference as an object, making them always disjoint.
-  : A extends Lang.Primitive ?
-  B extends Lang.Primitive ?
-  // Both are primitives - check if their intersection is empty.
-  // Primitives can only overlap if they share literal values.
-  // Examples:
-  // - 'a' & 'b' = never (disjoint literals)
-  // - string & 'hello' = 'hello' (overlapping - 'hello' is in string)
-  // - string & number = never (disjoint base types)
-  [A & B] extends [never] ? 'disjoint' : 'overlapping'
-  : 'disjoint'  // Primitive vs object - always disjoint (no possible overlap between value and reference types)
-
-  : B extends Lang.Primitive ? 'disjoint'  // Object vs primitive - always disjoint
-
-  // Both are non-primitives (objects/interfaces).
-  // Objects can have overlapping properties even if neither extends the other.
-  // Example: {a: 1} and {b: 2} don't extend each other, but {a: 1, b: 2} satisfies both.
-  // We check if their intersection is never to determine if they're completely incompatible.
-  : [A & B] extends [never] ? 'disjoint' : 'overlapping'
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/relation.ts#L141" />
-
-Classify how the SECOND type parameter relates to the FIRST type parameter.
-
-Returns one of:
-
-- `'subtype'`
-- B is a subtype of A (B extends A, B is narrower/more specific than A).
-
-See: https://en.wikipedia.org/wiki/Subtyping
-
-- `'supertype'`
-- B is a supertype of A (A extends B, B is wider/more general than A).
-
-This is the inverse of subtyping. See: https://en.wikipedia.org/wiki/Subtyping#Subsumption
-
-- `'equivalent'`
-- A and B are mutually assignable (both extend each other).
-
-Also known as type equality in structural type systems.
-
-See: https://en.wikipedia.org/wiki/Type_system#Type_equivalence
-
-- `'overlapping'`
-- Types share some possible values but neither is a subtype of the other.
-
-Common in structural typing where types can share properties without a subtype relationship.
-
-See: https://www.typescriptlang.org/docs/handbook/type-compatibility.html
-
-- `'disjoint'`
-- Types have no values in common (their intersection is empty/never).
-
-See: https://en.wikipedia.org/wiki/Disjoint_union
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Ts } from '@wollybeard/kit/ts'
-// ---cut---
-// Read as: "How does the second type relate to the first?"
-type T1 = GetRelation<string, string> // 'equivalent'
-type T2 = GetRelation<1, 1> // 'equivalent'
-type T3 = GetRelation<string, number> // 'disjoint'
-type T4 = GetRelation<{ a: 1 }, { b: 2 }> // 'overlapping' (objects can have both properties)
-type T5 = GetRelation<{ a: 1, id: 1 }, { b: 2, id: 1 }> // 'overlapping'
-type T6 = GetRelation<{ a: 1 }, { a: 1 }> // 'equivalent'
-type T7 = GetRelation<'a' | 'b', 'a'> // 'subtype' ('a' is narrower than 'a' | 'b')
-type T8 = GetRelation<'a', 'a' | 'b'> // 'supertype' ('a' | 'b' is wider than 'a')
+type T1 = IsUnknown<unknown> // true
+type T2 = IsUnknown<any> // false
+type T3 = IsUnknown<string> // false
+type T4 = IsUnknown<never> // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isTypeWith`

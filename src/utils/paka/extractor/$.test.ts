@@ -66,12 +66,15 @@ Test
     { files: project.add('i.ts', `export const a = 1\nexport const _b = 2`).toLayout() },
     // Mixed: @internal and underscore filtering
     {
-      files: project.add('i.ts', `export const a = 1
+      files: project.add(
+        'i.ts',
+        `export const a = 1
           /** @internal */
           export const b = 2
           export const _c = 3
           /** @internal */
-          export const _d = 4`).toLayout(),
+          export const _d = 4`,
+      ).toLayout(),
       filterUnderscoreExports: true,
     },
     // ESM namespace with TypeScript shadow - JSDoc from shadow is used

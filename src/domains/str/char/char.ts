@@ -38,10 +38,6 @@ export type LetterUpper =
   | 'Y'
   | 'Z'
 
-/**
- * Alphabet mapping for tip indices.
- * @internal
- */
 export type LettersLower = [
   'a',
   'b',

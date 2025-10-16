@@ -18,9 +18,10 @@ import { test } from 'vitest'
 
 test('exact error - string vs number', () => {
   attest({} as Ts.Test.exact<string, number>).type.toString.snap(`{
-  ERROR_______: "⚠ Types are not exactly equal"
-  expected____: string
-  actual______: number
+  ERROR_________: "Types are completely disjoint (no common values)"
+  expected______: string
+  actual________: number
+  tip___________: "These types have no overlap and will never be equal"
 }`)
 })
 
@@ -28,9 +29,15 @@ test('exact error - SingleOperation case', () => {
   type A<T = {}> = { query: T }
   type B = { name: 'default'; result: { a: string | null } }
   attest({} as Ts.Test.exact<A, B>).type.toString.snap(`{
-  ERROR_______: "⚠ Types are not exactly equal"
-  expected____: A<{}>
-  actual______: B
+  ERROR_________: "Types have overlapping values but are not structurally equal"
+  expected______: A<{}>
+  actual________: B
+  diff_missing__: { query: {} }
+  diff_excess___: {
+    name: "default"
+    result: { a: string | null }
+  }
+  tip___________: "Types share some possible values but are different"
 }`)
 })
 
@@ -38,31 +45,71 @@ test('exact error - with built-in types preserved', () => {
   type A = { a: Date; b: string }
   type B = { a: number; b: string }
   attest({} as Ts.Test.exact<A, B>).type.toString.snap(`{
-  ERROR_______: "⚠ Types are not exactly equal"
-  expected____: A
-  actual______: B
+  ERROR_________: "Types have overlapping values but are not structurally equal"
+  expected______: A
+  actual________: B
+  diff_mismatch_: { a: { expected: Date; actual: number } }
+  tip___________: "Types share some possible values but are different"
+}`)
+})
+
+test('exact error - diff with missing, excess, and mismatched', () => {
+  type Expected = {
+    id: string
+    name: string
+    age: number
+  }
+  type Actual = {
+    id: number // Mismatched - different type
+    name: string // Same
+    email: string // Excess - not in Expected
+  }
+  attest({} as Ts.Test.exact<Expected, Actual>).type.toString.snap(`{
+  ERROR_________: "Types have overlapping values but are not structurally equal"
+  expected______: Expected
+  actual________: Actual
+  diff_missing__: { age: number }
+  diff_excess___: { email: string }
+  diff_mismatch_: {
+    id: { expected: string; actual: number }
+  }
+  tip___________: "Types share some possible values but are different"
+}`)
+})
+
+test('exact error - optionality difference', () => {
+  type Expected = { x: 1 }
+  type Actual = { x?: 1 }
+  attest({} as Ts.Test.exact<Expected, Actual>).type.toString.snap(`{
+  ERROR_________: "Actual type is a supertype of expected type but not structurally equal"
+  expected______: Expected
+  actual________: Actual
+  diff_mismatch_: {
+    x: { expected: 1; actual: 1 | undefined }
+  }
+  tip___________: "Actual is wider than expected - types don't match exactly"
 }`)
 })
 
 test('exact value mode - basic type mismatches', () => {
-  const fn = Ts.Test.exact<string>()<42>
+  const fn = Ts.Test.exact.is<string>()<42>
   attest(fn).type.toString.snap(`(
   actual: 42,
-  error: "⚠ Types are not exactly equal",
+  error: "Types are completely disjoint (no common values)",
   expected: string
 ) => void`)
 
-  const fn2 = Ts.Test.exact<{ a: string }>()<{ a: number; b: number }>
+  const fn2 = Ts.Test.exact.is<{ a: string }>()<{ a: number; b: number }>
   attest(fn2).type.toString.snap(`(
   actual: { a: number; b: number },
-  error: "⚠ Types are not exactly equal",
+  error: "Types have overlapping values but are not structurally equal",
   expected: { a: string }
 ) => void`)
 })
 
 test('exact value mode - never handling', () => {
   const neverValue = null as never
-  Ts.Test.exact<never>()(neverValue)
+  Ts.Test.exact.is<never>()(neverValue)
 })
 
 test('exact value mode - parameter-based error feedback', () => {
@@ -124,11 +171,11 @@ test('exact value mode - complex type aliases in signatures', () => {
     extra: boolean
   }
 
-  const exactComplexA = Ts.Test.exact<ComplexA>()
+  const exactComplexA = Ts.Test.exact.is<ComplexA>()
   const fnComplexError = exactComplexA<ComplexB>
   attest(fnComplexError).type.toString.snap(`(
   actual: ComplexB,
-  error: "⚠ Types are not exactly equal",
+  error: "Types have overlapping values but are not structurally equal",
   expected: ComplexA
 ) => void`)
 })
@@ -152,15 +199,14 @@ test('error with custom metadata', () => {
     'Custom validation failed',
     { a: string },
     { a: number },
-    never,
     { location: 'src/file.ts:42'; hint: 'Use string' }
   >
   attest({} as e).type.toString.snap(`{
-  ERROR_______: "Custom validation failed"
-  expected____: { a: string }
-  actual______: { a: number }
-  location____: "src/file.ts:42"
-  hint________: "Use string"
+  ERROR_________: "Custom validation failed"
+  expected______: { a: string }
+  actual________: { a: number }
+  location______: "src/file.ts:42"
+  hint__________: "Use string"
 }`)
 })
 
@@ -172,10 +218,10 @@ test('error with tip string (backward compat)', () => {
     'Use string'
   >
   attest({} as e).type.toString.snap(`{
-  ERROR_______: "Type mismatch"
-  expected____: string
-  actual______: number
-  tip_________: "Use string"
+  ERROR_________: "Type mismatch"
+  expected______: string
+  actual________: number
+  tip___________: "Use string"
 }`)
 })
 
@@ -187,12 +233,12 @@ test('error with tuple of tips', () => {
     ['Use string', 'Check docs', 'See example']
   >
   attest({} as e).type.toString.snap(`{
-  ERROR_______: "Type mismatch"
-  expected____: string
-  actual______: number
-  tip_a_______: "Use string"
-  tip_b_______: "Check docs"
-  tip_c_______: "See example"
+  ERROR_________: "Type mismatch"
+  expected______: string
+  actual________: number
+  tip_a_________: "Use string"
+  tip_b_________: "Check docs"
+  tip_c_________: "See example"
 }`)
 })
 
@@ -251,9 +297,13 @@ test('user-defined types preserved with preserveTypes setting', () => {
   type A = { a: Foo; b: string }
   type B = { a: Date; b: string }
   attest({} as Ts.Test.exact<A, B>).type.toString.snap(`{
-  ERROR_______: "⚠ Types are not exactly equal"
-  expected____: A
-  actual______: B
+  ERROR_________: "Types have overlapping values but are not structurally equal"
+  expected______: A
+  actual________: B
+  diff_mismatch_: {
+    a: { expected: { value: Date }; actual: Date }
+  }
+  tip___________: "Types share some possible values but are different"
 }`)
 })
 
@@ -261,9 +311,16 @@ test('multiple preserved types from different augmentations', () => {
   type A = { a: Bar; b: string }
   type B = { a: { a: number; b: number }; b: string }
   attest({} as Ts.Test.exact<A, B>).type.toString.snap(`{
-  ERROR_______: "⚠ Types are not exactly equal"
-  expected____: A
-  actual______: B
+  ERROR_________: "Types have overlapping values but are not structurally equal"
+  expected______: A
+  actual________: B
+  diff_mismatch_: {
+    a: {
+      expected: { a: string; b: number }
+      actual: { a: number; b: number }
+    }
+  }
+  tip___________: "Types share some possible values but are different"
 }`)
 })
 
@@ -283,9 +340,9 @@ test('multiple preserved types from different augmentations', () => {
 
 test('sub error - string does not extend hello', () => {
   attest({} as Ts.Test.sub<'hello', string>).type.toString.snap(`{
-  ERROR_______: "Actual type does not extend expected type"
-  expected____: "hello"
-  actual______: string
+  ERROR_________: "Actual type does not extend expected type"
+  expected______: "hello"
+  actual________: string
 }`)
 })
 
@@ -305,12 +362,12 @@ test('sub error - string does not extend hello', () => {
 
 test('subNoExcess error - excess property', () => {
   type Config = { id: boolean; name?: string }
-  attest({} as Ts.Test.subNoExcess<Config, { id: true; extra: number }>).type
+  attest({} as Ts.Test.sub.noExcess<Config, { id: true; extra: number }>).type
     .toString.snap(`{
-  ERROR_______: "Type has excess properties not present in expected type"
-  expected____: Config
-  actual______: { id: true; extra: number }
-  tip_________: "Excess properties: ''extra''"
+  ERROR_________: "Type has excess properties not present in expected type"
+  expected______: Config
+  actual________: { id: true; extra: number }
+  tip___________: "Excess properties: ''extra''"
 }`)
 })
 
@@ -329,10 +386,10 @@ test('subNoExcess error - excess property', () => {
 //
 
 test('subNot error - hello extends string', () => {
-  attest({} as Ts.Test.subNot<string, 'hello'>).type.toString.snap(`{
-  ERROR_______: "Actual type extends type it should not extend"
-  expected____: string
-  actual______: "hello"
+  attest({} as Ts.Test.not.sub<string, 'hello'>).type.toString.snap(`{
+  ERROR_________: "Type extends the type it should not extend"
+  expected______: string
+  actual________: "hello"
 }`)
 })
 
@@ -352,25 +409,25 @@ test('subNot error - hello extends string', () => {
 
 test('equiv error - types are disjoint', () => {
   attest({} as Ts.Test.equiv<string, number>).type.toString.snap(`{
-  ERROR_______: "Types are disjoint (no common values)"
-  expected____: string
-  actual______: number
+  ERROR_________: "Types are disjoint (no common values)"
+  expected______: string
+  actual________: number
 }`)
 })
 
 test('equiv error - actual extends expected but not vice versa', () => {
   attest({} as Ts.Test.equiv<string, 'hello'>).type.toString.snap(`{
-  ERROR_______: "Actual extends Expected, but Expected does not extend Actual"
-  expected____: string
-  actual______: "hello"
+  ERROR_________: "Actual extends Expected, but Expected does not extend Actual"
+  expected______: string
+  actual________: "hello"
 }`)
 })
 
 test('equiv error - expected extends actual but not vice versa', () => {
   attest({} as Ts.Test.equiv<'hello', string>).type.toString.snap(`{
-  ERROR_______: "Expected extends Actual, but Actual does not extend Expected"
-  expected____: "hello"
-  actual______: string
+  ERROR_________: "Expected extends Actual, but Actual does not extend Expected"
+  expected______: "hello"
+  actual________: string
 }`)
 })
 
@@ -391,14 +448,14 @@ test('equiv error - expected extends actual but not vice versa', () => {
 test('equivNoExcess error - excess property', () => {
   type Config = { id: boolean; name?: string }
   attest(
-    {} as Ts.Test.equivNoExcess<
+    {} as Ts.Test.equiv.noExcess<
       Config,
       { id: boolean; name?: string; extra: number }
     >,
   ).type.toString.snap(`{
-  ERROR_______: "Actual extends Expected, but Expected does not extend Actual"
-  expected____: Config
-  actual______: {
+  ERROR_________: "Actual extends Expected, but Expected does not extend Actual"
+  expected______: Config
+  actual________: {
     id: boolean
     name?: string
     extra: number
@@ -421,41 +478,45 @@ test('equivNoExcess error - excess property', () => {
 //
 
 test('equalNever error - type is not never', () => {
-  attest({} as Ts.Test.equalNever<string>).type.toString.snap(`{
-  ERROR_______: "Type is not never"
-  expected____: never
-  actual______: string
+  attest({} as Ts.Test.exact.Never<string>).type.toString.snap(`{
+  ERROR_________: "Actual type is a supertype of expected type but not structurally equal"
+  expected______: never
+  actual________: string
 }`)
 })
 
 test('equalAny error - type is not any', () => {
-  attest({} as Ts.Test.equalAny<unknown>).type.toString.snap(`{
-  ERROR_______: "Type is not any"
-  expected____: any
-  actual______: unknown
+  attest({} as Ts.Test.exact.Any<unknown>).type.toString.snap(`{
+  ERROR_________: "Types are mutually assignable but not structurally equal"
+  expected______: any
+  actual________: unknown
+  tip___________: "Use equiv() for mutual assignability OR apply Simplify<T> to normalize types"
 }`)
 })
 
 test('equalUnknown error - type is not unknown', () => {
-  attest({} as Ts.Test.equalUnknown<string>).type.toString.snap(`{
-  ERROR_______: "Type is not unknown"
-  expected____: unknown
-  actual______: string
+  attest({} as Ts.Test.exact.Unknown<string>).type.toString.snap(`{
+  ERROR_________: "Actual type is a subtype of expected type but not structurally equal"
+  expected______: unknown
+  actual________: string
+  tip___________: "Actual is narrower than expected - types don't match exactly"
 }`)
 })
 
 test('equalUnknown error - type is any not unknown', () => {
-  attest({} as Ts.Test.equalUnknown<any>).type.toString.snap(`{
-  ERROR_______: "Type is any, not unknown"
-  expected____: unknown
-  actual______: any
+  attest({} as Ts.Test.exact.Unknown<any>).type.toString.snap(`{
+  ERROR_________: "Types are mutually assignable but not structurally equal"
+  expected______: unknown
+  actual________: any
+  tip___________: "Use equiv() for mutual assignability OR apply Simplify<T> to normalize types"
 }`)
 })
 
 test('equalEmptyObject error - type has keys', () => {
-  attest({} as Ts.Test.equalEmptyObject<{ a: number }>).type.toString.snap(`{
-  ERROR_______: "Type is not an empty object (has keys)"
-  expected____: Empty
-  actual______: object & { a: number }
+  attest({} as Ts.Test.exact.empty<{ a: number }>).type.toString.snap(`{
+  ERROR_________: "Types are completely disjoint (no common values)"
+  expected______: true
+  actual________: false
+  tip___________: "These types have no overlap and will never be equal"
 }`)
 })

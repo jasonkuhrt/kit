@@ -16,11 +16,11 @@ test('Type narrowing works correctly with isEven predicate', () => {
 
   // Predicate narrows to Even & Int intersection
   if (isEven(value)) {
-    Ts.Test.sub<Even & Int>()(value)
+    Ts.Test.sub.is<Even & Int>()(value)
     // Can assign to Even
-    Ts.Test.sub<Even>()(value)
+    Ts.Test.sub.is<Even>()(value)
     // Can assign to Int
-    Ts.Test.sub<Int>()(value)
+    Ts.Test.sub.is<Int>()(value)
   }
 
   // Multiple checks preserve all brands
@@ -39,31 +39,31 @@ test('Type narrowing works correctly with isEven predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic even constructor always returns Even & Int
   const even1 = even(4)
-  Ts.Test.exact<Even & Int>()(even1)
+  Ts.Test.exact.is<Even & Int>()(even1)
 
   // Negative even numbers
   const even2 = even(-2)
-  Ts.Test.exact<Even & Int>()(even2)
+  Ts.Test.exact.is<Even & Int>()(even2)
 
   // Zero is even
   const even3 = even(0)
-  Ts.Test.exact<Even & Int>()(even3)
+  Ts.Test.exact.is<Even & Int>()(even3)
 
   // Try constructor
   const try1 = tryEven(6)
-  Ts.Test.exact<(Even & Int) | null>()(try1)
+  Ts.Test.exact.is<(Even & Int) | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Ts.Test.exact<Even & Int>()(try1)
+    Ts.Test.exact.is<Even & Int>()(try1)
   }
 
   // Next/prev even operations
   const next = nextEven(3.5) // Should be 4
-  Ts.Test.exact<Even & Int>()(next)
+  Ts.Test.exact.is<Even & Int>()(next)
 
   const prev = prevEven(5.5) // Should be 4
-  Ts.Test.exact<Even & Int>()(prev)
+  Ts.Test.exact.is<Even & Int>()(prev)
 })
 
 // === Type Relationships ===
@@ -73,15 +73,15 @@ test('Even has correct relationship with Int', () => {
 
   // Even & Int can be assigned to Even
   const asEven: Even = evenNum
-  Ts.Test.sub<Even>()(asEven)
+  Ts.Test.sub.is<Even>()(asEven)
 
   // Even & Int can be assigned to Int
   const asInt: Int = evenNum
-  Ts.Test.sub<Int>()(asInt)
+  Ts.Test.sub.is<Int>()(asInt)
 
   // Even & Int can be assigned to number
   const asNumber: number = evenNum
-  Ts.Test.sub<number>()(asNumber)
+  Ts.Test.sub.is<number>()(asNumber)
 
   // But Even alone cannot be assigned to Int (might not be integer)
   const justEven = {} as Even
@@ -107,12 +107,12 @@ type _EvenRelationships = Ts.Test.Cases<
   Ts.Test.sub<Int, Even & Int>,
   Ts.Test.sub<number, Even & Int>,
   // Even does not extend Int (not all Even are Int in type system)
-  Ts.Test.subNot<Even, Int>,
+  Ts.Test.not.sub<Even, Int>,
   // Int does not extend Even (not all Int are Even)
-  Ts.Test.subNot<Int, Even>,
+  Ts.Test.not.sub<Int, Even>,
   // Even & Int is more specific than either alone
-  Ts.Test.subNot<Even & Int, Even>,
-  Ts.Test.subNot<Even & Int, Int>
+  Ts.Test.not.sub<Even & Int, Even>,
+  Ts.Test.not.sub<Even & Int, Int>
 >
 
 // Test constructor return types

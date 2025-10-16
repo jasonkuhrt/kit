@@ -209,7 +209,7 @@ Compare two fractions.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromWith`
 
 ```typescript
-(numerator: Natural) => (denominator: Natural) => Frac
+;((numerator: Natural) => (denominator: Natural) => Frac)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L100" />
@@ -219,7 +219,7 @@ Create a function that constructs fractions with a fixed numerator. Useful for c
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`
 
 ```typescript
-(denominator: Natural) => (numerator: Natural) => Frac
+;((denominator: Natural) => (numerator: Natural) => Frac)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L115" />
@@ -229,7 +229,7 @@ Create a function that constructs fractions with a fixed denominator. Useful for
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`
 
 ```typescript
-(a: Frac) => (b: Frac) => Ratio
+;((a: Frac) => (b: Frac) => Ratio)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L260" />
@@ -239,7 +239,7 @@ Create a function that adds to a specific fraction. Data-first pattern: fix the 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
 
 ```typescript
-(b: Frac) => (a: Frac) => Ratio
+;((b: Frac) => (a: Frac) => Ratio)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L274" />
@@ -249,7 +249,7 @@ Create a function that adds with a specific fraction. Data-second pattern: fix t
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`
 
 ```typescript
-(a: Frac) => (b: Frac) => Frac
+;((a: Frac) => (b: Frac) => Frac)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L311" />
@@ -259,7 +259,7 @@ Create a function that multiplies a specific fraction. Data-first pattern: fix t
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
 
 ```typescript
-(b: Frac) => (a: Frac) => Frac
+;((b: Frac) => (a: Frac) => Frac)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L325" />
@@ -269,7 +269,7 @@ Create a function that multiplies with a specific fraction. Data-second pattern:
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareOn`
 
 ```typescript
-(a: Frac) => (b: Frac) => 0 | 1 | -1
+;((a: Frac) => (b: Frac) => 0 | 1 | -1)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L355" />
@@ -279,7 +279,7 @@ Create a function that compares a specific fraction. Data-first pattern: fix the
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareWith`
 
 ```typescript
-(b: Frac) => (a: Frac) => 0 | 1 | -1
+;((b: Frac) => (a: Frac) => 0 | 1 | -1)
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L369" />

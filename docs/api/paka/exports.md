@@ -26,7 +26,7 @@ import * as Paka from '@wollybeard/kit/paka'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ExportLevel`
 
 ```typescript
-Enums<{ readonly value: "value"; readonly type: "type"; }>
+Enums<{ readonly value: 'value'; readonly type: 'type' }>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L11" />
@@ -36,7 +36,14 @@ Export level distinguishes between runtime values and type-only exports.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ValueExportType`
 
 ```typescript
-Enums<{ readonly function: "function"; readonly const: "const"; readonly class: "class"; readonly namespace: "namespace"; }>
+Enums<
+  {
+    readonly function: 'function'
+    readonly const: 'const'
+    readonly class: 'class'
+    readonly namespace: 'namespace'
+  }
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L17" />
@@ -48,7 +55,15 @@ Value export types
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `TypeExportType`
 
 ```typescript
-Enums<{ readonly interface: "interface"; readonly 'type-alias': "type-alias"; readonly enum: "enum"; readonly union: "union"; readonly intersection: "intersection"; }>
+Enums<
+  {
+    readonly interface: 'interface'
+    readonly 'type-alias': 'type-alias'
+    readonly enum: 'enum'
+    readonly union: 'union'
+    readonly intersection: 'intersection'
+  }
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L30" />
@@ -60,7 +75,13 @@ Type export types
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BuilderMethodCategory`
 
 ```typescript
-Enums<{ readonly chainable: "chainable"; readonly terminal: "terminal"; readonly transform: "transform"; }>
+Enums<
+  {
+    readonly chainable: 'chainable'
+    readonly terminal: 'terminal'
+    readonly transform: 'transform'
+  }
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L48" />
@@ -77,7 +98,15 @@ Builder method classification based on return type.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `SignatureModel`
 
 ```typescript
-Union<[typeof FunctionSignatureModel, typeof BuilderSignatureModel, typeof ClassSignatureModel, typeof TypeSignatureModel, typeof ValueSignatureModel]>
+Union<
+  [
+    typeof FunctionSignatureModel,
+    typeof BuilderSignatureModel,
+    typeof ClassSignatureModel,
+    typeof TypeSignatureModel,
+    typeof ValueSignatureModel,
+  ]
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L446" />
@@ -105,7 +134,7 @@ Discriminated by _tag field:
 Union<[typeof ValueExport, typeof TypeExport]>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L544" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L546" />
 
 Export is a tagged union of value and type exports.
 
@@ -115,7 +144,7 @@ Export is a tagged union of value and type exports.
 Union<[typeof DrillableNamespaceEntrypoint, typeof SimpleEntrypoint]>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L630" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L632" />
 
 Entrypoint union
 
@@ -127,7 +156,7 @@ Entrypoint union
 typeof Package
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L663" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L665" />
 
 The complete interface model output.
 
@@ -191,13 +220,24 @@ Function/method parameter. Captures parameter name, type, modifiers, and JSDoc d
 
 ```typescript twoslash
 // @noErrors
-import { Paka } from '@wollybeard/kit/paka'
-// ---cut---
-// (items: T[], fn?: (item: T) => U, ...rest: unknown[])
-[
-  { name: 'items', type: 'T[]', optional: false, rest: false, description: 'Array of items to process' },
-  { name: 'fn', type: '(item: T) => U', optional: true, rest: false, description: 'Transform function' },
-  { name: 'rest', type: 'unknown[]', optional: false, rest: true }
+import { Paka } from '@wollybeard/kit/paka' // ---cut---
+ // (items: T[], fn?: (item: T) => U, ...rest: unknown[])
+;[
+  {
+    name: 'items',
+    type: 'T[]',
+    optional: false,
+    rest: false,
+    description: 'Array of items to process',
+  },
+  {
+    name: 'fn',
+    type: '(item: T) => U',
+    optional: true,
+    rest: false,
+    description: 'Transform function',
+  },
+  { name: 'rest', type: 'unknown[]', optional: false, rest: true },
 ]
 ```
 
@@ -398,17 +438,34 @@ Class property. Captures property name, type, modifiers, and JSDoc description.
 
 ```typescript twoslash
 // @noErrors
-import { Paka } from '@wollybeard/kit/paka'
-// ---cut---
-// class User {
+import { Paka } from '@wollybeard/kit/paka' // ---cut---
+ // class User {
 //   readonly id: string
 //   name?: string
 //   static count: number
 // }
-[
-  { name: 'id', type: 'string', optional: false, readonly: true, static: false },
-  { name: 'name', type: 'string', optional: true, readonly: false, static: false },
-  { name: 'count', type: 'number', optional: false, readonly: false, static: true }
+;[
+  {
+    name: 'id',
+    type: 'string',
+    optional: false,
+    readonly: true,
+    static: false,
+  },
+  {
+    name: 'name',
+    type: 'string',
+    optional: true,
+    readonly: false,
+    static: false,
+  },
+  {
+    name: 'count',
+    type: 'number',
+    optional: false,
+    readonly: false,
+    static: true,
+  },
 ]
 ```
 
@@ -486,7 +543,7 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L524" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L526" />
 
 Value export
 
@@ -499,7 +556,7 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L535" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L537" />
 
 Type export
 
@@ -512,7 +569,7 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L598" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L600" />
 
 Drillable Namespace Pattern entrypoint.
 
@@ -577,7 +634,7 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L613" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L615" />
 
 Simple entrypoint without special import pattern.
 
@@ -588,7 +645,7 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L639" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L641" />
 
 Package metadata.
 
@@ -599,7 +656,7 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L649" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L651" />
 
 Package represents the complete extracted documentation model.
 
@@ -616,16 +673,16 @@ interface Module {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L480" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L482" />
 
 Module type definition.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ModuleEncoded`
 
 ```typescript
-interface ModuleEncoded extends Module { }
+interface ModuleEncoded extends Module {}
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L490" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L492" />
 
 Module encoded type (same as Module since no transformations).
