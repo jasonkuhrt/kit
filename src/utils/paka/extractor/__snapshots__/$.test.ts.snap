@@ -438,6 +438,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
             module: {
               location: './u.ts',
               description: 'Nested',
+              descriptionSource: 'jsdoc',
               exports: [
                 {
                   name: 'a',
@@ -515,6 +516,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
             module: {
               location: './u.ts',
               description: 'Nested',
+              descriptionSource: 'jsdoc',
               exports: [
                 {
                   name: 'a',
@@ -592,6 +594,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
             module: {
               location: './u.ts',
               description: 'Nested',
+              descriptionSource: 'jsdoc',
               exports: [
                 {
                   name: 'a',
@@ -873,6 +876,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
             module: {
               location: './u.ts',
               description: 'N',
+              descriptionSource: 'jsdoc',
               exports: [
                 {
                   name: 'a',
@@ -951,6 +955,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
             module: {
               location: './u.ts',
               description: 'N',
+              descriptionSource: 'jsdoc',
               exports: [
                 {
                   name: 'a',
@@ -1048,6 +1053,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
             module: {
               location: './u.ts',
               description: 'N',
+              descriptionSource: 'jsdoc',
               exports: [
                 {
                   name: 'a',
@@ -1103,6 +1109,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       module: {
         location: './i.ts',
         description: 'foo \`bar\`',
+        descriptionSource: 'jsdoc',
         exports: [
           {
             name: 'T',

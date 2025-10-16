@@ -145,7 +145,7 @@ Extract a module from a source file.
 (moduleDecl: ModuleDeclaration, location: RelFile, options?: ModuleExtractionOptions = {}): Module
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L327" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L331" />
 
 **Parameters:**
 

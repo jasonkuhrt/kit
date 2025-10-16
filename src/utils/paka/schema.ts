@@ -482,6 +482,7 @@ const BaseExportFields = {
 export interface Module {
   readonly location: typeof FsLoc.RelFile.Type
   readonly description: string
+  readonly descriptionSource?: 'jsdoc' | 'md-file'
   readonly category?: string
   readonly exports: ReadonlyArray<Export>
 }
@@ -512,6 +513,8 @@ export const Module: S.Schema<Module, ModuleEncoded> = S.suspend(
       location: FsLoc.RelFile,
       /** Module-level description from JSDoc */
       description: S.String,
+      /** Source of module description - tracks whether description came from JSDoc or external .md file */
+      descriptionSource: S.optional(S.Literal('jsdoc', 'md-file')),
       /** Category from @category tag for grouping in sidebar */
       category: S.optional(S.String),
       /** All exports in this module */

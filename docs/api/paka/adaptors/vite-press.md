@@ -30,7 +30,7 @@ Paka.Adaptors.VitePress.someFunction()
 (model: Package, config: VitePressConfig): void
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L78" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L70" />
 
 **Parameters:**
 

@@ -287,6 +287,7 @@ export const extractModuleFromFile = (
 
   // Get module-level description from external markdown or JSDoc fallback
   let description = ''
+  let descriptionSource: 'jsdoc' | 'md-file' | undefined
   let category: string | undefined
 
   // First: Check for external markdown documentation
@@ -296,6 +297,7 @@ export const extractModuleFromFile = (
   if (markdownContent) {
     // Use markdown content directly
     description = markdownContent
+    descriptionSource = 'md-file'
     // Category would need to be parsed from frontmatter (future enhancement)
   } else {
     // Fallback: Use JSDoc from first statement
@@ -304,6 +306,7 @@ export const extractModuleFromFile = (
       const firstStatement = statements[0]!
       const jsdoc = parseJSDoc(firstStatement)
       description = jsdoc.description || ''
+      descriptionSource = description ? 'jsdoc' : undefined
       category = jsdoc.category
     }
   }
@@ -311,6 +314,7 @@ export const extractModuleFromFile = (
   return {
     location,
     description,
+    ...(descriptionSource ? { descriptionSource } : {}),
     ...(category ? { category } : {}),
     exports: moduleExports,
   }
@@ -393,6 +397,7 @@ export const extractModule = (
   return {
     location,
     description,
+    ...(description ? { descriptionSource: 'jsdoc' as const } : {}),
     ...(category ? { category } : {}),
     exports,
   }

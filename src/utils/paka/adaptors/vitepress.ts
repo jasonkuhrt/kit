@@ -39,14 +39,6 @@ const deriveModuleName = (path: string): string => {
 }
 
 /**
- * Check if module has substantial README content warranting overview/exports split.
- */
-const hasSubstantialReadme = (description: string): boolean => {
-  // Has markdown headings or is substantial length
-  return description.includes('\n## ') || description.length > 200
-}
-
-/**
  * Page metadata for a generated page.
  */
 type Page = {
@@ -108,7 +100,7 @@ export const generate = (model: InterfaceModel, config: VitePressConfig): void =
 }
 
 /**
- * Generate API index page listing all modules.
+ * Generate API index page listing all modules with their namespace trees.
  */
 const generateApiIndex = (model: InterfaceModel): string => {
   const modules = model.entrypoints.map((entrypoint) => {
@@ -118,9 +110,23 @@ const generateApiIndex = (model: InterfaceModel): string => {
     // @ts-ignore - Effect Schema types have different runtime behavior
     const description = entrypoint.module.description.split('\n\n')[0].replace(/\n/g, ' ').trim()
 
+    // Find namespace exports
+    const namespaceExports = entrypoint.module.exports
+      .filter((exp: any) => exp.type === 'namespace' && exp.module)
+      .sort((a, b) => a.name.localeCompare(b.name))
+
+    // Build namespace list if any exist
+    const namespaceList = namespaceExports.length > 0
+      ? '\n\n' + namespaceExports.map((ns: any) => {
+        const nsUrl = `/api/${Md.kebab(moduleName)}/${ns.name.toLowerCase()}`
+        const nsLink = Md.link(nsUrl, Md.code(ns.name))
+        return Md.listItem(`${nsLink}${ns.description ? ` - ${ns.description}` : ''}`)
+      }).join('\n')
+      : ''
+
     return `## ${Md.link(url, moduleName)}
 
-${description}`
+${description}${namespaceList}`
   })
 
   return Md.sections(
@@ -140,8 +146,8 @@ const generatePages = (model: InterfaceModel): Page[] => {
     const moduleName = deriveModuleName(entrypoint.path)
     const module = entrypoint.module
 
-    // Check if module has substantial README
-    if (hasSubstantialReadme(module.description)) {
+    // Check if module description came from external .md file
+    if (module.descriptionSource === 'md-file') {
       // Split into overview + exports pages
 
       // Overview page (just README)

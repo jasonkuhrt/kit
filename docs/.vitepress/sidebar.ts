@@ -2,14 +2,6 @@ import type { DefaultTheme } from 'vitepress'
 import interfaceModel from '../.generated/interface.json'
 
 /**
- * Check if module has substantial README content warranting overview/exports split.
- */
-const hasSubstantialReadme = (description: string): boolean => {
-  // Has markdown headings or is substantial length
-  return description.includes('\n## ') || description.length > 200
-}
-
-/**
  * Generate VitePress sidebar items from the interface model.
  * Automatically includes nested namespaces as collapsible items.
  */
@@ -33,8 +25,8 @@ export function generateApiSidebar(): DefaultTheme.SidebarItem[] {
       }))
       .sort((a, b) => a.text.localeCompare(b.text))
 
-    // Check if module has substantial README
-    const hasReadme = hasSubstantialReadme(entrypoint.module.description)
+    // Check if module description came from external .md file
+    const hasExternalReadme = (entrypoint.module as any).descriptionSource === 'md-file'
 
     // Create sidebar item
     const item: DefaultTheme.SidebarItem = {
@@ -42,15 +34,17 @@ export function generateApiSidebar(): DefaultTheme.SidebarItem[] {
       link: `/api/${moduleName}`,
     }
 
-    // If has substantial README, create nested structure with Exports + namespaces
-    if (hasReadme) {
+    // If has external README, create nested structure with Exports + namespaces
+    if (hasExternalReadme) {
       item.items = [
         { text: 'Exports', link: `/api/${moduleName}/exports` },
         ...namespaceExports,
       ]
+      item.collapsed = true
     } else if (namespaceExports.length > 0) {
       // Otherwise, just add namespace items if any exist
       item.items = namespaceExports
+      item.collapsed = true
     }
 
     // Use category from module JSDoc, default to 'Other' if not specified

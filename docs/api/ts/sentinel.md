@@ -1,8 +1,8 @@
-# Ts.Test.not
+# Ts.SENTINEL
 
-_Ts.Test_ / **not**
+_Ts_ / **SENTINEL**
 
-Value-level negation - mirrors type-level structure.
+Utilities for working with the SENTINEL type.
 
 ## Import
 
@@ -12,14 +12,14 @@ Value-level negation - mirrors type-level structure.
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Test.not.someFunction()
+Ts.SENTINEL.someFunction()
 ```
 
 ```typescript [Barrel]
 import * as Ts from '@wollybeard/kit/ts'
 
 // Access via namespace
-Ts.Test.not.someFunction()
+Ts.SENTINEL.someFunction()
 ```
 
 :::

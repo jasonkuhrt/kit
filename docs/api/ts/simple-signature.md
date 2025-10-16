@@ -58,14 +58,12 @@ $Fn
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-interface PartitionFn extends
-  SimpleSignature<[
-    (obj: object, keys: string[]) => { picked: object; omitted: object },
-  ]>
-{
+interface PartitionFn extends SimpleSignature<[
+  (obj: object, keys: string[]) => { picked: object; omitted: object }
+]> {
   <T extends object, K extends keyof T>(
     obj: T,
-    keys: K[],
+    keys: K[]
   ): { picked: Pick<T, K>; omitted: Omit<T, K> }
 }
 
@@ -97,10 +95,7 @@ SimpleSignature
 
 ```typescript
 interface SimpleSignature<
-  $Overloads extends readonly [
-    (...args: any[]) => any,
-    ...Array<(...args: any[]) => any>,
-  ],
+  $Overloads extends readonly [(...args: any[]) => any, ...Array<(...args: any[]) => any>],
 > {
   [symbol]: $Overloads[number]
 }
@@ -122,13 +117,11 @@ $Overloads
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-interface MyFunctionType extends
-  SimpleSignature<[
-    (x: string) => number,
-    (x: number) => string,
-    (x: boolean) => boolean,
-  ]>
-{
+interface MyFunctionType extends SimpleSignature<[
+  (x: string) => number,
+  (x: number) => string,
+  (x: boolean) => boolean
+]> {
   // Your complex generic signature
   <T extends string | number | boolean>(x: T): ComplexType<T>
 }
@@ -139,14 +132,12 @@ interface MyFunctionType extends
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Single overload (most common case)
-interface PartitionFn extends
-  SimpleSignature<[
-    (obj: object, keys: string[]) => { picked: object; omitted: object },
-  ]>
-{
+interface PartitionFn extends SimpleSignature<[
+  (obj: object, keys: string[]) => { picked: object; omitted: object }
+]> {
   <T extends object, K extends keyof T>(
     obj: T,
-    keys: K[],
+    keys: K[]
   ): { picked: Pick<T, K>; omitted: Omit<T, K> }
 }
 ```
@@ -175,27 +166,20 @@ import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Function without __simpleSignature
 type Fn1 = (a: string, b: number) => boolean
-type Result1 = GetSignature<Fn1> // (a: string, b: number) => boolean
+type Result1 = GetSignature<Fn1>  // (a: string, b: number) => boolean
 
 // Function with __simpleSignature
 declare const partition: {
-  <T extends object, K extends keyof T>(
-    obj: T,
-    keys: K[],
-  ): { picked: Pick<T, K>; omitted: Omit<T, K> }
-  [__simpleSignature]: (
-    obj: object,
-    keys: string[],
-  ) => { picked: object; omitted: object }
+  <T extends object, K extends keyof T>(obj: T, keys: K[]): { picked: Pick<T, K>; omitted: Omit<T, K> }
+  [__simpleSignature]: (obj: object, keys: string[]) => { picked: object; omitted: object }
 }
-type Result2 = GetSignature<typeof partition> // (obj: object, keys: string[]) => { picked: object; omitted: object }
+type Result2 = GetSignature<typeof partition>  // (obj: object, keys: string[]) => { picked: object; omitted: object }
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetParameters`
 
 ```typescript
-type GetParameters<$fn> = GetSignature<$fn> extends (...args: any) => any
-  ? Parameters<GetSignature<$fn>>
+type GetParameters<$fn> = GetSignature<$fn> extends (...args: any) => any ? Parameters<GetSignature<$fn>>
   : never
 ```
 
@@ -213,21 +197,20 @@ $fn
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type Params1 = GetParameters<(a: string, b: number) => void> // [a: string, b: number]
+type Params1 = GetParameters<(a: string, b: number) => void>  // [a: string, b: number]
 
 // With __simpleSignature
 declare const partition: {
   <T extends object, K extends keyof T>(obj: T, keys: K[]): any
   [__simpleSignature]: (obj: object, keys: string[]) => any
 }
-type Params2 = GetParameters<typeof partition> // [obj: object, keys: string[]]
+type Params2 = GetParameters<typeof partition>  // [obj: object, keys: string[]]
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetReturnType`
 
 ```typescript
-type GetReturnType<$fn> = GetSignature<$fn> extends (...args: any) => any
-  ? ReturnType<GetSignature<$fn>>
+type GetReturnType<$fn> = GetSignature<$fn> extends (...args: any) => any ? ReturnType<GetSignature<$fn>>
   : never
 ```
 
@@ -245,18 +228,12 @@ $fn
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type Return1 = GetReturnType<(a: string) => number> // number
+type Return1 = GetReturnType<(a: string) => number>  // number
 
 // With __simpleSignature
 declare const partition: {
-  <T extends object, K extends keyof T>(
-    obj: T,
-    keys: K[],
-  ): { picked: Pick<T, K>; omitted: Omit<T, K> }
-  [__simpleSignature]: (
-    obj: object,
-    keys: string[],
-  ) => { picked: object; omitted: object }
+  <T extends object, K extends keyof T>(obj: T, keys: K[]): { picked: Pick<T, K>; omitted: Omit<T, K> }
+  [__simpleSignature]: (obj: object, keys: string[]) => { picked: object; omitted: object }
 }
-type Return2 = GetReturnType<typeof partition> // { picked: object; omitted: object }
+type Return2 = GetReturnType<typeof partition>  // { picked: object; omitted: object }
 ```

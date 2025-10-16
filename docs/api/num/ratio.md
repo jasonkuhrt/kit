@@ -240,7 +240,7 @@ Convert ratio to mixed number representation. Returns whole part and fractional 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromWith`
 
 ```typescript
-;((denominator: NonZero) => (numerator: Int) => Ratio)
+(denominator: NonZero) => (numerator: Int) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L110" />
@@ -250,7 +250,7 @@ Create a function that constructs ratios with a fixed numerator. Useful for crea
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`
 
 ```typescript
-;((numerator: Int) => (denominator: NonZero) => Ratio)
+(numerator: Int) => (denominator: NonZero) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L125" />
@@ -260,7 +260,7 @@ Create a function that constructs ratios with a fixed denominator. Useful for wo
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`
 
 ```typescript
-;((a: Ratio) => (b: Ratio) => Ratio)
+(a: Ratio) => (b: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L257" />
@@ -270,7 +270,7 @@ Create a function that adds a specific ratio. Useful for repeated additions.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
 
 ```typescript
-;((b: Ratio) => (a: Ratio) => Ratio)
+(b: Ratio) => (a: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L271" />
@@ -280,7 +280,7 @@ Create a function that adds to a specific ratio. Useful for accumulating values.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`
 
 ```typescript
-;((a: Ratio) => (b: Ratio) => Ratio)
+(a: Ratio) => (b: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L304" />
@@ -290,7 +290,7 @@ Create a function that subtracts from a specific ratio. Useful for calculating r
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractOn`
 
 ```typescript
-;((a: Ratio) => (b: Ratio) => Ratio)
+(a: Ratio) => (b: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L318" />
@@ -300,7 +300,7 @@ Create a function that subtracts a specific ratio. Useful for repeated subtracti
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`
 
 ```typescript
-;((a: Ratio) => (b: Ratio) => Ratio)
+(a: Ratio) => (b: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L355" />
@@ -310,7 +310,7 @@ Create a function that multiplies by a specific ratio. Useful for scaling.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
 
 ```typescript
-;((b: Ratio) => (a: Ratio) => Ratio)
+(b: Ratio) => (a: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L369" />
@@ -320,7 +320,7 @@ Create a function that multiplies a specific ratio. Useful for applying ratios t
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideWith`
 
 ```typescript
-;((a: Ratio) => (b: Ratio) => Ratio)
+(a: Ratio) => (b: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L408" />
@@ -330,7 +330,7 @@ Create a function that divides from a specific ratio. Useful for finding proport
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideOn`
 
 ```typescript
-;((a: Ratio) => (b: Ratio) => Ratio)
+(a: Ratio) => (b: Ratio) => Ratio
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L422" />
@@ -340,7 +340,7 @@ Create a function that divides by a specific ratio. Useful for repeated division
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareOn`
 
 ```typescript
-;((a: Ratio) => (b: Ratio) => 0 | 1 | -1)
+(a: Ratio) => (b: Ratio) => 0 | 1 | -1
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L459" />
@@ -350,7 +350,7 @@ Create a function that compares against a specific ratio. Useful for filtering o
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareWith`
 
 ```typescript
-;((b: Ratio) => (a: Ratio) => 0 | 1 | -1)
+(b: Ratio) => (a: Ratio) => 0 | 1 | -1
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/ratio/ratio.ts#L473" />

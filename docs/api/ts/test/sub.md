@@ -1,8 +1,8 @@
-# Ts.Test.not
+# Ts.Test.sub
 
-_Ts.Test_ / **not**
+_Ts.Test_ / **sub**
 
-Value-level negation - mirrors type-level structure.
+Sub relation at value level - namespace-only (not callable).
 
 ## Import
 
@@ -12,14 +12,14 @@ Value-level negation - mirrors type-level structure.
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Test.not.someFunction()
+Ts.Test.sub.someFunction()
 ```
 
 ```typescript [Barrel]
 import * as Ts from '@wollybeard/kit/ts'
 
 // Access via namespace
-Ts.Test.not.someFunction()
+Ts.Test.sub.someFunction()
 ```
 
 :::

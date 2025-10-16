@@ -225,7 +225,7 @@ export const extractFromFiles = (params: {
     if (namespaceDescription || namespaceCategory) {
       module = {
         ...module,
-        ...(namespaceDescription ? { description: namespaceDescription } : {}),
+        ...(namespaceDescription ? { description: namespaceDescription, descriptionSource: 'jsdoc' as const } : {}),
         ...(namespaceCategory ? { category: namespaceCategory } : {}),
       }
     }
@@ -443,7 +443,7 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
     if (namespaceDescription || namespaceCategory) {
       module = {
         ...module,
-        ...(namespaceDescription ? { description: namespaceDescription } : {}),
+        ...(namespaceDescription ? { description: namespaceDescription, descriptionSource: 'jsdoc' as const } : {}),
         ...(namespaceCategory ? { category: namespaceCategory } : {}),
       }
     }
