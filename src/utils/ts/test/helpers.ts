@@ -254,41 +254,14 @@ type BuiltInTypes =
  * ```
  */
 export type TupleToTips<$Tips extends readonly string[]> = {
-  [i in keyof $Tips as i extends `${infer __n__ extends number}` ? `tip_${Letters[__n__]}` : never]: $Tips[i]
+  [i in keyof $Tips as i extends `${infer __n__ extends number}` ? `tip_${Str.Char.LettersLower[__n__]}` : never]: $Tips[i]
 }
 
 /**
  * Alphabet mapping for tip indices.
  * @internal
  */
-type Letters = [
-  'a',
-  'b',
-  'c',
-  'd',
-  'e',
-  'f',
-  'g',
-  'h',
-  'i',
-  'j',
-  'k',
-  'l',
-  'm',
-  'n',
-  'o',
-  'p',
-  'q',
-  'r',
-  's',
-  't',
-  'u',
-  'v',
-  'w',
-  'x',
-  'y',
-  'z',
-]
+type Letters = Str.Char.Letter
 
 /**
  * Represents a static assertion error at the type level, optimized for type testing.

@@ -2,8 +2,7 @@ import type { Simplify } from 'type-fest'
 import type { Apply } from '../kind.js'
 import type { GetRelation, IsExact } from '../relation.js'
 import { type AssertionFn, runtime, type StaticErrorAssertion } from './helpers.js'
-import type { _ExactError } from './shared.js'
-import { WARNING } from './symbols.js'
+import type { _ExactError, ComputeDiff } from './shared.js'
 
 //
 //
@@ -27,14 +26,16 @@ interface ExactKind {
   parameters: [$Expected: unknown, $Actual: unknown]
   // dprint-ignore
   return:
-    IsExact<this['parameters'][1], this['parameters'][0]> extends true
+    Relation.IsExact<this['parameters'][1], this['parameters'][0]> extends true
       ? never
-      : GetRelation<this['parameters'][0], this['parameters'][1]> extends 'equivalent'
+      : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent
         ? _ExactError<this['parameters'][0], this['parameters'][1]>
         : StaticErrorAssertion<
             '⚠ Types are not exactly equal',
             this['parameters'][0],
-            this['parameters'][1]
+            this['parameters'][1],
+            never,
+            ComputeDiff<this['parameters'][0], this['parameters'][1]>
           >
 }
 

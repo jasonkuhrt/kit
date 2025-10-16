@@ -266,23 +266,23 @@ export const extractModuleFromFile = (
       continue
     }
 
-    // Use first declaration (typically there's only one)
-    const decl = declarations[0]!
+    // Process ALL declarations (can be multiple with declaration merging)
+    for (const decl of declarations) {
+      // Skip if this is a source file (namespace re-export from another file)
+      if (Node.isSourceFile(decl)) {
+        // This is a namespace re-exported from another file - skip it
+        // It should have been processed in the namespace re-export section
+        continue
+      }
 
-    // Skip if this is a source file (namespace re-export from another file)
-    if (Node.isSourceFile(decl)) {
-      // This is a namespace re-exported from another file - skip it
-      // It should have been processed in the namespace re-export section
-      continue
+      // Check if this export should be filtered
+      const jsdoc = parseJSDoc(decl)
+      if (shouldFilterExport(exportName, jsdoc, options)) {
+        continue
+      }
+
+      moduleExports.push(extractExport(exportName, decl))
     }
-
-    // Check if this export should be filtered
-    const jsdoc = parseJSDoc(decl)
-    if (shouldFilterExport(exportName, jsdoc, options)) {
-      continue
-    }
-
-    moduleExports.push(extractExport(exportName, decl))
   }
 
   // Get module-level description from external markdown or JSDoc fallback

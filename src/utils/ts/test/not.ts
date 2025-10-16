@@ -1,5 +1,5 @@
-import type { Apply, Kind } from '../kind.js'
-import type { GetRelation, IsExact } from '../relation.js'
+import type { Apply } from '../kind.js'
+import type { Relation } from '../relation.js'
 import { type AssertionFn, runtime, runtimeUnary, type StaticErrorAssertion, type UnaryAssertionFn } from './helpers.js'
 
 /**

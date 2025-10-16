@@ -171,3 +171,5 @@ export type GetRelation<A, B> =
     // Example: {a: 1} and {b: 2} don't extend each other, but {a: 1, b: 2} satisfies both.
     // We check if their intersection is never to determine if they're completely incompatible.
     : [A & B] extends [never] ? 'disjoint' : 'overlapping'
+
+export type equivalent = 'equivalent'

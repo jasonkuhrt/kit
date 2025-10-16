@@ -1,8 +1,7 @@
 import type { Obj } from '#obj'
-import type { Apply, Kind } from '../kind.ts'
+import type { Apply } from '../kind.ts'
 import type { ShowInTemplate } from '../ts.ts'
 import { type AssertionFn, runtime, type StaticErrorAssertion } from './helpers.ts'
-import type { ___NoValue___ } from './shared.ts'
 
 //
 //
