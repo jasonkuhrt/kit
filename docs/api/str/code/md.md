@@ -147,7 +147,7 @@ import { Str } from '@wollybeard/kit/str'
 // [!code word:codeGroup:1]
 Str.Code.Md.codeGroup([
   { label: 'npm', code: 'npm install foo', language: 'bash' },
-  { label: 'pnpm', code: 'pnpm add foo', language: 'bash' },
+  { label: 'pnpm', code: 'pnpm add foo', language: 'bash' }
 ])
 ```
 
@@ -272,7 +272,7 @@ import { Str } from '@wollybeard/kit/str'
 Str.Code.Md.table({
   'Name': 'Alice',
   'Age': '30',
-  'City': undefined, // filtered out
+  'City': undefined  // filtered out
 })
 // | | |
 // | - | - |
@@ -307,7 +307,7 @@ doc.blank()
 doc`Main description`
 
 if (showExample) {
-  // [!code word:codeFence:1]
+// [!code word:codeFence:1]
   doc.codeFence('const x = 1', 'ts')
 }
 
@@ -351,7 +351,7 @@ doc.heading(1, 'API Reference')
 // [!code word:blank:1]
 doc.blank()
 if (hasDescription) {
-  // [!code word:add:1]
+// [!code word:add:1]
   doc.add(description)
 }
 // [!code word:build:1]
@@ -383,17 +383,14 @@ interface Builder {
    * Add a line to the markdown via tagged template.
    * Use empty template for blank lines: `doc\`\``
    */
-  (
-    strings: TemplateStringsArray,
-    ...values: Array<string | number | Raw | null | undefined>
-  ): Builder
+  (strings: TemplateStringsArray, ...values: Array<string | number | Raw | null | undefined>): Builder
 
-  /**
+/**
  * Add content directly. Skips if null/undefined.
  * Perfect for chaining with optional content.
  *
  * @example
- *
+ * 
 ```ts
    * doc
    *   .add(description)  // skips if null/undefined
@@ -457,11 +454,7 @@ interface Builder {
    * doc.codeFence('const x = 1', 'typescript')
    * ```
    */
-  codeFence(
-    code: string | null | undefined,
-    language?: string,
-    modifiers?: string,
-  ): Builder
+  codeFence(code: string | null | undefined, language?: string, modifiers?: string): Builder
 
   /**
    * Add a VitePress code group with multiple tabs.
@@ -474,11 +467,7 @@ interface Builder {
    * ])
    * ```
    */
-  codeGroup(
-    tabs: Array<
-      { label: string; code: string; language?: string; modifiers?: string }
-    >,
-  ): Builder
+  codeGroup(tabs: Array<{ label: string; code: string; language?: string; modifiers?: string }>): Builder
 
   /**
    * Add a list item.
@@ -513,11 +502,7 @@ interface Builder {
    * doc.container('warning', 'Deprecated', 'Use newMethod() instead')
    * ```
    */
-  container(
-    type: 'warning' | 'tip' | 'info' | 'danger',
-    title: string,
-    content: string,
-  ): Builder
+  container(type: 'warning' | 'tip' | 'info' | 'danger', title: string, content: string): Builder
 
   /**
    * Build the final markdown string with whitespace normalization.
@@ -546,7 +531,7 @@ doc.blank()
 doc`Main description here.`
 
 if (showTable) {
-  // [!code word:table:1]
+// [!code word:table:1]
   doc.table({ 'Type': 'string', 'Required': 'Yes' })
 }
 
@@ -561,11 +546,11 @@ return doc.build()
 
 ````typescript
 interface Template {
-  /**
+/**
  * Tagged template for building markdown content.
  *
  * @example
- *
+ * 
 ```ts
    * const doc = template`
    *   # ${title}
@@ -576,10 +561,7 @@ interface Template {
    * `
    * ```
    */
-  (
-    strings: TemplateStringsArray,
-    ...values: Array<string | number | Raw | null | undefined>
-  ): string
+  (strings: TemplateStringsArray, ...values: Array<string | number | Raw | null | undefined>): string
 
   /**
    * Create a new markdown builder for imperative construction.
@@ -601,9 +583,7 @@ interface Template {
    * // Usage: getDoc('My Title', ['item1', 'item2']) -> string
    * ```
    */
-  factory: <$Args extends any[]>(
-    fn: (doc: Builder, ...args: $Args) => void,
-  ) => (...args: $Args) => string
+  factory: <$Args extends any[]>(fn: (doc: Builder, ...args: $Args) => void) => (...args: $Args) => string
 
   /**
    * Markdown element helpers for generating formatted elements.

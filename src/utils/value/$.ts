@@ -5,6 +5,6 @@
  * identity proxies, and lazy value resolution. Includes helpers for working
  * with deferred computations and value type checking.
  *
- * @category Error Handling & Values
+ * @category Utils
  */
 export * as Value from './$$.js'

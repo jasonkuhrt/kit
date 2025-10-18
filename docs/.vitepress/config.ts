@@ -8,8 +8,8 @@ export default defineConfig({
   title: '@wollybeard/kit',
   description: 'A TypeScript utility library with functional programming utilities',
 
-  // Use / when deployed on Netlify, /kit/ for local development
-  base: process.env.NETLIFY ? '/' : '/kit/',
+  // Use / for local development and production
+  base: '/',
 
   // Remove .html from URLs
   cleanUrls: true,
@@ -20,7 +20,9 @@ export default defineConfig({
   markdown: {
     codeTransformers: [
       transformerNotationWordHighlight(),
-      transformerTwoslash(),
+      // Enable Twoslash in CI or when explicitly enabled via TWOSLASH=true
+      // Disabled by default in local dev for faster iteration
+      ...(process.env.CI || process.env.TWOSLASH === 'true' ? [transformerTwoslash()] : []),
     ],
   },
 

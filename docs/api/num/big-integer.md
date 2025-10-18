@@ -357,7 +357,7 @@ BigInteger
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+(a: BigInteger) => (b: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L129" />
@@ -367,7 +367,7 @@ Create a function that operates on a specific BigInteger by adding to it. Data-f
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+(b: BigInteger) => (a: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L147" />
@@ -377,7 +377,7 @@ Create a function that adds with a specific BigInteger value. Data-second patter
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+(b: BigInteger) => (a: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L177" />
@@ -387,7 +387,7 @@ Create a function that subtracts with a specific BigInteger. Data-second pattern
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractOn`
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+(a: BigInteger) => (b: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L191" />
@@ -397,7 +397,7 @@ Create a function that operates on a specific BigInteger by subtracting from it.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+(a: BigInteger) => (b: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L227" />
@@ -407,7 +407,7 @@ Create a function that operates on a specific BigInteger by multiplying it. Data
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+(b: BigInteger) => (a: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L244" />
@@ -417,7 +417,7 @@ Create a function that multiplies with a specific BigInteger. Data-second patter
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideOn`
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+(a: BigInteger) => (b: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L281" />
@@ -427,7 +427,7 @@ Create a function that operates on a specific BigInteger by dividing it. Data-fi
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideWith`
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+(b: BigInteger) => (a: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L298" />
@@ -437,7 +437,7 @@ Create a function that divides by a specific BigInteger. Data-second pattern: th
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `remainderOn`
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+(a: BigInteger) => (b: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L335" />
@@ -447,7 +447,7 @@ Create a function that operates on a specific BigInteger to get its remainder. D
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `remainderWith`
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+(b: BigInteger) => (a: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L351" />
@@ -457,7 +457,7 @@ Create a function that gets remainder with a specific divisor. Data-second patte
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerOn`
 
 ```typescript
-;((base: BigInteger) => (exponent: BigInteger) => BigInteger)
+(base: BigInteger) => (exponent: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L388" />
@@ -467,7 +467,7 @@ Create a function that operates on a specific BigInteger base by raising it to p
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerWith`
 
 ```typescript
-;((exponent: BigInteger) => (base: BigInteger) => BigInteger)
+(exponent: BigInteger) => (base: BigInteger) => BigInteger
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L406" />
@@ -477,7 +477,7 @@ Create a function that raises to a specific power. Data-second pattern: the fixe
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareOn`
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => 0 | 1 | -1)
+(a: BigInteger) => (b: BigInteger) => 0 | 1 | -1
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L456" />
@@ -487,7 +487,7 @@ Create a function that operates on a specific BigInteger by comparing it. Data-f
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareWith`
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => 0 | 1 | -1)
+(b: BigInteger) => (a: BigInteger) => 0 | 1 | -1
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L474" />

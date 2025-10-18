@@ -5,6 +5,6 @@
  * including type guards, merging, creation, and index signature manipulation.
  * Strictly validates plain objects, rejecting arrays and class instances.
  *
- * @category Collections
+ * @category Core Data Structures
  */
 export * as Rec from './$$.js'

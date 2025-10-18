@@ -101,7 +101,7 @@ export type Interpolatable =
  * processString(42)       // Type error with custom message
  * ```
  *
- * @category Error Messages
+ * @category Utils
  */
 export interface StaticError<
   $Message extends string = string,

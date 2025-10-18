@@ -100,7 +100,7 @@ Add two numbers together.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
 
 ```typescript
-;((a: number) => (b: number) => number)
+(a: number) => (b: number) => number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L48" />
@@ -127,7 +127,7 @@ Subtract one number from another. Takes the second number away from the first nu
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`
 
 ```typescript
-;((a: number) => (b: number) => number)
+(a: number) => (b: number) => number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L88" />
@@ -154,7 +154,7 @@ Multiply two numbers together. This gives you the result of adding a number to i
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
 
 ```typescript
-;((b: number) => (a: number) => number)
+(b: number) => (a: number) => number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L132" />
@@ -216,7 +216,7 @@ Find the smaller of two numbers. Returns whichever number is less.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `minWith`
 
 ```typescript
-;((a: number) => (b: number) => number)
+(a: number) => (b: number) => number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L866" />
@@ -243,7 +243,7 @@ Find the larger of two numbers. Returns whichever number is greater.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `maxWith`
 
 ```typescript
-;((a: number) => (b: number) => number)
+(a: number) => (b: number) => number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L910" />
@@ -314,7 +314,7 @@ Raise a number to a power (exponentiation). This multiplies the base number by i
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerWith`
 
 ```typescript
-;((exponent: number) => (base: number) => number)
+(exponent: number) => (base: number) => number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L230" />
@@ -465,7 +465,7 @@ Find the greatest common divisor (GCD) of two integers. The GCD is the largest p
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `gcdWith`
 
 ```typescript
-;((a: Int) => (b: Int) => Natural)
+(a: Int) => (b: Int) => Natural
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L971" />
@@ -492,7 +492,7 @@ Find the least common multiple (LCM) of two integers. The LCM is the smallest po
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `lcmWith`
 
 ```typescript
-;((a: Int) => (b: Int) => Whole)
+(a: Int) => (b: Int) => Whole
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L1020" />
@@ -752,7 +752,7 @@ Round a number to the nearest integer or to a specific number of decimal places.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `roundWith`
 
 ```typescript
-;((precision?: number | undefined) => (value: number) => number)
+(precision?: number | undefined) => (value: number) => number
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L286" />
@@ -925,7 +925,7 @@ Calculate the angle from the positive x-axis to a point (x, y). This is like ata
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `atan2With`
 
 ```typescript
-;((y: Finite) => (x: Finite) => Radians)
+(y: Finite) => (x: Finite) => Radians
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L762" />
@@ -969,13 +969,13 @@ Provides number equality comparison using strict equality (===). Handles special
 import { Num } from '@wollybeard/kit'
 
 // [!code word:is:1]
-Num.Eq.is(42, 42) // true
+Num.Eq.is(42, 42)           // true
 // [!code word:is:1]
-Num.Eq.is(3.14, 3.14) // true
+Num.Eq.is(3.14, 3.14)       // true
 // [!code word:is:1]
-Num.Eq.is(0, -0) // true (positive and negative zero are equal)
+Num.Eq.is(0, -0)            // true (positive and negative zero are equal)
 // [!code word:is:1]
-Num.Eq.is(NaN, NaN) // false (NaN is never equal to itself)
+Num.Eq.is(NaN, NaN)         // false (NaN is never equal to itself)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Type`
@@ -997,13 +997,13 @@ Provides type checking for number values using typeof.
 import { Num } from '@wollybeard/kit'
 
 // [!code word:is:1]
-Num.Type.is(42) // true
+Num.Type.is(42)            // true
 // [!code word:is:1]
-Num.Type.is(3.14) // true
+Num.Type.is(3.14)          // true
 // [!code word:is:1]
-Num.Type.is(NaN) // true (NaN is a number)
+Num.Type.is(NaN)           // true (NaN is a number)
 // [!code word:is:1]
-Num.Type.is('42') // false
+Num.Type.is('42')          // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Floor`

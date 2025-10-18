@@ -4,6 +4,6 @@
  * Provides utilities for working with Promises including deferred promise
  * creation, promise combinators, and async control flow patterns.
  *
- * @category Error Handling & Values
+ * @category Core Data Structures
  */
 export * as Prom from './$$.js'

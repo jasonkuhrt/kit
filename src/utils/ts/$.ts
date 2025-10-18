@@ -6,6 +6,6 @@
  * type testing tools. Features conditional types, type transformations, and
  * type-level assertions for advanced TypeScript patterns.
  *
- * @category Development
+ * @category Utils
  */
 export * as Ts from './$$.js'

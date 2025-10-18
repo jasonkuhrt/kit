@@ -113,10 +113,7 @@ Range-constrained number.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Clamp`
 
 ```typescript
-type Clamp<_T extends number, Min extends number, Max extends number> = InRange<
-  Min,
-  Max
->
+type Clamp<_T extends number, Min extends number, Max extends number> = InRange<Min, Max>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/in-range/in-range.ts#L57" />

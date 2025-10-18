@@ -399,7 +399,7 @@ Creates a human-readable string in standard mathematical notation (a + bi). Hand
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromWith`
 
 ```typescript
-;((real: number) => (imaginary?: number | undefined) => Complex)
+(real: number) => (imaginary?: number | undefined) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L107" />
@@ -409,7 +409,7 @@ Create a function that constructs complex numbers with a fixed real part. Useful
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`
 
 ```typescript
-;((imaginary?: number | undefined) => (real: number) => Complex)
+(imaginary?: number | undefined) => (real: number) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L122" />
@@ -449,7 +449,7 @@ One complex number (1 + 0i).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`
 
 ```typescript
-;((a: Complex) => (b: Complex) => Complex)
+(a: Complex) => (b: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L217" />
@@ -461,7 +461,7 @@ This is the data-first curried version where the input becomes the first paramet
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
 
 ```typescript
-;((b: Complex) => (a: Complex) => Complex)
+(b: Complex) => (a: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L242" />
@@ -473,7 +473,7 @@ This is the data-second curried version where the fixed value is added to variou
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`
 
 ```typescript
-;((a: Complex) => (b: Complex) => Complex)
+(a: Complex) => (b: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L270" />
@@ -483,7 +483,7 @@ Create a function that subtracts from a specific complex number.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractOn`
 
 ```typescript
-;((a: Complex) => (b: Complex) => Complex)
+(a: Complex) => (b: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L286" />
@@ -495,7 +495,7 @@ This is the data-first curried version where the input becomes the subtrahend. U
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`
 
 ```typescript
-;((a: Complex) => (b: Complex) => Complex)
+(a: Complex) => (b: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L332" />
@@ -507,7 +507,7 @@ This is the data-first curried version where the input becomes the second factor
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
 
 ```typescript
-;((b: Complex) => (a: Complex) => Complex)
+(b: Complex) => (a: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L359" />
@@ -519,7 +519,7 @@ This is the data-second curried version where the fixed multiplier is applied to
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideWith`
 
 ```typescript
-;((a: Complex) => (b: Complex) => Complex)
+(a: Complex) => (b: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L408" />
@@ -531,7 +531,7 @@ This creates a function where the provided complex number is the dividend (numer
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideOn`
 
 ```typescript
-;((a: Complex) => (b: Complex) => Complex)
+(a: Complex) => (b: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L430" />
@@ -543,7 +543,7 @@ This is the data-first curried version where the input becomes the divisor. Usef
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerOn`
 
 ```typescript
-;((z: Complex) => (n: number) => Complex)
+(z: Complex) => (n: number) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L684" />
@@ -555,7 +555,7 @@ This is the data-first curried version where the input becomes the exponent. Use
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerWith`
 
 ```typescript
-;((n: number) => (z: Complex) => Complex)
+(n: number) => (z: Complex) => Complex
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L719" />
@@ -567,7 +567,7 @@ This is the data-second curried version where the fixed exponent is applied to v
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `equalsOn`
 
 ```typescript
-;((a: Complex) => (b: Complex) => (tolerance?: number | undefined) => boolean)
+(a: Complex) => (b: Complex) => (tolerance?: number | undefined) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L898" />
@@ -579,7 +579,7 @@ This is the data-first curried version where the reference value is the first pa
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `equalsWith`
 
 ```typescript
-;((b: Complex) => (a: Complex) => (tolerance?: number | undefined) => boolean)
+(b: Complex) => (a: Complex) => (tolerance?: number | undefined) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L932" />

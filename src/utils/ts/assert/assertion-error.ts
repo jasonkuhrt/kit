@@ -78,7 +78,7 @@ export type RenderAssertionError<$Error extends AssertionErrorHash> =
  * type E5 = StaticErrorAssertion<'Types mismatch', string, number, { tip: 'Use String()', diff_missing: { x: number } }>
  * ```
  *
- * @category Error Messages
+ * @category Utils
  */
 // dprint-ignore
 export type StaticErrorAssertion<

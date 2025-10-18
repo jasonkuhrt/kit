@@ -106,8 +106,8 @@ Convert string to UPPERCASE with type-level transformation. Preserves the upperc
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
-uppercase('hello') // Type: "HELLO" (not string)
-uppercase('world') // Type: "WORLD"
+uppercase('hello')  // Type: "HELLO" (not string)
+uppercase('world')  // Type: "WORLD"
 
 // Works with plain strings too
 uppercase('hello world') // 'HELLO WORLD'
@@ -136,9 +136,9 @@ Convert the first letter of a string to lowercase with type-level transformation
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
-lowerCaseFirst('Hello') // Type: "hello"
-lowerCaseFirst('World') // Type: "world"
-lowerCaseFirst('HELLO') // Type: "hELLO"
+lowerCaseFirst('Hello')  // Type: "hello"
+lowerCaseFirst('World')  // Type: "world"
+lowerCaseFirst('HELLO')  // Type: "hELLO"
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `capFirst`
@@ -163,9 +163,9 @@ Capitalize the first letter of a string with type-level transformation.
 // @noErrors
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
-capitalizeFirst('hello') // Type: "Hello"
-capitalizeFirst('world') // Type: "World"
-capitalizeFirst('foo bar') // Type: "Foo bar"
+capitalizeFirst('hello')  // Type: "Hello"
+capitalizeFirst('world')  // Type: "World"
+capitalizeFirst('foo bar')  // Type: "Foo bar"
 ```
 
 ## Other

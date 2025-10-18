@@ -46,6 +46,6 @@
  * )
  * ```
  *
- * @category Development
+ * @category Utils
  */
 export * as Test from './$$.js'

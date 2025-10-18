@@ -22,82 +22,563 @@ import * as Ts from '@wollybeard/kit/ts'
 
 - [**`Kind`**](/api/ts/kind) - Higher-kinded type utilities for type-level programming. Provides type-level functions and utilities for simulating higher-kinded types in TypeScript.
 - [**`SimpleSignature`**](/api/ts/simple-signature) - Utilities for working with the `__simpleSignature` phantom type pattern. Allows complex generic functions to provide simpler signatures for type inference.
-- [**`Test`**](/api/ts/test) - Type-level assertion utilities for testing type correctness. Provides compile-time type checking and assertions for tests.
+- [**`Assert`**](/api/ts/assert) - # TypeScript Test Module
+
+Type-level and value-level assertion utilities for testing TypeScript code.
+
+## Core Concepts
+
+### Two Testing Modes
+
+This module supports two distinct testing modes:
+
+#### TVA Mode (Type-Value-Arg)
+
+Provide expected type, then pass a value to check:
+
+```typescript
+// Single call with value
+// [!code word:exact:1]
+Ts.Assert.exact<string>()('hello')
+
+// Preserve literal types with .const()
+// [!code word:exact:1]
+Ts.Assert.exact<1>().const(1)
+```
+
+**Signature**: `<Expected>() => (value) => void`
+
+#### TTA Mode (Type-Type-Arg)
+
+Provide both expected and actual types:
+
+```typescript
+// Type-only check - no value
+// [!code word:exact:1]
+Ts.Assert.exact<string, string>()
+
+// Fails - requires error parameter
+// [!code word:exact:1]
+Ts.Assert.exact<string, number>() // ❌ Expected 1 arguments, but got 0
+```
+
+**Signature**: `<Expected, Actual>() => void` (passes) or `<Expected, Actual>(error) => void` (fails)
+
+### Error Feedback
+
+When assertions fail, errors appear in parameter types:
+
+```typescript
+// TVA mode - error shows in value parameter type
+// [!code word:exact:1]
+Ts.Assert.exact<string>()(42)
+// Parameter type becomes: { ERROR: "...", expected: string, actual: number }
+
+// TTA mode - error parameter required
+// [!code word:exact:1]
+Ts.Assert.exact<string, number>()
+// Must provide: (error: { ERROR: "...", expected: string, actual: number })
+```
+
+## Relations
+
+### `exact`
+
+Types must be exactly equal (mutual subtype):
+
+```typescript
+exact<A, B> // A extends B AND B extends A
+```
+
+### `sub`
+
+Actual must be subtype of expected:
+
+```typescript
+sub<A, B> // B extends A
+```
+
+### `equiv`
+
+Types are equivalent (ignoring excess properties):
+
+```typescript
+equiv<A, B> // A and B have same structure, allow excess
+```
+
+### `not.*`
+
+Negated relations:
+
+```typescript
+// [!code word:exact:1]
+not.exact<A, B> // NOT (A extends B AND B extends A)
+// [!code word:sub:1]
+not.sub<A, B> // NOT (B extends A)
+// [!code word:equiv:1]
+not.equiv<A, B> // NOT (A equivalent to B)
+```
+
+## Extractors
+
+### `awaited`
+
+Extract and assert on promised type:
+
+```typescript
+// [!code word:is:1]
+// [!code word:resolve:1]
+awaited.is<number>()(Promise.resolve(1)) // OK
+// [!code word:is:1]
+// [!code word:resolve:1]
+awaited.is<string>()(Promise.resolve(1)) // ❌
+```
+
+### `returned`
+
+Extract and assert on return type:
+
+```typescript
+// [!code word:is:1]
+returned.is<number>()(() => 1) // OK
+// [!code word:awaited:1]
+// [!code word:resolve:1]
+returned.awaited<string>()(() => Promise.resolve('x')) // OK
+```
+
+### `parameter`
+
+Assert on function parameter type:
+
+```typescript
+parameter<string>()((x: string) => { }) // OK
+parameter2<number>()((a: string, b: number) => { }) // OK (2nd param)
+parameters<[string, number]>()((x: string, y: number) => { }) // OK (all)
+```
+
+## Special Types
+
+### `never`
+
+Unary assertion - expects never type:
+
+```typescript
+never()(null as never) // OK
+never<never>() // OK (TTA mode)
+never<string>() // ❌
+```
+
+### `any` / `unknown`
+
+Unary assertions for special types:
+
+```typescript
+any()(null as any) // OK
+unknown()(null as unknown) // OK
+```
+
+### `empty`
+
+Assert array/object is empty:
+
+```typescript
+empty()([]) // OK
+empty()({}) // OK
+empty()([1]) // ❌
+```
+
+## Collection Types
+
+### `array`
+
+Assert on array element type:
+
+```typescript
+array<string>()(['a', 'b']) // OK
+```
+
+### `tuple`
+
+Assert exact tuple type:
+
+```typescript
+tuple<[string, number]>()(['a', 1]) // OK
+```
+
+### `indexed`
+
+Assert type at specific index:
+
+```typescript
+indexed<0, string>()(['a', 1]) // OK - first element is string
+```
+
+## Properties
+
+### `properties`
+
+Assert object has required properties (allows excess):
+
+```typescript
+properties<{ id: string }>()({ id: '1', name: 'test' }) // OK
+```
+
+## Type-Level Testing
+
+For batch type assertions in test files:
+
+```typescript
+// Single assertion - must extend never (pass)
+type _ = Ts.Assert.Case<Equal<string, string>> // OK
+
+// Multiple assertions
+type _ = Ts.Assert.Cases<
+  Equal<string, string>, // ✓
+  Sub<'hello', string>, // ✓
+  Exact<number, number> // ✓
+>
+```
+
+## Technical Details
+
+### Literal Type Preservation
+
+Scalars with `as const` preserve their literal types when passed to generics:
+
+```typescript
+const x = 1 as const
+type T = typeof x // 1 (not number)
+
+// [!code word:exact:1]
+Ts.Assert.exact<1>()(x) // OK - x is type 1
+```
+
+Use `.const()` method for explicit literal preservation:
+
+```typescript
+// [!code word:exact:1]
+Ts.Assert.exact<1>().const(1) // Preserves literal 1
+```
+
+### Never Detection
+
+Passing `never` to non-never assertions requires explicit error parameter:
+
+```typescript
+// [!code word:exact:1]
+Ts.Assert.exact<number>()(null as never)
+// ❌ Requires: (error: NeverNotAllowedError)
+
+// [!code word:exact:1]
+Ts.Assert.exact<never>()(null as never) // OK
+```
+
+### Error Messages
+
+Error objects use aligned keys for readability:
+
+```typescript
+{
+  ERROR_________: 'Types are not exactly equal'
+  expected______: string
+  actual________: number
+}
+```
+
+Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
+
+````ts
+/**
+ * Type-level assertion utilities for testing type correctness.
+ *
+ * ## The Chaining API
+ *
+ * All assertions follow a consistent, compositional pattern:
+ *
+ * ```typescript
+// [!code word:Assert:1]
+// [!code word:not:1]
+ * Ts.Assert[.not].<relation>.<extractor?>.<extractor?>...<TypeParams>
+ * 
+```
+ *
+ * Where:
+ * - **Relation**: `exact` (structural equality), `equiv` (mutual assignability), `sub` (subtype)
+ * - **Extractor**: Optional transformation (`.awaited`, `.returned`, `.parameter`, etc.)
+ * - **Negation**: Optional `.not` prefix negates the assertion
+ *
+ * ## Quick Examples
+ *
+ * ```typescript
+ * // Type Level
+// [!code word:Cases:1]
+ * type _ = Ts.Assert.Cases <
+// [!code word:exact:1]
+ * Ts.Assert.exact<string, string>,                    // Plain relation
+// [!code word:awaited:1]
+ * Ts.Assert.sub.awaited<User, Promise<AdminUser>>,    // With extractor
+// [!code word:awaited:1]
+ * Ts.Assert.exact.returned.awaited<Data, AsyncFn>,    // Chained extractors
+// [!code word:equiv:1]
+ * Ts.Assert.not.equiv<string, number>                 // Negation
+  * >
+ *
+ * // Value Level (requires .is for identity)
+// [!code word:as:1]
+ * Ts.Assert.exact.of.as<string>()(value)
+// [!code word:awaited:1]
+  * Ts.Assert.sub.awaited<number>()(promise)
+// [!code word:awaited:1]
+  * Ts.Assert.exact.returned.awaited<User>()(asyncFn)
+// [!code word:as:1]
+  * Ts.Assert.not.sub.of.as<number>()(value)
+  * 
+```
+ *
+ * ## Relations
+ *
+ * ### `exact` - Structural Equality
+ * Types must be structurally identical. Most strict assertion.
+ *
+ * ```typescript
+// [!code word:exact:1]
+ * type T = Ts.Assert.exact<string, string>           // ✓ Pass
+// [!code word:exact:1]
+  * type T = Ts.Assert.exact<1 | 2, 2 | 1>             // ✗ Fail (different structure)
+// [!code word:exact:1]
+    * type T = Ts.Assert.exact<string & {}, string>      // ✗ Fail (different structure)
+      * 
+```
+ *
+ * ### `equiv` - Mutual Assignability (Semantic Equality)
+ * Types must be mutually assignable (compute to the same result).
+ *
+ * ```typescript
+// [!code word:equiv:1]
+ * type T = Ts.Assert.equiv<1 | 2, 2 | 1>             // ✓ Pass (same computed type)
+// [!code word:equiv:1]
+  * type T = Ts.Assert.equiv<string & {}, string>      // ✓ Pass (both compute to string)
+// [!code word:equiv:1]
+    * type T = Ts.Assert.equiv<string, number>           // ✗ Fail (not mutually assignable)
+      * 
+```
+ *
+ * ### `sub` - Subtype Checking
+ * Actual must extend Expected. Most commonly used relation.
+ *
+ * ```typescript
+// [!code word:sub:1]
+ * type T = Ts.Assert.sub<string, 'hello'>            // ✓ Pass ('hello' extends string)
+// [!code word:sub:1]
+  * type T = Ts.Assert.sub<object, { a: 1 }>           // ✓ Pass (more specific extends less)
+// [!code word:sub:1]
+    * type T = Ts.Assert.sub<'hello', string>            // ✗ Fail (string doesn't extend 'hello')
+      * 
+```
+ *
+ * ## Extractors
+ *
+ * Extractors transform types before applying the relation check.
+ *
+ * ### Special Types
+ * - `.Never<T>` / `.never()` - Check if type is `never` (type-level uses PascalCase due to keyword)
+ * - `.Any<T>` / `.any()` - Check if type is `any`
+ * - `.Unknown<T>` / `.unknown()` - Check if type is `unknown`
+ * - `.empty<T>` - Check if type is empty ([], '', or empty object)
+ *
+ * ```typescript
+// [!code word:Never:1]
+ * type T = Ts.Assert.equiv.Never<never>              // ✓ Pass
+// [!code word:any:1]
+  * Ts.Assert.exact.any()(value)                       // Value level (lowercase)
+  * 
+```
+ *
+ * ### Containers
+ * - `.array<Element, T>` - Check array element type
+ * - `.tuple<[...], T>` - Check tuple structure
+ * - `.indexed<N, Element, T>` - Check specific array/tuple element
+ *
+ * ```typescript
+// [!code word:array:1]
+ * type T = Ts.Assert.sub.array<number, (1 | 2 | 3)[]>  // ✓ Pass
+// [!code word:indexed:1]
+  * type T = Ts.Assert.exact.indexed<0, string, [string, number]>  // ✓ Pass
+    * 
+```
+ *
+ * ### Transformations (Chainable)
+ * - `.awaited` - Extract resolved type from Promise
+ * - `.returned` - Extract return type from function
+ *
+ * **These are namespace-only** (not callable). Use `.is` for terminal checks:
+ *
+ * ```typescript
+ * // Terminal check (explicit .is)
+// [!code word:is:1]
+ * type T = Ts.Assert.exact.awaited.is<number, Promise<number>>
+// [!code word:is:1]
+  * Ts.Assert.exact.returned.is<string>()(fn)
+  *
+ * // Chaining (nest extractors)
+// [!code word:awaited:1]
+ * type T = Ts.Assert.exact.returned.awaited<User, () => Promise<User>>
+// [!code word:array:1]
+// [!code word:resolve:1]
+  * Ts.Assert.sub.awaited.array<number>()(Promise.resolve([1, 2, 3]))
+  * 
+```
+ *
+ * ### Functions
+ * - `.parameter<X, F>` - First parameter (most common)
+ * - `.parameter1-5<X, F>` - Specific parameter position
+ * - `.parameters<[...], F>` - Full parameter tuple
+ *
+ * ```typescript
+// [!code word:parameter:1]
+ * type T = Ts.Assert.exact.parameter<string, (x: string) => void>
+// [!code word:parameter2:1]
+  * type T = Ts.Assert.sub.parameter2<number, (a: string, b: number) => void>
+    * 
+```
+ *
+ * ### Objects
+ * - `.properties<Props, T>` - Check specific properties (ignores others)
+ *
+ * ```typescript
+ * type Config = { id: string; name: string; debug: boolean }
+// [!code word:properties:1]
+  * type T = Ts.Assert.exact.properties<{ id: string }, Config>  // ✓ Pass
+    * 
+```
+ *
+ * ### Modifiers
+ * - `.noExcess<A, B>` - Additionally check for no excess properties
+ *
+ * **`sub.noExcess`** - Most common use case (config validation with narrowing):
+ * ```typescript
+ * type Options = { timeout?: number; retry?: boolean }
+// [!code word:noExcess:1]
+  * type T = Ts.Assert.sub.noExcess<Options, { timeout: 5000, retry: true }>  // ✓ Allows literals
+// [!code word:noExcess:1]
+    * type T = Ts.Assert.sub.noExcess<Options, { timeout: 5000, retrys: true }> // ✗ Catches typo!
+      * 
+```
+ *
+ * **`equiv.noExcess`** - Special case (optional property typos in equiv types):
+ * ```typescript
+ * type Schema = { id: number; email?: string }
+  * type Response = { id: number; emial?: string }  // Typo!
+// [!code word:equiv:1]
+    * type T = Ts.Assert.equiv<Schema, Response>          // ✓ Pass (mutually assignable)
+// [!code word:noExcess:1]
+      * type T = Ts.Assert.equiv.noExcess<Schema, Response> // ✗ Fail (catches typo!)
+        * 
+```
+ *
+ * ## Negation
+ *
+ * The `.not` namespace mirrors the entire API structure:
+ *
+ * ```typescript
+ * // Negate any assertion
+// [!code word:exact:1]
+ * type T = Ts.Assert.not.exact<string, number>             // ✓ Pass (different)
+// [!code word:awaited:1]
+  * type T = Ts.Assert.not.sub.awaited<X, Promise<Y>>        // ✓ Pass if Y doesn't extend X
+// [!code word:awaited:1]
+    * Ts.Assert.not.exact.returned.awaited<X>()(fn)            // Value level
+    * 
+```
+ *
+ * ## Value Level vs Type Level
+ *
+ * **Type Level**: Use relations and extractors directly as types
+ * ```typescript
+// [!code word:exact:1]
+ * type T = Ts.Assert.exact<A, B>
+// [!code word:awaited:1]
+  * type T = Ts.Assert.sub.awaited<X, Promise<Y>>
+    * 
+```
+ *
+ * **Value Level**: Relations require `.is`, extractors work directly
+ * ```typescript
+ * // Relations need .is for identity
+// [!code word:as:1]
+ * Ts.Assert.exact.of.as<string>()(value)    // ✓ Use .is
+// [!code word:exact:1]
+  * Ts.Assert.exact<string>()(value)       // ✗ Error - exact is not callable!
+  *
+ * // Extractors work directly
+// [!code word:awaited:1]
+ * Ts.Assert.exact.awaited<X>()(promise)  // ✓ Works
+  *
+ * // Chained extractors use .is for terminal
+// [!code word:is:1]
+ * Ts.Assert.exact.returned.is<X>()(fn)            // Terminal check
+// [!code word:awaited:1]
+  * Ts.Assert.exact.returned.awaited<X>()(fn)       // Chained check
+  * 
+```
+ *
+ * ## Why `.is` for Identity?
+ *
+ * Relations (`exact`, `equiv`, `sub`) are **namespace-only** at value level to avoid
+ * callable interfaces which pollute autocomplete with function properties (`call`, `apply`,
+ * `bind`, `length`, `name`, etc.). Using `.is` keeps autocomplete clean and consistent.
+ *
+ * ## Type-Level Diff
+ *
+ * When comparing object types, failed assertions automatically include a `diff` field:
+ *
+ * ```typescript
+ * type Expected = { id: string; name: string; age: number }
+  * type Actual = { id: number; name: string; email: string }
+    *
+// [!code word:exact:1]
+ * type T = Ts.Assert.exact<Expected, Actual>
+  * // Error includes:
+ * // diff: {
+ * //   missing: { age: number }
+ * //   excess: { email: string }
+ * //   mismatched: { id: { expected: string, actual: number } }
+ * // }
+ * 
+```
+ *
+ * ## Configuration
+ *
+ * Assertion behavior can be configured via global settings.
+ * See {@link KitLibrarySettings.Ts.Assert.Settings} for available options.
+ *
+ * @example
+ * ```typescript
+ * // Enable strict linting in your project
+ * // types/kit-settings.d.ts
+ * declare global {
+ * namespace KitLibrarySettings {
+ * namespace Ts {
+ * namespace Test {
+ * interface Settings {
+ * lintBidForExactPossibility: true
+            *         }
+ *       }
+ *     }
+ *   }
+ * }
+ * export { }
+ * 
+```
+ */
+````
+
 - [**`Union`**](/api/ts/union) - Utilities for working with union types at the type level.
 - [**`VariancePhantom`**](/api/ts/variance-phantom) - Phantom type helpers for controlling type variance (covariance, contravariance, invariance, bivariance).
 - [**`SENTINEL`**](/api/ts/sentinel) - Utilities for working with the SENTINEL type.
 - [**`Relation`**](/api/ts/relation)
 
 ## Error Messages
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `StaticError`
-
-```typescript
-interface StaticError<
-  $Message extends string = string,
-  $Context extends object = {},
-  $Hint extends string = '(none)',
-> {
-  ERROR: $Message
-  CONTEXT: $Context
-  HINT: $Hint
-}
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L106" />
-
-Represents a type error that can be surfaced at the type level.
-
-This is useful for providing more informative error messages directly in TypeScript's type checking, often used with conditional types or generic constraints. When TypeScript encounters this type, it will display the error information in a structured way.
-
-$Message
-
-- A string literal type describing the error
-
-$Context
-
-- An object type providing additional context about the error,
-
-often including the types involved
-
-$Hint
-
-- A string literal type providing a hint for resolving the error
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Ts } from '@wollybeard/kit/ts'
-// ---cut---
-// Creating a custom type error
-type RequireString<T> = T extends string ? T : StaticError<
-  'Type must be a string',
-  { Received: T },
-  'Consider using string or a string literal type'
->
-
-type Good = RequireString<'hello'> // 'hello'
-type Bad = RequireString<number> // StaticError<...>
-```
-
-```typescript twoslash
-// @noErrors
-import { Ts } from '@wollybeard/kit/ts'
-// ---cut---
-// Using in function constraints
-function processString<T>(
-  value: T extends string ? T : StaticError<
-    'Argument must be a string',
-    { ProvidedType: T }
-  >,
-): void {
-  // Implementation
-}
-
-processString('hello') // OK
-processString(42) // Type error with custom message
-```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StaticErrorAny`
 
@@ -115,38 +596,43 @@ type StaticErrorAny = StaticError<string, object, string>
 type Print<$Type, $Fallback extends string | undefined = undefined> =
   // Language base category types
   IsAny<$Type> extends true ? 'any'
-    : IsUnknown<$Type> extends true ? 'unknown'
-    : IsNever<$Type> extends true ? 'never'
-    // Special union type boolean which we display as boolean insead of true | false
-    : [$Type] extends [boolean]
-      ? ([boolean] extends [$Type] ? 'boolean' : `${$Type}`)
-    // General unions types
-    : Union.ToTuple<$Type> extends ArrMut.Any2OrMoreRO
-      ? _PrintUnion<Union.ToTuple<$Type>>
-    // Primitive and literal types
-    : $Type extends true ? 'true'
-    : $Type extends false ? 'false'
-    : $Type extends void ? ($Type extends undefined ? 'undefined' : 'void')
-    : $Type extends string ? (string extends $Type ? 'string' : `'${$Type}'`)
-    : $Type extends number ? (number extends $Type ? 'number' : `${$Type}`)
-    : $Type extends bigint ? (bigint extends $Type ? 'bigint' : `${$Type}n`)
-    : $Type extends null ? 'null'
-    : $Type extends undefined ? 'undefined'
-    // User-provided fallback takes precedence if type is not a primitive
-    : $Fallback extends string ? $Fallback
-    // Common object types and specific generic patterns
-    : $Type extends Promise<infer T> ? `Promise<${Print<T>}>`
-    : $Type extends (infer T)[] ? `Array<${Print<T>}>`
-    : $Type extends readonly (infer T)[] ? `ReadonlyArray<${Print<T>}>`
-    : $Type extends Date ? 'Date'
-    : $Type extends RegExp ? 'RegExp'
-    //
-    : $Type extends Function ? 'Function'
-    : $Type extends symbol ? 'symbol'
-    // General object fallback
-    : $Type extends object ? 'object'
-    // Ultimate fallback
-    : '?'
+  : IsUnknown<$Type> extends true ? 'unknown'
+  : IsNever<$Type> extends true ? 'never'
+
+  // Special union type boolean which we display as boolean insead of true | false
+  : [$Type] extends [boolean] ? ([boolean] extends [$Type] ? 'boolean' : `${$Type}`)
+
+  // General unions types
+  : Union.ToTuple<$Type> extends ArrMut.Any2OrMoreRO ? _PrintUnion<Union.ToTuple<$Type>>
+
+  // Primitive and literal types
+  : $Type extends true ? 'true'
+  : $Type extends false ? 'false'
+  : $Type extends void ? ($Type extends undefined ? 'undefined' : 'void')
+  : $Type extends string ? (string extends $Type ? 'string' : `'${$Type}'`)
+  : $Type extends number ? (number extends $Type ? 'number' : `${$Type}`)
+  : $Type extends bigint ? (bigint extends $Type ? 'bigint' : `${$Type}n`)
+  : $Type extends null ? 'null'
+  : $Type extends undefined ? 'undefined'
+
+  // User-provided fallback takes precedence if type is not a primitive
+  : $Fallback extends string ? $Fallback
+
+  // Common object types and specific generic patterns
+  : $Type extends Promise<infer T> ? `Promise<${Print<T>}>`
+  : $Type extends (infer T)[] ? `Array<${Print<T>}>`
+  : $Type extends readonly (infer T)[] ? `ReadonlyArray<${Print<T>}>`
+  : $Type extends Date ? 'Date'
+  : $Type extends RegExp ? 'RegExp'
+  //
+  : $Type extends Function ? 'Function'
+  : $Type extends symbol ? 'symbol'
+
+  // General object fallback
+  : $Type extends object ? 'object'
+
+  // Ultimate fallback
+  : '?'
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/print.ts#L13" />
@@ -184,7 +670,7 @@ type Message2 = `The type ${Show<'hello' | 'world'>} is not assignable`
 // Using in error messages
 type TypeError<Expected, Actual> = StaticError<
   `Type mismatch: expected ${Show<Expected>} but got ${Show<Actual>}`,
-  { Expected; Actual }
+  { Expected, Actual }
 >
 ```
 
@@ -263,9 +749,9 @@ type Valid4 = `ID: ${123n}`
 
 // Example usage in conditional types:
 type Stringify<T extends Interpolatable> = `${T}`
-type Result1 = Stringify<42> // "42"
-type Result2 = Stringify<true> // "true"
-type Result3 = Stringify<'hello'> // "hello"
+type Result1 = Stringify<42>        // "42"
+type Result2 = Stringify<true>      // "true"
+type Result3 = Stringify<'hello'>   // "hello"
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Simplify`
@@ -358,9 +844,10 @@ function process<$T = SENTINEL>(...):
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Real-world usage in assertion functions
-type AssertFn<$Expected, $Actual = SENTINEL> = Ts.SENTINEL.Is<$Actual> extends
-  true ? <$actual>(value: $actual) => void // Value mode
-  : void // Type-only mode
+type AssertFn<$Expected, $Actual = SENTINEL> =
+  Ts.SENTINEL.Is<$Actual> extends true
+  ? <$actual>(value: $actual) => void  // Value mode
+  : void                                // Type-only mode
 ```
 
 ## Utilities
@@ -400,13 +887,83 @@ const result = someFunction()
 assertExtends<string>()(_ as typeof result)
 ```
 
+## Utils
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `StaticError`
+
+```typescript
+interface StaticError<
+  $Message extends string = string,
+  $Context extends object = {},
+  $Hint extends string = '(none)',
+> {
+  ERROR: $Message
+  CONTEXT: $Context
+  HINT: $Hint
+}
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L106" />
+
+Represents a type error that can be surfaced at the type level.
+
+This is useful for providing more informative error messages directly in TypeScript's type checking, often used with conditional types or generic constraints. When TypeScript encounters this type, it will display the error information in a structured way.
+
+$Message
+
+- A string literal type describing the error
+
+$Context
+
+- An object type providing additional context about the error,
+
+often including the types involved
+
+$Hint
+
+- A string literal type providing a hint for resolving the error
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// Creating a custom type error
+type RequireString<T> = T extends string ? T : StaticError<
+  'Type must be a string',
+  { Received: T },
+  'Consider using string or a string literal type'
+>
+
+type Good = RequireString<'hello'>  // 'hello'
+type Bad = RequireString<number>    // StaticError<...>
+```
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// Using in function constraints
+function processString<T>(
+  value: T extends string ? T : StaticError<
+    'Argument must be a string',
+    { ProvidedType: T }
+  >
+): void {
+  // Implementation
+}
+
+processString('hello')  // OK
+processString(42)       // Type error with custom message
+```
+
 ## Other
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SimplifyNullable`
 
 ```typescript
-type SimplifyNullable<$T> = null extends $T ? (Simplify<$T> & {}) | null
-  : Simplify<$T> & {}
+type SimplifyNullable<$T> = null extends $T ? (Simplify<$T> & {}) | null : Simplify<$T> & {}
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L259" />
@@ -433,10 +990,10 @@ import { Ts } from '@wollybeard/kit/ts'
 // Problem: Plain Simplify can mangle nullable unions
 type User = { name: string } & { age: number }
 type MaybeUser = User | null
-type Bad = Simplify<MaybeUser> // May not preserve | null correctly
+type Bad = Simplify<MaybeUser>  // May not preserve | null correctly
 
 // Solution: SimplifyNullable preserves the null union
-type Good = SimplifyNullable<MaybeUser> // { name: string; age: number } | null
+type Good = SimplifyNullable<MaybeUser>  // { name: string; age: number } | null
 ```
 
 ```typescript twoslash
@@ -444,17 +1001,19 @@ type Good = SimplifyNullable<MaybeUser> // { name: string; age: number } | null
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Works with non-nullable types too
-type Simple = SimplifyNullable<{ a: 1 } & { b: 2 }> // { a: 1; b: 2 }
+type Simple = SimplifyNullable<{ a: 1 } & { b: 2 }>  // { a: 1; b: 2 }
 
 // Preserves null in unions
-type Nullable = SimplifyNullable<({ a: 1 } & { b: 2 }) | null> // { a: 1; b: 2 } | null
+type Nullable = SimplifyNullable<({ a: 1 } & { b: 2 }) | null>  // { a: 1; b: 2 } | null
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExtendsExact`
 
 ```typescript
-type ExtendsExact<$Input, $Constraint> = $Input extends $Constraint
-  ? $Constraint extends $Input ? $Input
+type ExtendsExact<$Input, $Constraint> =
+  $Input extends $Constraint
+  ? $Constraint extends $Input
+  ? $Input
   : never
   : never
 ```
@@ -489,10 +1048,10 @@ $B
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T1 = NotExtends<string, number> // true (string doesn't extend number)
-type T2 = NotExtends<'hello', string> // false ('hello' extends string)
-type T3 = NotExtends<42, number> // false (42 extends number)
-type T4 = NotExtends<{ a: 1 }, { b: 2 }> // true (different properties)
+type T1 = NotExtends<string, number>      // true (string doesn't extend number)
+type T2 = NotExtends<'hello', string>     // false ('hello' extends string)
+type T3 = NotExtends<42, number>          // false (42 extends number)
+type T4 = NotExtends<{ a: 1 }, { b: 2 }>  // true (different properties)
 ```
 
 ```typescript twoslash
@@ -500,11 +1059,10 @@ type T4 = NotExtends<{ a: 1 }, { b: 2 }> // true (different properties)
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Using in conditional types for optional handling
-type VarBuilderToType<$Type, $VarBuilder> = $VarBuilder['required'] extends true
-  ? Exclude<$Type, undefined>
-  : NotExtends<$VarBuilder['default'], undefined> extends true
-    ? $Type | undefined
-  : $Type
+type VarBuilderToType<$Type, $VarBuilder> =
+  $VarBuilder['required'] extends true ? Exclude<$Type, undefined> :
+  NotExtends<$VarBuilder['default'], undefined> extends true ? $Type | undefined :
+  $Type
 
 // If default is undefined, type is just $Type
 // If default is not undefined, type is $Type | undefined
@@ -515,11 +1073,12 @@ type VarBuilderToType<$Type, $VarBuilder> = $VarBuilder['required'] extends true
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Checking for specific type exclusions
-type SafeDivide<T> = NotExtends<T, 0> extends true ? number
+type SafeDivide<T> = NotExtends<T, 0> extends true
+  ? number
   : StaticError<'Cannot divide by zero'>
 
-type Result1 = SafeDivide<5> // number
-type Result2 = SafeDivide<0> // StaticError<'Cannot divide by zero'>
+type Result1 = SafeDivide<5>   // number
+type Result2 = SafeDivide<0>   // StaticError<'Cannot divide by zero'>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Writeable`
@@ -541,15 +1100,13 @@ Make all properties in an object mutable (removes readonly modifiers).
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type Readonly = { readonly x: number; readonly y: string }
-type Mutable = Writeable<Readonly> // { x: number; y: string }
+type Mutable = Writeable<Readonly>  // { x: number; y: string }
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IfExtendsElse`
 
 ```typescript
-type IfExtendsElse<$Type, $Extends, $Then, $Else> = $Type extends $Extends
-  ? $Then
-  : $Else
+type IfExtendsElse<$Type, $Extends, $Then, $Else> = $Type extends $Extends ? $Then : $Else
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L398" />
@@ -578,9 +1135,7 @@ type IsNever<$Type> = [$Type] extends [never] ? true : false
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IntersectionIgnoreNeverOrAny`
 
 ```typescript
-type IntersectionIgnoreNeverOrAny<$T> = IsAny<$T> extends true ? unknown
-  : $T extends never ? unknown
-  : $T
+type IntersectionIgnoreNeverOrAny<$T> = IsAny<$T> extends true ? unknown : $T extends never ? unknown : $T
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L405" />
@@ -590,9 +1145,7 @@ Intersection that ignores never and any.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `NeverOrAnyToUnknown`
 
 ```typescript
-type NeverOrAnyToUnknown<$T> = IsAny<$T> extends true ? unknown
-  : $T extends never ? unknown
-  : $T
+type NeverOrAnyToUnknown<$T> = IsAny<$T> extends true ? unknown : $T extends never ? unknown : $T
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L410" />
@@ -612,9 +1165,7 @@ Any narrowable primitive type.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAndUnknownToNever`
 
 ```typescript
-type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never
-  : IsUnknown<$T> extends true ? never
-  : $T
+type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never : IsUnknown<$T> extends true ? never : $T
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L420" />
@@ -639,17 +1190,16 @@ Uses the fact that `any` is the only type where `0 extends (1 & T)` is true, sin
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T1 = IsAny<any> // true
-type T2 = IsAny<unknown> // false
-type T3 = IsAny<string> // false
-type T4 = IsAny<never> // false
+type T1 = IsAny<any>      // true
+type T2 = IsAny<unknown>  // false
+type T3 = IsAny<string>   // false
+type T4 = IsAny<never>    // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsUnknown`
 
 ```typescript
-type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true)
-  : false
+type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true) : false
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L453" />
@@ -666,10 +1216,10 @@ Unknown is the top type
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T1 = IsUnknown<unknown> // true
-type T2 = IsUnknown<any> // false
-type T3 = IsUnknown<string> // false
-type T4 = IsUnknown<never> // false
+type T1 = IsUnknown<unknown>  // true
+type T2 = IsUnknown<any>      // false
+type T3 = IsUnknown<string>   // false
+type T4 = IsUnknown<never>    // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isTypeWith`

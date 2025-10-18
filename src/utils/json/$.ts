@@ -5,6 +5,6 @@
  * and validation using Effect Schema. Supports JSON primitives, objects, and
  * recursive value structures with comprehensive error handling.
  *
- * @category Serialization & Network
+ * @category Core Data Structures
  */
 export * as Json from './$$.js'

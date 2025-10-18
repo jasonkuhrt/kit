@@ -224,8 +224,7 @@ interface BoxKind extends PrivateKind {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PrivateApply`
 
 ```typescript
-type PrivateApply<$Kind extends Private, $Args> =
-  ($Kind & { [PrivateKindParameters]: $Args })[PrivateKindReturn]
+type PrivateApply<$Kind extends Private, $Args> = ($Kind & { [PrivateKindParameters]: $Args })[PrivateKindReturn]
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L154" />
@@ -252,7 +251,8 @@ type BoxOfString = PrivateKindApply<BoxKind, [string]> // Box<string>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MaybePrivateApplyOr`
 
 ```typescript
-type MaybePrivateApplyOr<$MaybeKind, $Args, $Or> = $MaybeKind extends Private
+type MaybePrivateApplyOr<$MaybeKind, $Args, $Or> =
+  $MaybeKind extends Private
   ? PrivateApply<$MaybeKind, $Args>
   : $Or
 ```
@@ -281,4 +281,53 @@ import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type Test1 = IsPrivateKind<BoxKind> // true
 type Test2 = IsPrivateKind<string> // false
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Pipe`
+
+```typescript
+type Pipe<$Kinds extends readonly Kind[], $Input> =
+  $Kinds extends readonly [infer __first__ extends Kind, ...infer __rest__ extends readonly Kind[]]
+  ? Pipe<__rest__, Apply<__first__, [$Input]>>
+  : $Input
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L218" />
+
+Apply a tuple of Kinds sequentially (left-to-right composition).
+
+Takes an array of Kind functions and applies them in sequence from left to right. This enables composing multiple type-level transformations without creating specialized intermediate types.
+
+**Application order**: Left-to-right (first Kind, then second, then third, etc.)
+
+$Kinds
+
+- Tuple of Kind functions to apply sequentially
+
+$Input
+
+- The initial type to transform
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// Define some extractors
+interface Awaited extends Kind {
+  return: Awaited<this['parameters'][0]>
+}
+
+interface ArrayElement extends Kind {
+  return: this['parameters'][0] extends (infer El)[] ? El : never
+}
+
+// Compose them: Promise<string[]> -> string[] -> string
+type Result = Pipe<[Awaited, ArrayElement], Promise<string[]>>
+// Result: string
+
+// Compose three: () => Promise<number[]> -> Promise<number[]> -> number[] -> number
+type Result2 = Pipe<[ReturnType, Awaited, ArrayElement], () => Promise<number[]>>
+// Result2: number
 ```

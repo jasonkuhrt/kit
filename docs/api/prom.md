@@ -73,7 +73,7 @@ deferred.reject(new Error('failed'))
 
 // Use the promise
 // [!code word:promise:1]
-await deferred.promise // 42
+await deferred.promise  // 42
 ```
 
 ```typescript twoslash
@@ -84,15 +84,15 @@ import { Prom } from '@wollybeard/kit/prom'
 const deferred = createDeferred<number>()
 // [!code word:log:1]
 // [!code word:isResolved:1]
-console.log(deferred.isResolved) // false
+console.log(deferred.isResolved)  // false
 // [!code word:resolve:1]
 deferred.resolve(42)
 // [!code word:log:1]
 // [!code word:isResolved:1]
-console.log(deferred.isResolved) // true
+console.log(deferred.isResolved)  // true
 // [!code word:log:1]
 // [!code word:isSettled:1]
-console.log(deferred.isSettled) // true
+console.log(deferred.isSettled)   // true
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `createDeferred`
@@ -120,12 +120,12 @@ import { Prom } from '@wollybeard/kit/prom'
 const deferred = createDeferred<number>()
 
 setTimeout(() => {
-  // [!code word:resolve:1]
+// [!code word:resolve:1]
   deferred.resolve(42)
 }, 1000)
 
 // [!code word:promise:1]
-const result = await deferred.promise // 42
+const result = await deferred.promise  // 42
 ```
 
 ```typescript twoslash
@@ -138,7 +138,7 @@ const deferred = createDeferred<number>({ strict: true })
 // [!code word:resolve:1]
 deferred.resolve(1)
 // [!code word:resolve:1]
-deferred.resolve(2) // Throws error
+deferred.resolve(2)  // Throws error
 ```
 
 ## Type Guards
@@ -172,7 +172,7 @@ Prom.isShape(Promise.resolve(42)) // true
 
 // with a thenable object
 // [!code word:isShape:1]
-Prom.isShape({ then: () => {}, catch: () => {}, finally: () => {} }) // true
+Prom.isShape({ then: () => { }, catch: () => { }, finally: () => { } }) // true
 
 // with non-promise values
 // [!code word:isShape:1]
@@ -221,7 +221,7 @@ import { Prom } from '@wollybeard/kit/prom'
 // ---cut---
 // function that accepts sync or async values
 function process<T>(value: Maybe<T>): Promise<T> {
-  // [!code word:resolve:1]
+// [!code word:resolve:1]
   return Promise.resolve(value)
 }
 
@@ -233,8 +233,9 @@ process(Promise.resolve(42)) // accepts Promise<number>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AwaitedUnion`
 
 ```typescript
-type AwaitedUnion<$MaybePromise, $Additional> = $MaybePromise extends
-  Promise<infer __promised__> ? Promise<Awaited<__promised__ | $Additional>>
+type AwaitedUnion<$MaybePromise, $Additional> =
+  $MaybePromise extends Promise<infer __promised__>
+  ? Promise<Awaited<__promised__ | $Additional>>
   : $MaybePromise | $Additional
 ```
 
@@ -302,8 +303,8 @@ const result = Prom.maybeAsync(
   () => fetchData(),
   {
     then: (data) => processData(data),
-    catch: (error) => ({ success: false, error }),
-  },
+    catch: (error) => ({ success: false, error })
+  }
 )
 
 // Just error handling
@@ -312,11 +313,11 @@ const safeResult = Prom.maybeAsync(
   () => riskyOperation(),
   {
     catch: (error, isAsync) => {
-      // [!code word:error:1]
+// [!code word:error:1]
       console.error(`Failed ${isAsync ? 'async' : 'sync'}:`, error)
       return null
-    },
-  },
+    }
+  }
 )
 
 // Just success handling
@@ -324,9 +325,9 @@ const safeResult = Prom.maybeAsync(
 const transformed = Prom.maybeAsync(
   () => getValue(),
   {
-    // [!code word:toUpperCase:1]
-    then: (value) => value.toUpperCase(),
-  },
+// [!code word:toUpperCase:1]
+    then: (value) => value.toUpperCase()
+  }
 )
 ```
 
@@ -375,9 +376,7 @@ const result = Prom.maybeAsyncEnvelope(() => 42)
 
 // Sync failure
 // [!code word:maybeAsyncEnvelope:1]
-const result = Prom.maybeAsyncEnvelope(() => {
-  throw new Error('fail')
-})
+const result = Prom.maybeAsyncEnvelope(() => { throw new Error('fail') })
 // { channel: 'fail', error: Error('fail'), async: false }
 
 // Async success
@@ -395,9 +394,7 @@ const result = await Prom.maybeAsyncEnvelope(() => Promise.reject('error'))
 // Promise resolving to Error (not a rejection!)
 // [!code word:maybeAsyncEnvelope:1]
 // [!code word:resolve:1]
-const result = await Prom.maybeAsyncEnvelope(() =>
-  Promise.resolve(new Error('value'))
-)
+const result = await Prom.maybeAsyncEnvelope(() => Promise.resolve(new Error('value')))
 // { channel: 'succeed', value: Error('value'), async: true }
 ```
 

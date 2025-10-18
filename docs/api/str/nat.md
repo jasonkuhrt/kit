@@ -139,7 +139,7 @@ Str.Nat.article('university') // 'a' (irregular)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `plural`
 
 ```typescript
-;((word: string) => string)
+(word: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L5" />
@@ -147,7 +147,7 @@ Str.Nat.article('university') // 'a' (irregular)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `singular`
 
 ```typescript
-;((word: string) => string)
+(word: string) => string
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L6" />
@@ -155,7 +155,7 @@ Str.Nat.article('university') // 'a' (irregular)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isPlural`
 
 ```typescript
-;((word: string) => boolean)
+(word: string) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L7" />
@@ -163,7 +163,7 @@ Str.Nat.article('university') // 'a' (irregular)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isSingular`
 
 ```typescript
-;((word: string) => boolean)
+(word: string) => boolean
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L8" />
