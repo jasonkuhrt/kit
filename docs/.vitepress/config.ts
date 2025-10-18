@@ -34,6 +34,8 @@ export default defineConfig({
       { text: 'API', link: '/api/' },
     ],
 
+    aside: 'left', // Move table of contents to left sidebar
+
     outline: {
       level: [2, 3], // Show h2 and h3 headings in the outline
     },

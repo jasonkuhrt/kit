@@ -19,10 +19,13 @@ import { array } from '@wollybeard/kit/ts'
 
 ## Namespaces
 
-- [**`equiv`**](/api/ts/assert/array/equiv)
-- [**`exact`**](/api/ts/assert/array/exact)
-- [**`not`**](/api/ts/assert/array/not)
-- [**`sub`**](/api/ts/assert/array/sub)
+| Namespace | Description |
+| --------- | ----------- |
+
+| [**`equiv`**](/api/ts/assert/array/equiv) | — |
+| [**`exact`**](/api/ts/assert/array/exact) | — |
+| [**`not`**](/api/ts/assert/array/not) | — |
+| [**`sub`**](/api/ts/assert/array/sub) | — |
 
 ## Constants
 

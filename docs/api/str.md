@@ -20,26 +20,27 @@ import * as Str from '@wollybeard/kit/str'
 
 ## Namespaces
 
-- [**`AxisHand`**](/api/str/axis-hand)
-- [**`Case`**](/api/str/case)
-- [**`Char`**](/api/str/char) - Uppercase letter.
-- [**`Nat`**](/api/str/nat)
-- [**`Tpl`**](/api/str/tpl)
-- [**`Code`**](/api/str/code) - Code generation and documentation utilities.
+| Namespace | Description |
+| --------- | ----------- |
 
-Provides tools for generating markdown, TSDoc/JSDoc, and TypeScript code. Includes safe JSDoc generation with escaping, builder API, and structured tag helpers.
+| [**`AxisHand`**](/api/str/axis-hand) | — |
+| [**`Case`**](/api/str/case) | — |
+| [**`Char`**](/api/str/char) | Uppercase letter. |
+| [**`Nat`**](/api/str/nat) | — |
+| [**`Tpl`**](/api/str/tpl) | — |
+| [**`Code`**](/api/str/code) | Code generation and documentation utilities.
 
-- [**`Text`**](/api/str/text) - Multi-line text formatting and layout utilities.
+Provides tools for generating markdown, TSDoc/JSDoc, and TypeScript code. Includes safe JSDoc generation with escaping, builder API, and structured tag helpers. |
+| [**`Text`**](/api/str/text) | Multi-line text formatting and layout utilities.
 
 Provides functions specifically for working with multi-line strings treated as text content: - **Line operations**: Split into lines, join lines, map transformations per line - **Indentation**: Add/remove indentation, strip common leading whitespace - **Alignment**: Pad text, span to width, fit to exact width - **Block formatting**: Format blocks with prefixes, styled borders
 
 **Use Text for**: Operations that treat strings as multi-line content with visual layout (indentation, padding for tables, line-by-line transformations).
 
-**Use root Str for**: Primitive string operations (split, join, replace, match, trim) that work on strings as atomic values.
+**Use root Str for**: Primitive string operations (split, join, replace, match, trim) that work on strings as atomic values. |
+| [**`Visual`**](/api/str/visual) | Visual-aware string utilities that handle ANSI escape codes and grapheme clusters.
 
-- [**`Visual`**](/api/str/visual) - Visual-aware string utilities that handle ANSI escape codes and grapheme clusters.
-
-These functions measure and manipulate strings based on their visual appearance, not raw character count. Useful for terminal output, tables, and formatted text.
+These functions measure and manipulate strings based on their visual appearance, not raw character count. Useful for terminal output, tables, and formatted text. |
 
 ## Builder
 

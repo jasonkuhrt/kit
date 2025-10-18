@@ -20,29 +20,32 @@ import * as Num from '@wollybeard/kit/num'
 
 ## Namespaces
 
-- [**`Degrees`**](/api/num/degrees)
-- [**`Even`**](/api/num/even)
-- [**`Finite`**](/api/num/finite)
-- [**`Float`**](/api/num/float)
-- [**`InRange`**](/api/num/in-range)
-- [**`Int`**](/api/num/int)
-- [**`Natural`**](/api/num/natural)
-- [**`Negative`**](/api/num/negative)
-- [**`NonNegative`**](/api/num/non-negative)
-- [**`NonPositive`**](/api/num/non-positive)
-- [**`NonZero`**](/api/num/non-zero)
-- [**`Odd`**](/api/num/odd)
-- [**`Percentage`**](/api/num/percentage)
-- [**`Positive`**](/api/num/positive)
-- [**`Radians`**](/api/num/radians)
-- [**`SafeInt`**](/api/num/safe-int)
-- [**`Whole`**](/api/num/whole)
-- [**`Zero`**](/api/num/zero)
-- [**`Prime`**](/api/num/prime)
-- [**`Ratio`**](/api/num/ratio)
-- [**`Frac`**](/api/num/frac)
-- [**`Complex`**](/api/num/complex)
-- [**`BigInteger`**](/api/num/big-integer)
+| Namespace | Description |
+| --------- | ----------- |
+
+| [**`Degrees`**](/api/num/degrees) | — |
+| [**`Even`**](/api/num/even) | — |
+| [**`Finite`**](/api/num/finite) | — |
+| [**`Float`**](/api/num/float) | — |
+| [**`InRange`**](/api/num/in-range) | — |
+| [**`Int`**](/api/num/int) | — |
+| [**`Natural`**](/api/num/natural) | — |
+| [**`Negative`**](/api/num/negative) | — |
+| [**`NonNegative`**](/api/num/non-negative) | — |
+| [**`NonPositive`**](/api/num/non-positive) | — |
+| [**`NonZero`**](/api/num/non-zero) | — |
+| [**`Odd`**](/api/num/odd) | — |
+| [**`Percentage`**](/api/num/percentage) | — |
+| [**`Positive`**](/api/num/positive) | — |
+| [**`Radians`**](/api/num/radians) | — |
+| [**`SafeInt`**](/api/num/safe-int) | — |
+| [**`Whole`**](/api/num/whole) | — |
+| [**`Zero`**](/api/num/zero) | — |
+| [**`Prime`**](/api/num/prime) | — |
+| [**`Ratio`**](/api/num/ratio) | — |
+| [**`Frac`**](/api/num/frac) | — |
+| [**`Complex`**](/api/num/complex) | — |
+| [**`BigInteger`**](/api/num/big-integer) | — |
 
 ## Angle Conversion
 

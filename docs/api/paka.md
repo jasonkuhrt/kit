@@ -357,8 +357,11 @@ import * as Paka from '@wollybeard/kit/paka'
 
 ## Namespaces
 
-- [**`Adaptors`**](/api/paka/adaptors)
-- [**`Extractor`**](/api/paka/extractor)
+| Namespace | Description |
+| --------- | ----------- |
+
+| [**`Adaptors`**](/api/paka/adaptors) | — |
+| [**`Extractor`**](/api/paka/extractor) | — |
 
 ## Constants
 

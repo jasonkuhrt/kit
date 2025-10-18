@@ -19,9 +19,12 @@ import { TSDoc } from '@wollybeard/kit/str'
 
 ## Namespaces
 
-- [**`tag`**](/api/str/code/tsdoc/tag) - Structured JSDoc tag helpers.
+| Namespace | Description |
+| --------- | ----------- |
 
-These helpers generate properly formatted JSDoc tags with automatic escaping. All helpers return `Raw` (safe for injection) or `null` for graceful handling.
+| [**`tag`**](/api/str/code/tsdoc/tag) | Structured JSDoc tag helpers.
+
+These helpers generate properly formatted JSDoc tags with automatic escaping. All helpers return `Raw` (safe for injection) or `null` for graceful handling. |
 
 ## Functions
 

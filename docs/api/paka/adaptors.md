@@ -19,4 +19,7 @@ import { Adaptors } from '@wollybeard/kit/paka'
 
 ## Namespaces
 
-- [**`VitePress`**](/api/paka/adaptors/vite-press)
+| Namespace | Description |
+| --------- | ----------- |
+
+| [**`VitePress`**](/api/paka/adaptors/vite-press) | — |

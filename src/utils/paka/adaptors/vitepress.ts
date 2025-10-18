@@ -443,17 +443,19 @@ const renderImportSection = (
 }
 
 /**
- * Render namespaces section with links.
+ * Render namespaces section as a table.
  */
 const renderNamespacesSection = (namespaces: Export[], breadcrumbs: string[]): string => {
-  const items = namespaces.map((ns: any) => {
+  const tableHeader = '| Namespace | Description |\n|-----------|-------------|'
+
+  const rows = namespaces.map((ns: any) => {
     const nsPath = `/api/${[...breadcrumbs, ns.name].map(Md.kebab).join('/')}`
     const link = Md.link(nsPath, `**${Md.code(ns.name)}**`)
-    const nsDesc = ns.docs?.description ? ` - ${ns.docs.description}` : ''
-    return Md.listItem(`${link}${nsDesc}`)
+    const desc = ns.docs?.description || '—'
+    return `| ${link} | ${desc} |`
   })
 
-  return Md.sections(Md.heading(2, 'Namespaces'), items.join('\n'))
+  return Md.sections(Md.heading(2, 'Namespaces'), tableHeader, rows.join('\n'))
 }
 
 /**

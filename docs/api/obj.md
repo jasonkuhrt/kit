@@ -20,15 +20,17 @@ import * as Obj from '@wollybeard/kit/obj'
 
 ## Namespaces
 
-- [**`Union`**](/api/obj/union) - Union operations on objects.
+| Namespace | Description |
+| --------- | ----------- |
+
+| [**`Union`**](/api/obj/union) | Union operations on objects.
 
 This module provides utilities for working with unions of object types, solving common TypeScript limitations when dealing with union types:
 
 - `keyof (A | B)` returns only common keys (intersection), not all keys (union) - `(A | B)['key']` returns `any` for keys not in all members - No built-in way to merge union members while preserving value unions per key
 
-These utilities use distributive conditional types to properly handle each union member separately, then combine the results.
-
-- [**`PropertySignature`**](/api/obj/property-signature)
+These utilities use distributive conditional types to properly handle each union member separately, then combine the results. |
+| [**`PropertySignature`**](/api/obj/property-signature) | — |
 
 ## Access
 

@@ -12,4 +12,7 @@ import * as test from '@wollybeard/kit/test'
 
 ## Namespaces
 
-- [**`Test`**](/api/test/test) - Custom Vitest matchers for Effect Schema and equivalence testing.
+| Namespace | Description |
+| --------- | ----------- |
+
+| [**`Test`**](/api/test/test) | Custom Vitest matchers for Effect Schema and equivalence testing. |

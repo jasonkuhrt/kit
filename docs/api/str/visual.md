@@ -19,7 +19,10 @@ import { Visual } from '@wollybeard/kit/str'
 
 ## Namespaces
 
-- [**`Table`**](/api/str/visual/table) - Visual-aware table operations for multi-column text layout.
+| Namespace | Description |
+| --------- | ----------- |
+
+| [**`Table`**](/api/str/visual/table) | Visual-aware table operations for multi-column text layout. |
 
 ## Text Formatting
 
