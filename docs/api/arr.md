@@ -20,13 +20,11 @@ import * as Arr from '@wollybeard/kit/arr'
 
 ## Access
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `last`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `last`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L186" /> {#f-last-186}
 
 ```typescript
 <$T>(array: readonly $T[]): $T | undefined
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L186" />
 
 **Parameters:**
 
@@ -52,13 +50,11 @@ Arr.last([])  // undefined
 
 ## Constants
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `empty`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `empty`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L78" /> {#c-empty-78}
 
 ```typescript
 readonly[]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L78" />
 
 :::warning DEPRECATED
 Use Array.empty from Effect instead
@@ -78,13 +74,11 @@ const emptyArray = Arr.empty
 console.log(emptyArray) // []
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `emptyArray`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `emptyArray`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L90" /> {#c-empty-array-90}
 
 ```typescript
 readonly[]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L90" />
 
 Empty array constant (frozen). Useful as a default value or sentinel.
 
@@ -100,13 +94,11 @@ const arr = items ?? Arr.emptyArray
 
 ## Normalization
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `ensure`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `ensure`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L169" /> {#f-ensure-169}
 
 ```typescript
 <$T>(value: $T | $T[]): $T[]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L169" />
 
 **Parameters:**
 
@@ -132,13 +124,11 @@ Arr.ensure(42)  // [42]
 
 ## Search
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `includes`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `includes`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L148" /> {#f-includes-148}
 
 ```typescript
 <$T>(array: $T[], value: unknown): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L148" />
 
 **Parameters:**
 
@@ -166,13 +156,11 @@ if (Arr.includes(fruits, value)) {
 
 ## Traits
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Eq`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Eq`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/traits/eq.ts#L35" /> {#c-eq-35}
 
 ```typescript
 Eq<Any>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/traits/eq.ts#L35" />
 
 Eq trait implementation for immutable arrays.
 
@@ -207,13 +195,11 @@ Arr.Eq.is(
 ) // true
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Type`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Type`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/traits/type.ts#L21" /> {#c-type-21}
 
 ```typescript
 Type<Any>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/traits/type.ts#L21" />
 
 Type trait implementation for immutable arrays.
 
@@ -237,13 +223,11 @@ Arr.Type.is(null)          // false
 
 ## Transformation
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `transpose`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `transpose`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L222" /> {#f-transpose-222}
 
 ```typescript
 <$T>(rows: readonly(readonly $T[])[]): $T[][]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L222" />
 
 **Parameters:**
 
@@ -286,13 +270,11 @@ Arr.transpose(ragged)
 
 ## Type Guards
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `assert`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `assert`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L124" /> {#f-assert-124}
 
 ```typescript
 (value: unknown): void
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L124" />
 
 **Parameters:**
 
@@ -322,13 +304,11 @@ function process(value: unknown) {
 
 ## Type Utilities
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `All`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `All`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L27" /> {#t-all-27}
 
 ```typescript
 type All<$Tuple extends [...boolean[]]> = $Tuple[number] extends true ? true : false
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L27" />
 
 Check if all booleans in a tuple are true.
 
@@ -342,13 +322,11 @@ type T1 = All<[true, true, true]>  // true
 type T2 = All<[true, false, true]>  // false
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsTupleMultiple`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsTupleMultiple`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L39" /> {#t-is-tuple-multiple-39}
 
 ```typescript
 type IsTupleMultiple<$T> = $T extends [unknown, unknown, ...unknown[]] ? true : false
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L39" />
 
 Check if a tuple has multiple elements.
 
@@ -362,13 +340,11 @@ type T1 = IsTupleMultiple<[1, 2]>  // true
 type T2 = IsTupleMultiple<[1]>  // false
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Push`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Push`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L50" /> {#t-push-50}
 
 ```typescript
 type Push<$T extends any[], $V> = [...$T, $V]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L50" />
 
 Push a value onto a tuple.
 
@@ -381,7 +357,7 @@ import { Arr } from '@wollybeard/kit/arr'
 type T = Push<[1, 2], 3>  // [1, 2, 3]
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `FirstNonUnknownNever`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `FirstNonUnknownNever`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L57" /> {#t-first-non-unknown-never-57}
 
 ```typescript
 type FirstNonUnknownNever<$T extends any[]> = $T extends [infer __first__, ...infer __rest__]
@@ -392,42 +368,32 @@ type FirstNonUnknownNever<$T extends any[]> = $T extends [infer __first__, ...in
   : never
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L57" />
-
 Get the first non-unknown, non-never element from a tuple.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `EmptyArray`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `EmptyArray`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L97" /> {#t-empty-array-97}
 
 ```typescript
 type EmptyArray = typeof emptyArray
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L97" />
-
 Type for the empty array constant.
 
 ## Other
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Unknown`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Unknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L9" /> {#t-unknown-9}
 
 ```typescript
 type Unknown = readonly unknown[]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L9" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Any`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L11" /> {#t-any-11}
 
 ```typescript
 type Any = readonly any[]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L11" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Empty`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Empty`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L13" /> {#t-empty-13}
 
 ```typescript
 type Empty = readonly []
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L13" />

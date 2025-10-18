@@ -19,13 +19,11 @@ import { Nat } from '@wollybeard/kit/str'
 
 ## Natural Language
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `list`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `list`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L23" /> {#f-list-23}
 
 ```typescript
 (items: string[]): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L23" />
 
 **Parameters:**
 
@@ -51,13 +49,11 @@ Str.Nat.list(['a', 'b']) // 'a or b'
 Str.Nat.list(['a', 'b', 'c']) // 'a, b, or c'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `ordinal`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `ordinal`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L45" /> {#f-ordinal-45}
 
 ```typescript
 (n: number): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L45" />
 
 **Parameters:**
 
@@ -87,13 +83,11 @@ Str.Nat.ordinal(21) // '21st'
 Str.Nat.ordinal(42) // '42nd'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `article`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `article`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L209" /> {#f-article-209}
 
 ```typescript
 (word: string): "a" | "an"
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L209" />
 
 **Parameters:**
 
@@ -123,42 +117,32 @@ Str.Nat.article('university') // 'a' (irregular)
 
 ## Other
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `pluralize`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `pluralize`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L4" /> {#c-pluralize-4}
 
 ```typescript
 { (word: string, count?: number | undefined, inclusive?: boolean | undefined): string; plural(word: string): string; singular(word: string): string; addPluralRule(rule: Rule, replacement: string): void; addSingularRule(rule: Rule, replacement: string): void; addIrregularRule(single: string, plural: string): void; addUncountableRule(rule: Rule): void; isPlural(word: string): boolean; isSingular(word: string): boolean; }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L4" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `plural`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `plural`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L5" /> {#c-plural-5}
 
 ```typescript
 (word: string) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L5" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `singular`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `singular`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L6" /> {#c-singular-6}
 
 ```typescript
 (word: string) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L6" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isPlural`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isPlural`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L7" /> {#c-is-plural-7}
 
 ```typescript
 (word: string) => boolean
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L7" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isSingular`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isSingular`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L8" /> {#c-is-singular-8}
 
 ```typescript
 (word: string) => boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L8" />

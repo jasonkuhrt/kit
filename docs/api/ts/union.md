@@ -21,23 +21,19 @@ import { Union } from '@wollybeard/kit/ts'
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `DiscriminantPropertyValue`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `DiscriminantPropertyValue`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L4" /> {#u-discriminant-property-value-4}
 
 ```typescript
 type DiscriminantPropertyValue = string | number | symbol
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L4" />
-
 Valid values for discriminant properties in tagged unions.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `__FORCE_DISTRIBUTION__`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `__FORCE_DISTRIBUTION__`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L37" /> {#t-**force_distribution**-37}
 
 ```typescript
 type __FORCE_DISTRIBUTION__ = any
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L37" />
 
 Marker type to make forced union distribution explicit and self-documenting.
 
@@ -74,13 +70,11 @@ type Result = AddPrefix<'a' | 'b' | 'c'>
 // 'prefix_a' | 'prefix_b' | 'prefix_c'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Include`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Include`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L49" /> {#t-include-49}
 
 ```typescript
 type Include<$T, $U> = $T extends $U ? $T : never
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L49" />
 
 Include only types that extend a constraint (opposite of Exclude). Filters a union type to only include members that extend the constraint.
 
@@ -94,7 +88,7 @@ type T = Union.Include<string | number | boolean, string | number>  // string | 
 type T2 = Union.Include<'a' | 'b' | 1 | 2, string>  // 'a' | 'b'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ToTuple`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ToTuple`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L59" /> {#t-to-tuple-59}
 
 ```typescript
 type ToTuple<
@@ -104,8 +98,6 @@ type ToTuple<
 > = true extends ___N ? []
   : [...ToTuple<Exclude<$Union, ___L>>, ___L]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L59" />
 
 Convert a union type to a tuple type.
 
@@ -118,14 +110,12 @@ import { Ts } from '@wollybeard/kit/ts'
 type T = Union.ToTuple<'a' | 'b' | 'c'>  // ['a', 'b', 'c']
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ToIntersection`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ToIntersection`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L75" /> {#t-to-intersection-75}
 
 ```typescript
 type ToIntersection<$U> = ($U extends any ? (k: $U) => void : never) extends ((k: infer __i__) => void) ? __i__
   : never
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L75" />
 
 Convert a union type to an intersection type.
 
@@ -139,14 +129,12 @@ type U = { a: string } | { b: number }
 type I = Union.ToIntersection<U>  // { a: string } & { b: number }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `LastOf`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `LastOf`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L86" /> {#t-last-of-86}
 
 ```typescript
 type LastOf<$T> = ToIntersection<$T extends any ? () => $T : never> extends () => infer __r__ ? __r__
   : never
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L86" />
 
 Get the last type in a union.
 
@@ -159,13 +147,11 @@ import { Ts } from '@wollybeard/kit/ts'
 type T = Union.LastOf<'a' | 'b' | 'c'>  // 'c'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Expanded`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Expanded`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L97" /> {#t-expanded-97}
 
 ```typescript
 type Expanded<$Union> = $Union
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L97" />
 
 Force union distribution in conditional types.
 
@@ -178,17 +164,15 @@ import { Ts } from '@wollybeard/kit/ts'
 type T = Union.Expanded<'a' | 'b'>  // 'a' | 'b' (forced distribution)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IgnoreAnyOrUnknown`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IgnoreAnyOrUnknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L102" /> {#t-ignore-any-or-unknown-102}
 
 ```typescript
 type IgnoreAnyOrUnknown<$T> = unknown extends $T ? never : $T
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L102" />
-
 Union that ignores any and unknown.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsAnyMemberExtends`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsAnyMemberExtends`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L114" /> {#t-is-any-member-extends-114}
 
 ```typescript
 type IsAnyMemberExtends<$Union, $Type> =
@@ -202,8 +186,6 @@ type IsAnyMemberExtends<$Union, $Type> =
   : true
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L114" />
-
 Check if any member of a union extends a type.
 
 **Examples:**
@@ -216,7 +198,7 @@ type T1 = Union.IsAnyMemberExtends<string | number, string>  // true
 type T2 = Union.IsAnyMemberExtends<number | boolean, string>  // false
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsHas`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsHas`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L162" /> {#t-is-has-162}
 
 ```typescript
 type IsHas<$Type, $LookingFor> =
@@ -224,8 +206,6 @@ type IsHas<$Type, $LookingFor> =
   ? false
   : true
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L162" />
 
 Checks if a union type contains a specific type.
 
@@ -272,7 +252,7 @@ type R3 = MaybeAsync<string | Promise<number>>  // true
 type R4 = MaybeAsync<string | number>           // false
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Merge`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Merge`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L182" /> {#t-merge-182}
 
 ```typescript
 type Merge<$U> = {
@@ -283,8 +263,6 @@ type Merge<$U> = {
   ]: $U extends any ? (k extends keyof $U ? $U[k] : never) : never
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L182" />
 
 Merge all members of a union into a single type.
 
@@ -298,7 +276,7 @@ type U = { a: string } | { b: number }
 type M = Union.Merge<U>  // { a: string; b: number }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Is`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Is`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L231" /> {#t-is-231}
 
 ```typescript
 type Is<$Type> =
@@ -306,8 +284,6 @@ type Is<$Type> =
   [$Type] extends [ToIntersection<$Type>] ? false :
   true
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L231" />
 
 Check if a type is a union type.
 

@@ -19,13 +19,11 @@ import { NonZero } from '@wollybeard/kit/num'
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L42" /> {#f-is-42}
 
 ```typescript
 (value: unknown): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L42" />
 
 **Parameters:**
 
@@ -35,13 +33,11 @@ import { NonZero } from '@wollybeard/kit/num'
 
 Type predicate to check if value is non-zero.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L63" /> {#f-from-63}
 
 ```typescript
 (value: number): NonZero
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L63" />
 
 **Parameters:**
 
@@ -55,13 +51,11 @@ Type predicate to check if value is non-zero.
 
 Construct a NonZero number. Throws if the value is zero.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L83" /> {#f-try-from-83}
 
 ```typescript
 (value: number): NonZero | null
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L83" />
 
 **Parameters:**
 
@@ -71,13 +65,11 @@ Construct a NonZero number. Throws if the value is zero.
 
 Try to construct a NonZero number. Returns null if the value is zero.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `safeDivide`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `safeDivide`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L100" /> {#f-safe-divide-100}
 
 ```typescript
 (dividend: number, divisor: NonZero): number
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L100" />
 
 **Parameters:**
 
@@ -88,13 +80,11 @@ Try to construct a NonZero number. Returns null if the value is zero.
 
 Safely divide a number by a NonZero divisor. This operation is guaranteed to never throw.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `safeDiv`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `safeDiv`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L118" /> {#f-safe-div-118}
 
 ```typescript
 (dividend: number, divisor: number): number | null
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L118" />
 
 **Parameters:**
 
@@ -105,13 +95,11 @@ Safely divide a number by a NonZero divisor. This operation is guaranteed to nev
 
 Try to divide two numbers safely. Returns null if the divisor is zero.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `safeDivOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `safeDivOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L137" /> {#f-safe-div-on-137}
 
 ```typescript
 (dividend: number): (divisor: number) => number | null
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L137" />
 
 **Parameters:**
 
@@ -121,13 +109,11 @@ Try to divide two numbers safely. Returns null if the divisor is zero.
 
 Create a function that safely divides a fixed dividend by any divisor.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `safeDivWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `safeDivWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L155" /> {#f-safe-div-with-155}
 
 ```typescript
 (divisor: number): (dividend: number) => number | null
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L155" />
 
 **Parameters:**
 
@@ -139,13 +125,11 @@ Create a function that safely divides any dividend by a fixed divisor.
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `NonZero`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `NonZero`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L25" /> {#intersection-non-zero-25}
 
 ```typescript
 type NonZero = number & { [NonZeroBrand]: true }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/non-zero/non-zero.ts#L25" />
 
 Non-zero number (≠ 0).
 

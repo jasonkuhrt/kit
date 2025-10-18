@@ -19,43 +19,35 @@ import { Text } from '@wollybeard/kit/str'
 
 ## Text Formatting
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultIndentCharacter`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultIndentCharacter`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L17" /> {#c-default-indent-character-17}
 
 ```typescript
 " "
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L17" />
-
 Default character used for indentation (non-breaking space).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultLineSeparator`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultLineSeparator`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L23" /> {#c-default-line-separator-23}
 
 ```typescript
 "\n"
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L23" />
-
 Default line separator character (newline).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Column`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Column`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L31" /> {#t-column-31}
 
 ```typescript
 type Column = string[]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L31" />
-
 A column is a vertical stack of lines.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `lines`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `lines`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L47" /> {#c-lines-47}
 
 ```typescript
 (value: string) => string[]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L47" />
 
 Split text into an array of lines. Pre-configured splitWith using newline separator.
 
@@ -71,13 +63,11 @@ Str.Text.lines('hello\nworld\n!') // ['hello', 'world', '!']
 Str.Text.lines('single line') // ['single line']
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `unlines`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `unlines`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L61" /> {#c-unlines-61}
 
 ```typescript
 (value: string[]) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L61" />
 
 Join an array of lines into text. Pre-configured joinWith using newline separator.
 
@@ -93,13 +83,11 @@ Str.Text.unlines(['hello', 'world', '!']) // 'hello\nworld\n!'
 Str.Text.unlines(['single line']) // 'single line'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `indent`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `indent`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L77" /> {#f-indent-77}
 
 ```typescript
 (text: string, size?: number | undefined): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L77" />
 
 **Parameters:**
 
@@ -122,23 +110,19 @@ Str.Text.indent('hello\nworld') // '  hello\n  world'
 Str.Text.indent('line1\nline2', 4) // '    line1\n    line2'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L88" /> {#c-indent-on-88}
 
 ```typescript
 (text: string) => (size?: number | undefined) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L88" />
-
 Curried version of indent with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L101" /> {#c-indent-with-101}
 
 ```typescript
 (size?: number | undefined) => (text: string) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L101" />
 
 Curried version of indent with size first.
 
@@ -153,13 +137,11 @@ const indent4 = Str.Text.indentWith(4)
 indent4('hello\nworld') // '    hello\n    world'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `indentBy`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `indentBy`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L124" /> {#f-indent-by-124}
 
 ```typescript
 (text: string, prefixOrFn: string | ((line: string, lineIndex: number) => string)): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L124" />
 
 **Parameters:**
 
@@ -191,23 +173,19 @@ Str.Text.indentBy('title\nitem', (line, i) => line === 'title' ? '' : '  ')
 // 'title\n  item'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentByOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentByOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L139" /> {#c-indent-by-on-139}
 
 ```typescript
 (text: string) => (prefixOrFn: string | ((line: string, lineIndex: number) => string)) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L139" />
-
 Curried version of indentBy with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentByWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `indentByWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L160" /> {#c-indent-by-with-160}
 
 ```typescript
 (prefixOrFn: string | ((line: string, lineIndex: number) => string)) => (text: string) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L160" />
 
 Curried version of indentBy with prefix first.
 
@@ -233,13 +211,11 @@ const conditionalIndent = Str.Text.indentByWith((line, i) =>
 conditionalIndent('# Title\nContent') // '# Title\n  Content'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `stripIndent`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `stripIndent`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L182" /> {#f-strip-indent-182}
 
 ```typescript
 (text: string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L182" />
 
 **Parameters:**
 
@@ -269,23 +245,19 @@ Str.Text.stripIndent('    line1\n\n    line2')
 // 'line1\n\nline2'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultPadCharacter`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultPadCharacter`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L208" /> {#c-default-pad-character-208}
 
 ```typescript
 " "
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L208" />
-
 Default character used for padding.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pad`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pad`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L225" /> {#f-pad-225}
 
 ```typescript
 (text: string, size: number, side?: "left" | "right" = `left`, char?: string = defaultPadCharacter): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L225" />
 
 **Parameters:**
 
@@ -312,33 +284,27 @@ Str.Text.pad('hello', 3, 'right') // 'hello   '
 Str.Text.pad('hello', 2, 'left', '-') // '--hello'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L240" /> {#c-pad-on-240}
 
 ```typescript
 (text: string) => (size: number) => (side?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L240" />
-
 Curried version of pad with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L248" /> {#c-pad-with-248}
 
 ```typescript
 (size: number) => (text: string) => (side?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L248" />
-
 Curried version of pad with size first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `padLeft`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `padLeft`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L263" /> {#f-pad-left-263}
 
 ```typescript
 (text: string, size: number, char?: string = defaultPadCharacter): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L263" />
 
 **Parameters:**
 
@@ -362,23 +328,19 @@ Str.Text.padLeft('hello', 3) // '   hello'
 Str.Text.padLeft('hello', 2, '0') // '00hello'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padLeftOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padLeftOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L273" /> {#c-pad-left-on-273}
 
 ```typescript
 (text: string) => (size: number) => (char?: string | undefined) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L273" />
-
 Curried version of padLeft with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padLeftWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padLeftWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L286" /> {#c-pad-left-with-286}
 
 ```typescript
 (size: number) => (text: string) => (char?: string | undefined) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L286" />
 
 Curried version of padLeft with size first.
 
@@ -393,13 +355,11 @@ const pad3 = Str.Text.padLeftWith(3)
 pad3('hi') // '   hi'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `padRight`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `padRight`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L301" /> {#f-pad-right-301}
 
 ```typescript
 (text: string, size: number, char?: string = defaultPadCharacter): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L301" />
 
 **Parameters:**
 
@@ -423,23 +383,19 @@ Str.Text.padRight('hello', 3) // 'hello   '
 Str.Text.padRight('hello', 2, '.') // 'hello..'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padRightOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padRightOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L311" /> {#c-pad-right-on-311}
 
 ```typescript
 (text: string) => (size: number) => (char?: string | undefined) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L311" />
-
 Curried version of padRight with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padRightWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padRightWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L324" /> {#c-pad-right-with-324}
 
 ```typescript
 (size: number) => (text: string) => (char?: string | undefined) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L324" />
 
 Curried version of padRight with size first.
 
@@ -454,13 +410,11 @@ const pad3 = Str.Text.padRightWith(3)
 pad3('hi') // 'hi   '
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `span`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `span`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L351" /> {#f-span-351}
 
 ```typescript
 (text: string, width: number, align?: "left" | "right" = `left`, char?: string = defaultPadCharacter): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L351" />
 
 **Parameters:**
 
@@ -494,23 +448,19 @@ Str.span('hi', 5, 'right')    // '   hi'
 Str.span('hello world', 5, 'left')  // 'hello world' (unchanged)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L368" /> {#c-span-on-368}
 
 ```typescript
 (text: string) => (width: number) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L368" />
-
 Curried version of span with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L383" /> {#c-span-with-383}
 
 ```typescript
 (width: number) => (text: string) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L383" />
 
 Curried version of span with width first.
 
@@ -526,13 +476,11 @@ span8('Name', 'left')   // 'Name    '
 span8('Age', 'right')   // '     Age'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fit`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fit`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L427" /> {#f-fit-427}
 
 ```typescript
 (text: string, width: number, align?: "left" | "right" = `left`, char?: string = defaultPadCharacter): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L427" />
 
 **Parameters:**
 
@@ -586,23 +534,19 @@ const row = [name, email, status].map((val, i) =>
 ).join(',')
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L443" /> {#c-fit-on-443}
 
 ```typescript
 (text: string) => (width: number) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L443" />
-
 Curried version of fit with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L462" /> {#c-fit-with-462}
 
 ```typescript
 (width: number) => (text: string) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L462" />
 
 Curried version of fit with width first.
 
@@ -623,13 +567,11 @@ statusColumn('Active', 'left')         // 'Active    '
 statusColumn('Very Long Status', 'left') // 'Very Long '
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapLines`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapLines`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L479" /> {#f-map-lines-479}
 
 ```typescript
 (text: string, fn: (line: string, index: number) => string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L479" />
 
 **Parameters:**
 
@@ -656,23 +598,19 @@ Str.Text.mapLines('a\nb\nc', (line, i) => `${i}: ${line}`)
 // '0: a\n1: b\n2: c'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mapLinesOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mapLinesOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L489" /> {#c-map-lines-on-489}
 
 ```typescript
 (text: string) => (fn: (line: string, index: number) => string) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L489" />
-
 Curried version of mapLines with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mapLinesWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mapLinesWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L502" /> {#c-map-lines-with-502}
 
 ```typescript
 (fn: (line: string, index: number) => string) => (text: string) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L502" />
 
 Curried version of mapLines with function first.
 
@@ -688,7 +626,7 @@ const uppercase = Str.Text.mapLinesWith((line) => line.toUpperCase())
 uppercase('hello\nworld') // 'HELLO\nWORLD'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StyledPrefix`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StyledPrefix`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L512" /> {#t-styled-prefix-512}
 
 ```typescript
 type StyledPrefix = {
@@ -703,17 +641,13 @@ type StyledPrefix = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L512" />
-
 Styled prefix that can have an optional color function. Used with formatBlock for colored line prefixes.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `formatBlock`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `formatBlock`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L566" /> {#f-format-block-566}
 
 ```typescript
 (block: string, opts: { prefix?: string | StyledPrefix; indent?: number; excludeFirstLine?: boolean; }): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L566" />
 
 **Parameters:**
 
@@ -764,23 +698,19 @@ Str.Text.formatBlock('data\nmore data', {
 // '\x1b[90m│ \x1b[0m  data\n\x1b[90m│ \x1b[0m  more data'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `formatBlockOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `formatBlockOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L598" /> {#c-format-block-on-598}
 
 ```typescript
 (block: string) => (opts: { prefix?: string | StyledPrefix; indent?: number; excludeFirstLine?: boolean; }) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L598" />
-
 Curried version of formatBlock with block first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `formatBlockWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `formatBlockWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L612" /> {#c-format-block-with-612}
 
 ```typescript
 (opts: { prefix?: string | StyledPrefix; indent?: number; excludeFirstLine?: boolean; }) => (block: string) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L612" />
 
 Curried version of formatBlock with options first.
 
@@ -798,12 +728,10 @@ addSpine('line1\nline2\nline3')
 
 ## Text Formatting 2
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultIndentSize`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultIndentSize`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L11" /> {#c-default-indent-size-11}
 
 ```typescript
 2
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/text.ts#L11" />
 
 Default indentation size in characters.

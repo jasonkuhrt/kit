@@ -26,66 +26,50 @@ import { parameter1 } from '@wollybeard/kit/ts'
 
 ## Constants
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `awaited`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `awaited`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L11" /> {#c-awaited-11}
 
 ```typescript
 ExtractorsBuilder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter1>, Awaited$>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L11" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `returned`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `returned`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L12" /> {#c-returned-12}
 
 ```typescript
 ExtractorsBuilder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter1>, Returned>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L12" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `array`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L13" /> {#c-array-13}
 
 ```typescript
 ExtractorsBuilder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter1>, ArrayElement>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L13" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameters`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameters`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L14" /> {#c-parameters-14}
 
 ```typescript
 ExtractorsBuilder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter1>, Parameters$>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L14" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameter2`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameter2`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L15" /> {#c-parameter2-15}
 
 ```typescript
 ExtractorsBuilder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter1>, Parameter2>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L15" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameter3`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameter3`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L16" /> {#c-parameter3-16}
 
 ```typescript
 ExtractorsBuilder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter1>, Parameter3>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L16" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameter4`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameter4`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L17" /> {#c-parameter4-17}
 
 ```typescript
 ExtractorsBuilder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter1>, Parameter4>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L17" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameter5`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameter5`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L18" /> {#c-parameter5-18}
 
 ```typescript
 ExtractorsBuilder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter1>, Parameter5>>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter1/$$.ts#L18" />

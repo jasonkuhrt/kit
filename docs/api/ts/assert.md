@@ -586,7 +586,7 @@ import { Assert } from '@wollybeard/kit/ts'
 
 ## Utils
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StaticErrorAssertion`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StaticErrorAssertion`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/assertion-error.ts#L84" /> {#t-static-error-assertion-84}
 
 ```typescript
 type StaticErrorAssertion<
@@ -621,8 +621,6 @@ type StaticErrorAssertion<
     ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta)[k]
   }>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/assertion-error.ts#L84" />
 
 Represents a static assertion error at the type level, optimized for type testing.
 
@@ -675,13 +673,11 @@ type E5 = StaticErrorAssertion<'Types mismatch', string, number, { tip: 'Use Str
 
 ## Other
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Case`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Case`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/cases.ts#L13" /> {#t-case-13}
 
 ```typescript
 type Case<$Result extends never> = $Result
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/cases.ts#L13" />
 
 Type-level test assertion that requires the result to be never (no error). Used in type-level test suites to ensure a type evaluates to never (success).
 
@@ -697,7 +693,7 @@ type MyTests = [
 ]
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Cases`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Cases`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/cases.ts#L35" /> {#t-cases-35}
 
 ```typescript
 type Cases<
@@ -803,8 +799,6 @@ type Cases<
   _T100 extends never = never,
 > = true
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/cases.ts#L35" />
 
 Type-level batch assertion helper that accepts multiple assertions. Each type parameter must extend never (no error), allowing batch type assertions.
 

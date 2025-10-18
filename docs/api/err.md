@@ -20,35 +20,29 @@ import * as Err from '@wollybeard/kit/err'
 
 ## Conversion
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `ensure`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `ensure`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/type.ts#L65" /> {#f-ensure-65}
 
 ```typescript
 (value: unknown): Error
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/type.ts#L65" />
-
 Ensure that the given value is an error and return it. If it is not an error than wrap it in one, passing the given value as the error message.
 
 ## Inspection
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `log`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `log`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/$$.ts#L23" /> {#f-log-23}
 
 ```typescript
 (error: Error, options?: { color?: boolean; stackTraceColumns?: number; identColumns?: number; maxFrames?: number; showHelp?: boolean; } | undefined): void
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/$$.ts#L23" />
-
 Log an error to console with nice formatting.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `InspectOptions`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `InspectOptions`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L175" /> {#t-inspect-options-175}
 
 ```typescript
 type InspectOptions = InferOptions<typeof optionSpecs>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L175" />
 
 Options for configuring error inspection output. All options can be overridden via environment variables.
 
@@ -101,13 +95,11 @@ process.env.ERROR_DISPLAY_COLOR = 'false'
 process.env.ERROR_DISPLAY_SHOW_HELP = 'false'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `inspect`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `inspect`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L239" /> {#f-inspect-239}
 
 ```typescript
 (error: Error, options?: { color?: boolean; stackTraceColumns?: number; identColumns?: number; maxFrames?: number; showHelp?: boolean; } | undefined): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L239" />
 
 **Parameters:**
 
@@ -164,7 +156,7 @@ console.log(Err.inspect(error, { showHelp: false }))
 
 ## Stack Traces
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `StackOptions`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `StackOptions`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L9" /> {#i-stack-options-9}
 
 ```typescript
 interface StackOptions {
@@ -200,11 +192,9 @@ interface StackOptions {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L9" />
-
 Options for cleaning and formatting stack traces.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `StackFrame`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `StackFrame`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L46" /> {#i-stack-frame-46}
 
 ```typescript
 interface StackFrame {
@@ -245,21 +235,17 @@ interface StackFrame {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L46" />
-
 Parsed stack frame information.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `parseStack`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `parseStack`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L88" /> {#f-parse-stack-88}
 
 ```typescript
 (stack: string): StackFrame[]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L88" />
-
 Parse a stack trace string into structured frames.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `StackCleanStats`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `StackCleanStats`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L167" /> {#i-stack-clean-stats-167}
 
 ```typescript
 interface StackCleanStats {
@@ -295,8 +281,6 @@ interface StackCleanStats {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L167" />
-
 Statistics about stack trace filtering. Provides detailed information about what was filtered during stack cleaning.
 
 **Examples:**
@@ -316,7 +300,7 @@ console.log(`Filtered ${result.stats.filteredFrames} frames`)
 console.log(`Showing ${result.stats.shownFrames} of ${result.stats.totalFrames} total`)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `CleanStackResult`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `CleanStackResult`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L207" /> {#i-clean-stack-result-207}
 
 ```typescript
 interface CleanStackResult {
@@ -332,17 +316,13 @@ interface CleanStackResult {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L207" />
-
 Result of cleaning a stack trace. Contains both the cleaned stack string and statistics about what was filtered.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `cleanStackWithStats`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `cleanStackWithStats`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L242" /> {#f-clean-stack-with-stats-242}
 
 ```typescript
 (stack: string, options?: StackOptions | undefined): CleanStackResult
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L242" />
 
 **Parameters:**
 
@@ -376,13 +356,11 @@ console.log(result.stack) // Cleaned stack trace
 console.log(`Filtered ${result.stats.nodeModulesFrames} node_modules frames`)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `cleanStack`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `cleanStack`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L318" /> {#f-clean-stack-318}
 
 ```typescript
 (stack: string, options?: StackOptions | undefined): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L318" />
 
 **Parameters:**
 
@@ -397,17 +375,15 @@ Use cleanStackWithStats for detailed filtering information
 
 Clean a stack trace by removing internal frames and applying filters.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `formatFrame`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `formatFrame`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L327" /> {#f-format-frame-327}
 
 ```typescript
 (frame: StackFrame): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L327" />
-
 Format a stack frame for better readability.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `CleanError`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `CleanError`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L339" /> {#class-clean-error-339}
 
 ```typescript
 class {
@@ -419,8 +395,6 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L339" />
-
 **Properties:**
 
 - `originalStack` - Original uncleaned stack trace.
@@ -428,19 +402,17 @@ class {
 
 Enhanced Error class that automatically cleans stack traces.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mergeStacks`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mergeStacks`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L375" /> {#f-merge-stacks-375}
 
 ```typescript
 (wrapper: Error, cause: Error): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L375" />
-
 Merge stack traces from multiple errors (useful for wrapped errors). This preserves the full error chain while removing duplicates.
 
 ## Try-Catch
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryCatch`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryCatch`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L109" /> {#f-try-catch-109}
 
 ```typescript
 <returned, thrown > (promise: Promise<returned>, predicates ?: readonly[TypePredicate<thrown>, ...TypePredicate < thrown > []] | undefined): Promise < returned | (IsUnknown<thrown> extends true ? Error : thrown)>
@@ -449,8 +421,6 @@ Merge stack traces from multiple errors (useful for wrapped errors). This preser
       is as Bool.TypePredicate<thrown>,
     ]): any
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L109" />
 
 **Parameters:**
 
@@ -487,23 +457,19 @@ const response = Err.tryCatch(
 ) // Response | NetworkError
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `TryCatchDefaultPredicateTypes`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `TryCatchDefaultPredicateTypes`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L35" /> {#t-try-catch-default-predicate-types-35}
 
 ```typescript
 type TryCatchDefaultPredicateTypes = Error
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L35" />
-
 Default error types caught by try/catch functions when no predicates are specified.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryCatchify`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryCatchify`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L63" /> {#f-try-catchify-63}
 
 ```typescript
 <fn extends Fn.AnyAny, thrown > (fn: fn, predicates ?: readonly[TypePredicate<thrown>, ...TypePredicate < thrown > []] =[is as Bool.TypePredicate<thrown>]): (...args: Parameters<fn>) => AwaitedUnion<ReturnType<fn>, IsUnknown<thrown> extends true ? Error : thrown>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L63" />
 
 **Parameters:**
 
@@ -537,13 +503,11 @@ const fetchSafe = Err.tryCatchify(fetch, [isNetworkError])
 const response = await fetchSafe(url) // Response | NetworkError
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryCatchIgnore`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryCatchIgnore`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L167" /> {#f-try-catch-ignore-167}
 
 ```typescript
 <$Return>(fn: () => $Return): $Return
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L167" />
 
 **Parameters:**
 
@@ -573,13 +537,11 @@ await Err.tryCatchIgnore(async () => {
 
 ## Try-Or
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOrRethrow`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOrRethrow`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L406" /> {#f-try-or-rethrow-406}
 
 ```typescript
 <$Return>(fn: () => $Return, wrapper: string | WrapOptions | ((cause: Error) => Error)): $Return extends Promise<any> ? $Return : $Return
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L406" />
 
 **Parameters:**
 
@@ -629,13 +591,11 @@ const config = await Err.tryOrRethrow(
 )
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryAllOrRethrow`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryAllOrRethrow`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L447" /> {#f-try-all-or-rethrow-447}
 
 ```typescript
 <$Fns extends readonly [() => any, ...Array<() => any>]>(fns: $Fns, wrapper: string | WrapOptions | ((cause: Error) => Error)): Promise<{ [K in keyof $Fns]: Awaited<ReturnType<$Fns[K]>>; }>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L447" />
 
 **Parameters:**
 
@@ -670,13 +630,11 @@ const [config, schema, data] = await Err.tryAllOrRethrow(
 )
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOr`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOr`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L212" /> {#f-try-or-212}
 
 ```typescript
 <success, fallback > (fn: () => success, fallback: LazyMaybe<fallback>): TryOrReturn<success, fallback>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L212" />
 
 **Parameters:**
 
@@ -728,13 +686,11 @@ const data = await Err.tryOr(
 // )
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOrAsync`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOrAsync`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L248" /> {#f-try-or-async-248}
 
 ```typescript
 <success, fallback > (fn: () => success, fallback: LazyMaybe<fallback>): Promise<Awaited<success> | Awaited<fallback>>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L248" />
 
 **Parameters:**
 
@@ -771,13 +727,11 @@ const result = await Err.tryOrAsync(
 ) // Always Promise<number | string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOrAsyncOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOrAsyncOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L273" /> {#f-try-or-async-on-273}
 
 ```typescript
 <success>(fn: () => success): <fallback>(fallback: LazyMaybe<fallback>) => Promise<Awaited<success> | Awaited<fallback>>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L273" />
 
 Curried version of tryOrAsync that takes the function first. Useful for creating reusable async error handlers.
 
@@ -793,13 +747,11 @@ const parseJsonOrFetch = Err.tryOrAsyncOn(() => JSON.parse(input))
 const data = await parseJsonOrFetch(async () => fetchDefault())
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOrAsyncWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOrAsyncWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L292" /> {#f-try-or-async-with-292}
 
 ```typescript
 <fallback>(fallback: LazyMaybe<fallback>): <success>(fn: () => success) => Promise<Awaited<success> | Awaited<fallback>>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L292" />
 
 Curried version of tryOrAsync that takes the fallback first. Always returns a Promise regardless of input types.
 
@@ -815,13 +767,11 @@ const data1 = await orFetchDefault(() => localData())
 const data2 = await orFetchDefault(() => cachedData())
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOrOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOrOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L312" /> {#f-try-or-on-312}
 
 ```typescript
 <success>(fn: () => success): <fallback>(fallback: LazyMaybe<fallback>) => TryOrReturn<success, fallback>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L312" />
 
 Curried version of tryOr that takes the function first. Useful for creating reusable error handlers.
 
@@ -841,13 +791,11 @@ const parseJsonOr = Err.tryOrOn(() => JSON.parse(input))
 const data = parseJsonOr({ error: 'Invalid JSON' })
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOrWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryOrWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L334" /> {#f-try-or-with-334}
 
 ```typescript
 <fallback>(fallback: LazyMaybe<fallback>): <success>(fn: () => success) => TryOrReturn<success, fallback>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L334" />
 
 Curried version of tryOr that takes the fallback first. Useful for creating reusable fallback patterns.
 
@@ -868,13 +816,11 @@ const result1 = orDefault(() => fetchStatus())
 const result2 = orDefault(() => getLatestData())
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `tryOrUndefined`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `tryOrUndefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L351" /> {#c-try-or-undefined-351}
 
 ```typescript
 <success>(fn: () => success) => TryOrReturn<success, undefined>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L351" />
 
 Try to execute a function and return undefined if it throws. Shorthand for `tryOrWith(undefined)`.
 
@@ -890,13 +836,11 @@ const data = Err.tryOrUndefined(() => localStorage.getItem('key'))
 // data is string | undefined
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `tryOrNull`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `tryOrNull`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L365" /> {#c-try-or-null-365}
 
 ```typescript
 <success>(fn: () => success) => TryOrReturn<success, null>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L365" />
 
 Try to execute a function and return null if it throws. Shorthand for `tryOrWith(null)`.
 
@@ -913,13 +857,11 @@ const user = await Err.tryOrNull(async () => fetchUser(id))
 
 ## Type Guards
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/type.ts#L14" /> {#f-is-14}
 
 ```typescript
 (value: unknown): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/type.ts#L14" />
 
 **Parameters:**
 
@@ -943,23 +885,19 @@ Err.is('not an error') // false
 Err.is(null) // false
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isAggregateError`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isAggregateError`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/type.ts#L25" /> {#f-is-aggregate-error-25}
 
 ```typescript
 (value: unknown): boolean
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/type.ts#L25" />
-
 Check if a value is an AggregateError instance.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isAbortError`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isAbortError`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/type.ts#L50" /> {#f-is-abort-error-50}
 
 ```typescript
 (error: any): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/type.ts#L50" />
 
 **Parameters:**
 
@@ -993,7 +931,7 @@ try {
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `ContextualError`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `ContextualError`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/contextual.ts#L6" /> {#intersection-contextual-error-6}
 
 ```typescript
 type ContextualError<$Context extends Record<string, unknown> = Record<string, unknown>> = Error & {
@@ -1001,21 +939,17 @@ type ContextualError<$Context extends Record<string, unknown> = Record<string, u
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/contextual.ts#L6" />
-
 An error with additional contextual data.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Context`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Context`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/types.ts#L7" /> {#t-context-7}
 
 ```typescript
 type Context = object
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/types.ts#L7" />
-
 Context information that can be attached to errors. Must be an object to ensure it can be properly serialized and inspected.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ErrorWithContext`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ErrorWithContext`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/types.ts#L15" /> {#i-error-with-context-15}
 
 ```typescript
 interface ErrorWithContext extends Error {
@@ -1026,8 +960,6 @@ interface ErrorWithContext extends Error {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/types.ts#L15" />
-
 :::warning DEPRECATED
 Use ContextualError instead for better type safety.
 :::
@@ -1036,13 +968,11 @@ An error that includes additional context information.
 
 ## Utilities
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `throwNull`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `throwNull`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/$$.ts#L41" /> {#f-throw-null-41}
 
 ```typescript
 <V>(value: V, message ?: string | undefined): Exclude<V, null>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/$$.ts#L41" />
 
 **Parameters:**
 
@@ -1069,23 +999,19 @@ const result = Err.throwNull(maybeNull) // throws if null
 const safe = Err.throwNull(maybeNull, 'Custom error message')
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultThrowNullMessage`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultThrowNullMessage`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/$$.ts#L52" /> {#c-default-throw-null-message-52}
 
 ```typescript
 "Unexpected null value."
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/$$.ts#L52" />
-
 Default error message used by throwNull when no custom message is provided.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `guardNull`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `guardNull`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/$$.ts#L69" /> {#f-guard-null-69}
 
 ```typescript
 <fn extends Fn.AnyAny>(fn: fn, message ?: string | undefined): ReturnExclude<null, fn>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/$$.ts#L69" />
 
 **Parameters:**
 
@@ -1111,13 +1037,11 @@ const findOrThrow = Err.guardNull(find, 'Item not found')
 const item = findOrThrow('123') // throws if not found
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `createContextualError`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `createContextualError`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/contextual.ts#L33" /> {#f-create-contextual-error-33}
 
 ```typescript
 <$Context extends Record<string, unknown>>(message: string, context: $Context): ContextualError<$Context>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/contextual.ts#L33" />
 
 **Parameters:**
 
@@ -1150,7 +1074,7 @@ console.log(error.context.userId) // '123'
 
 ## Wrapping
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `WrapOptions`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `WrapOptions`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/wrap.ts#L11" /> {#i-wrap-options-11}
 
 ```typescript
 interface WrapOptions {
@@ -1165,17 +1089,13 @@ interface WrapOptions {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/wrap.ts#L11" />
-
 Options for wrapping errors with additional context.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `wrap`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `wrap`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/wrap.ts#L51" /> {#f-wrap-51}
 
 ```typescript
 (cause: unknown, messageOrOptions: string | WrapOptions): Error
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/wrap.ts#L51" />
 
 **Parameters:**
 
@@ -1211,13 +1131,11 @@ try {
 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/wrap.ts#L83" /> {#c-wrap-on-83}
 
 ```typescript
 (cause: unknown) => (messageOrOptions: string | WrapOptions) => Error
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/wrap.ts#L83" />
 
 Curried version of wrap that takes the error first. Useful for error handling pipelines.
 
@@ -1232,13 +1150,11 @@ const wrapFetchError = Err.wrapOn(networkError)
 throw wrapFetchError('Failed to fetch data')
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/wrap.ts#L108" /> {#c-wrap-with-108}
 
 ```typescript
 (messageOrOptions: string | WrapOptions) => (cause: unknown) => Error
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/wrap.ts#L108" />
 
 Curried version of wrap that takes the message/options first. Useful for creating reusable error wrappers.
 
@@ -1267,7 +1183,7 @@ const wrapAsUserError = Err.wrapWith({
 
 ## Other
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `_InferOptions`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `_InferOptions`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L38" /> {#t-_infer-options-38}
 
 ```typescript
 type _InferOptions<$EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[]> = {
@@ -1277,29 +1193,23 @@ type _InferOptions<$EnvironmentConfigurableOptions extends EnvironmentConfigurab
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/inspect.ts#L38" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `captureStackTrace`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `captureStackTrace`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L423" /> {#f-capture-stack-trace-423}
 
 ```typescript
 (message?: string = 'Captured stack'): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L423" />
-
 Capture the current stack trace at a specific point. Useful for adding trace information without throwing.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getCaller`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getCaller`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L432" /> {#f-get-caller-432}
 
 ```typescript
 (depth?: number = 1): StackFrame | undefined
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L432" />
-
 Get the caller information from the current stack.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryCatch`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryCatch`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L116" /> {#f-try-catch-116}
 
 ```typescript
 <returned, thrown > (promise: Promise<returned>, predicates ?: readonly[TypePredicate<thrown>, ...TypePredicate < thrown > []] | undefined): Promise < returned | (IsUnknown<thrown> extends true ? Error : thrown)>
@@ -1308,8 +1218,6 @@ Get the caller information from the current stack.
       is as Bool.TypePredicate<thrown>,
     ]): any
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L116" />
 
 **Parameters:**
 
@@ -1317,7 +1225,7 @@ Get the caller information from the current stack.
 
 **Returns:** The result if successful, or the caught error
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryCatch`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryCatch`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L126" /> {#f-try-catch-126}
 
 ```typescript
 <returned, thrown > (promise: Promise<returned>, predicates ?: readonly[TypePredicate<thrown>, ...TypePredicate < thrown > []] | undefined): Promise < returned | (IsUnknown<thrown> extends true ? Error : thrown)>
@@ -1326,8 +1234,6 @@ Get the caller information from the current stack.
       is as Bool.TypePredicate<thrown>,
     ]): any
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L126" />
 
 **Parameters:**
 

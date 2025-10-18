@@ -20,13 +20,11 @@ import * as Rec from '@wollybeard/kit/rec'
 
 ## Factories
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `create`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `create`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L197" /> {#f-create-197}
 
 ```typescript
 <value>(): Record<PropertyKey, value>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L197" />
 
 **Returns:** An empty record typed to hold values of the specified type
 
@@ -76,13 +74,11 @@ const grouped = items.reduce(
 
 ## Operations
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `merge`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `merge`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L116" /> {#f-merge-116}
 
 ```typescript
 <rec1 extends Any, rec2 extends Any > (rec1: rec1, rec2: rec2): rec1 & rec2
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L116" />
 
 **Parameters:**
 
@@ -134,13 +130,11 @@ const merged = Rec.merge(config, overrides)
 
 ## Type Guards
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L67" /> {#f-is-67}
 
 ```typescript
 (value: unknown): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L67" />
 
 **Parameters:**
 
@@ -191,23 +185,19 @@ function processData(data: unknown) {
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Any`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L7" /> {#t-any-7}
 
 ```typescript
 type Any = AnyKeyTo<unknown>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L7" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyReadonly`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyReadonly`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L12" /> {#t-any-readonly-12}
 
 ```typescript
 type AnyReadonly = AnyReadonlyKeyTo<unknown>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L12" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyKeyTo`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyKeyTo`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L17" /> {#t-any-key-to-17}
 
 ```typescript
 type AnyKeyTo<$Value> = {
@@ -215,9 +205,7 @@ type AnyKeyTo<$Value> = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L17" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyReadonlyKeyTo`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyReadonlyKeyTo`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L24" /> {#t-any-readonly-key-to-24}
 
 ```typescript
 type AnyReadonlyKeyTo<$Value> = {
@@ -225,9 +213,7 @@ type AnyReadonlyKeyTo<$Value> = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L24" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Value`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Value`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L31" /> {#t-value-31}
 
 ```typescript
 type Value = {
@@ -235,9 +221,7 @@ type Value = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L31" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Optional`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Optional`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L123" /> {#t-optional-123}
 
 ```typescript
 type Optional<$Key extends PropertyKey, $Value> = {
@@ -245,17 +229,13 @@ type Optional<$Key extends PropertyKey, $Value> = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L123" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RemoveIndex`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RemoveIndex`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L139" /> {#t-remove-index-139}
 
 ```typescript
 type RemoveIndex<$T> = {
   [k in keyof $T as string extends k ? never : number extends k ? never : k]: $T[k]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L139" />
 
 Remove index signatures from an object type. Useful for converting Record types to object types with only known keys.
 
@@ -269,13 +249,11 @@ type WithIndex = { a: string; b: number;[key: string]: any }
 type WithoutIndex = RemoveIndex<WithIndex>  // { a: string; b: number }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsHasIndex`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsHasIndex`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L155" /> {#t-is-has-index-155}
 
 ```typescript
 type IsHasIndex<$T, $Key extends PropertyKey = string> = $Key extends keyof $T ? true : false
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L155" />
 
 Check if a type has an index signature.
 

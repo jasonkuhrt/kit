@@ -20,7 +20,7 @@ import * as Prom from '@wollybeard/kit/prom'
 
 ## Deferred
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Deferred`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Deferred`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/deferred.ts#L30" /> {#i-deferred-30}
 
 ```typescript
 interface Deferred<$Value> {
@@ -50,8 +50,6 @@ interface Deferred<$Value> {
   readonly isSettled: boolean
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/deferred.ts#L30" />
 
 A deferred promise with exposed resolve and reject functions.
 
@@ -95,13 +93,11 @@ console.log(deferred.isResolved)  // true
 console.log(deferred.isSettled)   // true
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `createDeferred`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `createDeferred`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/deferred.ts#L86" /> {#f-create-deferred-86}
 
 ```typescript
 <$T>(options ?: { strict?: boolean; } | undefined): Deferred<$T>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/deferred.ts#L86" />
 
 **Parameters:**
 
@@ -143,13 +139,11 @@ deferred.resolve(2)  // Throws error
 
 ## Type Guards
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isShape`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isShape`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L59" /> {#f-is-shape-59}
 
 ```typescript
 (value: unknown): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L59" />
 
 **Parameters:**
 
@@ -183,33 +177,27 @@ Prom.isShape({}) // false
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Any`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L9" /> {#t-any-9}
 
 ```typescript
 type Any = Promise<unknown>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L9" />
-
 Type representing a Promise of unknown type. Useful for generic promise handling where the resolved type is not important.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAny`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAny`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L17" /> {#t-any-any-17}
 
 ```typescript
 type AnyAny = Promise<any>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L17" />
-
 Type representing a Promise of any type. Less type-safe than Any, use with caution.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Maybe`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Maybe`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L35" /> {#u-maybe-35}
 
 ```typescript
 type Maybe<$Type> = $Type | Promise<$Type>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L35" />
 
 Type representing a value that may or may not be wrapped in a Promise.
 
@@ -230,7 +218,7 @@ process(42) // accepts number
 process(Promise.resolve(42)) // accepts Promise<number>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AwaitedUnion`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AwaitedUnion`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L86" /> {#t-awaited-union-86}
 
 ```typescript
 type AwaitedUnion<$MaybePromise, $Additional> =
@@ -238,8 +226,6 @@ type AwaitedUnion<$MaybePromise, $Additional> =
   ? Promise<Awaited<__promised__ | $Additional>>
   : $MaybePromise | $Additional
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L86" />
 
 Type that adds an additional type to a potentially promised union. If the input is a Promise, the additional type is added to the promised value. If the input is not a Promise, creates a union with the additional type.
 
@@ -256,7 +242,7 @@ type Result1 = AwaitedUnion<Promise<string>, number> // Promise<string | number>
 type Result2 = AwaitedUnion<string, number> // string | number
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Envelope`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Envelope`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L96" /> {#t-envelope-96}
 
 ```typescript
 type Envelope<T = unknown> = {
@@ -266,19 +252,15 @@ type Envelope<T = unknown> = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L96" />
-
 Envelope containing execution metadata.
 
 ## Utilities
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `maybeAsync`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `maybeAsync`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L231" /> {#f-maybe-async-231}
 
 ```typescript
 <T, R = T, E = unknown > (fn: () => T, handlers ?: MaybeAsyncHandlers<T extends Promise<infer U> ? U : T, R, E> = {}): T extends Promise<infer U> ? Promise<R | E | U> : T | R | E
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L231" />
 
 **Parameters:**
 
@@ -331,13 +313,11 @@ const transformed = Prom.maybeAsync(
 )
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `maybeAsyncEnvelope`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `maybeAsyncEnvelope`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L147" /> {#f-maybe-async-envelope-147}
 
 ```typescript
 <$return>(fn: () => $return): $return extends Promise<infer __awaited__> ? Promise<Envelope<__awaited__>> : Envelope<$return>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L147" />
 
 **Parameters:**
 
@@ -398,7 +378,7 @@ const result = await Prom.maybeAsyncEnvelope(() => Promise.resolve(new Error('va
 // { channel: 'succeed', value: Error('value'), async: true }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `MaybeAsyncHandlers`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `MaybeAsyncHandlers`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L174" /> {#i-maybe-async-handlers-174}
 
 ```typescript
 interface MaybeAsyncHandlers<T, R = T, E = unknown> {
@@ -415,7 +395,5 @@ interface MaybeAsyncHandlers<T, R = T, E = unknown> {
   catch?: (error: unknown, isAsync: boolean) => E
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/prom/prom.ts#L174" />
 
 Options for handling values that might be promises.

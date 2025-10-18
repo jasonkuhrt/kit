@@ -19,13 +19,11 @@ import { Frac } from '@wollybeard/kit/num'
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L48" /> {#f-is-48}
 
 ```typescript
 (value: unknown): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L48" />
 
 **Parameters:**
 
@@ -35,13 +33,11 @@ import { Frac } from '@wollybeard/kit/num'
 
 Type predicate to check if value is a proper fraction.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L76" /> {#f-from-76}
 
 ```typescript
 (numerator: Natural, denominator: Natural): Frac
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L76" />
 
 **Parameters:**
 
@@ -56,13 +52,11 @@ Type predicate to check if value is a proper fraction.
 
 Construct a Fraction from numerator and denominator. Both must be positive and numerator must be less than denominator.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L131" /> {#f-try-from-131}
 
 ```typescript
 (numerator: Natural, denominator: Natural): Frac | null
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L131" />
 
 **Parameters:**
 
@@ -73,13 +67,11 @@ Construct a Fraction from numerator and denominator. Both must be positive and n
 
 Try to construct a Fraction. Returns null if not a proper fraction.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fromDecimal`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fromDecimal`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L158" /> {#f-from-decimal-158}
 
 ```typescript
 (value: number, maxDenominator?: number = 100): Frac
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L158" />
 
 **Parameters:**
 
@@ -94,13 +86,11 @@ Try to construct a Fraction. Returns null if not a proper fraction.
 
 Convert a decimal to a fraction. The decimal must be between 0 and 1 (exclusive).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `toDecimal`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `toDecimal`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L183" /> {#f-to-decimal-183}
 
 ```typescript
 (frac: Frac): number
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L183" />
 
 **Parameters:**
 
@@ -110,13 +100,11 @@ Convert a decimal to a fraction. The decimal must be between 0 and 1 (exclusive)
 
 Convert fraction to decimal.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `toPercentage`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `toPercentage`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L199" /> {#f-to-percentage-199}
 
 ```typescript
 (frac: Frac): number
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L199" />
 
 **Parameters:**
 
@@ -126,13 +114,11 @@ Convert fraction to decimal.
 
 Convert fraction to percentage.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `complement`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `complement`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L218" /> {#f-complement-218}
 
 ```typescript
 (frac: Frac): Frac
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L218" />
 
 **Parameters:**
 
@@ -144,13 +130,11 @@ Get the complement of a fraction (1
 
 - fraction).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `add`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `add`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L244" /> {#f-add-244}
 
 ```typescript
 (a: Frac, b: Frac): Ratio
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L244" />
 
 **Parameters:**
 
@@ -161,13 +145,11 @@ Get the complement of a fraction (1
 
 Add two fractions. Note: The result might not be a fraction if the sum = 1.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `multiply`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `multiply`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L294" /> {#f-multiply-294}
 
 ```typescript
 (a: Frac, b: Frac): Frac
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L294" />
 
 **Parameters:**
 
@@ -182,13 +164,11 @@ Multiply two fractions. The result is always a fraction (product of two numbers
 
 1).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `compare`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `compare`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L339" /> {#f-compare-339}
 
 ```typescript
 (a: Frac, b: Frac): 0 | 1 | -1
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L339" />
 
 **Parameters:**
 
@@ -201,95 +181,77 @@ Compare two fractions.
 
 ## Constants
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L100" /> {#c-from-with-100}
 
 ```typescript
 (numerator: Natural) => (denominator: Natural) => Frac
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L100" />
-
 Create a function that constructs fractions with a fixed numerator. Useful for creating series of fractions.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L115" /> {#c-from-on-115}
 
 ```typescript
 (denominator: Natural) => (numerator: Natural) => Frac
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L115" />
-
 Create a function that constructs fractions with a fixed denominator. Useful for working with common denominators.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L260" /> {#c-add-on-260}
 
 ```typescript
 (a: Frac) => (b: Frac) => Ratio
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L260" />
-
 Create a function that adds to a specific fraction. Data-first pattern: fix the first argument.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L274" /> {#c-add-with-274}
 
 ```typescript
 (b: Frac) => (a: Frac) => Ratio
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L274" />
-
 Create a function that adds with a specific fraction. Data-second pattern: fix the second argument.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L311" /> {#c-multiply-on-311}
 
 ```typescript
 (a: Frac) => (b: Frac) => Frac
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L311" />
-
 Create a function that multiplies a specific fraction. Data-first pattern: fix the first argument.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L325" /> {#c-multiply-with-325}
 
 ```typescript
 (b: Frac) => (a: Frac) => Frac
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L325" />
-
 Create a function that multiplies with a specific fraction. Data-second pattern: fix the second argument.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L355" /> {#c-compare-on-355}
 
 ```typescript
 (a: Frac) => (b: Frac) => 0 | 1 | -1
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L355" />
-
 Create a function that compares a specific fraction. Data-first pattern: fix the first argument.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L369" /> {#c-compare-with-369}
 
 ```typescript
 (b: Frac) => (a: Frac) => 0 | 1 | -1
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L369" />
-
 Create a function that compares with a specific fraction. Data-second pattern: fix the second argument.
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Frac`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Frac`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L32" /> {#intersection-frac-32}
 
 ```typescript
 type Frac = Ratio & { [FracBrand]: true }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L32" />
 
 Fraction (proper fraction)
 

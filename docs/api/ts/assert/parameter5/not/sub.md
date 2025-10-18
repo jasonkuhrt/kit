@@ -19,119 +19,91 @@ import { sub } from '@wollybeard/kit/ts'
 
 ## Constants
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Array`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L222" /> {#c-array-222}
 
 ```typescript
 InputActualFactory<State.SetMatcher<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Parameter5>>, SubKind>, any[], false, false>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L222" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `bigint`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L78" /> {#c-bigint-78}
 
 ```typescript
 InputActualFactory<State.SetMatcher<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Parameter5>>, SubKind>, bigint, false, false>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L78" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boolean`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boolean`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L94" /> {#c-boolean-94}
 
 ```typescript
 InputActualFactory<State.SetMatcher<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Parameter5>>, SubKind>, boolean, false, false>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L94" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Date`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L158" /> {#c-date-158}
 
 ```typescript
 InputActualFactory<State.SetMatcher<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Parameter5>>, SubKind>, Date, false, false>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L158" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Error`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L190" /> {#c-error-190}
 
 ```typescript
 InputActualFactory<State.SetMatcher<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Parameter5>>, SubKind>, Error, false, false>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L190" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `null`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L126" /> {#c-null-126}
 
 ```typescript
 InputActualFactory<State.SetMatcher<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Parameter5>>, SubKind>, null, false, false>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L126" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `number`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `number`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L62" /> {#c-number-62}
 
 ```typescript
 InputActualFactory<State.SetMatcher<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Parameter5>>, SubKind>, number, false, false>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L62" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `of`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L30" /> {#c-of-30}
 
 ```typescript
 InputMatcherArgFactory<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Parameter5>>, SubKind>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L30" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Promise`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Promise`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L206" /> {#c-promise-206}
 
 ```typescript
 InputActualFactory<State.SetMatcher<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Parameter5>>, SubKind>, Promise<any>, false, false>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L206" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `RegExp`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L174" /> {#c-reg-exp-174}
 
 ```typescript
 InputActualFactory<State.SetMatcher<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Parameter5>>, SubKind>, RegExp, false, false>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L174" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `string`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L46" /> {#c-string-46}
 
 ```typescript
 InputActualFactory<State.SetMatcher<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Parameter5>>, SubKind>, string, false, false>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L46" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `symbol`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L142" /> {#c-symbol-142}
 
 ```typescript
 InputActualFactory<State.SetMatcher<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Parameter5>>, SubKind>, symbol, false, false>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L142" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `undefined`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L110" /> {#c-undefined-110}
 
 ```typescript
 InputActualFactory<State.SetMatcher<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Parameter5>>, SubKind>, undefined, false, false>>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L110" />
-
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Array`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L221" /> {#t-array-221}
 
 ```typescript
 type Array_<$Actual> = Kind.Apply<SubKind, [any[], Kind.Apply<Parameter5, [$Actual]>, true]>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L221" />
 
 Pre-curried matcher for any[]. Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) = any → T
 
@@ -148,13 +120,11 @@ type _ = Assert.parameter5.sub.Array<(arg: any[]) => any>
 type _ = Assert.parameter5.sub.Array<(arg: string) => any>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `bigint`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L77" /> {#t-bigint-77}
 
 ```typescript
 type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, Kind.Apply<Parameter5, [$Actual]>, true]>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L77" />
 
 Pre-curried matcher for bigint. Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) = any → T
 
@@ -171,13 +141,11 @@ type _ = Assert.parameter5.sub.bigint<(arg: bigint) => any>
 type _ = Assert.parameter5.sub.bigint<(arg: string) => any>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `boolean`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `boolean`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L93" /> {#t-boolean-93}
 
 ```typescript
 type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, Kind.Apply<Parameter5, [$Actual]>, true]>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L93" />
 
 Pre-curried matcher for boolean. Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) = any → T
 
@@ -194,13 +162,11 @@ type _ = Assert.parameter5.sub.boolean<(arg: boolean) => any>
 type _ = Assert.parameter5.sub.boolean<(arg: string) => any>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Date`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L157" /> {#t-date-157}
 
 ```typescript
 type Date_<$Actual> = Kind.Apply<SubKind, [Date, Kind.Apply<Parameter5, [$Actual]>, true]>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L157" />
 
 Pre-curried matcher for Date. Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) = any → T
 
@@ -217,13 +183,11 @@ type _ = Assert.parameter5.sub.Date<(arg: Date) => any>
 type _ = Assert.parameter5.sub.Date<(arg: string) => any>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Error`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L189" /> {#t-error-189}
 
 ```typescript
 type Error_<$Actual> = Kind.Apply<SubKind, [Error, Kind.Apply<Parameter5, [$Actual]>, true]>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L189" />
 
 Pre-curried matcher for Error. Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) = any → T
 
@@ -240,13 +204,11 @@ type _ = Assert.parameter5.sub.Error<(arg: Error) => any>
 type _ = Assert.parameter5.sub.Error<(arg: string) => any>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `null`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L125" /> {#t-null-125}
 
 ```typescript
 type null_<$Actual> = Kind.Apply<SubKind, [null, Kind.Apply<Parameter5, [$Actual]>, true]>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L125" />
 
 Pre-curried matcher for null. Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) = any → T
 
@@ -263,13 +225,11 @@ type _ = Assert.parameter5.sub.null<(arg: null) => any>
 type _ = Assert.parameter5.sub.null<(arg: string) => any>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `number`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `number`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L61" /> {#t-number-61}
 
 ```typescript
 type number_<$Actual> = Kind.Apply<SubKind, [number, Kind.Apply<Parameter5, [$Actual]>, true]>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L61" />
 
 Pre-curried matcher for number. Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) = any → T
 
@@ -286,25 +246,21 @@ type _ = Assert.parameter5.sub.number<(arg: number) => any>
 type _ = Assert.parameter5.sub.number<(arg: string) => any>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `of`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L29" /> {#t-of-29}
 
 ```typescript
 type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Parameter5, [$Actual]>, true]>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L29" />
-
 parameter5 + sub relation matchers.
 
 Extraction: extracts the fifth parameter type from a function Relation: subtype relation (extends)
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Promise`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Promise`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L205" /> {#t-promise-205}
 
 ```typescript
 type Promise_<$Actual> = Kind.Apply<SubKind, [Promise<any>, Kind.Apply<Parameter5, [$Actual]>, true]>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L205" />
 
 Pre-curried matcher for Promise. Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) = any → T
 
@@ -321,13 +277,11 @@ type _ = Assert.parameter5.sub.Promise<(arg: Promise<any>) => any>
 type _ = Assert.parameter5.sub.Promise<(arg: string) => any>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RegExp`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L173" /> {#t-reg-exp-173}
 
 ```typescript
 type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, Kind.Apply<Parameter5, [$Actual]>, true]>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L173" />
 
 Pre-curried matcher for RegExp. Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) = any → T
 
@@ -344,13 +298,11 @@ type _ = Assert.parameter5.sub.RegExp<(arg: RegExp) => any>
 type _ = Assert.parameter5.sub.RegExp<(arg: string) => any>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `string`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L45" /> {#t-string-45}
 
 ```typescript
 type string_<$Actual> = Kind.Apply<SubKind, [string, Kind.Apply<Parameter5, [$Actual]>, true]>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L45" />
 
 Pre-curried matcher for string. Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) = any → T
 
@@ -367,13 +319,11 @@ type _ = Assert.parameter5.sub.string<(arg: string) => any>
 type _ = Assert.parameter5.sub.string<(arg: number) => any>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `symbol`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L141" /> {#t-symbol-141}
 
 ```typescript
 type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, Kind.Apply<Parameter5, [$Actual]>, true]>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L141" />
 
 Pre-curried matcher for symbol. Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) = any → T
 
@@ -390,13 +340,11 @@ type _ = Assert.parameter5.sub.symbol<(arg: symbol) => any>
 type _ = Assert.parameter5.sub.symbol<(arg: string) => any>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `undefined`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L109" /> {#t-undefined-109}
 
 ```typescript
 type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, Kind.Apply<Parameter5, [$Actual]>, true]>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter5/not/sub.ts#L109" />
 
 Pre-curried matcher for undefined. Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) = any → T
 

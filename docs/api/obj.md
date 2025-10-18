@@ -32,13 +32,11 @@ These utilities use distributive conditional types to properly handle each union
 
 ## Access
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L63" /> {#f-get-with-63}
 
 ```typescript
 <pathInput extends PropertyPathInput>(pathInput: pathInput): <obj extends InferShapeFromPropertyPath<normalizePropertyPathInput<pathInput>>>(obj: obj) => getWith<normalizePropertyPathInput<pathInput>, obj>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L63" />
 
 **Parameters:**
 
@@ -85,13 +83,11 @@ const users = [
 users.map(Obj.getWith('score')) // [95, 87]
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L122" /> {#f-get-on-122}
 
 ```typescript
 (obj: object): (pathInput: PropertyPathInput) => unknown
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L122" />
 
 **Parameters:**
 
@@ -132,13 +128,11 @@ const apiUrl = getConfig('api.url')
 const apiKey = getConfig('api.key')
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `entries`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `entries`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L156" /> {#f-entries-156}
 
 ```typescript
 <obj extends Any>(obj: obj): { [K in keyof obj] -?: undefined extends obj[K] ? {} extends Pick<obj, K> ? [K, Exclude<obj[K]>] : [K, obj[K]] : [K, obj[K]]; } [keyof obj][]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L156" />
 
 **Parameters:**
 
@@ -169,13 +163,11 @@ Obj.entries({ a: 1, b?: 2, c: undefined })
 // Returns proper types preserving optionality
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `stringKeyEntries`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `stringKeyEntries`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L183" /> {#f-string-key-entries-183}
 
 ```typescript
 <$T extends object>(obj: $T): [string & keyof $T, $T[keyof $T]][]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L183" />
 
 **Parameters:**
 
@@ -196,13 +188,11 @@ const obj = { a: 1, b: 2 }
 Obj.stringKeyEntries(obj)  // [['a', 1], ['b', 2]]
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `entriesStrict`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `entriesStrict`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L200" /> {#f-entries-strict-200}
 
 ```typescript
 <$T extends object>(obj: $T): { [k in keyof $T]: [k, Exclude<$T[k], undefined>]; } [keyof $T][]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L200" />
 
 **Parameters:**
 
@@ -223,13 +213,11 @@ const obj = { a: 1, b: undefined, c: 2 }
 Obj.entriesStrict(obj)  // [['a', 1], ['c', 2]]
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `keysStrict`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `keysStrict`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L222" /> {#f-keys-strict-222}
 
 ```typescript
 <$T extends object>(obj: $T): (keyof $T)[]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L222" />
 
 **Parameters:**
 
@@ -250,13 +238,11 @@ const obj = { a: 1, b: 2 }
 Obj.keysStrict(obj)  // ['a', 'b'] with type ('a' | 'b')[]
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getRandomly`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getRandomly`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L241" /> {#f-get-randomly-241}
 
 ```typescript
 <obj extends Any>(obj: obj): keyof obj extends never ? undefined : obj[keyof obj]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L241" />
 
 **Parameters:**
 
@@ -280,13 +266,11 @@ Obj.getRandomly({ a: 1, b: undefined }) // Could return 1 or undefined
 Obj.getRandomly({}) // Returns undefined
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getValueAtPath`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getValueAtPath`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L270" /> {#f-get-value-at-path-270}
 
 ```typescript
 <$T, ___Path extends readonly string[] > (obj: $T, path: ___Path): any
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L270" />
 
 **Parameters:**
 
@@ -310,13 +294,11 @@ Obj.getValueAtPath(obj, ['a', 'b', 'c'])  // 42
 Obj.getValueAtPath(obj, ['a', 'x'])  // undefined
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `values`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `values`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L300" /> {#f-values-300}
 
 ```typescript
 <$T extends object>(obj: $T): values<$T>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L300" />
 
 **Parameters:**
 
@@ -339,7 +321,7 @@ Obj.values(obj)  // [1, 'hello', true] with type (string | number | boolean)[]
 
 ## Filtering
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pick`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pick`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L62" /> {#f-pick-62}
 
 ```typescript
 <T extends object, K extends keyof T > (obj: T, keys: readonly K[]): Pick < T, K >
@@ -347,8 +329,6 @@ Obj.values(obj)  // [1, 'hello', true] with type (string | number | boolean)[]
     <$Object extends object>(obj: $Object, predicate: (key: keyof $Object, value: $Object[keyof $Object], obj?: $Object | undefined) => boolean): Partial < $Object >
       <T extends object, K extends keyof T > (obj: T, keysOrPredicate: readonly K[] | ((key: keyof T, value?: any, obj?: any) => boolean)): Pick<T, K> | Partial<T>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L62" />
 
 **Parameters:**
 
@@ -412,7 +392,7 @@ Obj.pick(obj, (k, v) => v > 1) // { b: 2, c: 3 }
 Obj.pick(obj, (k, v, o) => v > average(o)) // picks above-average values
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `omit`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `omit`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L162" /> {#f-omit-162}
 
 ```typescript
 <T extends object, K extends keyof T > (obj: T, keys: readonly K[]): Omit < T, K >
@@ -420,8 +400,6 @@ Obj.pick(obj, (k, v, o) => v > average(o)) // picks above-average values
     <$Object extends object>(obj: $Object, predicate: (key: keyof $Object, value: $Object[keyof $Object], obj?: $Object | undefined) => boolean): Partial < $Object >
       <T extends object, K extends keyof T > (obj: T, keysOrPredicate: readonly K[] | ((key: keyof T, value?: any, obj?: any) => boolean)): Omit<T, K> | Partial<T>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L162" />
 
 **Parameters:**
 
@@ -485,61 +463,51 @@ Obj.omit(obj, (k, v) => v > 1) // { a: 1 } (excludes b and c where value > 1)
 Obj.omit(obj, (k, v, o) => v > average(o)) // excludes above-average values
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pickWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pickWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L91" /> {#f-pick-with-91}
 
 ```typescript
 <K extends PropertyKey>(keysOrPredicate: readonly K[] | ((key: PropertyKey, value?: any, obj?: any) => boolean)): <T extends object>(obj: T) => any
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L91" />
-
 Curried version of pick
 
 - takes keys/predicate first, then object.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pickOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pickOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L105" /> {#f-pick-on-105}
 
 ```typescript
 <T extends object>(obj: T): <K extends keyof T>(keysOrPredicate: readonly K[] | ((key: keyof T, value?: any, obj?: any) => boolean)) => any
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L105" />
-
 Curried version of pick
 
 - takes object first, then keys/predicate.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `omitWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `omitWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L192" /> {#f-omit-with-192}
 
 ```typescript
 <K extends PropertyKey>(keysOrPredicate: readonly K[] | ((key: PropertyKey, value?: any, obj?: any) => boolean)): <T extends object>(obj: T) => any
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L192" />
-
 Curried version of omit
 
 - takes keys/predicate first, then object.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `omitOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `omitOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L206" /> {#f-omit-on-206}
 
 ```typescript
 <T extends object>(obj: T): <K extends keyof T>(keysOrPredicate: readonly K[] | ((key: keyof T, value?: any, obj?: any) => boolean)) => any
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L206" />
-
 Curried version of omit
 
 - takes object first, then keys/predicate.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `policyFilter`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `policyFilter`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L236" /> {#f-policy-filter-236}
 
 ```typescript
 <$Object extends object, $Key extends Keyof<$Object>, $Mode extends 'allow' | 'deny' > (mode: $Mode, obj: $Object, keys: readonly $Key[]): PolicyFilter<$Object, $Key, $Mode>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L236" />
 
 **Parameters:**
 
@@ -568,13 +536,11 @@ Obj.policyFilter('allow', obj, ['a', 'c']) // { a: 1, c: 3 }
 Obj.policyFilter('deny', obj, ['a', 'c']) // { b: 2 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `omitUndefined`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `omitUndefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L291" /> {#c-omit-undefined-291}
 
 ```typescript
 <T>(obj: T) => any
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L291" />
 
 Remove all properties with `undefined` values from an object.
 
@@ -606,13 +572,11 @@ const cleanConfig = Obj.omitUndefined(config)
 // Only includes properties that have actual values
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `partition`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `partition`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L321" /> {#c-partition-321}
 
 ```typescript
 partition
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L321" />
 
 Partition an object into picked and omitted parts.
 
@@ -629,13 +593,11 @@ const { picked, omitted } = Obj.partition(obj, ['a', 'c'])
 // omitted: { b: 2 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pickMatching`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pickMatching`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L357" /> {#f-pick-matching-357}
 
 ```typescript
 <T extends object>(obj: T, predicate: (key: string) => boolean): Partial<T>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L357" />
 
 **Parameters:**
 
@@ -666,13 +628,11 @@ const dataAttrs = Obj.pickMatching(props, key => key.startsWith('data-'))
 
 ## Merging
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mergeWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mergeWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L43" /> {#f-merge-with-43}
 
 ```typescript
 (mergers?: MergeOptions | undefined): <obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2) => obj1 & obj2
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L43" />
 
 **Parameters:**
 
@@ -709,13 +669,11 @@ mergeArrays({ items: [1, 2] }, { items: [3, 4] })
 // Returns: { items: [1, 2, 3, 4] }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `merge`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `merge`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L81" /> {#c-merge-81}
 
 ```typescript
 <obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2) => obj1 & obj2
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L81" />
 
 Deep merge two objects, with properties from the second object overwriting the first. Recursively merges nested objects, but arrays and other non-object values are replaced.
 
@@ -753,13 +711,11 @@ Obj.merge({ tags: ['a', 'b'] }, { tags: ['c', 'd'] })
 // Returns: { tags: ['c', 'd'] }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mergeWithArrayPush`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mergeWithArrayPush`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L108" /> {#c-merge-with-array-push-108}
 
 ```typescript
 <obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2) => obj1 & obj2
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L108" />
 
 Deep merge two objects with special handling for arrays. When both objects have an array at the same path, concatenates them instead of replacing.
 
@@ -790,13 +746,11 @@ Obj.mergeWithArrayPush(
 // Returns: { user: { skills: ['js', 'ts'] } }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mergeWithArrayPushDedupe`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mergeWithArrayPushDedupe`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L139" /> {#c-merge-with-array-push-dedupe-139}
 
 ```typescript
 <obj1 extends Any, obj2 extends Any>(obj1: obj1, obj2: obj2) => obj1 & obj2
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L139" />
 
 Deep merge two objects with array concatenation and deduplication. When both objects have an array at the same path, concatenates and removes duplicates.
 
@@ -827,13 +781,11 @@ Obj.mergeWithArrayPushDedupe(
 // Returns: { ids: [1, 2, 3, 4, 5] }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mergeDefaults`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `mergeDefaults`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L175" /> {#c-merge-defaults-175}
 
 ```typescript
 <obj1 extends Any, obj1Defaults extends Partial<obj1>>(obj1: obj1, obj1Defaults: obj1Defaults) => { [_ in keyof(obj1 & obj1Defaults)]: (obj1 & obj1Defaults)[_]; }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L175" />
 
 Merge default values into an object, only filling in missing properties. Existing properties in the base object are preserved, even if undefined.
 
@@ -864,13 +816,11 @@ Obj.mergeDefaults(config, defaults)
 // Returns: { port: 3000, host: 'localhost', debug: false }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `shallowMergeDefaults`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `shallowMergeDefaults`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L199" /> {#f-shallow-merge-defaults-199}
 
 ```typescript
 <$Defaults extends object, $Input extends object > (defaults: $Defaults, input: $Input): $Defaults & $Input
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L199" />
 
 **Parameters:**
 
@@ -893,13 +843,11 @@ const input = { b: 20 }
 Obj.shallowMergeDefaults(defaults, input)  // { a: 1, b: 20, c: 3 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `spreadShallow`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `spreadShallow`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L234" /> {#f-spread-shallow-234}
 
 ```typescript
 <$Objects extends readonly (object | undefined)[]>(...objects ?: $Objects): { }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L234" />
 
 **Parameters:**
 
@@ -934,13 +882,11 @@ const config = Obj.spreadShallow(
 
 ## Path Utilities
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `normalizePropertyPathInput`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `normalizePropertyPathInput`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L31" /> {#f-normalize-property-path-input-31}
 
 ```typescript
 <pathInput extends PropertyPathInput>(pathInput: pathInput): normalizePropertyPathInput<pathInput>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L31" />
 
 **Parameters:**
 
@@ -970,13 +916,11 @@ Obj.normalizePropertyPathInput(['user', 'address', 'city'])
 // Returns: ['user', 'address', 'city'] (unchanged)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parsePropertyPathExpression`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parsePropertyPathExpression`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L81" /> {#c-parse-property-path-expression-81}
 
 ```typescript
 <expression extends string>(expression: expression) => parsePropertyPathExpression<expression>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L81" />
 
 Parse a dot-notation property path expression into an array of property names.
 
@@ -1011,13 +955,11 @@ Obj.parsePropertyPathExpression('singleProperty')
 
 ## Predicates
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `hasNonUndefinedKeys`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `hasNonUndefinedKeys`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L179" /> {#f-has-non-undefined-keys-179}
 
 ```typescript
 (object: object): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L179" />
 
 **Parameters:**
 
@@ -1041,13 +983,11 @@ Obj.hasNonUndefinedKeys({ a: undefined, b: 1 })  // true
 Obj.hasNonUndefinedKeys({})  // false
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `empty`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `empty`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L89" /> {#f-empty-89}
 
 ```typescript
 (): Empty
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L89" />
 
 **Returns:** An empty object with type `Record<string, never>`
 
@@ -1073,13 +1013,11 @@ const emptyObj = Obj.empty()
 type T = typeof emptyObj  // Record<string, never>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isEmpty`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isEmpty`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L197" /> {#f-is-empty-197}
 
 ```typescript
 (obj: object): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L197" />
 
 **Parameters:**
 
@@ -1113,13 +1051,11 @@ Object.defineProperty(obj, 'hidden', { value: 1, enumerable: false })
 Obj.isEmpty(obj) // true - non-enumerable properties are ignored
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isEmpty$`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isEmpty$`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L230" /> {#f-is-empty$-230}
 
 ```typescript
 <$T extends object>(obj: $T): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L230" />
 
 **Parameters:**
 
@@ -1157,13 +1093,11 @@ function processObject<T extends object>(obj: T) {
 
 ## Shape & Validation
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `assert`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `assert`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L34" /> {#f-assert-34}
 
 ```typescript
 (value: unknown): void
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L34" />
 
 **Parameters:**
 
@@ -1191,13 +1125,11 @@ function process(value: unknown) {
 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isShape`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isShape`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L73" /> {#f-is-shape-73}
 
 ```typescript
 <type>(spec: Record<PropertyKey, "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function">): (value: unknown) => value is type
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L73" />
 
 **Parameters:**
 
@@ -1235,13 +1167,11 @@ const isCallback = isShape<{ fn: Function }>({
 
 ## State Management
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `setPrivateState`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `setPrivateState`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L116" /> {#f-set-private-state-116}
 
 ```typescript
 <obj extends Any>(obj: obj, value: object): obj
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L116" />
 
 **Parameters:**
 
@@ -1281,13 +1211,11 @@ Obj.setPrivateState(config, {
 })
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getPrivateState`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `getPrivateState`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L159" /> {#f-get-private-state-159}
 
 ```typescript
 <state extends Any>(obj: object): state
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L159" />
 
 **Parameters:**
 
@@ -1336,13 +1264,11 @@ const meta = getPrivateState<Metadata>(doc)
 
 ## Traits
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Eq`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Eq`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/traits/eq.ts#L35" /> {#c-eq-35}
 
 ```typescript
 Eq<object>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/traits/eq.ts#L35" />
 
 Eq trait implementation for objects.
 
@@ -1379,13 +1305,11 @@ Obj.Eq.is(
 
 ## Transformation
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapEntriesDeep`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapEntriesDeep`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-entries-deep.ts#L132" /> {#f-map-entries-deep-132}
 
 ```typescript
 <$value extends DeepObjectValue>(value: $value, visitor: (key: string, value: DeepObjectValue) => { key: string; value: DeepObjectValue; } | undefined): $value
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-entries-deep.ts#L132" />
 
 **Parameters:**
 
@@ -1537,13 +1461,11 @@ Obj.mapEntriesDeep(users, (key, value) =>
 // [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapValuesDeep`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapValuesDeep`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-values-deep.ts#L89" /> {#f-map-values-deep-89}
 
 ```typescript
 (value: any, visitor: (value: any) => any, visited?: WeakSet<WeakKey> = new WeakSet()): any
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-values-deep.ts#L89" />
 
 **Parameters:**
 
@@ -1656,13 +1578,11 @@ Obj.mapValuesDeep(data, (v) => {
 })
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapValues`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `mapValues`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/update.ts#L25" /> {#f-map-values-25}
 
 ```typescript
 <rec extends Record<PropertyKey, any>, newValue > (obj: rec, fn: (value: rec[keyof rec], key: keyof rec) => newValue): Record<keyof rec, newValue>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/update.ts#L25" />
 
 **Parameters:**
 
@@ -1698,17 +1618,15 @@ const withKeys = Obj.mapValues(data, (value, key) => `${key}: ${value}`)
 
 ## Type Utilities
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Keyof`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Keyof`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L380" /> {#t-keyof-380}
 
 ```typescript
 type Keyof<$Object extends object> = object extends $Object ? PropertyKey : (keyof $Object)
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L380" />
-
 Like keyof but returns PropertyKey for object type. Helper type for generic object key operations.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PolicyFilter`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PolicyFilter`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L400" /> {#t-policy-filter-400}
 
 ```typescript
 type PolicyFilter<
@@ -1719,8 +1637,6 @@ type PolicyFilter<
   ? Pick<$Object, Extract<$Key, keyof $Object>>
   : Omit<$Object, Extract<$Key, keyof $Object>>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L400" />
 
 Filter object properties based on a policy mode and set of keys.
 
@@ -1740,15 +1656,13 @@ type SafeUser = PolicyFilter<User, 'password', 'deny'>
 // Result: { id: number; name: string; email: string }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PickWhereValueExtends`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PickWhereValueExtends`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L420" /> {#t-pick-where-value-extends-420}
 
 ```typescript
 type PickWhereValueExtends<$Obj extends object, $Constraint> = {
   [k in keyof $Obj as $Obj[k] extends $Constraint ? k : never]: $Obj[k]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L420" />
 
 Pick properties from an object where the values extend a given constraint.
 
@@ -1763,15 +1677,13 @@ type BooleanProps = PickWhereValueExtends<User, boolean>
 // Result: { isActive: boolean; flag: boolean }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SuffixKeyNames`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SuffixKeyNames`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L435" /> {#t-suffix-key-names-435}
 
 ```typescript
 type SuffixKeyNames<$Suffix extends string, $Object extends object> = {
   [k in keyof $Object as k extends string ? `${k}${$Suffix}` : k]: $Object[k]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L435" />
 
 Add a suffix to all property names in an object.
 
@@ -1785,15 +1697,13 @@ type T = SuffixKeyNames<'_old', { a: string; b: number }>
 // { a_old: string; b_old: number }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `OmitKeysWithPrefix`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `OmitKeysWithPrefix`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L450" /> {#t-omit-keys-with-prefix-450}
 
 ```typescript
 type OmitKeysWithPrefix<$Object extends object, $Prefix extends string> = {
   [k in keyof $Object as k extends `${$Prefix}${string}` ? never : k]: $Object[k]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L450" />
 
 Omit all keys that start with a specific prefix.
 
@@ -1807,15 +1717,13 @@ type T = OmitKeysWithPrefix<{ _a: string; _b: number; c: boolean }, '_'>
 // { c: boolean }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PickRequiredProperties`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PickRequiredProperties`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L464" /> {#t-pick-required-properties-464}
 
 ```typescript
 type PickRequiredProperties<$T extends object> = {
   [k in keyof $T as {} extends Pick<$T, k> ? never : k]: $T[k]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L464" />
 
 Pick only the required (non-optional) properties from an object.
 
@@ -1828,13 +1736,11 @@ import { Obj } from '@wollybeard/kit/obj'
 type T = PickRequiredProperties<{ a: string; b?: number }>  // { a: string }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RequireProperties`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RequireProperties`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L479" /> {#t-require-properties-479}
 
 ```typescript
 type RequireProperties<$O extends object, $K extends keyof $O> = Ts.Simplify<$O & { [k in $K]-?: $O[k] }>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L479" />
 
 Make specific properties required in an object.
 
@@ -1848,15 +1754,13 @@ type T = RequireProperties<{ a?: string; b?: number }, 'a'>
 // { a: string; b?: number }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PartialOrUndefined`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PartialOrUndefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L492" /> {#t-partial-or-undefined-492}
 
 ```typescript
 type PartialOrUndefined<$T> = {
   [k in keyof $T]?: $T[k] | undefined
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L492" />
 
 Make all properties optional and allow undefined values.
 
@@ -1870,14 +1774,12 @@ type T = PartialOrUndefined<{ a: string; b: number }>
 // { a?: string | undefined; b?: number | undefined }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PickOptionalPropertyOrFallback`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PickOptionalPropertyOrFallback`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L507" /> {#t-pick-optional-property-or-fallback-507}
 
 ```typescript
 type PickOptionalPropertyOrFallback<$Object extends object, $Property extends keyof $Object, $Fallback> =
   {} extends Pick<$Object, $Property> ? $Object[$Property] : $Fallback
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L507" />
 
 Pick an optional property or use fallback if required.
 
@@ -1891,15 +1793,13 @@ type T1 = PickOptionalPropertyOrFallback<{ a?: string }, 'a', never>  // string
 type T2 = PickOptionalPropertyOrFallback<{ a: string }, 'a', never>  // never
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `OnlyKeysInArray`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `OnlyKeysInArray`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L522" /> {#t-only-keys-in-array-522}
 
 ```typescript
 type OnlyKeysInArray<$Obj extends object, $KeysArray extends readonly string[]> = {
   [k in keyof $Obj as k extends $KeysArray[number] ? k : never]: $Obj[k]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L522" />
 
 Pick only the properties from an object that exist in a provided array of keys.
 
@@ -1914,13 +1814,11 @@ type PublicUser = OnlyKeysInArray<User, ['name', 'email']>
 // Result: { name: string; email: string }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetKeyOr`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetKeyOr`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L317" /> {#t-get-key-or-317}
 
 ```typescript
 type GetKeyOr<$T, $Key, $Or> = $Key extends keyof $T ? $T[$Key] : $Or
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L317" />
 
 Get value at key, or return fallback if key doesn't exist.
 
@@ -1934,7 +1832,7 @@ type T1 = GetKeyOr<{ a: string }, 'a', never>  // string
 type T2 = GetKeyOr<{ a: string }, 'b', never>  // never
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetOrNever`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetOrNever`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L330" /> {#t-get-or-never-330}
 
 ```typescript
 type GetOrNever<$O extends object, $P extends string> = $P extends keyof $O ? $O[$P]
@@ -1943,8 +1841,6 @@ type GetOrNever<$O extends object, $P extends string> = $P extends keyof $O ? $O
   : never
   : never
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L330" />
 
 Get value at key or return never.
 
@@ -1958,13 +1854,11 @@ type T1 = GetOrNever<{ a: string }, 'a'>  // string
 type T2 = GetOrNever<{ a: string }, 'b'>  // never
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `keyofOr`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `keyofOr`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L347" /> {#t-keyof-or-347}
 
 ```typescript
 type keyofOr<$Obj extends object, $Or> = [keyof $Obj] extends [never] ? $Or : $Obj[keyof $Obj]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L347" />
 
 Get the union of all value types from an object, or return fallback if no keys.
 
@@ -1978,13 +1872,11 @@ type T1 = keyofOr<{ a: string; b: number }, never>  // string | number
 type T2 = keyofOr<{}, 'fallback'>  // 'fallback'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `KeysArray`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `KeysArray`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L361" /> {#t-keys-array-361}
 
 ```typescript
 type KeysArray<$Obj extends object> = Array<keyof $Obj>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L361" />
 
 Create an array type containing the keys of an object.
 
@@ -1999,13 +1891,11 @@ type UserKeys = KeysArray<User>
 // Result: Array<'name' | 'age' | 'email'>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `KeysReadonlyArray`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `KeysReadonlyArray`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L375" /> {#t-keys-readonly-array-375}
 
 ```typescript
 type KeysReadonlyArray<$Obj extends object> = ReadonlyArray<keyof $Obj>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L375" />
 
 Create a readonly array type containing the keys of an object.
 
@@ -2020,13 +1910,11 @@ type UserKeys = KeysReadonlyArray<User>
 // Result: ReadonlyArray<'name' | 'age' | 'email'>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `StringKeyof`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `StringKeyof`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L387" /> {#intersection-string-keyof-387}
 
 ```typescript
 type StringKeyof<$T> = keyof $T & string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L387" />
 
 Extract only string keys from an object.
 
@@ -2039,7 +1927,7 @@ import { Obj } from '@wollybeard/kit/obj'
 type T = StringKeyof<{ a: 1;[x: number]: 2 }>  // 'a'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PrimitiveFieldKeys`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PrimitiveFieldKeys`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L409" /> {#t-primitive-field-keys-409}
 
 ```typescript
 type PrimitiveFieldKeys<$T> = {
@@ -2048,8 +1936,6 @@ type PrimitiveFieldKeys<$T> = {
   : never
 }[keyof $T]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L409" />
 
 Extract keys from an object type that have primitive values. Useful for serialization scenarios where only primitive values can be safely transferred.
 
@@ -2071,7 +1957,7 @@ type SerializableKeys = PrimitiveFieldKeys<User>
 // Note: Date is considered primitive for serialization purposes
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MergeAllShallow`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MergeAllShallow`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L287" /> {#t-merge-all-shallow-287}
 
 ```typescript
 type MergeAllShallow<$Objects extends readonly object[]> =
@@ -2081,8 +1967,6 @@ type MergeAllShallow<$Objects extends readonly object[]> =
   : MergeShallow<$First, MergeAllShallow<$Rest>>
   : {}
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L287" />
 
 Recursively merge an array of objects using shallow merge semantics. Each object in the array overrides properties from previous objects.
 
@@ -2096,15 +1980,13 @@ type T = MergeAllShallow<[{ a: string }, { b: number }, { c: boolean }]>
 // Result: { a: string; b: number; c: boolean }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MergeAll`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MergeAll`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L306" /> {#t-merge-all-306}
 
 ```typescript
 type MergeAll<$Objects extends object[]> = $Objects extends
   [infer __first__ extends object, ...infer __rest__ extends object[]] ? __first__ & MergeAll<__rest__>
   : {}
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L306" />
 
 Merge an array of object types into a single type using deep merge semantics. Uses TypeScript's intersection type (`&`) for merging.
 
@@ -2118,7 +2000,7 @@ type T = MergeAll<[{ a: string }, { b: number }]>
 // Result: { a: string; b: number }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `ReplaceProperty`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `ReplaceProperty`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L322" /> {#intersection-replace-property-322}
 
 ```typescript
 type ReplaceProperty<$Obj extends object, $Key extends keyof $Obj, $NewType> =
@@ -2127,8 +2009,6 @@ type ReplaceProperty<$Obj extends object, $Key extends keyof $Obj, $NewType> =
     [_ in $Key]: $NewType
   }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L322" />
 
 Replace the type of a specific property in an object.
 
@@ -2143,13 +2023,11 @@ type UpdatedUser = ReplaceProperty<User, 'id', string>
 // Result: { id: string; name: string; age: number }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Replace`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Replace`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L341" /> {#intersection-replace-341}
 
 ```typescript
 type Replace<$Object1, $Object2> = Omit<$Object1, keyof $Object2> & $Object2
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L341" />
 
 Replace properties in an object type with new types. Useful for overriding specific property types.
 
@@ -2164,13 +2042,11 @@ type SerializedUser = Replace<User, { createdAt: string }>
 // Result: { id: number; name: string; createdAt: string }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Writeable`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Writeable`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L224" /> {#t-writeable-224}
 
 ```typescript
 type Writeable<$Obj extends object> = Writable<$Obj>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L224" />
 
 Make all properties of an object writable (remove readonly modifiers).
 
@@ -2185,7 +2061,7 @@ type WritableUser = Writeable<ReadonlyUser>
 // Result: { id: number; name: string }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ToParameters`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ToParameters`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L232" /> {#t-to-parameters-232}
 
 ```typescript
 type ToParameters<$Params extends object | undefined> =
@@ -2194,11 +2070,9 @@ type ToParameters<$Params extends object | undefined> =
   [params: $Params]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L232" />
-
 Convert an object to a parameters tuple.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ToParametersExact`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ToParametersExact`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L242" /> {#t-to-parameters-exact-242}
 
 ```typescript
 type ToParametersExact<
@@ -2208,11 +2082,9 @@ type ToParametersExact<
   : ToParameters<$Params>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L242" />
-
 Convert an object to parameters tuple with exact matching.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PropertyKeyToString`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PropertyKeyToString`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L253" /> {#t-property-key-to-string-253}
 
 ```typescript
 type PropertyKeyToString<$Key extends PropertyKey> = $Key extends string ? $Key
@@ -2220,17 +2092,13 @@ type PropertyKeyToString<$Key extends PropertyKey> = $Key extends string ? $Key
   : never
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L253" />
-
 Convert PropertyKey to string if possible.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsEmpty`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsEmpty`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L29" /> {#t-is-empty-29}
 
 ```typescript
 type IsEmpty<$Obj extends object> = keyof $Obj extends never ? true : false
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L29" />
 
 Type-level check to determine if an object type has no keys.
 
@@ -2244,24 +2112,20 @@ type Empty = IsEmpty<{}> // true
 type NotEmpty = IsEmpty<{ a: 1 }> // false
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Empty`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Empty`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L36" /> {#t-empty-36}
 
 ```typescript
 type Empty = Record<string, never>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L36" />
-
 Type for an empty object.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `NoExcessNonEmpty`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `NoExcessNonEmpty`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L162" /> {#t-no-excess-non-empty-162}
 
 ```typescript
 type NoExcessNonEmpty<$Value extends object, $Constraint> = IsEmpty<$Value> extends true ? never
   : NoExcess<$Constraint, $Value>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L162" />
 
 Like NoExcess but also requires the object to be non-empty.
 
@@ -2280,13 +2144,11 @@ type T2 = NoExcessNonEmpty<{}, User>                       // ✗ Fail - empty
 type T3 = NoExcessNonEmpty<{ name: 'Bob', age: 30 }, User> // ✗ Fail - excess
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HasOptionalKeys`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HasOptionalKeys`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L14" /> {#t-has-optional-keys-14}
 
 ```typescript
 type HasOptionalKeys<$Obj extends object> = OptionalKeys<$Obj> extends never ? false : true
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L14" />
 
 Check if an interface has any optional properties.
 
@@ -2300,15 +2162,13 @@ type T1 = HasOptionalKeys<{ a?: string }>  // true
 type T2 = HasOptionalKeys<{ a: string }>  // false
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `OptionalKeys`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `OptionalKeys`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L27" /> {#t-optional-keys-27}
 
 ```typescript
 type OptionalKeys<T> = {
   [K in keyof T]-?: {} extends Pick<T, K> ? K : never
 }[keyof T]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L27" />
 
 Extract keys that are optional in the interface.
 
@@ -2322,13 +2182,11 @@ type Obj = { a: string; b?: number; c?: boolean }
 type Optional = OptionalKeys<Obj>  // 'b' | 'c'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RequiredKeys`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RequiredKeys`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L42" /> {#t-required-keys-42}
 
 ```typescript
 type RequiredKeys<T> = Exclude<keyof T, OptionalKeys<T>>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L42" />
 
 Extract keys that are required in the interface.
 
@@ -2342,13 +2200,11 @@ type Obj = { a: string; b?: number; c?: boolean }
 type Required = RequiredKeys<Obj>  // 'a'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HasRequiredKeys`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HasRequiredKeys`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L56" /> {#t-has-required-keys-56}
 
 ```typescript
 type HasRequiredKeys<$Obj extends object> = RequiredKeys<$Obj> extends never ? false : true
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L56" />
 
 Check if an interface has any required properties.
 
@@ -2363,14 +2219,12 @@ type T2 = HasRequiredKeys<{ a?: string }>  // false
 type T3 = HasRequiredKeys<{ a: string; b?: number }>  // true
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HasOptionalKey`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HasOptionalKey`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L69" /> {#t-has-optional-key-69}
 
 ```typescript
 type HasOptionalKey<$Object extends object, $Key extends keyof $Object> = undefined extends $Object[$Key] ? true
   : false
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L69" />
 
 Check if a key is optional in an object.
 
@@ -2384,15 +2238,13 @@ type T1 = HasOptionalKey<{ a?: string }, 'a'>  // true
 type T2 = HasOptionalKey<{ a: string }, 'a'>  // false
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsKeyOptional`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsKeyOptional`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L84" /> {#t-is-key-optional-84}
 
 ```typescript
 type IsKeyOptional<$T extends Undefined.Maybe<object>, $K extends string> = $K extends keyof $T
   ? ({} extends Pick<$T, $K> ? true : false)
   : false
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L84" />
 
 Check if a key is optional in an object.
 
@@ -2407,13 +2259,11 @@ type T2 = IsKeyOptional<{ a: string }, 'a'>  // false
 type T3 = IsKeyOptional<{ a: string }, 'b'>  // false
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HasKey`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HasKey`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L99" /> {#t-has-key-99}
 
 ```typescript
 type HasKey<$T extends object, $K extends string> = $K extends keyof $T ? true : false
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/predicates.ts#L99" />
 
 Check if a key exists in an object.
 
@@ -2431,13 +2281,11 @@ type T2 = HasKey<{ a: string }, 'b'>  // false
 
 $A - First object type $B - Second object type
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SharedKeys`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SharedKeys`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L274" /> {#t-shared-keys-274}
 
 ```typescript
 type SharedKeys<$A extends object, $B extends object> = O.IntersectKeys<$A, $B>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L274" />
 
 Extract keys that are shared between two object types.
 
@@ -2472,13 +2320,11 @@ type Same = Obj.SharedKeys<{ a: 1; b: 2 }, { a: 3; b: 4 }>  // "a" | "b"
 
 $A - The object type to subtract from $B - The object type whose properties to remove
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SubtractShallow`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SubtractShallow`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L67" /> {#t-subtract-shallow-67}
 
 ```typescript
 type SubtractShallow<$A, $B> = Omit<$A, keyof $B>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L67" />
 
 Subtract properties present in $B from $A (shallow operation).
 
@@ -2512,7 +2358,7 @@ type Extra = Obj.SubtractShallow<Provided, Config>  // { invalid: true; typo: st
 
 $Expected - The expected object type $Actual - The actual object type to compare
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Mismatched`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Mismatched`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L346" /> {#t-mismatched-346}
 
 ```typescript
 type Mismatched<$Expected extends object, $Actual extends object> = {
@@ -2527,8 +2373,6 @@ type Mismatched<$Expected extends object, $Actual extends object> = {
   : never
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L346" />
 
 Find properties that exist in both object types but have different types.
 
@@ -2567,13 +2411,11 @@ type OnlyMismatches = Obj.OmitNever<Obj.Mismatched<Expected, Actual>>
 
 $Expected - The type defining allowed properties $Actual - The actual type to check for excess properties
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `NoExcess`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `NoExcess`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L142" /> {#intersection-no-excess-142}
 
 ```typescript
 type NoExcess<$Expected, $Actual> = $Actual & Record<Exclude<keyof $Actual, keyof $Expected>, never>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L142" />
 
 Enforces that a type has no excess properties beyond those defined in the expected type.
 
@@ -2615,15 +2457,13 @@ configure({ id: 'test', invalid: 'x' })  // ✗ Error: 'invalid' is never
 
 $T - The object type to filter
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `OmitNever`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `OmitNever`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L394" /> {#t-omit-never-394}
 
 ```typescript
 type OmitNever<$T> = {
   [k in keyof $T as $T[k] extends never ? never : k]: $T[k]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L394" />
 
 Remove all properties with `never` type from an object type.
 
@@ -2664,15 +2504,13 @@ type OnlyStrings = Obj.OmitNever<Conditional<Input>>
 
 $T - The object type to remove keys from $Keys - Union of keys to remove
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExcludeKeys`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExcludeKeys`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L306" /> {#t-exclude-keys-306}
 
 ```typescript
 type ExcludeKeys<$T, $Keys> = {
   [k in Exclude<keyof $T, $Keys>]: $T[k]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L306" />
 
 Remove specified keys from an object type, with forced evaluation.
 
@@ -2706,15 +2544,13 @@ type WithExclude = Obj.ExcludeKeys<User, 'password'>  // Displays as: { id: stri
 
 $T - The type whose keys should be aligned $Length - The target length for padded keys $Pad - The character to use for padding (defaults to '_')
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AlignKeys`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AlignKeys`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L432" /> {#t-align-keys-432}
 
 ```typescript
 type AlignKeys<$T, $Length extends number, $Pad extends string = '_'> = {
   [k in keyof $T as k extends string ? Str.PadEnd<k, $Length, $Pad> : k]: $T[k]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L432" />
 
 Align object keys by padding with a character to a target length.
 
@@ -2737,15 +2573,13 @@ type Output2 = Obj.AlignKeys<Input, 12, '.'>
 
 ## Other
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Type`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Type`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/traits/type.ts#L5" /> {#c-type-5}
 
 ```typescript
 Type<object>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/traits/type.ts#L5" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pick`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pick`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L66" /> {#f-pick-66}
 
 ```typescript
 <T extends object, K extends keyof T > (obj: T, keys: readonly K[]): Pick < T, K >
@@ -2754,15 +2588,13 @@ Type<object>
       <T extends object, K extends keyof T > (obj: T, keysOrPredicate: readonly K[] | ((key: keyof T, value?: any, obj?: any) => boolean)): Pick<T, K> | Partial<T>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L66" />
-
 **Parameters:**
 
 - `obj` - The object to pick properties from
 
 **Returns:** A new object containing only the specified properties
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pick`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pick`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L70" /> {#f-pick-70}
 
 ```typescript
 <T extends object, K extends keyof T > (obj: T, keys: readonly K[]): Pick < T, K >
@@ -2771,15 +2603,13 @@ Type<object>
       <T extends object, K extends keyof T > (obj: T, keysOrPredicate: readonly K[] | ((key: keyof T, value?: any, obj?: any) => boolean)): Pick<T, K> | Partial<T>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L70" />
-
 **Parameters:**
 
 - `obj` - The object to pick properties from
 
 **Returns:** A new object containing only the specified properties
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pick`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pick`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L74" /> {#f-pick-74}
 
 ```typescript
 <T extends object, K extends keyof T > (obj: T, keys: readonly K[]): Pick < T, K >
@@ -2788,15 +2618,13 @@ Type<object>
       <T extends object, K extends keyof T > (obj: T, keysOrPredicate: readonly K[] | ((key: keyof T, value?: any, obj?: any) => boolean)): Pick<T, K> | Partial<T>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L74" />
-
 **Parameters:**
 
 - `obj` - The object to pick properties from
 
 **Returns:** A new object containing only the specified properties
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `omit`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `omit`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L166" /> {#f-omit-166}
 
 ```typescript
 <T extends object, K extends keyof T > (obj: T, keys: readonly K[]): Omit < T, K >
@@ -2805,15 +2633,13 @@ Type<object>
       <T extends object, K extends keyof T > (obj: T, keysOrPredicate: readonly K[] | ((key: keyof T, value?: any, obj?: any) => boolean)): Omit<T, K> | Partial<T>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L166" />
-
 **Parameters:**
 
 - `obj` - The object to omit properties from
 
 **Returns:** A new object without the specified properties
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `omit`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `omit`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L170" /> {#f-omit-170}
 
 ```typescript
 <T extends object, K extends keyof T > (obj: T, keys: readonly K[]): Omit < T, K >
@@ -2822,15 +2648,13 @@ Type<object>
       <T extends object, K extends keyof T > (obj: T, keysOrPredicate: readonly K[] | ((key: keyof T, value?: any, obj?: any) => boolean)): Omit<T, K> | Partial<T>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L170" />
-
 **Parameters:**
 
 - `obj` - The object to omit properties from
 
 **Returns:** A new object without the specified properties
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `omit`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `omit`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L174" /> {#f-omit-174}
 
 ```typescript
 <T extends object, K extends keyof T > (obj: T, keys: readonly K[]): Omit < T, K >
@@ -2839,15 +2663,13 @@ Type<object>
       <T extends object, K extends keyof T > (obj: T, keysOrPredicate: readonly K[] | ((key: keyof T, value?: any, obj?: any) => boolean)): Omit<T, K> | Partial<T>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L174" />
-
 **Parameters:**
 
 - `obj` - The object to omit properties from
 
 **Returns:** A new object without the specified properties
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `partition`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `partition`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L293" /> {#i-partition-293}
 
 ```typescript
 interface partition extends
@@ -2862,9 +2684,7 @@ interface partition extends
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/filter.ts#L293" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `getWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `getWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L75" /> {#t-get-with-75}
 
 ```typescript
 type getWith<
@@ -2882,9 +2702,7 @@ type getWith<
   : $Obj
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L75" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `entries`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `entries`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L161" /> {#t-entries-161}
 
 ```typescript
 type entries<obj extends Any> = {
@@ -2897,37 +2715,29 @@ type entries<obj extends Any> = {
 }[keyof obj][]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L161" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `values`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `values`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L304" /> {#t-values-304}
 
 ```typescript
 type values<$Obj extends object> = $Obj[keyof $Obj][]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/get.ts#L304" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `DeepObjectValue`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `DeepObjectValue`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-entries-deep.ts#L4" /> {#u-deep-object-value-4}
 
 ```typescript
 type DeepObjectValue = string | boolean | null | number | DeepObject | DeepObjectValue[]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-entries-deep.ts#L4" />
-
 A deep object value can be any JSON-serializable value including nested objects and arrays.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `DeepObject`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `DeepObject`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-entries-deep.ts#L9" /> {#t-deep-object-9}
 
 ```typescript
 type DeepObject = { [key: string]: DeepObjectValue }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/map-entries-deep.ts#L9" />
-
 A deep object is a plain object with string keys and deep object values.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MergeShallow`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MergeShallow`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L261" /> {#t-merge-shallow-261}
 
 ```typescript
 type MergeShallow<
@@ -2944,9 +2754,7 @@ type MergeShallow<
 > = __
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/merge.ts#L261" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PartialDeep`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PartialDeep`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L186" /> {#t-partial-deep-186}
 
 ```typescript
 type PartialDeep<$Type> =
@@ -2961,33 +2769,25 @@ type PartialDeep<$Type> =
   $Type
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/obj.ts#L186" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PropertyPathExpression`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PropertyPathExpression`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L4" /> {#t-property-path-expression-4}
 
 ```typescript
 type PropertyPathExpression = string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L4" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PropertyPath`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PropertyPath`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L6" /> {#t-property-path-6}
 
 ```typescript
 type PropertyPath = readonly string[]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L6" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `PropertyPathInput`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `PropertyPathInput`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L8" /> {#u-property-path-input-8}
 
 ```typescript
 type PropertyPathInput = PropertyPathExpression | PropertyPath
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L8" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `normalizePropertyPathInput`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `normalizePropertyPathInput`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L41" /> {#t-normalize-property-path-input-41}
 
 ```typescript
 type normalizePropertyPathInput<pathInput extends PropertyPathInput> =
@@ -2998,19 +2798,15 @@ type normalizePropertyPathInput<pathInput extends PropertyPathInput> =
   : never
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L41" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `PropertyPathSeparator`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `PropertyPathSeparator`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L52" /> {#c-property-path-separator-52}
 
 ```typescript
 "."
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L52" />
-
 The separator character used in property path expressions. Used to split dot-notation paths like 'user.address.city'.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `parsePropertyPathExpression`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `parsePropertyPathExpression`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L86" /> {#t-parse-property-path-expression-86}
 
 ```typescript
 type parsePropertyPathExpression<$Expression extends string> =
@@ -3019,9 +2815,7 @@ type parsePropertyPathExpression<$Expression extends string> =
   : [$Expression]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L86" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `InferShapeFromPropertyPath`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `InferShapeFromPropertyPath`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L92" /> {#t-infer-shape-from-property-path-92}
 
 ```typescript
 type InferShapeFromPropertyPath<$PropertyPath extends PropertyPath> =
@@ -3030,17 +2824,13 @@ type InferShapeFromPropertyPath<$PropertyPath extends PropertyPath> =
   : _InferShapeFromPropertyPath<$PropertyPath>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/path.ts#L92" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Any`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L6" /> {#t-any-6}
 
 ```typescript
 type Any = object
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/type.ts#L6" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PropertySignature`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PropertySignature`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/property-signature.ts#L1" /> {#t-property-signature-1}
 
 ```typescript
 type PropertySignature = {
@@ -3050,5 +2840,3 @@ type PropertySignature = {
   optionalUndefined: boolean
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/property-signature.ts#L1" />

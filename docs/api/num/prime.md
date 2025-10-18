@@ -19,13 +19,11 @@ import { Prime } from '@wollybeard/kit/num'
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L41" /> {#f-is-41}
 
 ```typescript
 (value: unknown): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L41" />
 
 **Parameters:**
 
@@ -35,13 +33,11 @@ import { Prime } from '@wollybeard/kit/num'
 
 Type predicate to check if value is a prime number. Uses trial division optimization up to sqrt(n).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L74" /> {#f-from-74}
 
 ```typescript
 (value: Natural): Prime
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L74" />
 
 **Parameters:**
 
@@ -55,13 +51,11 @@ Type predicate to check if value is a prime number. Uses trial division optimiza
 
 Construct a Prime number. Throws if the value is not prime.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L96" /> {#f-try-from-96}
 
 ```typescript
 (value: Natural): Prime | null
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L96" />
 
 **Parameters:**
 
@@ -71,13 +65,11 @@ Construct a Prime number. Throws if the value is not prime.
 
 Try to construct a Prime number. Returns null if the value is not prime.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `next`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `next`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L114" /> {#f-next-114}
 
 ```typescript
 (value: number): Prime
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L114" />
 
 **Parameters:**
 
@@ -87,13 +79,11 @@ Try to construct a Prime number. Returns null if the value is not prime.
 
 Find the next prime number after the given value.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `prev`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `prev`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L141" /> {#f-prev-141}
 
 ```typescript
 (value: number): Prime | null
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L141" />
 
 **Parameters:**
 
@@ -103,13 +93,11 @@ Find the next prime number after the given value.
 
 Find the previous prime number before the given value. Returns null if no prime exists before the value (i.e., value = 2).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `nth`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `nth`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L173" /> {#f-nth-173}
 
 ```typescript
 (n: Natural): Prime
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L173" />
 
 **Parameters:**
 
@@ -123,13 +111,11 @@ Find the previous prime number before the given value. Returns null if no prime 
 
 Get the nth prime number (1-indexed). Uses a simple sieve for small n, trial division for larger.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `factorize`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `factorize`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L211" /> {#f-factorize-211}
 
 ```typescript
 (value: Natural): Map<Prime, Natural>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L211" />
 
 **Parameters:**
 
@@ -145,13 +131,11 @@ Prime factorization of a number. Returns a map of prime factors to their exponen
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Prime`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Prime`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L26" /> {#intersection-prime-26}
 
 ```typescript
 type Prime = Natural & { [PrimeBrand]: true }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/prime/prime.ts#L26" />
 
 Prime number (natural number
 

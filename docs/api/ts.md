@@ -30,17 +30,15 @@ import * as Ts from '@wollybeard/kit/ts'
 
 ## Error Messages
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StaticErrorAny`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StaticErrorAny`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L119" /> {#t-static-error-any-119}
 
 ```typescript
 type StaticErrorAny = StaticError<string, object, string>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L119" />
-
 ## Type Printing
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Print`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Print`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/print.ts#L13" /> {#t-print-13}
 
 ```typescript
 type Print<$Type, $Fallback extends string | undefined = undefined> =
@@ -85,17 +83,13 @@ type Print<$Type, $Fallback extends string | undefined = undefined> =
   : '?'
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/print.ts#L13" />
-
 Print a type as a readable string representation.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Show`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Show`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L146" /> {#t-show-146}
 
 ```typescript
 type Show<$Type> = `\`${Print<$Type>}\``
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L146" />
 
 Like Print but adds additional styling to display the rendered type in a sentence.
 
@@ -124,13 +118,11 @@ type TypeError<Expected, Actual> = StaticError<
 >
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ShowInTemplate`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ShowInTemplate`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L177" /> {#t-show-in-template-177}
 
 ```typescript
 type ShowInTemplate<$Type> = `'${Print<$Type>}'`
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L177" />
 
 Version of Show but uses single quotes instead of backticks.
 
@@ -162,7 +154,7 @@ type WithShowInTemplate = `Type is ${ShowInTemplate<number>}`
 
 ## Type Utilities
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Interpolatable`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Interpolatable`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L50" /> {#u-interpolatable-50}
 
 ```typescript
 type Interpolatable =
@@ -178,8 +170,6 @@ type Interpolatable =
   | any
   | never
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L50" />
 
 Types that TypeScript accepts being interpolated into a Template Literal Type.
 
@@ -204,7 +194,7 @@ type Result2 = Stringify<true>      // "true"
 type Result3 = Stringify<'hello'>   // "hello"
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Simplify`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Simplify`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L219" /> {#intersection-simplify-219}
 
 ```typescript
 type Simplify<$Type> =
@@ -213,8 +203,6 @@ type Simplify<$Type> =
   }
   & unknown
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L219" />
 
 Simplifies complex type intersections and mapped types for better readability.
 
@@ -262,13 +250,11 @@ function processUser<T extends Simplify<UserPermissions>>(user: T) {
 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SENTINEL`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SENTINEL`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L484" /> {#t-sentinel-484}
 
 ```typescript
 type SENTINEL = { readonly __kit_ts_sentinel__: unique symbol }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L484" />
 
 Sentinel type for detecting whether an optional type parameter was provided.
 
@@ -302,13 +288,11 @@ type AssertFn<$Expected, $Actual = SENTINEL> =
 
 ## Utilities
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `as`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `as`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L24" /> {#f-as-24}
 
 ```typescript
 <$value>(value ?: unknown): $value
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L24" />
 
 **Parameters:**
 
@@ -339,7 +323,7 @@ assertExtends<string>()(_ as typeof result)
 
 ## Utils
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `StaticError`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `StaticError`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L106" /> {#i-static-error-106}
 
 ```typescript
 interface StaticError<
@@ -352,8 +336,6 @@ interface StaticError<
   HINT: $Hint
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L106" />
 
 Represents a type error that can be surfaced at the type level.
 
@@ -410,13 +392,11 @@ processString(42)       // Type error with custom message
 
 ## Other
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SimplifyNullable`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SimplifyNullable`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L259" /> {#t-simplify-nullable-259}
 
 ```typescript
 type SimplifyNullable<$T> = null extends $T ? (Simplify<$T> & {}) | null : Simplify<$T> & {}
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L259" />
 
 Simplify a type while preserving `| null` unions.
 
@@ -457,7 +437,7 @@ type Simple = SimplifyNullable<{ a: 1 } & { b: 2 }>  // { a: 1; b: 2 }
 type Nullable = SimplifyNullable<({ a: 1 } & { b: 2 }) | null>  // { a: 1; b: 2 } | null
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExtendsExact`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExtendsExact`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L299" /> {#t-extends-exact-299}
 
 ```typescript
 type ExtendsExact<$Input, $Constraint> =
@@ -468,17 +448,13 @@ type ExtendsExact<$Input, $Constraint> =
   : never
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L299" />
-
 Utilities for working with union types at the type level.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `NotExtends`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `NotExtends`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L348" /> {#t-not-extends-348}
 
 ```typescript
 type NotExtends<$A, $B> = [$A] extends [$B] ? false : true
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L348" />
 
 Type-level utility that checks if a type does NOT extend another type.
 
@@ -531,15 +507,13 @@ type Result1 = SafeDivide<5>   // number
 type Result2 = SafeDivide<0>   // StaticError<'Cannot divide by zero'>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Writeable`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Writeable`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L359" /> {#t-writeable-359}
 
 ```typescript
 type Writeable<$Object> = {
   -readonly [k in keyof $Object]: $Object[k]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L359" />
 
 Make all properties in an object mutable (removes readonly modifiers).
 
@@ -553,13 +527,11 @@ type Readonly = { readonly x: number; readonly y: string }
 type Mutable = Writeable<Readonly>  // { x: number; y: string }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IfExtendsElse`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IfExtendsElse`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L398" /> {#t-if-extends-else-398}
 
 ```typescript
 type IfExtendsElse<$Type, $Extends, $Then, $Else> = $Type extends $Extends ? $Then : $Else
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L398" />
 
 :::warning DEPRECATED
 
@@ -574,61 +546,49 @@ If a use case for true bidirectional exact matching emerges, uncomment. Otherwis
 Original implementation:
 :::
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsNever`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsNever`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L400" /> {#t-is-never-400}
 
 ```typescript
 type IsNever<$Type> = [$Type] extends [never] ? true : false
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L400" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IntersectionIgnoreNeverOrAny`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IntersectionIgnoreNeverOrAny`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L405" /> {#t-intersection-ignore-never-or-any-405}
 
 ```typescript
 type IntersectionIgnoreNeverOrAny<$T> = IsAny<$T> extends true ? unknown : $T extends never ? unknown : $T
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L405" />
-
 Intersection that ignores never and any.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `NeverOrAnyToUnknown`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `NeverOrAnyToUnknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L410" /> {#t-never-or-any-to-unknown-410}
 
 ```typescript
 type NeverOrAnyToUnknown<$T> = IsAny<$T> extends true ? unknown : $T extends never ? unknown : $T
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L410" />
-
 Convert never or any to unknown.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Narrowable`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Narrowable`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L415" /> {#u-narrowable-415}
 
 ```typescript
 type Narrowable = string | number | bigint | boolean | []
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L415" />
-
 Any narrowable primitive type.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAndUnknownToNever`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAndUnknownToNever`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L420" /> {#t-any-and-unknown-to-never-420}
 
 ```typescript
 type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never : IsUnknown<$T> extends true ? never : $T
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L420" />
-
 Convert any and unknown to never.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsAny`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsAny`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L436" /> {#t-is-any-436}
 
 ```typescript
 type IsAny<T> = 0 extends 1 & T ? true : false
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L436" />
 
 Check if a type is `any`.
 
@@ -646,13 +606,11 @@ type T3 = IsAny<string>   // false
 type T4 = IsAny<never>    // false
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsUnknown`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsUnknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L453" /> {#t-is-unknown-453}
 
 ```typescript
 type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true) : false
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L453" />
 
 Check if a type is `unknown`.
 
@@ -672,13 +630,11 @@ type T3 = IsUnknown<string>   // false
 type T4 = IsUnknown<never>    // false
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isTypeWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isTypeWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/type-guards.ts#L18" /> {#f-is-type-with-18}
 
 ```typescript
 <reference>(reference: reference): <valueGiven>(value: ValidateIsSupertype<reference, valueGiven>) => value is reference extends valueGiven ? reference : never
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/type-guards.ts#L18" />
 
 **Parameters:**
 
@@ -702,13 +658,11 @@ if (isNull(value)) {
 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isntTypeWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isntTypeWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/type-guards.ts#L41" /> {#f-isnt-type-with-41}
 
 ```typescript
 <reference>(reference: reference): <valueGiven>(value: ValidateIsSupertype<reference, valueGiven>) => value is reference extends valueGiven ? Exclude<valueGiven, reference> : never
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/type-guards.ts#L41" />
 
 **Parameters:**
 

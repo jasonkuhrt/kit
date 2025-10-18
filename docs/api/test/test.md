@@ -14,13 +14,11 @@ import * as test from '@wollybeard/kit/test'
 
 ## Property Testing
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `property`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `property`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/test/property.ts#L40" /> {#f-property-40}
 
 ```typescript
 <Ts extends [unknown, ...unknown[]]>(...args ?: [description: string, ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]>; }, predicate: (...args: Ts) => boolean | void]): void
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/test/property.ts#L40" />
 
 **Parameters:**
 
@@ -70,7 +68,7 @@ Test.Test.property(
 
 ## Test Builders
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `on`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `on`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/test/table/constructors.ts#L155" /> {#f-on-155}
 
 ```typescript
 // [!code word:only:1]
@@ -138,8 +136,6 @@ Test.Test.property(
   .layer<R>(layer: Layer<R, never, never>): TestBuilderWithLayers
   .layerEach<R>(factory: State["fn"] extends undefined ? (testCase: { i: State["input"]; o: State["output"]; } & State["context"]) => Layer<R, never, never> : State["fn"] extends AnyAny ? (testCase: { i: EffectiveInput<State>; o?: EffectiveOutput<State>; }) => Layer<R, never, never> : (testCase: { i: State["input"]; o: State["output"]; } & State["context"]) => Layer<R, never, never>): TestBuilderWithLayers
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/test/table/constructors.ts#L155" />
 
 Creates a test table builder for testing a specific function.
 
@@ -256,7 +252,7 @@ HELLO
 ╚══════════════════════════════════════════════════╝
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `describe`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `describe`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/test/table/constructors.ts#L296" /> {#f-describe-296}
 
 ```typescript
 (description?: string | undefined): TestBuilder
@@ -315,8 +311,6 @@ HELLO
   .layer<R>(layer: Layer<R, never, never>): TestBuilderWithLayers
   .layerEach<R>(factory: State["fn"] extends undefined ? (testCase: { i: State["input"]; o: State["output"]; } & State["context"]) => Layer<R, never, never> : State["fn"] extends AnyAny ? (testCase: { i: EffectiveInput<State>; o?: EffectiveOutput<State>; }) => Layer<R, never, never> : (testCase: { i: State["input"]; o: State["output"]; } & State["context"]) => Layer<R, never, never>): TestBuilderWithLayers
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/test/table/constructors.ts#L296" />
 
 Creates a test table builder for property-based and example-based testing.
 

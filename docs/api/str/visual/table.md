@@ -19,13 +19,11 @@ import { Table } from '@wollybeard/kit/str'
 
 ## Text Formatting
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Cell`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Cell`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L41" /> {#t-cell-41}
 
 ```typescript
 type Cell = string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L41" />
 
 Visual-aware table operations for multi-column text layout.
 
@@ -56,29 +54,25 @@ Str.Visual.Table.render(colored, { separator: ' | ' })
 // "Red | Normal"  (correctly aligned despite ANSI)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Row`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Row`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L48" /> {#t-row-48}
 
 ```typescript
 type Row = Cell[]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L48" />
-
 Row of cells in a table.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Table`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Table`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L58" /> {#t-table-58}
 
 ```typescript
 type Table = Row[]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L58" />
-
 Row-major 2D table of text cells.
 
 Access pattern: `table[rowIndex][columnIndex]` Can be jagged (rows with different lengths).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `RenderOptions`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `RenderOptions`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L65" /> {#i-render-options-65}
 
 ```typescript
 interface RenderOptions {
@@ -102,17 +96,13 @@ interface RenderOptions {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L65" />
-
 Options for rendering tables into formatted text.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `render`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `render`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L115" /> {#f-render-115}
 
 ```typescript
 (table: Table, options?: RenderOptions | undefined): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L115" />
 
 **Parameters:**
 
@@ -150,33 +140,27 @@ Str.Visual.Table.render(table, { separator: ' | ', align: 'right' })
 // "  Bob |  25 |   LA"
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L136" /> {#c-render-on-136}
 
 ```typescript
 (table: Table) => (options?: RenderOptions | undefined) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L136" />
-
 Curried version of render with table first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L142" /> {#c-render-with-142}
 
 ```typescript
 (options?: RenderOptions | undefined) => (table: Table) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L142" />
-
 Curried version of render with options first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `renderColumns`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `renderColumns`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L180" /> {#f-render-columns-180}
 
 ```typescript
 (columns: string[][], options?: RenderOptions | undefined): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L180" />
 
 **Parameters:**
 
@@ -219,33 +203,27 @@ Str.Visual.Table.renderColumns(jagged)
 // "   Z"
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderColumnsOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderColumnsOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L190" /> {#c-render-columns-on-190}
 
 ```typescript
 (columns: string[][]) => (options?: RenderOptions | undefined) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L190" />
-
 Curried version of renderColumns with columns first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderColumnsWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderColumnsWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L196" /> {#c-render-columns-with-196}
 
 ```typescript
 (options?: RenderOptions | undefined) => (columns: string[][]) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L196" />
-
 Curried version of renderColumns with options first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `columnWidths`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `columnWidths`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L219" /> {#f-column-widths-219}
 
 ```typescript
 (table: Table): number[]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L219" />
 
 **Parameters:**
 
@@ -273,13 +251,11 @@ Str.Visual.Table.columnWidths(table)
 // [5, 5]  (max of 'hi'/'hello', max of 'world'/'x')
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `dimensions`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `dimensions`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L251" /> {#f-dimensions-251}
 
 ```typescript
 (table: Table): { rows: number; columns: number; }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L251" />
 
 **Parameters:**
 
@@ -301,13 +277,11 @@ Str.Visual.Table.dimensions(table)
 // { rows: 2, columns: 2 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `normalize`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `normalize`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L274" /> {#f-normalize-274}
 
 ```typescript
 (table: Table): Table
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L274" />
 
 **Parameters:**
 

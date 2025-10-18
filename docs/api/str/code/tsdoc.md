@@ -25,13 +25,11 @@ These helpers generate properly formatted JSDoc tags with automatic escaping. Al
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `escape`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `escape`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L36" /> {#f-escape-36}
 
 ```typescript
 (content: string | null | undefined): string | null
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L36" />
 
 **Parameters:**
 
@@ -63,13 +61,11 @@ Str.Code.TSDoc.escape('@deprecated use new API')
 // '\\@deprecated use new API'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `format`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `format`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L74" /> {#f-format-74}
 
 ```typescript
 (content: string | null): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L74" />
 
 **Parameters:**
 
@@ -101,13 +97,11 @@ Str.Code.TSDoc.format('Single line')
 //  *\/
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `raw`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `raw`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L116" /> {#f-raw-116}
 
 ```typescript
 (content: string): Raw
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L116" />
 
 Mark content as safe for JSDoc (already escaped or intentionally raw).
 
@@ -129,13 +123,11 @@ const escaped = escape(userInput)
 const safe = Str.Code.TSDoc.raw(escaped)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `builder`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `builder`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L425" /> {#f-builder-425}
 
 ```typescript
 (): Builder
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L425" />
 
 Create a new JSDoc builder for imperative construction.
 
@@ -166,13 +158,11 @@ return doc.build()
 
 ## Constants
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `template`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `template`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L700" /> {#c-template-700}
 
 ```typescript
 Template
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L700" />
 
 Tagged template for building JSDoc content with automatic escaping. Also provides `.builder()` for imperative JSDoc construction and `.tag` for tag helpers.
 
@@ -203,7 +193,7 @@ return doc.build()
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Raw`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Raw`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L95" /> {#i-raw-95}
 
 ```typescript
 interface Raw {
@@ -212,13 +202,11 @@ interface Raw {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L95" />
-
 Branded type for content marked as safe for JSDoc injection.
 
 Use raw to create values of this type. This prevents accidental injection of unescaped user content.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Builder`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Builder`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L271" /> {#i-builder-271}
 
 ````typescript
 interface Builder {
@@ -354,8 +342,6 @@ interface Builder {
 }
 ````
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L271" />
-
 JSDoc builder interface for imperative JSDoc construction.
 
 Provides a fluent API for building JSDoc with conditionals, loops, and tag helpers.
@@ -380,7 +366,7 @@ doc.table({ 'Type': 'string', 'Required': 'Yes' })
 return doc.build()
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Template`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Template`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L618" /> {#i-template-618}
 
 ````typescript
 interface Template {
@@ -443,7 +429,5 @@ interface Template {
   tag: typeof tag
 }
 ````
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/tsdoc/tsdoc.ts#L618" />
 
 JSDoc template function type with builder property.

@@ -1,16 +1,22 @@
 <script setup lang="ts">
 import { Github } from 'lucide-vue-next'
 
-defineProps<{
-  href: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    href: string
+    inline?: boolean
+  }>(),
+  {
+    inline: false,
+  },
+)
 </script>
 
 <template>
-  <div class="source-link">
+  <div :class="['source-link', { inline }]">
     <a :href="href" target="_blank" rel="noopener noreferrer">
-      <Github :size="14" />
-      <span>Source</span>
+      <Github :size="inline ? 16 : 14" />
+      <span v-if="!inline">Source</span>
     </a>
   </div>
 </template>
@@ -20,6 +26,12 @@ defineProps<{
   font-size: 0.75em;
   line-height: 1.4;
   margin-top: 0.5em;
+}
+
+.source-link.inline {
+  float: right;
+  margin-top: 0;
+  margin-left: 0.5em;
 }
 
 .source-link a {

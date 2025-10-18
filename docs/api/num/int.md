@@ -19,13 +19,11 @@ import { Int } from '@wollybeard/kit/num'
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/int/int.ts#L42" /> {#f-is-42}
 
 ```typescript
 (value: unknown): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/int/int.ts#L42" />
 
 **Parameters:**
 
@@ -35,13 +33,11 @@ import { Int } from '@wollybeard/kit/num'
 
 Type predicate to check if value is an integer.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/int/int.ts#L64" /> {#f-from-64}
 
 ```typescript
 (value: number): Int
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/int/int.ts#L64" />
 
 **Parameters:**
 
@@ -55,13 +51,11 @@ Type predicate to check if value is an integer.
 
 Construct an Int. Throws if the value is not an integer.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/int/int.ts#L85" /> {#f-try-from-85}
 
 ```typescript
 (value: number): Int | null
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/int/int.ts#L85" />
 
 **Parameters:**
 
@@ -71,13 +65,11 @@ Construct an Int. Throws if the value is not an integer.
 
 Try to construct an Int. Returns null if the value is not an integer.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `parse`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `parse`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/int/int.ts#L107" /> {#f-parse-107}
 
 ```typescript
 (value: string): Int | null
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/int/int.ts#L107" />
 
 **Parameters:**
 
@@ -87,13 +79,11 @@ Try to construct an Int. Returns null if the value is not an integer.
 
 Parse a string to an Int. Uses parseInt with base 10.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `round`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `round`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/int/int.ts#L127" /> {#f-round-127}
 
 ```typescript
 (value: number): Int
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/int/int.ts#L127" />
 
 **Parameters:**
 
@@ -105,13 +95,11 @@ Round a number to the nearest integer. Uses standard rounding rules (0.5 rounds 
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Int`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Int`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/int/int.ts#L25" /> {#intersection-int-25}
 
 ```typescript
 type Int = number & { [IntBrand]: true }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/int/int.ts#L25" />
 
 Integer number.
 

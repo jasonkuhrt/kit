@@ -19,13 +19,11 @@ import { VitePress } from '@wollybeard/kit/paka'
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `generate`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `generate`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L82" /> {#f-generate-82}
 
 ```typescript
 (model: Package, config: VitePressConfig): void
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L82" />
 
 **Parameters:**
 
@@ -34,13 +32,11 @@ import { VitePress } from '@wollybeard/kit/paka'
 
 Generate VitePress documentation from interface model.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `generateSidebar`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `generateSidebar`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L131" /> {#f-generate-sidebar-131}
 
 ```typescript
 (model: Package, categoryOrder?: string[] | undefined): { text: string; items: { text: string; link: string; items?: any[]; collapsed?: boolean; }[]; }[]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L131" />
 
 **Parameters:**
 
@@ -53,7 +49,7 @@ Generate VitePress sidebar configuration from interface model.
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `VitePressConfig`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `VitePressConfig`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L25" /> {#t-vite-press-config-25}
 
 ```typescript
 type VitePressConfig = {
@@ -69,7 +65,5 @@ type VitePressConfig = {
   categoryOrder?: string[]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L25" />
 
 Configuration for VitePress generation.

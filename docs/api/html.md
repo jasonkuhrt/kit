@@ -18,13 +18,11 @@ import * as Html from '@wollybeard/kit/html'
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `escape`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `escape`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/html/html.ts#L37" /> {#f-escape-37}
 
 ```typescript
 (string: unknown): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/html/html.ts#L37" />
 
 **Parameters:**
 

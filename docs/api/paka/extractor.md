@@ -19,13 +19,11 @@ import { Extractor } from '@wollybeard/kit/paka'
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extractFromFiles`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extractFromFiles`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L41" /> {#f-extract-from-files-41}
 
 ```typescript
 (params: { projectRoot?: string; files: Layout; entrypoints?: string[]; extractorVersion?: string; filterUnderscoreExports?: boolean; }): Package
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L41" />
 
 **Parameters:**
 
@@ -51,13 +49,11 @@ const layout = Dir.spec('/')
 const model = Paka.Extractor.extractFromFiles({ files: layout })
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extract`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extract`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L312" /> {#f-extract-312}
 
 ```typescript
 (config: ExtractConfig): Package
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L312" />
 
 **Parameters:**
 
@@ -67,13 +63,11 @@ const model = Paka.Extractor.extractFromFiles({ files: layout })
 
 Extract documentation model from TypeScript source files.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `categorize`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `categorize`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/categorize.ts#L18" /> {#f-categorize-18}
 
 ```typescript
 (decl: Node<ts.Node>): Category
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/categorize.ts#L18" />
 
 **Parameters:**
 
@@ -83,13 +77,11 @@ Extract documentation model from TypeScript source files.
 
 Categorize a TypeScript declaration node into export level and type.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extractExport`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extractExport`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/export.ts#L27" /> {#f-extract-export-27}
 
 ```typescript
 (name: string, decl: ExportedDeclarations): ValueExport | TypeExport
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/export.ts#L27" />
 
 **Parameters:**
 
@@ -100,13 +92,11 @@ Categorize a TypeScript declaration node into export level and type.
 
 Extract export information from a declaration node.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `parseJSDoc`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `parseJSDoc`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/jsdoc.ts#L258" /> {#f-parse-jsdoc-258}
 
 ```typescript
 (decl: Node<ts.Node>): JSDocInfo
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/jsdoc.ts#L258" />
 
 **Parameters:**
 
@@ -116,13 +106,11 @@ Extract export information from a declaration node.
 
 Parse JSDoc from a declaration node.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extractModuleFromFile`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extractModuleFromFile`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L239" /> {#f-extract-module-from-file-239}
 
 ```typescript
 (sourceFile: SourceFile, location: RelFile, options?: ModuleExtractionOptions = {}): Module
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L239" />
 
 **Parameters:**
 
@@ -134,13 +122,11 @@ Parse JSDoc from a declaration node.
 
 Extract a module from a source file.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extractModule`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extractModule`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L437" /> {#f-extract-module-437}
 
 ```typescript
 (moduleDecl: ModuleDeclaration, location: RelFile, options?: ModuleExtractionOptions = {}): Module
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L437" />
 
 **Parameters:**
 
@@ -154,7 +140,7 @@ Extract a module from a namespace declaration.
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExtractConfig`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExtractConfig`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L293" /> {#t-extract-config-293}
 
 ```typescript
 type ExtractConfig = {
@@ -171,11 +157,9 @@ type ExtractConfig = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L293" />
-
 Configuration for extraction.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Category`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Category`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/categorize.ts#L7" /> {#t-category-7}
 
 ```typescript
 type Category = {
@@ -184,11 +168,9 @@ type Category = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/categorize.ts#L7" />
-
 Categorization result for a declaration node.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `JSDocInfo`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `JSDocInfo`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/jsdoc.ts#L8" /> {#t-jsdoc-info-8}
 
 ```typescript
 type JSDocInfo = {
@@ -213,11 +195,9 @@ type JSDocInfo = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/jsdoc.ts#L8" />
-
 Parsed JSDoc information.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ModuleExtractionOptions`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ModuleExtractionOptions`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L207" /> {#t-module-extraction-options-207}
 
 ```typescript
 type ModuleExtractionOptions = {
@@ -227,7 +207,5 @@ type ModuleExtractionOptions = {
   filterUnderscoreExports?: boolean
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L207" />
 
 Options for module extraction.

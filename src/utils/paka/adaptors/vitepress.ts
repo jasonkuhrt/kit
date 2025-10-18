@@ -567,15 +567,22 @@ const renderExport = (exp: Export, context: Context): string => {
 
   // Build heading with type icon (using backticks for monospace)
   const typeIcon = exp.typeIcon
+  // Source link inline with heading - icon-only, right-aligned
+  const sourceLink = context.githubUrl && exp.sourceLocation
+    ? `<SourceLink inline href="${context.githubUrl}/blob/main/${exp.sourceLocation.file}#L${exp.sourceLocation.line}" />`
+    : ''
+
+  // Normalize type icon for anchor ID (handles duplicate names with different types)
+  const typeIconNormalized = typeIcon.toLowerCase().replace('∩', 'intersection')
+
+  // Generate unique anchor ID: type-icon-prefix + kebab-case-name + line-number
+  // Line number is included to handle function overloads (same name, different signatures)
+  const anchorId = `${typeIconNormalized}-${Md.kebab(exp.name)}-${exp.sourceLocation.line}`
+
   const heading = Md.heading(
     3,
-    `<span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">\`[${typeIcon}]\`</span> ${Md.code(exp.name)}`,
+    `<span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">\`[${typeIcon}]\`</span> ${Md.code(exp.name)}${sourceLink} {#${anchorId}}`,
   )
-
-  // Source link as info line (after signature) using custom Vue component
-  const sourceLink = context.githubUrl && exp.sourceLocation
-    ? `<SourceLink href="${context.githubUrl}/blob/main/${exp.sourceLocation.file}#L${exp.sourceLocation.line}" />`
-    : ''
 
   // Render signature - use simple signature if available, with full signature in toggle
   let signatureSection: string
@@ -608,7 +615,6 @@ const renderExport = (exp: Export, context: Context): string => {
   return Md.sections(
     heading,
     signatureSection,
-    sourceLink,
     signatureDetails,
     deprecated,
     description + guide,

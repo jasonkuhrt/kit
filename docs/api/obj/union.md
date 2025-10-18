@@ -27,15 +27,13 @@ import { Union } from '@wollybeard/kit/obj'
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Merge`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Merge`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/union.ts#L67" /> {#t-merge-67}
 
 ```typescript
 type Merge<$Union extends object> = {
   [k in Keys<$Union>]: ValueAt<$Union, k>
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/union.ts#L67" />
 
 Union operations on objects.
 
@@ -47,7 +45,7 @@ This module provides utilities for working with unions of object types, solving 
 
 These utilities use distributive conditional types to properly handle each union member separately, then combine the results.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Keys`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Keys`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/union.ts#L124" /> {#t-keys-124}
 
 ```typescript
 type Keys<
@@ -59,8 +57,6 @@ type Keys<
 
   : never
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/union.ts#L124" />
 
 Collects all keys from all members of a union of objects into a single union of keys.
 
@@ -119,7 +115,7 @@ type Partial2 = { b?: number }
 type Keys = Obj.Union.Keys<Partial1 | Partial2>  // 'a' | 'b'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ValueAt`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ValueAt`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/union.ts#L206" /> {#t-value-at-206}
 
 ```typescript
 type ValueAt<
@@ -134,8 +130,6 @@ type ValueAt<
 
   : never
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/union.ts#L206" />
 
 Gets the union of all possible value types for a specific key across all members of a union of objects.
 

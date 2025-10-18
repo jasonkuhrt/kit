@@ -25,13 +25,11 @@ These helpers generate properly formatted markdown elements. All helpers return 
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `raw`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `raw`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L38" /> {#f-raw-38}
 
 ```typescript
 (content: string): Raw
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L38" />
 
 Mark content as already-formatted markdown (won't be processed further).
 
@@ -49,13 +47,11 @@ const doc = builder()
 doc`Check out ${formattedLink}`
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `code`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `code`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L56" /> {#f-code-56}
 
 ```typescript
 (value: string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L56" />
 
 Wrap value in markdown inline code (backticks).
 
@@ -71,13 +67,11 @@ Str.Code.Md.code('hello') // '`hello`'
 Str.Code.Md.code('Array<T>') // '`Array<T>`'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `link`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `link`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L76" /> {#f-link-76}
 
 ```typescript
 (url: string, text?: string | undefined): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L76" />
 
 Create a markdown inline link.
 
@@ -103,33 +97,27 @@ Str.Code.Md.link('/api/foo', `**${code('Foo')}**`)
 // '[**`Foo`**](/api/foo)'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `heading`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `heading`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L88" /> {#f-heading-88}
 
 ```typescript
 (level: number, text: string): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L88" />
-
 Create a markdown heading.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `codeFence`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `codeFence`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L95" /> {#f-code-fence-95}
 
 ```typescript
 (code: string, language?: string = 'typescript', modifiers?: string | undefined): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L95" />
-
 Create a code fence with optional language and modifiers.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `codeGroup`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `codeGroup`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L111" /> {#f-code-group-111}
 
 ```typescript
 (tabs: { label: string; code: string; language?: string; modifiers?: string; }[]): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L111" />
 
 Create a VitePress code group with multiple tabs.
 
@@ -146,53 +134,43 @@ Str.Code.Md.codeGroup([
 ])
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `container`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `container`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L126" /> {#f-container-126}
 
 ```typescript
 (type: "warning" | "tip" | "info" | "danger", title: string, content: string): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L126" />
-
 Create a VitePress custom container (warning, tip, etc.).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `deprecation`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `deprecation`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L133" /> {#f-deprecation-133}
 
 ```typescript
 (message: string): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L133" />
-
 Create a deprecation warning with proper link conversion.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `listItem`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `listItem`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L140" /> {#f-list-item-140}
 
 ```typescript
 (text: string, level?: number = 0): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L140" />
-
 Create an unordered list item.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `sub`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `sub`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L148" /> {#f-sub-148}
 
 ```typescript
 (text: string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L148" />
 
 Create a sub-text annotation (smaller font).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `convertJSDocLinks`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `convertJSDocLinks`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L161" /> {#f-convert-jsdoc-links-161}
 
 ```typescript
 (text: string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L161" />
 
 Convert JSDoc
 
@@ -206,13 +184,11 @@ Patterns:
 
 For Effect library references (String._, Array._, etc.), links to Effect documentation.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `demoteHeadings`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `demoteHeadings`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L190" /> {#f-demote-headings-190}
 
 ```typescript
 (markdown: string, levels: number): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L190" />
 
 **Parameters:**
 
@@ -225,33 +201,27 @@ Demote markdown headings by adding a specified number of levels.
 
 This is used to ensure JSDoc descriptions don't break the document hierarchy. For example, if an export is h3, its description headings should be h4+.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `sections`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `sections`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L204" /> {#f-sections-204}
 
 ```typescript
 (...parts?: (string | false | null | undefined)[]): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L204" />
-
 Join markdown sections with double newlines, filtering out empty sections.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `kebab`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `kebab`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L211" /> {#f-kebab-211}
 
 ```typescript
 (str: string): string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L211" />
-
 Convert string to kebab-case.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `table`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `table`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L236" /> {#f-table-236}
 
 ```typescript
 (rows: Record<string, string | null | undefined>): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L236" />
 
 Generate a markdown table from key-value pairs.
 
@@ -275,13 +245,11 @@ Str.Code.Md.table({
 // | **Age** | 30 |
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `builder`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `builder`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L520" /> {#f-builder-520}
 
 ```typescript
 (): Builder
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L520" />
 
 Create a new markdown builder for imperative construction.
 
@@ -312,13 +280,11 @@ return doc.build()
 
 ## Constants
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `template`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `template`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L759" /> {#c-template-759}
 
 ```typescript
 Template
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L759" />
 
 Tagged template for building markdown content. Also provides `.builder()` for imperative construction and `.md` for element helpers.
 
@@ -355,7 +321,7 @@ return doc.build()
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Raw`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Raw`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L21" /> {#i-raw-21}
 
 ```typescript
 interface Raw {
@@ -364,13 +330,11 @@ interface Raw {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L21" />
-
 Branded type for markdown content that's already formatted and safe.
 
 Use raw to create values of this type.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Builder`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Builder`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L369" /> {#i-builder-369}
 
 ````typescript
 interface Builder {
@@ -506,8 +470,6 @@ interface Builder {
 }
 ````
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L369" />
-
 Markdown builder interface for imperative markdown construction.
 
 Provides a fluent API for building markdown with conditionals, loops, and helpers.
@@ -537,7 +499,7 @@ doc.codeFence('const x = 1', 'typescript')
 return doc.build()
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Template`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Template`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L689" /> {#i-template-689}
 
 ````typescript
 interface Template {
@@ -586,7 +548,5 @@ interface Template {
   md: typeof md
 }
 ````
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/md/md.ts#L689" />
 
 Markdown template function type with builder property.

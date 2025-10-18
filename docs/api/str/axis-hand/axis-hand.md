@@ -25,13 +25,11 @@ import { AxisHand } from '@wollybeard/kit/str'
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `parse`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `parse`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/axishand/axishand.ts#L102" /> {#f-parse-102}
 
 ```typescript
 <$value = number > (input: Input<$value>): Partial<Logical<$value>>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/axishand/axishand.ts#L102" />
 
 **Parameters:**
 
@@ -45,7 +43,7 @@ Handles all input formats and returns a partial Logical object with only the spe
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Logical`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Logical`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/axishand/axishand.ts#L47" /> {#t-logical-47}
 
 ```typescript
 type Logical<$value = number> = {
@@ -55,8 +53,6 @@ type Logical<$value = number> = {
   crossEnd?: $value
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/axishand/axishand.ts#L47" />
 
 AxisHand provides a logical, orientation-aware coordinate system for box model properties.
 
@@ -104,7 +100,7 @@ AxisHand.parse([[2], [, 4]])
 // → { mainStart: 2, crossEnd: 4 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `AxisValue`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `AxisValue`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/axishand/axishand.ts#L64" /> {#u-axis-value-64}
 
 ```typescript
 type AxisValue<$value = number> =
@@ -116,8 +112,6 @@ type AxisValue<$value = number> =
   | { start?: $value; end?: $value }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/axishand/axishand.ts#L64" />
-
 Value specification for a single axis.
 
 Can be:
@@ -126,7 +120,7 @@ Can be:
 - An array `[start, end]` or sparse `[start]`, `[, end]`
 - An object with explicit `start` and `end` properties
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Input`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Input`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/axishand/axishand.ts#L85" /> {#u-input-85}
 
 ```typescript
 type Input<$value = number> =
@@ -137,8 +131,6 @@ type Input<$value = number> =
   | { main?: AxisValue<$value>; cross?: AxisValue<$value> } // object with axes
   | Logical<$value>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/box/axishand/axishand.ts#L85" />
 
 Input format for AxisHand.
 

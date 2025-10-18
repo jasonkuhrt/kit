@@ -362,47 +362,39 @@ import * as Paka from '@wollybeard/kit/paka'
 
 ## Constants
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ExportLevel`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ExportLevel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L13" /> {#c-export-level-13}
 
 ```typescript
 Enums<{ readonly value: "value"; readonly type: "type"; }>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L13" />
-
 Export level distinguishes between runtime values and type-only exports.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ValueExportType`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ValueExportType`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L19" /> {#c-value-export-type-19}
 
 ```typescript
 Enums<{ readonly function: "function"; readonly const: "const"; readonly class: "class"; readonly namespace: "namespace"; }>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L19" />
-
 Value export types
 
 - exports that exist at runtime.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `TypeExportType`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `TypeExportType`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L32" /> {#c-type-export-type-32}
 
 ```typescript
 Enums<{ readonly interface: "interface"; readonly 'type-alias': "type-alias"; readonly enum: "enum"; readonly union: "union"; readonly intersection: "intersection"; }>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L32" />
-
 Type export types
 
 - exports that only exist in TypeScript's type system.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BuilderMethodCategory`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BuilderMethodCategory`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L50" /> {#c-builder-method-category-50}
 
 ```typescript
 Enums<{ readonly chainable: "chainable"; readonly terminal: "terminal"; readonly transform: "transform"; }>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L50" />
 
 Builder method classification based on return type.
 
@@ -413,23 +405,19 @@ Builder method classification based on return type.
 - `transform`
 - Returns a different builder type (transforms to another builder)
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Provenance`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Provenance`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L131" /> {#c-provenance-131}
 
 ```typescript
 Union<[typeof JSDocProvenance, typeof MdFileProvenance]>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L131" />
-
 Union of all possible documentation provenance types.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `SignatureModel`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `SignatureModel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L517" /> {#c-signature-model-517}
 
 ```typescript
 Union<[typeof FunctionSignatureModel, typeof BuilderSignatureModel, typeof ClassSignatureModel, typeof TypeSignatureModel, typeof ValueSignatureModel]>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L517" />
 
 Signature model
 
@@ -448,127 +436,105 @@ Discriminated by _tag field:
 - `ValueSignatureModel`
 - Const values (type as text)
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Export`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Export`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L754" /> {#c-export-754}
 
 ```typescript
 Union<[typeof ValueExport, typeof TypeExport]>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L754" />
-
 Export is a tagged union of value and type exports.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Entrypoint`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Entrypoint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L938" /> {#c-entrypoint-938}
 
 ```typescript
 Union<[typeof DrillableNamespaceEntrypoint, typeof SimpleEntrypoint]>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L938" />
-
 Entrypoint union
 
 - all patterns.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `InterfaceModel`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `InterfaceModel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L971" /> {#c-interface-model-971}
 
 ```typescript
 typeof Package
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L971" />
-
 The complete interface model output.
 
 ## Classes
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `Example`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `Example`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L66" /> {#class-example-66}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L66" />
 
 Code example extracted from JSDoc
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ImportExample`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ImportExample`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L83" /> {#class-import-example-83}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L83" />
 
 Import example for documentation UI.
 
 Non-serialized class used for rendering import tabs in documentation. Returned by Entrypoint instance methods to provide structured import examples.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `SourceLocation`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `SourceLocation`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L93" /> {#class-source-location-93}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L93" />
 
 Source location for "View source" links.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `JSDocProvenance`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `JSDocProvenance`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L108" /> {#class-jsdoc-provenance-108}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L108" />
 
 Provenance for JSDoc-sourced documentation. Tracks whether it came from a shadow namespace or regular JSDoc.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `MdFileProvenance`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `MdFileProvenance`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L120" /> {#class-md-file-provenance-120}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L120" />
 
 Provenance for markdown file-sourced documentation. Includes file path for "Edit this page" links.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `Docs`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `Docs`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L138" /> {#class-docs-138}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L138" />
 
 Documentation content for modules and exports. Groups descriptive and guide content together.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `DocsProvenance`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `DocsProvenance`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L149" /> {#class-docs-provenance-149}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L149" />
 
 Provenance tracking for documentation sources. Maps each doc field (description/guide) to its source.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `TypeParameter`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `TypeParameter`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L170" /> {#class-type-parameter-170}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L170" />
 
 Type parameter for generic functions/classes. Captures type parameter name, constraint, and default value.
 
@@ -582,14 +548,12 @@ import { Paka } from '@wollybeard/kit/paka'
 { name: 'T', constraint: 'string', default: "'default'" }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `Parameter`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `Parameter`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L193" /> {#class-parameter-193}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L193" />
 
 Function/method parameter. Captures parameter name, type, modifiers, and JSDoc description.
 
@@ -607,14 +571,12 @@ import { Paka } from '@wollybeard/kit/paka'
 ]
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `FunctionSignature`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `FunctionSignature`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L225" /> {#class-function-signature-225}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L225" />
 
 Single function signature (one overload). Captures type parameters, parameters, return type, and JSDoc documentation.
 
@@ -635,14 +597,12 @@ import { Paka } from '@wollybeard/kit/paka'
 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `FunctionSignatureModel`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `FunctionSignatureModel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L257" /> {#class-function-signature-model-257}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L257" />
 
 Function signature model supporting multiple overloads.
 
@@ -665,14 +625,12 @@ import { Paka } from '@wollybeard/kit/paka'
 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `BuilderMethod`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `BuilderMethod`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L298" /> {#class-builder-method-298}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L298" />
 
 Builder method on a builder interface.
 
@@ -709,14 +667,12 @@ import { Paka } from '@wollybeard/kit/paka'
 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `BuilderSignatureModel`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `BuilderSignatureModel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L357" /> {#class-builder-signature-model-357}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L357" />
 
 Builder signature model for fluent/builder pattern APIs.
 
@@ -751,14 +707,12 @@ import { Paka } from '@wollybeard/kit/paka'
 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `TypeSignatureModel`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `TypeSignatureModel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L381" /> {#class-type-signature-model-381}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L381" />
 
 Type signature model (interfaces, type aliases, etc).
 
@@ -766,14 +720,12 @@ For now, these are kept as plain text since parsing TypeScript type definitions 
 
 Future: Could be expanded to structured form (properties, methods, etc).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ValueSignatureModel`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ValueSignatureModel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L401" /> {#class-value-signature-model-401}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L401" />
 
 Value signature model (simple const values, primitives).
 
@@ -789,14 +741,12 @@ import { Paka } from '@wollybeard/kit/paka'
 { _tag: 'ValueSignatureModel', type: 'number' }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ClassProperty`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ClassProperty`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L427" /> {#class-class-property-427}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L427" />
 
 Class property. Captures property name, type, modifiers, and JSDoc description.
 
@@ -818,14 +768,12 @@ import { Paka } from '@wollybeard/kit/paka'
 ]
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ClassMethod`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ClassMethod`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L458" /> {#class-class-method-458}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L458" />
 
 Class method. Captures method name, overloads, and modifiers.
 
@@ -845,14 +793,12 @@ import { Paka } from '@wollybeard/kit/paka'
 ]
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ClassSignatureModel`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ClassSignatureModel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L495" /> {#class-class-signature-model-495}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L495" />
 
 Class signature model with structured class information.
 
@@ -885,14 +831,12 @@ import { Paka } from '@wollybeard/kit/paka'
 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `Module`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `Module`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L582" /> {#class-module-582}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L582" />
 
 Module schema implementation.
 
@@ -905,7 +849,7 @@ NOTE: Circular dependency handled via declaration merging:
 - ValueExport (part of Export union) contains optional Module (through module field)
 - This is intentional and handled correctly at runtime by Effect Schema via S.suspend()
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ValueExport`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ValueExport`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L694" /> {#class-value-export-694}
 
 ```typescript
 class {
@@ -915,11 +859,9 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L694" />
-
 Value export schema implementation.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `TypeExport`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `TypeExport`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L724" /> {#class-type-export-724}
 
 ```typescript
 class {
@@ -929,11 +871,9 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L724" />
-
 Type export schema implementation.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `DrillableNamespaceEntrypoint`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `DrillableNamespaceEntrypoint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L809" /> {#class-drillable-namespace-entrypoint-809}
 
 ```typescript
 class {
@@ -942,8 +882,6 @@ class {
   getImportExamples(packageName: string, breadcrumbs: string[]): ImportExample[]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L809" />
 
 Drillable Namespace Pattern entrypoint.
 
@@ -1001,7 +939,7 @@ export * as A from './z.js'  // ← Points to z.js, not a.js
 // Namespace points to src/z.ts, subpath points to src/a.ts → NOT drillable (different files)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `SimpleEntrypoint`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `SimpleEntrypoint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L873" /> {#class-simple-entrypoint-873}
 
 ```typescript
 class {
@@ -1011,83 +949,65 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L873" />
-
 Simple entrypoint without special import pattern.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `PackageMetadata`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `PackageMetadata`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L947" /> {#class-package-metadata-947}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L947" />
 
 Package metadata.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `Package`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `Package`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L957" /> {#class-package-957}
 
 ```typescript
 class {
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L957" />
 
 Package represents the complete extracted documentation model.
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExportLevel`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExportLevel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L14" /> {#t-export-level-14}
 
 ```typescript
 type ExportLevel = typeof ExportLevel.Type
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L14" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ValueExportType`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ValueExportType`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L27" /> {#t-value-export-type-27}
 
 ```typescript
 type ValueExportType = typeof ValueExportType.Type
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L27" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `TypeExportType`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `TypeExportType`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L41" /> {#t-type-export-type-41}
 
 ```typescript
 type TypeExportType = typeof TypeExportType.Type
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L41" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `BuilderMethodCategory`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `BuilderMethodCategory`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L57" /> {#t-builder-method-category-57}
 
 ```typescript
 type BuilderMethodCategory = typeof BuilderMethodCategory.Type
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L57" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Provenance`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Provenance`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L132" /> {#t-provenance-132}
 
 ```typescript
 type Provenance = typeof Provenance.Type
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L132" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SignatureModel`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SignatureModel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L524" /> {#t-signature-model-524}
 
 ```typescript
 type SignatureModel = S.Schema.Type<typeof SignatureModel>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L524" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Module`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Module`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L556" /> {#i-module-556}
 
 ```typescript
 interface Module {
@@ -1099,11 +1019,9 @@ interface Module {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L556" />
-
 Module type interface for declaration merging. Following the graphql-kit pattern for circular schemas with instance methods.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ModuleEncoded`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ModuleEncoded`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L564" /> {#i-module-encoded-564}
 
 ```typescript
 interface ModuleEncoded {
@@ -1115,9 +1033,7 @@ interface ModuleEncoded {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L564" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ValueExport`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ValueExport`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L659" /> {#i-value-export-659}
 
 ```typescript
 interface ValueExport {
@@ -1137,11 +1053,9 @@ interface ValueExport {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L659" />
-
 ValueExport type interface for declaration merging.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ValueExportEncoded`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ValueExportEncoded`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L675" /> {#i-value-export-encoded-675}
 
 ```typescript
 interface ValueExportEncoded {
@@ -1161,36 +1075,26 @@ interface ValueExportEncoded {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L675" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Export`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Export`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L755" /> {#t-export-755}
 
 ```typescript
 type Export = S.Schema.Type<typeof Export>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L755" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `ExportEncoded`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `ExportEncoded`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L756" /> {#u-export-encoded-756}
 
 ```typescript
 type ExportEncoded = ValueExportEncoded | S.Schema.Encoded<typeof TypeExport>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L756" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Entrypoint`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Entrypoint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L942" /> {#t-entrypoint-942}
 
 ```typescript
 type Entrypoint = S.Schema.Type<typeof Entrypoint>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L942" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `InterfaceModel`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `InterfaceModel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L972" /> {#t-interface-model-972}
 
 ```typescript
 type InterfaceModel = S.Schema.Type<typeof InterfaceModel>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L972" />

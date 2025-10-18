@@ -19,13 +19,11 @@ import { Tpl } from '@wollybeard/kit/str'
 
 ## Template
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Tpl`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Tpl`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L19" /> {#t-tpl-19}
 
 ```typescript
 type Tpl = TemplateStringsArray
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L19" />
 
 Convenience re-export of the built-in TemplateStringsArray type. Contains the string parts of a tagged template literal along with a `raw` property.
 
@@ -44,13 +42,11 @@ function tag(strings: Str.Tpl.Tpl.Array, ...values: unknown[]) {
 tag`Hello ${name}!`
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L38" /> {#f-is-38}
 
 ```typescript
 (value: unknown): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L38" />
 
 **Parameters:**
 
@@ -75,13 +71,11 @@ function tag(...args: unknown[]) {
 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `CallInput`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `CallInput`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L57" /> {#t-call-input-57}
 
 ```typescript
 type CallInput = [Tpl, ...unknown[]]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L57" />
 
 Tagged template literal arguments tuple. First element is the template strings array, followed by interpolated values.
 
@@ -100,13 +94,11 @@ function tag(...args: unknown[]) {
 tag`Hello ${name}!`
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isCallInput`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isCallInput`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L75" /> {#f-is-call-input-75}
 
 ```typescript
 (value: unknown): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L75" />
 
 **Parameters:**
 
@@ -131,13 +123,11 @@ function tag(...args: unknown[]) {
 tag`Hello ${name}!`
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `normalizeCall`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `normalizeCall`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L102" /> {#f-normalize-call-102}
 
 ```typescript
 (callInput: CallInput): Call
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L102" />
 
 **Parameters:**
 
@@ -164,13 +154,11 @@ function tag(...args: unknown[]) {
 tag`Hello ${name}!`
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `renderWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `renderWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L125" /> {#f-render-with-125}
 
 ```typescript
 (mapper: (value: unknown) => string): (callInput: CallInput) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L125" />
 
 **Parameters:**
 
@@ -200,13 +188,11 @@ tag`Value: ${{ foo: 'bar' }}` // "Value: {\"foo\":\"bar\"}"
 const renderPrefixed = Str.Tpl.renderWith(v => `[${v}]`)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `render`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `render`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L150" /> {#c-render-150}
 
 ```typescript
 (callInput: CallInput) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L150" />
 
 Render tagged template literal arguments to a string. Interpolated values are converted using plain `String()` coercion.
 
@@ -226,13 +212,11 @@ tag`Hello ${name}!` // "Hello World!"
 tag`Count: ${42}` // "Count: 42"
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `passthrough`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `passthrough`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L166" /> {#f-passthrough-166}
 
 ```typescript
 (strings: TemplateStringsArray, ...values?: unknown[]): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L166" />
 
 **Parameters:**
 
@@ -254,13 +238,11 @@ const message = template`Hello ${name}, you have ${count} items.`
 // Result: "Hello Alice, you have 5 items."
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `dedent`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `dedent`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L209" /> {#f-dedent-209}
 
 ```typescript
 (strings: TemplateStringsArray, ...values?: unknown[]): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L209" />
 
 **Parameters:**
 
@@ -311,23 +293,19 @@ const path = dedent`
 // Result: "C:\\Users\\name\\Documents" (backslashes preserved)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HighlightTag`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `HighlightTag`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L250" /> {#t-highlight-tag-250}
 
 ```typescript
 type HighlightTag = typeof passthrough
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L250" />
-
 Type for a tagged template literal function used for syntax highlighting.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `highlight`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `highlight`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L297" /> {#c-highlight-297}
 
 ```typescript
 { ts: (strings: TemplateStringsArray, ...values: unknown[]) => string; js: (strings: TemplateStringsArray, ...values: unknown[]) => string; html: (strings: TemplateStringsArray, ...values: unknown[]) => string; css: (strings: TemplateStringsArray, ...values: unknown[]) => string; sql: (strings: TemplateStringsArray, ...values: unknown[]) => string; json: (strings: TemplateStringsArray, ...values: unknown[]) => string; yaml: (strings: TemplateStringsArray, ...values: unknown[]) => string; yml: (strings: TemplateStringsArray, ...values: unknown[]) => string; graphql: (strings: TemplateStringsArray, ...values: unknown[]) => string; gql: (strings: TemplateStringsArray, ...values: unknown[]) => string; iso: (strings: TemplateStringsArray, ...values: unknown[]) => string; }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L297" />
 
 Object containing language-specific template tag functions for syntax highlighting. Each property is a tagged template function that provides editor syntax highlighting for that language (when supported by the editor).
 
@@ -371,7 +349,7 @@ const query = sql`
 
 ## Other
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Call`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Call`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L79" /> {#i-call-79}
 
 ```typescript
 interface Call {
@@ -379,5 +357,3 @@ interface Call {
   args: unknown[]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L79" />

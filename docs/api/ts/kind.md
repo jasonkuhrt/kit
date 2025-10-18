@@ -23,29 +23,25 @@ import { Kind } from '@wollybeard/kit/ts'
 
 ## Constants
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `PrivateKindReturn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `PrivateKindReturn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L114" /> {#c-private-kind-return-114}
 
 ```typescript
 typeof PrivateKindReturn
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L114" />
-
 Private symbol for storing kind return type.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `PrivateKindParameters`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `PrivateKindParameters`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L120" /> {#c-private-kind-parameters-120}
 
 ```typescript
 typeof PrivateKindParameters
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L120" />
-
 Private symbol for storing kind parameters.
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Apply`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Apply`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L32" /> {#t-apply-32}
 
 ```typescript
 type Apply<$Kind, $Args> =
@@ -53,13 +49,11 @@ type Apply<$Kind, $Args> =
   ($Kind & { parameters: $Args })['return']
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L32" />
-
 Higher-kinded type utilities for TypeScript.
 
 Provides type-level functions and utilities for simulating higher-kinded types in TypeScript, enabling more advanced type-level programming patterns.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Kind`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Kind`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L52" /> {#i-kind-52}
 
 ```typescript
 interface Kind<$Params = unknown, $Return = unknown> {
@@ -67,8 +61,6 @@ interface Kind<$Params = unknown, $Return = unknown> {
   readonly return: $Return
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L52" />
 
 Define a kind (higher-kinded type) function interface.
 
@@ -93,13 +85,11 @@ interface BoxOf extends Kind<[unknown], Box<any>> {
 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Parameters`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Parameters`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L62" /> {#t-parameters-62}
 
 ```typescript
 type Parameters<$Kind> = $Kind extends Kind<infer P, any> ? P : never
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L62" />
 
 Extract the parameter types from a kind.
 
@@ -107,13 +97,11 @@ $Kind
 
 - The kind to extract parameters from
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Return`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Return`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L69" /> {#t-return-69}
 
 ```typescript
 type Return<$Kind> = $Kind extends Kind<any, infer R> ? R : never
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L69" />
 
 Extract the return type from a kind.
 
@@ -121,7 +109,7 @@ $Kind
 
 - The kind to extract return type from
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Identity`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Identity`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L82" /> {#i-identity-82}
 
 ```typescript
 interface Identity extends Kind {
@@ -129,8 +117,6 @@ interface Identity extends Kind {
   return: this['parameters'][0]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L82" />
 
 Create a type-level identity function.
 
@@ -145,15 +131,13 @@ import { Ts } from '@wollybeard/kit/ts'
 type Same = Kind.Apply<Kind.Identity, [string]> // string
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Const`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Const`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L99" /> {#i-const-99}
 
 ```typescript
 interface Const<$Const> extends Kind {
   return: $Const
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L99" />
 
 Create a type-level constant function.
 
@@ -172,23 +156,19 @@ import { Ts } from '@wollybeard/kit/ts'
 type AlwaysString = Kind.Apply<Kind.Const<string>, [number]> // string
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PrivateKindReturn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PrivateKindReturn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L115" /> {#t-private-kind-return-115}
 
 ```typescript
 type PrivateKindReturn = typeof PrivateKindReturn
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L115" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PrivateKindParameters`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PrivateKindParameters`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L121" /> {#t-private-kind-parameters-121}
 
 ```typescript
 type PrivateKindParameters = typeof PrivateKindParameters
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L121" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Private`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Private`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L138" /> {#i-private-138}
 
 ```typescript
 interface Private {
@@ -196,8 +176,6 @@ interface Private {
   [PrivateKindParameters]: unknown
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L138" />
 
 Private kind interface using symbols instead of string keys.
 
@@ -216,13 +194,11 @@ interface BoxKind extends PrivateKind {
 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PrivateApply`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PrivateApply`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L154" /> {#t-private-apply-154}
 
 ```typescript
 type PrivateApply<$Kind extends Private, $Args> = ($Kind & { [PrivateKindParameters]: $Args })[PrivateKindReturn]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L154" />
 
 Apply arguments to a private kind.
 
@@ -243,7 +219,7 @@ import { Ts } from '@wollybeard/kit/ts'
 type BoxOfString = PrivateKindApply<BoxKind, [string]> // Box<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MaybePrivateApplyOr`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MaybePrivateApplyOr`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L157" /> {#t-maybe-private-apply-or-157}
 
 ```typescript
 type MaybePrivateApplyOr<$MaybeKind, $Args, $Or> =
@@ -252,15 +228,11 @@ type MaybePrivateApplyOr<$MaybeKind, $Args, $Or> =
   : $Or
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L157" />
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsPrivateKind`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsPrivateKind`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L173" /> {#t-is-private-kind-173}
 
 ```typescript
 type IsPrivateKind<T> = T extends Private ? true : false
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L173" />
 
 Check if a type is a private kind.
 
@@ -278,7 +250,7 @@ type Test1 = IsPrivateKind<BoxKind> // true
 type Test2 = IsPrivateKind<string> // false
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Pipe`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Pipe`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L218" /> {#t-pipe-218}
 
 ```typescript
 type Pipe<$Kinds extends readonly Kind[], $Input> =
@@ -286,8 +258,6 @@ type Pipe<$Kinds extends readonly Kind[], $Input> =
   ? Pipe<__rest__, Apply<__first__, [$Input]>>
   : $Input
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L218" />
 
 Apply a tuple of Kinds sequentially (left-to-right composition).
 

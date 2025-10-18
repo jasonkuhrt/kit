@@ -23,13 +23,11 @@ import { Visual } from '@wollybeard/kit/str'
 
 ## Text Formatting
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `width`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `width`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L66" /> {#f-width-66}
 
 ```typescript
 (text: string): number
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L66" />
 
 **Parameters:**
 
@@ -69,13 +67,11 @@ Str.Visual.width('')                    // 0
 Str.Visual.width('\x1b[31m\x1b[0m')     // 0 (only ANSI codes)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pad`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pad`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L102" /> {#f-pad-102}
 
 ```typescript
 (text: string, size: number, side?: "left" | "right" = `left`, char?: string = defaultPadCharacter): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L102" />
 
 **Parameters:**
 
@@ -110,23 +106,19 @@ Str.Visual.pad(colored, 5, 'right')  // Adds 3 spaces (visual: "OK   ")
 Str.Visual.pad('hello', 3, 'left')  // 'hello' (unchanged)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L119" /> {#c-pad-on-119}
 
 ```typescript
 (text: string) => (size: number) => (side?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L119" />
-
 Curried version of pad with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L133" /> {#c-pad-with-133}
 
 ```typescript
 (size: number) => (text: string) => (side?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L133" />
 
 Curried version of pad with size first.
 
@@ -141,13 +133,11 @@ const pad10 = Str.Visual.padWith(10)
 pad10('\x1b[32mSuccess\x1b[0m', 'right')  // Visual width 10
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `span`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `span`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L161" /> {#f-span-161}
 
 ```typescript
 (text: string, width: number, align?: "left" | "right" = `left`, char?: string = defaultPadCharacter): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L161" />
 
 **Parameters:**
 
@@ -182,23 +172,19 @@ const colored = '\x1b[34mID\x1b[0m'
 Str.Visual.span(colored, 6, 'left')  // Visual: "ID    "
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L176" /> {#c-span-on-176}
 
 ```typescript
 (text: string) => (width: number) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L176" />
-
 Curried version of span with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L191" /> {#c-span-with-191}
 
 ```typescript
 (width: number) => (text: string) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L191" />
 
 Curried version of span with width first.
 
@@ -214,13 +200,11 @@ span8('Name', 'left')   // 'Name    '
 span8('Age', 'right')   // '     Age'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fit`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fit`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L234" /> {#f-fit-234}
 
 ```typescript
 (text: string, width: number, align?: "left" | "right" = `left`, char?: string = defaultPadCharacter): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L234" />
 
 **Parameters:**
 
@@ -273,23 +257,19 @@ const columns = ['Name', 'Email', 'Status'].map(
 // ['Name      ', 'Email               ', 'Status  ']
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L250" /> {#c-fit-on-250}
 
 ```typescript
 (text: string) => (width: number) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L250" />
-
 Curried version of fit with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L269" /> {#c-fit-with-269}
 
 ```typescript
 (width: number) => (text: string) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L269" />
 
 Curried version of fit with width first.
 
@@ -310,13 +290,11 @@ statusColumn('Active', 'left')         // 'Active    '
 statusColumn('Very Long Status', 'left') // 'Very Long '
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `take`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `take`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L295" /> {#f-take-295}
 
 ```typescript
 (text: string, size: number): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L295" />
 
 **Parameters:**
 
@@ -349,23 +327,19 @@ Str.Visual.take(colored, 5)  // '\x1b[31mhello\x1b[0m' (visual: "hello")
 Str.Visual.take('👋 hello', 2)  // '👋 ' (emoji + space)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L312" /> {#c-take-on-312}
 
 ```typescript
 (text: string) => (size: number) => string
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L312" />
-
 Curried version of take with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L326" /> {#c-take-with-326}
 
 ```typescript
 (size: number) => (text: string) => string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L326" />
 
 Curried version of take with size first.
 
@@ -380,13 +354,11 @@ const take10 = Str.Visual.takeWith(10)
 take10('a long string here')  // First 10 visual chars
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `takeWords`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `takeWords`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L356" /> {#f-take-words-356}
 
 ```typescript
 (text: string, size: number): { taken: string; remaining: string; }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L356" />
 
 **Parameters:**
 
@@ -422,23 +394,19 @@ Str.Visual.takeWords(colored, 7)
 // { taken: '\x1b[32mone\x1b[0m two', remaining: 'three' }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWordsOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWordsOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L399" /> {#c-take-words-on-399}
 
 ```typescript
 (text: string) => (size: number) => { taken: string; remaining: string; }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L399" />
-
 Curried version of takeWords with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWordsWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWordsWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L414" /> {#c-take-words-with-414}
 
 ```typescript
 (size: number) => (text: string) => { taken: string; remaining: string; }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L414" />
 
 Curried version of takeWords with size first.
 
@@ -454,13 +422,11 @@ take20('Lorem ipsum dolor sit amet')
 // { taken: 'Lorem ipsum dolor', remaining: 'sit amet' }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `wrap`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `wrap`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L443" /> {#f-wrap-443}
 
 ```typescript
 (text: string, width: number): string[]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L443" />
 
 **Parameters:**
 
@@ -496,23 +462,19 @@ Str.Visual.wrap(colored, 12)
 // ['\x1b[31mthis is red\x1b[0m', 'text and', 'normal']
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L466" /> {#c-wrap-on-466}
 
 ```typescript
 (text: string) => (width: number) => string[]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L466" />
-
 Curried version of wrap with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L480" /> {#c-wrap-with-480}
 
 ```typescript
 (width: number) => (text: string) => string[]
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L480" />
 
 Curried version of wrap with width first.
 
@@ -527,13 +489,11 @@ const wrap80 = Str.Visual.wrapWith(80)
 wrap80('long text here...')  // Wraps to 80 columns
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `size`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `size`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L507" /> {#f-size-507}
 
 ```typescript
 (text: string): { maxWidth: number; height: number; }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L507" />
 
 **Parameters:**
 
@@ -567,13 +527,11 @@ Str.Visual.size('')
 // { maxWidth: 0, height: 0 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `maxWidth`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `maxWidth`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L535" /> {#f-max-width-535}
 
 ```typescript
 (text: string): number
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L535" />
 
 **Parameters:**
 

@@ -25,13 +25,11 @@ import { SimpleSignature } from '@wollybeard/kit/ts'
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `implement`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `implement`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L157" /> {#f-implement-157}
 
 ```typescript
 <$Fn>(impl: GetSignature<$Fn>): $Fn
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L157" />
 
 **Parameters:**
 
@@ -70,13 +68,11 @@ export const partition = implement<PartitionFn>((obj, pickedKeys) => {
 
 ## Constants
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `symbol`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L25" /> {#c-symbol-25}
 
 ```typescript
 typeof symbol
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L25" />
 
 Utilities for working with the `__simpleSignature` phantom type pattern.
 
@@ -86,7 +82,7 @@ SimpleSignature
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `SimpleSignature`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `SimpleSignature`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L60" /> {#i-simple-signature-60}
 
 ```typescript
 interface SimpleSignature<
@@ -95,8 +91,6 @@ interface SimpleSignature<
   [symbol]: $Overloads[number]
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L60" />
 
 Helper interface for defining simple signatures with overloads.
 
@@ -137,13 +131,11 @@ interface PartitionFn extends SimpleSignature<[
 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetSignature`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetSignature`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L88" /> {#t-get-signature-88}
 
 ```typescript
 type GetSignature<$fn> = $fn extends { [symbol]: infer $sig } ? $sig : $fn
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L88" />
 
 Extract the signature from a function, preferring `__simpleSignature` if available.
 
@@ -171,14 +163,12 @@ declare const partition: {
 type Result2 = GetSignature<typeof partition>  // (obj: object, keys: string[]) => { picked: object; omitted: object }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetParameters`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetParameters`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L107" /> {#t-get-parameters-107}
 
 ```typescript
 type GetParameters<$fn> = GetSignature<$fn> extends (...args: any) => any ? Parameters<GetSignature<$fn>>
   : never
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L107" />
 
 Extract parameters from a function, using `__simpleSignature` if available.
 
@@ -202,14 +192,12 @@ declare const partition: {
 type Params2 = GetParameters<typeof partition>  // [obj: object, keys: string[]]
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetReturnType`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetReturnType`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L127" /> {#t-get-return-type-127}
 
 ```typescript
 type GetReturnType<$fn> = GetSignature<$fn> extends (...args: any) => any ? ReturnType<GetSignature<$fn>>
   : never
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/simple-signature.ts#L127" />
 
 Extract return type from a function, using `__simpleSignature` if available.
 

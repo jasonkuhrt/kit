@@ -19,13 +19,11 @@ import { Even } from '@wollybeard/kit/num'
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/even/even.ts#L44" /> {#f-is-44}
 
 ```typescript
 (value: unknown): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/even/even.ts#L44" />
 
 **Parameters:**
 
@@ -35,13 +33,11 @@ import { Even } from '@wollybeard/kit/num'
 
 Type predicate to check if value is even. Returns Even & Int when the value is an even integer.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/even/even.ts#L65" /> {#f-from-65}
 
 ```typescript
 (value: number): number & { [EvenBrand]: true; } & { [IntBrand]: true; }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/even/even.ts#L65" />
 
 **Parameters:**
 
@@ -55,13 +51,11 @@ Type predicate to check if value is even. Returns Even & Int when the value is a
 
 Construct an Even integer. Throws if the value is not an even integer.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `tryFrom`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/even/even.ts#L88" /> {#f-try-from-88}
 
 ```typescript
 (value: number): (number & { [EvenBrand]: true; } & { [IntBrand]: true; }) | null
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/even/even.ts#L88" />
 
 **Parameters:**
 
@@ -71,13 +65,11 @@ Construct an Even integer. Throws if the value is not an even integer.
 
 Try to construct an Even integer. Returns null if the value is not an even integer.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `next`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `next`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/even/even.ts#L106" /> {#f-next-106}
 
 ```typescript
 (value: number): number & { [EvenBrand]: true; } & { [IntBrand]: true; }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/even/even.ts#L106" />
 
 **Parameters:**
 
@@ -87,13 +79,11 @@ Try to construct an Even integer. Returns null if the value is not an even integ
 
 Get the next even number (rounds up if odd). For any number, returns the smallest even integer greater than or equal to it.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `prev`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `prev`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/even/even.ts#L125" /> {#f-prev-125}
 
 ```typescript
 (value: number): number & { [EvenBrand]: true; } & { [IntBrand]: true; }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/even/even.ts#L125" />
 
 **Parameters:**
 
@@ -105,13 +95,11 @@ Get the previous even number (rounds down if odd). For any number, returns the l
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Even`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Even`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/even/even.ts#L27" /> {#intersection-even-27}
 
 ```typescript
 type Even = number & { [EvenBrand]: true }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/even/even.ts#L27" />
 
 Even integer.
 

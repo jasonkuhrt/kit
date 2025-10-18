@@ -19,13 +19,11 @@ import { Complex } from '@wollybeard/kit/num'
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `is`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L52" /> {#f-is-52}
 
 ```typescript
 (value: unknown): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L52" />
 
 **Parameters:**
 
@@ -35,13 +33,11 @@ import { Complex } from '@wollybeard/kit/num'
 
 Type predicate to check if value is a Complex number.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `from`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L83" /> {#f-from-83}
 
 ```typescript
 (real: number, imaginary?: number = 0): Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L83" />
 
 **Parameters:**
 
@@ -52,13 +48,11 @@ Type predicate to check if value is a Complex number.
 
 Construct a Complex number from real and imaginary parts.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `real`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `real`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L135" /> {#f-real-135}
 
 ```typescript
 (real: number): Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L135" />
 
 **Parameters:**
 
@@ -68,13 +62,11 @@ Construct a Complex number from real and imaginary parts.
 
 Create a real complex number (imaginary part = 0).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `imaginary`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `imaginary`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L148" /> {#f-imaginary-148}
 
 ```typescript
 (imaginary: number): Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L148" />
 
 **Parameters:**
 
@@ -84,13 +76,11 @@ Create a real complex number (imaginary part = 0).
 
 Create a pure imaginary complex number (real part = 0).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `add`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `add`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L193" /> {#f-add-193}
 
 ```typescript
 (a: Complex, b: Complex): Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L193" />
 
 **Parameters:**
 
@@ -103,13 +93,11 @@ Add two complex numbers together.
 
 When adding complex numbers, you add the real parts together and the imaginary parts together. Formula: (a + bi) + (c + di) = (a + c) + (b + d)i
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `subtract`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `subtract`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L256" /> {#f-subtract-256}
 
 ```typescript
 (a: Complex, b: Complex): Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L256" />
 
 **Parameters:**
 
@@ -124,13 +112,11 @@ Subtract two complex numbers. (a + bi)
 - c) + (b
 - d)i
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `multiply`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `multiply`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L306" /> {#f-multiply-306}
 
 ```typescript
 (a: Complex, b: Complex): Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L306" />
 
 **Parameters:**
 
@@ -143,13 +129,11 @@ Multiply two complex numbers. (a + bi)(c + di) = (ac
 
 - bd) + (ad + bc)i
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `divide`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `divide`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L375" /> {#f-divide-375}
 
 ```typescript
 (a: Complex, b: Complex): Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L375" />
 
 **Parameters:**
 
@@ -166,13 +150,11 @@ Divide two complex numbers. (a + bi) / (c + di) = [(a + bi)(c
 
 - di)] / (c² + d²)
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `conjugate`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `conjugate`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L462" /> {#f-conjugate-462}
 
 ```typescript
 (z: Complex): Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L462" />
 
 **Parameters:**
 
@@ -192,13 +174,11 @@ If z = a + bi, then z* = a
 
 - bi
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `abs`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `abs`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L496" /> {#f-abs-496}
 
 ```typescript
 (z: Complex): number
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L496" />
 
 **Parameters:**
 
@@ -212,13 +192,11 @@ The magnitude represents the distance from the origin to the point in the comple
 
 Formula: |a + bi| = √(a² + b²)
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `arg`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `arg`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L534" /> {#f-arg-534}
 
 ```typescript
 (z: Complex): number
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L534" />
 
 **Parameters:**
 
@@ -236,13 +214,11 @@ The argument is the angle from the positive real axis to the line connecting the
 
 Formula: arg(a + bi) = atan2(b, a)
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `toPolar`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `toPolar`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L566" /> {#f-to-polar-566}
 
 ```typescript
 (z: Complex): { magnitude: number; angle: number; }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L566" />
 
 **Parameters:**
 
@@ -254,13 +230,11 @@ Convert complex number to polar form (magnitude, angle).
 
 Polar form represents a complex number as r*e^(iθ) where r is the magnitude and θ is the angle. This form is especially useful for multiplication and power operations, as it turns them into simple arithmetic on the components.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fromPolar`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fromPolar`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L600" /> {#f-from-polar-600}
 
 ```typescript
 (magnitude: number, angle: number): Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L600" />
 
 **Parameters:**
 
@@ -273,13 +247,11 @@ Create complex number from polar form (magnitude, angle).
 
 This converts from polar coordinates (r, θ) to rectangular coordinates (a, bi) using Euler's formula: r*e^(iθ) = r(cos θ + i sin θ)
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `power`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `power`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L646" /> {#f-power-646}
 
 ```typescript
 (z: Complex, n: number): Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L646" />
 
 **Parameters:**
 
@@ -292,13 +264,11 @@ Raise a complex number to a real power using De Moivre's theorem.
 
 This uses the polar form to compute powers efficiently: If z = r*e^(iθ), then z^n = r^n * e^(inθ) This avoids the complexity of repeated multiplication for integer powers.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `sqrt`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `sqrt`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L749" /> {#f-sqrt-749}
 
 ```typescript
 (z: Complex): Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L749" />
 
 **Parameters:**
 
@@ -310,13 +280,11 @@ Get the square root of a complex number.
 
 Returns the principal (primary) square root using the power function. The principal root is the one with argument in the range (-π/2, π/2]. Note that every non-zero complex number has exactly two square roots.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `exp`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `exp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L785" /> {#f-exp-785}
 
 ```typescript
 (z: Complex): Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L785" />
 
 **Parameters:**
 
@@ -328,13 +296,11 @@ Natural exponential function for complex numbers.
 
 Uses Euler's formula: e^(a + bi) = e^a * (cos b + i sin b) This fundamental function connects exponentials with trigonometry and is essential for signal processing, quantum mechanics, and many areas of mathematics.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `log`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `log`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L823" /> {#f-log-823}
 
 ```typescript
 (z: Complex): Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L823" />
 
 **Parameters:**
 
@@ -350,13 +316,11 @@ Natural logarithm for complex numbers.
 
 Uses the formula: log(z) = log|z| + i*arg(z) This gives the principal branch of the complex logarithm. Note that complex logarithms are multi-valued; this returns the principal value.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `equals`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `equals`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L865" /> {#f-equals-865}
 
 ```typescript
 (a: Complex, b: Complex, tolerance?: number = 1e-9): boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L865" />
 
 **Parameters:**
 
@@ -370,13 +334,11 @@ Check if two complex numbers are equal within a tolerance.
 
 Due to floating-point arithmetic limitations, exact equality is rarely achievable for computed complex numbers. This function allows for small differences that arise from numerical precision issues.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `toString`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `toString`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L973" /> {#f-to-string-973}
 
 ```typescript
 (z: Complex, precision?: number = 6): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L973" />
 
 **Parameters:**
 
@@ -391,193 +353,159 @@ Creates a human-readable string in standard mathematical notation (a + bi). Hand
 
 ## Constants
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L107" /> {#c-from-with-107}
 
 ```typescript
 (real: number) => (imaginary?: number | undefined) => Complex
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L107" />
-
 Create a function that constructs complex numbers with a fixed real part. Useful for creating pure imaginary numbers or series.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L122" /> {#c-from-on-122}
 
 ```typescript
 (imaginary?: number | undefined) => (real: number) => Complex
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L122" />
-
 Create a function that constructs complex numbers with a fixed imaginary part. Useful for creating real numbers or series with constant imaginary component.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `I`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `I`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L158" /> {#c-i-158}
 
 ```typescript
 Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L158" />
 
 The imaginary unit i (0 + 1i). Satisfies i² = -1.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ZERO`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ZERO`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L163" /> {#c-zero-163}
 
 ```typescript
 Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L163" />
 
 Zero complex number (0 + 0i).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ONE`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ONE`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L168" /> {#c-one-168}
 
 ```typescript
 Complex
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L168" />
-
 One complex number (1 + 0i).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L217" /> {#c-add-on-217}
 
 ```typescript
 (a: Complex) => (b: Complex) => Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L217" />
 
 Create a function that adds its input to a specific complex number.
 
 This is the data-first curried version where the input becomes the first parameter. Useful for operations where you want to add various numbers to a fixed base value.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L242" /> {#c-add-with-242}
 
 ```typescript
 (b: Complex) => (a: Complex) => Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L242" />
 
 Create a function that adds a specific complex number to other complex numbers.
 
 This is the data-second curried version where the fixed value is added to various inputs. Useful when you want to add the same complex number to many different values.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L270" /> {#c-subtract-with-270}
 
 ```typescript
 (a: Complex) => (b: Complex) => Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L270" />
 
 Create a function that subtracts from a specific complex number.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L286" /> {#c-subtract-on-286}
 
 ```typescript
 (a: Complex) => (b: Complex) => Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L286" />
 
 Create a function that subtracts from a specific complex number.
 
 This is the data-first curried version where the input becomes the subtrahend. Useful for operations where you want to subtract various numbers from a fixed value.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L332" /> {#c-multiply-on-332}
 
 ```typescript
 (a: Complex) => (b: Complex) => Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L332" />
 
 Create a function that multiplies a specific complex number by others.
 
 This is the data-first curried version where the input becomes the second factor. Useful for operations where you want to multiply a fixed base by various values.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L359" /> {#c-multiply-with-359}
 
 ```typescript
 (b: Complex) => (a: Complex) => Complex
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L359" />
-
 Create a function that multiplies with a specific complex number.
 
 This is the data-second curried version where the fixed multiplier is applied to various inputs. Useful when you want to scale or rotate many complex numbers by the same amount. In 2D graphics, multiplying by a complex number rotates and scales points around the origin.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L408" /> {#c-divide-with-408}
 
 ```typescript
 (a: Complex) => (b: Complex) => Complex
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L408" />
 
 Create a function that divides from a specific complex number.
 
 This creates a function where the provided complex number is the dividend (numerator) and the function's input becomes the divisor (denominator).
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L430" /> {#c-divide-on-430}
 
 ```typescript
 (a: Complex) => (b: Complex) => Complex
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L430" />
-
 Create a function that divides a specific complex number by others.
 
 This is the data-first curried version where the input becomes the divisor. Useful for operations where you want to divide a fixed dividend by various values.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L684" /> {#c-power-on-684}
 
 ```typescript
 (z: Complex) => (n: number) => Complex
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L684" />
-
 Create a function that raises a specific complex number to various powers.
 
 This is the data-first curried version where the input becomes the exponent. Useful for operations where you want to raise a fixed base to different powers.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L719" /> {#c-power-with-719}
 
 ```typescript
 (n: number) => (z: Complex) => Complex
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L719" />
-
 Create a function that raises complex numbers to a specific power.
 
 This is the data-second curried version where the fixed exponent is applied to various bases. Useful for applying the same power operation to multiple complex numbers, such as when processing arrays or in mathematical transformations.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `equalsOn`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `equalsOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L898" /> {#c-equals-on-898}
 
 ```typescript
 (a: Complex) => (b: Complex) => (tolerance?: number | undefined) => boolean
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L898" />
-
 Create a function that checks if its input equals a specific complex number.
 
 This is the data-first curried version where the reference value is the first parameter. Useful for checking if various numbers equal a fixed reference value.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `equalsWith`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `equalsWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L932" /> {#c-equals-with-932}
 
 ```typescript
 (b: Complex) => (a: Complex) => (tolerance?: number | undefined) => boolean
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L932" />
 
 Create a function that checks equality with a specific complex number.
 
@@ -585,7 +513,7 @@ This is the data-second curried version where the comparison value is fixed. Use
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Complex`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Complex`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L34" /> {#intersection-complex-34}
 
 ```typescript
 type Complex = {
@@ -593,8 +521,6 @@ type Complex = {
   readonly imaginary: number
 } & { [ComplexBrand]: true }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L34" />
 
 Complex number
 

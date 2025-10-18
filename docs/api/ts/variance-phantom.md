@@ -21,13 +21,11 @@ import { VariancePhantom } from '@wollybeard/kit/ts'
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Co`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Co`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L28" /> {#t-co-28}
 
 ```typescript
 type Co<$T> = () => $T
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L28" />
 
 Phantom type helper that makes a type parameter covariant.
 
@@ -48,13 +46,11 @@ wide = narrow  // ✅ Allowed (1 extends number)
 narrow = wide  // ❌ Error (number does not extend 1)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Contra`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Contra`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L55" /> {#t-contra-55}
 
 ```typescript
 type Contra<$T> = (value: $T) => void
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L55" />
 
 Phantom type helper that makes a type parameter contravariant.
 
@@ -75,13 +71,11 @@ narrow = wide  // ✅ Allowed (reversed direction!)
 wide = narrow  // ❌ Error
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `In`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `In`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L77" /> {#t-in-77}
 
 ```typescript
 type In<$T> = (value: $T) => $T
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L77" />
 
 Phantom type helper that makes a type parameter invariant.
 
@@ -102,13 +96,11 @@ num = one  // ❌ Error (no direction works)
 one = num  // ❌ Error (no direction works)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Bi`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Bi`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L99" /> {#t-bi-99}
 
 ```typescript
 type Bi<$T> = { bivariantHack(value: $T): void }['bivariantHack']
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L99" />
 
 Phantom type helper that makes a type parameter bivariant (unsafe).
 

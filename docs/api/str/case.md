@@ -19,13 +19,11 @@ import { Case } from '@wollybeard/kit/str'
 
 ## Case Conversion
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `constant`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `constant`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L60" /> {#f-constant-60}
 
 ```typescript
 (name: string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L60" />
 
 **Parameters:**
 
@@ -49,13 +47,11 @@ Str.Case.constant('foo-bar') // 'FOO_BAR'
 Str.Case.constant('myEnvVar') // 'MY_ENV_VAR'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `title`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `title`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L75" /> {#f-title-75}
 
 ```typescript
 (str: string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L75" />
 
 **Parameters:**
 
@@ -79,13 +75,11 @@ Str.Case.title('foo_bar') // 'Foo Bar'
 Str.Case.title('the quick brown fox') // 'The Quick Brown Fox'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `capAll`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `capAll`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L97" /> {#f-cap-all-97}
 
 ```typescript
 <$S extends string>(str: $S): Uppercase<$S>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L97" />
 
 **Parameters:**
 
@@ -109,13 +103,11 @@ uppercase('hello world') // 'HELLO WORLD'
 uppercase('FooBar') // 'FOOBAR'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `uncapFirst`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `uncapFirst`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L113" /> {#f-uncap-first-113}
 
 ```typescript
 <$S extends string>(s: $S): Uncapitalize<$S>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L113" />
 
 **Parameters:**
 
@@ -136,13 +128,11 @@ lowerCaseFirst('World')  // Type: "world"
 lowerCaseFirst('HELLO')  // Type: "hELLO"
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `capFirst`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `capFirst`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L129" /> {#f-cap-first-129}
 
 ```typescript
 <$S extends string>(string: $S): Capitalize<$S>
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/case/case.ts#L129" />
 
 **Parameters:**
 
@@ -165,14 +155,12 @@ capitalizeFirst('foo bar')  // Type: "Foo bar"
 
 ## Other
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `camel`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `camel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./node_modules/.pnpm/es-toolkit@1.39.10/node_modules/es-toolkit/dist/string/camelCase.d.ts#L17" /> {#f-camel-17}
 
 ```typescript
 (str: string): string
 (str: string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./node_modules/.pnpm/es-toolkit@1.39.10/node_modules/es-toolkit/dist/string/camelCase.d.ts#L17" />
 
 **Parameters:**
 
@@ -184,14 +172,12 @@ Converts a string to camel case.
 
 Camel case is the naming convention in which the first word is written in lowercase and each subsequent word begins with a capital letter, concatenated without any separator characters.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `kebab`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `kebab`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./node_modules/.pnpm/es-toolkit@1.39.10/node_modules/es-toolkit/dist/string/kebabCase.d.ts#L15" /> {#f-kebab-15}
 
 ```typescript
 (str: string): string
 (str: string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./node_modules/.pnpm/es-toolkit@1.39.10/node_modules/es-toolkit/dist/string/kebabCase.d.ts#L15" />
 
 **Parameters:**
 
@@ -203,14 +189,12 @@ Converts a string to kebab case.
 
 Kebab case is the naming convention in which each word is written in lowercase and separated by a dash (-) character.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pascal`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pascal`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./node_modules/.pnpm/es-toolkit@1.39.10/node_modules/es-toolkit/dist/string/pascalCase.d.ts#L15" /> {#f-pascal-15}
 
 ```typescript
 (str: string): string
 (str: string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./node_modules/.pnpm/es-toolkit@1.39.10/node_modules/es-toolkit/dist/string/pascalCase.d.ts#L15" />
 
 **Parameters:**
 
@@ -222,14 +206,12 @@ Converts a string to Pascal case.
 
 Pascal case is the naming convention in which each word is capitalized and concatenated without any separator characters.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `snake`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `snake`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./node_modules/.pnpm/es-toolkit@1.39.10/node_modules/es-toolkit/dist/string/snakeCase.d.ts#L15" /> {#f-snake-15}
 
 ```typescript
 (str: string): string
 (str: string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./node_modules/.pnpm/es-toolkit@1.39.10/node_modules/es-toolkit/dist/string/snakeCase.d.ts#L15" />
 
 **Parameters:**
 

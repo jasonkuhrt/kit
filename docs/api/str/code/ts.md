@@ -19,13 +19,11 @@ import { TS } from '@wollybeard/kit/str'
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `string`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L25" /> {#f-string-25}
 
 ```typescript
 (str: string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L25" />
 
 Quote a string value for TypeScript code.
 
@@ -40,13 +38,11 @@ Str.Code.TS.string('hello')
 // '"hello"'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `list`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `list`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L36" /> {#f-list-36}
 
 ```typescript
 (items: string[]): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L36" />
 
 Generate an array literal.
 
@@ -61,13 +57,11 @@ Str.Code.TS.list(['a', 'b', 'c'])
 // '[a, b, c]'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `block`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `block`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L47" /> {#f-block-47}
 
 ```typescript
 (content: string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L47" />
 
 Wrap content in curly braces.
 
@@ -82,13 +76,11 @@ Str.Code.TS.block('a: string')
 // '{\na: string\n}'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `object`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `object`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L58" /> {#f-object-58}
 
 ```typescript
 (entries: readonly (readonly [string, string])[]): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L58" />
 
 Generate an object literal from entries.
 
@@ -103,13 +95,11 @@ Str.Code.TS.object([['name', '"Alice"'], ['age', '30']])
 // '{\nname: "Alice",\nage: 30\n}'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `typeAlias`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `typeAlias`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L84" /> {#f-type-alias-84}
 
 ```typescript
 (name: string, type: string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L84" />
 
 **Parameters:**
 
@@ -135,13 +125,11 @@ Str.Code.TS.typeAlias('Point', '{ x: number; y: number }')
 // 'type Point = { x: number; y: number }'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `typeAliasWithOptions`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `typeAliasWithOptions`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L136" /> {#f-type-alias-with-options-136}
 
 ```typescript
 (options: TypeAliasOptions): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L136" />
 
 Generate a type alias with optional JSDoc and type parameters.
 
@@ -165,13 +153,11 @@ Str.Code.TS.typeAliasWithOptions({
 // export type Result<T> = T | Error
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `interfaceDecl`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `interfaceDecl`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L207" /> {#f-interface-decl-207}
 
 ```typescript
 (options: InterfaceOptions): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L207" />
 
 Generate an interface declaration.
 
@@ -197,13 +183,11 @@ Str.Code.TS.interfaceDecl({
 // }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `exportDecl`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `exportDecl`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L239" /> {#f-export-decl-239}
 
 ```typescript
 (declaration: string): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L239" />
 
 Generate an export declaration.
 
@@ -218,13 +202,11 @@ Str.Code.TS.exportDecl('const foo = 1')
 // 'export const foo = 1'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `reexportAll`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `reexportAll`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L255" /> {#f-reexport-all-255}
 
 ```typescript
 (input: { from: string; type?: boolean; }): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L255" />
 
 Re-export all exports from a module.
 
@@ -243,13 +225,11 @@ Str.Code.TS.reexportAll({ from: './path', type: true })
 // 'export type * from './path''
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `reexportNamespace`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `reexportNamespace`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L275" /> {#f-reexport-namespace-275}
 
 ```typescript
 (input: { as: string; from: string; type?: boolean; }): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L275" />
 
 Re-export all exports as a namespace.
 
@@ -268,13 +248,11 @@ Str.Code.TS.reexportNamespace({ as: 'Name', from: './path', type: true })
 // 'export type * as Name from './path''
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `reexportNamed`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `reexportNamed`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L303" /> {#f-reexport-named-303}
 
 ```typescript
 (input: { names: string | string[] | Record<string, string>; from: string; type?: boolean; }): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L303" />
 
 Re-export named exports from a module. Supports simple names, arrays, and aliased names.
 
@@ -301,13 +279,11 @@ Str.Code.TS.reexportNamed({ names: { oldName: 'newName' }, from: './path' })
 Str.Code.TS.reexportNamed({ names: 'Name', from: './path', type: true })
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `importAll`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `importAll`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L341" /> {#f-import-all-341}
 
 ```typescript
 (input: { as: string; from: string; type?: boolean; }): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L341" />
 
 Import all exports as a namespace.
 
@@ -324,13 +300,11 @@ Str.Code.TS.importAll({ as: 'Name', from: './path', type: true })
 // 'import type * as Name from './path''
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `importNamed`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `importNamed`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L369" /> {#f-import-named-369}
 
 ```typescript
 (input: { names: string | string[] | Record<string, string>; from: string; type?: boolean; }): string
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L369" />
 
 Import named exports from a module. Supports simple names, arrays, and aliased names.
 
@@ -357,7 +331,7 @@ Str.Code.TS.importNamed({ names: 'Name', from: './path', type: true })
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `TypeAliasOptions`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `TypeAliasOptions`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L91" /> {#i-type-alias-options-91}
 
 ```typescript
 interface TypeAliasOptions {
@@ -388,11 +362,9 @@ interface TypeAliasOptions {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L91" />
-
 Options for generating a type alias with metadata.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `InterfaceOptions`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `InterfaceOptions`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L155" /> {#i-interface-options-155}
 
 ```typescript
 interface InterfaceOptions {
@@ -427,7 +399,5 @@ interface InterfaceOptions {
   export?: boolean
 }
 ```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L155" />
 
 Options for generating an interface.
