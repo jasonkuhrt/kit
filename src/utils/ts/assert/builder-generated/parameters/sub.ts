@@ -1,7 +1,7 @@
 import type * as Kind from '../../../kind.js'
+import { runtime } from '../../builder/runtime.js'
 import type { Parameters$ } from '../../kinds/extractors.js'
 import type { SubKind } from '../../kinds/relators.js'
-import { runtime } from '../../builder/runtime.js'
 
 /**
  * parameters + sub relation matchers.
@@ -9,7 +9,6 @@ import { runtime } from '../../builder/runtime.js'
  * Extraction: extracts the parameters tuple from a function
  * Relation: subtype relation (extends)
  */
-
 
 /**
  * Base matcher accepting any expected type.
@@ -30,7 +29,6 @@ import { runtime } from '../../builder/runtime.js'
 type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Parameters$, [$Actual]>]>
 const of_ = runtime.parameters.sub.of
 
-
 /**
  * Pre-curried matcher for string.
  * Extraction chain: (...args: any[]) => T → Parameters<Function>
@@ -46,7 +44,6 @@ const of_ = runtime.parameters.sub.of
  */
 type string_<$Actual> = Kind.Apply<SubKind, [string, Kind.Apply<Parameters$, [$Actual]>]>
 const string_ = runtime.parameters.sub.string
-
 
 /**
  * Pre-curried matcher for number.
@@ -64,7 +61,6 @@ const string_ = runtime.parameters.sub.string
 type number_<$Actual> = Kind.Apply<SubKind, [number, Kind.Apply<Parameters$, [$Actual]>]>
 const number_ = runtime.parameters.sub.number
 
-
 /**
  * Pre-curried matcher for bigint.
  * Extraction chain: (...args: any[]) => T → Parameters<Function>
@@ -80,7 +76,6 @@ const number_ = runtime.parameters.sub.number
  */
 type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, Kind.Apply<Parameters$, [$Actual]>]>
 const bigint_ = runtime.parameters.sub.bigint
-
 
 /**
  * Pre-curried matcher for boolean.
@@ -98,7 +93,6 @@ const bigint_ = runtime.parameters.sub.bigint
 type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, Kind.Apply<Parameters$, [$Actual]>]>
 const boolean_ = runtime.parameters.sub.boolean
 
-
 /**
  * Pre-curried matcher for undefined.
  * Extraction chain: (...args: any[]) => T → Parameters<Function>
@@ -114,7 +108,6 @@ const boolean_ = runtime.parameters.sub.boolean
  */
 type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, Kind.Apply<Parameters$, [$Actual]>]>
 const undefined_ = runtime.parameters.sub.undefined
-
 
 /**
  * Pre-curried matcher for null.
@@ -132,7 +125,6 @@ const undefined_ = runtime.parameters.sub.undefined
 type null_<$Actual> = Kind.Apply<SubKind, [null, Kind.Apply<Parameters$, [$Actual]>]>
 const null_ = runtime.parameters.sub.null
 
-
 /**
  * Pre-curried matcher for symbol.
  * Extraction chain: (...args: any[]) => T → Parameters<Function>
@@ -148,7 +140,6 @@ const null_ = runtime.parameters.sub.null
  */
 type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, Kind.Apply<Parameters$, [$Actual]>]>
 const symbol_ = runtime.parameters.sub.symbol
-
 
 /**
  * Pre-curried matcher for Date.
@@ -166,7 +157,6 @@ const symbol_ = runtime.parameters.sub.symbol
 type Date_<$Actual> = Kind.Apply<SubKind, [Date, Kind.Apply<Parameters$, [$Actual]>]>
 const Date_ = runtime.parameters.sub.Date
 
-
 /**
  * Pre-curried matcher for RegExp.
  * Extraction chain: (...args: any[]) => T → Parameters<Function>
@@ -182,7 +172,6 @@ const Date_ = runtime.parameters.sub.Date
  */
 type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, Kind.Apply<Parameters$, [$Actual]>]>
 const RegExp_ = runtime.parameters.sub.RegExp
-
 
 /**
  * Pre-curried matcher for Error.
@@ -200,7 +189,6 @@ const RegExp_ = runtime.parameters.sub.RegExp
 type Error_<$Actual> = Kind.Apply<SubKind, [Error, Kind.Apply<Parameters$, [$Actual]>]>
 const Error_ = runtime.parameters.sub.Error
 
-
 /**
  * Pre-curried matcher for Promise<any>.
  * Extraction chain: (...args: any[]) => T → Parameters<Function>
@@ -216,7 +204,6 @@ const Error_ = runtime.parameters.sub.Error
  */
 type Promise_<$Actual> = Kind.Apply<SubKind, [Promise<any>, Kind.Apply<Parameters$, [$Actual]>]>
 const Promise_ = runtime.parameters.sub.Promise
-
 
 /**
  * Pre-curried matcher for any[].
@@ -235,17 +222,17 @@ type Array_<$Actual> = Kind.Apply<SubKind, [any[], Kind.Apply<Parameters$, [$Act
 const Array_ = runtime.parameters.sub.Array
 
 export {
-  of_ as of,
-  string_ as string,
-  number_ as number,
+  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
-  undefined_ as undefined,
-  null_ as null,
-  symbol_ as symbol,
   Date_ as Date,
-  RegExp_ as RegExp,
   Error_ as Error,
+  null_ as null,
+  number_ as number,
+  of_ as of,
   Promise_ as Promise,
-  Array_ as Array,
+  RegExp_ as RegExp,
+  string_ as string,
+  symbol_ as symbol,
+  undefined_ as undefined,
 }

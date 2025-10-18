@@ -416,7 +416,9 @@ function generateExtractorBarrelFile(extractorName: string, barrelPath: string):
 
   const imports = `import type * as Kind from '${kindPath}'
 import type { ${extractor.kindName} } from '${extractorsPath}'
-import type { ${relatorKinds} } from '${relatorsPath}'${otherExtractors.length > 0 ? `\nimport { runtime } from '${runtimePath}'` : ''}`
+import type { ${relatorKinds} } from '${relatorsPath}'${
+    otherExtractors.length > 0 ? `\nimport { runtime } from '${runtimePath}'` : ''
+  }`
 
   const typeShorthands = Object.keys(RELATORS).map((relatorName) => {
     const relator = RELATORS[relatorName]!

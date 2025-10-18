@@ -19,13 +19,13 @@ export type GuardAnyOrNeverExpectation<
   $expected,
   $State extends State
 > =
-  IsNever<$expected> extends true  ? $State['matcher'] extends 'never'
+  IsNever<$expected> extends true  ? IsNever<$State['matcher']['type']> extends true
     ? $expected
-    : [error: StaticErrorAssertion<'Type never is not assignable unless expected type is never', never, $expected, 'Use .never matcher if you actually expect never type'>] :
+    : StaticErrorAssertion<'Type never is not assignable unless expected type is never', never, $expected, 'Use .never matcher if you actually expect never type'> :
 
-  IsAny<$expected> extends true    ? $State['matcher'] extends 'any'
+  IsAny<$expected> extends true    ? IsAny<$State['matcher']['type']> extends true
     ? $expected
-    : [error: StaticErrorAssertion<'Type any is not assignable unless expected type is any', any, $expected, 'Use .any matcher if you actually expect any type'>] :
+    : StaticErrorAssertion<'Type any is not assignable unless expected type is any', any, $expected, 'Use .any matcher if you actually expect any type'> :
 
     $expected
 
@@ -34,13 +34,13 @@ export type GuardAnyOrNeverActual<
   $actual,
   $State extends State
 > =
-  IsNever<$actual> extends true  ? $State['matcher'] extends 'never'
+  IsNever<$actual> extends true  ? IsNever<$State['matcher']['type']> extends true
     ? $actual
-    : [error: StaticErrorAssertion<'Type never is not assignable unless expected type is never', never, $actual, 'Use .never matcher if you actually expect never type'>] :
+    : StaticErrorAssertion<'Type never is not assignable unless expected type is never', never, $actual, 'Use .never matcher if you actually expect never type'> :
 
-  IsAny<$actual> extends true    ? $State['matcher'] extends 'any'
+  IsAny<$actual> extends true    ? IsAny<$State['matcher']['type']> extends true
     ? $actual
-    : [error: StaticErrorAssertion<'Type any is not assignable unless expected type is any', never, $actual, 'Use .any matcher if you actually expect any type'>] :
+    : StaticErrorAssertion<'Type any is not assignable unless expected type is any', any, $actual, 'Use .any matcher if you actually expect any type'> :
 
     $actual
 

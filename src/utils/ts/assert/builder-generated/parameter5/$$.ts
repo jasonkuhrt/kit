@@ -1,12 +1,12 @@
 import type * as Kind from '../../../kind.js'
-import type { Parameter5 } from '../../kinds/extractors.js'
-import type { ExactKind, EquivKind, SubKind } from '../../kinds/relators.js'
 import { runtime } from '../../builder/runtime.js'
+import type { Parameter5 } from '../../kinds/extractors.js'
+import type { EquivKind, ExactKind, SubKind } from '../../kinds/relators.js'
 
-export * as exact from './exact.js'
 export * as equiv from './equiv.js'
-export * as sub from './sub.js'
+export * as exact from './exact.js'
 export * as not from './not/$$.js'
+export * as sub from './sub.js'
 // Value-level extractor chaining via runtime proxy
 export const awaited = runtime.parameter5.awaited
 export const returned = runtime.parameter5.returned

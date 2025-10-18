@@ -1,7 +1,7 @@
 import type * as Kind from '../../../kind.js'
+import { runtime } from '../../builder/runtime.js'
 import type { ArrayElement } from '../../kinds/extractors.js'
 import type { ExactKind } from '../../kinds/relators.js'
-import { runtime } from '../../builder/runtime.js'
 
 /**
  * array + exact relation matchers.
@@ -9,7 +9,6 @@ import { runtime } from '../../builder/runtime.js'
  * Extraction: extracts the element type from an array
  * Relation: exact structural equality
  */
-
 
 /**
  * Base matcher accepting any expected type.
@@ -30,7 +29,6 @@ import { runtime } from '../../builder/runtime.js'
 type of_<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, Kind.Apply<ArrayElement, [$Actual]>]>
 const of_ = runtime.array.exact.of
 
-
 /**
  * Pre-curried matcher for string.
  * Extraction chain: T[] → T
@@ -46,7 +44,6 @@ const of_ = runtime.array.exact.of
  */
 type string_<$Actual> = Kind.Apply<ExactKind, [string, Kind.Apply<ArrayElement, [$Actual]>]>
 const string_ = runtime.array.exact.string
-
 
 /**
  * Pre-curried matcher for number.
@@ -64,7 +61,6 @@ const string_ = runtime.array.exact.string
 type number_<$Actual> = Kind.Apply<ExactKind, [number, Kind.Apply<ArrayElement, [$Actual]>]>
 const number_ = runtime.array.exact.number
 
-
 /**
  * Pre-curried matcher for bigint.
  * Extraction chain: T[] → T
@@ -80,7 +76,6 @@ const number_ = runtime.array.exact.number
  */
 type bigint_<$Actual> = Kind.Apply<ExactKind, [bigint, Kind.Apply<ArrayElement, [$Actual]>]>
 const bigint_ = runtime.array.exact.bigint
-
 
 /**
  * Pre-curried matcher for boolean.
@@ -98,7 +93,6 @@ const bigint_ = runtime.array.exact.bigint
 type boolean_<$Actual> = Kind.Apply<ExactKind, [boolean, Kind.Apply<ArrayElement, [$Actual]>]>
 const boolean_ = runtime.array.exact.boolean
 
-
 /**
  * Pre-curried matcher for undefined.
  * Extraction chain: T[] → T
@@ -114,7 +108,6 @@ const boolean_ = runtime.array.exact.boolean
  */
 type undefined_<$Actual> = Kind.Apply<ExactKind, [undefined, Kind.Apply<ArrayElement, [$Actual]>]>
 const undefined_ = runtime.array.exact.undefined
-
 
 /**
  * Pre-curried matcher for null.
@@ -132,7 +125,6 @@ const undefined_ = runtime.array.exact.undefined
 type null_<$Actual> = Kind.Apply<ExactKind, [null, Kind.Apply<ArrayElement, [$Actual]>]>
 const null_ = runtime.array.exact.null
 
-
 /**
  * Pre-curried matcher for symbol.
  * Extraction chain: T[] → T
@@ -148,7 +140,6 @@ const null_ = runtime.array.exact.null
  */
 type symbol_<$Actual> = Kind.Apply<ExactKind, [symbol, Kind.Apply<ArrayElement, [$Actual]>]>
 const symbol_ = runtime.array.exact.symbol
-
 
 /**
  * Pre-curried matcher for Date.
@@ -166,7 +157,6 @@ const symbol_ = runtime.array.exact.symbol
 type Date_<$Actual> = Kind.Apply<ExactKind, [Date, Kind.Apply<ArrayElement, [$Actual]>]>
 const Date_ = runtime.array.exact.Date
 
-
 /**
  * Pre-curried matcher for RegExp.
  * Extraction chain: T[] → T
@@ -182,7 +172,6 @@ const Date_ = runtime.array.exact.Date
  */
 type RegExp_<$Actual> = Kind.Apply<ExactKind, [RegExp, Kind.Apply<ArrayElement, [$Actual]>]>
 const RegExp_ = runtime.array.exact.RegExp
-
 
 /**
  * Pre-curried matcher for Error.
@@ -200,7 +189,6 @@ const RegExp_ = runtime.array.exact.RegExp
 type Error_<$Actual> = Kind.Apply<ExactKind, [Error, Kind.Apply<ArrayElement, [$Actual]>]>
 const Error_ = runtime.array.exact.Error
 
-
 /**
  * Pre-curried matcher for Promise<any>.
  * Extraction chain: T[] → T
@@ -216,7 +204,6 @@ const Error_ = runtime.array.exact.Error
  */
 type Promise_<$Actual> = Kind.Apply<ExactKind, [Promise<any>, Kind.Apply<ArrayElement, [$Actual]>]>
 const Promise_ = runtime.array.exact.Promise
-
 
 /**
  * Pre-curried matcher for any[].
@@ -235,17 +222,17 @@ type Array_<$Actual> = Kind.Apply<ExactKind, [any[], Kind.Apply<ArrayElement, [$
 const Array_ = runtime.array.exact.Array
 
 export {
-  of_ as of,
-  string_ as string,
-  number_ as number,
+  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
-  undefined_ as undefined,
-  null_ as null,
-  symbol_ as symbol,
   Date_ as Date,
-  RegExp_ as RegExp,
   Error_ as Error,
+  null_ as null,
+  number_ as number,
+  of_ as of,
   Promise_ as Promise,
-  Array_ as Array,
+  RegExp_ as RegExp,
+  string_ as string,
+  symbol_ as symbol,
+  undefined_ as undefined,
 }

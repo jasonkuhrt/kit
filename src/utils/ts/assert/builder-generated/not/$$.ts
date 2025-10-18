@@ -1,8 +1,8 @@
 import type * as Kind from '../../../kind.js'
-import type { ExactKind, EquivKind, SubKind } from '../../kinds/relators.js'
+import type { EquivKind, ExactKind, SubKind } from '../../kinds/relators.js'
 
-export * as exact from './exact.js'
 export * as equiv from './equiv.js'
+export * as exact from './exact.js'
 export * as sub from './sub.js'
 export type exact<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, $Actual, true]>
 export type equiv<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, $Actual, true]>

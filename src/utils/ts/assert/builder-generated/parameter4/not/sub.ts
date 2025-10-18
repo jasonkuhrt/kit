@@ -1,7 +1,7 @@
 import type * as Kind from '../../../../kind.js'
+import { runtime } from '../../../builder/runtime.js'
 import type { Parameter4 } from '../../../kinds/extractors.js'
 import type { SubKind } from '../../../kinds/relators.js'
-import { runtime } from '../../../builder/runtime.js'
 
 /**
  * parameter4 + sub relation matchers.
@@ -9,7 +9,6 @@ import { runtime } from '../../../builder/runtime.js'
  * Extraction: extracts the fourth parameter type from a function
  * Relation: subtype relation (extends)
  */
-
 
 /**
  * Base matcher accepting any expected type.
@@ -30,7 +29,6 @@ import { runtime } from '../../../builder/runtime.js'
 type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Parameter4, [$Actual]>, true]>
 const of_ = runtime.parameter4.not.sub.of
 
-
 /**
  * Pre-curried matcher for string.
  * Extraction chain: (p1: any, p2: any, p3: any, p4: T, ...) => any → T
@@ -46,7 +44,6 @@ const of_ = runtime.parameter4.not.sub.of
  */
 type string_<$Actual> = Kind.Apply<SubKind, [string, Kind.Apply<Parameter4, [$Actual]>, true]>
 const string_ = runtime.parameter4.not.sub.string
-
 
 /**
  * Pre-curried matcher for number.
@@ -64,7 +61,6 @@ const string_ = runtime.parameter4.not.sub.string
 type number_<$Actual> = Kind.Apply<SubKind, [number, Kind.Apply<Parameter4, [$Actual]>, true]>
 const number_ = runtime.parameter4.not.sub.number
 
-
 /**
  * Pre-curried matcher for bigint.
  * Extraction chain: (p1: any, p2: any, p3: any, p4: T, ...) => any → T
@@ -80,7 +76,6 @@ const number_ = runtime.parameter4.not.sub.number
  */
 type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, Kind.Apply<Parameter4, [$Actual]>, true]>
 const bigint_ = runtime.parameter4.not.sub.bigint
-
 
 /**
  * Pre-curried matcher for boolean.
@@ -98,7 +93,6 @@ const bigint_ = runtime.parameter4.not.sub.bigint
 type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, Kind.Apply<Parameter4, [$Actual]>, true]>
 const boolean_ = runtime.parameter4.not.sub.boolean
 
-
 /**
  * Pre-curried matcher for undefined.
  * Extraction chain: (p1: any, p2: any, p3: any, p4: T, ...) => any → T
@@ -114,7 +108,6 @@ const boolean_ = runtime.parameter4.not.sub.boolean
  */
 type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, Kind.Apply<Parameter4, [$Actual]>, true]>
 const undefined_ = runtime.parameter4.not.sub.undefined
-
 
 /**
  * Pre-curried matcher for null.
@@ -132,7 +125,6 @@ const undefined_ = runtime.parameter4.not.sub.undefined
 type null_<$Actual> = Kind.Apply<SubKind, [null, Kind.Apply<Parameter4, [$Actual]>, true]>
 const null_ = runtime.parameter4.not.sub.null
 
-
 /**
  * Pre-curried matcher for symbol.
  * Extraction chain: (p1: any, p2: any, p3: any, p4: T, ...) => any → T
@@ -148,7 +140,6 @@ const null_ = runtime.parameter4.not.sub.null
  */
 type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, Kind.Apply<Parameter4, [$Actual]>, true]>
 const symbol_ = runtime.parameter4.not.sub.symbol
-
 
 /**
  * Pre-curried matcher for Date.
@@ -166,7 +157,6 @@ const symbol_ = runtime.parameter4.not.sub.symbol
 type Date_<$Actual> = Kind.Apply<SubKind, [Date, Kind.Apply<Parameter4, [$Actual]>, true]>
 const Date_ = runtime.parameter4.not.sub.Date
 
-
 /**
  * Pre-curried matcher for RegExp.
  * Extraction chain: (p1: any, p2: any, p3: any, p4: T, ...) => any → T
@@ -182,7 +172,6 @@ const Date_ = runtime.parameter4.not.sub.Date
  */
 type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, Kind.Apply<Parameter4, [$Actual]>, true]>
 const RegExp_ = runtime.parameter4.not.sub.RegExp
-
 
 /**
  * Pre-curried matcher for Error.
@@ -200,7 +189,6 @@ const RegExp_ = runtime.parameter4.not.sub.RegExp
 type Error_<$Actual> = Kind.Apply<SubKind, [Error, Kind.Apply<Parameter4, [$Actual]>, true]>
 const Error_ = runtime.parameter4.not.sub.Error
 
-
 /**
  * Pre-curried matcher for Promise<any>.
  * Extraction chain: (p1: any, p2: any, p3: any, p4: T, ...) => any → T
@@ -216,7 +204,6 @@ const Error_ = runtime.parameter4.not.sub.Error
  */
 type Promise_<$Actual> = Kind.Apply<SubKind, [Promise<any>, Kind.Apply<Parameter4, [$Actual]>, true]>
 const Promise_ = runtime.parameter4.not.sub.Promise
-
 
 /**
  * Pre-curried matcher for any[].
@@ -235,17 +222,17 @@ type Array_<$Actual> = Kind.Apply<SubKind, [any[], Kind.Apply<Parameter4, [$Actu
 const Array_ = runtime.parameter4.not.sub.Array
 
 export {
-  of_ as of,
-  string_ as string,
-  number_ as number,
+  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
-  undefined_ as undefined,
-  null_ as null,
-  symbol_ as symbol,
   Date_ as Date,
-  RegExp_ as RegExp,
   Error_ as Error,
+  null_ as null,
+  number_ as number,
+  of_ as of,
   Promise_ as Promise,
-  Array_ as Array,
+  RegExp_ as RegExp,
+  string_ as string,
+  symbol_ as symbol,
+  undefined_ as undefined,
 }

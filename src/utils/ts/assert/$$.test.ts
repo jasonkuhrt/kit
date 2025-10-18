@@ -652,10 +652,7 @@ test('exact value mode - basic type mismatches', () => {
 }`)
 })
 
-test('exact value mode - never handling', () => {
-  const neverValue = null as never
-  Assert.exact.of.as<never>()(neverValue)
-})
+// Note: never handling is now covered by guard tests
 
 test('exact value mode - parameter-based error feedback', () => {
   type IsExact<E, A> = E extends A ? A extends E ? true : false : false
@@ -1251,3 +1248,18 @@ test('extractor - array', () => {
 //   tip___________: "Types share no values"
 // }`)
 // })
+
+test('any/never actuals should be caught by guards', () => {
+  // @ts-expect-error - should error: any is not assignable to literal 3
+  Assert.exact.of.as<3>()(null as any)
+  // @ts-expect-error
+  type _t1 = Assert.Case<Assert.exact<3, any>>
+  // @ts-expect-error - should error: any is not assignable to string
+  Assert.equiv.of.as<string>()(null as any)
+  // @ts-expect-error - should error: any is not assignable to number
+  Assert.sub.of.as<number>()(null as any)
+  // @ts-expect-error - should error: never actual when expected is string
+  Assert.exact.of.as<string>()(null as never)
+  // @ts-expect-error
+  type _t2 = Assert.Case<Assert.exact<3, never>>
+})

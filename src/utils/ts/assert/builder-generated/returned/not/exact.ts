@@ -1,7 +1,7 @@
 import type * as Kind from '../../../../kind.js'
+import { runtime } from '../../../builder/runtime.js'
 import type { Returned } from '../../../kinds/extractors.js'
 import type { ExactKind } from '../../../kinds/relators.js'
-import { runtime } from '../../../builder/runtime.js'
 
 /**
  * returned + exact relation matchers.
@@ -9,7 +9,6 @@ import { runtime } from '../../../builder/runtime.js'
  * Extraction: extracts the return type from a function
  * Relation: exact structural equality
  */
-
 
 /**
  * Base matcher accepting any expected type.
@@ -30,7 +29,6 @@ import { runtime } from '../../../builder/runtime.js'
 type of_<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, Kind.Apply<Returned, [$Actual]>, true]>
 const of_ = runtime.returned.not.exact.of
 
-
 /**
  * Pre-curried matcher for string.
  * Extraction chain: (...args: any[]) => T → T
@@ -46,7 +44,6 @@ const of_ = runtime.returned.not.exact.of
  */
 type string_<$Actual> = Kind.Apply<ExactKind, [string, Kind.Apply<Returned, [$Actual]>, true]>
 const string_ = runtime.returned.not.exact.string
-
 
 /**
  * Pre-curried matcher for number.
@@ -64,7 +61,6 @@ const string_ = runtime.returned.not.exact.string
 type number_<$Actual> = Kind.Apply<ExactKind, [number, Kind.Apply<Returned, [$Actual]>, true]>
 const number_ = runtime.returned.not.exact.number
 
-
 /**
  * Pre-curried matcher for bigint.
  * Extraction chain: (...args: any[]) => T → T
@@ -80,7 +76,6 @@ const number_ = runtime.returned.not.exact.number
  */
 type bigint_<$Actual> = Kind.Apply<ExactKind, [bigint, Kind.Apply<Returned, [$Actual]>, true]>
 const bigint_ = runtime.returned.not.exact.bigint
-
 
 /**
  * Pre-curried matcher for boolean.
@@ -98,7 +93,6 @@ const bigint_ = runtime.returned.not.exact.bigint
 type boolean_<$Actual> = Kind.Apply<ExactKind, [boolean, Kind.Apply<Returned, [$Actual]>, true]>
 const boolean_ = runtime.returned.not.exact.boolean
 
-
 /**
  * Pre-curried matcher for undefined.
  * Extraction chain: (...args: any[]) => T → T
@@ -114,7 +108,6 @@ const boolean_ = runtime.returned.not.exact.boolean
  */
 type undefined_<$Actual> = Kind.Apply<ExactKind, [undefined, Kind.Apply<Returned, [$Actual]>, true]>
 const undefined_ = runtime.returned.not.exact.undefined
-
 
 /**
  * Pre-curried matcher for null.
@@ -132,7 +125,6 @@ const undefined_ = runtime.returned.not.exact.undefined
 type null_<$Actual> = Kind.Apply<ExactKind, [null, Kind.Apply<Returned, [$Actual]>, true]>
 const null_ = runtime.returned.not.exact.null
 
-
 /**
  * Pre-curried matcher for symbol.
  * Extraction chain: (...args: any[]) => T → T
@@ -148,7 +140,6 @@ const null_ = runtime.returned.not.exact.null
  */
 type symbol_<$Actual> = Kind.Apply<ExactKind, [symbol, Kind.Apply<Returned, [$Actual]>, true]>
 const symbol_ = runtime.returned.not.exact.symbol
-
 
 /**
  * Pre-curried matcher for Date.
@@ -166,7 +157,6 @@ const symbol_ = runtime.returned.not.exact.symbol
 type Date_<$Actual> = Kind.Apply<ExactKind, [Date, Kind.Apply<Returned, [$Actual]>, true]>
 const Date_ = runtime.returned.not.exact.Date
 
-
 /**
  * Pre-curried matcher for RegExp.
  * Extraction chain: (...args: any[]) => T → T
@@ -182,7 +172,6 @@ const Date_ = runtime.returned.not.exact.Date
  */
 type RegExp_<$Actual> = Kind.Apply<ExactKind, [RegExp, Kind.Apply<Returned, [$Actual]>, true]>
 const RegExp_ = runtime.returned.not.exact.RegExp
-
 
 /**
  * Pre-curried matcher for Error.
@@ -200,7 +189,6 @@ const RegExp_ = runtime.returned.not.exact.RegExp
 type Error_<$Actual> = Kind.Apply<ExactKind, [Error, Kind.Apply<Returned, [$Actual]>, true]>
 const Error_ = runtime.returned.not.exact.Error
 
-
 /**
  * Pre-curried matcher for Promise<any>.
  * Extraction chain: (...args: any[]) => T → T
@@ -216,7 +204,6 @@ const Error_ = runtime.returned.not.exact.Error
  */
 type Promise_<$Actual> = Kind.Apply<ExactKind, [Promise<any>, Kind.Apply<Returned, [$Actual]>, true]>
 const Promise_ = runtime.returned.not.exact.Promise
-
 
 /**
  * Pre-curried matcher for any[].
@@ -235,17 +222,17 @@ type Array_<$Actual> = Kind.Apply<ExactKind, [any[], Kind.Apply<Returned, [$Actu
 const Array_ = runtime.returned.not.exact.Array
 
 export {
-  of_ as of,
-  string_ as string,
-  number_ as number,
+  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
-  undefined_ as undefined,
-  null_ as null,
-  symbol_ as symbol,
   Date_ as Date,
-  RegExp_ as RegExp,
   Error_ as Error,
+  null_ as null,
+  number_ as number,
+  of_ as of,
   Promise_ as Promise,
-  Array_ as Array,
+  RegExp_ as RegExp,
+  string_ as string,
+  symbol_ as symbol,
+  undefined_ as undefined,
 }
