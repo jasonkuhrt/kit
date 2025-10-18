@@ -162,7 +162,7 @@ Str.Code.TS.typeAliasWithOptions({
   type: 'T | Error',
   parameters: ['T'],
   tsDoc: 'A result that may be successful or an error',
-  export: true
+  export: true,
 })
 // /**
 //  * A result that may be successful or an error
@@ -191,7 +191,7 @@ Str.Code.TS.interfaceDecl({
   name: 'User',
   block: 'id: string\nname: string',
   tsDoc: 'Represents a user',
-  export: true
+  export: true,
 })
 // /**
 //  * Represents a user

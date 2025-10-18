@@ -1,6 +1,6 @@
 import { Match, ParseResult, Schema as S } from 'effect'
 import { Analyzer } from '../codec-string/$.ts'
-import * as Extension from './extension.ts'
+import * as Extension from './extension.js'
 
 /**
  * Class representing file metadata.

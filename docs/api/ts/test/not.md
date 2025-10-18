@@ -1,6 +1,6 @@
-# Ts.Test.not
+# Ts.Assert.not
 
-_Ts.Test_ / **not**
+_Ts.Assert_ / **not**
 
 Value-level negation - mirrors type-level structure.
 
@@ -12,14 +12,14 @@ Value-level negation - mirrors type-level structure.
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Test.not.someFunction()
+Ts.Assert.not.someFunction()
 ```
 
 ```typescript [Barrel]
 import * as Ts from '@wollybeard/kit/ts'
 
 // Access via namespace
-Ts.Test.not.someFunction()
+Ts.Assert.not.someFunction()
 ```
 
 :::

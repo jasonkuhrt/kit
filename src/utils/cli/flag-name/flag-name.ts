@@ -1,6 +1,6 @@
 import type { Ts } from '#ts'
 import { ParseResult, Schema as S } from 'effect'
-import * as Analyzer from './analyzer.ts'
+import * as Analyzer from './analyzer.js'
 
 // ============================================================================
 // Type-Level Utilities (Internal)

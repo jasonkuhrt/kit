@@ -20,15 +20,7 @@ export * as SimpleSignature from './simple-signature.js'
  */
 export namespace SimpleSignature {}
 
-// @ts-expect-error Duplicate identifier
-export * as Test from './test/$$.js'
-/**
- * Type-level assertion utilities for testing type correctness.
- * Provides compile-time type checking and assertions for tests.
- *
- * @category Type Testing
- */
-export namespace Test {}
+export * as Assert from './assert/$$.js'
 
 export * from './ts.js'
 export * from './type-guards.js'

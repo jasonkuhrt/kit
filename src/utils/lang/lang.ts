@@ -157,3 +157,38 @@ export const PrimitiveArb = fc.oneof(
   fc.constant(undefined),
   fc.constant(Symbol('test')),
 )
+
+/**
+ * Built-in types that should not be expanded in error messages.
+ * @internal
+ */
+export type BuiltInTypes =
+  | string
+  | number
+  | boolean
+  | symbol
+  | bigint
+  | null
+  | undefined
+  | void
+  | never
+  | unknown
+  | any
+  | string
+  | number
+  | boolean
+  | symbol
+  | bigint
+  | Array<any>
+  | ReadonlyArray<any>
+  | Promise<any>
+  | Record<any, any>
+  | Map<any, any>
+  | Set<any>
+  | WeakMap<any, any>
+  | WeakSet<any>
+  | Date
+  | RegExp
+  | Error
+  | Function
+  | ((...args: any[]) => any)

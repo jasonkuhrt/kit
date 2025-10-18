@@ -1,4 +1,4 @@
-# Ts.Test
+# Ts.Assert
 
 _Ts_ / **Test**
 
@@ -11,7 +11,7 @@ All assertions follow a consistent, compositional pattern:
 ```typescript
 // [!code word:Test:1]
 // [!code word:not:1]
-Ts.Test[.not].<relation>.<extractor?>.<extractor?>...<TypeParams>
+Ts.Assert[.not].<relation>.<extractor?>.<extractor?>...<TypeParams>
 ```
 
 Where: - **Relation**: `exact` (structural equality), `equiv` (mutual assignability), `sub` (subtype) - **Extractor**: Optional transformation (`.awaited`, `.returned`, `.parameter`, etc.) - **Negation**: Optional `.not` prefix negates the assertion
@@ -20,22 +20,22 @@ Where: - **Relation**: `exact` (structural equality), `equiv` (mutual assignabil
 
 ```typescript
 // Type Level
-type _ = Ts.Test.Cases<
-  Ts.Test.exact<string, string>,                    // Plain relation
-  Ts.Test.sub.awaited<User, Promise<AdminUser>>,    // With extractor
-  Ts.Test.exact.returned.awaited<Data, AsyncFn>,    // Chained extractors
-  Ts.Test.not.equiv<string, number>                 // Negation
+type _ = Ts.Assert.Cases<
+  Ts.Assert.exact<string, string>, // Plain relation
+  Ts.Assert.sub.awaited<User, Promise<AdminUser>>, // With extractor
+  Ts.Assert.exact.returned.awaited<Data, AsyncFn>, // Chained extractors
+  Ts.Assert.not.equiv<string, number> // Negation
 >
 
 // Value Level (requires .is for identity)
 // [!code word:is:1]
-Ts.Test.exact.is<string>()(value)
+Ts.Assert.exact.of.as<string>()(value)
 // [!code word:awaited:1]
-Ts.Test.sub.awaited<number>()(promise)
+Ts.Assert.sub.awaited<number>()(promise)
 // [!code word:awaited:1]
-Ts.Test.exact.returned.awaited<User>()(asyncFn)
+Ts.Assert.exact.returned.awaited<User>()(asyncFn)
 // [!code word:is:1]
-Ts.Test.not.sub.is<number>()(value)
+Ts.Assert.not.sub.of.as<number>()(value)
 ```
 
 ## Relations
@@ -43,25 +43,25 @@ Ts.Test.not.sub.is<number>()(value)
 ### `exact` - Structural Equality Types must be structurally identical. Most strict assertion.
 
 ```typescript
-type T = Ts.Test.exact<string, string>           // ✓ Pass
-type T = Ts.Test.exact<1 | 2, 2 | 1>             // ✗ Fail (different structure)
-type T = Ts.Test.exact<string & {}, string>      // ✗ Fail (different structure)
+type T = Ts.Assert.exact<string, string> // ✓ Pass
+type T = Ts.Assert.exact<1 | 2, 2 | 1> // ✗ Fail (different structure)
+type T = Ts.Assert.exact<string & {}, string> // ✗ Fail (different structure)
 ```
 
 ### `equiv` - Mutual Assignability (Semantic Equality) Types must be mutually assignable (compute to the same result).
 
 ```typescript
-type T = Ts.Test.equiv<1 | 2, 2 | 1>             // ✓ Pass (same computed type)
-type T = Ts.Test.equiv<string & {}, string>      // ✓ Pass (both compute to string)
-type T = Ts.Test.equiv<string, number>           // ✗ Fail (not mutually assignable)
+type T = Ts.Assert.equiv<1 | 2, 2 | 1> // ✓ Pass (same computed type)
+type T = Ts.Assert.equiv<string & {}, string> // ✓ Pass (both compute to string)
+type T = Ts.Assert.equiv<string, number> // ✗ Fail (not mutually assignable)
 ```
 
 ### `sub` - Subtype Checking Actual must extend Expected. Most commonly used relation.
 
 ```typescript
-type T = Ts.Test.sub<string, 'hello'>            // ✓ Pass ('hello' extends string)
-type T = Ts.Test.sub<object, { a: 1 }>           // ✓ Pass (more specific extends less)
-type T = Ts.Test.sub<'hello', string>            // ✗ Fail (string doesn't extend 'hello')
+type T = Ts.Assert.sub<string, 'hello'> // ✓ Pass ('hello' extends string)
+type T = Ts.Assert.sub<object, { a: 1 }> // ✓ Pass (more specific extends less)
+type T = Ts.Assert.sub<'hello', string> // ✗ Fail (string doesn't extend 'hello')
 ```
 
 ## Extractors
@@ -71,16 +71,16 @@ Extractors transform types before applying the relation check.
 ### Special Types - `.Never<T>` / `.never()` - Check if type is `never` (type-level uses PascalCase due to keyword) - `.Any<T>` / `.any()` - Check if type is `any` - `.Unknown<T>` / `.unknown()` - Check if type is `unknown` - `.empty<T>` - Check if type is empty ([], '', or empty object)
 
 ```typescript
-type T = Ts.Test.equiv.Never<never>              // ✓ Pass
+type T = Ts.Assert.equiv.Never<never> // ✓ Pass
 // [!code word:any:1]
-Ts.Test.exact.any()(value)                       // Value level (lowercase)
+Ts.Assert.exact.any()(value) // Value level (lowercase)
 ```
 
 ### Containers - `.array<Element, T>` - Check array element type - `.tuple<[...], T>` - Check tuple structure - `.indexed<N, Element, T>` - Check specific array/tuple element
 
 ```typescript
-type T = Ts.Test.sub.array<number, (1 | 2 | 3)[]>  // ✓ Pass
-type T = Ts.Test.exact.indexed<0, string, [string, number]>  // ✓ Pass
+type T = Ts.Assert.sub.array<number, (1 | 2 | 3)[]> // ✓ Pass
+type T = Ts.Assert.exact.indexed<0, string, [string, number]> // ✓ Pass
 ```
 
 ### Transformations (Chainable) - `.awaited` - Extract resolved type from Promise - `.returned` - Extract return type from function
@@ -89,29 +89,29 @@ type T = Ts.Test.exact.indexed<0, string, [string, number]>  // ✓ Pass
 
 ```typescript
 // Terminal check (explicit .is)
-type T = Ts.Test.exact.awaited.is<number, Promise<number>>
+type T = Ts.Assert.exact.awaited.is<number, Promise<number>>
 // [!code word:is:1]
-Ts.Test.exact.returned.is<string>()(fn)
+Ts.Assert.exact.returned.is<string>()(fn)
 
 // Chaining (nest extractors)
-type T = Ts.Test.exact.returned.awaited<User, () => Promise<User>>
+type T = Ts.Assert.exact.returned.awaited<User, () => Promise<User>>
 // [!code word:array:1]
 // [!code word:resolve:1]
-Ts.Test.sub.awaited.array<number>()(Promise.resolve([1, 2, 3]))
+Ts.Assert.sub.awaited.array<number>()(Promise.resolve([1, 2, 3]))
 ```
 
 ### Functions - `.parameter<X, F>` - First parameter (most common) - `.parameter1-5<X, F>` - Specific parameter position - `.parameters<[...], F>` - Full parameter tuple
 
 ```typescript
-type T = Ts.Test.exact.parameter<string, (x: string) => void>
-type T = Ts.Test.sub.parameter2<number, (a: string, b: number) => void>
+type T = Ts.Assert.exact.parameter<string, (x: string) => void>
+type T = Ts.Assert.sub.parameter2<number, (a: string, b: number) => void>
 ```
 
 ### Objects - `.properties<Props, T>` - Check specific properties (ignores others)
 
 ```typescript
 type Config = { id: string; name: string; debug: boolean }
-type T = Ts.Test.exact.properties<{ id: string }, Config>  // ✓ Pass
+type T = Ts.Assert.exact.properties<{ id: string }, Config> // ✓ Pass
 ```
 
 ### Modifiers - `.noExcess<A, B>` - Additionally check for no excess properties
@@ -120,17 +120,17 @@ type T = Ts.Test.exact.properties<{ id: string }, Config>  // ✓ Pass
 
 ```typescript
 type Options = { timeout?: number; retry?: boolean }
-type T = Ts.Test.sub.noExcess<Options, { timeout: 5000, retry: true }>  // ✓ Allows literals
-type T = Ts.Test.sub.noExcess<Options, { timeout: 5000, retrys: true }> // ✗ Catches typo!
+type T = Ts.Assert.sub.noExcess<Options, { timeout: 5000; retry: true }> // ✓ Allows literals
+type T = Ts.Assert.sub.noExcess<Options, { timeout: 5000; retrys: true }> // ✗ Catches typo!
 ```
 
 **`equiv.noExcess`** - Special case (optional property typos in equiv types):
 
 ```typescript
 type Schema = { id: number; email?: string }
-type Response = { id: number; emial?: string }  // Typo!
-type T = Ts.Test.equiv<Schema, Response>          // ✓ Pass (mutually assignable)
-type T = Ts.Test.equiv.noExcess<Schema, Response> // ✗ Fail (catches typo!)
+type Response = { id: number; emial?: string } // Typo!
+type T = Ts.Assert.equiv<Schema, Response> // ✓ Pass (mutually assignable)
+type T = Ts.Assert.equiv.noExcess<Schema, Response> // ✗ Fail (catches typo!)
 ```
 
 ## Negation
@@ -139,10 +139,10 @@ The `.not` namespace mirrors the entire API structure:
 
 ```typescript
 // Negate any assertion
-type T = Ts.Test.not.exact<string, number>             // ✓ Pass (different)
-type T = Ts.Test.not.sub.awaited<X, Promise<Y>>        // ✓ Pass if Y doesn't extend X
+type T = Ts.Assert.not.exact<string, number> // ✓ Pass (different)
+type T = Ts.Assert.not.sub.awaited<X, Promise<Y>> // ✓ Pass if Y doesn't extend X
 // [!code word:awaited:1]
-Ts.Test.not.exact.returned.awaited<X>()(fn)            // Value level
+Ts.Assert.not.exact.returned.awaited<X>()(fn) // Value level
 ```
 
 ## Value Level vs Type Level
@@ -150,8 +150,8 @@ Ts.Test.not.exact.returned.awaited<X>()(fn)            // Value level
 **Type Level**: Use relations and extractors directly as types
 
 ```typescript
-type T = Ts.Test.exact<A, B>
-type T = Ts.Test.sub.awaited<X, Promise<Y>>
+type T = Ts.Assert.exact<A, B>
+type T = Ts.Assert.sub.awaited<X, Promise<Y>>
 ```
 
 **Value Level**: Relations require `.is`, extractors work directly
@@ -159,19 +159,19 @@ type T = Ts.Test.sub.awaited<X, Promise<Y>>
 ```typescript
 // Relations need .is for identity
 // [!code word:is:1]
-Ts.Test.exact.is<string>()(value)    // ✓ Use .is
+Ts.Assert.exact.of.as<string>()(value) // ✓ Use .is
 // [!code word:exact:1]
-Ts.Test.exact<string>()(value)       // ✗ Error - exact is not callable!
+Ts.Assert.exact<string>()(value) // ✗ Error - exact is not callable!
 
 // Extractors work directly
 // [!code word:awaited:1]
-Ts.Test.exact.awaited<X>()(promise)  // ✓ Works
+Ts.Assert.exact.awaited<X>()(promise) // ✓ Works
 
 // Chained extractors use .is for terminal
 // [!code word:is:1]
-Ts.Test.exact.returned.is<X>()(fn)            // Terminal check
+Ts.Assert.exact.returned.is<X>()(fn) // Terminal check
 // [!code word:awaited:1]
-Ts.Test.exact.returned.awaited<X>()(fn)       // Chained check
+Ts.Assert.exact.returned.awaited<X>()(fn) // Chained check
 ```
 
 ## Why `.is` for Identity?
@@ -186,7 +186,7 @@ When comparing object types, failed assertions automatically include a `diff` fi
 type Expected = { id: string; name: string; age: number }
 type Actual = { id: number; name: string; email: string }
 
-type T = Ts.Test.exact<Expected, Actual>
+type T = Ts.Assert.exact<Expected, Actual>
 // Error includes:
 // diff: {
 //   missing: { age: number }
@@ -197,7 +197,7 @@ type T = Ts.Test.exact<Expected, Actual>
 
 ## Configuration
 
-Assertion behavior can be configured via global settings. See KitLibrarySettings.Ts.Test.Settings for available options.
+Assertion behavior can be configured via global settings. See KitLibrarySettings.Ts.Assert.Settings for available options.
 
 ## Import
 
@@ -207,14 +207,14 @@ Assertion behavior can be configured via global settings. See KitLibrarySettings
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Test.someFunction()
+Ts.Assert.someFunction()
 ```
 
 ```typescript [Barrel]
 import * as Ts from '@wollybeard/kit/ts'
 
 // Access via namespace
-Ts.Test.someFunction()
+Ts.Assert.someFunction()
 ```
 
 :::
@@ -260,28 +260,68 @@ type StaticErrorAssertion<
 > =
   // Check what kind of $Meta we have
   [$Meta] extends [never]
-  ? // No meta - just error, expected, actual
-  {
-    [k in keyof { ERROR: $Message; expected: $Expected; actual: $Actual } as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
-    { ERROR: $Message; expected: $Expected; actual: $Actual }[k]
-  }
-  : [$Meta] extends [string]
-  ? // String tip - render as { tip: $Meta }
-  Simplify<{
-    [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & { tip: $Meta }) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
-    ({ ERROR: $Message; expected: $Expected; actual: $Actual } & { tip: $Meta })[k]
-  }>
-  : [$Meta] extends [readonly string[]]
-  ? // Tuple of tips - render as { tip_a, tip_b, ... }
-  Simplify<{
-    [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & TupleToTips<$Meta>) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
-    ({ ERROR: $Message; expected: $Expected; actual: $Actual } & TupleToTips<$Meta>)[k]
-  }>
-  : // Object - spread $Meta directly
-  Simplify<{
-    [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta) as k extends string ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'> : k]:
-    ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta)[k]
-  }>
+    // No meta - just error, expected, actual
+    ? {
+      [
+        k in keyof {
+          ERROR: $Message
+          expected: $Expected
+          actual: $Actual
+        } as k extends string
+          ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'>
+          : k
+      ]: { ERROR: $Message; expected: $Expected; actual: $Actual }[k]
+    }
+    : [$Meta] extends [string]
+    // String tip - render as { tip: $Meta }
+      ? Simplify<
+        {
+          [
+            k in keyof ({
+              ERROR: $Message
+              expected: $Expected
+              actual: $Actual
+            } & { tip: $Meta }) as k extends string
+              ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'>
+              : k
+          ]: ({ ERROR: $Message; expected: $Expected; actual: $Actual } & {
+            tip: $Meta
+          })[k]
+        }
+      >
+    : [$Meta] extends [readonly string[]]
+    // Tuple of tips - render as { tip_a, tip_b, ... }
+      ? Simplify<
+        {
+          [
+            k in keyof ({
+              ERROR: $Message
+              expected: $Expected
+              actual: $Actual
+            } & TupleToTips<$Meta>) as k extends string
+              ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'>
+              : k
+          ]: (
+            & { ERROR: $Message; expected: $Expected; actual: $Actual }
+            & TupleToTips<$Meta>
+          )[k]
+        }
+      >
+    // Object - spread $Meta directly
+    : Simplify<
+      {
+        [
+          k in keyof (
+            & { ERROR: $Message; expected: $Expected; actual: $Actual }
+            & $Meta
+          ) as k extends string
+            ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'>
+            : k
+        ]: ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta)[
+          k
+        ]
+      }
+    >
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/helpers.ts#L358" />
@@ -323,16 +363,36 @@ import { Ts } from '@wollybeard/kit/ts'
 type E1 = StaticErrorAssertion<'Types mismatch', string, number>
 
 // With a single tip
-type E2 = StaticErrorAssertion<'Types mismatch', string, number, 'Use String() to convert'>
+type E2 = StaticErrorAssertion<
+  'Types mismatch',
+  string,
+  number,
+  'Use String() to convert'
+>
 
 // With multiple tips
-type E3 = StaticErrorAssertion<'Types mismatch', string, number, ['Tip 1', 'Tip 2']>
+type E3 = StaticErrorAssertion<
+  'Types mismatch',
+  string,
+  number,
+  ['Tip 1', 'Tip 2']
+>
 
 // With metadata object
-type E4 = StaticErrorAssertion<'Types mismatch', string, number, { operation: 'concat' }>
+type E4 = StaticErrorAssertion<
+  'Types mismatch',
+  string,
+  number,
+  { operation: 'concat' }
+>
 
 // With tip and metadata
-type E5 = StaticErrorAssertion<'Types mismatch', string, number, { tip: 'Use String()', diff_missing: { x: number } }>
+type E5 = StaticErrorAssertion<
+  'Types mismatch',
+  string,
+  number,
+  { tip: 'Use String()'; diff_missing: { x: number } }
+>
 ```
 
 ## Other
@@ -359,8 +419,8 @@ Type Level
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T = Ts.Test.exact<string, string>  // ✓ Pass
-type T = Ts.Test.exact<string, number>  // ✗ Fail
+type T = Ts.Assert.exact<string, string> // ✓ Pass
+type T = Ts.Assert.exact<string, number> // ✗ Fail
 ```
 
 Value Level
@@ -370,7 +430,7 @@ Value Level
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // [!code word:is:1]
-Ts.Test.exact.is<string>()(value)  // Must use .is for identity
+Ts.Assert.exact.of.as<string>()(value) // Must use .is for identity
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `equiv`
@@ -395,9 +455,9 @@ Type Level
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T = Ts.Test.equiv<string, string>      // ✓ Pass
-type T = Ts.Test.equiv<string & {}, string> // ✓ Pass (mutually assignable)
-type T = Ts.Test.equiv<1 | 2, 2 | 1>        // ✓ Pass (same computed type)
+type T = Ts.Assert.equiv<string, string> // ✓ Pass
+type T = Ts.Assert.equiv<string & {}, string> // ✓ Pass (mutually assignable)
+type T = Ts.Assert.equiv<1 | 2, 2 | 1> // ✓ Pass (same computed type)
 ```
 
 Value Level
@@ -407,7 +467,7 @@ Value Level
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // [!code word:is:1]
-Ts.Test.equiv.is<string>()(value)  // Must use .is for identity
+Ts.Assert.equiv.of<string>()(value) // Must use .is for identity
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `sub`
@@ -432,9 +492,9 @@ Type Level
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T = Ts.Test.sub<string, 'hello'>      // ✓ Pass ('hello' extends string)
-type T = Ts.Test.sub<object, { a: 1 }>     // ✓ Pass (more specific extends less)
-type T = Ts.Test.sub<'hello', string>      // ✗ Fail (string doesn't extend 'hello')
+type T = Ts.Assert.sub<string, 'hello'> // ✓ Pass ('hello' extends string)
+type T = Ts.Assert.sub<object, { a: 1 }> // ✓ Pass (more specific extends less)
+type T = Ts.Assert.sub<'hello', string> // ✗ Fail (string doesn't extend 'hello')
 ```
 
 Value Level
@@ -444,7 +504,7 @@ Value Level
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // [!code word:is:1]
-Ts.Test.sub.is<string>()(value)  // Must use .is for identity
+Ts.Assert.sub.of.as<string>()(value) // Must use .is for identity
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Cases`
@@ -564,17 +624,17 @@ Type-level batch assertion helper that accepts multiple assertions. Each type pa
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type _ = Ts.Test.Cases<
-  Equal<string, string>,     // ✓ Pass (returns never)
-  Extends<string, 'hello'>,  // ✓ Pass (returns never)
-  Never<never>               // ✓ Pass (returns never)
+type _ = Ts.Assert.Cases<
+  Equal<string, string>, // ✓ Pass (returns never)
+  Extends<string, 'hello'>, // ✓ Pass (returns never)
+  Never<never> // ✓ Pass (returns never)
 >
 
 // Type error if any assertion fails
-type _ = Ts.Test.Cases<
-  Equal<string, string>,     // ✓ Pass (returns never)
-  Equal<string, number>,     // ✗ Fail - Type error here (returns StaticErrorAssertion)
-  Extends<string, 'hello'>   // ✓ Pass (returns never)
+type _ = Ts.Assert.Cases<
+  Equal<string, string>, // ✓ Pass (returns never)
+  Equal<string, number>, // ✗ Fail - Type error here (returns StaticErrorAssertion)
+  Extends<string, 'hello'> // ✓ Pass (returns never)
 >
 ```
 
@@ -595,7 +655,7 @@ Type-level test assertion that requires the result to be never (no error). Used 
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type MyTests = [
-  Ts.Test.Case<Equal<string, string>>,  // OK - evaluates to never (success)
-  Ts.Test.Case<Equal<string, number>>,  // Error - doesn't extend never (returns error)
+  Ts.Assert.Case<Equal<string, string>>, // OK - evaluates to never (success)
+  Ts.Assert.Case<Equal<string, number>>, // Error - doesn't extend never (returns error)
 ]
 ```

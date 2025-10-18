@@ -1,4 +1,4 @@
-import type { Path } from '../path.ts'
+import type { Path } from '../path.js'
 
 export type PathWithEmptySegments<T extends Path> = T & { segments: readonly [] }
 

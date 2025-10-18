@@ -1,5 +1,5 @@
 import { Str } from '#str'
-import type { FlagName } from './flag-name.ts'
+import type { FlagName } from './flag-name.js'
 
 /**
  * Runtime analyzer for CLI flag expressions.

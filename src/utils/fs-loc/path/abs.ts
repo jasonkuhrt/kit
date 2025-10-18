@@ -1,7 +1,7 @@
 import { Match, ParseResult, Schema as S } from 'effect'
-import { Analyzer } from '../codec-string/$.ts'
+import { Analyzer } from '../codec-string/$.js'
 import * as Segment from '../types/segment.js'
-import { stringSeparator } from './constants.ts'
+import { stringSeparator } from './constants.js'
 
 export const Encoded = S.String
 

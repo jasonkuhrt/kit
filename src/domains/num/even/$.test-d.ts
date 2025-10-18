@@ -5,6 +5,7 @@ import { test } from 'vitest'
  */
 
 import { Ts } from '#ts'
+import { Assert } from '#ts/ts'
 import type { Int } from '../int/$$.js'
 import type { Even } from './$$.js'
 import { from as even, is as isEven, next as nextEven, prev as prevEven, tryFrom as tryEven } from './$$.js'
@@ -16,11 +17,11 @@ test('Type narrowing works correctly with isEven predicate', () => {
 
   // Predicate narrows to Even & Int intersection
   if (isEven(value)) {
-    Ts.Test.sub.is<Even & Int>()(value)
+    Assert.sub.of.as<Even & Int>()(value)
     // Can assign to Even
-    Ts.Test.sub.is<Even>()(value)
+    Assert.sub.of.as<Even>()(value)
     // Can assign to Int
-    Ts.Test.sub.is<Int>()(value)
+    Assert.sub.of.as<Int>()(value)
   }
 
   // Multiple checks preserve all brands
@@ -39,31 +40,31 @@ test('Type narrowing works correctly with isEven predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic even constructor always returns Even & Int
   const even1 = even(4)
-  Ts.Test.exact.is<Even & Int>()(even1)
+  Assert.exact.of.as<Even & Int>()(even1)
 
   // Negative even numbers
   const even2 = even(-2)
-  Ts.Test.exact.is<Even & Int>()(even2)
+  Assert.exact.of.as<Even & Int>()(even2)
 
   // Zero is even
   const even3 = even(0)
-  Ts.Test.exact.is<Even & Int>()(even3)
+  Assert.exact.of.as<Even & Int>()(even3)
 
   // Try constructor
   const try1 = tryEven(6)
-  Ts.Test.exact.is<(Even & Int) | null>()(try1)
+  Assert.exact.of.as<(Even & Int) | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Ts.Test.exact.is<Even & Int>()(try1)
+    Assert.exact.of.as<Even & Int>()(try1)
   }
 
   // Next/prev even operations
   const next = nextEven(3.5) // Should be 4
-  Ts.Test.exact.is<Even & Int>()(next)
+  Assert.exact.of.as<Even & Int>()(next)
 
   const prev = prevEven(5.5) // Should be 4
-  Ts.Test.exact.is<Even & Int>()(prev)
+  Assert.exact.of.as<Even & Int>()(prev)
 })
 
 // === Type Relationships ===
@@ -73,15 +74,15 @@ test('Even has correct relationship with Int', () => {
 
   // Even & Int can be assigned to Even
   const asEven: Even = evenNum
-  Ts.Test.sub.is<Even>()(asEven)
+  Assert.sub.of.as<Even>()(asEven)
 
   // Even & Int can be assigned to Int
   const asInt: Int = evenNum
-  Ts.Test.sub.is<Int>()(asInt)
+  Assert.sub.of.as<Int>()(asInt)
 
   // Even & Int can be assigned to number
   const asNumber: number = evenNum
-  Ts.Test.sub.is<number>()(asNumber)
+  Assert.sub.of.as<number>()(asNumber)
 
   // But Even alone cannot be assigned to Int (might not be integer)
   const justEven = {} as Even
@@ -97,37 +98,37 @@ test('Even has correct relationship with Int', () => {
 // === Type-Level Only Tests ===
 
 // Test brand relationships
-type _EvenRelationships = Ts.Test.Cases<
+type _EvenRelationships = Ts.Assert.Cases<
   // Even extends number
-  Ts.Test.sub<number, Even>,
+  Assert.sub.of<number, Even>,
   // Int extends number
-  Ts.Test.sub<number, Int>,
+  Assert.sub.of<number, Int>,
   // Even & Int extends both Even and Int
-  Ts.Test.sub<Even, Even & Int>,
-  Ts.Test.sub<Int, Even & Int>,
-  Ts.Test.sub<number, Even & Int>,
+  Assert.sub.of<Even, Even & Int>,
+  Assert.sub.of<Int, Even & Int>,
+  Assert.sub.of<number, Even & Int>,
   // Even does not extend Int (not all Even are Int in type system)
-  Ts.Test.not.sub<Even, Int>,
+  Ts.Assert.not.sub<Even, Int>,
   // Int does not extend Even (not all Int are Even)
-  Ts.Test.not.sub<Int, Even>,
+  Ts.Assert.not.sub<Int, Even>,
   // Even & Int is more specific than either alone
-  Ts.Test.not.sub<Even & Int, Even>,
-  Ts.Test.not.sub<Even & Int, Int>
+  Ts.Assert.not.sub<Even & Int, Even>,
+  Ts.Assert.not.sub<Even & Int, Int>
 >
 
 // Test constructor return types
-type _ConstructorReturnTypes = Ts.Test.Cases<
+type _ConstructorReturnTypes = Ts.Assert.Cases<
   // All constructors return the intersection type
-  Ts.Test.exact<ReturnType<typeof even>, Even & Int>,
-  Ts.Test.exact<ReturnType<typeof tryEven>, (Even & Int) | null>,
-  Ts.Test.exact<ReturnType<typeof nextEven>, Even & Int>,
-  Ts.Test.exact<ReturnType<typeof prevEven>, Even & Int>
+  Assert.exact.of<ReturnType<typeof even>, Even & Int>,
+  Assert.exact.of<ReturnType<typeof tryEven>, (Even & Int) | null>,
+  Assert.exact.of<ReturnType<typeof nextEven>, Even & Int>,
+  Assert.exact.of<ReturnType<typeof prevEven>, Even & Int>
 >
 
 // Test predicate return type
-type _PredicateTypes = Ts.Test.Cases<
+type _PredicateTypes = Ts.Assert.Cases<
   // isEven narrows to the intersection
-  Ts.Test.sub<(value: unknown) => value is Even & Int, typeof isEven>
+  Assert.sub.of<(value: unknown) => value is Even & Int, typeof isEven>
 >
 
 // Demonstrate intersection behavior

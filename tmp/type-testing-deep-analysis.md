@@ -177,23 +177,23 @@ expectTypeOf<'a' | 'b' | 'c'>()
 
 ```typescript
 // Test suite for union operations
-type _ = Ts.Test.Cases<
+type _ = Ts.Assert.Cases<
   // Basic extraction
-  Ts.Test.exact<
+  Ts.Assert.exact<
     ExtractResult<'a' | 'b' | 'c', 'a' | 'b'>,
     'a' | 'b'
   >,
   // Exclusion
-  Ts.Test.exact<
+  Ts.Assert.exact<
     ExcludeResult<'a' | 'b' | 'c', 'a'>,
     'b' | 'c'
   >,
   // Empty result
-  Ts.Test.equalNever<
+  Ts.Assert.equalNever<
     ExtractResult<'a' | 'b', 'c'>
   >,
   // Nested unions
-  Ts.Test.exact<
+  Ts.Assert.exact<
     ExtractResult<{ type: 'a'; x: 1 } | { type: 'b'; y: 2 }, { type: 'a' }>,
     { type: 'a'; x: 1 }
   >
@@ -719,7 +719,7 @@ export const Ts = {
 }
 
 // Also export fluent directly
-export const expectTypeOf = Ts.Test.expect
+export const expectTypeOf = Ts.Assert.expect
 ```
 
 **Pros:** Best of both worlds, gradual migration
@@ -813,7 +813,7 @@ export const expectTypeOf = Ts.Test.expect
 **Precision approach (current):**
 
 ```typescript
-Ts.Test.sub<string>()(value)
+Ts.Assert.sub<string>()(value)
 // Clear: value extends string
 // Explicit relationship: subtype
 ```

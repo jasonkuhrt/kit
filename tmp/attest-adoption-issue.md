@@ -311,7 +311,7 @@ attest<string>('hello') // Simple, one function
 **Kit:**
 
 ```typescript
-Ts.Test.sub<string>()('hello') // Two-step, explicit
+Ts.Assert.sub<string>()('hello') // Two-step, explicit
 ```
 
 **Trade-off:** Attest is shorter, Kit is more precise (exact/equiv/sub/sup).
@@ -326,10 +326,10 @@ Ts.Test.sub<string>()('hello') // Two-step, explicit
 
 ```typescript
 // Distinguish between different relationships
-Ts.Test.exact<T, U>() // Structural equality (strict)
-Ts.Test.equiv<T, U>() // Mutual assignability (semantic)
-Ts.Test.sub<T, U>() // Subtype relationship
-Ts.Test.sup<T, U>() // Supertype relationship
+Ts.Assert.exact<T, U>() // Structural equality (strict)
+Ts.Assert.equiv<T, U>() // Mutual assignability (semantic)
+Ts.Assert.sub<T, U>() // Subtype relationship
+Ts.Assert.sup<T, U>() // Supertype relationship
 
 // This precision is UNIQUE to Kit
 ```
@@ -355,10 +355,10 @@ test('catch config typos', () => {
 
   // Catches typo: "offest" instead of "offset"
   // @ts-expect-error - Excess property!
-  Ts.Test.subNoExcess<QueryOptions>()({ limit: 10, offest: 20 })
+  Ts.Assert.subNoExcess<QueryOptions>()({ limit: 10, offest: 20 })
 
   // Correct spelling passes
-  Ts.Test.subNoExcess<QueryOptions>()({ limit: 10, offset: 20 })
+  Ts.Assert.subNoExcess<QueryOptions>()({ limit: 10, offset: 20 })
 })
 ```
 
@@ -379,9 +379,9 @@ attest<QueryOptions>({ limit: 10, offest: 20 }) // ✓ Passes (wrong!)
 **Kit:**
 
 ```typescript
-Ts.Test.propertiesSub<{ name: string }, User>()
-Ts.Test.propertiesExact<{ role: 'admin' | 'user' }, User>()
-Ts.Test.propertiesEquiv<{ count: number }, User>()
+Ts.Assert.propertiesSub<{ name: string }, User>()
+Ts.Assert.propertiesExact<{ role: 'admin' | 'user' }, User>()
+Ts.Assert.propertiesEquiv<{ count: number }, User>()
 ```
 
 **Attest:**
@@ -397,9 +397,9 @@ Ts.Test.propertiesEquiv<{ count: number }, User>()
 **Kit:**
 
 ```typescript
-Ts.Test.Not.promise<number>() // Assert NOT a Promise
-Ts.Test.Not.array<string>() // Assert NOT an array
-Ts.Test.Not.sub<T, U>() // Assert U doesn't extend T
+Ts.Assert.Not.promise<number>() // Assert NOT a Promise
+Ts.Assert.Not.array<string>() // Assert NOT an array
+Ts.Assert.Not.sub<T, U>() // Assert U doesn't extend T
 ```
 
 **Attest:**
@@ -599,9 +599,9 @@ Attest **cannot replace** Kit's core features:
 
 ```typescript
 // Kit for precision
-type _ = Ts.Test.Cases<
-  Ts.Test.exact<Expected, Actual>,
-  Ts.Test.subNoExcess<Config, Value>
+type _ = Ts.Assert.Cases<
+  Ts.Assert.exact<Expected, Actual>,
+  Ts.Assert.subNoExcess<Config, Value>
 >
 
 // Attest for benchmarking
@@ -636,15 +636,15 @@ bench('type complexity', () => {
 
 ```typescript
 // Fluent API (from #10)
-Ts.Test.expect(value).toBeString()
-Ts.Test.expect(fn).returns.toBeNumber()
+Ts.Assert.expect(value).toBeString()
+Ts.Assert.expect(fn).returns.toBeNumber()
 ```
 
 #### Phase 2: Attest-Inspired Features (3-4 weeks)
 
 ```typescript
 // Type instantiation benchmarking
-Ts.Test.bench('complex type', () => {
+Ts.Assert.bench('complex type', () => {
   return {} as ComplexTransform<T>
 }).snapshots({
   instantiations: 150,
@@ -652,16 +652,16 @@ Ts.Test.bench('complex type', () => {
 })
 
 // Completion snapshotting
-Ts.Test.completions<Status>()
+Ts.Assert.completions<Status>()
   .at({ key: 'status' })
   .expects(['pending', 'complete', 'failed'])
 
 // JSDoc assertions
-Ts.Test.jsdoc(Type.properties.id)
+Ts.Assert.jsdoc(Type.properties.id)
   .includes('unique identifier')
 
 // Type snapshots
-Ts.Test.snapshot(complexType)
+Ts.Assert.snapshot(complexType)
   .expect('ComplexReturn<T>')
 ```
 
@@ -669,10 +669,10 @@ Ts.Test.snapshot(complexType)
 
 ```typescript
 // Features no one has (from #10)
-Ts.Test.diff<Expected, Actual>()  // Visual diff
-Ts.Test.algebraic<Union>().commutative()
-Ts.Test.coverage('./src').expectMinimum(0.9)
-Ts.Test.fuzzing<DeepReadonly>().property(...)
+Ts.Assert.diff<Expected, Actual>()  // Visual diff
+Ts.Assert.algebraic<Union>().commutative()
+Ts.Assert.coverage('./src').expectMinimum(0.9)
+Ts.Assert.fuzzing<DeepReadonly>().property(...)
 ```
 
 **Benefits:**

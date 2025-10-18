@@ -1,6 +1,6 @@
-# Ts.Test.exact
+# Ts.Assert.exact
 
-_Ts.Test_ / **exact**
+_Ts.Assert_ / **exact**
 
 Exact relation at value level - namespace-only (not callable).
 
@@ -16,14 +16,14 @@ All extractors are defined as const values using the runtime infrastructure. For
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Test.exact.someFunction()
+Ts.Assert.exact.someFunction()
 ```
 
 ```typescript [Barrel]
 import * as Ts from '@wollybeard/kit/ts'
 
 // Access via namespace
-Ts.Test.exact.someFunction()
+Ts.Assert.exact.someFunction()
 ```
 
 :::

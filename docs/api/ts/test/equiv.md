@@ -1,6 +1,6 @@
-# Ts.Test.equiv
+# Ts.Assert.equiv
 
-_Ts.Test_ / **equiv**
+_Ts.Assert_ / **equiv**
 
 Equiv relation at value level - namespace-only (not callable).
 
@@ -12,14 +12,14 @@ Equiv relation at value level - namespace-only (not callable).
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Test.equiv.someFunction()
+Ts.Assert.equiv.someFunction()
 ```
 
 ```typescript [Barrel]
 import * as Ts from '@wollybeard/kit/ts'
 
 // Access via namespace
-Ts.Test.equiv.someFunction()
+Ts.Assert.equiv.someFunction()
 ```
 
 :::

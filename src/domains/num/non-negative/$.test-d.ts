@@ -5,6 +5,7 @@ import { test } from 'vitest'
  */
 
 import { Ts } from '#ts'
+import { Assert } from '#ts/ts'
 import type { Negative } from '../negative/$$.js'
 import type { Positive } from '../positive/$$.js'
 import type { Zero } from '../zero/$$.js'
@@ -18,7 +19,7 @@ test('Type narrowing works correctly with isNonNegative predicate', () => {
 
   // Predicate narrows to NonNegative type
   if (isNonNegative(value)) {
-    Ts.Test.sub.is<NonNegative>()(value)
+    Assert.sub.of.as<NonNegative>()(value)
   }
 
   // Works with zero and positive values
@@ -36,32 +37,32 @@ test('Type narrowing works correctly with isNonNegative predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic non-negative constructor
   const nn1 = nonNegative(5)
-  Ts.Test.exact.is<NonNegative>()(nn1)
+  Assert.exact.of.as<NonNegative>()(nn1)
 
   // Zero is non-negative
   const nn2 = nonNegative(0)
-  Ts.Test.exact.is<NonNegative>()(nn2)
+  Assert.exact.of.as<NonNegative>()(nn2)
 
   // Large positive values
   const nn3 = nonNegative(1000)
-  Ts.Test.exact.is<NonNegative>()(nn3)
+  Assert.exact.of.as<NonNegative>()(nn3)
 
   // Small positive values
   const nn4 = nonNegative(0.001)
-  Ts.Test.exact.is<NonNegative>()(nn4)
+  Assert.exact.of.as<NonNegative>()(nn4)
 
   // Try constructor
   const try1 = tryNonNegative(42)
-  Ts.Test.exact.is<NonNegative | null>()(try1)
+  Assert.exact.of.as<NonNegative | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Ts.Test.exact.is<NonNegative>()(try1)
+    Assert.exact.of.as<NonNegative>()(try1)
   }
 
   // Try with negative returns null
   const try2 = tryNonNegative(-1)
-  Ts.Test.exact.is<NonNegative | null>()(try2)
+  Assert.exact.of.as<NonNegative | null>()(try2)
 })
 
 // === Type Relationships ===
@@ -71,7 +72,7 @@ test('NonNegative has correct relationships with other sign brands', () => {
 
   // NonNegative can be assigned to number
   const asNumber: number = nnVal
-  Ts.Test.sub.is<number>()(asNumber)
+  Assert.sub.of.as<number>()(asNumber)
 
   // NonNegative and Negative are mutually exclusive
   const _negVal = {} as Negative
@@ -98,40 +99,40 @@ test('NonNegative has correct relationships with other sign brands', () => {
 // === Type-Level Only Tests ===
 
 // Test brand relationships
-type _NonNegativeRelationships = Ts.Test.Cases<
+type _NonNegativeRelationships = Ts.Assert.Cases<
   // NonNegative extends number
-  Ts.Test.sub<number, NonNegative>,
+  Assert.sub.of<number, NonNegative>,
   // number does not extend NonNegative
-  Ts.Test.not.sub<NonNegative, number>,
+  Ts.Assert.not.sub<NonNegative, number>,
   // NonNegative and Negative are mutually exclusive
-  Ts.Test.not.sub<NonNegative, Negative>,
-  Ts.Test.not.sub<Negative, NonNegative>,
+  Ts.Assert.not.sub<NonNegative, Negative>,
+  Ts.Assert.not.sub<Negative, NonNegative>,
   // Positive and NonNegative are separate brands (no subtype relationship)
-  Ts.Test.not.sub<NonNegative, Positive>,
-  Ts.Test.not.sub<Positive, NonNegative>,
+  Ts.Assert.not.sub<NonNegative, Positive>,
+  Ts.Assert.not.sub<Positive, NonNegative>,
   // Zero and NonNegative are separate brands (no subtype relationship)
-  Ts.Test.not.sub<NonNegative, Zero>,
-  Ts.Test.not.sub<Zero, NonNegative>,
+  Ts.Assert.not.sub<NonNegative, Zero>,
+  Ts.Assert.not.sub<Zero, NonNegative>,
   // NonNegative does not extend Positive (includes zero)
-  Ts.Test.not.sub<NonNegative, Positive>,
+  Ts.Assert.not.sub<NonNegative, Positive>,
   // NonNegative does not extend Zero (includes positives)
-  Ts.Test.not.sub<NonNegative, Zero>
+  Ts.Assert.not.sub<NonNegative, Zero>
 >
 
 // Test constructor return types
-type _ConstructorReturnTypes = Ts.Test.Cases<
-  Ts.Test.exact<ReturnType<typeof nonNegative>, NonNegative>,
-  Ts.Test.exact<ReturnType<typeof tryNonNegative>, NonNegative | null>
+type _ConstructorReturnTypes = Ts.Assert.Cases<
+  Assert.exact.of<ReturnType<typeof nonNegative>, NonNegative>,
+  Assert.exact.of<ReturnType<typeof tryNonNegative>, NonNegative | null>
 >
 
 // Test the conceptual nature of NonNegative
-type _NonNegativeConceptual = Ts.Test.Cases<
+type _NonNegativeConceptual = Ts.Assert.Cases<
   // NonNegative conceptually includes positive and zero values
   // But at the type level, they are separate brands
-  Ts.Test.not.sub<Positive, NonNegative>,
-  Ts.Test.not.sub<Zero, NonNegative>,
+  Ts.Assert.not.sub<Positive, NonNegative>,
+  Ts.Assert.not.sub<Zero, NonNegative>,
   // NonNegative is its own brand, not literally Positive | Zero
-  Ts.Test.not.sub<NonNegative, Positive | Zero>
+  Ts.Assert.not.sub<NonNegative, Positive | Zero>
 >
 
 // Demonstrate type safety with NonNegative
@@ -146,7 +147,7 @@ test('NonNegative enables specific numeric constraints', () => {
   const value = 16
   const nn = nonNegative(value)
   const result = _calculateSquareRoot(nn)
-  Ts.Test.sub.is<number>()(result)
+  Assert.sub.of.as<number>()(result)
 
   // Cannot pass negative values
   // @ts-expect-error - Cannot assign negative number to NonNegative

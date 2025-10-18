@@ -1,7 +1,7 @@
 import type { Fn } from '#fn'
 import { Option } from 'effect'
-import * as Types from './builder-types.ts'
-import * as Builder from './builder.ts'
+import * as Types from './builder-types.js'
+import * as Builder from './builder.js'
 
 /**
  * Creates a test table builder for testing a specific function.

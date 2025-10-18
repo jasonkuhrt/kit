@@ -30,7 +30,7 @@ import { Ts } from '#ts'
 import { test } from 'vitest'
 
 test('my types', () => {
-  Ts.Test.sub<string>()('hello')
+  Ts.Assert.sub<string>()('hello')
 })
 ```
 
@@ -67,14 +67,14 @@ test('my types', () => {
 ```typescript
 test('sub (subtype)', () => {
   // Test that 'hello' extends string
-  Ts.Test.sub<string>()('hello')
+  Ts.Assert.sub<string>()('hello')
 
   // Test that object literal extends object
-  Ts.Test.sub<object>()({ a: 1 })
+  Ts.Assert.sub<object>()({ a: 1 })
 
   // Should fail - 'world' doesn't extend 'hello'
   // @ts-expect-error
-  Ts.Test.sub<'hello'>()('world')
+  Ts.Assert.sub<'hello'>()('world')
 })
 ```
 
@@ -108,11 +108,11 @@ test('sub (subtype)', () => {
 
 ```typescript
 test('exact (exact structural equality)', () => {
-  Ts.Test.exact<string>()('hello')
-  Ts.Test.exact<{ a: 1 }>()({ a: 1 } as { a: 1 })
+  Ts.Assert.exact<string>()('hello')
+  Ts.Assert.exact<{ a: 1 }>()({ a: 1 } as { a: 1 })
 
   // @ts-expect-error - Too narrow
-  Ts.Test.exact<string | number>()('hello')
+  Ts.Assert.exact<string | number>()('hello')
 })
 ```
 
@@ -149,7 +149,7 @@ test('exact type equality', () => {
 test('type errors', () => {
   // Must use @ts-expect-error comments
   // @ts-expect-error - Type error expected here
-  Ts.Test.sub<string>()(42)
+  Ts.Assert.sub<string>()(42)
 })
 ```
 
@@ -353,10 +353,10 @@ test('subNoExcess - typo detection', () => {
 
   // Common typo: "offest" instead of "offset"
   // @ts-expect-error - Catches typo!
-  Ts.Test.subNoExcess<QueryOptions>()({ limit: 10, offest: 20 })
+  Ts.Assert.subNoExcess<QueryOptions>()({ limit: 10, offest: 20 })
 
   // Correct spelling passes
-  Ts.Test.subNoExcess<QueryOptions>()({ limit: 10, offset: 20 })
+  Ts.Assert.subNoExcess<QueryOptions>()({ limit: 10, offset: 20 })
 })
 ```
 
@@ -430,9 +430,9 @@ test('type relationships', () => {
 
 ```typescript
 test('exactConst - preserves literal types', () => {
-  Ts.Test.exactConst<'hello'>()('hello')
-  Ts.Test.exactConst<42>()(42)
-  Ts.Test.exactConst<{ readonly a: 1 }>()({ a: 1 })
+  Ts.Assert.exactConst<'hello'>()('hello')
+  Ts.Assert.exactConst<42>()(42)
+  Ts.Assert.exactConst<{ readonly a: 1 }>()({ a: 1 })
 })
 ```
 
@@ -468,9 +468,9 @@ const syncValue = 42
 const asyncValue = Promise.resolve(42)
 
 test('promise', () => {
-  Ts.Test.promise<number>()(asyncValue)
+  Ts.Assert.promise<number>()(asyncValue)
   // @ts-expect-error - Not a Promise
-  Ts.Test.promise<number>()(syncValue)
+  Ts.Assert.promise<number>()(syncValue)
 })
 ```
 
@@ -505,10 +505,10 @@ test('promise types', () => {
 
 ```typescript
 // Kit's HKT-based tests for precision
-type _Tests = Ts.Test.Cases<
-  Ts.Test.exact<Expected, Actual>,
-  Ts.Test.subNoExcess<Config, { id: true }>,
-  Ts.Test.equiv<Union1, Union2>
+type _Tests = Ts.Assert.Cases<
+  Ts.Assert.exact<Expected, Actual>,
+  Ts.Assert.subNoExcess<Config, { id: true }>,
+  Ts.Assert.equiv<Union1, Union2>
 >
 
 // Attest for benchmarking and completions
@@ -543,14 +543,14 @@ Instead of using Attest directly, implement its features in Kit:
 
 ```typescript
 // Proposed Kit API with Attest-inspired features
-Ts.Test.bench('complex type', () => {
+Ts.Assert.bench('complex type', () => {
   return {} as ComplexTransform<T>
 }).snapshots({
   instantiations: 150,
   maxInstantiations: 200,
 })
 
-Ts.Test.completions<Status>()
+Ts.Assert.completions<Status>()
   .at({ key: 'status' })
   .expects(['pending', 'complete', 'failed'])
 ```
@@ -588,9 +588,9 @@ iterate toward a stable 1.0."
 **Kit:** Pure compile-time, precise relationships
 
 ```typescript
-Ts.Test.exact<T, U>() // Structural equality
-Ts.Test.equiv<T, U>() // Mutual assignability
-Ts.Test.sub<T, U>() // Subtype relationship
+Ts.Assert.exact<T, U>() // Structural equality
+Ts.Assert.equiv<T, U>() // Mutual assignability
+Ts.Assert.sub<T, U>() // Subtype relationship
 ```
 
 **Attest:** Runtime + compile-time, snapshots
@@ -637,14 +637,14 @@ pnpm attest setup
 
 ### What Attest Does Better
 
-| Feature                         | Attest            | Kit                     | Winner    |
-| ------------------------------- | ----------------- | ----------------------- | --------- |
-| Type instantiation benchmarking | ✅ Built-in       | ❌ None                 | 🏆 Attest |
-| Completion snapshotting         | ✅ Built-in       | ❌ None                 | 🏆 Attest |
-| JSDoc assertions                | ✅ Built-in       | ❌ None                 | 🏆 Attest |
-| Type snapshots                  | ✅ Built-in       | ❌ None                 | 🏆 Attest |
-| Runtime + type testing          | ✅ Core feature   | ❌ Pure compile-time    | 🏆 Attest |
-| Syntax brevity                  | ✅ `attest<T>(v)` | ⚠️ `Ts.Test.sub<T>()(v)` | 🏆 Attest |
+| Feature                         | Attest            | Kit                       | Winner    |
+| ------------------------------- | ----------------- | ------------------------- | --------- |
+| Type instantiation benchmarking | ✅ Built-in       | ❌ None                   | 🏆 Attest |
+| Completion snapshotting         | ✅ Built-in       | ❌ None                   | 🏆 Attest |
+| JSDoc assertions                | ✅ Built-in       | ❌ None                   | 🏆 Attest |
+| Type snapshots                  | ✅ Built-in       | ❌ None                   | 🏆 Attest |
+| Runtime + type testing          | ✅ Core feature   | ❌ Pure compile-time      | 🏆 Attest |
+| Syntax brevity                  | ✅ `attest<T>(v)` | ⚠️ `Ts.Assert.sub<T>()(v)` | 🏆 Attest |
 
 ### What Kit Does Better
 
@@ -694,9 +694,9 @@ pnpm attest setup
 
 ```typescript
 // Kit for type assertions
-type _ = Ts.Test.Cases<
-  Ts.Test.exact<Expected, Actual>,
-  Ts.Test.subNoExcess<Config, Value>
+type _ = Ts.Assert.Cases<
+  Ts.Assert.exact<Expected, Actual>,
+  Ts.Assert.subNoExcess<Config, Value>
 >
 
 // Attest for performance
@@ -739,25 +739,25 @@ import { Ts } from '#ts'
 
 test('comprehensive type testing', () => {
   // Kit's precision
-  Ts.Test.exact<Expected, Actual>()
-  Ts.Test.subNoExcess<Config>()({ id: true })
+  Ts.Assert.exact<Expected, Actual>()
+  Ts.Assert.subNoExcess<Config>()({ id: true })
 
   // Fluent API (Phase 1)
-  Ts.Test.expect(value).toBeString()
-  Ts.Test.expect(fn).returns.toBeNumber()
+  Ts.Assert.expect(value).toBeString()
+  Ts.Assert.expect(fn).returns.toBeNumber()
 
   // Attest-inspired (Phase 2)
-  Ts.Test.bench('complex type', () => {
+  Ts.Assert.bench('complex type', () => {
     return {} as ComplexType
   }).snapshots({ instantiations: 150 })
 
-  Ts.Test.completions<Status>()
+  Ts.Assert.completions<Status>()
     .expects(['pending', 'complete', 'failed'])
 
   // Novel features (Phase 3)
-  Ts.Test.diff<Expected, Actual>() // Visual diff
-  Ts.Test.algebraic<Union>().commutative()
-  Ts.Test.coverage('./src').expectMinimum(0.9)
+  Ts.Assert.diff<Expected, Actual>() // Visual diff
+  Ts.Assert.algebraic<Union>().commutative()
+  Ts.Assert.coverage('./src').expectMinimum(0.9)
 })
 ```
 
@@ -808,28 +808,28 @@ test('comprehensive type testing', () => {
 **Kit's `exact`** - Structural equality matters
 
 ```typescript
-Ts.Test.exact<{ a: 1 }, { a: 1 }>() // ✓
-Ts.Test.exact<1 | 2, 2 | 1>() // ✗ Different structure
+Ts.Assert.exact<{ a: 1 }, { a: 1 }>() // ✓
+Ts.Assert.exact<1 | 2, 2 | 1>() // ✗ Different structure
 ```
 
 **Kit's `equiv`** - Semantic equality
 
 ```typescript
-Ts.Test.equiv<1 | 2, 2 | 1>() // ✓ Same computed type
-Ts.Test.equiv<string & {}, string>() // ✓ Both compute to string
+Ts.Assert.equiv<1 | 2, 2 | 1>() // ✓ Same computed type
+Ts.Assert.equiv<string & {}, string>() // ✓ Both compute to string
 ```
 
 **Kit's `sub`** - Subtype checking
 
 ```typescript
-Ts.Test.sub<string, 'hello'>() // ✓ 'hello' extends string
-Ts.Test.sub<object, { a: 1 }>() // ✓ Object literal extends object
+Ts.Assert.sub<string, 'hello'>() // ✓ 'hello' extends string
+Ts.Assert.sub<object, { a: 1 }>() // ✓ Object literal extends object
 ```
 
 **Kit's `subNoExcess`** - Typo detection
 
 ```typescript
-Ts.Test.subNoExcess<Config>()({ id: true, typo: 1 }) // ✗ Catches typo!
+Ts.Assert.subNoExcess<Config>()({ id: true, typo: 1 }) // ✗ Catches typo!
 ```
 
 **Attest's `attest`** - Runtime + type (if using it)

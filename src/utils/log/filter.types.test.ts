@@ -7,9 +7,9 @@ import type * as FilterTypes from './filter.types.js'
  */
 
 test('type-level filter parsing', () => {
-  type _ = Ts.Test.Cases<
+  type _ = Ts.Assert.Cases<
     // Simple path
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.ParseOne<'app'>,
       {
         originalInput: 'app'
@@ -19,7 +19,7 @@ test('type-level filter parsing', () => {
       }
     >,
     // Path with descendants
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.ParseOne<'app:*'>,
       {
         originalInput: 'app:*'
@@ -29,7 +29,7 @@ test('type-level filter parsing', () => {
       }
     >,
     // Path descendants only
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.ParseOne<'app::*'>,
       {
         originalInput: 'app::*'
@@ -39,7 +39,7 @@ test('type-level filter parsing', () => {
       }
     >,
     // Wildcard all
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.ParseOne<'*'>,
       {
         originalInput: '*'
@@ -49,7 +49,7 @@ test('type-level filter parsing', () => {
       }
     >,
     // Wildcard descendants only
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.ParseOne<':*'>,
       {
         originalInput: ':*'
@@ -59,7 +59,7 @@ test('type-level filter parsing', () => {
       }
     >,
     // With level - exact
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.ParseOne<'app@warn'>,
       {
         originalInput: 'app@warn'
@@ -69,7 +69,7 @@ test('type-level filter parsing', () => {
       }
     >,
     // With level - gte
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.ParseOne<'app@warn+'>,
       {
         originalInput: 'app@warn+'
@@ -79,7 +79,7 @@ test('type-level filter parsing', () => {
       }
     >,
     // With level - lte
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.ParseOne<'app@warn-'>,
       {
         originalInput: 'app@warn-'
@@ -89,7 +89,7 @@ test('type-level filter parsing', () => {
       }
     >,
     // With level number
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.ParseOne<'app@4'>,
       {
         originalInput: 'app@4'
@@ -99,7 +99,7 @@ test('type-level filter parsing', () => {
       }
     >,
     // With level wildcard
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.ParseOne<'app@*'>,
       {
         originalInput: 'app@*'
@@ -109,7 +109,7 @@ test('type-level filter parsing', () => {
       }
     >,
     // Negated
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.ParseOne<'!app'>,
       {
         originalInput: '!app'
@@ -119,7 +119,7 @@ test('type-level filter parsing', () => {
       }
     >,
     // Negated with level
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.ParseOne<'!app@error+'>,
       {
         originalInput: '!app@error+'
@@ -129,7 +129,7 @@ test('type-level filter parsing', () => {
       }
     >,
     // Root
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.ParseOne<'.'>,
       {
         originalInput: '.'
@@ -139,7 +139,7 @@ test('type-level filter parsing', () => {
       }
     >,
     // Multiple patterns (comma-separated)
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.Parse<'app,nexus'>,
       [
         {
@@ -157,7 +157,7 @@ test('type-level filter parsing', () => {
       ]
     >,
     // Multiple patterns with complex syntax
-    Ts.Test.exact<
+    Ts.Assert.exact<
       FilterTypes.Parse<'app:*@info+,!nexus@warn'>,
       [
         {

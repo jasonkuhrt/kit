@@ -32,3 +32,31 @@ export const createCachedGetProxy = <type, options extends GetProxyOptions>(
     },
   })
 }
+
+/**
+ * Creates an infinite self-referencing proxy.
+ *
+ * Every property access returns the same proxy, allowing unlimited chaining.
+ * Useful for type-level APIs where the runtime behavior doesn't matter.
+ *
+ * @template $Type - The type signature to enforce on the proxy
+ *
+ * @example
+ * ```typescript
+ * interface Builder {
+ *   exact: Builder
+ *   equiv: Builder
+ *   of: <T>() => (value: T) => void
+ * }
+ *
+ * const builder = Prox.createRecursive<Builder>()
+ * builder.exact.equiv.of<string>()('hello')  // All properties return the proxy
+ * ```
+ */
+export const createRecursive = <$Type>(): $Type => {
+  const proxy: any = new Proxy(() => {}, {
+    get: () => proxy,
+    apply: () => proxy,
+  })
+  return proxy
+}

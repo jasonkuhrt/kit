@@ -71,8 +71,8 @@ Comprehensive competitive analysis of TypeScript type testing libraries reveals 
 
 ```typescript
 // Current (powerful but verbose)
-Ts.Test.sub<string>()(value)
-Ts.Test.parameters<[number, number]>()(fn)
+Ts.Assert.sub<string>()(value)
+Ts.Assert.parameters<[number, number]>()(fn)
 
 // Ecosystem (discoverable, intuitive)
 expectTypeOf(value).toBeString()
@@ -194,8 +194,8 @@ Keep both APIs for smooth migration:
 
 ```typescript
 // Existing API (unchanged)
-Ts.Test.exact<T, U>()
-Ts.Test.sub<T>()(value)
+Ts.Assert.exact<T, U>()
+Ts.Assert.sub<T>()(value)
 
 // New fluent API (additive)
 expectTypeOf(value).toBeString()

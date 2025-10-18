@@ -1,0 +1,251 @@
+import type * as Kind from '../../../kind.js'
+import type { Parameters$ } from '../../kinds/extractors.js'
+import type { ExactKind } from '../../kinds/relators.js'
+import { runtime } from '../../builder/runtime.js'
+
+/**
+ * parameters + exact relation matchers.
+ *
+ * Extraction: extracts the parameters tuple from a function
+ * Relation: exact structural equality
+ */
+
+
+/**
+ * Base matcher accepting any expected type.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * Note: This exists for symmetry with the value-level API.
+ * At the type-level, you can omit `.of` for simpler syntax (e.g., `exact<E, A>` instead of `exact.of<E, A>`).
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.exact.of<string, (...args: any[]) => string>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.exact.of<string, (...args: any[]) => number>
+ * ```
+ */
+type of_<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, Kind.Apply<Parameters$, [$Actual]>]>
+const of_ = runtime.parameters.exact.of
+
+
+/**
+ * Pre-curried matcher for string.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.exact.string<(...args: any[]) => string>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.exact.string<(...args: any[]) => number>
+ * ```
+ */
+type string_<$Actual> = Kind.Apply<ExactKind, [string, Kind.Apply<Parameters$, [$Actual]>]>
+const string_ = runtime.parameters.exact.string
+
+
+/**
+ * Pre-curried matcher for number.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.exact.number<(...args: any[]) => number>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.exact.number<(...args: any[]) => string>
+ * ```
+ */
+type number_<$Actual> = Kind.Apply<ExactKind, [number, Kind.Apply<Parameters$, [$Actual]>]>
+const number_ = runtime.parameters.exact.number
+
+
+/**
+ * Pre-curried matcher for bigint.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.exact.bigint<(...args: any[]) => bigint>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.exact.bigint<(...args: any[]) => string>
+ * ```
+ */
+type bigint_<$Actual> = Kind.Apply<ExactKind, [bigint, Kind.Apply<Parameters$, [$Actual]>]>
+const bigint_ = runtime.parameters.exact.bigint
+
+
+/**
+ * Pre-curried matcher for boolean.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.exact.boolean<(...args: any[]) => boolean>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.exact.boolean<(...args: any[]) => string>
+ * ```
+ */
+type boolean_<$Actual> = Kind.Apply<ExactKind, [boolean, Kind.Apply<Parameters$, [$Actual]>]>
+const boolean_ = runtime.parameters.exact.boolean
+
+
+/**
+ * Pre-curried matcher for undefined.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.exact.undefined<(...args: any[]) => undefined>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.exact.undefined<(...args: any[]) => string>
+ * ```
+ */
+type undefined_<$Actual> = Kind.Apply<ExactKind, [undefined, Kind.Apply<Parameters$, [$Actual]>]>
+const undefined_ = runtime.parameters.exact.undefined
+
+
+/**
+ * Pre-curried matcher for null.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.exact.null<(...args: any[]) => null>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.exact.null<(...args: any[]) => string>
+ * ```
+ */
+type null_<$Actual> = Kind.Apply<ExactKind, [null, Kind.Apply<Parameters$, [$Actual]>]>
+const null_ = runtime.parameters.exact.null
+
+
+/**
+ * Pre-curried matcher for symbol.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.exact.symbol<(...args: any[]) => symbol>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.exact.symbol<(...args: any[]) => string>
+ * ```
+ */
+type symbol_<$Actual> = Kind.Apply<ExactKind, [symbol, Kind.Apply<Parameters$, [$Actual]>]>
+const symbol_ = runtime.parameters.exact.symbol
+
+
+/**
+ * Pre-curried matcher for Date.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.exact.Date<(...args: any[]) => Date>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.exact.Date<(...args: any[]) => string>
+ * ```
+ */
+type Date_<$Actual> = Kind.Apply<ExactKind, [Date, Kind.Apply<Parameters$, [$Actual]>]>
+const Date_ = runtime.parameters.exact.Date
+
+
+/**
+ * Pre-curried matcher for RegExp.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.exact.RegExp<(...args: any[]) => RegExp>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.exact.RegExp<(...args: any[]) => string>
+ * ```
+ */
+type RegExp_<$Actual> = Kind.Apply<ExactKind, [RegExp, Kind.Apply<Parameters$, [$Actual]>]>
+const RegExp_ = runtime.parameters.exact.RegExp
+
+
+/**
+ * Pre-curried matcher for Error.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.exact.Error<(...args: any[]) => Error>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.exact.Error<(...args: any[]) => string>
+ * ```
+ */
+type Error_<$Actual> = Kind.Apply<ExactKind, [Error, Kind.Apply<Parameters$, [$Actual]>]>
+const Error_ = runtime.parameters.exact.Error
+
+
+/**
+ * Pre-curried matcher for Promise<any>.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.exact.Promise<(...args: any[]) => Promise<any>>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.exact.Promise<(...args: any[]) => string>
+ * ```
+ */
+type Promise_<$Actual> = Kind.Apply<ExactKind, [Promise<any>, Kind.Apply<Parameters$, [$Actual]>]>
+const Promise_ = runtime.parameters.exact.Promise
+
+
+/**
+ * Pre-curried matcher for any[].
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.exact.Array<(...args: any[]) => any[]>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.exact.Array<(...args: any[]) => string>
+ * ```
+ */
+type Array_<$Actual> = Kind.Apply<ExactKind, [any[], Kind.Apply<Parameters$, [$Actual]>]>
+const Array_ = runtime.parameters.exact.Array
+
+export {
+  of_ as of,
+  string_ as string,
+  number_ as number,
+  bigint_ as bigint,
+  boolean_ as boolean,
+  undefined_ as undefined,
+  null_ as null,
+  symbol_ as symbol,
+  Date_ as Date,
+  RegExp_ as RegExp,
+  Error_ as Error,
+  Promise_ as Promise,
+  Array_ as Array,
+}

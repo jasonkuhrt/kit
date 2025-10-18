@@ -7,6 +7,7 @@ import { test } from 'vitest'
  */
 
 import { Ts } from '#ts'
+import { Assert } from '#ts/ts'
 import { tryOr, tryOrAsync, tryOrAsyncWith, tryOrNull, tryOrUndefined, tryOrWith } from './try.js'
 
 // tryOr type tests
@@ -14,13 +15,13 @@ import { tryOr, tryOrAsync, tryOrAsyncWith, tryOrNull, tryOrUndefined, tryOrWith
 // Sync function with sync fallback
 test('sync function with sync fallback', () => {
   const result = tryOr(() => 42, 'fallback')
-  Ts.Test.sub.is<number | string>()(result)
+  Assert.sub.of.as<number | string>()(result)
 })
 
 // Sync function with lazy sync fallback
 test('sync function with lazy sync fallback', () => {
   const result = tryOr(() => 42, () => 'fallback')
-  Ts.Test.sub.is<number | string>()(result)
+  Assert.sub.of.as<number | string>()(result)
 })
 
 // Sync function with async fallback - requires tryOrAsync
@@ -31,25 +32,25 @@ test('sync function with async fallback requires tryOrAsync', () => {
 
   // Use tryOrAsync instead
   const result = tryOrAsync(() => 42, async () => 'fallback')
-  Ts.Test.sub.is<Promise<number | string>>()(result)
+  Assert.sub.of.as<Promise<number | string>>()(result)
 })
 
 // Async function with sync fallback
 test('async function with sync fallback', () => {
   const result = tryOr(async () => 42, 'fallback')
-  Ts.Test.sub.is<Promise<number | string>>()(result)
+  Assert.sub.of.as<Promise<number | string>>()(result)
 })
 
 // Async function with lazy sync fallback
 test('async function with lazy sync fallback', () => {
   const result = tryOr(async () => 42, () => 'fallback')
-  Ts.Test.sub.is<Promise<number | string>>()(result)
+  Assert.sub.of.as<Promise<number | string>>()(result)
 })
 
 // Async function with async fallback
 test('async function with async fallback', () => {
   const result = tryOr(async () => 42, async () => 'fallback')
-  Ts.Test.sub.is<Promise<number | string>>()(result)
+  Assert.sub.of.as<Promise<number | string>>()(result)
 })
 
 // Complex types
@@ -69,43 +70,43 @@ test('complex types', () => {
     (): User => ({ id: '1', name: 'John' }),
     { error: true, message: 'Failed' } as ErrorResult,
   )
-  Ts.Test.sub.is<User | ErrorResult>()(r1)
+  Assert.sub.of.as<User | ErrorResult>()(r1)
 
   // Async with async fallback returning different type
   const r2 = tryOr(
     async (): Promise<User> => ({ id: '1', name: 'John' }),
     async (): Promise<ErrorResult> => ({ error: true, message: 'Failed' }),
   )
-  Ts.Test.sub.is<Promise<User | ErrorResult>>()(r2)
+  Assert.sub.of.as<Promise<User | ErrorResult>>()(r2)
 })
 
 // tryOrUndefined type tests
 test('tryOrUndefined', () => {
   // Sync function
   const r1 = tryOrUndefined(() => 42)
-  Ts.Test.sub.is<number | undefined>()(r1)
+  Assert.sub.of.as<number | undefined>()(r1)
 
   // Async function
   const r2 = tryOrUndefined(async () => 42)
-  Ts.Test.sub.is<Promise<number | undefined>>()(r2)
+  Assert.sub.of.as<Promise<number | undefined>>()(r2)
 
   // With complex type
   interface Data {
     value: string
   }
   const r3 = tryOrUndefined((): Data => ({ value: 'test' }))
-  Ts.Test.sub.is<Data | undefined>()(r3)
+  Assert.sub.of.as<Data | undefined>()(r3)
 })
 
 // tryOrNull type tests
 test('tryOrNull', () => {
   // Sync function
   const r1 = tryOrNull(() => 'hello')
-  Ts.Test.sub.is<string | null>()(r1)
+  Assert.sub.of.as<string | null>()(r1)
 
   // Async function
   const r2 = tryOrNull(async () => 'hello')
-  Ts.Test.sub.is<Promise<string | null>>()(r2)
+  Assert.sub.of.as<Promise<string | null>>()(r2)
 })
 
 // tryOrWith curried function type tests
@@ -114,11 +115,11 @@ test('tryOrWith curried function', () => {
 
   // With sync function
   const r1 = orDefault(() => ({ status: 'ok', data: 'value' }))
-  Ts.Test.sub.is<{ status: string; data: string | null }>()(r1)
+  Assert.sub.of.as<{ status: string; data: string | null }>()(r1)
 
   // With async function
   const r2 = orDefault(async () => ({ status: 'ok', data: 'value' }))
-  Ts.Test.sub.is<Promise<{ status: string; data: string | null }>>()(r2)
+  Assert.sub.of.as<Promise<{ status: string; data: string | null }>>()(r2)
 
   // With async fallback - this won't work with tryOrWith
   // @ts-expect-error - tryOrWith cannot handle sync function with async fallback
@@ -128,10 +129,10 @@ test('tryOrWith curried function', () => {
   const orAsyncDefault = tryOrAsyncWith(async () => ({ error: 'timeout' }))
 
   const r3 = orAsyncDefault(() => 'success')
-  Ts.Test.sub.is<Promise<string | { error: string }>>()(r3)
+  Assert.sub.of.as<Promise<string | { error: string }>>()(r3)
 
   const r4 = orAsyncDefault(async () => 'success')
-  Ts.Test.sub.is<Promise<string | { error: string }>>()(r4)
+  Assert.sub.of.as<Promise<string | { error: string }>>()(r4)
 })
 
 // Edge cases
@@ -139,10 +140,10 @@ test('tryOrWith curried function', () => {
 // Void functions
 test('void functions', () => {
   const r1 = tryOr(() => {}, 'fallback')
-  Ts.Test.sub.is<void | string>()(r1)
+  Assert.sub.of.as<void | string>()(r1)
 
   const r2 = tryOr(async () => {}, 'fallback')
-  Ts.Test.sub.is<Promise<void | string>>()(r2)
+  Assert.sub.of.as<Promise<void | string>>()(r2)
 })
 
 // Never type (functions that always throw)
@@ -152,14 +153,14 @@ test('never type', () => {
   }
 
   const r1 = tryOr(alwaysThrows, 'fallback')
-  Ts.Test.sub.is<string>()(r1)
+  Assert.sub.of.as<string>()(r1)
 
   // This would be an error with tryOr
   // const _errorCase2 = tryOr(alwaysThrows, async () => 'fallback')
 
   // Use tryOrAsync instead
   const r2 = tryOrAsync(alwaysThrows, async () => 'fallback')
-  Ts.Test.sub.is<Promise<string>>()(r2)
+  Assert.sub.of.as<Promise<string>>()(r2)
 })
 
 // Union types
@@ -167,10 +168,10 @@ test('union types', () => {
   const fn = (): string | number => Math.random() > 0.5 ? 'text' : 42
 
   const r1 = tryOr(fn, false)
-  Ts.Test.sub.is<string | number | boolean>()(r1)
+  Assert.sub.of.as<string | number | boolean>()(r1)
 
   const r2 = tryOr(async () => fn(), null)
-  Ts.Test.sub.is<Promise<string | number | null>>()(r2)
+  Assert.sub.of.as<Promise<string | number | null>>()(r2)
 })
 
 // Nested promises (should be flattened)
@@ -179,7 +180,7 @@ test('nested promises', () => {
     async () => Promise.resolve(42),
     async () => Promise.resolve('fallback'),
   )
-  Ts.Test.sub.is<Promise<number | string>>()(r1)
+  Assert.sub.of.as<Promise<number | string>>()(r1)
 
   // Not Promise<Promise<number | string>>
 })
@@ -195,8 +196,8 @@ test('generic function usage', () => {
   }
 
   const r1 = safeProcess('hello', 'default')
-  Ts.Test.sub.is<string>()(r1)
+  Assert.sub.of.as<string>()(r1)
 
   const r2 = safeProcess(42, 0)
-  Ts.Test.sub.is<number>()(r2)
+  Assert.sub.of.as<number>()(r2)
 })

@@ -1,97 +1,19 @@
 {
-    "src/utils/ts/test/$$.test.ts": [
+    "src/utils/ts/assert/$$.test.ts": [
         {
             "location": {
                 "start": {
-                    "line": 20,
+                    "line": 30,
                     "char": 3
                 },
                 "end": {
-                    "line": 20,
-                    "char": 46
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"Types are completely disjoint (no common values)\"; expected______: string; actual________: number; tip___________: \"These types have no overlap and will never be equal\"; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 31,
-                    "char": 3
-                },
-                "end": {
-                    "line": 31,
-                    "char": 36
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"Types have overlapping values but are not structurally equal\"; expected______: A<{}>; actual________: B; diff_missing__: { query: {}; }; diff_excess___: { name: \"default\"; result: { a: string | null; }; }; tip___________: \"Types share some possible values but are different\"; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 47,
-                    "char": 3
-                },
-                "end": {
-                    "line": 47,
-                    "char": 36
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"Types have overlapping values but are not structurally equal\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: Date; actual: number; }; }; tip___________: \"Types share some possible values but are different\"; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 67,
-                    "char": 3
-                },
-                "end": {
-                    "line": 67,
+                    "line": 30,
                     "char": 48
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_________: \"Types have overlapping values but are not structurally equal\"; expected______: Expected; actual________: Actual; diff_missing__: { age: number; }; diff_excess___: { email: string; }; diff_mismatch_: { id: { expected: string; actual: number; }; }; tip___________: \"Types share some possible values but are different\"; }",
+                    "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; tip___________: \"Types share no values\"; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -107,17 +29,17 @@
         {
             "location": {
                 "start": {
-                    "line": 83,
+                    "line": 41,
                     "char": 3
                 },
                 "end": {
-                    "line": 83,
-                    "char": 48
+                    "line": 41,
+                    "char": 38
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_________: \"Actual type is a supertype of expected type but not structurally equal\"; expected______: Expected; actual________: Actual; diff_mismatch_: { x: { expected: 1; actual: 1 | undefined; }; }; tip___________: \"Actual is wider than expected - types don't match exactly\"; }",
+                    "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A<{}>; actual________: B; diff_missing__: { query: {}; }; diff_excess___: { name: \"default\"; result: { a: string | null; }; }; tip___________: \"Types share some values but differ\"; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -133,17 +55,95 @@
         {
             "location": {
                 "start": {
-                    "line": 96,
+                    "line": 57,
                     "char": 3
                 },
                 "end": {
-                    "line": 96,
+                    "line": 57,
+                    "char": 38
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: Date; actual: number; }; }; tip___________: \"Types share some values but differ\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 69,
+                    "char": 3
+                },
+                "end": {
+                    "line": 69,
+                    "char": 38
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: E; actual________: A; diff_missing__: { age: number; }; diff_excess___: { email: string; }; diff_mismatch_: { id: { expected: string; actual: number; }; }; tip___________: \"Types share some values but differ\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 85,
+                    "char": 3
+                },
+                "end": {
+                    "line": 85,
+                    "char": 38
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"ACTUAL is supertype of EXPECTED\"; expected______: E; actual________: A; diff_mismatch_: { x: { expected: 1; actual: 1 | undefined; }; }; tip___________: \"ACTUAL is wider than EXPECTED\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 98,
+                    "char": 3
+                },
+                "end": {
+                    "line": 98,
                     "char": 13
                 }
             },
             "args": [
                 {
-                    "type": "(actual: 42, error: \"Types are completely disjoint (no common values)\", expected: string) => void",
+                    "type": "{ (actual: { ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: 42; tip___________: \"Types share no values\"; }): void; as<$actual>(...params: [GuardActual_<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, string>, ExactKind, $actual, [$actual] extends [AssertionErrorHash] ? $actual : IsExact<$actual, string> extends true ? never : GetRelation<string, $actual> extends \"equivalent\" ? { ERROR_________: \"EXPECTED and ACTUAL are only equivilant (not exact)\"; expected______: string; actual________: $actual; tip___________: \"Use equiv() for mutual assignability OR apply Simplify<T> to normalize types\"; } : GetRelation<string, $actual> extends \"subtype\" ? { ERROR_________: \"ACTUAL is subtype of EXPECTED\"; expected______: string; actual________: $actual; tip___________: \"ACTUAL is narrower than EXPECTED\"; } : GetRelation<string, $actual> extends \"supertype\" ? { ERROR_________: \"ACTUAL is supertype of EXPECTED\"; expected______: string; actual________: $actual; tip___________: \"ACTUAL is wider than EXPECTED\"; } : GetRelation<string, $actual> extends \"overlapping\" ? { ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: string; actual________: $actual; tip___________: \"Types share some values but differ\"; } : { ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: $actual; tip___________: \"Types share no values\"; }>] extends [AssertionErrorHash] ? [AssertionErrorHash & GuardActual_<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, string>, ExactKind, $actual, [$actual] extends [AssertionErrorHash] ? $actual : IsExact<$actual, string> extends true ? never : GetRelation<string, $actual> extends \"equivalent\" ? { ERROR_________: \"EXPECTED and ACTUAL are only equivilant (not exact)\"; expected______: string; actual________: $actual; tip___________: \"Use equiv() for mutual assignability OR apply Simplify<T> to normalize types\"; } : GetRelation<string, $actual> extends \"subtype\" ? { ERROR_________: \"ACTUAL is subtype of EXPECTED\"; expected______: string; actual________: $actual; tip___________: \"ACTUAL is narrower than EXPECTED\"; } : GetRelation<string, $actual> extends \"supertype\" ? { ERROR_________: \"ACTUAL is supertype of EXPECTED\"; expected______: string; actual________: $actual; tip___________: \"ACTUAL is wider than EXPECTED\"; } : GetRelation<string, $actual> extends \"overlapping\" ? { ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: string; actual________: $actual; tip___________: \"Types share some values but differ\"; } : { ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: $actual; tip___________: \"Types share no values\"; }>, ...[GuardAnyOrNeverActual<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, string>>] extends [AssertionErrorHash] ? [AssertionErrorHash & GuardAnyOrNeverActual<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, string>>] : []] : [GuardAnyOrNeverActual<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, string>>] extends [AssertionErrorHash] ? [AssertionErrorHash & GuardAnyOrNeverActual<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, string>>] : []): void; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -159,17 +159,17 @@
         {
             "location": {
                 "start": {
-                    "line": 103,
+                    "line": 273,
                     "char": 3
                 },
                 "end": {
-                    "line": 103,
+                    "line": 273,
                     "char": 14
                 }
             },
             "args": [
                 {
-                    "type": "(actual: { a: number; b: number; }, error: \"Types have overlapping values but are not structurally equal\", expected: { a: string; }) => void",
+                    "type": "{ (actual: { ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: { a: string; }; actual________: { a: number; b: number; }; diff_excess___: { b: number; }; diff_mismatch_: { a: { expected: string; actual: number; }; }; tip___________: \"Types share some values but differ\"; }): void; as<$actual>(...params: [GuardActual_<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, { a: string; }>, ExactKind, $actual, [$actual] extends [AssertionErrorHash] ? $actual : IsExact<$actual, { a: string; }> extends true ? never : GetRelation<{ a: string; }, $actual> extends \"equivalent\" ? StaticErrorAssertion<\"EXPECTED and ACTUAL are only equivilant (not exact)\", { a: string; }, $actual, ($actual extends object ? { [k in keyof DiffFields<{ a: string; }, $actual> as IsEmpty<DiffFields<{ a: string; }, $actual>[k]> extends true ? never : k]: DiffFields<{ a: string; }, $actual>[k]; } : {}) & { tip: \"Use equiv() for mutual assignability OR apply Simplify<T> to normalize types\"; }, 14> : GetRelation<{ a: string; }, $actual> extends \"subtype\" ? StaticErrorAssertion<\"ACTUAL is subtype of EXPECTED\", { a: string; }, $actual, ($actual extends object ? { [k in keyof DiffFields<{ a: string; }, $actual> as IsEmpty<DiffFields<{ a: string; }, $actual>[k]> extends true ? never : k]: DiffFields<{ a: string; }, $actual>[k]; } : {}) & { tip: \"ACTUAL is narrower than EXPECTED\"; }, 14> : GetRelation<{ a: string; }, $actual> extends \"supertype\" ? StaticErrorAssertion<\"ACTUAL is supertype of EXPECTED\", { a: string; }, $actual, ($actual extends object ? { [k in keyof DiffFields<{ a: string; }, $actual> as IsEmpty<DiffFields<{ a: string; }, $actual>[k]> extends true ? never : k]: DiffFields<{ a: string; }, $actual>[k]; } : {}) & { tip: \"ACTUAL is wider than EXPECTED\"; }, 14> : GetRelation<{ a: string; }, $actual> extends \"overlapping\" ? StaticErrorAssertion<\"EXPECTED only overlaps with ACTUAL\", { a: string; }, $actual, ($actual extends object ? { [k in keyof DiffFields<{ a: string; }, $actual> as IsEmpty<DiffFields<{ a: string; }, $actual>[k]> extends true ? never : k]: DiffFields<{ a: string; }, $actual>[k]; } : {}) & { tip: \"Types share some values but differ\"; }, 14> : StaticErrorAssertion<\"EXPECTED and ACTUAL are disjoint\", { a: string; }, $actual, ($actual extends object ? { [k in keyof DiffFields<{ a: string; }, $actual> as IsEmpty<DiffFields<{ a: string; }, $actual>[k]> extends true ? never : k]: DiffFields<{ a: string; }, $actual>[k]; } : {}) & { tip: \"Types share no values\"; }, 14>>] extends [AssertionErrorHash] ? [AssertionErrorHash & GuardActual_<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, { a: string; }>, ExactKind, $actual, [$actual] extends [AssertionErrorHash] ? $actual : IsExact<$actual, { a: string; }> extends true ? never : GetRelation<{ a: string; }, $actual> extends \"equivalent\" ? StaticErrorAssertion<\"EXPECTED and ACTUAL are only equivilant (not exact)\", { a: string; }, $actual, ($actual extends object ? { [k in keyof DiffFields<{ a: string; }, $actual> as IsEmpty<DiffFields<{ a: string; }, $actual>[k]> extends true ? never : k]: DiffFields<{ a: string; }, $actual>[k]; } : {}) & { tip: \"Use equiv() for mutual assignability OR apply Simplify<T> to normalize types\"; }, 14> : GetRelation<{ a: string; }, $actual> extends \"subtype\" ? StaticErrorAssertion<\"ACTUAL is subtype of EXPECTED\", { a: string; }, $actual, ($actual extends object ? { [k in keyof DiffFields<{ a: string; }, $actual> as IsEmpty<DiffFields<{ a: string; }, $actual>[k]> extends true ? never : k]: DiffFields<{ a: string; }, $actual>[k]; } : {}) & { tip: \"ACTUAL is narrower than EXPECTED\"; }, 14> : GetRelation<{ a: string; }, $actual> extends \"supertype\" ? StaticErrorAssertion<\"ACTUAL is supertype of EXPECTED\", { a: string; }, $actual, ($actual extends object ? { [k in keyof DiffFields<{ a: string; }, $actual> as IsEmpty<DiffFields<{ a: string; }, $actual>[k]> extends true ? never : k]: DiffFields<{ a: string; }, $actual>[k]; } : {}) & { tip: \"ACTUAL is wider than EXPECTED\"; }, 14> : GetRelation<{ a: string; }, $actual> extends \"overlapping\" ? StaticErrorAssertion<\"EXPECTED only overlaps with ACTUAL\", { a: string; }, $actual, ($actual extends object ? { [k in keyof DiffFields<{ a: string; }, $actual> as IsEmpty<DiffFields<{ a: string; }, $actual>[k]> extends true ? never : k]: DiffFields<{ a: string; }, $actual>[k]; } : {}) & { tip: \"Types share some values but differ\"; }, 14> : StaticErrorAssertion<\"EXPECTED and ACTUAL are disjoint\", { a: string; }, $actual, ($actual extends object ? { [k in keyof DiffFields<{ a: string; }, $actual> as IsEmpty<DiffFields<{ a: string; }, $actual>[k]> extends true ? never : k]: DiffFields<{ a: string; }, $actual>[k]; } : {}) & { tip: \"Types share no values\"; }, 14>>, ...[GuardAnyOrNeverActual<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, { a: string; }>>] extends [AssertionErrorHash] ? [AssertionErrorHash & GuardAnyOrNeverActual<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, { a: string; }>>] : []] : [GuardAnyOrNeverActual<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, { a: string; }>>] extends [AssertionErrorHash] ? [AssertionErrorHash & GuardAnyOrNeverActual<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, { a: string; }>>] : []): void; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -185,11 +185,11 @@
         {
             "location": {
                 "start": {
-                    "line": 129,
+                    "line": 669,
                     "char": 3
                 },
                 "end": {
-                    "line": 129,
+                    "line": 669,
                     "char": 18
                 }
             },
@@ -211,11 +211,11 @@
         {
             "location": {
                 "start": {
-                    "line": 136,
+                    "line": 676,
                     "char": 3
                 },
                 "end": {
-                    "line": 136,
+                    "line": 676,
                     "char": 20
                 }
             },
@@ -237,17 +237,17 @@
         {
             "location": {
                 "start": {
-                    "line": 153,
+                    "line": 680,
                     "char": 3
                 },
                 "end": {
-                    "line": 153,
+                    "line": 680,
                     "char": 25
                 }
             },
             "args": [
                 {
-                    "type": "(actual: ComplexB, error: \"⚠ Types are not exactly equal\", expected: ComplexA) => void",
+                    "type": "(actual: CB, error: \"⚠ Types are not exactly equal\", expected: CA) => void",
                     "relationships": {
                         "args": [
                             "equality"
@@ -263,17 +263,17 @@
         {
             "location": {
                 "start": {
-                    "line": 176,
+                    "line": 690,
                     "char": 3
                 },
                 "end": {
-                    "line": 176,
+                    "line": 690,
                     "char": 25
                 }
             },
             "args": [
                 {
-                    "type": "(actual: ComplexB, error: \"Types have overlapping values but are not structurally equal\", expected: ComplexA) => void",
+                    "type": "{ (actual: { ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: CA; actual________: CB; diff_excess___: { extra: boolean; }; diff_mismatch_: { user: { expected: { name: string; age: number; }; actual: { name: string; age: string; }; }; }; tip___________: \"Types share some values but differ\"; }): void; as<$actual>(...params: [GuardActual_<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, CA>, ExactKind, $actual, [$actual] extends [AssertionErrorHash] ? $actual : IsExact<$actual, CA> extends true ? never : GetRelation<CA, $actual> extends \"equivalent\" ? StaticErrorAssertion<\"EXPECTED and ACTUAL are only equivilant (not exact)\", CA, $actual, ($actual extends object ? { [k in keyof DiffFields<CA, $actual> as IsEmpty<DiffFields<CA, $actual>[k]> extends true ? never : k]: DiffFields<CA, $actual>[k]; } : {}) & { tip: \"Use equiv() for mutual assignability OR apply Simplify<T> to normalize types\"; }, 14> : GetRelation<CA, $actual> extends \"subtype\" ? StaticErrorAssertion<\"ACTUAL is subtype of EXPECTED\", CA, $actual, ($actual extends object ? { [k in keyof DiffFields<CA, $actual> as IsEmpty<DiffFields<CA, $actual>[k]> extends true ? never : k]: DiffFields<CA, $actual>[k]; } : {}) & { tip: \"ACTUAL is narrower than EXPECTED\"; }, 14> : GetRelation<CA, $actual> extends \"supertype\" ? StaticErrorAssertion<\"ACTUAL is supertype of EXPECTED\", CA, $actual, ($actual extends object ? { [k in keyof DiffFields<CA, $actual> as IsEmpty<DiffFields<CA, $actual>[k]> extends true ? never : k]: DiffFields<CA, $actual>[k]; } : {}) & { tip: \"ACTUAL is wider than EXPECTED\"; }, 14> : GetRelation<CA, $actual> extends \"overlapping\" ? StaticErrorAssertion<\"EXPECTED only overlaps with ACTUAL\", CA, $actual, ($actual extends object ? { [k in keyof DiffFields<CA, $actual> as IsEmpty<DiffFields<CA, $actual>[k]> extends true ? never : k]: DiffFields<CA, $actual>[k]; } : {}) & { tip: \"Types share some values but differ\"; }, 14> : StaticErrorAssertion<\"EXPECTED and ACTUAL are disjoint\", CA, $actual, ($actual extends object ? { [k in keyof DiffFields<CA, $actual> as IsEmpty<DiffFields<CA, $actual>[k]> extends true ? never : k]: DiffFields<CA, $actual>[k]; } : {}) & { tip: \"Types share no values\"; }, 14>>] extends [AssertionErrorHash] ? [AssertionErrorHash & GuardActual_<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, CA>, ExactKind, $actual, [$actual] extends [AssertionErrorHash] ? $actual : IsExact<$actual, CA> extends true ? never : GetRelation<CA, $actual> extends \"equivalent\" ? StaticErrorAssertion<\"EXPECTED and ACTUAL are only equivilant (not exact)\", CA, $actual, ($actual extends object ? { [k in keyof DiffFields<CA, $actual> as IsEmpty<DiffFields<CA, $actual>[k]> extends true ? never : k]: DiffFields<CA, $actual>[k]; } : {}) & { tip: \"Use equiv() for mutual assignability OR apply Simplify<T> to normalize types\"; }, 14> : GetRelation<CA, $actual> extends \"subtype\" ? StaticErrorAssertion<\"ACTUAL is subtype of EXPECTED\", CA, $actual, ($actual extends object ? { [k in keyof DiffFields<CA, $actual> as IsEmpty<DiffFields<CA, $actual>[k]> extends true ? never : k]: DiffFields<CA, $actual>[k]; } : {}) & { tip: \"ACTUAL is narrower than EXPECTED\"; }, 14> : GetRelation<CA, $actual> extends \"supertype\" ? StaticErrorAssertion<\"ACTUAL is supertype of EXPECTED\", CA, $actual, ($actual extends object ? { [k in keyof DiffFields<CA, $actual> as IsEmpty<DiffFields<CA, $actual>[k]> extends true ? never : k]: DiffFields<CA, $actual>[k]; } : {}) & { tip: \"ACTUAL is wider than EXPECTED\"; }, 14> : GetRelation<CA, $actual> extends \"overlapping\" ? StaticErrorAssertion<\"EXPECTED only overlaps with ACTUAL\", CA, $actual, ($actual extends object ? { [k in keyof DiffFields<CA, $actual> as IsEmpty<DiffFields<CA, $actual>[k]> extends true ? never : k]: DiffFields<CA, $actual>[k]; } : {}) & { tip: \"Types share some values but differ\"; }, 14> : StaticErrorAssertion<\"EXPECTED and ACTUAL are disjoint\", CA, $actual, ($actual extends object ? { [k in keyof DiffFields<CA, $actual> as IsEmpty<DiffFields<CA, $actual>[k]> extends true ? never : k]: DiffFields<CA, $actual>[k]; } : {}) & { tip: \"Types share no values\"; }, 14>>, ...[GuardAnyOrNeverActual<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, CA>>] extends [AssertionErrorHash] ? [AssertionErrorHash & GuardAnyOrNeverActual<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, CA>>] : []] : [GuardAnyOrNeverActual<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, CA>>] extends [AssertionErrorHash] ? [AssertionErrorHash & GuardAnyOrNeverActual<$actual, SetMatcherType<SetRelator<Empty, ExactKind>, CA>>] : []): void; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -289,11 +289,11 @@
         {
             "location": {
                 "start": {
-                    "line": 204,
+                    "line": 1045,
                     "char": 3
                 },
                 "end": {
-                    "line": 204,
+                    "line": 1045,
                     "char": 18
                 }
             },
@@ -315,11 +315,11 @@
         {
             "location": {
                 "start": {
-                    "line": 220,
+                    "line": 1056,
                     "char": 3
                 },
                 "end": {
-                    "line": 220,
+                    "line": 1056,
                     "char": 18
                 }
             },
@@ -341,11 +341,11 @@
         {
             "location": {
                 "start": {
-                    "line": 235,
+                    "line": 1071,
                     "char": 3
                 },
                 "end": {
-                    "line": 235,
+                    "line": 1071,
                     "char": 18
                 }
             },
@@ -367,17 +367,17 @@
         {
             "location": {
                 "start": {
-                    "line": 299,
+                    "line": 1086,
                     "char": 3
                 },
                 "end": {
-                    "line": 299,
-                    "char": 36
+                    "line": 1086,
+                    "char": 38
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_________: \"Types have overlapping values but are not structurally equal\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: { value: Date; }; actual: Date; }; }; tip___________: \"Types share some possible values but are different\"; }",
+                    "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: { value: Date; }; actual: Date; }; }; tip___________: \"Types share some values but differ\"; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -393,17 +393,17 @@
         {
             "location": {
                 "start": {
-                    "line": 313,
+                    "line": 1100,
                     "char": 3
                 },
                 "end": {
-                    "line": 313,
-                    "char": 36
+                    "line": 1100,
+                    "char": 38
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_________: \"Types have overlapping values but are not structurally equal\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: { a: string; b: number; }; actual: { a: number; b: number; }; }; }; tip___________: \"Types share some possible values but are different\"; }",
+                    "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: { a: string; b: number; }; actual: { a: number; b: number; }; }; }; tip___________: \"Types share some values but differ\"; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -419,121 +419,17 @@
         {
             "location": {
                 "start": {
-                    "line": 342,
+                    "line": 1117,
                     "char": 3
                 },
                 "end": {
-                    "line": 342,
-                    "char": 45
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"Actual type does not extend expected type\"; expected______: \"hello\"; actual________: string; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 365,
-                    "char": 3
-                },
-                "end": {
-                    "line": 365,
-                    "char": 74
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"Type has excess properties not present in expected type\"; expected______: Config; actual________: { id: true; extra: number; }; tip___________: \"Excess properties: ''extra''\"; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 389,
-                    "char": 3
-                },
-                "end": {
-                    "line": 389,
-                    "char": 49
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"Type extends the type it should not extend\"; expected______: string; actual________: \"hello\"; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 411,
-                    "char": 3
-                },
-                "end": {
-                    "line": 411,
-                    "char": 46
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"Types are disjoint (no common values)\"; expected______: string; actual________: number; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 419,
-                    "char": 3
-                },
-                "end": {
-                    "line": 419,
+                    "line": 1117,
                     "char": 47
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_________: \"Actual extends Expected, but Expected does not extend Actual\"; expected______: string; actual________: \"hello\"; }",
+                    "type": "{ ERROR_________: \"ACTUAL does not extend EXPECTED\"; expected______: \"hello\"; actual________: string; }",
                     "relationships": {
                         "args": [
                             "equality"
@@ -549,173 +445,173 @@
         {
             "location": {
                 "start": {
-                    "line": 427,
+                    "line": 1139,
                     "char": 3
                 },
                 "end": {
-                    "line": 427,
-                    "char": 47
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"Expected extends Actual, but Actual does not extend Expected\"; expected______: \"hello\"; actual________: string; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 450,
-                    "char": 3
-                },
-                "end": {
-                    "line": 455,
-                    "char": 4
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"Actual extends Expected, but Expected does not extend Actual\"; expected______: Config; actual________: { id: boolean; name?: string; extra: number; }; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 481,
-                    "char": 3
-                },
-                "end": {
-                    "line": 481,
-                    "char": 44
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"Actual type is a supertype of expected type but not structurally equal\"; expected______: never; actual________: string; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 489,
-                    "char": 3
-                },
-                "end": {
-                    "line": 489,
-                    "char": 43
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"Types are mutually assignable but not structurally equal\"; expected______: any; actual________: unknown; tip___________: \"Use equiv() for mutual assignability OR apply Simplify<T> to normalize types\"; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 498,
-                    "char": 3
-                },
-                "end": {
-                    "line": 498,
-                    "char": 46
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"Actual type is a subtype of expected type but not structurally equal\"; expected______: unknown; actual________: string; tip___________: \"Actual is narrower than expected - types don't match exactly\"; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 507,
-                    "char": 3
-                },
-                "end": {
-                    "line": 507,
-                    "char": 43
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"Types are mutually assignable but not structurally equal\"; expected______: unknown; actual________: any; tip___________: \"Use equiv() for mutual assignability OR apply Simplify<T> to normalize types\"; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 516,
-                    "char": 3
-                },
-                "end": {
-                    "line": 516,
+                    "line": 1139,
                     "char": 51
                 }
             },
             "args": [
                 {
-                    "type": "{ ERROR_________: \"Types are completely disjoint (no common values)\"; expected______: true; actual________: false; tip___________: \"These types have no overlap and will never be equal\"; }",
+                    "type": "{ ERROR_________: \"ACTUAL extends EXPECTED but should not\"; expected______: string; actual________: \"hello\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 1149,
+                    "char": 3
+                },
+                "end": {
+                    "line": 1149,
+                    "char": 48
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 1154,
+                    "char": 3
+                },
+                "end": {
+                    "line": 1154,
+                    "char": 49
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"ACTUAL extends EXPECTED but not vice versa\"; expected______: string; actual________: \"hello\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 1159,
+                    "char": 3
+                },
+                "end": {
+                    "line": 1159,
+                    "char": 49
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"EXPECTED extends ACTUAL but not vice versa\"; expected______: \"hello\"; actual________: string; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 1188,
+                    "char": 3
+                },
+                "end": {
+                    "line": 1188,
+                    "char": 77
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"ACTUAL is supertype of EXPECTED\"; expected______: [string, string]; actual________: any[]; diff_missing__: ExcludeKeys<[string, string], number>; diff_excess___: {}[]; diff_mismatch_: { [x: number]: { expected: string; actual: any; }; }; tip___________: \"ACTUAL is wider than EXPECTED\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 1203,
+                    "char": 3
+                },
+                "end": {
+                    "line": 1203,
+                    "char": 65
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; tip___________: \"Types share no values\"; }",
+                    "relationships": {
+                        "args": [
+                            "equality"
+                        ],
+                        "typeArgs": []
+                    }
+                }
+            ],
+            "typeArgs": [],
+            "errors": [],
+            "completions": {}
+        },
+        {
+            "location": {
+                "start": {
+                    "line": 1213,
+                    "char": 3
+                },
+                "end": {
+                    "line": 1213,
+                    "char": 53
+                }
+            },
+            "args": [
+                {
+                    "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: number; actual________: string; tip___________: \"Types share no values\"; }",
                     "relationships": {
                         "args": [
                             "equality"

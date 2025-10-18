@@ -2,7 +2,7 @@
 
 ## 🎯 Summary
 
-Kit's type testing API currently requires currying: `Ts.Test.sub<string>()(value)` instead of the more natural `Ts.Test.sub<string>(value)`. This is due to a fundamental TypeScript limitation: **no partial type parameter inference**.
+Kit's type testing API currently requires currying: `Ts.Assert.sub<string>()(value)` instead of the more natural `Ts.Assert.sub<string>(value)`. This is due to a fundamental TypeScript limitation: **no partial type parameter inference**.
 
 This issue documents why we can't have the ideal API today and should be reopened if TypeScript ever adds this feature.
 
@@ -12,9 +12,9 @@ This issue documents why we can't have the ideal API today and should be reopene
 
 ```typescript
 // Ideal API - specify Expected, infer Actual
-Ts.Test.sub<string>(value)
-Ts.Test.exact<User>(result)
-Ts.Test.equiv<Config>(input)
+Ts.Assert.sub<string>(value)
+Ts.Assert.exact<User>(result)
+Ts.Assert.equiv<Config>(input)
 
 // ✗ Error: TypeScript can't infer `value`'s type when we provide `string`
 ```
@@ -25,9 +25,9 @@ Ts.Test.equiv<Config>(input)
 
 ```typescript
 // Current API - currying workaround
-Ts.Test.sub<string>()(value)
-Ts.Test.exact<User>()(result)
-Ts.Test.equiv<Config>()(input)
+Ts.Assert.sub<string>()(value)
+Ts.Assert.exact<User>()(result)
+Ts.Assert.equiv<Config>()(input)
 
 // ✓ Works: Two calls allow separate inference contexts
 ```
@@ -185,12 +185,12 @@ When/if TypeScript implements partial inference (#26242 or #53999), we should:
 
 ```typescript
 // New: Direct call (if TS supports it)
-Ts.Test.sub<string>(value)
-Ts.Test.exact<User>(result)
+Ts.Assert.sub<string>(value)
+Ts.Assert.exact<User>(result)
 
 // Legacy: Curried (keep for compatibility)
-Ts.Test.sub<string>()(value)
-Ts.Test.exact<User>()(result)
+Ts.Assert.sub<string>()(value)
+Ts.Assert.exact<User>()(result)
 
 // Both would coexist for a deprecation period
 ```
@@ -204,10 +204,10 @@ Ts.Test.exact<User>()(result)
  * @example
  * ```ts
  * // Modern (requires TS 5.x+):
- * Ts.Test.sub<string>(value)
+ * Ts.Assert.sub<string>(value)
  *
  * // Legacy (all versions):
- * Ts.Test.sub<string>()(value)
+ * Ts.Assert.sub<string>()(value)
  * ```
  */
 ````
@@ -246,12 +246,12 @@ No one has solved this because **TypeScript doesn't support it**.
 
 ```typescript
 // Current best practice
-Ts.Test.sub<string>()(value)
-Ts.Test.exact<User>()(result)
+Ts.Assert.sub<string>()(value)
+Ts.Assert.exact<User>()(result)
 
 // Add fluent API as alternative (#10)
-Ts.Test.expect(value).toBeString()
-Ts.Test.expect(result).toEqualTypeOf<User>()
+Ts.Assert.expect(value).toBeString()
+Ts.Assert.expect(result).toEqualTypeOf<User>()
 ```
 
 **Why both?**

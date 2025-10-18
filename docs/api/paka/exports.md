@@ -26,7 +26,7 @@ import * as Paka from '@wollybeard/kit/paka'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ExportLevel`
 
 ```typescript
-Enums<{ readonly value: "value"; readonly type: "type"; }>
+Enums<{ readonly value: 'value'; readonly type: 'type' }>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L11" />
@@ -36,7 +36,14 @@ Export level distinguishes between runtime values and type-only exports.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ValueExportType`
 
 ```typescript
-Enums<{ readonly function: "function"; readonly const: "const"; readonly class: "class"; readonly namespace: "namespace"; }>
+Enums<
+  {
+    readonly function: 'function'
+    readonly const: 'const'
+    readonly class: 'class'
+    readonly namespace: 'namespace'
+  }
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L17" />
@@ -48,7 +55,15 @@ Value export types
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `TypeExportType`
 
 ```typescript
-Enums<{ readonly interface: "interface"; readonly 'type-alias': "type-alias"; readonly enum: "enum"; readonly union: "union"; readonly intersection: "intersection"; }>
+Enums<
+  {
+    readonly interface: 'interface'
+    readonly 'type-alias': 'type-alias'
+    readonly enum: 'enum'
+    readonly union: 'union'
+    readonly intersection: 'intersection'
+  }
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L30" />
@@ -60,7 +75,13 @@ Type export types
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BuilderMethodCategory`
 
 ```typescript
-Enums<{ readonly chainable: "chainable"; readonly terminal: "terminal"; readonly transform: "transform"; }>
+Enums<
+  {
+    readonly chainable: 'chainable'
+    readonly terminal: 'terminal'
+    readonly transform: 'transform'
+  }
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L48" />
@@ -77,7 +98,15 @@ Builder method classification based on return type.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `SignatureModel`
 
 ```typescript
-Union<[typeof FunctionSignatureModel, typeof BuilderSignatureModel, typeof ClassSignatureModel, typeof TypeSignatureModel, typeof ValueSignatureModel]>
+Union<
+  [
+    typeof FunctionSignatureModel,
+    typeof BuilderSignatureModel,
+    typeof ClassSignatureModel,
+    typeof TypeSignatureModel,
+    typeof ValueSignatureModel,
+  ]
+>
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L446" />
@@ -210,13 +239,24 @@ Function/method parameter. Captures parameter name, type, modifiers, and JSDoc d
 
 ```typescript twoslash
 // @noErrors
-import { Paka } from '@wollybeard/kit/paka'
-// ---cut---
-// (items: T[], fn?: (item: T) => U, ...rest: unknown[])
-[
-  { name: 'items', type: 'T[]', optional: false, rest: false, description: 'Array of items to process' },
-  { name: 'fn', type: '(item: T) => U', optional: true, rest: false, description: 'Transform function' },
-  { name: 'rest', type: 'unknown[]', optional: false, rest: true }
+import { Paka } from '@wollybeard/kit/paka' // ---cut---
+ // (items: T[], fn?: (item: T) => U, ...rest: unknown[])
+;[
+  {
+    name: 'items',
+    type: 'T[]',
+    optional: false,
+    rest: false,
+    description: 'Array of items to process',
+  },
+  {
+    name: 'fn',
+    type: '(item: T) => U',
+    optional: true,
+    rest: false,
+    description: 'Transform function',
+  },
+  { name: 'rest', type: 'unknown[]', optional: false, rest: true },
 ]
 ```
 
@@ -417,17 +457,34 @@ Class property. Captures property name, type, modifiers, and JSDoc description.
 
 ```typescript twoslash
 // @noErrors
-import { Paka } from '@wollybeard/kit/paka'
-// ---cut---
-// class User {
+import { Paka } from '@wollybeard/kit/paka' // ---cut---
+ // class User {
 //   readonly id: string
 //   name?: string
 //   static count: number
 // }
-[
-  { name: 'id', type: 'string', optional: false, readonly: true, static: false },
-  { name: 'name', type: 'string', optional: true, readonly: false, static: false },
-  { name: 'count', type: 'number', optional: false, readonly: false, static: true }
+;[
+  {
+    name: 'id',
+    type: 'string',
+    optional: false,
+    readonly: true,
+    static: false,
+  },
+  {
+    name: 'name',
+    type: 'string',
+    optional: true,
+    readonly: false,
+    static: false,
+  },
+  {
+    name: 'count',
+    type: 'number',
+    optional: false,
+    readonly: false,
+    static: true,
+  },
 ]
 ```
 
@@ -683,7 +740,7 @@ Module type definition.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ModuleEncoded`
 
 ```typescript
-interface ModuleEncoded extends Module { }
+interface ModuleEncoded extends Module {}
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L493" />

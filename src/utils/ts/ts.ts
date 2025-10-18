@@ -511,6 +511,37 @@ export namespace SENTINEL {
    * ```
    */
   export type Is<T> = [T] extends [SENTINEL] ? true : false
+
+  /**
+   * Sentinel type for representing an empty/unset value.
+   *
+   * Use this instead of `unknown` when you need a sentinel to indicate
+   * "no value has been set" in contexts like optional configuration or state.
+   *
+   * @example
+   * ```ts
+   * // Using Empty as a sentinel for matcher state
+   * interface Matcher {
+   *   type: SENTINEL.Empty | string | number  // Empty means no matcher set
+   * }
+   * ```
+   */
+  export type Empty = { readonly __kit_ts_sentinel_empty__: unique symbol }
+
+  /**
+   * Check if a type is the Empty sentinel.
+   *
+   * Returns `true` if the type is `SENTINEL.Empty`, `false` otherwise.
+   * Uses tuple wrapping to prevent distributive conditional behavior.
+   *
+   * @example
+   * ```ts
+   * type T1 = SENTINEL.IsEmpty<SENTINEL.Empty>  // true
+   * type T2 = SENTINEL.IsEmpty<string>          // false
+   * type T3 = SENTINEL.IsEmpty<unknown>         // false
+   * ```
+   */
+  export type IsEmpty<T> = [T] extends [Empty] ? true : false
 }
 
 // Export relation utilities

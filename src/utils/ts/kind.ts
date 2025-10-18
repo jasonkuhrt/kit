@@ -171,3 +171,51 @@ export type MaybePrivateApplyOr<$MaybeKind, $Args, $Or> =
  * ```
  */
 export type IsPrivateKind<T> = T extends Private ? true : false
+
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Kind Composition
+//
+//
+//
+//
+
+/**
+ * Apply a tuple of Kinds sequentially (left-to-right composition).
+ *
+ * Takes an array of Kind functions and applies them in sequence from left to right.
+ * This enables composing multiple type-level transformations without creating
+ * specialized intermediate types.
+ *
+ * **Application order**: Left-to-right (first Kind, then second, then third, etc.)
+ *
+ * @template $Kinds - Tuple of Kind functions to apply sequentially
+ * @template $Input - The initial type to transform
+ *
+ * @example
+ * ```ts
+ * // Define some extractors
+ * interface Awaited extends Kind {
+ *   return: Awaited<this['parameters'][0]>
+ * }
+ *
+ * interface ArrayElement extends Kind {
+ *   return: this['parameters'][0] extends (infer El)[] ? El : never
+ * }
+ *
+ * // Compose them: Promise<string[]> -> string[] -> string
+ * type Result = Pipe<[Awaited, ArrayElement], Promise<string[]>>
+ * // Result: string
+ *
+ * // Compose three: () => Promise<number[]> -> Promise<number[]> -> number[] -> number
+ * type Result2 = Pipe<[ReturnType, Awaited, ArrayElement], () => Promise<number[]>>
+ * // Result2: number
+ * ```
+ */
+// dprint-ignore
+export type Pipe<$Kinds extends readonly Kind[], $Input> =
+  $Kinds extends readonly [infer __first__ extends Kind, ...infer __rest__ extends readonly Kind[]]
+    ? Pipe<__rest__, Apply<__first__, [$Input]>>
+    : $Input

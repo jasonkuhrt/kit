@@ -1,6 +1,6 @@
-# Ts.Test.sub
+# Ts.Assert.sub
 
-_Ts.Test_ / **sub**
+_Ts.Assert_ / **sub**
 
 Sub relation at value level - namespace-only (not callable).
 
@@ -12,14 +12,14 @@ Sub relation at value level - namespace-only (not callable).
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Test.sub.someFunction()
+Ts.Assert.sub.someFunction()
 ```
 
 ```typescript [Barrel]
 import * as Ts from '@wollybeard/kit/ts'
 
 // Access via namespace
-Ts.Test.sub.someFunction()
+Ts.Assert.sub.someFunction()
 ```
 
 :::

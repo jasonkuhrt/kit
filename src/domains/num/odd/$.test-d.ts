@@ -5,6 +5,7 @@ import { test } from 'vitest'
  */
 
 import { Ts } from '#ts'
+import { Assert } from '#ts/ts'
 import type { Even } from '../even/$$.js'
 import type { Int } from '../int/$$.js'
 import type { Odd } from './$$.js'
@@ -17,11 +18,11 @@ test('Type narrowing works correctly with isOdd predicate', () => {
 
   // Predicate narrows to Odd & Int intersection
   if (isOdd(value)) {
-    Ts.Test.sub.is<Odd & Int>()(value)
+    Assert.sub.of.as<Odd & Int>()(value)
     // Can assign to Odd
-    Ts.Test.sub.is<Odd>()(value)
+    Assert.sub.of.as<Odd>()(value)
     // Can assign to Int
-    Ts.Test.sub.is<Int>()(value)
+    Assert.sub.of.as<Int>()(value)
   }
 
   // Multiple checks preserve all brands
@@ -40,31 +41,31 @@ test('Type narrowing works correctly with isOdd predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic odd constructor always returns Odd & Int
   const odd1 = odd(5)
-  Ts.Test.exact.is<Odd & Int>()(odd1)
+  Assert.exact.of.as<Odd & Int>()(odd1)
 
   // Negative odd numbers
   const odd2 = odd(-3)
-  Ts.Test.exact.is<Odd & Int>()(odd2)
+  Assert.exact.of.as<Odd & Int>()(odd2)
 
   // Large odd numbers
   const odd3 = odd(999)
-  Ts.Test.exact.is<Odd & Int>()(odd3)
+  Assert.exact.of.as<Odd & Int>()(odd3)
 
   // Try constructor
   const try1 = tryOdd(7)
-  Ts.Test.exact.is<(Odd & Int) | null>()(try1)
+  Assert.exact.of.as<(Odd & Int) | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Ts.Test.exact.is<Odd & Int>()(try1)
+    Assert.exact.of.as<Odd & Int>()(try1)
   }
 
   // Next/prev odd operations
   const next = nextOdd(4.5) // Should be 5
-  Ts.Test.exact.is<Odd & Int>()(next)
+  Assert.exact.of.as<Odd & Int>()(next)
 
   const prev = prevOdd(6.5) // Should be 5
-  Ts.Test.exact.is<Odd & Int>()(prev)
+  Assert.exact.of.as<Odd & Int>()(prev)
 })
 
 // === Type Relationships ===
@@ -74,15 +75,15 @@ test('Odd has correct relationship with Int and Even', () => {
 
   // Odd & Int can be assigned to Odd
   const asOdd: Odd = oddNum
-  Ts.Test.sub.is<Odd>()(asOdd)
+  Assert.sub.of.as<Odd>()(asOdd)
 
   // Odd & Int can be assigned to Int
   const asInt: Int = oddNum
-  Ts.Test.sub.is<Int>()(asInt)
+  Assert.sub.of.as<Int>()(asInt)
 
   // Odd & Int can be assigned to number
   const asNumber: number = oddNum
-  Ts.Test.sub.is<number>()(asNumber)
+  Assert.sub.of.as<number>()(asNumber)
 
   // Odd and Even are mutually exclusive
   const _oddVal = {} as Odd
@@ -98,45 +99,45 @@ test('Odd has correct relationship with Int and Even', () => {
 // === Type-Level Only Tests ===
 
 // Test brand relationships
-type _OddRelationships = Ts.Test.Cases<
+type _OddRelationships = Ts.Assert.Cases<
   // Odd extends number
-  Ts.Test.sub<number, Odd>,
+  Assert.sub.of<number, Odd>,
   // Int extends number
-  Ts.Test.sub<number, Int>,
+  Assert.sub.of<number, Int>,
   // Odd & Int extends both Odd and Int
-  Ts.Test.sub<Odd, Odd & Int>,
-  Ts.Test.sub<Int, Odd & Int>,
-  Ts.Test.sub<number, Odd & Int>,
+  Assert.sub.of<Odd, Odd & Int>,
+  Assert.sub.of<Int, Odd & Int>,
+  Assert.sub.of<number, Odd & Int>,
   // Odd does not extend Int (not all Odd are Int in type system)
-  Ts.Test.not.sub<Odd, Int>,
+  Ts.Assert.not.sub<Odd, Int>,
   // Int does not extend Odd (not all Int are Odd)
-  Ts.Test.not.sub<Int, Odd>,
+  Ts.Assert.not.sub<Int, Odd>,
   // Odd & Int is more specific than either alone
-  Ts.Test.not.sub<Odd & Int, Odd>,
-  Ts.Test.not.sub<Odd & Int, Int>
+  Ts.Assert.not.sub<Odd & Int, Odd>,
+  Ts.Assert.not.sub<Odd & Int, Int>
 >
 
 // Test mutual exclusivity with Even
-type _OddEvenExclusive = Ts.Test.Cases<
+type _OddEvenExclusive = Ts.Assert.Cases<
   // Odd and Even don't extend each other
-  Ts.Test.not.sub<Odd, Even>,
-  Ts.Test.not.sub<Even, Odd>
+  Ts.Assert.not.sub<Odd, Even>,
+  Ts.Assert.not.sub<Even, Odd>
 > // The intersection Odd & Even would be never in practice
 // (though TypeScript won't reduce it to never automatically)
 
 // Test constructor return types
-type _ConstructorReturnTypes = Ts.Test.Cases<
+type _ConstructorReturnTypes = Ts.Assert.Cases<
   // All constructors return the intersection type
-  Ts.Test.exact<ReturnType<typeof odd>, Odd & Int>,
-  Ts.Test.exact<ReturnType<typeof tryOdd>, (Odd & Int) | null>,
-  Ts.Test.exact<ReturnType<typeof nextOdd>, Odd & Int>,
-  Ts.Test.exact<ReturnType<typeof prevOdd>, Odd & Int>
+  Assert.exact.of<ReturnType<typeof odd>, Odd & Int>,
+  Assert.exact.of<ReturnType<typeof tryOdd>, (Odd & Int) | null>,
+  Assert.exact.of<ReturnType<typeof nextOdd>, Odd & Int>,
+  Assert.exact.of<ReturnType<typeof prevOdd>, Odd & Int>
 >
 
 // Test predicate return type
-type _PredicateTypes = Ts.Test.Cases<
+type _PredicateTypes = Ts.Assert.Cases<
   // isOdd narrows to the intersection
-  Ts.Test.sub<(value: unknown) => value is Odd & Int, typeof isOdd>
+  Assert.sub.of<(value: unknown) => value is Odd & Int, typeof isOdd>
 >
 
 // Demonstrate intersection behavior

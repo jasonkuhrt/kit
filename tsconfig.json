@@ -126,6 +126,7 @@
       "#traitor/traitor": ["./src/utils/traitor/$$.ts"],
       "#ts": ["./src/utils/ts/$.ts"],
       "#ts/ts": ["./src/utils/ts/$$.ts"],
+      "#ts/test": ["./src/utils/ts/test/$$.ts"],
       "#value": ["./src/utils/value/$.ts"],
       "#value/value": ["./src/utils/value/$$.ts"],
       "#fs-loc": ["./src/utils/fs-loc/$.ts"],

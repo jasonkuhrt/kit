@@ -1,4 +1,4 @@
-import type { Analyze } from './analyzer.types.ts'
+import type { Analyze } from './analyzer.types.js'
 
 interface AnalysisBase {
   /** Original input string */

@@ -237,6 +237,7 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "docs:generate": "tsx src/utils/paka/cli.ts generate",
+    "generate:test-namespaces": "tsx scripts/generate-test-namespaces/index.ts",
     "toggle:precommit": "if [ -f .husky/pre-commit ]; then mv .husky/pre-commit .husky/pre-commit.disabled && echo '✗ Pre-commit hook disabled'; else mv .husky/pre-commit.disabled .husky/pre-commit && echo '✓ Pre-commit hook enabled'; fi"
   },
   "devDependencies": {

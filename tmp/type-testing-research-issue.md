@@ -45,9 +45,9 @@ This issue provides a comprehensive analysis of TypeScript type testing in the e
 
 ```typescript
 // Kit's current approach
-Ts.Test.sub<string>()(value) // Needs type parameter
-Ts.Test.parameters<[number, number]>()(fn) // Verbose
-Ts.Test.propertiesSub<{ a: string }, T>() // No property accessor
+Ts.Assert.sub<string>()(value) // Needs type parameter
+Ts.Assert.parameters<[number, number]>()(fn) // Verbose
+Ts.Assert.propertiesSub<{ a: string }, T>() // No property accessor
 
 // vs. Modern fluent APIs
 expectTypeOf(value).toBeString() // Discoverable
@@ -758,7 +758,7 @@ Output:
 
 2. **Naming**
    - `expectTypeOf` (matches ecosystem) vs `expect` (shorter)?
-   - Keep `Ts.Test` namespace or new namespace?
+   - Keep `Ts.Assert` namespace or new namespace?
 
 3. **Scope**
    - Should we implement all novel features, or start with most impactful?
