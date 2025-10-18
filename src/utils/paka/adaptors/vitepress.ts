@@ -446,8 +446,6 @@ const renderImportSection = (
  * Render namespaces section as a table.
  */
 const renderNamespacesSection = (namespaces: Export[], breadcrumbs: string[]): string => {
-  const tableHeader = '| Namespace | Description |\n|-----------|-------------|'
-
   const rows = namespaces.map((ns: any) => {
     const nsPath = `/api/${[...breadcrumbs, ns.name].map(Md.kebab).join('/')}`
     const link = Md.link(nsPath, `**${Md.code(ns.name)}**`)
@@ -455,7 +453,14 @@ const renderNamespacesSection = (namespaces: Export[], breadcrumbs: string[]): s
     return `| ${link} | ${desc} |`
   })
 
-  return Md.sections(Md.heading(2, 'Namespaces'), tableHeader, rows.join('\n'))
+  // Build complete table as single string (no blank lines within table)
+  const table = [
+    '| Namespace | Description |',
+    '|-----------|-------------|',
+    ...rows,
+  ].join('\n')
+
+  return Md.sections(Md.heading(2, 'Namespaces'), table)
 }
 
 /**

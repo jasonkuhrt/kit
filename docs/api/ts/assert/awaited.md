@@ -19,13 +19,12 @@ import { awaited } from '@wollybeard/kit/ts'
 
 ## Namespaces
 
-| Namespace | Description |
-| --------- | ----------- |
-
-| [**`equiv`**](/api/ts/assert/awaited/equiv) | — |
-| [**`exact`**](/api/ts/assert/awaited/exact) | — |
-| [**`not`**](/api/ts/assert/awaited/not) | — |
-| [**`sub`**](/api/ts/assert/awaited/sub) | — |
+| Namespace                                   | Description |
+| ------------------------------------------- | ----------- |
+| [**`equiv`**](/api/ts/assert/awaited/equiv) | —           |
+| [**`exact`**](/api/ts/assert/awaited/exact) | —           |
+| [**`not`**](/api/ts/assert/awaited/not)     | —           |
+| [**`sub`**](/api/ts/assert/awaited/sub)     | —           |
 
 ## Constants
 

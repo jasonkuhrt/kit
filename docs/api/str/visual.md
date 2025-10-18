@@ -19,9 +19,8 @@ import { Visual } from '@wollybeard/kit/str'
 
 ## Namespaces
 
-| Namespace | Description |
-| --------- | ----------- |
-
+| Namespace                            | Description                                                 |
+| ------------------------------------ | ----------------------------------------------------------- |
 | [**`Table`**](/api/str/visual/table) | Visual-aware table operations for multi-column text layout. |
 
 ## Text Formatting

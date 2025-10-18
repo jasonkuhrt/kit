@@ -304,11 +304,11 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * // Value Level (requires .is for identity)
 // [!code word:as:1]
  * Ts.Assert.exact.of.as<string>()(value)
-  // [!code word:awaited:1]
+// [!code word:awaited:1]
   * Ts.Assert.sub.awaited<number>()(promise)
-  // [!code word:awaited:1]
+// [!code word:awaited:1]
   * Ts.Assert.exact.returned.awaited<User>()(asyncFn)
-  // [!code word:as:1]
+// [!code word:as:1]
   * Ts.Assert.not.sub.of.as<number>()(value)
   * 
 ```
@@ -321,9 +321,9 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * ```typescript
 // [!code word:exact:1]
  * type T = Ts.Assert.exact<string, string>           // ✓ Pass
-  // [!code word:exact:1]
+// [!code word:exact:1]
   * type T = Ts.Assert.exact<1 | 2, 2 | 1>             // ✗ Fail (different structure)
-    // [!code word:exact:1]
+// [!code word:exact:1]
     * type T = Ts.Assert.exact<string & {}, string>      // ✗ Fail (different structure)
       * 
 ```
@@ -334,9 +334,9 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * ```typescript
 // [!code word:equiv:1]
  * type T = Ts.Assert.equiv<1 | 2, 2 | 1>             // ✓ Pass (same computed type)
-  // [!code word:equiv:1]
+// [!code word:equiv:1]
   * type T = Ts.Assert.equiv<string & {}, string>      // ✓ Pass (both compute to string)
-    // [!code word:equiv:1]
+// [!code word:equiv:1]
     * type T = Ts.Assert.equiv<string, number>           // ✗ Fail (not mutually assignable)
       * 
 ```
@@ -347,9 +347,9 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * ```typescript
 // [!code word:sub:1]
  * type T = Ts.Assert.sub<string, 'hello'>            // ✓ Pass ('hello' extends string)
-  // [!code word:sub:1]
+// [!code word:sub:1]
   * type T = Ts.Assert.sub<object, { a: 1 }>           // ✓ Pass (more specific extends less)
-    // [!code word:sub:1]
+// [!code word:sub:1]
     * type T = Ts.Assert.sub<'hello', string>            // ✗ Fail (string doesn't extend 'hello')
       * 
 ```
@@ -367,7 +367,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * ```typescript
 // [!code word:Never:1]
  * type T = Ts.Assert.equiv.Never<never>              // ✓ Pass
-  // [!code word:any:1]
+// [!code word:any:1]
   * Ts.Assert.exact.any()(value)                       // Value level (lowercase)
   * 
 ```
@@ -380,7 +380,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * ```typescript
 // [!code word:array:1]
  * type T = Ts.Assert.sub.array<number, (1 | 2 | 3)[]>  // ✓ Pass
-  // [!code word:indexed:1]
+// [!code word:indexed:1]
   * type T = Ts.Assert.exact.indexed<0, string, [string, number]>  // ✓ Pass
     * 
 ```
@@ -395,14 +395,14 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * // Terminal check (explicit .is)
 // [!code word:is:1]
  * type T = Ts.Assert.exact.awaited.is<number, Promise<number>>
-  // [!code word:is:1]
+// [!code word:is:1]
   * Ts.Assert.exact.returned.is<string>()(fn)
   *
  * // Chaining (nest extractors)
 // [!code word:awaited:1]
  * type T = Ts.Assert.exact.returned.awaited<User, () => Promise<User>>
-  // [!code word:array:1]
-  // [!code word:resolve:1]
+// [!code word:array:1]
+// [!code word:resolve:1]
   * Ts.Assert.sub.awaited.array<number>()(Promise.resolve([1, 2, 3]))
   * 
 ```
@@ -415,7 +415,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * ```typescript
 // [!code word:parameter:1]
  * type T = Ts.Assert.exact.parameter<string, (x: string) => void>
-  // [!code word:parameter2:1]
+// [!code word:parameter2:1]
   * type T = Ts.Assert.sub.parameter2<number, (a: string, b: number) => void>
     * 
 ```
@@ -425,7 +425,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  *
  * ```typescript
  * type Config = { id: string; name: string; debug: boolean }
-  // [!code word:properties:1]
+// [!code word:properties:1]
   * type T = Ts.Assert.exact.properties<{ id: string }, Config>  // ✓ Pass
     * 
 ```
@@ -436,9 +436,9 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * **`sub.noExcess`** - Most common use case (config validation with narrowing):
  * ```typescript
  * type Options = { timeout?: number; retry?: boolean }
-  // [!code word:noExcess:1]
+// [!code word:noExcess:1]
   * type T = Ts.Assert.sub.noExcess<Options, { timeout: 5000, retry: true }>  // ✓ Allows literals
-    // [!code word:noExcess:1]
+// [!code word:noExcess:1]
     * type T = Ts.Assert.sub.noExcess<Options, { timeout: 5000, retrys: true }> // ✗ Catches typo!
       * 
 ```
@@ -447,9 +447,9 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * ```typescript
  * type Schema = { id: number; email?: string }
   * type Response = { id: number; emial?: string }  // Typo!
-    // [!code word:equiv:1]
+// [!code word:equiv:1]
     * type T = Ts.Assert.equiv<Schema, Response>          // ✓ Pass (mutually assignable)
-      // [!code word:noExcess:1]
+// [!code word:noExcess:1]
       * type T = Ts.Assert.equiv.noExcess<Schema, Response> // ✗ Fail (catches typo!)
         * 
 ```
@@ -462,9 +462,9 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * // Negate any assertion
 // [!code word:exact:1]
  * type T = Ts.Assert.not.exact<string, number>             // ✓ Pass (different)
-  // [!code word:awaited:1]
+// [!code word:awaited:1]
   * type T = Ts.Assert.not.sub.awaited<X, Promise<Y>>        // ✓ Pass if Y doesn't extend X
-    // [!code word:awaited:1]
+// [!code word:awaited:1]
     * Ts.Assert.not.exact.returned.awaited<X>()(fn)            // Value level
     * 
 ```
@@ -475,7 +475,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * ```typescript
 // [!code word:exact:1]
  * type T = Ts.Assert.exact<A, B>
-  // [!code word:awaited:1]
+// [!code word:awaited:1]
   * type T = Ts.Assert.sub.awaited<X, Promise<Y>>
     * 
 ```
@@ -485,7 +485,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * // Relations need .is for identity
 // [!code word:as:1]
  * Ts.Assert.exact.of.as<string>()(value)    // ✓ Use .is
-  // [!code word:exact:1]
+// [!code word:exact:1]
   * Ts.Assert.exact<string>()(value)       // ✗ Error - exact is not callable!
   *
  * // Extractors work directly
@@ -495,7 +495,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * // Chained extractors use .is for terminal
 // [!code word:is:1]
  * Ts.Assert.exact.returned.is<X>()(fn)            // Terminal check
-  // [!code word:awaited:1]
+// [!code word:awaited:1]
   * Ts.Assert.exact.returned.awaited<X>()(fn)       // Chained check
   * 
 ```
@@ -570,22 +570,21 @@ import { Assert } from '@wollybeard/kit/ts'
 
 ## Namespaces
 
-| Namespace | Description |
-| --------- | ----------- |
-
-| [**`array`**](/api/ts/assert/array) | — |
-| [**`awaited`**](/api/ts/assert/awaited) | — |
-| [**`equiv`**](/api/ts/assert/equiv) | — |
-| [**`exact`**](/api/ts/assert/exact) | — |
-| [**`not`**](/api/ts/assert/not) | — |
-| [**`parameter1`**](/api/ts/assert/parameter1) | — |
-| [**`parameter2`**](/api/ts/assert/parameter2) | — |
-| [**`parameter3`**](/api/ts/assert/parameter3) | — |
-| [**`parameter4`**](/api/ts/assert/parameter4) | — |
-| [**`parameter5`**](/api/ts/assert/parameter5) | — |
-| [**`parameters`**](/api/ts/assert/parameters) | — |
-| [**`returned`**](/api/ts/assert/returned) | — |
-| [**`sub`**](/api/ts/assert/sub) | — |
+| Namespace                                     | Description |
+| --------------------------------------------- | ----------- |
+| [**`array`**](/api/ts/assert/array)           | —           |
+| [**`awaited`**](/api/ts/assert/awaited)       | —           |
+| [**`equiv`**](/api/ts/assert/equiv)           | —           |
+| [**`exact`**](/api/ts/assert/exact)           | —           |
+| [**`not`**](/api/ts/assert/not)               | —           |
+| [**`parameter1`**](/api/ts/assert/parameter1) | —           |
+| [**`parameter2`**](/api/ts/assert/parameter2) | —           |
+| [**`parameter3`**](/api/ts/assert/parameter3) | —           |
+| [**`parameter4`**](/api/ts/assert/parameter4) | —           |
+| [**`parameter5`**](/api/ts/assert/parameter5) | —           |
+| [**`parameters`**](/api/ts/assert/parameters) | —           |
+| [**`returned`**](/api/ts/assert/returned)     | —           |
+| [**`sub`**](/api/ts/assert/sub)               | —           |
 
 ## Utils
 

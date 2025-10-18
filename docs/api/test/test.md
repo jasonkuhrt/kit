@@ -10,10 +10,9 @@ import * as test from '@wollybeard/kit/test'
 
 ## Namespaces
 
-| Namespace | Description |
-| --------- | ----------- |
-
-| [**`Matchers`**](/api/test/test/matchers) | — |
+| Namespace                                 | Description |
+| ----------------------------------------- | ----------- |
+| [**`Matchers`**](/api/test/test/matchers) | —           |
 
 ## Property Testing
 

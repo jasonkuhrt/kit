@@ -19,10 +19,9 @@ import { AxisHand } from '@wollybeard/kit/str'
 
 ## Namespaces
 
-| Namespace | Description |
-| --------- | ----------- |
-
-| [**`AxisHand`**](/api/str/axis-hand/axis-hand) | AxisHand provides a logical, orientation-aware coordinate system for box model properties.
+| Namespace                                      | Description                                                                                |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| [**`AxisHand`**](/api/str/axis-hand/axis-hand) | AxisHand provides a logical, orientation-aware coordinate system for box model properties. |
 
 Unlike physical coordinates (top/left/etc), AxisHand uses logical properties relative to flow direction: - **main axis**: The primary flow direction (set by orientation) - **cross axis**: Perpendicular to the main axis
 

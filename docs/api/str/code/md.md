@@ -19,10 +19,9 @@ import { Md } from '@wollybeard/kit/str'
 
 ## Namespaces
 
-| Namespace | Description |
-| --------- | ----------- |
-
-| [**`md`**](/api/str/code/md/md) | Structured markdown helpers.
+| Namespace                       | Description                  |
+| ------------------------------- | ---------------------------- |
+| [**`md`**](/api/str/code/md/md) | Structured markdown helpers. |
 
 These helpers generate properly formatted markdown elements. All helpers return `Raw` (already formatted) or `null` for graceful handling. |
 

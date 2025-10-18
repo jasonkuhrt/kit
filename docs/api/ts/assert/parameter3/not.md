@@ -19,9 +19,8 @@ import { not } from '@wollybeard/kit/ts'
 
 ## Namespaces
 
-| Namespace | Description |
-| --------- | ----------- |
-
-| [**`equiv`**](/api/ts/assert/parameter3/not/equiv) | — |
-| [**`exact`**](/api/ts/assert/parameter3/not/exact) | — |
-| [**`sub`**](/api/ts/assert/parameter3/not/sub) | — |
+| Namespace                                          | Description |
+| -------------------------------------------------- | ----------- |
+| [**`equiv`**](/api/ts/assert/parameter3/not/equiv) | —           |
+| [**`exact`**](/api/ts/assert/parameter3/not/exact) | —           |
+| [**`sub`**](/api/ts/assert/parameter3/not/sub)     | —           |

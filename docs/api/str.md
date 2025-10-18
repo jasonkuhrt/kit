@@ -20,15 +20,14 @@ import * as Str from '@wollybeard/kit/str'
 
 ## Namespaces
 
-| Namespace | Description |
-| --------- | ----------- |
-
-| [**`AxisHand`**](/api/str/axis-hand) | — |
-| [**`Case`**](/api/str/case) | — |
-| [**`Char`**](/api/str/char) | Uppercase letter. |
-| [**`Nat`**](/api/str/nat) | — |
-| [**`Tpl`**](/api/str/tpl) | — |
-| [**`Code`**](/api/str/code) | Code generation and documentation utilities.
+| Namespace                            | Description                                  |
+| ------------------------------------ | -------------------------------------------- |
+| [**`AxisHand`**](/api/str/axis-hand) | —                                            |
+| [**`Case`**](/api/str/case)          | —                                            |
+| [**`Char`**](/api/str/char)          | Uppercase letter.                            |
+| [**`Nat`**](/api/str/nat)            | —                                            |
+| [**`Tpl`**](/api/str/tpl)            | —                                            |
+| [**`Code`**](/api/str/code)          | Code generation and documentation utilities. |
 
 Provides tools for generating markdown, TSDoc/JSDoc, and TypeScript code. Includes safe JSDoc generation with escaping, builder API, and structured tag helpers. |
 | [**`Text`**](/api/str/text) | Multi-line text formatting and layout utilities.

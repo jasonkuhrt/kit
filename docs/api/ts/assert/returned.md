@@ -19,13 +19,12 @@ import { returned } from '@wollybeard/kit/ts'
 
 ## Namespaces
 
-| Namespace | Description |
-| --------- | ----------- |
-
-| [**`equiv`**](/api/ts/assert/returned/equiv) | — |
-| [**`exact`**](/api/ts/assert/returned/exact) | — |
-| [**`not`**](/api/ts/assert/returned/not) | — |
-| [**`sub`**](/api/ts/assert/returned/sub) | — |
+| Namespace                                    | Description |
+| -------------------------------------------- | ----------- |
+| [**`equiv`**](/api/ts/assert/returned/equiv) | —           |
+| [**`exact`**](/api/ts/assert/returned/exact) | —           |
+| [**`not`**](/api/ts/assert/returned/not)     | —           |
+| [**`sub`**](/api/ts/assert/returned/sub)     | —           |
 
 ## Constants
 

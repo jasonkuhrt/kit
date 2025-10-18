@@ -19,10 +19,9 @@ import { Code } from '@wollybeard/kit/str'
 
 ## Namespaces
 
-| Namespace | Description |
-| --------- | ----------- |
-
-| [**`Md`**](/api/str/code/md) | Markdown string utilities for code documentation.
+| Namespace                    | Description                                       |
+| ---------------------------- | ------------------------------------------------- |
+| [**`Md`**](/api/str/code/md) | Markdown string utilities for code documentation. |
 
 Provides functions for generating markdown elements like inline code, links, and tables. |
 | [**`TSDoc`**](/api/str/code/tsdoc) | TSDoc/JSDoc string utilities for code documentation.

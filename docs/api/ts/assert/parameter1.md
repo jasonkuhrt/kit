@@ -19,13 +19,12 @@ import { parameter1 } from '@wollybeard/kit/ts'
 
 ## Namespaces
 
-| Namespace | Description |
-| --------- | ----------- |
-
-| [**`equiv`**](/api/ts/assert/parameter1/equiv) | — |
-| [**`exact`**](/api/ts/assert/parameter1/exact) | — |
-| [**`not`**](/api/ts/assert/parameter1/not) | — |
-| [**`sub`**](/api/ts/assert/parameter1/sub) | — |
+| Namespace                                      | Description |
+| ---------------------------------------------- | ----------- |
+| [**`equiv`**](/api/ts/assert/parameter1/equiv) | —           |
+| [**`exact`**](/api/ts/assert/parameter1/exact) | —           |
+| [**`not`**](/api/ts/assert/parameter1/not)     | —           |
+| [**`sub`**](/api/ts/assert/parameter1/sub)     | —           |
 
 ## Constants
 

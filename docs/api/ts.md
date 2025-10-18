@@ -20,16 +20,15 @@ import * as Ts from '@wollybeard/kit/ts'
 
 ## Namespaces
 
-| Namespace | Description |
-| --------- | ----------- |
-
-| [**`Kind`**](/api/ts/kind) | Higher-kinded type utilities for type-level programming. Provides type-level functions and utilities for simulating higher-kinded types in TypeScript. |
+| Namespace                                         | Description                                                                                                                                                 |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [**`Kind`**](/api/ts/kind)                        | Higher-kinded type utilities for type-level programming. Provides type-level functions and utilities for simulating higher-kinded types in TypeScript.      |
 | [**`SimpleSignature`**](/api/ts/simple-signature) | Utilities for working with the `__simpleSignature` phantom type pattern. Allows complex generic functions to provide simpler signatures for type inference. |
-| [**`Assert`**](/api/ts/assert) | — |
-| [**`Union`**](/api/ts/union) | Utilities for working with union types at the type level. |
-| [**`VariancePhantom`**](/api/ts/variance-phantom) | Phantom type helpers for controlling type variance (covariance, contravariance, invariance, bivariance). |
-| [**`SENTINEL`**](/api/ts/sentinel) | Utilities for working with the SENTINEL type. |
-| [**`Relation`**](/api/ts/relation) | — |
+| [**`Assert`**](/api/ts/assert)                    | —                                                                                                                                                           |
+| [**`Union`**](/api/ts/union)                      | Utilities for working with union types at the type level.                                                                                                   |
+| [**`VariancePhantom`**](/api/ts/variance-phantom) | Phantom type helpers for controlling type variance (covariance, contravariance, invariance, bivariance).                                                    |
+| [**`SENTINEL`**](/api/ts/sentinel)                | Utilities for working with the SENTINEL type.                                                                                                               |
+| [**`Relation`**](/api/ts/relation)                | —                                                                                                                                                           |
 
 ## Error Messages
 

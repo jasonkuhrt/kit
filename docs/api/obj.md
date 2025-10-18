@@ -20,10 +20,9 @@ import * as Obj from '@wollybeard/kit/obj'
 
 ## Namespaces
 
-| Namespace | Description |
-| --------- | ----------- |
-
-| [**`Union`**](/api/obj/union) | Union operations on objects.
+| Namespace                     | Description                  |
+| ----------------------------- | ---------------------------- |
+| [**`Union`**](/api/obj/union) | Union operations on objects. |
 
 This module provides utilities for working with unions of object types, solving common TypeScript limitations when dealing with union types:
 
