@@ -7,6 +7,7 @@ import { Example } from '../../schema.js'
  */
 export type JSDocInfo = {
   description: string | undefined
+  guide: string | undefined
   examples: Example[]
   deprecated: string | undefined
   category: string | undefined
@@ -151,6 +152,13 @@ const parseJSDocWithTSDoc = (commentText: string): JSDocInfo => {
       allowMultiple: false,
     }),
   )
+  configuration.addTagDefinition(
+    new TSDocTagDefinition({
+      tagName: '@guide',
+      syntaxKind: TSDocTagSyntaxKind.BlockTag,
+      allowMultiple: false,
+    }),
+  )
 
   const tsdocParser = new TSDocParser(configuration)
   const parserContext = tsdocParser.parseString(commentText)
@@ -173,6 +181,7 @@ const parseJSDocWithTSDoc = (commentText: string): JSDocInfo => {
   let isBuilder = false
   let internal = false
   let category: string | undefined
+  let guide: string | undefined
 
   // Check for @builder and @internal in modifier tags
   for (const tag of docComment.modifierTagSet.nodes) {
@@ -190,6 +199,8 @@ const parseJSDocWithTSDoc = (commentText: string): JSDocInfo => {
       forceNamespace = true
     } else if (tagName === '@category') {
       category = extractTSDocText(block.content).trim() || undefined
+    } else if (tagName === '@guide') {
+      guide = extractTSDocText(block.content).trim() || undefined
     } else if (tagName !== '@example') {
       // Store other custom tags
       tags[tagName.slice(1)] = extractTSDocText(block.content).trim()
@@ -224,6 +235,7 @@ const parseJSDocWithTSDoc = (commentText: string): JSDocInfo => {
 
   return {
     description,
+    guide,
     examples,
     deprecated,
     category,
@@ -280,6 +292,7 @@ export const parseJSDoc = (decl: Node): JSDocInfo => {
   if (jsDocs.length === 0) {
     return {
       description: undefined,
+      guide: undefined,
       examples: [],
       deprecated: undefined,
       category: undefined,

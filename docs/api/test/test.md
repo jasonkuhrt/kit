@@ -16,7 +16,7 @@ Test.Test.someFunction()
 
 ## Namespaces
 
-- [**`Matchers`**](/api/test/test/matchers) - Custom Vitest matchers for Effect Schema and equivalence testing.
+- [**`Matchers`**](/api/test/test/matchers)
 
 ## Property Testing
 

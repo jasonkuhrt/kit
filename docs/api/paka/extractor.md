@@ -94,7 +94,7 @@ Categorize a TypeScript declaration node into export level and type.
 (name: string, decl: ExportedDeclarations): ValueExport | TypeExport
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/export.ts#L18" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/export.ts#L26" />
 
 **Parameters:**
 
@@ -111,7 +111,7 @@ Extract export information from a declaration node.
 (decl: Node<ts.Node>): JSDocInfo
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/jsdoc.ts#L246" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/jsdoc.ts#L258" />
 
 **Parameters:**
 
@@ -127,7 +127,7 @@ Parse JSDoc from a declaration node.
 (sourceFile: SourceFile, location: RelFile, options?: ModuleExtractionOptions = {}): Module
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L175" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L240" />
 
 **Parameters:**
 
@@ -145,7 +145,7 @@ Extract a module from a source file.
 (moduleDecl: ModuleDeclaration, location: RelFile, options?: ModuleExtractionOptions = {}): Module
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L331" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L438" />
 
 **Parameters:**
 
@@ -198,6 +198,7 @@ Categorization result for a declaration node.
 ```typescript
 type JSDocInfo = {
   description: string | undefined
+  guide: string | undefined
   examples: Example[]
   deprecated: string | undefined
   category: string | undefined
@@ -232,6 +233,6 @@ type ModuleExtractionOptions = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L143" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L208" />
 
 Options for module extraction.

@@ -1,6 +1,7 @@
 import { FsLoc } from '#fs-loc'
 import { expect, test } from 'vitest'
 import {
+  Docs,
   FunctionSignature,
   FunctionSignatureModel,
   Parameter,
@@ -29,7 +30,9 @@ test('demotes H2 headings in JSDoc descriptions to H4', () => {
         }),
       ],
     }),
-    description: 'Creates a test table builder.  ## Case Formats  Test cases can be specified in multiple formats.',
+    docs: Docs.make({
+      description: 'Creates a test table builder.  ## Case Formats  Test cases can be specified in multiple formats.',
+    }),
     examples: [],
     tags: {},
     sourceLocation: SourceLocation.make({ file: FsLoc.fromString('./test.ts'), line: 1 }),
@@ -37,7 +40,7 @@ test('demotes H2 headings in JSDoc descriptions to H4', () => {
 
   // The description should have H2 headings demoted to H4
   // We can't easily test the full pipeline, but we can verify the transformation logic
-  const description = mockExport.description!
+  const description = mockExport.docs?.description
 
   // Simulate the transformation that should happen
   const transformed = description
@@ -75,7 +78,6 @@ test('renders @param documentation', () => {
     type: 'function',
     name: 'map',
     signature: sig,
-    description: '',
     examples: [],
     tags: {},
     sourceLocation: SourceLocation.make({ file: FsLoc.fromString('./test.ts'), line: 1 }),
@@ -104,7 +106,6 @@ test('renders @returns documentation', () => {
     type: 'function',
     name: 'double',
     signature: sig,
-    description: '',
     examples: [],
     tags: {},
     sourceLocation: SourceLocation.make({ file: FsLoc.fromString('./test.ts'), line: 1 }),
@@ -132,7 +133,6 @@ test('renders @throws documentation', () => {
     type: 'function',
     name: 'process',
     signature: sig,
-    description: '',
     examples: [],
     tags: {},
     sourceLocation: SourceLocation.make({ file: FsLoc.fromString('./test.ts'), line: 1 }),

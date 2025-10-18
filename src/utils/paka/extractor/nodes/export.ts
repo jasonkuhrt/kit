@@ -1,7 +1,15 @@
 import { FsLoc } from '#fs-loc'
 import { Match, Schema as S } from 'effect'
 import { type ExportedDeclarations, Node } from 'ts-morph'
-import { type Export, SourceLocation, TypeExport, ValueExport } from '../../schema.js'
+import {
+  Docs,
+  DocsProvenance,
+  type Export,
+  JSDocProvenance,
+  SourceLocation,
+  TypeExport,
+  ValueExport,
+} from '../../schema.js'
 import { absoluteToRelative } from '../path-utils.js'
 import { categorize } from './categorize.js'
 import { parseJSDoc } from './jsdoc.js'
@@ -36,11 +44,25 @@ export const extractExport = (name: string, decl: ExportedDeclarations): Export 
   })
 
   // Base export properties
+  const docs = jsdoc.description || jsdoc.guide
+    ? Docs.make({ description: jsdoc.description, guide: jsdoc.guide })
+    : undefined
+
+  const docsProvenance = jsdoc.description || jsdoc.guide
+    ? DocsProvenance.make({
+      description: jsdoc.description
+        ? JSDocProvenance.make({ shadowNamespace: false })
+        : undefined,
+      guide: jsdoc.guide ? JSDocProvenance.make({ shadowNamespace: false }) : undefined,
+    })
+    : undefined
+
   const baseExport = {
     name,
     signature,
     signatureSimple,
-    description: jsdoc.description,
+    ...(docs ? { docs } : {}),
+    ...(docsProvenance ? { docsProvenance } : {}),
     examples: jsdoc.examples,
     deprecated: jsdoc.deprecated,
     category: jsdoc.category,
@@ -60,7 +82,6 @@ export const extractExport = (name: string, decl: ExportedDeclarations): Export 
       type: 'namespace',
       module: {
         location,
-        description: jsdoc.description || '',
         exports: [],
       },
     })

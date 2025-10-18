@@ -106,9 +106,9 @@ const generateApiIndex = (model: InterfaceModel): string => {
   const modules = model.entrypoints.map((entrypoint) => {
     const moduleName = deriveModuleName(entrypoint.path)
     const url = `/api/${Md.kebab(moduleName)}`
-    // Module.description is required in schema, but TypeScript doesn't trust Effect Schema types
-    // @ts-ignore - Effect Schema types have different runtime behavior
-    const description = entrypoint.module.description.split('\n\n')[0].replace(/\n/g, ' ').trim()
+    const description = entrypoint.module.docs?.description
+      ? entrypoint.module.docs.description.split('\n\n')[0]!.replace(/\n/g, ' ').trim()
+      : ''
 
     // Find namespace exports
     const namespaceExports = entrypoint.module.exports
@@ -120,7 +120,8 @@ const generateApiIndex = (model: InterfaceModel): string => {
       ? '\n\n' + namespaceExports.map((ns: any) => {
         const nsUrl = `/api/${Md.kebab(moduleName)}/${ns.name.toLowerCase()}`
         const nsLink = Md.link(nsUrl, Md.code(ns.name))
-        return Md.listItem(`${nsLink}${ns.description ? ` - ${ns.description}` : ''}`)
+        const nsDesc = ns.docs?.description ? ` - ${ns.docs.description}` : ''
+        return Md.listItem(`${nsLink}${nsDesc}`)
       }).join('\n')
       : ''
 
@@ -147,7 +148,7 @@ const generatePages = (model: InterfaceModel): Page[] => {
     const module = entrypoint.module
 
     // Check if module description came from external .md file
-    if (module.descriptionSource === 'md-file') {
+    if (module.docsProvenance?.description?._tag === 'md-file') {
       // Split into overview + exports pages
 
       // Overview page (just README)
@@ -236,9 +237,11 @@ const generatePageContent = (page: Page, context: Context): string => {
 
   // Handle overview pages (just README)
   if (pageType === 'overview') {
+    const description = module.docs?.description || ''
+    const guide = module.docs?.guide ? `\n\n${module.docs.guide}` : ''
     return Md.sections(
       Md.heading(1, breadcrumbs.join('.')),
-      module.description || '',
+      description + guide,
     )
   }
 
@@ -275,10 +278,13 @@ const generatePageContent = (page: Page, context: Context): string => {
   // Add breadcrumbs to context for namespace usage in examples
   const contextWithBreadcrumbs = { ...context, breadcrumbs }
 
+  const description = module.docs?.description || ''
+  const guide = module.docs?.guide ? `\n\n${module.docs.guide}` : ''
+
   return Md.sections(
     Md.heading(1, breadcrumbs.join('.')),
     breadcrumbNav,
-    module.description || '',
+    description + guide,
     renderImportSection(entrypoint, context.packageName, breadcrumbs),
     namespaceExports.length > 0 ? renderNamespacesSection(namespaceExports, breadcrumbs) : '',
     renderExportsSection(regularExports, contextWithBreadcrumbs),
@@ -345,7 +351,8 @@ const renderNamespacesSection = (namespaces: Export[], breadcrumbs: string[]): s
   const items = namespaces.map((ns) => {
     const nsPath = `/api/${[...breadcrumbs, ns.name].map(Md.kebab).join('/')}`
     const link = Md.link(nsPath, `**${Md.code(ns.name)}**`)
-    return Md.listItem(`${link}${ns.description ? ` - ${ns.description}` : ''}`)
+    const nsDesc = ns.docs?.description ? ` - ${ns.docs.description}` : ''
+    return Md.listItem(`${link}${nsDesc}`)
   })
 
   return Md.sections(Md.heading(2, 'Namespaces'), items.join('\n'))
@@ -467,11 +474,11 @@ const renderExport = (exp: Export, context: Context): string => {
   // Transform description: normalize whitespace, demote headings, convert links, escape HTML
   // CRITICAL: Must convert double-space separators to newlines BEFORE demoting headings,
   // since demoteHeadings requires actual line breaks to match ^## patterns
-  const description = exp.description
-    ? escapeHtmlPreservingCode(
+  const transformMarkdown = (text: string) =>
+    escapeHtmlPreservingCode(
       Md.demoteHeadings(
         Md.convertJSDocLinks(
-          exp.description
+          text
             .replace(/  /g, '\n\n') // Convert double-space paragraph separators to newlines FIRST
             .replace(/ - /g, '\n- '), // Convert list item separators to proper markdown list items
         ),
@@ -480,7 +487,9 @@ const renderExport = (exp: Export, context: Context): string => {
         // Wrap list items that start with code-like patterns in backticks
         .replace(/^- (\[\[.*?\]\]|\{[^}]+\})/gm, '- `$1`'),
     )
-    : ''
+
+  const description = exp.docs?.description ? transformMarkdown(exp.docs.description) : ''
+  const guide = exp.docs?.guide ? `\n\n${transformMarkdown(exp.docs.guide)}` : ''
 
   const examples = exp.examples.length > 0
     ? `**Examples:**\n\n${exp.examples.map((ex) => renderExample(ex, exp.name, context)).join('\n\n')}`
@@ -532,7 +541,7 @@ const renderExport = (exp: Export, context: Context): string => {
     sourceLink,
     signatureDetails,
     deprecated,
-    description,
+    description + guide,
     examples,
   )
 }

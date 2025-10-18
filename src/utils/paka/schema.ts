@@ -83,6 +83,62 @@ export class SourceLocation extends S.Class<SourceLocation>('SourceLocation')({
 }) {}
 
 // ============================================================================
+// Documentation Provenance
+// ============================================================================
+
+/**
+ * Provenance for JSDoc-sourced documentation.
+ * Tracks whether it came from a shadow namespace or regular JSDoc.
+ */
+export class JSDocProvenance extends S.TaggedClass<JSDocProvenance>()(
+  'jsdoc',
+  {
+    /** Whether description came from shadow namespace pattern */
+    shadowNamespace: S.Boolean,
+  },
+) {}
+
+/**
+ * Provenance for markdown file-sourced documentation.
+ * Includes file path for "Edit this page" links.
+ */
+export class MdFileProvenance extends S.TaggedClass<MdFileProvenance>()(
+  'md-file',
+  {
+    /** Relative path to the source markdown file */
+    filePath: FsLoc.RelFile,
+  },
+) {}
+
+/**
+ * Union of all possible documentation provenance types.
+ */
+export const Provenance = S.Union(JSDocProvenance, MdFileProvenance)
+export type Provenance = typeof Provenance.Type
+
+/**
+ * Documentation content for modules and exports.
+ * Groups descriptive and guide content together.
+ */
+export class Docs extends S.Class<Docs>('Docs')({
+  /** Brief technical description (API reference style) - from JSDoc/shadow */
+  description: S.optional(S.String),
+  /** Long-form guide/tutorial content (narrative style) - from .md files or @guide tag */
+  guide: S.optional(S.String),
+}) {}
+
+/**
+ * Provenance tracking for documentation sources.
+ * Maps each doc field (description/guide) to its source.
+ */
+export class DocsProvenance extends S.Class<DocsProvenance>('DocsProvenance')({
+  /** Provenance for the description field */
+  description: S.optional(Provenance),
+  /** Provenance for the guide field */
+  guide: S.optional(Provenance),
+}) {}
+
+// ============================================================================
 // Signature Models
 // ============================================================================
 
@@ -462,8 +518,10 @@ const BaseExportFields = {
   signature: SignatureModel,
   /** Simple signature when __simpleSignature phantom type is present */
   signatureSimple: S.optional(SignatureModel),
-  /** Description from JSDoc */
-  description: S.optional(S.String),
+  /** Documentation content (description and guide) */
+  docs: S.optional(Docs),
+  /** Provenance tracking for documentation sources */
+  docsProvenance: S.optional(DocsProvenance),
   /** Code examples from @example tags */
   examples: S.Array(Example),
   /** Deprecation notice from @deprecated tag */
@@ -481,8 +539,8 @@ const BaseExportFields = {
  */
 export interface Module {
   readonly location: typeof FsLoc.RelFile.Type
-  readonly description: string
-  readonly descriptionSource?: 'jsdoc' | 'md-file'
+  readonly docs?: typeof Docs.Type
+  readonly docsProvenance?: typeof DocsProvenance.Type
   readonly category?: string
   readonly exports: ReadonlyArray<Export>
 }
@@ -511,10 +569,10 @@ export const Module: S.Schema<Module, ModuleEncoded> = S.suspend(
        * Portable across package registry, GitHub repo, local dev, etc.
        */
       location: FsLoc.RelFile,
-      /** Module-level description from JSDoc */
-      description: S.String,
-      /** Source of module description - tracks whether description came from JSDoc or external .md file */
-      descriptionSource: S.optional(S.Literal('jsdoc', 'md-file')),
+      /** Documentation content (description and guide) */
+      docs: S.optional(Docs),
+      /** Provenance tracking for documentation sources */
+      docsProvenance: S.optional(DocsProvenance),
       /** Category from @category tag for grouping in sidebar */
       category: S.optional(S.String),
       /** All exports in this module */
