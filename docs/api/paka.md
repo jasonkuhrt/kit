@@ -448,23 +448,13 @@ Discriminated by _tag field:
 - `ValueSignatureModel`
 - Const values (type as text)
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Module`
-
-```typescript
-any
-```
-
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L585" />
-
-Export ModuleSchema as Module schema for use in other schemas. Also provides the class type with instance methods.
-
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Export`
 
 ```typescript
-any
+Union<[typeof ValueExport, typeof TypeExport]>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L615" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L754" />
 
 Export is a tagged union of value and type exports.
 
@@ -474,7 +464,7 @@ Export is a tagged union of value and type exports.
 Union<[typeof DrillableNamespaceEntrypoint, typeof SimpleEntrypoint]>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L771" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L938" />
 
 Entrypoint union
 
@@ -486,7 +476,7 @@ Entrypoint union
 typeof Package
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L804" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L971" />
 
 The complete interface model output.
 
@@ -895,31 +885,53 @@ import { Paka } from '@wollybeard/kit/paka'
 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ValueExport`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `Module`
 
 ```typescript
 class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L593" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L582" />
 
-Value export
+Module schema implementation.
 
-- represents a runtime export. Namespace exports include a nested module.
+NOTE: Circular dependency handled via declaration merging:
+
+- Module interface declared above provides type structure
+- Module class extends S.Class
+- same name enables declaration merging
+- Module contains Export[] (through exports field)
+- ValueExport (part of Export union) contains optional Module (through module field)
+- This is intentional and handled correctly at runtime by Effect Schema via S.suspend()
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ValueExport`
+
+```typescript
+class {
+
+  // Properties
+  static is: (u: unknown, overrideOptions?: number | ParseOptions | undefined) => u is ValueExport
+}
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L694" />
+
+Value export schema implementation.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `TypeExport`
 
 ```typescript
 class {
+
+  // Properties
+  static is: (u: unknown, overrideOptions?: number | ParseOptions | undefined) => u is TypeExport
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L605" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L724" />
 
-Type export
-
-- represents a type-only export.
+Type export schema implementation.
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `DrillableNamespaceEntrypoint`
 
@@ -931,7 +943,7 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L669" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L809" />
 
 Drillable Namespace Pattern entrypoint.
 
@@ -999,7 +1011,7 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L733" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L873" />
 
 Simple entrypoint without special import pattern.
 
@@ -1010,7 +1022,7 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L780" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L947" />
 
 Package metadata.
 
@@ -1021,7 +1033,7 @@ class {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L790" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L957" />
 
 Package represents the complete extracted documentation model.
 
@@ -1075,13 +1087,81 @@ type SignatureModel = S.Schema.Type<typeof SignatureModel>
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L524" />
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Module`
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Module`
 
 ```typescript
-type Module = S.Schema.Type<typeof Module>
+interface Module {
+  readonly location: S.Schema.Type<typeof FsLoc.RelFile>
+  readonly docs?: Docs | undefined
+  readonly docsProvenance?: DocsProvenance | undefined
+  readonly category?: string | undefined
+  readonly exports: Export[]
+}
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L586" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L556" />
+
+Module type interface for declaration merging. Following the graphql-kit pattern for circular schemas with instance methods.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ModuleEncoded`
+
+```typescript
+interface ModuleEncoded {
+  readonly location: S.Schema.Encoded<typeof FsLoc.RelFile>
+  readonly docs?: Docs | undefined
+  readonly docsProvenance?: DocsProvenance | undefined
+  readonly category?: string | undefined
+  readonly exports: ExportEncoded[]
+}
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L564" />
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ValueExport`
+
+```typescript
+interface ValueExport {
+  readonly name: string
+  readonly signature: SignatureModel
+  readonly signatureSimple?: SignatureModel | undefined
+  readonly docs?: Docs | undefined
+  readonly docsProvenance?: DocsProvenance | undefined
+  readonly examples: readonly Example[]
+  readonly deprecated?: string | undefined
+  readonly category?: string | undefined
+  readonly tags: Readonly<Record<string, string>>
+  readonly sourceLocation: SourceLocation
+  readonly _tag: 'value'
+  readonly type: S.Schema.Type<typeof ValueExportType>
+  readonly module?: Module | undefined
+}
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L659" />
+
+ValueExport type interface for declaration merging.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ValueExportEncoded`
+
+```typescript
+interface ValueExportEncoded {
+  readonly _tag: 'value'
+  readonly name: string
+  readonly signature: SignatureModel
+  readonly signatureSimple?: SignatureModel | undefined
+  readonly docs?: Docs | undefined
+  readonly docsProvenance?: DocsProvenance | undefined
+  readonly examples: readonly Example[]
+  readonly deprecated?: string | undefined
+  readonly category?: string | undefined
+  readonly tags: Readonly<Record<string, string>>
+  readonly sourceLocation: SourceLocation
+  readonly type: S.Schema.Encoded<typeof ValueExportType>
+  readonly module?: ModuleEncoded | undefined
+}
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L675" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Export`
 
@@ -1089,7 +1169,15 @@ type Module = S.Schema.Type<typeof Module>
 type Export = S.Schema.Type<typeof Export>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L616" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L755" />
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `ExportEncoded`
+
+```typescript
+type ExportEncoded = ValueExportEncoded | S.Schema.Encoded<typeof TypeExport>
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L756" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Entrypoint`
 
@@ -1097,7 +1185,7 @@ type Export = S.Schema.Type<typeof Export>
 type Entrypoint = S.Schema.Type<typeof Entrypoint>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L775" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L942" />
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `InterfaceModel`
 
@@ -1105,4 +1193,4 @@ type Entrypoint = S.Schema.Type<typeof Entrypoint>
 type InterfaceModel = S.Schema.Type<typeof InterfaceModel>
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L805" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L972" />

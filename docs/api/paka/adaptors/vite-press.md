@@ -25,7 +25,7 @@ import { VitePress } from '@wollybeard/kit/paka'
 (model: Package, config: VitePressConfig): void
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L72" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L82" />
 
 **Parameters:**
 
@@ -40,7 +40,7 @@ Generate VitePress documentation from interface model.
 (model: Package, categoryOrder?: string[] | undefined): { text: string; items: { text: string; link: string; items?: any[]; collapsed?: boolean; }[]; }[]
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L121" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L131" />
 
 **Parameters:**
 
@@ -70,6 +70,6 @@ type VitePressConfig = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L15" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L25" />
 
 Configuration for VitePress generation.
