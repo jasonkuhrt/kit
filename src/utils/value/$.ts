@@ -1,3 +1,6 @@
+// @ts-expect-error Duplicate identifier
+export * as Value from './$$.js'
+
 /**
  * General value utilities for common JavaScript values and patterns.
  *
@@ -7,4 +10,4 @@
  *
  * @category Utils
  */
-export * as Value from './$$.js'
+export namespace Value {}

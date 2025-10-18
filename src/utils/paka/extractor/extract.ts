@@ -6,9 +6,12 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { Project } from 'ts-morph'
 import {
+  Docs,
+  DocsProvenance,
   DrillableNamespaceEntrypoint,
   type Entrypoint,
   type InterfaceModel,
+  JSDocProvenance,
   Package,
   PackageMetadata,
   SimpleEntrypoint,
@@ -158,10 +161,18 @@ export const extractFromFiles = (params: {
         if (nsFilePath === subpathFilePath) {
           isDrillableNamespace = true
           actualSourceFile = nsReferencedFile
-          // Extract JSDoc from the namespace export declaration
-          const jsdoc = parseJSDoc(exportDecl)
-          namespaceDescription = jsdoc.description
-          namespaceCategory = jsdoc.category
+          // Extract JSDoc: prefer namespace declaration (better IDE experience) over export declaration (fallback)
+          const namespaceDecl = sourceFile.getModules().find((m) => m.getName() === nsName)
+          if (namespaceDecl) {
+            const jsdoc = parseJSDoc(namespaceDecl)
+            namespaceDescription = jsdoc.description
+            namespaceCategory = jsdoc.category
+          } else {
+            // Fallback: read JSDoc from export * as declaration
+            const jsdoc = parseJSDoc(exportDecl)
+            namespaceDescription = jsdoc.description
+            namespaceCategory = jsdoc.category
+          }
           break
         }
       }
@@ -197,10 +208,18 @@ export const extractFromFiles = (params: {
                 isDrillableNamespace = true
                 // Keep actualSourceFile as the barrel file ($$.ts), not the namespace wrapper
                 // We want to extract the barrel's contents, just use the wrapper's JSDoc
-                // Extract JSDoc from the namespace export declaration
-                const jsdoc = parseJSDoc(exportDecl)
-                namespaceDescription = jsdoc.description
-                namespaceCategory = jsdoc.category
+                // Extract JSDoc: prefer namespace declaration (better IDE experience) over export declaration (fallback)
+                const namespaceDecl = siblingNamespaceFile.getModules().find((m) => m.getName() === nsName)
+                if (namespaceDecl) {
+                  const jsdoc = parseJSDoc(namespaceDecl)
+                  namespaceDescription = jsdoc.description
+                  namespaceCategory = jsdoc.category
+                } else {
+                  // Fallback: read JSDoc from export * as declaration
+                  const jsdoc = parseJSDoc(exportDecl)
+                  namespaceDescription = jsdoc.description
+                  namespaceCategory = jsdoc.category
+                }
                 break
               }
             }
@@ -225,7 +244,18 @@ export const extractFromFiles = (params: {
     if (namespaceDescription || namespaceCategory) {
       module = {
         ...module,
-        ...(namespaceDescription ? { description: namespaceDescription, descriptionSource: 'jsdoc' as const } : {}),
+        ...(namespaceDescription
+          ? {
+            docs: Docs.make({
+              description: namespaceDescription,
+              guide: module.docs?.guide,
+            }),
+            docsProvenance: DocsProvenance.make({
+              description: JSDocProvenance.make({ shadowNamespace: true }),
+              guide: module.docsProvenance?.guide,
+            }),
+          }
+          : {}),
         ...(namespaceCategory ? { category: namespaceCategory } : {}),
       }
     }
@@ -376,10 +406,18 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
         if (nsFilePath === subpathFilePath) {
           isDrillableNamespace = true
           actualSourceFile = nsReferencedFile
-          // Extract JSDoc from the namespace export declaration
-          const jsdoc = parseJSDoc(exportDecl)
-          namespaceDescription = jsdoc.description
-          namespaceCategory = jsdoc.category
+          // Extract JSDoc: prefer namespace declaration (better IDE experience) over export declaration (fallback)
+          const namespaceDecl = sourceFile.getModules().find((m) => m.getName() === nsName)
+          if (namespaceDecl) {
+            const jsdoc = parseJSDoc(namespaceDecl)
+            namespaceDescription = jsdoc.description
+            namespaceCategory = jsdoc.category
+          } else {
+            // Fallback: read JSDoc from export * as declaration
+            const jsdoc = parseJSDoc(exportDecl)
+            namespaceDescription = jsdoc.description
+            namespaceCategory = jsdoc.category
+          }
           break
         }
       }
@@ -415,10 +453,18 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
                 isDrillableNamespace = true
                 // Keep actualSourceFile as the barrel file ($$.ts), not the namespace wrapper
                 // We want to extract the barrel's contents, just use the wrapper's JSDoc
-                // Extract JSDoc from the namespace export declaration
-                const jsdoc = parseJSDoc(exportDecl)
-                namespaceDescription = jsdoc.description
-                namespaceCategory = jsdoc.category
+                // Extract JSDoc: prefer namespace declaration (better IDE experience) over export declaration (fallback)
+                const namespaceDecl = siblingNamespaceFile.getModules().find((m) => m.getName() === nsName)
+                if (namespaceDecl) {
+                  const jsdoc = parseJSDoc(namespaceDecl)
+                  namespaceDescription = jsdoc.description
+                  namespaceCategory = jsdoc.category
+                } else {
+                  // Fallback: read JSDoc from export * as declaration
+                  const jsdoc = parseJSDoc(exportDecl)
+                  namespaceDescription = jsdoc.description
+                  namespaceCategory = jsdoc.category
+                }
                 break
               }
             }
@@ -443,7 +489,18 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
     if (namespaceDescription || namespaceCategory) {
       module = {
         ...module,
-        ...(namespaceDescription ? { description: namespaceDescription, descriptionSource: 'jsdoc' as const } : {}),
+        ...(namespaceDescription
+          ? {
+            docs: Docs.make({
+              description: namespaceDescription,
+              guide: module.docs?.guide,
+            }),
+            docsProvenance: DocsProvenance.make({
+              description: JSDocProvenance.make({ shadowNamespace: true }),
+              guide: module.docsProvenance?.guide,
+            }),
+          }
+          : {}),
         ...(namespaceCategory ? { category: namespaceCategory } : {}),
       }
     }

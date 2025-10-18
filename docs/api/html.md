@@ -1,5 +1,7 @@
 # Html
 
+HTML utility functions for escaping and working with HTML content.
+
 ## Import
 
 ::: code-group

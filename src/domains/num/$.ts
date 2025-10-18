@@ -1,3 +1,6 @@
+// @ts-expect-error Duplicate identifier
+export * as Num from './$$.js'
+
 /**
  * Numeric types and utilities with branded types for mathematical constraints.
  *
@@ -6,6 +9,6 @@
  * numeric domains like Complex, Ratio, and BigInt. Includes type guards,
  * ordering, and equivalence utilities.
  *
- * @category Core Data Structures
+ * @category Domains
  */
-export * as Num from './$$.js'
+export namespace Num {}

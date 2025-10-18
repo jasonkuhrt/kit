@@ -1,3 +1,6 @@
+// @ts-expect-error Duplicate identifier
+export * as Str from './$$.js'
+
 /**
  * String utilities for text manipulation and analysis.
  *
@@ -5,6 +8,6 @@
  * matching, replacement, templating, and character utilities. Features type-safe
  * APIs with strong inference for string literals and patterns.
  *
- * @category Core Data Structures
+ * @category Domains
  */
-export * as Str from './$$.js'
+export namespace Str {}

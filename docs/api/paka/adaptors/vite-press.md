@@ -30,7 +30,7 @@ Paka.Adaptors.VitePress.someFunction()
 (model: Package, config: VitePressConfig): void
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L70" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L72" />
 
 **Parameters:**
 
@@ -38,6 +38,23 @@ Paka.Adaptors.VitePress.someFunction()
 - `config` - VitePress generation configuration
 
 Generate VitePress documentation from interface model.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `generateSidebar`
+
+```typescript
+(model: Package, categoryOrder?: string[] | undefined): { text: string; items: { text: string; link: string; items?: any[]; collapsed?: boolean; }[]; }[]
+```
+
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/adaptors/vitepress.ts#L121" />
+
+**Parameters:**
+
+- `model` - The extracted interface model
+- `categoryOrder` - Optional category ordering (defaults to alphabetical)
+
+**Returns:** Sidebar items grouped by category
+
+Generate VitePress sidebar configuration from interface model.
 
 ## Types
 
@@ -53,6 +70,8 @@ type VitePressConfig = {
   githubUrl?: string
   /** Group exports by @category tag (auto-detects if undefined) */
   groupByCategory?: boolean
+  /** Optional category ordering for sidebar (defaults to alphabetical with "Other" last) */
+  categoryOrder?: string[]
 }
 ```
 

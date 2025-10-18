@@ -1,3 +1,6 @@
+// @ts-expect-error Duplicate identifier
+export * as Rec from './$$.js'
+
 /**
  * Record utilities for working with plain JavaScript objects as dictionaries.
  *
@@ -5,6 +8,6 @@
  * including type guards, merging, creation, and index signature manipulation.
  * Strictly validates plain objects, rejecting arrays and class instances.
  *
- * @category Core Data Structures
+ * @category Domains
  */
-export * as Rec from './$$.js'
+export namespace Rec {}

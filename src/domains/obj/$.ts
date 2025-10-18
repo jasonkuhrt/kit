@@ -1,3 +1,6 @@
+// @ts-expect-error Duplicate identifier
+export * as Obj from './$$.js'
+
 /**
  * Object utilities for working with plain JavaScript objects.
  *
@@ -5,6 +8,6 @@
  * manipulation, merging, filtering, and transformations. Supports both value-level
  * and type-level operations with strong type inference.
  *
- * @category Core Data Structures
+ * @category Domains
  */
-export * as Obj from './$$.js'
+export namespace Obj {}

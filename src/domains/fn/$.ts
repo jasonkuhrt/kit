@@ -1,3 +1,6 @@
+// @ts-expect-error Duplicate identifier
+export * as Fn from './$$.js'
+
 /**
  * Function utilities for functional programming patterns.
  *
@@ -5,6 +8,6 @@
  * piping, and common functional patterns like identity and constant functions.
  * Includes function analysis tools and endomorphism utilities.
  *
- * @category Core Data Structures
+ * @category Domains
  */
-export * as Fn from './$$.js'
+export namespace Fn {}

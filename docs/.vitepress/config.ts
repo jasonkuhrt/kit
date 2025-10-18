@@ -1,7 +1,7 @@
 import { transformerNotationWordHighlight } from '@shikijs/transformers'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { defineConfig } from 'vitepress'
-import { generateApiSidebar } from './sidebar.js'
+import { apiSidebar } from '../.generated/sidebar.js'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -68,7 +68,7 @@ export default defineConfig({
             { text: 'Overview', link: '/api/' },
           ],
         },
-        ...generateApiSidebar(),
+        ...apiSidebar,
       ],
     },
 

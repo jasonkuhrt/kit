@@ -44,7 +44,7 @@ test('demotes H2 headings in JSDoc descriptions to H4', () => {
 
   // Simulate the transformation that should happen
   const transformed = description
-    .replace(/  /g, '\n\n') // Convert double-space to newlines FIRST
+    ?.replace(/  /g, '\n\n') // Convert double-space to newlines FIRST
     .replace(/ - /g, '\n- ')
 
   // After conversion, headings should be present as actual line-start patterns

@@ -1346,3 +1346,312 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
 }
 ╚══════════════════════════════════════════════════╝"
 `;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 19`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js","./arr":"./arr/$$.js"}}',
+    '/i.ts': '// @ts-expect-error Duplicate identifier\\n          export * as Arr from \\'./arr/$$.js\\'\\n          /** Array utilities @category Domains */\\n          export namespace Arr {}',
+    '/arr/$.ts': '// @ts-expect-error Duplicate identifier\\n          export * as Arr from \\'./$$.js\\'\\n          /** Array utilities @category Domains */\\n          export namespace Arr {}',
+    '/arr/$$.ts': 'export const map = 1'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './arr/$$.ts',
+        docs: {
+          description: 'Array utilities',
+          guide: undefined
+        },
+        docsProvenance: {
+          description: {
+            shadowNamespace: true,
+            _tag: 'jsdoc'
+          },
+          guide: undefined
+        },
+        category: 'Domains',
+        exports: [
+          {
+            name: 'map',
+            signature: {
+              type: '1',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './arr/$$.ts',
+              line: 1
+            },
+            _tag: 'value',
+            type: 'const'
+          }
+        ]
+      },
+      _tag: 'DrillableNamespaceEntrypoint'
+    },
+    {
+      path: './arr',
+      module: {
+        location: './arr/$$.ts',
+        docs: {
+          description: 'Array utilities',
+          guide: undefined
+        },
+        docsProvenance: {
+          description: {
+            shadowNamespace: true,
+            _tag: 'jsdoc'
+          },
+          guide: undefined
+        },
+        category: 'Domains',
+        exports: [
+          {
+            name: 'map',
+            signature: {
+              type: '1',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './arr/$$.ts',
+              line: 1
+            },
+            _tag: 'value',
+            type: 'const'
+          }
+        ]
+      },
+      _tag: 'DrillableNamespaceEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 20`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js","./str":"./str/$$.js"}}',
+    '/i.ts': '/** String utilities @category Domains */\\n          export * as Str from \\'./str/$$.js\\'',
+    '/str/$.ts': '/** String utilities @category Domains */\\n          export * as Str from \\'./$$.js\\'',
+    '/str/$$.ts': 'export const trim = 1'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './str/$$.ts',
+        docs: {
+          description: 'String utilities',
+          guide: undefined
+        },
+        docsProvenance: {
+          description: {
+            shadowNamespace: true,
+            _tag: 'jsdoc'
+          },
+          guide: undefined
+        },
+        category: 'Domains',
+        exports: [
+          {
+            name: 'trim',
+            signature: {
+              type: '1',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './str/$$.ts',
+              line: 1
+            },
+            _tag: 'value',
+            type: 'const'
+          }
+        ]
+      },
+      _tag: 'DrillableNamespaceEntrypoint'
+    },
+    {
+      path: './str',
+      module: {
+        location: './str/$$.ts',
+        docs: {
+          description: 'String utilities',
+          guide: undefined
+        },
+        docsProvenance: {
+          description: {
+            shadowNamespace: true,
+            _tag: 'jsdoc'
+          },
+          guide: undefined
+        },
+        category: 'Domains',
+        exports: [
+          {
+            name: 'trim',
+            signature: {
+              type: '1',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './str/$$.ts',
+              line: 1
+            },
+            _tag: 'value',
+            type: 'const'
+          }
+        ]
+      },
+      _tag: 'DrillableNamespaceEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 21`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js","./num":"./num/$$.js"}}',
+    '/i.ts': '/** Export doc @category Wrong */\\n          export * as Num from \\'./num/$$.js\\'\\n          /** Shadow doc @category Domains */\\n          export namespace Num {}',
+    '/num/$.ts': '/** Export doc @category Wrong */\\n          export * as Num from \\'./$$.js\\'\\n          /** Shadow doc @category Domains */\\n          export namespace Num {}',
+    '/num/$$.ts': 'export const add = 1'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './num/$$.ts',
+        docs: {
+          description: 'Shadow doc',
+          guide: undefined
+        },
+        docsProvenance: {
+          description: {
+            shadowNamespace: true,
+            _tag: 'jsdoc'
+          },
+          guide: undefined
+        },
+        category: 'Domains',
+        exports: [
+          {
+            name: 'add',
+            signature: {
+              type: '1',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './num/$$.ts',
+              line: 1
+            },
+            _tag: 'value',
+            type: 'const'
+          }
+        ]
+      },
+      _tag: 'DrillableNamespaceEntrypoint'
+    },
+    {
+      path: './num',
+      module: {
+        location: './num/$$.ts',
+        docs: {
+          description: 'Shadow doc',
+          guide: undefined
+        },
+        docsProvenance: {
+          description: {
+            shadowNamespace: true,
+            _tag: 'jsdoc'
+          },
+          guide: undefined
+        },
+        category: 'Domains',
+        exports: [
+          {
+            name: 'add',
+            signature: {
+              type: '1',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './num/$$.ts',
+              line: 1
+            },
+            _tag: 'value',
+            type: 'const'
+          }
+        ]
+      },
+      _tag: 'DrillableNamespaceEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;

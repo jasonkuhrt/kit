@@ -30,7 +30,7 @@ Paka.Extractor.someFunction()
 (params: { projectRoot?: string; files: Layout; entrypoints?: string[]; extractorVersion?: string; filterUnderscoreExports?: boolean; }): Package
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L37" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L40" />
 
 **Parameters:**
 
@@ -62,7 +62,7 @@ const model = Paka.Extractor.extractFromFiles({ files: layout })
 (config: ExtractConfig): Package
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L280" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L310" />
 
 **Parameters:**
 
@@ -176,7 +176,7 @@ type ExtractConfig = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L261" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L291" />
 
 Configuration for extraction.
 

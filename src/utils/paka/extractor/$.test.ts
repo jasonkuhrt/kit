@@ -151,5 +151,67 @@ Test
     { files: project.add('i.ts', `/** foo \`bar\` */\nexport type T = string`).toLayout() },
     // Interface + const with same name - should extract both
     { files: project.add('i.ts', `export interface foo { (): number }\nexport const foo = 1`).toLayout() },
+    // Drillable namespace: shadow namespace with @category (preferred pattern)
+    {
+      files: project
+        .add('package.json', {
+          name: 'x',
+          version: '0.0.0',
+          exports: {
+            '.': './i.js',
+            './arr': './arr/$$.js',
+          },
+        })
+        .add('i.ts', `// @ts-expect-error Duplicate identifier
+          export * as Arr from './arr/$$.js'
+          /** Array utilities @category Domains */
+          export namespace Arr {}`)
+        .add('arr/$.ts', `// @ts-expect-error Duplicate identifier
+          export * as Arr from './$$.js'
+          /** Array utilities @category Domains */
+          export namespace Arr {}`)
+        .add('arr/$$.ts', `export const map = 1`)
+        .toLayout(),
+    },
+    // Drillable namespace: JSDoc on export declaration (fallback pattern)
+    {
+      files: project
+        .add('package.json', {
+          name: 'x',
+          version: '0.0.0',
+          exports: {
+            '.': './i.js',
+            './str': './str/$$.js',
+          },
+        })
+        .add('i.ts', `/** String utilities @category Domains */
+          export * as Str from './str/$$.js'`)
+        .add('str/$.ts', `/** String utilities @category Domains */
+          export * as Str from './$$.js'`)
+        .add('str/$$.ts', `export const trim = 1`)
+        .toLayout(),
+    },
+    // Drillable namespace: shadow takes precedence over export JSDoc
+    {
+      files: project
+        .add('package.json', {
+          name: 'x',
+          version: '0.0.0',
+          exports: {
+            '.': './i.js',
+            './num': './num/$$.js',
+          },
+        })
+        .add('i.ts', `/** Export doc @category Wrong */
+          export * as Num from './num/$$.js'
+          /** Shadow doc @category Domains */
+          export namespace Num {}`)
+        .add('num/$.ts', `/** Export doc @category Wrong */
+          export * as Num from './$$.js'
+          /** Shadow doc @category Domains */
+          export namespace Num {}`)
+        .add('num/$$.ts', `export const add = 1`)
+        .toLayout(),
+    },
   )
   .test()

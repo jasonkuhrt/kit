@@ -1,3 +1,6 @@
+// @ts-expect-error Duplicate identifier
+export * as Json from './$$.js'
+
 /**
  * JSON utilities with Effect Schema integration.
  *
@@ -5,6 +8,6 @@
  * and validation using Effect Schema. Supports JSON primitives, objects, and
  * recursive value structures with comprehensive error handling.
  *
- * @category Core Data Structures
+ * @category Domains
  */
-export * as Json from './$$.js'
+export namespace Json {}

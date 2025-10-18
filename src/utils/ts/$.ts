@@ -1,3 +1,6 @@
+// @ts-expect-error Duplicate identifier
+export * as Ts from './$$.js'
+
 /**
  * TypeScript type utilities and type-level programming helpers.
  *
@@ -8,4 +11,4 @@
  *
  * @category Utils
  */
-export * as Ts from './$$.js'
+export namespace Ts {}

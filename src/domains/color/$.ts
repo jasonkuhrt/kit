@@ -1,3 +1,6 @@
+// @ts-expect-error Duplicate identifier
+export * as Color from './$$.js'
+
 /**
  * Color utilities for terminal output.
  *
@@ -50,4 +53,4 @@
  *
  * @category Color
  */
-export * as Color from './$$.js'
+export namespace Color {}
