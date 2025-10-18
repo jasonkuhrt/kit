@@ -174,7 +174,9 @@ export const generateSidebar = (
   }
 
   // Build final sidebar structure
-  const sidebar: Array<{ text: string; items: Array<{ text: string; link: string; items?: any[]; collapsed?: boolean }> }> = []
+  const sidebar: Array<
+    { text: string; items: Array<{ text: string; link: string; items?: any[]; collapsed?: boolean }> }
+  > = []
 
   // Determine category order
   let sortedCategories: string[]
@@ -403,52 +405,34 @@ const renderImportSection = (
   packageName: string,
   breadcrumbs: string[],
 ): string => {
-  const moduleName = breadcrumbs[0]
-  if (!moduleName) return ''
-
-  const subpath = `${packageName}/${Md.kebab(moduleName)}`
-
-  // For nested namespaces, show access pattern
-  if (breadcrumbs.length > 1) {
-    const namespacePath = breadcrumbs.join('.')
-    const childNamespace = breadcrumbs[breadcrumbs.length - 1]!
-    const namespaceAccessExample = `// Access via namespace\n${namespacePath}.someFunction()`
-    const barrelAccessExample = `// Access via direct import\n${childNamespace}.someFunction()`
-
+  const importExamples = (() => {
     if (entrypoint._tag === 'DrillableNamespaceEntrypoint') {
-      return Md.sections(
-        Md.heading(2, 'Import'),
-        Md.codeGroup([
-          {
-            label: 'Namespace',
-            code: `import { ${moduleName} } from '${packageName}'\n\n${namespaceAccessExample}`,
-          },
-          {
-            label: 'Barrel',
-            code: `import { ${childNamespace} } from '${subpath}'\n\n${barrelAccessExample}`,
-          },
-        ]),
-      )
+      return entrypoint.getImportExamples(packageName, breadcrumbs)
     } else {
-      return Md.sections(
-        Md.heading(2, 'Import'),
-        Md.codeFence(`import { ${moduleName} } from '${subpath}'\n\n${namespaceAccessExample}`),
-      )
+      return entrypoint.getImportExamples(packageName, entrypoint.path)
     }
-  }
+  })()
 
-  // Top-level module
-  if (entrypoint._tag === 'DrillableNamespaceEntrypoint') {
+  if (importExamples.length === 0) return ''
+
+  // Single import example - use code fence
+  if (importExamples.length === 1) {
     return Md.sections(
       Md.heading(2, 'Import'),
-      Md.codeGroup([
-        { label: 'Namespace', code: `import { ${moduleName} } from '${packageName}'` },
-        { label: 'Barrel', code: `import * as ${moduleName} from '${subpath}'` },
-      ]),
+      Md.codeFence(importExamples[0]!.content),
     )
-  } else {
-    return Md.sections(Md.heading(2, 'Import'), Md.codeFence(`import { ${moduleName} } from '${subpath}'`))
   }
+
+  // Multiple import examples - use code group with tabs
+  return Md.sections(
+    Md.heading(2, 'Import'),
+    Md.codeGroup(
+      importExamples.map((example) => ({
+        label: example.label,
+        code: example.content,
+      })),
+    ),
+  )
 }
 
 /**

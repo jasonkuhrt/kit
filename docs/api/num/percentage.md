@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.Percentage.someFunction()
+Num.Percentage
 ```
 
 ```typescript [Barrel]
 import { Percentage } from '@wollybeard/kit/num'
-
-// Access via direct import
-Percentage.someFunction()
 ```
 
 :::

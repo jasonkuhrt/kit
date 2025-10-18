@@ -8,14 +8,11 @@
 import { Paka } from '@wollybeard/kit'
 
 // Access via namespace
-Paka.Adaptors.VitePress.someFunction()
+Paka.Adaptors.VitePress
 ```
 
 ```typescript [Barrel]
 import { VitePress } from '@wollybeard/kit/paka'
-
-// Access via direct import
-VitePress.someFunction()
 ```
 
 :::

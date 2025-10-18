@@ -8,14 +8,11 @@
 import { Obj } from '@wollybeard/kit'
 
 // Access via namespace
-Obj.PropertySignature.someFunction()
+Obj.PropertySignature
 ```
 
 ```typescript [Barrel]
 import { PropertySignature } from '@wollybeard/kit/obj'
-
-// Access via direct import
-PropertySignature.someFunction()
 ```
 
 :::

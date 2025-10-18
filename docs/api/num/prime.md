@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.Prime.someFunction()
+Num.Prime
 ```
 
 ```typescript [Barrel]
 import { Prime } from '@wollybeard/kit/num'
-
-// Access via direct import
-Prime.someFunction()
 ```
 
 :::

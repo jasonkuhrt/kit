@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.Negative.someFunction()
+Num.Negative
 ```
 
 ```typescript [Barrel]
 import { Negative } from '@wollybeard/kit/num'
-
-// Access via direct import
-Negative.someFunction()
 ```
 
 :::

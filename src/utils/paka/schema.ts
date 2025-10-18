@@ -1,4 +1,6 @@
+import { Arr } from '#arr'
 import { FsLoc } from '#fs-loc'
+import { Str } from '#str'
 import { Schema as S } from 'effect'
 
 // ============================================================================
@@ -70,6 +72,19 @@ export class Example extends S.Class<Example>('Example')({
   twoslashEnabled: S.Boolean,
   /** Programming language for syntax highlighting */
   language: S.String,
+}) {}
+
+/**
+ * Import example for documentation UI.
+ *
+ * Non-serialized class used for rendering import tabs in documentation.
+ * Returned by Entrypoint instance methods to provide structured import examples.
+ */
+export class ImportExample extends S.Class<ImportExample>('ImportExample')({
+  /** Tab label (e.g., "Namespace", "Barrel") */
+  label: S.String,
+  /** Import code snippet */
+  content: S.String,
 }) {}
 
 /**
@@ -535,61 +550,53 @@ const BaseExportFields = {
 }
 
 /**
- * Module type definition.
- */
-export interface Module {
-  readonly location: typeof FsLoc.RelFile.Type
-  readonly docs?: typeof Docs.Type
-  readonly docsProvenance?: typeof DocsProvenance.Type
-  readonly category?: string
-  readonly exports: ReadonlyArray<Export>
-}
-
-/**
- * Module encoded type (same as Module since no transformations).
- */
-export interface ModuleEncoded extends Module {}
-
-/**
- * Module schema - uses suspend for circular reference with ValueExport.
+ * Module schema implementation - non-exported class for circular reference.
  *
- * NOTE: The `as any` assertions are required here due to circular dependency:
+ * NOTE: The `@ts-expect-error` comment suppresses TypeScript's circular reference detection.
  * - Module contains Export[] (through exports field)
  * - ValueExport (part of Export union) contains optional Module (through module field)
+ * - This circular dependency is intentional and handled correctly at runtime by Effect Schema
  *
- * Effect Schema's S.suspend handles this at runtime, but TypeScript needs help
- * with the circular type reference. The interface definitions above ensure
- * type safety for consumers.
+ * Following the pattern from graphql-kit for circular schemas with instance methods.
  */
-export const Module: S.Schema<Module, ModuleEncoded> = S.suspend(
-  (): S.Schema<Module, ModuleEncoded> =>
-    S.Struct({
-      /**
-       * Source file location relative to project root.
-       * Portable across package registry, GitHub repo, local dev, etc.
-       */
-      location: FsLoc.RelFile,
-      /** Documentation content (description and guide) */
-      docs: S.optional(Docs),
-      /** Provenance tracking for documentation sources */
-      docsProvenance: S.optional(DocsProvenance),
-      /** Category from @category tag for grouping in sidebar */
-      category: S.optional(S.String),
-      /** All exports in this module */
-      exports: S.Array(Export as any),
-    }) as any,
-)
+// @ts-expect-error - Circular reference between Module and Export is intentional
+class ModuleSchema extends S.Class<ModuleSchema>('Module')({
+  /**
+   * Source file location relative to project root.
+   * Portable across package registry, GitHub repo, local dev, etc.
+   */
+  location: FsLoc.RelFile,
+  /** Documentation content (description and guide) */
+  docs: S.optional(Docs),
+  /** Provenance tracking for documentation sources */
+  docsProvenance: S.optional(DocsProvenance),
+  /** Category from @category tag for grouping in sidebar */
+  category: S.optional(S.String),
+  /** All exports in this module */
+  // @ts-expect-error - Forward reference to Export resolved at runtime via S.suspend
+  exports: S.Array(S.suspend(() => Export as any)),
+}) {}
+
+/**
+ * Export ModuleSchema as Module schema for use in other schemas.
+ * Also provides the class type with instance methods.
+ */
+// @ts-expect-error - Circular reference resolved at runtime
+export const Module: typeof ModuleSchema = ModuleSchema as any
+export type Module = S.Schema.Type<typeof Module>
 
 /**
  * Value export - represents a runtime export.
  * Namespace exports include a nested module.
  */
+// @ts-expect-error - Circular reference between ValueExport and Module is intentional
 export class ValueExport extends S.Class<ValueExport>('ValueExport')({
   ...BaseExportFields,
   _tag: S.Literal('value'),
   type: ValueExportType,
   /** Nested module for namespace exports */
-  module: S.optional(Module),
+  // @ts-expect-error - Forward reference to Module resolved at runtime via S.suspend
+  module: S.optional(S.suspend(() => Module as any)),
 }) {}
 
 /**
@@ -604,7 +611,8 @@ export class TypeExport extends S.Class<TypeExport>('TypeExport')({
 /**
  * Export is a tagged union of value and type exports.
  */
-export const Export = S.Union(ValueExport, TypeExport)
+// @ts-expect-error - Circular reference with Module resolved at runtime
+export const Export = S.Union(ValueExport as any, TypeExport as any)
 export type Export = S.Schema.Type<typeof Export>
 
 /**
@@ -668,7 +676,56 @@ export class DrillableNamespaceEntrypoint extends S.TaggedClass<DrillableNamespa
     /** The extracted module interface from the barrel file */
     module: Module,
   },
-) {}
+) {
+  /**
+   * Generate import examples for this entrypoint.
+   *
+   * For drillable namespaces, this generates both:
+   * - Namespace tab: `import { Name } from 'package'` with access pattern for nested
+   * - Barrel tab: `import * as Name from 'package/kebab-name'` (top-level)
+   *              or `import { ChildName } from 'package/kebab-name'` with access (nested)
+   *
+   * @param packageName - The package name (e.g., '@wollybeard/kit')
+   * @param breadcrumbs - The namespace path (e.g., ['Ts', 'Union'])
+   * @returns Array of import examples with labels and code
+   */
+  getImportExamples(packageName: string, breadcrumbs: string[]): ImportExample[] {
+    const moduleName = breadcrumbs[0]
+    if (!moduleName) return []
+
+    const kebabName = Str.Case.kebab(moduleName)
+    const subpath = `${packageName}/${kebabName}`
+
+    // Top-level: both Namespace and Barrel tabs
+    if (breadcrumbs.length === 1) {
+      return [
+        ImportExample.make({
+          label: 'Namespace',
+          content: `import { ${moduleName} } from '${packageName}'`,
+        }),
+        ImportExample.make({
+          label: 'Barrel',
+          content: `import * as ${moduleName} from '${subpath}'`,
+        }),
+      ]
+    }
+
+    // Nested: show access pattern for namespace (barrel is self-evident)
+    const childNamespace = Arr.last(breadcrumbs)!
+    const namespacePath = breadcrumbs.join('.')
+
+    return [
+      ImportExample.make({
+        label: 'Namespace',
+        content: `import { ${moduleName} } from '${packageName}'\n\n// Access via namespace\n${namespacePath}`,
+      }),
+      ImportExample.make({
+        label: 'Barrel',
+        content: `import { ${childNamespace} } from '${subpath}'`,
+      }),
+    ]
+  }
+}
 
 /**
  * Simple entrypoint without special import pattern.
@@ -685,7 +742,28 @@ export class SimpleEntrypoint extends S.TaggedClass<SimpleEntrypoint>()(
     /** The extracted module interface */
     module: Module,
   },
-) {}
+) {
+  /**
+   * Generate import examples for this entrypoint.
+   *
+   * Simple entrypoints only have one import pattern (no drillable namespace).
+   *
+   * @param packageName - The package name (e.g., '@wollybeard/kit')
+   * @param path - The entrypoint path from package.json exports
+   * @returns Array with single import example
+   */
+  getImportExamples(packageName: string, path: string): ImportExample[] {
+    const moduleName = path.replace('./', '')
+    const subpath = packageName + path.replace('.', '')
+
+    return [
+      ImportExample.make({
+        label: 'Import',
+        content: `import * as ${moduleName} from '${subpath}'`,
+      }),
+    ]
+  }
+}
 
 /**
  * Entrypoint union - all patterns.

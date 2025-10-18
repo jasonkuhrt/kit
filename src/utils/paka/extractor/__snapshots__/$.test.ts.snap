@@ -20,6 +20,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: []
       },
       _tag: 'SimpleEntrypoint'
@@ -51,6 +54,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: '_',
@@ -102,6 +108,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './a.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: '_',
@@ -129,6 +138,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: './a',
       module: {
         location: './a.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: '_',
@@ -179,6 +191,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: 'a',
@@ -230,6 +245,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: 'a',
@@ -280,6 +298,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: 'a',
@@ -349,6 +370,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: 'a',
@@ -400,6 +424,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: 'U',
@@ -441,6 +468,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                 },
                 guide: undefined
               },
+              category: undefined,
               exports: [
                 {
                   name: 'a',
@@ -506,6 +534,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: 'U',
@@ -538,6 +569,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               location: './u.ts',
               docs: '[Circular]',
               docsProvenance: '[Circular]',
+              category: undefined,
               exports: [
                 {
                   name: 'a',
@@ -603,6 +635,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: 'U',
@@ -644,6 +679,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                 },
                 guide: undefined
               },
+              category: undefined,
               exports: [
                 {
                   name: 'a',
@@ -727,6 +763,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: 'a',
@@ -786,6 +825,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: 'a',
@@ -846,6 +888,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: 'a',
@@ -906,6 +951,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: 'U',
@@ -938,6 +986,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               location: './u.ts',
               docs: '[Circular]',
               docsProvenance: '[Circular]',
+              category: undefined,
               exports: [
                 {
                   name: 'a',
@@ -1004,6 +1053,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: 'U',
@@ -1036,6 +1088,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               location: './u.ts',
               docs: '[Circular]',
               docsProvenance: '[Circular]',
+              category: undefined,
               exports: [
                 {
                   name: 'a',
@@ -1120,6 +1173,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: 'U',
@@ -1161,6 +1217,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                 },
                 guide: undefined
               },
+              category: undefined,
               exports: [
                 {
                   name: 'a',
@@ -1236,6 +1293,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
           },
           guide: undefined
         },
+        category: undefined,
         exports: [
           {
             name: 'T',
@@ -1297,6 +1355,9 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
       path: '.',
       module: {
         location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
         exports: [
           {
             name: 'foo',

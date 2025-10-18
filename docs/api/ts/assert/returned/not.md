@@ -8,14 +8,11 @@
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Assert.returned.not.someFunction()
+Ts.Assert.returned.not
 ```
 
 ```typescript [Barrel]
 import { not } from '@wollybeard/kit/ts'
-
-// Access via direct import
-not.someFunction()
 ```
 
 :::

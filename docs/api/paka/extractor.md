@@ -8,14 +8,11 @@
 import { Paka } from '@wollybeard/kit'
 
 // Access via namespace
-Paka.Extractor.someFunction()
+Paka.Extractor
 ```
 
 ```typescript [Barrel]
 import { Extractor } from '@wollybeard/kit/paka'
-
-// Access via direct import
-Extractor.someFunction()
 ```
 
 :::
@@ -28,7 +25,7 @@ Extractor.someFunction()
 (params: { projectRoot?: string; files: Layout; entrypoints?: string[]; extractorVersion?: string; filterUnderscoreExports?: boolean; }): Package
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L40" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L41" />
 
 **Parameters:**
 
@@ -60,7 +57,7 @@ const model = Paka.Extractor.extractFromFiles({ files: layout })
 (config: ExtractConfig): Package
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L310" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L312" />
 
 **Parameters:**
 
@@ -89,7 +86,7 @@ Categorize a TypeScript declaration node into export level and type.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extractExport`
 
 ```typescript
-(name: string, decl: ExportedDeclarations): ValueExport | TypeExport
+(name: string, decl: ExportedDeclarations): unknown
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/export.ts#L26" />
@@ -122,7 +119,7 @@ Parse JSDoc from a declaration node.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extractModuleFromFile`
 
 ```typescript
-(sourceFile: SourceFile, location: RelFile, options?: ModuleExtractionOptions = {}): Module
+(sourceFile: SourceFile, location: RelFile, options?: ModuleExtractionOptions = {}): any
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L240" />
@@ -140,7 +137,7 @@ Extract a module from a source file.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extractModule`
 
 ```typescript
-(moduleDecl: ModuleDeclaration, location: RelFile, options?: ModuleExtractionOptions = {}): Module
+(moduleDecl: ModuleDeclaration, location: RelFile, options?: ModuleExtractionOptions = {}): any
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/nodes/module.ts#L438" />
@@ -174,7 +171,7 @@ type ExtractConfig = {
 }
 ```
 
-<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L291" />
+<SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L293" />
 
 Configuration for extraction.
 

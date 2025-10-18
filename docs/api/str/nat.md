@@ -8,14 +8,11 @@
 import { Str } from '@wollybeard/kit'
 
 // Access via namespace
-Str.Nat.someFunction()
+Str.Nat
 ```
 
 ```typescript [Barrel]
 import { Nat } from '@wollybeard/kit/str'
-
-// Access via direct import
-Nat.someFunction()
 ```
 
 :::

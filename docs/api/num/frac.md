@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.Frac.someFunction()
+Num.Frac
 ```
 
 ```typescript [Barrel]
 import { Frac } from '@wollybeard/kit/num'
-
-// Access via direct import
-Frac.someFunction()
 ```
 
 :::

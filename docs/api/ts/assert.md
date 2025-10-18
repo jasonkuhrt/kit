@@ -559,14 +559,11 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Assert.someFunction()
+Ts.Assert
 ```
 
 ```typescript [Barrel]
 import { Assert } from '@wollybeard/kit/ts'
-
-// Access via direct import
-Assert.someFunction()
 ```
 
 :::

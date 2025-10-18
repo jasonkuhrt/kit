@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.BigInteger.someFunction()
+Num.BigInteger
 ```
 
 ```typescript [Barrel]
 import { BigInteger } from '@wollybeard/kit/num'
-
-// Access via direct import
-BigInteger.someFunction()
 ```
 
 :::

@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.Radians.someFunction()
+Num.Radians
 ```
 
 ```typescript [Barrel]
 import { Radians } from '@wollybeard/kit/num'
-
-// Access via direct import
-Radians.someFunction()
 ```
 
 :::

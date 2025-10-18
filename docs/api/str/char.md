@@ -10,14 +10,11 @@ Uppercase letter.
 import { Str } from '@wollybeard/kit'
 
 // Access via namespace
-Str.Char.someFunction()
+Str.Char
 ```
 
 ```typescript [Barrel]
 import { Char } from '@wollybeard/kit/str'
-
-// Access via direct import
-Char.someFunction()
 ```
 
 :::

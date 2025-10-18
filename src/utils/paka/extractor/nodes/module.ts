@@ -8,7 +8,7 @@ import {
   DocsProvenance,
   JSDocProvenance,
   MdFileProvenance,
-  type Module,
+  Module,
   SourceLocation,
   TypeSignatureModel,
   ValueExport,
@@ -418,13 +418,13 @@ export const extractModuleFromFile = (
 
   const category = moduleJSDoc?.category
 
-  return {
+  return Module.make({
     location,
-    ...(docs ? { docs } : {}),
-    ...(docsProvenance ? { docsProvenance } : {}),
-    ...(category ? { category } : {}),
+    docs,
+    docsProvenance,
+    category,
     exports: moduleExports,
-  }
+  })
 }
 
 /**
@@ -512,11 +512,11 @@ export const extractModule = (
     })
     : undefined
 
-  return {
+  return Module.make({
     location,
-    ...(docs ? { docs } : {}),
-    ...(docsProvenance ? { docsProvenance } : {}),
-    ...(category ? { category } : {}),
+    docs,
+    docsProvenance,
+    category,
     exports,
-  }
+  })
 }

@@ -16,14 +16,11 @@ These utilities use distributive conditional types to properly handle each union
 import { Obj } from '@wollybeard/kit'
 
 // Access via namespace
-Obj.Union.someFunction()
+Obj.Union
 ```
 
 ```typescript [Barrel]
 import { Union } from '@wollybeard/kit/obj'
-
-// Access via direct import
-Union.someFunction()
 ```
 
 :::

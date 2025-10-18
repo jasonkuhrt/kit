@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.Odd.someFunction()
+Num.Odd
 ```
 
 ```typescript [Barrel]
 import { Odd } from '@wollybeard/kit/num'
-
-// Access via direct import
-Odd.someFunction()
 ```
 
 :::

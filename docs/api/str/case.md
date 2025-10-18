@@ -8,14 +8,11 @@
 import { Str } from '@wollybeard/kit'
 
 // Access via namespace
-Str.Case.someFunction()
+Str.Case
 ```
 
 ```typescript [Barrel]
 import { Case } from '@wollybeard/kit/str'
-
-// Access via direct import
-Case.someFunction()
 ```
 
 :::

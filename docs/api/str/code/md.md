@@ -8,14 +8,11 @@
 import { Str } from '@wollybeard/kit'
 
 // Access via namespace
-Str.Code.Md.someFunction()
+Str.Code.Md
 ```
 
 ```typescript [Barrel]
 import { Md } from '@wollybeard/kit/str'
-
-// Access via direct import
-Md.someFunction()
 ```
 
 :::

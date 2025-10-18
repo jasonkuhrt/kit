@@ -8,14 +8,11 @@
 import { Paka } from '@wollybeard/kit'
 
 // Access via namespace
-Paka.Adaptors.someFunction()
+Paka.Adaptors
 ```
 
 ```typescript [Barrel]
 import { Adaptors } from '@wollybeard/kit/paka'
-
-// Access via direct import
-Adaptors.someFunction()
 ```
 
 :::

@@ -162,14 +162,20 @@ Test
             './arr': './arr/$$.js',
           },
         })
-        .add('i.ts', `// @ts-expect-error Duplicate identifier
+        .add(
+          'i.ts',
+          `// @ts-expect-error Duplicate identifier
           export * as Arr from './arr/$$.js'
           /** Array utilities @category Domains */
-          export namespace Arr {}`)
-        .add('arr/$.ts', `// @ts-expect-error Duplicate identifier
+          export namespace Arr {}`,
+        )
+        .add(
+          'arr/$.ts',
+          `// @ts-expect-error Duplicate identifier
           export * as Arr from './$$.js'
           /** Array utilities @category Domains */
-          export namespace Arr {}`)
+          export namespace Arr {}`,
+        )
         .add('arr/$$.ts', `export const map = 1`)
         .toLayout(),
     },
@@ -184,10 +190,16 @@ Test
             './str': './str/$$.js',
           },
         })
-        .add('i.ts', `/** String utilities @category Domains */
-          export * as Str from './str/$$.js'`)
-        .add('str/$.ts', `/** String utilities @category Domains */
-          export * as Str from './$$.js'`)
+        .add(
+          'i.ts',
+          `/** String utilities @category Domains */
+          export * as Str from './str/$$.js'`,
+        )
+        .add(
+          'str/$.ts',
+          `/** String utilities @category Domains */
+          export * as Str from './$$.js'`,
+        )
         .add('str/$$.ts', `export const trim = 1`)
         .toLayout(),
     },
@@ -202,14 +214,20 @@ Test
             './num': './num/$$.js',
           },
         })
-        .add('i.ts', `/** Export doc @category Wrong */
+        .add(
+          'i.ts',
+          `/** Export doc @category Wrong */
           export * as Num from './num/$$.js'
           /** Shadow doc @category Domains */
-          export namespace Num {}`)
-        .add('num/$.ts', `/** Export doc @category Wrong */
+          export namespace Num {}`,
+        )
+        .add(
+          'num/$.ts',
+          `/** Export doc @category Wrong */
           export * as Num from './$$.js'
           /** Shadow doc @category Domains */
-          export namespace Num {}`)
+          export namespace Num {}`,
+        )
         .add('num/$$.ts', `export const add = 1`)
         .toLayout(),
     },

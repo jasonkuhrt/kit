@@ -8,14 +8,11 @@
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Assert.array.sub.someFunction()
+Ts.Assert.array.sub
 ```
 
 ```typescript [Barrel]
 import { sub } from '@wollybeard/kit/ts'
-
-// Access via direct import
-sub.someFunction()
 ```
 
 :::

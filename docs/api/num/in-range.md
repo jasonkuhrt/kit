@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.InRange.someFunction()
+Num.InRange
 ```
 
 ```typescript [Barrel]
 import { InRange } from '@wollybeard/kit/num'
-
-// Access via direct import
-InRange.someFunction()
 ```
 
 :::

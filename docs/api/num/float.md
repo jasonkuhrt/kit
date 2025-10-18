@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.Float.someFunction()
+Num.Float
 ```
 
 ```typescript [Barrel]
 import { Float } from '@wollybeard/kit/num'
-
-// Access via direct import
-Float.someFunction()
 ```
 
 :::

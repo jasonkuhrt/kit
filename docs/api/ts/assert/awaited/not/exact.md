@@ -8,14 +8,11 @@
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Assert.awaited.not.exact.someFunction()
+Ts.Assert.awaited.not.exact
 ```
 
 ```typescript [Barrel]
 import { exact } from '@wollybeard/kit/ts'
-
-// Access via direct import
-exact.someFunction()
 ```
 
 :::

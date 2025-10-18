@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.Degrees.someFunction()
+Num.Degrees
 ```
 
 ```typescript [Barrel]
 import { Degrees } from '@wollybeard/kit/num'
-
-// Access via direct import
-Degrees.someFunction()
 ```
 
 :::

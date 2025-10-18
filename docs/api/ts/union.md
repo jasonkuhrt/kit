@@ -10,14 +10,11 @@ Valid values for discriminant properties in tagged unions.
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Union.someFunction()
+Ts.Union
 ```
 
 ```typescript [Barrel]
 import { Union } from '@wollybeard/kit/ts'
-
-// Access via direct import
-Union.someFunction()
 ```
 
 :::

@@ -8,14 +8,11 @@
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Assert.parameter3.not.exact.someFunction()
+Ts.Assert.parameter3.not.exact
 ```
 
 ```typescript [Barrel]
 import { exact } from '@wollybeard/kit/ts'
-
-// Access via direct import
-exact.someFunction()
 ```
 
 :::

@@ -12,14 +12,11 @@ Provides type-level functions and utilities for simulating higher-kinded types i
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Kind.someFunction()
+Ts.Kind
 ```
 
 ```typescript [Barrel]
 import { Kind } from '@wollybeard/kit/ts'
-
-// Access via direct import
-Kind.someFunction()
 ```
 
 :::

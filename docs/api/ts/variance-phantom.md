@@ -10,14 +10,11 @@ Phantom type helper that makes a type parameter covariant.
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.VariancePhantom.someFunction()
+Ts.VariancePhantom
 ```
 
 ```typescript [Barrel]
 import { VariancePhantom } from '@wollybeard/kit/ts'
-
-// Access via direct import
-VariancePhantom.someFunction()
 ```
 
 :::

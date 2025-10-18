@@ -14,14 +14,11 @@ SimpleSignature
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.SimpleSignature.someFunction()
+Ts.SimpleSignature
 ```
 
 ```typescript [Barrel]
 import { SimpleSignature } from '@wollybeard/kit/ts'
-
-// Access via direct import
-SimpleSignature.someFunction()
 ```
 
 :::

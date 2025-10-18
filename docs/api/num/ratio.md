@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.Ratio.someFunction()
+Num.Ratio
 ```
 
 ```typescript [Barrel]
 import { Ratio } from '@wollybeard/kit/num'
-
-// Access via direct import
-Ratio.someFunction()
 ```
 
 :::

@@ -12,14 +12,11 @@ These helpers generate properly formatted markdown elements. All helpers return 
 import { Str } from '@wollybeard/kit'
 
 // Access via namespace
-Str.Code.Md.md.someFunction()
+Str.Code.Md.md
 ```
 
 ```typescript [Barrel]
 import { md } from '@wollybeard/kit/str'
-
-// Access via direct import
-md.someFunction()
 ```
 
 :::

@@ -12,6 +12,7 @@ import {
   type Entrypoint,
   type InterfaceModel,
   JSDocProvenance,
+  Module,
   Package,
   PackageMetadata,
   SimpleEntrypoint,
@@ -242,22 +243,23 @@ export const extractFromFiles = (params: {
 
     // Override module description and category with namespace export JSDoc if available
     if (namespaceDescription || namespaceCategory) {
-      module = {
-        ...module,
-        ...(namespaceDescription
-          ? {
-            docs: Docs.make({
-              description: namespaceDescription,
-              guide: module.docs?.guide,
-            }),
-            docsProvenance: DocsProvenance.make({
-              description: JSDocProvenance.make({ shadowNamespace: true }),
-              guide: module.docsProvenance?.guide,
-            }),
-          }
-          : {}),
-        ...(namespaceCategory ? { category: namespaceCategory } : {}),
-      }
+      module = Module.make({
+        location: module.location,
+        exports: module.exports,
+        docs: namespaceDescription
+          ? Docs.make({
+            description: namespaceDescription,
+            guide: module.docs?.guide,
+          })
+          : module.docs,
+        docsProvenance: namespaceDescription
+          ? DocsProvenance.make({
+            description: JSDocProvenance.make({ shadowNamespace: true }),
+            guide: module.docsProvenance?.guide,
+          })
+          : module.docsProvenance,
+        category: namespaceCategory ?? module.category,
+      })
     }
 
     // Create appropriate entrypoint type
@@ -487,22 +489,23 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
 
     // Override module description and category with namespace export JSDoc if available
     if (namespaceDescription || namespaceCategory) {
-      module = {
-        ...module,
-        ...(namespaceDescription
-          ? {
-            docs: Docs.make({
-              description: namespaceDescription,
-              guide: module.docs?.guide,
-            }),
-            docsProvenance: DocsProvenance.make({
-              description: JSDocProvenance.make({ shadowNamespace: true }),
-              guide: module.docsProvenance?.guide,
-            }),
-          }
-          : {}),
-        ...(namespaceCategory ? { category: namespaceCategory } : {}),
-      }
+      module = Module.make({
+        location: module.location,
+        exports: module.exports,
+        docs: namespaceDescription
+          ? Docs.make({
+            description: namespaceDescription,
+            guide: module.docs?.guide,
+          })
+          : module.docs,
+        docsProvenance: namespaceDescription
+          ? DocsProvenance.make({
+            description: JSDocProvenance.make({ shadowNamespace: true }),
+            guide: module.docsProvenance?.guide,
+          })
+          : module.docsProvenance,
+        category: namespaceCategory ?? module.category,
+      })
     }
 
     // Create appropriate entrypoint type

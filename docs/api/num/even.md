@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.Even.someFunction()
+Num.Even
 ```
 
 ```typescript [Barrel]
 import { Even } from '@wollybeard/kit/num'
-
-// Access via direct import
-Even.someFunction()
 ```
 
 :::

@@ -12,14 +12,11 @@ These helpers generate properly formatted JSDoc tags with automatic escaping. Al
 import { Str } from '@wollybeard/kit'
 
 // Access via namespace
-Str.Code.TSDoc.tag.someFunction()
+Str.Code.TSDoc.tag
 ```
 
 ```typescript [Barrel]
 import { tag } from '@wollybeard/kit/str'
-
-// Access via direct import
-tag.someFunction()
 ```
 
 :::

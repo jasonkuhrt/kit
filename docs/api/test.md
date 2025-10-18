@@ -7,7 +7,7 @@ Provides builder API and type-safe utilities for parameterized tests with built-
 ## Import
 
 ```typescript
-import { Test } from '@wollybeard/kit/test'
+import * as test from '@wollybeard/kit/test'
 ```
 
 ## Namespaces

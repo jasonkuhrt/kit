@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.Finite.someFunction()
+Num.Finite
 ```
 
 ```typescript [Barrel]
 import { Finite } from '@wollybeard/kit/num'
-
-// Access via direct import
-Finite.someFunction()
 ```
 
 :::

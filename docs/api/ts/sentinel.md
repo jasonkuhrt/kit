@@ -10,14 +10,11 @@ Utilities for working with the SENTINEL type.
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.SENTINEL.someFunction()
+Ts.SENTINEL
 ```
 
 ```typescript [Barrel]
 import { SENTINEL } from '@wollybeard/kit/ts'
-
-// Access via direct import
-SENTINEL.someFunction()
 ```
 
 :::

@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.Complex.someFunction()
+Num.Complex
 ```
 
 ```typescript [Barrel]
 import { Complex } from '@wollybeard/kit/num'
-
-// Access via direct import
-Complex.someFunction()
 ```
 
 :::

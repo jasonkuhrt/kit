@@ -8,14 +8,11 @@
 import { Str } from '@wollybeard/kit'
 
 // Access via namespace
-Str.Tpl.someFunction()
+Str.Tpl
 ```
 
 ```typescript [Barrel]
 import { Tpl } from '@wollybeard/kit/str'
-
-// Access via direct import
-Tpl.someFunction()
 ```
 
 :::

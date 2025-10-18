@@ -8,14 +8,11 @@
 import { Str } from '@wollybeard/kit'
 
 // Access via namespace
-Str.Visual.someFunction()
+Str.Visual
 ```
 
 ```typescript [Barrel]
 import { Visual } from '@wollybeard/kit/str'
-
-// Access via direct import
-Visual.someFunction()
 ```
 
 :::

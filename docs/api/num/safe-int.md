@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.SafeInt.someFunction()
+Num.SafeInt
 ```
 
 ```typescript [Barrel]
 import { SafeInt } from '@wollybeard/kit/num'
-
-// Access via direct import
-SafeInt.someFunction()
 ```
 
 :::

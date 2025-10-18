@@ -8,14 +8,11 @@
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Assert.parameter4.equiv.someFunction()
+Ts.Assert.parameter4.equiv
 ```
 
 ```typescript [Barrel]
 import { equiv } from '@wollybeard/kit/ts'
-
-// Access via direct import
-equiv.someFunction()
 ```
 
 :::

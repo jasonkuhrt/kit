@@ -8,14 +8,11 @@
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Assert.array.not.equiv.someFunction()
+Ts.Assert.array.not.equiv
 ```
 
 ```typescript [Barrel]
 import { equiv } from '@wollybeard/kit/ts'
-
-// Access via direct import
-equiv.someFunction()
 ```
 
 :::

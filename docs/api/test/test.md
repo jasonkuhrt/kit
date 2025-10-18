@@ -5,11 +5,7 @@ Custom Vitest matchers for Effect Schema and equivalence testing.
 ## Import
 
 ```typescript
-import { Test } from '@wollybeard/kit/test'
-
-// Access via namespace
-// [!code word:someFunction:1]
-Test.Test.someFunction()
+import * as test from '@wollybeard/kit/test'
 ```
 
 ## Namespaces

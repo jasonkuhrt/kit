@@ -8,14 +8,11 @@
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Assert.awaited.someFunction()
+Ts.Assert.awaited
 ```
 
 ```typescript [Barrel]
 import { awaited } from '@wollybeard/kit/ts'
-
-// Access via direct import
-awaited.someFunction()
 ```
 
 :::

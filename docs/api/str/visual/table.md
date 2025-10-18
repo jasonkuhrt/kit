@@ -8,14 +8,11 @@
 import { Str } from '@wollybeard/kit'
 
 // Access via namespace
-Str.Visual.Table.someFunction()
+Str.Visual.Table
 ```
 
 ```typescript [Barrel]
 import { Table } from '@wollybeard/kit/str'
-
-// Access via direct import
-Table.someFunction()
 ```
 
 :::

@@ -8,14 +8,11 @@
 import { Str } from '@wollybeard/kit'
 
 // Access via namespace
-Str.AxisHand.someFunction()
+Str.AxisHand
 ```
 
 ```typescript [Barrel]
 import { AxisHand } from '@wollybeard/kit/str'
-
-// Access via direct import
-AxisHand.someFunction()
 ```
 
 :::

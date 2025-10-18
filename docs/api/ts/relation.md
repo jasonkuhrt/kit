@@ -8,14 +8,11 @@
 import { Ts } from '@wollybeard/kit'
 
 // Access via namespace
-Ts.Relation.someFunction()
+Ts.Relation
 ```
 
 ```typescript [Barrel]
 import { Relation } from '@wollybeard/kit/ts'
-
-// Access via direct import
-Relation.someFunction()
 ```
 
 :::

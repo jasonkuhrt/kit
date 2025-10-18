@@ -8,14 +8,11 @@
 import { Num } from '@wollybeard/kit'
 
 // Access via namespace
-Num.Whole.someFunction()
+Num.Whole
 ```
 
 ```typescript [Barrel]
 import { Whole } from '@wollybeard/kit/num'
-
-// Access via direct import
-Whole.someFunction()
 ```
 
 :::
