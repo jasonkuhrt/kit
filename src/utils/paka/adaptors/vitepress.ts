@@ -4,7 +4,17 @@ import { Match } from 'effect'
 import { writeFileSync } from 'node:fs'
 import { mkdirSync } from 'node:fs'
 import { join } from 'node:path'
-import type { Entrypoint, Example, Export, InterfaceModel, Module, SignatureModel, ValueExport } from '../schema.js'
+import type {
+  Entrypoint,
+  Example,
+  Export,
+  ImportExample,
+  InterfaceModel,
+  Module,
+  SignatureModel,
+  TypeExport,
+  ValueExport,
+} from '../schema.js'
 
 // Convenient alias for markdown utilities
 const Md = Str.Code.Md
@@ -126,23 +136,25 @@ export const generateSidebar = (
 
   // Process each entrypoint
   for (const entrypoint of model.entrypoints) {
+    // Both entrypoint types have path and module, but TS union narrowing doesn't work
+    const ep = entrypoint as any
+
     // Extract the module name from path (e.g., "./arr" -> "arr")
-    const moduleName = entrypoint.path.replace(/^\.\//, '')
+    const moduleName = ep.path.replace(/^\.\//, '')
 
     // Create title case for display (e.g., "arr" -> "Arr")
     const displayName = moduleName.charAt(0).toUpperCase() + moduleName.slice(1)
 
     // Find namespace exports with nested modules
-    const namespaceExports = entrypoint.module.exports
-      .filter((exp: any) => exp.type === 'namespace' && exp.module)
+    const namespaceExports = ep.module.namespaceExports
       .map((exp: any) => ({
         text: exp.name,
         link: `/api/${moduleName}/${exp.name.toLowerCase()}`,
       }))
-      .sort((a, b) => a.text.localeCompare(b.text))
+      .sort((a: any, b: any) => a.text.localeCompare(b.text))
 
     // Check if module description came from external .md file
-    const hasExternalReadme = entrypoint.module.docsProvenance?.description?._tag === 'md-file'
+    const hasExternalReadme = ep.module.hasExternalReadme
 
     // Create sidebar item
     const item: { text: string; link: string; items?: any[]; collapsed?: boolean } = {
@@ -164,7 +176,7 @@ export const generateSidebar = (
     }
 
     // Use category from module JSDoc, default to 'Other' if not specified
-    const category = entrypoint.module.category ?? 'Other'
+    const category = ep.module.category ?? 'Other'
 
     // Add to category group
     if (!categories.has(category)) {
@@ -218,16 +230,17 @@ export const generateSidebar = (
  */
 const generateApiIndex = (model: InterfaceModel): string => {
   const modules = model.entrypoints.map((entrypoint) => {
-    const moduleName = deriveModuleName(entrypoint.path)
-    const url = `/api/${Md.kebab(moduleName)}`
-    const description = entrypoint.module.docs?.description
-      ? entrypoint.module.docs.description.split('\n\n')[0]!.replace(/\n/g, ' ').trim()
+    const ep = entrypoint as any
+    // Use instance getters for SimpleEntrypoint, fallback for DrillableNamespaceEntrypoint
+    const moduleName = ep._tag === 'SimpleEntrypoint' ? ep.moduleName : deriveModuleName(ep.path)
+    const url = `/api/${ep._tag === 'SimpleEntrypoint' ? ep.kebabName : Md.kebab(moduleName)}`
+    const description = ep.module.docs?.description
+      ? ep.module.docs.description.split('\n\n')[0]!.replace(/\n/g, ' ').trim()
       : ''
 
     // Find namespace exports
-    const namespaceExports = entrypoint.module.exports
-      .filter((exp: any) => exp.type === 'namespace' && exp.module)
-      .sort((a, b) => a.name.localeCompare(b.name))
+    const namespaceExports = ep.module.namespaceExports
+      .sort((a: any, b: any) => a.name.localeCompare(b.name))
 
     // Build namespace list if any exist
     const namespaceList = namespaceExports.length > 0
@@ -258,17 +271,20 @@ const generatePages = (model: InterfaceModel): Page[] => {
   const pages: Page[] = []
 
   for (const entrypoint of model.entrypoints) {
-    const moduleName = deriveModuleName(entrypoint.path)
-    const module = entrypoint.module
+    const ep = entrypoint as any
+    // Use instance getters for SimpleEntrypoint, fallback for DrillableNamespaceEntrypoint
+    const moduleName = ep._tag === 'SimpleEntrypoint' ? ep.moduleName : deriveModuleName(ep.path)
+    const kebabName = ep._tag === 'SimpleEntrypoint' ? ep.kebabName : Md.kebab(moduleName)
+    const module = ep.module
 
     // Check if module description came from external .md file
-    if (module.docsProvenance?.description?._tag === 'md-file') {
+    if (module.hasExternalReadme) {
       // Split into overview + exports pages
 
       // Overview page (just README)
       pages.push({
-        url: `/api/${Md.kebab(moduleName)}`,
-        filepath: `api/${Md.kebab(moduleName)}.md`,
+        url: `/api/${kebabName}`,
+        filepath: `api/${kebabName}.md`,
         title: moduleName,
         entrypoint,
         module,
@@ -278,8 +294,8 @@ const generatePages = (model: InterfaceModel): Page[] => {
 
       // Exports page (imports + exports, no README)
       pages.push({
-        url: `/api/${Md.kebab(moduleName)}/exports`,
-        filepath: `api/${Md.kebab(moduleName)}/exports.md`,
+        url: `/api/${kebabName}/exports`,
+        filepath: `api/${kebabName}/exports.md`,
         title: moduleName,
         entrypoint,
         module,
@@ -289,8 +305,8 @@ const generatePages = (model: InterfaceModel): Page[] => {
     } else {
       // Single page with everything (current behavior)
       pages.push({
-        url: `/api/${Md.kebab(moduleName)}`,
-        filepath: `api/${Md.kebab(moduleName)}.md`,
+        url: `/api/${kebabName}`,
+        filepath: `api/${kebabName}.md`,
         title: moduleName,
         entrypoint,
         module,
@@ -311,9 +327,7 @@ const generatePages = (model: InterfaceModel): Page[] => {
 const generateNamespacePages = (entrypoint: Entrypoint, module: Module, breadcrumbs: string[]): Page[] => {
   const pages: Page[] = []
 
-  const namespaceExports = module.exports.filter(
-    (exp: any): exp is any => exp._tag === 'value' && exp.type === 'namespace' && exp.module !== undefined,
-  )
+  const namespaceExports = module.namespaceExports
 
   for (const nsExport of namespaceExports) {
     const newBreadcrumbs = [...breadcrumbs, nsExport.name]
@@ -356,12 +370,8 @@ const generatePageContent = (page: Page, context: Context): string => {
   // Handle exports pages (skip README)
   if (pageType === 'exports') {
     // Separate namespace exports from regular exports
-    const namespaceExports = module.exports.filter(
-      (exp: any) => exp._tag === 'value' && exp.type === 'namespace',
-    )
-    const regularExports = module.exports.filter(
-      (exp: any) => !(exp._tag === 'value' && exp.type === 'namespace'),
-    )
+    const namespaceExports = module.namespaceExports
+    const regularExports = module.regularExports
 
     // Add breadcrumbs to context for namespace usage in examples
     const contextWithBreadcrumbs = { ...context, breadcrumbs }
@@ -375,12 +385,8 @@ const generatePageContent = (page: Page, context: Context): string => {
   }
 
   // Default behavior for single-page modules
-  const namespaceExports = module.exports.filter(
-    (exp: any) => exp._tag === 'value' && exp.type === 'namespace',
-  )
-  const regularExports = module.exports.filter(
-    (exp: any) => !(exp._tag === 'value' && exp.type === 'namespace'),
-  )
+  const namespaceExports = module.namespaceExports
+  const regularExports = module.regularExports
 
   // Add breadcrumbs to context for namespace usage in examples
   const contextWithBreadcrumbs = { ...context, breadcrumbs }
@@ -405,11 +411,12 @@ const renderImportSection = (
   packageName: string,
   breadcrumbs: string[],
 ): string => {
+  const ep = entrypoint as any
   const importExamples = (() => {
-    if (entrypoint._tag === 'DrillableNamespaceEntrypoint') {
-      return entrypoint.getImportExamples(packageName, breadcrumbs)
+    if (ep._tag === 'DrillableNamespaceEntrypoint') {
+      return ep.getImportExamples(packageName, breadcrumbs)
     } else {
-      return entrypoint.getImportExamples(packageName, entrypoint.path)
+      return ep.getImportExamples(packageName, ep.path)
     }
   })()
 
@@ -427,7 +434,7 @@ const renderImportSection = (
   return Md.sections(
     Md.heading(2, 'Import'),
     Md.codeGroup(
-      importExamples.map((example) => ({
+      importExamples.map((example: ImportExample) => ({
         label: example.label,
         code: example.content,
       })),
@@ -439,7 +446,7 @@ const renderImportSection = (
  * Render namespaces section with links.
  */
 const renderNamespacesSection = (namespaces: Export[], breadcrumbs: string[]): string => {
-  const items = namespaces.map((ns) => {
+  const items = namespaces.map((ns: any) => {
     const nsPath = `/api/${[...breadcrumbs, ns.name].map(Md.kebab).join('/')}`
     const link = Md.link(nsPath, `**${Md.code(ns.name)}**`)
     const nsDesc = ns.docs?.description ? ` - ${ns.docs.description}` : ''
@@ -461,7 +468,7 @@ const renderExportsSection = (exports: Export[], context: Context): string => {
     const categorized = new Map<string, Export[]>()
 
     for (const exp of exports) {
-      const category = exp.category ?? 'Other'
+      const category = (exp as any).category ?? 'Other'
       const existing = categorized.get(category) ?? []
       categorized.set(category, [...existing, exp])
     }
@@ -486,10 +493,10 @@ const renderExportsSection = (exports: Export[], context: Context): string => {
   }
 
   // Traditional type-based grouping
-  const functions = exports.filter((e: any) => e._tag === 'value' && e.type === 'function')
-  const constants = exports.filter((e: any) => e._tag === 'value' && e.type === 'const')
-  const classes = exports.filter((e: any) => e._tag === 'value' && e.type === 'class')
-  const types = exports.filter((e: any) => e._tag === 'type')
+  const functions = exports.filter((e): e is ValueExport => e._tag === 'value' && e.type === 'function')
+  const constants = exports.filter((e): e is ValueExport => e._tag === 'value' && e.type === 'const')
+  const classes = exports.filter((e): e is ValueExport => e._tag === 'value' && e.type === 'class')
+  const types = exports.filter((e): e is TypeExport => e._tag === 'type')
 
   return Md.sections(
     functions.length > 0
@@ -504,34 +511,6 @@ const renderExportsSection = (exports: Export[], context: Context): string => {
     types.length > 0
       ? Md.sections(Md.heading(2, 'Types'), types.map((e) => renderExport(e, context)).join('\n\n'))
       : '',
-  )
-}
-
-/**
- * Get type icon/badge for an export.
- */
-const getTypeIcon = (exp: Export): string => {
-  return Match.value(exp).pipe(
-    Match.tags({
-      value: (valueExp) =>
-        Match.value(valueExp.type).pipe(
-          Match.when('function', () => 'F'),
-          Match.when('const', () => 'C'),
-          Match.when('class', () => 'Class'),
-          Match.when('namespace', () => 'NS'),
-          Match.exhaustive,
-        ),
-      type: (typeExp) =>
-        Match.value(typeExp.type).pipe(
-          Match.when('interface', () => 'I'),
-          Match.when('type-alias', () => 'T'),
-          Match.when('enum', () => 'E'),
-          Match.when('union', () => 'U'),
-          Match.when('intersection', () => '∩'),
-          Match.exhaustive,
-        ),
-    }),
-    Match.exhaustive,
   )
 }
 
@@ -587,7 +566,7 @@ const renderExport = (exp: Export, context: Context): string => {
     : ''
 
   // Build heading with type icon (using backticks for monospace)
-  const typeIcon = getTypeIcon(exp)
+  const typeIcon = exp.typeIcon
   const heading = Md.heading(
     3,
     `<span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">\`[${typeIcon}]\`</span> ${Md.code(exp.name)}`,

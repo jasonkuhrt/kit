@@ -73,8 +73,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -127,8 +127,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './a.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -157,8 +157,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './a.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -210,8 +210,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -264,8 +264,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -317,8 +317,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           },
           {
             name: '_b',
@@ -335,8 +335,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 2
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -389,8 +389,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -453,7 +453,6 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 2
             },
-            _tag: 'value',
             type: 'namespace',
             module: {
               location: './u.ts',
@@ -496,11 +495,12 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                     file: './u.ts',
                     line: 2
                   },
-                  _tag: 'value',
-                  type: 'const'
+                  type: 'const',
+                  _tag: 'value'
                 }
               ]
-            }
+            },
+            _tag: 'value'
           }
         ]
       },
@@ -563,7 +563,6 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 1
             },
-            _tag: 'value',
             type: 'namespace',
             module: {
               location: './u.ts',
@@ -597,11 +596,12 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                     file: './u.ts',
                     line: 2
                   },
-                  _tag: 'value',
-                  type: 'const'
+                  type: 'const',
+                  _tag: 'value'
                 }
               ]
-            }
+            },
+            _tag: 'value'
           }
         ]
       },
@@ -664,7 +664,6 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 2
             },
-            _tag: 'value',
             type: 'namespace',
             module: {
               location: './u.ts',
@@ -707,11 +706,12 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                     file: './u.ts',
                     line: 2
                   },
-                  _tag: 'value',
-                  type: 'const'
+                  type: 'const',
+                  _tag: 'value'
                 }
               ]
-            }
+            },
+            _tag: 'value'
           },
           {
             name: 'b',
@@ -728,8 +728,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 5
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -790,8 +790,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'function'
+            type: 'function',
+            _tag: 'value'
           }
         ]
       },
@@ -852,8 +852,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'function'
+            type: 'function',
+            _tag: 'value'
           }
         ]
       },
@@ -915,8 +915,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'function'
+            type: 'function',
+            _tag: 'value'
           }
         ]
       },
@@ -980,7 +980,6 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 1
             },
-            _tag: 'value',
             type: 'namespace',
             module: {
               location: './u.ts',
@@ -1014,11 +1013,12 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                     file: './u.ts',
                     line: 2
                   },
-                  _tag: 'value',
-                  type: 'const'
+                  type: 'const',
+                  _tag: 'value'
                 }
               ]
-            }
+            },
+            _tag: 'value'
           }
         ]
       },
@@ -1082,7 +1082,6 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 1
             },
-            _tag: 'value',
             type: 'namespace',
             module: {
               location: './u.ts',
@@ -1116,11 +1115,12 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                     file: './u.ts',
                     line: 2
                   },
-                  _tag: 'value',
-                  type: 'const'
+                  type: 'const',
+                  _tag: 'value'
                 }
               ]
-            }
+            },
+            _tag: 'value'
           },
           {
             name: 'b',
@@ -1137,8 +1137,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 2
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -1202,7 +1202,6 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 2
             },
-            _tag: 'value',
             type: 'namespace',
             module: {
               location: './u.ts',
@@ -1245,11 +1244,12 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                     file: './u.ts',
                     line: 2
                   },
-                  _tag: 'value',
-                  type: 'const'
+                  type: 'const',
+                  _tag: 'value'
                 }
               ]
-            }
+            },
+            _tag: 'value'
           }
         ]
       },
@@ -1321,8 +1321,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 2
             },
-            _tag: 'type',
-            type: 'type-alias'
+            type: 'type-alias',
+            _tag: 'type'
           }
         ]
       },
@@ -1374,8 +1374,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 1
             },
-            _tag: 'type',
-            type: 'interface'
+            type: 'interface',
+            _tag: 'type'
           },
           {
             name: 'foo',
@@ -1392,8 +1392,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './i.ts',
               line: 2
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -1456,8 +1456,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './arr/$$.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -1495,8 +1495,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './arr/$$.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -1559,8 +1559,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './str/$$.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -1598,8 +1598,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './str/$$.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -1662,8 +1662,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './num/$$.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },
@@ -1701,8 +1701,8 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
               file: './num/$$.ts',
               line: 1
             },
-            _tag: 'value',
-            type: 'const'
+            type: 'const',
+            _tag: 'value'
           }
         ]
       },

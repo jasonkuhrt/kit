@@ -550,17 +550,36 @@ const BaseExportFields = {
 }
 
 /**
- * Module schema implementation - non-exported class for circular reference.
+ * Module type interface for declaration merging.
+ * Following the graphql-kit pattern for circular schemas with instance methods.
+ */
+export interface Module {
+  readonly location: S.Schema.Type<typeof FsLoc.RelFile>
+  readonly docs?: Docs | undefined
+  readonly docsProvenance?: DocsProvenance | undefined
+  readonly category?: string | undefined
+  readonly exports: Export[]
+}
+
+export interface ModuleEncoded {
+  readonly location: S.Schema.Encoded<typeof FsLoc.RelFile>
+  readonly docs?: Docs | undefined
+  readonly docsProvenance?: DocsProvenance | undefined
+  readonly category?: string | undefined
+  readonly exports: ExportEncoded[]
+}
+
+/**
+ * Module schema implementation.
  *
- * NOTE: The `@ts-expect-error` comment suppresses TypeScript's circular reference detection.
+ * NOTE: Circular dependency handled via declaration merging:
+ * - Module interface declared above provides type structure
+ * - Module class extends S.Class<Module> - same name enables declaration merging
  * - Module contains Export[] (through exports field)
  * - ValueExport (part of Export union) contains optional Module (through module field)
- * - This circular dependency is intentional and handled correctly at runtime by Effect Schema
- *
- * Following the pattern from graphql-kit for circular schemas with instance methods.
+ * - This is intentional and handled correctly at runtime by Effect Schema via S.suspend()
  */
-// @ts-expect-error - Circular reference between Module and Export is intentional
-class ModuleSchema extends S.Class<ModuleSchema>('Module')({
+export class Module extends S.Class<Module>('Module')({
   /**
    * Source file location relative to project root.
    * Portable across package registry, GitHub repo, local dev, etc.
@@ -573,47 +592,168 @@ class ModuleSchema extends S.Class<ModuleSchema>('Module')({
   /** Category from @category tag for grouping in sidebar */
   category: S.optional(S.String),
   /** All exports in this module */
-  // @ts-expect-error - Forward reference to Export resolved at runtime via S.suspend
-  exports: S.Array(S.suspend(() => Export as any)),
-}) {}
+  exports: S.Array(S.suspend((): S.Schema<Export, ExportEncoded> => Export as any)),
+}) {
+  /**
+   * Get namespace exports (value exports with type='namespace' and nested module).
+   */
+  get namespaceExports(): ValueExport[] {
+    return this.exports.filter(
+      (exp): exp is ValueExport => exp._tag === 'value' && exp.type === 'namespace' && exp.module !== undefined,
+    )
+  }
+
+  /**
+   * Get regular exports (non-namespace exports).
+   */
+  get regularExports(): Export[] {
+    return this.exports.filter((exp) => !(exp._tag === 'value' && exp.type === 'namespace'))
+  }
+
+  /**
+   * Get function exports.
+   */
+  get functionExports(): ValueExport[] {
+    return this.exports.filter((exp): exp is ValueExport => exp._tag === 'value' && exp.type === 'function')
+  }
+
+  /**
+   * Get constant exports.
+   */
+  get constantExports(): ValueExport[] {
+    return this.exports.filter((exp): exp is ValueExport => exp._tag === 'value' && exp.type === 'const')
+  }
+
+  /**
+   * Get class exports.
+   */
+  get classExports(): ValueExport[] {
+    return this.exports.filter((exp): exp is ValueExport => exp._tag === 'value' && exp.type === 'class')
+  }
+
+  /**
+   * Get type exports.
+   */
+  get typeExports(): TypeExport[] {
+    return this.exports.filter((exp): exp is TypeExport => exp._tag === 'type')
+  }
+
+  /**
+   * Check if any export has a category tag.
+   */
+  get hasCategories(): boolean {
+    return this.exports.some((exp) => exp.category !== undefined)
+  }
+
+  /**
+   * Check if module description came from an external .md file.
+   */
+  get hasExternalReadme(): boolean {
+    return this.docsProvenance?.description?._tag === 'md-file'
+  }
+}
 
 /**
- * Export ModuleSchema as Module schema for use in other schemas.
- * Also provides the class type with instance methods.
+ * ValueExport type interface for declaration merging.
  */
-// @ts-expect-error - Circular reference resolved at runtime
-export const Module: typeof ModuleSchema = ModuleSchema as any
-export type Module = S.Schema.Type<typeof Module>
+export interface ValueExport {
+  readonly name: string
+  readonly signature: SignatureModel
+  readonly signatureSimple?: SignatureModel | undefined
+  readonly docs?: Docs | undefined
+  readonly docsProvenance?: DocsProvenance | undefined
+  readonly examples: readonly Example[]
+  readonly deprecated?: string | undefined
+  readonly category?: string | undefined
+  readonly tags: Readonly<Record<string, string>>
+  readonly sourceLocation: SourceLocation
+  readonly _tag: 'value'
+  readonly type: S.Schema.Type<typeof ValueExportType>
+  readonly module?: Module | undefined
+}
+
+export interface ValueExportEncoded {
+  readonly _tag: 'value'
+  readonly name: string
+  readonly signature: SignatureModel
+  readonly signatureSimple?: SignatureModel | undefined
+  readonly docs?: Docs | undefined
+  readonly docsProvenance?: DocsProvenance | undefined
+  readonly examples: readonly Example[]
+  readonly deprecated?: string | undefined
+  readonly category?: string | undefined
+  readonly tags: Readonly<Record<string, string>>
+  readonly sourceLocation: SourceLocation
+  readonly type: S.Schema.Encoded<typeof ValueExportType>
+  readonly module?: ModuleEncoded | undefined
+}
 
 /**
- * Value export - represents a runtime export.
- * Namespace exports include a nested module.
+ * Value export schema implementation.
  */
-// @ts-expect-error - Circular reference between ValueExport and Module is intentional
-export class ValueExport extends S.Class<ValueExport>('ValueExport')({
+export class ValueExport extends S.TaggedClass<ValueExport>('ValueExport')('value', {
   ...BaseExportFields,
-  _tag: S.Literal('value'),
   type: ValueExportType,
   /** Nested module for namespace exports */
-  // @ts-expect-error - Forward reference to Module resolved at runtime via S.suspend
-  module: S.optional(S.suspend(() => Module as any)),
-}) {}
+  module: S.optional(S.suspend((): S.Schema<Module, ModuleEncoded> => Module as any)),
+}) {
+  static is = S.is(ValueExport)
+
+  /**
+   * Get type icon/badge for documentation rendering.
+   *
+   * @returns Short string representing the export type
+   */
+  get typeIcon(): string {
+    switch (this.type) {
+      case 'function':
+        return 'F'
+      case 'const':
+        return 'C'
+      case 'class':
+        return 'Class'
+      case 'namespace':
+        return 'NS'
+    }
+  }
+}
 
 /**
- * Type export - represents a type-only export.
+ * Type export schema implementation.
  */
-export class TypeExport extends S.Class<TypeExport>('TypeExport')({
+export class TypeExport extends S.TaggedClass<TypeExport>('TypeExport')('type', {
   ...BaseExportFields,
-  _tag: S.Literal('type'),
   type: TypeExportType,
-}) {}
+}) {
+  static is = S.is(TypeExport)
+
+  /**
+   * Get type icon/badge for documentation rendering.
+   *
+   * @returns Short string representing the export type
+   */
+  get typeIcon(): string {
+    switch (this.type) {
+      case 'interface':
+        return 'I'
+      case 'type-alias':
+        return 'T'
+      case 'enum':
+        return 'E'
+      case 'union':
+        return 'U'
+      case 'intersection':
+        return '∩'
+    }
+  }
+}
 
 /**
  * Export is a tagged union of value and type exports.
  */
-// @ts-expect-error - Circular reference with Module resolved at runtime
-export const Export = S.Union(ValueExport as any, TypeExport as any)
+export const Export = S.Union(ValueExport, TypeExport)
 export type Export = S.Schema.Type<typeof Export>
+export type ExportEncoded = ValueExportEncoded | S.Schema.Encoded<typeof TypeExport>
 
 /**
  * Drillable Namespace Pattern entrypoint.
@@ -743,6 +883,33 @@ export class SimpleEntrypoint extends S.TaggedClass<SimpleEntrypoint>()(
     module: Module,
   },
 ) {
+  /**
+   * Derive PascalCase module name from path.
+   * Handles kebab-case conversion properly.
+   *
+   * @example
+   * './arr' -> 'Arr'
+   * './package-manager' -> 'PackageManager'
+   */
+  get moduleName(): string {
+    const withoutLeadingDot = this.path.replace(/^\.\//, '')
+    return withoutLeadingDot
+      .split('-')
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join('')
+  }
+
+  /**
+   * Derive kebab-case name from path.
+   *
+   * @example
+   * './arr' -> 'arr'
+   * './package-manager' -> 'package-manager'
+   */
+  get kebabName(): string {
+    return this.path.replace(/^\.\//, '')
+  }
+
   /**
    * Generate import examples for this entrypoint.
    *

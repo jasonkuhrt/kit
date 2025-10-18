@@ -121,7 +121,6 @@ const createNamespaceExport = (
   }
 
   return ValueExport.make({
-    _tag: 'value',
     name: nsName,
     type: 'namespace',
     signature: TypeSignatureModel.make({
@@ -443,10 +442,10 @@ export const extractModule = (
   const body = moduleDecl.getBody()
 
   if (!body || !Node.isModuleBlock(body)) {
-    return {
+    return Module.make({
       location,
       exports: [],
-    }
+    })
   }
 
   const exports = []

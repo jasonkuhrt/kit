@@ -16,7 +16,6 @@ test('demotes H2 headings in JSDoc descriptions to H4', () => {
   // Must convert double-spaces to newlines BEFORE demoting headings.
 
   const mockExport = ValueExport.make({
-    _tag: 'value',
     type: 'function',
     name: 'on',
     signature: FunctionSignatureModel.make({
@@ -74,7 +73,6 @@ test('renders @param documentation', () => {
   })
 
   const mockExport = ValueExport.make({
-    _tag: 'value',
     type: 'function',
     name: 'map',
     signature: sig,
@@ -102,7 +100,6 @@ test('renders @returns documentation', () => {
   })
 
   const mockExport = ValueExport.make({
-    _tag: 'value',
     type: 'function',
     name: 'double',
     signature: sig,
@@ -129,7 +126,6 @@ test('renders @throws documentation', () => {
   })
 
   const mockExport = ValueExport.make({
-    _tag: 'value',
     type: 'function',
     name: 'process',
     signature: sig,

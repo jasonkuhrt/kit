@@ -6,6 +6,7 @@ import {
   DocsProvenance,
   type Export,
   JSDocProvenance,
+  Module,
   SourceLocation,
   TypeExport,
   ValueExport,
@@ -78,12 +79,11 @@ export const extractExport = (name: string, decl: ExportedDeclarations): Export 
     )
     return ValueExport.make({
       ...baseExport,
-      _tag: 'value',
       type: 'namespace',
-      module: {
+      module: Module.make({
         location,
         exports: [],
-      },
+      }),
     })
   }
 
@@ -96,7 +96,6 @@ export const extractExport = (name: string, decl: ExportedDeclarations): Export 
 
     return ValueExport.make({
       ...baseExport,
-      _tag: 'value',
       type: 'namespace',
       module: nestedModule,
     })
@@ -107,13 +106,11 @@ export const extractExport = (name: string, decl: ExportedDeclarations): Export 
     Match.when('value', () =>
       ValueExport.make({
         ...baseExport,
-        _tag: 'value',
         type: type as typeof ValueExport.Type['type'],
       })),
     Match.when('type', () =>
       TypeExport.make({
         ...baseExport,
-        _tag: 'type',
         type: type as typeof TypeExport.Type['type'],
       })),
     Match.exhaustive,
