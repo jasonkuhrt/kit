@@ -1,7 +1,5 @@
 # Ts.Assert
 
-_Ts_ / **Assert**
-
 # TypeScript Test Module
 
 Type-level and value-level assertion utilities for testing TypeScript code.
@@ -565,10 +563,10 @@ Ts.Assert.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { Assert } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.Assert.someFunction()
+// Access via direct import
+Assert.someFunction()
 ```
 
 :::

@@ -1,7 +1,5 @@
 # Ts.Assert.parameter4.exact
 
-_Ts.Assert.parameter4_ / **exact**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Ts.Assert.parameter4.exact.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { exact } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.Assert.parameter4.exact.someFunction()
+// Access via direct import
+exact.someFunction()
 ```
 
 :::

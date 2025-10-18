@@ -1,7 +1,5 @@
 # Ts.Assert.parameter3.equiv
 
-_Ts.Assert.parameter3_ / **equiv**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Ts.Assert.parameter3.equiv.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { equiv } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.Assert.parameter3.equiv.someFunction()
+// Access via direct import
+equiv.someFunction()
 ```
 
 :::

@@ -1,7 +1,5 @@
 # Test.Test.Matchers
 
-_Test.Test_ / **Matchers**
-
 ## Import
 
 ```typescript

@@ -1,7 +1,5 @@
 # Num.NonPositive
 
-_Num_ / **NonPositive**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.NonPositive.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { NonPositive } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.NonPositive.someFunction()
+// Access via direct import
+NonPositive.someFunction()
 ```
 
 :::

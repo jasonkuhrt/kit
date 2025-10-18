@@ -1,7 +1,5 @@
 # Num.Radians
 
-_Num_ / **Radians**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.Radians.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { Radians } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.Radians.someFunction()
+// Access via direct import
+Radians.someFunction()
 ```
 
 :::

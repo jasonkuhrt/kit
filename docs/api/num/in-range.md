@@ -1,7 +1,5 @@
 # Num.InRange
 
-_Num_ / **InRange**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.InRange.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { InRange } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.InRange.someFunction()
+// Access via direct import
+InRange.someFunction()
 ```
 
 :::

@@ -1,7 +1,5 @@
 # Ts.Assert.returned.not
 
-_Ts.Assert.returned_ / **not**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Ts.Assert.returned.not.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { not } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.Assert.returned.not.someFunction()
+// Access via direct import
+not.someFunction()
 ```
 
 :::

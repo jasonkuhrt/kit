@@ -1,7 +1,5 @@
 # Paka.Adaptors
 
-_Paka_ / **Adaptors**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Paka.Adaptors.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Paka from '@wollybeard/kit/paka'
+import { Adaptors } from '@wollybeard/kit/paka'
 
-// Access via namespace
-Paka.Adaptors.someFunction()
+// Access via direct import
+Adaptors.someFunction()
 ```
 
 :::

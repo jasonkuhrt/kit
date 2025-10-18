@@ -1,7 +1,5 @@
 # Num.Complex
 
-_Num_ / **Complex**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.Complex.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { Complex } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.Complex.someFunction()
+// Access via direct import
+Complex.someFunction()
 ```
 
 :::

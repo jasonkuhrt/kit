@@ -1,7 +1,5 @@
 # Num.Whole
 
-_Num_ / **Whole**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.Whole.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { Whole } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.Whole.someFunction()
+// Access via direct import
+Whole.someFunction()
 ```
 
 :::

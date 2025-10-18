@@ -1,7 +1,5 @@
 # Ts.Assert.awaited
 
-_Ts.Assert_ / **awaited**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Ts.Assert.awaited.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { awaited } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.Assert.awaited.someFunction()
+// Access via direct import
+awaited.someFunction()
 ```
 
 :::

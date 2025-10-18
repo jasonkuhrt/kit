@@ -1,7 +1,5 @@
 # Str.Code.TSDoc.tag
 
-_Str.Code.TSDoc_ / **tag**
-
 Structured JSDoc tag helpers.
 
 These helpers generate properly formatted JSDoc tags with automatic escaping. All helpers return `Raw` (safe for injection) or `null` for graceful handling.
@@ -18,10 +16,10 @@ Str.Code.TSDoc.tag.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Str from '@wollybeard/kit/str'
+import { tag } from '@wollybeard/kit/str'
 
-// Access via namespace
-Str.Code.TSDoc.tag.someFunction()
+// Access via direct import
+tag.someFunction()
 ```
 
 :::

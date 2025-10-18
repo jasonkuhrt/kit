@@ -1,7 +1,5 @@
 # Num.Natural
 
-_Num_ / **Natural**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.Natural.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { Natural } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.Natural.someFunction()
+// Access via direct import
+Natural.someFunction()
 ```
 
 :::

@@ -1,7 +1,5 @@
 # Num.Ratio
 
-_Num_ / **Ratio**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.Ratio.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { Ratio } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.Ratio.someFunction()
+// Access via direct import
+Ratio.someFunction()
 ```
 
 :::

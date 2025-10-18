@@ -1,7 +1,5 @@
 # Obj.Union
 
-_Obj_ / **Union**
-
 Union operations on objects.
 
 This module provides utilities for working with unions of object types, solving common TypeScript limitations when dealing with union types:
@@ -22,10 +20,10 @@ Obj.Union.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Obj from '@wollybeard/kit/obj'
+import { Union } from '@wollybeard/kit/obj'
 
-// Access via namespace
-Obj.Union.someFunction()
+// Access via direct import
+Union.someFunction()
 ```
 
 :::

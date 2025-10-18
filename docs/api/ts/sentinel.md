@@ -1,7 +1,5 @@
 # Ts.SENTINEL
 
-_Ts_ / **SENTINEL**
-
 Utilities for working with the SENTINEL type.
 
 ## Import
@@ -16,10 +14,10 @@ Ts.SENTINEL.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { SENTINEL } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.SENTINEL.someFunction()
+// Access via direct import
+SENTINEL.someFunction()
 ```
 
 :::

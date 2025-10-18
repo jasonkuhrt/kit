@@ -1,7 +1,5 @@
 # Ts.Assert.returned
 
-_Ts.Assert_ / **returned**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Ts.Assert.returned.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { returned } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.Assert.returned.someFunction()
+// Access via direct import
+returned.someFunction()
 ```
 
 :::

@@ -1,7 +1,5 @@
 # Paka.Adaptors.VitePress
 
-_Paka.Adaptors_ / **VitePress**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Paka.Adaptors.VitePress.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Paka from '@wollybeard/kit/paka'
+import { VitePress } from '@wollybeard/kit/paka'
 
-// Access via namespace
-Paka.Adaptors.VitePress.someFunction()
+// Access via direct import
+VitePress.someFunction()
 ```
 
 :::

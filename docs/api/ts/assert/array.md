@@ -1,7 +1,5 @@
 # Ts.Assert.array
 
-_Ts.Assert_ / **array**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Ts.Assert.array.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { array } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.Assert.array.someFunction()
+// Access via direct import
+array.someFunction()
 ```
 
 :::

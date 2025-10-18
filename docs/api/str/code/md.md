@@ -1,7 +1,5 @@
 # Str.Code.Md
 
-_Str.Code_ / **Md**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Str.Code.Md.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Str from '@wollybeard/kit/str'
+import { Md } from '@wollybeard/kit/str'
 
-// Access via namespace
-Str.Code.Md.someFunction()
+// Access via direct import
+Md.someFunction()
 ```
 
 :::

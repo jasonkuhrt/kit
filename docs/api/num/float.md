@@ -1,7 +1,5 @@
 # Num.Float
 
-_Num_ / **Float**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.Float.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { Float } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.Float.someFunction()
+// Access via direct import
+Float.someFunction()
 ```
 
 :::

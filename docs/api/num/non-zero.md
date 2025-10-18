@@ -1,7 +1,5 @@
 # Num.NonZero
 
-_Num_ / **NonZero**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.NonZero.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { NonZero } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.NonZero.someFunction()
+// Access via direct import
+NonZero.someFunction()
 ```
 
 :::

@@ -1,7 +1,5 @@
 # Num.Finite
 
-_Num_ / **Finite**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.Finite.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { Finite } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.Finite.someFunction()
+// Access via direct import
+Finite.someFunction()
 ```
 
 :::

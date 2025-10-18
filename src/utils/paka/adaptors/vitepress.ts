@@ -341,12 +341,6 @@ const generateNamespacePages = (entrypoint: Entrypoint, module: Module, breadcru
 const generatePageContent = (page: Page, context: Context): string => {
   const { entrypoint, module, breadcrumbs, pageType } = page
 
-  // Breadcrumb navigation
-  const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1]
-  const breadcrumbNav = breadcrumbs.length > 1 && lastBreadcrumb
-    ? `*${breadcrumbs.slice(0, -1).join('.')}* / **${lastBreadcrumb}**`
-    : ''
-
   // Handle overview pages (just README)
   if (pageType === 'overview') {
     const description = module.docs?.description || ''
@@ -372,7 +366,6 @@ const generatePageContent = (page: Page, context: Context): string => {
 
     return Md.sections(
       Md.heading(1, breadcrumbs.join('.')),
-      breadcrumbNav,
       renderImportSection(entrypoint, context.packageName, [breadcrumbs[0]!]), // Use module name only
       namespaceExports.length > 0 ? renderNamespacesSection(namespaceExports, [breadcrumbs[0]!]) : '',
       renderExportsSection(regularExports, contextWithBreadcrumbs),
@@ -395,7 +388,6 @@ const generatePageContent = (page: Page, context: Context): string => {
 
   return Md.sections(
     Md.heading(1, breadcrumbs.join('.')),
-    breadcrumbNav,
     description + guide,
     renderImportSection(entrypoint, context.packageName, breadcrumbs),
     namespaceExports.length > 0 ? renderNamespacesSection(namespaceExports, breadcrumbs) : '',
@@ -418,7 +410,10 @@ const renderImportSection = (
 
   // For nested namespaces, show access pattern
   if (breadcrumbs.length > 1) {
-    const accessExample = `// Access via namespace\n${breadcrumbs.join('.')}.someFunction()`
+    const namespacePath = breadcrumbs.join('.')
+    const childNamespace = breadcrumbs[breadcrumbs.length - 1]!
+    const namespaceAccessExample = `// Access via namespace\n${namespacePath}.someFunction()`
+    const barrelAccessExample = `// Access via direct import\n${childNamespace}.someFunction()`
 
     if (entrypoint._tag === 'DrillableNamespaceEntrypoint') {
       return Md.sections(
@@ -426,18 +421,18 @@ const renderImportSection = (
         Md.codeGroup([
           {
             label: 'Namespace',
-            code: `import { ${moduleName} } from '${packageName}'\n\n${accessExample}`,
+            code: `import { ${moduleName} } from '${packageName}'\n\n${namespaceAccessExample}`,
           },
           {
             label: 'Barrel',
-            code: `import * as ${moduleName} from '${subpath}'\n\n${accessExample}`,
+            code: `import { ${childNamespace} } from '${subpath}'\n\n${barrelAccessExample}`,
           },
         ]),
       )
     } else {
       return Md.sections(
         Md.heading(2, 'Import'),
-        Md.codeFence(`import { ${moduleName} } from '${subpath}'\n\n${accessExample}`),
+        Md.codeFence(`import { ${moduleName} } from '${subpath}'\n\n${namespaceAccessExample}`),
       )
     }
   }

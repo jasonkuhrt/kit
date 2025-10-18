@@ -1,7 +1,5 @@
 # Ts.Assert.array.not.equiv
 
-_Ts.Assert.array.not_ / **equiv**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Ts.Assert.array.not.equiv.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { equiv } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.Assert.array.not.equiv.someFunction()
+// Access via direct import
+equiv.someFunction()
 ```
 
 :::

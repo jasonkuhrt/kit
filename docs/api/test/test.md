@@ -1,7 +1,5 @@
 # Test.Test
 
-_Test_ / **Test**
-
 Custom Vitest matchers for Effect Schema and equivalence testing.
 
 ## Import

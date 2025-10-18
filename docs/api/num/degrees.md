@@ -1,7 +1,5 @@
 # Num.Degrees
 
-_Num_ / **Degrees**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.Degrees.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { Degrees } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.Degrees.someFunction()
+// Access via direct import
+Degrees.someFunction()
 ```
 
 :::

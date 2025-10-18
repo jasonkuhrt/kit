@@ -1,7 +1,5 @@
 # Str.Code.TSDoc
 
-_Str.Code_ / **TSDoc**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Str.Code.TSDoc.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Str from '@wollybeard/kit/str'
+import { TSDoc } from '@wollybeard/kit/str'
 
-// Access via namespace
-Str.Code.TSDoc.someFunction()
+// Access via direct import
+TSDoc.someFunction()
 ```
 
 :::

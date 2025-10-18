@@ -1,7 +1,5 @@
 # Num.Percentage
 
-_Num_ / **Percentage**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.Percentage.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { Percentage } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.Percentage.someFunction()
+// Access via direct import
+Percentage.someFunction()
 ```
 
 :::

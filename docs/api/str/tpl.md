@@ -1,7 +1,5 @@
 # Str.Tpl
 
-_Str_ / **Tpl**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Str.Tpl.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Str from '@wollybeard/kit/str'
+import { Tpl } from '@wollybeard/kit/str'
 
-// Access via namespace
-Str.Tpl.someFunction()
+// Access via direct import
+Tpl.someFunction()
 ```
 
 :::

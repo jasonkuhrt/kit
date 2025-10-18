@@ -1,7 +1,5 @@
 # Num.BigInteger
 
-_Num_ / **BigInteger**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.BigInteger.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { BigInteger } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.BigInteger.someFunction()
+// Access via direct import
+BigInteger.someFunction()
 ```
 
 :::

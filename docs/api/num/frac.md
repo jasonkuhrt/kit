@@ -1,7 +1,5 @@
 # Num.Frac
 
-_Num_ / **Frac**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.Frac.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { Frac } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.Frac.someFunction()
+// Access via direct import
+Frac.someFunction()
 ```
 
 :::

@@ -1,7 +1,5 @@
 # Str.Case
 
-_Str_ / **Case**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Str.Case.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Str from '@wollybeard/kit/str'
+import { Case } from '@wollybeard/kit/str'
 
-// Access via namespace
-Str.Case.someFunction()
+// Access via direct import
+Case.someFunction()
 ```
 
 :::

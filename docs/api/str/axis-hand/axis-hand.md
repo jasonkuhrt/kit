@@ -1,7 +1,5 @@
 # Str.AxisHand.AxisHand
 
-_Str.AxisHand_ / **AxisHand**
-
 AxisHand provides a logical, orientation-aware coordinate system for box model properties.
 
 Unlike physical coordinates (top/left/etc), AxisHand uses logical properties relative to flow direction: - **main axis**: The primary flow direction (set by orientation) - **cross axis**: Perpendicular to the main axis
@@ -20,10 +18,10 @@ Str.AxisHand.AxisHand.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Str from '@wollybeard/kit/str'
+import { AxisHand } from '@wollybeard/kit/str'
 
-// Access via namespace
-Str.AxisHand.AxisHand.someFunction()
+// Access via direct import
+AxisHand.someFunction()
 ```
 
 :::

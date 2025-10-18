@@ -1,7 +1,5 @@
 # Num.Prime
 
-_Num_ / **Prime**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.Prime.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { Prime } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.Prime.someFunction()
+// Access via direct import
+Prime.someFunction()
 ```
 
 :::

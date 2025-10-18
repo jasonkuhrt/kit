@@ -1,7 +1,5 @@
 # Num.Odd
 
-_Num_ / **Odd**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.Odd.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { Odd } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.Odd.someFunction()
+// Access via direct import
+Odd.someFunction()
 ```
 
 :::

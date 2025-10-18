@@ -1,7 +1,5 @@
 # Paka.Extractor
 
-_Paka_ / **Extractor**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Paka.Extractor.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Paka from '@wollybeard/kit/paka'
+import { Extractor } from '@wollybeard/kit/paka'
 
-// Access via namespace
-Paka.Extractor.someFunction()
+// Access via direct import
+Extractor.someFunction()
 ```
 
 :::

@@ -1,7 +1,5 @@
 # Ts.Assert.parameter4.not.equiv
 
-_Ts.Assert.parameter4.not_ / **equiv**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Ts.Assert.parameter4.not.equiv.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { equiv } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.Assert.parameter4.not.equiv.someFunction()
+// Access via direct import
+equiv.someFunction()
 ```
 
 :::

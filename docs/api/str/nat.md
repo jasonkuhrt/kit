@@ -1,7 +1,5 @@
 # Str.Nat
 
-_Str_ / **Nat**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Str.Nat.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Str from '@wollybeard/kit/str'
+import { Nat } from '@wollybeard/kit/str'
 
-// Access via namespace
-Str.Nat.someFunction()
+// Access via direct import
+Nat.someFunction()
 ```
 
 :::

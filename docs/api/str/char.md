@@ -1,7 +1,5 @@
 # Str.Char
 
-_Str_ / **Char**
-
 Uppercase letter.
 
 ## Import
@@ -16,10 +14,10 @@ Str.Char.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Str from '@wollybeard/kit/str'
+import { Char } from '@wollybeard/kit/str'
 
-// Access via namespace
-Str.Char.someFunction()
+// Access via direct import
+Char.someFunction()
 ```
 
 :::

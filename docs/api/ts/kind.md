@@ -1,7 +1,5 @@
 # Ts.Kind
 
-_Ts_ / **Kind**
-
 Higher-kinded type utilities for TypeScript.
 
 Provides type-level functions and utilities for simulating higher-kinded types in TypeScript, enabling more advanced type-level programming patterns.
@@ -18,10 +16,10 @@ Ts.Kind.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { Kind } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.Kind.someFunction()
+// Access via direct import
+Kind.someFunction()
 ```
 
 :::

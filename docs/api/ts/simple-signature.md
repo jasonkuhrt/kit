@@ -1,7 +1,5 @@
 # Ts.SimpleSignature
 
-_Ts_ / **SimpleSignature**
-
 Utilities for working with the `__simpleSignature` phantom type pattern.
 
 This pattern allows functions with complex generic signatures to provide a simpler signature for type inference in contexts like testing or documentation.
@@ -20,10 +18,10 @@ Ts.SimpleSignature.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { SimpleSignature } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.SimpleSignature.someFunction()
+// Access via direct import
+SimpleSignature.someFunction()
 ```
 
 :::

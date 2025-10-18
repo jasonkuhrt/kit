@@ -1,7 +1,5 @@
 # Num.SafeInt
 
-_Num_ / **SafeInt**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.SafeInt.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { SafeInt } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.SafeInt.someFunction()
+// Access via direct import
+SafeInt.someFunction()
 ```
 
 :::

@@ -1,7 +1,5 @@
 # Ts.Union
 
-_Ts_ / **Union**
-
 Valid values for discriminant properties in tagged unions.
 
 ## Import
@@ -16,10 +14,10 @@ Ts.Union.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { Union } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.Union.someFunction()
+// Access via direct import
+Union.someFunction()
 ```
 
 :::

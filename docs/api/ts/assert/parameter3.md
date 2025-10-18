@@ -1,7 +1,5 @@
 # Ts.Assert.parameter3
 
-_Ts.Assert_ / **parameter3**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Ts.Assert.parameter3.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { parameter3 } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.Assert.parameter3.someFunction()
+// Access via direct import
+parameter3.someFunction()
 ```
 
 :::

@@ -1,7 +1,5 @@
 # Str.Code
 
-_Str_ / **Code**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Str.Code.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Str from '@wollybeard/kit/str'
+import { Code } from '@wollybeard/kit/str'
 
-// Access via namespace
-Str.Code.someFunction()
+// Access via direct import
+Code.someFunction()
 ```
 
 :::

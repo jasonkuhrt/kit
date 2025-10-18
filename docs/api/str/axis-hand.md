@@ -1,7 +1,5 @@
 # Str.AxisHand
 
-_Str_ / **AxisHand**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Str.AxisHand.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Str from '@wollybeard/kit/str'
+import { AxisHand } from '@wollybeard/kit/str'
 
-// Access via namespace
-Str.AxisHand.someFunction()
+// Access via direct import
+AxisHand.someFunction()
 ```
 
 :::

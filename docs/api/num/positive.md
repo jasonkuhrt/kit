@@ -1,7 +1,5 @@
 # Num.Positive
 
-_Num_ / **Positive**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.Positive.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { Positive } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.Positive.someFunction()
+// Access via direct import
+Positive.someFunction()
 ```
 
 :::

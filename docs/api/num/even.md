@@ -1,7 +1,5 @@
 # Num.Even
 
-_Num_ / **Even**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Num.Even.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Num from '@wollybeard/kit/num'
+import { Even } from '@wollybeard/kit/num'
 
-// Access via namespace
-Num.Even.someFunction()
+// Access via direct import
+Even.someFunction()
 ```
 
 :::

@@ -1,7 +1,5 @@
 # Ts.VariancePhantom
 
-_Ts_ / **VariancePhantom**
-
 Phantom type helper that makes a type parameter covariant.
 
 ## Import
@@ -16,10 +14,10 @@ Ts.VariancePhantom.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Ts from '@wollybeard/kit/ts'
+import { VariancePhantom } from '@wollybeard/kit/ts'
 
-// Access via namespace
-Ts.VariancePhantom.someFunction()
+// Access via direct import
+VariancePhantom.someFunction()
 ```
 
 :::

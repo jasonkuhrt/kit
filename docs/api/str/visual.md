@@ -1,7 +1,5 @@
 # Str.Visual
 
-_Str_ / **Visual**
-
 ## Import
 
 ::: code-group
@@ -14,10 +12,10 @@ Str.Visual.someFunction()
 ```
 
 ```typescript [Barrel]
-import * as Str from '@wollybeard/kit/str'
+import { Visual } from '@wollybeard/kit/str'
 
-// Access via namespace
-Str.Visual.someFunction()
+// Access via direct import
+Visual.someFunction()
 ```
 
 :::
