@@ -22,43 +22,82 @@ import { exact } from '@wollybeard/kit/ts'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L208" /> {#c-array-208}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, any[], false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, ExactKind>,
+    any[],
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L73" /> {#c-bigint-73}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, bigint, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, ExactKind>,
+    bigint,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boolean`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L88" /> {#c-boolean-88}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, boolean, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, ExactKind>,
+    boolean,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L148" /> {#c-date-148}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, Date, false, false>>
+InputActualFactory<
+  State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, Date, false, false>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L178" /> {#c-error-178}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, Error, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, ExactKind>,
+    Error,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L118" /> {#c-null-118}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, null, false, false>>
+InputActualFactory<
+  State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, null, false, false>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `number`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L58" /> {#c-number-58}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, number, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, ExactKind>,
+    number,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L28" /> {#c-of-28}
@@ -70,31 +109,66 @@ InputMatcherArgFactory<State.SetRelator<State.Empty, ExactKind>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Promise`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L193" /> {#c-promise-193}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, Promise<any>, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, ExactKind>,
+    Promise<any>,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L163" /> {#c-reg-exp-163}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, RegExp, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, ExactKind>,
+    RegExp,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L43" /> {#c-string-43}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, string, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, ExactKind>,
+    string,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L133" /> {#c-symbol-133}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, symbol, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, ExactKind>,
+    symbol,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L103" /> {#c-undefined-103}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, undefined, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, ExactKind>,
+    undefined,
+    false,
+    false
+  >
+>
 ```
 
 ## Types

@@ -216,13 +216,16 @@ interface Builder {
    * Add a line to the JSDoc. Automatically escapes user content.
    * Use empty template for blank lines: `doc\`\``
    */
-  (strings: TemplateStringsArray, ...values: Array<string | number | Raw | null | undefined>): Builder
+  (
+    strings: TemplateStringsArray,
+    ...values: Array<string | number | Raw | null | undefined>
+  ): Builder
 
-/**
+  /**
  * Add content with auto-escaping. Skips if null/undefined.
  * Perfect for chaining with optional content.
  * @example
- * 
+ *
 ```ts
    * doc
    *   .add(field.description)  // skips if null/undefined
@@ -275,7 +278,9 @@ interface Builder {
    * })
    * ```
    */
-  table(rows: Record<string, string | Raw | Array<string | Raw> | undefined | null>): Builder
+  table(
+    rows: Record<string, string | Raw | Array<string | Raw> | undefined | null>,
+  ): Builder
 
   /**
    * Add a markdown code block with language syntax highlighting.
@@ -316,7 +321,10 @@ interface Builder {
    * doc.$example('Basic usage', 'ts', code)
    * ```
    */
-  $example(label?: string, lang?: string): (strings: TemplateStringsArray, ...values: any[]) => Builder
+  $example(
+    label?: string,
+    lang?: string,
+  ): (strings: TemplateStringsArray, ...values: any[]) => Builder
   $example(label: string | undefined, lang: string, code: string): Builder
 
   /**
@@ -372,14 +380,14 @@ return doc.build()
 
 ````typescript
 interface Template {
-/**
+  /**
  * Tagged template for building JSDoc content with automatic escaping.
  *
  * By default, interpolated values are escaped to prevent JSDoc injection.
  * Use {@link raw} to inject pre-escaped or intentionally raw content.
  *
  * @example
- * 
+ *
 ```ts
    * // User content is automatically escaped
    * const doc = tag\`
@@ -396,7 +404,10 @@ interface Template {
    * \`
    * ```
    */
-  (strings: TemplateStringsArray, ...values: Array<string | number | Raw | null | undefined>): string
+  (
+    strings: TemplateStringsArray,
+    ...values: Array<string | number | Raw | null | undefined>
+  ): string
 
   /**
    * Create a new JSDoc builder for imperative construction.
@@ -423,7 +434,9 @@ interface Template {
    * // Usage: getFieldDoc(field, parentType) -> string
    * ```
    */
-  factory: <$Args extends any[]>(fn: (doc: Builder, ...args: $Args) => void) => (...args: $Args) => string
+  factory: <$Args extends any[]>(
+    fn: (doc: Builder, ...args: $Args) => void,
+  ) => (...args: $Args) => string
 
   /**
    * JSDoc tag helpers for generating properly formatted tags.

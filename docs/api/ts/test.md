@@ -260,68 +260,68 @@ type StaticErrorAssertion<
 > =
   // Check what kind of $Meta we have
   [$Meta] extends [never]
-  // No meta - just error, expected, actual
-  ? {
-    [
-    k in keyof {
-      ERROR: $Message
-      expected: $Expected
-      actual: $Actual
-    } as k extends string
-    ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'>
-    : k
-    ]: { ERROR: $Message; expected: $Expected; actual: $Actual }[k]
-  }
-  : [$Meta] extends [string]
-  // String tip - render as { tip: $Meta }
-  ? Simplify<
-    {
+    // No meta - just error, expected, actual
+    ? {
       [
-      k in keyof ({
-        ERROR: $Message
-        expected: $Expected
-        actual: $Actual
-      } & { tip: $Meta }) as k extends string
-      ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'>
-      : k
-      ]: ({ ERROR: $Message; expected: $Expected; actual: $Actual } & {
-        tip: $Meta
-      })[k]
+        k in keyof {
+          ERROR: $Message
+          expected: $Expected
+          actual: $Actual
+        } as k extends string
+          ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'>
+          : k
+      ]: { ERROR: $Message; expected: $Expected; actual: $Actual }[k]
     }
-  >
-  : [$Meta] extends [readonly string[]]
-  // Tuple of tips - render as { tip_a, tip_b, ... }
-  ? Simplify<
-    {
-      [
-      k in keyof ({
-        ERROR: $Message
-        expected: $Expected
-        actual: $Actual
-      } & TupleToTips<$Meta>) as k extends string
-      ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'>
-      : k
-      ]: (
-        & { ERROR: $Message; expected: $Expected; actual: $Actual }
-        & TupleToTips<$Meta>
-      )[k]
-    }
-  >
-  // Object - spread $Meta directly
-  : Simplify<
-    {
-      [
-      k in keyof (
-        & { ERROR: $Message; expected: $Expected; actual: $Actual }
-        & $Meta
-      ) as k extends string
-      ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'>
-      : k
-      ]: ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta)[
-      k
-      ]
-    }
-  >
+    : [$Meta] extends [string]
+    // String tip - render as { tip: $Meta }
+      ? Simplify<
+        {
+          [
+            k in keyof ({
+              ERROR: $Message
+              expected: $Expected
+              actual: $Actual
+            } & { tip: $Meta }) as k extends string
+              ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'>
+              : k
+          ]: ({ ERROR: $Message; expected: $Expected; actual: $Actual } & {
+            tip: $Meta
+          })[k]
+        }
+      >
+    : [$Meta] extends [readonly string[]]
+    // Tuple of tips - render as { tip_a, tip_b, ... }
+      ? Simplify<
+        {
+          [
+            k in keyof ({
+              ERROR: $Message
+              expected: $Expected
+              actual: $Actual
+            } & TupleToTips<$Meta>) as k extends string
+              ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'>
+              : k
+          ]: (
+            & { ERROR: $Message; expected: $Expected; actual: $Actual }
+            & TupleToTips<$Meta>
+          )[k]
+        }
+      >
+    // Object - spread $Meta directly
+    : Simplify<
+      {
+        [
+          k in keyof (
+            & { ERROR: $Message; expected: $Expected; actual: $Actual }
+            & $Meta
+          ) as k extends string
+            ? Str.PadEnd<k, GetTestSetting<'errorKeyLength'>, '_'>
+            : k
+        ]: ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta)[
+          k
+        ]
+      }
+    >
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/test/helpers.ts#L358" />

@@ -588,7 +588,9 @@ const renderExport = (exp: Export, context: Context): string => {
 
   const heading = Md.heading(
     3,
-    `<span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">\`[${typeIcon}]\`</span> ${Md.code(exp.name)}${sourceLink} {#${anchorId}}`,
+    `<span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">\`[${typeIcon}]\`</span> ${
+      Md.code(exp.name)
+    }${sourceLink} {#${anchorId}}`,
   )
 
   // Render signature - use simple signature if available, with full signature in toggle

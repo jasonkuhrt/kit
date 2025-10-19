@@ -3,259 +3,259 @@ import type { DefaultTheme } from 'vitepress'
 
 export const apiSidebar: DefaultTheme.SidebarItem[] = [
   {
-    "text": "Domains",
-    "items": [
+    'text': 'Domains',
+    'items': [
       {
-        "text": "Arr",
-        "link": "/api/arr"
+        'text': 'Arr',
+        'link': '/api/arr',
       },
       {
-        "text": "Err",
-        "link": "/api/err"
+        'text': 'Err',
+        'link': '/api/err',
       },
       {
-        "text": "Fn",
-        "link": "/api/fn"
+        'text': 'Fn',
+        'link': '/api/fn',
       },
       {
-        "text": "Json",
-        "link": "/api/json"
+        'text': 'Json',
+        'link': '/api/json',
       },
       {
-        "text": "Num",
-        "link": "/api/num",
-        "items": [
+        'text': 'Num',
+        'link': '/api/num',
+        'items': [
           {
-            "text": "BigInteger",
-            "link": "/api/num/biginteger"
+            'text': 'BigInteger',
+            'link': '/api/num/biginteger',
           },
           {
-            "text": "Complex",
-            "link": "/api/num/complex"
+            'text': 'Complex',
+            'link': '/api/num/complex',
           },
           {
-            "text": "Degrees",
-            "link": "/api/num/degrees"
+            'text': 'Degrees',
+            'link': '/api/num/degrees',
           },
           {
-            "text": "Even",
-            "link": "/api/num/even"
+            'text': 'Even',
+            'link': '/api/num/even',
           },
           {
-            "text": "Finite",
-            "link": "/api/num/finite"
+            'text': 'Finite',
+            'link': '/api/num/finite',
           },
           {
-            "text": "Float",
-            "link": "/api/num/float"
+            'text': 'Float',
+            'link': '/api/num/float',
           },
           {
-            "text": "Frac",
-            "link": "/api/num/frac"
+            'text': 'Frac',
+            'link': '/api/num/frac',
           },
           {
-            "text": "InRange",
-            "link": "/api/num/inrange"
+            'text': 'InRange',
+            'link': '/api/num/inrange',
           },
           {
-            "text": "Int",
-            "link": "/api/num/int"
+            'text': 'Int',
+            'link': '/api/num/int',
           },
           {
-            "text": "Natural",
-            "link": "/api/num/natural"
+            'text': 'Natural',
+            'link': '/api/num/natural',
           },
           {
-            "text": "Negative",
-            "link": "/api/num/negative"
+            'text': 'Negative',
+            'link': '/api/num/negative',
           },
           {
-            "text": "NonNegative",
-            "link": "/api/num/nonnegative"
+            'text': 'NonNegative',
+            'link': '/api/num/nonnegative',
           },
           {
-            "text": "NonPositive",
-            "link": "/api/num/nonpositive"
+            'text': 'NonPositive',
+            'link': '/api/num/nonpositive',
           },
           {
-            "text": "NonZero",
-            "link": "/api/num/nonzero"
+            'text': 'NonZero',
+            'link': '/api/num/nonzero',
           },
           {
-            "text": "Odd",
-            "link": "/api/num/odd"
+            'text': 'Odd',
+            'link': '/api/num/odd',
           },
           {
-            "text": "Percentage",
-            "link": "/api/num/percentage"
+            'text': 'Percentage',
+            'link': '/api/num/percentage',
           },
           {
-            "text": "Positive",
-            "link": "/api/num/positive"
+            'text': 'Positive',
+            'link': '/api/num/positive',
           },
           {
-            "text": "Prime",
-            "link": "/api/num/prime"
+            'text': 'Prime',
+            'link': '/api/num/prime',
           },
           {
-            "text": "Radians",
-            "link": "/api/num/radians"
+            'text': 'Radians',
+            'link': '/api/num/radians',
           },
           {
-            "text": "Ratio",
-            "link": "/api/num/ratio"
+            'text': 'Ratio',
+            'link': '/api/num/ratio',
           },
           {
-            "text": "SafeInt",
-            "link": "/api/num/safeint"
+            'text': 'SafeInt',
+            'link': '/api/num/safeint',
           },
           {
-            "text": "Whole",
-            "link": "/api/num/whole"
+            'text': 'Whole',
+            'link': '/api/num/whole',
           },
           {
-            "text": "Zero",
-            "link": "/api/num/zero"
-          }
+            'text': 'Zero',
+            'link': '/api/num/zero',
+          },
         ],
-        "collapsed": true
+        'collapsed': true,
       },
       {
-        "text": "Obj",
-        "link": "/api/obj",
-        "items": [
+        'text': 'Obj',
+        'link': '/api/obj',
+        'items': [
           {
-            "text": "PropertySignature",
-            "link": "/api/obj/propertysignature"
+            'text': 'PropertySignature',
+            'link': '/api/obj/propertysignature',
           },
           {
-            "text": "Union",
-            "link": "/api/obj/union"
-          }
+            'text': 'Union',
+            'link': '/api/obj/union',
+          },
         ],
-        "collapsed": true
+        'collapsed': true,
       },
       {
-        "text": "Prom",
-        "link": "/api/prom"
+        'text': 'Prom',
+        'link': '/api/prom',
       },
       {
-        "text": "Rec",
-        "link": "/api/rec"
+        'text': 'Rec',
+        'link': '/api/rec',
       },
       {
-        "text": "Str",
-        "link": "/api/str",
-        "items": [
+        'text': 'Str',
+        'link': '/api/str',
+        'items': [
           {
-            "text": "AxisHand",
-            "link": "/api/str/axishand"
+            'text': 'AxisHand',
+            'link': '/api/str/axishand',
           },
           {
-            "text": "Case",
-            "link": "/api/str/case"
+            'text': 'Case',
+            'link': '/api/str/case',
           },
           {
-            "text": "Char",
-            "link": "/api/str/char"
+            'text': 'Char',
+            'link': '/api/str/char',
           },
           {
-            "text": "Code",
-            "link": "/api/str/code"
+            'text': 'Code',
+            'link': '/api/str/code',
           },
           {
-            "text": "Nat",
-            "link": "/api/str/nat"
+            'text': 'Nat',
+            'link': '/api/str/nat',
           },
           {
-            "text": "Text",
-            "link": "/api/str/text"
+            'text': 'Text',
+            'link': '/api/str/text',
           },
           {
-            "text": "Tpl",
-            "link": "/api/str/tpl"
+            'text': 'Tpl',
+            'link': '/api/str/tpl',
           },
           {
-            "text": "Visual",
-            "link": "/api/str/visual"
-          }
+            'text': 'Visual',
+            'link': '/api/str/visual',
+          },
         ],
-        "collapsed": true
-      }
-    ]
+        'collapsed': true,
+      },
+    ],
   },
   {
-    "text": "Utils",
-    "items": [
+    'text': 'Utils',
+    'items': [
       {
-        "text": "Html",
-        "link": "/api/html"
+        'text': 'Html',
+        'link': '/api/html',
       },
       {
-        "text": "Paka",
-        "link": "/api/paka",
-        "items": [
+        'text': 'Paka',
+        'link': '/api/paka',
+        'items': [
           {
-            "text": "Adaptors",
-            "link": "/api/paka/adaptors"
+            'text': 'Adaptors',
+            'link': '/api/paka/adaptors',
           },
           {
-            "text": "Extractor",
-            "link": "/api/paka/extractor"
-          }
+            'text': 'Extractor',
+            'link': '/api/paka/extractor',
+          },
         ],
-        "collapsed": true
+        'collapsed': true,
       },
       {
-        "text": "Test",
-        "link": "/api/test",
-        "items": [
+        'text': 'Test',
+        'link': '/api/test',
+        'items': [
           {
-            "text": "Test",
-            "link": "/api/test/test"
-          }
+            'text': 'Test',
+            'link': '/api/test/test',
+          },
         ],
-        "collapsed": true
+        'collapsed': true,
       },
       {
-        "text": "Ts",
-        "link": "/api/ts",
-        "items": [
+        'text': 'Ts',
+        'link': '/api/ts',
+        'items': [
           {
-            "text": "Assert",
-            "link": "/api/ts/assert"
+            'text': 'Assert',
+            'link': '/api/ts/assert',
           },
           {
-            "text": "Kind",
-            "link": "/api/ts/kind"
+            'text': 'Kind',
+            'link': '/api/ts/kind',
           },
           {
-            "text": "Relation",
-            "link": "/api/ts/relation"
+            'text': 'Relation',
+            'link': '/api/ts/relation',
           },
           {
-            "text": "SENTINEL",
-            "link": "/api/ts/sentinel"
+            'text': 'SENTINEL',
+            'link': '/api/ts/sentinel',
           },
           {
-            "text": "SimpleSignature",
-            "link": "/api/ts/simplesignature"
+            'text': 'SimpleSignature',
+            'link': '/api/ts/simplesignature',
           },
           {
-            "text": "Union",
-            "link": "/api/ts/union"
+            'text': 'Union',
+            'link': '/api/ts/union',
           },
           {
-            "text": "VariancePhantom",
-            "link": "/api/ts/variancephantom"
-          }
+            'text': 'VariancePhantom',
+            'link': '/api/ts/variancephantom',
+          },
         ],
-        "collapsed": true
+        'collapsed': true,
       },
       {
-        "text": "Value",
-        "link": "/api/value"
-      }
-    ]
-  }
+        'text': 'Value',
+        'link': '/api/value',
+      },
+    ],
+  },
 ]

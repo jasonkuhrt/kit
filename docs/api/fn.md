@@ -105,8 +105,8 @@ Fn.pipe(5, add1, double, toString) // "12"
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `bind`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L175" /> {#t-bind-175}
 
 ```typescript
-type bind<$Fn extends AnyAnyParametersMin1> =
-  $Fn extends (...args: [any, ...infer __args_tail__]) => infer __return__
+type bind<$Fn extends AnyAnyParametersMin1> = $Fn extends
+  (...args: [any, ...infer __args_tail__]) => infer __return__
   ? (...args: __args_tail__) => __return__
   : never
 ```
@@ -122,8 +122,8 @@ Apply the second parameter of a curried function. For a function (a) = (b) = c a
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `applySecond`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L214" /> {#t-apply-second-214}
 
 ```typescript
-type applySecond<$Fn, $Arg> =
-  $Fn extends (...args: infer __args__) => (arg: $Arg) => infer __return__
+type applySecond<$Fn, $Arg> = $Fn extends
+  (...args: infer __args__) => (arg: $Arg) => infer __return__
   ? (...args: __args__) => __return__
   : never
 ```
@@ -139,8 +139,8 @@ Apply the second parameter of a curried function. For a function (a) = (b) = c, 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `curry`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/curry.ts#L27" /> {#t-curry-27}
 
 ```typescript
-type curry<fn extends AnyAny> =
-  fn extends (...args: infer __args__) => infer __return__
+type curry<fn extends AnyAny> = fn extends
+  (...args: infer __args__) => infer __return__
   ? Curry__Signature<__args__, __return__>
   : never
 ```
@@ -241,7 +241,10 @@ const same = Fn.endo(obj) // returns the same object reference
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Parameter`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/analyze.ts#L6" /> {#u-parameter-6}
 
 ```typescript
-type Parameter = { type: 'name'; value: string } | { type: 'destructured'; names: string[] }
+type Parameter = { type: 'name'; value: string } | {
+  type: 'destructured'
+  names: string[]
+}
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `analyzeFunction`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/analyze.ts#L31" /> {#f-analyze-function-31}
@@ -307,9 +310,9 @@ const binary = (a: number, b: number) => a + b
 const nullary = () => 42
 
 // [!code word:isUnary:1]
-Fn.isUnary(unary)   // true
+Fn.isUnary(unary) // true
 // [!code word:isUnary:1]
-Fn.isUnary(binary)  // false
+Fn.isUnary(binary) // false
 // [!code word:isUnary:1]
 Fn.isUnary(nullary) // false
 ```
@@ -391,7 +394,10 @@ const result = Fn.partial(add, 1, 2) // 3
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `apply`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/partial/runtime.ts#L97" /> {#c-apply-97}
 
 ```typescript
-<$Fn extends Fn.AnyAny, const $Args extends readonly unknown[]>(fn: $Fn, ...args: $Args) => any
+;(<$Fn extends Fn.AnyAny, const $Args extends readonly unknown[]>(
+  fn: $Fn,
+  ...args: $Args
+) => any)
 ```
 
 Type-safe partial application with automatic type inference. This is an alias for `partial` with a more explicit name.
@@ -423,7 +429,7 @@ Helper to create a deferred computation using partial application. Useful for cr
 import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 const expensiveComputation = (a: number, b: number) => {
-// [!code word:log:1]
+  // [!code word:log:1]
   console.log('Computing...')
   return a * b
 }
@@ -505,16 +511,16 @@ Extract the guarded type from a type guard function.
 import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 const isString = (x: any): x is string => typeof x === 'string'
-type T = GuardedType<typeof isString>  // string
+type T = GuardedType<typeof isString> // string
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ReturnExtract`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L73" /> {#t-return-extract-73}
 
 ```typescript
-type ReturnExtract<$Type, $Fn extends AnyAny> =
-  $Fn extends (...args: infer __args__) => infer __return__
-  ? (...args: __args__) =>
-    __return__ extends Prom.AnyAny
+type ReturnExtract<$Type, $Fn extends AnyAny> = $Fn extends
+  (...args: infer __args__) => infer __return__ ? (
+    ...args: __args__
+  ) => __return__ extends Prom.AnyAny
     ? Promise<Extract<Awaited<__return__>, $Type>>
     : Extract<__return__, $Type>
   : never
@@ -534,32 +540,30 @@ import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 // Sync function
 type Fn1 = (x: number) => string | number
-type Result1 = ReturnExtract<string, Fn1>  // (x: number) => string
+type Result1 = ReturnExtract<string, Fn1> // (x: number) => string
 
 // Async function - automatically unwraps and rewraps Promise
 type Fn2 = (x: number) => Promise<string | number>
-type Result2 = ReturnExtract<string, Fn2>  // (x: number) => Promise<string>
+type Result2 = ReturnExtract<string, Fn2> // (x: number) => Promise<string>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ReturnReplace`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L85" /> {#t-return-replace-85}
 
 ```typescript
-type ReturnReplace<$Fn extends AnyAny, $Type> =
-  $Fn extends (...args: infer __args__) => infer __return__
-  ? (...args: __args__) => $Type
+type ReturnReplace<$Fn extends AnyAny, $Type> = $Fn extends
+  (...args: infer __args__) => infer __return__ ? (...args: __args__) => $Type
   : never
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ReturnExclude`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L111" /> {#t-return-exclude-111}
 
 ```typescript
-type ReturnExclude<$Type, $Fn extends AnyAny> =
-  $Fn extends (...args: infer __args__) => infer __return__
-  ? (...args: __args__) => (
-    __return__ extends Prom.AnyAny
+type ReturnExclude<$Type, $Fn extends AnyAny> = $Fn extends
+  (...args: infer __args__) => infer __return__ ? (
+    ...args: __args__
+  ) => __return__ extends Prom.AnyAny
     ? Promise<Exclude<Awaited<__return__>, $Type>>
     : Exclude<__return__, $Type>
-  )
   : never
 ```
 
@@ -577,11 +581,11 @@ import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 // Sync function
 type Fn1 = (x: number) => string | null
-type Result1 = ReturnExclude<null, Fn1>  // (x: number) => string
+type Result1 = ReturnExclude<null, Fn1> // (x: number) => string
 
 // Async function - automatically unwraps and rewraps Promise
 type Fn2 = (x: number) => Promise<string | null>
-type Result2 = ReturnExclude<null, Fn2>  // (x: number) => Promise<string>
+type Result2 = ReturnExclude<null, Fn2> // (x: number) => Promise<string>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ReturnExcludeNull`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L123" /> {#t-return-exclude-null-123}
@@ -593,13 +597,11 @@ type ReturnExcludeNull<$Fn extends AnyAny> = ReturnExclude<null, $Fn>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ReturnInclude`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/base.ts#L146" /> {#t-return-include-146}
 
 ```typescript
-type ReturnInclude<$Type, $Fn extends AnyAny> =
-  $Fn extends (...args: infer __args__) => infer __return__
-  ? (...args: __args__) => (
-    __return__ extends Prom.AnyAny
-    ? Promise<$Type | Awaited<__return__>>
+type ReturnInclude<$Type, $Fn extends AnyAny> = $Fn extends
+  (...args: infer __args__) => infer __return__ ? (
+    ...args: __args__
+  ) => __return__ extends Prom.AnyAny ? Promise<$Type | Awaited<__return__>>
     : $Type | __return__
-  )
   : never
 ```
 
@@ -617,11 +619,11 @@ import { Fn } from '@wollybeard/kit/fn'
 // ---cut---
 // Sync function
 type Fn1 = (x: number) => string
-type Result1 = ReturnInclude<null, Fn1>  // (x: number) => string | null
+type Result1 = ReturnInclude<null, Fn1> // (x: number) => string | null
 
 // Async function - automatically unwraps and rewraps Promise
 type Fn2 = (x: number) => Promise<string>
-type Result2 = ReturnInclude<null, Fn2>  // (x: number) => Promise<string | null>
+type Result2 = ReturnInclude<null, Fn2> // (x: number) => Promise<string | null>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAny2Curried`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/fn/core/curry.ts#L7" /> {#t-any-any2curried-7}

@@ -191,7 +191,7 @@ const renderPrefixed = Str.Tpl.renderWith(v => `[${v}]`)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `render`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L150" /> {#c-render-150}
 
 ```typescript
-(callInput: CallInput) => string
+;((callInput: CallInput) => string)
 ```
 
 Render tagged template literal arguments to a string. Interpolated values are converted using plain `String()` coercion.
@@ -204,7 +204,7 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 function tag(...args: unknown[]) {
   if (isArgs(args)) {
-// [!code word:render:1]
+    // [!code word:render:1]
     return Str.Tpl.render(args)
   }
 }
@@ -304,7 +304,30 @@ Type for a tagged template literal function used for syntax highlighting.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `highlight`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/tpl/tpl.ts#L297" /> {#c-highlight-297}
 
 ```typescript
-{ ts: (strings: TemplateStringsArray, ...values: unknown[]) => string; js: (strings: TemplateStringsArray, ...values: unknown[]) => string; html: (strings: TemplateStringsArray, ...values: unknown[]) => string; css: (strings: TemplateStringsArray, ...values: unknown[]) => string; sql: (strings: TemplateStringsArray, ...values: unknown[]) => string; json: (strings: TemplateStringsArray, ...values: unknown[]) => string; yaml: (strings: TemplateStringsArray, ...values: unknown[]) => string; yml: (strings: TemplateStringsArray, ...values: unknown[]) => string; graphql: (strings: TemplateStringsArray, ...values: unknown[]) => string; gql: (strings: TemplateStringsArray, ...values: unknown[]) => string; iso: (strings: TemplateStringsArray, ...values: unknown[]) => string; }
+{
+  ts: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  js: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  html: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  css: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  sql: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  json: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  yaml: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  yml: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  graphql: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  gql: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+  iso: ;
+  ;((strings: TemplateStringsArray, ...values: unknown[]) => string)
+}
 ```
 
 Object containing language-specific template tag functions for syntax highlighting. Each property is a tagged template function that provides editor syntax highlighting for that language (when supported by the editor).

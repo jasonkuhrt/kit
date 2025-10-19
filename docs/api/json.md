@@ -49,7 +49,10 @@ Parse a JSON string to a typed value. Uses Effect's parseJson for better error m
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Primitive`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L211" /> {#c-primitive-211}
 
 ```typescript
-{ parse: (value: unknown) => string | number | boolean | null; }
+{
+  parse: ;
+  ;((value: unknown) => string | number | boolean | null)
+}
 ```
 
 Exported schemas for parsing JSON types. These are used in tests and provide parse methods.
@@ -57,7 +60,10 @@ Exported schemas for parsing JSON types. These are used in tests and provide par
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Value`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L218" /> {#c-value-218}
 
 ```typescript
-{ parse: (value: unknown) => Value; }
+{
+  parse: ;
+  ;((value: unknown) => Value)
+}
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `PrimitiveSchema`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/json/json.effect.ts#L110" /> {#c-primitive-schema-110}

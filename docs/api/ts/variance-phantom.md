@@ -42,8 +42,8 @@ interface Container<T> {
 let narrow: Container<1> = {}
 let wide: Container<number> = {}
 
-wide = narrow  // ✅ Allowed (1 extends number)
-narrow = wide  // ❌ Error (number does not extend 1)
+wide = narrow // ✅ Allowed (1 extends number)
+narrow = wide // ❌ Error (number does not extend 1)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Contra`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L55" /> {#t-contra-55}
@@ -67,8 +67,8 @@ interface Handler<T> {
 let narrow: Handler<1> = {}
 let wide: Handler<number> = {}
 
-narrow = wide  // ✅ Allowed (reversed direction!)
-wide = narrow  // ❌ Error
+narrow = wide // ✅ Allowed (reversed direction!)
+wide = narrow // ❌ Error
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `In`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L77" /> {#t-in-77}
@@ -92,8 +92,8 @@ interface Exact<T> {
 let one: Exact<1> = {}
 let num: Exact<number> = {}
 
-num = one  // ❌ Error (no direction works)
-one = num  // ❌ Error (no direction works)
+num = one // ❌ Error (no direction works)
+one = num // ❌ Error (no direction works)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Bi`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/variance-phantom.ts#L99" /> {#t-bi-99}
@@ -117,6 +117,6 @@ interface Unsafe<T> {
 let one: Unsafe<1> = {}
 let num: Unsafe<number> = {}
 
-num = one  // ⚠️ Allowed (both directions work)
-one = num  // ⚠️ Allowed (unsafe!)
+num = one // ⚠️ Allowed (both directions work)
+one = num // ⚠️ Allowed (unsafe!)
 ```

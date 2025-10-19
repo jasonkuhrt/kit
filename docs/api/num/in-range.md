@@ -90,7 +90,10 @@ Range-constrained number.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Clamp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/in-range/in-range.ts#L57" /> {#t-clamp-57}
 
 ```typescript
-type Clamp<_T extends number, Min extends number, Max extends number> = InRange<Min, Max>
+type Clamp<_T extends number, Min extends number, Max extends number> = InRange<
+  Min,
+  Max
+>
 ```
 
 Type-level clamp transformation. Ensures the result type is within the specified range.
