@@ -12,5 +12,8 @@ docs/.vitepress/cache/
 # Playwright MCP
 .playwright-mcp/
 
+# Serena MCP
+.serena/cache/
+
 # Local Netlify folder
 .netlify
