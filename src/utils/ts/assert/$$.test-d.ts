@@ -239,15 +239,12 @@ Assert.array.sub.of.as<a>().as<b[]>()
 //
 // ━━ noExcess
 //
-// TODO: Not yet supported in new builder API
-// sub.noExcess<{ id: a }>()({ id: a })
-// sub.noExcess<{ id: a }, { id: a }>()
-// // @ts-expect-error
-// sub.noExcess<{ id: a }>()({ id: a } as { id: a; name?: b })
-// // @ts-expect-error
-// sub.noExcess<{ id: a }, { id: a; name?: b }>()
-// // @ts-expect-error - expectation constraint
-// sub.noExcess<1>
+Assert.sub.noExcess.of.as<{ id: a }>()({ id: a })
+Assert.sub.noExcess.of.as<{ id: a }>().as<{ id: a }>()
+// @ts-expect-error
+Assert.sub.noExcess.of.as<{ id: a }>()({ id: a } as { id: a; name?: b })
+// @ts-expect-error
+Assert.sub.noExcess.of<{ id: a }>().as<{ id: a; name?: b }>()
 
 //
 //
@@ -338,13 +335,12 @@ Assert.array.equiv.of.as<a>().as<b[]>()
 //
 // ━━ noExcess
 //
-// TODO: Not yet supported in new builder API
-// equiv.noExcess<{ id: a }>()({ id: a })
-// equiv.noExcess<{ id: a }, { id: a }>()
-// // @ts-expect-error
-// equiv.noExcess<{ id: a }>()({ id: a } as { id: a; name?: b })
-// // @ts-expect-error
-// equiv.noExcess<{ id: a }, { id: a; name?: b }>()
+Assert.equiv.noExcess.of.as<{ id: a }>()({ id: a })
+Assert.equiv.noExcess.of.as<{ id: a }>().as<{ id: a }>()
+// @ts-expect-error
+Assert.equiv.noExcess.of.as<{ id: a }>()({ id: a } as { id: a; name?: b })
+// @ts-expect-error
+Assert.equiv.noExcess.of<{ id: a }>().as<{ id: a; name?: b }>()
 
 //
 //
@@ -525,6 +521,13 @@ test('Type-level: equiv relation', () => {
   >
 })
 
+test('Type-level: equiv.noExcess relation', () => {
+  type _ = Assert.Cases<
+    Assert.equiv.noExcess.of<{ id: string }, { id: string }>,
+    Assert.equiv.noExcess.of<{ a: number } & {}, { a: number }>
+  >
+})
+
 test('Type-level: sub relation', () => {
   type _ = Assert.Cases<
     // Base .of matcher
@@ -537,6 +540,13 @@ test('Type-level: sub relation', () => {
     Assert.sub.boolean<true>,
     Assert.sub.undefined<undefined>,
     Assert.sub.null<null>
+  >
+})
+
+test('Type-level: sub.noExcess relation', () => {
+  type _ = Assert.Cases<
+    Assert.sub.noExcess.of<{ id: string }, { id: string }>,
+    Assert.sub.noExcess.of<{ a: number }, { a: 42 }>
   >
 })
 
@@ -591,28 +601,6 @@ test('Type-level: array extractor', () => {
 //
 // Type-Level Error Cases
 //
-type y = Assert.exact<string, number>
-/**
-
- type y = {
-     ERROR_________: "EXPECTED and ACTUAL are disjoint";
-     expected______: string;
-     actual________: number;
-     tip___________: "Types share no values";
- }
-
- */
-
-type x = Assert.exact.string<42>
-/*
-type x = {
-    ERROR_________: "EXPECTED and ACTUAL are disjoint";
-    expected______: string;
-    actual________: 42;
-    tip___________: "Types share no values";
-}
-
-*/
 
 test('Type-level: error cases', () => {
   // @ts-expect-error - number not assignable to string

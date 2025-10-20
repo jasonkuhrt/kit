@@ -9,7 +9,7 @@ import type {
   Parameters$,
   Returned,
 } from '../kinds/extractors.js'
-import type { EquivKind, ExactKind, SubKind } from '../kinds/relators.js'
+import type { EquivKind, EquivNoExcessKind, ExactKind, SubKind, SubNoExcessKind } from '../kinds/relators.js'
 import type { InputActualFactory, InputMatcherArgConstFactory, InputMatcherArgFactory } from './input.js'
 import type { State } from './state.js'
 
@@ -46,20 +46,34 @@ export interface RelatorNamespace<$State extends State> {
 }
 
 /**
+ * Sub relator namespace with noExcess modifier.
+ */
+export interface SubRelatorNamespace<$State extends State> extends RelatorNamespace<$State> {
+  readonly noExcess: RelatorNamespace<State.SetRelator<$State, SubNoExcessKind>>
+}
+
+/**
+ * Equiv relator namespace with noExcess modifier.
+ */
+export interface EquivRelatorNamespace<$State extends State> extends RelatorNamespace<$State> {
+  readonly noExcess: RelatorNamespace<State.SetRelator<$State, EquivNoExcessKind>>
+}
+
+/**
  * Not namespace for negated assertions.
  * Contains only relators (no extractors) with negation applied.
  */
 export interface NotNamespace<$State extends State> {
   readonly exact: RelatorNamespace<State.SetRelator<State.SetNegated<$State>, ExactKind>>
-  readonly equiv: RelatorNamespace<State.SetRelator<State.SetNegated<$State>, EquivKind>>
-  readonly sub: RelatorNamespace<State.SetRelator<State.SetNegated<$State>, SubKind>>
+  readonly equiv: EquivRelatorNamespace<State.SetRelator<State.SetNegated<$State>, EquivKind>>
+  readonly sub: SubRelatorNamespace<State.SetRelator<State.SetNegated<$State>, SubKind>>
 }
 
 export interface ExtractorsBuilder<$State extends State> {
   // Relators return RelatorNamespace
   readonly exact: RelatorNamespace<State.SetRelator<$State, ExactKind>>
-  readonly equiv: RelatorNamespace<State.SetRelator<$State, EquivKind>>
-  readonly sub: RelatorNamespace<State.SetRelator<$State, SubKind>>
+  readonly equiv: EquivRelatorNamespace<State.SetRelator<$State, EquivKind>>
+  readonly sub: SubRelatorNamespace<State.SetRelator<$State, SubKind>>
 
   /**
    * Negate the assertion (inverts the relation check).

@@ -1,4 +1,5 @@
 import type { Kind } from '#ts/ts'
+import type { Obj } from '#obj'
 import type { Relation } from '../../relation.js'
 import type { ComputeDiff, StaticErrorAssertion } from '../assertion-error.js'
 // import type { AssertionKind } from '../helpers.js'
@@ -156,4 +157,93 @@ type InvertSubResult<$Expected, $Actual> = $Actual extends $Expected ? StaticErr
     $Expected,
     $Actual
   >
+  : never
+
+/**
+ * Helper: Check for excess properties in Actual beyond Expected.
+ *
+ * Returns never if no excess, otherwise StaticErrorAssertion with excess keys.
+ */
+type CheckNoExcess<$Expected, $Actual> = $Actual extends infer __actual__
+  ? $Expected extends infer __expected__
+    ? [keyof Obj.SubtractShallow<__actual__, __expected__>] extends [never] ? never
+      : StaticErrorAssertion<
+          'ACTUAL has excess properties not in EXPECTED',
+          __expected__,
+          __actual__,
+          { excess: keyof Obj.SubtractShallow<__actual__, __expected__> }
+        >
+    : never
+  : never
+
+/**
+ * Sub + NoExcess kind - checks subtype relation AND no excess properties.
+ *
+ * Parameters: [$Expected, $Actual, $Negated?]
+ * Returns: never if Actual extends Expected with no excess properties
+ *
+ * Combines two checks:
+ * 1. Actual extends Expected (subtype relation)
+ * 2. Actual has no object keys beyond those in Expected
+ */
+// dprint-ignore
+export interface SubNoExcessKind extends AssertionKind {
+  expectationConstraint: unknown
+  parameters: [$Expected: unknown, $Actual: unknown, $Negated?: boolean]
+  return:
+    this['parameters'][2] extends true
+      ? InvertSubNoExcessResult<this['parameters'][0], this['parameters'][1]>
+      : this['parameters'][1] extends this['parameters'][0]
+        ? CheckNoExcess<this['parameters'][0], this['parameters'][1]>
+        : StaticErrorAssertion<
+            'ACTUAL does not extend EXPECTED',
+            this['parameters'][0],
+            this['parameters'][1]
+          >
+}
+
+type InvertSubNoExcessResult<$Expected, $Actual> = $Actual extends $Expected
+  ? [keyof Obj.SubtractShallow<$Actual, $Expected>] extends [never]
+    ? StaticErrorAssertion<
+        'ACTUAL extends EXPECTED with no excess but should not',
+        $Expected,
+        $Actual
+      >
+    : never
+  : never
+
+/**
+ * Equiv + NoExcess kind - checks mutual assignability AND no excess properties.
+ *
+ * Parameters: [$Expected, $Actual, $Negated?]
+ * Returns: never if types are equivalent with no excess properties
+ *
+ * Combines two checks:
+ * 1. Expected and Actual are mutually assignable (equivalent)
+ * 2. Actual has no object keys beyond those in Expected
+ */
+// dprint-ignore
+export interface EquivNoExcessKind extends AssertionKind {
+  expectationConstraint: unknown
+  parameters: [$Expected: unknown, $Actual: unknown, $Negated?: boolean]
+  return:
+    this['parameters'][2] extends true
+      ? InvertEquivNoExcessResult<this['parameters'][0], this['parameters'][1]>
+      : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent
+        ? CheckNoExcess<this['parameters'][0], this['parameters'][1]>
+        : StaticErrorAssertion<
+            'EXPECTED and ACTUAL are not equivalent',
+            this['parameters'][0],
+            this['parameters'][1]
+          >
+}
+
+type InvertEquivNoExcessResult<$Expected, $Actual> = Relation.GetRelation<$Expected, $Actual> extends Relation.equivalent
+  ? [keyof Obj.SubtractShallow<$Actual, $Expected>] extends [never]
+    ? StaticErrorAssertion<
+        'ACTUAL is equivalent to EXPECTED with no excess but should not',
+        $Expected,
+        $Actual
+      >
+    : never
   : never
