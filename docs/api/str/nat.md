@@ -126,23 +126,23 @@ Str.Nat.article('university') // 'a' (irregular)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `plural`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L5" /> {#c-plural-5}
 
 ```typescript
-;((word: string) => string)
+((word: string) => string)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `singular`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L6" /> {#c-singular-6}
 
 ```typescript
-;((word: string) => string)
+((word: string) => string)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isPlural`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L7" /> {#c-is-plural-7}
 
 ```typescript
-;((word: string) => boolean)
+((word: string) => boolean)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `isSingular`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/nat/nat.ts#L8" /> {#c-is-singular-8}
 
 ```typescript
-;((word: string) => boolean)
+((word: string) => boolean)
 ```

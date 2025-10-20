@@ -294,24 +294,24 @@ Function/method parameter. Captures parameter name, type, modifiers, and JSDoc d
 ```typescript twoslash
 // @noErrors
 import { Paka } from '@wollybeard/kit/paka' // ---cut---
- // (items: T[], fn?: (item: T) => U, ...rest: unknown[])
-;[
-  {
-    name: 'items',
-    type: 'T[]',
-    optional: false,
-    rest: false,
-    description: 'Array of items to process',
-  },
-  {
-    name: 'fn',
-    type: '(item: T) => U',
-    optional: true,
-    rest: false,
-    description: 'Transform function',
-  },
-  { name: 'rest', type: 'unknown[]', optional: false, rest: true },
-]
+  // (items: T[], fn?: (item: T) => U, ...rest: unknown[])
+  ;[
+    {
+      name: 'items',
+      type: 'T[]',
+      optional: false,
+      rest: false,
+      description: 'Array of items to process',
+    },
+    {
+      name: 'fn',
+      type: '(item: T) => U',
+      optional: true,
+      rest: false,
+      description: 'Transform function',
+    },
+    { name: 'rest', type: 'unknown[]', optional: false, rest: true },
+  ]
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `FunctionSignature`
@@ -512,34 +512,34 @@ Class property. Captures property name, type, modifiers, and JSDoc description.
 ```typescript twoslash
 // @noErrors
 import { Paka } from '@wollybeard/kit/paka' // ---cut---
- // class User {
-//   readonly id: string
-//   name?: string
-//   static count: number
-// }
-;[
-  {
-    name: 'id',
-    type: 'string',
-    optional: false,
-    readonly: true,
-    static: false,
-  },
-  {
-    name: 'name',
-    type: 'string',
-    optional: true,
-    readonly: false,
-    static: false,
-  },
-  {
-    name: 'count',
-    type: 'number',
-    optional: false,
-    readonly: false,
-    static: true,
-  },
-]
+  // class User {
+  //   readonly id: string
+  //   name?: string
+  //   static count: number
+  // }
+  ;[
+    {
+      name: 'id',
+      type: 'string',
+      optional: false,
+      readonly: true,
+      static: false,
+    },
+    {
+      name: 'name',
+      type: 'string',
+      optional: true,
+      readonly: false,
+      static: false,
+    },
+    {
+      name: 'count',
+      type: 'number',
+      optional: false,
+      readonly: false,
+      static: true,
+    },
+  ]
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[Class]`</span> `ClassMethod`
@@ -804,7 +804,7 @@ Module type definition.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ModuleEncoded`
 
 ```typescript
-interface ModuleEncoded extends Module {}
+interface ModuleEncoded extends Module { }
 ```
 
 <SourceLink href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L555" />

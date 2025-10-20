@@ -54,7 +54,7 @@ Paka supports two complementary documentation fields:
  *
  * Always validate the parsed config...
  */
-export const parseConfig = (input: string) => {/* ... */}
+export const parseConfig = (input: string) => {/* ... */ }
 ```
 
 **Markdown File Guide:**
@@ -111,7 +111,7 @@ export * as Utils from './utils.js'
  *
  * @category Utilities
  */
-export namespace Utils {}
+export namespace Utils { }
 ```
 
 **Why use namespace shadows?**
@@ -161,7 +161,7 @@ Mark exports as internal to exclude them from public documentation:
  * Internal helper function
  * @internal
  */
-export const _internalHelper = () => {}
+export const _internalHelper = () => { }
 ```
 
 Always filtered when `filterInternal: true` (default in production).
@@ -171,7 +171,7 @@ Always filtered when `filterInternal: true` (default in production).
 Optionally filter exports starting with `_`:
 
 ```typescript
-export const _privateHelper = () => {} // Filtered when filterUnderscoreExports: true
+export const _privateHelper = () => { } // Filtered when filterUnderscoreExports: true
 ```
 
 Enable with `filterUnderscoreExports` option (default: `false` for backward compatibility).
@@ -241,7 +241,7 @@ Examples support TypeScript's Twoslash for inline type display:
 ````typescript
 /**
  * @example
- *
+ * 
 ```ts
  * const result = add(1, 2)  // hover shows: const result: number
  * ```
@@ -253,7 +253,7 @@ Disable per-example with `@twoslash-disable`:
 ````typescript
 /**
  * @example
- *
+ * 
 ```ts
  * // @twoslash-disable
  * const pseudocode = "not real TypeScript"
@@ -360,7 +360,7 @@ import * as Paka from '@wollybeard/kit/paka'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ExportLevel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L13" /> {#c-export-level-13}
 
 ```typescript
-Enums<{ readonly value: 'value'; readonly type: 'type' }>
+Enums<{ readonly value: "value"; readonly type: "type"; }>
 ```
 
 Export level distinguishes between runtime values and type-only exports.
@@ -368,14 +368,7 @@ Export level distinguishes between runtime values and type-only exports.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ValueExportType`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L19" /> {#c-value-export-type-19}
 
 ```typescript
-Enums<
-  {
-    readonly function: 'function'
-    readonly const: 'const'
-    readonly class: 'class'
-    readonly namespace: 'namespace'
-  }
->
+Enums<{ readonly function: "function"; readonly const: "const"; readonly class: "class"; readonly namespace: "namespace"; }>
 ```
 
 Value export types
@@ -385,15 +378,7 @@ Value export types
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `TypeExportType`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L32" /> {#c-type-export-type-32}
 
 ```typescript
-Enums<
-  {
-    readonly interface: 'interface'
-    readonly 'type-alias': 'type-alias'
-    readonly enum: 'enum'
-    readonly union: 'union'
-    readonly intersection: 'intersection'
-  }
->
+Enums<{ readonly interface: "interface"; readonly 'type-alias': "type-alias"; readonly enum: "enum"; readonly union: "union"; readonly intersection: "intersection"; }>
 ```
 
 Type export types
@@ -403,13 +388,7 @@ Type export types
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BuilderMethodCategory`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L50" /> {#c-builder-method-category-50}
 
 ```typescript
-Enums<
-  {
-    readonly chainable: 'chainable'
-    readonly terminal: 'terminal'
-    readonly transform: 'transform'
-  }
->
+Enums<{ readonly chainable: "chainable"; readonly terminal: "terminal"; readonly transform: "transform"; }>
 ```
 
 Builder method classification based on return type.
@@ -432,15 +411,7 @@ Union of all possible documentation provenance types.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `SignatureModel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L517" /> {#c-signature-model-517}
 
 ```typescript
-Union<
-  [
-    typeof FunctionSignatureModel,
-    typeof BuilderSignatureModel,
-    typeof ClassSignatureModel,
-    typeof TypeSignatureModel,
-    typeof ValueSignatureModel,
-  ]
->
+Union<[typeof FunctionSignatureModel, typeof BuilderSignatureModel, typeof ClassSignatureModel, typeof TypeSignatureModel, typeof ValueSignatureModel]>
 ```
 
 Signature model
@@ -585,24 +556,13 @@ Function/method parameter. Captures parameter name, type, modifiers, and JSDoc d
 
 ```typescript twoslash
 // @noErrors
-import { Paka } from '@wollybeard/kit/paka' // ---cut---
- // (items: T[], fn?: (item: T) => U, ...rest: unknown[])
-;[
-  {
-    name: 'items',
-    type: 'T[]',
-    optional: false,
-    rest: false,
-    description: 'Array of items to process',
-  },
-  {
-    name: 'fn',
-    type: '(item: T) => U',
-    optional: true,
-    rest: false,
-    description: 'Transform function',
-  },
-  { name: 'rest', type: 'unknown[]', optional: false, rest: true },
+import { Paka } from '@wollybeard/kit/paka'
+// ---cut---
+// (items: T[], fn?: (item: T) => U, ...rest: unknown[])
+[
+  { name: 'items', type: 'T[]', optional: false, rest: false, description: 'Array of items to process' },
+  { name: 'fn', type: '(item: T) => U', optional: true, rest: false, description: 'Transform function' },
+  { name: 'rest', type: 'unknown[]', optional: false, rest: true }
 ]
 ```
 
@@ -789,34 +749,17 @@ Class property. Captures property name, type, modifiers, and JSDoc description.
 
 ```typescript twoslash
 // @noErrors
-import { Paka } from '@wollybeard/kit/paka' // ---cut---
- // class User {
+import { Paka } from '@wollybeard/kit/paka'
+// ---cut---
+// class User {
 //   readonly id: string
 //   name?: string
 //   static count: number
 // }
-;[
-  {
-    name: 'id',
-    type: 'string',
-    optional: false,
-    readonly: true,
-    static: false,
-  },
-  {
-    name: 'name',
-    type: 'string',
-    optional: true,
-    readonly: false,
-    static: false,
-  },
-  {
-    name: 'count',
-    type: 'number',
-    optional: false,
-    readonly: false,
-    static: true,
-  },
+[
+  { name: 'id', type: 'string', optional: false, readonly: true, static: false },
+  { name: 'name', type: 'string', optional: true, readonly: false, static: false },
+  { name: 'count', type: 'number', optional: false, readonly: false, static: true }
 ]
 ```
 

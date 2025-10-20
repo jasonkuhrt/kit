@@ -197,8 +197,7 @@ interface BoxKind extends PrivateKind {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PrivateApply`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L154" /> {#t-private-apply-154}
 
 ```typescript
-type PrivateApply<$Kind extends Private, $Args> =
-  ($Kind & { [PrivateKindParameters]: $Args })[PrivateKindReturn]
+type PrivateApply<$Kind extends Private, $Args> = ($Kind & { [PrivateKindParameters]: $Args })[PrivateKindReturn]
 ```
 
 Apply arguments to a private kind.
@@ -223,7 +222,8 @@ type BoxOfString = PrivateKindApply<BoxKind, [string]> // Box<string>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MaybePrivateApplyOr`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L157" /> {#t-maybe-private-apply-or-157}
 
 ```typescript
-type MaybePrivateApplyOr<$MaybeKind, $Args, $Or> = $MaybeKind extends Private
+type MaybePrivateApplyOr<$MaybeKind, $Args, $Or> =
+  $MaybeKind extends Private
   ? PrivateApply<$MaybeKind, $Args>
   : $Or
 ```
@@ -253,10 +253,9 @@ type Test2 = IsPrivateKind<string> // false
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Pipe`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/kind.ts#L218" /> {#t-pipe-218}
 
 ```typescript
-type Pipe<$Kinds extends readonly Kind[], $Input> = $Kinds extends readonly [
-  infer __first__ extends Kind,
-  ...infer __rest__ extends readonly Kind[],
-] ? Pipe<__rest__, Apply<__first__, [$Input]>>
+type Pipe<$Kinds extends readonly Kind[], $Input> =
+  $Kinds extends readonly [infer __first__ extends Kind, ...infer __rest__ extends readonly Kind[]]
+  ? Pipe<__rest__, Apply<__first__, [$Input]>>
   : $Input
 ```
 
@@ -294,9 +293,6 @@ type Result = Pipe<[Awaited, ArrayElement], Promise<string[]>>
 // Result: string
 
 // Compose three: () => Promise<number[]> -> Promise<number[]> -> number[] -> number
-type Result2 = Pipe<
-  [ReturnType, Awaited, ArrayElement],
-  () => Promise<number[]>
->
+type Result2 = Pipe<[ReturnType, Awaited, ArrayElement], () => Promise<number[]>>
 // Result2: number
 ```

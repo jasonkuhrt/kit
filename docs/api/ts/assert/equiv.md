@@ -17,163 +17,95 @@ import { equiv } from '@wollybeard/kit/ts'
 
 :::
 
+## Namespaces
+
+| Namespace                                        | Description |
+| ------------------------------------------------ | ----------- |
+| [**`noExcess`**](/api/ts/assert/equiv/no-excess) | —           |
+
 ## Constants
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L208" /> {#c-array-208}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L210" /> {#c-array-210}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, EquivKind>,
-    any[],
-    false,
-    false
-  >
->
+InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, any[], false, false>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L73" /> {#c-bigint-73}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L75" /> {#c-bigint-75}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, EquivKind>,
-    bigint,
-    false,
-    false
-  >
->
+InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, bigint, false, false>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boolean`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L88" /> {#c-boolean-88}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boolean`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L90" /> {#c-boolean-90}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, EquivKind>,
-    boolean,
-    false,
-    false
-  >
->
+InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, boolean, false, false>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L148" /> {#c-date-148}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L150" /> {#c-date-150}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, Date, false, false>
->
+InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, Date, false, false>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L178" /> {#c-error-178}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L180" /> {#c-error-180}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, EquivKind>,
-    Error,
-    false,
-    false
-  >
->
+InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, Error, false, false>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L118" /> {#c-null-118}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L120" /> {#c-null-120}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, null, false, false>
->
+InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, null, false, false>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `number`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L58" /> {#c-number-58}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `number`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L60" /> {#c-number-60}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, EquivKind>,
-    number,
-    false,
-    false
-  >
->
+InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, number, false, false>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L28" /> {#c-of-28}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L30" /> {#c-of-30}
 
 ```typescript
 InputMatcherArgFactory<State.SetRelator<State.Empty, EquivKind>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Promise`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L193" /> {#c-promise-193}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Promise`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L195" /> {#c-promise-195}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, EquivKind>,
-    Promise<any>,
-    false,
-    false
-  >
->
+InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, Promise<any>, false, false>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L163" /> {#c-reg-exp-163}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L165" /> {#c-reg-exp-165}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, EquivKind>,
-    RegExp,
-    false,
-    false
-  >
->
+InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, RegExp, false, false>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L43" /> {#c-string-43}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L45" /> {#c-string-45}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, EquivKind>,
-    string,
-    false,
-    false
-  >
->
+InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, string, false, false>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L133" /> {#c-symbol-133}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L135" /> {#c-symbol-135}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, EquivKind>,
-    symbol,
-    false,
-    false
-  >
->
+InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, symbol, false, false>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L103" /> {#c-undefined-103}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L105" /> {#c-undefined-105}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, EquivKind>,
-    undefined,
-    false,
-    false
-  >
->
+InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, undefined, false, false>>
 ```
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L207" /> {#t-array-207}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L209" /> {#t-array-209}
 
 ```typescript
 type Array_<$Actual> = Kind.Apply<EquivKind, [any[], $Actual]>
@@ -194,7 +126,7 @@ type _ = Assert.equiv.Array<any[]>
 type _ = Assert.equiv.Array<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L72" /> {#t-bigint-72}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L74" /> {#t-bigint-74}
 
 ```typescript
 type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, $Actual]>
@@ -215,7 +147,7 @@ type _ = Assert.equiv.bigint<bigint>
 type _ = Assert.equiv.bigint<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `boolean`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L87" /> {#t-boolean-87}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `boolean`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L89" /> {#t-boolean-89}
 
 ```typescript
 type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, $Actual]>
@@ -236,7 +168,7 @@ type _ = Assert.equiv.boolean<boolean>
 type _ = Assert.equiv.boolean<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L147" /> {#t-date-147}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L149" /> {#t-date-149}
 
 ```typescript
 type Date_<$Actual> = Kind.Apply<EquivKind, [Date, $Actual]>
@@ -257,7 +189,7 @@ type _ = Assert.equiv.Date<Date>
 type _ = Assert.equiv.Date<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L177" /> {#t-error-177}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L179" /> {#t-error-179}
 
 ```typescript
 type Error_<$Actual> = Kind.Apply<EquivKind, [Error, $Actual]>
@@ -278,7 +210,7 @@ type _ = Assert.equiv.Error<Error>
 type _ = Assert.equiv.Error<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L117" /> {#t-null-117}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L119" /> {#t-null-119}
 
 ```typescript
 type null_<$Actual> = Kind.Apply<EquivKind, [null, $Actual]>
@@ -299,7 +231,7 @@ type _ = Assert.equiv.null<null>
 type _ = Assert.equiv.null<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `number`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L57" /> {#t-number-57}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `number`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L59" /> {#t-number-59}
 
 ```typescript
 type number_<$Actual> = Kind.Apply<EquivKind, [number, $Actual]>
@@ -320,7 +252,7 @@ type _ = Assert.equiv.number<number>
 type _ = Assert.equiv.number<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L27" /> {#t-of-27}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L29" /> {#t-of-29}
 
 ```typescript
 type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, $Actual]>
@@ -330,7 +262,7 @@ base + equiv relation matchers.
 
 Direct type assertion Relation: mutual assignability (equivalent types)
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Promise`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L192" /> {#t-promise-192}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Promise`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L194" /> {#t-promise-194}
 
 ```typescript
 type Promise_<$Actual> = Kind.Apply<EquivKind, [Promise<any>, $Actual]>
@@ -351,7 +283,7 @@ type _ = Assert.equiv.Promise<Promise<any>>
 type _ = Assert.equiv.Promise<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L162" /> {#t-reg-exp-162}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L164" /> {#t-reg-exp-164}
 
 ```typescript
 type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, $Actual]>
@@ -372,7 +304,7 @@ type _ = Assert.equiv.RegExp<RegExp>
 type _ = Assert.equiv.RegExp<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L42" /> {#t-string-42}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L44" /> {#t-string-44}
 
 ```typescript
 type string_<$Actual> = Kind.Apply<EquivKind, [string, $Actual]>
@@ -393,7 +325,7 @@ type _ = Assert.equiv.string<string>
 type _ = Assert.equiv.string<number>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L132" /> {#t-symbol-132}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L134" /> {#t-symbol-134}
 
 ```typescript
 type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, $Actual]>
@@ -414,7 +346,7 @@ type _ = Assert.equiv.symbol<symbol>
 type _ = Assert.equiv.symbol<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv.ts#L102" /> {#t-undefined-102}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L104" /> {#t-undefined-104}
 
 ```typescript
 type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, $Actual]>
