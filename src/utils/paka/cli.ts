@@ -98,6 +98,12 @@ const generateDocs = async () => {
       './rec',
       './value',
     ],
+    // Only include exports with JSDoc descriptions
+    matching: {
+      docs: {
+        description: { $not: undefined },
+      },
+    },
   })
 
   console.log(`Extracted ${model.entrypoints.length} entrypoints`)

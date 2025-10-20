@@ -1,5 +1,6 @@
 import type { Dir } from '#dir'
 import { FsLoc } from '#fs-loc'
+import { Pat } from '#pat'
 import { Str } from '#str'
 import { Schema as S } from 'effect'
 import { readFileSync } from 'node:fs'
@@ -10,6 +11,7 @@ import {
   DocsProvenance,
   DrillableNamespaceEntrypoint,
   type Entrypoint,
+  type Export,
   type InterfaceModel,
   JSDocProvenance,
   Module,
@@ -43,6 +45,8 @@ export const extractFromFiles = (params: {
   files: Dir.Layout
   entrypoints?: string[]
   extractorVersion?: string
+  matching?: Pat.PatternForType<Export>
+  /** @deprecated Use `matching` instead */
   filterUnderscoreExports?: boolean
 }): InterfaceModel => {
   const {
@@ -50,6 +54,7 @@ export const extractFromFiles = (params: {
     files,
     entrypoints: targetEntrypoints,
     extractorVersion = '0.1.0',
+    matching,
     filterUnderscoreExports = false,
   } = params
 
@@ -241,6 +246,15 @@ export const extractFromFiles = (params: {
       { filterInternal: true, filterUnderscoreExports },
     )
 
+    // Apply pattern matching filter if provided
+    if (matching) {
+      const filteredExports = module.exports.filter(exp => Pat.isMatch(exp, matching))
+      module = Module.make({
+        ...module,
+        exports: filteredExports,
+      })
+    }
+
     // Override module description and category with namespace export JSDoc if available
     if (namespaceDescription || namespaceCategory) {
       module = Module.make({
@@ -299,7 +313,9 @@ export type ExtractConfig = {
   entrypoints?: string[]
   /** Extractor version */
   extractorVersion?: string
-  /** Filter exports that start with underscore `_` prefix (default: false) */
+  /** Pattern for exports to include. Exports not matching this pattern are filtered out. */
+  matching?: Pat.PatternForType<Export>
+  /** @deprecated Use `matching` instead. Filter exports that start with underscore `_` prefix (default: false) */
   filterUnderscoreExports?: boolean
 }
 
@@ -315,6 +331,7 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
     tsconfigPath = join(projectRoot, 'tsconfig.json'),
     entrypoints: targetEntrypoints,
     extractorVersion = '0.1.0',
+    matching,
     filterUnderscoreExports = false,
   } = config
 
@@ -486,6 +503,15 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
       S.decodeSync(FsLoc.RelFile.String)(relativeSourcePath),
       { filterInternal: true, filterUnderscoreExports },
     )
+
+    // Apply pattern matching filter if provided
+    if (matching) {
+      const filteredExports = module.exports.filter(exp => Pat.isMatch(exp, matching))
+      module = Module.make({
+        ...module,
+        exports: filteredExports,
+      })
+    }
 
     // Override module description and category with namespace export JSDoc if available
     if (namespaceDescription || namespaceCategory) {
