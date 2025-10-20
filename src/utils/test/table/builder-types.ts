@@ -832,8 +832,42 @@ export interface TestBuilder<State extends BuilderTypeState> {
   /**
    * Create a nested describe block with direct cases array.
    *
-   * @param name - Name for the describe block
-   * @param cases - Array of test cases
+   * **IMPORTANT**: This is a complete method call - you provide both name AND cases in one call.
+   * You **CANNOT** chain `.cases()` after this. Use one of these patterns:
+   *
+   * ✅ **Correct - Direct cases array**:
+   * ```ts
+   * Test.on(add)
+   *   .describe('Addition', [
+   *     [[2, 3], 5],
+   *     [[0, 0], 0]
+   *   ])
+   *   .describe('Subtraction', [
+   *     [[5, 3], 2]
+   *   ])
+   *   .test()
+   * ```
+   *
+   * ✅ **Correct - Use callback overload if you need to call .cases()**:
+   * ```ts
+   * Test.on(add)
+   *   .describe('Addition', (t) => t.cases(
+   *     [[2, 3], 5],
+   *     [[0, 0], 0]
+   *   ))
+   *   .test()
+   * ```
+   *
+   * ❌ **WRONG - Cannot chain .cases() after .describe(name, cases[])**:
+   * ```ts
+   * Test.on(add)
+   *   .describe('Addition')  // ❌ Missing second argument!
+   *   .cases([[2, 3], 5])    // ❌ This doesn't work!
+   *   .test()
+   * ```
+   *
+   * @param name - Name for the describe block. Supports ` > ` separator for nested describes.
+   * @param cases - Complete array of test cases for this describe block
    */
   describe(
     name: string,
@@ -849,6 +883,10 @@ export interface TestBuilder<State extends BuilderTypeState> {
   /**
    * Create a nested describe block with a callback that builds child test cases.
    *
+   * **This is the CALLBACK OVERLOAD** - use this when you want to call `.cases()`, `.inputType()`,
+   * or other builder methods to configure the child tests. The callback receives a fresh builder
+   * that you can chain methods on.
+   *
    * The child builder inherits parent's setup context, default output provider,
    * output mapper, and type declarations.
    *
@@ -858,11 +896,16 @@ export interface TestBuilder<State extends BuilderTypeState> {
    * - Multiple tests with the same prefix share the outer describe blocks
    * - Supports any depth: `'API > Users > Create'` creates three levels
    *
+   * **Choose the right overload**:
+   * - Use **this overload** (callback) when you need to call builder methods like `.cases()`
+   * - Use the **cases array overload** when you have cases ready and don't need method chaining
+   *
    * @param name - Name for the nested describe block. Supports ` > ` separator for multi-level nesting.
    * @param callback - Function that receives child builder and returns it with cases
    *
    * @example
    * ```ts
+   * // Callback overload - can use .cases() and other methods
    * Test.describe('Transform > String', (t) => t
    *   .inputType<string>()
    *   .outputType<string>()

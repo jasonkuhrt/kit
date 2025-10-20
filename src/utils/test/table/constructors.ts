@@ -16,7 +16,7 @@ import * as Builder from './builder.js'
  *
  * **Tuple Format** (most common):
  * - `[[arg1, arg2], expected]` - Test with expected output
- * - `['name', [arg1, arg2], expected]` - Named test case
+ * - `[[arg1, arg2], expected, { comment: 'name' }]` - Named test case (context is 3rd element)
  * - `[[arg1, arg2]]` - Snapshot test (no expected value)
  *
  * **Object Format** (more verbose but clearer):
@@ -39,7 +39,7 @@ import * as Builder from './builder.js'
  * Test.on(multiply)
  *   .cases(
  *     [[2, 3], 6],                              // Tuple format
- *     ['zero case', [5, 0], 0],                 // Named tuple
+ *     [[5, 0], 0, { comment: 'zero case' }],    // Named tuple with context
  *     { input: [-2, 3], output: -6 },           // Object format
  *     { input: [100, 100], output: 10000, comment: 'large numbers' }
  *   )
@@ -221,9 +221,9 @@ export function on<$fn extends Fn.AnyAny>(
  * Test.describe('addition')
  *   .on(add)
  *   .cases(
- *     [[2, 3], 5],                          // add(2, 3) should return 5
- *     ['negative', [-1, -2], -3],           // Named test case
- *     [[0, 0], 0]                           // Edge case
+ *     [[2, 3], 5],                                  // add(2, 3) should return 5
+ *     [[-1, -2], -3, { comment: 'negative' }],      // Named test case with context
+ *     [[0, 0], 0]                                   // Edge case
  *   )
  *   .test()  // Uses default assertion (Effect's Equal.equals)
  *
