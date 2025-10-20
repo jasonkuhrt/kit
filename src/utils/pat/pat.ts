@@ -100,41 +100,12 @@ export const isMatch = <value>(value: value, pattern: Pattern<value>): boolean =
 }
 
 /**
- * Curried version of {@link isMatch} with pattern first.
- *
- * Returns a function that checks if values match the given pattern.
- * Useful for filtering, finding, and other higher-order operations.
- *
- * @template value - The type of values to match
- * @param pattern - The pattern to match against
- * @returns A function that takes a value and returns true if it matches the pattern
- *
- * @example
- * ```ts
- * // Filter with constraints
- * const isPositive = isMatchOn({ gt: 0 })
- * [-1, 0, 1, 2].filter(isPositive) // [1, 2]
- *
- * // Filter with object patterns
- * const isAdmin = isMatchOn({ role: 'admin' })
- * users.filter(isAdmin) // All admin users
- *
- * // Filter with regex
- * const startsWithA = isMatchOn(/^a/i)
- * ['Alice', 'Bob', 'Anne'].filter(startsWithA) // ['Alice', 'Anne']
- *
- * // Array filtering
- * const hasLargeNumbers = isMatchOn({ some: { gt: 100 } })
- * [[1, 3], [200, 4], [1, 2]].filter(hasLargeNumbers) // [[200, 4]]
- * ```
- */
-export const isMatchOn = Fn.flipCurried(Fn.curry(isMatch))
-
-/**
  * Curried version of {@link isMatch} with value first.
  *
  * Returns a function that checks if the given value matches patterns.
  * Useful for testing a value against multiple patterns.
+ *
+ * Follows Kit convention: `On` suffix takes the data/subject (value to operate ON).
  *
  * @template value - The type of the value to match
  * @param value - The value to match against patterns
@@ -143,24 +114,61 @@ export const isMatchOn = Fn.flipCurried(Fn.curry(isMatch))
  * @example
  * ```ts
  * const user = { name: 'John', role: 'admin', age: 30 }
- * const matchesUser = isMatchWith(user)
+ * const matchesUser = isMatchOn(user)
  *
  * // Test against multiple patterns
  * matchesUser({ role: 'admin' }) // true
- * matchesUser({ age: { gte: 18 } }) // true
+ * matchesUser({ age: { $gte: 18 } }) // true
  * matchesUser({ name: /^J/ }) // true
  * matchesUser({ name: 'Jane' }) // false
  *
  * // Find matching patterns
  * const patterns = [
  *   { role: 'admin' },
- *   { age: { lt: 18 } },
+ *   { age: { $lt: 18 } },
  *   { name: /^J/ }
  * ]
  * patterns.filter(matchesUser) // [{ role: 'admin' }, { name: /^J/ }]
  * ```
  */
-export const isMatchWith = Fn.flipCurried(isMatchOn)
+export const isMatchOn = <value>(value: value) => (pattern: Pattern<value>): boolean => {
+  return isMatch(value, pattern)
+}
+
+/**
+ * Curried version of {@link isMatch} with pattern first.
+ *
+ * Returns a function that checks if values match the given pattern.
+ * Useful for filtering, finding, and other higher-order operations.
+ *
+ * Follows Kit convention: `With` suffix takes the configuration/parameters (pattern to match WITH).
+ *
+ * @template value - The type of values to match
+ * @param pattern - The pattern to match against
+ * @returns A function that takes a value and returns true if it matches the pattern
+ *
+ * @example
+ * ```ts
+ * // Filter with constraints
+ * const isPositive = isMatchWith({ $gt: 0 })
+ * [-1, 0, 1, 2].filter(isPositive) // [1, 2]
+ *
+ * // Filter with object patterns
+ * const isAdmin = isMatchWith({ role: 'admin' })
+ * users.filter(isAdmin) // All admin users
+ *
+ * // Filter with regex
+ * const startsWithA = isMatchWith(/^a/i)
+ * ['Alice', 'Bob', 'Anne'].filter(startsWithA) // ['Alice', 'Anne']
+ *
+ * // Array filtering
+ * const hasLargeNumbers = isMatchWith({ $some: { $gt: 100 } })
+ * [[1, 3], [200, 4], [1, 2]].filter(hasLargeNumbers) // [[200, 4]]
+ * ```
+ */
+export const isMatchWith = <value>(pattern: Pattern<value>) => (value: value): boolean => {
+  return isMatch(value, pattern)
+}
 
 //
 //

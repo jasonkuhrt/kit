@@ -138,6 +138,6 @@ Test
     expect(Pat.isMatch(value, pattern)).toBe(output)
 
     // Test curried variants - these should produce identical results
-    expect(Pat.isMatchOn(pattern)(value)).toBe(output)
-    expect(Pat.isMatchWith(value)(pattern)).toBe(output)
+    expect(Pat.isMatchOn(value)(pattern)).toBe(output)
+    expect(Pat.isMatchWith(pattern)(value)).toBe(output)
   })

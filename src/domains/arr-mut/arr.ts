@@ -136,7 +136,7 @@ export const find = <value>(arr: value[], predicate: Bool.PredicateMaybe<value>)
  * ```
  */
 export const findFirstMatching = <value>(arr: value[], pattern: Pat.Pattern<value>): value | undefined => {
-  return arr.find(Pat.isMatchOn(pattern))
+  return arr.find(Pat.isMatchWith(pattern))
 }
 
 export type Maybe<$Type> = $Type | $Type[]
