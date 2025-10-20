@@ -42,29 +42,29 @@ import { Test } from '@wollybeard/kit/test'
 // [!code word:property:1]
 Test.Test.property(
   'reversing array twice returns original',
-// [!code word:array:1]
-// [!code word:integer:1]
+  // [!code word:array:1]
+  // [!code word:integer:1]
   fc.array(fc.integer()),
   (arr) => {
-// [!code word:slice:1]
+    // [!code word:slice:1]
     const reversed = arr.slice().reverse()
-// [!code word:slice:1]
+    // [!code word:slice:1]
     const reversedTwice = reversed.slice().reverse()
     expect(reversedTwice).toEqual(arr)
-  }
+  },
 )
 
 // test with multiple arbitraries
 // [!code word:property:1]
 Test.Test.property(
   'addition is commutative',
-// [!code word:integer:1]
+  // [!code word:integer:1]
   fc.integer(),
-// [!code word:integer:1]
+  // [!code word:integer:1]
   fc.integer(),
   (a, b) => {
     expect(a + b).toBe(b + a)
-  }
+  },
 )
 ```
 
@@ -174,9 +174,9 @@ import { Test } from '@wollybeard/kit/test'
 // [!code word:on:1]
 Test.on(add)
   .cases(
-    [[2, 3], 5],                    // add(2, 3) === 5
-    [[0, 0], 0],                    // add(0, 0) === 0
-    [[-1, 1], 0]                    // add(-1, 1) === 0
+    [[2, 3], 5], // add(2, 3) === 5
+    [[0, 0], 0], // add(0, 0) === 0
+    [[-1, 1], 0], // add(-1, 1) === 0
   )
   .test()
 
@@ -184,10 +184,10 @@ Test.on(add)
 // [!code word:on:1]
 Test.on(multiply)
   .cases(
-    [[2, 3], 6],                              // Tuple format
-    [[5, 0], 0, { comment: 'zero case' }],    // Named tuple with context
-    { input: [-2, 3], output: -6 },           // Object format
-    { input: [100, 100], output: 10000, comment: 'large numbers' }
+    [[2, 3], 6], // Tuple format
+    [[5, 0], 0, { comment: 'zero case' }], // Named tuple with context
+    { input: [-2, 3], output: -6 }, // Object format
+    { input: [100, 100], output: 10000, comment: 'large numbers' },
   )
   .test()
 
@@ -206,11 +206,15 @@ Test.on(divide)
 // Output transformation - build full expectations from partials
 // [!code word:on:1]
 Test.on(createUser)
-// [!code word:input:1]
-  .onOutput((partial, context) => ({ ...defaultUser, name: context.input[0], ...partial }))
+  // [!code word:input:1]
+  .onOutput((partial, context) => ({
+    ...defaultUser,
+    name: context.input[0],
+    ...partial,
+  }))
   .cases(
-    [['Alice'], { role: 'admin' }],           // Only specify differences
-    [['Bob'], { role: 'user', age: 30 }]
+    [['Alice'], { role: 'admin' }], // Only specify differences
+    [['Bob'], { role: 'user', age: 30 }],
   )
   .test()
 ```
@@ -225,8 +229,8 @@ import { Test } from '@wollybeard/kit/test'
 // [!code word:on:1]
 Test.on(parseInt)
   .cases(
-    ['42'],      // Returns: 42
-    ['hello'],   // Returns: NaN
+    ['42'], // Returns: 42
+    ['hello'], // Returns: NaN
   )
   .test()
 
@@ -235,8 +239,12 @@ Test.on(parseInt)
 // [!code word:from:1]
 Test.on(Positive.from)
   .cases(
-    [1], [10], [100],        // THEN RETURNS the value
-    [0], [-1], [-10],        // THEN THROWS "Value must be positive"
+    [1],
+    [10],
+    [100], // THEN RETURNS the value
+    [0],
+    [-1],
+    [-10], // THEN THROWS "Value must be positive"
   )
   .test()
 ```
@@ -366,7 +374,7 @@ import { Test } from '@wollybeard/kit/test'
 Test.describe('decodeSync > basic')
   .on(decodeSync)
   .cases([['1.2.3']])
-  .describeInputs('union', [['1.2.3-beta']])  // ❌ This creates a NESTED describe, not sibling!
+  .describeInputs('union', [['1.2.3-beta']]) // ❌ This creates a NESTED describe, not sibling!
   .test()
 
 // ✅ CORRECT - Separate Test.describe() calls for separate test groups
@@ -377,7 +385,7 @@ Test.describe('decodeSync > basic')
   .test()
 
 // [!code word:describe:1]
-Test.describe('decodeSync > union')  // Shares 'decodeSync' parent describe
+Test.describe('decodeSync > union') // Shares 'decodeSync' parent describe
   .on(decodeSync)
   .cases([['1.2.3-beta']], [['1.2.3+build']])
   .test()
@@ -387,11 +395,11 @@ Test.describe('decodeSync > union')  // Shares 'decodeSync' parent describe
 Test.describe('addition')
   .on(add)
   .cases(
-    [[2, 3], 5],                                  // add(2, 3) should return 5
-    [[-1, -2], -3, { comment: 'negative' }],      // Named test case with context
-    [[0, 0], 0]                                   // Edge case
+    [[2, 3], 5], // add(2, 3) should return 5
+    [[-1, -2], -3, { comment: 'negative' }], // Named test case with context
+    [[0, 0], 0], // Edge case
   )
-  .test()  // Uses default assertion (Effect's Equal.equals)
+  .test() // Uses default assertion (Effect's Equal.equals)
 
 // Generic mode - custom validation logic
 // [!code word:describe:1]
@@ -401,7 +409,7 @@ Test.describe('email validation')
   .cases(
     ['user@example.com', true],
     ['invalid.com', false],
-    ['', false]
+    ['', false],
   )
   .test(({ input, output }) => {
     const result = isValidEmail(input)
@@ -410,17 +418,17 @@ Test.describe('email validation')
 
 // Nested describe blocks with ' > ' separator
 // [!code word:describe:1]
-Test.describe('Transform > String')  // Creates nested: Transform -> String
+Test.describe('Transform > String') // Creates nested: Transform -> String
   .inputType<string>()
   .outputType<string>()
   .cases(['hello', 'HELLO'])
   .test(({ input, output }) => {
-// [!code word:toUpperCase:1]
+    // [!code word:toUpperCase:1]
     expect(input.toUpperCase()).toBe(output)
   })
 
 // [!code word:describe:1]
-Test.describe('Transform > Number')  // SEPARATE call - Shares 'Transform' parent describe
+Test.describe('Transform > Number') // SEPARATE call - Shares 'Transform' parent describe
   .inputType<number>()
   .outputType<number>()
   .cases([42, 42])
@@ -439,22 +447,22 @@ Test.describe('string transform')
   })
   .cases(
     ['hello', 'hello'],
-    ['world', 'world']
+    ['world', 'world'],
   )
   .test(({ input, output, matrix }) => {
     // Runs 4 times (2 cases × 2 uppercase × 2 prefix = 8 tests)
     let result = input
-// [!code word:prefix:1]
+    // [!code word:prefix:1]
     if (matrix.prefix) result = matrix.prefix + result
-// [!code word:uppercase:1]
-// [!code word:toUpperCase:1]
+    // [!code word:uppercase:1]
+    // [!code word:toUpperCase:1]
     if (matrix.uppercase) result = result.toUpperCase()
 
     let expected = output
-// [!code word:prefix:1]
+    // [!code word:prefix:1]
     if (matrix.prefix) expected = matrix.prefix + expected
-// [!code word:uppercase:1]
-// [!code word:toUpperCase:1]
+    // [!code word:uppercase:1]
+    // [!code word:toUpperCase:1]
     if (matrix.uppercase) expected = expected.toUpperCase()
 
     expect(result).toBe(expected)
