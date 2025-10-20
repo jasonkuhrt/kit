@@ -1,3 +1,9 @@
+/**
+ * @generated
+ * This file contains generated type-level matchers.
+ * Manual edits should be made carefully and consistently across all generated files.
+ */
+
 import type * as Kind from '../../kind.js'
 import { runtime } from '../builder/runtime.js'
 import type { ExactKind } from '../kinds/relators.js'
@@ -207,12 +213,59 @@ const Promise_ = runtime.exact.Promise
 type Array_<$Actual> = Kind.Apply<ExactKind, [any[], $Actual]>
 const Array_ = runtime.exact.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.exact.unknown<unknown>
+ *
+ * // ✗ Fail
+ * type _ = Assert.exact.unknown<string>
+ * ```
+ */
+type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, $Actual]>
+const unknown_ = runtime.exact.unknown
+
+/**
+ * Pre-curried matcher for any.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.exact.any<any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.exact.any<unknown>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<ExactKind, [any, $Actual]>
+const any_ = runtime.exact.any
+
+/**
+ * Pre-curried matcher for never.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.exact.never<never>
+ *
+ * // ✗ Fail
+ * type _ = Assert.exact.never<string>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<ExactKind, [never, $Actual]>
+const never_ = runtime.exact.never
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
   null_ as null,
   number_ as number,
   of_ as of,
@@ -221,4 +274,5 @@ export {
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

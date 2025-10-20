@@ -22,6 +22,9 @@ interface Matcher {
   type: unknown
   input: boolean
   inputLiteral: boolean
+  allowUnknown: boolean
+  allowAny: boolean
+  allowNever: boolean
 }
 
 export namespace State {
@@ -35,6 +38,9 @@ export namespace State {
       type: SENTINEL.Empty
       input: true
       inputLiteral: false
+      allowUnknown: false
+      allowAny: false
+      allowNever: false
     }
     negated: false
   }
@@ -59,11 +65,33 @@ export namespace State {
     negated: $State['negated']
   }
 
+  export type SetAllowFlags<
+    $State extends State,
+    $AllowUnknown extends boolean = $State['matcher']['allowUnknown'],
+    $AllowAny extends boolean = $State['matcher']['allowAny'],
+    $AllowNever extends boolean = $State['matcher']['allowNever'],
+  > = {
+    extractors: $State['extractors']
+    relator: $State['relator']
+    matcher: {
+      type: $State['matcher']['type']
+      input: $State['matcher']['input']
+      inputLiteral: $State['matcher']['inputLiteral']
+      allowUnknown: $AllowUnknown
+      allowAny: $AllowAny
+      allowNever: $AllowNever
+    }
+    negated: $State['negated']
+  }
+
   export type SetMatcher<
     $State extends State,
     $Type,
     $Input extends boolean = false,
     $InputLiteral extends boolean = false,
+    $AllowUnknown extends boolean = false,
+    $AllowAny extends boolean = false,
+    $AllowNever extends boolean = false,
   > = {
     extractors: $State['extractors']
     relator: $State['relator']
@@ -71,6 +99,9 @@ export namespace State {
       type: $Type
       input: $Input
       inputLiteral: $InputLiteral
+      allowUnknown: $AllowUnknown
+      allowAny: $AllowAny
+      allowNever: $AllowNever
     }
     negated: $State['negated']
   }
@@ -85,6 +116,9 @@ export namespace State {
       type: $Type
       input: false // Matcher has consumed its input
       inputLiteral: $State['matcher']['inputLiteral']
+      allowUnknown: $State['matcher']['allowUnknown']
+      allowAny: $State['matcher']['allowAny']
+      allowNever: $State['matcher']['allowNever']
     }
     negated: $State['negated']
   }
@@ -98,6 +132,9 @@ export namespace State {
       type: $State['matcher']['type']
       input: $State['matcher']['input']
       inputLiteral: true
+      allowUnknown: $State['matcher']['allowUnknown']
+      allowAny: $State['matcher']['allowAny']
+      allowNever: $State['matcher']['allowNever']
     }
     negated: $State['negated']
   }

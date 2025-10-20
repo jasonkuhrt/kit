@@ -101,3 +101,18 @@ export interface InputActualFactory<
     ]>
   ): void
 }
+
+// dprint-ignore
+export interface InputActualFactorySpecial<
+  $State extends State
+> {
+  <$actual>(
+    actual: GuardActual<$actual, $State>
+  ): void
+
+  as<$actual>(
+    ...params: RestParamsDisplayGuards<[
+      GuardActual<$actual, $State>
+    ]>
+  ): void
+}

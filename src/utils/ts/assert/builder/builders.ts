@@ -10,7 +10,12 @@ import type {
   Returned,
 } from '../kinds/extractors.js'
 import type { EquivKind, EquivNoExcessKind, ExactKind, SubKind, SubNoExcessKind } from '../kinds/relators.js'
-import type { InputActualFactory, InputMatcherArgConstFactory, InputMatcherArgFactory } from './input.js'
+import type {
+  InputActualFactory,
+  InputActualFactorySpecial,
+  InputMatcherArgConstFactory,
+  InputMatcherArgFactory,
+} from './input.js'
 import type { State } from './state.js'
 
 /**
@@ -40,6 +45,12 @@ export interface RelatorNamespace<$State extends State> {
   readonly Error: InputActualFactory<State.SetMatcher<$State, Error>>
   readonly Promise: InputActualFactory<State.SetMatcher<$State, Promise<any>>>
   readonly Array: InputActualFactory<State.SetMatcher<$State, any[]>>
+
+  // Pre-curried special types - one-level: (actual) => void
+  // These use InputActualFactorySpecial to bypass GuardAnyOrNeverActual since they explicitly allow these types
+  readonly unknown: InputActualFactorySpecial<State.SetMatcher<$State, unknown, false, false, true, false, false>>
+  readonly any: InputActualFactorySpecial<State.SetMatcher<$State, any, false, false, false, true, false>>
+  readonly never: InputActualFactorySpecial<State.SetMatcher<$State, never, false, false, false, false, true>>
 
   // Special - two-level curry with const: (expected) => (actual) => void
   readonly const: InputMatcherArgConstFactory<$State>

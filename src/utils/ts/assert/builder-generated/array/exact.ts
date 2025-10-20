@@ -1,3 +1,9 @@
+/**
+ * @generated
+ * This file contains generated type-level matchers.
+ * Manual edits should be made carefully and consistently across all generated files.
+ */
+
 import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
 import type { ArrayElement } from '../../kinds/extractors.js'
@@ -221,12 +227,35 @@ const Promise_ = runtime.array.exact.Promise
 type Array_<$Actual> = Kind.Apply<ExactKind, [any[], Kind.Apply<ArrayElement, [$Actual]>]>
 const Array_ = runtime.array.exact.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ * Extraction chain: T[] → T
+ */
+type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, Kind.Apply<ArrayElement, [$Actual]>]>
+const unknown_ = runtime.array.exact.unknown
+
+/**
+ * Pre-curried matcher for any.
+ * Extraction chain: T[] → T
+ */
+type any_<$Actual> = Kind.Apply<ExactKind, [any, Kind.Apply<ArrayElement, [$Actual]>]>
+const any_ = runtime.array.exact.any
+
+/**
+ * Pre-curried matcher for never.
+ * Extraction chain: T[] → T
+ */
+type never_<$Actual> = Kind.Apply<ExactKind, [never, Kind.Apply<ArrayElement, [$Actual]>]>
+const never_ = runtime.array.exact.never
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
   null_ as null,
   number_ as number,
   of_ as of,
@@ -235,4 +264,5 @@ export {
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

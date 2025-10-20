@@ -34,15 +34,24 @@ export type GuardAnyOrNeverActual<
   $actual,
   $State extends State
 > =
-  IsNever<$actual> extends true  ? IsNever<$State['matcher']['type']> extends true
-    ? $actual
-    : StaticErrorAssertion<'Type never is not assignable unless expected type is never', never, $actual, 'Use .never matcher if you actually expect never type'> :
-
-  IsAny<$actual> extends true    ? IsAny<$State['matcher']['type']> extends true
-    ? $actual
-    : StaticErrorAssertion<'Type any is not assignable unless expected type is any', any, $actual, 'Use .any matcher if you actually expect any type'> :
-
-    $actual
+  // Check for never
+  IsNever<$actual> extends true
+    ? $State['matcher']['allowNever'] extends true
+      ? $actual  // ✅ allowNever flag set, pass
+      : IsNever<$State['matcher']['type']> extends true
+        ? $actual  // ✅ Expected type is also never, pass
+        : StaticErrorAssertion<'Type never is not assignable unless expected type is never', never, $actual, 'Use .never matcher if you actually expect never type'>
+    :
+  // Check for any
+  IsAny<$actual> extends true
+    ? $State['matcher']['allowAny'] extends true
+      ? $actual  // ✅ allowAny flag set, pass
+      : IsAny<$State['matcher']['type']> extends true
+        ? $actual  // ✅ Expected type is also any, pass
+        : StaticErrorAssertion<'Type any is not assignable unless expected type is any', any, $actual, 'Use .any matcher if you actually expect any type'>
+    :
+  // Neither never nor any
+  $actual
 
 export type GuardActual<
   $actual,
@@ -64,8 +73,21 @@ type GuardActual_<
     : Kind.Apply<$Relator, [$State['matcher']['type'], ___$ActualExtracted]>,
 > =
   // [___$ActualExtracted, ___$Error]
-IsUnknown<___$ActualExtracted> extends true       ? StaticErrorAssertion<'Type unknown is not a valid actual type to assertion on unless flag has been set'> :
-[___$Error] extends [never]                       ? $actual :
+IsUnknown<___$ActualExtracted> extends true
+  ? $State['matcher']['allowUnknown'] extends true
+    ? [___$Error] extends [never]
+      ? $actual
+      : [___$Error] extends [AssertionErrorHash]
+        ? ___$Error
+        : StaticErrorAssertion<'Unexpected error type in GuardActual', unknown, unknown>
+    : IsUnknown<$State['matcher']['type']> extends true
+      ? [___$Error] extends [never]
+        ? $actual
+        : [___$Error] extends [AssertionErrorHash]
+          ? ___$Error
+          : StaticErrorAssertion<'Unexpected error type in GuardActual', unknown, unknown>
+      : StaticErrorAssertion<'Type unknown is not a valid actual type to assertion on unless flag has been set'>
+: [___$Error] extends [never]                       ? $actual :
 [___$Error] extends [AssertionErrorHash]          ? ___$Error
                                                   : StaticErrorAssertion<'Unexpected error type in GuardActual', unknown, unknown>
 
