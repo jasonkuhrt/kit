@@ -8,7 +8,6 @@ import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
 import type { EquivKind } from '../../kinds/relators.js'
 
-
 export * as noExcess from './noExcess.js'
 /**
  * base + equiv relation matchers.

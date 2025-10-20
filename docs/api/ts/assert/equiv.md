@@ -28,43 +28,82 @@ import { equiv } from '@wollybeard/kit/ts'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L210" /> {#c-array-210}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, any[], false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, EquivKind>,
+    any[],
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L75" /> {#c-bigint-75}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, bigint, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, EquivKind>,
+    bigint,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boolean`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L90" /> {#c-boolean-90}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, boolean, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, EquivKind>,
+    boolean,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L150" /> {#c-date-150}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, Date, false, false>>
+InputActualFactory<
+  State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, Date, false, false>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L180" /> {#c-error-180}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, Error, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, EquivKind>,
+    Error,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L120" /> {#c-null-120}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, null, false, false>>
+InputActualFactory<
+  State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, null, false, false>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `number`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L60" /> {#c-number-60}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, number, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, EquivKind>,
+    number,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L30" /> {#c-of-30}
@@ -76,31 +115,66 @@ InputMatcherArgFactory<State.SetRelator<State.Empty, EquivKind>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Promise`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L195" /> {#c-promise-195}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, Promise<any>, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, EquivKind>,
+    Promise<any>,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L165" /> {#c-reg-exp-165}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, RegExp, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, EquivKind>,
+    RegExp,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L45" /> {#c-string-45}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, string, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, EquivKind>,
+    string,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L135" /> {#c-symbol-135}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, symbol, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, EquivKind>,
+    symbol,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/$$.ts#L105" /> {#c-undefined-105}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.Empty, EquivKind>, undefined, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<State.Empty, EquivKind>,
+    undefined,
+    false,
+    false
+  >
+>
 ```
 
 ## Types

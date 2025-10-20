@@ -22,79 +22,201 @@ import { noExcess } from '@wollybeard/kit/ts'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/noExcess.ts#L97" /> {#c-array-97}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.SetRelator<State.Empty, EquivKind>, EquivNoExcessKind>, any[], false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<
+      State.SetRelator<State.Empty, EquivKind>,
+      EquivNoExcessKind
+    >,
+    any[],
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/noExcess.ts#L43" /> {#c-bigint-43}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.SetRelator<State.Empty, EquivKind>, EquivNoExcessKind>, bigint, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<
+      State.SetRelator<State.Empty, EquivKind>,
+      EquivNoExcessKind
+    >,
+    bigint,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boolean`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/noExcess.ts#L49" /> {#c-boolean-49}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.SetRelator<State.Empty, EquivKind>, EquivNoExcessKind>, boolean, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<
+      State.SetRelator<State.Empty, EquivKind>,
+      EquivNoExcessKind
+    >,
+    boolean,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/noExcess.ts#L73" /> {#c-date-73}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.SetRelator<State.Empty, EquivKind>, EquivNoExcessKind>, Date, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<
+      State.SetRelator<State.Empty, EquivKind>,
+      EquivNoExcessKind
+    >,
+    Date,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/noExcess.ts#L85" /> {#c-error-85}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.SetRelator<State.Empty, EquivKind>, EquivNoExcessKind>, Error, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<
+      State.SetRelator<State.Empty, EquivKind>,
+      EquivNoExcessKind
+    >,
+    Error,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/noExcess.ts#L61" /> {#c-null-61}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.SetRelator<State.Empty, EquivKind>, EquivNoExcessKind>, null, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<
+      State.SetRelator<State.Empty, EquivKind>,
+      EquivNoExcessKind
+    >,
+    null,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `number`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/noExcess.ts#L37" /> {#c-number-37}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.SetRelator<State.Empty, EquivKind>, EquivNoExcessKind>, number, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<
+      State.SetRelator<State.Empty, EquivKind>,
+      EquivNoExcessKind
+    >,
+    number,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/noExcess.ts#L25" /> {#c-of-25}
 
 ```typescript
-InputMatcherArgFactory<State.SetRelator<State.SetRelator<State.Empty, EquivKind>, EquivNoExcessKind>>
+InputMatcherArgFactory<
+  State.SetRelator<State.SetRelator<State.Empty, EquivKind>, EquivNoExcessKind>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Promise`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/noExcess.ts#L91" /> {#c-promise-91}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.SetRelator<State.Empty, EquivKind>, EquivNoExcessKind>, Promise<any>, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<
+      State.SetRelator<State.Empty, EquivKind>,
+      EquivNoExcessKind
+    >,
+    Promise<any>,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/noExcess.ts#L79" /> {#c-reg-exp-79}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.SetRelator<State.Empty, EquivKind>, EquivNoExcessKind>, RegExp, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<
+      State.SetRelator<State.Empty, EquivKind>,
+      EquivNoExcessKind
+    >,
+    RegExp,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/noExcess.ts#L31" /> {#c-string-31}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.SetRelator<State.Empty, EquivKind>, EquivNoExcessKind>, string, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<
+      State.SetRelator<State.Empty, EquivKind>,
+      EquivNoExcessKind
+    >,
+    string,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/noExcess.ts#L67" /> {#c-symbol-67}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.SetRelator<State.Empty, EquivKind>, EquivNoExcessKind>, symbol, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<
+      State.SetRelator<State.Empty, EquivKind>,
+      EquivNoExcessKind
+    >,
+    symbol,
+    false,
+    false
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/noExcess.ts#L55" /> {#c-undefined-55}
 
 ```typescript
-InputActualFactory<State.SetMatcher<State.SetRelator<State.SetRelator<State.Empty, EquivKind>, EquivNoExcessKind>, undefined, false, false>>
+InputActualFactory<
+  State.SetMatcher<
+    State.SetRelator<
+      State.SetRelator<State.Empty, EquivKind>,
+      EquivNoExcessKind
+    >,
+    undefined,
+    false,
+    false
+  >
+>
 ```
 
 ## Types
@@ -158,7 +280,10 @@ Pre-curried matcher for number.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/equiv/noExcess.ts#L24" /> {#t-of-24}
 
 ```typescript
-type of_<$Expected, $Actual> = Kind.Apply<EquivNoExcessKind, [$Expected, $Actual]>
+type of_<$Expected, $Actual> = Kind.Apply<
+  EquivNoExcessKind,
+  [$Expected, $Actual]
+>
 ```
 
 equiv + noExcess relation matchers.

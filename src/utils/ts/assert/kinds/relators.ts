@@ -1,5 +1,5 @@
-import type { Kind } from '#ts/ts'
 import type { Obj } from '#obj'
+import type { Kind } from '#ts/ts'
 import type { Relation } from '../../relation.js'
 import type { ComputeDiff, StaticErrorAssertion } from '../assertion-error.js'
 // import type { AssertionKind } from '../helpers.js'
@@ -165,15 +165,14 @@ type InvertSubResult<$Expected, $Actual> = $Actual extends $Expected ? StaticErr
  * Returns never if no excess, otherwise StaticErrorAssertion with excess keys.
  */
 type CheckNoExcess<$Expected, $Actual> = $Actual extends infer __actual__
-  ? $Expected extends infer __expected__
-    ? [keyof Obj.SubtractShallow<__actual__, __expected__>] extends [never] ? never
-      : StaticErrorAssertion<
-          'ACTUAL has excess properties not in EXPECTED',
-          __expected__,
-          __actual__,
-          { excess: keyof Obj.SubtractShallow<__actual__, __expected__> }
-        >
-    : never
+  ? $Expected extends infer __expected__ ? [keyof Obj.SubtractShallow<__actual__, __expected__>] extends [never] ? never
+    : StaticErrorAssertion<
+      'ACTUAL has excess properties not in EXPECTED',
+      __expected__,
+      __actual__,
+      { excess: keyof Obj.SubtractShallow<__actual__, __expected__> }
+    >
+  : never
   : never
 
 /**
@@ -203,13 +202,12 @@ export interface SubNoExcessKind extends AssertionKind {
 }
 
 type InvertSubNoExcessResult<$Expected, $Actual> = $Actual extends $Expected
-  ? [keyof Obj.SubtractShallow<$Actual, $Expected>] extends [never]
-    ? StaticErrorAssertion<
-        'ACTUAL extends EXPECTED with no excess but should not',
-        $Expected,
-        $Actual
-      >
-    : never
+  ? [keyof Obj.SubtractShallow<$Actual, $Expected>] extends [never] ? StaticErrorAssertion<
+      'ACTUAL extends EXPECTED with no excess but should not',
+      $Expected,
+      $Actual
+    >
+  : never
   : never
 
 /**
@@ -238,12 +236,11 @@ export interface EquivNoExcessKind extends AssertionKind {
           >
 }
 
-type InvertEquivNoExcessResult<$Expected, $Actual> = Relation.GetRelation<$Expected, $Actual> extends Relation.equivalent
-  ? [keyof Obj.SubtractShallow<$Actual, $Expected>] extends [never]
-    ? StaticErrorAssertion<
-        'ACTUAL is equivalent to EXPECTED with no excess but should not',
-        $Expected,
-        $Actual
-      >
-    : never
+type InvertEquivNoExcessResult<$Expected, $Actual> = Relation.GetRelation<$Expected, $Actual> extends
+  Relation.equivalent ? [keyof Obj.SubtractShallow<$Actual, $Expected>] extends [never] ? StaticErrorAssertion<
+      'ACTUAL is equivalent to EXPECTED with no excess but should not',
+      $Expected,
+      $Actual
+    >
+  : never
   : never
