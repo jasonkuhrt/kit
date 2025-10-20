@@ -14,6 +14,18 @@ const ab = 0 as a | b
 type a = typeof a
 type b = typeof b
 type ab = typeof ab
+const obj = { a: a } as const
+const objExcess = { ...obj } as any as { a: a; z: 0 }
+type objExcess = typeof objExcess
+const objExcessOptional = { ...obj } as any as { a: a; z?: 0 }
+type objExcessOptional = typeof objExcessOptional
+type obj = typeof obj
+const $n = 0 as never
+const $a = 0 as any
+const $u = 0 as unknown
+type $n = typeof $n
+type $a = typeof $a
+type $u = typeof $u
 
 //
 //
@@ -140,15 +152,9 @@ Assert.parameters.exact<[a, b]>()((_: b, __: a) => a)
 // @ts-expect-error
 Assert.parameters.exact<[a, b], (_: b, __: a) => a>()
 //
-// ━━ noExcess
+// ━━ noExcess (not a thing)
 //
-
-// Assert.noExcess.of.as<{ id: a }>()({ id: a })
-// Assert.noExcess.of.as<{ id: a }>().as<{ id: a }>()
-// // @ts-expect-error
-// Assert.noExcess<{ id: a }>()({ id: a, name: b })
-// // @ts-expect-error
-// Assert.noExcess<{ id: a }, { id: a; name: b }>()
+Assert.exact.never(Assert.exact.noExcess)
 
 //
 //
@@ -237,12 +243,16 @@ Assert.sub.parameters.of<[a, b]>().as<(_: b, __: a) => a>()
 //
 // ━━ noExcess
 //
-Assert.sub.noExcess.of.as<{ id: a }>()({ id: a })
-Assert.sub.noExcess.of.as<{ id: a }>().as<{ id: a }>()
+Assert.sub.noExcess.as<obj>()(obj)
+Assert.sub.noExcess.as<obj>().as<obj>()
 // @ts-expect-error
-Assert.sub.noExcess.of.as<{ id: a }>()({ id: a } as { id: a; name?: b })
+Assert.sub.noExcess.as<obj>()(objExcess)
 // @ts-expect-error
-Assert.sub.noExcess.of<{ id: a }>().as<{ id: a; name?: b }>()
+Assert.sub.noExcess.as<obj>()(objExcessOptional)
+// @ts-expect-error
+Assert.sub.noExcess.as<obj>().as<objExcess>()
+// @ts-expect-error
+Assert.sub.noExcess.as<obj>().as<objExcessOptional>()
 
 //
 //
@@ -331,12 +341,16 @@ Assert.equiv.parameters.of<[a, b]>().as<(_: b, __: a) => a>()
 //
 // ━━ noExcess
 //
-Assert.equiv.noExcess.of.as<{ id: a }>()({ id: a })
-Assert.equiv.noExcess.of.as<{ id: a }>().as<{ id: a }>()
+Assert.equiv.noExcess.as<obj>()(obj)
+Assert.equiv.noExcess.as<obj>().as<obj>()
 // @ts-expect-error
-Assert.equiv.noExcess.of.as<{ id: a }>()({ id: a } as { id: a; name?: b })
+Assert.equiv.noExcess.as<obj>()(objExcess)
 // @ts-expect-error
-Assert.equiv.noExcess.of<{ id: a }>().as<{ id: a; name?: b }>()
+Assert.equiv.noExcess.as<obj>()(objExcessOptional)
+// @ts-expect-error
+Assert.equiv.noExcess.as<obj>().as<objExcess>()
+// @ts-expect-error
+Assert.equiv.noExcess.as<obj>().as<objExcessOptional>()
 
 //
 //
@@ -403,13 +417,6 @@ Assert.equiv.noExcess.of<{ id: a }>().as<{ id: a; name?: b }>()
 //
 //
 
-const $n = 0 as never
-const $a = 0 as any
-const $u = 0 as unknown
-type $n = typeof $n
-type $a = typeof $a
-type $u = typeof $u
-
 //
 //
 // ━━━━━━━━━━━━━━ • exact - never
@@ -417,7 +424,7 @@ type $u = typeof $u
 //
 Assert.exact.never($n)
 // @ts-expect-error
-Assert.exact.never(1)
+Assert.exact.never(a)
 // @ts-expect-error
 Assert.exact.of(a)($n)
 // @ts-expect-error
@@ -430,7 +437,7 @@ Assert.exact.of(a).as<$n>()
 //
 Assert.exact.any($a)
 // @ts-expect-error
-Assert.exact.any(1)
+Assert.exact.any(a)
 // @ts-expect-error
 Assert.exact.of(a)($a)
 // @ts-expect-error
@@ -443,7 +450,7 @@ Assert.exact.of(a).as<$a>()
 //
 Assert.exact.unknown($u)
 // @ts-expect-error
-Assert.exact.unknown(1)
+Assert.exact.unknown(a)
 // @ts-expect-error
 Assert.exact.of(a)($u)
 // @ts-expect-error
@@ -517,8 +524,8 @@ type _equiv_relation = Assert.Cases<
 >
 
 type _equiv_noExcess_relation = Assert.Cases<
-  Assert.equiv.noExcess.of<{ id: string }, { id: string }>,
-  Assert.equiv.noExcess.of<{ a: number } & {}, { a: number }>
+  Assert.equiv.noExcess<{ id: string }, { id: string }>,
+  Assert.equiv.noExcess<{ a: number } & {}, { a: number }>
 >
 
 type _sub_relation = Assert.Cases<
@@ -538,8 +545,8 @@ type _sub_relation = Assert.Cases<
 >
 
 type _sub_noExcess_relation = Assert.Cases<
-  Assert.sub.noExcess.of<{ id: string }, { id: string }>,
-  Assert.sub.noExcess.of<{ a: number }, { a: 42 }>
+  Assert.sub.noExcess<{ id: string }, { id: string }>,
+  Assert.sub.noExcess<{ a: number }, { a: 42 }>
 >
 
 //

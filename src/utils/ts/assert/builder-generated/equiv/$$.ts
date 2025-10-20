@@ -6,9 +6,8 @@
 
 import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
-import type { EquivKind } from '../../kinds/relators.js'
+import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
 
-export * as noExcess from './noExcess.js'
 /**
  * base + equiv relation matchers.
  *
@@ -232,6 +231,23 @@ const any_ = runtime.equiv.any
 type never_<$Actual> = Kind.Apply<EquivKind, [never, $Actual]>
 const never_ = runtime.equiv.never
 
+/**
+ * Equivalence relation with no excess properties.
+ *
+ * Asserts that actual is equivalent to expected AND has no excess properties.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass - no excess properties
+ * type _ = Assert.equiv.noExcess<{ id: string }, { id: string }>
+ *
+ * // ✗ Fail - has excess property 'name'
+ * type _ = Assert.equiv.noExcess<{ id: string }, { id: string; name: string }>
+ * ```
+ */
+type noExcess_<$Expected, $Actual> = Kind.Apply<EquivNoExcessKind, [$Expected, $Actual]>
+const noExcess_ = runtime.equiv.noExcess
+
 export {
   any_ as any,
   Array_ as Array,
@@ -240,6 +256,7 @@ export {
   Date_ as Date,
   Error_ as Error,
   never_ as never,
+  noExcess_ as noExcess,
   null_ as null,
   number_ as number,
   of_ as of,

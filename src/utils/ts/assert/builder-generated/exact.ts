@@ -258,6 +258,12 @@ const any_ = runtime.exact.any
 type never_<$Actual> = Kind.Apply<ExactKind, [never, $Actual]>
 const never_ = runtime.exact.never
 
+/**
+ * Not available for exact relation.
+ * @see ExactRelatorNamespace.noExcess for why this is never
+ */
+const noExcess_ = runtime.exact.noExcess
+
 export {
   any_ as any,
   Array_ as Array,
@@ -266,6 +272,7 @@ export {
   Date_ as Date,
   Error_ as Error,
   never_ as never,
+  noExcess_ as noExcess,
   null_ as null,
   number_ as number,
   of_ as of,

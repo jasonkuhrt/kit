@@ -57,17 +57,43 @@ export interface RelatorNamespace<$State extends State> {
 }
 
 /**
+ * Exact relator namespace (no noExcess modifier).
+ */
+export interface ExactRelatorNamespace<$State extends State> extends RelatorNamespace<$State> {
+  /**
+   * Not available for exact relation.
+   *
+   * The `noExcess` modifier only makes sense for `sub` and `equiv` relations, where it adds
+   * excess property checking. The `exact` relation already requires exact type matching,
+   * so `noExcess` would be redundant.
+   *
+   * Use `Assert.sub.noExcess` or `Assert.equiv.noExcess` instead.
+   */
+  readonly noExcess: never
+}
+
+/**
  * Sub relator namespace with noExcess modifier.
  */
 export interface SubRelatorNamespace<$State extends State> extends RelatorNamespace<$State> {
-  readonly noExcess: RelatorNamespace<State.SetRelator<$State, SubNoExcessKind>>
+  /**
+   * Subtype relation with excess property checking.
+   *
+   * Asserts that the actual type is a subtype of the expected type AND has no excess properties.
+   */
+  readonly noExcess: InputMatcherArgFactory<State.SetRelator<$State, SubNoExcessKind>>
 }
 
 /**
  * Equiv relator namespace with noExcess modifier.
  */
 export interface EquivRelatorNamespace<$State extends State> extends RelatorNamespace<$State> {
-  readonly noExcess: RelatorNamespace<State.SetRelator<$State, EquivNoExcessKind>>
+  /**
+   * Equivalence relation with excess property checking.
+   *
+   * Asserts that the actual type is equivalent to the expected type AND has no excess properties.
+   */
+  readonly noExcess: InputMatcherArgFactory<State.SetRelator<$State, EquivNoExcessKind>>
 }
 
 /**
@@ -75,14 +101,14 @@ export interface EquivRelatorNamespace<$State extends State> extends RelatorName
  * Contains only relators (no extractors) with negation applied.
  */
 export interface NotNamespace<$State extends State> {
-  readonly exact: RelatorNamespace<State.SetRelator<State.SetNegated<$State>, ExactKind>>
+  readonly exact: ExactRelatorNamespace<State.SetRelator<State.SetNegated<$State>, ExactKind>>
   readonly equiv: EquivRelatorNamespace<State.SetRelator<State.SetNegated<$State>, EquivKind>>
   readonly sub: SubRelatorNamespace<State.SetRelator<State.SetNegated<$State>, SubKind>>
 }
 
 export interface ExtractorsBuilder<$State extends State> {
-  // Relators return RelatorNamespace
-  readonly exact: RelatorNamespace<State.SetRelator<$State, ExactKind>>
+  // Relators
+  readonly exact: ExactRelatorNamespace<State.SetRelator<$State, ExactKind>>
   readonly equiv: EquivRelatorNamespace<State.SetRelator<$State, EquivKind>>
   readonly sub: SubRelatorNamespace<State.SetRelator<$State, SubKind>>
 
