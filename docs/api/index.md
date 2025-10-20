@@ -26,35 +26,10 @@ JSON utilities with Effect Schema integration.
 
 Numeric types and utilities with branded types for mathematical constraints.
 
-- [`BigInteger`](/api/num/biginteger)
-- [`Complex`](/api/num/complex)
-- [`Degrees`](/api/num/degrees)
-- [`Even`](/api/num/even)
-- [`Finite`](/api/num/finite)
-- [`Float`](/api/num/float)
-- [`Frac`](/api/num/frac)
-- [`InRange`](/api/num/inrange)
-- [`Int`](/api/num/int)
-- [`Natural`](/api/num/natural)
-- [`Negative`](/api/num/negative)
-- [`NonNegative`](/api/num/nonnegative)
-- [`NonPositive`](/api/num/nonpositive)
-- [`NonZero`](/api/num/nonzero)
-- [`Odd`](/api/num/odd)
-- [`Percentage`](/api/num/percentage)
-- [`Positive`](/api/num/positive)
-- [`Prime`](/api/num/prime)
-- [`Radians`](/api/num/radians)
-- [`Ratio`](/api/num/ratio)
-- [`SafeInt`](/api/num/safeint)
-- [`Whole`](/api/num/whole)
-- [`Zero`](/api/num/zero)
-
 ## [Obj](/api/obj)
 
 Object utilities for working with plain JavaScript objects.
 
-- [`PropertySignature`](/api/obj/propertysignature)
 - [`Union`](/api/obj/union) - Union operations on objects.
 
 This module provides utilities for working with unions of object types, solving common TypeScript limitations when dealing with union types:
@@ -75,14 +50,11 @@ Record utilities for working with plain JavaScript objects as dictionaries.
 
 String utilities for text manipulation and analysis.
 
-- [`AxisHand`](/api/str/axishand)
-- [`Case`](/api/str/case)
 - [`Char`](/api/str/char) - Uppercase letter.
 - [`Code`](/api/str/code) - Code generation and documentation utilities.
 
 Provides tools for generating markdown, TSDoc/JSDoc, and TypeScript code. Includes safe JSDoc generation with escaping, builder API, and structured tag helpers.
 
-- [`Nat`](/api/str/nat)
 - [`Text`](/api/str/text) - Multi-line text formatting and layout utilities.
 
 Provides functions specifically for working with multi-line strings treated as text content: - **Line operations**: Split into lines, join lines, map transformations per line - **Indentation**: Add/remove indentation, strip common leading whitespace - **Alignment**: Pad text, span to width, fit to exact width - **Block formatting**: Format blocks with prefixes, styled borders
@@ -91,7 +63,6 @@ Provides functions specifically for working with multi-line strings treated as t
 
 **Use root Str for**: Primitive string operations (split, join, replace, match, trim) that work on strings as atomic values.
 
-- [`Tpl`](/api/str/tpl)
 - [`Visual`](/api/str/visual) - Visual-aware string utilities that handle ANSI escape codes and grapheme clusters.
 
 These functions measure and manipulate strings based on their visual appearance, not raw character count. Useful for terminal output, tables, and formatted text.
@@ -108,7 +79,6 @@ TypeScript type utilities and type-level programming helpers.
 
 - [`Assert`](/api/ts/assert)
 - [`Kind`](/api/ts/kind) - Higher-kinded type utilities for type-level programming. Provides type-level functions and utilities for simulating higher-kinded types in TypeScript.
-- [`Relation`](/api/ts/relation)
 - [`SENTINEL`](/api/ts/sentinel) - Utilities for working with the SENTINEL type.
 - [`SimpleSignature`](/api/ts/simplesignature) - Utilities for working with the `__simpleSignature` phantom type pattern. Allows complex generic functions to provide simpler signatures for type inference.
 - [`Union`](/api/ts/union) - Utilities for working with union types at the type level.
@@ -121,6 +91,3 @@ General value utilities for common JavaScript values and patterns.
 ## [Paka](/api/paka)
 
 todo
-
-- [`Adaptors`](/api/paka/adaptors)
-- [`Extractor`](/api/paka/extractor)

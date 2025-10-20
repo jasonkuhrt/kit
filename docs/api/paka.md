@@ -54,7 +54,7 @@ Paka supports two complementary documentation fields:
  *
  * Always validate the parsed config...
  */
-export const parseConfig = (input: string) => {/* ... */}
+export const parseConfig = (input: string) => {/* ... */ }
 ```
 
 **Markdown File Guide:**
@@ -111,7 +111,7 @@ export * as Utils from './utils.js'
  *
  * @category Utilities
  */
-export namespace Utils {}
+export namespace Utils { }
 ```
 
 **Why use namespace shadows?**
@@ -161,7 +161,7 @@ Mark exports as internal to exclude them from public documentation:
  * Internal helper function
  * @internal
  */
-export const _internalHelper = () => {}
+export const _internalHelper = () => { }
 ```
 
 Always filtered when `filterInternal: true` (default in production).
@@ -171,7 +171,7 @@ Always filtered when `filterInternal: true` (default in production).
 Optionally filter exports starting with `_`:
 
 ```typescript
-export const _privateHelper = () => {} // Filtered when filterUnderscoreExports: true
+export const _privateHelper = () => { } // Filtered when filterUnderscoreExports: true
 ```
 
 Enable with `filterUnderscoreExports` option (default: `false` for backward compatibility).
@@ -241,7 +241,7 @@ Examples support TypeScript's Twoslash for inline type display:
 ````typescript
 /**
  * @example
- *
+ * 
 ```ts
  * const result = add(1, 2)  // hover shows: const result: number
  * ```
@@ -253,7 +253,7 @@ Disable per-example with `@twoslash-disable`:
 ````typescript
 /**
  * @example
- *
+ * 
 ```ts
  * // @twoslash-disable
  * const pseudocode = "not real TypeScript"
@@ -355,19 +355,12 @@ import * as Paka from '@wollybeard/kit/paka'
 
 :::
 
-## Namespaces
-
-| Namespace                              | Description |
-| -------------------------------------- | ----------- |
-| [**`Adaptors`**](/api/paka/adaptors)   | —           |
-| [**`Extractor`**](/api/paka/extractor) | —           |
-
 ## Constants
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ExportLevel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L13" /> {#c-export-level-13}
 
 ```typescript
-Enums<{ readonly value: 'value'; readonly type: 'type' }>
+Enums<{ readonly value: "value"; readonly type: "type"; }>
 ```
 
 Export level distinguishes between runtime values and type-only exports.
@@ -375,14 +368,7 @@ Export level distinguishes between runtime values and type-only exports.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ValueExportType`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L19" /> {#c-value-export-type-19}
 
 ```typescript
-Enums<
-  {
-    readonly function: 'function'
-    readonly const: 'const'
-    readonly class: 'class'
-    readonly namespace: 'namespace'
-  }
->
+Enums<{ readonly function: "function"; readonly const: "const"; readonly class: "class"; readonly namespace: "namespace"; }>
 ```
 
 Value export types
@@ -392,15 +378,7 @@ Value export types
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `TypeExportType`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L32" /> {#c-type-export-type-32}
 
 ```typescript
-Enums<
-  {
-    readonly interface: 'interface'
-    readonly 'type-alias': 'type-alias'
-    readonly enum: 'enum'
-    readonly union: 'union'
-    readonly intersection: 'intersection'
-  }
->
+Enums<{ readonly interface: "interface"; readonly 'type-alias': "type-alias"; readonly enum: "enum"; readonly union: "union"; readonly intersection: "intersection"; }>
 ```
 
 Type export types
@@ -410,13 +388,7 @@ Type export types
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BuilderMethodCategory`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L50" /> {#c-builder-method-category-50}
 
 ```typescript
-Enums<
-  {
-    readonly chainable: 'chainable'
-    readonly terminal: 'terminal'
-    readonly transform: 'transform'
-  }
->
+Enums<{ readonly chainable: "chainable"; readonly terminal: "terminal"; readonly transform: "transform"; }>
 ```
 
 Builder method classification based on return type.
@@ -439,15 +411,7 @@ Union of all possible documentation provenance types.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `SignatureModel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L517" /> {#c-signature-model-517}
 
 ```typescript
-Union<
-  [
-    typeof FunctionSignatureModel,
-    typeof BuilderSignatureModel,
-    typeof ClassSignatureModel,
-    typeof TypeSignatureModel,
-    typeof ValueSignatureModel,
-  ]
->
+Union<[typeof FunctionSignatureModel, typeof BuilderSignatureModel, typeof ClassSignatureModel, typeof TypeSignatureModel, typeof ValueSignatureModel]>
 ```
 
 Signature model
@@ -592,24 +556,13 @@ Function/method parameter. Captures parameter name, type, modifiers, and JSDoc d
 
 ```typescript twoslash
 // @noErrors
-import { Paka } from '@wollybeard/kit/paka' // ---cut---
- // (items: T[], fn?: (item: T) => U, ...rest: unknown[])
-;[
-  {
-    name: 'items',
-    type: 'T[]',
-    optional: false,
-    rest: false,
-    description: 'Array of items to process',
-  },
-  {
-    name: 'fn',
-    type: '(item: T) => U',
-    optional: true,
-    rest: false,
-    description: 'Transform function',
-  },
-  { name: 'rest', type: 'unknown[]', optional: false, rest: true },
+import { Paka } from '@wollybeard/kit/paka'
+// ---cut---
+// (items: T[], fn?: (item: T) => U, ...rest: unknown[])
+[
+  { name: 'items', type: 'T[]', optional: false, rest: false, description: 'Array of items to process' },
+  { name: 'fn', type: '(item: T) => U', optional: true, rest: false, description: 'Transform function' },
+  { name: 'rest', type: 'unknown[]', optional: false, rest: true }
 ]
 ```
 
@@ -796,34 +749,17 @@ Class property. Captures property name, type, modifiers, and JSDoc description.
 
 ```typescript twoslash
 // @noErrors
-import { Paka } from '@wollybeard/kit/paka' // ---cut---
- // class User {
+import { Paka } from '@wollybeard/kit/paka'
+// ---cut---
+// class User {
 //   readonly id: string
 //   name?: string
 //   static count: number
 // }
-;[
-  {
-    name: 'id',
-    type: 'string',
-    optional: false,
-    readonly: true,
-    static: false,
-  },
-  {
-    name: 'name',
-    type: 'string',
-    optional: true,
-    readonly: false,
-    static: false,
-  },
-  {
-    name: 'count',
-    type: 'number',
-    optional: false,
-    readonly: false,
-    static: true,
-  },
+[
+  { name: 'id', type: 'string', optional: false, readonly: true, static: false },
+  { name: 'name', type: 'string', optional: true, readonly: false, static: false },
+  { name: 'count', type: 'number', optional: false, readonly: false, static: true }
 ]
 ```
 
@@ -1030,42 +966,6 @@ Package represents the complete extracted documentation model.
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExportLevel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L14" /> {#t-export-level-14}
-
-```typescript
-type ExportLevel = typeof ExportLevel.Type
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ValueExportType`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L27" /> {#t-value-export-type-27}
-
-```typescript
-type ValueExportType = typeof ValueExportType.Type
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `TypeExportType`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L41" /> {#t-type-export-type-41}
-
-```typescript
-type TypeExportType = typeof TypeExportType.Type
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `BuilderMethodCategory`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L57" /> {#t-builder-method-category-57}
-
-```typescript
-type BuilderMethodCategory = typeof BuilderMethodCategory.Type
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Provenance`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L132" /> {#t-provenance-132}
-
-```typescript
-type Provenance = typeof Provenance.Type
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SignatureModel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L524" /> {#t-signature-model-524}
-
-```typescript
-type SignatureModel = S.Schema.Type<typeof SignatureModel>
-```
-
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `Module`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L556" /> {#i-module-556}
 
 ```typescript
@@ -1079,18 +979,6 @@ interface Module {
 ```
 
 Module type interface for declaration merging. Following the graphql-kit pattern for circular schemas with instance methods.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ModuleEncoded`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L564" /> {#i-module-encoded-564}
-
-```typescript
-interface ModuleEncoded {
-  readonly location: S.Schema.Encoded<typeof FsLoc.RelFile>
-  readonly docs?: Docs | undefined
-  readonly docsProvenance?: DocsProvenance | undefined
-  readonly category?: string | undefined
-  readonly exports: ExportEncoded[]
-}
-```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ValueExport`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L659" /> {#i-value-export-659}
 
@@ -1113,47 +1001,3 @@ interface ValueExport {
 ```
 
 ValueExport type interface for declaration merging.
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `ValueExportEncoded`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L675" /> {#i-value-export-encoded-675}
-
-```typescript
-interface ValueExportEncoded {
-  readonly _tag: 'value'
-  readonly name: string
-  readonly signature: SignatureModel
-  readonly signatureSimple?: SignatureModel | undefined
-  readonly docs?: Docs | undefined
-  readonly docsProvenance?: DocsProvenance | undefined
-  readonly examples: readonly Example[]
-  readonly deprecated?: string | undefined
-  readonly category?: string | undefined
-  readonly tags: Readonly<Record<string, string>>
-  readonly sourceLocation: SourceLocation
-  readonly type: S.Schema.Encoded<typeof ValueExportType>
-  readonly module?: ModuleEncoded | undefined
-}
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Export`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L755" /> {#t-export-755}
-
-```typescript
-type Export = S.Schema.Type<typeof Export>
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `ExportEncoded`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L756" /> {#u-export-encoded-756}
-
-```typescript
-type ExportEncoded = ValueExportEncoded | S.Schema.Encoded<typeof TypeExport>
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Entrypoint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L942" /> {#t-entrypoint-942}
-
-```typescript
-type Entrypoint = S.Schema.Type<typeof Entrypoint>
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `InterfaceModel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L972" /> {#t-interface-model-972}
-
-```typescript
-type InterfaceModel = S.Schema.Type<typeof InterfaceModel>
-```

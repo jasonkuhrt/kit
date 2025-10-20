@@ -19,10 +19,10 @@ import { Extractor } from '@wollybeard/kit/paka'
 
 ## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extractFromFiles`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L41" /> {#f-extract-from-files-41}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extractFromFiles`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L43" /> {#f-extract-from-files-43}
 
 ```typescript
-(params: { projectRoot?: string; files: Layout; entrypoints?: string[]; extractorVersion?: string; filterUnderscoreExports?: boolean; }): Package
+(params: { projectRoot?: string; files: Layout; entrypoints?: string[]; extractorVersion?: string; matching?: PatternForType<ValueExport | TypeExport>; filterUnderscoreExports?: boolean; }): Package
 ```
 
 **Parameters:**
@@ -49,7 +49,7 @@ const layout = Dir.spec('/')
 const model = Paka.Extractor.extractFromFiles({ files: layout })
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extract`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L312" /> {#f-extract-312}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `extract`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L328" /> {#f-extract-328}
 
 ```typescript
 (config: ExtractConfig): Package
@@ -140,7 +140,7 @@ Extract a module from a namespace declaration.
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExtractConfig`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L293" /> {#t-extract-config-293}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExtractConfig`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/extractor/extract.ts#L307" /> {#t-extract-config-307}
 
 ```typescript
 type ExtractConfig = {
@@ -152,7 +152,9 @@ type ExtractConfig = {
   entrypoints?: string[]
   /** Extractor version */
   extractorVersion?: string
-  /** Filter exports that start with underscore `_` prefix (default: false) */
+  /** Pattern for exports to include. Exports not matching this pattern are filtered out. */
+  matching?: Pat.PatternForType<Export>
+  /** @deprecated Use `matching` instead. Filter exports that start with underscore `_` prefix (default: false) */
   filterUnderscoreExports?: boolean
 }
 ```

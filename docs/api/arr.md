@@ -41,11 +41,11 @@ Get the last element of an array.
 import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
 // [!code word:last:1]
-Arr.last([1, 2, 3]) // 3
+Arr.last([1, 2, 3])  // 3
 // [!code word:last:1]
-Arr.last(['a']) // 'a'
+Arr.last(['a'])  // 'a'
 // [!code word:last:1]
-Arr.last([]) // undefined
+Arr.last([])  // undefined
 ```
 
 ## Constants
@@ -115,11 +115,11 @@ Ensure a value is an array. If the value is already an array, return it as-is. O
 import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
 // [!code word:ensure:1]
-Arr.ensure('hello') // ['hello']
+Arr.ensure('hello')  // ['hello']
 // [!code word:ensure:1]
-Arr.ensure(['a', 'b']) // ['a', 'b']
+Arr.ensure(['a', 'b'])  // ['a', 'b']
 // [!code word:ensure:1]
-Arr.ensure(42) // [42]
+Arr.ensure(42)  // [42]
 ```
 
 ## Search
@@ -184,14 +184,14 @@ Arr.Eq.is([1, 2], [1, 2, 3]) // false (different lengths)
 // [!code word:is:1]
 Arr.Eq.is(
   [[1, 2], [3, 4]],
-  [[1, 2], [3, 4]],
+  [[1, 2], [3, 4]]
 ) // true
 
 // Mixed types
 // [!code word:is:1]
 Arr.Eq.is(
   [1, 'hello', true],
-  [1, 'hello', true],
+  [1, 'hello', true]
 ) // true
 ```
 
@@ -212,13 +212,13 @@ Provides type checking for readonly array values using Array.isArray.
 import { Arr } from '@wollybeard/kit'
 
 // [!code word:is:1]
-Arr.Type.is([1, 2, 3]) // true
+Arr.Type.is([1, 2, 3])     // true
 // [!code word:is:1]
-Arr.Type.is([]) // true
+Arr.Type.is([])            // true
 // [!code word:is:1]
-Arr.Type.is('not array') // false
+Arr.Type.is('not array')   // false
 // [!code word:is:1]
-Arr.Type.is(null) // false
+Arr.Type.is(null)          // false
 ```
 
 ## Transformation
@@ -247,7 +247,7 @@ import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
 const rows = [
   [1, 2, 3],
-  [4, 5, 6],
+  [4, 5, 6]
 ]
 // [!code word:transpose:1]
 Arr.transpose(rows)
@@ -255,7 +255,7 @@ Arr.transpose(rows)
 
 const table = [
   ['Alice', 'Engineer', '100k'],
-  ['Bob', 'Designer', '90k'],
+  ['Bob', 'Designer', '90k']
 ]
 // [!code word:transpose:1]
 Arr.transpose(table)
@@ -293,11 +293,11 @@ Assert that a value is an array. Throws a TypeError if the value is not an array
 import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
 function process(value: unknown) {
-  // [!code word:assert:1]
+// [!code word:assert:1]
   Arr.assert(value)
   // value is now typed as unknown[]
-  // [!code word:forEach:1]
-  // [!code word:log:1]
+// [!code word:forEach:1]
+// [!code word:log:1]
   value.forEach(item => console.log(item))
 }
 ```
@@ -307,8 +307,7 @@ function process(value: unknown) {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `All`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L27" /> {#t-all-27}
 
 ```typescript
-type All<$Tuple extends [...boolean[]]> = $Tuple[number] extends true ? true
-  : false
+type All<$Tuple extends [...boolean[]]> = $Tuple[number] extends true ? true : false
 ```
 
 Check if all booleans in a tuple are true.
@@ -319,15 +318,14 @@ Check if all booleans in a tuple are true.
 // @noErrors
 import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
-type T1 = All<[true, true, true]> // true
-type T2 = All<[true, false, true]> // false
+type T1 = All<[true, true, true]>  // true
+type T2 = All<[true, false, true]>  // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsTupleMultiple`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L39" /> {#t-is-tuple-multiple-39}
 
 ```typescript
-type IsTupleMultiple<$T> = $T extends [unknown, unknown, ...unknown[]] ? true
-  : false
+type IsTupleMultiple<$T> = $T extends [unknown, unknown, ...unknown[]] ? true : false
 ```
 
 Check if a tuple has multiple elements.
@@ -338,8 +336,8 @@ Check if a tuple has multiple elements.
 // @noErrors
 import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
-type T1 = IsTupleMultiple<[1, 2]> // true
-type T2 = IsTupleMultiple<[1]> // false
+type T1 = IsTupleMultiple<[1, 2]>  // true
+type T2 = IsTupleMultiple<[1]>  // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Push`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L50" /> {#t-push-50}
@@ -356,17 +354,15 @@ Push a value onto a tuple.
 // @noErrors
 import { Arr } from '@wollybeard/kit/arr'
 // ---cut---
-type T = Push<[1, 2], 3> // [1, 2, 3]
+type T = Push<[1, 2], 3>  // [1, 2, 3]
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `FirstNonUnknownNever`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L57" /> {#t-first-non-unknown-never-57}
 
 ```typescript
-type FirstNonUnknownNever<$T extends any[]> = $T extends
-  [infer __first__, ...infer __rest__]
-  ? unknown extends __first__
-    ? 0 extends 1 & __first__ ? FirstNonUnknownNever<__rest__> // is any
-    : FirstNonUnknownNever<__rest__> // is unknown
+type FirstNonUnknownNever<$T extends any[]> = $T extends [infer __first__, ...infer __rest__]
+  ? unknown extends __first__ ? 0 extends 1 & __first__ ? FirstNonUnknownNever<__rest__> // is any
+  : FirstNonUnknownNever<__rest__> // is unknown
   : __first__ extends never ? FirstNonUnknownNever<__rest__>
   : __first__
   : never
@@ -381,23 +377,3 @@ type EmptyArray = typeof emptyArray
 ```
 
 Type for the empty array constant.
-
-## Other
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Unknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L9" /> {#t-unknown-9}
-
-```typescript
-type Unknown = readonly unknown[]
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L11" /> {#t-any-11}
-
-```typescript
-type Any = readonly any[]
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Empty`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/arr/arr.ts#L13" /> {#t-empty-13}
-
-```typescript
-type Empty = readonly []
-```

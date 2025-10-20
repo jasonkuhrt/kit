@@ -28,15 +28,6 @@ import * as Ts from '@wollybeard/kit/ts'
 | [**`Union`**](/api/ts/union)                      | Utilities for working with union types at the type level.                                                                                                   |
 | [**`VariancePhantom`**](/api/ts/variance-phantom) | Phantom type helpers for controlling type variance (covariance, contravariance, invariance, bivariance).                                                    |
 | [**`SENTINEL`**](/api/ts/sentinel)                | Utilities for working with the SENTINEL type.                                                                                                               |
-| [**`Relation`**](/api/ts/relation)                | —                                                                                                                                                           |
-
-## Error Messages
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StaticErrorAny`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L119" /> {#t-static-error-any-119}
-
-```typescript
-type StaticErrorAny = StaticError<string, object, string>
-```
 
 ## Type Printing
 
@@ -46,38 +37,43 @@ type StaticErrorAny = StaticError<string, object, string>
 type Print<$Type, $Fallback extends string | undefined = undefined> =
   // Language base category types
   IsAny<$Type> extends true ? 'any'
-    : IsUnknown<$Type> extends true ? 'unknown'
-    : IsNever<$Type> extends true ? 'never'
-    // Special union type boolean which we display as boolean insead of true | false
-    : [$Type] extends [boolean]
-      ? ([boolean] extends [$Type] ? 'boolean' : `${$Type}`)
-    // General unions types
-    : Union.ToTuple<$Type> extends ArrMut.Any2OrMoreRO
-      ? _PrintUnion<Union.ToTuple<$Type>>
-    // Primitive and literal types
-    : $Type extends true ? 'true'
-    : $Type extends false ? 'false'
-    : $Type extends void ? ($Type extends undefined ? 'undefined' : 'void')
-    : $Type extends string ? (string extends $Type ? 'string' : `'${$Type}'`)
-    : $Type extends number ? (number extends $Type ? 'number' : `${$Type}`)
-    : $Type extends bigint ? (bigint extends $Type ? 'bigint' : `${$Type}n`)
-    : $Type extends null ? 'null'
-    : $Type extends undefined ? 'undefined'
-    // User-provided fallback takes precedence if type is not a primitive
-    : $Fallback extends string ? $Fallback
-    // Common object types and specific generic patterns
-    : $Type extends Promise<infer T> ? `Promise<${Print<T>}>`
-    : $Type extends (infer T)[] ? `Array<${Print<T>}>`
-    : $Type extends readonly (infer T)[] ? `ReadonlyArray<${Print<T>}>`
-    : $Type extends Date ? 'Date'
-    : $Type extends RegExp ? 'RegExp'
-    //
-    : $Type extends Function ? 'Function'
-    : $Type extends symbol ? 'symbol'
-    // General object fallback
-    : $Type extends object ? 'object'
-    // Ultimate fallback
-    : '?'
+  : IsUnknown<$Type> extends true ? 'unknown'
+  : IsNever<$Type> extends true ? 'never'
+
+  // Special union type boolean which we display as boolean insead of true | false
+  : [$Type] extends [boolean] ? ([boolean] extends [$Type] ? 'boolean' : `${$Type}`)
+
+  // General unions types
+  : Union.ToTuple<$Type> extends ArrMut.Any2OrMoreRO ? _PrintUnion<Union.ToTuple<$Type>>
+
+  // Primitive and literal types
+  : $Type extends true ? 'true'
+  : $Type extends false ? 'false'
+  : $Type extends void ? ($Type extends undefined ? 'undefined' : 'void')
+  : $Type extends string ? (string extends $Type ? 'string' : `'${$Type}'`)
+  : $Type extends number ? (number extends $Type ? 'number' : `${$Type}`)
+  : $Type extends bigint ? (bigint extends $Type ? 'bigint' : `${$Type}n`)
+  : $Type extends null ? 'null'
+  : $Type extends undefined ? 'undefined'
+
+  // User-provided fallback takes precedence if type is not a primitive
+  : $Fallback extends string ? $Fallback
+
+  // Common object types and specific generic patterns
+  : $Type extends Promise<infer T> ? `Promise<${Print<T>}>`
+  : $Type extends (infer T)[] ? `Array<${Print<T>}>`
+  : $Type extends readonly (infer T)[] ? `ReadonlyArray<${Print<T>}>`
+  : $Type extends Date ? 'Date'
+  : $Type extends RegExp ? 'RegExp'
+  //
+  : $Type extends Function ? 'Function'
+  : $Type extends symbol ? 'symbol'
+
+  // General object fallback
+  : $Type extends object ? 'object'
+
+  // Ultimate fallback
+  : '?'
 ```
 
 Print a type as a readable string representation.
@@ -111,7 +107,7 @@ type Message2 = `The type ${Show<'hello' | 'world'>} is not assignable`
 // Using in error messages
 type TypeError<Expected, Actual> = StaticError<
   `Type mismatch: expected ${Show<Expected>} but got ${Show<Actual>}`,
-  { Expected; Actual }
+  { Expected, Actual }
 >
 ```
 
@@ -186,9 +182,9 @@ type Valid4 = `ID: ${123n}`
 
 // Example usage in conditional types:
 type Stringify<T extends Interpolatable> = `${T}`
-type Result1 = Stringify<42> // "42"
-type Result2 = Stringify<true> // "true"
-type Result3 = Stringify<'hello'> // "hello"
+type Result1 = Stringify<42>        // "42"
+type Result2 = Stringify<true>      // "true"
+type Result3 = Stringify<'hello'>   // "hello"
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `Simplify`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L219" /> {#intersection-simplify-219}
@@ -277,9 +273,10 @@ function process<$T = SENTINEL>(...):
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Real-world usage in assertion functions
-type AssertFn<$Expected, $Actual = SENTINEL> = Ts.SENTINEL.Is<$Actual> extends
-  true ? <$actual>(value: $actual) => void // Value mode
-  : void // Type-only mode
+type AssertFn<$Expected, $Actual = SENTINEL> =
+  Ts.SENTINEL.Is<$Actual> extends true
+  ? <$actual>(value: $actual) => void  // Value mode
+  : void                                // Type-only mode
 ```
 
 ## Utilities
@@ -364,8 +361,8 @@ type RequireString<T> = T extends string ? T : StaticError<
   'Consider using string or a string literal type'
 >
 
-type Good = RequireString<'hello'> // 'hello'
-type Bad = RequireString<number> // StaticError<...>
+type Good = RequireString<'hello'>  // 'hello'
+type Bad = RequireString<number>    // StaticError<...>
 ```
 
 ```typescript twoslash
@@ -377,13 +374,13 @@ function processString<T>(
   value: T extends string ? T : StaticError<
     'Argument must be a string',
     { ProvidedType: T }
-  >,
+  >
 ): void {
   // Implementation
 }
 
-processString('hello') // OK
-processString(42) // Type error with custom message
+processString('hello')  // OK
+processString(42)       // Type error with custom message
 ```
 
 ## Other
@@ -391,8 +388,7 @@ processString(42) // Type error with custom message
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `SimplifyNullable`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L259" /> {#t-simplify-nullable-259}
 
 ```typescript
-type SimplifyNullable<$T> = null extends $T ? (Simplify<$T> & {}) | null
-  : Simplify<$T> & {}
+type SimplifyNullable<$T> = null extends $T ? (Simplify<$T> & {}) | null : Simplify<$T> & {}
 ```
 
 Simplify a type while preserving `| null` unions.
@@ -417,10 +413,10 @@ import { Ts } from '@wollybeard/kit/ts'
 // Problem: Plain Simplify can mangle nullable unions
 type User = { name: string } & { age: number }
 type MaybeUser = User | null
-type Bad = Simplify<MaybeUser> // May not preserve | null correctly
+type Bad = Simplify<MaybeUser>  // May not preserve | null correctly
 
 // Solution: SimplifyNullable preserves the null union
-type Good = SimplifyNullable<MaybeUser> // { name: string; age: number } | null
+type Good = SimplifyNullable<MaybeUser>  // { name: string; age: number } | null
 ```
 
 ```typescript twoslash
@@ -428,17 +424,19 @@ type Good = SimplifyNullable<MaybeUser> // { name: string; age: number } | null
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Works with non-nullable types too
-type Simple = SimplifyNullable<{ a: 1 } & { b: 2 }> // { a: 1; b: 2 }
+type Simple = SimplifyNullable<{ a: 1 } & { b: 2 }>  // { a: 1; b: 2 }
 
 // Preserves null in unions
-type Nullable = SimplifyNullable<({ a: 1 } & { b: 2 }) | null> // { a: 1; b: 2 } | null
+type Nullable = SimplifyNullable<({ a: 1 } & { b: 2 }) | null>  // { a: 1; b: 2 } | null
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ExtendsExact`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L299" /> {#t-extends-exact-299}
 
 ```typescript
-type ExtendsExact<$Input, $Constraint> = $Input extends $Constraint
-  ? $Constraint extends $Input ? $Input
+type ExtendsExact<$Input, $Constraint> =
+  $Input extends $Constraint
+  ? $Constraint extends $Input
+  ? $Input
   : never
   : never
 ```
@@ -469,10 +467,10 @@ $B
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T1 = NotExtends<string, number> // true (string doesn't extend number)
-type T2 = NotExtends<'hello', string> // false ('hello' extends string)
-type T3 = NotExtends<42, number> // false (42 extends number)
-type T4 = NotExtends<{ a: 1 }, { b: 2 }> // true (different properties)
+type T1 = NotExtends<string, number>      // true (string doesn't extend number)
+type T2 = NotExtends<'hello', string>     // false ('hello' extends string)
+type T3 = NotExtends<42, number>          // false (42 extends number)
+type T4 = NotExtends<{ a: 1 }, { b: 2 }>  // true (different properties)
 ```
 
 ```typescript twoslash
@@ -480,11 +478,10 @@ type T4 = NotExtends<{ a: 1 }, { b: 2 }> // true (different properties)
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Using in conditional types for optional handling
-type VarBuilderToType<$Type, $VarBuilder> = $VarBuilder['required'] extends true
-  ? Exclude<$Type, undefined>
-  : NotExtends<$VarBuilder['default'], undefined> extends true
-    ? $Type | undefined
-  : $Type
+type VarBuilderToType<$Type, $VarBuilder> =
+  $VarBuilder['required'] extends true ? Exclude<$Type, undefined> :
+  NotExtends<$VarBuilder['default'], undefined> extends true ? $Type | undefined :
+  $Type
 
 // If default is undefined, type is just $Type
 // If default is not undefined, type is $Type | undefined
@@ -495,11 +492,12 @@ type VarBuilderToType<$Type, $VarBuilder> = $VarBuilder['required'] extends true
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Checking for specific type exclusions
-type SafeDivide<T> = NotExtends<T, 0> extends true ? number
+type SafeDivide<T> = NotExtends<T, 0> extends true
+  ? number
   : StaticError<'Cannot divide by zero'>
 
-type Result1 = SafeDivide<5> // number
-type Result2 = SafeDivide<0> // StaticError<'Cannot divide by zero'>
+type Result1 = SafeDivide<5>   // number
+type Result2 = SafeDivide<0>   // StaticError<'Cannot divide by zero'>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Writeable`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L359" /> {#t-writeable-359}
@@ -519,42 +517,13 @@ Make all properties in an object mutable (removes readonly modifiers).
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type Readonly = { readonly x: number; readonly y: string }
-type Mutable = Writeable<Readonly> // { x: number; y: string }
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IfExtendsElse`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L398" /> {#t-if-extends-else-398}
-
-```typescript
-type IfExtendsElse<$Type, $Extends, $Then, $Else> = $Type extends $Extends
-  ? $Then
-  : $Else
-```
-
-:::warning DEPRECATED
-
-- Commented out 2025-01-07
-
-This utility was too strict - requires BIDIRECTIONAL extends, which rejects valid narrowed types (e.g., id: true for id: boolean ).
-
-Use Obj.NoExcess instead, which: - ✓ Rejects excess properties (what you want) - ✓ Allows valid subtypes/narrowing (what you need)
-
-If a use case for true bidirectional exact matching emerges, uncomment. Otherwise, remove after 3-6 months (target: ~2025-07-01).
-
-Original implementation:
-:::
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsNever`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L400" /> {#t-is-never-400}
-
-```typescript
-type IsNever<$Type> = [$Type] extends [never] ? true : false
+type Mutable = Writeable<Readonly>  // { x: number; y: string }
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IntersectionIgnoreNeverOrAny`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L405" /> {#t-intersection-ignore-never-or-any-405}
 
 ```typescript
-type IntersectionIgnoreNeverOrAny<$T> = IsAny<$T> extends true ? unknown
-  : $T extends never ? unknown
-  : $T
+type IntersectionIgnoreNeverOrAny<$T> = IsAny<$T> extends true ? unknown : $T extends never ? unknown : $T
 ```
 
 Intersection that ignores never and any.
@@ -562,9 +531,7 @@ Intersection that ignores never and any.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `NeverOrAnyToUnknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L410" /> {#t-never-or-any-to-unknown-410}
 
 ```typescript
-type NeverOrAnyToUnknown<$T> = IsAny<$T> extends true ? unknown
-  : $T extends never ? unknown
-  : $T
+type NeverOrAnyToUnknown<$T> = IsAny<$T> extends true ? unknown : $T extends never ? unknown : $T
 ```
 
 Convert never or any to unknown.
@@ -580,9 +547,7 @@ Any narrowable primitive type.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyAndUnknownToNever`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L420" /> {#t-any-and-unknown-to-never-420}
 
 ```typescript
-type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never
-  : IsUnknown<$T> extends true ? never
-  : $T
+type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never : IsUnknown<$T> extends true ? never : $T
 ```
 
 Convert any and unknown to never.
@@ -603,17 +568,16 @@ Uses the fact that `any` is the only type where `0 extends (1 & T)` is true, sin
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T1 = IsAny<any> // true
-type T2 = IsAny<unknown> // false
-type T3 = IsAny<string> // false
-type T4 = IsAny<never> // false
+type T1 = IsAny<any>      // true
+type T2 = IsAny<unknown>  // false
+type T3 = IsAny<string>   // false
+type T4 = IsAny<never>    // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsUnknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/ts.ts#L453" /> {#t-is-unknown-453}
 
 ```typescript
-type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true)
-  : false
+type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true) : false
 ```
 
 Check if a type is `unknown`.
@@ -628,10 +592,10 @@ Unknown is the top type
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T1 = IsUnknown<unknown> // true
-type T2 = IsUnknown<any> // false
-type T3 = IsUnknown<string> // false
-type T4 = IsUnknown<never> // false
+type T1 = IsUnknown<unknown>  // true
+type T2 = IsUnknown<any>      // false
+type T3 = IsUnknown<string>   // false
+type T4 = IsUnknown<never>    // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `isTypeWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/type-guards.ts#L18" /> {#f-is-type-with-18}

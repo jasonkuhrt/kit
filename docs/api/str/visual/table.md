@@ -38,7 +38,7 @@ import { Str } from '@wollybeard/kit'
 // Create table from row data
 const table = [
   ['Name', 'Age'],
-  ['Alice', '30'],
+  ['Alice', '30']
 ]
 
 // Render with visual alignment
@@ -124,7 +124,7 @@ import { Str } from '@wollybeard/kit/str'
 const table = [
   ['Name', 'Age', 'City'],
   ['Alice', '30', 'NYC'],
-  ['Bob', '25', 'LA'],
+  ['Bob', '25', 'LA']
 ]
 
 // [!code word:render:1]
@@ -143,7 +143,7 @@ Str.Visual.Table.render(table, { separator: ' | ', align: 'right' })
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L136" /> {#c-render-on-136}
 
 ```typescript
-;((table: Table) => (options?: RenderOptions | undefined) => string)
+(table: Table) => (options?: RenderOptions | undefined) => string
 ```
 
 Curried version of render with table first.
@@ -151,7 +151,7 @@ Curried version of render with table first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L142" /> {#c-render-with-142}
 
 ```typescript
-;((options?: RenderOptions | undefined) => (table: Table) => string)
+(options?: RenderOptions | undefined) => (table: Table) => string
 ```
 
 Curried version of render with options first.
@@ -181,8 +181,8 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Column-oriented data
 const columns = [
-  ['Name', 'Alice', 'Bob'], // Column 1
-  ['Age', '30', '25'], // Column 2
+  ['Name', 'Alice', 'Bob'],    // Column 1
+  ['Age', '30', '25']           // Column 2
 ]
 
 // [!code word:renderColumns:1]
@@ -194,7 +194,7 @@ Str.Visual.Table.renderColumns(columns)
 // Handles jagged arrays
 const jagged = [
   ['A', 'B'],
-  ['X', 'Y', 'Z'],
+  ['X', 'Y', 'Z']
 ]
 // [!code word:renderColumns:1]
 Str.Visual.Table.renderColumns(jagged)
@@ -206,7 +206,7 @@ Str.Visual.Table.renderColumns(jagged)
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderColumnsOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L190" /> {#c-render-columns-on-190}
 
 ```typescript
-;((columns: string[][]) => (options?: RenderOptions | undefined) => string)
+(columns: string[][]) => (options?: RenderOptions | undefined) => string
 ```
 
 Curried version of renderColumns with columns first.
@@ -214,7 +214,7 @@ Curried version of renderColumns with columns first.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `renderColumnsWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual-table.ts#L196" /> {#c-render-columns-with-196}
 
 ```typescript
-;((options?: RenderOptions | undefined) => (columns: string[][]) => string)
+(options?: RenderOptions | undefined) => (columns: string[][]) => string
 ```
 
 Curried version of renderColumns with options first.
@@ -243,7 +243,7 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 const table = [
   ['hi', 'world'],
-  ['hello', 'x'],
+  ['hello', 'x']
 ]
 
 // [!code word:columnWidths:1]

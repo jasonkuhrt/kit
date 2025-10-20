@@ -64,11 +64,11 @@ import { Rec } from '@wollybeard/kit/rec'
 // [!code word:reduce:1]
 const grouped = items.reduce(
   (acc, item) => {
-    // [!code word:category:1]
+// [!code word:category:1]
     acc[item.category] = item
     return acc
   },
-  create<Item>(),
+  create<Item>()
 )
 ```
 
@@ -108,7 +108,7 @@ import { Rec } from '@wollybeard/kit/rec'
 // [!code word:merge:1]
 Rec.merge(
   { user: { name: 'Alice', settings: { theme: 'dark' } } },
-  { user: { settings: { fontSize: 16 } } },
+  { user: { settings: { fontSize: 16 } } }
 )
 // Returns: { user: { name: 'Alice', settings: { theme: 'dark', fontSize: 16 } } }
 ```
@@ -171,12 +171,12 @@ import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
 // Type guard usage
 function processData(data: unknown) {
-  // [!code word:is:1]
+// [!code word:is:1]
   if (Rec.is(data)) {
     // data is typed as Rec.Any
-    // [!code word:keys:1]
+// [!code word:keys:1]
     Object.keys(data).forEach(key => {
-      // [!code word:log:1]
+// [!code word:log:1]
       console.log(data[key])
     })
   }
@@ -185,56 +185,11 @@ function processData(data: unknown) {
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L7" /> {#t-any-7}
-
-```typescript
-type Any = AnyKeyTo<unknown>
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyReadonly`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L12" /> {#t-any-readonly-12}
-
-```typescript
-type AnyReadonly = AnyReadonlyKeyTo<unknown>
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyKeyTo`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L17" /> {#t-any-key-to-17}
-
-```typescript
-type AnyKeyTo<$Value> = {
-  [key: PropertyKey]: $Value
-}
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `AnyReadonlyKeyTo`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L24" /> {#t-any-readonly-key-to-24}
-
-```typescript
-type AnyReadonlyKeyTo<$Value> = {
-  readonly [key: PropertyKey]: $Value
-}
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Value`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L31" /> {#t-value-31}
-
-```typescript
-type Value = {
-  [key: PropertyKey]: Lang.Value
-}
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Optional`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L123" /> {#t-optional-123}
-
-```typescript
-type Optional<$Key extends PropertyKey, $Value> = {
-  [K in $Key]?: $Value
-}
-```
-
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RemoveIndex`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L139" /> {#t-remove-index-139}
 
 ```typescript
 type RemoveIndex<$T> = {
-  [k in keyof $T as string extends k ? never : number extends k ? never : k]:
-    $T[k]
+  [k in keyof $T as string extends k ? never : number extends k ? never : k]: $T[k]
 }
 ```
 
@@ -246,16 +201,14 @@ Remove index signatures from an object type. Useful for converting Record types 
 // @noErrors
 import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
-type WithIndex = { a: string; b: number; [key: string]: any }
-type WithoutIndex = RemoveIndex<WithIndex> // { a: string; b: number }
+type WithIndex = { a: string; b: number;[key: string]: any }
+type WithoutIndex = RemoveIndex<WithIndex>  // { a: string; b: number }
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsHasIndex`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/rec/rec.ts#L155" /> {#t-is-has-index-155}
 
 ```typescript
-type IsHasIndex<$T, $Key extends PropertyKey = string> = $Key extends keyof $T
-  ? true
-  : false
+type IsHasIndex<$T, $Key extends PropertyKey = string> = $Key extends keyof $T ? true : false
 ```
 
 Check if a type has an index signature.
@@ -266,7 +219,7 @@ Check if a type has an index signature.
 // @noErrors
 import { Rec } from '@wollybeard/kit/rec'
 // ---cut---
-type T1 = IsHasIndex<{ [key: string]: any }> // true
-type T2 = IsHasIndex<{ a: string }> // false
-type T3 = IsHasIndex<{ [key: number]: any }, number> // true
+type T1 = IsHasIndex<{ [key: string]: any }>  // true
+type T2 = IsHasIndex<{ a: string }>  // false
+type T3 = IsHasIndex<{ [key: number]: any }, number>  // true
 ```
