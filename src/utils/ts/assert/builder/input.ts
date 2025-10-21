@@ -1,5 +1,6 @@
 import type { WritableDeep } from 'type-fest'
 import type * as Kind from '../../kind.js'
+import type { Error as TsError } from '../../ts.js'
 import type { GuardActual, GuardAnyOrNeverActual, RestParamsDisplayGuards } from './guards.js'
 import type { State } from './state.js'
 
@@ -56,9 +57,9 @@ export type InputMatcherArgFactory<$State extends State> =
         {
           <const $expected>(
             ...params: [
-              expected: DeepMutable<$expected>,
+              expected: $expected,
             ]
-          ): InputActualFactory<State.SetMatcherType<$State, DeepMutable<$expected>>>
+          ): InputActualFactoryAuto<State.SetMatcherType<$State, DeepMutable<$expected>>>
         }
       : // Narrow mode: Const + keep readonly
         {
@@ -97,6 +98,29 @@ export interface InputActualConstFactory<
   as<$actual>(
     ...params: RestParamsDisplayGuards<[
       GuardActual<$actual, $State>,
+      GuardAnyOrNeverActual<$actual,$State>
+    ]>
+  ): void
+}
+
+// dprint-ignore
+export interface InputActualFactoryAuto<
+  $State extends State
+> {
+  <const $actual>(
+    ...params: [
+      actual: [GuardActual<DeepMutable<$actual>, $State>] extends [TsError]
+        ? GuardActual<DeepMutable<$actual>, $State>
+        : $actual,
+      ...error: RestParamsDisplayGuards<[
+        GuardAnyOrNeverActual<NoInfer<$actual>, $State>,
+      ]>
+    ]
+  ): void
+
+  as<$actual>(
+    ...params: RestParamsDisplayGuards<[
+      GuardActual<DeepMutable<$actual>, $State>,
       GuardAnyOrNeverActual<$actual,$State>
     ]>
   ): void

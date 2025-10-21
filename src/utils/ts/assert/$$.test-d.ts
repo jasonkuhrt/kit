@@ -1,5 +1,5 @@
 import { Ts } from '#ts'
-import * as Assert from './$$.js'
+import * as A from './$$.js'
 
 //
 //
@@ -40,9 +40,9 @@ type $u = typeof $u
 //
 
 type __ = [
-  Ts.Assert.Case<never>,
+  A.Case<never>,
   // @ts-expect-error
-  Ts.Assert.Case<true>,
+  A.Case<true>,
 ]
 
 //
@@ -83,142 +83,142 @@ type __ = [
 //
 //
 
-Assert.exact.of(a)(a)
-Assert.on(a).exact.of(a)
-Assert.exact.ofAs<a>()(a)
-Assert.onAs<a>().exact.of(a)
-Assert.exact.ofAs<a>().as<a>()
-Assert.onAs(a).exact.ofAs<a>()
+A.exact.of(a)(a)
+A.on(a).exact.of(a)
+A.exact.ofAs<a>()(a)
+A.onAs<a>().exact.of(a)
+A.exact.ofAs<a>().as<a>()
+A.onAs(a).exact.ofAs<a>()
 // @ts-expect-error
-Assert.exact.ofAs<a>()(b)
-Assert.onAs<a>().exact.of(b)
+A.exact.ofAs<a>()(b)
+A.onAs<a>().exact.of(b)
 // @ts-expect-error
-Assert.exact.ofAs<a>().as<b>()
-Assert.onAs<a>().exact.ofAs<b>()
+A.exact.ofAs<a>().as<b>()
+A.onAs<a>().exact.ofAs<b>()
 //
 // ━━ awaited.is
 //
-Assert.awaited.exact.of(a)(Promise.resolve(a))
-Assert.on(Promise.resolve(a)).awaited.exact.of(a)
-Assert.awaited.exact.ofAs<a>()(Promise.resolve(a))
-Assert.onAs<Promise<a>>().awaited.exact.of(a)
-Assert.awaited.exact.ofAs<a>().as<Promise<a>>()
-Assert.onAs(Promise.resolve(a)).awaited.exact.ofAs<a>()
+A.awaited.exact.of(a)(Promise.resolve(a))
+A.on(Promise.resolve(a)).awaited.exact.of(a)
+A.awaited.exact.ofAs<a>()(Promise.resolve(a))
+A.onAs<Promise<a>>().awaited.exact.of(a)
+A.awaited.exact.ofAs<a>().as<Promise<a>>()
+A.onAs(Promise.resolve(a)).awaited.exact.ofAs<a>()
 // @ts-expect-error
-Assert.awaited.exact.ofAs<a>()(Promise.resolve(b))
-Assert.onAs<Promise<a>>().awaited.exact.of(b)
+A.awaited.exact.ofAs<a>()(Promise.resolve(b))
+A.onAs<Promise<a>>().awaited.exact.of(b)
 // @ts-expect-error
-Assert.awaited.exact.ofAs<a>().as<Promise<b>>()
-Assert.onAs<Promise<a>>().awaited.exact.ofAs<b>()
+A.awaited.exact.ofAs<a>().as<Promise<b>>()
+A.onAs<Promise<a>>().awaited.exact.ofAs<b>()
 //
 // ━━ awaited.array
 //
-Assert.awaited.array.exact.of(a)(Promise.resolve([a]))
-Assert.on(Promise.resolve([a])).awaited.array.exact.of(a)
-Assert.awaited.array.exact.ofAs<a>()(Promise.resolve([a]))
-Assert.onAs<Promise<a[]>>().awaited.array.exact.of(a)
-Assert.awaited.array.exact.ofAs<a>().as<Promise<a[]>>()
-Assert.onAs(Promise.resolve([a])).awaited.array.exact.ofAs<a>()
+A.awaited.array.exact.of(a)(Promise.resolve([a]))
+A.on(Promise.resolve([a])).awaited.array.exact.of(a)
+A.awaited.array.exact.ofAs<a>()(Promise.resolve([a]))
+A.onAs<Promise<a[]>>().awaited.array.exact.of(a)
+A.awaited.array.exact.ofAs<a>().as<Promise<a[]>>()
+A.onAs(Promise.resolve([a])).awaited.array.exact.ofAs<a>()
 // @ts-expect-error
-Assert.awaited.array.exact.ofAs<a>()(Promise.resolve([b]))
-Assert.onAs<Promise<a[]>>().awaited.array.exact.of(b)
+A.awaited.array.exact.ofAs<a>()(Promise.resolve([b]))
+A.onAs<Promise<a[]>>().awaited.array.exact.of(b)
 // @ts-expect-error
-Assert.awaited.array.exact.ofAs<a>().as<Promise<b[]>>()
-Assert.onAs<Promise<a[]>>().awaited.array.exact.ofAs<b>()
+A.awaited.array.exact.ofAs<a>().as<Promise<b[]>>()
+A.onAs<Promise<a[]>>().awaited.array.exact.ofAs<b>()
 //
 // ━━ returned.is
 //
-Assert.returned.exact.of(a)(() => a)
-Assert.on(() => a).returned.exact.of(a)
-Assert.returned.exact.ofAs<a>()(() => a)
-Assert.onAs<() => a>().returned.exact.of(a)
-Assert.returned.exact.ofAs<a>().as<() => a>()
-Assert.onAs(() => a).returned.exact.ofAs<a>()
+A.returned.exact.of(a)(() => a)
+A.on(() => a).returned.exact.of(a)
+A.returned.exact.ofAs<a>()(() => a)
+A.onAs<() => a>().returned.exact.of(a)
+A.returned.exact.ofAs<a>().as<() => a>()
+A.onAs(() => a).returned.exact.ofAs<a>()
 // @ts-expect-error
-Assert.returned.exact.ofAs<a>()(() => b)
-Assert.onAs<() => a>().returned.exact.of(b)
+A.returned.exact.ofAs<a>()(() => b)
+A.onAs<() => a>().returned.exact.of(b)
 // @ts-expect-error
-Assert.returned.exact.ofAs<a>().as<() => b>()
-Assert.onAs<() => a>().returned.exact.ofAs<b>()
+A.returned.exact.ofAs<a>().as<() => b>()
+A.onAs<() => a>().returned.exact.ofAs<b>()
 //
 // ━━ returned.awaited
 //
-Assert.returned.awaited.exact.of(a)(() => Promise.resolve(a))
-Assert.on(() => Promise.resolve(a)).returned.awaited.exact.of(a)
-Assert.returned.awaited.exact.ofAs<a>()(() => Promise.resolve(a))
-Assert.onAs<() => Promise<a>>().returned.awaited.exact.of(a)
-Assert.returned.awaited.exact.ofAs<a>().as<() => Promise<a>>()
-Assert.onAs(() => Promise.resolve(a)).returned.awaited.exact.ofAs<a>()
+A.returned.awaited.exact.of(a)(() => Promise.resolve(a))
+A.on(() => Promise.resolve(a)).returned.awaited.exact.of(a)
+A.returned.awaited.exact.ofAs<a>()(() => Promise.resolve(a))
+A.onAs<() => Promise<a>>().returned.awaited.exact.of(a)
+A.returned.awaited.exact.ofAs<a>().as<() => Promise<a>>()
+A.onAs(() => Promise.resolve(a)).returned.awaited.exact.ofAs<a>()
 // @ts-expect-error
-Assert.returned.awaited.exact.ofAs<a>()(() => Promise.resolve(b))
-Assert.onAs<() => Promise<a>>().returned.awaited.exact.of(b)
+A.returned.awaited.exact.ofAs<a>()(() => Promise.resolve(b))
+A.onAs<() => Promise<a>>().returned.awaited.exact.of(b)
 // @ts-expect-error
-Assert.returned.awaited.exact.ofAs<a>().as<() => Promise<b>>()
-Assert.onAs<() => Promise<a>>().returned.awaited.exact.ofAs<b>()
+A.returned.awaited.exact.ofAs<a>().as<() => Promise<b>>()
+A.onAs<() => Promise<a>>().returned.awaited.exact.ofAs<b>()
 //
 // ━━ returned.array
 //
-Assert.returned.array.exact.of(a)(() => [a])
-Assert.on(() => [a]).returned.array.exact.of(a)
-Assert.returned.array.exact.ofAs<a>()(() => [a])
-Assert.onAs<() => a[]>().returned.array.exact.of(a)
-Assert.returned.array.exact.ofAs<a>().as<() => a[]>()
-Assert.onAs(() => [a]).returned.array.exact.ofAs<a>()
+A.returned.array.exact.of(a)(() => [a])
+A.on(() => [a]).returned.array.exact.of(a)
+A.returned.array.exact.ofAs<a>()(() => [a])
+A.onAs<() => a[]>().returned.array.exact.of(a)
+A.returned.array.exact.ofAs<a>().as<() => a[]>()
+A.onAs(() => [a]).returned.array.exact.ofAs<a>()
 // @ts-expect-error
-Assert.returned.array.exact.ofAs<a>()(() => [b])
-Assert.onAs<() => a[]>().returned.array.exact.of(b)
+A.returned.array.exact.ofAs<a>()(() => [b])
+A.onAs<() => a[]>().returned.array.exact.of(b)
 // @ts-expect-error
-Assert.returned.array.exact.ofAs<a>().as<() => b[]>()
-Assert.onAs<() => a[]>().returned.array.exact.ofAs<b>()
+A.returned.array.exact.ofAs<a>().as<() => b[]>()
+A.onAs<() => a[]>().returned.array.exact.ofAs<b>()
 //
 // ━━ array
 //
-Assert.array.exact.of(a)([a])
-Assert.on([a]).array.exact.of(a)
-Assert.array.exact.ofAs<a>()([a])
-Assert.onAs<a[]>().array.exact.of(a)
-Assert.array.exact.ofAs<a>().as<a[]>()
-Assert.onAs([a]).array.exact.ofAs<a>()
+A.array.exact.of(a)([a])
+A.on([a]).array.exact.of(a)
+A.array.exact.ofAs<a>()([a])
+A.onAs<a[]>().array.exact.of(a)
+A.array.exact.ofAs<a>().as<a[]>()
+A.onAs([a]).array.exact.ofAs<a>()
 // @ts-expect-error
-Assert.array.exact.ofAs<a>()([b])
-Assert.onAs<a[]>().array.exact.of(b)
+A.array.exact.ofAs<a>()([b])
+A.onAs<a[]>().array.exact.of(b)
 // @ts-expect-error
-Assert.array.exact.ofAs<a>().as<b[]>()
-Assert.onAs<a[]>().array.exact.ofAs<b>()
+A.array.exact.ofAs<a>().as<b[]>()
+A.onAs<a[]>().array.exact.ofAs<b>()
 //
 // ━━ parameter1
 //
-Assert.parameter1.exact.of(a)((_: a) => b)
-Assert.on((_: a) => b).parameter1.exact.of(a)
-Assert.parameter1.exact.ofAs<a>()((_: a) => b)
-Assert.onAs<(_: a) => b>().parameter1.exact.of(a)
-Assert.parameter1.exact.ofAs<a>().as<(_: a) => b>()
-Assert.onAs((_: a) => b).parameter1.exact.ofAs<a>()
+A.parameter1.exact.of(a)((_: a) => b)
+A.on((_: a) => b).parameter1.exact.of(a)
+A.parameter1.exact.ofAs<a>()((_: a) => b)
+A.onAs<(_: a) => b>().parameter1.exact.of(a)
+A.parameter1.exact.ofAs<a>().as<(_: a) => b>()
+A.onAs((_: a) => b).parameter1.exact.ofAs<a>()
 // @ts-expect-error
-Assert.parameter1.exact.of<a>()((_: b) => a)
-Assert.onAs<(_: a) => b>().parameter1.exact.of(b)
+A.parameter1.exact.of<a>()((_: b) => a)
+A.onAs<(_: a) => b>().parameter1.exact.of(b)
 // @ts-expect-error
-Assert.parameter1.exact.of<a, (_: b) => a>()
-Assert.onAs<(_: a) => b>().parameter1.exact.ofAs<b>()
+A.parameter1.exact.of<a, (_: b) => a>()
+A.onAs<(_: a) => b>().parameter1.exact.ofAs<b>()
 //
 // ━━ parameters
 //
-Assert.parameters.exact.of([a, b])((_: a, __: b) => a)
-Assert.on((_: a, __: b) => a).parameters.exact.of([a, b])
-Assert.parameters.exact.ofAs<[a, b]>()((_: a, __: b) => a)
-Assert.onAs<(_: a, __: b) => a>().parameters.exact.of([a, b])
-Assert.parameters.exact.ofAs<[a, b]>().as<((_: a, __: b) => a)>()
-Assert.onAs((_: a, __: b) => a).parameters.exact.ofAs<[a, b]>()
+A.parameters.exact.of([a, b])((_: a, __: b) => a)
+A.on((_: a, __: b) => a).parameters.exact.of([a, b])
+A.parameters.exact.ofAs<[a, b]>()((_: a, __: b) => a)
+A.onAs<(_: a, __: b) => a>().parameters.exact.of([a, b])
+A.parameters.exact.ofAs<[a, b]>().as<((_: a, __: b) => a)>()
+A.onAs((_: a, __: b) => a).parameters.exact.ofAs<[a, b]>()
 // @ts-expect-error
-Assert.parameters.exact<[a, b]>()((_: b, __: a) => a)
-Assert.onAs<(_: a, __: b) => a>().parameters.exact.of([b, a])
+A.parameters.exact<[a, b]>()((_: b, __: a) => a)
+A.onAs<(_: a, __: b) => a>().parameters.exact.of([b, a])
 // @ts-expect-error
-Assert.parameters.exact<[a, b], (_: b, __: a) => a>()
-Assert.onAs<(_: a, __: b) => a>().parameters.exact.ofAs<[b, a]>()
+A.parameters.exact<[a, b], (_: b, __: a) => a>()
+A.onAs<(_: a, __: b) => a>().parameters.exact.ofAs<[b, a]>()
 //
 // ━━ noExcess (not a thing)
 //
-Assert.exact.never(Assert.exact.noExcess)
+A.exact.never(A.exact.noExcess)
 
 //
 //
@@ -226,159 +226,159 @@ Assert.exact.never(Assert.exact.noExcess)
 //
 //
 
-Assert.sub.of(a)(a)
-Assert.on(a).sub.of(a)
-Assert.sub.ofAs<a>()(a)
-Assert.onAs<a>().sub.of(a)
-Assert.sub.ofAs<a>().as<a>()
-Assert.onAs(a).sub.ofAs<a>()
+A.sub.of(a)(a)
+A.on(a).sub.of(a)
+A.sub.ofAs<a>()(a)
+A.onAs<a>().sub.of(a)
+A.sub.ofAs<a>().as<a>()
+A.onAs(a).sub.ofAs<a>()
 // @ts-expect-error
-Assert.sub.ofAs<a>()(b)
-Assert.onAs<a>().sub.of(b)
+A.sub.ofAs<a>()(b)
+A.onAs<a>().sub.of(b)
 // @ts-expect-error
-Assert.sub.ofAs<a>().as<b>()
-Assert.onAs<a>().sub.ofAs<b>()
+A.sub.ofAs<a>().as<b>()
+A.onAs<a>().sub.ofAs<b>()
 //
 // ━━ awaited.is
 //
-Assert.awaited.sub.of(a)(Promise.resolve(a))
-Assert.on(Promise.resolve(a)).awaited.sub.of(a)
-Assert.awaited.sub.ofAs<a>()(Promise.resolve(a))
-Assert.onAs<Promise<a>>().awaited.sub.of(a)
-Assert.awaited.sub.ofAs<a>().as<Promise<a>>()
-Assert.onAs(Promise.resolve(a)).awaited.sub.ofAs<a>()
+A.awaited.sub.of(a)(Promise.resolve(a))
+A.on(Promise.resolve(a)).awaited.sub.of(a)
+A.awaited.sub.ofAs<a>()(Promise.resolve(a))
+A.onAs<Promise<a>>().awaited.sub.of(a)
+A.awaited.sub.ofAs<a>().as<Promise<a>>()
+A.onAs(Promise.resolve(a)).awaited.sub.ofAs<a>()
 // @ts-expect-error
-Assert.awaited.sub.ofAs<a>()(Promise.resolve(b))
-Assert.onAs<Promise<a>>().awaited.sub.of(b)
+A.awaited.sub.ofAs<a>()(Promise.resolve(b))
+A.onAs<Promise<a>>().awaited.sub.of(b)
 // @ts-expect-error
-Assert.awaited.sub.ofAs<a>().as<Promise<b>>()
-Assert.onAs<Promise<a>>().awaited.sub.ofAs<b>()
+A.awaited.sub.ofAs<a>().as<Promise<b>>()
+A.onAs<Promise<a>>().awaited.sub.ofAs<b>()
 //
 // ━━ awaited.array
 //
-Assert.awaited.array.sub.of(a)(Promise.resolve([a]))
-Assert.on(Promise.resolve([a])).awaited.array.sub.of(a)
-Assert.awaited.array.sub.ofAs<a>()(Promise.resolve([a]))
-Assert.onAs<Promise<a[]>>().awaited.array.sub.of(a)
-Assert.awaited.array.sub.ofAs<a>().as<Promise<a[]>>()
-Assert.onAs(Promise.resolve([a])).awaited.array.sub.ofAs<a>()
+A.awaited.array.sub.of(a)(Promise.resolve([a]))
+A.on(Promise.resolve([a])).awaited.array.sub.of(a)
+A.awaited.array.sub.ofAs<a>()(Promise.resolve([a]))
+A.onAs<Promise<a[]>>().awaited.array.sub.of(a)
+A.awaited.array.sub.ofAs<a>().as<Promise<a[]>>()
+A.onAs(Promise.resolve([a])).awaited.array.sub.ofAs<a>()
 // @ts-expect-error
-Assert.awaited.array.sub.ofAs<a>()(Promise.resolve([b]))
-Assert.onAs<Promise<a[]>>().awaited.array.sub.of(b)
+A.awaited.array.sub.ofAs<a>()(Promise.resolve([b]))
+A.onAs<Promise<a[]>>().awaited.array.sub.of(b)
 // @ts-expect-error
-Assert.awaited.array.sub.ofAs<a>().as<Promise<b[]>>()
-Assert.onAs<Promise<a[]>>().awaited.array.sub.ofAs<b>()
+A.awaited.array.sub.ofAs<a>().as<Promise<b[]>>()
+A.onAs<Promise<a[]>>().awaited.array.sub.ofAs<b>()
 //
 // ━━ returned.is
 //
-Assert.returned.sub.of(a)(() => a)
-Assert.on(() => a).returned.sub.of(a)
-Assert.returned.sub.ofAs<a>()(() => a)
-Assert.onAs<() => a>().returned.sub.of(a)
-Assert.returned.sub.ofAs<a>().as<() => a>()
-Assert.onAs(() => a).returned.sub.ofAs<a>()
+A.returned.sub.of(a)(() => a)
+A.on(() => a).returned.sub.of(a)
+A.returned.sub.ofAs<a>()(() => a)
+A.onAs<() => a>().returned.sub.of(a)
+A.returned.sub.ofAs<a>().as<() => a>()
+A.onAs(() => a).returned.sub.ofAs<a>()
 // @ts-expect-error
-Assert.returned.sub.ofAs<a>()(() => b)
-Assert.onAs<() => a>().returned.sub.of(b)
+A.returned.sub.ofAs<a>()(() => b)
+A.onAs<() => a>().returned.sub.of(b)
 // @ts-expect-error
-Assert.returned.sub.ofAs<a>().as<() => b>()
-Assert.onAs<() => a>().returned.sub.ofAs<b>()
+A.returned.sub.ofAs<a>().as<() => b>()
+A.onAs<() => a>().returned.sub.ofAs<b>()
 //
 // ━━ returned.awaited
 //
-Assert.returned.awaited.sub.of(a)(() => Promise.resolve(a))
-Assert.on(() => Promise.resolve(a)).returned.awaited.sub.of(a)
-Assert.returned.awaited.sub.ofAs<a>()(() => Promise.resolve(a))
-Assert.onAs<() => Promise<a>>().returned.awaited.sub.of(a)
-Assert.returned.awaited.sub.ofAs<a>().as<() => Promise<a>>()
-Assert.onAs(() => Promise.resolve(a)).returned.awaited.sub.ofAs<a>()
+A.returned.awaited.sub.of(a)(() => Promise.resolve(a))
+A.on(() => Promise.resolve(a)).returned.awaited.sub.of(a)
+A.returned.awaited.sub.ofAs<a>()(() => Promise.resolve(a))
+A.onAs<() => Promise<a>>().returned.awaited.sub.of(a)
+A.returned.awaited.sub.ofAs<a>().as<() => Promise<a>>()
+A.onAs(() => Promise.resolve(a)).returned.awaited.sub.ofAs<a>()
 // @ts-expect-error
-Assert.returned.awaited.sub.ofAs<a>()(() => Promise.resolve(b))
-Assert.onAs<() => Promise<a>>().returned.awaited.sub.of(b)
+A.returned.awaited.sub.ofAs<a>()(() => Promise.resolve(b))
+A.onAs<() => Promise<a>>().returned.awaited.sub.of(b)
 // @ts-expect-error
-Assert.returned.awaited.sub.ofAs<a>().as<() => Promise<b>>()
-Assert.onAs<() => Promise<a>>().returned.awaited.sub.ofAs<b>()
+A.returned.awaited.sub.ofAs<a>().as<() => Promise<b>>()
+A.onAs<() => Promise<a>>().returned.awaited.sub.ofAs<b>()
 //
 // ━━ returned.array
 //
-Assert.returned.array.sub.of(a)(() => [a])
-Assert.on(() => [a]).returned.array.sub.of(a)
-Assert.returned.array.sub.ofAs<a>()(() => [a])
-Assert.onAs<() => a[]>().returned.array.sub.of(a)
-Assert.returned.array.sub.ofAs<a>().as<() => a[]>()
-Assert.onAs(() => [a]).returned.array.sub.ofAs<a>()
+A.returned.array.sub.of(a)(() => [a])
+A.on(() => [a]).returned.array.sub.of(a)
+A.returned.array.sub.ofAs<a>()(() => [a])
+A.onAs<() => a[]>().returned.array.sub.of(a)
+A.returned.array.sub.ofAs<a>().as<() => a[]>()
+A.onAs(() => [a]).returned.array.sub.ofAs<a>()
 // @ts-expect-error
-Assert.returned.array.sub.ofAs<a>()(() => [b])
-Assert.onAs<() => a[]>().returned.array.sub.of(b)
+A.returned.array.sub.ofAs<a>()(() => [b])
+A.onAs<() => a[]>().returned.array.sub.of(b)
 // @ts-expect-error
-Assert.returned.array.sub.ofAs<a>().as<() => b[]>()
-Assert.onAs<() => a[]>().returned.array.sub.ofAs<b>()
+A.returned.array.sub.ofAs<a>().as<() => b[]>()
+A.onAs<() => a[]>().returned.array.sub.ofAs<b>()
 //
 // ━━ array
 //
-Assert.array.sub.of(a)([a])
-Assert.on([a]).array.sub.of(a)
-Assert.array.sub.ofAs<a>()([a])
-Assert.onAs<a[]>().array.sub.of(a)
-Assert.array.sub.ofAs<a>().as<a[]>()
-Assert.onAs([a]).array.sub.ofAs<a>()
+A.array.sub.of(a)([a])
+A.on([a]).array.sub.of(a)
+A.array.sub.ofAs<a>()([a])
+A.onAs<a[]>().array.sub.of(a)
+A.array.sub.ofAs<a>().as<a[]>()
+A.onAs([a]).array.sub.ofAs<a>()
 // @ts-expect-error
-Assert.array.sub.ofAs<a>()([b])
-Assert.onAs<a[]>().array.sub.of(b)
+A.array.sub.ofAs<a>()([b])
+A.onAs<a[]>().array.sub.of(b)
 // @ts-expect-error
-Assert.array.sub.ofAs<a>().as<b[]>()
-Assert.onAs<a[]>().array.sub.ofAs<b>()
+A.array.sub.ofAs<a>().as<b[]>()
+A.onAs<a[]>().array.sub.ofAs<b>()
 //
 // ━━ parameter1
 //
-Assert.parameter1.sub.of(a)((_: a) => b)
-Assert.on((_: a) => b).parameter1.sub.of(a)
-Assert.parameter1.sub.ofAs<a>()((_: a) => b)
-Assert.onAs<(_: a) => b>().parameter1.sub.of(a)
-Assert.parameter1.sub.ofAs<a>().as<(_: a) => b>()
-Assert.onAs((_: a) => b).parameter1.sub.ofAs<a>()
+A.parameter1.sub.of(a)((_: a) => b)
+A.on((_: a) => b).parameter1.sub.of(a)
+A.parameter1.sub.ofAs<a>()((_: a) => b)
+A.onAs<(_: a) => b>().parameter1.sub.of(a)
+A.parameter1.sub.ofAs<a>().as<(_: a) => b>()
+A.onAs((_: a) => b).parameter1.sub.ofAs<a>()
 // @ts-expect-error
-Assert.sub.parameter1.ofAs<a>()((_: b) => a)
-Assert.onAs<(_: a) => b>().parameter1.sub.of(b)
+A.sub.parameter1.ofAs<a>()((_: b) => a)
+A.onAs<(_: a) => b>().parameter1.sub.of(b)
 // @ts-expect-error
-Assert.sub.parameter1.of<a>().as<(_: b) => a>()
-Assert.onAs<(_: a) => b>().parameter1.sub.ofAs<b>()
+A.sub.parameter1.of<a>().as<(_: b) => a>()
+A.onAs<(_: a) => b>().parameter1.sub.ofAs<b>()
 //
 // ━━ parameters
 //
-Assert.parameters.sub.of([a, b])((_: a, __: b) => a)
-Assert.on((_: a, __: b) => a).parameters.sub.of([a, b])
-Assert.parameters.sub.ofAs<[a, b]>()((_: a, __: b) => a)
-Assert.onAs<(_: a, __: b) => a>().parameters.sub.of([a, b])
-Assert.parameters.sub.ofAs<[a, b]>().as<(_: a, __: b) => a>()
-Assert.onAs((_: a, __: b) => a).parameters.sub.ofAs<[a, b]>()
+A.parameters.sub.of([a, b])((_: a, __: b) => a)
+A.on((_: a, __: b) => a).parameters.sub.of([a, b])
+A.parameters.sub.ofAs<[a, b]>()((_: a, __: b) => a)
+A.onAs<(_: a, __: b) => a>().parameters.sub.of([a, b])
+A.parameters.sub.ofAs<[a, b]>().as<(_: a, __: b) => a>()
+A.onAs((_: a, __: b) => a).parameters.sub.ofAs<[a, b]>()
 // @ts-expect-error
-Assert.sub.parameters.ofAs<[a, b]>()((_: b, __: a) => a)
-Assert.onAs<(_: a, __: b) => a>().parameters.sub.of([b, a])
+A.sub.parameters.ofAs<[a, b]>()((_: b, __: a) => a)
+A.onAs<(_: a, __: b) => a>().parameters.sub.of([b, a])
 // @ts-expect-error
-Assert.sub.parameters.of<[a, b]>().as<(_: b, __: a) => a>()
-Assert.onAs<(_: a, __: b) => a>().parameters.sub.ofAs<[b, a]>()
+A.sub.parameters.of<[a, b]>().as<(_: b, __: a) => a>()
+A.onAs<(_: a, __: b) => a>().parameters.sub.ofAs<[b, a]>()
 //
 // ━━ noExcess
 //
-Assert.sub.noExcess(obj)(obj)
-Assert.on(obj).sub.noExcess(obj)
-Assert.sub.noExcessAs<obj>()(obj)
-Assert.onAs<obj>().sub.noExcess(obj)
-Assert.sub.noExcessAs<obj>().as<obj>()
-Assert.onAs(obj).sub.noExcessAs<obj>()
+A.sub.noExcess(obj)(obj)
+A.on(obj).sub.noExcess(obj)
+A.sub.noExcessAs<obj>()(obj)
+A.onAs<obj>().sub.noExcess(obj)
+A.sub.noExcessAs<obj>().as<obj>()
+A.onAs(obj).sub.noExcessAs<obj>()
 // @ts-expect-error
-Assert.sub.noExcessAs<obj>()(objExcess)
-Assert.onAs<obj>().sub.noExcess(objExcess)
+A.sub.noExcessAs<obj>()(objExcess)
+A.onAs<obj>().sub.noExcess(objExcess)
 // @ts-expect-error
-Assert.sub.noExcessAs<obj>()(objExcessOptional)
-Assert.onAs<obj>().sub.noExcess(objExcessOptional)
+A.sub.noExcessAs<obj>()(objExcessOptional)
+A.onAs<obj>().sub.noExcess(objExcessOptional)
 // @ts-expect-error
-Assert.sub.noExcessAs<obj>().as<objExcess>()
-Assert.onAs<obj>().sub.noExcessAs<objExcess>()
+A.sub.noExcessAs<obj>().as<objExcess>()
+A.onAs<obj>().sub.noExcessAs<objExcess>()
 // @ts-expect-error
-Assert.sub.noExcessAs<obj>().as<objExcessOptional>()
-Assert.onAs<obj>().sub.noExcessAs<objExcessOptional>()
+A.sub.noExcessAs<obj>().as<objExcessOptional>()
+A.onAs<obj>().sub.noExcessAs<objExcessOptional>()
 
 //
 //
@@ -386,159 +386,159 @@ Assert.onAs<obj>().sub.noExcessAs<objExcessOptional>()
 //
 //
 
-Assert.equiv.of(ab)(ab)
-Assert.on(ab).equiv.of(ab)
-Assert.equiv.ofAs<ab>()(ab)
-Assert.onAs<ab>().equiv.of(ab)
-Assert.equiv.ofAs<ab>().as<ab>()
-Assert.onAs(ab).equiv.ofAs<ab>()
+A.equiv.of(ab)(ab)
+A.on(ab).equiv.of(ab)
+A.equiv.ofAs<ab>()(ab)
+A.onAs<ab>().equiv.of(ab)
+A.equiv.ofAs<ab>().as<ab>()
+A.onAs(ab).equiv.ofAs<ab>()
 // @ts-expect-error
-Assert.equiv.ofAs<a>()(b)
-Assert.onAs<a>().equiv.of(b)
+A.equiv.ofAs<a>()(b)
+A.onAs<a>().equiv.of(b)
 // @ts-expect-error
-Assert.equiv.ofAs<a>().as<b>()
-Assert.onAs<a>().equiv.ofAs<b>()
+A.equiv.ofAs<a>().as<b>()
+A.onAs<a>().equiv.ofAs<b>()
 //
 // ━━ awaited.is
 //
-Assert.awaited.equiv.of(a)(Promise.resolve(a))
-Assert.on(Promise.resolve(a)).awaited.equiv.of(a)
-Assert.awaited.equiv.ofAs<a>()(Promise.resolve(a))
-Assert.onAs<Promise<a>>().awaited.equiv.of(a)
-Assert.awaited.equiv.ofAs<a>().as<Promise<a>>()
-Assert.onAs(Promise.resolve(a)).awaited.equiv.ofAs<a>()
+A.awaited.equiv.of(a)(Promise.resolve(a))
+A.on(Promise.resolve(a)).awaited.equiv.of(a)
+A.awaited.equiv.ofAs<a>()(Promise.resolve(a))
+A.onAs<Promise<a>>().awaited.equiv.of(a)
+A.awaited.equiv.ofAs<a>().as<Promise<a>>()
+A.onAs(Promise.resolve(a)).awaited.equiv.ofAs<a>()
 // @ts-expect-error
-Assert.awaited.equiv.ofAs<a>()(Promise.resolve(b))
-Assert.onAs<Promise<a>>().awaited.equiv.of(b)
+A.awaited.equiv.ofAs<a>()(Promise.resolve(b))
+A.onAs<Promise<a>>().awaited.equiv.of(b)
 // @ts-expect-error
-Assert.awaited.equiv.ofAs<a>().as<Promise<b>>()
-Assert.onAs<Promise<a>>().awaited.equiv.ofAs<b>()
+A.awaited.equiv.ofAs<a>().as<Promise<b>>()
+A.onAs<Promise<a>>().awaited.equiv.ofAs<b>()
 //
 // ━━ awaited.array
 //
-Assert.awaited.array.equiv.of(a)(Promise.resolve([a]))
-Assert.on(Promise.resolve([a])).awaited.array.equiv.of(a)
-Assert.awaited.array.equiv.ofAs<a>()(Promise.resolve([a]))
-Assert.onAs<Promise<a[]>>().awaited.array.equiv.of(a)
-Assert.awaited.array.equiv.ofAs<a>().as<Promise<a[]>>()
-Assert.onAs(Promise.resolve([a])).awaited.array.equiv.ofAs<a>()
+A.awaited.array.equiv.of(a)(Promise.resolve([a]))
+A.on(Promise.resolve([a])).awaited.array.equiv.of(a)
+A.awaited.array.equiv.ofAs<a>()(Promise.resolve([a]))
+A.onAs<Promise<a[]>>().awaited.array.equiv.of(a)
+A.awaited.array.equiv.ofAs<a>().as<Promise<a[]>>()
+A.onAs(Promise.resolve([a])).awaited.array.equiv.ofAs<a>()
 // @ts-expect-error
-Assert.awaited.array.equiv.ofAs<a>()(Promise.resolve([b]))
-Assert.onAs<Promise<a[]>>().awaited.array.equiv.of(b)
+A.awaited.array.equiv.ofAs<a>()(Promise.resolve([b]))
+A.onAs<Promise<a[]>>().awaited.array.equiv.of(b)
 // @ts-expect-error
-Assert.awaited.array.equiv.ofAs<a>().as<Promise<b[]>>()
-Assert.onAs<Promise<a[]>>().awaited.array.equiv.ofAs<b>()
+A.awaited.array.equiv.ofAs<a>().as<Promise<b[]>>()
+A.onAs<Promise<a[]>>().awaited.array.equiv.ofAs<b>()
 //
 // ━━ returned.is
 //
-Assert.returned.equiv.of(a)(() => a)
-Assert.on(() => a).returned.equiv.of(a)
-Assert.returned.equiv.ofAs<a>()(() => a)
-Assert.onAs<() => a>().returned.equiv.of(a)
-Assert.returned.equiv.ofAs<a>().as<() => a>()
-Assert.onAs(() => a).returned.equiv.ofAs<a>()
+A.returned.equiv.of(a)(() => a)
+A.on(() => a).returned.equiv.of(a)
+A.returned.equiv.ofAs<a>()(() => a)
+A.onAs<() => a>().returned.equiv.of(a)
+A.returned.equiv.ofAs<a>().as<() => a>()
+A.onAs(() => a).returned.equiv.ofAs<a>()
 // @ts-expect-error
-Assert.returned.equiv.ofAs<a>()(() => b)
-Assert.onAs<() => a>().returned.equiv.of(b)
+A.returned.equiv.ofAs<a>()(() => b)
+A.onAs<() => a>().returned.equiv.of(b)
 // @ts-expect-error
-Assert.returned.equiv.ofAs<a>().as<() => b>()
-Assert.onAs<() => a>().returned.equiv.ofAs<b>()
+A.returned.equiv.ofAs<a>().as<() => b>()
+A.onAs<() => a>().returned.equiv.ofAs<b>()
 //
 // ━━ returned.awaited
 //
-Assert.returned.awaited.equiv.of(a)(() => Promise.resolve(a))
-Assert.on(() => Promise.resolve(a)).returned.awaited.equiv.of(a)
-Assert.returned.awaited.equiv.ofAs<a>()(() => Promise.resolve(a))
-Assert.onAs<() => Promise<a>>().returned.awaited.equiv.of(a)
-Assert.returned.awaited.equiv.ofAs<a>().as<() => Promise<a>>()
-Assert.onAs(() => Promise.resolve(a)).returned.awaited.equiv.ofAs<a>()
+A.returned.awaited.equiv.of(a)(() => Promise.resolve(a))
+A.on(() => Promise.resolve(a)).returned.awaited.equiv.of(a)
+A.returned.awaited.equiv.ofAs<a>()(() => Promise.resolve(a))
+A.onAs<() => Promise<a>>().returned.awaited.equiv.of(a)
+A.returned.awaited.equiv.ofAs<a>().as<() => Promise<a>>()
+A.onAs(() => Promise.resolve(a)).returned.awaited.equiv.ofAs<a>()
 // @ts-expect-error
-Assert.returned.awaited.equiv.ofAs<a>()(() => Promise.resolve(b))
-Assert.onAs<() => Promise<a>>().returned.awaited.equiv.of(b)
+A.returned.awaited.equiv.ofAs<a>()(() => Promise.resolve(b))
+A.onAs<() => Promise<a>>().returned.awaited.equiv.of(b)
 // @ts-expect-error
-Assert.returned.awaited.equiv.ofAs<a>().as<() => Promise<b>>()
-Assert.onAs<() => Promise<a>>().returned.awaited.equiv.ofAs<b>()
+A.returned.awaited.equiv.ofAs<a>().as<() => Promise<b>>()
+A.onAs<() => Promise<a>>().returned.awaited.equiv.ofAs<b>()
 //
 // ━━ returned.array
 //
-Assert.returned.array.equiv.of(a)(() => [a])
-Assert.on(() => [a]).returned.array.equiv.of(a)
-Assert.returned.array.equiv.ofAs<a>()(() => [a])
-Assert.onAs<() => a[]>().returned.array.equiv.of(a)
-Assert.returned.array.equiv.ofAs<a>().as<() => a[]>()
-Assert.onAs(() => [a]).returned.array.equiv.ofAs<a>()
+A.returned.array.equiv.of(a)(() => [a])
+A.on(() => [a]).returned.array.equiv.of(a)
+A.returned.array.equiv.ofAs<a>()(() => [a])
+A.onAs<() => a[]>().returned.array.equiv.of(a)
+A.returned.array.equiv.ofAs<a>().as<() => a[]>()
+A.onAs(() => [a]).returned.array.equiv.ofAs<a>()
 // @ts-expect-error
-Assert.returned.array.equiv.ofAs<a>()(() => [b])
-Assert.onAs<() => a[]>().returned.array.equiv.of(b)
+A.returned.array.equiv.ofAs<a>()(() => [b])
+A.onAs<() => a[]>().returned.array.equiv.of(b)
 // @ts-expect-error
-Assert.returned.array.equiv.ofAs<a>().as<() => b[]>()
-Assert.onAs<() => a[]>().returned.array.equiv.ofAs<b>()
+A.returned.array.equiv.ofAs<a>().as<() => b[]>()
+A.onAs<() => a[]>().returned.array.equiv.ofAs<b>()
 //
 // ━━ array
 //
-Assert.array.equiv.of(a)([a])
-Assert.on([a]).array.equiv.of(a)
-Assert.array.equiv.ofAs<a>()([a])
-Assert.onAs<a[]>().array.equiv.of(a)
-Assert.array.equiv.ofAs<a>().as<a[]>()
-Assert.onAs([a]).array.equiv.ofAs<a>()
+A.array.equiv.of(a)([a])
+A.on([a]).array.equiv.of(a)
+A.array.equiv.ofAs<a>()([a])
+A.onAs<a[]>().array.equiv.of(a)
+A.array.equiv.ofAs<a>().as<a[]>()
+A.onAs([a]).array.equiv.ofAs<a>()
 // @ts-expect-error
-Assert.array.equiv.ofAs<a>()([b])
-Assert.onAs<a[]>().array.equiv.of(b)
+A.array.equiv.ofAs<a>()([b])
+A.onAs<a[]>().array.equiv.of(b)
 // @ts-expect-error
-Assert.array.equiv.ofAs<a>().as<b[]>()
-Assert.onAs<a[]>().array.equiv.ofAs<b>()
+A.array.equiv.ofAs<a>().as<b[]>()
+A.onAs<a[]>().array.equiv.ofAs<b>()
 //
 // ━━ parameter1
 //
-Assert.parameter1.equiv.of(a)((_: a) => b)
-Assert.on((_: a) => b).parameter1.equiv.of(a)
-Assert.parameter1.equiv.ofAs<a>()((_: a) => b)
-Assert.onAs<(_: a) => b>().parameter1.equiv.of(a)
-Assert.parameter1.equiv.ofAs<a>().as<(_: a) => b>()
-Assert.onAs((_: a) => b).parameter1.equiv.ofAs<a>()
+A.parameter1.equiv.of(a)((_: a) => b)
+A.on((_: a) => b).parameter1.equiv.of(a)
+A.parameter1.equiv.ofAs<a>()((_: a) => b)
+A.onAs<(_: a) => b>().parameter1.equiv.of(a)
+A.parameter1.equiv.ofAs<a>().as<(_: a) => b>()
+A.onAs((_: a) => b).parameter1.equiv.ofAs<a>()
 // @ts-expect-error
-Assert.equiv.parameter1.ofAs<a>()((_: b) => a)
-Assert.onAs<(_: a) => b>().parameter1.equiv.of(b)
+A.equiv.parameter1.ofAs<a>()((_: b) => a)
+A.onAs<(_: a) => b>().parameter1.equiv.of(b)
 // @ts-expect-error
-Assert.equiv.parameter1.of<a>().as<(_: b) => a>()
-Assert.onAs<(_: a) => b>().parameter1.equiv.ofAs<b>()
+A.equiv.parameter1.of<a>().as<(_: b) => a>()
+A.onAs<(_: a) => b>().parameter1.equiv.ofAs<b>()
 //
 // ━━ parameters
 //
-Assert.parameters.equiv.of([a, b])((_: a, __: b) => a)
-Assert.on((_: a, __: b) => a).parameters.equiv.of([a, b])
-Assert.parameters.equiv.ofAs<[a, b]>()((_: a, __: b) => a)
-Assert.onAs<(_: a, __: b) => a>().parameters.equiv.of([a, b])
-Assert.parameters.equiv.ofAs<[a, b]>().as<(_: a, __: b) => a>()
-Assert.onAs((_: a, __: b) => a).parameters.equiv.ofAs<[a, b]>()
+A.parameters.equiv.of([a, b])((_: a, __: b) => a)
+A.on((_: a, __: b) => a).parameters.equiv.of([a, b])
+A.parameters.equiv.ofAs<[a, b]>()((_: a, __: b) => a)
+A.onAs<(_: a, __: b) => a>().parameters.equiv.of([a, b])
+A.parameters.equiv.ofAs<[a, b]>().as<(_: a, __: b) => a>()
+A.onAs((_: a, __: b) => a).parameters.equiv.ofAs<[a, b]>()
 // @ts-expect-error
-Assert.equiv.parameters.ofAs<[a, b]>()((_: b, __: a) => a)
-Assert.onAs<(_: a, __: b) => a>().parameters.equiv.of([b, a])
+A.equiv.parameters.ofAs<[a, b]>()((_: b, __: a) => a)
+A.onAs<(_: a, __: b) => a>().parameters.equiv.of([b, a])
 // @ts-expect-error
-Assert.equiv.parameters.of<[a, b]>().as<(_: b, __: a) => a>()
-Assert.onAs<(_: a, __: b) => a>().parameters.equiv.ofAs<[b, a]>()
+A.equiv.parameters.of<[a, b]>().as<(_: b, __: a) => a>()
+A.onAs<(_: a, __: b) => a>().parameters.equiv.ofAs<[b, a]>()
 //
 // ━━ noExcess
 //
-Assert.equiv.noExcess(obj)(obj)
-Assert.on(obj).equiv.noExcess(obj)
-Assert.equiv.noExcessAs<obj>()(obj)
-Assert.onAs<obj>().equiv.noExcess(obj)
-Assert.equiv.noExcessAs<obj>().as<obj>()
-Assert.onAs(obj).equiv.noExcessAs<obj>()
+A.equiv.noExcess(obj)(obj)
+A.on(obj).equiv.noExcess(obj)
+A.equiv.noExcessAs<obj>()(obj)
+A.onAs<obj>().equiv.noExcess(obj)
+A.equiv.noExcessAs<obj>().as<obj>()
+A.onAs(obj).equiv.noExcessAs<obj>()
 // @ts-expect-error
-Assert.equiv.noExcessAs<obj>()(objExcess)
-Assert.onAs<obj>().equiv.noExcess(objExcess)
+A.equiv.noExcessAs<obj>()(objExcess)
+A.onAs<obj>().equiv.noExcess(objExcess)
 // @ts-expect-error
-Assert.equiv.noExcessAs<obj>()(objExcessOptional)
-Assert.onAs<obj>().equiv.noExcess(objExcessOptional)
+A.equiv.noExcessAs<obj>()(objExcessOptional)
+A.onAs<obj>().equiv.noExcess(objExcessOptional)
 // @ts-expect-error
-Assert.equiv.noExcessAs<obj>().as<objExcess>()
-Assert.onAs<obj>().equiv.noExcessAs<objExcess>()
+A.equiv.noExcessAs<obj>().as<objExcess>()
+A.onAs<obj>().equiv.noExcessAs<objExcess>()
 // @ts-expect-error
-Assert.equiv.noExcessAs<obj>().as<objExcessOptional>()
-Assert.onAs<obj>().equiv.noExcessAs<objExcessOptional>()
+A.equiv.noExcessAs<obj>().as<objExcessOptional>()
+A.onAs<obj>().equiv.noExcessAs<objExcessOptional>()
 
 //
 //
@@ -610,51 +610,51 @@ Assert.onAs<obj>().equiv.noExcessAs<objExcessOptional>()
 // ━━━━━━━━━━━━━━ • exact - never
 //
 //
-Assert.exact.never($n)
-Assert.on($n).exact.never()
+A.exact.never($n)
+A.on($n).exact.never()
 // @ts-expect-error
-Assert.exact.never(a)
-Assert.on(a).exact.never()
+A.exact.never(a)
+A.on(a).exact.never()
 // @ts-expect-error
-Assert.exact.of(a)($n)
-Assert.on($n).exact.of(a)
+A.exact.of(a)($n)
+A.on($n).exact.of(a)
 // @ts-expect-error
-Assert.exact.of(a).as<$n>()
-Assert.onAs<$n>().exact.of(a)
+A.exact.of(a).as<$n>()
+A.onAs<$n>().exact.of(a)
 
 //
 //
 // ━━━━━━━━━━━━━━ • exact - any
 //
 //
-Assert.exact.any($a)
-Assert.on($a).exact.any()
+A.exact.any($a)
+A.on($a).exact.any()
 // @ts-expect-error
-Assert.exact.any(a)
-Assert.on(a).exact.any()
+A.exact.any(a)
+A.on(a).exact.any()
 // @ts-expect-error
-Assert.exact.of(a)($a)
-Assert.on($a).exact.of(a)
+A.exact.of(a)($a)
+A.on($a).exact.of(a)
 // @ts-expect-error
-Assert.exact.of(a).as<$a>()
-Assert.onAs<$a>().exact.of(a)
+A.exact.of(a).as<$a>()
+A.onAs<$a>().exact.of(a)
 
 //
 //
 // ━━━━━━━━━━━━━━ • exact - unknown
 //
 //
-Assert.exact.unknown($u)
-Assert.on($u).exact.unknown()
+A.exact.unknown($u)
+A.on($u).exact.unknown()
 // @ts-expect-error
-Assert.exact.unknown(a)
-Assert.on(a).exact.unknown()
+A.exact.unknown(a)
+A.on(a).exact.unknown()
 // @ts-expect-error
-Assert.exact.of(a)($u)
-Assert.on($u).exact.of(a)
+A.exact.of(a)($u)
+A.on($u).exact.of(a)
 // @ts-expect-error
-Assert.exact.of(a).as<$u>()
-Assert.onAs<$u>().exact.of(a)
+A.exact.of(a).as<$u>()
+A.onAs<$u>().exact.of(a)
 
 //
 //
@@ -678,10 +678,22 @@ Assert.onAs<$u>().exact.of(a)
 //
 //
 
-Assert /* default */.exact.of([a]).as<[a]>()
-Assert.setInfer('auto').exact.of([a]).as<[a]>()
-Assert.setInfer('narrow').exact.of([a]).as<readonly [a]>()
-Assert.setInfer('wide').exact.of([a]).as<a[]>()
+const readonlyValue = Ts.as<readonly [string]>()
+type readonlyValue = typeof readonlyValue
+
+/* default */
+A.exact.of([a]).as<[a]>()
+A.exact.of(readonlyValue)(readonlyValue)
+A.exact.of(readonlyValue)([a] as any as [string])
+A.exact.of(readonlyValue).as<[string]>()
+
+A.setInfer('auto').exact.of([a]).as<[a]>()
+A.setInfer('wide').exact.of([a]).as<a[]>()
+
+A.setInfer('narrow').exact.of([a]).as<readonly [a]>()
+A.setInfer('narrow').exact.of(readonlyValue)(readonlyValue)
+A.setInfer('narrow').exact.of(readonlyValue)([a] as any as readonlyValue)
+A.setInfer('narrow').exact.of(readonlyValue).as<readonlyValue>()
 
 //
 //
@@ -700,122 +712,122 @@ Assert.setInfer('wide').exact.of([a]).as<a[]>()
 // Base Relators
 //
 
-type _exact_relation = Assert.Cases<
+type _exact_relation = A.Cases<
   // Base .of matcher
-  Assert.exact.of<string, string>,
-  Assert.exact.of<number, number>,
-  Assert.exact.of<42, 42>,
-  Assert.exact.of<'hello', 'hello'>,
+  A.exact.of<string, string>,
+  A.exact.of<number, number>,
+  A.exact.of<42, 42>,
+  A.exact.of<'hello', 'hello'>,
   // Pre-curried primitives
-  Assert.exact.string<string>,
-  Assert.exact.number<number>,
-  Assert.exact.bigint<bigint>,
-  Assert.exact.boolean<boolean>,
-  Assert.exact.undefined<undefined>,
-  Assert.exact.null<null>,
-  Assert.exact.symbol<symbol>,
-  Assert.exact.unknown<unknown>,
-  Assert.exact.any<any>,
-  Assert.exact.never<never>,
+  A.exact.string<string>,
+  A.exact.number<number>,
+  A.exact.bigint<bigint>,
+  A.exact.boolean<boolean>,
+  A.exact.undefined<undefined>,
+  A.exact.null<null>,
+  A.exact.symbol<symbol>,
+  A.exact.unknown<unknown>,
+  A.exact.any<any>,
+  A.exact.never<never>,
   // Pre-curried built-ins
-  Assert.exact.Date<Date>,
-  Assert.exact.RegExp<RegExp>,
-  Assert.exact.Error<Error>,
-  Assert.exact.Promise<Promise<any>>,
-  Assert.exact.Array<any[]>
+  A.exact.Date<Date>,
+  A.exact.RegExp<RegExp>,
+  A.exact.Error<Error>,
+  A.exact.Promise<Promise<any>>,
+  A.exact.Array<any[]>
 >
 
-type _equiv_relation = Assert.Cases<
+type _equiv_relation = A.Cases<
   // Base .of matcher
-  Assert.equiv.of<string & {}, string>,
-  Assert.equiv.of<1 | 2, 2 | 1>,
+  A.equiv.of<string & {}, string>,
+  A.equiv.of<1 | 2, 2 | 1>,
   // Pre-curried primitives
-  Assert.equiv.string<string>,
-  Assert.equiv.number<number>,
-  Assert.equiv.bigint<bigint>,
-  Assert.equiv.boolean<boolean>,
-  Assert.equiv.undefined<undefined>,
-  Assert.equiv.null<null>,
-  Assert.equiv.unknown<unknown>,
-  Assert.equiv.any<any>,
-  Assert.equiv.never<never>
+  A.equiv.string<string>,
+  A.equiv.number<number>,
+  A.equiv.bigint<bigint>,
+  A.equiv.boolean<boolean>,
+  A.equiv.undefined<undefined>,
+  A.equiv.null<null>,
+  A.equiv.unknown<unknown>,
+  A.equiv.any<any>,
+  A.equiv.never<never>
 >
 
-type _equiv_noExcess_relation = Assert.Cases<
-  Assert.equiv.noExcess<{ id: string }, { id: string }>,
-  Assert.equiv.noExcess<{ a: number } & {}, { a: number }>
+type _equiv_noExcess_relation = A.Cases<
+  A.equiv.noExcess<{ id: string }, { id: string }>,
+  A.equiv.noExcess<{ a: number } & {}, { a: number }>
 >
 
-type _sub_relation = Assert.Cases<
+type _sub_relation = A.Cases<
   // Base .of matcher
-  Assert.sub.of<string, 'hello'>,
-  Assert.sub.of<number, 42>,
-  Assert.sub.of<object, { a: 1 }>,
+  A.sub.of<string, 'hello'>,
+  A.sub.of<number, 42>,
+  A.sub.of<object, { a: 1 }>,
   // Pre-curried primitives
-  Assert.sub.string<'hello'>,
-  Assert.sub.number<42>,
-  Assert.sub.boolean<true>,
-  Assert.sub.undefined<undefined>,
-  Assert.sub.null<null>,
-  Assert.sub.unknown<unknown>,
-  Assert.sub.any<any>,
-  Assert.sub.never<never>
+  A.sub.string<'hello'>,
+  A.sub.number<42>,
+  A.sub.boolean<true>,
+  A.sub.undefined<undefined>,
+  A.sub.null<null>,
+  A.sub.unknown<unknown>,
+  A.sub.any<any>,
+  A.sub.never<never>
 >
 
-type _sub_noExcess_relation = Assert.Cases<
-  Assert.sub.noExcess<{ id: string }, { id: string }>,
-  Assert.sub.noExcess<{ a: number }, { a: 42 }>
+type _sub_noExcess_relation = A.Cases<
+  A.sub.noExcess<{ id: string }, { id: string }>,
+  A.sub.noExcess<{ a: number }, { a: 42 }>
 >
 
 //
 // Extractors
 //
 
-type _awaited_extractor = Assert.Cases<
+type _awaited_extractor = A.Cases<
   // Base .of matcher
-  Assert.awaited.exact.of<number, Promise<number>>,
-  Assert.awaited.exact.of<string, Promise<string>>,
-  Assert.awaited.equiv.of<string & {}, Promise<string>>,
-  Assert.awaited.sub.of<string, Promise<'hello'>>,
+  A.awaited.exact.of<number, Promise<number>>,
+  A.awaited.exact.of<string, Promise<string>>,
+  A.awaited.equiv.of<string & {}, Promise<string>>,
+  A.awaited.sub.of<string, Promise<'hello'>>,
   // Pre-curried primitives
-  Assert.awaited.exact.string<Promise<string>>,
-  Assert.awaited.exact.number<Promise<number>>,
-  Assert.awaited.exact.null<Promise<null>>,
-  Assert.awaited.exact.unknown<Promise<unknown>>,
-  Assert.awaited.exact.any<Promise<any>>,
-  Assert.awaited.exact.never<Promise<never>>,
-  Assert.awaited.sub.string<Promise<'hello'>>,
-  Assert.awaited.sub.number<Promise<42>>
+  A.awaited.exact.string<Promise<string>>,
+  A.awaited.exact.number<Promise<number>>,
+  A.awaited.exact.null<Promise<null>>,
+  A.awaited.exact.unknown<Promise<unknown>>,
+  A.awaited.exact.any<Promise<any>>,
+  A.awaited.exact.never<Promise<never>>,
+  A.awaited.sub.string<Promise<'hello'>>,
+  A.awaited.sub.number<Promise<42>>
 >
 
-type _returned_extractor = Assert.Cases<
+type _returned_extractor = A.Cases<
   // Base .of matcher
-  Assert.returned.exact.of<number, () => number>,
-  Assert.returned.exact.of<string, () => string>,
-  Assert.returned.sub.of<string, () => 'hello'>,
+  A.returned.exact.of<number, () => number>,
+  A.returned.exact.of<string, () => string>,
+  A.returned.sub.of<string, () => 'hello'>,
   // Pre-curried primitives
-  Assert.returned.exact.string<() => string>,
-  Assert.returned.exact.number<() => number>,
-  Assert.returned.exact.null<() => null>,
-  Assert.returned.exact.unknown<() => unknown>,
-  Assert.returned.exact.any<() => any>,
-  Assert.returned.exact.never<() => never>,
-  Assert.returned.sub.string<() => 'hello'>
+  A.returned.exact.string<() => string>,
+  A.returned.exact.number<() => number>,
+  A.returned.exact.null<() => null>,
+  A.returned.exact.unknown<() => unknown>,
+  A.returned.exact.any<() => any>,
+  A.returned.exact.never<() => never>,
+  A.returned.sub.string<() => 'hello'>
 >
 
-type _array_extractor = Assert.Cases<
+type _array_extractor = A.Cases<
   // Base .of matcher
-  Assert.array.exact.of<number, number[]>,
-  Assert.array.exact.of<string, string[]>,
-  Assert.array.sub.of<string, 'hello'[]>,
+  A.array.exact.of<number, number[]>,
+  A.array.exact.of<string, string[]>,
+  A.array.sub.of<string, 'hello'[]>,
   // Pre-curried primitives
-  Assert.array.exact.string<string[]>,
-  Assert.array.exact.number<number[]>,
-  Assert.array.exact.null<null[]>,
-  Assert.array.exact.unknown<unknown[]>,
-  Assert.array.exact.any<any[]>,
-  Assert.array.exact.never<never[]>,
-  Assert.array.sub.string<'hello'[]>
+  A.array.exact.string<string[]>,
+  A.array.exact.number<number[]>,
+  A.array.exact.null<null[]>,
+  A.array.exact.unknown<unknown[]>,
+  A.array.exact.any<any[]>,
+  A.array.exact.never<never[]>,
+  A.array.sub.string<'hello'[]>
 >
 
 //
@@ -823,105 +835,105 @@ type _array_extractor = Assert.Cases<
 //
 
 // @ts-expect-error - number not assignable to string
-type _error_1 = Assert.Case<Assert.exact<string, number>>
+type _error_1 = A.Case<A.exact<string, number>>
 // @ts-expect-error - 42 not exact match for string
-type _error_2 = Assert.Case<Assert.exact.string<42>>
+type _error_2 = A.Case<A.exact.string<42>>
 // @ts-expect-error - null not exact match for number
-type _error_3 = Assert.Case<Assert.exact.null<42>>
+type _error_3 = A.Case<A.exact.null<42>>
 // @ts-expect-error - Promise<string> not Promise<number>
-type _error_4 = Assert.Case<Assert.awaited.exact.number<Promise<string>>>
+type _error_4 = A.Case<A.awaited.exact.number<Promise<string>>>
 // @ts-expect-error - () => string not () => number
-type _error_5 = Assert.Case<Assert.returned.exact.number<() => string>>
+type _error_5 = A.Case<A.returned.exact.number<() => string>>
 // @ts-expect-error - string[] not number[]
-type _error_6 = Assert.Case<Assert.array.exact.number<string[]>>
+type _error_6 = A.Case<A.array.exact.number<string[]>>
 // @ts-expect-error - string not exact match for unknown
-type _error_7 = Assert.Case<Assert.exact.unknown<string>>
+type _error_7 = A.Case<A.exact.unknown<string>>
 // @ts-expect-error - unknown not exact match for any
-type _error_8 = Assert.Case<Assert.exact.any<unknown>>
+type _error_8 = A.Case<A.exact.any<unknown>>
 // @ts-expect-error - string not exact match for never
-type _error_9 = Assert.Case<Assert.exact.never<string>>
+type _error_9 = A.Case<A.exact.never<string>>
 
 // any/never actuals should be caught by guards (type-level)
 // @ts-expect-error - any not assignable to literal 3
-type _guard_any = Assert.Case<Assert.exact<3, any>>
+type _guard_any = A.Case<A.exact<3, any>>
 // @ts-expect-error - never not assignable to literal 3
-type _guard_never = Assert.Case<Assert.exact<3, never>>
+type _guard_never = A.Case<A.exact<3, never>>
 
 //
 // Coverage: All Relators with All Matchers
 //
 
-type _coverage_exact = Assert.Cases<
+type _coverage_exact = A.Cases<
   // All primitives
-  Assert.exact.string<string>,
-  Assert.exact.number<number>,
-  Assert.exact.bigint<bigint>,
-  Assert.exact.boolean<boolean>,
-  Assert.exact.undefined<undefined>,
-  Assert.exact.null<null>,
-  Assert.exact.symbol<symbol>,
+  A.exact.string<string>,
+  A.exact.number<number>,
+  A.exact.bigint<bigint>,
+  A.exact.boolean<boolean>,
+  A.exact.undefined<undefined>,
+  A.exact.null<null>,
+  A.exact.symbol<symbol>,
   // All built-ins
-  Assert.exact.Date<Date>,
-  Assert.exact.RegExp<RegExp>,
-  Assert.exact.Error<Error>,
-  Assert.exact.Promise<Promise<any>>,
-  Assert.exact.Array<any[]>
+  A.exact.Date<Date>,
+  A.exact.RegExp<RegExp>,
+  A.exact.Error<Error>,
+  A.exact.Promise<Promise<any>>,
+  A.exact.Array<any[]>
 >
 
-type _coverage_equiv = Assert.Cases<
+type _coverage_equiv = A.Cases<
   // All primitives
-  Assert.equiv.string<string>,
-  Assert.equiv.number<number>,
-  Assert.equiv.bigint<bigint>,
-  Assert.equiv.boolean<boolean>,
-  Assert.equiv.undefined<undefined>,
-  Assert.equiv.null<null>,
-  Assert.equiv.symbol<symbol>,
+  A.equiv.string<string>,
+  A.equiv.number<number>,
+  A.equiv.bigint<bigint>,
+  A.equiv.boolean<boolean>,
+  A.equiv.undefined<undefined>,
+  A.equiv.null<null>,
+  A.equiv.symbol<symbol>,
   // All built-ins
-  Assert.equiv.Date<Date>,
-  Assert.equiv.RegExp<RegExp>,
-  Assert.equiv.Error<Error>,
-  Assert.equiv.Promise<Promise<any>>,
-  Assert.equiv.Array<any[]>
+  A.equiv.Date<Date>,
+  A.equiv.RegExp<RegExp>,
+  A.equiv.Error<Error>,
+  A.equiv.Promise<Promise<any>>,
+  A.equiv.Array<any[]>
 >
 
-type _coverage_sub = Assert.Cases<
+type _coverage_sub = A.Cases<
   // All primitives
-  Assert.sub.string<string>,
-  Assert.sub.number<number>,
-  Assert.sub.bigint<bigint>,
-  Assert.sub.boolean<boolean>,
-  Assert.sub.undefined<undefined>,
-  Assert.sub.null<null>,
-  Assert.sub.symbol<symbol>,
+  A.sub.string<string>,
+  A.sub.number<number>,
+  A.sub.bigint<bigint>,
+  A.sub.boolean<boolean>,
+  A.sub.undefined<undefined>,
+  A.sub.null<null>,
+  A.sub.symbol<symbol>,
   // All built-ins
-  Assert.sub.Date<Date>,
-  Assert.sub.RegExp<RegExp>,
-  Assert.sub.Error<Error>,
-  Assert.sub.Promise<Promise<any>>,
-  Assert.sub.Array<any[]>
+  A.sub.Date<Date>,
+  A.sub.RegExp<RegExp>,
+  A.sub.Error<Error>,
+  A.sub.Promise<Promise<any>>,
+  A.sub.Array<any[]>
 >
 
 //
 // Coverage: All Extractors with All Relators
 //
 
-type _awaited_all_relators = Assert.Cases<
-  Assert.awaited.exact.string<Promise<string>>,
-  Assert.awaited.equiv.string<Promise<string>>,
-  Assert.awaited.sub.string<Promise<'hello'>>
+type _awaited_all_relators = A.Cases<
+  A.awaited.exact.string<Promise<string>>,
+  A.awaited.equiv.string<Promise<string>>,
+  A.awaited.sub.string<Promise<'hello'>>
 >
 
-type _returned_all_relators = Assert.Cases<
-  Assert.returned.exact.number<() => number>,
-  Assert.returned.equiv.number<() => number>,
-  Assert.returned.sub.number<() => 42>
+type _returned_all_relators = A.Cases<
+  A.returned.exact.number<() => number>,
+  A.returned.equiv.number<() => number>,
+  A.returned.sub.number<() => 42>
 >
 
-type _array_all_relators = Assert.Cases<
-  Assert.array.exact.boolean<boolean[]>,
-  Assert.array.equiv.boolean<boolean[]>,
-  Assert.array.sub.boolean<true[]>
+type _array_all_relators = A.Cases<
+  A.array.exact.boolean<boolean[]>,
+  A.array.equiv.boolean<boolean[]>,
+  A.array.sub.boolean<true[]>
 >
 
 //
@@ -954,14 +966,14 @@ type AllExtractors =
 
 // dprint-ignore
 type _extractor_availability = [
-  Assert.exact.of<BaseKeys | 'awaited',                                                                                                   keyof ReturnType<typeof Assert.on<Promise<number>>>>,                           // Promise - only awaited available
-  Assert.exact.of<BaseKeys | 'returned' | 'parameters' | 'parameter1' | 'parameter2' | 'parameter3' | 'parameter4' | 'parameter5',       keyof ReturnType<typeof Assert.on<() => number>>>,                              // Function - function extractors only
-  Assert.exact.of<BaseKeys | 'array',                                                                                                     keyof ReturnType<typeof Assert.on<number[]>>>,                                   // Array - only array available
-  Assert.exact.of<BaseKeys,                                                                                                               keyof ReturnType<typeof Assert.on<string>>>,                                     // Primitives - no extractors, only base keys
-  Assert.exact.of<BaseKeys | 'awaited',                                                                                                   keyof ReturnType<typeof Assert.on<Promise<number[]>>>>,                          // Chaining - Promise<Array> before awaited
-  Assert.exact.of<BaseKeys | 'array',                                                                                                     keyof ReturnType<typeof Assert.on<Promise<number[]>>>['awaited']>,               // Chaining - Promise<Array> after awaited
-  Assert.exact.of<BaseKeys | 'awaited',                                                                                                   keyof ReturnType<typeof Assert.on<Promise<() => number>>>>,                      // Chaining - Promise<Function> before awaited
-  Assert.exact.of<BaseKeys | 'returned' | 'parameters' | 'parameter1' | 'parameter2' | 'parameter3' | 'parameter4' | 'parameter5',       keyof ReturnType<typeof Assert.on<Promise<() => number>>>['awaited']>,           // Chaining - Promise<Function> after awaited
-  Assert.exact.of<BaseKeys | AllExtractors,                                                                                               keyof ReturnType<typeof Assert.on<any>>>,                                        // any - all extractors available
-  Assert.exact.of<BaseKeys | AllExtractors,                                                                                               keyof ReturnType<typeof Assert.on<unknown>>>,                                    // unknown - all extractors available
+  A.exact.of<BaseKeys | 'awaited',                                                                                                   keyof ReturnType<typeof A.on<Promise<number>>>>,                           // Promise - only awaited available
+  A.exact.of<BaseKeys | 'returned' | 'parameters' | 'parameter1' | 'parameter2' | 'parameter3' | 'parameter4' | 'parameter5',       keyof ReturnType<typeof A.on<() => number>>>,                              // Function - function extractors only
+  A.exact.of<BaseKeys | 'array',                                                                                                     keyof ReturnType<typeof A.on<number[]>>>,                                   // Array - only array available
+  A.exact.of<BaseKeys,                                                                                                               keyof ReturnType<typeof A.on<string>>>,                                     // Primitives - no extractors, only base keys
+  A.exact.of<BaseKeys | 'awaited',                                                                                                   keyof ReturnType<typeof A.on<Promise<number[]>>>>,                          // Chaining - Promise<Array> before awaited
+  A.exact.of<BaseKeys | 'array',                                                                                                     keyof ReturnType<typeof A.on<Promise<number[]>>>['awaited']>,               // Chaining - Promise<Array> after awaited
+  A.exact.of<BaseKeys | 'awaited',                                                                                                   keyof ReturnType<typeof A.on<Promise<() => number>>>>,                      // Chaining - Promise<Function> before awaited
+  A.exact.of<BaseKeys | 'returned' | 'parameters' | 'parameter1' | 'parameter2' | 'parameter3' | 'parameter4' | 'parameter5',       keyof ReturnType<typeof A.on<Promise<() => number>>>['awaited']>,           // Chaining - Promise<Function> after awaited
+  A.exact.of<BaseKeys | AllExtractors,                                                                                               keyof ReturnType<typeof A.on<any>>>,                                        // any - all extractors available
+  A.exact.of<BaseKeys | AllExtractors,                                                                                               keyof ReturnType<typeof A.on<unknown>>>,                                    // unknown - all extractors available
 ]
