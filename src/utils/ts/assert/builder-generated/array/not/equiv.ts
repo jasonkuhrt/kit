@@ -1,6 +1,6 @@
 import type * as Kind from '../../../../kind.js'
-import { runtime } from '../../../builder/runtime.js'
 import type { ArrayElement } from '../../../../path.js'
+import { builder } from '../../../builder-singleton.js'
 import type { EquivKind } from '../../../kinds/relators.js'
 
 /**
@@ -27,7 +27,7 @@ import type { EquivKind } from '../../../kinds/relators.js'
  * ```
  */
 type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const of_ = runtime.array.not.equiv.of
+const of_ = builder.array.not.equiv.of
 
 /**
  * Pre-curried matcher for string.
@@ -43,7 +43,7 @@ const of_ = runtime.array.not.equiv.of
  * ```
  */
 type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const string_ = runtime.array.not.equiv.string
+const string_ = builder.array.not.equiv.string
 
 /**
  * Pre-curried matcher for number.
@@ -59,7 +59,7 @@ const string_ = runtime.array.not.equiv.string
  * ```
  */
 type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const number_ = runtime.array.not.equiv.number
+const number_ = builder.array.not.equiv.number
 
 /**
  * Pre-curried matcher for bigint.
@@ -75,7 +75,7 @@ const number_ = runtime.array.not.equiv.number
  * ```
  */
 type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const bigint_ = runtime.array.not.equiv.bigint
+const bigint_ = builder.array.not.equiv.bigint
 
 /**
  * Pre-curried matcher for boolean.
@@ -91,7 +91,7 @@ const bigint_ = runtime.array.not.equiv.bigint
  * ```
  */
 type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const boolean_ = runtime.array.not.equiv.boolean
+const boolean_ = builder.array.not.equiv.boolean
 
 /**
  * Pre-curried matcher for undefined.
@@ -107,7 +107,7 @@ const boolean_ = runtime.array.not.equiv.boolean
  * ```
  */
 type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const undefined_ = runtime.array.not.equiv.undefined
+const undefined_ = builder.array.not.equiv.undefined
 
 /**
  * Pre-curried matcher for null.
@@ -123,7 +123,7 @@ const undefined_ = runtime.array.not.equiv.undefined
  * ```
  */
 type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const null_ = runtime.array.not.equiv.null
+const null_ = builder.array.not.equiv.null
 
 /**
  * Pre-curried matcher for symbol.
@@ -139,7 +139,7 @@ const null_ = runtime.array.not.equiv.null
  * ```
  */
 type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const symbol_ = runtime.array.not.equiv.symbol
+const symbol_ = builder.array.not.equiv.symbol
 
 /**
  * Pre-curried matcher for Date.
@@ -155,7 +155,7 @@ const symbol_ = runtime.array.not.equiv.symbol
  * ```
  */
 type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const Date_ = runtime.array.not.equiv.Date
+const Date_ = builder.array.not.equiv.Date
 
 /**
  * Pre-curried matcher for RegExp.
@@ -171,7 +171,7 @@ const Date_ = runtime.array.not.equiv.Date
  * ```
  */
 type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const RegExp_ = runtime.array.not.equiv.RegExp
+const RegExp_ = builder.array.not.equiv.RegExp
 
 /**
  * Pre-curried matcher for Error.
@@ -187,39 +187,7 @@ const RegExp_ = runtime.array.not.equiv.RegExp
  * ```
  */
 type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const Error_ = runtime.array.not.equiv.Error
-
-/**
- * Pre-curried matcher for Promise<any>.
- * Extraction chain: T[] → T
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.array.equiv.Promise<Promise<any>[]>
- *
- * // ✗ Fail
- * type _ = Assert.array.equiv.Promise<string[]>
- * ```
- */
-type Promise_<$Actual> = Kind.Apply<EquivKind, [Promise<any>, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const Promise_ = runtime.array.not.equiv.Promise
-
-/**
- * Pre-curried matcher for any[].
- * Extraction chain: T[] → T
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.array.equiv.Array<any[][]>
- *
- * // ✗ Fail
- * type _ = Assert.array.equiv.Array<string[]>
- * ```
- */
-type Array_<$Actual> = Kind.Apply<EquivKind, [any[], Kind.Apply<ArrayElement, [$Actual]>, true]>
-const Array_ = runtime.array.not.equiv.Array
+const Error_ = builder.array.not.equiv.Error
 
 /**
  * Pre-curried matcher for unknown.
@@ -235,7 +203,7 @@ const Array_ = runtime.array.not.equiv.Array
  * ```
  */
 type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const unknown_ = runtime.array.not.equiv.unknown
+const unknown_ = builder.array.not.equiv.unknown
 
 /**
  * Pre-curried matcher for any.
@@ -251,7 +219,7 @@ const unknown_ = runtime.array.not.equiv.unknown
  * ```
  */
 type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const any_ = runtime.array.not.equiv.any
+const any_ = builder.array.not.equiv.any
 
 /**
  * Pre-curried matcher for never.
@@ -267,13 +235,12 @@ const any_ = runtime.array.not.equiv.any
  * ```
  */
 type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<ArrayElement, [$Actual]>, true]>
-const never_ = runtime.array.not.equiv.never
+const never_ = builder.array.not.equiv.never
 
-const ofAs_ = runtime.array.not.equiv.ofAs
+const ofAs_ = <$Type>() => builder.array.not.equiv.ofAs<$Type>()
 
 export {
   any_ as any,
-  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
@@ -283,7 +250,6 @@ export {
   number_ as number,
   of_ as of,
   ofAs_ as ofAs,
-  Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,

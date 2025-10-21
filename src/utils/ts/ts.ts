@@ -457,6 +457,73 @@ export type Writeable<$Object> = {
 }
 
 /**
+ * Matches any primitive value type.
+ *
+ * Primitive values are the basic building blocks of JavaScript that are not objects.
+ * This includes all value types that are not Objects, Functions, or Arrays.
+ *
+ * @example
+ * ```ts
+ * type T1 = Primitive extends string ? true : false        // true
+ * type T2 = Primitive extends { x: number } ? true : false // false
+ *
+ * // Use in conditional types
+ * type StripPrimitives<T> = T extends Primitive ? never : T
+ * ```
+ *
+ * @category Type Utilities
+ */
+export type Primitive = null | undefined | string | number | boolean | symbol | bigint
+
+/**
+ * Recursively make all properties writable (removes readonly modifiers deeply).
+ *
+ * Handles functions, primitives, built-ins, and branded types correctly by passing them through.
+ * Only recursively processes plain objects and tuples/arrays.
+ *
+ * Unlike type-fest's WritableDeep, this implementation properly handles function types
+ * during TypeScript inference, preventing inference failures that result in `unknown`.
+ *
+ * Built-in types (primitives, Date, RegExp, etc.) are checked FIRST to handle branded types
+ * like `number & { [Brand]: true }`, which extend both `number` and `object`.
+ *
+ * @template $T - The type to recursively make writable
+ *
+ * @example
+ * ```ts
+ * // Primitives and built-ins pass through
+ * type N = WritableDeep<number>  // number
+ * type D = WritableDeep<Date>    // Date
+ *
+ * // Branded types pass through (checked before object)
+ * type Branded = number & { [brand]: true }
+ * type Result = WritableDeep<Branded>  // number & { [brand]: true }
+ *
+ * // Functions pass through unchanged
+ * type Fn = (x: readonly string[]) => void
+ * type Result2 = WritableDeep<Fn>  // (x: readonly string[]) => void
+ *
+ * // Objects are recursively processed
+ * type Obj = { readonly a: { readonly b: number } }
+ * type Result3 = WritableDeep<Obj>  // { a: { b: number } }
+ *
+ * // Arrays/tuples are recursively processed
+ * type Arr = readonly [readonly string[], readonly number[]]
+ * type Result4 = WritableDeep<Arr>  // [string[], number[]]
+ * ```
+ *
+ * @category Type Utilities
+ */
+// dprint-ignore
+export type WritableDeep<$T> =
+  // Built-ins checked FIRST - handles branded types like `number & { [Brand]: true }`
+  $T extends Primitive | void | Date | RegExp ? $T
+    : $T extends (...args: any[]) => any ? $T  // Functions pass through
+    : $T extends readonly any[] ? { -readonly [i in keyof $T]: WritableDeep<$T[i]> }  // Arrays/tuples
+    : $T extends object ? { -readonly [k in keyof $T]: WritableDeep<$T[k]> }  // Objects
+    : $T  // Fallback (should not be reached)
+
+/**
  * @deprecated - Commented out 2025-01-07
  *
  * This utility was too strict - requires BIDIRECTIONAL extends, which rejects
@@ -494,6 +561,24 @@ export type Writeable<$Object> = {
 export type IfExtendsElse<$Type, $Extends, $Then, $Else> = $Type extends $Extends ? $Then : $Else
 
 export type IsNever<$Type> = [$Type] extends [never] ? true : false
+
+/**
+ * Convert a boolean type to a string literal 'true' or 'false'.
+ * Useful for lookup table indexing.
+ *
+ * @example
+ * ```ts
+ * type T1 = BooleanCase<true>   // 'true'
+ * type T2 = BooleanCase<false>  // 'false'
+ *
+ * // Using in lookup tables:
+ * type Result = {
+ *   true: 'yes'
+ *   false: 'no'
+ * }[BooleanCase<SomeCheck<T>>]
+ * ```
+ */
+export type BooleanCase<$T extends boolean> = $T extends true ? 'true' : 'false'
 
 /**
  * Intersection that ignores never and any.
@@ -625,9 +710,25 @@ export namespace SENTINEL {
   export type Empty = { readonly __kit_ts_sentinel_empty__: unique symbol }
 
   /**
+   * Check if a type is never or any.
+   * These are real types, not sentinels.
+   *
+   * @example
+   * ```ts
+   * type T1 = SENTINEL.IsNeverOrAny<never>  // true
+   * type T2 = SENTINEL.IsNeverOrAny<any>    // true
+   * type T3 = SENTINEL.IsNeverOrAny<string> // false
+   * ```
+   */
+  export type IsNeverOrAny<T> = [IsNever<T>] extends [true] ? true
+    : [IsAny<T>] extends [true] ? true
+    : false
+
+  /**
    * Check if a type is the Empty sentinel.
    *
    * Returns `true` if the type is `SENTINEL.Empty`, `false` otherwise.
+   * Returns `false` for never/any since they are real types, not sentinels.
    * Uses tuple wrapping to prevent distributive conditional behavior.
    *
    * @example
@@ -635,9 +736,50 @@ export namespace SENTINEL {
    * type T1 = SENTINEL.IsEmpty<SENTINEL.Empty>  // true
    * type T2 = SENTINEL.IsEmpty<string>          // false
    * type T3 = SENTINEL.IsEmpty<unknown>         // false
+   * type T4 = SENTINEL.IsEmpty<never>           // false (never is a real type)
+   * type T5 = SENTINEL.IsEmpty<any>             // false (any is a real type)
    * ```
    */
-  export type IsEmpty<T> = [T] extends [Empty] ? true : false
+  export type IsEmpty<T> = [IsNeverOrAny<T>] extends [true] ? false // never/any are NOT empty
+    : [T] extends [Empty] ? true // Only Empty is empty
+    : false
+
+  /**
+   * Convert SENTINEL.Is check to 'true' or 'false' string literal.
+   * Shorthand for BooleanCase<SENTINEL.Is<T>>.
+   *
+   * @example
+   * ```ts
+   * type T1 = SENTINEL.CaseIs<SENTINEL.Empty>  // 'true'
+   * type T2 = SENTINEL.CaseIs<string>          // 'false'
+   *
+   * // Using in lookup tables:
+   * type Result = {
+   *   true: 'sentinel'
+   *   false: 'not-sentinel'
+   * }[SENTINEL.CaseIs<T>]
+   * ```
+   */
+  export type CaseIs<T> = BooleanCase<Is<T>>
+
+  /**
+   * Convert SENTINEL.IsEmpty check to 'true' or 'false' string literal.
+   * Shorthand for BooleanCase<SENTINEL.IsEmpty<T>>.
+   *
+   * @example
+   * ```ts
+   * type T1 = SENTINEL.CaseIsEmpty<SENTINEL.Empty>  // 'true'
+   * type T2 = SENTINEL.CaseIsEmpty<string>          // 'false'
+   * type T3 = SENTINEL.CaseIsEmpty<never>           // 'false'
+   *
+   * // Using in lookup tables:
+   * type Result = {
+   *   true: 'empty'
+   *   false: 'not-empty'
+   * }[SENTINEL.CaseIsEmpty<T>]
+   * ```
+   */
+  export type CaseIsEmpty<T> = BooleanCase<IsEmpty<T>>
 }
 
 // Export relation utilities

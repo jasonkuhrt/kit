@@ -1,6 +1,6 @@
 import type * as Kind from '../../../kind.js'
-import { runtime } from '../../builder/runtime.js'
 import type { ArrayElement } from '../../../path.js'
+import { builder } from '../../builder-singleton.js'
 import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
 
 /**
@@ -27,7 +27,7 @@ import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
  * ```
  */
 type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<ArrayElement, [$Actual]>]>
-const of_ = runtime.array.sub.of
+const of_ = builder.array.sub.of
 
 /**
  * Pre-curried matcher for string.
@@ -43,7 +43,7 @@ const of_ = runtime.array.sub.of
  * ```
  */
 type string_<$Actual> = Kind.Apply<SubKind, [string, Kind.Apply<ArrayElement, [$Actual]>]>
-const string_ = runtime.array.sub.string
+const string_ = builder.array.sub.string
 
 /**
  * Pre-curried matcher for number.
@@ -59,7 +59,7 @@ const string_ = runtime.array.sub.string
  * ```
  */
 type number_<$Actual> = Kind.Apply<SubKind, [number, Kind.Apply<ArrayElement, [$Actual]>]>
-const number_ = runtime.array.sub.number
+const number_ = builder.array.sub.number
 
 /**
  * Pre-curried matcher for bigint.
@@ -75,7 +75,7 @@ const number_ = runtime.array.sub.number
  * ```
  */
 type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, Kind.Apply<ArrayElement, [$Actual]>]>
-const bigint_ = runtime.array.sub.bigint
+const bigint_ = builder.array.sub.bigint
 
 /**
  * Pre-curried matcher for boolean.
@@ -91,7 +91,7 @@ const bigint_ = runtime.array.sub.bigint
  * ```
  */
 type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, Kind.Apply<ArrayElement, [$Actual]>]>
-const boolean_ = runtime.array.sub.boolean
+const boolean_ = builder.array.sub.boolean
 
 /**
  * Pre-curried matcher for undefined.
@@ -107,7 +107,7 @@ const boolean_ = runtime.array.sub.boolean
  * ```
  */
 type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, Kind.Apply<ArrayElement, [$Actual]>]>
-const undefined_ = runtime.array.sub.undefined
+const undefined_ = builder.array.sub.undefined
 
 /**
  * Pre-curried matcher for null.
@@ -123,7 +123,7 @@ const undefined_ = runtime.array.sub.undefined
  * ```
  */
 type null_<$Actual> = Kind.Apply<SubKind, [null, Kind.Apply<ArrayElement, [$Actual]>]>
-const null_ = runtime.array.sub.null
+const null_ = builder.array.sub.null
 
 /**
  * Pre-curried matcher for symbol.
@@ -139,7 +139,7 @@ const null_ = runtime.array.sub.null
  * ```
  */
 type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, Kind.Apply<ArrayElement, [$Actual]>]>
-const symbol_ = runtime.array.sub.symbol
+const symbol_ = builder.array.sub.symbol
 
 /**
  * Pre-curried matcher for Date.
@@ -155,7 +155,7 @@ const symbol_ = runtime.array.sub.symbol
  * ```
  */
 type Date_<$Actual> = Kind.Apply<SubKind, [Date, Kind.Apply<ArrayElement, [$Actual]>]>
-const Date_ = runtime.array.sub.Date
+const Date_ = builder.array.sub.Date
 
 /**
  * Pre-curried matcher for RegExp.
@@ -171,7 +171,7 @@ const Date_ = runtime.array.sub.Date
  * ```
  */
 type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, Kind.Apply<ArrayElement, [$Actual]>]>
-const RegExp_ = runtime.array.sub.RegExp
+const RegExp_ = builder.array.sub.RegExp
 
 /**
  * Pre-curried matcher for Error.
@@ -187,39 +187,7 @@ const RegExp_ = runtime.array.sub.RegExp
  * ```
  */
 type Error_<$Actual> = Kind.Apply<SubKind, [Error, Kind.Apply<ArrayElement, [$Actual]>]>
-const Error_ = runtime.array.sub.Error
-
-/**
- * Pre-curried matcher for Promise<any>.
- * Extraction chain: T[] → T
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.array.sub.Promise<Promise<any>[]>
- *
- * // ✗ Fail
- * type _ = Assert.array.sub.Promise<string[]>
- * ```
- */
-type Promise_<$Actual> = Kind.Apply<SubKind, [Promise<any>, Kind.Apply<ArrayElement, [$Actual]>]>
-const Promise_ = runtime.array.sub.Promise
-
-/**
- * Pre-curried matcher for any[].
- * Extraction chain: T[] → T
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.array.sub.Array<any[][]>
- *
- * // ✗ Fail
- * type _ = Assert.array.sub.Array<string[]>
- * ```
- */
-type Array_<$Actual> = Kind.Apply<SubKind, [any[], Kind.Apply<ArrayElement, [$Actual]>]>
-const Array_ = runtime.array.sub.Array
+const Error_ = builder.array.sub.Error
 
 /**
  * Pre-curried matcher for unknown.
@@ -235,7 +203,7 @@ const Array_ = runtime.array.sub.Array
  * ```
  */
 type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<ArrayElement, [$Actual]>]>
-const unknown_ = runtime.array.sub.unknown
+const unknown_ = builder.array.sub.unknown
 
 /**
  * Pre-curried matcher for any.
@@ -251,7 +219,7 @@ const unknown_ = runtime.array.sub.unknown
  * ```
  */
 type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<ArrayElement, [$Actual]>]>
-const any_ = runtime.array.sub.any
+const any_ = builder.array.sub.any
 
 /**
  * Pre-curried matcher for never.
@@ -267,20 +235,19 @@ const any_ = runtime.array.sub.any
  * ```
  */
 type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<ArrayElement, [$Actual]>]>
-const never_ = runtime.array.sub.never
+const never_ = builder.array.sub.never
 
-const ofAs_ = runtime.array.sub.ofAs
+const ofAs_ = <$Type>() => builder.array.sub.ofAs<$Type>()
 /**
  * No-excess variant of sub relation.
  * Checks that actual has no excess properties beyond expected.
  */
 type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, Kind.Apply<ArrayElement, [$Actual]>]>
-const noExcess_ = runtime.array.sub.noExcess
-const noExcessAs_ = runtime.array.sub.noExcessAs
+const noExcess_ = builder.array.sub.noExcess
+const noExcessAs_ = <$Type>() => builder.array.sub.noExcessAs<$Type>()
 
 export {
   any_ as any,
-  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
@@ -292,7 +259,6 @@ export {
   number_ as number,
   of_ as of,
   ofAs_ as ofAs,
-  Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,

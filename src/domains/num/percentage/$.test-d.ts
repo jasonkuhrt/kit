@@ -24,9 +24,9 @@ test('Type narrowing works correctly with isPercentage predicate', () => {
 
   // Predicate narrows to Percentage type
   if (isPercentage(value)) {
-    Assert.sub.ofAs<Percentage>()(value)
+    Assert.sub.ofAs<Percentage>().on(value)
     // Percentage is also InRange<0, 1>
-    Assert.sub.ofAs<InRange<0, 1>>()(value)
+    Assert.sub.ofAs<InRange<0, 1>>().on(value)
   }
 
   // Runtime check confirms the relationship
@@ -44,27 +44,27 @@ test('Type narrowing works correctly with isPercentage predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic percentage constructor
   const pct1 = percentage(0.5)
-  Assert.exact.ofAs<Percentage>()(pct1)
+  Assert.exact.ofAs<Percentage>().on(pct1)
 
   // Edge cases
   const pct2 = percentage(0)
-  Assert.exact.ofAs<Percentage>()(pct2)
+  Assert.exact.ofAs<Percentage>().on(pct2)
 
   const pct3 = percentage(1)
-  Assert.exact.ofAs<Percentage>()(pct3)
+  Assert.exact.ofAs<Percentage>().on(pct3)
 
   // Try constructor
   const try1 = tryPercentage(0.75)
-  Assert.exact.ofAs<Percentage | null>()(try1)
+  Assert.exact.ofAs<Percentage | null>().on(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Assert.exact.ofAs<Percentage>()(try1)
+    Assert.exact.ofAs<Percentage>().on(try1)
   }
 
   // From percent conversion
   const pct4 = fromPercent(50) // 50% -> 0.5
-  Assert.exact.ofAs<Percentage>()(pct4)
+  Assert.exact.ofAs<Percentage>().on(pct4)
 })
 
 // === Type Relationships ===
@@ -74,7 +74,7 @@ test('Percentage has correct relationship with InRange<0, 1>', () => {
 
   // Percentage can be assigned to InRange<0, 1>
   const range: InRange<0, 1> = pct
-  Assert.sub.ofAs<InRange<0, 1>>()(range)
+  Assert.sub.ofAs<InRange<0, 1>>().on(range)
 
   // But InRange<0, 1> cannot be directly assigned to Percentage
   const _rangeValue = {} as InRange<0, 1>
@@ -89,18 +89,18 @@ test('Conversion operations have correct types', () => {
 
   // toPercent returns plain number
   const percent = toPercent(pct)
-  Assert.exact.ofAs<number>()(percent)
+  Assert.exact.ofAs<number>().on(percent)
 
   // fromPercent returns Percentage
   const fromPct = fromPercent(75)
-  Assert.exact.ofAs<Percentage>()(fromPct)
+  Assert.exact.ofAs<Percentage>().on(fromPct)
 
   // clampToPercentage always returns Percentage
   const clamped1 = clampToPercentage(1.5)
-  Assert.exact.ofAs<Percentage>()(clamped1)
+  Assert.exact.ofAs<Percentage>().on(clamped1)
 
   const clamped2 = clampToPercentage(-0.5)
-  Assert.exact.ofAs<Percentage>()(clamped2)
+  Assert.exact.ofAs<Percentage>().on(clamped2)
 })
 
 // === Type-Level Only Tests ===

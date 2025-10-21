@@ -21,6 +21,7 @@ interface AssertionKind extends Kind.Kind {}
  */
 // dprint-ignore
 export interface ExactKind extends AssertionKind {
+  name: 'exact'
   expectationConstraint: unknown
   parameters: [$Expected: unknown, $Actual: unknown, $Negated?: boolean]
   return:
@@ -166,6 +167,7 @@ type InvertExactResult<$Expected, $Actual> = Relation.IsExact<$Actual, $Expected
  */
 // dprint-ignore
 export interface EquivKind extends AssertionKind {
+  name: 'equiv'
   expectationConstraint: unknown
   parameters: [$Expected: unknown, $Actual: unknown, $Negated?: boolean]
   return:
@@ -279,6 +281,7 @@ type InvertEquivResult<$Expected, $Actual> = Relation.GetRelation<$Expected, $Ac
  */
 // dprint-ignore
 export interface SubKind extends AssertionKind {
+  name: 'sub'
   expectationConstraint: unknown
   parameters: [$Expected: unknown, $Actual: unknown, $Negated?: boolean]
   return:
@@ -351,6 +354,7 @@ type CheckNoExcess<$Expected, $Actual> = $Actual extends infer __actual__
  */
 // dprint-ignore
 export interface SubNoExcessKind extends AssertionKind {
+  name: 'sub'
   expectationConstraint: unknown
   parameters: [$Expected: unknown, $Actual: unknown, $Negated?: boolean]
   return:
@@ -409,6 +413,7 @@ type InvertSubNoExcessResult<$Expected, $Actual> = $Actual extends $Expected
  */
 // dprint-ignore
 export interface EquivNoExcessKind extends AssertionKind {
+  name: 'equiv'
   expectationConstraint: unknown
   parameters: [$Expected: unknown, $Actual: unknown, $Negated?: boolean]
   return:

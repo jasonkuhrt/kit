@@ -22,6 +22,15 @@ export namespace SimpleSignature {}
 
 export * as Assert from './assert/$$.js'
 
+// @ts-expect-error Duplicate identifier
+export * as Inhabitance from './inhabitance.js'
+/**
+ * Type utilities for classifying types by their inhabitance in TypeScript's type lattice.
+ *
+ * @category Type Inhabitance
+ */
+export namespace Inhabitance {}
+
 export * from './ts.js'
 export * from './type-guards.js'
 

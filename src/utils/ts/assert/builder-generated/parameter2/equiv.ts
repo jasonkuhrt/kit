@@ -1,6 +1,6 @@
 import type * as Kind from '../../../kind.js'
-import { runtime } from '../../builder/runtime.js'
 import type { Parameter2 } from '../../../path.js'
+import { builder } from '../../builder-singleton.js'
 import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
 
 /**
@@ -27,7 +27,7 @@ import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
  * ```
  */
 type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Parameter2, [$Actual]>]>
-const of_ = runtime.parameter2.equiv.of
+const of_ = builder.parameter2.equiv.of
 
 /**
  * Pre-curried matcher for string.
@@ -43,7 +43,7 @@ const of_ = runtime.parameter2.equiv.of
  * ```
  */
 type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<Parameter2, [$Actual]>]>
-const string_ = runtime.parameter2.equiv.string
+const string_ = builder.parameter2.equiv.string
 
 /**
  * Pre-curried matcher for number.
@@ -59,7 +59,7 @@ const string_ = runtime.parameter2.equiv.string
  * ```
  */
 type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<Parameter2, [$Actual]>]>
-const number_ = runtime.parameter2.equiv.number
+const number_ = builder.parameter2.equiv.number
 
 /**
  * Pre-curried matcher for bigint.
@@ -75,7 +75,7 @@ const number_ = runtime.parameter2.equiv.number
  * ```
  */
 type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<Parameter2, [$Actual]>]>
-const bigint_ = runtime.parameter2.equiv.bigint
+const bigint_ = builder.parameter2.equiv.bigint
 
 /**
  * Pre-curried matcher for boolean.
@@ -91,7 +91,7 @@ const bigint_ = runtime.parameter2.equiv.bigint
  * ```
  */
 type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<Parameter2, [$Actual]>]>
-const boolean_ = runtime.parameter2.equiv.boolean
+const boolean_ = builder.parameter2.equiv.boolean
 
 /**
  * Pre-curried matcher for undefined.
@@ -107,7 +107,7 @@ const boolean_ = runtime.parameter2.equiv.boolean
  * ```
  */
 type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<Parameter2, [$Actual]>]>
-const undefined_ = runtime.parameter2.equiv.undefined
+const undefined_ = builder.parameter2.equiv.undefined
 
 /**
  * Pre-curried matcher for null.
@@ -123,7 +123,7 @@ const undefined_ = runtime.parameter2.equiv.undefined
  * ```
  */
 type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<Parameter2, [$Actual]>]>
-const null_ = runtime.parameter2.equiv.null
+const null_ = builder.parameter2.equiv.null
 
 /**
  * Pre-curried matcher for symbol.
@@ -139,7 +139,7 @@ const null_ = runtime.parameter2.equiv.null
  * ```
  */
 type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<Parameter2, [$Actual]>]>
-const symbol_ = runtime.parameter2.equiv.symbol
+const symbol_ = builder.parameter2.equiv.symbol
 
 /**
  * Pre-curried matcher for Date.
@@ -155,7 +155,7 @@ const symbol_ = runtime.parameter2.equiv.symbol
  * ```
  */
 type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<Parameter2, [$Actual]>]>
-const Date_ = runtime.parameter2.equiv.Date
+const Date_ = builder.parameter2.equiv.Date
 
 /**
  * Pre-curried matcher for RegExp.
@@ -171,7 +171,7 @@ const Date_ = runtime.parameter2.equiv.Date
  * ```
  */
 type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<Parameter2, [$Actual]>]>
-const RegExp_ = runtime.parameter2.equiv.RegExp
+const RegExp_ = builder.parameter2.equiv.RegExp
 
 /**
  * Pre-curried matcher for Error.
@@ -187,39 +187,7 @@ const RegExp_ = runtime.parameter2.equiv.RegExp
  * ```
  */
 type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<Parameter2, [$Actual]>]>
-const Error_ = runtime.parameter2.equiv.Error
-
-/**
- * Pre-curried matcher for Promise<any>.
- * Extraction chain: (p1: any, p2: T, ...) => any → T
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.parameter2.equiv.Promise<(arg: Promise<any>) => any>
- *
- * // ✗ Fail
- * type _ = Assert.parameter2.equiv.Promise<(arg: string) => any>
- * ```
- */
-type Promise_<$Actual> = Kind.Apply<EquivKind, [Promise<any>, Kind.Apply<Parameter2, [$Actual]>]>
-const Promise_ = runtime.parameter2.equiv.Promise
-
-/**
- * Pre-curried matcher for any[].
- * Extraction chain: (p1: any, p2: T, ...) => any → T
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.parameter2.equiv.Array<(arg: any[]) => any>
- *
- * // ✗ Fail
- * type _ = Assert.parameter2.equiv.Array<(arg: string) => any>
- * ```
- */
-type Array_<$Actual> = Kind.Apply<EquivKind, [any[], Kind.Apply<Parameter2, [$Actual]>]>
-const Array_ = runtime.parameter2.equiv.Array
+const Error_ = builder.parameter2.equiv.Error
 
 /**
  * Pre-curried matcher for unknown.
@@ -235,7 +203,7 @@ const Array_ = runtime.parameter2.equiv.Array
  * ```
  */
 type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Parameter2, [$Actual]>]>
-const unknown_ = runtime.parameter2.equiv.unknown
+const unknown_ = builder.parameter2.equiv.unknown
 
 /**
  * Pre-curried matcher for any.
@@ -251,7 +219,7 @@ const unknown_ = runtime.parameter2.equiv.unknown
  * ```
  */
 type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Parameter2, [$Actual]>]>
-const any_ = runtime.parameter2.equiv.any
+const any_ = builder.parameter2.equiv.any
 
 /**
  * Pre-curried matcher for never.
@@ -267,20 +235,19 @@ const any_ = runtime.parameter2.equiv.any
  * ```
  */
 type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Parameter2, [$Actual]>]>
-const never_ = runtime.parameter2.equiv.never
+const never_ = builder.parameter2.equiv.never
 
-const ofAs_ = runtime.parameter2.equiv.ofAs
+const ofAs_ = <$Type>() => builder.parameter2.equiv.ofAs<$Type>()
 /**
  * No-excess variant of equiv relation.
  * Checks that actual has no excess properties beyond expected.
  */
 type noExcess_<$Expected, $Actual> = Kind.Apply<EquivNoExcessKind, [$Expected, Kind.Apply<Parameter2, [$Actual]>]>
-const noExcess_ = runtime.parameter2.equiv.noExcess
-const noExcessAs_ = runtime.parameter2.equiv.noExcessAs
+const noExcess_ = builder.parameter2.equiv.noExcess
+const noExcessAs_ = <$Type>() => builder.parameter2.equiv.noExcessAs<$Type>()
 
 export {
   any_ as any,
-  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
@@ -292,7 +259,6 @@ export {
   number_ as number,
   of_ as of,
   ofAs_ as ofAs,
-  Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,

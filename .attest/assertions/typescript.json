@@ -143,7 +143,7 @@
       },
       "args": [
         {
-          "type": "[actual: { ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: 42; tip___________: \"Types share no values\"; }]",
+          "type": "[actual: 42]",
           "relationships": {
             "args": [
               "equality"
@@ -169,7 +169,7 @@
       },
       "args": [
         {
-          "type": "[actual: { ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: { a: string; }; actual________: { a: number; b: number; }; diff_excess___: { b: number; }; diff_mismatch_: { a: { expected: string; actual: number; }; }; tip___________: \"Types share some values but differ\"; }]",
+          "type": "[actual: { a: number; b: number; }]",
           "relationships": {
             "args": [
               "equality"
@@ -273,7 +273,7 @@
       },
       "args": [
         {
-          "type": "[actual: { ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: CA; actual________: CB; diff_excess___: { extra: boolean; }; diff_mismatch_: { user: { expected: { name: string; age: number; }; actual: { name: string; age: string; }; }; }; tip___________: \"Types share some values but differ\"; }]",
+          "type": "[actual: CB]",
           "relationships": {
             "args": [
               "equality"
@@ -455,17 +455,19 @@
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"ACTUAL extends EXPECTED but should not\"; expected______: string; actual________: \"hello\"; }",
+          "type": "Assert.not.sub.of<string, \"hello\">",
           "relationships": {
             "args": [
-              "equality"
+              "none"
             ],
             "typeArgs": []
           }
         }
       ],
       "typeArgs": [],
-      "errors": [],
+      "errors": [
+        "'Assert.not.sub.of' refers to a value, but is being used as a type here. Did you mean 'typeof Assert.not.sub.of'?"
+      ],
       "completions": {}
     },
     {

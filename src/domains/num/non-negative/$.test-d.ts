@@ -19,7 +19,7 @@ test('Type narrowing works correctly with isNonNegative predicate', () => {
 
   // Predicate narrows to NonNegative type
   if (isNonNegative(value)) {
-    Assert.sub.ofAs<NonNegative>()(value)
+    Assert.sub.ofAs<NonNegative>().on(value)
   }
 
   // Works with zero and positive values
@@ -37,32 +37,32 @@ test('Type narrowing works correctly with isNonNegative predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic non-negative constructor
   const nn1 = nonNegative(5)
-  Assert.exact.ofAs<NonNegative>()(nn1)
+  Assert.exact.ofAs<NonNegative>().on(nn1)
 
   // Zero is non-negative
   const nn2 = nonNegative(0)
-  Assert.exact.ofAs<NonNegative>()(nn2)
+  Assert.exact.ofAs<NonNegative>().on(nn2)
 
   // Large positive values
   const nn3 = nonNegative(1000)
-  Assert.exact.ofAs<NonNegative>()(nn3)
+  Assert.exact.ofAs<NonNegative>().on(nn3)
 
   // Small positive values
   const nn4 = nonNegative(0.001)
-  Assert.exact.ofAs<NonNegative>()(nn4)
+  Assert.exact.ofAs<NonNegative>().on(nn4)
 
   // Try constructor
   const try1 = tryNonNegative(42)
-  Assert.exact.ofAs<NonNegative | null>()(try1)
+  Assert.exact.ofAs<NonNegative | null>().on(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Assert.exact.ofAs<NonNegative>()(try1)
+    Assert.exact.ofAs<NonNegative>().on(try1)
   }
 
   // Try with negative returns null
   const try2 = tryNonNegative(-1)
-  Assert.exact.ofAs<NonNegative | null>()(try2)
+  Assert.exact.ofAs<NonNegative | null>().on(try2)
 })
 
 // === Type Relationships ===
@@ -72,7 +72,7 @@ test('NonNegative has correct relationships with other sign brands', () => {
 
   // NonNegative can be assigned to number
   const asNumber: number = nnVal
-  Assert.sub.ofAs<number>()(asNumber)
+  Assert.sub.ofAs<number>().on(asNumber)
 
   // NonNegative and Negative are mutually exclusive
   const _negVal = {} as Negative
@@ -147,7 +147,7 @@ test('NonNegative enables specific numeric constraints', () => {
   const value = 16
   const nn = nonNegative(value)
   const result = _calculateSquareRoot(nn)
-  Assert.sub.ofAs<number>()(result)
+  Assert.sub.ofAs<number>().on(result)
 
   // Cannot pass negative values
   // @ts-expect-error - Cannot assign negative number to NonNegative

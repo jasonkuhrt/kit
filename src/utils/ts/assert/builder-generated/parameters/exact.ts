@@ -1,6 +1,6 @@
 import type * as Kind from '../../../kind.js'
-import { runtime } from '../../builder/runtime.js'
 import type { Parameters$ } from '../../../path.js'
+import { builder } from '../../builder-singleton.js'
 import type { ExactKind } from '../../kinds/relators.js'
 
 /**
@@ -27,7 +27,7 @@ import type { ExactKind } from '../../kinds/relators.js'
  * ```
  */
 type of_<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, Kind.Apply<Parameters$, [$Actual]>]>
-const of_ = runtime.parameters.exact.of
+const of_ = builder.parameters.exact.of
 
 /**
  * Pre-curried matcher for string.
@@ -43,7 +43,7 @@ const of_ = runtime.parameters.exact.of
  * ```
  */
 type string_<$Actual> = Kind.Apply<ExactKind, [string, Kind.Apply<Parameters$, [$Actual]>]>
-const string_ = runtime.parameters.exact.string
+const string_ = builder.parameters.exact.string
 
 /**
  * Pre-curried matcher for number.
@@ -59,7 +59,7 @@ const string_ = runtime.parameters.exact.string
  * ```
  */
 type number_<$Actual> = Kind.Apply<ExactKind, [number, Kind.Apply<Parameters$, [$Actual]>]>
-const number_ = runtime.parameters.exact.number
+const number_ = builder.parameters.exact.number
 
 /**
  * Pre-curried matcher for bigint.
@@ -75,7 +75,7 @@ const number_ = runtime.parameters.exact.number
  * ```
  */
 type bigint_<$Actual> = Kind.Apply<ExactKind, [bigint, Kind.Apply<Parameters$, [$Actual]>]>
-const bigint_ = runtime.parameters.exact.bigint
+const bigint_ = builder.parameters.exact.bigint
 
 /**
  * Pre-curried matcher for boolean.
@@ -91,7 +91,7 @@ const bigint_ = runtime.parameters.exact.bigint
  * ```
  */
 type boolean_<$Actual> = Kind.Apply<ExactKind, [boolean, Kind.Apply<Parameters$, [$Actual]>]>
-const boolean_ = runtime.parameters.exact.boolean
+const boolean_ = builder.parameters.exact.boolean
 
 /**
  * Pre-curried matcher for undefined.
@@ -107,7 +107,7 @@ const boolean_ = runtime.parameters.exact.boolean
  * ```
  */
 type undefined_<$Actual> = Kind.Apply<ExactKind, [undefined, Kind.Apply<Parameters$, [$Actual]>]>
-const undefined_ = runtime.parameters.exact.undefined
+const undefined_ = builder.parameters.exact.undefined
 
 /**
  * Pre-curried matcher for null.
@@ -123,7 +123,7 @@ const undefined_ = runtime.parameters.exact.undefined
  * ```
  */
 type null_<$Actual> = Kind.Apply<ExactKind, [null, Kind.Apply<Parameters$, [$Actual]>]>
-const null_ = runtime.parameters.exact.null
+const null_ = builder.parameters.exact.null
 
 /**
  * Pre-curried matcher for symbol.
@@ -139,7 +139,7 @@ const null_ = runtime.parameters.exact.null
  * ```
  */
 type symbol_<$Actual> = Kind.Apply<ExactKind, [symbol, Kind.Apply<Parameters$, [$Actual]>]>
-const symbol_ = runtime.parameters.exact.symbol
+const symbol_ = builder.parameters.exact.symbol
 
 /**
  * Pre-curried matcher for Date.
@@ -155,7 +155,7 @@ const symbol_ = runtime.parameters.exact.symbol
  * ```
  */
 type Date_<$Actual> = Kind.Apply<ExactKind, [Date, Kind.Apply<Parameters$, [$Actual]>]>
-const Date_ = runtime.parameters.exact.Date
+const Date_ = builder.parameters.exact.Date
 
 /**
  * Pre-curried matcher for RegExp.
@@ -171,7 +171,7 @@ const Date_ = runtime.parameters.exact.Date
  * ```
  */
 type RegExp_<$Actual> = Kind.Apply<ExactKind, [RegExp, Kind.Apply<Parameters$, [$Actual]>]>
-const RegExp_ = runtime.parameters.exact.RegExp
+const RegExp_ = builder.parameters.exact.RegExp
 
 /**
  * Pre-curried matcher for Error.
@@ -187,39 +187,7 @@ const RegExp_ = runtime.parameters.exact.RegExp
  * ```
  */
 type Error_<$Actual> = Kind.Apply<ExactKind, [Error, Kind.Apply<Parameters$, [$Actual]>]>
-const Error_ = runtime.parameters.exact.Error
-
-/**
- * Pre-curried matcher for Promise<any>.
- * Extraction chain: (...args: any[]) => T → Parameters<Function>
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.parameters.exact.Promise<(...args: any[]) => Promise<any>>
- *
- * // ✗ Fail
- * type _ = Assert.parameters.exact.Promise<(...args: any[]) => string>
- * ```
- */
-type Promise_<$Actual> = Kind.Apply<ExactKind, [Promise<any>, Kind.Apply<Parameters$, [$Actual]>]>
-const Promise_ = runtime.parameters.exact.Promise
-
-/**
- * Pre-curried matcher for any[].
- * Extraction chain: (...args: any[]) => T → Parameters<Function>
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.parameters.exact.Array<(...args: any[]) => any[]>
- *
- * // ✗ Fail
- * type _ = Assert.parameters.exact.Array<(...args: any[]) => string>
- * ```
- */
-type Array_<$Actual> = Kind.Apply<ExactKind, [any[], Kind.Apply<Parameters$, [$Actual]>]>
-const Array_ = runtime.parameters.exact.Array
+const Error_ = builder.parameters.exact.Error
 
 /**
  * Pre-curried matcher for unknown.
@@ -235,7 +203,7 @@ const Array_ = runtime.parameters.exact.Array
  * ```
  */
 type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, Kind.Apply<Parameters$, [$Actual]>]>
-const unknown_ = runtime.parameters.exact.unknown
+const unknown_ = builder.parameters.exact.unknown
 
 /**
  * Pre-curried matcher for any.
@@ -251,7 +219,7 @@ const unknown_ = runtime.parameters.exact.unknown
  * ```
  */
 type any_<$Actual> = Kind.Apply<ExactKind, [any, Kind.Apply<Parameters$, [$Actual]>]>
-const any_ = runtime.parameters.exact.any
+const any_ = builder.parameters.exact.any
 
 /**
  * Pre-curried matcher for never.
@@ -267,15 +235,14 @@ const any_ = runtime.parameters.exact.any
  * ```
  */
 type never_<$Actual> = Kind.Apply<ExactKind, [never, Kind.Apply<Parameters$, [$Actual]>]>
-const never_ = runtime.parameters.exact.never
+const never_ = builder.parameters.exact.never
 
-const ofAs_ = runtime.parameters.exact.ofAs
+const ofAs_ = <$Type>() => builder.parameters.exact.ofAs<$Type>()
 type noExcess_ = never
-const noExcess_ = runtime.parameters.exact.noExcess
+const noExcess_ = builder.parameters.exact.noExcess
 
 export {
   any_ as any,
-  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
@@ -286,7 +253,6 @@ export {
   number_ as number,
   of_ as of,
   ofAs_ as ofAs,
-  Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,

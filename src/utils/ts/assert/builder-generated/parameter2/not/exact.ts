@@ -1,6 +1,6 @@
 import type * as Kind from '../../../../kind.js'
-import { runtime } from '../../../builder/runtime.js'
 import type { Parameter2 } from '../../../../path.js'
+import { builder } from '../../../builder-singleton.js'
 import type { ExactKind } from '../../../kinds/relators.js'
 
 /**
@@ -27,7 +27,7 @@ import type { ExactKind } from '../../../kinds/relators.js'
  * ```
  */
 type of_<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, Kind.Apply<Parameter2, [$Actual]>, true]>
-const of_ = runtime.parameter2.not.exact.of
+const of_ = builder.parameter2.not.exact.of
 
 /**
  * Pre-curried matcher for string.
@@ -43,7 +43,7 @@ const of_ = runtime.parameter2.not.exact.of
  * ```
  */
 type string_<$Actual> = Kind.Apply<ExactKind, [string, Kind.Apply<Parameter2, [$Actual]>, true]>
-const string_ = runtime.parameter2.not.exact.string
+const string_ = builder.parameter2.not.exact.string
 
 /**
  * Pre-curried matcher for number.
@@ -59,7 +59,7 @@ const string_ = runtime.parameter2.not.exact.string
  * ```
  */
 type number_<$Actual> = Kind.Apply<ExactKind, [number, Kind.Apply<Parameter2, [$Actual]>, true]>
-const number_ = runtime.parameter2.not.exact.number
+const number_ = builder.parameter2.not.exact.number
 
 /**
  * Pre-curried matcher for bigint.
@@ -75,7 +75,7 @@ const number_ = runtime.parameter2.not.exact.number
  * ```
  */
 type bigint_<$Actual> = Kind.Apply<ExactKind, [bigint, Kind.Apply<Parameter2, [$Actual]>, true]>
-const bigint_ = runtime.parameter2.not.exact.bigint
+const bigint_ = builder.parameter2.not.exact.bigint
 
 /**
  * Pre-curried matcher for boolean.
@@ -91,7 +91,7 @@ const bigint_ = runtime.parameter2.not.exact.bigint
  * ```
  */
 type boolean_<$Actual> = Kind.Apply<ExactKind, [boolean, Kind.Apply<Parameter2, [$Actual]>, true]>
-const boolean_ = runtime.parameter2.not.exact.boolean
+const boolean_ = builder.parameter2.not.exact.boolean
 
 /**
  * Pre-curried matcher for undefined.
@@ -107,7 +107,7 @@ const boolean_ = runtime.parameter2.not.exact.boolean
  * ```
  */
 type undefined_<$Actual> = Kind.Apply<ExactKind, [undefined, Kind.Apply<Parameter2, [$Actual]>, true]>
-const undefined_ = runtime.parameter2.not.exact.undefined
+const undefined_ = builder.parameter2.not.exact.undefined
 
 /**
  * Pre-curried matcher for null.
@@ -123,7 +123,7 @@ const undefined_ = runtime.parameter2.not.exact.undefined
  * ```
  */
 type null_<$Actual> = Kind.Apply<ExactKind, [null, Kind.Apply<Parameter2, [$Actual]>, true]>
-const null_ = runtime.parameter2.not.exact.null
+const null_ = builder.parameter2.not.exact.null
 
 /**
  * Pre-curried matcher for symbol.
@@ -139,7 +139,7 @@ const null_ = runtime.parameter2.not.exact.null
  * ```
  */
 type symbol_<$Actual> = Kind.Apply<ExactKind, [symbol, Kind.Apply<Parameter2, [$Actual]>, true]>
-const symbol_ = runtime.parameter2.not.exact.symbol
+const symbol_ = builder.parameter2.not.exact.symbol
 
 /**
  * Pre-curried matcher for Date.
@@ -155,7 +155,7 @@ const symbol_ = runtime.parameter2.not.exact.symbol
  * ```
  */
 type Date_<$Actual> = Kind.Apply<ExactKind, [Date, Kind.Apply<Parameter2, [$Actual]>, true]>
-const Date_ = runtime.parameter2.not.exact.Date
+const Date_ = builder.parameter2.not.exact.Date
 
 /**
  * Pre-curried matcher for RegExp.
@@ -171,7 +171,7 @@ const Date_ = runtime.parameter2.not.exact.Date
  * ```
  */
 type RegExp_<$Actual> = Kind.Apply<ExactKind, [RegExp, Kind.Apply<Parameter2, [$Actual]>, true]>
-const RegExp_ = runtime.parameter2.not.exact.RegExp
+const RegExp_ = builder.parameter2.not.exact.RegExp
 
 /**
  * Pre-curried matcher for Error.
@@ -187,39 +187,7 @@ const RegExp_ = runtime.parameter2.not.exact.RegExp
  * ```
  */
 type Error_<$Actual> = Kind.Apply<ExactKind, [Error, Kind.Apply<Parameter2, [$Actual]>, true]>
-const Error_ = runtime.parameter2.not.exact.Error
-
-/**
- * Pre-curried matcher for Promise<any>.
- * Extraction chain: (p1: any, p2: T, ...) => any → T
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.parameter2.exact.Promise<(arg: Promise<any>) => any>
- *
- * // ✗ Fail
- * type _ = Assert.parameter2.exact.Promise<(arg: string) => any>
- * ```
- */
-type Promise_<$Actual> = Kind.Apply<ExactKind, [Promise<any>, Kind.Apply<Parameter2, [$Actual]>, true]>
-const Promise_ = runtime.parameter2.not.exact.Promise
-
-/**
- * Pre-curried matcher for any[].
- * Extraction chain: (p1: any, p2: T, ...) => any → T
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.parameter2.exact.Array<(arg: any[]) => any>
- *
- * // ✗ Fail
- * type _ = Assert.parameter2.exact.Array<(arg: string) => any>
- * ```
- */
-type Array_<$Actual> = Kind.Apply<ExactKind, [any[], Kind.Apply<Parameter2, [$Actual]>, true]>
-const Array_ = runtime.parameter2.not.exact.Array
+const Error_ = builder.parameter2.not.exact.Error
 
 /**
  * Pre-curried matcher for unknown.
@@ -235,7 +203,7 @@ const Array_ = runtime.parameter2.not.exact.Array
  * ```
  */
 type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, Kind.Apply<Parameter2, [$Actual]>, true]>
-const unknown_ = runtime.parameter2.not.exact.unknown
+const unknown_ = builder.parameter2.not.exact.unknown
 
 /**
  * Pre-curried matcher for any.
@@ -251,7 +219,7 @@ const unknown_ = runtime.parameter2.not.exact.unknown
  * ```
  */
 type any_<$Actual> = Kind.Apply<ExactKind, [any, Kind.Apply<Parameter2, [$Actual]>, true]>
-const any_ = runtime.parameter2.not.exact.any
+const any_ = builder.parameter2.not.exact.any
 
 /**
  * Pre-curried matcher for never.
@@ -267,15 +235,14 @@ const any_ = runtime.parameter2.not.exact.any
  * ```
  */
 type never_<$Actual> = Kind.Apply<ExactKind, [never, Kind.Apply<Parameter2, [$Actual]>, true]>
-const never_ = runtime.parameter2.not.exact.never
+const never_ = builder.parameter2.not.exact.never
 
-const ofAs_ = runtime.parameter2.not.exact.ofAs
+const ofAs_ = <$Type>() => builder.parameter2.not.exact.ofAs<$Type>()
 type noExcess_ = never
-const noExcess_ = runtime.parameter2.not.exact.noExcess
+const noExcess_ = builder.parameter2.not.exact.noExcess
 
 export {
   any_ as any,
-  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
@@ -286,7 +253,6 @@ export {
   number_ as number,
   of_ as of,
   ofAs_ as ofAs,
-  Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,

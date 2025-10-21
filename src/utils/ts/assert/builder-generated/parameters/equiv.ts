@@ -1,6 +1,6 @@
 import type * as Kind from '../../../kind.js'
-import { runtime } from '../../builder/runtime.js'
 import type { Parameters$ } from '../../../path.js'
+import { builder } from '../../builder-singleton.js'
 import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
 
 /**
@@ -27,7 +27,7 @@ import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
  * ```
  */
 type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Parameters$, [$Actual]>]>
-const of_ = runtime.parameters.equiv.of
+const of_ = builder.parameters.equiv.of
 
 /**
  * Pre-curried matcher for string.
@@ -43,7 +43,7 @@ const of_ = runtime.parameters.equiv.of
  * ```
  */
 type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<Parameters$, [$Actual]>]>
-const string_ = runtime.parameters.equiv.string
+const string_ = builder.parameters.equiv.string
 
 /**
  * Pre-curried matcher for number.
@@ -59,7 +59,7 @@ const string_ = runtime.parameters.equiv.string
  * ```
  */
 type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<Parameters$, [$Actual]>]>
-const number_ = runtime.parameters.equiv.number
+const number_ = builder.parameters.equiv.number
 
 /**
  * Pre-curried matcher for bigint.
@@ -75,7 +75,7 @@ const number_ = runtime.parameters.equiv.number
  * ```
  */
 type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<Parameters$, [$Actual]>]>
-const bigint_ = runtime.parameters.equiv.bigint
+const bigint_ = builder.parameters.equiv.bigint
 
 /**
  * Pre-curried matcher for boolean.
@@ -91,7 +91,7 @@ const bigint_ = runtime.parameters.equiv.bigint
  * ```
  */
 type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<Parameters$, [$Actual]>]>
-const boolean_ = runtime.parameters.equiv.boolean
+const boolean_ = builder.parameters.equiv.boolean
 
 /**
  * Pre-curried matcher for undefined.
@@ -107,7 +107,7 @@ const boolean_ = runtime.parameters.equiv.boolean
  * ```
  */
 type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<Parameters$, [$Actual]>]>
-const undefined_ = runtime.parameters.equiv.undefined
+const undefined_ = builder.parameters.equiv.undefined
 
 /**
  * Pre-curried matcher for null.
@@ -123,7 +123,7 @@ const undefined_ = runtime.parameters.equiv.undefined
  * ```
  */
 type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<Parameters$, [$Actual]>]>
-const null_ = runtime.parameters.equiv.null
+const null_ = builder.parameters.equiv.null
 
 /**
  * Pre-curried matcher for symbol.
@@ -139,7 +139,7 @@ const null_ = runtime.parameters.equiv.null
  * ```
  */
 type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<Parameters$, [$Actual]>]>
-const symbol_ = runtime.parameters.equiv.symbol
+const symbol_ = builder.parameters.equiv.symbol
 
 /**
  * Pre-curried matcher for Date.
@@ -155,7 +155,7 @@ const symbol_ = runtime.parameters.equiv.symbol
  * ```
  */
 type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<Parameters$, [$Actual]>]>
-const Date_ = runtime.parameters.equiv.Date
+const Date_ = builder.parameters.equiv.Date
 
 /**
  * Pre-curried matcher for RegExp.
@@ -171,7 +171,7 @@ const Date_ = runtime.parameters.equiv.Date
  * ```
  */
 type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<Parameters$, [$Actual]>]>
-const RegExp_ = runtime.parameters.equiv.RegExp
+const RegExp_ = builder.parameters.equiv.RegExp
 
 /**
  * Pre-curried matcher for Error.
@@ -187,39 +187,7 @@ const RegExp_ = runtime.parameters.equiv.RegExp
  * ```
  */
 type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<Parameters$, [$Actual]>]>
-const Error_ = runtime.parameters.equiv.Error
-
-/**
- * Pre-curried matcher for Promise<any>.
- * Extraction chain: (...args: any[]) => T → Parameters<Function>
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.parameters.equiv.Promise<(...args: any[]) => Promise<any>>
- *
- * // ✗ Fail
- * type _ = Assert.parameters.equiv.Promise<(...args: any[]) => string>
- * ```
- */
-type Promise_<$Actual> = Kind.Apply<EquivKind, [Promise<any>, Kind.Apply<Parameters$, [$Actual]>]>
-const Promise_ = runtime.parameters.equiv.Promise
-
-/**
- * Pre-curried matcher for any[].
- * Extraction chain: (...args: any[]) => T → Parameters<Function>
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.parameters.equiv.Array<(...args: any[]) => any[]>
- *
- * // ✗ Fail
- * type _ = Assert.parameters.equiv.Array<(...args: any[]) => string>
- * ```
- */
-type Array_<$Actual> = Kind.Apply<EquivKind, [any[], Kind.Apply<Parameters$, [$Actual]>]>
-const Array_ = runtime.parameters.equiv.Array
+const Error_ = builder.parameters.equiv.Error
 
 /**
  * Pre-curried matcher for unknown.
@@ -235,7 +203,7 @@ const Array_ = runtime.parameters.equiv.Array
  * ```
  */
 type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Parameters$, [$Actual]>]>
-const unknown_ = runtime.parameters.equiv.unknown
+const unknown_ = builder.parameters.equiv.unknown
 
 /**
  * Pre-curried matcher for any.
@@ -251,7 +219,7 @@ const unknown_ = runtime.parameters.equiv.unknown
  * ```
  */
 type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Parameters$, [$Actual]>]>
-const any_ = runtime.parameters.equiv.any
+const any_ = builder.parameters.equiv.any
 
 /**
  * Pre-curried matcher for never.
@@ -267,20 +235,19 @@ const any_ = runtime.parameters.equiv.any
  * ```
  */
 type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Parameters$, [$Actual]>]>
-const never_ = runtime.parameters.equiv.never
+const never_ = builder.parameters.equiv.never
 
-const ofAs_ = runtime.parameters.equiv.ofAs
+const ofAs_ = <$Type>() => builder.parameters.equiv.ofAs<$Type>()
 /**
  * No-excess variant of equiv relation.
  * Checks that actual has no excess properties beyond expected.
  */
 type noExcess_<$Expected, $Actual> = Kind.Apply<EquivNoExcessKind, [$Expected, Kind.Apply<Parameters$, [$Actual]>]>
-const noExcess_ = runtime.parameters.equiv.noExcess
-const noExcessAs_ = runtime.parameters.equiv.noExcessAs
+const noExcess_ = builder.parameters.equiv.noExcess
+const noExcessAs_ = <$Type>() => builder.parameters.equiv.noExcessAs<$Type>()
 
 export {
   any_ as any,
-  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
@@ -292,7 +259,6 @@ export {
   number_ as number,
   of_ as of,
   ofAs_ as ofAs,
-  Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,

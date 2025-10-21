@@ -1,6 +1,6 @@
 import type * as Kind from '../../../../kind.js'
-import { runtime } from '../../../builder/runtime.js'
 import type { Awaited$ } from '../../../../path.js'
+import { builder } from '../../../builder-singleton.js'
 import type { ExactKind } from '../../../kinds/relators.js'
 
 /**
@@ -27,7 +27,7 @@ import type { ExactKind } from '../../../kinds/relators.js'
  * ```
  */
 type of_<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, Kind.Apply<Awaited$, [$Actual]>, true]>
-const of_ = runtime.awaited.not.exact.of
+const of_ = builder.awaited.not.exact.of
 
 /**
  * Pre-curried matcher for string.
@@ -43,7 +43,7 @@ const of_ = runtime.awaited.not.exact.of
  * ```
  */
 type string_<$Actual> = Kind.Apply<ExactKind, [string, Kind.Apply<Awaited$, [$Actual]>, true]>
-const string_ = runtime.awaited.not.exact.string
+const string_ = builder.awaited.not.exact.string
 
 /**
  * Pre-curried matcher for number.
@@ -59,7 +59,7 @@ const string_ = runtime.awaited.not.exact.string
  * ```
  */
 type number_<$Actual> = Kind.Apply<ExactKind, [number, Kind.Apply<Awaited$, [$Actual]>, true]>
-const number_ = runtime.awaited.not.exact.number
+const number_ = builder.awaited.not.exact.number
 
 /**
  * Pre-curried matcher for bigint.
@@ -75,7 +75,7 @@ const number_ = runtime.awaited.not.exact.number
  * ```
  */
 type bigint_<$Actual> = Kind.Apply<ExactKind, [bigint, Kind.Apply<Awaited$, [$Actual]>, true]>
-const bigint_ = runtime.awaited.not.exact.bigint
+const bigint_ = builder.awaited.not.exact.bigint
 
 /**
  * Pre-curried matcher for boolean.
@@ -91,7 +91,7 @@ const bigint_ = runtime.awaited.not.exact.bigint
  * ```
  */
 type boolean_<$Actual> = Kind.Apply<ExactKind, [boolean, Kind.Apply<Awaited$, [$Actual]>, true]>
-const boolean_ = runtime.awaited.not.exact.boolean
+const boolean_ = builder.awaited.not.exact.boolean
 
 /**
  * Pre-curried matcher for undefined.
@@ -107,7 +107,7 @@ const boolean_ = runtime.awaited.not.exact.boolean
  * ```
  */
 type undefined_<$Actual> = Kind.Apply<ExactKind, [undefined, Kind.Apply<Awaited$, [$Actual]>, true]>
-const undefined_ = runtime.awaited.not.exact.undefined
+const undefined_ = builder.awaited.not.exact.undefined
 
 /**
  * Pre-curried matcher for null.
@@ -123,7 +123,7 @@ const undefined_ = runtime.awaited.not.exact.undefined
  * ```
  */
 type null_<$Actual> = Kind.Apply<ExactKind, [null, Kind.Apply<Awaited$, [$Actual]>, true]>
-const null_ = runtime.awaited.not.exact.null
+const null_ = builder.awaited.not.exact.null
 
 /**
  * Pre-curried matcher for symbol.
@@ -139,7 +139,7 @@ const null_ = runtime.awaited.not.exact.null
  * ```
  */
 type symbol_<$Actual> = Kind.Apply<ExactKind, [symbol, Kind.Apply<Awaited$, [$Actual]>, true]>
-const symbol_ = runtime.awaited.not.exact.symbol
+const symbol_ = builder.awaited.not.exact.symbol
 
 /**
  * Pre-curried matcher for Date.
@@ -155,7 +155,7 @@ const symbol_ = runtime.awaited.not.exact.symbol
  * ```
  */
 type Date_<$Actual> = Kind.Apply<ExactKind, [Date, Kind.Apply<Awaited$, [$Actual]>, true]>
-const Date_ = runtime.awaited.not.exact.Date
+const Date_ = builder.awaited.not.exact.Date
 
 /**
  * Pre-curried matcher for RegExp.
@@ -171,7 +171,7 @@ const Date_ = runtime.awaited.not.exact.Date
  * ```
  */
 type RegExp_<$Actual> = Kind.Apply<ExactKind, [RegExp, Kind.Apply<Awaited$, [$Actual]>, true]>
-const RegExp_ = runtime.awaited.not.exact.RegExp
+const RegExp_ = builder.awaited.not.exact.RegExp
 
 /**
  * Pre-curried matcher for Error.
@@ -187,39 +187,7 @@ const RegExp_ = runtime.awaited.not.exact.RegExp
  * ```
  */
 type Error_<$Actual> = Kind.Apply<ExactKind, [Error, Kind.Apply<Awaited$, [$Actual]>, true]>
-const Error_ = runtime.awaited.not.exact.Error
-
-/**
- * Pre-curried matcher for Promise<any>.
- * Extraction chain: Promise<T> → T
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.awaited.exact.Promise<Promise<Promise<any>>>
- *
- * // ✗ Fail
- * type _ = Assert.awaited.exact.Promise<Promise<string>>
- * ```
- */
-type Promise_<$Actual> = Kind.Apply<ExactKind, [Promise<any>, Kind.Apply<Awaited$, [$Actual]>, true]>
-const Promise_ = runtime.awaited.not.exact.Promise
-
-/**
- * Pre-curried matcher for any[].
- * Extraction chain: Promise<T> → T
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.awaited.exact.Array<Promise<any[]>>
- *
- * // ✗ Fail
- * type _ = Assert.awaited.exact.Array<Promise<string>>
- * ```
- */
-type Array_<$Actual> = Kind.Apply<ExactKind, [any[], Kind.Apply<Awaited$, [$Actual]>, true]>
-const Array_ = runtime.awaited.not.exact.Array
+const Error_ = builder.awaited.not.exact.Error
 
 /**
  * Pre-curried matcher for unknown.
@@ -235,7 +203,7 @@ const Array_ = runtime.awaited.not.exact.Array
  * ```
  */
 type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, Kind.Apply<Awaited$, [$Actual]>, true]>
-const unknown_ = runtime.awaited.not.exact.unknown
+const unknown_ = builder.awaited.not.exact.unknown
 
 /**
  * Pre-curried matcher for any.
@@ -251,7 +219,7 @@ const unknown_ = runtime.awaited.not.exact.unknown
  * ```
  */
 type any_<$Actual> = Kind.Apply<ExactKind, [any, Kind.Apply<Awaited$, [$Actual]>, true]>
-const any_ = runtime.awaited.not.exact.any
+const any_ = builder.awaited.not.exact.any
 
 /**
  * Pre-curried matcher for never.
@@ -267,15 +235,14 @@ const any_ = runtime.awaited.not.exact.any
  * ```
  */
 type never_<$Actual> = Kind.Apply<ExactKind, [never, Kind.Apply<Awaited$, [$Actual]>, true]>
-const never_ = runtime.awaited.not.exact.never
+const never_ = builder.awaited.not.exact.never
 
-const ofAs_ = runtime.awaited.not.exact.ofAs
+const ofAs_ = <$Type>() => builder.awaited.not.exact.ofAs<$Type>()
 type noExcess_ = never
-const noExcess_ = runtime.awaited.not.exact.noExcess
+const noExcess_ = builder.awaited.not.exact.noExcess
 
 export {
   any_ as any,
-  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
@@ -286,7 +253,6 @@ export {
   number_ as number,
   of_ as of,
   ofAs_ as ofAs,
-  Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,

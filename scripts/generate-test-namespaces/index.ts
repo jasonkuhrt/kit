@@ -60,8 +60,6 @@ const MATCHERS: Matcher[] = [
   { name: 'Date', typeExpr: 'Date', description: 'Date' },
   { name: 'RegExp', typeExpr: 'RegExp', description: 'RegExp' },
   { name: 'Error', typeExpr: 'Error', description: 'Error' },
-  { name: 'Promise', typeExpr: 'Promise<any>', description: 'Promise<any>' },
-  { name: 'Array', typeExpr: 'any[]', description: 'any[]' },
   { name: 'unknown', typeExpr: 'unknown', description: 'unknown' },
   { name: 'any', typeExpr: 'any', description: 'any' },
   { name: 'never', typeExpr: 'never', description: 'never' },
@@ -173,17 +171,17 @@ function calculateImportPaths(combo: Combination) {
   const rootDir = path.join(process.cwd(), 'src/utils/ts')
 
   const kindPath = getRelativePath(sourceFile, path.join(rootDir, 'kind.js'))
-  const extractorsPath = getRelativePath(sourceFile, path.join(rootDir, 'assert/kinds/extractors.js'))
+  const extractorsPath = getRelativePath(sourceFile, path.join(rootDir, 'path.js'))
   const relatorsPath = getRelativePath(sourceFile, path.join(rootDir, 'assert/kinds/relators.js'))
-  const runtimePath = getRelativePath(sourceFile, path.join(rootDir, 'assert/builder/runtime.js'))
+  const builderPath = getRelativePath(sourceFile, path.join(rootDir, 'assert/builder-singleton.js'))
 
-  return { kindPath, extractorsPath, relatorsPath, runtimePath }
+  return { kindPath, extractorsPath, relatorsPath, builderPath }
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Template Generation
 
 function generateFileHeader(combo: Combination): string {
-  const { kindPath, extractorsPath, relatorsPath, runtimePath } = calculateImportPaths(combo)
+  const { kindPath, extractorsPath, relatorsPath, builderPath } = calculateImportPaths(combo)
 
   const extractorKinds = combo.extractors.map((e) => e.kindName).join(', ')
   const extractorImports = combo.extractors.length > 0
@@ -200,7 +198,7 @@ function generateFileHeader(combo: Combination): string {
 
   return `import type * as Kind from '${kindPath}'
 ${extractorImports}import type { ${relatorKinds.join(', ')} } from '${relatorsPath}'
-import { runtime } from '${runtimePath}'
+import { builder } from '${builderPath}'
 `
 }
 
@@ -233,9 +231,9 @@ function buildExtractorChain(extractors: Extractor[], actualType: string): strin
 }
 
 function buildRuntimeChain(combo: Combination, matcherName: string): string {
-  // Build the runtime access chain: runtime.${extractors}.${not?}.${relator}.${matcher}
+  // Build the builder access chain: builder.${extractors}.${not?}.${relator}.${matcher}
   const parts = [
-    'runtime',
+    'builder',
     ...combo.extractors.map((e) => e.name),
   ]
 
@@ -329,7 +327,11 @@ function generateMatcherType(matcher: Matcher, combo: Combination): string {
 
   const typeDef =
     `type ${matcher.name}_${typeParams} = Kind.Apply<${combo.relator.kindName}, [${expectedType}, ${extractorChain}${negatedParam}]>`
-  const constDef = `const ${matcher.name}_ = ${buildRuntimeChain(combo, matcher.name)}`
+
+  // Pre-configured matchers are already functions in BuilderMatchers interface
+  // No need to chain .on - they're accessed directly from builder
+  const runtimeChain = buildRuntimeChain(combo, matcher.name)
+  const constDef = `const ${matcher.name}_ = ${runtimeChain}`
 
   return `${typeDef}\n${constDef}`
 }
@@ -360,8 +362,8 @@ function generateMatcherFile(combo: Combination): string {
     return `${jsdoc}\n${typeDef}`
   }).join('\n\n')
 
-  // Add ofAs const declaration
-  const ofAsConst = `const ofAs_ = ${buildRuntimeChain(combo, 'ofAs')}`
+  // Add ofAs const declaration - returns builder (not function, so no .on chain)
+  const ofAsConst = `const ofAs_ = <$Type>() => ${buildRuntimeChain(combo, 'ofAs')}<$Type>()`
 
   // Add noExcess/noExcessAs for sub and equiv relators (not for exact, not for negated)
   let noExcessDecls = ''
@@ -375,9 +377,9 @@ function generateMatcherFile(combo: Combination): string {
  */
 type noExcess_<$Expected, $Actual> = Kind.Apply<${noExcessKind}, [$Expected, ${extractorChain}]>
 const noExcess_ = ${buildRuntimeChain(combo, 'noExcess')}
-const noExcessAs_ = ${buildRuntimeChain(combo, 'noExcessAs')}`
+const noExcessAs_ = <$Type>() => ${buildRuntimeChain(combo, 'noExcessAs')}<$Type>()`
   } else if (combo.relator.name === 'exact') {
-    // For exact, noExcess is never (just reference it from runtime for completeness)
+    // For exact, noExcess is never (just reference it from builder for completeness)
     noExcessDecls = `\ntype noExcess_ = never\nconst noExcess_ = ${buildRuntimeChain(combo, 'noExcess')}`
   }
 
@@ -432,14 +434,14 @@ ${typeShorthands}
 
 /**
  * Generate a barrel file for an extractor subdirectory.
- * Exports relators (type+value), 'not' namespace, and other extractors (value-only via runtime proxy).
+ * Exports relators (type+value), 'not' namespace, and other extractors (value-only via builder proxy).
  */
 function generateExtractorBarrelFile(extractorName: string, barrelPath: string): string {
   // Calculate relative paths
   const rootDir = path.join(process.cwd(), 'src/utils/ts')
-  const runtimePath = getRelativePath(barrelPath, path.join(rootDir, 'assert/builder/runtime.js'))
+  const builderPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/builder-singleton.js'))
   const kindPath = getRelativePath(barrelPath, path.join(rootDir, 'kind.js'))
-  const extractorsPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/kinds/extractors.js'))
+  const extractorsPath = getRelativePath(barrelPath, path.join(rootDir, 'path.js'))
   const relatorsPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/kinds/relators.js'))
 
   // Part 1: Export relators as dual namespaces (type+value)
@@ -450,11 +452,11 @@ function generateExtractorBarrelFile(extractorName: string, barrelPath: string):
   // Part 2: Export 'not' namespace (type+value)
   const notExport = `export * as not from './not/$$.js'`
 
-  // Part 3: Export other extractors as value-only runtime references
+  // Part 3: Export other extractors as value-only builder proxy references
   const otherExtractors = Object.keys(EXTRACTORS).filter((name) => name !== extractorName)
   const extractorExports = otherExtractors.length > 0
-    ? `\n// Value-level extractor chaining via runtime proxy\n`
-      + otherExtractors.map((name) => `export const ${name} = runtime.${extractorName}.${name}`).join('\n')
+    ? `\n// Value-level extractor chaining via builder proxy\n`
+      + otherExtractors.map((name) => `export const ${name} = builder.${extractorName}.${name}`).join('\n')
     : ''
 
   // Part 4: Add type-level shorthand for relators (allows omitting .of)
@@ -462,7 +464,7 @@ function generateExtractorBarrelFile(extractorName: string, barrelPath: string):
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
 
   const imports = `import type * as Kind from '${kindPath}'
-import { runtime } from '${runtimePath}'
+import { builder } from '${builderPath}'
 import type { ${extractor.kindName} } from '${extractorsPath}'
 import type { ${relatorKinds} } from '${relatorsPath}'`
 
@@ -487,7 +489,7 @@ function generateNotBarrelFile(barrelPath: string, extractors: Extractor[]): str
   // Calculate relative paths
   const rootDir = path.join(process.cwd(), 'src/utils/ts')
   const kindPath = getRelativePath(barrelPath, path.join(rootDir, 'kind.js'))
-  const extractorsPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/kinds/extractors.js'))
+  const extractorsPath = getRelativePath(barrelPath, path.join(rootDir, 'path.js'))
   const relatorsPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/kinds/relators.js'))
 
   // Export relators as dual namespaces (type+value)

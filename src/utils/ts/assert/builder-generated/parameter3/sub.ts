@@ -1,6 +1,6 @@
 import type * as Kind from '../../../kind.js'
-import { runtime } from '../../builder/runtime.js'
 import type { Parameter3 } from '../../../path.js'
+import { builder } from '../../builder-singleton.js'
 import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
 
 /**
@@ -27,7 +27,7 @@ import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
  * ```
  */
 type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Parameter3, [$Actual]>]>
-const of_ = runtime.parameter3.sub.of
+const of_ = builder.parameter3.sub.of
 
 /**
  * Pre-curried matcher for string.
@@ -43,7 +43,7 @@ const of_ = runtime.parameter3.sub.of
  * ```
  */
 type string_<$Actual> = Kind.Apply<SubKind, [string, Kind.Apply<Parameter3, [$Actual]>]>
-const string_ = runtime.parameter3.sub.string
+const string_ = builder.parameter3.sub.string
 
 /**
  * Pre-curried matcher for number.
@@ -59,7 +59,7 @@ const string_ = runtime.parameter3.sub.string
  * ```
  */
 type number_<$Actual> = Kind.Apply<SubKind, [number, Kind.Apply<Parameter3, [$Actual]>]>
-const number_ = runtime.parameter3.sub.number
+const number_ = builder.parameter3.sub.number
 
 /**
  * Pre-curried matcher for bigint.
@@ -75,7 +75,7 @@ const number_ = runtime.parameter3.sub.number
  * ```
  */
 type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, Kind.Apply<Parameter3, [$Actual]>]>
-const bigint_ = runtime.parameter3.sub.bigint
+const bigint_ = builder.parameter3.sub.bigint
 
 /**
  * Pre-curried matcher for boolean.
@@ -91,7 +91,7 @@ const bigint_ = runtime.parameter3.sub.bigint
  * ```
  */
 type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, Kind.Apply<Parameter3, [$Actual]>]>
-const boolean_ = runtime.parameter3.sub.boolean
+const boolean_ = builder.parameter3.sub.boolean
 
 /**
  * Pre-curried matcher for undefined.
@@ -107,7 +107,7 @@ const boolean_ = runtime.parameter3.sub.boolean
  * ```
  */
 type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, Kind.Apply<Parameter3, [$Actual]>]>
-const undefined_ = runtime.parameter3.sub.undefined
+const undefined_ = builder.parameter3.sub.undefined
 
 /**
  * Pre-curried matcher for null.
@@ -123,7 +123,7 @@ const undefined_ = runtime.parameter3.sub.undefined
  * ```
  */
 type null_<$Actual> = Kind.Apply<SubKind, [null, Kind.Apply<Parameter3, [$Actual]>]>
-const null_ = runtime.parameter3.sub.null
+const null_ = builder.parameter3.sub.null
 
 /**
  * Pre-curried matcher for symbol.
@@ -139,7 +139,7 @@ const null_ = runtime.parameter3.sub.null
  * ```
  */
 type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, Kind.Apply<Parameter3, [$Actual]>]>
-const symbol_ = runtime.parameter3.sub.symbol
+const symbol_ = builder.parameter3.sub.symbol
 
 /**
  * Pre-curried matcher for Date.
@@ -155,7 +155,7 @@ const symbol_ = runtime.parameter3.sub.symbol
  * ```
  */
 type Date_<$Actual> = Kind.Apply<SubKind, [Date, Kind.Apply<Parameter3, [$Actual]>]>
-const Date_ = runtime.parameter3.sub.Date
+const Date_ = builder.parameter3.sub.Date
 
 /**
  * Pre-curried matcher for RegExp.
@@ -171,7 +171,7 @@ const Date_ = runtime.parameter3.sub.Date
  * ```
  */
 type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, Kind.Apply<Parameter3, [$Actual]>]>
-const RegExp_ = runtime.parameter3.sub.RegExp
+const RegExp_ = builder.parameter3.sub.RegExp
 
 /**
  * Pre-curried matcher for Error.
@@ -187,39 +187,7 @@ const RegExp_ = runtime.parameter3.sub.RegExp
  * ```
  */
 type Error_<$Actual> = Kind.Apply<SubKind, [Error, Kind.Apply<Parameter3, [$Actual]>]>
-const Error_ = runtime.parameter3.sub.Error
-
-/**
- * Pre-curried matcher for Promise<any>.
- * Extraction chain: (p1: any, p2: any, p3: T, ...) => any → T
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.parameter3.sub.Promise<(arg: Promise<any>) => any>
- *
- * // ✗ Fail
- * type _ = Assert.parameter3.sub.Promise<(arg: string) => any>
- * ```
- */
-type Promise_<$Actual> = Kind.Apply<SubKind, [Promise<any>, Kind.Apply<Parameter3, [$Actual]>]>
-const Promise_ = runtime.parameter3.sub.Promise
-
-/**
- * Pre-curried matcher for any[].
- * Extraction chain: (p1: any, p2: any, p3: T, ...) => any → T
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.parameter3.sub.Array<(arg: any[]) => any>
- *
- * // ✗ Fail
- * type _ = Assert.parameter3.sub.Array<(arg: string) => any>
- * ```
- */
-type Array_<$Actual> = Kind.Apply<SubKind, [any[], Kind.Apply<Parameter3, [$Actual]>]>
-const Array_ = runtime.parameter3.sub.Array
+const Error_ = builder.parameter3.sub.Error
 
 /**
  * Pre-curried matcher for unknown.
@@ -235,7 +203,7 @@ const Array_ = runtime.parameter3.sub.Array
  * ```
  */
 type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<Parameter3, [$Actual]>]>
-const unknown_ = runtime.parameter3.sub.unknown
+const unknown_ = builder.parameter3.sub.unknown
 
 /**
  * Pre-curried matcher for any.
@@ -251,7 +219,7 @@ const unknown_ = runtime.parameter3.sub.unknown
  * ```
  */
 type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<Parameter3, [$Actual]>]>
-const any_ = runtime.parameter3.sub.any
+const any_ = builder.parameter3.sub.any
 
 /**
  * Pre-curried matcher for never.
@@ -267,20 +235,19 @@ const any_ = runtime.parameter3.sub.any
  * ```
  */
 type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<Parameter3, [$Actual]>]>
-const never_ = runtime.parameter3.sub.never
+const never_ = builder.parameter3.sub.never
 
-const ofAs_ = runtime.parameter3.sub.ofAs
+const ofAs_ = <$Type>() => builder.parameter3.sub.ofAs<$Type>()
 /**
  * No-excess variant of sub relation.
  * Checks that actual has no excess properties beyond expected.
  */
 type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, Kind.Apply<Parameter3, [$Actual]>]>
-const noExcess_ = runtime.parameter3.sub.noExcess
-const noExcessAs_ = runtime.parameter3.sub.noExcessAs
+const noExcess_ = builder.parameter3.sub.noExcess
+const noExcessAs_ = <$Type>() => builder.parameter3.sub.noExcessAs<$Type>()
 
 export {
   any_ as any,
-  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
@@ -292,7 +259,6 @@ export {
   number_ as number,
   of_ as of,
   ofAs_ as ofAs,
-  Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,

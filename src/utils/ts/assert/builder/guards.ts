@@ -1,9 +1,87 @@
-import type { Ts } from '#ts/ts'
+import type { Inhabitance, Ts } from '#ts/ts'
+import type { WritableDeep } from 'type-fest'
 import type * as Kind from '../../kind.js'
-import type { IsAny, IsNever, IsUnknown } from '../../ts.js'
-import type { StaticErrorAssertion } from '../assertion-error.js'
 import type { ApplyExtractors } from '../../path.js'
+import type { BooleanCase, IsAny, IsNever, IsUnknown } from '../../ts.js'
+import type { StaticErrorAssertion } from '../assertion-error.js'
 import type { State } from './state.js'
+
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Normalization
+//
+//
+//
+//
+
+/**
+ * Normalize types for comparison based on inference mode from state.
+ *
+ * - `'auto'` - Strip readonly deep (WritableDeep) for readonly-agnostic comparison
+ * - `'wide'` - No normalization (identity)
+ * - `'narrow'` - No normalization (identity)
+ *
+ * This enables auto mode to ignore readonly modifiers when comparing types,
+ * while wide/narrow modes respect them.
+ */
+// dprint-ignore
+type NormalizeForComparison<$T, $State extends State> = {
+  'auto': WritableDeep<$T>
+  'narrow': $T
+  'wide': $T
+}[$State['matcher_inferMode']]
+
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Edge Type Validation
+//
+//
+//
+//
+
+/**
+ * Validate edge types (never/any/unknown) using inhabitance-based lookup.
+ *
+ * Uses Inhabitance.GetCase to determine the type case, then dispatches to
+ * ValidateEdgeType for proper edge types. Returns never for proper types.
+ */
+// dprint-ignore
+type CheckEdgeType<
+  $Value,
+  $State extends State,
+  ___Case extends Inhabitance.Case = Inhabitance.GetCase<$Value>
+> = {
+  'never': ValidateEdgeType<'never', $State>,
+  'any': ValidateEdgeType<'any', $State>,
+  // having this here breaks inference wherein unknown needs to be toleerated unti TS has resolved the arg type
+  // 'unknown': ValidateEdgeType<'unknown', $State>,
+  'unknown': never
+  'proper': never
+}[___Case]
+
+/**
+ * Core validation logic for edge types using 2D lookup table.
+ *
+ * Dimensions: allowFlag (true/false) × negated (true/false)
+ */
+// dprint-ignore
+type ValidateEdgeType<
+  $TypeName extends 'never' | 'any' | 'unknown',
+  $State extends State,
+> = {
+  false: {  // allowed = false
+    false: StaticErrorAssertion<`Edge type ${$TypeName} not allowed by default, opt in with .${$TypeName}()`>,
+    true: StaticErrorAssertion<`Expected type to not be ${$TypeName}, but was`>
+  },
+  true: {  // allowed = true
+    false: never,
+    true: StaticErrorAssertion<`Expected type to not be ${$TypeName}, but was`>
+  }
+}[BooleanCase<$State[`matcher_allow${Capitalize<$TypeName>}`]>][BooleanCase<$State['matcher_negated']>]
 
 //
 //
@@ -15,100 +93,197 @@ import type { State } from './state.js'
 //
 //
 
+/**
+ * Apply relator after normalization.
+ * Shared logic for both GuardActual and GuardExpected.
+ */
 // dprint-ignore
-export type GuardAnyOrNeverExpectation<
-  $expected,
-  $State extends State
+type ApplyRelation<
+  $Expected,
+  $Actual,
+  $State extends State,
+  $Relator extends Kind.Kind,
+  ___$ExpectedNormalized = NormalizeForComparison<$Expected, $State>,
+  ___$ActualNormalized = NormalizeForComparison<$Actual, $State>,
+> = Kind.Apply<$Relator, [___$ExpectedNormalized, ___$ActualNormalized]>
+
+/**
+ * Pure validation - returns Error | never.
+ * Handles extraction, extraction errors, and relation validation.
+ */
+// dprint-ignore
+type Validate<
+  $Expected,
+  $RawActual,
+  $State extends State,
+  $Relator extends Kind.Kind,
+  ___$ActualExtracted = ApplyExtractors<$State['actual_extractors'], $RawActual>,
+  ___$Error = ApplyRelation<$Expected, ___$ActualExtracted, $State, $Relator>,
 > =
-  IsNever<$expected> extends true  ? IsNever<$State['matcher']['type']> extends true
-    ? $expected
-    : StaticErrorAssertion<'Type never is not assignable unless expected type is never', never, $expected, 'Use .never matcher if you actually expect never type'> :
+  // Check extraction error first
+  [___$ActualExtracted] extends [Ts.Error]
+    ? ___$ActualExtracted
+    // Check unknown - only allowed with flag
+    : IsUnknown<___$ActualExtracted> extends true
+      ? $State['matcher_allowUnknown'] extends true
+        ? [___$Error] extends [never]
+          ? never
+          : [___$Error] extends [Ts.Error]
+            ? ___$Error
+            : StaticErrorAssertion<'Unexpected error type in guard', unknown, unknown>
+        : StaticErrorAssertion<'Type unknown is not a valid actual type to assertion on unless flag has been set'>
+      // Regular validation
+      : [___$Error] extends [never]
+        ? never
+        : [___$Error] extends [Ts.Error]
+          ? ___$Error
+          : StaticErrorAssertion<'Unexpected error type in guard', unknown, unknown>
 
-  IsAny<$expected> extends true    ? IsAny<$State['matcher']['type']> extends true
-    ? $expected
-    : StaticErrorAssertion<'Type any is not assignable unless expected type is any', any, $expected, 'Use .any matcher if you actually expect any type'> :
+//
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • GuardAnyOrNever (Unified)
+//
+//
+//
+//
 
-    $expected
-
-// dprint-ignore
-export type GuardAnyOrNeverActual<
+/**
+ * Unified guard for never/any/unknown validation.
+ * Checks both actual and expected values, returns tuple of 0-2 errors.
+ */
+export type GuardAgainstAnyNeverUnknown<
   $actual,
-  $State extends State
-> =
-  // Check for never
-  IsNever<$actual> extends true
-    ? $State['matcher']['allowNever'] extends true
-      ? $actual  // ✅ allowNever flag set, pass
-      : IsNever<$State['matcher']['type']> extends true
-        ? $actual  // ✅ Expected type is also never, pass
-        : StaticErrorAssertion<'Type never is not assignable unless expected type is never', never, $actual, 'Use .never matcher if you actually expect never type'>
-    :
-  // Check for any
-  IsAny<$actual> extends true
-    ? $State['matcher']['allowAny'] extends true
-      ? $actual  // ✅ allowAny flag set, pass
-      : IsAny<$State['matcher']['type']> extends true
-        ? $actual  // ✅ Expected type is also any, pass
-        : StaticErrorAssertion<'Type any is not assignable unless expected type is any', any, $actual, 'Use .any matcher if you actually expect any type'>
-    :
-  // Neither never nor any
-  $actual
+  $expected,
+  $State extends State,
+> = OnlyFailingChecks<[
+  CheckEdgeType<$actual, $State>,
+  CheckEdgeType<$expected, $State>,
+]>
 
 export type GuardActual<
   $actual,
   $State extends State,
-> = $State['relator'] extends Kind.Kind ? GuardActual_<
+> = $State['matcher_relator'] extends Kind.Kind ? Guard<
     $actual,
-    $State,
-    $State['relator']
+    Validate<$State['expected_type'], $actual, $State, $State['matcher_relator']>
+  >
+  : StaticErrorAssertion<'No relator set'>
+
+export type GuardExpected<
+  $expected,
+  $State extends State,
+> = $State['matcher_relator'] extends Kind.Kind ? Guard<
+    $expected,
+    Validate<$State['actual_type'], $expected, $State, $State['matcher_relator']>
   >
   : StaticErrorAssertion<'No relator set'>
 
 // dprint-ignore
-type GuardActual_<
-  $actual,
-  $State extends State,
-  $Relator extends Kind.Kind,
-  ___$ActualExtracted = ApplyExtractors<$State['extractors'], $actual>,
-> =
-  // Check if extraction failed first
-  [___$ActualExtracted] extends [Ts.Error]
-    ? ___$ActualExtracted
-    // Extraction succeeded, proceed with relation check
-    : GuardActual__<$actual, $State, $Relator, ___$ActualExtracted>
-
-// dprint-ignore
-type GuardActual__<
-  $actual,
-  $State extends State,
-  $Relator extends Kind.Kind,
-  ___$ActualExtracted,
-  ___$Error = Kind.Apply<$Relator, [$State['matcher']['type'], ___$ActualExtracted]>,
-> =
-IsUnknown<___$ActualExtracted> extends true
-  ? $State['matcher']['allowUnknown'] extends true
-    ? [___$Error] extends [never]
-      ? $actual
-      : [___$Error] extends [Ts.Error]
-        ? ___$Error
-        : StaticErrorAssertion<'Unexpected error type in GuardActual', unknown, unknown>
-    : IsUnknown<$State['matcher']['type']> extends true
-      ? [___$Error] extends [never]
-        ? $actual
-        : [___$Error] extends [Ts.Error]
-          ? ___$Error
-          : StaticErrorAssertion<'Unexpected error type in GuardActual', unknown, unknown>
-      : StaticErrorAssertion<'Type unknown is not a valid actual type to assertion on unless flag has been set'>
-: [___$Error] extends [never]                       ? $actual :
-[___$Error] extends [Ts.Error]          ? ___$Error
-                                                  : StaticErrorAssertion<'Unexpected error type in GuardActual', unknown, unknown>
-
-// dprint-ignore
-export type RestParamsDisplayGuards<$Results extends readonly any[]> =
+export type OnlyFailingChecks<$Results extends readonly any[]> =
   $Results extends [infer __first__, ...infer __rest__]
-    ? [__first__] extends [Ts.Error]
-      ? [__first__, ...RestParamsDisplayGuards<__rest__>]
-      : RestParamsDisplayGuards<__rest__>
+    ? IsNever<__first__> extends true      ? OnlyFailingChecks<__rest__>
+    : IsAny<__first__> extends true        ? OnlyFailingChecks<__rest__>
+    : [__first__] extends [Ts.Error]       ? [__first__, ...OnlyFailingChecks<__rest__>]
+                                           : OnlyFailingChecks<__rest__>
     : []
 
-export type RestParamsDisplayGuard<$Result> = [$Result] extends [Ts.Error] ? [$Result] : []
+// // dprint-ignore
+// export type GetRestParamsForDisplayingGuard<$Result> =
+//   IsNever<$Result> extends true     ? [] :
+//   IsAny<$Result> extends true       ? [] :
+//   [$Result] extends [Ts.Error]      ? [$Result] :
+//                                       []
+
+/**
+ * Thin guard wrapper - converts validation result to Error | $Value.
+ * Returns $Value on success (validation = never), Error on failure.
+ */
+// dprint-ignore
+type Guard<
+  $Value,
+  ___Validation
+> = [___Validation] extends [never]
+  ? $Value
+  : ___Validation
+
+//
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Unary Relator Guards
+//
+//
+//
+//
+
+/**
+ * Guard for unary relators.
+ * Dispatches based on kind and negation state.
+ */
+export type GuardUnaryRelator<
+  $actual,
+  $State extends State,
+  $Kind extends 'any' | 'unknown' | 'never' | 'empty',
+> = {
+  'any': GuardUnaryRelatorEdgeType<$actual, $State, 'any'>
+  'unknown': GuardUnaryRelatorEdgeType<$actual, $State, 'unknown'>
+  'never': GuardUnaryRelatorEdgeType<$actual, $State, 'never'>
+  'empty': GuardUnaryRelatorEmpty<$actual, $State>
+}[$Kind]
+
+/**
+ * Check if type matches the edge type (any/unknown/never) for unary relators.
+ * Unlike CheckEdgeType which validates/rejects edge types, this CHECKS if type IS that edge type.
+ */
+// dprint-ignore
+type GuardUnaryRelatorEdgeType<
+  $actual,
+  $State extends State,
+  $TypeName extends 'any' | 'unknown' | 'never',
+> = {
+  false: {  // not negated - check if type IS the edge type
+    true: never  // is the edge type - pass (return never so params becomes [])
+    false: StaticErrorAssertion<
+      `Type is not ${$TypeName}`,
+      $TypeName,
+      $actual
+    >
+  }
+  true: {  // negated - check if type is NOT the edge type
+    true: StaticErrorAssertion<`Type is ${$TypeName}, but expected not ${$TypeName}`, $TypeName, $actual>
+    false: never  // not the edge type - pass (return never so params becomes [])
+  }
+}[BooleanCase<$State['matcher_negated']>][BooleanCase<Inhabitance.GetCase<$actual> extends $TypeName ? true : false>]
+
+/**
+ * Validate empty with negation support.
+ */
+// dprint-ignore
+type GuardUnaryRelatorEmpty<$actual, $State extends State> = {
+  false: {  // not negated
+    true: never  // is empty - pass (return never so params becomes [])
+    false: StaticErrorAssertion<
+      'Type is not empty',
+      EmptyTypes,
+      $actual,
+      {
+        tip_array: 'Empty array: [] or readonly []'
+        tip_object: 'Empty object: keyof T extends never (not {}!)'
+        tip_string: 'Empty string: \'\''
+      }
+    >
+  }
+  true: {  // negated
+    true: StaticErrorAssertion<'Expected type to not be empty, but was'>
+    false: never  // not empty - pass (return never so params becomes [])
+  }
+}[BooleanCase<$State['matcher_negated']>][BooleanCase<Inhabitance.IsEmpty<$actual>>]
+
+/**
+ * Union of valid empty types for error display.
+ */
+type EmptyTypes = [] | Record<PropertyKey, never> | ''

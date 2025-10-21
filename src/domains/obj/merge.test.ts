@@ -41,7 +41,7 @@ describe('merge', () => {
     const { obj1, obj2 } = fixtures.simple()
     const result = Obj.merge(obj1, obj2)
     expect(result).toEqual({ a: 1, b: 3, c: 4 })
-    Ts.Assert.sub.ofAs<{ a: number; b: number; c: number }>()(result)
+    Ts.Assert.sub.ofAs<{ a: number; b: number; c: number }>().on(result)
   })
 
   test('deep merges nested objects', () => {
@@ -54,7 +54,7 @@ describe('merge', () => {
     Ts.Assert.sub.ofAs<{
       user: { name: string; age: number; city: string }
       tags: string[]
-    }>()(result)
+    }>().on(result)
   })
 
   test('replaces arrays rather than merging', () => {
@@ -106,7 +106,7 @@ describe('mergeWithArrayPush', () => {
     const { obj1, obj2 } = fixtures.withArrays()
     const result = Obj.mergeWithArrayPush(obj1, obj2)
     expect(result).toEqual({ tags: ['react', 'typescript', 'nodejs', 'express'] })
-    Ts.Assert.sub.ofAs<{ tags: string[] }>()(result)
+    Ts.Assert.sub.ofAs<{ tags: string[] }>().on(result)
   })
 
   test('works with nested arrays', () => {
@@ -149,7 +149,7 @@ describe('mergeDefaults', () => {
     const defaults = { port: 8080, host: 'localhost', debug: false }
     const result = Obj.mergeDefaults(config, defaults)
     expect(result).toEqual({ port: 3000, host: 'localhost', debug: false })
-    Ts.Assert.sub.ofAs<{ port: number; host: string; debug: boolean }>()(result)
+    Ts.Assert.sub.ofAs<{ port: number; host: string; debug: boolean }>().on(result)
   })
 
   test('preserves undefined properties', () => {
@@ -168,7 +168,7 @@ describe('shallowMergeDefaults', () => {
     const { defaults, config } = fixtures.withDefaults()
     const result = Obj.shallowMergeDefaults(defaults, config)
     expect(result).toEqual({ port: 3000, host: 'localhost', debug: false })
-    Ts.Assert.sub.ofAs<{ port: number; host: string; debug: boolean }>()(result)
+    Ts.Assert.sub.ofAs<{ port: number; host: string; debug: boolean }>().on(result)
   })
 
   test('later values override earlier ones', () => {

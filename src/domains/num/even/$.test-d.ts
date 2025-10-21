@@ -17,11 +17,11 @@ test('Type narrowing works correctly with isEven predicate', () => {
 
   // Predicate narrows to Even & Int intersection
   if (isEven(value)) {
-    Assert.sub.ofAs<Even & Int>()(value)
+    Assert.sub.ofAs<Even & Int>().on(value)
     // Can assign to Even
-    Assert.sub.ofAs<Even>()(value)
+    Assert.sub.ofAs<Even>().on(value)
     // Can assign to Int
-    Assert.sub.ofAs<Int>()(value)
+    Assert.sub.ofAs<Int>().on(value)
   }
 
   // Multiple checks preserve all brands
@@ -40,31 +40,31 @@ test('Type narrowing works correctly with isEven predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic even constructor always returns Even & Int
   const even1 = even(4)
-  Assert.exact.ofAs<Even & Int>()(even1)
+  Assert.exact.ofAs<Even & Int>().on(even1)
 
   // Negative even numbers
   const even2 = even(-2)
-  Assert.exact.ofAs<Even & Int>()(even2)
+  Assert.exact.ofAs<Even & Int>().on(even2)
 
   // Zero is even
   const even3 = even(0)
-  Assert.exact.ofAs<Even & Int>()(even3)
+  Assert.exact.ofAs<Even & Int>().on(even3)
 
   // Try constructor
   const try1 = tryEven(6)
-  Assert.exact.ofAs<(Even & Int) | null>()(try1)
+  Assert.exact.ofAs<(Even & Int) | null>().on(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Assert.exact.ofAs<Even & Int>()(try1)
+    Assert.exact.ofAs<Even & Int>().on(try1)
   }
 
   // Next/prev even operations
   const next = nextEven(3.5) // Should be 4
-  Assert.exact.ofAs<Even & Int>()(next)
+  Assert.exact.ofAs<Even & Int>().on(next)
 
   const prev = prevEven(5.5) // Should be 4
-  Assert.exact.ofAs<Even & Int>()(prev)
+  Assert.exact.ofAs<Even & Int>().on(prev)
 })
 
 // === Type Relationships ===
@@ -74,15 +74,15 @@ test('Even has correct relationship with Int', () => {
 
   // Even & Int can be assigned to Even
   const asEven: Even = evenNum
-  Assert.sub.ofAs<Even>()(asEven)
+  Assert.sub.ofAs<Even>().on(asEven)
 
   // Even & Int can be assigned to Int
   const asInt: Int = evenNum
-  Assert.sub.ofAs<Int>()(asInt)
+  Assert.sub.ofAs<Int>().on(asInt)
 
   // Even & Int can be assigned to number
   const asNumber: number = evenNum
-  Assert.sub.ofAs<number>()(asNumber)
+  Assert.sub.ofAs<number>().on(asNumber)
 
   // But Even alone cannot be assigned to Int (might not be integer)
   const justEven = {} as Even

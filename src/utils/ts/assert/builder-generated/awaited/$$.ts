@@ -1,21 +1,21 @@
 import type * as Kind from '../../../kind.js'
-import { runtime } from '../../builder/runtime.js'
 import type { Awaited$ } from '../../../path.js'
+import { builder } from '../../builder-singleton.js'
 import type { EquivKind, ExactKind, SubKind } from '../../kinds/relators.js'
 
 export * as equiv from './equiv.js'
 export * as exact from './exact.js'
 export * as not from './not/$$.js'
 export * as sub from './sub.js'
-// Value-level extractor chaining via runtime proxy
-export const returned = runtime.awaited.returned
-export const array = runtime.awaited.array
-export const parameters = runtime.awaited.parameters
-export const parameter1 = runtime.awaited.parameter1
-export const parameter2 = runtime.awaited.parameter2
-export const parameter3 = runtime.awaited.parameter3
-export const parameter4 = runtime.awaited.parameter4
-export const parameter5 = runtime.awaited.parameter5
+// Value-level extractor chaining via builder proxy
+export const returned = builder.awaited.returned
+export const array = builder.awaited.array
+export const parameters = builder.awaited.parameters
+export const parameter1 = builder.awaited.parameter1
+export const parameter2 = builder.awaited.parameter2
+export const parameter3 = builder.awaited.parameter3
+export const parameter4 = builder.awaited.parameter4
+export const parameter5 = builder.awaited.parameter5
 export type exact<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, Kind.Apply<Awaited$, [$Actual]>]>
 export type equiv<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Awaited$, [$Actual]>]>
 export type sub<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Awaited$, [$Actual]>]>

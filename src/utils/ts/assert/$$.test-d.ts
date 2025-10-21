@@ -60,22 +60,20 @@ type __ = [
 // - Every test must be one line
 // - Every extractor section follows a 10-line pattern covering both API styles:
 //
-//   1. .of(expected)(actual)             - Simple inferred value-level
+//   1. .of(expected).on(actual)             - Simple inferred value-level
 //   2. .on(actual).of(expected)          - Value-first API
-//   3. .ofAs<Type>()(actual)             - Type-explicit value-level
+//   3. .ofAs<Type>().on(actual)             - Type-explicit value-level
 //   4. .onAs<Type>().of(expected)        - Type-first API
-//   5. .ofAs<Type>().as<Type>()          - Type-level assertion (deprecated .as)
+//   5. .ofAs<Type>().onAs<Type>()          - Type-level assertion (deprecated .as)
 //   6. .onAs(actual).ofAs<Type>()        - Value-first with type-level
-//   7. .ofAs<Type>()(wrongValue)         - Failing case (with @ts-expect-error)
+//   7. .ofAs<Type>().on(wrongValue)         - Failing case (with @ts-expect-error)
 //   8. .onAs<Type>().of(wrongValue)      - Failing value-first (no @ts-expect-error)
-//   9. .ofAs<Type>().as<WrongType>()     - Failing type-level (with @ts-expect-error, deprecated .as)
+//   9. .ofAs<Type>().onAs<WrongType>()     - Failing type-level (with @ts-expect-error, deprecated .as)
 //   10. .onAs<Type>().ofAs<WrongType>()  - Failing value-first type-level (no @ts-expect-error)
 //
 // Note: Lines 5 and 9 use deprecated `.as()` method on actual receiver
 //
 //
-
-// const { not, exact, sub, equiv } = Ts.Assert // OLD API - no longer used
 
 //
 //
@@ -83,137 +81,162 @@ type __ = [
 //
 //
 
-A.exact.of(a)(a)
-A.on(a).exact.of(a)
-A.exact.ofAs<a>()(a)
-A.onAs<a>().exact.of(a)
-A.exact.ofAs<a>().as<a>()
-A.onAs(a).exact.ofAs<a>()
+A.exact.of(a).on(a)
+A.exact.ofAs<a>().on(a)
 // @ts-expect-error
-A.exact.ofAs<a>()(b)
+A.exact.ofAs<a>().on(b)
+A.exact.ofAs<a>().onAs<a>()
+// @ts-expect-error
+A.exact.ofAs<a>().onAs<b>()
+A.on(a).exact.of(a)
+A.on(a).exact.ofAs<a>()
+A.onAs<a>().exact.of(a)
+// @ts-expect-error
 A.onAs<a>().exact.of(b)
 // @ts-expect-error
-A.exact.ofAs<a>().as<b>()
 A.onAs<a>().exact.ofAs<b>()
+
+// Excess property test - both APIs should reject excess properties
+// @ts-expect-error
+A.exact.of(obj).on(objExcess)
+// @ts-expect-error
+A.on(objExcess).exact.of(obj)
+
 //
 // ━━ awaited.is
 //
-A.awaited.exact.of(a)(Promise.resolve(a))
+A.awaited.exact.of(a).on(Promise.resolve(a))
 A.on(Promise.resolve(a)).awaited.exact.of(a)
-A.awaited.exact.ofAs<a>()(Promise.resolve(a))
+A.awaited.exact.ofAs<a>().on(Promise.resolve(a))
 A.onAs<Promise<a>>().awaited.exact.of(a)
-A.awaited.exact.ofAs<a>().as<Promise<a>>()
-A.onAs(Promise.resolve(a)).awaited.exact.ofAs<a>()
+A.awaited.exact.ofAs<a>().onAs<Promise<a>>()
+A.on(Promise.resolve(a)).awaited.exact.ofAs<a>()
 // @ts-expect-error
-A.awaited.exact.ofAs<a>()(Promise.resolve(b))
+A.awaited.exact.ofAs<a>().on(Promise.resolve(b))
+// @ts-expect-error
 A.onAs<Promise<a>>().awaited.exact.of(b)
 // @ts-expect-error
-A.awaited.exact.ofAs<a>().as<Promise<b>>()
+A.awaited.exact.ofAs<a>().onAs<Promise<b>>()
+// @ts-expect-error
 A.onAs<Promise<a>>().awaited.exact.ofAs<b>()
 //
 // ━━ awaited.array
 //
-A.awaited.array.exact.of(a)(Promise.resolve([a]))
+A.awaited.array.exact.of(a).on(Promise.resolve([a]))
 A.on(Promise.resolve([a])).awaited.array.exact.of(a)
-A.awaited.array.exact.ofAs<a>()(Promise.resolve([a]))
+A.awaited.array.exact.ofAs<a>().on(Promise.resolve([a]))
 A.onAs<Promise<a[]>>().awaited.array.exact.of(a)
-A.awaited.array.exact.ofAs<a>().as<Promise<a[]>>()
-A.onAs(Promise.resolve([a])).awaited.array.exact.ofAs<a>()
+A.awaited.array.exact.ofAs<a>().onAs<Promise<a[]>>()
+A.on(Promise.resolve([a])).awaited.array.exact.ofAs<a>()
 // @ts-expect-error
-A.awaited.array.exact.ofAs<a>()(Promise.resolve([b]))
+A.awaited.array.exact.ofAs<a>().on(Promise.resolve([b]))
+// @ts-expect-error
 A.onAs<Promise<a[]>>().awaited.array.exact.of(b)
 // @ts-expect-error
-A.awaited.array.exact.ofAs<a>().as<Promise<b[]>>()
+A.awaited.array.exact.ofAs<a>().onAs<Promise<b[]>>()
+// @ts-expect-error
 A.onAs<Promise<a[]>>().awaited.array.exact.ofAs<b>()
 //
 // ━━ returned.is
 //
-A.returned.exact.of(a)(() => a)
+A.returned.exact.of(a).on(() => a)
 A.on(() => a).returned.exact.of(a)
-A.returned.exact.ofAs<a>()(() => a)
+A.returned.exact.ofAs<a>().on(() => a)
 A.onAs<() => a>().returned.exact.of(a)
-A.returned.exact.ofAs<a>().as<() => a>()
-A.onAs(() => a).returned.exact.ofAs<a>()
+A.returned.exact.ofAs<a>().onAs<() => a>()
+A.on(() => a).returned.exact.ofAs<a>()
 // @ts-expect-error
-A.returned.exact.ofAs<a>()(() => b)
+A.returned.exact.ofAs<a>().on(() => b)
+// @ts-expect-error
 A.onAs<() => a>().returned.exact.of(b)
 // @ts-expect-error
-A.returned.exact.ofAs<a>().as<() => b>()
+A.returned.exact.ofAs<a>().onAs<() => b>()
+// @ts-expect-error
 A.onAs<() => a>().returned.exact.ofAs<b>()
 //
 // ━━ returned.awaited
 //
-A.returned.awaited.exact.of(a)(() => Promise.resolve(a))
+A.returned.awaited.exact.of(a).on(() => Promise.resolve(a))
 A.on(() => Promise.resolve(a)).returned.awaited.exact.of(a)
-A.returned.awaited.exact.ofAs<a>()(() => Promise.resolve(a))
+A.returned.awaited.exact.ofAs<a>().on(() => Promise.resolve(a))
 A.onAs<() => Promise<a>>().returned.awaited.exact.of(a)
-A.returned.awaited.exact.ofAs<a>().as<() => Promise<a>>()
-A.onAs(() => Promise.resolve(a)).returned.awaited.exact.ofAs<a>()
+A.returned.awaited.exact.ofAs<a>().onAs<() => Promise<a>>()
+A.on(() => Promise.resolve(a)).returned.awaited.exact.ofAs<a>()
 // @ts-expect-error
-A.returned.awaited.exact.ofAs<a>()(() => Promise.resolve(b))
+A.returned.awaited.exact.ofAs<a>().on(() => Promise.resolve(b))
+// @ts-expect-error
 A.onAs<() => Promise<a>>().returned.awaited.exact.of(b)
 // @ts-expect-error
-A.returned.awaited.exact.ofAs<a>().as<() => Promise<b>>()
+A.returned.awaited.exact.ofAs<a>().onAs<() => Promise<b>>()
+// @ts-expect-error
 A.onAs<() => Promise<a>>().returned.awaited.exact.ofAs<b>()
 //
 // ━━ returned.array
 //
-A.returned.array.exact.of(a)(() => [a])
+A.returned.array.exact.of(a).on(() => [a])
 A.on(() => [a]).returned.array.exact.of(a)
-A.returned.array.exact.ofAs<a>()(() => [a])
+A.returned.array.exact.ofAs<a>().on(() => [a])
 A.onAs<() => a[]>().returned.array.exact.of(a)
-A.returned.array.exact.ofAs<a>().as<() => a[]>()
-A.onAs(() => [a]).returned.array.exact.ofAs<a>()
+A.returned.array.exact.ofAs<a>().onAs<() => a[]>()
+A.on(() => [a]).returned.array.exact.ofAs<a>()
 // @ts-expect-error
-A.returned.array.exact.ofAs<a>()(() => [b])
+A.returned.array.exact.ofAs<a>().on(() => [b])
+// @ts-expect-error
 A.onAs<() => a[]>().returned.array.exact.of(b)
 // @ts-expect-error
-A.returned.array.exact.ofAs<a>().as<() => b[]>()
+A.returned.array.exact.ofAs<a>().onAs<() => b[]>()
+// @ts-expect-error
 A.onAs<() => a[]>().returned.array.exact.ofAs<b>()
 //
 // ━━ array
 //
-A.array.exact.of(a)([a])
+A.array.exact.of(a).on([a])
 A.on([a]).array.exact.of(a)
-A.array.exact.ofAs<a>()([a])
+A.array.exact.ofAs<a>().on([a])
 A.onAs<a[]>().array.exact.of(a)
-A.array.exact.ofAs<a>().as<a[]>()
-A.onAs([a]).array.exact.ofAs<a>()
+A.array.exact.ofAs<a>().onAs<a[]>()
+A.on([a]).array.exact.ofAs<a>()
 // @ts-expect-error
-A.array.exact.ofAs<a>()([b])
+A.array.exact.ofAs<a>().on([b])
+// @ts-expect-error
 A.onAs<a[]>().array.exact.of(b)
 // @ts-expect-error
-A.array.exact.ofAs<a>().as<b[]>()
+A.array.exact.ofAs<a>().onAs<b[]>()
+// @ts-expect-error
 A.onAs<a[]>().array.exact.ofAs<b>()
 //
 // ━━ parameter1
 //
-A.parameter1.exact.of(a)((_: a) => b)
+A.parameter1.exact.of(a).on((_: a) => b)
 A.on((_: a) => b).parameter1.exact.of(a)
-A.parameter1.exact.ofAs<a>()((_: a) => b)
+A.parameter1.exact.ofAs<a>().on((_: a) => b)
 A.onAs<(_: a) => b>().parameter1.exact.of(a)
-A.parameter1.exact.ofAs<a>().as<(_: a) => b>()
-A.onAs((_: a) => b).parameter1.exact.ofAs<a>()
+A.parameter1.exact.ofAs<a>().onAs<(_: a) => b>()
+A.on((_: a) => b).parameter1.exact.ofAs<a>()
 // @ts-expect-error
-A.parameter1.exact.of<a>()((_: b) => a)
+A.parameter1.exact.of<a>().on((_: b) => a)
+// @ts-expect-error
 A.onAs<(_: a) => b>().parameter1.exact.of(b)
 // @ts-expect-error
 A.parameter1.exact.of<a, (_: b) => a>()
+// @ts-expect-error
 A.onAs<(_: a) => b>().parameter1.exact.ofAs<b>()
 //
 // ━━ parameters
 //
-A.parameters.exact.of([a, b])((_: a, __: b) => a)
+A.parameters.exact.of([a, b]).on((_: a, __: b) => a)
 A.on((_: a, __: b) => a).parameters.exact.of([a, b])
-A.parameters.exact.ofAs<[a, b]>()((_: a, __: b) => a)
+A.parameters.exact.ofAs<[a, b]>().on((_: a, __: b) => a)
 A.onAs<(_: a, __: b) => a>().parameters.exact.of([a, b])
-A.parameters.exact.ofAs<[a, b]>().as<((_: a, __: b) => a)>()
-A.onAs((_: a, __: b) => a).parameters.exact.ofAs<[a, b]>()
+A.parameters.exact.ofAs<[a, b]>().onAs<((_: a, __: b) => a)>()
+A.on((_: a, __: b) => a).parameters.exact.ofAs<[a, b]>()
 // @ts-expect-error
-A.parameters.exact<[a, b]>()((_: b, __: a) => a)
+A.parameters.exact<[a, b]>().on((_: b, __: a) => a)
+// @ts-expect-error
 A.onAs<(_: a, __: b) => a>().parameters.exact.of([b, a])
 // @ts-expect-error
 A.parameters.exact<[a, b], (_: b, __: a) => a>()
+// @ts-expect-error
 A.onAs<(_: a, __: b) => a>().parameters.exact.ofAs<[b, a]>()
 //
 // ━━ noExcess (not a thing)
@@ -226,158 +249,180 @@ A.exact.never(A.exact.noExcess)
 //
 //
 
-A.sub.of(a)(a)
+A.sub.of(a).on(a)
 A.on(a).sub.of(a)
-A.sub.ofAs<a>()(a)
+A.sub.ofAs<a>().on(a)
 A.onAs<a>().sub.of(a)
-A.sub.ofAs<a>().as<a>()
-A.onAs(a).sub.ofAs<a>()
+A.sub.ofAs<a>().onAs<a>()
+A.on(a).sub.ofAs<a>()
 // @ts-expect-error
-A.sub.ofAs<a>()(b)
+A.sub.ofAs<a>().on(b)
+// @ts-expect-error
 A.onAs<a>().sub.of(b)
 // @ts-expect-error
-A.sub.ofAs<a>().as<b>()
+A.sub.ofAs<a>().onAs<b>()
+// @ts-expect-error
 A.onAs<a>().sub.ofAs<b>()
 //
 // ━━ awaited.is
 //
-A.awaited.sub.of(a)(Promise.resolve(a))
+A.awaited.sub.of(a).on(Promise.resolve(a))
 A.on(Promise.resolve(a)).awaited.sub.of(a)
-A.awaited.sub.ofAs<a>()(Promise.resolve(a))
+A.awaited.sub.ofAs<a>().on(Promise.resolve(a))
 A.onAs<Promise<a>>().awaited.sub.of(a)
-A.awaited.sub.ofAs<a>().as<Promise<a>>()
-A.onAs(Promise.resolve(a)).awaited.sub.ofAs<a>()
+A.awaited.sub.ofAs<a>().onAs<Promise<a>>()
+A.on(Promise.resolve(a)).awaited.sub.ofAs<a>()
 // @ts-expect-error
-A.awaited.sub.ofAs<a>()(Promise.resolve(b))
+A.awaited.sub.ofAs<a>().on(Promise.resolve(b))
+// @ts-expect-error
 A.onAs<Promise<a>>().awaited.sub.of(b)
 // @ts-expect-error
-A.awaited.sub.ofAs<a>().as<Promise<b>>()
+A.awaited.sub.ofAs<a>().onAs<Promise<b>>()
+// @ts-expect-error
 A.onAs<Promise<a>>().awaited.sub.ofAs<b>()
 //
 // ━━ awaited.array
 //
-A.awaited.array.sub.of(a)(Promise.resolve([a]))
+A.awaited.array.sub.of(a).on(Promise.resolve([a]))
 A.on(Promise.resolve([a])).awaited.array.sub.of(a)
-A.awaited.array.sub.ofAs<a>()(Promise.resolve([a]))
+A.awaited.array.sub.ofAs<a>().on(Promise.resolve([a]))
 A.onAs<Promise<a[]>>().awaited.array.sub.of(a)
-A.awaited.array.sub.ofAs<a>().as<Promise<a[]>>()
-A.onAs(Promise.resolve([a])).awaited.array.sub.ofAs<a>()
+A.awaited.array.sub.ofAs<a>().onAs<Promise<a[]>>()
+A.on(Promise.resolve([a])).awaited.array.sub.ofAs<a>()
 // @ts-expect-error
-A.awaited.array.sub.ofAs<a>()(Promise.resolve([b]))
+A.awaited.array.sub.ofAs<a>().on(Promise.resolve([b]))
+// @ts-expect-error
 A.onAs<Promise<a[]>>().awaited.array.sub.of(b)
 // @ts-expect-error
-A.awaited.array.sub.ofAs<a>().as<Promise<b[]>>()
+A.awaited.array.sub.ofAs<a>().onAs<Promise<b[]>>()
+// @ts-expect-error
 A.onAs<Promise<a[]>>().awaited.array.sub.ofAs<b>()
 //
 // ━━ returned.is
 //
-A.returned.sub.of(a)(() => a)
+A.returned.sub.of(a).on(() => a)
 A.on(() => a).returned.sub.of(a)
-A.returned.sub.ofAs<a>()(() => a)
+A.returned.sub.ofAs<a>().on(() => a)
 A.onAs<() => a>().returned.sub.of(a)
-A.returned.sub.ofAs<a>().as<() => a>()
-A.onAs(() => a).returned.sub.ofAs<a>()
+A.returned.sub.ofAs<a>().onAs<() => a>()
+A.on(() => a).returned.sub.ofAs<a>()
 // @ts-expect-error
-A.returned.sub.ofAs<a>()(() => b)
+A.returned.sub.ofAs<a>().on(() => b)
+// @ts-expect-error
 A.onAs<() => a>().returned.sub.of(b)
 // @ts-expect-error
-A.returned.sub.ofAs<a>().as<() => b>()
+A.returned.sub.ofAs<a>().onAs<() => b>()
+// @ts-expect-error
 A.onAs<() => a>().returned.sub.ofAs<b>()
 //
 // ━━ returned.awaited
 //
-A.returned.awaited.sub.of(a)(() => Promise.resolve(a))
+A.returned.awaited.sub.of(a).on(() => Promise.resolve(a))
 A.on(() => Promise.resolve(a)).returned.awaited.sub.of(a)
-A.returned.awaited.sub.ofAs<a>()(() => Promise.resolve(a))
+A.returned.awaited.sub.ofAs<a>().on(() => Promise.resolve(a))
 A.onAs<() => Promise<a>>().returned.awaited.sub.of(a)
-A.returned.awaited.sub.ofAs<a>().as<() => Promise<a>>()
-A.onAs(() => Promise.resolve(a)).returned.awaited.sub.ofAs<a>()
+A.returned.awaited.sub.ofAs<a>().onAs<() => Promise<a>>()
+A.on(() => Promise.resolve(a)).returned.awaited.sub.ofAs<a>()
 // @ts-expect-error
-A.returned.awaited.sub.ofAs<a>()(() => Promise.resolve(b))
+A.returned.awaited.sub.ofAs<a>().on(() => Promise.resolve(b))
+// @ts-expect-error
 A.onAs<() => Promise<a>>().returned.awaited.sub.of(b)
 // @ts-expect-error
-A.returned.awaited.sub.ofAs<a>().as<() => Promise<b>>()
+A.returned.awaited.sub.ofAs<a>().onAs<() => Promise<b>>()
+// @ts-expect-error
 A.onAs<() => Promise<a>>().returned.awaited.sub.ofAs<b>()
 //
 // ━━ returned.array
 //
-A.returned.array.sub.of(a)(() => [a])
+A.returned.array.sub.of(a).on(() => [a])
 A.on(() => [a]).returned.array.sub.of(a)
-A.returned.array.sub.ofAs<a>()(() => [a])
+A.returned.array.sub.ofAs<a>().on(() => [a])
 A.onAs<() => a[]>().returned.array.sub.of(a)
-A.returned.array.sub.ofAs<a>().as<() => a[]>()
-A.onAs(() => [a]).returned.array.sub.ofAs<a>()
+A.returned.array.sub.ofAs<a>().onAs<() => a[]>()
+A.on(() => [a]).returned.array.sub.ofAs<a>()
 // @ts-expect-error
-A.returned.array.sub.ofAs<a>()(() => [b])
+A.returned.array.sub.ofAs<a>().on(() => [b])
+// @ts-expect-error
 A.onAs<() => a[]>().returned.array.sub.of(b)
 // @ts-expect-error
-A.returned.array.sub.ofAs<a>().as<() => b[]>()
+A.returned.array.sub.ofAs<a>().onAs<() => b[]>()
+// @ts-expect-error
 A.onAs<() => a[]>().returned.array.sub.ofAs<b>()
 //
 // ━━ array
 //
-A.array.sub.of(a)([a])
+A.array.sub.of(a).on([a])
 A.on([a]).array.sub.of(a)
-A.array.sub.ofAs<a>()([a])
+A.array.sub.ofAs<a>().on([a])
 A.onAs<a[]>().array.sub.of(a)
-A.array.sub.ofAs<a>().as<a[]>()
-A.onAs([a]).array.sub.ofAs<a>()
+A.array.sub.ofAs<a>().onAs<a[]>()
+A.on([a]).array.sub.ofAs<a>()
 // @ts-expect-error
-A.array.sub.ofAs<a>()([b])
+A.array.sub.ofAs<a>().on([b])
+// @ts-expect-error
 A.onAs<a[]>().array.sub.of(b)
 // @ts-expect-error
-A.array.sub.ofAs<a>().as<b[]>()
+A.array.sub.ofAs<a>().onAs<b[]>()
+// @ts-expect-error
 A.onAs<a[]>().array.sub.ofAs<b>()
 //
 // ━━ parameter1
 //
-A.parameter1.sub.of(a)((_: a) => b)
+A.parameter1.sub.of(a).on((_: a) => b)
 A.on((_: a) => b).parameter1.sub.of(a)
-A.parameter1.sub.ofAs<a>()((_: a) => b)
+A.parameter1.sub.ofAs<a>().on((_: a) => b)
 A.onAs<(_: a) => b>().parameter1.sub.of(a)
-A.parameter1.sub.ofAs<a>().as<(_: a) => b>()
-A.onAs((_: a) => b).parameter1.sub.ofAs<a>()
+A.parameter1.sub.ofAs<a>().onAs<(_: a) => b>()
+A.on((_: a) => b).parameter1.sub.ofAs<a>()
 // @ts-expect-error
-A.sub.parameter1.ofAs<a>()((_: b) => a)
+A.sub.parameter1.ofAs<a>().on((_: b) => a)
+// @ts-expect-error
 A.onAs<(_: a) => b>().parameter1.sub.of(b)
 // @ts-expect-error
-A.sub.parameter1.of<a>().as<(_: b) => a>()
+A.sub.parameter1.of<a>().onAs<(_: b) => a>()
+// @ts-expect-error
 A.onAs<(_: a) => b>().parameter1.sub.ofAs<b>()
 //
 // ━━ parameters
 //
-A.parameters.sub.of([a, b])((_: a, __: b) => a)
+A.parameters.sub.of([a, b]).on((_: a, __: b) => a)
 A.on((_: a, __: b) => a).parameters.sub.of([a, b])
-A.parameters.sub.ofAs<[a, b]>()((_: a, __: b) => a)
+A.parameters.sub.ofAs<[a, b]>().on((_: a, __: b) => a)
 A.onAs<(_: a, __: b) => a>().parameters.sub.of([a, b])
-A.parameters.sub.ofAs<[a, b]>().as<(_: a, __: b) => a>()
-A.onAs((_: a, __: b) => a).parameters.sub.ofAs<[a, b]>()
+A.parameters.sub.ofAs<[a, b]>().onAs<(_: a, __: b) => a>()
+A.on((_: a, __: b) => a).parameters.sub.ofAs<[a, b]>()
 // @ts-expect-error
-A.sub.parameters.ofAs<[a, b]>()((_: b, __: a) => a)
+A.sub.parameters.ofAs<[a, b]>().on((_: b, __: a) => a)
+// @ts-expect-error
 A.onAs<(_: a, __: b) => a>().parameters.sub.of([b, a])
 // @ts-expect-error
-A.sub.parameters.of<[a, b]>().as<(_: b, __: a) => a>()
+A.sub.parameters.of<[a, b]>().onAs<(_: b, __: a) => a>()
+// @ts-expect-error
 A.onAs<(_: a, __: b) => a>().parameters.sub.ofAs<[b, a]>()
 //
 // ━━ noExcess
 //
-A.sub.noExcess(obj)(obj)
+A.sub.noExcess(obj).on(obj)
 A.on(obj).sub.noExcess(obj)
-A.sub.noExcessAs<obj>()(obj)
+A.sub.noExcessAs<obj>().on(obj)
 A.onAs<obj>().sub.noExcess(obj)
-A.sub.noExcessAs<obj>().as<obj>()
-A.onAs(obj).sub.noExcessAs<obj>()
+A.sub.noExcessAs<obj>().onAs<obj>()
+A.on(obj).sub.noExcessAs<obj>()
 // @ts-expect-error
-A.sub.noExcessAs<obj>()(objExcess)
+A.sub.noExcessAs<obj>().on(objExcess)
+// @ts-expect-error
 A.onAs<obj>().sub.noExcess(objExcess)
 // @ts-expect-error
-A.sub.noExcessAs<obj>()(objExcessOptional)
+A.sub.noExcessAs<obj>().on(objExcessOptional)
+// @ts-expect-error
 A.onAs<obj>().sub.noExcess(objExcessOptional)
 // @ts-expect-error
-A.sub.noExcessAs<obj>().as<objExcess>()
+A.sub.noExcessAs<obj>().onAs<objExcess>()
+// @ts-expect-error
 A.onAs<obj>().sub.noExcessAs<objExcess>()
 // @ts-expect-error
-A.sub.noExcessAs<obj>().as<objExcessOptional>()
+A.sub.noExcessAs<obj>().onAs<objExcessOptional>()
+// @ts-expect-error
 A.onAs<obj>().sub.noExcessAs<objExcessOptional>()
 
 //
@@ -386,159 +431,198 @@ A.onAs<obj>().sub.noExcessAs<objExcessOptional>()
 //
 //
 
-A.equiv.of(ab)(ab)
+A.equiv.of(ab).on(ab)
 A.on(ab).equiv.of(ab)
-A.equiv.ofAs<ab>()(ab)
+A.equiv.ofAs<ab>().on(ab)
 A.onAs<ab>().equiv.of(ab)
-A.equiv.ofAs<ab>().as<ab>()
-A.onAs(ab).equiv.ofAs<ab>()
+A.equiv.ofAs<ab>().onAs<ab>()
+A.on(ab).equiv.ofAs<ab>()
 // @ts-expect-error
-A.equiv.ofAs<a>()(b)
+A.equiv.ofAs<a>().on(b)
+// @ts-expect-error
 A.onAs<a>().equiv.of(b)
 // @ts-expect-error
-A.equiv.ofAs<a>().as<b>()
+A.equiv.ofAs<a>().onAs<b>()
+// @ts-expect-error
 A.onAs<a>().equiv.ofAs<b>()
 //
 // ━━ awaited.is
 //
-A.awaited.equiv.of(a)(Promise.resolve(a))
+A.awaited.equiv.of(a).on(Promise.resolve(a))
 A.on(Promise.resolve(a)).awaited.equiv.of(a)
-A.awaited.equiv.ofAs<a>()(Promise.resolve(a))
+A.awaited.equiv.ofAs<a>().on(Promise.resolve(a))
 A.onAs<Promise<a>>().awaited.equiv.of(a)
-A.awaited.equiv.ofAs<a>().as<Promise<a>>()
-A.onAs(Promise.resolve(a)).awaited.equiv.ofAs<a>()
+A.awaited.equiv.ofAs<a>().onAs<Promise<a>>()
+A.on(Promise.resolve(a)).awaited.equiv.ofAs<a>()
 // @ts-expect-error
-A.awaited.equiv.ofAs<a>()(Promise.resolve(b))
+A.awaited.equiv.ofAs<a>().on(Promise.resolve(b))
+// @ts-expect-error
 A.onAs<Promise<a>>().awaited.equiv.of(b)
 // @ts-expect-error
-A.awaited.equiv.ofAs<a>().as<Promise<b>>()
+A.awaited.equiv.ofAs<a>().onAs<Promise<b>>()
+// @ts-expect-error
 A.onAs<Promise<a>>().awaited.equiv.ofAs<b>()
 //
 // ━━ awaited.array
 //
-A.awaited.array.equiv.of(a)(Promise.resolve([a]))
+A.awaited.array.equiv.of(a).on(Promise.resolve([a]))
 A.on(Promise.resolve([a])).awaited.array.equiv.of(a)
-A.awaited.array.equiv.ofAs<a>()(Promise.resolve([a]))
+A.awaited.array.equiv.ofAs<a>().on(Promise.resolve([a]))
 A.onAs<Promise<a[]>>().awaited.array.equiv.of(a)
-A.awaited.array.equiv.ofAs<a>().as<Promise<a[]>>()
-A.onAs(Promise.resolve([a])).awaited.array.equiv.ofAs<a>()
+A.awaited.array.equiv.ofAs<a>().onAs<Promise<a[]>>()
+A.on(Promise.resolve([a])).awaited.array.equiv.ofAs<a>()
 // @ts-expect-error
-A.awaited.array.equiv.ofAs<a>()(Promise.resolve([b]))
+A.awaited.array.equiv.ofAs<a>().on(Promise.resolve([b]))
+// @ts-expect-error
 A.onAs<Promise<a[]>>().awaited.array.equiv.of(b)
 // @ts-expect-error
-A.awaited.array.equiv.ofAs<a>().as<Promise<b[]>>()
+A.awaited.array.equiv.ofAs<a>().onAs<Promise<b[]>>()
+// @ts-expect-error
 A.onAs<Promise<a[]>>().awaited.array.equiv.ofAs<b>()
 //
 // ━━ returned.is
 //
-A.returned.equiv.of(a)(() => a)
+A.returned.equiv.of(a).on(() => a)
 A.on(() => a).returned.equiv.of(a)
-A.returned.equiv.ofAs<a>()(() => a)
+A.returned.equiv.ofAs<a>().on(() => a)
 A.onAs<() => a>().returned.equiv.of(a)
-A.returned.equiv.ofAs<a>().as<() => a>()
-A.onAs(() => a).returned.equiv.ofAs<a>()
+A.returned.equiv.ofAs<a>().onAs<() => a>()
+A.on(() => a).returned.equiv.ofAs<a>()
 // @ts-expect-error
-A.returned.equiv.ofAs<a>()(() => b)
+A.returned.equiv.ofAs<a>().on(() => b)
+// @ts-expect-error
 A.onAs<() => a>().returned.equiv.of(b)
 // @ts-expect-error
-A.returned.equiv.ofAs<a>().as<() => b>()
+A.returned.equiv.ofAs<a>().onAs<() => b>()
+// @ts-expect-error
 A.onAs<() => a>().returned.equiv.ofAs<b>()
 //
 // ━━ returned.awaited
 //
-A.returned.awaited.equiv.of(a)(() => Promise.resolve(a))
+A.returned.awaited.equiv.of(a).on(() => Promise.resolve(a))
 A.on(() => Promise.resolve(a)).returned.awaited.equiv.of(a)
-A.returned.awaited.equiv.ofAs<a>()(() => Promise.resolve(a))
+A.returned.awaited.equiv.ofAs<a>().on(() => Promise.resolve(a))
 A.onAs<() => Promise<a>>().returned.awaited.equiv.of(a)
-A.returned.awaited.equiv.ofAs<a>().as<() => Promise<a>>()
-A.onAs(() => Promise.resolve(a)).returned.awaited.equiv.ofAs<a>()
+A.returned.awaited.equiv.ofAs<a>().onAs<() => Promise<a>>()
+A.on(() => Promise.resolve(a)).returned.awaited.equiv.ofAs<a>()
 // @ts-expect-error
-A.returned.awaited.equiv.ofAs<a>()(() => Promise.resolve(b))
+A.returned.awaited.equiv.ofAs<a>().on(() => Promise.resolve(b))
+// @ts-expect-error
 A.onAs<() => Promise<a>>().returned.awaited.equiv.of(b)
 // @ts-expect-error
-A.returned.awaited.equiv.ofAs<a>().as<() => Promise<b>>()
+A.returned.awaited.equiv.ofAs<a>().onAs<() => Promise<b>>()
+// @ts-expect-error
 A.onAs<() => Promise<a>>().returned.awaited.equiv.ofAs<b>()
 //
 // ━━ returned.array
 //
-A.returned.array.equiv.of(a)(() => [a])
+A.returned.array.equiv.of(a).on(() => [a])
 A.on(() => [a]).returned.array.equiv.of(a)
-A.returned.array.equiv.ofAs<a>()(() => [a])
+A.returned.array.equiv.ofAs<a>().on(() => [a])
 A.onAs<() => a[]>().returned.array.equiv.of(a)
-A.returned.array.equiv.ofAs<a>().as<() => a[]>()
-A.onAs(() => [a]).returned.array.equiv.ofAs<a>()
+A.returned.array.equiv.ofAs<a>().onAs<() => a[]>()
+A.on(() => [a]).returned.array.equiv.ofAs<a>()
 // @ts-expect-error
-A.returned.array.equiv.ofAs<a>()(() => [b])
+A.returned.array.equiv.ofAs<a>().on(() => [b])
+// @ts-expect-error
 A.onAs<() => a[]>().returned.array.equiv.of(b)
 // @ts-expect-error
-A.returned.array.equiv.ofAs<a>().as<() => b[]>()
+A.returned.array.equiv.ofAs<a>().onAs<() => b[]>()
+// @ts-expect-error
 A.onAs<() => a[]>().returned.array.equiv.ofAs<b>()
 //
 // ━━ array
 //
-A.array.equiv.of(a)([a])
+A.array.equiv.of(a).on([a])
 A.on([a]).array.equiv.of(a)
-A.array.equiv.ofAs<a>()([a])
+A.array.equiv.ofAs<a>().on([a])
 A.onAs<a[]>().array.equiv.of(a)
-A.array.equiv.ofAs<a>().as<a[]>()
-A.onAs([a]).array.equiv.ofAs<a>()
+A.array.equiv.ofAs<a>().onAs<a[]>()
+A.on([a]).array.equiv.ofAs<a>()
 // @ts-expect-error
-A.array.equiv.ofAs<a>()([b])
+A.array.equiv.ofAs<a>().on([b])
+// @ts-expect-error
 A.onAs<a[]>().array.equiv.of(b)
 // @ts-expect-error
-A.array.equiv.ofAs<a>().as<b[]>()
+A.array.equiv.ofAs<a>().onAs<b[]>()
+// @ts-expect-error
 A.onAs<a[]>().array.equiv.ofAs<b>()
 //
 // ━━ parameter1
 //
-A.parameter1.equiv.of(a)((_: a) => b)
+A.parameter1.equiv.of(a).on((_: a) => b)
 A.on((_: a) => b).parameter1.equiv.of(a)
-A.parameter1.equiv.ofAs<a>()((_: a) => b)
+A.parameter1.equiv.ofAs<a>().on((_: a) => b)
 A.onAs<(_: a) => b>().parameter1.equiv.of(a)
-A.parameter1.equiv.ofAs<a>().as<(_: a) => b>()
-A.onAs((_: a) => b).parameter1.equiv.ofAs<a>()
+A.parameter1.equiv.ofAs<a>().onAs<(_: a) => b>()
+A.on((_: a) => b).parameter1.equiv.ofAs<a>()
 // @ts-expect-error
-A.equiv.parameter1.ofAs<a>()((_: b) => a)
+A.equiv.parameter1.ofAs<a>().on((_: b) => a)
+// @ts-expect-error
 A.onAs<(_: a) => b>().parameter1.equiv.of(b)
 // @ts-expect-error
-A.equiv.parameter1.of<a>().as<(_: b) => a>()
+A.equiv.parameter1.of<a>().onAs<(_: b) => a>()
+// @ts-expect-error
 A.onAs<(_: a) => b>().parameter1.equiv.ofAs<b>()
 //
 // ━━ parameters
 //
-A.parameters.equiv.of([a, b])((_: a, __: b) => a)
+A.parameters.equiv.of([a, b]).on((_: a, __: b) => a)
 A.on((_: a, __: b) => a).parameters.equiv.of([a, b])
-A.parameters.equiv.ofAs<[a, b]>()((_: a, __: b) => a)
+A.parameters.equiv.ofAs<[a, b]>().on((_: a, __: b) => a)
 A.onAs<(_: a, __: b) => a>().parameters.equiv.of([a, b])
-A.parameters.equiv.ofAs<[a, b]>().as<(_: a, __: b) => a>()
-A.onAs((_: a, __: b) => a).parameters.equiv.ofAs<[a, b]>()
+A.parameters.equiv.ofAs<[a, b]>().onAs<(_: a, __: b) => a>()
+A.on((_: a, __: b) => a).parameters.equiv.ofAs<[a, b]>()
 // @ts-expect-error
-A.equiv.parameters.ofAs<[a, b]>()((_: b, __: a) => a)
+A.equiv.parameters.ofAs<[a, b]>().on((_: b, __: a) => a)
+// @ts-expect-error
 A.onAs<(_: a, __: b) => a>().parameters.equiv.of([b, a])
 // @ts-expect-error
-A.equiv.parameters.of<[a, b]>().as<(_: b, __: a) => a>()
+A.equiv.parameters.of<[a, b]>().onAs<(_: b, __: a) => a>()
+// @ts-expect-error
 A.onAs<(_: a, __: b) => a>().parameters.equiv.ofAs<[b, a]>()
 //
 // ━━ noExcess
 //
-A.equiv.noExcess(obj)(obj)
+A.equiv.noExcess(obj).on(obj)
 A.on(obj).equiv.noExcess(obj)
-A.equiv.noExcessAs<obj>()(obj)
+A.equiv.noExcessAs<obj>().on(obj)
 A.onAs<obj>().equiv.noExcess(obj)
-A.equiv.noExcessAs<obj>().as<obj>()
-A.onAs(obj).equiv.noExcessAs<obj>()
+A.equiv.noExcessAs<obj>().onAs<obj>()
+A.on(obj).equiv.noExcessAs<obj>()
 // @ts-expect-error
-A.equiv.noExcessAs<obj>()(objExcess)
+A.equiv.noExcessAs<obj>().on(objExcess)
+// @ts-expect-error
 A.onAs<obj>().equiv.noExcess(objExcess)
 // @ts-expect-error
-A.equiv.noExcessAs<obj>()(objExcessOptional)
+A.equiv.noExcessAs<obj>().on(objExcessOptional)
+// @ts-expect-error
 A.onAs<obj>().equiv.noExcess(objExcessOptional)
 // @ts-expect-error
-A.equiv.noExcessAs<obj>().as<objExcess>()
+A.equiv.noExcessAs<obj>().onAs<objExcess>()
+// @ts-expect-error
 A.onAs<obj>().equiv.noExcessAs<objExcess>()
 // @ts-expect-error
-A.equiv.noExcessAs<obj>().as<objExcessOptional>()
+A.equiv.noExcessAs<obj>().onAs<objExcessOptional>()
+// @ts-expect-error
 A.onAs<obj>().equiv.noExcessAs<objExcessOptional>()
+
+//
+//
+//
+//
+//
+// Matchers
+//
+// ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+//
+//
+//
+
+// @ts-expect-error
+A.exact.string(42)
+// @ts-expect-error
+A.on(42).exact.string()
 
 //
 //
@@ -560,10 +644,10 @@ A.onAs<obj>().equiv.noExcessAs<objExcessOptional>()
 //
 
 // TODO: Not yet supported in new builder API
-// not.exact.ofAs<a>()(b)
+// not.exact.ofAs<a>().on(b)
 // not.exact.ofAs<a, b>()
 // // @ts-expect-error
-// not.exact.ofAs<a>()(a)
+// not.exact.ofAs<a>().on(a)
 // // @ts-expect-error
 // not.exact.ofAs<a, a>()
 
@@ -611,15 +695,20 @@ A.onAs<obj>().equiv.noExcessAs<objExcessOptional>()
 //
 //
 A.exact.never($n)
+// @ts-expect-error
+A.not.exact.never($n)
 A.on($n).exact.never()
 // @ts-expect-error
 A.exact.never(a)
+// @ts-expect-error
 A.on(a).exact.never()
 // @ts-expect-error
-A.exact.of(a)($n)
+A.exact.of(a).on($n)
+// @ts-expect-error
 A.on($n).exact.of(a)
 // @ts-expect-error
-A.exact.of(a).as<$n>()
+A.exact.of(a).onAs<$n>()
+// @ts-expect-error
 A.onAs<$n>().exact.of(a)
 
 //
@@ -630,13 +719,18 @@ A.onAs<$n>().exact.of(a)
 A.exact.any($a)
 A.on($a).exact.any()
 // @ts-expect-error
+A.not.exact.any($a)
+// @ts-expect-error
 A.exact.any(a)
+// @ts-expect-error
 A.on(a).exact.any()
 // @ts-expect-error
-A.exact.of(a)($a)
+A.exact.of(a).on($a)
+// @ts-expect-error
 A.on($a).exact.of(a)
 // @ts-expect-error
-A.exact.of(a).as<$a>()
+A.exact.of(a).onAs<$a>()
+// @ts-expect-error
 A.onAs<$a>().exact.of(a)
 
 //
@@ -646,24 +740,95 @@ A.onAs<$a>().exact.of(a)
 //
 A.exact.unknown($u)
 A.on($u).exact.unknown()
+// todo
+// A.not.exact.unknown($u)
 // @ts-expect-error
 A.exact.unknown(a)
+// @ts-expect-error
 A.on(a).exact.unknown()
 // @ts-expect-error
-A.exact.of(a)($u)
+A.exact.of(a).on($u)
+// @ts-expect-error
 A.on($u).exact.of(a)
 // @ts-expect-error
-A.exact.of(a).as<$u>()
+A.exact.of(a).onAs<$u>()
+// @ts-expect-error
 A.onAs<$u>().exact.of(a)
 
 //
 //
-// ━━━━━━━━━━━━━━ • exact - empty
-//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Unary Relators (Top-Level)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 //
 
-// TODO: Not yet supported in new builder API
-// exact.empty([])
+//
+// ━━━━━━━━━━━━━━ • any (unary relator)
+//
+A.any($a)
+A.on($a).any()
+A.not.any(a)
+// @ts-expect-error
+A.any(a)
+// @ts-expect-error
+A.not.any($a)
+
+//
+// ━━━━━━━━━━━━━━ • unknown (unary relator)
+//
+A.unknown($u)
+A.on($u).unknown()
+A.not.unknown(a)
+// @ts-expect-error
+A.unknown(a)
+// @ts-expect-error
+A.not.unknown($u)
+
+//
+// ━━━━━━━━━━━━━━ • never (unary relator)
+//
+A.never($n)
+A.on($n).never()
+A.not.never(a)
+// @ts-expect-error
+A.never(a)
+// @ts-expect-error
+A.not.never($n)
+
+//
+// ━━━━━━━━━━━━━━ • empty (unary relator - NEW)
+//
+
+// Pass cases - empty values
+A.empty({})
+A.empty([])
+A.on([]).empty()
+A.empty([] as const)
+A.empty([] as readonly [])
+A.empty('')
+A.on('' as const).empty()
+
+// Negation - not empty
+A.not.empty([1])
+A.not.empty({ a: 1 })
+A.not.empty('hello')
+
+// With extractors
+A.onAs<Promise<[]>>().awaited.empty()
+A.onAs<() => []>().returned.empty()
+A.on([[]]).array.empty()
+
+// Error cases - not empty
+// @ts-expect-error - array not empty
+A.empty([1])
+// @ts-expect-error - has properties
+A.empty({ a: 1 })
+// @ts-expect-error - string not empty
+A.empty('hello')
+// @ts-expect-error - is empty but negated
+A.not.empty([])
+// @ts-expect-error - is empty but negated
+A.not.empty('')
 
 //
 //
@@ -682,18 +847,18 @@ const readonlyValue = Ts.as<readonly [string]>()
 type readonlyValue = typeof readonlyValue
 
 /* default */
-A.exact.of([a]).as<[a]>()
-A.exact.of(readonlyValue)(readonlyValue)
-A.exact.of(readonlyValue)([a] as any as [string])
-A.exact.of(readonlyValue).as<[string]>()
+A.exact.of([a]).onAs<[a]>()
+A.exact.of(readonlyValue).on(readonlyValue)
+// A.exact.of(readonlyValue).on([a] as any as [string])
+A.exact.of(readonlyValue).onAs<[string]>()
 
-A.setInfer('auto').exact.of([a]).as<[a]>()
-A.setInfer('wide').exact.of([a]).as<a[]>()
+A.setInfer('auto').exact.of([a]).onAs<[a]>()
+A.setInfer('wide').exact.of([a]).onAs<a[]>()
 
-A.setInfer('narrow').exact.of([a]).as<readonly [a]>()
-A.setInfer('narrow').exact.of(readonlyValue)(readonlyValue)
-A.setInfer('narrow').exact.of(readonlyValue)([a] as any as readonlyValue)
-A.setInfer('narrow').exact.of(readonlyValue).as<readonlyValue>()
+A.setInfer('narrow').exact.of([a]).onAs<readonly [a]>()
+A.setInfer('narrow').exact.of(readonlyValue).on(readonlyValue)
+A.setInfer('narrow').exact.of(readonlyValue).on([a] as any as readonlyValue)
+A.setInfer('narrow').exact.of(readonlyValue).onAs<readonlyValue>()
 
 //
 //
@@ -715,10 +880,8 @@ A.setInfer('narrow').exact.of(readonlyValue).as<readonlyValue>()
 type _exact_relation = A.Cases<
   // Base .of matcher
   A.exact.of<string, string>,
-  A.exact.of<number, number>,
-  A.exact.of<42, 42>,
-  A.exact.of<'hello', 'hello'>,
-  // Pre-curried primitives
+  A.exact.of<a, a>,
+  // curried primitives
   A.exact.string<string>,
   A.exact.number<number>,
   A.exact.bigint<bigint>,
@@ -729,19 +892,17 @@ type _exact_relation = A.Cases<
   A.exact.unknown<unknown>,
   A.exact.any<any>,
   A.exact.never<never>,
-  // Pre-curried built-ins
+  // curried built-ins
   A.exact.Date<Date>,
   A.exact.RegExp<RegExp>,
-  A.exact.Error<Error>,
-  A.exact.Promise<Promise<any>>,
-  A.exact.Array<any[]>
+  A.exact.Error<Error>
 >
 
 type _equiv_relation = A.Cases<
   // Base .of matcher
   A.equiv.of<string & {}, string>,
   A.equiv.of<1 | 2, 2 | 1>,
-  // Pre-curried primitives
+  // curried primitives
   A.equiv.string<string>,
   A.equiv.number<number>,
   A.equiv.bigint<bigint>,
@@ -763,7 +924,7 @@ type _sub_relation = A.Cases<
   A.sub.of<string, 'hello'>,
   A.sub.of<number, 42>,
   A.sub.of<object, { a: 1 }>,
-  // Pre-curried primitives
+  // curried primitives
   A.sub.string<'hello'>,
   A.sub.number<42>,
   A.sub.boolean<true>,
@@ -875,9 +1036,7 @@ type _coverage_exact = A.Cases<
   // All built-ins
   A.exact.Date<Date>,
   A.exact.RegExp<RegExp>,
-  A.exact.Error<Error>,
-  A.exact.Promise<Promise<any>>,
-  A.exact.Array<any[]>
+  A.exact.Error<Error>
 >
 
 type _coverage_equiv = A.Cases<
@@ -892,9 +1051,7 @@ type _coverage_equiv = A.Cases<
   // All built-ins
   A.equiv.Date<Date>,
   A.equiv.RegExp<RegExp>,
-  A.equiv.Error<Error>,
-  A.equiv.Promise<Promise<any>>,
-  A.equiv.Array<any[]>
+  A.equiv.Error<Error>
 >
 
 type _coverage_sub = A.Cases<
@@ -909,9 +1066,7 @@ type _coverage_sub = A.Cases<
   // All built-ins
   A.sub.Date<Date>,
   A.sub.RegExp<RegExp>,
-  A.sub.Error<Error>,
-  A.sub.Promise<Promise<any>>,
-  A.sub.Array<any[]>
+  A.sub.Error<Error>
 >
 
 //

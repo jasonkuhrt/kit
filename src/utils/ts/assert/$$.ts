@@ -1,11 +1,24 @@
 export type { StaticErrorAssertion } from './assertion-error.ts'
 export * from './builder-generated/$$.js'
-export { on, onAs } from './builder/builder.js'
 export * from './cases.js'
 
-// Inference config entry points
-import { runtime } from './builder/runtime.js'
-export const inferNarrow = runtime.inferNarrow
-export const inferWide = runtime.inferWide
-export const inferAuto = runtime.inferAuto
-export const setInfer = runtime.setInfer
+import { builder } from './builder-singleton.ts'
+
+// Unary Relators (top-level)
+export const any = builder.any
+export const unknown = builder.unknown
+export const never = builder.never
+export const empty = builder.empty
+
+// Input Methods
+export const on = builder.on
+export const onAs = builder.onAs
+
+// Settings/Modifiers
+export const inferNarrow = builder.inferNarrow
+export const inferWide = builder.inferWide
+export const inferAuto = builder.inferAuto
+export const setInfer = builder.setInfer
+
+// Note: Binary relators (exact, sub, equiv, not), extractors (awaited, returned, etc.)
+// and their matchers are all exported via builder-generated/$$.js

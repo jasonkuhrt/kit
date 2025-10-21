@@ -50,7 +50,47 @@ Ts.Assert.exact<string, number>()
 // Must provide: (error: { ERROR: "...", expected: string, actual: number })
 ```
 
-## Relations
+## Unary Relators
+
+Relators that check properties of a single type (no comparison). Available at top-level and directly executable.
+
+### `any` / `unknown` / `never`
+
+Check if type is an edge case:
+
+```typescript
+Assert.any(x as any) // ✅
+Assert.unknown(x as unknown) // ✅
+Assert.never(x as never) // ✅
+
+// With negation
+Assert.not.any(x as string) // ✅
+
+// Note: Also available under binary relators for backward compat
+Assert.exact.any(x as any) // ✅ (same behavior)
+```
+
+### `empty`
+
+Assert type is empty:
+
+```typescript
+Assert.empty([]) // ✅ empty array
+Assert.empty('' as const) // ✅ empty string
+Assert.empty({} as Record<string, never>) // ✅ empty object
+
+// With negation
+Assert.not.empty([1]) // ✅ not empty
+
+// Common mistakes
+Assert.empty({}) // ❌ {} = non-nullish!
+```
+
+**Important:** `{}` means "non-nullish", not empty. Use `Record<PropertyKey, never>`.
+
+## Binary Relators
+
+Binary relators compare two types (expected vs actual).
 
 ### `exact`
 
@@ -116,36 +156,9 @@ parameter2<number>()((a: string, b: number) => {}) // OK (2nd param)
 parameters<[string, number]>()((x: string, y: number) => {}) // OK (all)
 ```
 
-## Special Types
+## Special Types (Legacy - see Unary Relators above)
 
-### `never`
-
-Unary assertion - expects never type:
-
-```typescript
-never()(null as never) // OK
-never<never>() // OK (TTA mode)
-never<string>() // ❌
-```
-
-### `any` / `unknown`
-
-Unary assertions for special types:
-
-```typescript
-any()(null as any) // OK
-unknown()(null as unknown) // OK
-```
-
-### `empty`
-
-Assert array/object is empty:
-
-```typescript
-empty()([]) // OK
-empty()({}) // OK
-empty()([1]) // ❌
-```
+These matchers are available under binary relators for backward compatibility, but work identically to their top-level unary relator counterparts.
 
 ## Collection Types
 

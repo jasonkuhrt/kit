@@ -1,5 +1,5 @@
 import type * as Kind from '../../../kind.js'
-import { runtime } from '../../builder/runtime.js'
+import { builder } from '../../builder-singleton.js'
 import type { SubKind } from '../../kinds/relators.js'
 
 /**
@@ -25,7 +25,7 @@ import type { SubKind } from '../../kinds/relators.js'
  * ```
  */
 type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, $Actual, true]>
-const of_ = runtime.not.sub.of
+const of_ = builder.not.sub.of
 
 /**
  * Pre-curried matcher for string.
@@ -40,7 +40,7 @@ const of_ = runtime.not.sub.of
  * ```
  */
 type string_<$Actual> = Kind.Apply<SubKind, [string, $Actual, true]>
-const string_ = runtime.not.sub.string
+const string_ = builder.not.sub.string
 
 /**
  * Pre-curried matcher for number.
@@ -55,7 +55,7 @@ const string_ = runtime.not.sub.string
  * ```
  */
 type number_<$Actual> = Kind.Apply<SubKind, [number, $Actual, true]>
-const number_ = runtime.not.sub.number
+const number_ = builder.not.sub.number
 
 /**
  * Pre-curried matcher for bigint.
@@ -70,7 +70,7 @@ const number_ = runtime.not.sub.number
  * ```
  */
 type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, $Actual, true]>
-const bigint_ = runtime.not.sub.bigint
+const bigint_ = builder.not.sub.bigint
 
 /**
  * Pre-curried matcher for boolean.
@@ -85,7 +85,7 @@ const bigint_ = runtime.not.sub.bigint
  * ```
  */
 type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, $Actual, true]>
-const boolean_ = runtime.not.sub.boolean
+const boolean_ = builder.not.sub.boolean
 
 /**
  * Pre-curried matcher for undefined.
@@ -100,7 +100,7 @@ const boolean_ = runtime.not.sub.boolean
  * ```
  */
 type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, $Actual, true]>
-const undefined_ = runtime.not.sub.undefined
+const undefined_ = builder.not.sub.undefined
 
 /**
  * Pre-curried matcher for null.
@@ -115,7 +115,7 @@ const undefined_ = runtime.not.sub.undefined
  * ```
  */
 type null_<$Actual> = Kind.Apply<SubKind, [null, $Actual, true]>
-const null_ = runtime.not.sub.null
+const null_ = builder.not.sub.null
 
 /**
  * Pre-curried matcher for symbol.
@@ -130,7 +130,7 @@ const null_ = runtime.not.sub.null
  * ```
  */
 type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, $Actual, true]>
-const symbol_ = runtime.not.sub.symbol
+const symbol_ = builder.not.sub.symbol
 
 /**
  * Pre-curried matcher for Date.
@@ -145,7 +145,7 @@ const symbol_ = runtime.not.sub.symbol
  * ```
  */
 type Date_<$Actual> = Kind.Apply<SubKind, [Date, $Actual, true]>
-const Date_ = runtime.not.sub.Date
+const Date_ = builder.not.sub.Date
 
 /**
  * Pre-curried matcher for RegExp.
@@ -160,7 +160,7 @@ const Date_ = runtime.not.sub.Date
  * ```
  */
 type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, $Actual, true]>
-const RegExp_ = runtime.not.sub.RegExp
+const RegExp_ = builder.not.sub.RegExp
 
 /**
  * Pre-curried matcher for Error.
@@ -175,37 +175,7 @@ const RegExp_ = runtime.not.sub.RegExp
  * ```
  */
 type Error_<$Actual> = Kind.Apply<SubKind, [Error, $Actual, true]>
-const Error_ = runtime.not.sub.Error
-
-/**
- * Pre-curried matcher for Promise<any>.
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.sub.Promise<Promise<any>>
- *
- * // ✗ Fail
- * type _ = Assert.sub.Promise<string>
- * ```
- */
-type Promise_<$Actual> = Kind.Apply<SubKind, [Promise<any>, $Actual, true]>
-const Promise_ = runtime.not.sub.Promise
-
-/**
- * Pre-curried matcher for any[].
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.sub.Array<any[]>
- *
- * // ✗ Fail
- * type _ = Assert.sub.Array<string>
- * ```
- */
-type Array_<$Actual> = Kind.Apply<SubKind, [any[], $Actual, true]>
-const Array_ = runtime.not.sub.Array
+const Error_ = builder.not.sub.Error
 
 /**
  * Pre-curried matcher for unknown.
@@ -220,7 +190,7 @@ const Array_ = runtime.not.sub.Array
  * ```
  */
 type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, $Actual, true]>
-const unknown_ = runtime.not.sub.unknown
+const unknown_ = builder.not.sub.unknown
 
 /**
  * Pre-curried matcher for any.
@@ -235,7 +205,7 @@ const unknown_ = runtime.not.sub.unknown
  * ```
  */
 type any_<$Actual> = Kind.Apply<SubKind, [any, $Actual, true]>
-const any_ = runtime.not.sub.any
+const any_ = builder.not.sub.any
 
 /**
  * Pre-curried matcher for never.
@@ -250,13 +220,12 @@ const any_ = runtime.not.sub.any
  * ```
  */
 type never_<$Actual> = Kind.Apply<SubKind, [never, $Actual, true]>
-const never_ = runtime.not.sub.never
+const never_ = builder.not.sub.never
 
-const ofAs_ = runtime.not.sub.ofAs
+const ofAs_ = <$Type>() => builder.not.sub.ofAs<$Type>()
 
 export {
   any_ as any,
-  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
@@ -266,7 +235,6 @@ export {
   number_ as number,
   of_ as of,
   ofAs_ as ofAs,
-  Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,

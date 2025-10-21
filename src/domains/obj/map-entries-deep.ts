@@ -138,7 +138,8 @@ export const mapEntriesDeep = <$value extends DeepObjectValue>(
       return val.map(item => impl(item, visited))
     }
 
-    if (typeof val === 'object' && val !== null) {
+    // Only process plain objects, not Date, RegExp, Error, etc.
+    if (typeof val === 'object' && val !== null && val.constructor === Object) {
       // Circular reference guard
       if (visited.has(val)) return '[Circular]'
       visited.add(val)

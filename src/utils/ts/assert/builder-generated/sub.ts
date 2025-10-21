@@ -1,12 +1,6 @@
-/**
- * @generated
- * This file contains generated type-level matchers.
- * Manual edits should be made carefully and consistently across all generated files.
- */
-
-import type * as Kind from '../../../kind.js'
-import { runtime } from '../../builder/runtime.js'
-import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
+import type * as Kind from '../../kind.js'
+import { builder } from '../builder-singleton.js'
+import type { SubKind, SubNoExcessKind } from '../kinds/relators.js'
 
 /**
  * base + sub relation matchers.
@@ -31,21 +25,7 @@ import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
  * ```
  */
 type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, $Actual]>
-const of_ = runtime.sub.of
-
-/**
- * Type-explicit matcher accepting an explicit type parameter.
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * Assert.sub.ofAs<string>()('hello')
- *
- * // ✗ Fail
- * Assert.sub.ofAs<string>()(42)
- * ```
- */
-const ofAs_ = runtime.sub.ofAs
+const of_ = builder.sub.of
 
 /**
  * Pre-curried matcher for string.
@@ -60,7 +40,7 @@ const ofAs_ = runtime.sub.ofAs
  * ```
  */
 type string_<$Actual> = Kind.Apply<SubKind, [string, $Actual]>
-const string_ = runtime.sub.string
+const string_ = builder.sub.string
 
 /**
  * Pre-curried matcher for number.
@@ -75,7 +55,7 @@ const string_ = runtime.sub.string
  * ```
  */
 type number_<$Actual> = Kind.Apply<SubKind, [number, $Actual]>
-const number_ = runtime.sub.number
+const number_ = builder.sub.number
 
 /**
  * Pre-curried matcher for bigint.
@@ -90,7 +70,7 @@ const number_ = runtime.sub.number
  * ```
  */
 type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, $Actual]>
-const bigint_ = runtime.sub.bigint
+const bigint_ = builder.sub.bigint
 
 /**
  * Pre-curried matcher for boolean.
@@ -105,7 +85,7 @@ const bigint_ = runtime.sub.bigint
  * ```
  */
 type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, $Actual]>
-const boolean_ = runtime.sub.boolean
+const boolean_ = builder.sub.boolean
 
 /**
  * Pre-curried matcher for undefined.
@@ -120,7 +100,7 @@ const boolean_ = runtime.sub.boolean
  * ```
  */
 type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, $Actual]>
-const undefined_ = runtime.sub.undefined
+const undefined_ = builder.sub.undefined
 
 /**
  * Pre-curried matcher for null.
@@ -135,7 +115,7 @@ const undefined_ = runtime.sub.undefined
  * ```
  */
 type null_<$Actual> = Kind.Apply<SubKind, [null, $Actual]>
-const null_ = runtime.sub.null
+const null_ = builder.sub.null
 
 /**
  * Pre-curried matcher for symbol.
@@ -150,7 +130,7 @@ const null_ = runtime.sub.null
  * ```
  */
 type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, $Actual]>
-const symbol_ = runtime.sub.symbol
+const symbol_ = builder.sub.symbol
 
 /**
  * Pre-curried matcher for Date.
@@ -165,7 +145,7 @@ const symbol_ = runtime.sub.symbol
  * ```
  */
 type Date_<$Actual> = Kind.Apply<SubKind, [Date, $Actual]>
-const Date_ = runtime.sub.Date
+const Date_ = builder.sub.Date
 
 /**
  * Pre-curried matcher for RegExp.
@@ -180,7 +160,7 @@ const Date_ = runtime.sub.Date
  * ```
  */
 type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, $Actual]>
-const RegExp_ = runtime.sub.RegExp
+const RegExp_ = builder.sub.RegExp
 
 /**
  * Pre-curried matcher for Error.
@@ -195,92 +175,64 @@ const RegExp_ = runtime.sub.RegExp
  * ```
  */
 type Error_<$Actual> = Kind.Apply<SubKind, [Error, $Actual]>
-const Error_ = runtime.sub.Error
-
-/**
- * Pre-curried matcher for Promise<any>.
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.sub.Promise<Promise<any>>
- *
- * // ✗ Fail
- * type _ = Assert.sub.Promise<string>
- * ```
- */
-type Promise_<$Actual> = Kind.Apply<SubKind, [Promise<any>, $Actual]>
-const Promise_ = runtime.sub.Promise
-
-/**
- * Pre-curried matcher for any[].
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.sub.Array<any[]>
- *
- * // ✗ Fail
- * type _ = Assert.sub.Array<string>
- * ```
- */
-type Array_<$Actual> = Kind.Apply<SubKind, [any[], $Actual]>
-const Array_ = runtime.sub.Array
+const Error_ = builder.sub.Error
 
 /**
  * Pre-curried matcher for unknown.
- */
-type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, $Actual]>
-const unknown_ = runtime.sub.unknown
-
-/**
- * Pre-curried matcher for any.
- */
-type any_<$Actual> = Kind.Apply<SubKind, [any, $Actual]>
-const any_ = runtime.sub.any
-
-/**
- * Pre-curried matcher for never.
- */
-type never_<$Actual> = Kind.Apply<SubKind, [never, $Actual]>
-const never_ = runtime.sub.never
-
-/**
- * Subtype relation with no excess properties.
- *
- * Asserts that actual is a subtype of expected AND has no excess properties.
- *
- * @example
- * ```typescript
- * // ✓ Pass - no excess properties
- * type _ = Assert.sub.noExcess<{ id: string }, { id: string }>
- *
- * // ✗ Fail - has excess property 'name'
- * type _ = Assert.sub.noExcess<{ id: string }, { id: string; name: string }>
- * ```
- */
-type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, $Actual]>
-const noExcess_ = runtime.sub.noExcess
-
-/**
- * Type-explicit variant of noExcess.
- *
- * Asserts that the actual type is a subtype of the expected type AND has no excess properties.
  *
  * @example
  * ```typescript
  * // ✓ Pass
- * Assert.sub.noExcessAs<{ id: string }>()({ id: 'abc' })
+ * type _ = Assert.sub.unknown<unknown>
  *
- * // ✗ Fail - has excess property
- * Assert.sub.noExcessAs<{ id: string }>()({ id: 'abc', name: 'John' })
+ * // ✗ Fail
+ * type _ = Assert.sub.unknown<string>
  * ```
  */
-const noExcessAs_ = runtime.sub.noExcessAs
+type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, $Actual]>
+const unknown_ = builder.sub.unknown
+
+/**
+ * Pre-curried matcher for any.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.sub.any<any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.sub.any<string>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<SubKind, [any, $Actual]>
+const any_ = builder.sub.any
+
+/**
+ * Pre-curried matcher for never.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.sub.never<never>
+ *
+ * // ✗ Fail
+ * type _ = Assert.sub.never<string>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<SubKind, [never, $Actual]>
+const never_ = builder.sub.never
+
+const ofAs_ = <$Type>() => builder.sub.ofAs<$Type>()
+/**
+ * No-excess variant of sub relation.
+ * Checks that actual has no excess properties beyond expected.
+ */
+type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, $Actual]>
+const noExcess_ = builder.sub.noExcess
+const noExcessAs_ = <$Type>() => builder.sub.noExcessAs<$Type>()
 
 export {
   any_ as any,
-  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
@@ -292,7 +244,6 @@ export {
   number_ as number,
   of_ as of,
   ofAs_ as ofAs,
-  Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,

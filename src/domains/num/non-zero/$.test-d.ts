@@ -25,7 +25,7 @@ test('Type narrowing works correctly with isNonZero predicate', () => {
 
   // Predicate narrows to NonZero type
   if (isNonZero(value)) {
-    Assert.sub.ofAs<NonZero>()(value)
+    Assert.sub.ofAs<NonZero>().on(value)
   }
 
   // Works with different numeric values
@@ -43,28 +43,28 @@ test('Type narrowing works correctly with isNonZero predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic non-zero constructor
   const nz1 = nonZero(5)
-  Assert.exact.ofAs<NonZero>()(nz1)
+  Assert.exact.ofAs<NonZero>().on(nz1)
 
   // Negative non-zero
   const nz2 = nonZero(-10)
-  Assert.exact.ofAs<NonZero>()(nz2)
+  Assert.exact.ofAs<NonZero>().on(nz2)
 
   // Small non-zero values
   const nz3 = nonZero(0.001)
-  Assert.exact.ofAs<NonZero>()(nz3)
+  Assert.exact.ofAs<NonZero>().on(nz3)
 
   // Try constructor
   const try1 = tryNonZero(42)
-  Assert.exact.ofAs<NonZero | null>()(try1)
+  Assert.exact.ofAs<NonZero | null>().on(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Assert.exact.ofAs<NonZero>()(try1)
+    Assert.exact.ofAs<NonZero>().on(try1)
   }
 
   // Try with zero returns null
   const try2 = tryNonZero(0)
-  Assert.exact.ofAs<NonZero | null>()(try2)
+  Assert.exact.ofAs<NonZero | null>().on(try2)
 })
 
 // === Safe Division Operations ===
@@ -74,18 +74,18 @@ test('Safe division operations have correct types', () => {
 
   // safeDivide requires NonZero divisor and returns number
   const result1 = safeDivide(10, divisor)
-  Assert.sub.ofAs<number>()(result1)
+  Assert.sub.ofAs<number>().on(result1)
 
   // safeDiv accepts any number and returns number | null
   const result2 = safeDiv(10, 2)
-  Assert.sub.ofAs<number | null>()(result2)
+  Assert.sub.ofAs<number | null>().on(result2)
 
   const result3 = safeDiv(10, 0)
-  Assert.sub.ofAs<number | null>()(result3)
+  Assert.sub.ofAs<number | null>().on(result3)
 
   // Type narrowing with safeDiv
   if (result2 !== null) {
-    Assert.sub.ofAs<number>()(result2)
+    Assert.sub.ofAs<number>().on(result2)
   }
 })
 
@@ -97,7 +97,7 @@ test('NonZero has correct relationship with Zero', () => {
 
   // NonZero can be assigned to number
   const asNumber: number = nonZeroVal
-  Assert.sub.ofAs<number>()(asNumber)
+  Assert.sub.ofAs<number>().on(asNumber)
 
   // NonZero and Zero are mutually exclusive
   // @ts-expect-error - NonZero is not assignable to Zero
@@ -197,7 +197,7 @@ test('NonZero practical type safety examples', () => {
   // Usage
   const denom = getDenominator(4)
   const ratio = _calculateRatio(12, denom)
-  Assert.sub.ofAs<number>()(ratio)
+  Assert.sub.ofAs<number>().on(ratio)
 })
 
 // Test combinations with other brands

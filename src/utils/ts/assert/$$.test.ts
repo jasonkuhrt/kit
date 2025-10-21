@@ -95,7 +95,7 @@ test('exact error - optionality difference', () => {
 })
 
 test('exact value mode - basic type mismatches', () => {
-  const fn = Assert.exact.ofAs<string>()<42>
+  const fn = Assert.exact.ofAs<string>().onAs<42>
   const p = Ts.as<Parameters<typeof fn>>()
   attest(p).type.toString.snap(`[
   actual: {
@@ -106,7 +106,7 @@ test('exact value mode - basic type mismatches', () => {
   }
 ]`)
 
-  const fn2 = Assert.exact.ofAs<{ a: string }>()<{ a: number; b: number }>
+  const fn2 = Assert.exact.ofAs<{ a: string }>().onAs<{ a: number; b: number }>
   const p2 = Ts.as<Parameters<typeof fn2>>()
   attest(p2).type.toString.snap(`[
   actual: {
@@ -152,7 +152,7 @@ test('exact value mode - parameter-based error feedback', () => {
 })
 
 test('exact value mode - complex type aliases in signatures', () => {
-  const exactComplexA = Assert.exact.ofAs<CA>()
+  const exactComplexA = Assert.exact.ofAs<CA>().on
   const fnComplexError = exactComplexA<CB>
   const p3 = Ts.as<Parameters<typeof fnComplexError>>()
   attest(p3).type.toString.snap(`[
@@ -275,7 +275,7 @@ test('sub error - string does not extend hello', () => {
 // subNot() Tests
 
 test('subNot error - hello extends string', () => {
-  attest({} as Assert.not.sub.of<string, 'hello'>).type.toString.snap(`{
+  attest({} as Assert.not.sub<string, 'hello'>).type.toString.snap(`{
   ERROR_________: "ACTUAL extends EXPECTED but should not"
   expected______: string
   actual________: "hello"

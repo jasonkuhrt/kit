@@ -1,6 +1,6 @@
 import type * as Kind from '../../../kind.js'
-import { runtime } from '../../builder/runtime.js'
 import type { Awaited$ } from '../../../path.js'
+import { builder } from '../../builder-singleton.js'
 import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
 
 /**
@@ -27,7 +27,7 @@ import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
  * ```
  */
 type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Awaited$, [$Actual]>]>
-const of_ = runtime.awaited.equiv.of
+const of_ = builder.awaited.equiv.of
 
 /**
  * Pre-curried matcher for string.
@@ -43,7 +43,7 @@ const of_ = runtime.awaited.equiv.of
  * ```
  */
 type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<Awaited$, [$Actual]>]>
-const string_ = runtime.awaited.equiv.string
+const string_ = builder.awaited.equiv.string
 
 /**
  * Pre-curried matcher for number.
@@ -59,7 +59,7 @@ const string_ = runtime.awaited.equiv.string
  * ```
  */
 type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<Awaited$, [$Actual]>]>
-const number_ = runtime.awaited.equiv.number
+const number_ = builder.awaited.equiv.number
 
 /**
  * Pre-curried matcher for bigint.
@@ -75,7 +75,7 @@ const number_ = runtime.awaited.equiv.number
  * ```
  */
 type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<Awaited$, [$Actual]>]>
-const bigint_ = runtime.awaited.equiv.bigint
+const bigint_ = builder.awaited.equiv.bigint
 
 /**
  * Pre-curried matcher for boolean.
@@ -91,7 +91,7 @@ const bigint_ = runtime.awaited.equiv.bigint
  * ```
  */
 type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<Awaited$, [$Actual]>]>
-const boolean_ = runtime.awaited.equiv.boolean
+const boolean_ = builder.awaited.equiv.boolean
 
 /**
  * Pre-curried matcher for undefined.
@@ -107,7 +107,7 @@ const boolean_ = runtime.awaited.equiv.boolean
  * ```
  */
 type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<Awaited$, [$Actual]>]>
-const undefined_ = runtime.awaited.equiv.undefined
+const undefined_ = builder.awaited.equiv.undefined
 
 /**
  * Pre-curried matcher for null.
@@ -123,7 +123,7 @@ const undefined_ = runtime.awaited.equiv.undefined
  * ```
  */
 type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<Awaited$, [$Actual]>]>
-const null_ = runtime.awaited.equiv.null
+const null_ = builder.awaited.equiv.null
 
 /**
  * Pre-curried matcher for symbol.
@@ -139,7 +139,7 @@ const null_ = runtime.awaited.equiv.null
  * ```
  */
 type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<Awaited$, [$Actual]>]>
-const symbol_ = runtime.awaited.equiv.symbol
+const symbol_ = builder.awaited.equiv.symbol
 
 /**
  * Pre-curried matcher for Date.
@@ -155,7 +155,7 @@ const symbol_ = runtime.awaited.equiv.symbol
  * ```
  */
 type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<Awaited$, [$Actual]>]>
-const Date_ = runtime.awaited.equiv.Date
+const Date_ = builder.awaited.equiv.Date
 
 /**
  * Pre-curried matcher for RegExp.
@@ -171,7 +171,7 @@ const Date_ = runtime.awaited.equiv.Date
  * ```
  */
 type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<Awaited$, [$Actual]>]>
-const RegExp_ = runtime.awaited.equiv.RegExp
+const RegExp_ = builder.awaited.equiv.RegExp
 
 /**
  * Pre-curried matcher for Error.
@@ -187,39 +187,7 @@ const RegExp_ = runtime.awaited.equiv.RegExp
  * ```
  */
 type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<Awaited$, [$Actual]>]>
-const Error_ = runtime.awaited.equiv.Error
-
-/**
- * Pre-curried matcher for Promise<any>.
- * Extraction chain: Promise<T> → T
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.awaited.equiv.Promise<Promise<Promise<any>>>
- *
- * // ✗ Fail
- * type _ = Assert.awaited.equiv.Promise<Promise<string>>
- * ```
- */
-type Promise_<$Actual> = Kind.Apply<EquivKind, [Promise<any>, Kind.Apply<Awaited$, [$Actual]>]>
-const Promise_ = runtime.awaited.equiv.Promise
-
-/**
- * Pre-curried matcher for any[].
- * Extraction chain: Promise<T> → T
- *
- * @example
- * ```typescript
- * // ✓ Pass
- * type _ = Assert.awaited.equiv.Array<Promise<any[]>>
- *
- * // ✗ Fail
- * type _ = Assert.awaited.equiv.Array<Promise<string>>
- * ```
- */
-type Array_<$Actual> = Kind.Apply<EquivKind, [any[], Kind.Apply<Awaited$, [$Actual]>]>
-const Array_ = runtime.awaited.equiv.Array
+const Error_ = builder.awaited.equiv.Error
 
 /**
  * Pre-curried matcher for unknown.
@@ -235,7 +203,7 @@ const Array_ = runtime.awaited.equiv.Array
  * ```
  */
 type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Awaited$, [$Actual]>]>
-const unknown_ = runtime.awaited.equiv.unknown
+const unknown_ = builder.awaited.equiv.unknown
 
 /**
  * Pre-curried matcher for any.
@@ -251,7 +219,7 @@ const unknown_ = runtime.awaited.equiv.unknown
  * ```
  */
 type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Awaited$, [$Actual]>]>
-const any_ = runtime.awaited.equiv.any
+const any_ = builder.awaited.equiv.any
 
 /**
  * Pre-curried matcher for never.
@@ -267,20 +235,19 @@ const any_ = runtime.awaited.equiv.any
  * ```
  */
 type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Awaited$, [$Actual]>]>
-const never_ = runtime.awaited.equiv.never
+const never_ = builder.awaited.equiv.never
 
-const ofAs_ = runtime.awaited.equiv.ofAs
+const ofAs_ = <$Type>() => builder.awaited.equiv.ofAs<$Type>()
 /**
  * No-excess variant of equiv relation.
  * Checks that actual has no excess properties beyond expected.
  */
 type noExcess_<$Expected, $Actual> = Kind.Apply<EquivNoExcessKind, [$Expected, Kind.Apply<Awaited$, [$Actual]>]>
-const noExcess_ = runtime.awaited.equiv.noExcess
-const noExcessAs_ = runtime.awaited.equiv.noExcessAs
+const noExcess_ = builder.awaited.equiv.noExcess
+const noExcessAs_ = <$Type>() => builder.awaited.equiv.noExcessAs<$Type>()
 
 export {
   any_ as any,
-  Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
@@ -292,7 +259,6 @@ export {
   number_ as number,
   of_ as of,
   ofAs_ as ofAs,
-  Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,

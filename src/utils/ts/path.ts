@@ -1,7 +1,7 @@
 import type { Obj } from '#obj'
+import type { Ts } from './$.js'
 import * as Kind from './kind.js'
 import type { ShowInTemplate } from './ts.js'
-import type { StaticErrorAssertion } from './assert/assertion-error.js'
 
 //
 //
@@ -12,6 +12,25 @@ import type { StaticErrorAssertion } from './assert/assertion-error.js'
 //
 //
 //
+
+/**
+ * Error type helpers that avoid using `this` inside object literal positions.
+ * These wrap Ts.StaticError with specific metadata structures.
+ */
+type PathErrorKeyNotFound<$Key, $Actual> = Ts.StaticError<
+  'Key does not exist on type',
+  { key: $Key; actual: $Actual }
+>
+
+type PathErrorArrayExtract<$Actual> = Ts.StaticError<
+  'Failed to extract array element from type',
+  { constraint: readonly any[]; actual: $Actual }
+>
+
+type PathErrorTupleExtract<$Actual> = Ts.StaticError<
+  'Failed to extract tuple element from type',
+  { constraint: readonly any[]; actual: $Actual }
+>
 
 /**
  * Check if two types are completely disjoint (cannot overlap).
@@ -48,11 +67,9 @@ export type ValidateAndExtract<
   $Constraint,
   $ExtractorName extends string,
   $ExtractionLogic,
-> = IsDisjoint<$Actual, $Constraint> extends true ? StaticErrorAssertion<
+> = IsDisjoint<$Actual, $Constraint> extends true ? Ts.StaticError<
     `Cannot extract ${$ExtractorName} from incompatible type`,
-    FormatConstraint<$Constraint>,
-    $Actual,
-    { attempted: `${$ExtractorName} extractor` }
+    { constraint: FormatConstraint<$Constraint>; actual: $Actual; attempted: `${$ExtractorName} extractor` }
   >
   : $ExtractionLogic
 
@@ -120,7 +137,7 @@ export interface Indexed extends Kind.Kind {
   extractorName: 'indexed'
   parameters: [$Actual: unknown, $Key: PropertyKey]
   return: this['parameters'][1] extends keyof this['parameters'][0] ? this['parameters'][0][this['parameters'][1]]
-    : never
+    : PathErrorKeyNotFound<this['parameters'][1], this['parameters'][0]>
 }
 
 /**
@@ -139,7 +156,8 @@ export interface ArrayElement extends Kind.Kind {
     this['parameters'][0],
     this['constraint'],
     this['extractorName'],
-    this['parameters'][0] extends (infer __element__)[] ? __element__ : never
+    this['parameters'][0] extends readonly (infer __element__)[] ? __element__
+      : PathErrorArrayExtract<this['parameters'][0]>
   >
 }
 
@@ -299,7 +317,8 @@ export interface TupleAt<$Index extends number> extends Kind.Kind {
     this['parameters'][0],
     this['constraint'],
     this['extractorName'],
-    this['parameters'][0] extends readonly any[] ? this['parameters'][0][$Index] : never
+    this['parameters'][0] extends readonly any[] ? this['parameters'][0][$Index]
+      : PathErrorTupleExtract<this['parameters'][0]>
   >
 }
 
@@ -327,12 +346,10 @@ export interface NoExcess extends Kind.Kind {
   parameters: [$Expected: unknown, $Actual: unknown]
   return: this['parameters'] extends [infer __expected__, infer __actual__]
     ? [keyof Obj.SubtractShallow<__actual__, __expected__>] extends [never] ? __actual__
-      : StaticErrorAssertion<
-        'Type has excess properties',
-        __expected__,
-        __actual__,
-        { excess: keyof Obj.SubtractShallow<__actual__, __expected__> }
-      >
+    : Ts.StaticError<
+      'Type has excess properties',
+      { expected: __expected__; actual: __actual__; excess: keyof Obj.SubtractShallow<__actual__, __expected__> }
+    >
     : never
 }
 
