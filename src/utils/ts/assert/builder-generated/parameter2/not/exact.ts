@@ -221,18 +221,75 @@ const Promise_ = runtime.parameter2.not.exact.Promise
 type Array_<$Actual> = Kind.Apply<ExactKind, [any[], Kind.Apply<Parameter2, [$Actual]>, true]>
 const Array_ = runtime.parameter2.not.exact.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ * Extraction chain: (p1: any, p2: T, ...) => any → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameter2.exact.unknown<(arg: unknown) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameter2.exact.unknown<(arg: string) => any>
+ * ```
+ */
+type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, Kind.Apply<Parameter2, [$Actual]>, true]>
+const unknown_ = runtime.parameter2.not.exact.unknown
+
+/**
+ * Pre-curried matcher for any.
+ * Extraction chain: (p1: any, p2: T, ...) => any → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameter2.exact.any<(arg: any) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameter2.exact.any<(arg: string) => any>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<ExactKind, [any, Kind.Apply<Parameter2, [$Actual]>, true]>
+const any_ = runtime.parameter2.not.exact.any
+
+/**
+ * Pre-curried matcher for never.
+ * Extraction chain: (p1: any, p2: T, ...) => any → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameter2.exact.never<(arg: never) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameter2.exact.never<(arg: string) => any>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<ExactKind, [never, Kind.Apply<Parameter2, [$Actual]>, true]>
+const never_ = runtime.parameter2.not.exact.never
+
+const ofAs_ = runtime.parameter2.not.exact.ofAs
+type noExcess_ = never
+const noExcess_ = runtime.parameter2.not.exact.noExcess
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
+  noExcess_ as noExcess,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

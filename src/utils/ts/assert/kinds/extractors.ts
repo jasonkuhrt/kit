@@ -7,6 +7,59 @@ import type { StaticErrorAssertion } from '../assertion-error.js'
 //
 //
 //
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Helpers
+//
+//
+//
+//
+
+/**
+ * Check if two types are completely disjoint (cannot overlap).
+ * Only returns true when types are GUARANTEED to never intersect.
+ *
+ * This allows unions that include valid types to pass through.
+ * @example
+ * IsDisjoint<string, PromiseLike<any>> // true - guaranteed disjoint
+ * IsDisjoint<Promise<number>, PromiseLike<any>> // false - they overlap
+ * IsDisjoint<string | Promise<number>, PromiseLike<any>> // false - Promise part overlaps
+ */
+type IsDisjoint<$T, $Constraint> = [Extract<$T, $Constraint>] extends [never] ? true : false
+
+/**
+ * Format a constraint type for display in error messages.
+ * Provides human-readable descriptions for common type patterns.
+ */
+type FormatConstraint<$Constraint> = $Constraint extends readonly any[] ? 'Type must extend array (readonly any[])'
+  : $Constraint extends PromiseLike<any> ? 'Type must extend PromiseLike<any>'
+  : $Constraint extends (...args: any) => any ? 'Type must extend function ((...args: any) => any)'
+  : ShowInTemplate<$Constraint>
+
+/**
+ * Validates an input type against a constraint and returns extraction result or error.
+ * This is used by extractors to provide helpful errors when used on incompatible types.
+ *
+ * @param $Actual - The type to validate and extract from
+ * @param $Constraint - The required constraint type
+ * @param $ExtractorName - Human-readable name of the extractor
+ * @param $ExtractionLogic - The extraction logic to apply if validation passes
+ */
+type ValidateAndExtract<
+  $Actual,
+  $Constraint,
+  $ExtractorName extends string,
+  $ExtractionLogic,
+> = IsDisjoint<$Actual, $Constraint> extends true ? StaticErrorAssertion<
+    `Cannot extract ${$ExtractorName} from incompatible type`,
+    FormatConstraint<$Constraint>,
+    $Actual,
+    { attempted: `${$ExtractorName} extractor` }
+  >
+  : $ExtractionLogic
+
+//
+//
+//
+//
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Transformation Extractors
 //
 //
@@ -23,8 +76,15 @@ import type { StaticErrorAssertion } from '../assertion-error.js'
  * Used by `.awaited` assertions to check what a Promise resolves to.
  */
 export interface Awaited$ {
+  constraint: PromiseLike<any>
+  extractorName: 'awaited'
   parameters: [$Actual: unknown]
-  return: Awaited<this['parameters'][0]>
+  return: ValidateAndExtract<
+    this['parameters'][0],
+    this['constraint'],
+    this['extractorName'],
+    Awaited<this['parameters'][0]>
+  >
 }
 
 /**
@@ -36,8 +96,15 @@ export interface Awaited$ {
  * Used by `.returned` assertions to check what a function returns.
  */
 export interface Returned {
-  parameters: [$Actual: (...args: any[]) => any]
-  return: ReturnType<this['parameters'][0]>
+  constraint: (...args: any[]) => any
+  extractorName: 'returned'
+  parameters: [$Actual: unknown]
+  return: ValidateAndExtract<
+    this['parameters'][0],
+    this['constraint'],
+    this['extractorName'],
+    ReturnType<Extract<this['parameters'][0], this['constraint']>>
+  >
 }
 
 /**
@@ -66,8 +133,15 @@ export interface Indexed {
  * Used by composite extractors like `.awaited.array` to check array element types.
  */
 export interface ArrayElement {
+  constraint: readonly any[]
+  extractorName: 'array'
   parameters: [$Actual: unknown]
-  return: this['parameters'][0] extends (infer __element__)[] ? __element__ : never
+  return: ValidateAndExtract<
+    this['parameters'][0],
+    this['constraint'],
+    this['extractorName'],
+    this['parameters'][0] extends (infer __element__)[] ? __element__ : never
+  >
 }
 
 //
@@ -107,8 +181,15 @@ export interface Parameter {
  * Used by `.parameters` assertion (full tuple matching).
  */
 export interface Parameters$ {
-  parameters: [$Actual: (...args: any[]) => any]
-  return: Parameters<this['parameters'][0]>
+  constraint: (...args: any[]) => any
+  extractorName: 'parameters'
+  parameters: [$Actual: unknown]
+  return: ValidateAndExtract<
+    this['parameters'][0],
+    this['constraint'],
+    this['extractorName'],
+    Parameters<Extract<this['parameters'][0], this['constraint']>>
+  >
 }
 
 /**
@@ -118,8 +199,15 @@ export interface Parameters$ {
  * Returns: Parameters<$Actual>[0]
  */
 export interface Parameter1 {
-  parameters: [$Actual: (...args: any[]) => any]
-  return: Parameters<this['parameters'][0]>[0]
+  constraint: (...args: any[]) => any
+  extractorName: 'parameter1'
+  parameters: [$Actual: unknown]
+  return: ValidateAndExtract<
+    this['parameters'][0],
+    this['constraint'],
+    this['extractorName'],
+    Parameters<Extract<this['parameters'][0], this['constraint']>>[0]
+  >
 }
 
 /**
@@ -129,8 +217,15 @@ export interface Parameter1 {
  * Returns: Parameters<$Actual>[1]
  */
 export interface Parameter2 {
-  parameters: [$Actual: (...args: any[]) => any]
-  return: Parameters<this['parameters'][0]>[1]
+  constraint: (...args: any[]) => any
+  extractorName: 'parameter2'
+  parameters: [$Actual: unknown]
+  return: ValidateAndExtract<
+    this['parameters'][0],
+    this['constraint'],
+    this['extractorName'],
+    Parameters<Extract<this['parameters'][0], this['constraint']>>[1]
+  >
 }
 
 /**
@@ -140,8 +235,15 @@ export interface Parameter2 {
  * Returns: Parameters<$Actual>[2]
  */
 export interface Parameter3 {
-  parameters: [$Actual: (...args: any[]) => any]
-  return: Parameters<this['parameters'][0]>[2]
+  constraint: (...args: any[]) => any
+  extractorName: 'parameter3'
+  parameters: [$Actual: unknown]
+  return: ValidateAndExtract<
+    this['parameters'][0],
+    this['constraint'],
+    this['extractorName'],
+    Parameters<Extract<this['parameters'][0], this['constraint']>>[2]
+  >
 }
 
 /**
@@ -151,8 +253,15 @@ export interface Parameter3 {
  * Returns: Parameters<$Actual>[3]
  */
 export interface Parameter4 {
-  parameters: [$Actual: (...args: any[]) => any]
-  return: Parameters<this['parameters'][0]>[3]
+  constraint: (...args: any[]) => any
+  extractorName: 'parameter4'
+  parameters: [$Actual: unknown]
+  return: ValidateAndExtract<
+    this['parameters'][0],
+    this['constraint'],
+    this['extractorName'],
+    Parameters<Extract<this['parameters'][0], this['constraint']>>[3]
+  >
 }
 
 /**
@@ -162,8 +271,15 @@ export interface Parameter4 {
  * Returns: Parameters<$Actual>[4]
  */
 export interface Parameter5 {
-  parameters: [$Actual: (...args: any[]) => any]
-  return: Parameters<this['parameters'][0]>[4]
+  constraint: (...args: any[]) => any
+  extractorName: 'parameter5'
+  parameters: [$Actual: unknown]
+  return: ValidateAndExtract<
+    this['parameters'][0],
+    this['constraint'],
+    this['extractorName'],
+    Parameters<Extract<this['parameters'][0], this['constraint']>>[4]
+  >
 }
 
 export interface TupleAt<$Index extends number> {
@@ -246,7 +362,7 @@ export interface NoExcess {
  * Apply a tuple of extractors sequentially (right-to-left composition).
  *
  * Takes an array of extractor Kinds and applies them in sequence from right to left.
- * This enables flexible extractor chaining without creating specialized composite types.
+ * Validates each extractor's constraint before applying to provide helpful error messages.
  *
  * @example
  * ```typescript
@@ -254,16 +370,29 @@ export interface NoExcess {
  * type Result = ApplyExtractors<[Extractors.Awaited, Extractors.ArrayElement], Promise<string[]>>
  * // Result: string
  *
- * // Apply ReturnType, then Awaited
- * type Result2 = ApplyExtractors<[Extractors.Returned, Extractors.Awaited], () => Promise<number>>
- * // Result2: number
+ * // Error on incompatible type
+ * type Error = ApplyExtractors<[Extractors.ArrayElement], string>
+ * // Result: StaticErrorAssertion<"Cannot extract array element from non-array type", ...>
  * ```
  *
  * @param $Extractors - Tuple of extractor Kinds to apply sequentially
  * @param $Actual - The type to extract from
- * @returns The result of applying all extractors in sequence
+ * @returns The result of applying all extractors in sequence, or StaticErrorAssertion on validation failure
  */
 export type ApplyExtractors<$Extractors extends readonly Kind.Kind[], $Actual> = $Extractors extends
   readonly [infer __first__ extends Kind.Kind, ...infer __rest__ extends readonly Kind.Kind[]]
-  ? ApplyExtractors<__rest__, Kind.Apply<__first__, [$Actual]>>
+  ? __first__ extends { constraint: infer __constraint__; extractorName: infer __name__ }
+    // Extractor has constraint - validate before applying
+    ? IsDisjoint<$Actual, __constraint__> extends true
+      // Type is disjoint from constraint - guaranteed failure
+      ? StaticErrorAssertion<
+        `Cannot extract ${__name__ & string} from incompatible type`,
+        FormatConstraint<__constraint__>,
+        $Actual,
+        { attempted: `${__name__ & string} extractor` }
+      >
+      // Type overlaps with constraint - proceed with extraction
+    : ApplyExtractors<__rest__, Kind.Apply<__first__, [$Actual]>>
+    // No constraint - apply directly
+  : ApplyExtractors<__rest__, Kind.Apply<__first__, [$Actual]>>
   : $Actual

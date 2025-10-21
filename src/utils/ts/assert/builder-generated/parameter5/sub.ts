@@ -1,7 +1,7 @@
 import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
 import type { Parameter5 } from '../../kinds/extractors.js'
-import type { SubKind } from '../../kinds/relators.js'
+import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
 
 /**
  * parameter5 + sub relation matchers.
@@ -221,18 +221,81 @@ const Promise_ = runtime.parameter5.sub.Promise
 type Array_<$Actual> = Kind.Apply<SubKind, [any[], Kind.Apply<Parameter5, [$Actual]>]>
 const Array_ = runtime.parameter5.sub.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ * Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) => any → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameter5.sub.unknown<(arg: unknown) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameter5.sub.unknown<(arg: string) => any>
+ * ```
+ */
+type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<Parameter5, [$Actual]>]>
+const unknown_ = runtime.parameter5.sub.unknown
+
+/**
+ * Pre-curried matcher for any.
+ * Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) => any → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameter5.sub.any<(arg: any) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameter5.sub.any<(arg: string) => any>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<Parameter5, [$Actual]>]>
+const any_ = runtime.parameter5.sub.any
+
+/**
+ * Pre-curried matcher for never.
+ * Extraction chain: (p1: any, p2: any, p3: any, p4: any, p5: T) => any → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameter5.sub.never<(arg: never) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameter5.sub.never<(arg: string) => any>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<Parameter5, [$Actual]>]>
+const never_ = runtime.parameter5.sub.never
+
+const ofAs_ = runtime.parameter5.sub.ofAs
+/**
+ * No-excess variant of sub relation.
+ * Checks that actual has no excess properties beyond expected.
+ */
+type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, Kind.Apply<Parameter5, [$Actual]>]>
+const noExcess_ = runtime.parameter5.sub.noExcess
+const noExcessAs_ = runtime.parameter5.sub.noExcessAs
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
+  noExcess_ as noExcess,
+  noExcessAs_ as noExcessAs,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

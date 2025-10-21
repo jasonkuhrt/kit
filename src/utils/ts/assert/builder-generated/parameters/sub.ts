@@ -1,7 +1,7 @@
 import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
 import type { Parameters$ } from '../../kinds/extractors.js'
-import type { SubKind } from '../../kinds/relators.js'
+import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
 
 /**
  * parameters + sub relation matchers.
@@ -221,18 +221,81 @@ const Promise_ = runtime.parameters.sub.Promise
 type Array_<$Actual> = Kind.Apply<SubKind, [any[], Kind.Apply<Parameters$, [$Actual]>]>
 const Array_ = runtime.parameters.sub.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.sub.unknown<(...args: any[]) => unknown>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.sub.unknown<(...args: any[]) => string>
+ * ```
+ */
+type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<Parameters$, [$Actual]>]>
+const unknown_ = runtime.parameters.sub.unknown
+
+/**
+ * Pre-curried matcher for any.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.sub.any<(...args: any[]) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.sub.any<(...args: any[]) => string>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<Parameters$, [$Actual]>]>
+const any_ = runtime.parameters.sub.any
+
+/**
+ * Pre-curried matcher for never.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.sub.never<(...args: any[]) => never>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.sub.never<(...args: any[]) => string>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<Parameters$, [$Actual]>]>
+const never_ = runtime.parameters.sub.never
+
+const ofAs_ = runtime.parameters.sub.ofAs
+/**
+ * No-excess variant of sub relation.
+ * Checks that actual has no excess properties beyond expected.
+ */
+type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, Kind.Apply<Parameters$, [$Actual]>]>
+const noExcess_ = runtime.parameters.sub.noExcess
+const noExcessAs_ = runtime.parameters.sub.noExcessAs
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
+  noExcess_ as noExcess,
+  noExcessAs_ as noExcessAs,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

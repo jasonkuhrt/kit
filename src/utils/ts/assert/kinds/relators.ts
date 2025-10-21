@@ -1,7 +1,8 @@
 import type { Obj } from '#obj'
-import type { Kind } from '#ts/ts'
+import type { Kind, Ts } from '#ts/ts'
 import type { Relation } from '../../relation.js'
-import type { ComputeDiff, StaticErrorAssertion } from '../assertion-error.js'
+import type { IsAny, IsNever } from '../../ts.js'
+import type { StaticErrorAssertion } from '../assertion-error.js'
 // import type { AssertionKind } from '../helpers.js'
 
 interface AssertionKind extends Kind.Kind {}
@@ -23,44 +24,125 @@ export interface ExactKind extends AssertionKind {
   expectationConstraint: unknown
   parameters: [$Expected: unknown, $Actual: unknown, $Negated?: boolean]
   return:
-    this['parameters'][2] extends true
-      ? InvertExactResult<this['parameters'][0], this['parameters'][1]>
-      : Relation.IsExact<this['parameters'][1], this['parameters'][0]> extends true
-        ? never
-        : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent
-          ? StaticErrorAssertion<
-              'EXPECTED and ACTUAL are only equivilant (not exact)',
-              this['parameters'][0],
-              this['parameters'][1],
-              ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Use equiv() for mutual assignability OR apply Simplify<T> to normalize types' }
-            >
-          : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.subtype
-            ? StaticErrorAssertion<
-                'ACTUAL is subtype of EXPECTED',
-                this['parameters'][0],
-                this['parameters'][1],
-                ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is narrower than EXPECTED' }
-              >
-            : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.supertype
+    // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
+    IsAny<this['parameters'][1]> extends false
+      ? IsNever<this['parameters'][1]> extends false
+        ? [this['parameters'][1]] extends [Ts.Error]
+          ? this['parameters'][1]
+          : this['parameters'][2] extends true
+            ? InvertExactResult<this['parameters'][0], this['parameters'][1]>
+            : Relation.IsExact<this['parameters'][1], this['parameters'][0]> extends true
+              ? never
+              : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent
+                ? StaticErrorAssertion<
+                    'EXPECTED and ACTUAL are only equivilant (not exact)',
+                    this['parameters'][0],
+                    this['parameters'][1],
+                    Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Use equiv() for mutual assignability OR apply Simplify<T> to normalize types' }
+                  >
+                : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.subtype
+                  ? StaticErrorAssertion<
+                      'ACTUAL is subtype of EXPECTED',
+                      this['parameters'][0],
+                      this['parameters'][1],
+                      Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is narrower than EXPECTED' }
+                    >
+                  : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.supertype
+                    ? StaticErrorAssertion<
+                          'ACTUAL is supertype of EXPECTED',
+                          this['parameters'][0],
+                          this['parameters'][1],
+                          Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is wider than EXPECTED' }
+                        >
+                      : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.overlapping
+                        ? StaticErrorAssertion<
+                            'EXPECTED only overlaps with ACTUAL',
+                            this['parameters'][0],
+                            this['parameters'][1],
+                            Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share some values but differ' }
+                          >
+                        : StaticErrorAssertion<
+                            'EXPECTED and ACTUAL are disjoint',
+                            this['parameters'][0],
+                            this['parameters'][1],
+                            Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share no values' }
+                          >
+        : this['parameters'][2] extends true
+          ? InvertExactResult<this['parameters'][0], this['parameters'][1]>
+          : Relation.IsExact<this['parameters'][1], this['parameters'][0]> extends true
+            ? never
+            : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent
               ? StaticErrorAssertion<
-                  'ACTUAL is supertype of EXPECTED',
+                  'EXPECTED and ACTUAL are only equivilant (not exact)',
                   this['parameters'][0],
                   this['parameters'][1],
-                  ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is wider than EXPECTED' }
+                  Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Use equiv() for mutual assignability OR apply Simplify<T> to normalize types' }
                 >
-              : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.overlapping
+              : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.subtype
                 ? StaticErrorAssertion<
-                    'EXPECTED only overlaps with ACTUAL',
+                    'ACTUAL is subtype of EXPECTED',
                     this['parameters'][0],
                     this['parameters'][1],
-                    ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share some values but differ' }
+                    Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is narrower than EXPECTED' }
                   >
-                : StaticErrorAssertion<
-                    'EXPECTED and ACTUAL are disjoint',
-                    this['parameters'][0],
-                    this['parameters'][1],
-                    ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share no values' }
-                  >
+                : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.supertype
+                  ? StaticErrorAssertion<
+                        'ACTUAL is supertype of EXPECTED',
+                        this['parameters'][0],
+                        this['parameters'][1],
+                        Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is wider than EXPECTED' }
+                      >
+                    : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.overlapping
+                      ? StaticErrorAssertion<
+                          'EXPECTED only overlaps with ACTUAL',
+                          this['parameters'][0],
+                          this['parameters'][1],
+                          Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share some values but differ' }
+                        >
+                      : StaticErrorAssertion<
+                          'EXPECTED and ACTUAL are disjoint',
+                          this['parameters'][0],
+                          this['parameters'][1],
+                          Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share no values' }
+                        >
+      : this['parameters'][2] extends true
+        ? InvertExactResult<this['parameters'][0], this['parameters'][1]>
+        : Relation.IsExact<this['parameters'][1], this['parameters'][0]> extends true
+          ? never
+          : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent
+            ? StaticErrorAssertion<
+                'EXPECTED and ACTUAL are only equivilant (not exact)',
+                this['parameters'][0],
+                this['parameters'][1],
+                Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Use equiv() for mutual assignability OR apply Simplify<T> to normalize types' }
+              >
+            : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.subtype
+              ? StaticErrorAssertion<
+                  'ACTUAL is subtype of EXPECTED',
+                  this['parameters'][0],
+                  this['parameters'][1],
+                  Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is narrower than EXPECTED' }
+                >
+              : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.supertype
+                ? StaticErrorAssertion<
+                      'ACTUAL is supertype of EXPECTED',
+                      this['parameters'][0],
+                      this['parameters'][1],
+                      Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is wider than EXPECTED' }
+                    >
+                  : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.overlapping
+                    ? StaticErrorAssertion<
+                        'EXPECTED only overlaps with ACTUAL',
+                        this['parameters'][0],
+                        this['parameters'][1],
+                        Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share some values but differ' }
+                      >
+                    : StaticErrorAssertion<
+                        'EXPECTED and ACTUAL are disjoint',
+                        this['parameters'][0],
+                        this['parameters'][1],
+                        Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share no values' }
+                      >
 }
 
 type InvertExactResult<$Expected, $Actual> = Relation.IsExact<$Actual, $Expected> extends true ? StaticErrorAssertion<
@@ -87,33 +169,92 @@ export interface EquivKind extends AssertionKind {
   expectationConstraint: unknown
   parameters: [$Expected: unknown, $Actual: unknown, $Negated?: boolean]
   return:
-    this['parameters'][2] extends true
-      ? InvertEquivResult<this['parameters'][0], this['parameters'][1]>
-      : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent
-        ? never
-        : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.subtype
-          ? StaticErrorAssertion<
-              'ACTUAL extends EXPECTED but not vice versa',
-              this['parameters'][0],
-              this['parameters'][1]
-            >
-          : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.supertype
+    // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
+    IsAny<this['parameters'][1]> extends false
+      ? IsNever<this['parameters'][1]> extends false
+        ? [this['parameters'][1]] extends [Ts.Error]
+          ? this['parameters'][1]
+          : this['parameters'][2] extends true
+            ? InvertEquivResult<this['parameters'][0], this['parameters'][1]>
+            : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent
+              ? never
+              : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.subtype
+                ? StaticErrorAssertion<
+                    'ACTUAL extends EXPECTED but not vice versa',
+                    this['parameters'][0],
+                    this['parameters'][1]
+                  >
+                : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.supertype
+                  ? StaticErrorAssertion<
+                      'EXPECTED extends ACTUAL but not vice versa',
+                      this['parameters'][0],
+                      this['parameters'][1]
+                    >
+                  : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.overlapping
+                    ? StaticErrorAssertion<
+                        'EXPECTED and ACTUAL overlap but not mutually assignable',
+                        this['parameters'][0],
+                        this['parameters'][1]
+                      >
+                    : StaticErrorAssertion<
+                        'EXPECTED and ACTUAL are disjoint',
+                        this['parameters'][0],
+                        this['parameters'][1]
+                      >
+        : this['parameters'][2] extends true
+          ? InvertEquivResult<this['parameters'][0], this['parameters'][1]>
+          : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent
+            ? never
+            : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.subtype
+              ? StaticErrorAssertion<
+                  'ACTUAL extends EXPECTED but not vice versa',
+                  this['parameters'][0],
+                  this['parameters'][1]
+                >
+              : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.supertype
+                ? StaticErrorAssertion<
+                    'EXPECTED extends ACTUAL but not vice versa',
+                    this['parameters'][0],
+                    this['parameters'][1]
+                  >
+                : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.overlapping
+                  ? StaticErrorAssertion<
+                      'EXPECTED and ACTUAL overlap but not mutually assignable',
+                      this['parameters'][0],
+                      this['parameters'][1]
+                    >
+                  : StaticErrorAssertion<
+                      'EXPECTED and ACTUAL are disjoint',
+                      this['parameters'][0],
+                      this['parameters'][1]
+                    >
+      : this['parameters'][2] extends true
+        ? InvertEquivResult<this['parameters'][0], this['parameters'][1]>
+        : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent
+          ? never
+          : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.subtype
             ? StaticErrorAssertion<
-                'EXPECTED extends ACTUAL but not vice versa',
+                'ACTUAL extends EXPECTED but not vice versa',
                 this['parameters'][0],
                 this['parameters'][1]
               >
-            : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.overlapping
+            : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.supertype
               ? StaticErrorAssertion<
-                  'EXPECTED and ACTUAL overlap but not mutually assignable',
+                  'EXPECTED extends ACTUAL but not vice versa',
                   this['parameters'][0],
                   this['parameters'][1]
                 >
-              : StaticErrorAssertion<
-                  'EXPECTED and ACTUAL are disjoint',
-                  this['parameters'][0],
-                  this['parameters'][1]
-                >
+              : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.overlapping
+                ? StaticErrorAssertion<
+                    'EXPECTED and ACTUAL overlap but not mutually assignable',
+                    this['parameters'][0],
+                    this['parameters'][1]
+                  >
+                : StaticErrorAssertion<
+                    'EXPECTED and ACTUAL are disjoint',
+                    this['parameters'][0],
+                    this['parameters'][1]
+                  >
 }
 
 type InvertEquivResult<$Expected, $Actual> = Relation.GetRelation<$Expected, $Actual> extends Relation.equivalent
@@ -141,15 +282,38 @@ export interface SubKind extends AssertionKind {
   expectationConstraint: unknown
   parameters: [$Expected: unknown, $Actual: unknown, $Negated?: boolean]
   return:
-    this['parameters'][2] extends true
-      ? InvertSubResult<this['parameters'][0], this['parameters'][1]>
-      : this['parameters'][1] extends this['parameters'][0]
-        ? never
-        : StaticErrorAssertion<
-            'ACTUAL does not extend EXPECTED',
-            this['parameters'][0],
-            this['parameters'][1]
-          >
+    // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
+    IsAny<this['parameters'][1]> extends false
+      ? IsNever<this['parameters'][1]> extends false
+        ? [this['parameters'][1]] extends [Ts.Error]
+          ? this['parameters'][1]
+          : this['parameters'][2] extends true
+            ? InvertSubResult<this['parameters'][0], this['parameters'][1]>
+            : this['parameters'][1] extends this['parameters'][0]
+              ? never
+              : StaticErrorAssertion<
+                  'ACTUAL does not extend EXPECTED',
+                  this['parameters'][0],
+                  this['parameters'][1]
+                >
+        : this['parameters'][2] extends true
+          ? InvertSubResult<this['parameters'][0], this['parameters'][1]>
+          : this['parameters'][1] extends this['parameters'][0]
+            ? never
+            : StaticErrorAssertion<
+                'ACTUAL does not extend EXPECTED',
+                this['parameters'][0],
+                this['parameters'][1]
+              >
+      : this['parameters'][2] extends true
+        ? InvertSubResult<this['parameters'][0], this['parameters'][1]>
+        : this['parameters'][1] extends this['parameters'][0]
+          ? never
+          : StaticErrorAssertion<
+              'ACTUAL does not extend EXPECTED',
+              this['parameters'][0],
+              this['parameters'][1]
+            >
 }
 
 type InvertSubResult<$Expected, $Actual> = $Actual extends $Expected ? StaticErrorAssertion<
@@ -190,15 +354,38 @@ export interface SubNoExcessKind extends AssertionKind {
   expectationConstraint: unknown
   parameters: [$Expected: unknown, $Actual: unknown, $Negated?: boolean]
   return:
-    this['parameters'][2] extends true
-      ? InvertSubNoExcessResult<this['parameters'][0], this['parameters'][1]>
-      : this['parameters'][1] extends this['parameters'][0]
-        ? CheckNoExcess<this['parameters'][0], this['parameters'][1]>
-        : StaticErrorAssertion<
-            'ACTUAL does not extend EXPECTED',
-            this['parameters'][0],
-            this['parameters'][1]
-          >
+    // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
+    IsAny<this['parameters'][1]> extends false
+      ? IsNever<this['parameters'][1]> extends false
+        ? [this['parameters'][1]] extends [Ts.Error]
+          ? this['parameters'][1]
+          : this['parameters'][2] extends true
+            ? InvertSubNoExcessResult<this['parameters'][0], this['parameters'][1]>
+            : this['parameters'][1] extends this['parameters'][0]
+              ? CheckNoExcess<this['parameters'][0], this['parameters'][1]>
+              : StaticErrorAssertion<
+                  'ACTUAL does not extend EXPECTED',
+                  this['parameters'][0],
+                  this['parameters'][1]
+                >
+        : this['parameters'][2] extends true
+          ? InvertSubNoExcessResult<this['parameters'][0], this['parameters'][1]>
+          : this['parameters'][1] extends this['parameters'][0]
+            ? CheckNoExcess<this['parameters'][0], this['parameters'][1]>
+            : StaticErrorAssertion<
+                'ACTUAL does not extend EXPECTED',
+                this['parameters'][0],
+                this['parameters'][1]
+              >
+      : this['parameters'][2] extends true
+        ? InvertSubNoExcessResult<this['parameters'][0], this['parameters'][1]>
+        : this['parameters'][1] extends this['parameters'][0]
+          ? CheckNoExcess<this['parameters'][0], this['parameters'][1]>
+          : StaticErrorAssertion<
+              'ACTUAL does not extend EXPECTED',
+              this['parameters'][0],
+              this['parameters'][1]
+            >
 }
 
 type InvertSubNoExcessResult<$Expected, $Actual> = $Actual extends $Expected
@@ -225,15 +412,38 @@ export interface EquivNoExcessKind extends AssertionKind {
   expectationConstraint: unknown
   parameters: [$Expected: unknown, $Actual: unknown, $Negated?: boolean]
   return:
-    this['parameters'][2] extends true
-      ? InvertEquivNoExcessResult<this['parameters'][0], this['parameters'][1]>
-      : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent
-        ? CheckNoExcess<this['parameters'][0], this['parameters'][1]>
-        : StaticErrorAssertion<
-            'EXPECTED and ACTUAL are not equivalent',
-            this['parameters'][0],
-            this['parameters'][1]
-          >
+    // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
+    IsAny<this['parameters'][1]> extends false
+      ? IsNever<this['parameters'][1]> extends false
+        ? [this['parameters'][1]] extends [Ts.Error]
+          ? this['parameters'][1]
+          : this['parameters'][2] extends true
+            ? InvertEquivNoExcessResult<this['parameters'][0], this['parameters'][1]>
+            : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent
+              ? CheckNoExcess<this['parameters'][0], this['parameters'][1]>
+              : StaticErrorAssertion<
+                  'EXPECTED and ACTUAL are not equivalent',
+                  this['parameters'][0],
+                  this['parameters'][1]
+                >
+        : this['parameters'][2] extends true
+          ? InvertEquivNoExcessResult<this['parameters'][0], this['parameters'][1]>
+          : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent
+            ? CheckNoExcess<this['parameters'][0], this['parameters'][1]>
+            : StaticErrorAssertion<
+                'EXPECTED and ACTUAL are not equivalent',
+                this['parameters'][0],
+                this['parameters'][1]
+              >
+      : this['parameters'][2] extends true
+        ? InvertEquivNoExcessResult<this['parameters'][0], this['parameters'][1]>
+        : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.equivalent
+          ? CheckNoExcess<this['parameters'][0], this['parameters'][1]>
+          : StaticErrorAssertion<
+              'EXPECTED and ACTUAL are not equivalent',
+              this['parameters'][0],
+              this['parameters'][1]
+            >
 }
 
 type InvertEquivNoExcessResult<$Expected, $Actual> = Relation.GetRelation<$Expected, $Actual> extends

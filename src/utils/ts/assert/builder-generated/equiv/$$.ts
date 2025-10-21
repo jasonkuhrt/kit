@@ -34,6 +34,20 @@ type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, $Actual]>
 const of_ = runtime.equiv.of
 
 /**
+ * Type-explicit matcher accepting an explicit type parameter.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * Assert.equiv.ofAs<string>()('hello')
+ *
+ * // ✗ Fail
+ * Assert.equiv.ofAs<string>()(42)
+ * ```
+ */
+const ofAs_ = runtime.equiv.ofAs
+
+/**
  * Pre-curried matcher for string.
  *
  * @example
@@ -248,6 +262,22 @@ const never_ = runtime.equiv.never
 type noExcess_<$Expected, $Actual> = Kind.Apply<EquivNoExcessKind, [$Expected, $Actual]>
 const noExcess_ = runtime.equiv.noExcess
 
+/**
+ * Type-explicit variant of noExcess.
+ *
+ * Asserts that the actual type is equivalent to the expected type AND has no excess properties.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * Assert.equiv.noExcessAs<{ id: string }>()({ id: 'abc' })
+ *
+ * // ✗ Fail - has excess property
+ * Assert.equiv.noExcessAs<{ id: string }>()({ id: 'abc', name: 'John' })
+ * ```
+ */
+const noExcessAs_ = runtime.equiv.noExcessAs
+
 export {
   any_ as any,
   Array_ as Array,
@@ -257,9 +287,11 @@ export {
   Error_ as Error,
   never_ as never,
   noExcess_ as noExcess,
+  noExcessAs_ as noExcessAs,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,

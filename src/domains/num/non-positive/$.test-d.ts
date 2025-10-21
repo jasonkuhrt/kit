@@ -19,7 +19,7 @@ test('Type narrowing works correctly with isNonPositive predicate', () => {
 
   // Predicate narrows to NonPositive type
   if (isNonPositive(value)) {
-    Assert.sub.of.as<NonPositive>()(value)
+    Assert.sub.ofAs<NonPositive>()(value)
   }
 
   // Works with zero and negative values
@@ -37,32 +37,32 @@ test('Type narrowing works correctly with isNonPositive predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic non-positive constructor
   const np1 = nonPositive(-5)
-  Assert.exact.of.as<NonPositive>()(np1)
+  Assert.exact.ofAs<NonPositive>()(np1)
 
   // Zero is non-positive
   const np2 = nonPositive(0)
-  Assert.exact.of.as<NonPositive>()(np2)
+  Assert.exact.ofAs<NonPositive>()(np2)
 
   // Large negative values
   const np3 = nonPositive(-1000)
-  Assert.exact.of.as<NonPositive>()(np3)
+  Assert.exact.ofAs<NonPositive>()(np3)
 
   // Small negative values
   const np4 = nonPositive(-0.001)
-  Assert.exact.of.as<NonPositive>()(np4)
+  Assert.exact.ofAs<NonPositive>()(np4)
 
   // Try constructor
   const try1 = tryNonPositive(-42)
-  Assert.exact.of.as<NonPositive | null>()(try1)
+  Assert.exact.ofAs<NonPositive | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Assert.exact.of.as<NonPositive>()(try1)
+    Assert.exact.ofAs<NonPositive>()(try1)
   }
 
   // Try with positive returns null
   const try2 = tryNonPositive(1)
-  Assert.exact.of.as<NonPositive | null>()(try2)
+  Assert.exact.ofAs<NonPositive | null>()(try2)
 })
 
 // === Type Relationships ===
@@ -72,7 +72,7 @@ test('NonPositive has correct relationships with other sign brands', () => {
 
   // NonPositive can be assigned to number
   const asNumber: number = npVal
-  Assert.sub.of.as<number>()(asNumber)
+  Assert.sub.ofAs<number>()(asNumber)
 
   // NonPositive and Positive are mutually exclusive
   const _posVal = {} as Positive
@@ -148,7 +148,7 @@ test('NonPositive enables specific numeric constraints', () => {
   const value = -5
   const np = nonPositive(value)
   const result = processNonPositive(np)
-  Assert.sub.of.as<string>()(result)
+  Assert.sub.ofAs<string>()(result)
 
   // Cannot pass positive values
   // @ts-expect-error - Cannot assign positive number to NonPositive

@@ -221,18 +221,72 @@ const Promise_ = runtime.array.not.equiv.Promise
 type Array_<$Actual> = Kind.Apply<EquivKind, [any[], Kind.Apply<ArrayElement, [$Actual]>, true]>
 const Array_ = runtime.array.not.equiv.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ * Extraction chain: T[] → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.array.equiv.unknown<unknown[]>
+ *
+ * // ✗ Fail
+ * type _ = Assert.array.equiv.unknown<string[]>
+ * ```
+ */
+type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<ArrayElement, [$Actual]>, true]>
+const unknown_ = runtime.array.not.equiv.unknown
+
+/**
+ * Pre-curried matcher for any.
+ * Extraction chain: T[] → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.array.equiv.any<any[]>
+ *
+ * // ✗ Fail
+ * type _ = Assert.array.equiv.any<string[]>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<ArrayElement, [$Actual]>, true]>
+const any_ = runtime.array.not.equiv.any
+
+/**
+ * Pre-curried matcher for never.
+ * Extraction chain: T[] → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.array.equiv.never<never[]>
+ *
+ * // ✗ Fail
+ * type _ = Assert.array.equiv.never<string[]>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<ArrayElement, [$Actual]>, true]>
+const never_ = runtime.array.not.equiv.never
+
+const ofAs_ = runtime.array.not.equiv.ofAs
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

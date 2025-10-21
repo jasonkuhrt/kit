@@ -207,18 +207,69 @@ const Promise_ = runtime.not.sub.Promise
 type Array_<$Actual> = Kind.Apply<SubKind, [any[], $Actual, true]>
 const Array_ = runtime.not.sub.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.sub.unknown<unknown>
+ *
+ * // ✗ Fail
+ * type _ = Assert.sub.unknown<string>
+ * ```
+ */
+type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, $Actual, true]>
+const unknown_ = runtime.not.sub.unknown
+
+/**
+ * Pre-curried matcher for any.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.sub.any<any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.sub.any<string>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<SubKind, [any, $Actual, true]>
+const any_ = runtime.not.sub.any
+
+/**
+ * Pre-curried matcher for never.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.sub.never<never>
+ *
+ * // ✗ Fail
+ * type _ = Assert.sub.never<string>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<SubKind, [never, $Actual, true]>
+const never_ = runtime.not.sub.never
+
+const ofAs_ = runtime.not.sub.ofAs
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

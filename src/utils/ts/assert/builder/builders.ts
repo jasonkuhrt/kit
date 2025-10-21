@@ -30,6 +30,9 @@ export interface RelatorNamespace<$State extends State> {
   // Base primitive - two-level curry: (expected) => (actual) => void
   readonly of: InputMatcherArgFactory<$State>
 
+  // Type-explicit variant - one-level curry with type parameter: <Type>() => (actual) => void
+  readonly ofAs: <$Type>() => InputActualFactory<State.SetMatcherType<$State, $Type>>
+
   // Pre-curried primitives - one-level: (actual) => void
   readonly string: InputActualFactory<State.SetMatcher<$State, string>>
   readonly number: InputActualFactory<State.SetMatcher<$State, number>>
@@ -48,9 +51,9 @@ export interface RelatorNamespace<$State extends State> {
 
   // Pre-curried special types - one-level: (actual) => void
   // These use InputActualFactorySpecial to bypass GuardAnyOrNeverActual since they explicitly allow these types
-  readonly unknown: InputActualFactorySpecial<State.SetMatcher<$State, unknown, false, false, true, false, false>>
-  readonly any: InputActualFactorySpecial<State.SetMatcher<$State, any, false, false, false, true, false>>
-  readonly never: InputActualFactorySpecial<State.SetMatcher<$State, never, false, false, false, false, true>>
+  readonly unknown: InputActualFactorySpecial<State.SetMatcher<$State, unknown, false, true, false, false>>
+  readonly any: InputActualFactorySpecial<State.SetMatcher<$State, any, false, false, true, false>>
+  readonly never: InputActualFactorySpecial<State.SetMatcher<$State, never, false, false, false, true>>
 
   // Special - two-level curry with const: (expected) => (actual) => void
   readonly const: InputMatcherArgConstFactory<$State>
@@ -82,6 +85,15 @@ export interface SubRelatorNamespace<$State extends State> extends RelatorNamesp
    * Asserts that the actual type is a subtype of the expected type AND has no excess properties.
    */
   readonly noExcess: InputMatcherArgFactory<State.SetRelator<$State, SubNoExcessKind>>
+
+  /**
+   * Type-explicit variant of noExcess.
+   *
+   * Asserts that the actual type is a subtype of the expected type AND has no excess properties.
+   */
+  readonly noExcessAs: <$Type>() => InputActualFactory<
+    State.SetMatcherType<State.SetRelator<$State, SubNoExcessKind>, $Type>
+  >
 }
 
 /**
@@ -94,6 +106,15 @@ export interface EquivRelatorNamespace<$State extends State> extends RelatorName
    * Asserts that the actual type is equivalent to the expected type AND has no excess properties.
    */
   readonly noExcess: InputMatcherArgFactory<State.SetRelator<$State, EquivNoExcessKind>>
+
+  /**
+   * Type-explicit variant of noExcess.
+   *
+   * Asserts that the actual type is equivalent to the expected type AND has no excess properties.
+   */
+  readonly noExcessAs: <$Type>() => InputActualFactory<
+    State.SetMatcherType<State.SetRelator<$State, EquivNoExcessKind>, $Type>
+  >
 }
 
 /**
@@ -163,4 +184,35 @@ export interface ExtractorsBuilder<$State extends State> {
   readonly parameter5: ExtractorsBuilder<State.AddExtractor<$State, Parameter5>>
 }
 
-export interface BaseBuilder<$State extends State> extends ExtractorsBuilder<$State> {}
+export interface BaseBuilder<$State extends State> extends ExtractorsBuilder<$State> {
+  /**
+   * Configure inference mode to narrow (literals with readonly preserved).
+   *
+   * Use `const` modifier with readonly preserved.
+   * Example: `[1, 2]` becomes `readonly [1, 2]`
+   */
+  readonly inferNarrow: BaseBuilder<State.SetInferMode<$State, 'narrow'>>
+
+  /**
+   * Configure inference mode to wide (no literal inference).
+   *
+   * No `const` modifier, types are widened.
+   * Example: `[1, 2]` becomes `number[]`
+   */
+  readonly inferWide: BaseBuilder<State.SetInferMode<$State, 'wide'>>
+
+  /**
+   * Configure inference mode to auto (default: literals with readonly stripped).
+   *
+   * Use `const` modifier but strip readonly deep.
+   * Example: `[1, 2]` becomes `[1, 2]` (not `readonly [1, 2]`)
+   */
+  readonly inferAuto: BaseBuilder<State.SetInferMode<$State, 'auto'>>
+
+  /**
+   * Dynamically configure inference mode.
+   *
+   * Useful when inference mode comes from configuration or external source.
+   */
+  setInfer<$Mode extends 'auto' | 'narrow' | 'wide'>(mode: $Mode): BaseBuilder<State.SetInferMode<$State, $Mode>>
+}

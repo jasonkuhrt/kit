@@ -1,3 +1,4 @@
+import { Ts } from '#ts'
 import { attest } from '@ark/attest'
 import { test } from 'vitest'
 import * as Assert from './$$.js'
@@ -94,184 +95,21 @@ test('exact error - optionality difference', () => {
 })
 
 test('exact value mode - basic type mismatches', () => {
-  const fn = Assert.exact.of.as<string>()<42>
-  attest(fn).type.toString.snap(`{
-  (actual: {
+  const fn = Assert.exact.ofAs<string>()<42>
+  const p = Ts.as<Parameters<typeof fn>>()
+  attest(p).type.toString.snap(`[
+  actual: {
     ERROR_________: "EXPECTED and ACTUAL are disjoint"
     expected______: string
     actual________: 42
     tip___________: "Types share no values"
-  }): void
-  as<$actual>(
-    ...params: [
-      GuardActual_<
-        $actual,
-        SetMatcherType<
-          SetRelator<Empty, ExactKind>,
-          string
-        >,
-        ExactKind,
-        $actual,
-        [$actual] extends [AssertionErrorHash]
-          ? $actual
-          : IsExact<$actual, string> extends true
-            ? never
-            : GetRelation<
-                  string,
-                  $actual
-                > extends "equivalent"
-              ? {
-                  ERROR_________: "EXPECTED and ACTUAL are only equivilant (not exact)"
-                  expected______: string
-                  actual________: $actual
-                  tip___________: "Use equiv() for mutual assignability OR apply Simplify<T> to normalize types"
-                }
-              : GetRelation<
-                    string,
-                    $actual
-                  > extends "subtype"
-                ? {
-                    ERROR_________: "ACTUAL is subtype of EXPECTED"
-                    expected______: string
-                    actual________: $actual
-                    tip___________: "ACTUAL is narrower than EXPECTED"
-                  }
-                : GetRelation<
-                      string,
-                      $actual
-                    > extends "supertype"
-                  ? {
-                      ERROR_________: "ACTUAL is supertype of EXPECTED"
-                      expected______: string
-                      actual________: $actual
-                      tip___________: "ACTUAL is wider than EXPECTED"
-                    }
-                  : GetRelation<
-                        string,
-                        $actual
-                      > extends "overlapping"
-                    ? {
-                        ERROR_________: "EXPECTED only overlaps with ACTUAL"
-                        expected______: string
-                        actual________: $actual
-                        tip___________: "Types share some values but differ"
-                      }
-                    : {
-                        ERROR_________: "EXPECTED and ACTUAL are disjoint"
-                        expected______: string
-                        actual________: $actual
-                        tip___________: "Types share no values"
-                      }
-      >
-    ] extends [AssertionErrorHash]
-      ? [
-          AssertionErrorHash &
-            GuardActual_<
-              $actual,
-              SetMatcherType<
-                SetRelator<Empty, ExactKind>,
-                string
-              >,
-              ExactKind,
-              $actual,
-              [$actual] extends [AssertionErrorHash]
-                ? $actual
-                : IsExact<$actual, string> extends true
-                  ? never
-                  : GetRelation<
-                        string,
-                        $actual
-                      > extends "equivalent"
-                    ? {
-                        ERROR_________: "EXPECTED and ACTUAL are only equivilant (not exact)"
-                        expected______: string
-                        actual________: $actual
-                        tip___________: "Use equiv() for mutual assignability OR apply Simplify<T> to normalize types"
-                      }
-                    : GetRelation<
-                          string,
-                          $actual
-                        > extends "subtype"
-                      ? {
-                          ERROR_________: "ACTUAL is subtype of EXPECTED"
-                          expected______: string
-                          actual________: $actual
-                          tip___________: "ACTUAL is narrower than EXPECTED"
-                        }
-                      : GetRelation<
-                            string,
-                            $actual
-                          > extends "supertype"
-                        ? {
-                            ERROR_________: "ACTUAL is supertype of EXPECTED"
-                            expected______: string
-                            actual________: $actual
-                            tip___________: "ACTUAL is wider than EXPECTED"
-                          }
-                        : GetRelation<
-                              string,
-                              $actual
-                            > extends "overlapping"
-                          ? {
-                              ERROR_________: "EXPECTED only overlaps with ACTUAL"
-                              expected______: string
-                              actual________: $actual
-                              tip___________: "Types share some values but differ"
-                            }
-                          : {
-                              ERROR_________: "EXPECTED and ACTUAL are disjoint"
-                              expected______: string
-                              actual________: $actual
-                              tip___________: "Types share no values"
-                            }
-            >,
-          ...([
-            GuardAnyOrNeverActual<
-              $actual,
-              SetMatcherType<
-                SetRelator<Empty, ExactKind>,
-                string
-              >
-            >
-          ] extends [AssertionErrorHash]
-            ? [
-                AssertionErrorHash &
-                  GuardAnyOrNeverActual<
-                    $actual,
-                    SetMatcherType<
-                      SetRelator<Empty, ExactKind>,
-                      string
-                    >
-                  >
-              ]
-            : [])
-        ]
-      : [
-            GuardAnyOrNeverActual<
-              $actual,
-              SetMatcherType<
-                SetRelator<Empty, ExactKind>,
-                string
-              >
-            >
-          ] extends [AssertionErrorHash]
-        ? [
-            AssertionErrorHash &
-              GuardAnyOrNeverActual<
-                $actual,
-                SetMatcherType<
-                  SetRelator<Empty, ExactKind>,
-                  string
-                >
-              >
-          ]
-        : []
-  ): void
-}`)
+  }
+]`)
 
-  const fn2 = Assert.exact.of.as<{ a: string }>()<{ a: number; b: number }>
-  attest(fn2).type.toString.snap(`{
-  (actual: {
+  const fn2 = Assert.exact.ofAs<{ a: string }>()<{ a: number; b: number }>
+  const p2 = Ts.as<Parameters<typeof fn2>>()
+  attest(p2).type.toString.snap(`[
+  actual: {
     ERROR_________: "EXPECTED only overlaps with ACTUAL"
     expected______: { a: string }
     actual________: { a: number; b: number }
@@ -280,376 +118,8 @@ test('exact value mode - basic type mismatches', () => {
       a: { expected: string; actual: number }
     }
     tip___________: "Types share some values but differ"
-  }): void
-  as<$actual>(
-    ...params: [
-      GuardActual_<
-        $actual,
-        SetMatcherType<
-          SetRelator<Empty, ExactKind>,
-          { a: string }
-        >,
-        ExactKind,
-        $actual,
-        [$actual] extends [AssertionErrorHash]
-          ? $actual
-          : IsExact<$actual, { a: string }> extends true
-            ? never
-            : GetRelation<
-                  { a: string },
-                  $actual
-                > extends "equivalent"
-              ? StaticErrorAssertion<
-                  "EXPECTED and ACTUAL are only equivilant (not exact)",
-                  { a: string },
-                  $actual,
-                  ($actual extends object
-                    ? {
-                        [k in keyof DiffFields<
-                          { a: string },
-                          $actual
-                        > as IsEmpty<
-                          DiffFields<
-                            { a: string },
-                            $actual
-                          >[k]
-                        > extends true
-                          ? never
-                          : k]: DiffFields<
-                          { a: string },
-                          $actual
-                        >[k]
-                      }
-                    : {}) & {
-                    tip: "Use equiv() for mutual assignability OR apply Simplify<T> to normalize types"
-                  },
-                  14
-                >
-              : GetRelation<
-                    { a: string },
-                    $actual
-                  > extends "subtype"
-                ? StaticErrorAssertion<
-                    "ACTUAL is subtype of EXPECTED",
-                    { a: string },
-                    $actual,
-                    ($actual extends object
-                      ? {
-                          [k in keyof DiffFields<
-                            { a: string },
-                            $actual
-                          > as IsEmpty<
-                            DiffFields<
-                              { a: string },
-                              $actual
-                            >[k]
-                          > extends true
-                            ? never
-                            : k]: DiffFields<
-                            { a: string },
-                            $actual
-                          >[k]
-                        }
-                      : {}) & {
-                      tip: "ACTUAL is narrower than EXPECTED"
-                    },
-                    14
-                  >
-                : GetRelation<
-                      { a: string },
-                      $actual
-                    > extends "supertype"
-                  ? StaticErrorAssertion<
-                      "ACTUAL is supertype of EXPECTED",
-                      { a: string },
-                      $actual,
-                      ($actual extends object
-                        ? {
-                            [k in keyof DiffFields<
-                              { a: string },
-                              $actual
-                            > as IsEmpty<
-                              DiffFields<
-                                { a: string },
-                                $actual
-                              >[k]
-                            > extends true
-                              ? never
-                              : k]: DiffFields<
-                              { a: string },
-                              $actual
-                            >[k]
-                          }
-                        : {}) & {
-                        tip: "ACTUAL is wider than EXPECTED"
-                      },
-                      14
-                    >
-                  : GetRelation<
-                        { a: string },
-                        $actual
-                      > extends "overlapping"
-                    ? StaticErrorAssertion<
-                        "EXPECTED only overlaps with ACTUAL",
-                        { a: string },
-                        $actual,
-                        ($actual extends object
-                          ? {
-                              [k in keyof DiffFields<
-                                { a: string },
-                                $actual
-                              > as IsEmpty<
-                                DiffFields<
-                                  { a: string },
-                                  $actual
-                                >[k]
-                              > extends true
-                                ? never
-                                : k]: DiffFields<
-                                { a: string },
-                                $actual
-                              >[k]
-                            }
-                          : {}) & {
-                          tip: "Types share some values but differ"
-                        },
-                        14
-                      >
-                    : StaticErrorAssertion<
-                        "EXPECTED and ACTUAL are disjoint",
-                        { a: string },
-                        $actual,
-                        ($actual extends object
-                          ? {
-                              [k in keyof DiffFields<
-                                { a: string },
-                                $actual
-                              > as IsEmpty<
-                                DiffFields<
-                                  { a: string },
-                                  $actual
-                                >[k]
-                              > extends true
-                                ? never
-                                : k]: DiffFields<
-                                { a: string },
-                                $actual
-                              >[k]
-                            }
-                          : {}) & {
-                          tip: "Types share no values"
-                        },
-                        14
-                      >
-      >
-    ] extends [AssertionErrorHash]
-      ? [
-          AssertionErrorHash &
-            GuardActual_<
-              $actual,
-              SetMatcherType<
-                SetRelator<Empty, ExactKind>,
-                { a: string }
-              >,
-              ExactKind,
-              $actual,
-              [$actual] extends [AssertionErrorHash]
-                ? $actual
-                : IsExact<
-                      $actual,
-                      { a: string }
-                    > extends true
-                  ? never
-                  : GetRelation<
-                        { a: string },
-                        $actual
-                      > extends "equivalent"
-                    ? StaticErrorAssertion<
-                        "EXPECTED and ACTUAL are only equivilant (not exact)",
-                        { a: string },
-                        $actual,
-                        ($actual extends object
-                          ? {
-                              [k in keyof DiffFields<
-                                { a: string },
-                                $actual
-                              > as IsEmpty<
-                                DiffFields<
-                                  { a: string },
-                                  $actual
-                                >[k]
-                              > extends true
-                                ? never
-                                : k]: DiffFields<
-                                { a: string },
-                                $actual
-                              >[k]
-                            }
-                          : {}) & {
-                          tip: "Use equiv() for mutual assignability OR apply Simplify<T> to normalize types"
-                        },
-                        14
-                      >
-                    : GetRelation<
-                          { a: string },
-                          $actual
-                        > extends "subtype"
-                      ? StaticErrorAssertion<
-                          "ACTUAL is subtype of EXPECTED",
-                          { a: string },
-                          $actual,
-                          ($actual extends object
-                            ? {
-                                [k in keyof DiffFields<
-                                  { a: string },
-                                  $actual
-                                > as IsEmpty<
-                                  DiffFields<
-                                    { a: string },
-                                    $actual
-                                  >[k]
-                                > extends true
-                                  ? never
-                                  : k]: DiffFields<
-                                  { a: string },
-                                  $actual
-                                >[k]
-                              }
-                            : {}) & {
-                            tip: "ACTUAL is narrower than EXPECTED"
-                          },
-                          14
-                        >
-                      : GetRelation<
-                            { a: string },
-                            $actual
-                          > extends "supertype"
-                        ? StaticErrorAssertion<
-                            "ACTUAL is supertype of EXPECTED",
-                            { a: string },
-                            $actual,
-                            ($actual extends object
-                              ? {
-                                  [k in keyof DiffFields<
-                                    { a: string },
-                                    $actual
-                                  > as IsEmpty<
-                                    DiffFields<
-                                      { a: string },
-                                      $actual
-                                    >[k]
-                                  > extends true
-                                    ? never
-                                    : k]: DiffFields<
-                                    { a: string },
-                                    $actual
-                                  >[k]
-                                }
-                              : {}) & {
-                              tip: "ACTUAL is wider than EXPECTED"
-                            },
-                            14
-                          >
-                        : GetRelation<
-                              { a: string },
-                              $actual
-                            > extends "overlapping"
-                          ? StaticErrorAssertion<
-                              "EXPECTED only overlaps with ACTUAL",
-                              { a: string },
-                              $actual,
-                              ($actual extends object
-                                ? {
-                                    [k in keyof DiffFields<
-                                      { a: string },
-                                      $actual
-                                    > as IsEmpty<
-                                      DiffFields<
-                                        { a: string },
-                                        $actual
-                                      >[k]
-                                    > extends true
-                                      ? never
-                                      : k]: DiffFields<
-                                      { a: string },
-                                      $actual
-                                    >[k]
-                                  }
-                                : {}) & {
-                                tip: "Types share some values but differ"
-                              },
-                              14
-                            >
-                          : StaticErrorAssertion<
-                              "EXPECTED and ACTUAL are disjoint",
-                              { a: string },
-                              $actual,
-                              ($actual extends object
-                                ? {
-                                    [k in keyof DiffFields<
-                                      { a: string },
-                                      $actual
-                                    > as IsEmpty<
-                                      DiffFields<
-                                        { a: string },
-                                        $actual
-                                      >[k]
-                                    > extends true
-                                      ? never
-                                      : k]: DiffFields<
-                                      { a: string },
-                                      $actual
-                                    >[k]
-                                  }
-                                : {}) & {
-                                tip: "Types share no values"
-                              },
-                              14
-                            >
-            >,
-          ...([
-            GuardAnyOrNeverActual<
-              $actual,
-              SetMatcherType<
-                SetRelator<Empty, ExactKind>,
-                { a: string }
-              >
-            >
-          ] extends [AssertionErrorHash]
-            ? [
-                AssertionErrorHash &
-                  GuardAnyOrNeverActual<
-                    $actual,
-                    SetMatcherType<
-                      SetRelator<Empty, ExactKind>,
-                      { a: string }
-                    >
-                  >
-              ]
-            : [])
-        ]
-      : [
-            GuardAnyOrNeverActual<
-              $actual,
-              SetMatcherType<
-                SetRelator<Empty, ExactKind>,
-                { a: string }
-              >
-            >
-          ] extends [AssertionErrorHash]
-        ? [
-            AssertionErrorHash &
-              GuardAnyOrNeverActual<
-                $actual,
-                SetMatcherType<
-                  SetRelator<Empty, ExactKind>,
-                  { a: string }
-                >
-              >
-          ]
-        : []
-  ): void
-}`)
+  }
+]`)
 })
 
 // Note: never handling is now covered by guard tests
@@ -682,10 +152,11 @@ test('exact value mode - parameter-based error feedback', () => {
 })
 
 test('exact value mode - complex type aliases in signatures', () => {
-  const exactComplexA = Assert.exact.of.as<CA>()
+  const exactComplexA = Assert.exact.ofAs<CA>()
   const fnComplexError = exactComplexA<CB>
-  attest(fnComplexError).type.toString.snap(`{
-  (actual: {
+  const p3 = Ts.as<Parameters<typeof fnComplexError>>()
+  attest(p3).type.toString.snap(`[
+  actual: {
     ERROR_________: "EXPECTED only overlaps with ACTUAL"
     expected______: CA
     actual________: CB
@@ -697,337 +168,8 @@ test('exact value mode - complex type aliases in signatures', () => {
       }
     }
     tip___________: "Types share some values but differ"
-  }): void
-  as<$actual>(
-    ...params: [
-      GuardActual_<
-        $actual,
-        SetMatcherType<SetRelator<Empty, ExactKind>, CA>,
-        ExactKind,
-        $actual,
-        [$actual] extends [AssertionErrorHash]
-          ? $actual
-          : IsExact<$actual, CA> extends true
-            ? never
-            : GetRelation<CA, $actual> extends "equivalent"
-              ? StaticErrorAssertion<
-                  "EXPECTED and ACTUAL are only equivilant (not exact)",
-                  CA,
-                  $actual,
-                  ($actual extends object
-                    ? {
-                        [k in keyof DiffFields<
-                          CA,
-                          $actual
-                        > as IsEmpty<
-                          DiffFields<CA, $actual>[k]
-                        > extends true
-                          ? never
-                          : k]: DiffFields<CA, $actual>[k]
-                      }
-                    : {}) & {
-                    tip: "Use equiv() for mutual assignability OR apply Simplify<T> to normalize types"
-                  },
-                  14
-                >
-              : GetRelation<CA, $actual> extends "subtype"
-                ? StaticErrorAssertion<
-                    "ACTUAL is subtype of EXPECTED",
-                    CA,
-                    $actual,
-                    ($actual extends object
-                      ? {
-                          [k in keyof DiffFields<
-                            CA,
-                            $actual
-                          > as IsEmpty<
-                            DiffFields<CA, $actual>[k]
-                          > extends true
-                            ? never
-                            : k]: DiffFields<CA, $actual>[k]
-                        }
-                      : {}) & {
-                      tip: "ACTUAL is narrower than EXPECTED"
-                    },
-                    14
-                  >
-                : GetRelation<
-                      CA,
-                      $actual
-                    > extends "supertype"
-                  ? StaticErrorAssertion<
-                      "ACTUAL is supertype of EXPECTED",
-                      CA,
-                      $actual,
-                      ($actual extends object
-                        ? {
-                            [k in keyof DiffFields<
-                              CA,
-                              $actual
-                            > as IsEmpty<
-                              DiffFields<CA, $actual>[k]
-                            > extends true
-                              ? never
-                              : k]: DiffFields<
-                              CA,
-                              $actual
-                            >[k]
-                          }
-                        : {}) & {
-                        tip: "ACTUAL is wider than EXPECTED"
-                      },
-                      14
-                    >
-                  : GetRelation<
-                        CA,
-                        $actual
-                      > extends "overlapping"
-                    ? StaticErrorAssertion<
-                        "EXPECTED only overlaps with ACTUAL",
-                        CA,
-                        $actual,
-                        ($actual extends object
-                          ? {
-                              [k in keyof DiffFields<
-                                CA,
-                                $actual
-                              > as IsEmpty<
-                                DiffFields<CA, $actual>[k]
-                              > extends true
-                                ? never
-                                : k]: DiffFields<
-                                CA,
-                                $actual
-                              >[k]
-                            }
-                          : {}) & {
-                          tip: "Types share some values but differ"
-                        },
-                        14
-                      >
-                    : StaticErrorAssertion<
-                        "EXPECTED and ACTUAL are disjoint",
-                        CA,
-                        $actual,
-                        ($actual extends object
-                          ? {
-                              [k in keyof DiffFields<
-                                CA,
-                                $actual
-                              > as IsEmpty<
-                                DiffFields<CA, $actual>[k]
-                              > extends true
-                                ? never
-                                : k]: DiffFields<
-                                CA,
-                                $actual
-                              >[k]
-                            }
-                          : {}) & {
-                          tip: "Types share no values"
-                        },
-                        14
-                      >
-      >
-    ] extends [AssertionErrorHash]
-      ? [
-          AssertionErrorHash &
-            GuardActual_<
-              $actual,
-              SetMatcherType<
-                SetRelator<Empty, ExactKind>,
-                CA
-              >,
-              ExactKind,
-              $actual,
-              [$actual] extends [AssertionErrorHash]
-                ? $actual
-                : IsExact<$actual, CA> extends true
-                  ? never
-                  : GetRelation<
-                        CA,
-                        $actual
-                      > extends "equivalent"
-                    ? StaticErrorAssertion<
-                        "EXPECTED and ACTUAL are only equivilant (not exact)",
-                        CA,
-                        $actual,
-                        ($actual extends object
-                          ? {
-                              [k in keyof DiffFields<
-                                CA,
-                                $actual
-                              > as IsEmpty<
-                                DiffFields<CA, $actual>[k]
-                              > extends true
-                                ? never
-                                : k]: DiffFields<
-                                CA,
-                                $actual
-                              >[k]
-                            }
-                          : {}) & {
-                          tip: "Use equiv() for mutual assignability OR apply Simplify<T> to normalize types"
-                        },
-                        14
-                      >
-                    : GetRelation<
-                          CA,
-                          $actual
-                        > extends "subtype"
-                      ? StaticErrorAssertion<
-                          "ACTUAL is subtype of EXPECTED",
-                          CA,
-                          $actual,
-                          ($actual extends object
-                            ? {
-                                [k in keyof DiffFields<
-                                  CA,
-                                  $actual
-                                > as IsEmpty<
-                                  DiffFields<CA, $actual>[k]
-                                > extends true
-                                  ? never
-                                  : k]: DiffFields<
-                                  CA,
-                                  $actual
-                                >[k]
-                              }
-                            : {}) & {
-                            tip: "ACTUAL is narrower than EXPECTED"
-                          },
-                          14
-                        >
-                      : GetRelation<
-                            CA,
-                            $actual
-                          > extends "supertype"
-                        ? StaticErrorAssertion<
-                            "ACTUAL is supertype of EXPECTED",
-                            CA,
-                            $actual,
-                            ($actual extends object
-                              ? {
-                                  [k in keyof DiffFields<
-                                    CA,
-                                    $actual
-                                  > as IsEmpty<
-                                    DiffFields<
-                                      CA,
-                                      $actual
-                                    >[k]
-                                  > extends true
-                                    ? never
-                                    : k]: DiffFields<
-                                    CA,
-                                    $actual
-                                  >[k]
-                                }
-                              : {}) & {
-                              tip: "ACTUAL is wider than EXPECTED"
-                            },
-                            14
-                          >
-                        : GetRelation<
-                              CA,
-                              $actual
-                            > extends "overlapping"
-                          ? StaticErrorAssertion<
-                              "EXPECTED only overlaps with ACTUAL",
-                              CA,
-                              $actual,
-                              ($actual extends object
-                                ? {
-                                    [k in keyof DiffFields<
-                                      CA,
-                                      $actual
-                                    > as IsEmpty<
-                                      DiffFields<
-                                        CA,
-                                        $actual
-                                      >[k]
-                                    > extends true
-                                      ? never
-                                      : k]: DiffFields<
-                                      CA,
-                                      $actual
-                                    >[k]
-                                  }
-                                : {}) & {
-                                tip: "Types share some values but differ"
-                              },
-                              14
-                            >
-                          : StaticErrorAssertion<
-                              "EXPECTED and ACTUAL are disjoint",
-                              CA,
-                              $actual,
-                              ($actual extends object
-                                ? {
-                                    [k in keyof DiffFields<
-                                      CA,
-                                      $actual
-                                    > as IsEmpty<
-                                      DiffFields<
-                                        CA,
-                                        $actual
-                                      >[k]
-                                    > extends true
-                                      ? never
-                                      : k]: DiffFields<
-                                      CA,
-                                      $actual
-                                    >[k]
-                                  }
-                                : {}) & {
-                                tip: "Types share no values"
-                              },
-                              14
-                            >
-            >,
-          ...([
-            GuardAnyOrNeverActual<
-              $actual,
-              SetMatcherType<
-                SetRelator<Empty, ExactKind>,
-                CA
-              >
-            >
-          ] extends [AssertionErrorHash]
-            ? [
-                AssertionErrorHash &
-                  GuardAnyOrNeverActual<
-                    $actual,
-                    SetMatcherType<
-                      SetRelator<Empty, ExactKind>,
-                      CA
-                    >
-                  >
-              ]
-            : [])
-        ]
-      : [
-            GuardAnyOrNeverActual<
-              $actual,
-              SetMatcherType<
-                SetRelator<Empty, ExactKind>,
-                CA
-              >
-            >
-          ] extends [AssertionErrorHash]
-        ? [
-            AssertionErrorHash &
-              GuardAnyOrNeverActual<
-                $actual,
-                SetMatcherType<
-                  SetRelator<Empty, ExactKind>,
-                  CA
-                >
-              >
-          ]
-        : []
-  ): void
-}`)
+  }
+]`)
 })
 
 // StaticErrorAssertion Tests
@@ -1181,17 +323,25 @@ test('equiv errors', () => {
 
 test('extractor - parameters', () => {
   type Fn = (a: number, b: number) => number
-  type _Pass = Assert.parameters.exact.of<[number, number], Parameters<Fn>>
-  attest({} as Assert.parameters.exact.of<[string, string], Parameters<Fn>>).type.toString.snap(`{
-  ERROR_________: "ACTUAL is supertype of EXPECTED"
+  type _Pass = Assert.parameters.exact.of<[number, number], Fn>
+  attest({} as Assert.parameters.exact.of<[string, string], Fn>).type.toString.snap(`{
+  ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: [string, string]
-  actual________: any[]
-  diff_missing__: ExcludeKeys<[string, string], number>
-  diff_excess___: {}[]
+  actual________: [a: number, b: number]
+  diff_missing__: ExcludeKeys<
+    [string, string],
+    number | "0" | "1"
+  >
+  diff_excess___: ExcludeKeys<
+    [a: number, b: number],
+    number | "0" | "1"
+  >
   diff_mismatch_: {
-    [x: number]: { expected: string; actual: any }
+    [x: number]: { expected: string; actual: number }
+    0: { expected: string; actual: number }
+    1: { expected: string; actual: number }
   }
-  tip___________: "ACTUAL is wider than EXPECTED"
+  tip___________: "Types share some values but differ"
 }`)
 })
 
@@ -1215,36 +365,123 @@ test('extractor - array', () => {
 }`)
 })
 
-// // Special Type Tests
+// Extractor Resolution Errors - Value-Second API
 
-// test('special type tests', () => {
-//   attest({} as Assert.exact.never<string>).type.toString.snap(`{
-//   ERROR_________: "ACTUAL is supertype of EXPECTED but not structurally equal"
-//   expected______: never
-//   actual________: string
-// }`)
-//   attest({} as Assert.exact.any<unknown>).type.toString.snap(`{
-//   ERROR_________: "EXPECTED and ACTUAL are mutually assignable but not structurally equal"
-//   expected______: any
-//   actual________: unknown
-//   tip___________: "Use equiv() for mutual assignability OR apply Simplify<T> to normalize types"
-// }`)
-//   attest({} as Assert.exact.unknown<string>).type.toString.snap(`{
-//   ERROR_________: "ACTUAL is subtype of EXPECTED but not structurally equal"
-//   expected______: unknown
-//   actual________: string
-//   tip___________: "ACTUAL is narrower than EXPECTED"
-// }`)
-//   attest({} as Assert.exact.unknown<any>).type.toString.snap(`{
-//   ERROR_________: "EXPECTED and ACTUAL are mutually assignable but not structurally equal"
-//   expected______: unknown
-//   actual________: any
-//   tip___________: "Use equiv() for mutual assignability OR apply Simplify<T> to normalize types"
-// }`)
-//   attest({} as Assert.exact.empty<{ a: number }>).type.toString.snap(`{
-//   ERROR_________: "EXPECTED and ACTUAL are disjoint"
-//   expected______: true
-//   actual________: false
-//   tip___________: "Types share no values"
-// }`)
-// })
+test('extractor error - array on non-array', () => {
+  type ParamError = Assert.array.exact.of<number, string>
+  attest({} as ParamError).type.toString.snap(`{
+  ERROR_________: "Cannot extract array from incompatible type"
+  expected______: "Type must extend array (readonly any[])"
+  actual________: string
+  attempted_____: "array extractor"
+}`)
+})
+
+test('extractor error - awaited on non-Promise string', () => {
+  type ParamError = Assert.awaited.exact.of<number, string>
+  attest({} as ParamError).type.toString.snap(`{
+  ERROR_________: "Cannot extract awaited from incompatible type"
+  expected______: "Type must extend PromiseLike<any>"
+  actual________: string
+  attempted_____: "awaited extractor"
+}`)
+})
+
+test('extractor error - parameters on non-function', () => {
+  type ParamError = Assert.parameters.exact.of<[number], string>
+  attest({} as ParamError).type.toString.snap(`{
+  ERROR_________: "Cannot extract parameters from incompatible type"
+  expected______: "Type must extend function ((...args: any) => any)"
+  actual________: string
+  attempted_____: "parameters extractor"
+}`)
+})
+
+test('extractor error - returned on non-function', () => {
+  type ParamError = Assert.returned.exact.of<number, string>
+  attest({} as ParamError).type.toString.snap(`{
+  ERROR_________: "Cannot extract returned from incompatible type"
+  expected______: "Type must extend function ((...args: any) => any)"
+  actual________: string
+  attempted_____: "returned extractor"
+}`)
+})
+
+// Union Edge Cases - Unions with valid parts should pass
+
+test('extractor - awaited with union containing Promise (type-level)', () => {
+  // Union with Promise should NOT error - the Promise part is valid
+  type MixedUnion = string | Promise<number>
+  type _Pass = Assert.awaited.exact.of<number, MixedUnion> // Should pass - extracts from Promise part
+
+  // Pure string should error
+  type _Error = Assert.awaited.exact.of<number, string>
+  attest({} as _Error).type.toString.snap(`{
+  ERROR_________: "Cannot extract awaited from incompatible type"
+  expected______: "Type must extend PromiseLike<any>"
+  actual________: string
+  attempted_____: "awaited extractor"
+}`)
+})
+
+test('extractor - array with union containing array (type-level)', () => {
+  // Union with array should NOT error - the array part is valid
+  type MixedUnion = string | number[]
+  type _Pass = Assert.array.exact.of<number, MixedUnion> // Should pass - extracts from array part
+
+  // Pure string should error
+  type _Error = Assert.array.exact.of<number, string>
+  attest({} as _Error).type.toString.snap(`{
+  ERROR_________: "Cannot extract array from incompatible type"
+  expected______: "Type must extend array (readonly any[])"
+  actual________: string
+  attempted_____: "array extractor"
+}`)
+})
+
+// Value-Level API Tests
+
+test('extractor - awaited value-level API', () => {
+  const promiseValue = Promise.resolve(42)
+  type _Pass = Assert.awaited.exact.of<number, typeof promiseValue>
+
+  // Error case - string is not a Promise
+  const stringValue = 'hello'
+  type _Error = Assert.awaited.exact.of<number, typeof stringValue>
+  attest({} as _Error).type.toString.snap(`{
+  ERROR_________: "Cannot extract awaited from incompatible type"
+  expected______: "Type must extend PromiseLike<any>"
+  actual________: "hello"
+  attempted_____: "awaited extractor"
+}`)
+})
+
+test('extractor - array value-level API', () => {
+  const arrayValue = [1, 2, 3]
+  type _Pass = Assert.array.exact.of<number, typeof arrayValue>
+
+  // Error case - string is not an array
+  const stringValue = 'hello'
+  type _Error = Assert.array.exact.of<number, typeof stringValue>
+  attest({} as _Error).type.toString.snap(`{
+  ERROR_________: "Cannot extract array from incompatible type"
+  expected______: "Type must extend array (readonly any[])"
+  actual________: "hello"
+  attempted_____: "array extractor"
+}`)
+})
+
+test('extractor - returned value-level API', () => {
+  const fnValue = () => 42
+  type _Pass = Assert.returned.exact.of<number, typeof fnValue>
+
+  // Error case - string is not a function
+  const stringValue = 'hello'
+  type _Error = Assert.returned.exact.of<number, typeof stringValue>
+  attest({} as _Error).type.toString.snap(`{
+  ERROR_________: "Cannot extract returned from incompatible type"
+  expected______: "Type must extend function ((...args: any) => any)"
+  actual________: "hello"
+  attempted_____: "returned extractor"
+}`)
+})

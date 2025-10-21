@@ -221,18 +221,72 @@ const Promise_ = runtime.parameters.not.sub.Promise
 type Array_<$Actual> = Kind.Apply<SubKind, [any[], Kind.Apply<Parameters$, [$Actual]>, true]>
 const Array_ = runtime.parameters.not.sub.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.sub.unknown<(...args: any[]) => unknown>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.sub.unknown<(...args: any[]) => string>
+ * ```
+ */
+type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<Parameters$, [$Actual]>, true]>
+const unknown_ = runtime.parameters.not.sub.unknown
+
+/**
+ * Pre-curried matcher for any.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.sub.any<(...args: any[]) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.sub.any<(...args: any[]) => string>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<Parameters$, [$Actual]>, true]>
+const any_ = runtime.parameters.not.sub.any
+
+/**
+ * Pre-curried matcher for never.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.sub.never<(...args: any[]) => never>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.sub.never<(...args: any[]) => string>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<Parameters$, [$Actual]>, true]>
+const never_ = runtime.parameters.not.sub.never
+
+const ofAs_ = runtime.parameters.not.sub.ofAs
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

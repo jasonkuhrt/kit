@@ -1,9 +1,3 @@
-/**
- * @generated
- * This file contains generated type-level matchers.
- * Manual edits should be made carefully and consistently across all generated files.
- */
-
 import type * as Kind from '../../kind.js'
 import { runtime } from '../builder/runtime.js'
 import type { ExactKind } from '../kinds/relators.js'
@@ -237,7 +231,7 @@ const unknown_ = runtime.exact.unknown
  * type _ = Assert.exact.any<any>
  *
  * // ✗ Fail
- * type _ = Assert.exact.any<unknown>
+ * type _ = Assert.exact.any<string>
  * ```
  */
 type any_<$Actual> = Kind.Apply<ExactKind, [any, $Actual]>
@@ -258,10 +252,8 @@ const any_ = runtime.exact.any
 type never_<$Actual> = Kind.Apply<ExactKind, [never, $Actual]>
 const never_ = runtime.exact.never
 
-/**
- * Not available for exact relation.
- * @see ExactRelatorNamespace.noExcess for why this is never
- */
+const ofAs_ = runtime.exact.ofAs
+type noExcess_ = never
 const noExcess_ = runtime.exact.noExcess
 
 export {
@@ -276,6 +268,7 @@ export {
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,

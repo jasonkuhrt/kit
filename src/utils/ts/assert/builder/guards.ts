@@ -1,6 +1,7 @@
+import type { Ts } from '#ts/ts'
 import type * as Kind from '../../kind.js'
 import type { IsAny, IsNever, IsUnknown } from '../../ts.js'
-import type { AssertionErrorHash, StaticErrorAssertion } from '../assertion-error.js'
+import type { StaticErrorAssertion } from '../assertion-error.js'
 import type { ApplyExtractors } from '../kinds/extractors.ts'
 import type { State } from './state.js'
 
@@ -69,34 +70,45 @@ type GuardActual_<
   $State extends State,
   $Relator extends Kind.Kind,
   ___$ActualExtracted = ApplyExtractors<$State['extractors'], $actual>,
-  ___$Error = [___$ActualExtracted] extends [AssertionErrorHash] ? ___$ActualExtracted
-    : Kind.Apply<$Relator, [$State['matcher']['type'], ___$ActualExtracted]>,
 > =
-  // [___$ActualExtracted, ___$Error]
+  // Check if extraction failed first
+  [___$ActualExtracted] extends [Ts.Error]
+    ? ___$ActualExtracted
+    // Extraction succeeded, proceed with relation check
+    : GuardActual__<$actual, $State, $Relator, ___$ActualExtracted>
+
+// dprint-ignore
+type GuardActual__<
+  $actual,
+  $State extends State,
+  $Relator extends Kind.Kind,
+  ___$ActualExtracted,
+  ___$Error = Kind.Apply<$Relator, [$State['matcher']['type'], ___$ActualExtracted]>,
+> =
 IsUnknown<___$ActualExtracted> extends true
   ? $State['matcher']['allowUnknown'] extends true
     ? [___$Error] extends [never]
       ? $actual
-      : [___$Error] extends [AssertionErrorHash]
+      : [___$Error] extends [Ts.Error]
         ? ___$Error
         : StaticErrorAssertion<'Unexpected error type in GuardActual', unknown, unknown>
     : IsUnknown<$State['matcher']['type']> extends true
       ? [___$Error] extends [never]
         ? $actual
-        : [___$Error] extends [AssertionErrorHash]
+        : [___$Error] extends [Ts.Error]
           ? ___$Error
           : StaticErrorAssertion<'Unexpected error type in GuardActual', unknown, unknown>
       : StaticErrorAssertion<'Type unknown is not a valid actual type to assertion on unless flag has been set'>
 : [___$Error] extends [never]                       ? $actual :
-[___$Error] extends [AssertionErrorHash]          ? ___$Error
+[___$Error] extends [Ts.Error]          ? ___$Error
                                                   : StaticErrorAssertion<'Unexpected error type in GuardActual', unknown, unknown>
 
 // dprint-ignore
 export type RestParamsDisplayGuards<$Results extends readonly any[]> =
   $Results extends [infer __first__, ...infer __rest__]
-    ? [__first__] extends [AssertionErrorHash]
+    ? [__first__] extends [Ts.Error]
       ? [__first__, ...RestParamsDisplayGuards<__rest__>]
       : RestParamsDisplayGuards<__rest__>
     : []
 
-export type RestParamsDisplayGuard<$Result> = [$Result] extends [AssertionErrorHash] ? [$Result] : []
+export type RestParamsDisplayGuard<$Result> = [$Result] extends [Ts.Error] ? [$Result] : []

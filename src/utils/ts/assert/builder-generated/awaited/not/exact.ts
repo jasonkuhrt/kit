@@ -221,18 +221,75 @@ const Promise_ = runtime.awaited.not.exact.Promise
 type Array_<$Actual> = Kind.Apply<ExactKind, [any[], Kind.Apply<Awaited$, [$Actual]>, true]>
 const Array_ = runtime.awaited.not.exact.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ * Extraction chain: Promise<T> → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.awaited.exact.unknown<Promise<unknown>>
+ *
+ * // ✗ Fail
+ * type _ = Assert.awaited.exact.unknown<Promise<string>>
+ * ```
+ */
+type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, Kind.Apply<Awaited$, [$Actual]>, true]>
+const unknown_ = runtime.awaited.not.exact.unknown
+
+/**
+ * Pre-curried matcher for any.
+ * Extraction chain: Promise<T> → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.awaited.exact.any<Promise<any>>
+ *
+ * // ✗ Fail
+ * type _ = Assert.awaited.exact.any<Promise<string>>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<ExactKind, [any, Kind.Apply<Awaited$, [$Actual]>, true]>
+const any_ = runtime.awaited.not.exact.any
+
+/**
+ * Pre-curried matcher for never.
+ * Extraction chain: Promise<T> → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.awaited.exact.never<Promise<never>>
+ *
+ * // ✗ Fail
+ * type _ = Assert.awaited.exact.never<Promise<string>>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<ExactKind, [never, Kind.Apply<Awaited$, [$Actual]>, true]>
+const never_ = runtime.awaited.not.exact.never
+
+const ofAs_ = runtime.awaited.not.exact.ofAs
+type noExcess_ = never
+const noExcess_ = runtime.awaited.not.exact.noExcess
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
+  noExcess_ as noExcess,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

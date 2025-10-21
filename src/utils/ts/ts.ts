@@ -1,4 +1,9 @@
+import type { AlignKeys, ComputeDiff as ComputeDiff_, SimplifyPreserving } from './error.js'
 import type { Print } from './print.js'
+import type { GetErrorPreservedTypes } from './test-settings.js'
+
+// Re-export error display utilities
+export type * as ErrorDisplay from './error.js'
 
 /**
  * Cast any value to a specific type for testing purposes.
@@ -103,20 +108,108 @@ export type Interpolatable =
  *
  * @category Utils
  */
-export interface StaticError<
+/**
+ * Universal base interface for all static type-level errors in the Kit library.
+ *
+ * This interface serves as a marker that a type represents an error condition.
+ * All error types in the Kit library should extend this interface, enabling
+ * generic error detection and propagation without tight coupling.
+ *
+ * Uses the user-facing ERROR field as the marker - this way the error tag
+ * is the actual error message users see, not a hidden implementation detail.
+ *
+ * @example
+ * ```ts
+ * // Check if a type is an error
+ * type IsError<$T> = [$T] extends [Ts.Error] ? true : false
+ *
+ * // Pass through errors in type transformations
+ * type Transform<$T> = [$T] extends [Ts.Error] ? $T : ActualTransform<$T>
+ * ```
+ *
+ * @category Error Messages
+ */
+export interface Error {
+  ERROR_________: string
+}
+
+// dprint-ignore
+export type StaticError<
   $Message extends string = string,
   $Context extends object = {},
   $Hint extends string = '(none)',
-> {
+> = AlignKeys<{
   ERROR: $Message
   CONTEXT: $Context
   HINT: $Hint
-}
+}>
 
 /**
  * @category Error Messages
  */
 export type StaticErrorAny = StaticError<string, object, string>
+
+/**
+ * Smart type expansion for error displays with generic type preservation.
+ *
+ * Expands user-defined types while preserving specified types and built-in primitives.
+ * Prevents error messages from expanding types like `Array`, `Promise`, `Record` into
+ * their raw structural definitions.
+ *
+ * Uses types registered in {@link KitLibrarySettings.Ts.Error.PreserveTypes}.
+ *
+ * @template $T - The type to selectively expand
+ *
+ * @example
+ * ```ts
+ * type Custom = { x: number }
+ * type A = Ts.DisplaySimplify<Custom>  // { x: number } - expands custom types
+ * type B = Ts.DisplaySimplify<Array<number>>  // number[] - preserves built-in
+ * type C = Ts.DisplaySimplify<Promise<string>>  // Promise<string> - preserves built-in
+ * ```
+ *
+ * @category Error Messages
+ */
+export type DisplaySimplify<$T> = SimplifyPreserving<$T, GetErrorPreservedTypes>
+
+/**
+ * Compute structured diff between Expected and Actual object types.
+ *
+ * Returns a flat object with prefixed fields showing the differences:
+ * - `${prefix}_missing` - Properties in Expected but not in Actual (omitted if empty)
+ * - `${prefix}_excess` - Properties in Actual but not in Expected (omitted if empty)
+ * - `${prefix}_mismatch` - Properties in both but with different types (omitted if empty)
+ *
+ * Empty diff fields are completely omitted from the result.
+ * If either type is not an object, returns an empty object (no diff).
+ *
+ * Uses types registered in {@link KitLibrarySettings.Ts.Error.PreserveTypes}.
+ *
+ * @template $Expected - The expected object type
+ * @template $Actual - The actual object type
+ * @template $Prefix - Prefix for diff field names (defaults to 'diff')
+ *
+ * @example
+ * ```ts
+ * type Expected = { a: string; b: number }
+ * type Actual = { b: string; c: boolean }
+ *
+ * type Diff = Ts.ComputeDiff<Expected, Actual>
+ * // {
+ * //   diff_missing: { a: string }
+ * //   diff_excess: { c: boolean }
+ * //   diff_mismatch: { b: { expected: number; actual: string } }
+ * // }
+ * ```
+ *
+ * @category Error Messages
+ */
+export type ComputeDiff<$Expected, $Actual, $Prefix extends string = 'diff'> = ComputeDiff_<
+  $Expected,
+  $Actual,
+  $Prefix,
+  GetErrorPreservedTypes
+>
 
 /**
  * Like {@link Print} but adds additional styling to display the rendered type in a sentence.

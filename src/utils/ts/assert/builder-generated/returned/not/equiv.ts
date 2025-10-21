@@ -221,18 +221,72 @@ const Promise_ = runtime.returned.not.equiv.Promise
 type Array_<$Actual> = Kind.Apply<EquivKind, [any[], Kind.Apply<Returned, [$Actual]>, true]>
 const Array_ = runtime.returned.not.equiv.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ * Extraction chain: (...args: any[]) => T → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.returned.equiv.unknown<() => unknown>
+ *
+ * // ✗ Fail
+ * type _ = Assert.returned.equiv.unknown<() => string>
+ * ```
+ */
+type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Returned, [$Actual]>, true]>
+const unknown_ = runtime.returned.not.equiv.unknown
+
+/**
+ * Pre-curried matcher for any.
+ * Extraction chain: (...args: any[]) => T → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.returned.equiv.any<() => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.returned.equiv.any<() => string>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Returned, [$Actual]>, true]>
+const any_ = runtime.returned.not.equiv.any
+
+/**
+ * Pre-curried matcher for never.
+ * Extraction chain: (...args: any[]) => T → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.returned.equiv.never<() => never>
+ *
+ * // ✗ Fail
+ * type _ = Assert.returned.equiv.never<() => string>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Returned, [$Actual]>, true]>
+const never_ = runtime.returned.not.equiv.never
+
+const ofAs_ = runtime.returned.not.equiv.ofAs
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

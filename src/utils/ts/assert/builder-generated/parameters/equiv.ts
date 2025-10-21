@@ -1,7 +1,7 @@
 import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
 import type { Parameters$ } from '../../kinds/extractors.js'
-import type { EquivKind } from '../../kinds/relators.js'
+import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
 
 /**
  * parameters + equiv relation matchers.
@@ -221,18 +221,81 @@ const Promise_ = runtime.parameters.equiv.Promise
 type Array_<$Actual> = Kind.Apply<EquivKind, [any[], Kind.Apply<Parameters$, [$Actual]>]>
 const Array_ = runtime.parameters.equiv.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.equiv.unknown<(...args: any[]) => unknown>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.equiv.unknown<(...args: any[]) => string>
+ * ```
+ */
+type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Parameters$, [$Actual]>]>
+const unknown_ = runtime.parameters.equiv.unknown
+
+/**
+ * Pre-curried matcher for any.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.equiv.any<(...args: any[]) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.equiv.any<(...args: any[]) => string>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Parameters$, [$Actual]>]>
+const any_ = runtime.parameters.equiv.any
+
+/**
+ * Pre-curried matcher for never.
+ * Extraction chain: (...args: any[]) => T → Parameters<Function>
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameters.equiv.never<(...args: any[]) => never>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameters.equiv.never<(...args: any[]) => string>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Parameters$, [$Actual]>]>
+const never_ = runtime.parameters.equiv.never
+
+const ofAs_ = runtime.parameters.equiv.ofAs
+/**
+ * No-excess variant of equiv relation.
+ * Checks that actual has no excess properties beyond expected.
+ */
+type noExcess_<$Expected, $Actual> = Kind.Apply<EquivNoExcessKind, [$Expected, Kind.Apply<Parameters$, [$Actual]>]>
+const noExcess_ = runtime.parameters.equiv.noExcess
+const noExcessAs_ = runtime.parameters.equiv.noExcessAs
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
+  noExcess_ as noExcess,
+  noExcessAs_ as noExcessAs,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

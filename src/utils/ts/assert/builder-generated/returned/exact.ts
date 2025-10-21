@@ -1,9 +1,3 @@
-/**
- * @generated
- * This file contains generated type-level matchers.
- * Manual edits should be made carefully and consistently across all generated files.
- */
-
 import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
 import type { Returned } from '../../kinds/extractors.js'
@@ -230,6 +224,15 @@ const Array_ = runtime.returned.exact.Array
 /**
  * Pre-curried matcher for unknown.
  * Extraction chain: (...args: any[]) => T → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.returned.exact.unknown<() => unknown>
+ *
+ * // ✗ Fail
+ * type _ = Assert.returned.exact.unknown<() => string>
+ * ```
  */
 type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, Kind.Apply<Returned, [$Actual]>]>
 const unknown_ = runtime.returned.exact.unknown
@@ -237,6 +240,15 @@ const unknown_ = runtime.returned.exact.unknown
 /**
  * Pre-curried matcher for any.
  * Extraction chain: (...args: any[]) => T → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.returned.exact.any<() => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.returned.exact.any<() => string>
+ * ```
  */
 type any_<$Actual> = Kind.Apply<ExactKind, [any, Kind.Apply<Returned, [$Actual]>]>
 const any_ = runtime.returned.exact.any
@@ -244,9 +256,22 @@ const any_ = runtime.returned.exact.any
 /**
  * Pre-curried matcher for never.
  * Extraction chain: (...args: any[]) => T → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.returned.exact.never<() => never>
+ *
+ * // ✗ Fail
+ * type _ = Assert.returned.exact.never<() => string>
+ * ```
  */
 type never_<$Actual> = Kind.Apply<ExactKind, [never, Kind.Apply<Returned, [$Actual]>]>
 const never_ = runtime.returned.exact.never
+
+const ofAs_ = runtime.returned.exact.ofAs
+type noExcess_ = never
+const noExcess_ = runtime.returned.exact.noExcess
 
 export {
   any_ as any,
@@ -256,9 +281,11 @@ export {
   Date_ as Date,
   Error_ as Error,
   never_ as never,
+  noExcess_ as noExcess,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,

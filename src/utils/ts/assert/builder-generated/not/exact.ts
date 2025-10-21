@@ -207,18 +207,72 @@ const Promise_ = runtime.not.exact.Promise
 type Array_<$Actual> = Kind.Apply<ExactKind, [any[], $Actual, true]>
 const Array_ = runtime.not.exact.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.exact.unknown<unknown>
+ *
+ * // ✗ Fail
+ * type _ = Assert.exact.unknown<string>
+ * ```
+ */
+type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, $Actual, true]>
+const unknown_ = runtime.not.exact.unknown
+
+/**
+ * Pre-curried matcher for any.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.exact.any<any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.exact.any<string>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<ExactKind, [any, $Actual, true]>
+const any_ = runtime.not.exact.any
+
+/**
+ * Pre-curried matcher for never.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.exact.never<never>
+ *
+ * // ✗ Fail
+ * type _ = Assert.exact.never<string>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<ExactKind, [never, $Actual, true]>
+const never_ = runtime.not.exact.never
+
+const ofAs_ = runtime.not.exact.ofAs
+type noExcess_ = never
+const noExcess_ = runtime.not.exact.noExcess
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
+  noExcess_ as noExcess,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

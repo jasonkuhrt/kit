@@ -323,6 +323,71 @@ export const reexportNamed = (input: {
 }
 
 // ============================================================================
+// Object Members
+// ============================================================================
+
+/**
+ * Options for generating a field/property in an interface or type.
+ */
+export interface FieldOptions {
+  /**
+   * Optional JSDoc comment content (will be formatted automatically)
+   */
+  tsDoc?: string | null
+
+  /**
+   * Whether the field is optional (adds `?`)
+   */
+  optional?: boolean
+
+  /**
+   * Whether the field is readonly (adds `readonly `)
+   */
+  readonly?: boolean
+}
+
+/**
+ * Generate a field/property for an interface or object type.
+ *
+ * @param name - Field name
+ * @param type - Field type
+ * @param options - Optional modifiers and documentation
+ * @returns Formatted field declaration
+ *
+ * @example
+ * ```ts
+ * field('id', 'string')
+ * // 'id: string'
+ *
+ * field('name', 'string', { optional: true })
+ * // 'name?: string'
+ *
+ * field('data', 'Data', { readonly: true })
+ * // 'readonly data: Data'
+ *
+ * field('value', 'number', {
+ *   readonly: true,
+ *   optional: true,
+ *   tsDoc: 'The current value'
+ * })
+ * // /**
+ * //  * The current value
+ * //  *\/
+ * // readonly value?: number
+ * ```
+ */
+export const field = (
+  name: string,
+  type: string,
+  options?: FieldOptions,
+): string => {
+  const tsDocFormatted = options?.tsDoc ? TSDoc.format(options.tsDoc) + `\n` : ``
+  const readonlyModifier = options?.readonly ? `readonly ` : ``
+  const optionalModifier = options?.optional ? `?` : ``
+  return `${tsDocFormatted}${readonlyModifier}${name}${optionalModifier}: ${type}`
+}
+
+// ============================================================================
 // Imports
 // ============================================================================
 

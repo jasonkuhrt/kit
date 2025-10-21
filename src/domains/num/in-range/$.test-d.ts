@@ -16,19 +16,19 @@ test('Type narrowing works correctly with inRange predicate', () => {
 
   // Single range check narrows type
   if (inRange(value, 0, 100)) {
-    Assert.sub.of.as<InRange<0, 100>>()(value)
+    Assert.sub.ofAs<InRange<0, 100>>()(value)
   }
 
   // Different ranges create different types
   if (inRange(value, -10, 10)) {
-    Assert.sub.of.as<InRange<-10, 10>>()(value)
+    Assert.sub.ofAs<InRange<-10, 10>>()(value)
   }
 
   // Nested ranges
   if (inRange(value, 0, 100) && inRange(value, 25, 75)) {
     // Value is both InRange<0, 100> and InRange<25, 75>
-    Assert.sub.of.as<InRange<0, 100>>()(value)
-    Assert.sub.of.as<InRange<25, 75>>()(value)
+    Assert.sub.ofAs<InRange<0, 100>>()(value)
+    Assert.sub.ofAs<InRange<25, 75>>()(value)
   }
 })
 
@@ -37,23 +37,23 @@ test('Type narrowing works correctly with inRange predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic range constructor
   const ranged1 = ranged(50, 0, 100)
-  Assert.sub.of.as<InRange<0, 100>>()(ranged1)
+  Assert.sub.ofAs<InRange<0, 100>>()(ranged1)
 
   // Negative range
   const ranged2 = ranged(-5, -10, 0)
-  Assert.sub.of.as<InRange<-10, 0>>()(ranged2)
+  Assert.sub.ofAs<InRange<-10, 0>>()(ranged2)
 
   // Decimal range
   const ranged3 = ranged(0.5, 0, 1)
-  Assert.sub.of.as<InRange<0, 1>>()(ranged3)
+  Assert.sub.ofAs<InRange<0, 1>>()(ranged3)
 
   // Try constructor
   const try1 = tryRanged(50, 0, 100)
-  Assert.sub.of.as<InRange<0, 100> | null>()(try1)
+  Assert.sub.ofAs<InRange<0, 100> | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Assert.sub.of.as<InRange<0, 100>>()(try1)
+    Assert.sub.ofAs<InRange<0, 100>>()(try1)
   }
 })
 
@@ -62,18 +62,18 @@ test('Constructor functions produce correctly branded types', () => {
 test('Clamp operations produce correctly branded types', () => {
   // Clamp always returns InRange type
   const clamped1 = clamp(150, 0, 100)
-  Assert.sub.of.as<InRange<0, 100>>()(clamped1)
+  Assert.sub.ofAs<InRange<0, 100>>()(clamped1)
 
   const clamped2 = clamp(-20, -10, 10)
-  Assert.sub.of.as<InRange<-10, 10>>()(clamped2)
+  Assert.sub.ofAs<InRange<-10, 10>>()(clamped2)
 
   // Clamp with decimal bounds
   const clamped3 = clamp(2, 0, 1)
-  Assert.sub.of.as<InRange<0, 1>>()(clamped3)
+  Assert.sub.ofAs<InRange<0, 1>>()(clamped3)
 
   // Clamp with same min/max
   const clamped4 = clamp(5, 42, 42)
-  Assert.sub.of.as<InRange<42, 42>>()(clamped4)
+  Assert.sub.ofAs<InRange<42, 42>>()(clamped4)
 })
 
 // === Type-Level Only Tests ===

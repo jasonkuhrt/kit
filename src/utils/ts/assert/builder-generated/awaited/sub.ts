@@ -1,13 +1,7 @@
-/**
- * @generated
- * This file contains generated type-level matchers.
- * Manual edits should be made carefully and consistently across all generated files.
- */
-
 import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
 import type { Awaited$ } from '../../kinds/extractors.js'
-import type { SubKind } from '../../kinds/relators.js'
+import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
 
 /**
  * awaited + sub relation matchers.
@@ -230,6 +224,15 @@ const Array_ = runtime.awaited.sub.Array
 /**
  * Pre-curried matcher for unknown.
  * Extraction chain: Promise<T> → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.awaited.sub.unknown<Promise<unknown>>
+ *
+ * // ✗ Fail
+ * type _ = Assert.awaited.sub.unknown<Promise<string>>
+ * ```
  */
 type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<Awaited$, [$Actual]>]>
 const unknown_ = runtime.awaited.sub.unknown
@@ -237,6 +240,15 @@ const unknown_ = runtime.awaited.sub.unknown
 /**
  * Pre-curried matcher for any.
  * Extraction chain: Promise<T> → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.awaited.sub.any<Promise<any>>
+ *
+ * // ✗ Fail
+ * type _ = Assert.awaited.sub.any<Promise<string>>
+ * ```
  */
 type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<Awaited$, [$Actual]>]>
 const any_ = runtime.awaited.sub.any
@@ -244,9 +256,27 @@ const any_ = runtime.awaited.sub.any
 /**
  * Pre-curried matcher for never.
  * Extraction chain: Promise<T> → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.awaited.sub.never<Promise<never>>
+ *
+ * // ✗ Fail
+ * type _ = Assert.awaited.sub.never<Promise<string>>
+ * ```
  */
 type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<Awaited$, [$Actual]>]>
 const never_ = runtime.awaited.sub.never
+
+const ofAs_ = runtime.awaited.sub.ofAs
+/**
+ * No-excess variant of sub relation.
+ * Checks that actual has no excess properties beyond expected.
+ */
+type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, Kind.Apply<Awaited$, [$Actual]>]>
+const noExcess_ = runtime.awaited.sub.noExcess
+const noExcessAs_ = runtime.awaited.sub.noExcessAs
 
 export {
   any_ as any,
@@ -256,9 +286,12 @@ export {
   Date_ as Date,
   Error_ as Error,
   never_ as never,
+  noExcess_ as noExcess,
+  noExcessAs_ as noExcessAs,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,

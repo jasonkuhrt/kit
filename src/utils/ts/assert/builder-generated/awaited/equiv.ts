@@ -1,13 +1,7 @@
-/**
- * @generated
- * This file contains generated type-level matchers.
- * Manual edits should be made carefully and consistently across all generated files.
- */
-
 import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
 import type { Awaited$ } from '../../kinds/extractors.js'
-import type { EquivKind } from '../../kinds/relators.js'
+import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
 
 /**
  * awaited + equiv relation matchers.
@@ -230,6 +224,15 @@ const Array_ = runtime.awaited.equiv.Array
 /**
  * Pre-curried matcher for unknown.
  * Extraction chain: Promise<T> → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.awaited.equiv.unknown<Promise<unknown>>
+ *
+ * // ✗ Fail
+ * type _ = Assert.awaited.equiv.unknown<Promise<string>>
+ * ```
  */
 type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Awaited$, [$Actual]>]>
 const unknown_ = runtime.awaited.equiv.unknown
@@ -237,6 +240,15 @@ const unknown_ = runtime.awaited.equiv.unknown
 /**
  * Pre-curried matcher for any.
  * Extraction chain: Promise<T> → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.awaited.equiv.any<Promise<any>>
+ *
+ * // ✗ Fail
+ * type _ = Assert.awaited.equiv.any<Promise<string>>
+ * ```
  */
 type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Awaited$, [$Actual]>]>
 const any_ = runtime.awaited.equiv.any
@@ -244,9 +256,27 @@ const any_ = runtime.awaited.equiv.any
 /**
  * Pre-curried matcher for never.
  * Extraction chain: Promise<T> → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.awaited.equiv.never<Promise<never>>
+ *
+ * // ✗ Fail
+ * type _ = Assert.awaited.equiv.never<Promise<string>>
+ * ```
  */
 type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Awaited$, [$Actual]>]>
 const never_ = runtime.awaited.equiv.never
+
+const ofAs_ = runtime.awaited.equiv.ofAs
+/**
+ * No-excess variant of equiv relation.
+ * Checks that actual has no excess properties beyond expected.
+ */
+type noExcess_<$Expected, $Actual> = Kind.Apply<EquivNoExcessKind, [$Expected, Kind.Apply<Awaited$, [$Actual]>]>
+const noExcess_ = runtime.awaited.equiv.noExcess
+const noExcessAs_ = runtime.awaited.equiv.noExcessAs
 
 export {
   any_ as any,
@@ -256,9 +286,12 @@ export {
   Date_ as Date,
   Error_ as Error,
   never_ as never,
+  noExcess_ as noExcess,
+  noExcessAs_ as noExcessAs,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,

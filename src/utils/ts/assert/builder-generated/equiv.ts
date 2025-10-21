@@ -1,6 +1,6 @@
 import type * as Kind from '../../kind.js'
 import { runtime } from '../builder/runtime.js'
-import type { EquivKind } from '../kinds/relators.js'
+import type { EquivKind, EquivNoExcessKind } from '../kinds/relators.js'
 
 /**
  * base + equiv relation matchers.
@@ -207,18 +207,78 @@ const Promise_ = runtime.equiv.Promise
 type Array_<$Actual> = Kind.Apply<EquivKind, [any[], $Actual]>
 const Array_ = runtime.equiv.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.equiv.unknown<unknown>
+ *
+ * // ✗ Fail
+ * type _ = Assert.equiv.unknown<string>
+ * ```
+ */
+type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, $Actual]>
+const unknown_ = runtime.equiv.unknown
+
+/**
+ * Pre-curried matcher for any.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.equiv.any<any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.equiv.any<string>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<EquivKind, [any, $Actual]>
+const any_ = runtime.equiv.any
+
+/**
+ * Pre-curried matcher for never.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.equiv.never<never>
+ *
+ * // ✗ Fail
+ * type _ = Assert.equiv.never<string>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<EquivKind, [never, $Actual]>
+const never_ = runtime.equiv.never
+
+const ofAs_ = runtime.equiv.ofAs
+/**
+ * No-excess variant of equiv relation.
+ * Checks that actual has no excess properties beyond expected.
+ */
+type noExcess_<$Expected, $Actual> = Kind.Apply<EquivNoExcessKind, [$Expected, $Actual]>
+const noExcess_ = runtime.equiv.noExcess
+const noExcessAs_ = runtime.equiv.noExcessAs
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
+  noExcess_ as noExcess,
+  noExcessAs_ as noExcessAs,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

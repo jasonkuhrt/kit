@@ -3,7 +3,7 @@ import type { EquivKind, ExactKind, SubKind } from '../kinds/relators.js'
 
 export * as array from './array/$$.js'
 export * as awaited from './awaited/$$.js'
-export * as equiv from './equiv/$$.js'
+export * as equiv from './equiv.js'
 export * as exact from './exact.js'
 export * as not from './not/$$.js'
 export * as parameter1 from './parameter1/$$.js'

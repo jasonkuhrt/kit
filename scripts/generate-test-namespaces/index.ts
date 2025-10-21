@@ -62,6 +62,9 @@ const MATCHERS: Matcher[] = [
   { name: 'Error', typeExpr: 'Error', description: 'Error' },
   { name: 'Promise', typeExpr: 'Promise<any>', description: 'Promise<any>' },
   { name: 'Array', typeExpr: 'any[]', description: 'any[]' },
+  { name: 'unknown', typeExpr: 'unknown', description: 'unknown' },
+  { name: 'any', typeExpr: 'any', description: 'any' },
+  { name: 'never', typeExpr: 'never', description: 'never' },
 ]
 
 const EXTRACTORS: Record<string, Extractor> = {
@@ -187,8 +190,16 @@ function generateFileHeader(combo: Combination): string {
     ? `import type { ${extractorKinds} } from '${extractorsPath}'\n`
     : ''
 
+  // Add noExcess kinds for sub/equiv
+  const relatorKinds = [combo.relator.kindName]
+  if (!combo.negated && combo.relator.name === 'sub') {
+    relatorKinds.push('SubNoExcessKind')
+  } else if (!combo.negated && combo.relator.name === 'equiv') {
+    relatorKinds.push('EquivNoExcessKind')
+  }
+
   return `import type * as Kind from '${kindPath}'
-${extractorImports}import type { ${combo.relator.kindName} } from '${relatorsPath}'
+${extractorImports}import type { ${relatorKinds.join(', ')} } from '${relatorsPath}'
 import { runtime } from '${runtimePath}'
 `
 }
@@ -323,9 +334,21 @@ function generateMatcherType(matcher: Matcher, combo: Combination): string {
   return `${typeDef}\n${constDef}`
 }
 
-function generateExports(matchers: Matcher[]): string {
-  const exports = matchers.map((m) => `${m.name}_ as ${m.name}`).join(',\n  ')
-  return `export {\n  ${exports},\n}`
+function generateExports(matchers: Matcher[], combo: Combination): string {
+  const matcherExports = matchers.map((m) => `${m.name}_ as ${m.name}`).join(',\n  ')
+
+  // Add noExcess exports for sub/equiv (not for exact when negated)
+  let noExcessExports = ''
+  if (!combo.negated && (combo.relator.name === 'sub' || combo.relator.name === 'equiv')) {
+    noExcessExports = ',\n  noExcess_ as noExcess,\n  noExcessAs_ as noExcessAs'
+  } else if (combo.relator.name === 'exact') {
+    noExcessExports = ',\n  noExcess_ as noExcess'
+  }
+
+  return `export {
+  ${matcherExports},
+  ofAs_ as ofAs${noExcessExports},
+}`
 }
 
 function generateMatcherFile(combo: Combination): string {
@@ -336,10 +359,34 @@ function generateMatcherFile(combo: Combination): string {
     const typeDef = generateMatcherType(m, combo)
     return `${jsdoc}\n${typeDef}`
   }).join('\n\n')
-  const exports = generateExports(MATCHERS)
+
+  // Add ofAs const declaration
+  const ofAsConst = `const ofAs_ = ${buildRuntimeChain(combo, 'ofAs')}`
+
+  // Add noExcess/noExcessAs for sub and equiv relators (not for exact, not for negated)
+  let noExcessDecls = ''
+  if (!combo.negated && (combo.relator.name === 'sub' || combo.relator.name === 'equiv')) {
+    const extractorChain = buildExtractorChain(combo.extractors, '$Actual')
+    const noExcessKind = combo.relator.name === 'sub' ? 'SubNoExcessKind' : 'EquivNoExcessKind'
+    noExcessDecls = `
+/**
+ * No-excess variant of ${combo.relator.name} relation.
+ * Checks that actual has no excess properties beyond expected.
+ */
+type noExcess_<$Expected, $Actual> = Kind.Apply<${noExcessKind}, [$Expected, ${extractorChain}]>
+const noExcess_ = ${buildRuntimeChain(combo, 'noExcess')}
+const noExcessAs_ = ${buildRuntimeChain(combo, 'noExcessAs')}`
+  } else if (combo.relator.name === 'exact') {
+    // For exact, noExcess is never (just reference it from runtime for completeness)
+    noExcessDecls = `\ntype noExcess_ = never\nconst noExcess_ = ${buildRuntimeChain(combo, 'noExcess')}`
+  }
+
+  const exports = generateExports(MATCHERS, combo)
 
   return `${header}${fileLevelDoc}
 ${matchers}
+
+${ofAsConst}${noExcessDecls}
 
 ${exports}
 `
@@ -415,10 +462,9 @@ function generateExtractorBarrelFile(extractorName: string, barrelPath: string):
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
 
   const imports = `import type * as Kind from '${kindPath}'
+import { runtime } from '${runtimePath}'
 import type { ${extractor.kindName} } from '${extractorsPath}'
-import type { ${relatorKinds} } from '${relatorsPath}'${
-    otherExtractors.length > 0 ? `\nimport { runtime } from '${runtimePath}'` : ''
-  }`
+import type { ${relatorKinds} } from '${relatorsPath}'`
 
   const typeShorthands = Object.keys(RELATORS).map((relatorName) => {
     const relator = RELATORS[relatorName]!

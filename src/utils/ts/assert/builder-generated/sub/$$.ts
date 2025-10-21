@@ -34,6 +34,20 @@ type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, $Actual]>
 const of_ = runtime.sub.of
 
 /**
+ * Type-explicit matcher accepting an explicit type parameter.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * Assert.sub.ofAs<string>()('hello')
+ *
+ * // ✗ Fail
+ * Assert.sub.ofAs<string>()(42)
+ * ```
+ */
+const ofAs_ = runtime.sub.ofAs
+
+/**
  * Pre-curried matcher for string.
  *
  * @example
@@ -248,6 +262,22 @@ const never_ = runtime.sub.never
 type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, $Actual]>
 const noExcess_ = runtime.sub.noExcess
 
+/**
+ * Type-explicit variant of noExcess.
+ *
+ * Asserts that the actual type is a subtype of the expected type AND has no excess properties.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * Assert.sub.noExcessAs<{ id: string }>()({ id: 'abc' })
+ *
+ * // ✗ Fail - has excess property
+ * Assert.sub.noExcessAs<{ id: string }>()({ id: 'abc', name: 'John' })
+ * ```
+ */
+const noExcessAs_ = runtime.sub.noExcessAs
+
 export {
   any_ as any,
   Array_ as Array,
@@ -257,9 +287,11 @@ export {
   Error_ as Error,
   never_ as never,
   noExcess_ as noExcess,
+  noExcessAs_ as noExcessAs,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,

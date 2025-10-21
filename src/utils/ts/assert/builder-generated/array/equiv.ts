@@ -1,13 +1,7 @@
-/**
- * @generated
- * This file contains generated type-level matchers.
- * Manual edits should be made carefully and consistently across all generated files.
- */
-
 import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
 import type { ArrayElement } from '../../kinds/extractors.js'
-import type { EquivKind } from '../../kinds/relators.js'
+import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
 
 /**
  * array + equiv relation matchers.
@@ -230,6 +224,15 @@ const Array_ = runtime.array.equiv.Array
 /**
  * Pre-curried matcher for unknown.
  * Extraction chain: T[] → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.array.equiv.unknown<unknown[]>
+ *
+ * // ✗ Fail
+ * type _ = Assert.array.equiv.unknown<string[]>
+ * ```
  */
 type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<ArrayElement, [$Actual]>]>
 const unknown_ = runtime.array.equiv.unknown
@@ -237,6 +240,15 @@ const unknown_ = runtime.array.equiv.unknown
 /**
  * Pre-curried matcher for any.
  * Extraction chain: T[] → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.array.equiv.any<any[]>
+ *
+ * // ✗ Fail
+ * type _ = Assert.array.equiv.any<string[]>
+ * ```
  */
 type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<ArrayElement, [$Actual]>]>
 const any_ = runtime.array.equiv.any
@@ -244,9 +256,27 @@ const any_ = runtime.array.equiv.any
 /**
  * Pre-curried matcher for never.
  * Extraction chain: T[] → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.array.equiv.never<never[]>
+ *
+ * // ✗ Fail
+ * type _ = Assert.array.equiv.never<string[]>
+ * ```
  */
 type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<ArrayElement, [$Actual]>]>
 const never_ = runtime.array.equiv.never
+
+const ofAs_ = runtime.array.equiv.ofAs
+/**
+ * No-excess variant of equiv relation.
+ * Checks that actual has no excess properties beyond expected.
+ */
+type noExcess_<$Expected, $Actual> = Kind.Apply<EquivNoExcessKind, [$Expected, Kind.Apply<ArrayElement, [$Actual]>]>
+const noExcess_ = runtime.array.equiv.noExcess
+const noExcessAs_ = runtime.array.equiv.noExcessAs
 
 export {
   any_ as any,
@@ -256,9 +286,12 @@ export {
   Date_ as Date,
   Error_ as Error,
   never_ as never,
+  noExcess_ as noExcess,
+  noExcessAs_ as noExcessAs,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,

@@ -1,6 +1,13 @@
+import type { WritableDeep } from 'type-fest'
 import type * as Kind from '../../kind.js'
 import type { GuardActual, GuardAnyOrNeverActual, RestParamsDisplayGuards } from './guards.js'
 import type { State } from './state.js'
+
+/**
+ * Strip readonly deeply from types.
+ * Uses type-fest's WritableDeep for comprehensive readonly removal.
+ */
+type DeepMutable<$T> = WritableDeep<$T>
 
 //
 //
@@ -20,30 +27,47 @@ export type InputFactory<
   $State['matcher']['input'] extends true
   // Take matcher input
   ? (
-      $State['matcher']['inputLiteral'] extends true
-        ? InputMatcherArgConstFactory<State.SetRelator<$State, $Relator>>
-        : InputMatcherArgFactory<State.SetRelator<$State, $Relator>>
+      $State['matcher']['inferMode'] extends 'wide'
+        ? InputMatcherArgFactory<State.SetRelator<$State, $Relator>>
+        : InputMatcherArgConstFactory<State.SetRelator<$State, $Relator>>
     )
   // Jump to taking actual input
   : (
-      $State['matcher']['inputLiteral'] extends true
-      ? InputActualConstFactory<State.SetRelator<$State, $Relator>>
-      : InputActualFactory<State.SetRelator<$State, $Relator>>
+      $State['matcher']['inferMode'] extends 'wide'
+      ? InputActualFactory<State.SetRelator<$State, $Relator>>
+      : InputActualConstFactory<State.SetRelator<$State, $Relator>>
     )
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Matcher Arg Receiver
 
 // dprint-ignore
-export interface InputMatcherArgFactory<$State extends State> {
-  <$expected>(
-    ...params: [
-      expected: $expected,
-      // ...error: RestParamsDisplayGuard<GuardAnyOrNeverExpectation<$expected, $State>>
-    ]
-  ): InputActualFactory<State.SetMatcherType<$State, $expected>>
-
-  as<$Type>(): InputActualFactory<State.SetMatcherType<$State, $Type>>
-}
+export type InputMatcherArgFactory<$State extends State> =
+  $State['matcher']['inferMode'] extends 'wide'
+    ? // Wide mode: No const, no readonly stripping
+      {
+        <$expected>(
+          ...params: [
+            expected: $expected,
+          ]
+        ): InputActualFactory<State.SetMatcherType<$State, $expected>>
+      }
+    : $State['matcher']['inferMode'] extends 'auto'
+      ? // Auto mode: Const + strip readonly deep
+        {
+          <const $expected>(
+            ...params: [
+              expected: DeepMutable<$expected>,
+            ]
+          ): InputActualFactory<State.SetMatcherType<$State, DeepMutable<$expected>>>
+        }
+      : // Narrow mode: Const + keep readonly
+        {
+          <const $expected>(
+            ...params: [
+              expected: $expected,
+            ]
+          ): InputActualFactory<State.SetMatcherType<$State, $expected>>
+        }
 
 export interface InputMatcherArgConstFactory<$State extends State> {
   <const $expected>(
@@ -52,8 +76,6 @@ export interface InputMatcherArgConstFactory<$State extends State> {
       // ...error: RestParamsDisplayGuard<GuardAnyOrNeverExpectation<$expected, $State>>,
     ]
   ): InputActualConstFactory<State.SetMatcherType<$State, $expected>>
-
-  as<$Type>(): InputActualConstFactory<State.SetMatcherType<$State, $Type>>
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Actual Receiver

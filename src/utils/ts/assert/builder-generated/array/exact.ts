@@ -1,9 +1,3 @@
-/**
- * @generated
- * This file contains generated type-level matchers.
- * Manual edits should be made carefully and consistently across all generated files.
- */
-
 import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
 import type { ArrayElement } from '../../kinds/extractors.js'
@@ -230,6 +224,15 @@ const Array_ = runtime.array.exact.Array
 /**
  * Pre-curried matcher for unknown.
  * Extraction chain: T[] → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.array.exact.unknown<unknown[]>
+ *
+ * // ✗ Fail
+ * type _ = Assert.array.exact.unknown<string[]>
+ * ```
  */
 type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, Kind.Apply<ArrayElement, [$Actual]>]>
 const unknown_ = runtime.array.exact.unknown
@@ -237,6 +240,15 @@ const unknown_ = runtime.array.exact.unknown
 /**
  * Pre-curried matcher for any.
  * Extraction chain: T[] → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.array.exact.any<any[]>
+ *
+ * // ✗ Fail
+ * type _ = Assert.array.exact.any<string[]>
+ * ```
  */
 type any_<$Actual> = Kind.Apply<ExactKind, [any, Kind.Apply<ArrayElement, [$Actual]>]>
 const any_ = runtime.array.exact.any
@@ -244,9 +256,22 @@ const any_ = runtime.array.exact.any
 /**
  * Pre-curried matcher for never.
  * Extraction chain: T[] → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.array.exact.never<never[]>
+ *
+ * // ✗ Fail
+ * type _ = Assert.array.exact.never<string[]>
+ * ```
  */
 type never_<$Actual> = Kind.Apply<ExactKind, [never, Kind.Apply<ArrayElement, [$Actual]>]>
 const never_ = runtime.array.exact.never
+
+const ofAs_ = runtime.array.exact.ofAs
+type noExcess_ = never
+const noExcess_ = runtime.array.exact.noExcess
 
 export {
   any_ as any,
@@ -256,9 +281,11 @@ export {
   Date_ as Date,
   Error_ as Error,
   never_ as never,
+  noExcess_ as noExcess,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,

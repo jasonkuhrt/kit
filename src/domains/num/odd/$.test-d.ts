@@ -18,11 +18,11 @@ test('Type narrowing works correctly with isOdd predicate', () => {
 
   // Predicate narrows to Odd & Int intersection
   if (isOdd(value)) {
-    Assert.sub.of.as<Odd & Int>()(value)
+    Assert.sub.ofAs<Odd & Int>()(value)
     // Can assign to Odd
-    Assert.sub.of.as<Odd>()(value)
+    Assert.sub.ofAs<Odd>()(value)
     // Can assign to Int
-    Assert.sub.of.as<Int>()(value)
+    Assert.sub.ofAs<Int>()(value)
   }
 
   // Multiple checks preserve all brands
@@ -41,31 +41,31 @@ test('Type narrowing works correctly with isOdd predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic odd constructor always returns Odd & Int
   const odd1 = odd(5)
-  Assert.exact.of.as<Odd & Int>()(odd1)
+  Assert.exact.ofAs<Odd & Int>()(odd1)
 
   // Negative odd numbers
   const odd2 = odd(-3)
-  Assert.exact.of.as<Odd & Int>()(odd2)
+  Assert.exact.ofAs<Odd & Int>()(odd2)
 
   // Large odd numbers
   const odd3 = odd(999)
-  Assert.exact.of.as<Odd & Int>()(odd3)
+  Assert.exact.ofAs<Odd & Int>()(odd3)
 
   // Try constructor
   const try1 = tryOdd(7)
-  Assert.exact.of.as<(Odd & Int) | null>()(try1)
+  Assert.exact.ofAs<(Odd & Int) | null>()(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Assert.exact.of.as<Odd & Int>()(try1)
+    Assert.exact.ofAs<Odd & Int>()(try1)
   }
 
   // Next/prev odd operations
   const next = nextOdd(4.5) // Should be 5
-  Assert.exact.of.as<Odd & Int>()(next)
+  Assert.exact.ofAs<Odd & Int>()(next)
 
   const prev = prevOdd(6.5) // Should be 5
-  Assert.exact.of.as<Odd & Int>()(prev)
+  Assert.exact.ofAs<Odd & Int>()(prev)
 })
 
 // === Type Relationships ===
@@ -75,15 +75,15 @@ test('Odd has correct relationship with Int and Even', () => {
 
   // Odd & Int can be assigned to Odd
   const asOdd: Odd = oddNum
-  Assert.sub.of.as<Odd>()(asOdd)
+  Assert.sub.ofAs<Odd>()(asOdd)
 
   // Odd & Int can be assigned to Int
   const asInt: Int = oddNum
-  Assert.sub.of.as<Int>()(asInt)
+  Assert.sub.ofAs<Int>()(asInt)
 
   // Odd & Int can be assigned to number
   const asNumber: number = oddNum
-  Assert.sub.of.as<number>()(asNumber)
+  Assert.sub.ofAs<number>()(asNumber)
 
   // Odd and Even are mutually exclusive
   const _oddVal = {} as Odd

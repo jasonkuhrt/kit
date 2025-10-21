@@ -221,18 +221,75 @@ const Promise_ = runtime.parameter3.exact.Promise
 type Array_<$Actual> = Kind.Apply<ExactKind, [any[], Kind.Apply<Parameter3, [$Actual]>]>
 const Array_ = runtime.parameter3.exact.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ * Extraction chain: (p1: any, p2: any, p3: T, ...) => any → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameter3.exact.unknown<(arg: unknown) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameter3.exact.unknown<(arg: string) => any>
+ * ```
+ */
+type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, Kind.Apply<Parameter3, [$Actual]>]>
+const unknown_ = runtime.parameter3.exact.unknown
+
+/**
+ * Pre-curried matcher for any.
+ * Extraction chain: (p1: any, p2: any, p3: T, ...) => any → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameter3.exact.any<(arg: any) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameter3.exact.any<(arg: string) => any>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<ExactKind, [any, Kind.Apply<Parameter3, [$Actual]>]>
+const any_ = runtime.parameter3.exact.any
+
+/**
+ * Pre-curried matcher for never.
+ * Extraction chain: (p1: any, p2: any, p3: T, ...) => any → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameter3.exact.never<(arg: never) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameter3.exact.never<(arg: string) => any>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<ExactKind, [never, Kind.Apply<Parameter3, [$Actual]>]>
+const never_ = runtime.parameter3.exact.never
+
+const ofAs_ = runtime.parameter3.exact.ofAs
+type noExcess_ = never
+const noExcess_ = runtime.parameter3.exact.noExcess
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
+  noExcess_ as noExcess,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

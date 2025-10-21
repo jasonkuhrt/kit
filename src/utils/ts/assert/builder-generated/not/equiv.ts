@@ -207,18 +207,69 @@ const Promise_ = runtime.not.equiv.Promise
 type Array_<$Actual> = Kind.Apply<EquivKind, [any[], $Actual, true]>
 const Array_ = runtime.not.equiv.Array
 
+/**
+ * Pre-curried matcher for unknown.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.equiv.unknown<unknown>
+ *
+ * // ✗ Fail
+ * type _ = Assert.equiv.unknown<string>
+ * ```
+ */
+type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, $Actual, true]>
+const unknown_ = runtime.not.equiv.unknown
+
+/**
+ * Pre-curried matcher for any.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.equiv.any<any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.equiv.any<string>
+ * ```
+ */
+type any_<$Actual> = Kind.Apply<EquivKind, [any, $Actual, true]>
+const any_ = runtime.not.equiv.any
+
+/**
+ * Pre-curried matcher for never.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.equiv.never<never>
+ *
+ * // ✗ Fail
+ * type _ = Assert.equiv.never<string>
+ * ```
+ */
+type never_<$Actual> = Kind.Apply<EquivKind, [never, $Actual, true]>
+const never_ = runtime.not.equiv.never
+
+const ofAs_ = runtime.not.equiv.ofAs
+
 export {
+  any_ as any,
   Array_ as Array,
   bigint_ as bigint,
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  never_ as never,
   null_ as null,
   number_ as number,
   of_ as of,
+  ofAs_ as ofAs,
   Promise_ as Promise,
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
   undefined_ as undefined,
+  unknown_ as unknown,
 }

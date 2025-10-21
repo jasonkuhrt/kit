@@ -21,7 +21,7 @@ export interface State {
 interface Matcher {
   type: unknown
   input: boolean
-  inputLiteral: boolean
+  inferMode: 'auto' | 'narrow' | 'wide'
   allowUnknown: boolean
   allowAny: boolean
   allowNever: boolean
@@ -37,7 +37,7 @@ export namespace State {
     matcher: {
       type: SENTINEL.Empty
       input: true
-      inputLiteral: false
+      inferMode: 'auto'
       allowUnknown: false
       allowAny: false
       allowNever: false
@@ -76,7 +76,7 @@ export namespace State {
     matcher: {
       type: $State['matcher']['type']
       input: $State['matcher']['input']
-      inputLiteral: $State['matcher']['inputLiteral']
+      inferMode: $State['matcher']['inferMode']
       allowUnknown: $AllowUnknown
       allowAny: $AllowAny
       allowNever: $AllowNever
@@ -88,7 +88,6 @@ export namespace State {
     $State extends State,
     $Type,
     $Input extends boolean = false,
-    $InputLiteral extends boolean = false,
     $AllowUnknown extends boolean = false,
     $AllowAny extends boolean = false,
     $AllowNever extends boolean = false,
@@ -98,7 +97,7 @@ export namespace State {
     matcher: {
       type: $Type
       input: $Input
-      inputLiteral: $InputLiteral
+      inferMode: $State['matcher']['inferMode']
       allowUnknown: $AllowUnknown
       allowAny: $AllowAny
       allowNever: $AllowNever
@@ -115,23 +114,7 @@ export namespace State {
     matcher: {
       type: $Type
       input: false // Matcher has consumed its input
-      inputLiteral: $State['matcher']['inputLiteral']
-      allowUnknown: $State['matcher']['allowUnknown']
-      allowAny: $State['matcher']['allowAny']
-      allowNever: $State['matcher']['allowNever']
-    }
-    negated: $State['negated']
-  }
-
-  export type SetMatcherLiteral<
-    $State extends State,
-  > = {
-    extractors: $State['extractors']
-    relator: $State['relator']
-    matcher: {
-      type: $State['matcher']['type']
-      input: $State['matcher']['input']
-      inputLiteral: true
+      inferMode: $State['matcher']['inferMode']
       allowUnknown: $State['matcher']['allowUnknown']
       allowAny: $State['matcher']['allowAny']
       allowNever: $State['matcher']['allowNever']
@@ -146,5 +129,22 @@ export namespace State {
     relator: $State['relator']
     matcher: $State['matcher']
     negated: true
+  }
+
+  export type SetInferMode<
+    $State extends State,
+    $Mode extends 'auto' | 'narrow' | 'wide',
+  > = {
+    extractors: $State['extractors']
+    relator: $State['relator']
+    matcher: {
+      type: $State['matcher']['type']
+      input: $State['matcher']['input']
+      inferMode: $Mode
+      allowUnknown: $State['matcher']['allowUnknown']
+      allowAny: $State['matcher']['allowAny']
+      allowNever: $State['matcher']['allowNever']
+    }
+    negated: $State['negated']
   }
 }

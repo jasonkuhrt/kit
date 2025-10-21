@@ -26,6 +26,15 @@ export * from './ts.js'
 export * from './type-guards.js'
 
 // @ts-expect-error Duplicate identifier
+export * as Ts from './ts.js'
+/**
+ * TypeScript type utilities and helpers.
+ *
+ * @category Type System
+ */
+export namespace Ts {}
+
+// @ts-expect-error Duplicate identifier
 export * as Union from './union.js'
 /**
  * Utilities for working with union types at the type level.
