@@ -5,6 +5,9 @@ import type { GetErrorPreservedTypes } from './test-settings.js'
 // Re-export error display utilities
 export type * as ErrorDisplay from './error.js'
 
+// Re-export path extraction utilities
+export type * as Path from './path.js'
+
 /**
  * Cast any value to a specific type for testing purposes.
  * Useful for type-level testing where you need to create a value with a specific type.

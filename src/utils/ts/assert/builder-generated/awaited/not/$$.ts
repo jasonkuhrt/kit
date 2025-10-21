@@ -1,5 +1,5 @@
 import type * as Kind from '../../../../kind.js'
-import type { Awaited$ } from '../../../kinds/extractors.js'
+import type { Awaited$ } from '../../../../path.js'
 import type { EquivKind, ExactKind, SubKind } from '../../../kinds/relators.js'
 
 export * as equiv from './equiv.js'

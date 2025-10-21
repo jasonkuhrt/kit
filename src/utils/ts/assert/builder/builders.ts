@@ -8,7 +8,7 @@ import type {
   Parameter5,
   Parameters$,
   Returned,
-} from '../kinds/extractors.js'
+} from '../../path.js'
 import type { EquivKind, EquivNoExcessKind, ExactKind, SubKind, SubNoExcessKind } from '../kinds/relators.js'
 import type {
   InputActualFactory,

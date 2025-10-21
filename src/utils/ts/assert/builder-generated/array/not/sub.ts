@@ -1,6 +1,6 @@
 import type * as Kind from '../../../../kind.js'
 import { runtime } from '../../../builder/runtime.js'
-import type { ArrayElement } from '../../../kinds/extractors.js'
+import type { ArrayElement } from '../../../../path.js'
 import type { SubKind } from '../../../kinds/relators.js'
 
 /**

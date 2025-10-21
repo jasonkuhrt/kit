@@ -2,7 +2,7 @@ import type { Ts } from '#ts/ts'
 import type * as Kind from '../../kind.js'
 import type { IsAny, IsNever, IsUnknown } from '../../ts.js'
 import type { StaticErrorAssertion } from '../assertion-error.js'
-import type { ApplyExtractors } from '../kinds/extractors.ts'
+import type { ApplyExtractors } from '../../path.js'
 import type { State } from './state.js'
 
 //

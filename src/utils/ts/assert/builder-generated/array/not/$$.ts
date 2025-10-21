@@ -1,5 +1,5 @@
 import type * as Kind from '../../../../kind.js'
-import type { ArrayElement } from '../../../kinds/extractors.js'
+import type { ArrayElement } from '../../../../path.js'
 import type { EquivKind, ExactKind, SubKind } from '../../../kinds/relators.js'
 
 export * as equiv from './equiv.js'

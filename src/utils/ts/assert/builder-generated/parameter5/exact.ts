@@ -1,6 +1,6 @@
 import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
-import type { Parameter5 } from '../../kinds/extractors.js'
+import type { Parameter5 } from '../../../path.js'
 import type { ExactKind } from '../../kinds/relators.js'
 
 /**

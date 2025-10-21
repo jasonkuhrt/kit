@@ -1,6 +1,6 @@
 import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
-import type { Awaited$ } from '../../kinds/extractors.js'
+import type { Awaited$ } from '../../../path.js'
 import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
 
 /**

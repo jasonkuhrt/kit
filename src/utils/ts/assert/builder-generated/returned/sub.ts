@@ -1,6 +1,6 @@
 import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
-import type { Returned } from '../../kinds/extractors.js'
+import type { Returned } from '../../../path.js'
 import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
 
 /**

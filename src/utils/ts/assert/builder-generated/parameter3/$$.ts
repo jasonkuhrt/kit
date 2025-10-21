@@ -1,6 +1,6 @@
 import type * as Kind from '../../../kind.js'
 import { runtime } from '../../builder/runtime.js'
-import type { Parameter3 } from '../../kinds/extractors.js'
+import type { Parameter3 } from '../../../path.js'
 import type { EquivKind, ExactKind, SubKind } from '../../kinds/relators.js'
 
 export * as equiv from './equiv.js'
