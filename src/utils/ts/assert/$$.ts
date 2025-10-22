@@ -1,8 +1,8 @@
-export type { StaticErrorAssertion } from './assertion-error.ts'
+export type { StaticErrorAssertion } from './assertion-error.js'
 export * from './builder-generated/$$.js'
 export * from './cases.js'
 
-import { builder } from './builder-singleton.ts'
+import { builder } from './builder-singleton.js'
 
 // Unary Relators (top-level)
 export const any = builder.any

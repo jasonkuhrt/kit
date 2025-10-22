@@ -10,8 +10,8 @@ import type {
   Parameter5,
   Parameters$,
   Returned,
-} from '../../path.ts'
-import type { EquivKind, EquivNoExcessKind, ExactKind, SubKind, SubNoExcessKind } from '../kinds/relators.ts'
+} from '../../path.js'
+import type { EquivKind, EquivNoExcessKind, ExactKind, SubKind, SubNoExcessKind } from '../kinds/relators.js'
 import type {
   GuardActual,
   GuardAgainstAnyNeverUnknown,
@@ -19,7 +19,7 @@ import type {
   GuardUnaryRelator,
   OnlyFailingChecks,
 } from './guards.js'
-import type { State as S } from './state.ts'
+import type { State as S } from './state.js'
 
 //
 //
