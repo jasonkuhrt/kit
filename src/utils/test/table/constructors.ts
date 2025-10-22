@@ -165,9 +165,9 @@ export function on<$fn extends Fn.AnyAny>(
 /**
  * Creates a test table builder for property-based and example-based testing.
  *
- * **CRITICAL**: Each call to `Test.describe()` creates a SEPARATE, INDEPENDENT test block.
- * The builder is NOT reusable - you CANNOT chain multiple `.cases()` or `.describeInputs()` calls
- * to add test cases to the same describe block. Each builder must end with `.test()`.
+ * **CRITICAL**: The builder supports chaining multiple `.describe(name, cases)` calls to organize
+ * related test groups. Each `.describe()` adds a new test group and returns the builder for
+ * continued chaining. The chain must end with `.test()` to execute all groups.
  *
  * Test tables allow you to define multiple test cases with inputs and expected outputs,
  * reducing boilerplate and making tests more maintainable. The builder supports two modes:
@@ -188,7 +188,7 @@ export function on<$fn extends Fn.AnyAny>(
  *
  * **Nested Describes** - Use ` > ` separator to create nested describe blocks:
  * - `Test.describe('Parent > Child')` creates `describe('Parent', () => describe('Child', ...))`
- * - Multiple SEPARATE Test.describe() calls with the same prefix share the outer describe block
+ * - Chain multiple `.describe()` calls: each adds a test group under its specified path
  * - Supports any depth: `'API > Users > Create'` creates three levels
  *
  * **Matrix Testing** - Use `.matrix()` to run cases across parameter combinations:
@@ -199,22 +199,22 @@ export function on<$fn extends Fn.AnyAny>(
  *
  * @example
  * ```ts
- * // ❌ WRONG - Trying to chain test cases (DOES NOT WORK)
- * Test.describe('decodeSync > basic')
- *   .on(decodeSync)
- *   .cases([['1.2.3']])
- *   .describeInputs('union', [['1.2.3-beta']])  // ❌ This creates a NESTED describe, not sibling!
+ * // ✅ CORRECT - Chain .describe() calls to add multiple test groups
+ * Test
+ *   .describe('decodeSync > basic', [
+ *     [['1.2.3']],
+ *     [['invalid']]
+ *   ])
+ *   .describe('decodeSync > union', [
+ *     [['1.2.3-beta']],
+ *     [['1.2.3+build']]
+ *   ])
  *   .test()
  *
- * // ✅ CORRECT - Separate Test.describe() calls for separate test groups
+ * // Alternative: Single describe with all cases
  * Test.describe('decodeSync > basic')
  *   .on(decodeSync)
  *   .cases([['1.2.3']], [['invalid']])
- *   .test()
- *
- * Test.describe('decodeSync > union')  // Shares 'decodeSync' parent describe
- *   .on(decodeSync)
- *   .cases([['1.2.3-beta']], [['1.2.3+build']])
  *   .test()
  *
  * // Function mode - testing a math function
@@ -241,21 +241,21 @@ export function on<$fn extends Fn.AnyAny>(
  *     expect(result).toBe(output)
  *   })
  *
- * // Nested describe blocks with ' > ' separator
- * Test.describe('Transform > String')  // Creates nested: Transform -> String
- *   .inputType<string>()
- *   .outputType<string>()
- *   .cases(['hello', 'HELLO'])
+ * // Nested describe blocks with ' > ' separator - chained
+ * Test
+ *   .describe('Transform > String', [
+ *     ['hello', 'HELLO']
+ *   ])
+ *   .describe('Transform > Number', [
+ *     [42, 42]
+ *   ])
  *   .test(({ input, output }) => {
- *     expect(input.toUpperCase()).toBe(output)
- *   })
- *
- * Test.describe('Transform > Number')  // SEPARATE call - Shares 'Transform' parent describe
- *   .inputType<number>()
- *   .outputType<number>()
- *   .cases([42, 42])
- *   .test(({ input, output }) => {
- *     expect(input).toBe(output)
+ *     // Custom test logic for both groups
+ *     if (typeof input === 'string') {
+ *       expect(input.toUpperCase()).toBe(output)
+ *     } else {
+ *       expect(input).toBe(output)
+ *     }
  *   })
  *
  * // Matrix testing - runs each case for all parameter combinations
