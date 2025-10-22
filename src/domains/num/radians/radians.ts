@@ -6,12 +6,12 @@
 import type { Finite } from '../finite/$$.js'
 import { is as isFinite } from '../finite/$$.js'
 
-declare const RadiansBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Angle in radians.
  */
-export type Radians = number & { [RadiansBrand]: true }
+export type Radians = number & Brand.Brand<'Radians'>
 
 /**
  * Type predicate to check if value is a valid radian angle.

@@ -1,5 +1,5 @@
 import type * as Kind from '../../../../kind.js'
-import type { Awaited$ } from '../../../../path.js'
+import type * as Path from '../../../../path.js'
 import { builder } from '../../../builder-singleton.js'
 import type { EquivKind } from '../../../kinds/relators.js'
 
@@ -26,7 +26,7 @@ import type { EquivKind } from '../../../kinds/relators.js'
  * type _ = Assert.awaited.equiv.of<string, Promise<number>>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Awaited$, [$Actual]>, true]>
+type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const of_ = builder.awaited.not.equiv.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.awaited.not.equiv.of
  * type _ = Assert.awaited.equiv.string<Promise<number>>
  * ```
  */
-type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<Awaited$, [$Actual]>, true]>
+type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const string_ = builder.awaited.not.equiv.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.awaited.not.equiv.string
  * type _ = Assert.awaited.equiv.number<Promise<string>>
  * ```
  */
-type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<Awaited$, [$Actual]>, true]>
+type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const number_ = builder.awaited.not.equiv.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.awaited.not.equiv.number
  * type _ = Assert.awaited.equiv.bigint<Promise<string>>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<Awaited$, [$Actual]>, true]>
+type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const bigint_ = builder.awaited.not.equiv.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.awaited.not.equiv.bigint
  * type _ = Assert.awaited.equiv.boolean<Promise<string>>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<Awaited$, [$Actual]>, true]>
+type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const boolean_ = builder.awaited.not.equiv.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.awaited.not.equiv.boolean
  * type _ = Assert.awaited.equiv.undefined<Promise<string>>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<Awaited$, [$Actual]>, true]>
+type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const undefined_ = builder.awaited.not.equiv.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.awaited.not.equiv.undefined
  * type _ = Assert.awaited.equiv.null<Promise<string>>
  * ```
  */
-type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<Awaited$, [$Actual]>, true]>
+type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const null_ = builder.awaited.not.equiv.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.awaited.not.equiv.null
  * type _ = Assert.awaited.equiv.symbol<Promise<string>>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<Awaited$, [$Actual]>, true]>
+type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const symbol_ = builder.awaited.not.equiv.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.awaited.not.equiv.symbol
  * type _ = Assert.awaited.equiv.Date<Promise<string>>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<Awaited$, [$Actual]>, true]>
+type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const Date_ = builder.awaited.not.equiv.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.awaited.not.equiv.Date
  * type _ = Assert.awaited.equiv.RegExp<Promise<string>>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<Awaited$, [$Actual]>, true]>
+type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const RegExp_ = builder.awaited.not.equiv.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.awaited.not.equiv.RegExp
  * type _ = Assert.awaited.equiv.Error<Promise<string>>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<Awaited$, [$Actual]>, true]>
+type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const Error_ = builder.awaited.not.equiv.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.awaited.not.equiv.Error
  * type _ = Assert.awaited.equiv.unknown<Promise<string>>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Awaited$, [$Actual]>, true]>
+type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const unknown_ = builder.awaited.not.equiv.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.awaited.not.equiv.unknown
  * type _ = Assert.awaited.equiv.any<Promise<string>>
  * ```
  */
-type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Awaited$, [$Actual]>, true]>
+type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const any_ = builder.awaited.not.equiv.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.awaited.not.equiv.any
  * type _ = Assert.awaited.equiv.never<Promise<string>>
  * ```
  */
-type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Awaited$, [$Actual]>, true]>
+type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const never_ = builder.awaited.not.equiv.never
 
 const ofAs_ = <$Type>() => builder.awaited.not.equiv.ofAs<$Type>()

@@ -1,6 +1,5 @@
 import type { ArrMut } from '#arr-mut'
-import type { IsNever } from './ts.js'
-import type { IsAny, IsUnknown } from './ts.js'
+import type { IsAny, IsNever, IsUnknown } from './inhabitance.js'
 import type * as Union from './union.js'
 
 /**

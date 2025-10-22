@@ -1,5 +1,5 @@
 import type * as Kind from '../../../../kind.js'
-import type { ArrayElement } from '../../../../path.js'
+import type * as Path from '../../../../path.js'
 import { builder } from '../../../builder-singleton.js'
 import type { EquivKind } from '../../../kinds/relators.js'
 
@@ -26,7 +26,7 @@ import type { EquivKind } from '../../../kinds/relators.js'
  * type _ = Assert.array.equiv.of<string, number[]>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<ArrayElement, [$Actual]>, true]>
+type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const of_ = builder.array.not.equiv.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.array.not.equiv.of
  * type _ = Assert.array.equiv.string<number[]>
  * ```
  */
-type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<ArrayElement, [$Actual]>, true]>
+type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const string_ = builder.array.not.equiv.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.array.not.equiv.string
  * type _ = Assert.array.equiv.number<string[]>
  * ```
  */
-type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<ArrayElement, [$Actual]>, true]>
+type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const number_ = builder.array.not.equiv.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.array.not.equiv.number
  * type _ = Assert.array.equiv.bigint<string[]>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<ArrayElement, [$Actual]>, true]>
+type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const bigint_ = builder.array.not.equiv.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.array.not.equiv.bigint
  * type _ = Assert.array.equiv.boolean<string[]>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<ArrayElement, [$Actual]>, true]>
+type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const boolean_ = builder.array.not.equiv.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.array.not.equiv.boolean
  * type _ = Assert.array.equiv.undefined<string[]>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<ArrayElement, [$Actual]>, true]>
+type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const undefined_ = builder.array.not.equiv.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.array.not.equiv.undefined
  * type _ = Assert.array.equiv.null<string[]>
  * ```
  */
-type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<ArrayElement, [$Actual]>, true]>
+type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const null_ = builder.array.not.equiv.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.array.not.equiv.null
  * type _ = Assert.array.equiv.symbol<string[]>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<ArrayElement, [$Actual]>, true]>
+type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const symbol_ = builder.array.not.equiv.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.array.not.equiv.symbol
  * type _ = Assert.array.equiv.Date<string[]>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<ArrayElement, [$Actual]>, true]>
+type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const Date_ = builder.array.not.equiv.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.array.not.equiv.Date
  * type _ = Assert.array.equiv.RegExp<string[]>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<ArrayElement, [$Actual]>, true]>
+type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const RegExp_ = builder.array.not.equiv.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.array.not.equiv.RegExp
  * type _ = Assert.array.equiv.Error<string[]>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<ArrayElement, [$Actual]>, true]>
+type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const Error_ = builder.array.not.equiv.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.array.not.equiv.Error
  * type _ = Assert.array.equiv.unknown<string[]>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<ArrayElement, [$Actual]>, true]>
+type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const unknown_ = builder.array.not.equiv.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.array.not.equiv.unknown
  * type _ = Assert.array.equiv.any<string[]>
  * ```
  */
-type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<ArrayElement, [$Actual]>, true]>
+type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const any_ = builder.array.not.equiv.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.array.not.equiv.any
  * type _ = Assert.array.equiv.never<string[]>
  * ```
  */
-type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<ArrayElement, [$Actual]>, true]>
+type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const never_ = builder.array.not.equiv.never
 
 const ofAs_ = <$Type>() => builder.array.not.equiv.ofAs<$Type>()

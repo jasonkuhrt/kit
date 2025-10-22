@@ -3,12 +3,12 @@
  * A finite number excludes NaN, Infinity, and -Infinity.
  */
 
-declare const FiniteBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Finite number (excludes NaN, Infinity, -Infinity).
  */
-export type Finite = number & { [FiniteBrand]: true }
+export type Finite = number & Brand.Brand<'Finite'>
 
 /**
  * Type predicate to check if value is a finite number.

@@ -1,9 +1,14 @@
-import type { AlignKeys, ComputeDiff as ComputeDiff_, SimplifyPreserving } from './error.js'
+import type { Str } from '#str'
+import type { Brand } from 'effect'
+import type { IsAny, IsNever, IsUnknown } from './inhabitance.js'
 import type { Print } from './print.js'
-import type { GetErrorPreservedTypes } from './test-settings.js'
+import type { GetPreservedTypes } from './test-settings.js'
 
-// Re-export error display utilities
-export type * as ErrorDisplay from './error.js'
+// Re-export error utilities
+export type * as Err from './err.js'
+
+// Re-export inhabitance utilities
+export type { IsAny, IsNever, IsUnknown } from './inhabitance.js'
 
 // Re-export path extraction utilities
 export type * as Path from './path.js'
@@ -111,108 +116,47 @@ export type Interpolatable =
  *
  * @category Utils
  */
+
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Tuple Utilities
+//
+//
+//
+//
+
 /**
- * Universal base interface for all static type-level errors in the Kit library.
+ * Convert a tuple of strings into lettered fields.
  *
- * This interface serves as a marker that a type represents an error condition.
- * All error types in the Kit library should extend this interface, enabling
- * generic error detection and propagation without tight coupling.
+ * Transforms `[string, string, ...]` into `{ tip_a: string, tip_b: string, ... }`.
+ * Useful for displaying multiple pieces of metadata with alphabetic labels.
  *
- * Uses the user-facing ERROR field as the marker - this way the error tag
- * is the actual error message users see, not a hidden implementation detail.
+ * @template $Values - Readonly array of strings
+ * @template $Prefix - Prefix for the field names (defaults to 'tip')
  *
  * @example
  * ```ts
- * // Check if a type is an error
- * type IsError<$T> = [$T] extends [Ts.Error] ? true : false
+ * type T1 = TupleToLettered<['First', 'Second']>
+ * // { tip_a: 'First', tip_b: 'Second' }
  *
- * // Pass through errors in type transformations
- * type Transform<$T> = [$T] extends [Ts.Error] ? $T : ActualTransform<$T>
+ * type T2 = TupleToLettered<['Only one']>
+ * // { tip_a: 'Only one' }
+ *
+ * // Custom prefix
+ * type T3 = TupleToLettered<['A', 'B'], 'item'>
+ * // { item_a: 'A', item_b: 'B' }
  * ```
  *
- * @category Error Messages
+ * @category Type Utilities
  */
-export interface Error {
-  ERROR_________: string
+export type TupleToLettered<$Values extends readonly string[], $Prefix extends string = 'tip'> = {
+  [
+    i in keyof $Values as i extends `${infer __n__ extends number}` ? `${$Prefix}_${Str.Char.LettersLower[__n__]}`
+      : never
+  ]: $Values[i]
 }
-
-// dprint-ignore
-export type StaticError<
-  $Message extends string = string,
-  $Context extends object = {},
-  $Hint extends string = '(none)',
-> = AlignKeys<{
-  ERROR: $Message
-  CONTEXT: $Context
-  HINT: $Hint
-}>
-
-/**
- * @category Error Messages
- */
-export type StaticErrorAny = StaticError<string, object, string>
-
-/**
- * Smart type expansion for error displays with generic type preservation.
- *
- * Expands user-defined types while preserving specified types and built-in primitives.
- * Prevents error messages from expanding types like `Array`, `Promise`, `Record` into
- * their raw structural definitions.
- *
- * Uses types registered in {@link KitLibrarySettings.Ts.Error.PreserveTypes}.
- *
- * @template $T - The type to selectively expand
- *
- * @example
- * ```ts
- * type Custom = { x: number }
- * type A = Ts.DisplaySimplify<Custom>  // { x: number } - expands custom types
- * type B = Ts.DisplaySimplify<Array<number>>  // number[] - preserves built-in
- * type C = Ts.DisplaySimplify<Promise<string>>  // Promise<string> - preserves built-in
- * ```
- *
- * @category Error Messages
- */
-export type DisplaySimplify<$T> = SimplifyPreserving<$T, GetErrorPreservedTypes>
-
-/**
- * Compute structured diff between Expected and Actual object types.
- *
- * Returns a flat object with prefixed fields showing the differences:
- * - `${prefix}_missing` - Properties in Expected but not in Actual (omitted if empty)
- * - `${prefix}_excess` - Properties in Actual but not in Expected (omitted if empty)
- * - `${prefix}_mismatch` - Properties in both but with different types (omitted if empty)
- *
- * Empty diff fields are completely omitted from the result.
- * If either type is not an object, returns an empty object (no diff).
- *
- * Uses types registered in {@link KitLibrarySettings.Ts.Error.PreserveTypes}.
- *
- * @template $Expected - The expected object type
- * @template $Actual - The actual object type
- * @template $Prefix - Prefix for diff field names (defaults to 'diff')
- *
- * @example
- * ```ts
- * type Expected = { a: string; b: number }
- * type Actual = { b: string; c: boolean }
- *
- * type Diff = Ts.ComputeDiff<Expected, Actual>
- * // {
- * //   diff_missing: { a: string }
- * //   diff_excess: { c: boolean }
- * //   diff_mismatch: { b: { expected: number; actual: string } }
- * // }
- * ```
- *
- * @category Error Messages
- */
-export type ComputeDiff<$Expected, $Actual, $Prefix extends string = 'diff'> = ComputeDiff_<
-  $Expected,
-  $Actual,
-  $Prefix,
-  GetErrorPreservedTypes
->
 
 /**
  * Like {@link Print} but adds additional styling to display the rendered type in a sentence.
@@ -271,88 +215,6 @@ export type Show<$Type> = `\`${Print<$Type>}\``
  * @category Type Printing
  */
 export type ShowInTemplate<$Type> = `'${Print<$Type>}'`
-
-/**
- * Simplifies complex type intersections and mapped types for better readability.
- *
- * Forces TypeScript to evaluate and flatten a type, which is especially useful for:
- * - Intersection types that appear as `A & B & C` in tooltips
- * - Complex mapped types that show their internal structure
- * - Making type aliases more readable in IDE tooltips
- *
- * @template $Type - The type to simplify
- *
- * @example
- * ```ts
- * // Without Simplify
- * type Complex = { a: string } & { b: number } & { c: boolean }
- * // Tooltip shows: { a: string } & { b: number } & { c: boolean }
- *
- * // With Simplify
- * type Simple = Simplify<Complex>
- * // Tooltip shows: { a: string; b: number; c: boolean }
- * ```
- *
- * @example
- * ```ts
- * // Simplifying complex mapped types
- * type UserPermissions =
- *   & { read: boolean }
- *   & { write: boolean }
- *   & { admin: boolean }
- *
- * type FlatPermissions = Simplify<UserPermissions>
- * // Shows as: { read: boolean; write: boolean; admin: boolean }
- *
- * // Useful with generic constraints
- * function processUser<T extends Simplify<UserPermissions>>(user: T) {
- *   // T will show flattened structure in errors and tooltips
- * }
- * ```
- *
- * @category Type Utilities
- */
-export type Simplify<$Type> =
-  & {
-    [_ in keyof $Type]: $Type[_]
-  }
-  & unknown
-
-/**
- * Simplify a type while preserving `| null` unions.
- *
- * This solves a subtle problem with {@link Simplify}: when you have `Type | null`,
- * using `Simplify<Type | null>` can absorb or transform the `null` in unexpected ways
- * due to the intersection with `& unknown` or `& {}`. This utility checks for null first,
- * then explicitly reconstructs the union to ensure `| null` remains intact.
- *
- * **When to use:**
- * - Use {@link SimplifyNullable} when simplifying types that may contain `| null` or `| undefined`
- * - Use {@link Simplify} for non-nullable types or when null handling doesn't matter
- *
- * @template $T - The type to simplify
- *
- * @example
- * ```ts
- * // Problem: Plain Simplify can mangle nullable unions
- * type User = { name: string } & { age: number }
- * type MaybeUser = User | null
- * type Bad = Simplify<MaybeUser>  // May not preserve | null correctly
- *
- * // Solution: SimplifyNullable preserves the null union
- * type Good = SimplifyNullable<MaybeUser>  // { name: string; age: number } | null
- * ```
- *
- * @example
- * ```ts
- * // Works with non-nullable types too
- * type Simple = SimplifyNullable<{ a: 1 } & { b: 2 }>  // { a: 1; b: 2 }
- *
- * // Preserves null in unions
- * type Nullable = SimplifyNullable<({ a: 1 } & { b: 2 }) | null>  // { a: 1; b: 2 } | null
- * ```
- */
-export type SimplifyNullable<$T> = null extends $T ? (Simplify<$T> & {}) | null : Simplify<$T> & {}
 
 /**
  * Utilities for working with union types at the type level.
@@ -476,6 +338,47 @@ export type Writeable<$Object> = {
 export type Primitive = null | undefined | string | number | boolean | symbol | bigint
 
 /**
+ * Structural pattern matching any Effect-branded primitive type.
+ *
+ * This type matches primitives that have been branded using Effect's {@link https://effect.website/docs/guides/schema/branded-types/ Brand system},
+ * by structurally checking for the presence of the `BrandTypeId` symbol property. It's used in
+ * {@link KitLibrarySettings.Ts.PreserveTypes} to prevent branded types from being expanded
+ * in type displays and error messages.
+ *
+ * **How it works:**
+ *
+ * Effect's branded types follow this pattern:
+ * ```ts
+ * type NonNegative = number & Brand.Brand<'NonNegative'>
+ * // Which expands to:
+ * // number & { readonly [BrandTypeId]: { readonly NonNegative: "NonNegative" } }
+ * ```
+ *
+ * The check `T extends { readonly [BrandTypeId]: any }` structurally matches the brand part
+ * while plain primitives fail the check since they lack the symbol property.
+ *
+ * @example
+ * ```ts
+ * import type { Brand } from 'effect'
+ *
+ * type NonNegative = number & Brand.Brand<'NonNegative'>
+ * type Int = number & Brand.Brand<'Int'>
+ *
+ * // Branded types match
+ * type Test1 = NonNegative extends PrimitiveBrandLike ? true : false  // true
+ * type Test2 = Int extends PrimitiveBrandLike ? true : false          // true
+ *
+ * // Plain primitives don't match
+ * type Test3 = number extends PrimitiveBrandLike ? true : false       // false
+ * type Test4 = string extends PrimitiveBrandLike ? true : false       // false
+ * ```
+ *
+ * @category Type Utilities
+ * @see {@link KitLibrarySettings.Ts.PreserveTypes}
+ */
+export type PrimitiveBrandLike = { readonly [Brand.BrandTypeId]: any }
+
+/**
  * Recursively make all properties writable (removes readonly modifiers deeply).
  *
  * Handles functions, primitives, built-ins, and branded types correctly by passing them through.
@@ -521,7 +424,63 @@ export type WritableDeep<$T> =
     : $T extends (...args: any[]) => any ? $T  // Functions pass through
     : $T extends readonly any[] ? { -readonly [i in keyof $T]: WritableDeep<$T[i]> }  // Arrays/tuples
     : $T extends object ? { -readonly [k in keyof $T]: WritableDeep<$T[k]> }  // Objects
-    : $T  // Fallback (should not be reached)
+    : $T // Fallback (should not be reached)
+
+/**
+ * Recursively strip readonly modifiers from a type.
+ *
+ * Strips `readonly` from objects, tuples, and arrays while recursing into nested structures.
+ * Uses inline simplification (`& unknown`) to avoid wrapper type names in error messages.
+ *
+ * Automatically preserves types registered in {@link KitLibrarySettings.Ts.PreserveTypes}
+ * (including built-in types like Date, Error, Function, and branded primitives).
+ *
+ * **CRITICAL**: Handles tuples BEFORE arrays to preserve tuple structure.
+ * Without tuple handling, `[1, 2]` would match `Array<infer element>` and widen to `(1 | 2)[]`.
+ *
+ * @template $T - The type to strip readonly from
+ *
+ * @example
+ * ```ts
+ * // Object with readonly properties
+ * type ReadonlyObj = { readonly x: number; readonly y: string }
+ * type Mutable = StripReadonlyDeep<ReadonlyObj>
+ * // { x: number; y: string }
+ *
+ * // Readonly tuple
+ * type ReadonlyTuple = readonly [1, 2, 3]
+ * type MutableTuple = StripReadonlyDeep<ReadonlyTuple>
+ * // [1, 2, 3]
+ *
+ * // Readonly array
+ * type ReadonlyArr = ReadonlyArray<number>
+ * type MutableArr = StripReadonlyDeep<ReadonlyArr>
+ * // Array<number>
+ *
+ * // Nested structures with branded types
+ * type NonNegative = number & Brand.Brand<'NonNegative'>
+ * type Nested = { readonly data: readonly [NonNegative, 1, 2] }
+ * type NestedMutable = StripReadonlyDeep<Nested>
+ * // { data: [NonNegative, 1, 2] } - branded type preserved!
+ * ```
+ *
+ * @category Type Utilities
+ */
+// dprint-ignore
+export type StripReadonlyDeep<$T> =
+  $T extends Function ? $T
+  // TUPLE HANDLING: Must come before Array AND before GetPreservedTypes to preserve structure
+  : $T extends readonly [...infer ___Elements]
+    ? { -readonly [i in keyof ___Elements]: StripReadonlyDeep<___Elements[i]> }
+  // Array handling (only matches non-tuple arrays now)
+  : $T extends Array<infer __element__> ? Array<StripReadonlyDeep<__element__>>
+  : $T extends ReadonlyArray<infer __element__> ? Array<StripReadonlyDeep<__element__>>
+  // Preserve types from settings AFTER array/tuple handling (branded primitives, built-ins, user-registered)
+  : $T extends GetPreservedTypes ? $T
+  : $T extends object
+    ? & { -readonly [k in keyof $T]: StripReadonlyDeep<$T[k]> }
+      & unknown
+    : $T
 
 /**
  * @deprecated - Commented out 2025-01-07
@@ -560,8 +519,6 @@ export type WritableDeep<$T> =
  */
 export type IfExtendsElse<$Type, $Extends, $Then, $Else> = $Type extends $Extends ? $Then : $Else
 
-export type IsNever<$Type> = [$Type] extends [never] ? true : false
-
 /**
  * Convert a boolean type to a string literal 'true' or 'false'.
  * Useful for lookup table indexing.
@@ -599,39 +556,6 @@ export type Narrowable = string | number | bigint | boolean | []
  * Convert any and unknown to never.
  */
 export type AnyAndUnknownToNever<$T> = IsAny<$T> extends true ? never : IsUnknown<$T> extends true ? never : $T
-
-/**
- * Check if a type is `any`.
- *
- * Uses the fact that `any` is the only type where `0 extends (1 & T)` is true,
- * since `any` absorbs all type operations including impossible intersections.
- *
- * @example
- * ```ts
- * type T1 = IsAny<any>      // true
- * type T2 = IsAny<unknown>  // false
- * type T3 = IsAny<string>   // false
- * type T4 = IsAny<never>    // false
- * ```
- */
-export type IsAny<T> = 0 extends 1 & T ? true : false
-
-/**
- * Check if a type is `unknown`.
- *
- * Unknown is the top type - everything extends unknown (except any, which is special).
- * So we check if unknown extends the type (only true for unknown and any),
- * then exclude any using IsAny.
- *
- * @example
- * ```ts
- * type T1 = IsUnknown<unknown>  // true
- * type T2 = IsUnknown<any>      // false
- * type T3 = IsUnknown<string>   // false
- * type T4 = IsUnknown<never>    // false
- * ```
- */
-export type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true) : false
 
 /**
  * Sentinel type for detecting whether an optional type parameter was provided.

@@ -5,7 +5,7 @@
 
 import type { Natural } from '../natural/$$.js'
 
-declare const PrimeBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Prime number (natural number > 1 with no divisors except 1 and itself).
@@ -23,7 +23,7 @@ declare const PrimeBrand: unique symbol
  * // Invalid (not prime):
  * // 1 (by definition), 4, 6, 8, 9, 10, 12...
  */
-export type Prime = Natural & { [PrimeBrand]: true }
+export type Prime = Natural & Brand.Brand<'Prime'>
 
 /**
  * Type predicate to check if value is a prime number.

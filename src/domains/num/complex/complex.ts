@@ -5,7 +5,7 @@
 
 import { CoreFn as Fn } from '#fn/core'
 
-declare const ComplexBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Complex number - a number with both real and imaginary parts, written as a + bi.
@@ -34,7 +34,7 @@ declare const ComplexBrand: unique symbol
 export type Complex = {
   readonly real: number
   readonly imaginary: number
-} & { [ComplexBrand]: true }
+} & Brand.Brand<'Complex'>
 
 /**
  * Type predicate to check if value is a Complex number.

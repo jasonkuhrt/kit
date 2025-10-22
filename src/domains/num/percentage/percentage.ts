@@ -5,13 +5,13 @@
 
 import type { InRange } from '../in-range/$$.js'
 
-declare const PercentageBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Percentage (0-1).
  * Represents a value between 0% (0.0) and 100% (1.0).
  */
-export type Percentage = InRange<0, 1> & { [PercentageBrand]: true }
+export type Percentage = InRange<0, 1> & Brand.Brand<'Percentage'>
 
 /**
  * Type predicate for percentage (0-1).

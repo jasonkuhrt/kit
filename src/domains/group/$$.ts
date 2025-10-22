@@ -21,7 +21,7 @@ export type by<
             // the key value itself is a union. In this case each group  gets the type but narrowed
             // for the key property.
             //
-            Ts.Simplify<
+            Ts.Simplify.Shallow<
               Extract<$Type, { [_ in $Key]: __group_name__ }> extends never
                 ? $Type & { [_ in $Key]: __group_name__ }
                 : Extract<$Type, { [_ in $Key]: __group_name__ }>
@@ -33,7 +33,7 @@ export type by<
 
 export type ErrorInvalidGroupKey<obj extends object, key extends keyof obj> =
   // dprint-ignore
-  Ts.StaticError<
+  Ts.Err.StaticError<
     `The value at your chosen key ${Ts.Show<key>} is not a subtype of allowed property key types (${Ts.Show<PropertyKey>}) and so cannot be used to group your objects.`,
     { your_key_type: obj[key] }
   >
@@ -104,8 +104,8 @@ export const by = <obj extends object, key extends keyof obj>(
 type ValidateIsGroupableKey<
   $Obj extends object,
   $Key extends keyof $Obj,
-  $Error extends Ts.StaticError,
-> = $Obj[$Key] extends PropertyKey ? $Key : Ts.Simplify<$Error>
+  $Error extends Ts.Err.StaticError,
+> = $Obj[$Key] extends PropertyKey ? $Key : Ts.Simplify.Shallow<$Error>
 
 /**
  * Merges two group sets together.
@@ -195,7 +195,7 @@ export type map<$GroupSet extends Any, $Mapper extends Mapper<$GroupSet>> = {
 export const map = <
   groupSet extends Any,
   handlers extends Mapper<groupSet>,
->(groupSet: groupSet, handlers: handlers): Ts.Simplify<map<groupSet, handlers>> => {
+>(groupSet: groupSet, handlers: handlers): Ts.Simplify.Shallow<map<groupSet, handlers>> => {
   for (const groupName in groupSet) {
     const handler = handlers[groupName]
     if (!handler) throw new Error(`No handler for group "${groupName}"`)

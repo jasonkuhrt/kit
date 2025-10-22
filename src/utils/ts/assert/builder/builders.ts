@@ -1,16 +1,7 @@
 import type { Inhabitance, SENTINEL } from '#ts/ts'
-import type {
-  ApplyExtractors,
-  ArrayElement,
-  Awaited$,
-  Parameter1,
-  Parameter2,
-  Parameter3,
-  Parameter4,
-  Parameter5,
-  Parameters$,
-  Returned,
-} from '../../path.js'
+import type * as Kind from '../../kind.js'
+import type * as Path from '../../path.js'
+import type { ExtractorRegistry } from '../../path.js'
 import type { EquivKind, EquivNoExcessKind, ExactKind, SubKind, SubNoExcessKind } from '../kinds/relators.js'
 import type {
   GuardActual,
@@ -108,7 +99,7 @@ export interface InputActualForUnaryRelatorWide<$State extends S, $Kind extends 
 export type ExecuteUnaryRelator<
   $State extends S,
   $Kind extends 'any' | 'unknown' | 'never' | 'empty',
-  ___ActualExtracted = ApplyExtractors<$State['actual_extractors'], $State['actual_type']>,
+  ___ActualExtracted = Path.ApplyExtractors<$State['actual_extractors'], $State['actual_type']>,
 > = (
   ...params: OnlyFailingChecks<[GuardUnaryRelator<___ActualExtracted, $State, $Kind>]>
 ) => void
@@ -150,51 +141,12 @@ export type BuilderExtractors<
   'complete': {}
 }[S.InputNextCase<$State>]
 
-export interface BuilderExtractorsConstant<$State extends S> {
-  /**
-   * Extract the resolved type from a Promise.
-   */
-  readonly awaited: Builder<S.AddExtractor<$State, Awaited$>>
-
-  /**
-   * Extract the return type from a function.
-   */
-  readonly returned: Builder<S.AddExtractor<$State, Returned>>
-
-  /**
-   * Extract the element type from an array.
-   */
-  readonly array: Builder<S.AddExtractor<$State, ArrayElement>>
-
-  /**
-   * Extract the parameters tuple from a function.
-   */
-  readonly parameters: Builder<S.AddExtractor<$State, Parameters$>>
-
-  /**
-   * Extract the first parameter type from a function.
-   */
-  readonly parameter1: Builder<S.AddExtractor<$State, Parameter1>>
-
-  /**
-   * Extract the second parameter type from a function.
-   */
-  readonly parameter2: Builder<S.AddExtractor<$State, Parameter2>>
-
-  /**
-   * Extract the third parameter type from a function.
-   */
-  readonly parameter3: Builder<S.AddExtractor<$State, Parameter3>>
-
-  /**
-   * Extract the fourth parameter type from a function.
-   */
-  readonly parameter4: Builder<S.AddExtractor<$State, Parameter4>>
-
-  /**
-   * Extract the fifth parameter type from a function.
-   */
-  readonly parameter5: Builder<S.AddExtractor<$State, Parameter5>>
+/**
+ * Extractor methods derived from registry.
+ * Each extractor returns a builder with that extractor added to the chain.
+ */
+export type BuilderExtractorsConstant<$State extends S> = {
+  readonly [K in keyof ExtractorRegistry]: Builder<S.AddExtractor<$State, ExtractorRegistry[K]>>
 }
 
 export type BuilderExtractorsConditionalMaybe<
@@ -210,27 +162,19 @@ export type BuilderExtractorsConditionalMaybe<
     'never': BuilderExtractorsConstant<$State>
   }[___$ActualInhabitanceCase]
 
-// dprint-ignore
-export type BuilderExtractorsConditional<$State extends S> =
-  // Check Promise first (outermost layer)
-  $State['actual_type'] extends Promise<infer __inner__>
-    ? { readonly awaited: Builder<S.SetActualType<$State, __inner__>> }
-    // Not Promise - check Function
-    : $State['actual_type'] extends (...args: infer __params__) => infer __return__
-      ? {
-          readonly returned: Builder<S.SetActualType<$State, __return__>>
-          readonly parameters: Builder<S.SetActualType<$State, __params__>>
-          readonly parameter1: Builder<S.SetActualType<$State, __params__[0]>>
-          readonly parameter2: Builder<S.SetActualType<$State, __params__[1]>>
-          readonly parameter3: Builder<S.SetActualType<$State, __params__[2]>>
-          readonly parameter4: Builder<S.SetActualType<$State, __params__[3]>>
-          readonly parameter5: Builder<S.SetActualType<$State, __params__[4]>>
-        }
-      // Not Function - check Array
-      : $State['actual_type'] extends readonly (infer __element__)[]
-        ? { readonly array: Builder<S.SetActualType<$State, __element__>> }
-        // Not any of the above - no extractors
-        : {}
+/**
+ * Conditional extractors based on actual type structure.
+ *
+ * Uses Path.GetApplicableExtractors to determine which extractors are valid for the type,
+ * then applies each extractor from the registry and wraps in a Builder.
+ *
+ * Type analysis logic lives in ts/path, this just orchestrates builders.
+ */
+export type BuilderExtractorsConditional<$State extends S> = {
+  readonly [K in keyof Path.GetApplicableExtractors<$State['actual_type']> & keyof ExtractorRegistry]: Builder<
+    S.SetActualType<$State, Kind.Apply<ExtractorRegistry[K], [$State['actual_type']]>>
+  >
+}
 
 /**
  * Valid relator kinds for use in Relator interface.

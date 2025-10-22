@@ -1,5 +1,5 @@
 import type * as Kind from '../../../../kind.js'
-import type { Parameters$ } from '../../../../path.js'
+import type * as Path from '../../../../path.js'
 import { builder } from '../../../builder-singleton.js'
 import type { SubKind } from '../../../kinds/relators.js'
 
@@ -26,7 +26,7 @@ import type { SubKind } from '../../../kinds/relators.js'
  * type _ = Assert.parameters.sub.of<string, (...args: any[]) => number>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Parameters$, [$Actual]>, true]>
+type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const of_ = builder.parameters.not.sub.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.parameters.not.sub.of
  * type _ = Assert.parameters.sub.string<(...args: any[]) => number>
  * ```
  */
-type string_<$Actual> = Kind.Apply<SubKind, [string, Kind.Apply<Parameters$, [$Actual]>, true]>
+type string_<$Actual> = Kind.Apply<SubKind, [string, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const string_ = builder.parameters.not.sub.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.parameters.not.sub.string
  * type _ = Assert.parameters.sub.number<(...args: any[]) => string>
  * ```
  */
-type number_<$Actual> = Kind.Apply<SubKind, [number, Kind.Apply<Parameters$, [$Actual]>, true]>
+type number_<$Actual> = Kind.Apply<SubKind, [number, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const number_ = builder.parameters.not.sub.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.parameters.not.sub.number
  * type _ = Assert.parameters.sub.bigint<(...args: any[]) => string>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, Kind.Apply<Parameters$, [$Actual]>, true]>
+type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const bigint_ = builder.parameters.not.sub.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.parameters.not.sub.bigint
  * type _ = Assert.parameters.sub.boolean<(...args: any[]) => string>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, Kind.Apply<Parameters$, [$Actual]>, true]>
+type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const boolean_ = builder.parameters.not.sub.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.parameters.not.sub.boolean
  * type _ = Assert.parameters.sub.undefined<(...args: any[]) => string>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, Kind.Apply<Parameters$, [$Actual]>, true]>
+type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const undefined_ = builder.parameters.not.sub.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.parameters.not.sub.undefined
  * type _ = Assert.parameters.sub.null<(...args: any[]) => string>
  * ```
  */
-type null_<$Actual> = Kind.Apply<SubKind, [null, Kind.Apply<Parameters$, [$Actual]>, true]>
+type null_<$Actual> = Kind.Apply<SubKind, [null, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const null_ = builder.parameters.not.sub.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.parameters.not.sub.null
  * type _ = Assert.parameters.sub.symbol<(...args: any[]) => string>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, Kind.Apply<Parameters$, [$Actual]>, true]>
+type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const symbol_ = builder.parameters.not.sub.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.parameters.not.sub.symbol
  * type _ = Assert.parameters.sub.Date<(...args: any[]) => string>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<SubKind, [Date, Kind.Apply<Parameters$, [$Actual]>, true]>
+type Date_<$Actual> = Kind.Apply<SubKind, [Date, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const Date_ = builder.parameters.not.sub.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.parameters.not.sub.Date
  * type _ = Assert.parameters.sub.RegExp<(...args: any[]) => string>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, Kind.Apply<Parameters$, [$Actual]>, true]>
+type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const RegExp_ = builder.parameters.not.sub.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.parameters.not.sub.RegExp
  * type _ = Assert.parameters.sub.Error<(...args: any[]) => string>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<SubKind, [Error, Kind.Apply<Parameters$, [$Actual]>, true]>
+type Error_<$Actual> = Kind.Apply<SubKind, [Error, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const Error_ = builder.parameters.not.sub.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.parameters.not.sub.Error
  * type _ = Assert.parameters.sub.unknown<(...args: any[]) => string>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<Parameters$, [$Actual]>, true]>
+type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const unknown_ = builder.parameters.not.sub.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.parameters.not.sub.unknown
  * type _ = Assert.parameters.sub.any<(...args: any[]) => string>
  * ```
  */
-type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<Parameters$, [$Actual]>, true]>
+type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const any_ = builder.parameters.not.sub.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.parameters.not.sub.any
  * type _ = Assert.parameters.sub.never<(...args: any[]) => string>
  * ```
  */
-type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<Parameters$, [$Actual]>, true]>
+type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const never_ = builder.parameters.not.sub.never
 
 const ofAs_ = <$Type>() => builder.parameters.not.sub.ofAs<$Type>()

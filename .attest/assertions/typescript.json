@@ -143,7 +143,7 @@
       },
       "args": [
         {
-          "type": "[actual: 42]",
+          "type": "[{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: 42; tip___________: \"Types share no values\"; }]",
           "relationships": {
             "args": [
               "equality"
@@ -169,7 +169,7 @@
       },
       "args": [
         {
-          "type": "[actual: { a: number; b: number; }]",
+          "type": "[{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: { a: string; }; actual________: { a: number; b: number; }; diff_excess___: { b: number; }; diff_mismatch_: { a: { expected: string; actual: number; }; }; tip___________: \"Types share some values but differ\"; }]",
           "relationships": {
             "args": [
               "equality"
@@ -273,7 +273,7 @@
       },
       "args": [
         {
-          "type": "[actual: CB]",
+          "type": "[actual: { ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: { id: string; user: { name: string; age: number; }; tags: string[]; }; actual________: { id: string; user: { name: string; age: string; }; tags: string[]; extra: boolean; }; diff_excess___: { extra: boolean; }; diff_mismatch_: { user: { expected: { name: string; age: number; }; actual: { name: string; age: string; }; }; }; tip___________: \"Types share some values but differ\"; }]",
           "relationships": {
             "args": [
               "equality"
@@ -289,11 +289,11 @@
     {
       "location": {
         "start": {
-          "line": 184,
+          "line": 193,
           "char": 3
         },
         "end": {
-          "line": 184,
+          "line": 193,
           "char": 18
         }
       },
@@ -315,11 +315,11 @@
     {
       "location": {
         "start": {
-          "line": 195,
+          "line": 204,
           "char": 3
         },
         "end": {
-          "line": 195,
+          "line": 204,
           "char": 18
         }
       },
@@ -341,11 +341,11 @@
     {
       "location": {
         "start": {
-          "line": 210,
+          "line": 219,
           "char": 3
         },
         "end": {
-          "line": 210,
+          "line": 219,
           "char": 18
         }
       },
@@ -367,17 +367,17 @@
     {
       "location": {
         "start": {
-          "line": 225,
+          "line": 234,
           "char": 3
         },
         "end": {
-          "line": 225,
+          "line": 234,
           "char": 38
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: { value: Date; }; actual: Date; }; }; tip___________: \"Types share some values but differ\"; }",
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: Foo; actual: Date; }; }; tip___________: \"Types share some values but differ\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -393,17 +393,17 @@
     {
       "location": {
         "start": {
-          "line": 239,
+          "line": 246,
           "char": 3
         },
         "end": {
-          "line": 239,
+          "line": 246,
           "char": 38
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: { a: string; b: number; }; actual: { a: number; b: number; }; }; }; tip___________: \"Types share some values but differ\"; }",
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: Bar; actual: { a: number; b: number; }; }; }; tip___________: \"Types share some values but differ\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -419,11 +419,11 @@
     {
       "location": {
         "start": {
-          "line": 256,
+          "line": 260,
           "char": 3
         },
         "end": {
-          "line": 256,
+          "line": 260,
           "char": 47
         }
       },
@@ -445,39 +445,37 @@
     {
       "location": {
         "start": {
-          "line": 278,
+          "line": 282,
           "char": 3
         },
         "end": {
-          "line": 278,
-          "char": 51
+          "line": 282,
+          "char": 48
         }
       },
       "args": [
         {
-          "type": "Assert.not.sub.of<string, \"hello\">",
+          "type": "{ ERROR_________: \"ACTUAL extends EXPECTED but should not\"; expected______: string; actual________: \"hello\"; }",
           "relationships": {
             "args": [
-              "none"
+              "equality"
             ],
             "typeArgs": []
           }
         }
       ],
       "typeArgs": [],
-      "errors": [
-        "'Assert.not.sub.of' refers to a value, but is being used as a type here. Did you mean 'typeof Assert.not.sub.of'?"
-      ],
+      "errors": [],
       "completions": {}
     },
     {
       "location": {
         "start": {
-          "line": 288,
+          "line": 292,
           "char": 3
         },
         "end": {
-          "line": 288,
+          "line": 292,
           "char": 48
         }
       },
@@ -499,11 +497,11 @@
     {
       "location": {
         "start": {
-          "line": 293,
+          "line": 297,
           "char": 3
         },
         "end": {
-          "line": 293,
+          "line": 297,
           "char": 49
         }
       },
@@ -525,11 +523,11 @@
     {
       "location": {
         "start": {
-          "line": 298,
+          "line": 302,
           "char": 3
         },
         "end": {
-          "line": 298,
+          "line": 302,
           "char": 49
         }
       },
@@ -551,11 +549,11 @@
     {
       "location": {
         "start": {
-          "line": 327,
+          "line": 331,
           "char": 3
         },
         "end": {
-          "line": 327,
+          "line": 331,
           "char": 65
         }
       },
@@ -577,11 +575,11 @@
     {
       "location": {
         "start": {
-          "line": 350,
+          "line": 354,
           "char": 3
         },
         "end": {
-          "line": 350,
+          "line": 354,
           "char": 65
         }
       },
@@ -603,11 +601,11 @@
     {
       "location": {
         "start": {
-          "line": 360,
+          "line": 364,
           "char": 3
         },
         "end": {
-          "line": 360,
+          "line": 364,
           "char": 53
         }
       },
@@ -629,11 +627,11 @@
     {
       "location": {
         "start": {
-          "line": 372,
+          "line": 376,
           "char": 3
         },
         "end": {
-          "line": 372,
+          "line": 376,
           "char": 27
         }
       },
@@ -655,11 +653,11 @@
     {
       "location": {
         "start": {
-          "line": 382,
+          "line": 386,
           "char": 3
         },
         "end": {
-          "line": 382,
+          "line": 386,
           "char": 27
         }
       },
@@ -681,11 +679,11 @@
     {
       "location": {
         "start": {
-          "line": 392,
+          "line": 396,
           "char": 3
         },
         "end": {
-          "line": 392,
+          "line": 396,
           "char": 27
         }
       },
@@ -707,11 +705,11 @@
     {
       "location": {
         "start": {
-          "line": 402,
+          "line": 406,
           "char": 3
         },
         "end": {
-          "line": 402,
+          "line": 406,
           "char": 27
         }
       },
@@ -733,11 +731,11 @@
     {
       "location": {
         "start": {
-          "line": 419,
+          "line": 423,
           "char": 3
         },
         "end": {
-          "line": 419,
+          "line": 423,
           "char": 23
         }
       },
@@ -759,11 +757,11 @@
     {
       "location": {
         "start": {
-          "line": 434,
+          "line": 438,
           "char": 3
         },
         "end": {
-          "line": 434,
+          "line": 438,
           "char": 23
         }
       },
@@ -785,11 +783,11 @@
     {
       "location": {
         "start": {
-          "line": 451,
+          "line": 455,
           "char": 3
         },
         "end": {
-          "line": 451,
+          "line": 455,
           "char": 23
         }
       },
@@ -811,11 +809,11 @@
     {
       "location": {
         "start": {
-          "line": 466,
+          "line": 470,
           "char": 3
         },
         "end": {
-          "line": 466,
+          "line": 470,
           "char": 23
         }
       },
@@ -837,11 +835,11 @@
     {
       "location": {
         "start": {
-          "line": 481,
+          "line": 485,
           "char": 3
         },
         "end": {
-          "line": 481,
+          "line": 485,
           "char": 23
         }
       },

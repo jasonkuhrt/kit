@@ -1,5 +1,5 @@
 import type * as Kind from '../../../kind.js'
-import type { Returned } from '../../../path.js'
+import type * as Path from '../../../path.js'
 import { builder } from '../../builder-singleton.js'
 import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
 
@@ -26,7 +26,7 @@ import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
  * type _ = Assert.returned.equiv.of<string, () => number>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Returned, [$Actual]>]>
+type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Path.Returned, [$Actual]>]>
 const of_ = builder.returned.equiv.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.returned.equiv.of
  * type _ = Assert.returned.equiv.string<() => number>
  * ```
  */
-type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<Returned, [$Actual]>]>
+type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<Path.Returned, [$Actual]>]>
 const string_ = builder.returned.equiv.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.returned.equiv.string
  * type _ = Assert.returned.equiv.number<() => string>
  * ```
  */
-type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<Returned, [$Actual]>]>
+type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<Path.Returned, [$Actual]>]>
 const number_ = builder.returned.equiv.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.returned.equiv.number
  * type _ = Assert.returned.equiv.bigint<() => string>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<Returned, [$Actual]>]>
+type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<Path.Returned, [$Actual]>]>
 const bigint_ = builder.returned.equiv.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.returned.equiv.bigint
  * type _ = Assert.returned.equiv.boolean<() => string>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<Returned, [$Actual]>]>
+type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<Path.Returned, [$Actual]>]>
 const boolean_ = builder.returned.equiv.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.returned.equiv.boolean
  * type _ = Assert.returned.equiv.undefined<() => string>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<Returned, [$Actual]>]>
+type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<Path.Returned, [$Actual]>]>
 const undefined_ = builder.returned.equiv.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.returned.equiv.undefined
  * type _ = Assert.returned.equiv.null<() => string>
  * ```
  */
-type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<Returned, [$Actual]>]>
+type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<Path.Returned, [$Actual]>]>
 const null_ = builder.returned.equiv.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.returned.equiv.null
  * type _ = Assert.returned.equiv.symbol<() => string>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<Returned, [$Actual]>]>
+type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<Path.Returned, [$Actual]>]>
 const symbol_ = builder.returned.equiv.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.returned.equiv.symbol
  * type _ = Assert.returned.equiv.Date<() => string>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<Returned, [$Actual]>]>
+type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<Path.Returned, [$Actual]>]>
 const Date_ = builder.returned.equiv.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.returned.equiv.Date
  * type _ = Assert.returned.equiv.RegExp<() => string>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<Returned, [$Actual]>]>
+type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<Path.Returned, [$Actual]>]>
 const RegExp_ = builder.returned.equiv.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.returned.equiv.RegExp
  * type _ = Assert.returned.equiv.Error<() => string>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<Returned, [$Actual]>]>
+type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<Path.Returned, [$Actual]>]>
 const Error_ = builder.returned.equiv.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.returned.equiv.Error
  * type _ = Assert.returned.equiv.unknown<() => string>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Returned, [$Actual]>]>
+type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Path.Returned, [$Actual]>]>
 const unknown_ = builder.returned.equiv.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.returned.equiv.unknown
  * type _ = Assert.returned.equiv.any<() => string>
  * ```
  */
-type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Returned, [$Actual]>]>
+type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Path.Returned, [$Actual]>]>
 const any_ = builder.returned.equiv.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.returned.equiv.any
  * type _ = Assert.returned.equiv.never<() => string>
  * ```
  */
-type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Returned, [$Actual]>]>
+type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Path.Returned, [$Actual]>]>
 const never_ = builder.returned.equiv.never
 
 const ofAs_ = <$Type>() => builder.returned.equiv.ofAs<$Type>()
@@ -242,7 +242,7 @@ const ofAs_ = <$Type>() => builder.returned.equiv.ofAs<$Type>()
  * No-excess variant of equiv relation.
  * Checks that actual has no excess properties beyond expected.
  */
-type noExcess_<$Expected, $Actual> = Kind.Apply<EquivNoExcessKind, [$Expected, Kind.Apply<Returned, [$Actual]>]>
+type noExcess_<$Expected, $Actual> = Kind.Apply<EquivNoExcessKind, [$Expected, Kind.Apply<Path.Returned, [$Actual]>]>
 const noExcess_ = builder.returned.equiv.noExcess
 const noExcessAs_ = <$Type>() => builder.returned.equiv.noExcessAs<$Type>()
 

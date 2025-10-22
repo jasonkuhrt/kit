@@ -1,4 +1,3 @@
-import { Lang } from '#lang'
 import { Traitor } from '#traitor'
 import type { Ts } from '#ts'
 import type { Type } from '#type'
@@ -73,16 +72,15 @@ export interface Eq<$A = any> extends
  * Prevents comparing disjoint types (no overlap).
  */
 type ValidateComparable<A, B> = Ts.Relation.GetRelation<A, B> extends Ts.Relation.disjoint
-  ? Ts.Simplify<ErrorDisjointTypes<A, B>>
+  ? Ts.Simplify.Shallow<ErrorDisjointTypes<A, B>>
   : B
 
 /**
  * Error type for comparing types with no overlap.
  */
-type ErrorDisjointTypes<A, B> = Ts.StaticError<
+type ErrorDisjointTypes<A, B> = Ts.Err.StaticError<
   `Cannot compare disjoint types ${Ts.ShowInTemplate<A>} and ${Ts.ShowInTemplate<B>}`,
-  { TypeA: A; TypeB: B },
-  `These types have no overlap. This comparison will always return false.`
+  { TypeA: A; TypeB: B; tip: `These types have no overlap. This comparison will always return false.` }
 >
 
 //

@@ -1,3 +1,5 @@
+export * from './ts.js'
+
 // @ts-expect-error Duplicate identifier
 export * as Kind from './kind.js'
 /**
@@ -35,13 +37,23 @@ export * from './ts.js'
 export * from './type-guards.js'
 
 // @ts-expect-error Duplicate identifier
-export * as Ts from './ts.js'
+export * as Simplify from './simplify.js'
 /**
- * TypeScript type utilities and helpers.
+ * Type simplification utilities for flattening and expanding types.
+ * All functions automatically preserve globally registered types from {@link KitLibrarySettings.Ts.PreserveTypes}.
  *
- * @category Type System
+ * @category Type Simplification
  */
-export namespace Ts {}
+export namespace Simplify {}
+
+// @ts-expect-error Duplicate identifier
+export * as Err from './err.js'
+/**
+ * Error utilities for working with static type-level errors.
+ *
+ * @category Error Utilities
+ */
+export namespace Err {}
 
 // @ts-expect-error Duplicate identifier
 export * as Union from './union.js'

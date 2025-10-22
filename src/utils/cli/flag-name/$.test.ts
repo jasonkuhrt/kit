@@ -341,7 +341,7 @@ test('type-level: fromString return types', () => {
   // @ts-expect-error - fromString returns 'any' internally
   Ts.Assert.equiv.ofAs<FlagName.Analyze<'-v --verbose -x --extra'>>()(FlagName.fromString('-v --verbose -x --extra'))
 
-  // Invalid inputs - input guard rejects with Ts.StaticError
+  // Invalid inputs - input guard rejects with Ts.Err.StaticError
   // These are type-only tests - they verify compile-time errors without executing
   if (false as boolean) {
     // @ts-expect-error - Empty input

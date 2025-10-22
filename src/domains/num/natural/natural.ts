@@ -9,7 +9,7 @@ import { is as isInt } from '../int/$$.js'
 import type { Positive } from '../positive/$$.js'
 import { is as isPositive } from '../positive/$$.js'
 
-declare const NaturalBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Natural number (positive integer: 1, 2, 3, ...).
@@ -28,7 +28,7 @@ declare const NaturalBrand: unique symbol
  * // 1.5 (not an integer)
  * // Infinity (not finite)
  */
-export type Natural = number & { [NaturalBrand]: true }
+export type Natural = number & Brand.Brand<'Natural'>
 
 /**
  * Type predicate to check if value is a natural number.

@@ -1,5 +1,5 @@
 import type { Obj } from '#obj'
-import type { Ts } from './$.js'
+import type { StaticError } from './err.js'
 import * as Kind from './kind.js'
 import type { ShowInTemplate } from './ts.js'
 
@@ -15,21 +15,21 @@ import type { ShowInTemplate } from './ts.js'
 
 /**
  * Error type helpers that avoid using `this` inside object literal positions.
- * These wrap Ts.StaticError with specific metadata structures.
+ * These use StaticError for consistent error formatting.
  */
-type PathErrorKeyNotFound<$Key, $Actual> = Ts.StaticError<
+type PathErrorKeyNotFound<$Key, $Actual> = StaticError<
   'Key does not exist on type',
   { key: $Key; actual: $Actual }
 >
 
-type PathErrorArrayExtract<$Actual> = Ts.StaticError<
+type PathErrorArrayExtract<$Actual> = StaticError<
   'Failed to extract array element from type',
-  { constraint: readonly any[]; actual: $Actual }
+  { expected: readonly any[]; actual: $Actual }
 >
 
-type PathErrorTupleExtract<$Actual> = Ts.StaticError<
+type PathErrorTupleExtract<$Actual> = StaticError<
   'Failed to extract tuple element from type',
-  { constraint: readonly any[]; actual: $Actual }
+  { expected: readonly any[]; actual: $Actual }
 >
 
 /**
@@ -67,9 +67,9 @@ export type ValidateAndExtract<
   $Constraint,
   $ExtractorName extends string,
   $ExtractionLogic,
-> = IsDisjoint<$Actual, $Constraint> extends true ? Ts.StaticError<
+> = IsDisjoint<$Actual, $Constraint> extends true ? StaticError<
     `Cannot extract ${$ExtractorName} from incompatible type`,
-    { constraint: FormatConstraint<$Constraint>; actual: $Actual; attempted: `${$ExtractorName} extractor` }
+    { expected: FormatConstraint<$Constraint>; actual: $Actual; attempted: `${$ExtractorName} extractor` }
   >
   : $ExtractionLogic
 
@@ -346,7 +346,7 @@ export interface NoExcess extends Kind.Kind {
   parameters: [$Expected: unknown, $Actual: unknown]
   return: this['parameters'] extends [infer __expected__, infer __actual__]
     ? [keyof Obj.SubtractShallow<__actual__, __expected__>] extends [never] ? __actual__
-    : Ts.StaticError<
+    : StaticError<
       'Type has excess properties',
       { expected: __expected__; actual: __actual__; excess: keyof Obj.SubtractShallow<__actual__, __expected__> }
     >
@@ -379,3 +379,95 @@ export type ApplyExtractors<$Extractors extends readonly Kind.Kind[], $Actual> =
   readonly [infer __first__ extends Kind.Kind, ...infer __rest__ extends Kind.Kind[]]
   ? ApplyExtractors<__rest__, Kind.Apply<__first__, [$Actual]>>
   : $Actual
+
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Applicability Analysis
+//
+//
+//
+//
+
+/**
+ * Determine which extractors are applicable to a given type based on its structure.
+ *
+ * This performs type analysis to determine which path extractors can meaningfully
+ * operate on a type:
+ * - Promise types → `awaited`
+ * - Function types → `returned`, `parameters`, `parameter1-5`
+ * - Array types → `array`
+ *
+ * Returns a mapped type with applicable extractor names as keys.
+ * Used by the assertion builder to provide contextual extractor methods.
+ *
+ * @example
+ * ```ts
+ * type PromiseExtractors = GetApplicableExtractors<Promise<string>>
+ * // { awaited: true }
+ *
+ * type FunctionExtractors = GetApplicableExtractors<() => number>
+ * // { returned: true; parameters: true; parameter1: true; ... }
+ *
+ * type ArrayExtractors = GetApplicableExtractors<string[]>
+ * // { array: true }
+ * ```
+ */
+// dprint-ignore
+export type GetApplicableExtractors<$T> =
+  // Check Promise first (outermost layer)
+  $T extends Promise<any>
+    ? { awaited: true }
+    // Not Promise - check Function
+    : $T extends (...args: any) => any
+      ? { returned: true; parameters: true; parameter1: true; parameter2: true; parameter3: true; parameter4: true; parameter5: true }
+      // Not Function - check Array
+      : $T extends readonly any[]
+        ? { array: true }
+        // Not any of the above - no extractors applicable
+        : {}
+
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Registry
+//
+//
+//
+//
+
+/**
+ * Central registry of all type path extractors.
+ *
+ * **This is the single source of truth for extractors.**
+ *
+ * To add a new extractor:
+ * 1. Define the Kind interface above in this file
+ * 2. Add entry here: `extractorName: ExtractorKind`
+ * 3. Run `pnpm generate:test-namespaces`
+ *
+ * Everything else (builder API, generated files) derives automatically.
+ */
+export interface ExtractorRegistry {
+  awaited: Awaited$
+  returned: Returned
+  array: ArrayElement
+  parameters: Parameters$
+  parameter1: Parameter1
+  parameter2: Parameter2
+  parameter3: Parameter3
+  parameter4: Parameter4
+  parameter5: Parameter5
+}
+
+/**
+ * Get extractor Kind by name.
+ */
+export type GetExtractor<$Name extends keyof ExtractorRegistry> = ExtractorRegistry[$Name]
+
+/**
+ * All registered extractor names.
+ */
+export type ExtractorName = keyof ExtractorRegistry

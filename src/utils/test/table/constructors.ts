@@ -293,11 +293,23 @@ export function on<$fn extends Fn.AnyAny>(
  * @builder
  * @category Test Builders
  */
-export function describe(
-  description?: string,
-): Types.TestBuilderEmpty {
-  const initialState = description
-    ? { ...Builder.defaultState, config: { description } }
-    : Builder.defaultState
-  return Builder.create(initialState)
+export function describe(description: string, cases: any[]): Types.TestBuilderEmpty
+
+export function describe(description?: string): Types.TestBuilderEmpty
+
+export function describe(description?: string, cases?: any[]): Types.TestBuilderEmpty {
+  const initialState = Builder.defaultState
+  const builder = Builder.create(initialState)
+
+  // If cases provided, call .describe() method on builder
+  if (description && cases) {
+    return builder.describe(description, cases)
+  }
+
+  // Otherwise, just set description in config
+  if (description) {
+    return Builder.create({ ...initialState, config: { description } })
+  }
+
+  return builder
 }

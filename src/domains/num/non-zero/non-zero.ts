@@ -3,7 +3,7 @@
  * A non-zero number is any number except zero.
  */
 
-declare const NonZeroBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Non-zero number (≠ 0).
@@ -22,7 +22,7 @@ declare const NonZeroBrand: unique symbol
  * // Invalid (not a number):
  * // NaN
  */
-export type NonZero = number & { [NonZeroBrand]: true }
+export type NonZero = number & Brand.Brand<'NonZero'>
 
 /**
  * Type predicate to check if value is non-zero.

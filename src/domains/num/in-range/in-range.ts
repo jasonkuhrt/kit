@@ -3,14 +3,14 @@
  * Represents a number within a specific min/max range.
  */
 
-declare const InRangeBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Range-constrained number.
  */
-export type InRange<Min extends number, Max extends number> = number & {
-  [InRangeBrand]: { min: Min; max: Max }
-}
+export type InRange<Min extends number = number, Max extends number = number> =
+  & number
+  & Brand.Brand<`InRange<${Min},${Max}>`>
 
 /**
  * Type predicate to check if value is within a specific range.

@@ -262,7 +262,6 @@
     "madge": "^8.0.0",
     "oxlint": "^1.19.0",
     "publint": "^0.3.13",
-    "ts-morph": "^27.0.0",
     "ts-toolbelt": "^9.6.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
@@ -283,6 +282,7 @@
     "pathe": "^2.0.3",
     "pluralize-esm": "^9.0.5",
     "tinyglobby": "^0.2.15",
+    "ts-morph": "^27.0.0",
     "type-fest": "^5.0.1"
   },
   "libra": {

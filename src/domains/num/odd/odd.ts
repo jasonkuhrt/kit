@@ -6,13 +6,13 @@
 import type { Int } from '../int/$$.js'
 import { is as isInt } from '../int/$$.js'
 
-declare const OddBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Odd integer.
  * Note: This stacks with Int brand to allow Int & Odd.
  */
-export type Odd = number & { [OddBrand]: true }
+export type Odd = number & Brand.Brand<'Odd'>
 
 /**
  * Type predicate to check if value is odd.

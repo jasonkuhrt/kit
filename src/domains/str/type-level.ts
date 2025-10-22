@@ -60,10 +60,9 @@ export type Contains<S extends string, C extends string> = S extends `${string}$
 export type LiteralOnly<
   T extends string,
   $ErrorMessage extends string = 'Expected a literal string',
-> = string extends T ? Ts.StaticError<
+> = string extends T ? Ts.Err.StaticError<
     $ErrorMessage,
-    { ReceivedType: T },
-    'Use a string literal instead of string type'
+    { ReceivedType: T; tip: 'Use a string literal instead of string type' }
   >
   : T
 

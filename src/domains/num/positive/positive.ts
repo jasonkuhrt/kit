@@ -3,7 +3,7 @@
  * A positive number is greater than zero.
  */
 
-declare const PositiveBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Positive number (> 0).
@@ -21,7 +21,7 @@ declare const PositiveBrand: unique symbol
  * // -0.5 (negative)
  * // NaN (not a number)
  */
-export type Positive = number & { [PositiveBrand]: true }
+export type Positive = number & Brand.Brand<'Positive'>
 
 /**
  * Type predicate to check if value is positive (> 0).

@@ -3,12 +3,12 @@
  * A non-positive number is less than or equal to zero.
  */
 
-declare const NonPositiveBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Non-positive number (<= 0).
  */
-export type NonPositive = number & { [NonPositiveBrand]: true }
+export type NonPositive = number & Brand.Brand<'NonPositive'>
 
 /**
  * Type predicate to check if value is non-positive (<= 0).

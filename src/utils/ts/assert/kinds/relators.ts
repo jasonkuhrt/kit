@@ -1,7 +1,8 @@
 import type { Obj } from '#obj'
-import type { Kind, Ts } from '#ts/ts'
+import type { Ts } from '#ts'
+import type { Kind } from '#ts/ts'
+import type { IsAny, IsNever } from '../../inhabitance.js'
 import type { Relation } from '../../relation.js'
-import type { IsAny, IsNever } from '../../ts.js'
 import type { StaticErrorAssertion } from '../assertion-error.js'
 // import type { AssertionKind } from '../helpers.js'
 
@@ -28,7 +29,7 @@ export interface ExactKind extends AssertionKind {
     // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
     IsAny<this['parameters'][1]> extends false
       ? IsNever<this['parameters'][1]> extends false
-        ? [this['parameters'][1]] extends [Ts.Error]
+        ? Ts.Err.Is<this['parameters'][1]> extends true
           ? this['parameters'][1]
           : this['parameters'][2] extends true
             ? InvertExactResult<this['parameters'][0], this['parameters'][1]>
@@ -39,34 +40,34 @@ export interface ExactKind extends AssertionKind {
                     'EXPECTED and ACTUAL are only equivilant (not exact)',
                     this['parameters'][0],
                     this['parameters'][1],
-                    Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Use equiv() for mutual assignability OR apply Simplify<T> to normalize types' }
+                    Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Use equiv() for mutual assignability OR apply Simplify<T> to normalize types' }
                   >
                 : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.subtype
                   ? StaticErrorAssertion<
                       'ACTUAL is subtype of EXPECTED',
                       this['parameters'][0],
                       this['parameters'][1],
-                      Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is narrower than EXPECTED' }
+                      Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is narrower than EXPECTED' }
                     >
                   : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.supertype
                     ? StaticErrorAssertion<
                           'ACTUAL is supertype of EXPECTED',
                           this['parameters'][0],
                           this['parameters'][1],
-                          Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is wider than EXPECTED' }
+                          Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is wider than EXPECTED' }
                         >
                       : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.overlapping
                         ? StaticErrorAssertion<
                             'EXPECTED only overlaps with ACTUAL',
                             this['parameters'][0],
                             this['parameters'][1],
-                            Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share some values but differ' }
+                            Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share some values but differ' }
                           >
                         : StaticErrorAssertion<
                             'EXPECTED and ACTUAL are disjoint',
                             this['parameters'][0],
                             this['parameters'][1],
-                            Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share no values' }
+                            Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share no values' }
                           >
         : this['parameters'][2] extends true
           ? InvertExactResult<this['parameters'][0], this['parameters'][1]>
@@ -77,34 +78,34 @@ export interface ExactKind extends AssertionKind {
                   'EXPECTED and ACTUAL are only equivilant (not exact)',
                   this['parameters'][0],
                   this['parameters'][1],
-                  Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Use equiv() for mutual assignability OR apply Simplify<T> to normalize types' }
+                  Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Use equiv() for mutual assignability OR apply Simplify<T> to normalize types' }
                 >
               : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.subtype
                 ? StaticErrorAssertion<
                     'ACTUAL is subtype of EXPECTED',
                     this['parameters'][0],
                     this['parameters'][1],
-                    Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is narrower than EXPECTED' }
+                    Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is narrower than EXPECTED' }
                   >
                 : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.supertype
                   ? StaticErrorAssertion<
                         'ACTUAL is supertype of EXPECTED',
                         this['parameters'][0],
                         this['parameters'][1],
-                        Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is wider than EXPECTED' }
+                        Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is wider than EXPECTED' }
                       >
                     : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.overlapping
                       ? StaticErrorAssertion<
                           'EXPECTED only overlaps with ACTUAL',
                           this['parameters'][0],
                           this['parameters'][1],
-                          Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share some values but differ' }
+                          Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share some values but differ' }
                         >
                       : StaticErrorAssertion<
                           'EXPECTED and ACTUAL are disjoint',
                           this['parameters'][0],
                           this['parameters'][1],
-                          Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share no values' }
+                          Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share no values' }
                         >
       : this['parameters'][2] extends true
         ? InvertExactResult<this['parameters'][0], this['parameters'][1]>
@@ -115,34 +116,34 @@ export interface ExactKind extends AssertionKind {
                 'EXPECTED and ACTUAL are only equivilant (not exact)',
                 this['parameters'][0],
                 this['parameters'][1],
-                Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Use equiv() for mutual assignability OR apply Simplify<T> to normalize types' }
+                Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Use equiv() for mutual assignability OR apply Simplify<T> to normalize types' }
               >
             : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.subtype
               ? StaticErrorAssertion<
                   'ACTUAL is subtype of EXPECTED',
                   this['parameters'][0],
                   this['parameters'][1],
-                  Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is narrower than EXPECTED' }
+                  Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is narrower than EXPECTED' }
                 >
               : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.supertype
                 ? StaticErrorAssertion<
                       'ACTUAL is supertype of EXPECTED',
                       this['parameters'][0],
                       this['parameters'][1],
-                      Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is wider than EXPECTED' }
+                      Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'ACTUAL is wider than EXPECTED' }
                     >
                   : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.overlapping
                     ? StaticErrorAssertion<
                         'EXPECTED only overlaps with ACTUAL',
                         this['parameters'][0],
                         this['parameters'][1],
-                        Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share some values but differ' }
+                        Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share some values but differ' }
                       >
                     : StaticErrorAssertion<
                         'EXPECTED and ACTUAL are disjoint',
                         this['parameters'][0],
                         this['parameters'][1],
-                        Ts.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share no values' }
+                        Obj.ComputeDiff<this['parameters'][0], this['parameters'][1]> & { tip: 'Types share no values' }
                       >
 }
 
@@ -174,7 +175,7 @@ export interface EquivKind extends AssertionKind {
     // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
     IsAny<this['parameters'][1]> extends false
       ? IsNever<this['parameters'][1]> extends false
-        ? [this['parameters'][1]] extends [Ts.Error]
+        ? Ts.Err.Is<this['parameters'][1]> extends true
           ? this['parameters'][1]
           : this['parameters'][2] extends true
             ? InvertEquivResult<this['parameters'][0], this['parameters'][1]>
@@ -288,7 +289,7 @@ export interface SubKind extends AssertionKind {
     // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
     IsAny<this['parameters'][1]> extends false
       ? IsNever<this['parameters'][1]> extends false
-        ? [this['parameters'][1]] extends [Ts.Error]
+        ? Ts.Err.Is<this['parameters'][1]> extends true
           ? this['parameters'][1]
           : this['parameters'][2] extends true
             ? InvertSubResult<this['parameters'][0], this['parameters'][1]>
@@ -361,7 +362,7 @@ export interface SubNoExcessKind extends AssertionKind {
     // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
     IsAny<this['parameters'][1]> extends false
       ? IsNever<this['parameters'][1]> extends false
-        ? [this['parameters'][1]] extends [Ts.Error]
+        ? Ts.Err.Is<this['parameters'][1]> extends true
           ? this['parameters'][1]
           : this['parameters'][2] extends true
             ? InvertSubNoExcessResult<this['parameters'][0], this['parameters'][1]>
@@ -420,7 +421,7 @@ export interface EquivNoExcessKind extends AssertionKind {
     // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
     IsAny<this['parameters'][1]> extends false
       ? IsNever<this['parameters'][1]> extends false
-        ? [this['parameters'][1]] extends [Ts.Error]
+        ? Ts.Err.Is<this['parameters'][1]> extends true
           ? this['parameters'][1]
           : this['parameters'][2] extends true
             ? InvertEquivNoExcessResult<this['parameters'][0], this['parameters'][1]>

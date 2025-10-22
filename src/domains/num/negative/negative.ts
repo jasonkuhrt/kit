@@ -3,12 +3,12 @@
  * A negative number is less than zero.
  */
 
-declare const NegativeBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Negative number (< 0).
  */
-export type Negative = number & { [NegativeBrand]: true }
+export type Negative = number & Brand.Brand<'Negative'>
 
 /**
  * Type predicate to check if value is negative (< 0).

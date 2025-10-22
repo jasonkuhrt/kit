@@ -5,7 +5,7 @@
 
 import { CoreFn as Fn } from '#fn/core'
 
-declare const BigIntegerBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * BigInteger - arbitrary precision integer with branded type safety.
@@ -31,7 +31,7 @@ declare const BigIntegerBrand: unique symbol
  * // Cryptographic applications
  * const rsaModulus = BigInteger.from('115792089237316195423570985008687907853269984665640564039457584007913129639936')
  */
-export type BigInteger = bigint & { [BigIntegerBrand]: true }
+export type BigInteger = bigint & Brand.Brand<'BigInteger'>
 
 /**
  * Type predicate to check if value is a BigInteger.

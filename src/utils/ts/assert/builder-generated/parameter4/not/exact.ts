@@ -1,5 +1,5 @@
 import type * as Kind from '../../../../kind.js'
-import type { Parameter4 } from '../../../../path.js'
+import type * as Path from '../../../../path.js'
 import { builder } from '../../../builder-singleton.js'
 import type { ExactKind } from '../../../kinds/relators.js'
 
@@ -26,7 +26,7 @@ import type { ExactKind } from '../../../kinds/relators.js'
  * type _ = Assert.parameter4.exact.of<string, (arg: number) => any>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, Kind.Apply<Parameter4, [$Actual]>, true]>
+type of_<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, Kind.Apply<Path.Parameter4, [$Actual]>, true]>
 const of_ = builder.parameter4.not.exact.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.parameter4.not.exact.of
  * type _ = Assert.parameter4.exact.string<(arg: number) => any>
  * ```
  */
-type string_<$Actual> = Kind.Apply<ExactKind, [string, Kind.Apply<Parameter4, [$Actual]>, true]>
+type string_<$Actual> = Kind.Apply<ExactKind, [string, Kind.Apply<Path.Parameter4, [$Actual]>, true]>
 const string_ = builder.parameter4.not.exact.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.parameter4.not.exact.string
  * type _ = Assert.parameter4.exact.number<(arg: string) => any>
  * ```
  */
-type number_<$Actual> = Kind.Apply<ExactKind, [number, Kind.Apply<Parameter4, [$Actual]>, true]>
+type number_<$Actual> = Kind.Apply<ExactKind, [number, Kind.Apply<Path.Parameter4, [$Actual]>, true]>
 const number_ = builder.parameter4.not.exact.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.parameter4.not.exact.number
  * type _ = Assert.parameter4.exact.bigint<(arg: string) => any>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<ExactKind, [bigint, Kind.Apply<Parameter4, [$Actual]>, true]>
+type bigint_<$Actual> = Kind.Apply<ExactKind, [bigint, Kind.Apply<Path.Parameter4, [$Actual]>, true]>
 const bigint_ = builder.parameter4.not.exact.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.parameter4.not.exact.bigint
  * type _ = Assert.parameter4.exact.boolean<(arg: string) => any>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<ExactKind, [boolean, Kind.Apply<Parameter4, [$Actual]>, true]>
+type boolean_<$Actual> = Kind.Apply<ExactKind, [boolean, Kind.Apply<Path.Parameter4, [$Actual]>, true]>
 const boolean_ = builder.parameter4.not.exact.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.parameter4.not.exact.boolean
  * type _ = Assert.parameter4.exact.undefined<(arg: string) => any>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<ExactKind, [undefined, Kind.Apply<Parameter4, [$Actual]>, true]>
+type undefined_<$Actual> = Kind.Apply<ExactKind, [undefined, Kind.Apply<Path.Parameter4, [$Actual]>, true]>
 const undefined_ = builder.parameter4.not.exact.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.parameter4.not.exact.undefined
  * type _ = Assert.parameter4.exact.null<(arg: string) => any>
  * ```
  */
-type null_<$Actual> = Kind.Apply<ExactKind, [null, Kind.Apply<Parameter4, [$Actual]>, true]>
+type null_<$Actual> = Kind.Apply<ExactKind, [null, Kind.Apply<Path.Parameter4, [$Actual]>, true]>
 const null_ = builder.parameter4.not.exact.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.parameter4.not.exact.null
  * type _ = Assert.parameter4.exact.symbol<(arg: string) => any>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<ExactKind, [symbol, Kind.Apply<Parameter4, [$Actual]>, true]>
+type symbol_<$Actual> = Kind.Apply<ExactKind, [symbol, Kind.Apply<Path.Parameter4, [$Actual]>, true]>
 const symbol_ = builder.parameter4.not.exact.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.parameter4.not.exact.symbol
  * type _ = Assert.parameter4.exact.Date<(arg: string) => any>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<ExactKind, [Date, Kind.Apply<Parameter4, [$Actual]>, true]>
+type Date_<$Actual> = Kind.Apply<ExactKind, [Date, Kind.Apply<Path.Parameter4, [$Actual]>, true]>
 const Date_ = builder.parameter4.not.exact.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.parameter4.not.exact.Date
  * type _ = Assert.parameter4.exact.RegExp<(arg: string) => any>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<ExactKind, [RegExp, Kind.Apply<Parameter4, [$Actual]>, true]>
+type RegExp_<$Actual> = Kind.Apply<ExactKind, [RegExp, Kind.Apply<Path.Parameter4, [$Actual]>, true]>
 const RegExp_ = builder.parameter4.not.exact.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.parameter4.not.exact.RegExp
  * type _ = Assert.parameter4.exact.Error<(arg: string) => any>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<ExactKind, [Error, Kind.Apply<Parameter4, [$Actual]>, true]>
+type Error_<$Actual> = Kind.Apply<ExactKind, [Error, Kind.Apply<Path.Parameter4, [$Actual]>, true]>
 const Error_ = builder.parameter4.not.exact.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.parameter4.not.exact.Error
  * type _ = Assert.parameter4.exact.unknown<(arg: string) => any>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, Kind.Apply<Parameter4, [$Actual]>, true]>
+type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, Kind.Apply<Path.Parameter4, [$Actual]>, true]>
 const unknown_ = builder.parameter4.not.exact.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.parameter4.not.exact.unknown
  * type _ = Assert.parameter4.exact.any<(arg: string) => any>
  * ```
  */
-type any_<$Actual> = Kind.Apply<ExactKind, [any, Kind.Apply<Parameter4, [$Actual]>, true]>
+type any_<$Actual> = Kind.Apply<ExactKind, [any, Kind.Apply<Path.Parameter4, [$Actual]>, true]>
 const any_ = builder.parameter4.not.exact.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.parameter4.not.exact.any
  * type _ = Assert.parameter4.exact.never<(arg: string) => any>
  * ```
  */
-type never_<$Actual> = Kind.Apply<ExactKind, [never, Kind.Apply<Parameter4, [$Actual]>, true]>
+type never_<$Actual> = Kind.Apply<ExactKind, [never, Kind.Apply<Path.Parameter4, [$Actual]>, true]>
 const never_ = builder.parameter4.not.exact.never
 
 const ofAs_ = <$Type>() => builder.parameter4.not.exact.ofAs<$Type>()

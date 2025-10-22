@@ -25,6 +25,37 @@
 declare global {
   namespace KitLibrarySettings {
     namespace Ts {
+      /**
+       * Registry of types to preserve during type simplification and display.
+       *
+       * Add properties to this interface to register types that should not be expanded
+       * when types are simplified for display (in errors, hover info, etc.).
+       * The property names don't matter - all value types will be unioned together.
+       *
+       * This is a general TypeScript concept used throughout the library, not just for errors.
+       *
+       * @example
+       * ```typescript
+       * // In your project: types/kit-settings.d.ts
+       * import type { MySpecialClass, AnotherClass } from './my-classes'
+       *
+       * declare global {
+       *   namespace KitLibrarySettings {
+       *     namespace Ts {
+       *       interface PreserveTypes {
+       *         mySpecial: MySpecialClass
+       *         another: AnotherClass
+       *       }
+       *     }
+       *   }
+       * }
+       * export {}
+       * ```
+       */
+      interface PreserveTypes {
+        // Empty by default - users augment this interface
+      }
+
       namespace Error {
         export type GetPreservedTypes<$T extends object> = [keyof $T] extends [never] ? never
           : $T[keyof $T]
@@ -85,36 +116,6 @@ declare global {
            */
           renderErrors: boolean
         }
-
-        /**
-         * Registry of types to preserve in error messages.
-         *
-         * Add properties to this interface to register types that should not be expanded.
-         * The property names don't matter - all value types will be unioned together.
-         *
-         * @example
-         * ```typescript
-         * // In your project: types/kit-settings.d.ts
-         * import type { MySpecialClass, AnotherClass } from './my-classes'
-         *
-         * declare global {
-         *   namespace KitLibrarySettings {
-         *     namespace Ts {
-         *       namespace Error {
-         *         interface PreserveTypes {
-         *           mySpecial: MySpecialClass
-         *           another: AnotherClass
-         *         }
-         *       }
-         *     }
-         *   }
-         * }
-         * export {}
-         * ```
-         */
-        interface PreserveTypes {
-          // Empty by default - users augment this interface
-        }
       }
 
       namespace Assert {
@@ -157,6 +158,49 @@ declare global {
 }
 
 /**
+ * Kit's built-in augmentation of PreserveTypes.
+ *
+ * IMPORTANT: Keep synchronized with {@link Lang.BuiltInTypes}.
+ * Any type in BuiltInTypes should have a corresponding entry here.
+ *
+ * @internal
+ */
+import type { PrimitiveBrandLike } from './ts.js'
+
+declare global {
+  namespace KitLibrarySettings {
+    namespace Ts {
+      interface PreserveTypes {
+        // Primitives
+        _void: void
+        _string: string
+        _number: number
+        _boolean: boolean
+        _symbol: symbol
+        _bigint: bigint
+        _null: null
+        _undefined: undefined
+        // Branded primitives - catches ALL Effect branded types by structural matching
+        // See {@link PrimitiveBrandLike} for details on how this pattern works
+        _branded: PrimitiveBrandLike
+        // Object built-ins
+        _Function: Function
+        _Date: Date
+        _Error: Error
+        _RegExp: RegExp
+        _Map: Map<any, any>
+        _Set: Set<any>
+        _WeakMap: WeakMap<any, any>
+        _WeakSet: WeakSet<any>
+        _Promise: Promise<any>
+        _Array: Array<any>
+        _ReadonlyArray: ReadonlyArray<any>
+      }
+    }
+  }
+}
+
+/**
  * Helper type to read an error setting with proper defaults.
  *
  * @internal
@@ -175,13 +219,15 @@ export type GetErrorSetting<K extends keyof KitLibrarySettings.Ts.Error.Settings
 export type GetRenderErrors<$Value = GetErrorSetting<'renderErrors'>> = boolean extends $Value ? true : $Value
 
 /**
- * Extract all preserved types from the Error.PreserveTypes registry.
+ * Extract all preserved types from the Ts.PreserveTypes registry.
  * Returns a union of all value types in the interface.
  * Returns `never` if no types are registered.
  *
+ * Used throughout the library for type simplification and display.
+ *
  * @internal
  */
-export type GetErrorPreservedTypes = [keyof KitLibrarySettings.Ts.Error.PreserveTypes] extends [never] ? never
-  : KitLibrarySettings.Ts.Error.PreserveTypes[keyof KitLibrarySettings.Ts.Error.PreserveTypes]
+export type GetPreservedTypes = [keyof KitLibrarySettings.Ts.PreserveTypes] extends [never] ? never
+  : KitLibrarySettings.Ts.PreserveTypes[keyof KitLibrarySettings.Ts.PreserveTypes]
 
 // Make this a module

@@ -3,7 +3,7 @@
  * An integer is a whole number without decimal places.
  */
 
-declare const IntBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Integer number.
@@ -22,7 +22,7 @@ declare const IntBrand: unique symbol
  * // Infinity (not finite)
  * // NaN (not a number)
  */
-export type Int = number & { [IntBrand]: true }
+export type Int = number & Brand.Brand<'Int'>
 
 /**
  * Type predicate to check if value is an integer.

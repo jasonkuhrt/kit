@@ -7,6 +7,58 @@
  */
 
 /**
+ * Check if a type is `never`.
+ *
+ * @example
+ * ```ts
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.equal<IsNever<never>, true>,
+ *   Ts.Test.equal<IsNever<any>, false>,
+ *   Ts.Test.equal<IsNever<unknown>, false>,
+ *   Ts.Test.equal<IsNever<string>, false>
+ * >
+ * ```
+ */
+export type IsNever<$Type> = [$Type] extends [never] ? true : false
+
+/**
+ * Check if a type is `any`.
+ *
+ * Uses the fact that `any` is the only type where `0 extends (1 & T)` is true,
+ * since `any` absorbs all type operations including impossible intersections.
+ *
+ * @example
+ * ```ts
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.equal<IsAny<any>, true>,
+ *   Ts.Test.equal<IsAny<unknown>, false>,
+ *   Ts.Test.equal<IsAny<string>, false>,
+ *   Ts.Test.equal<IsAny<never>, false>
+ * >
+ * ```
+ */
+export type IsAny<T> = 0 extends 1 & T ? true : false
+
+/**
+ * Check if a type is `unknown`.
+ *
+ * Unknown is the top type - everything extends unknown (except any, which is special).
+ * So we check if unknown extends the type (only true for unknown and any),
+ * then exclude any using IsAny.
+ *
+ * @example
+ * ```ts
+ * type _ = Ts.Test.Cases<
+ *   Ts.Test.equal<IsUnknown<unknown>, true>,
+ *   Ts.Test.equal<IsUnknown<any>, false>,
+ *   Ts.Test.equal<IsUnknown<string>, false>,
+ *   Ts.Test.equal<IsUnknown<never>, false>
+ * >
+ * ```
+ */
+export type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true) : false
+
+/**
  * Detect if a type is `any` or `unknown`.
  *
  * @example

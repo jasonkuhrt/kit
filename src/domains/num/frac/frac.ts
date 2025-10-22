@@ -10,7 +10,7 @@ import type { NonZero } from '../non-zero/$$.js'
 import type { Ratio } from '../ratio/$$.js'
 import * as Ratio_ from '../ratio/$$.js'
 
-declare const FracBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Fraction (proper fraction) - a positive ratio where 0 < numerator < denominator.
@@ -29,7 +29,7 @@ declare const FracBrand: unique symbol
  * // Invalid:
  * // 3/2 (improper), 4/4 (equals 1), 0/5 (equals 0), -1/2 (negative)
  */
-export type Frac = Ratio & { [FracBrand]: true }
+export type Frac = Ratio & Brand.Brand<'Frac'>
 
 /**
  * Type predicate to check if value is a proper fraction.

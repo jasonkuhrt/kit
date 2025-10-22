@@ -13,6 +13,7 @@
 
 import * as fs from 'node:fs'
 import * as path from 'node:path'
+import { Project } from 'ts-morph'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Data Structures
 
@@ -65,66 +66,52 @@ const MATCHERS: Matcher[] = [
   { name: 'never', typeExpr: 'never', description: 'never' },
 ]
 
-const EXTRACTORS: Record<string, Extractor> = {
+/**
+ * Extractor metadata (descriptions for JSDoc generation).
+ * The list of extractors comes from the registry - this only provides documentation.
+ */
+const EXTRACTOR_METADATA: Record<string, { description: string; inputDesc: string; outputDesc: string }> = {
   awaited: {
-    name: 'awaited',
-    kindName: 'Awaited$',
     description: 'extracts the resolved type from a Promise',
     inputDesc: 'Promise<T>',
     outputDesc: 'T',
   },
   returned: {
-    name: 'returned',
-    kindName: 'Returned',
     description: 'extracts the return type from a function',
     inputDesc: '(...args: any[]) => T',
     outputDesc: 'T',
   },
   array: {
-    name: 'array',
-    kindName: 'ArrayElement',
     description: 'extracts the element type from an array',
     inputDesc: 'T[]',
     outputDesc: 'T',
   },
   parameters: {
-    name: 'parameters',
-    kindName: 'Parameters$',
     description: 'extracts the parameters tuple from a function',
     inputDesc: '(...args: any[]) => T',
     outputDesc: 'Parameters<Function>',
   },
   parameter1: {
-    name: 'parameter1',
-    kindName: 'Parameter1',
     description: 'extracts the first parameter type from a function',
     inputDesc: '(p1: T, ...) => any',
     outputDesc: 'T',
   },
   parameter2: {
-    name: 'parameter2',
-    kindName: 'Parameter2',
     description: 'extracts the second parameter type from a function',
     inputDesc: '(p1: any, p2: T, ...) => any',
     outputDesc: 'T',
   },
   parameter3: {
-    name: 'parameter3',
-    kindName: 'Parameter3',
     description: 'extracts the third parameter type from a function',
     inputDesc: '(p1: any, p2: any, p3: T, ...) => any',
     outputDesc: 'T',
   },
   parameter4: {
-    name: 'parameter4',
-    kindName: 'Parameter4',
     description: 'extracts the fourth parameter type from a function',
     inputDesc: '(p1: any, p2: any, p3: any, p4: T, ...) => any',
     outputDesc: 'T',
   },
   parameter5: {
-    name: 'parameter5',
-    kindName: 'Parameter5',
     description: 'extracts the fifth parameter type from a function',
     inputDesc: '(p1: any, p2: any, p3: any, p4: any, p5: T) => any',
     outputDesc: 'T',
@@ -157,6 +144,96 @@ const RELATORS: Record<string, Relator> = {
 
 const OUTPUT_DIR = path.join(process.cwd(), 'src/utils/ts/assert/builder-generated')
 
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Registry Loading
+
+/**
+ * Load extractor registry from TypeScript source using ts-morph.
+ * Returns a map of extractor names to their Kind interface names.
+ */
+function loadExtractorRegistry(): Record<string, string> {
+  const project = new Project({
+    tsConfigFilePath: path.join(process.cwd(), 'tsconfig.json'),
+  })
+
+  const pathFilePath = path.join(process.cwd(), 'src/utils/ts/path.ts')
+  const sourceFile = project.addSourceFileAtPath(pathFilePath)
+
+  // Find the ExtractorRegistry interface
+  const registryInterface = sourceFile.getInterface('ExtractorRegistry')
+  if (!registryInterface) {
+    throw new Error('ExtractorRegistry interface not found in path.ts')
+  }
+
+  const registry: Record<string, string> = {}
+
+  // Extract each property: name → Kind interface name
+  for (const property of registryInterface.getProperties()) {
+    const extractorName = property.getName()
+    const typeNode = property.getTypeNode()
+
+    if (!typeNode) {
+      throw new Error(`Property ${extractorName} has no type annotation`)
+    }
+
+    const kindName = typeNode.getText()
+    registry[extractorName] = kindName
+  }
+
+  return registry
+}
+
+/**
+ * Validate that extractor metadata covers all registry entries.
+ * Throws error if metadata is missing for any registry entry.
+ */
+function validateExtractorMetadata(registry: Record<string, string>): void {
+  const registryNames = Object.keys(registry).sort()
+  const metadataNames = Object.keys(EXTRACTOR_METADATA).sort()
+
+  // Check for missing metadata
+  const missingMetadata = registryNames.filter((name) => !(name in EXTRACTOR_METADATA))
+  if (missingMetadata.length > 0) {
+    throw new Error(
+      `Extractors in registry missing metadata: ${missingMetadata.join(', ')}\n`
+        + `Add metadata for these extractors in EXTRACTOR_METADATA constant.`,
+    )
+  }
+
+  // Warn about unused metadata (not in registry)
+  const unusedMetadata = metadataNames.filter((name) => !(name in registry))
+  if (unusedMetadata.length > 0) {
+    console.warn('⚠️  Metadata exists but not in registry:', unusedMetadata)
+    console.warn('   These entries can be removed from EXTRACTOR_METADATA')
+  }
+}
+
+// Load and validate registry
+const REGISTRY = loadExtractorRegistry()
+validateExtractorMetadata(REGISTRY)
+
+/**
+ * Build EXTRACTORS from registry + metadata.
+ * This ensures the registry is the source of truth for which extractors exist.
+ */
+const EXTRACTORS: Record<string, Extractor> = Object.fromEntries(
+  Object.entries(REGISTRY).map(([name, kindName]) => {
+    const metadata = EXTRACTOR_METADATA[name]
+    if (!metadata) {
+      throw new Error(`Extractor '${name}' is in registry but has no metadata`)
+    }
+    return [
+      name,
+      {
+        name,
+        kindName,
+        description: metadata.description,
+        inputDesc: metadata.inputDesc,
+        outputDesc: metadata.outputDesc,
+      },
+    ]
+  }),
+)
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Path Utilities
 
 function getRelativePath(from: string, to: string): string {
@@ -183,9 +260,8 @@ function calculateImportPaths(combo: Combination) {
 function generateFileHeader(combo: Combination): string {
   const { kindPath, extractorsPath, relatorsPath, builderPath } = calculateImportPaths(combo)
 
-  const extractorKinds = combo.extractors.map((e) => e.kindName).join(', ')
   const extractorImports = combo.extractors.length > 0
-    ? `import type { ${extractorKinds} } from '${extractorsPath}'\n`
+    ? `import type * as Path from '${extractorsPath}'\n`
     : ''
 
   // Add noExcess kinds for sub/equiv
@@ -225,7 +301,7 @@ function buildExtractorChain(extractors: Extractor[], actualType: string): strin
   if (extractors.length === 0) return actualType
 
   return extractors.reduce(
-    (inner, extractor) => `Kind.Apply<${extractor.kindName}, [${inner}]>`,
+    (inner, extractor) => `Kind.Apply<Path.${extractor.kindName}, [${inner}]>`,
     actualType,
   )
 }
@@ -465,12 +541,12 @@ function generateExtractorBarrelFile(extractorName: string, barrelPath: string):
 
   const imports = `import type * as Kind from '${kindPath}'
 import { builder } from '${builderPath}'
-import type { ${extractor.kindName} } from '${extractorsPath}'
+import type * as Path from '${extractorsPath}'
 import type { ${relatorKinds} } from '${relatorsPath}'`
 
   const typeShorthands = Object.keys(RELATORS).map((relatorName) => {
     const relator = RELATORS[relatorName]!
-    return `export type ${relatorName}<$Expected, $Actual> = Kind.Apply<${relator.kindName}, [$Expected, Kind.Apply<${extractor.kindName}, [$Actual]>]>`
+    return `export type ${relatorName}<$Expected, $Actual> = Kind.Apply<${relator.kindName}, [$Expected, Kind.Apply<Path.${extractor.kindName}, [$Actual]>]>`
   }).join('\n')
 
   return `${imports}
@@ -491,20 +567,33 @@ function generateNotBarrelFile(barrelPath: string, extractors: Extractor[]): str
   const kindPath = getRelativePath(barrelPath, path.join(rootDir, 'kind.js'))
   const extractorsPath = getRelativePath(barrelPath, path.join(rootDir, 'path.js'))
   const relatorsPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/kinds/relators.js'))
+  const builderPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/builder-singleton.js'))
 
   // Export relators as dual namespaces (type+value)
   const relatorExports = Object.keys(RELATORS)
     .map((relator) => `export * as ${relator} from './${relator}.js'`)
     .join('\n')
 
+  // Build the runtime chain for unary relators (builder.not.${extractor1}.${extractor2}.${unaryRelator})
+  const extractorChainForRuntime = extractors.map((e) => e.name).join('.')
+  const builderPrefix = extractorChainForRuntime ? `builder.not.${extractorChainForRuntime}` : 'builder.not'
+
+  // Export unary relators from builder singleton
+  const unaryRelatorExports = `
+// Unary relators (negated)
+export const any = ${builderPrefix}.any
+export const unknown = ${builderPrefix}.unknown
+export const never = ${builderPrefix}.never
+export const empty = ${builderPrefix}.empty`
+
   // Add type-level shorthand for negated relators
-  const extractorKinds = extractors.map((e) => e.kindName).join(', ')
   const extractorImports = extractors.length > 0
-    ? `import type { ${extractorKinds} } from '${extractorsPath}'\n`
+    ? `import type * as Path from '${extractorsPath}'\n`
     : ''
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
 
   const imports = `import type * as Kind from '${kindPath}'
+import { builder } from '${builderPath}'
 ${extractorImports}import type { ${relatorKinds} } from '${relatorsPath}'`
 
   const typeShorthands = Object.keys(RELATORS).map((relatorName) => {
@@ -516,6 +605,7 @@ ${extractorImports}import type { ${relatorKinds} } from '${relatorsPath}'`
   return `${imports}
 
 ${relatorExports}
+${unaryRelatorExports}
 ${typeShorthands}
 `
 }

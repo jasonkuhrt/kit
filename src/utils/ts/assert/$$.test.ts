@@ -17,7 +17,7 @@ class Bar {
 export {}
 
 declare global {
-  namespace KitLibrarySettings.Ts.Assert {
+  namespace KitLibrarySettings.Ts {
     interface PreserveTypes {
       foo: Foo
       bar: Bar
@@ -98,7 +98,7 @@ test('exact value mode - basic type mismatches', () => {
   const fn = Assert.exact.ofAs<string>().onAs<42>
   const p = Ts.as<Parameters<typeof fn>>()
   attest(p).type.toString.snap(`[
-  actual: {
+  {
     ERROR_________: "EXPECTED and ACTUAL are disjoint"
     expected______: string
     actual________: 42
@@ -109,7 +109,7 @@ test('exact value mode - basic type mismatches', () => {
   const fn2 = Assert.exact.ofAs<{ a: string }>().onAs<{ a: number; b: number }>
   const p2 = Ts.as<Parameters<typeof fn2>>()
   attest(p2).type.toString.snap(`[
-  actual: {
+  {
     ERROR_________: "EXPECTED only overlaps with ACTUAL"
     expected______: { a: string }
     actual________: { a: number; b: number }
@@ -158,8 +158,17 @@ test('exact value mode - complex type aliases in signatures', () => {
   attest(p3).type.toString.snap(`[
   actual: {
     ERROR_________: "EXPECTED only overlaps with ACTUAL"
-    expected______: CA
-    actual________: CB
+    expected______: {
+      id: string
+      user: { name: string; age: number }
+      tags: string[]
+    }
+    actual________: {
+      id: string
+      user: { name: string; age: string }
+      tags: string[]
+      extra: boolean
+    }
     diff_excess___: { extra: boolean }
     diff_mismatch_: {
       user: {
@@ -226,9 +235,7 @@ test('user-defined types preserved with preserveTypes setting', () => {
   ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: A
   actual________: B
-  diff_mismatch_: {
-    a: { expected: { value: Date }; actual: Date }
-  }
+  diff_mismatch_: { a: { expected: Foo; actual: Date } }
   tip___________: "Types share some values but differ"
 }`)
 })
@@ -241,10 +248,7 @@ test('multiple preserved types from different augmentations', () => {
   expected______: A
   actual________: B
   diff_mismatch_: {
-    a: {
-      expected: { a: string; b: number }
-      actual: { a: number; b: number }
-    }
+    a: { expected: Bar; actual: { a: number; b: number } }
   }
   tip___________: "Types share some values but differ"
 }`)

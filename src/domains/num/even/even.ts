@@ -6,7 +6,7 @@
 import type { Int } from '../int/$$.js'
 import { Int as IntNs } from '../int/$.js'
 
-declare const EvenBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Even integer.
@@ -24,7 +24,7 @@ declare const EvenBrand: unique symbol
  * // 2.5 (not an integer)
  * // Infinity (not finite)
  */
-export type Even = number & { [EvenBrand]: true }
+export type Even = number & Brand.Brand<'Even'>
 
 /**
  * Type predicate to check if value is even.

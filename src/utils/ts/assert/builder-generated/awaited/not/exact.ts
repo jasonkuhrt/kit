@@ -1,5 +1,5 @@
 import type * as Kind from '../../../../kind.js'
-import type { Awaited$ } from '../../../../path.js'
+import type * as Path from '../../../../path.js'
 import { builder } from '../../../builder-singleton.js'
 import type { ExactKind } from '../../../kinds/relators.js'
 
@@ -26,7 +26,7 @@ import type { ExactKind } from '../../../kinds/relators.js'
  * type _ = Assert.awaited.exact.of<string, Promise<number>>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, Kind.Apply<Awaited$, [$Actual]>, true]>
+type of_<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const of_ = builder.awaited.not.exact.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.awaited.not.exact.of
  * type _ = Assert.awaited.exact.string<Promise<number>>
  * ```
  */
-type string_<$Actual> = Kind.Apply<ExactKind, [string, Kind.Apply<Awaited$, [$Actual]>, true]>
+type string_<$Actual> = Kind.Apply<ExactKind, [string, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const string_ = builder.awaited.not.exact.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.awaited.not.exact.string
  * type _ = Assert.awaited.exact.number<Promise<string>>
  * ```
  */
-type number_<$Actual> = Kind.Apply<ExactKind, [number, Kind.Apply<Awaited$, [$Actual]>, true]>
+type number_<$Actual> = Kind.Apply<ExactKind, [number, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const number_ = builder.awaited.not.exact.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.awaited.not.exact.number
  * type _ = Assert.awaited.exact.bigint<Promise<string>>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<ExactKind, [bigint, Kind.Apply<Awaited$, [$Actual]>, true]>
+type bigint_<$Actual> = Kind.Apply<ExactKind, [bigint, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const bigint_ = builder.awaited.not.exact.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.awaited.not.exact.bigint
  * type _ = Assert.awaited.exact.boolean<Promise<string>>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<ExactKind, [boolean, Kind.Apply<Awaited$, [$Actual]>, true]>
+type boolean_<$Actual> = Kind.Apply<ExactKind, [boolean, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const boolean_ = builder.awaited.not.exact.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.awaited.not.exact.boolean
  * type _ = Assert.awaited.exact.undefined<Promise<string>>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<ExactKind, [undefined, Kind.Apply<Awaited$, [$Actual]>, true]>
+type undefined_<$Actual> = Kind.Apply<ExactKind, [undefined, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const undefined_ = builder.awaited.not.exact.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.awaited.not.exact.undefined
  * type _ = Assert.awaited.exact.null<Promise<string>>
  * ```
  */
-type null_<$Actual> = Kind.Apply<ExactKind, [null, Kind.Apply<Awaited$, [$Actual]>, true]>
+type null_<$Actual> = Kind.Apply<ExactKind, [null, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const null_ = builder.awaited.not.exact.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.awaited.not.exact.null
  * type _ = Assert.awaited.exact.symbol<Promise<string>>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<ExactKind, [symbol, Kind.Apply<Awaited$, [$Actual]>, true]>
+type symbol_<$Actual> = Kind.Apply<ExactKind, [symbol, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const symbol_ = builder.awaited.not.exact.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.awaited.not.exact.symbol
  * type _ = Assert.awaited.exact.Date<Promise<string>>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<ExactKind, [Date, Kind.Apply<Awaited$, [$Actual]>, true]>
+type Date_<$Actual> = Kind.Apply<ExactKind, [Date, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const Date_ = builder.awaited.not.exact.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.awaited.not.exact.Date
  * type _ = Assert.awaited.exact.RegExp<Promise<string>>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<ExactKind, [RegExp, Kind.Apply<Awaited$, [$Actual]>, true]>
+type RegExp_<$Actual> = Kind.Apply<ExactKind, [RegExp, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const RegExp_ = builder.awaited.not.exact.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.awaited.not.exact.RegExp
  * type _ = Assert.awaited.exact.Error<Promise<string>>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<ExactKind, [Error, Kind.Apply<Awaited$, [$Actual]>, true]>
+type Error_<$Actual> = Kind.Apply<ExactKind, [Error, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const Error_ = builder.awaited.not.exact.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.awaited.not.exact.Error
  * type _ = Assert.awaited.exact.unknown<Promise<string>>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, Kind.Apply<Awaited$, [$Actual]>, true]>
+type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const unknown_ = builder.awaited.not.exact.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.awaited.not.exact.unknown
  * type _ = Assert.awaited.exact.any<Promise<string>>
  * ```
  */
-type any_<$Actual> = Kind.Apply<ExactKind, [any, Kind.Apply<Awaited$, [$Actual]>, true]>
+type any_<$Actual> = Kind.Apply<ExactKind, [any, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const any_ = builder.awaited.not.exact.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.awaited.not.exact.any
  * type _ = Assert.awaited.exact.never<Promise<string>>
  * ```
  */
-type never_<$Actual> = Kind.Apply<ExactKind, [never, Kind.Apply<Awaited$, [$Actual]>, true]>
+type never_<$Actual> = Kind.Apply<ExactKind, [never, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const never_ = builder.awaited.not.exact.never
 
 const ofAs_ = <$Type>() => builder.awaited.not.exact.ofAs<$Type>()

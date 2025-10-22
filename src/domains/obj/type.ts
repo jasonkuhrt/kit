@@ -432,3 +432,62 @@ export type OmitNever<$T> = {
 export type AlignKeys<$T, $Length extends number, $Pad extends string = '_'> = {
   [k in keyof $T as k extends string ? Str.PadEnd<k, $Length, $Pad> : k]: $T[k]
 }
+
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Diff Computation
+//
+//
+//
+//
+
+/**
+ * Compute a structured diff between two object types showing missing, excess, and mismatched fields.
+ *
+ * Creates a detailed comparison that shows:
+ * - `missing`: Fields in expected but not in actual
+ * - `excess`: Fields in actual but not in expected
+ * - `mismatch`: Fields with different types between expected and actual
+ *
+ * Empty diff categories are automatically omitted from the result.
+ *
+ * @template $Expected - The expected object type
+ * @template $Actual - The actual object type
+ * @template $Prefix - Prefix for diff field names (defaults to 'diff')
+ * @template $PreserveTypes - Types to preserve from simplification (defaults to never)
+ *
+ * @example
+ * ```ts
+ * type Expected = { a: string; b: number }
+ * type Actual = { b: string; c: boolean }
+ *
+ * type Diff = Obj.ComputeDiff<Expected, Actual>
+ * // {
+ * //   diff_missing: { a: string }
+ * //   diff_excess: { c: boolean }
+ * //   diff_mismatch: { b: { expected: number; actual: string } }
+ * // }
+ * ```
+ */
+// dprint-ignore
+export type ComputeDiff<
+  $Expected,
+  $Actual,
+  $Prefix extends string = 'diff'
+> =
+  $Expected extends object
+    ? $Actual extends object
+      ? {
+          [k in keyof ComputeDiffFields<$Expected, $Actual> as IsEmpty<ComputeDiffFields<$Expected, $Actual>[k]> extends true ? never : k extends string ? `${$Prefix}_${k}` : k]: ComputeDiffFields<$Expected, $Actual>[k]
+        }
+      : {}
+    : {}
+
+// dprint-ignore
+type ComputeDiffFields<$Expected extends object, $Actual extends object> = {
+  missing: Ts.Simplify.Deep<ExcludeKeys<$Expected, SharedKeys<$Expected, $Actual>>>
+  excess: Ts.Simplify.Deep<ExcludeKeys<$Actual, SharedKeys<$Expected, $Actual>>>
+  mismatch: Ts.Simplify.Deep<OmitNever<Mismatched<$Expected, $Actual>>>
+}

@@ -1,5 +1,5 @@
 import type * as Kind from '../../../kind.js'
-import type { Returned } from '../../../path.js'
+import type * as Path from '../../../path.js'
 import { builder } from '../../builder-singleton.js'
 import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
 
@@ -26,7 +26,7 @@ import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
  * type _ = Assert.returned.sub.of<string, () => number>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Returned, [$Actual]>]>
+type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Path.Returned, [$Actual]>]>
 const of_ = builder.returned.sub.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.returned.sub.of
  * type _ = Assert.returned.sub.string<() => number>
  * ```
  */
-type string_<$Actual> = Kind.Apply<SubKind, [string, Kind.Apply<Returned, [$Actual]>]>
+type string_<$Actual> = Kind.Apply<SubKind, [string, Kind.Apply<Path.Returned, [$Actual]>]>
 const string_ = builder.returned.sub.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.returned.sub.string
  * type _ = Assert.returned.sub.number<() => string>
  * ```
  */
-type number_<$Actual> = Kind.Apply<SubKind, [number, Kind.Apply<Returned, [$Actual]>]>
+type number_<$Actual> = Kind.Apply<SubKind, [number, Kind.Apply<Path.Returned, [$Actual]>]>
 const number_ = builder.returned.sub.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.returned.sub.number
  * type _ = Assert.returned.sub.bigint<() => string>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, Kind.Apply<Returned, [$Actual]>]>
+type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, Kind.Apply<Path.Returned, [$Actual]>]>
 const bigint_ = builder.returned.sub.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.returned.sub.bigint
  * type _ = Assert.returned.sub.boolean<() => string>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, Kind.Apply<Returned, [$Actual]>]>
+type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, Kind.Apply<Path.Returned, [$Actual]>]>
 const boolean_ = builder.returned.sub.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.returned.sub.boolean
  * type _ = Assert.returned.sub.undefined<() => string>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, Kind.Apply<Returned, [$Actual]>]>
+type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, Kind.Apply<Path.Returned, [$Actual]>]>
 const undefined_ = builder.returned.sub.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.returned.sub.undefined
  * type _ = Assert.returned.sub.null<() => string>
  * ```
  */
-type null_<$Actual> = Kind.Apply<SubKind, [null, Kind.Apply<Returned, [$Actual]>]>
+type null_<$Actual> = Kind.Apply<SubKind, [null, Kind.Apply<Path.Returned, [$Actual]>]>
 const null_ = builder.returned.sub.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.returned.sub.null
  * type _ = Assert.returned.sub.symbol<() => string>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, Kind.Apply<Returned, [$Actual]>]>
+type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, Kind.Apply<Path.Returned, [$Actual]>]>
 const symbol_ = builder.returned.sub.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.returned.sub.symbol
  * type _ = Assert.returned.sub.Date<() => string>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<SubKind, [Date, Kind.Apply<Returned, [$Actual]>]>
+type Date_<$Actual> = Kind.Apply<SubKind, [Date, Kind.Apply<Path.Returned, [$Actual]>]>
 const Date_ = builder.returned.sub.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.returned.sub.Date
  * type _ = Assert.returned.sub.RegExp<() => string>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, Kind.Apply<Returned, [$Actual]>]>
+type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, Kind.Apply<Path.Returned, [$Actual]>]>
 const RegExp_ = builder.returned.sub.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.returned.sub.RegExp
  * type _ = Assert.returned.sub.Error<() => string>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<SubKind, [Error, Kind.Apply<Returned, [$Actual]>]>
+type Error_<$Actual> = Kind.Apply<SubKind, [Error, Kind.Apply<Path.Returned, [$Actual]>]>
 const Error_ = builder.returned.sub.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.returned.sub.Error
  * type _ = Assert.returned.sub.unknown<() => string>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<Returned, [$Actual]>]>
+type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<Path.Returned, [$Actual]>]>
 const unknown_ = builder.returned.sub.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.returned.sub.unknown
  * type _ = Assert.returned.sub.any<() => string>
  * ```
  */
-type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<Returned, [$Actual]>]>
+type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<Path.Returned, [$Actual]>]>
 const any_ = builder.returned.sub.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.returned.sub.any
  * type _ = Assert.returned.sub.never<() => string>
  * ```
  */
-type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<Returned, [$Actual]>]>
+type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<Path.Returned, [$Actual]>]>
 const never_ = builder.returned.sub.never
 
 const ofAs_ = <$Type>() => builder.returned.sub.ofAs<$Type>()
@@ -242,7 +242,7 @@ const ofAs_ = <$Type>() => builder.returned.sub.ofAs<$Type>()
  * No-excess variant of sub relation.
  * Checks that actual has no excess properties beyond expected.
  */
-type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, Kind.Apply<Returned, [$Actual]>]>
+type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, Kind.Apply<Path.Returned, [$Actual]>]>
 const noExcess_ = builder.returned.sub.noExcess
 const noExcessAs_ = <$Type>() => builder.returned.sub.noExcessAs<$Type>()
 

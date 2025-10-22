@@ -171,18 +171,9 @@ export type BuiltInTypes =
   | null
   | undefined
   | void
-  | never
-  | unknown
-  | any
-  | string
-  | number
-  | boolean
-  | symbol
-  | bigint
   | Array<any>
   | ReadonlyArray<any>
   | Promise<any>
-  | Record<any, any>
   | Map<any, any>
   | Set<any>
   | WeakMap<any, any>

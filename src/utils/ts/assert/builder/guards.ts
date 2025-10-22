@@ -1,8 +1,9 @@
-import type { Inhabitance, Ts } from '#ts/ts'
-import type { WritableDeep } from 'type-fest'
+import type { Ts } from '#ts'
+import type { Inhabitance } from '#ts/ts'
+import type { IsAny, IsNever, IsUnknown } from '../../inhabitance.js'
 import type * as Kind from '../../kind.js'
-import type { ApplyExtractors } from '../../path.js'
-import type { BooleanCase, IsAny, IsNever, IsUnknown } from '../../ts.js'
+import type * as Path from '../../path.js'
+import type { BooleanCase, StripReadonlyDeep } from '../../ts.js'
 import type { StaticErrorAssertion } from '../assertion-error.js'
 import type { State } from './state.js'
 
@@ -19,7 +20,7 @@ import type { State } from './state.js'
 /**
  * Normalize types for comparison based on inference mode from state.
  *
- * - `'auto'` - Strip readonly deep (WritableDeep) for readonly-agnostic comparison
+ * - `'auto'` - Strip readonly deep for readonly-agnostic comparison
  * - `'wide'` - No normalization (identity)
  * - `'narrow'` - No normalization (identity)
  *
@@ -28,7 +29,7 @@ import type { State } from './state.js'
  */
 // dprint-ignore
 type NormalizeForComparison<$T, $State extends State> = {
-  'auto': WritableDeep<$T>
+  'auto': StripReadonlyDeep<$T>
   'narrow': $T
   'wide': $T
 }[$State['matcher_inferMode']]
@@ -98,7 +99,7 @@ type ValidateEdgeType<
  * Shared logic for both GuardActual and GuardExpected.
  */
 // dprint-ignore
-type ApplyRelation<
+type ApplyAssertion<
   $Expected,
   $Actual,
   $State extends State,
@@ -117,25 +118,25 @@ type Validate<
   $RawActual,
   $State extends State,
   $Relator extends Kind.Kind,
-  ___$ActualExtracted = ApplyExtractors<$State['actual_extractors'], $RawActual>,
-  ___$Error = ApplyRelation<$Expected, ___$ActualExtracted, $State, $Relator>,
+  ___$ActualExtracted = Path.ApplyExtractors<$State['actual_extractors'], $RawActual>,
+  ___$Error = ApplyAssertion<$Expected, ___$ActualExtracted, $State, $Relator>,
 > =
   // Check extraction error first
-  [___$ActualExtracted] extends [Ts.Error]
+  Ts.Err.Is<___$ActualExtracted> extends true
     ? ___$ActualExtracted
     // Check unknown - only allowed with flag
     : IsUnknown<___$ActualExtracted> extends true
       ? $State['matcher_allowUnknown'] extends true
         ? [___$Error] extends [never]
           ? never
-          : [___$Error] extends [Ts.Error]
+          : Ts.Err.Is<___$Error> extends true
             ? ___$Error
             : StaticErrorAssertion<'Unexpected error type in guard', unknown, unknown>
         : StaticErrorAssertion<'Type unknown is not a valid actual type to assertion on unless flag has been set'>
       // Regular validation
       : [___$Error] extends [never]
         ? never
-        : [___$Error] extends [Ts.Error]
+        : Ts.Err.Is<___$Error> extends true
           ? ___$Error
           : StaticErrorAssertion<'Unexpected error type in guard', unknown, unknown>
 
@@ -186,7 +187,7 @@ export type OnlyFailingChecks<$Results extends readonly any[]> =
   $Results extends [infer __first__, ...infer __rest__]
     ? IsNever<__first__> extends true      ? OnlyFailingChecks<__rest__>
     : IsAny<__first__> extends true        ? OnlyFailingChecks<__rest__>
-    : [__first__] extends [Ts.Error]       ? [__first__, ...OnlyFailingChecks<__rest__>]
+    : Ts.Err.Is<__first__> extends true       ? [__first__, ...OnlyFailingChecks<__rest__>]
                                            : OnlyFailingChecks<__rest__>
     : []
 
@@ -194,7 +195,7 @@ export type OnlyFailingChecks<$Results extends readonly any[]> =
 // export type GetRestParamsForDisplayingGuard<$Result> =
 //   IsNever<$Result> extends true     ? [] :
 //   IsAny<$Result> extends true       ? [] :
-//   [$Result] extends [Ts.Error]      ? [$Result] :
+//   [$Result] extends [Ts.StaticErrorLike]      ? [$Result] :
 //                                       []
 
 /**

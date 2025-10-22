@@ -9,7 +9,7 @@ import { is as isInt } from '../int/$$.js'
 import type { NonNegative } from '../non-negative/$$.js'
 import { is as isNonNegative } from '../non-negative/$$.js'
 
-declare const WholeBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Whole number (non-negative integer: 0, 1, 2, 3, ...).
@@ -27,7 +27,7 @@ declare const WholeBrand: unique symbol
  * // 1.5 (not an integer)
  * // Infinity (not finite)
  */
-export type Whole = number & { [WholeBrand]: true }
+export type Whole = number & Brand.Brand<'Whole'>
 
 /**
  * Type predicate to check if value is a whole number.

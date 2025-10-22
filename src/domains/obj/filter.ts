@@ -476,7 +476,7 @@ export type PickRequiredProperties<$T extends object> = {
  * // { a: string; b?: number }
  * ```
  */
-export type RequireProperties<$O extends object, $K extends keyof $O> = Ts.Simplify<$O & { [k in $K]-?: $O[k] }>
+export type RequireProperties<$O extends object, $K extends keyof $O> = Ts.Simplify.Shallow<$O & { [k in $K]-?: $O[k] }>
 
 /**
  * Make all properties optional and allow undefined values.

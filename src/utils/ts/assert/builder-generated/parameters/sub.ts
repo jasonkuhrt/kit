@@ -1,5 +1,5 @@
 import type * as Kind from '../../../kind.js'
-import type { Parameters$ } from '../../../path.js'
+import type * as Path from '../../../path.js'
 import { builder } from '../../builder-singleton.js'
 import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
 
@@ -26,7 +26,7 @@ import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
  * type _ = Assert.parameters.sub.of<string, (...args: any[]) => number>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Parameters$, [$Actual]>]>
+type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const of_ = builder.parameters.sub.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.parameters.sub.of
  * type _ = Assert.parameters.sub.string<(...args: any[]) => number>
  * ```
  */
-type string_<$Actual> = Kind.Apply<SubKind, [string, Kind.Apply<Parameters$, [$Actual]>]>
+type string_<$Actual> = Kind.Apply<SubKind, [string, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const string_ = builder.parameters.sub.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.parameters.sub.string
  * type _ = Assert.parameters.sub.number<(...args: any[]) => string>
  * ```
  */
-type number_<$Actual> = Kind.Apply<SubKind, [number, Kind.Apply<Parameters$, [$Actual]>]>
+type number_<$Actual> = Kind.Apply<SubKind, [number, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const number_ = builder.parameters.sub.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.parameters.sub.number
  * type _ = Assert.parameters.sub.bigint<(...args: any[]) => string>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, Kind.Apply<Parameters$, [$Actual]>]>
+type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const bigint_ = builder.parameters.sub.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.parameters.sub.bigint
  * type _ = Assert.parameters.sub.boolean<(...args: any[]) => string>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, Kind.Apply<Parameters$, [$Actual]>]>
+type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const boolean_ = builder.parameters.sub.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.parameters.sub.boolean
  * type _ = Assert.parameters.sub.undefined<(...args: any[]) => string>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, Kind.Apply<Parameters$, [$Actual]>]>
+type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const undefined_ = builder.parameters.sub.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.parameters.sub.undefined
  * type _ = Assert.parameters.sub.null<(...args: any[]) => string>
  * ```
  */
-type null_<$Actual> = Kind.Apply<SubKind, [null, Kind.Apply<Parameters$, [$Actual]>]>
+type null_<$Actual> = Kind.Apply<SubKind, [null, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const null_ = builder.parameters.sub.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.parameters.sub.null
  * type _ = Assert.parameters.sub.symbol<(...args: any[]) => string>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, Kind.Apply<Parameters$, [$Actual]>]>
+type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const symbol_ = builder.parameters.sub.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.parameters.sub.symbol
  * type _ = Assert.parameters.sub.Date<(...args: any[]) => string>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<SubKind, [Date, Kind.Apply<Parameters$, [$Actual]>]>
+type Date_<$Actual> = Kind.Apply<SubKind, [Date, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const Date_ = builder.parameters.sub.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.parameters.sub.Date
  * type _ = Assert.parameters.sub.RegExp<(...args: any[]) => string>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, Kind.Apply<Parameters$, [$Actual]>]>
+type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const RegExp_ = builder.parameters.sub.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.parameters.sub.RegExp
  * type _ = Assert.parameters.sub.Error<(...args: any[]) => string>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<SubKind, [Error, Kind.Apply<Parameters$, [$Actual]>]>
+type Error_<$Actual> = Kind.Apply<SubKind, [Error, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const Error_ = builder.parameters.sub.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.parameters.sub.Error
  * type _ = Assert.parameters.sub.unknown<(...args: any[]) => string>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<Parameters$, [$Actual]>]>
+type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const unknown_ = builder.parameters.sub.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.parameters.sub.unknown
  * type _ = Assert.parameters.sub.any<(...args: any[]) => string>
  * ```
  */
-type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<Parameters$, [$Actual]>]>
+type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const any_ = builder.parameters.sub.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.parameters.sub.any
  * type _ = Assert.parameters.sub.never<(...args: any[]) => string>
  * ```
  */
-type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<Parameters$, [$Actual]>]>
+type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const never_ = builder.parameters.sub.never
 
 const ofAs_ = <$Type>() => builder.parameters.sub.ofAs<$Type>()
@@ -242,7 +242,7 @@ const ofAs_ = <$Type>() => builder.parameters.sub.ofAs<$Type>()
  * No-excess variant of sub relation.
  * Checks that actual has no excess properties beyond expected.
  */
-type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, Kind.Apply<Parameters$, [$Actual]>]>
+type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, Kind.Apply<Path.Parameters$, [$Actual]>]>
 const noExcess_ = builder.parameters.sub.noExcess
 const noExcessAs_ = <$Type>() => builder.parameters.sub.noExcessAs<$Type>()
 

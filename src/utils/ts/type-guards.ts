@@ -1,4 +1,6 @@
-import type { Show, ShowInTemplate, Simplify, StaticError } from './ts.js'
+import type { Simplify } from './$$.js'
+import type { StaticError } from './err.js'
+import type { Show, ShowInTemplate } from './ts.js'
 
 /**
  * Create a type guard that checks if a value equals a reference value.
@@ -50,13 +52,12 @@ type ValidateIsSupertype<$Reference, $Value> =
   // dprint-ignore
   $Reference extends $Value
     ? $Value
-    : Simplify<StaticErrorGuardNotSubtype<$Reference, $Value>>
+    : Simplify.Shallow<StaticErrorGuardNotSubtype<$Reference, $Value>>
 
 interface StaticErrorGuardNotSubtype<$Reference, $Value> extends
   // dprint-ignore
   StaticError<
     `This type guard for ${ShowInTemplate<$Reference>} cannot be used against the given value ${ShowInTemplate<$Value>} because it is not a supertype.`,
-    { guard: $Reference; value: $Value },
-    `Since your value type has no overlap with ${Show<$Reference>} this will always return false.`
+    { guard: $Reference; value: $Value; tip: `Since your value type has no overlap with ${Show<$Reference>} this will always return false.` }
   >
 {}

@@ -82,7 +82,7 @@ export namespace Input {
  * validation fails at compile time. The StaticError type provides helpful
  * error messages to guide users toward correct path formats.
  */
-export type InputOrError<$FsLoc extends FsLoc.FsLoc = FsLoc.FsLoc> = Input<$FsLoc> | Ts.StaticErrorAny
+export type InputOrError<$FsLoc extends FsLoc.FsLoc = FsLoc.FsLoc> = Input<$FsLoc> | Ts.Err.StaticErrorAny
 
 /**
  * Validates an input against a target FsLoc type.
@@ -109,11 +109,11 @@ export type Guard<
   ___ActualFsLoc extends FsLoc.FsLoc = $Input extends string ? FromAnalysis<Analyzer.Analyze<$Input>> : $Input,
 > =
   string extends $Input
-    ? Ts.Simplify<Ts.StaticError<'When giving a string, it must be a literal so that it can be statically parsed.'>> :
+    ? Ts.Simplify.Shallow<Ts.Err.StaticError<'When giving a string, it must be a literal so that it can be statically parsed.'>> :
   ___ActualFsLoc['_tag'] extends $TargetFsLoc['_tag']
     ? $Input :
   // else
-    Ts.Simplify<Ts.StaticError<GetValidationError<$TargetFsLoc['_tag']>['message'], { received: $Input  }, GetValidationError<$TargetFsLoc['_tag']>['hint']>>
+    Ts.Simplify.Shallow<Ts.Err.StaticError<GetValidationError<$TargetFsLoc['_tag']>['message'], { received: $Input; tip: GetValidationError<$TargetFsLoc['_tag']>['hint'] }>>
 
 export type FromAnalysis<$Analysis extends Analyzer.Analysis> = $Analysis extends { _tag: 'file'; pathType: 'absolute' }
   ? FsLoc.AbsFile
@@ -188,12 +188,12 @@ export namespace Guard {
    */
   export type Any<$Input> = $Input extends FsLoc.FsLoc ? $Input
     : $Input extends string ? $Input
-    : Ts.StaticError<'Must be a FsLoc type or string', { received: $Input }>
+    : Ts.Err.StaticError<'Must be a FsLoc type or string', { received: $Input }>
 }
 
 // dprint-ignore
 export type normalize<$Input extends InputOrError> =
-  $Input extends Ts.StaticErrorAny    ? never :
+  $Input extends Ts.Err.StaticErrorAny    ? never :
   $Input extends string               ? FromAnalysis<Analyzer.Analyze<$Input>> :
                                         $Input
 

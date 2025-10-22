@@ -1,5 +1,5 @@
 import type * as Kind from '../../../kind.js'
-import type { Parameter3 } from '../../../path.js'
+import type * as Path from '../../../path.js'
 import { builder } from '../../builder-singleton.js'
 import type { EquivKind, ExactKind, SubKind } from '../../kinds/relators.js'
 
@@ -16,6 +16,6 @@ export const parameter1 = builder.parameter3.parameter1
 export const parameter2 = builder.parameter3.parameter2
 export const parameter4 = builder.parameter3.parameter4
 export const parameter5 = builder.parameter3.parameter5
-export type exact<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, Kind.Apply<Parameter3, [$Actual]>]>
-export type equiv<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Parameter3, [$Actual]>]>
-export type sub<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Parameter3, [$Actual]>]>
+export type exact<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, Kind.Apply<Path.Parameter3, [$Actual]>]>
+export type equiv<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Path.Parameter3, [$Actual]>]>
+export type sub<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Path.Parameter3, [$Actual]>]>

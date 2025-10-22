@@ -3,12 +3,12 @@
  * A non-negative number is greater than or equal to zero.
  */
 
-declare const NonNegativeBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Non-negative number (>= 0).
  */
-export type NonNegative = number & { [NonNegativeBrand]: true }
+export type NonNegative = number & Brand.Brand<'NonNegative'>
 
 /**
  * Type predicate to check if value is non-negative (>= 0).

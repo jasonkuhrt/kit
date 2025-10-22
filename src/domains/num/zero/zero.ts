@@ -3,12 +3,12 @@
  * Represents the exact value zero.
  */
 
-declare const ZeroBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Zero.
  */
-export type Zero = 0 & { [ZeroBrand]: true }
+export type Zero = 0 & Brand.Brand<'Zero'>
 
 /**
  * Type predicate to check if value is zero.

@@ -1,5 +1,5 @@
 import type * as Kind from '../../../../kind.js'
-import type { Parameters$ } from '../../../../path.js'
+import type * as Path from '../../../../path.js'
 import { builder } from '../../../builder-singleton.js'
 import type { EquivKind } from '../../../kinds/relators.js'
 
@@ -26,7 +26,7 @@ import type { EquivKind } from '../../../kinds/relators.js'
  * type _ = Assert.parameters.equiv.of<string, (...args: any[]) => number>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Parameters$, [$Actual]>, true]>
+type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const of_ = builder.parameters.not.equiv.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.parameters.not.equiv.of
  * type _ = Assert.parameters.equiv.string<(...args: any[]) => number>
  * ```
  */
-type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<Parameters$, [$Actual]>, true]>
+type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const string_ = builder.parameters.not.equiv.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.parameters.not.equiv.string
  * type _ = Assert.parameters.equiv.number<(...args: any[]) => string>
  * ```
  */
-type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<Parameters$, [$Actual]>, true]>
+type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const number_ = builder.parameters.not.equiv.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.parameters.not.equiv.number
  * type _ = Assert.parameters.equiv.bigint<(...args: any[]) => string>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<Parameters$, [$Actual]>, true]>
+type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const bigint_ = builder.parameters.not.equiv.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.parameters.not.equiv.bigint
  * type _ = Assert.parameters.equiv.boolean<(...args: any[]) => string>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<Parameters$, [$Actual]>, true]>
+type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const boolean_ = builder.parameters.not.equiv.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.parameters.not.equiv.boolean
  * type _ = Assert.parameters.equiv.undefined<(...args: any[]) => string>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<Parameters$, [$Actual]>, true]>
+type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const undefined_ = builder.parameters.not.equiv.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.parameters.not.equiv.undefined
  * type _ = Assert.parameters.equiv.null<(...args: any[]) => string>
  * ```
  */
-type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<Parameters$, [$Actual]>, true]>
+type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const null_ = builder.parameters.not.equiv.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.parameters.not.equiv.null
  * type _ = Assert.parameters.equiv.symbol<(...args: any[]) => string>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<Parameters$, [$Actual]>, true]>
+type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const symbol_ = builder.parameters.not.equiv.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.parameters.not.equiv.symbol
  * type _ = Assert.parameters.equiv.Date<(...args: any[]) => string>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<Parameters$, [$Actual]>, true]>
+type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const Date_ = builder.parameters.not.equiv.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.parameters.not.equiv.Date
  * type _ = Assert.parameters.equiv.RegExp<(...args: any[]) => string>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<Parameters$, [$Actual]>, true]>
+type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const RegExp_ = builder.parameters.not.equiv.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.parameters.not.equiv.RegExp
  * type _ = Assert.parameters.equiv.Error<(...args: any[]) => string>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<Parameters$, [$Actual]>, true]>
+type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const Error_ = builder.parameters.not.equiv.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.parameters.not.equiv.Error
  * type _ = Assert.parameters.equiv.unknown<(...args: any[]) => string>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Parameters$, [$Actual]>, true]>
+type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const unknown_ = builder.parameters.not.equiv.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.parameters.not.equiv.unknown
  * type _ = Assert.parameters.equiv.any<(...args: any[]) => string>
  * ```
  */
-type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Parameters$, [$Actual]>, true]>
+type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const any_ = builder.parameters.not.equiv.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.parameters.not.equiv.any
  * type _ = Assert.parameters.equiv.never<(...args: any[]) => string>
  * ```
  */
-type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Parameters$, [$Actual]>, true]>
+type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Path.Parameters$, [$Actual]>, true]>
 const never_ = builder.parameters.not.equiv.never
 
 const ofAs_ = <$Type>() => builder.parameters.not.equiv.ofAs<$Type>()

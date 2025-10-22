@@ -35,12 +35,6 @@ type CamelCase<$S extends string> = $S extends `${infer First}-${infer Rest}` ? 
   : $S
 
 /**
- * Simplify an intersection type into a single object type.
- * Creates a clean object type from complex intersections.
- */
-type Simplify<$T> = { [k in keyof $T]: $T[k] } & {}
-
-/**
  * Update a nested object property by path.
  *
  * @example
@@ -51,10 +45,11 @@ type Simplify<$T> = { [k in keyof $T]: $T[k] } & {}
  */
 type Update<$Obj, $Path extends string, $Value> = $Path extends `${infer Key}.${infer Rest}`
   ? $Obj extends Record<any, any>
-    ? Key extends keyof $Obj ? Simplify<Omit<$Obj, Key> & { [k in Key]: Update<$Obj[k], Rest, $Value> }>
+    ? Key extends keyof $Obj ? Ts.Simplify.Shallow<Omit<$Obj, Key> & { [k in Key]: Update<$Obj[k], Rest, $Value> }>
     : $Obj
   : $Obj
-  : $Obj extends Record<any, any> ? $Path extends keyof $Obj ? Simplify<Omit<$Obj, $Path> & { [k in $Path]: $Value }>
+  : $Obj extends Record<any, any>
+    ? $Path extends keyof $Obj ? Ts.Simplify.Shallow<Omit<$Obj, $Path> & { [k in $Path]: $Value }>
     : $Obj
   : $Obj
 
@@ -249,7 +244,7 @@ export class FlagName extends S.Class<FlagName>('FlagName')({
    * ```
    */
   static fromString = <const $input extends string>(
-    $input: FlagName.Analyze<$input> extends string ? Ts.StaticError<FlagName.Analyze<$input>>
+    $input: FlagName.Analyze<$input> extends string ? Ts.Err.StaticError<FlagName.Analyze<$input>>
       : $input,
   ) => {
     return S.decodeSync(FlagName.String)($input as any) as any

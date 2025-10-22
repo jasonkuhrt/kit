@@ -8,7 +8,7 @@ import type { Int } from '../int/$$.js'
 import { gcd } from '../math.js'
 import type { NonZero } from '../non-zero/$$.js'
 
-declare const RatioBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Ratio (rational number) - a number expressible as p/q where q ≠ 0.
@@ -30,7 +30,7 @@ declare const RatioBrand: unique symbol
 export type Ratio = {
   readonly numerator: Int
   readonly denominator: NonZero
-} & { [RatioBrand]: true }
+} & Brand.Brand<'Ratio'>
 
 /**
  * Type predicate to check if value is a Ratio.

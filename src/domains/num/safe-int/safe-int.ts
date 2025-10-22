@@ -5,12 +5,12 @@
 
 import type { Int } from '../int/$$.js'
 
-declare const SafeIntBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Safe integer (within Number.MAX_SAFE_INTEGER).
  */
-export type SafeInt = number & { [SafeIntBrand]: true }
+export type SafeInt = number & Brand.Brand<'SafeInt'>
 
 /**
  * Type predicate to check if value is a safe integer.

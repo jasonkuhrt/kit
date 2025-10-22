@@ -166,33 +166,35 @@ export const isValueEquality = (value: Lang.Value): value is Lang.Primitive => {
 /**
  * Error type for when primitive types are used with Ref operations.
  */
-export type ErrorPrimitiveType<T> = Ts.Simplify<
-  Ts.StaticError<
+export type ErrorPrimitiveType<T> = Ts.Simplify.Shallow<
+  Ts.Err.StaticError<
     `Ref operations only work with reference types.`,
-    { ProvidedType: T },
-    `Use domain Eq traits for primitives (e.g., Str.Eq.is, Num.Eq.is).`
+    { ProvidedType: T; tip: `Use domain Eq traits for primitives (e.g., Str.Eq.is, Num.Eq.is).` }
   >
 >
 
 /**
  * Error type for comparing identical primitive literals.
  */
-export type ErrorNotComparableSamePrimitive<T> = Ts.Simplify<
-  Ts.StaticError<
+export type ErrorNotComparableSamePrimitive<T> = Ts.Simplify.Shallow<
+  Ts.Err.StaticError<
     `Comparing ${Ts.ShowInTemplate<T>} to itself is meaningless.`,
-    { Type: T },
-    `This comparison would always return true.`
+    { Type: T; tip: `This comparison would always return true.` }
   >
 >
 
 /**
  * Error type for comparing types with no overlap.
  */
-export type ErrorNotComparableOverlap<A, B> = Ts.Simplify<
-  Ts.StaticError<
+export type ErrorNotComparableOverlap<A, B> = Ts.Simplify.Shallow<
+  Ts.Err.StaticError<
     `Cannot compare structurally different types ${Ts.ShowInTemplate<A>} and ${Ts.ShowInTemplate<B>}.`,
-    { TypeA: A; TypeB: B },
-    `While rare, different types can refer to the same instance if an object has properties from both types. Use @ts-expect-error if this is intentional.`
+    {
+      TypeA: A
+      TypeB: B
+      tip:
+        `While rare, different types can refer to the same instance if an object has properties from both types. Use @ts-expect-error if this is intentional.`
+    }
   >
 >
 

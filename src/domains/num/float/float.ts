@@ -5,12 +5,12 @@
 
 import type { Finite } from '../finite/$$.js'
 
-declare const FloatBrand: unique symbol
+import type { Brand } from 'effect'
 
 /**
  * Float (non-integer finite number).
  */
-export type Float = number & { [FloatBrand]: true }
+export type Float = number & Brand.Brand<'Float'>
 
 /**
  * Type predicate to check if value is a float (non-integer number).
