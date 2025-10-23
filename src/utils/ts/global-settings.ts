@@ -134,6 +134,82 @@ declare global {
       }
     }
 
+    /**
+     * Global settings for type simplification operations.
+     *
+     * These settings control how {@link Simplify} handles type traversal and flattening.
+     */
+    namespace Simplify {
+      /**
+       * Registry of custom type traversals for {@link Simplify}.
+       *
+       * Extend this interface to register custom container types that should be traversed
+       * during type simplification. Each entry defines a pattern to match and an HKT
+       * (higher-kinded type) to apply when matched.
+       *
+       * **Structure:**
+       * ```typescript
+       * interface Traversables {
+       *   [key: string]: {
+       *     extends: Pattern    // Type pattern to match against
+       *     traverse: HKT      // HKT to apply, receives [$T, $DepthNext, $SeenNext]
+       *   }
+       * }
+       * ```
+       *
+       * **Use cases:**
+       * - Third-party library types (Effect, fp-ts, RxJS, etc.)
+       * - Custom container/monad types
+       * - Domain-specific wrapper types
+       *
+       * @example
+       * ```typescript
+       * // In your project: types/kit-extensions.d.ts
+       * import type { Effect } from 'effect'
+       * import type { Simplify, Kind } from '@wollybeard/kit'
+       *
+       * // Define HKT for Effect traversal
+       * interface EffectTraverser extends Kind.Kind {
+       *   return: this['parameters'] extends [
+       *     infer $T,
+       *     infer $DN,
+       *     infer $SN
+       *   ]
+       *     ? $T extends Effect.Effect<infer S, infer E, infer R>
+       *       ? Effect.Effect<
+       *           Simplify.To<$DN, S, $SN>,
+       *           Simplify.To<$DN, E, $SN>,
+       *           Simplify.To<$DN, R, $SN>
+       *         >
+       *       : never
+       *     : never
+       * }
+       *
+       * // Register Effect traversal
+       * declare global {
+       *   namespace KitLibrarySettings {
+       *     namespace Simplify {
+       *       interface Traversables {
+       *         _effect: {
+       *           extends: Effect.Effect<any, any, any>
+       *           traverse: EffectTraverser
+       *         }
+       *       }
+       *     }
+       *   }
+       * }
+       * export {}
+       *
+       * // Now Effect types are traversed during simplification
+       * type Result = Simplify.All<Effect.Effect<{ a: 1 } & { b: 2 }, never, never>>
+       * // Effect.Effect<{ a: 1; b: 2 }, never, never>
+       * ```
+       */
+      interface Traversables {
+        // Empty by default - users augment this interface
+      }
+    }
+
     namespace Ts {
       /**
        * Registry of types to preserve during type simplification and display.

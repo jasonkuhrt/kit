@@ -1,7 +1,18 @@
-import type { E, L, St } from '#deps/effect'
 import { type Num } from '#num'
+import type { Ts } from '#ts'
 import type { GetPreservedTypes } from './global-settings.ts'
+import type * as Kind from './kind.js'
 import type * as Union from './union.js'
+
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Public API
+//
+//
+//
+//
 
 /**
  * Simplify a type to a specific depth.
@@ -12,7 +23,8 @@ import type * as Union from './union.js'
  * - Globally registered types ({@link KitLibrarySettings.Ts.PreserveTypes})
  *
  * Includes circular reference detection to prevent infinite recursion.
- * Traverses into generic containers (Array, Map, Set, Promise, Effect, etc.).
+ * Traverses into generic containers (Array, Map, Set, Promise, etc.).
+ * Supports custom traversal via {@link KitLibrarySettings.Simplify.Traversables}.
  *
  * @template $DepthRemaining - How many levels deep to simplify (use -1 for infinite)
  * @template $T - The type to simplify
@@ -75,15 +87,24 @@ export type To<
   $T extends WeakMap<infer __key__, infer __value__>                                            ? WeakMap<To<DN, __key__, SN>, To<DN, __value__, SN>> :
   // Handle WeakSet - traverse element type
   $T extends WeakSet<infer __element__>                                                         ? WeakSet<To<DN, __element__, SN>> :
-  // Handle Effect - traverse all three type parameters
-  $T extends E.Effect<infer __success__, infer __error__, infer __requirements__>               ? E.Effect<To<DN, __success__, SN>, To<DN, __error__, SN>, To<DN, __requirements__, SN>> :
-  // Handle Layer - traverse all three type parameters
-  $T extends L.Layer<infer __out__, infer __error__, infer __in__>                              ? L.Layer<To<DN, __out__, SN>, To<DN, __error__, SN>, To<DN, __in__, SN>> :
-  // Handle Stream - traverse all three type parameters
-  $T extends St.Stream<infer __success__, infer __error__, infer __requirements__>              ? St.Stream<To<DN, __success__, SN>, To<DN, __error__, SN>, To<DN, __requirements__, SN>> :
-  // Recursively expand objects, tracking seen types
-  $T extends object                                                                             ? { [k in keyof $T]: To<DN, $T[k], SN> } & {} :
-  $T
+  // Try custom types (user-registered via KitLibrarySettings.Simplify.Traversables)
+  // Let-Style Binding
+  {
+    [K in keyof KitLibrarySettings.Simplify.Traversables]:
+      KitLibrarySettings.Simplify.Traversables[K] extends { extends: infer __traverse_constraint__, traverse: infer __traverse_kind__ }
+        ? $T extends __traverse_constraint__
+          ? [Ts.SENTINEL, Kind.Apply<__traverse_kind__, [$T, DN, SN]>]
+          : never // pattern doesn't match
+        : never // entry malformed
+  }[keyof KitLibrarySettings.Simplify.Traversables] extends infer __custom_registry_result__
+    ? [__custom_registry_result__] extends [never]
+      ? $T extends object
+        ? { [k in keyof $T]: To<DN, $T[k], SN> } & {}
+        : $T
+      : __custom_registry_result__ extends [Ts.SENTINEL, infer __apply_return__]
+        ? __apply_return__
+        : never // impossible - we've either we dealt with apply return or skipped apply
+    : never // impossible - alt of let-style binding
 
 /**
  * Simplify one level only (top level flattening).

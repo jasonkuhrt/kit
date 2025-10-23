@@ -1,4 +1,3 @@
-import type { E } from '#deps/effect'
 import { Ts } from '#ts'
 import type * as Simplify from './simplify.js'
 
@@ -36,14 +35,6 @@ type _all_containers = Ts.Assert.Cases<
   Ts.Assert.exact<Set<{ a: 1; b: 2 }>, Simplify.All<Set<{ a: 1 } & { b: 2 }>>>,
   Ts.Assert.exact<Promise<{ a: 1; b: 2 }>, Simplify.All<Promise<{ a: 1 } & { b: 2 }>>>,
   Ts.Assert.exact<Array<{ a: 1; b: 2 }>, Simplify.All<Array<{ a: 1 } & { b: 2 }>>>
->
-
-// All - traverses Effect types
-type _all_effect = Ts.Assert.Cases<
-  Ts.Assert.exact<
-    E.Effect<{ a: 1; b: 2 }, { c: 3; d: 4 }, { e: 5; f: 6 }>,
-    Simplify.All<E.Effect<{ a: 1 } & { b: 2 }, { c: 3 } & { d: 4 }, { e: 5 } & { f: 6 }>>
-  >
 >
 
 // Distribution handles nullable unions automatically
