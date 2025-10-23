@@ -45,11 +45,11 @@ type CamelCase<$S extends string> = $S extends `${infer First}-${infer Rest}` ? 
  */
 type Update<$Obj, $Path extends string, $Value> = $Path extends `${infer Key}.${infer Rest}`
   ? $Obj extends Record<any, any>
-    ? Key extends keyof $Obj ? Ts.Simplify.Shallow<Omit<$Obj, Key> & { [k in Key]: Update<$Obj[k], Rest, $Value> }>
+    ? Key extends keyof $Obj ? Ts.Simplify.Top<Omit<$Obj, Key> & { [k in Key]: Update<$Obj[k], Rest, $Value> }>
     : $Obj
   : $Obj
   : $Obj extends Record<any, any>
-    ? $Path extends keyof $Obj ? Ts.Simplify.Shallow<Omit<$Obj, $Path> & { [k in $Path]: $Value }>
+    ? $Path extends keyof $Obj ? Ts.Simplify.Top<Omit<$Obj, $Path> & { [k in $Path]: $Value }>
     : $Obj
   : $Obj
 

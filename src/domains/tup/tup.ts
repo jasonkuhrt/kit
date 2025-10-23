@@ -249,7 +249,7 @@ export type ToIndexByObjectKey<$Items extends readonly object[], $Key extends ke
  * ```
  */
 // dprint-ignore
-export type GetAtNextIndex<$Items extends readonly any[], $Index extends Num.NumberLiteral> =
+export type GetAtNextIndex<$Items extends readonly any[], $Index extends Num.Literal> =
   $Items[Num.PlusOne<$Index>]
 
 /**
@@ -267,7 +267,7 @@ export type GetAtNextIndex<$Items extends readonly any[], $Index extends Num.Num
  * ```
  */
 // dprint-ignore
-export type GetNextIndexOr<$Items extends readonly any[], $Index extends number, $Or> =
+export type GetNextIndexOr<$Items extends readonly any[], $Index extends Num.Literal, $Or> =
   OrDefault<GetAtNextIndex<$Items, $Index>, $Or>
 
 /**
@@ -285,7 +285,7 @@ export type GetNextIndexOr<$Items extends readonly any[], $Index extends number,
  * ```
  */
 // dprint-ignore
-export type DropUntilIndex<$Items extends readonly any[], $Index extends Num.NumberLiteral> =
+export type DropUntilIndex<$Items extends readonly any[], $Index extends Num.Literal> =
   $Index extends 0                                  ? $Items :
   $Items extends readonly [infer _, ...infer $Rest] ? DropUntilIndex<$Rest, Num.MinusOne<$Index>> :
                                                       []
@@ -295,7 +295,7 @@ export type DropUntilIndex<$Items extends readonly any[], $Index extends Num.Num
  *
  * @template $Index - The index to increment
  */
-export type IndexPlusOne<$Index extends Num.NumberLiteral> = Num.PlusOne<$Index>
+export type IndexPlusOne<$Index extends Num.Literal> = Num.PlusOne<$Index>
 
 /**
  * Get the last value in a non-empty tuple.
@@ -308,7 +308,11 @@ export type IndexPlusOne<$Index extends Num.NumberLiteral> = Num.PlusOne<$Index>
  * type T2 = Tup.GetLastValue<['a']>      // 'a'
  * ```
  */
-export type GetLastValue<$T extends readonly [any, ...any[]]> = $T[Num.MinusOne<$T['length']>]
+// dprint-ignore
+export type GetLastValue<$T extends readonly [any, ...any[]]> =
+  $T['length'] extends Num.Literal
+    ? $T[Num.MinusOne<$T['length']>]
+    : never
 
 /**
  * Check if a value is the last value in a non-empty tuple.
@@ -342,7 +346,7 @@ export type FindIndexForValue<$Value, $List extends NonEmpty> =
   FindIndexForValue_<$Value, $List, 0>
 
 // dprint-ignore
-type FindIndexForValue_<$Value, $List extends NonEmpty, $i extends number> =
+type FindIndexForValue_<$Value, $List extends NonEmpty, $i extends Num.Literal> =
   $Value extends $List[$i]
     ? $i
     : FindIndexForValue_<$Value, $List, Num.PlusOne<$i>>

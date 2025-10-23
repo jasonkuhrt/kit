@@ -487,7 +487,7 @@ export type ComputeDiff<
 
 // dprint-ignore
 type ComputeDiffFields<$Expected extends object, $Actual extends object> = {
-  missing: Ts.Simplify.Deep<ExcludeKeys<$Expected, SharedKeys<$Expected, $Actual>>>
-  excess: Ts.Simplify.Deep<ExcludeKeys<$Actual, SharedKeys<$Expected, $Actual>>>
-  mismatch: Ts.Simplify.Deep<OmitNever<Mismatched<$Expected, $Actual>>>
+  missing: Ts.Simplify.All<ExcludeKeys<$Expected, SharedKeys<$Expected, $Actual>>>
+  excess: Ts.Simplify.All<ExcludeKeys<$Actual, SharedKeys<$Expected, $Actual>>>
+  mismatch: Ts.Simplify.All<OmitNever<Mismatched<$Expected, $Actual>>>
 }

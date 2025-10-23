@@ -178,7 +178,7 @@ export const mergeDefaults: <
 >(
   obj1: obj1,
   obj1Defaults: obj1Defaults,
-) => Ts.Simplify.Shallow<obj1 & obj1Defaults> = mergeWith({ defaults: true }) as any
+) => Ts.Simplify.Top<obj1 & obj1Defaults> = mergeWith({ defaults: true }) as any
 
 /**
  * Shallow merge two objects with later values overriding earlier ones.

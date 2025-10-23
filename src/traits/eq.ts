@@ -72,7 +72,7 @@ export interface Eq<$A = any> extends
  * Prevents comparing disjoint types (no overlap).
  */
 type ValidateComparable<A, B> = Ts.Relation.GetRelation<A, B> extends Ts.Relation.disjoint
-  ? Ts.Simplify.Shallow<ErrorDisjointTypes<A, B>>
+  ? Ts.Simplify.Top<ErrorDisjointTypes<A, B>>
   : B
 
 /**

@@ -14,8 +14,9 @@ import type { Simplify } from '#ts/ts'
 /**
  * Structural interface for all static type-level errors.
  *
- * All type-level error types must extend this interface by having an `ERROR_________` field.
- * This allows error detection via structural typing.
+ * All type-level error types must extend this interface by having an `ERROR_________` field
+ * and a `HIERARCHY___` field for hierarchical categorization.
+ * This allows error detection via structural typing and enables selective preservation.
  *
  * @example
  * ```ts
@@ -91,8 +92,9 @@ type PadKeyTo14<$Key extends string> =
 export type StaticError<
   $Message extends string = string,
   $Meta extends Record<string, any> = {},
-  ___$Obj = StaticErrorLike<$Message> & $Meta
-> = Simplify.Shallow<{
+  $Hierarchy extends readonly string[] = readonly ['root', ...string[]],
+  ___$Obj = StaticErrorLike<$Message> & $Meta & { HIERARCHY___: $Hierarchy }
+> = Simplify.Top<{
   [k  in keyof ___$Obj
       as k extends string
         ? PadKeyTo14<k>

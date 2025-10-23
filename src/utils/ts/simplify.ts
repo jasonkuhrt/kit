@@ -1,196 +1,152 @@
-import type * as Err_ from './err.js'
-import type { GetPreservedTypes } from './test-settings.js'
-import type { IsHas } from './union.js'
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Internal Implementation
-//
-//
-//
-//
+import type { E, L, St } from '#deps/effect'
+import { type Num } from '#num'
+import type { GetPreservedTypes } from './global-settings.ts'
+import type * as Union from './union.js'
 
 /**
- * Internal implementation for smart type expansion with preservation and circular reference detection.
+ * Simplify a type to a specific depth.
  *
- * @internal
- * @template $T - The type to selectively expand
- * @template $PreserveTypes - Union of types that should not be expanded
- * @template ___Seen - Accumulator for circular reference detection
- */
-// dprint-ignore
-type SimplifyPreservingInternal<$T, $PreserveTypes = never, ___Seen = never> =
-  // Check if it's an error type first - preserve errors intact
-  Err_.Is<$T> extends true ? $T
-  // Check for circular reference - prevent infinite recursion
-  : IsHas<___Seen, $T> extends true ? $T
-  // Check if type should be preserved (includes built-ins + user-registered types)
-  : $T extends $PreserveTypes ? $T
-  // Handle arrays specially - simplify element types
-  : $T extends Array<infer __element__>
-    ? __element__ extends object
-      ? Array<{ [k in keyof __element__]: SimplifyPreservingInternal<__element__[k], $PreserveTypes, $T | ___Seen> } & unknown>
-      : Array<__element__>
-  // Handle readonly arrays
-  : $T extends ReadonlyArray<infer __element__>
-    ? __element__ extends object
-      ? ReadonlyArray<{ [k in keyof __element__]: SimplifyPreservingInternal<__element__[k], $PreserveTypes, $T | ___Seen> } & unknown>
-      : ReadonlyArray<__element__>
-  // Recursively expand objects, tracking seen types
-  : $T extends object
-    ? { [k in keyof $T]: SimplifyPreservingInternal<$T[k], $PreserveTypes, $T | ___Seen> } & unknown
-    : $T
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Public API
-//
-//
-//
-//
-
-/**
- * Basic one-level type flattening with automatic preservation.
+ * Recursively flattens intersections and mapped types while preserving:
+ * - Error types ({@link Ts.Err.StaticErrorLike})
+ * - Built-in primitives (Date, Error, RegExp, Function)
+ * - Globally registered types ({@link KitLibrarySettings.Ts.PreserveTypes})
  *
- * Flattens intersections and mapped types at the top level only.
- * Automatically preserves types registered in {@link KitLibrarySettings.Ts.PreserveTypes}
- * (including built-in types like Date, Error, Function, etc.).
+ * Includes circular reference detection to prevent infinite recursion.
+ * Traverses into generic containers (Array, Map, Set, Promise, Effect, etc.).
  *
- * Use this when you need a quick flatten without recursion, such as:
- * - Making type aliases more readable in IDE tooltips
- * - Flattening simple intersections
- * - When you know nested types don't need expansion
- *
+ * @template $DepthRemaining - How many levels deep to simplify (use -1 for infinite)
  * @template $T - The type to simplify
+ * @template $Seen - Internal accumulator for circular reference detection
  *
  * @example
- * ```ts
- * // Basic flattening
- * type Complex = { a: string } & { b: number } & { c: boolean }
- * type Simple = Simplify.Shallow<Complex>
- * // { a: string; b: number; c: boolean }
+ * ```typescript
+ * // Depth 1 - flatten one level
+ * type One = Simplify.To<1, { a: 1 } & { b: { c: 2 } & { d: 3 } }>
+ * // { a: 1; b: { c: 2 } & { d: 3 } } - inner not flattened
  *
- * // Does not recurse into nested types
- * type Nested = { user: { name: string } & { age: number } }
- * type Flat = Simplify.Shallow<Nested>
- * // { user: { name: string } & { age: number } } - inner intersection not flattened
+ * // Depth 2 - flatten two levels
+ * type Two = Simplify.To<2, { a: 1 } & { b: { c: 2 } & { d: 3 } }>
+ * // { a: 1; b: { c: 2; d: 3 } } - all levels flattened
+ *
+ * // Infinite depth
+ * type All = Simplify.To<-1, DeepType>
+ * // Flattens all levels
  *
  * // Preserves built-ins
- * type WithDate = Simplify.Shallow<{ created: Date }>
+ * type WithDate = Simplify.To<-1, { created: Date }>
  * // { created: Date } - Date not expanded
+ *
+ * // Traverses containers
+ * type Container = Simplify.To<-1, Map<{ a: 1 } & { b: 2 }, string>>
+ * // Map<{ a: 1; b: 2 }, string>
  * ```
  *
  * @category Type Simplification
  */
-export type Shallow<$T> = $T extends GetPreservedTypes ? $T
-  :
-    & {
-      [k in keyof $T]: $T[k]
-    }
-    & unknown
+// dprint-ignore
+export type To<
+  $DepthRemaining extends Num.Literal,
+  $T,
+  $Seen = never,
+  DN extends Num.Literal = Num.NatDec<$DepthRemaining>,
+  SN = $T | $Seen
+> =
+  // Depth 0 - stop recursing
+  $DepthRemaining extends Num.LiteralZero                                                              ? $T :
+  // Check for circular reference - prevent infinite recursion
+  Union.IsHas<$Seen, $T> extends true                                                           ? $T :
+  // Check if type should be preserved (includes built-ins + user-registered types)
+  $T extends GetPreservedTypes                                                                  ? $T :
+  // Handle arrays - traverse element types
+  $T extends Array<infer __element__>                                                           ? __element__ extends object
+      ? Array<{ [k in keyof __element__]: To<DN, __element__[k], SN> } & {}>
+      : $T :
+  // Handle readonly arrays
+  $T extends ReadonlyArray<infer __element__>                                                   ? __element__ extends object
+      ? ReadonlyArray<{ [k in keyof __element__]: To<DN, __element__[k], SN> } & {}>
+      : $T :
+  // Handle Map - traverse both key and value types
+  $T extends Map<infer __key__, infer __value__>                                                ? Map<To<DN, __key__, SN>, To<DN, __value__, SN>> :
+  // Handle Set - traverse element type
+  $T extends Set<infer __element__>                                                             ? Set<To<DN, __element__, SN>> :
+  // Handle Promise - traverse resolved type
+  $T extends Promise<infer __resolved__>                                                        ? Promise<To<DN, __resolved__, SN>> :
+  // Handle WeakMap - traverse both key and value types
+  $T extends WeakMap<infer __key__, infer __value__>                                            ? WeakMap<To<DN, __key__, SN>, To<DN, __value__, SN>> :
+  // Handle WeakSet - traverse element type
+  $T extends WeakSet<infer __element__>                                                         ? WeakSet<To<DN, __element__, SN>> :
+  // Handle Effect - traverse all three type parameters
+  $T extends E.Effect<infer __success__, infer __error__, infer __requirements__>               ? E.Effect<To<DN, __success__, SN>, To<DN, __error__, SN>, To<DN, __requirements__, SN>> :
+  // Handle Layer - traverse all three type parameters
+  $T extends L.Layer<infer __out__, infer __error__, infer __in__>                              ? L.Layer<To<DN, __out__, SN>, To<DN, __error__, SN>, To<DN, __in__, SN>> :
+  // Handle Stream - traverse all three type parameters
+  $T extends St.Stream<infer __success__, infer __error__, infer __requirements__>              ? St.Stream<To<DN, __success__, SN>, To<DN, __error__, SN>, To<DN, __requirements__, SN>> :
+  // Recursively expand objects, tracking seen types
+  $T extends object                                                                             ? { [k in keyof $T]: To<DN, $T[k], SN> } & {} :
+  $T
 
 /**
- * Deep recursive type expansion with automatic preservation of globally registered types.
+ * Simplify one level only (top level flattening).
  *
- * Recursively expands user-defined types while preserving:
- * - Error types ({@link Ts.Err.StaticErrorLike})
- * - Built-in primitives (Array, Promise, Date, etc.)
- * - Globally registered types ({@link KitLibrarySettings.Ts.PreserveTypes})
- * - Functions
- *
- * Includes circular reference detection to prevent infinite recursion.
- * Handles arrays and readonly arrays with special logic to simplify element types.
+ * Alias for {@link To}<1, $T>.
  *
  * @template $T - The type to simplify
  *
  * @example
  * ```typescript
- * // Recursive expansion
  * type Complex = { a: 1 } & { b: { c: 2 } & { d: 3 } }
- * type Simple = Simplify.Deep<Complex>
- * // { a: 1; b: { c: 2; d: 3 } } - all levels flattened
- *
- * // Preserves registered types
- * type WithDate = Simplify.Deep<{ created: Date }>
- * // { created: Date } - Date not expanded
- *
- * // Handles arrays
- * type UserArray = Array<{ name: string } & { age: number }>
- * type SimpleArray = Simplify.Deep<UserArray>
- * // Array<{ name: string; age: number }>
+ * type Simple = Simplify.Top<Complex>
+ * // { a: 1; b: { c: 2 } & { d: 3 } } - inner not flattened
  * ```
  *
  * @category Type Simplification
  */
-export type Deep<$T> = SimplifyPreservingInternal<$T, GetPreservedTypes>
+export type Top<$T> = To<1, $T>
 
 /**
- * Type simplification that preserves `| null` and `| undefined` unions.
+ * Simplify using the configured default depth.
  *
- * Solves a subtle problem with basic simplification: when you have `Type | null`,
- * the intersection with `& unknown` can absorb or transform the `null` in unexpected ways.
- * This utility checks for null/undefined first, then explicitly reconstructs the union
- * to ensure `| null` and `| undefined` remain intact.
+ * Alias for {@link To}<{@link KitLibrarySettings.Perf.Settings.depth}, $T>.
  *
- * Automatically preserves globally registered types from {@link KitLibrarySettings.Ts.PreserveTypes}.
- *
- * **When to use:**
- * - When simplifying types that may contain `| null` or `| undefined`
- * - When you need to preserve optional/nullable semantics
- * - With API responses that may be null
+ * Default depth is 10, configurable via global settings.
  *
  * @template $T - The type to simplify
  *
  * @example
- * ```ts
- * // Preserves null union
- * type User = { name: string } & { age: number }
- * type MaybeUser = User | null
- * type Simple = Simplify.Nullable<MaybeUser>
- * // { name: string; age: number } | null
+ * ```typescript
+ * // With default depth: 10
+ * type Simple = Simplify.Auto<DeepType>
  *
- * // Works with non-nullable types too
- * type NonNull = Simplify.Nullable<{ a: 1 } & { b: 2 }>
- * // { a: 1; b: 2 }
- *
- * // Handles undefined
- * type Optional = ({ x: string } & { y: number }) | undefined
- * type SimpleOpt = Simplify.Nullable<Optional>
- * // { x: string; y: number } | undefined
+ * // Customize depth globally
+ * declare global {
+ *   namespace KitLibrarySettings {
+ *     namespace Perf {
+ *       interface Settings {
+ *         depth: 5
+ *       }
+ *     }
+ *   }
+ * }
  * ```
  *
  * @category Type Simplification
  */
-export type Nullable<$T> = null extends $T ? (Shallow<$T> & {}) | null
-  : undefined extends $T ? (Shallow<$T> & {}) | undefined
-  : Shallow<$T> & {}
+export type Auto<$T> = To<KitLibrarySettings.Perf.Settings['depth'], $T>
 
 /**
- * Smart type expansion for error displays with automatic preservation.
+ * Simplify all levels (infinite depth).
  *
- * Alias for {@link Deep}. Used in error messages and type displays to show
- * clean, expanded types while preserving built-ins and registered types.
+ * Alias for {@link To}<-1, $T>.
  *
- * Automatically preserves types registered in {@link KitLibrarySettings.Ts.PreserveTypes}.
- *
- * @template $T - The type to selectively expand
+ * @template $T - The type to simplify
  *
  * @example
- * ```ts
- * // In error messages
- * type Custom = { x: number } & { y: string }
- * type DisplayType = Simplify.Display<Custom>
- * // Shows: { x: number; y: string }
- *
- * // Preserves built-ins
- * type WithBuiltIn = Simplify.Display<{ data: Array<number>; created: Date }>
- * // Shows: { data: number[]; created: Date }
+ * ```typescript
+ * type Complex = { a: 1 } & { b: { c: 2 } & { d: 3 } }
+ * type Simple = Simplify.All<Complex>
+ * // { a: 1; b: { c: 2; d: 3 } } - all levels flattened
  * ```
  *
  * @category Type Simplification
  */
-export type Display<$T> = Deep<$T>
+export type All<$T> = To<Num.LiteralInfinity, $T>

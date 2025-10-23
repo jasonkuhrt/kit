@@ -1,7 +1,3 @@
-/**
- * Type-level tests for ts module utilities
- */
-
 import { Ts } from '#ts'
 import type { Brand } from 'effect'
 

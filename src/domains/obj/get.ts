@@ -153,7 +153,7 @@ const _get = (propertyPath: PropertyPath, obj: Any): unknown => {
  * // Returns proper types preserving optionality
  * ```
  */
-export const entries = <obj extends Any>(obj: obj): Ts.Simplify.Shallow<entries<obj>> => {
+export const entries = <obj extends Any>(obj: obj): Ts.Simplify.Top<entries<obj>> => {
   return Object.entries(obj) as any
 }
 

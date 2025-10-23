@@ -1,1 +1,1 @@
-export { Match as M, Schema as S } from 'effect'
+export { Effect as E, Layer as L, Match as M, Schema as S, Stream as St } from 'effect'

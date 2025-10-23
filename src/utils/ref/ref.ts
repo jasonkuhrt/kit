@@ -166,7 +166,7 @@ export const isValueEquality = (value: Lang.Value): value is Lang.Primitive => {
 /**
  * Error type for when primitive types are used with Ref operations.
  */
-export type ErrorPrimitiveType<T> = Ts.Simplify.Shallow<
+export type ErrorPrimitiveType<T> = Ts.Simplify.Top<
   Ts.Err.StaticError<
     `Ref operations only work with reference types.`,
     { ProvidedType: T; tip: `Use domain Eq traits for primitives (e.g., Str.Eq.is, Num.Eq.is).` }
@@ -176,7 +176,7 @@ export type ErrorPrimitiveType<T> = Ts.Simplify.Shallow<
 /**
  * Error type for comparing identical primitive literals.
  */
-export type ErrorNotComparableSamePrimitive<T> = Ts.Simplify.Shallow<
+export type ErrorNotComparableSamePrimitive<T> = Ts.Simplify.Top<
   Ts.Err.StaticError<
     `Comparing ${Ts.ShowInTemplate<T>} to itself is meaningless.`,
     { Type: T; tip: `This comparison would always return true.` }
@@ -186,7 +186,7 @@ export type ErrorNotComparableSamePrimitive<T> = Ts.Simplify.Shallow<
 /**
  * Error type for comparing types with no overlap.
  */
-export type ErrorNotComparableOverlap<A, B> = Ts.Simplify.Shallow<
+export type ErrorNotComparableOverlap<A, B> = Ts.Simplify.Top<
   Ts.Err.StaticError<
     `Cannot compare structurally different types ${Ts.ShowInTemplate<A>} and ${Ts.ShowInTemplate<B>}.`,
     {

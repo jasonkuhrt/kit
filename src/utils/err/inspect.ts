@@ -31,10 +31,9 @@ const makeEnvVarName = (spec: EnvironmentConfigurableOptionSpec) => {
  * @template $EnvironmentConfigurableOptions - Array of option specifications
  * @internal
  */
-export type InferOptions<$EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[]> =
-  Ts.Simplify.Shallow<
-    ArrMut.ReduceWithIntersection<_InferOptions<$EnvironmentConfigurableOptions>>
-  >
+export type InferOptions<$EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[]> = Ts.Simplify.Top<
+  ArrMut.ReduceWithIntersection<_InferOptions<$EnvironmentConfigurableOptions>>
+>
 
 export type _InferOptions<$EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[]> = {
   [i in keyof $EnvironmentConfigurableOptions]: {
@@ -52,7 +51,7 @@ interface EnvironmentConfigurableOptionInput<$Spec extends EnvironmentConfigurab
   source: 'default' | 'environment'
 }
 
-type Resolve<$Specs extends EnvironmentConfigurableOptionSpec[]> = Ts.Simplify.Shallow<
+type Resolve<$Specs extends EnvironmentConfigurableOptionSpec[]> = Ts.Simplify.Top<
   ArrMut.ReduceWithIntersection<_Resovle<$Specs>>
 >
 

@@ -52,7 +52,7 @@ type ValidateIsSupertype<$Reference, $Value> =
   // dprint-ignore
   $Reference extends $Value
     ? $Value
-    : Simplify.Shallow<StaticErrorGuardNotSubtype<$Reference, $Value>>
+    : Simplify.Top<StaticErrorGuardNotSubtype<$Reference, $Value>>
 
 interface StaticErrorGuardNotSubtype<$Reference, $Value> extends
   // dprint-ignore

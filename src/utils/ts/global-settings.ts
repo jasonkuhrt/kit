@@ -98,6 +98,39 @@ declare global {
          * @see {@link https://devblogs.microsoft.com/typescript/announcing-typescript-4-5/#tailrec-conditional | TS 4.5 Tail Recursion}
          */
         allowSlow: boolean
+
+        /**
+         * Default depth for type simplification operations.
+         *
+         * Controls how many levels deep {@link Simplify.Auto} will recursively flatten types.
+         * Use `-1` for unlimited depth.
+         *
+         * **When to adjust:**
+         * - Deeper nesting in your domain models → increase depth
+         * - Slow compilation times → decrease depth
+         * - Most projects work well with default
+         *
+         * @default 10
+         *
+         * @example
+         * ```typescript
+         * // With depth: 10 (default)
+         * type Result = Simplify.Auto<DeepType>  // Simplifies 10 levels deep
+         *
+         * // Customize depth
+         * declare global {
+         *   namespace KitLibrarySettings {
+         *     namespace Perf {
+         *       interface Settings {
+         *         depth: 5  // Shallower for faster compilation
+         *       }
+         *     }
+         *   }
+         * }
+         * export {}
+         * ```
+         */
+        depth: Num.Literal
       }
     }
 
@@ -234,6 +267,7 @@ declare global {
   }
 }
 
+import type { Num } from '#num'
 /**
  * Kit's built-in augmentation of PreserveTypes.
  *
@@ -242,7 +276,7 @@ declare global {
  *
  * @internal
  */
-import type { PrimitiveBrandLike } from './ts.js'
+import type { PrimitiveBrandLike } from './ts.ts'
 
 declare global {
   namespace KitLibrarySettings {
@@ -260,18 +294,13 @@ declare global {
         // Branded primitives - catches ALL Effect branded types by structural matching
         // See {@link PrimitiveBrandLike} for details on how this pattern works
         _branded: PrimitiveBrandLike
-        // Object built-ins
+        // Non parameterized Object built-ins
         _Function: Function
         _Date: Date
         _Error: Error
         _RegExp: RegExp
-        _Map: Map<any, any>
-        _Set: Set<any>
-        _WeakMap: WeakMap<any, any>
-        _WeakSet: WeakSet<any>
-        _Promise: Promise<any>
-        _Array: Array<any>
-        _ReadonlyArray: ReadonlyArray<any>
+        // Assertion errors - preserve exact/actual structure for error messages
+        _assertErrors: { HIERARCHY___: readonly ['root', 'assert', ...any[]] }
       }
     }
   }
@@ -304,7 +333,8 @@ export type GetRenderErrors<$Value = GetErrorSetting<'renderErrors'>> = boolean 
  *
  * @internal
  */
-export type GetPreservedTypes = [keyof KitLibrarySettings.Ts.PreserveTypes] extends [never] ? never
-  : KitLibrarySettings.Ts.PreserveTypes[keyof KitLibrarySettings.Ts.PreserveTypes]
-
-// Make this a module
+// dprint-ignore
+export type GetPreservedTypes =
+  [keyof KitLibrarySettings.Ts.PreserveTypes] extends [never]
+    ? never
+    : KitLibrarySettings.Ts.PreserveTypes[keyof KitLibrarySettings.Ts.PreserveTypes]

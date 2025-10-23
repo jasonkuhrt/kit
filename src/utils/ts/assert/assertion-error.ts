@@ -48,7 +48,8 @@ export type StaticErrorAssertion<
   {
     expected: $Expected
     actual: $Actual
-  } & NormalizeMetaInput<$MetaInput>
+  } & NormalizeMetaInput<$MetaInput>,
+  readonly ['root', 'assert', ...string[]]
 >
 
 /**

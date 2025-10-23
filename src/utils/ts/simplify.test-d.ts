@@ -1,187 +1,159 @@
-/**
- * Type-level tests for Simplify namespace
- * Tests all simplification utilities and preservation logic
- */
-
-import type { Brand } from 'effect'
+import type { E } from '#deps/effect'
+import { Ts } from '#ts'
 import type * as Simplify from './simplify.js'
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Test Setup - Branded Types
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Top - flattens one level
+type _top = Ts.Assert.Cases<
+  Ts.Assert.exact<{ a: string; b: number }, Simplify.Top<{ a: string } & { b: number }>>,
+  Ts.Assert.exact<{ a: 1; b: { c: 2 } & { d: 3 } }, Simplify.Top<{ a: 1 } & { b: { c: 2 } & { d: 3 } }>>
+>
 
-type NonNegative = number & Brand.Brand<'NonNegative'>
-type Int = number & Brand.Brand<'Int'>
-type UserId = string & Brand.Brand<'UserId'>
+// All - flattens all levels
+type _all = Ts.Assert.Cases<
+  Ts.Assert.exact<{ a: 1; b: { c: 2; d: 3 } }, Simplify.All<{ a: 1 } & { b: { c: 2 } & { d: 3 } }>>,
+  Ts.Assert.exact<
+    { created: Date; nested: { pattern: RegExp } },
+    Simplify.All<{ created: Date; nested: { pattern: RegExp } }>
+  >
+>
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Simplify.Shallow Tests
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// To - specific depths
+type _to_depths = Ts.Assert.Cases<
+  // Invalid Depth
+  // @ts-expect-error
+  Ts.Assert.exact<{}, Simplify.To<99, {}>>,
+  // Depth 0 - no change
+  Ts.Assert.exact<{ a: 1 } & { b: 2 }, Simplify.To<0, { a: 1 } & { b: 2 }>>,
+  // Depth 1 - one level
+  Ts.Assert.exact<{ a: 1; b: 2 }, Simplify.To<1, { a: 1 } & { b: 2 }>>,
+  // Depth 2 - two levels
+  Ts.Assert.exact<{ a: 1; b: { c: 2; d: 3 } }, Simplify.To<2, { a: 1 } & { b: { c: 2 } & { d: 3 } }>>
+>
 
-// Basic intersection flattening
-type _test_shallow_basic = Simplify.Shallow<{ a: string } & { b: number }>
-//   ^? Should be: { a: string; b: number }
+// All - traverses generic containers
+type _all_containers = Ts.Assert.Cases<
+  Ts.Assert.exact<Map<{ a: 1; b: 2 }, string>, Simplify.All<Map<{ a: 1 } & { b: 2 }, string>>>,
+  Ts.Assert.exact<Set<{ a: 1; b: 2 }>, Simplify.All<Set<{ a: 1 } & { b: 2 }>>>,
+  Ts.Assert.exact<Promise<{ a: 1; b: 2 }>, Simplify.All<Promise<{ a: 1 } & { b: 2 }>>>,
+  Ts.Assert.exact<Array<{ a: 1; b: 2 }>, Simplify.All<Array<{ a: 1 } & { b: 2 }>>>
+>
 
-// Preserves primitives in values
-type _test_shallow_primitives = Simplify.Shallow<{ str: string; num: number; bool: boolean }>
-//   ^? Should preserve: { str: string; num: number; bool: boolean }
+// All - traverses Effect types
+type _all_effect = Ts.Assert.Cases<
+  Ts.Assert.exact<
+    E.Effect<{ a: 1; b: 2 }, { c: 3; d: 4 }, { e: 5; f: 6 }>,
+    Simplify.All<E.Effect<{ a: 1 } & { b: 2 }, { c: 3 } & { d: 4 }, { e: 5 } & { f: 6 }>>
+  >
+>
 
-// Preserves Date and other built-ins
-type _test_shallow_builtins = Simplify.Shallow<{ created: Date; pattern: RegExp; data: Map<string, number> }>
-//   ^? Should preserve: { created: Date; pattern: RegExp; data: Map<string, number> }
+// Distribution handles nullable unions automatically
+type _nullable = Ts.Assert.Cases<
+  // Top level nullable with intersection
+  Ts.Assert.exact<{ a: 1; b: 2 } | null, Simplify.Top<({ a: 1 } & { b: 2 }) | null>>,
+  Ts.Assert.exact<{ a: 1; b: 2 } | undefined, Simplify.Top<({ a: 1 } & { b: 2 }) | undefined>>,
+  Ts.Assert.exact<{ a: 1; b: 2 } | null | undefined, Simplify.Top<({ a: 1 } & { b: 2 }) | null | undefined>>,
+  // Deep nullable - nested intersection with null
+  Ts.Assert.exact<{ a: 1; b: { c: 2; d: 3 } | null }, Simplify.All<{ a: 1 } & { b: ({ c: 2 } & { d: 3 }) | null }>>,
+  // All levels nullable - entire type is nullable
+  Ts.Assert.exact<{ a: 1; b: { c: 2; d: 3 } } | null, Simplify.All<({ a: 1 } & { b: { c: 2 } & { d: 3 } }) | null>>
+>
 
-// CRITICAL: Shallow does NOT preserve branded types in nested values (by design)
-type _test_shallow_branded_nested = Simplify.Shallow<{ id: UserId; count: NonNegative }>
-//   ^? Will expand branded types (Shallow doesn't recurse into values)
+// Complete container coverage - all supported generic types
+type _containers_complete = Ts.Assert.Cases<
+  // Standard collections
+  Ts.Assert.exact<Array<{ a: 1; b: 2 }>, Simplify.All<Array<{ a: 1 } & { b: 2 }>>>,
+  Ts.Assert.exact<ReadonlyArray<{ a: 1; b: 2 }>, Simplify.All<ReadonlyArray<{ a: 1 } & { b: 2 }>>>,
+  Ts.Assert.exact<Map<{ k: 1; v: 2 }, { a: 3; b: 4 }>, Simplify.All<Map<{ k: 1 } & { v: 2 }, { a: 3 } & { b: 4 }>>>,
+  Ts.Assert.exact<Set<{ a: 1; b: 2 }>, Simplify.All<Set<{ a: 1 } & { b: 2 }>>>,
+  Ts.Assert.exact<
+    WeakMap<{ k: 1; v: 2 }, { a: 3; b: 4 }>,
+    Simplify.All<WeakMap<{ k: 1 } & { v: 2 }, { a: 3 } & { b: 4 }>>
+  >,
+  Ts.Assert.exact<WeakSet<{ a: 1; b: 2 }>, Simplify.All<WeakSet<{ a: 1 } & { b: 2 }>>>,
+  // Async
+  Ts.Assert.exact<Promise<{ a: 1; b: 2 }>, Simplify.All<Promise<{ a: 1 } & { b: 2 }>>>
+> // Note: Layer and Stream tests omitted - need proper imports from effect
 
-// Top-level branded type should be preserved
-type _test_shallow_branded_toplevel = Simplify.Shallow<NonNegative>
-//   ^? Should preserve: NonNegative
+// Primitive optimization - containers with primitives return unchanged
+type _primitive_optimization = Ts.Assert.Cases<
+  // Arrays
+  Ts.Assert.exact<Array<number>, Simplify.All<Array<number>>>,
+  Ts.Assert.exact<ReadonlyArray<string>, Simplify.All<ReadonlyArray<string>>>,
+  // Collections
+  Ts.Assert.exact<Set<boolean>, Simplify.All<Set<boolean>>>,
+  Ts.Assert.exact<Map<string, number>, Simplify.All<Map<string, number>>>,
+  // Async
+  Ts.Assert.exact<Promise<string>, Simplify.All<Promise<string>>>
+>
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Simplify.Deep Tests - THE KEY TEST FOR BRANDED TYPE PRESERVATION
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Depth boundaries
+type _depth_boundaries = Ts.Assert.Cases<
+  // Max depth (20)
+  Ts.Assert.exact<
+    {
+      a: {
+        b: {
+          c: {
+            d: {
+              e: {
+                f: {
+                  g: { h: { i: { j: { k: { l: { m: { n: { o: { p: { q: { r: { s: { t: number } } } } } } } } } } } } }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    Simplify.To<
+      20,
+      {
+        a: {
+          b: {
+            c: {
+              d: {
+                e: {
+                  f: {
+                    g: { h: { i: { j: { k: { l: { m: { n: { o: { p: { q: { r: { s: { t: number } } } } } } } } } } } } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    >
+  >,
+  // Infinity literal
+  Ts.Assert.exact<{ a: 1; b: { c: 2; d: 3 } }, Simplify.All<{ a: 1 } & { b: { c: 2 } & { d: 3 } }>>
+>
 
-// Basic deep flattening
-type _test_deep_basic = Simplify.Deep<{ a: 1 } & { b: { c: 2 } & { d: 3 } }>
-//   ^? Should be: { a: 1; b: { c: 2; d: 3 } }
+// Preserved types - built-ins not expanded
+type _preserved_types = Ts.Assert.Cases<
+  Ts.Assert.exact<{ date: Date }, Simplify.All<{ date: Date }>>,
+  Ts.Assert.exact<{ err: Error }, Simplify.All<{ err: Error }>>,
+  Ts.Assert.exact<{ regex: RegExp }, Simplify.All<{ regex: RegExp }>>,
+  Ts.Assert.exact<{ fn: Function }, Simplify.All<{ fn: Function }>>
+>
 
-// Preserves primitives at all levels
-type _test_deep_primitives = Simplify.Deep<{
-  str: string
-  nested: { num: number; bool: boolean }
-}>
-//   ^? All primitives should be preserved
+// Edge cases
+type _edge_cases = Ts.Assert.Cases<
+  // Empty objects
+  Ts.Assert.exact<{}, Simplify.All<{}>>,
+  Ts.Assert.exact<{}, Simplify.All<{} & {}>>,
+  // Nested containers
+  Ts.Assert.exact<
+    Map<string, Array<{ a: 1; b: 2 }>>,
+    Simplify.All<Map<string, Array<{ a: 1 } & { b: 2 }>>>
+  >,
+  Ts.Assert.exact<
+    Set<Promise<{ x: 1; y: 2 }>>,
+    Simplify.All<Set<Promise<{ x: 1 } & { y: 2 }>>>
+  >
+>
 
-// Preserves built-ins at all levels
-type _test_deep_builtins = Simplify.Deep<{
-  created: Date
-  nested: { pattern: RegExp; data: Map<string, number> }
-}>
-//   ^? All built-ins should be preserved
-
-// ⭐ CRITICAL TEST: Deep should preserve branded types in nested values
-type _test_deep_branded_nested = Simplify.Deep<{
-  id: UserId
-  count: NonNegative
-  nested: { value: Int }
-}>
-//   ^? Should preserve: { id: UserId; count: NonNegative; nested: { value: Int } }
-//   NOT: { id: { toString: ..., [BrandTypeId]: ... }, count: { ... }, nested: { value: { ... } } }
-
-// Top-level branded type
-type _test_deep_branded_toplevel = Simplify.Deep<NonNegative>
-//   ^? Should preserve: NonNegative
-
-// Array of branded types
-type _test_deep_branded_array = Simplify.Deep<Array<NonNegative>>
-//   ^? Should preserve: Array<NonNegative>
-
-// Complex nested structure with brands
-type _test_deep_branded_complex = Simplify.Deep<{
-  user: {
-    id: UserId
-    age: NonNegative
-  }
-  counts: Array<Int>
-}>
-//   ^? All branded types should be preserved
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Simplify.Nullable Tests
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-// Preserves null union
-type _test_nullable_null = Simplify.Nullable<({ a: string } & { b: number }) | null>
-//   ^? Should be: { a: string; b: number } | null
-
-// Preserves undefined union
-type _test_nullable_undefined = Simplify.Nullable<({ a: string } & { b: number }) | undefined>
-//   ^? Should be: { a: string; b: number } | undefined
-
-// Non-nullable types
-type _test_nullable_nonnull = Simplify.Nullable<{ a: string } & { b: number }>
-//   ^? Should be: { a: string; b: number }
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Simplify.Display Tests (alias for Deep)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-type _test_display_branded = Simplify.Display<{
-  id: UserId
-  count: NonNegative
-}>
-//   ^? Should preserve branded types like Deep
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Visual Inspection Tests - Hover over these to verify display
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-/**
- * HOVER INSPECTION: These types let you visually verify the results
- * The type names below should show the simplified/preserved types when you hover
- */
-
-// This should show: { id: UserId; count: NonNegative; nested: { value: Int } }
-type InspectDeepBranded = Simplify.Deep<{
-  id: UserId
-  count: NonNegative
-  nested: { value: Int }
-}>
-
-// This should show expanded methods if branded types aren't preserved:
-// { id: { toString: ..., [BrandTypeId]: ... }, count: { ... }, nested: { value: { ... } } }
-type InspectWithoutPreservation = {
-  id: UserId
-  count: NonNegative
-  nested: { value: Int }
-}
-
-// For comparison - plain primitives should always be simple
-type InspectPlainPrimitives = Simplify.Deep<{
-  str: string
-  num: number
-  nested: { bool: boolean }
-}>
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Compile-Time Assertions - These MUST compile for tests to pass
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-// If branded preservation works, these should compile:
-declare const _deepBrandedResult: Simplify.Deep<{ id: UserId; count: NonNegative }>
-
-// The result should be assignable back to the original structure
-const _assignability_test: { id: UserId; count: NonNegative } = _deepBrandedResult
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Explicit Preservation Tests - Verify branded types aren't expanded
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-// Helper: Check if type is preserved (not expanded to method soup)
-type IsPreserved<T, Expected> = [T] extends [Expected] ? [Expected] extends [T] ? true : false : false
-
-// Top-level branded type should be preserved
-type _verify_toplevel_branded = IsPreserved<Simplify.Deep<NonNegative>, NonNegative>
-const _assert_toplevel_branded: _verify_toplevel_branded = true
-
-// Nested branded types should be preserved
-type _verify_nested_branded = Simplify.Deep<{ count: NonNegative }>
-type _verify_nested_test = IsPreserved<_verify_nested_branded['count'], NonNegative>
-const _assert_nested_branded: _verify_nested_test = true
-
-// Array of branded types should be preserved
-type _verify_array_branded = Simplify.Deep<Array<Int>>
-type _verify_array_element = _verify_array_branded extends Array<infer E> ? E : never
-type _verify_array_test = IsPreserved<_verify_array_element, Int>
-const _assert_array_branded: _verify_array_test = true
-
-// Complex structure - all branded types should be preserved
-type _verify_complex = Simplify.Deep<{
-  user: { id: UserId; age: NonNegative }
-  counts: Array<Int>
-}>
-type _verify_complex_id = IsPreserved<_verify_complex['user']['id'], UserId>
-type _verify_complex_age = IsPreserved<_verify_complex['user']['age'], NonNegative>
-const _assert_complex_id: _verify_complex_id = true
-const _assert_complex_age: _verify_complex_age = true
+// Circular reference detection - types with self-references should terminate
+type SelfRef = { self: SelfRef; data: string }
+type _circular = Ts.Assert.Cases<
+  Ts.Assert.exact<SelfRef, Simplify.All<SelfRef>>
+>

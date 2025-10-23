@@ -1,8 +1,8 @@
 import type { Str } from '#str'
 import type { Brand } from 'effect'
+import type { GetPreservedTypes } from './global-settings.ts'
 import type { IsAny, IsNever, IsUnknown } from './inhabitance.js'
 import type { Print } from './print.js'
-import type { GetPreservedTypes } from './test-settings.js'
 
 // Re-export error utilities
 export type * as Err from './err.js'

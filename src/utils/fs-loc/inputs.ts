@@ -109,11 +109,11 @@ export type Guard<
   ___ActualFsLoc extends FsLoc.FsLoc = $Input extends string ? FromAnalysis<Analyzer.Analyze<$Input>> : $Input,
 > =
   string extends $Input
-    ? Ts.Simplify.Shallow<Ts.Err.StaticError<'When giving a string, it must be a literal so that it can be statically parsed.'>> :
+    ? Ts.Simplify.Top<Ts.Err.StaticError<'When giving a string, it must be a literal so that it can be statically parsed.'>> :
   ___ActualFsLoc['_tag'] extends $TargetFsLoc['_tag']
     ? $Input :
   // else
-    Ts.Simplify.Shallow<Ts.Err.StaticError<GetValidationError<$TargetFsLoc['_tag']>['message'], { received: $Input; tip: GetValidationError<$TargetFsLoc['_tag']>['hint'] }>>
+    Ts.Simplify.Top<Ts.Err.StaticError<GetValidationError<$TargetFsLoc['_tag']>['message'], { received: $Input; tip: GetValidationError<$TargetFsLoc['_tag']>['hint'] }>>
 
 export type FromAnalysis<$Analysis extends Analyzer.Analysis> = $Analysis extends { _tag: 'file'; pathType: 'absolute' }
   ? FsLoc.AbsFile

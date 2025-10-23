@@ -8,10 +8,10 @@ type CA = { id: string; user: { name: string; age: number }; tags: string[] }
 type CB = { id: string; user: { name: string; age: string }; tags: string[]; extra: boolean }
 
 class Foo {
-  constructor(public value: Date) {}
+  constructor(public ts_assert_fixture_a: Date) {}
 }
 class Bar {
-  constructor(public a: string, public b: number) {}
+  constructor(public ts_assert_fixture_a: string, public ts_assert_fixture_b: number) {}
 }
 
 export {}

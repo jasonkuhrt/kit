@@ -166,12 +166,38 @@ export const modWith = <U extends NonZero>(divisor: U) => <T extends number>(div
 /**
  * Number literal type.
  */
-export type NumberLiteral = number
+export type Literal =
+  | LiteralZero
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12
+  | 13
+  | 14
+  | 15
+  | 16
+  | 17
+  | 18
+  | 19
+  | 20
+  | LiteralInfinity
+
+export type LiteralInfinity = -999999999999999
+
+export type LiteralZero = 0
 
 /**
  * Add one to a number literal type.
  */
-export type PlusOne<$n extends NumberLiteral> = [
+export type PlusOne<$n extends Literal> = [
   1,
   2,
   3,
@@ -192,7 +218,7 @@ export type PlusOne<$n extends NumberLiteral> = [
   18,
   19,
   20,
-  21,
+  never,
 ][
   $n
 ]
@@ -200,8 +226,8 @@ export type PlusOne<$n extends NumberLiteral> = [
 /**
  * Subtract one from a number literal type.
  */
-export type MinusOne<$n extends NumberLiteral> = [
-  -1,
+export type MinusOne<$n extends Literal> = [
+  never,
   0,
   1,
   2,
@@ -225,3 +251,9 @@ export type MinusOne<$n extends NumberLiteral> = [
 ][
   $n
 ]
+
+// dprint-ignore
+export type NatDec<$N extends Literal> =
+  $N extends LiteralInfinity          ? LiteralInfinity :
+  $N extends LiteralZero              ? LiteralZero :
+                                        MinusOne<$N>
