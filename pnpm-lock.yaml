@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@microsoft/tsdoc':
+        specifier: ^0.15.1
+        version: 0.15.1
       '@types/node':
         specifier: ^24.6.1
         version: 24.6.1
@@ -66,9 +69,6 @@ importers:
       '@effect/vitest':
         specifier: ^0.26.0
         version: 0.26.0(effect@3.18.1)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.6.1)(tsx@4.20.6))
-      '@microsoft/tsdoc':
-        specifier: ^0.15.1
-        version: 0.15.1
       '@shikijs/transformers':
         specifier: ^3.13.0
         version: 3.13.0
@@ -129,37 +129,6 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@24.6.1)(tsx@4.20.6)
-
-  node_modules/.pnpm/@ark+attest@0.50.0_typescript@5.9.3/node_modules/@ark/attest:
-    dependencies:
-      '@ark/fs':
-        specifier: 0.50.0
-        version: 0.50.0
-      '@ark/util':
-        specifier: 0.50.0
-        version: 0.50.0
-      '@prettier/sync':
-        specifier: 0.6.1
-        version: 0.6.1(prettier@3.6.2)
-      '@typescript/analyze-trace':
-        specifier: 0.10.1
-        version: 0.10.1
-      '@typescript/vfs':
-        specifier: 1.6.1
-        version: 1.6.1(typescript@5.9.3)
-      arktype:
-        specifier: 2.1.23
-        version: 2.1.23
-      prettier:
-        specifier: 3.6.2
-        version: 3.6.2
-    devDependencies:
-      ts-morph:
-        specifier: ^27.0.0
-        version: 27.0.0
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
 
 packages:
 
