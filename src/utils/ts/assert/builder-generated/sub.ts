@@ -88,6 +88,36 @@ type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, $Actual]>
 const boolean_ = builder.sub.boolean
 
 /**
+ * Pre-curried matcher for true literal.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.sub.true<true>
+ *
+ * // ✗ Fail
+ * type _ = Assert.sub.true<false>
+ * ```
+ */
+type true_<$Actual> = Kind.Apply<SubKind, [true, $Actual]>
+const true_ = builder.sub.true
+
+/**
+ * Pre-curried matcher for false literal.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.sub.false<false>
+ *
+ * // ✗ Fail
+ * type _ = Assert.sub.false<true>
+ * ```
+ */
+type false_<$Actual> = Kind.Apply<SubKind, [false, $Actual]>
+const false_ = builder.sub.false
+
+/**
  * Pre-curried matcher for undefined.
  *
  * @example
@@ -237,6 +267,7 @@ export {
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  false_ as false,
   never_ as never,
   noExcess_ as noExcess,
   noExcessAs_ as noExcessAs,
@@ -247,6 +278,7 @@ export {
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
+  true_ as true,
   undefined_ as undefined,
   unknown_ as unknown,
 }

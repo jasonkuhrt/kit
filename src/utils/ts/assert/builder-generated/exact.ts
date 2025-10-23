@@ -88,6 +88,38 @@ type boolean_<$Actual> = Kind.Apply<ExactKind, [boolean, $Actual]>
 const boolean_ = builder.exact.boolean
 
 /**
+ * Pre-curried matcher for true literal.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.exact.true<true>
+ *
+ * // ✗ Fail
+ * type _ = Assert.exact.true<false>
+ * type _ = Assert.exact.true<boolean>
+ * ```
+ */
+type true_<$Actual> = Kind.Apply<ExactKind, [true, $Actual]>
+const true_ = builder.exact.true
+
+/**
+ * Pre-curried matcher for false literal.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.exact.false<false>
+ *
+ * // ✗ Fail
+ * type _ = Assert.exact.false<true>
+ * type _ = Assert.exact.false<boolean>
+ * ```
+ */
+type false_<$Actual> = Kind.Apply<ExactKind, [false, $Actual]>
+const false_ = builder.exact.false
+
+/**
  * Pre-curried matcher for undefined.
  *
  * @example
@@ -232,6 +264,7 @@ export {
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  false_ as false,
   never_ as never,
   noExcess_ as noExcess,
   null_ as null,
@@ -241,6 +274,7 @@ export {
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
+  true_ as true,
   undefined_ as undefined,
   unknown_ as unknown,
 }

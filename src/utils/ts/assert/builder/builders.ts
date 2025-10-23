@@ -209,6 +209,8 @@ export interface BuilderMatchers<
   readonly number: InputActualDispatch<S.SetExpectedType<$State, number>>
   readonly bigint: InputActualDispatch<S.SetExpectedType<$State, bigint>>
   readonly boolean: InputActualDispatch<S.SetExpectedType<$State, boolean>>
+  readonly true: InputActualDispatch<S.SetExpectedType<$State, true>>
+  readonly false: InputActualDispatch<S.SetExpectedType<$State, false>>
   readonly undefined: InputActualDispatch<S.SetExpectedType<$State, undefined>>
   readonly null: InputActualDispatch<S.SetExpectedType<$State, null>>
   readonly symbol: InputActualDispatch<S.SetExpectedType<$State, symbol>>

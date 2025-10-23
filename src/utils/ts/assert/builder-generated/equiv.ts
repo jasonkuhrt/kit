@@ -88,6 +88,36 @@ type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, $Actual]>
 const boolean_ = builder.equiv.boolean
 
 /**
+ * Pre-curried matcher for true literal.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.equiv.true<true>
+ *
+ * // ✗ Fail
+ * type _ = Assert.equiv.true<false>
+ * ```
+ */
+type true_<$Actual> = Kind.Apply<EquivKind, [true, $Actual]>
+const true_ = builder.equiv.true
+
+/**
+ * Pre-curried matcher for false literal.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.equiv.false<false>
+ *
+ * // ✗ Fail
+ * type _ = Assert.equiv.false<true>
+ * ```
+ */
+type false_<$Actual> = Kind.Apply<EquivKind, [false, $Actual]>
+const false_ = builder.equiv.false
+
+/**
  * Pre-curried matcher for undefined.
  *
  * @example
@@ -237,6 +267,7 @@ export {
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  false_ as false,
   never_ as never,
   noExcess_ as noExcess,
   noExcessAs_ as noExcessAs,
@@ -247,6 +278,7 @@ export {
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
+  true_ as true,
   undefined_ as undefined,
   unknown_ as unknown,
 }

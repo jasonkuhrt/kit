@@ -147,5 +147,5 @@
     "declaration": true,
     "declarationMap": true
   },
-  "exclude": ["build", "articles", "src-new", "src-temp"]
+  "exclude": ["build", "articles", "src-new", "src-temp", "**/*.bench-d.ts"]
 }

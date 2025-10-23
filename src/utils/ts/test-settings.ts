@@ -24,6 +24,83 @@
 
 declare global {
   namespace KitLibrarySettings {
+    /**
+     * Global performance settings for Kit library type-level operations.
+     *
+     * These settings control performance trade-offs for computationally expensive
+     * type operations across all modules.
+     */
+    namespace Perf {
+      /**
+       * Configuration interface for performance-sensitive type operations.
+       *
+       * Augment this interface in your project to enable slower but more powerful operations.
+       */
+      interface Settings {
+        /**
+         * Allow slow type-level computations that trade compilation performance for flexibility.
+         *
+         * **When enabled, allows:**
+         * - Type-level operations on larger data structures beyond fast-path limits
+         * - Each utility documents its specific effective limits (see individual JSDoc)
+         * - Examples: `Str.Length` for >20 chars, future: deep object ops, complex tuple transforms
+         *
+         * **TypeScript Compiler Limits (Universal):**
+         * These are hard limits imposed by the TypeScript compiler that affect all recursive type operations:
+         * - **Tail recursion depth**: 1000 iterations (TS 4.5+, tail-recursive conditional types only)
+         * - **Type instantiation depth**: 500 levels (non-tail-recursive types)
+         * - **Instantiation count**: No hard limit, but affects compilation speed
+         *
+         * **Implementation Strategy:**
+         * Kit's slow path implementations use tail-recursive unrolling to maximize effective limits
+         * while staying within compiler constraints. Each utility chooses an appropriate unrolling
+         * factor (2x, 4x, 8x, etc.) based on its specific use case, resulting in different effective
+         * limits per utility
+         *
+         * **Performance Impact:**
+         * - `false` (default): Fast paths only with clear error messages when limits are exceeded
+         * - `true`: Enables slow recursive algorithms with longer compilation times
+         *   - Fast path (0-20): ~8 instantiations (instant)
+         *   - Slow path (21-4000): ~250-1000 instantiations (noticeable compilation delay)
+         *
+         * **When to enable:**
+         * - You need type-level operations on larger data structures
+         * - You accept longer compilation times for this flexibility
+         * - You're generating types from dynamic content (e.g., parsing string literals)
+         *
+         * **Recommendation:** Keep `false` unless explicitly needed. Fast paths cover 95%
+         * of use cases with zero performance cost.
+         *
+         * @default false
+         *
+         * @example
+         * ```typescript
+         * // With allowSlow: false (default)
+         * type L1 = Str.Length<'hello'>  // ✓ 5 (fast path, 8 instantiations)
+         * type L2 = Str.Length<'very long string over 20 chars'>  // ✗ Error: Exceeds limit
+         *
+         * // With allowSlow: true
+         * declare global {
+         *   namespace KitLibrarySettings {
+         *     namespace Perf {
+         *       interface Settings {
+         *         allowSlow: true
+         *       }
+         *     }
+         *   }
+         * }
+         * export {}
+         *
+         * type L3 = Str.Length<'very long string over 20 chars'>  // ✓ Works (slower compilation)
+         * type L4 = Str.Length<'x'.repeat(1000)>  // ✓ ~250 instantiations (near limit)
+         * ```
+         *
+         * @see {@link https://devblogs.microsoft.com/typescript/announcing-typescript-4-5/#tailrec-conditional | TS 4.5 Tail Recursion}
+         */
+        allowSlow: boolean
+      }
+    }
+
     namespace Ts {
       /**
        * Registry of types to preserve during type simplification and display.

@@ -1,15 +1,4 @@
-import type { Str } from '#str'
 import type { Ts } from '#ts'
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Assertion Error
-//
-//
-//
-//
 
 /**
  * Represents a static assertion error at the type level, optimized for type testing.
@@ -26,7 +15,7 @@ import type { Ts } from '#ts'
  * @template $Message - A string literal type describing the assertion failure
  * @template $Expected - The expected type
  * @template $Actual - The actual type that was provided
- * @template $Meta - Optional metadata: string tip, tuple of tips, or object with custom fields
+ * @template $MetaInput - Optional metadata: string tip, tuple of tips, or object with custom fields
  *
  * @example
  * ```ts
@@ -48,40 +37,34 @@ import type { Ts } from '#ts'
  *
  * @category Utils
  */
-// dprint-ignore
 export type StaticErrorAssertion<
   $Message extends string = string,
   $Expected = unknown,
   $Actual = unknown,
-  $Meta extends string | readonly string[] | Record<string, any> = never,
-  ___$ErrorKeyLength extends number = KitLibrarySettings.Ts.Error.Settings['errorKeyLength']
-> =
-  // Check what kind of $Meta we have
-  // All variants naturally extend Ts.Err (detected by Ts.Err.Is) through the ERROR_________ field
-  [$Meta] extends [never]
-    ? // No meta - just error, expected, actual
-      Ts.Simplify.Deep<{
-        [k in keyof { ERROR: $Message; expected: $Expected; actual: $Actual } as k extends string
-          ? Str.PadEnd<k, ___$ErrorKeyLength, '_'>
-          : k]: { ERROR: $Message; expected: $Expected; actual: $Actual }[k]
-      }>
-    : [$Meta] extends [string]
-      ? // String tip - render as { tip: $Meta }
-        Ts.Simplify.Deep<{
-          [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & { tip: $Meta }) as k extends string
-            ? Str.PadEnd<k, ___$ErrorKeyLength, '_'>
-            : k]: ({ ERROR: $Message; expected: $Expected; actual: $Actual } & { tip: $Meta })[k]
-        }>
-      : [$Meta] extends [readonly string[]]
-        ? // Tuple of tips - render as { tip_a, tip_b, ... }
-          Ts.Simplify.Deep<{
-            [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & Ts.TupleToLettered<$Meta>) as k extends string
-              ? Str.PadEnd<k, ___$ErrorKeyLength, '_'>
-              : k]: ({ ERROR: $Message; expected: $Expected; actual: $Actual } & Ts.TupleToLettered<$Meta>)[k]
-          }>
-        : // Object - spread $Meta directly
-          Ts.Simplify.Deep<{
-            [k in keyof ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta) as k extends string
-              ? Str.PadEnd<k, ___$ErrorKeyLength, '_'>
-              : k]: ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta)[k]
-          }>
+  $MetaInput extends MetaInput = never,
+  ___$ErrorKeyLength extends number = KitLibrarySettings.Ts.Error.Settings['errorKeyLength'],
+> = Ts.Err.StaticError<
+  $Message,
+  {
+    expected: $Expected
+    actual: $Actual
+  } & NormalizeMetaInput<$MetaInput>
+>
+
+/**
+ * Normalizes metadata input into a consistent object shape.
+ *
+ * @internal
+ * @template $MetaInput - The metadata input (never, string, string[], or object)
+ */
+// dprint-ignore
+export type NormalizeMetaInput<$MetaInput extends MetaInput = never> =
+  [$MetaInput] extends [never]
+    ? {}
+    : [$MetaInput] extends [string]
+      ? { tip: $MetaInput }
+      : [$MetaInput] extends [readonly string[]]
+        ? Ts.TupleToLettered<$MetaInput>
+        : $MetaInput
+
+export type MetaInput = string | readonly string[] | Record<string, any>

@@ -626,6 +626,46 @@ A.on(42).exact.string()
 
 //
 //
+// ━━━━━━━━━━━━━━ • true/false matchers
+//
+//
+
+// exact.true and exact.false
+A.exact.true(true as const)
+A.exact.false(false as const)
+A.on(true as const).exact.true()
+A.on(false as const).exact.false()
+// @ts-expect-error
+A.exact.true(false as const)
+// @ts-expect-error
+A.exact.false(true as const)
+// @ts-expect-error
+A.exact.true(true as boolean)
+// @ts-expect-error
+A.exact.false(false as boolean)
+
+// sub.true and sub.false
+A.sub.true(true as const)
+A.sub.false(false as const)
+A.on(true as const).sub.true()
+A.on(false as const).sub.false()
+// @ts-expect-error
+A.sub.true(false as const)
+// @ts-expect-error
+A.sub.false(true as const)
+
+// equiv.true and equiv.false
+A.equiv.true(true as const)
+A.equiv.false(false as const)
+A.on(true as const).equiv.true()
+A.on(false as const).equiv.false()
+// @ts-expect-error
+A.equiv.true(false as const)
+// @ts-expect-error
+A.equiv.false(true as const)
+
+//
+//
 //
 //
 //
@@ -1030,6 +1070,8 @@ type _coverage_exact = A.Cases<
   A.exact.number<number>,
   A.exact.bigint<bigint>,
   A.exact.boolean<boolean>,
+  A.exact.true<true>,
+  A.exact.false<false>,
   A.exact.undefined<undefined>,
   A.exact.null<null>,
   A.exact.symbol<symbol>,
@@ -1045,6 +1087,8 @@ type _coverage_equiv = A.Cases<
   A.equiv.number<number>,
   A.equiv.bigint<bigint>,
   A.equiv.boolean<boolean>,
+  A.equiv.true<true>,
+  A.equiv.false<false>,
   A.equiv.undefined<undefined>,
   A.equiv.null<null>,
   A.equiv.symbol<symbol>,
@@ -1060,6 +1104,8 @@ type _coverage_sub = A.Cases<
   A.sub.number<number>,
   A.sub.bigint<bigint>,
   A.sub.boolean<boolean>,
+  A.sub.true<true>,
+  A.sub.false<false>,
   A.sub.undefined<undefined>,
   A.sub.null<null>,
   A.sub.symbol<symbol>,

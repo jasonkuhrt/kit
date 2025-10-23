@@ -5,6 +5,33 @@
  */
 
 import type { Ts } from '#ts'
+import type { Length } from './length.js'
+
+/**
+ * Determine if a string type is a literal or the generic `string` type.
+ *
+ * Returns `'literal'` for concrete string literals, `'string'` for the `string` type.
+ * Template literals with string interpolations will be detected by the consuming utilities
+ * during their normal computation and will return `number`.
+ *
+ * Useful for discriminated type branching with indexed access patterns.
+ *
+ * @category Type-Level Utilities
+ *
+ * @example
+ * ```ts
+ * // Discriminated branching pattern
+ * type Result<$S extends string> = {
+ *   string: number
+ *   literal: ComputeExactValue<$S>
+ * }[Str.GetKindCase<$S>]
+ *
+ * type R1 = Result<'hello'>              // ComputeExactValue<'hello'>
+ * type R2 = Result<string>               // number
+ * type R3 = Result<`prefix-${string}`>   // number (detected during computation)
+ * ```
+ */
+export type GetKindCase<$S extends string> = string extends $S ? 'string' : 'literal'
 
 /**
  * Check if a string ends with a specific suffix.
@@ -65,27 +92,6 @@ export type LiteralOnly<
     { ReceivedType: T; tip: 'Use a string literal instead of string type' }
   >
   : T
-
-/**
- * Get the length of a string type using tuple counting.
- *
- * Uses recursive template literal parsing with tuple accumulation to count characters.
- * Limited by TypeScript's recursion depth (typically ~50 levels).
- *
- * @category Type-Level Utilities
- * @template $S - The string to measure
- * @template $Acc - Accumulator tuple for counting (internal)
- *
- * @example
- * ```ts
- * type L1 = Str.Length<'hello'> // 5
- * type L2 = Str.Length<''> // 0
- * type L3 = Str.Length<'a'> // 1
- * ```
- */
-export type Length<$S extends string, $Acc extends 0[] = []> = $S extends `${string}${infer __rest__}`
-  ? Length<__rest__, [...$Acc, 0]>
-  : $Acc['length']
 
 /**
  * Pad a string to a target length by appending a fill character.

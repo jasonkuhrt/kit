@@ -28,9 +28,36 @@ import type { Simplify } from '#ts/ts'
  *
  * @category Error Messages
  */
-export interface StaticErrorLike {
-  ERROR_________: string
+export interface StaticErrorLike<$Message extends string = string> {
+  ERROR_________: $Message
 }
+
+/**
+ * Pad a key to 14 characters with underscores - optimized with zero recursion.
+ * @internal
+ */
+// dprint-ignore
+type PadKeyTo14<$Key extends string> =
+  Str.Length<$Key> extends infer __len extends number
+    ? __len extends 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13
+      ? {
+          0: '______________'
+          1: `${$Key}_____________`
+          2: `${$Key}____________`
+          3: `${$Key}___________`
+          4: `${$Key}__________`
+          5: `${$Key}_________`
+          6: `${$Key}________`
+          7: `${$Key}_______`
+          8: `${$Key}______`
+          9: `${$Key}_____`
+          10: `${$Key}____`
+          11: `${$Key}___`
+          12: `${$Key}__`
+          13: `${$Key}_`
+        }[__len]
+      : $Key  // >= 14, already long enough
+    : $Key
 
 /**
  * General-purpose static type-level error with flexible metadata.
@@ -64,10 +91,13 @@ export interface StaticErrorLike {
 export type StaticError<
   $Message extends string = string,
   $Meta extends Record<string, any> = {},
+  ___$Obj = StaticErrorLike<$Message> & $Meta
 > = Simplify.Shallow<{
-  [k in keyof ({ ERROR: $Message } & $Meta) as k extends string
-    ? Str.PadEnd<k, 14, '_'>
-    : k]: ({ ERROR: $Message } & $Meta)[k]
+  [k  in keyof ___$Obj
+      as k extends string
+        ? PadKeyTo14<k>
+        : k
+  ]: ___$Obj[k]
 }>
 
 /**
@@ -76,7 +106,7 @@ export type StaticError<
  *
  * @category Error Messages
  */
-export type StaticErrorAny = StaticError<string, Record<string, any>>
+export type StaticErrorAny = StaticError<string, {}>
 
 //
 //

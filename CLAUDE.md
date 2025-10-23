@@ -6,6 +6,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Kit (`@wollybeard/kit`) is a TypeScript standard library providing data structures, utilities, primitives, and domains. The project emphasizes type safety, consistent APIs, and modular architecture.
 
+## Backwards Compatibility
+
+**Default stance: Breaking changes are acceptable.**
+
+This is a pre-1.0 library under active development. Unless explicitly instructed otherwise for a specific task, you should:
+
+- Prioritize clean design over backwards compatibility
+- Make breaking changes freely when they improve the API
+- Not worry about migration paths or deprecation warnings
+- Focus on the best long-term solution
+
+Backwards compatibility will ONLY be considered when explicitly mentioned in the task requirements.
+
 ## Code Quality Checks
 
 After making code changes, ensure these checks pass:
@@ -15,6 +28,24 @@ After making code changes, ensure these checks pass:
 3. **Formatting**: `pnpm fix:format` (always run the formatter to auto-fix any style issues)
 
 Run all checks with: `pnpm check`
+
+### TypeScript Configuration
+
+The project uses two TypeScript configurations for optimal development experience:
+
+- **`tsconfig.json`** (Development - Fast):
+  - Excludes `**/*.bench-d.ts` files
+  - Used by default for `pnpm check:types`
+  - Provides fast feedback during development
+  - Benchmarks contain intentionally expensive type operations and slow down type checking
+
+- **`tsconfig.all.json`** (CI/Complete):
+  - Includes all files including benchmarks
+  - Use with `pnpm check:types:all` for complete verification
+  - Recommended for CI or before releases
+  - Ensures benchmarks are type-safe
+
+**Why separate configs?** Type benchmarks measure expensive type operations (recursive types, complex conditionals). Including them in development type checking creates a poor DX with slow feedback loops.
 
 ## Development Commands
 
@@ -29,9 +60,10 @@ pnpm test           # Run tests with Vitest
 pnpm test:unit      # Same as test
 
 # Code Quality
-pnpm check:types    # TypeScript type checking
-pnpm check:format   # Check formatting with dprint
-pnpm fix:format     # Auto-format with dprint
+pnpm check:types        # TypeScript type checking (fast - excludes benchmarks)
+pnpm check:types:all    # Complete type checking (includes benchmarks - slower)
+pnpm check:format       # Check formatting with dprint
+pnpm fix:format         # Auto-format with dprint
 pnpm check:package:circular  # Check circular dependencies
 
 # Combined Commands
