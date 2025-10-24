@@ -1,4 +1,10 @@
+<!-- flo: local extension enabled -->
+
 # CLAUDE.md
+
+**CRITICAL**: If a file named `.claude/CLAUDE.local.md` exists in this project, read it immediately and follow its instructions. This file contains context-specific information for the current work (e.g., GitHub issue details).
+
+---
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
