@@ -202,12 +202,9 @@ export type TupleNumericKeys<$T extends readonly unknown[]> = Extract<keyof $T, 
  * @category Diff
  * @internal
  */
-type IsLonger<$A extends number, $B extends number, ___Acc extends unknown[] = []> =
-  ___Acc['length'] extends $A
-    ? false  // Reached A first, so A <= B
-    : ___Acc['length'] extends $B
-      ? true   // Reached B first, so A > B
-      : IsLonger<$A, $B, [...___Acc, unknown]>
+type IsLonger<$A extends number, $B extends number, ___Acc extends unknown[] = []> = ___Acc['length'] extends $A ? false // Reached A first, so A <= B
+  : ___Acc['length'] extends $B ? true // Reached B first, so A > B
+  : IsLonger<$A, $B, [...___Acc, unknown]>
 
 /**
  * Transform tuple mismatch object to array format with [expected, actual] pairs and _ markers.
@@ -266,12 +263,9 @@ type TupleMismatchToArrayHelper<
  * type NonEmptyArray = Obj.Diff.IsEmpty<[1, 2]> // false
  * ```
  */
-export type IsEmpty<$T> =
-  $T extends readonly unknown[]
-    ? $T['length'] extends 0 ? true : false
-    : $T extends object
-      ? keyof $T extends never ? true : false
-      : false
+export type IsEmpty<$T> = $T extends readonly unknown[] ? $T['length'] extends 0 ? true : false
+  : $T extends object ? keyof $T extends never ? true : false
+  : false
 
 //
 //
@@ -349,7 +343,7 @@ export type Compute<
 export type ComputeDiff<
   $Expected,
   $Actual,
-  $Prefix extends string = 'diff'
+  $Prefix extends string = 'diff',
 > = Compute<$Expected, $Actual, $Prefix>
 
 // dprint-ignore
@@ -398,10 +392,9 @@ type FilterTupleMismatch<$Mismatch extends object> = {
  * @category Diff
  * @internal
  */
-type HasAnyMismatch<$Filtered extends Record<string, any>> =
-  {
-    [k in keyof $Filtered]: $Filtered[k] extends never ? false : true
-  }[keyof $Filtered] extends false ? false : true
+type HasAnyMismatch<$Filtered extends Record<string, any>> = {
+  [k in keyof $Filtered]: $Filtered[k] extends never ? false : true
+}[keyof $Filtered] extends false ? false : true
 
 // dprint-ignore
 type TupleMissingToArray<

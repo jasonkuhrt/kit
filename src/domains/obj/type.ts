@@ -14,7 +14,6 @@ export type Any = object
 //
 //
 
-
 /**
  * Type for an empty object.
  *
