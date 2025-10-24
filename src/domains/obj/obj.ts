@@ -1,9 +1,10 @@
 import type { Lang } from '#lang'
 import type { Rec } from '#rec'
 import type { Writable } from 'type-fest'
+import { type IsEmpty } from './diff.js'
 import { entries } from './get.js'
 import { Type } from './traits/type.js'
-import { type Any, type IsEmpty } from './type.js'
+import { type Any } from './type.js'
 
 export * from './path.js'
 
