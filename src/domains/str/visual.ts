@@ -38,6 +38,26 @@ import { pad as strPad } from './text.js'
 const segmenter = new Intl.Segmenter()
 
 /**
+ * Remove all ANSI escape codes from text.
+ *
+ * Strips color codes, styles, cursor movements, and other escape sequences,
+ * leaving only the raw visible text.
+ *
+ * @category Text Formatting
+ * @param text - Text containing ANSI codes
+ * @returns Text with all ANSI codes removed
+ *
+ * @example
+ * ```typescript
+ * const colored = '\x1b[31mred\x1b[0m text'
+ * Str.Visual.strip(colored)  // 'red text'
+ *
+ * Str.Visual.strip('plain text')  // 'plain text' (unchanged)
+ * ```
+ */
+export const strip = ansis.strip
+
+/**
  * Get the visual width of a string, ignoring ANSI escape codes and counting grapheme clusters.
  *
  * This is the "true" visual width as it would appear in a terminal:
@@ -64,7 +84,7 @@ const segmenter = new Intl.Segmenter()
  * ```
  */
 export const width = (text: string): number => {
-  const stripped = ansis.strip(text)
+  const stripped = strip(text)
   if (stripped === ``) return 0
   let count = 0
   for (const _ of segmenter.segment(stripped)) {

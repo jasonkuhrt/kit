@@ -4,6 +4,10 @@ import { createBlockBuilder } from './block.js'
 import type { Builder } from './helpers.js'
 import { toInternalBuilder } from './helpers.js'
 
+export const defaults = {
+  terminalWidth: 120,
+} as const
+
 export interface RootBuilder extends BlockBuilder<RootBuilder> {
   render(): string
 }
@@ -11,8 +15,15 @@ export interface RootBuilder extends BlockBuilder<RootBuilder> {
 export const createRootBuilder = (parameters?: BlockParameters): RootBuilder => {
   const builder = createBlockBuilder({ getSuperChain: () => builder }) as RootBuilder
   const builderInternal = toInternalBuilder(builder)
+
+  const defaultWidth = process.stdout.columns ?? defaults.terminalWidth
+
   builderInternal._.node.setParameters({
-    spanRange: { cross: { max: process.stdout.columns } },
+    spanRange: {
+      cross: {
+        max: parameters?.spanRange?.cross?.max ?? defaultWidth,
+      },
+    },
     ...parameters,
   })
 

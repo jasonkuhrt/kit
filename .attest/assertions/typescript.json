@@ -1,292 +1,968 @@
 {
-    "updates": [
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 47,
-                "char": 4
-            },
-            "serializedValue": [
-                81,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "Top > simple intersection"
-            ]
+  "src/utils/ts/err.test.ts": [
+    {
+      "location": {
+        "start": {
+          "line": 6,
+          "char": 3
         },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 51,
-                "char": 4
-            },
-            "serializedValue": [
-                101,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "To<2> > nested intersection"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 55,
-                "char": 4
-            },
-            "serializedValue": [
-                1564,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "Auto > moderate depth"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 60,
-                "char": 4
-            },
-            "serializedValue": [
-                36,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "Array > object elements"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 64,
-                "char": 4
-            },
-            "serializedValue": [
-                16,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "Array > primitives"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 69,
-                "char": 4
-            },
-            "serializedValue": [
-                131,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "Set > object element"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 73,
-                "char": 4
-            },
-            "serializedValue": [
-                74,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "Set > primitive"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 78,
-                "char": 4
-            },
-            "serializedValue": [
-                224,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "Map > both objects"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 82,
-                "char": 4
-            },
-            "serializedValue": [
-                96,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "Map > primitives"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 86,
-                "char": 4
-            },
-            "serializedValue": [
-                161,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "Map > key object only"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 90,
-                "char": 4
-            },
-            "serializedValue": [
-                161,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "Map > value object only"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 95,
-                "char": 4
-            },
-            "serializedValue": [
-                266,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "WeakMap > both objects"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 100,
-                "char": 4
-            },
-            "serializedValue": [
-                162,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "WeakSet > object"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 105,
-                "char": 4
-            },
-            "serializedValue": [
-                136,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "Promise > object"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 109,
-                "char": 4
-            },
-            "serializedValue": [
-                71,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "Promise > primitive"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 114,
-                "char": 4
-            },
-            "serializedValue": [
-                88,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "nullable union"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 119,
-                "char": 4
-            },
-            "serializedValue": [
-                81,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "HKT registry > empty (baseline)"
-            ]
-        },
-        {
-            "position": {
-                "method": "<anonymous>",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/simplify.bench-d.ts",
-                "line": 123,
-                "char": 4
-            },
-            "serializedValue": [
-                283,
-                "instantiations"
-            ],
-            "snapFunctionName": "types",
-            "baselinePath": [
-                "HKT registry > with custom traverser (Box)"
-            ]
+        "end": {
+          "line": 6,
+          "char": 39
         }
-    ]
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"msg\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 12,
+          "char": 3
+        },
+        "end": {
+          "line": 12,
+          "char": 59
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"msg\"; a_____________: \"a\"; b_____________: \"b\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 20,
+          "char": 3
+        },
+        "end": {
+          "line": 20,
+          "char": 75
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"msg\"; a_____________: \"a\"; b_____________: \"b\"; c_____________: \"c\"; d_____________: \"d\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 31,
+          "char": 3
+        },
+        "end": {
+          "line": 31,
+          "char": 73
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"msg\"; veryLongKeyName: \"x\"; s_____________: \"y\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    }
+  ],
+  "src/utils/ts/assert/$$.test.ts": [
+    {
+      "location": {
+        "start": {
+          "line": 31,
+          "char": 3
+        },
+        "end": {
+          "line": 31,
+          "char": 48
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; tip___________: \"Types share no values\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 42,
+          "char": 3
+        },
+        "end": {
+          "line": 42,
+          "char": 38
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A<{}>; actual________: B; diff_missing__: { query: {}; }; diff_excess___: { name: \"default\"; result: { a: string | null; }; }; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 58,
+          "char": 3
+        },
+        "end": {
+          "line": 58,
+          "char": 38
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: Date; actual: number; }; }; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 70,
+          "char": 3
+        },
+        "end": {
+          "line": 70,
+          "char": 38
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: E; actual________: A; diff_missing__: { age: number; }; diff_excess___: { email: string; }; diff_mismatch_: { id: { expected: string; actual: number; }; }; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 86,
+          "char": 3
+        },
+        "end": {
+          "line": 86,
+          "char": 38
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"ACTUAL is supertype of EXPECTED\"; expected______: E; actual________: A; diff_mismatch_: { x: { expected: 1; actual: 1 | undefined; }; }; tip___________: \"ACTUAL is wider than EXPECTED\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 100,
+          "char": 3
+        },
+        "end": {
+          "line": 100,
+          "char": 12
+        }
+      },
+      "args": [
+        {
+          "type": "[{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: 42; tip___________: \"Types share no values\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 111,
+          "char": 3
+        },
+        "end": {
+          "line": 111,
+          "char": 13
+        }
+      },
+      "args": [
+        {
+          "type": "[{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: { a: string; }; actual________: { a: number; b: number; }; diff_excess___: { b: number; }; diff_mismatch_: { a: { expected: string; actual: number; }; }; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 136,
+          "char": 3
+        },
+        "end": {
+          "line": 136,
+          "char": 18
+        }
+      },
+      "args": [
+        {
+          "type": "(actual: 42, error: \"⚠ Types are not exactly equal\", expected: string) => void",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 143,
+          "char": 3
+        },
+        "end": {
+          "line": 143,
+          "char": 20
+        }
+      },
+      "args": [
+        {
+          "type": "(actual: string) => void",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 147,
+          "char": 3
+        },
+        "end": {
+          "line": 147,
+          "char": 25
+        }
+      },
+      "args": [
+        {
+          "type": "(actual: CB, error: \"⚠ Types are not exactly equal\", expected: CA) => void",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 158,
+          "char": 3
+        },
+        "end": {
+          "line": 158,
+          "char": 13
+        }
+      },
+      "args": [
+        {
+          "type": "[actual: { ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: { id: string; user: { name: string; age: number; }; tags: string[]; }; actual________: { id: string; user: { name: string; age: string; }; tags: string[]; extra: boolean; }; diff_excess___: { extra: boolean; }; diff_mismatch_: { user: { expected: { name: string; age: number; }; actual: { name: string; age: string; }; }; }; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 193,
+          "char": 3
+        },
+        "end": {
+          "line": 193,
+          "char": 18
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"Custom validation failed\"; expected______: { a: string; }; actual________: { a: number; }; location______: \"src/file.ts:42\"; hint__________: \"Use string\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 204,
+          "char": 3
+        },
+        "end": {
+          "line": 204,
+          "char": 18
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"Type mismatch\"; expected______: string; actual________: number; tip___________: \"Use string\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 219,
+          "char": 3
+        },
+        "end": {
+          "line": 219,
+          "char": 18
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"Type mismatch\"; expected______: string; actual________: number; tip_a_________: \"Use string\"; tip_b_________: \"Check docs\"; tip_c_________: \"See example\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 234,
+          "char": 3
+        },
+        "end": {
+          "line": 234,
+          "char": 38
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: Foo; actual: Date; }; }; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 246,
+          "char": 3
+        },
+        "end": {
+          "line": 246,
+          "char": 38
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; diff_mismatch_: { a: { expected: Bar; actual: { a: number; b: number; }; }; }; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 260,
+          "char": 3
+        },
+        "end": {
+          "line": 260,
+          "char": 47
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"ACTUAL does not extend EXPECTED\"; expected______: \"hello\"; actual________: string; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 282,
+          "char": 3
+        },
+        "end": {
+          "line": 282,
+          "char": 48
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"ACTUAL extends EXPECTED but should not\"; expected______: string; actual________: \"hello\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 292,
+          "char": 3
+        },
+        "end": {
+          "line": 292,
+          "char": 48
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 297,
+          "char": 3
+        },
+        "end": {
+          "line": 297,
+          "char": 49
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"ACTUAL extends EXPECTED but not vice versa\"; expected______: string; actual________: \"hello\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 302,
+          "char": 3
+        },
+        "end": {
+          "line": 302,
+          "char": 49
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED extends ACTUAL but not vice versa\"; expected______: \"hello\"; actual________: string; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 331,
+          "char": 3
+        },
+        "end": {
+          "line": 331,
+          "char": 65
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: [string, string]; actual________: [a: number, b: number]; diff_missing__: { [iterator]: () => ArrayIterator<string>; [unscopables]: { [x: number]: boolean | undefined; length?: boolean; toString?: boolean; toLocaleString?: boolean; pop?: boolean; push?: boolean; concat?: boolean; join?: boolean; reverse?: boolean; shift?: boolean; slice?: boolean; sort?: boolean; splice?: boolean; unshift?: boolean; indexOf?: boolean; lastIndexOf?: boolean; every?: boolean; some?: boolean; forEach?: boolean; map?: boolean; filter?: boolean; reduce?: boolean; reduceRight?: boolean; find?: boolean; findIndex?: boolean; fill?: boolean; copyWithin?: boolean; entries?: boolean; keys?: boolean; values?: boolean; includes?: boolean; flatMap?: boolean; flat?: boolean; at?: boolean; findLast?: boolean; findLastIndex?: boolean; toReversed?: boolean; toSorted?: boolean; toSpliced?: boolean; with?: boolean; [Symbol.iterator]?: boolean; readonly [Symbol.unscopables]?: boolean; }; length: 2; toString: () => string; toLocaleString: { (): string; (locales: string | string[], options?: (NumberFormatOptions & DateTimeFormatOptions) | undefined): string; }; pop: () => string | undefined; push: (...items: string[]) => number; concat: { (...items: ConcatArray<string>[]): string[]; (...items: (string | ConcatArray<string>)[]): string[]; }; join: (separator?: string | undefined) => string; reverse: () => string[]; shift: () => string | undefined; slice: (start?: number | undefined, end?: number | undefined) => string[]; sort: (compareFn?: ((a: string, b: string) => number) | undefined) => [string, string]; splice: { (start: number, deleteCount?: number | undefined): string[]; (start: number, deleteCount: number, ...items: string[]): string[]; }; unshift: (...items: string[]) => number; indexOf: (searchElement: string, fromIndex?: number | undefined) => number; lastIndexOf: (searchElement: string, fromIndex?: number | undefined) => number; every: { <S extends string>(predicate: (value: string, index: number, array: string[]) => value is S, thisArg?: any): this is S[]; (predicate: (value: string, index: number, array: string[]) => unknown, thisArg?: any): boolean; }; some: (predicate: (value: string, index: number, array: string[]) => unknown, thisArg?: any) => boolean; forEach: (callbackfn: (value: string, index: number, array: string[]) => void, thisArg?: any) => void; map: <U>(callbackfn: (value: string, index: number, array: string[]) => U, thisArg?: any) => U[]; filter: { <S extends string>(predicate: (value: string, index: number, array: string[]) => value is S, thisArg?: any): S[]; (predicate: (value: string, index: number, array: string[]) => unknown, thisArg?: any): string[]; }; reduce: { (callbackfn: (previousValue: string, currentValue: string, currentIndex: number, array: string[]) => string): string; (callbackfn: (previousValue: string, currentValue: string, currentIndex: number, array: string[]) => string, initialValue: string): string; <U>(callbackfn: (previousValue: U, currentValue: string, currentIndex: number, array: string[]) => U, initialValue: U): U; }; reduceRight: { (callbackfn: (previousValue: string, currentValue: string, currentIndex: number, array: string[]) => string): string; (callbackfn: (previousValue: string, currentValue: string, currentIndex: number, array: string[]) => string, initialValue: string): string; <U>(callbackfn: (previousValue: U, currentValue: string, currentIndex: number, array: string[]) => U, initialValue: U): U; }; find: { <S extends string>(predicate: (value: string, index: number, obj: string[]) => value is S, thisArg?: any): S | undefined; (predicate: (value: string, index: number, obj: string[]) => unknown, thisArg?: any): string | undefined; }; findIndex: (predicate: (value: string, index: number, obj: string[]) => unknown, thisArg?: any) => number; fill: (value: string, start?: number | undefined, end?: number | undefined) => [string, string]; copyWithin: (target: number, start: number, end?: number | undefined) => [string, string]; entries: () => ArrayIterator<[number, string]>; keys: () => ArrayIterator<number>; values: () => ArrayIterator<string>; includes: (searchElement: string, fromIndex?: number | undefined) => boolean; flatMap: <U, This = undefined>(callback: (this: This, value: string, index: number, array: string[]) => U | readonly U[], thisArg?: This | undefined) => U[]; flat: <A, D extends number = 1>(this: A, depth?: D | undefined) => FlatArray<A, D>[]; at: (index: number) => string | undefined; findLast: { <S extends string>(predicate: (value: string, index: number, array: string[]) => value is S, thisArg?: any): S | undefined; (predicate: (value: string, index: number, array: string[]) => unknown, thisArg?: any): string | undefined; }; findLastIndex: (predicate: (value: string, index: number, array: string[]) => unknown, thisArg?: any) => number; toReversed: () => string[]; toSorted: (compareFn?: ((a: string, b: string) => number) | undefined) => string[]; toSpliced: { (start: number, deleteCount: number, ...items: string[]): string[]; (start: number, deleteCount?: number | undefined): string[]; }; with: (index: number, value: string) => string[]; }; diff_excess___: { [iterator]: () => ArrayIterator<number>; [unscopables]: { [x: number]: boolean | undefined; length?: boolean; toString?: boolean; toLocaleString?: boolean; pop?: boolean; push?: boolean; concat?: boolean; join?: boolean; reverse?: boolean; shift?: boolean; slice?: boolean; sort?: boolean; splice?: boolean; unshift?: boolean; indexOf?: boolean; lastIndexOf?: boolean; every?: boolean; some?: boolean; forEach?: boolean; map?: boolean; filter?: boolean; reduce?: boolean; reduceRight?: boolean; find?: boolean; findIndex?: boolean; fill?: boolean; copyWithin?: boolean; entries?: boolean; keys?: boolean; values?: boolean; includes?: boolean; flatMap?: boolean; flat?: boolean; at?: boolean; findLast?: boolean; findLastIndex?: boolean; toReversed?: boolean; toSorted?: boolean; toSpliced?: boolean; with?: boolean; [Symbol.iterator]?: boolean; readonly [Symbol.unscopables]?: boolean; }; length: 2; toString: () => string; toLocaleString: { (): string; (locales: string | string[], options?: (NumberFormatOptions & DateTimeFormatOptions) | undefined): string; }; pop: () => number | undefined; push: (...items: number[]) => number; concat: { (...items: ConcatArray<number>[]): number[]; (...items: (number | ConcatArray<number>)[]): number[]; }; join: (separator?: string | undefined) => string; reverse: () => number[]; shift: () => number | undefined; slice: (start?: number | undefined, end?: number | undefined) => number[]; sort: (compareFn?: ((a: number, b: number) => number) | undefined) => [a: number, b: number]; splice: { (start: number, deleteCount?: number | undefined): number[]; (start: number, deleteCount: number, ...items: number[]): number[]; }; unshift: (...items: number[]) => number; indexOf: (searchElement: number, fromIndex?: number | undefined) => number; lastIndexOf: (searchElement: number, fromIndex?: number | undefined) => number; every: { <S extends number>(predicate: (value: number, index: number, array: number[]) => value is S, thisArg?: any): this is S[]; (predicate: (value: number, index: number, array: number[]) => unknown, thisArg?: any): boolean; }; some: (predicate: (value: number, index: number, array: number[]) => unknown, thisArg?: any) => boolean; forEach: (callbackfn: (value: number, index: number, array: number[]) => void, thisArg?: any) => void; map: <U>(callbackfn: (value: number, index: number, array: number[]) => U, thisArg?: any) => U[]; filter: { <S extends number>(predicate: (value: number, index: number, array: number[]) => value is S, thisArg?: any): S[]; (predicate: (value: number, index: number, array: number[]) => unknown, thisArg?: any): number[]; }; reduce: { (callbackfn: (previousValue: number, currentValue: number, currentIndex: number, array: number[]) => number): number; (callbackfn: (previousValue: number, currentValue: number, currentIndex: number, array: number[]) => number, initialValue: number): number; <U>(callbackfn: (previousValue: U, currentValue: number, currentIndex: number, array: number[]) => U, initialValue: U): U; }; reduceRight: { (callbackfn: (previousValue: number, currentValue: number, currentIndex: number, array: number[]) => number): number; (callbackfn: (previousValue: number, currentValue: number, currentIndex: number, array: number[]) => number, initialValue: number): number; <U>(callbackfn: (previousValue: U, currentValue: number, currentIndex: number, array: number[]) => U, initialValue: U): U; }; find: { <S extends number>(predicate: (value: number, index: number, obj: number[]) => value is S, thisArg?: any): S | undefined; (predicate: (value: number, index: number, obj: number[]) => unknown, thisArg?: any): number | undefined; }; findIndex: (predicate: (value: number, index: number, obj: number[]) => unknown, thisArg?: any) => number; fill: (value: number, start?: number | undefined, end?: number | undefined) => [a: number, b: number]; copyWithin: (target: number, start: number, end?: number | undefined) => [a: number, b: number]; entries: () => ArrayIterator<[number, number]>; keys: () => ArrayIterator<number>; values: () => ArrayIterator<number>; includes: (searchElement: number, fromIndex?: number | undefined) => boolean; flatMap: <U, This = undefined>(callback: (this: This, value: number, index: number, array: number[]) => U | readonly U[], thisArg?: This | undefined) => U[]; flat: <A, D extends number = 1>(this: A, depth?: D | undefined) => FlatArray<A, D>[]; at: (index: number) => number | undefined; findLast: { <S extends number>(predicate: (value: number, index: number, array: number[]) => value is S, thisArg?: any): S | undefined; (predicate: (value: number, index: number, array: number[]) => unknown, thisArg?: any): number | undefined; }; findLastIndex: (predicate: (value: number, index: number, array: number[]) => unknown, thisArg?: any) => number; toReversed: () => number[]; toSorted: (compareFn?: ((a: number, b: number) => number) | undefined) => number[]; toSpliced: { (start: number, deleteCount: number, ...items: number[]): number[]; (start: number, deleteCount?: number | undefined): number[]; }; with: (index: number, value: number) => number[]; }; diff_mismatch_: { [x: number]: { expected: string; actual: number; }; 0: { expected: string; actual: number; }; 1: { expected: string; actual: number; }; }; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 354,
+          "char": 3
+        },
+        "end": {
+          "line": 354,
+          "char": 65
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; tip___________: \"Types share no values\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 364,
+          "char": 3
+        },
+        "end": {
+          "line": 364,
+          "char": 53
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: number; actual________: string; tip___________: \"Types share no values\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 376,
+          "char": 3
+        },
+        "end": {
+          "line": 376,
+          "char": 27
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: string; attempted_____: \"array extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 386,
+          "char": 3
+        },
+        "end": {
+          "line": 386,
+          "char": 27
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: string; attempted_____: \"awaited extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 396,
+          "char": 3
+        },
+        "end": {
+          "line": 396,
+          "char": 27
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract parameters from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: string; attempted_____: \"parameters extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 406,
+          "char": 3
+        },
+        "end": {
+          "line": 406,
+          "char": 27
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract returned from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: string; attempted_____: \"returned extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 423,
+          "char": 3
+        },
+        "end": {
+          "line": 423,
+          "char": 23
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: string; attempted_____: \"awaited extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 438,
+          "char": 3
+        },
+        "end": {
+          "line": 438,
+          "char": 23
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: string; attempted_____: \"array extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 455,
+          "char": 3
+        },
+        "end": {
+          "line": 455,
+          "char": 23
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: \"hello\"; attempted_____: \"awaited extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 470,
+          "char": 3
+        },
+        "end": {
+          "line": 470,
+          "char": 23
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: \"hello\"; attempted_____: \"array extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 485,
+          "char": 3
+        },
+        "end": {
+          "line": 485,
+          "char": 23
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract returned from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: \"hello\"; attempted_____: \"returned extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    }
+  ]
 }
