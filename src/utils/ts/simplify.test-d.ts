@@ -3,6 +3,13 @@ import { Ts } from '#ts'
 import type * as Kind from './kind.js'
 import type * as Simplify from './simplify.js'
 
+// Fixtures
+
+type i1 = { a: 1 } & { b: 2 }
+type i2 = { m: 1 } & { n: 2 }
+type i1s = { a: 1; b: 2 }
+type i2s = { m: 1; n: 2 }
+
 // Depth control
 type _depths = Ts.Assert.Cases<
   // @ts-expect-error - invalid depth
@@ -104,7 +111,21 @@ type _hkt_traverser = Ts.Assert.Cases<
   Ts.Assert.exact<{ data: Box<{ a: 1; b: 2 }> }, Simplify.All<{ data: Box<{ a: 1 } & { b: 2 }> }>>
 >
 
+// Arrays / Tuples
+
+Ts.Assert.exact.ofAs<[i1s | i2s]>().onAs<Ts.Simplify.Top<[i1 | i2]>>()
+Ts.Assert.exact.ofAs<readonly [i1s | i2s]>().onAs<Ts.Simplify.Top<readonly [i1 | i2]>>()
+
+Ts.Assert.exact.ofAs<i1s[]>().onAs<Ts.Simplify.Top<i1[]>>()
+
+Ts.Assert.exact.ofAs<['a' | 'b']>().onAs<Ts.Simplify.Top<['a' | 'b']>>()
+Ts.Assert.exact.ofAs<readonly ['a' | 'b']>().onAs<Ts.Simplify.Top<readonly ['a' | 'b']>>()
+
+// unions
+Ts.Assert.exact.ofAs<'a' | 'b'>().onAs<Ts.Simplify.Top<'a' | 'b'>>()
+
 // Edge cases
+
 type _edge = Ts.Assert.Cases<
   Ts.Assert.exact<{}, Simplify.All<{} & {}>>,
   Ts.Assert.exact<SelfRef, Simplify.All<SelfRef>>

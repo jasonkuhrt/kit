@@ -59,14 +59,8 @@ export type To<
   Union.IsHas<$Seen, $T> extends true                                                           ? $T :
   // Check if type should be preserved (includes built-ins + user-registered types)
   $T extends GetPreservedTypes                                                                  ? $T :
-  // Handle arrays - traverse element types
-  $T extends Array<infer __element__>                                                           ? __element__ extends object
-      ? Array<{ [k in keyof __element__]: To<DN, __element__[k], SN> } & {}>
-      : $T :
-  // Handle readonly arrays
-  $T extends ReadonlyArray<infer __element__>                                                   ? __element__ extends object
-      ? ReadonlyArray<{ [k in keyof __element__]: To<DN, __element__[k], SN> } & {}>
-      : $T :
+  // Handle arrays and tuples - preserve structure with mapped type
+  $T extends readonly any[]                                                                     ? { [K in keyof $T]: To<DN, $T[K], SN> } :
   // Handle Map - traverse both key and value types
   $T extends Map<infer __key__, infer __value__>                                                ? Map<To<DN, __key__, SN>, To<DN, __value__, SN>> :
   // Handle Set - traverse element type
