@@ -82,7 +82,7 @@ export namespace Input {
  * validation fails at compile time. The StaticError type provides helpful
  * error messages to guide users toward correct path formats.
  */
-export type InputOrError<$FsLoc extends FsLoc.FsLoc = FsLoc.FsLoc> = Input<$FsLoc> | Ts.Err.StaticErrorAny
+export type InputOrError<$FsLoc extends FsLoc.FsLoc = FsLoc.FsLoc> = Input<$FsLoc> | Ts.Err.StaticErrorLike
 
 /**
  * Validates an input against a target FsLoc type.
@@ -193,9 +193,9 @@ export namespace Guard {
 
 // dprint-ignore
 export type normalize<$Input extends InputOrError> =
-  $Input extends Ts.Err.StaticErrorAny    ? never :
-  $Input extends string               ? FromAnalysis<Analyzer.Analyze<$Input>> :
-                                        $Input
+  $Input extends Ts.Err.StaticErrorLike     ? never :
+  $Input extends string                     ? FromAnalysis<Analyzer.Analyze<$Input>> :
+                                              $Input
 
 export const normalize = <$schema extends S.Schema.All>(schema: $schema) => {
   const decodeSync = S.decodeSync(schema as any)

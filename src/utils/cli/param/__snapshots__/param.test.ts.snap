@@ -5,7 +5,7 @@ exports[`error > fn(' ') 1`] = `
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 
 ╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
-ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+ParseError: (string <-> (Param (Encoded side) <-> Param))
 └─ Transformation process failure
    └─ You must specify at least one name for your flag.
 ╚══════════════════════════════════════════════════╝"
@@ -16,7 +16,7 @@ exports[`error > fn('') 1`] = `
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 
 ╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
-ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+ParseError: (string <-> (Param (Encoded side) <-> Param))
 └─ Transformation process failure
    └─ You must specify at least one name for your flag.
 ╚══════════════════════════════════════════════════╝"
@@ -27,7 +27,7 @@ exports[`error > fn('--foo --foo') 1`] = `
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 --foo --foo
 ╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
-ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+ParseError: (string <-> (Param (Encoded side) <-> Param))
 └─ Transformation process failure
    └─ Duplicate alias: "foo"
 ╚══════════════════════════════════════════════════╝"
@@ -38,7 +38,7 @@ exports[`error > fn('--v') 1`] = `
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 --v
 ╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
-ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+ParseError: (string <-> (Param (Encoded side) <-> Param))
 └─ Transformation process failure
    └─ Long flag must be two or more characters: '--v'
 ╚══════════════════════════════════════════════════╝"
@@ -49,7 +49,7 @@ exports[`error > fn('-v -v') 1`] = `
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 -v -v
 ╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
-ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+ParseError: (string <-> (Param (Encoded side) <-> Param))
 └─ Transformation process failure
    └─ Duplicate alias: "v"
 ╚══════════════════════════════════════════════════╝"
@@ -60,7 +60,7 @@ exports[`error > fn('-vv') 1`] = `
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 -vv
 ╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
-ParseError: (string <-> (FlagName (Encoded side) <-> FlagName))
+ParseError: (string <-> (Param (Encoded side) <-> Param))
 └─ Transformation process failure
    └─ Short flag must be exactly one character: '-vv'
 ╚══════════════════════════════════════════════════╝"
@@ -71,7 +71,7 @@ exports[`success > fn('--foo-bar') 1`] = `
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 --foo-bar
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
-FlagName {
+Param {
   canonical: 'fooBar',
   short: null,
   long: 'fooBar',
@@ -89,7 +89,7 @@ exports[`success > fn('--verbose') 1`] = `
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 --verbose
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
-FlagName {
+Param {
   canonical: 'verbose',
   short: null,
   long: 'verbose',
@@ -107,7 +107,7 @@ exports[`success > fn('-v --verbose -x --extra') 1`] = `
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 -v --verbose -x --extra
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
-FlagName {
+Param {
   canonical: 'verbose',
   short: 'v',
   long: 'verbose',
@@ -125,7 +125,7 @@ exports[`success > fn('-v --verbose') 1`] = `
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 -v --verbose
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
-FlagName {
+Param {
   canonical: 'verbose',
   short: 'v',
   long: 'verbose',
@@ -143,7 +143,7 @@ exports[`success > fn('-v') 1`] = `
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 -v
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
-FlagName {
+Param {
   canonical: 'v',
   short: 'v',
   long: null,
@@ -161,7 +161,7 @@ exports[`success > fn('v verbose x extra') 1`] = `
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 v verbose x extra
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
-FlagName {
+Param {
   canonical: 'verbose',
   short: 'v',
   long: 'verbose',

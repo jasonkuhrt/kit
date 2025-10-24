@@ -102,14 +102,6 @@ export type StaticError<
   ]: ___$Obj[k]
 }>
 
-/**
- * Type alias for any static error with default generic parameters.
- * Useful for union types or constraints where any error should be accepted.
- *
- * @category Error Messages
- */
-export type StaticErrorAny = StaticError<string, {}>
-
 //
 //
 //

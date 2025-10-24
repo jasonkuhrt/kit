@@ -1,6 +1,6 @@
+import { Str } from '#str'
 import type { Ts } from '#ts'
 import { ParseResult, Schema as S } from 'effect'
-import * as Analyzer from './analyzer.js'
 
 // ============================================================================
 // Type-Level Utilities (Internal)
@@ -65,13 +65,82 @@ type Update<$Obj, $Path extends string, $Value> = $Path extends `${infer Key}.${
 type Append<$Tuple extends readonly any[], $Element> = [...$Tuple, $Element]
 
 // ============================================================================
-// CLI Flag Name Class
+// Runtime Analyzer
 // ============================================================================
 
 /**
- * CLI flag name with validation.
+ * Runtime analyzer for CLI parameter expressions.
  *
- * Represents a parsed and validated CLI flag name with:
+ * Analyzes a parameter expression string into a structured analysis object with:
+ * - Primary short and long names
+ * - Additional aliases
+ * - Canonical name (long takes precedence)
+ *
+ * All names are normalized to camelCase.
+ *
+ * @param expression - The parameter expression to analyze (e.g., "-v --verbose -x --extra")
+ * @returns Analyzed Param object with canonical name, short/long, and aliases
+ *
+ * @example
+ * ```typescript
+ * analyze('-v')
+ * // { expression: '-v', canonical: 'v', short: 'v', long: null, aliases: { short: [], long: [] } }
+ *
+ * analyze('--verbose')
+ * // { expression: '--verbose', canonical: 'verbose', short: null, long: 'verbose', aliases: { short: [], long: [] } }
+ *
+ * analyze('-v --verbose')
+ * // { expression: '-v --verbose', canonical: 'verbose', short: 'v', long: 'verbose', aliases: { short: [], long: [] } }
+ * ```
+ */
+export function analyze<const $input extends string>($input: $input) {
+  const names = $input
+    .trim()
+    .split(` `)
+    .map((_) => _.trim())
+    .map(stripeDashPrefix)
+    .map(Str.Case.camel)
+    .filter((_) => _.length > 0)
+
+  const longs = names.filter((name): name is string => name.length > 1)
+  const shorts = names.filter((name): name is string => name.length === 1)
+  const short = (shorts.shift() ?? null)!
+  const long = (longs.shift() ?? null)!
+  const canonical = (long ?? short)!
+
+  return {
+    expression: $input,
+    canonical,
+    short,
+    long,
+    aliases: {
+      short: shorts,
+      long: longs,
+    },
+  } as any
+}
+
+/**
+ * Remove leading dashes from a parameter name.
+ */
+const stripeDashPrefix = (name: string): string => {
+  if (name.startsWith(`--`)) {
+    return name.slice(2)
+  }
+  if (name.startsWith(`-`)) {
+    return name.slice(1)
+  }
+  return name
+}
+
+// ============================================================================
+// CLI Parameter Name Class
+// ============================================================================
+
+/**
+ * CLI parameter name with validation.
+ *
+ * Represents a parsed and validated CLI parameter name with:
  * - Canonical name (the primary name used for the flag)
  * - Optional short name (single character)
  * - Optional long name (multiple characters, camelCased)
@@ -81,21 +150,21 @@ type Append<$Tuple extends readonly any[], $Element> = [...$Tuple, $Element]
  * @example
  * ```typescript
  * // Create from string
- * const flag1 = FlagName.fromString('-v --verbose')
+ * const flag1 = Param.fromString('-v --verbose')
  * // { canonical: 'verbose', short: 'v', long: 'verbose', aliases: { short: [], long: [] }, expression: '-v --verbose' }
  *
- * const flag2 = FlagName.fromString('--foo-bar')
+ * const flag2 = Param.fromString('--foo-bar')
  * // { canonical: 'fooBar', short: null, long: 'fooBar', aliases: { short: [], long: [] }, expression: '--foo-bar' }
  *
  * // Type-level parsing with validation
- * type Valid = FlagName.Analyze<'-v --verbose'>
+ * type Valid = Param.Analyze<'-v --verbose'>
  * // { canonical: 'verbose', short: 'v', long: 'verbose', ... }
  *
- * type Invalid = FlagName.Analyze<'--v'>
+ * type Invalid = Param.Analyze<'--v'>
  * // Error: "A long flag must be two (2) or more characters..."
  * ```
  */
-export class FlagName extends S.Class<FlagName>('FlagName')({
+export class Param extends S.Class<Param>('Param')({
   /**
    * The canonical (primary) name for the flag.
    * Long names take precedence over short names.
@@ -121,24 +190,24 @@ export class FlagName extends S.Class<FlagName>('FlagName')({
   }),
 
   /**
-   * Original flag expression string.
+   * Original parameter expression string.
    */
   expression: S.String,
 }) {
   /**
    * Schema for parsing from/encoding to string representation.
-   * Use this when you need to accept string flag expressions.
+   * Use this when you need to accept string parameter expressions.
    *
    * @example
    * ```typescript
    * const ConfigSchema = S.Struct({
-   *   flagName: FlagName.String
+   *   flagName: Param.String
    * })
    * ```
    */
   static String = S.transformOrFail(
     S.String,
-    FlagName,
+    Param,
     {
       strict: true,
       decode: (input, options, ast) => {
@@ -175,8 +244,8 @@ export class FlagName extends S.Class<FlagName>('FlagName')({
           }
         }
 
-        // Use runtime analyzer to parse the flag expression
-        const analysis = Analyzer.analyze(input)
+        // Use runtime analyzer to parse the parameter expression
+        const analysis = analyze(input)
 
         // Validate: No duplicates (check after camelCase normalization)
         const allNames = [
@@ -195,9 +264,9 @@ export class FlagName extends S.Class<FlagName>('FlagName')({
           seen.add(name)
         }
 
-        // Create FlagName instance from analysis
+        // Create Param instance from analysis
         return ParseResult.succeed(
-          new FlagName({
+          new Param({
             canonical: analysis.canonical,
             short: analysis.short,
             long: analysis.long,
@@ -214,7 +283,7 @@ export class FlagName extends S.Class<FlagName>('FlagName')({
   )
 
   /**
-   * Create a typed FlagName from a literal string with compile-time validation.
+   * Create a typed Param from a literal string with compile-time validation.
    *
    * This function requires a literal string at compile time to provide
    * type-safe parsing. The return type is automatically validated and structured
@@ -222,38 +291,39 @@ export class FlagName extends S.Class<FlagName>('FlagName')({
    *
    * For runtime strings (non-literals), use `decodeSync` instead.
    *
-   * @param input - A literal string flag expression
-   * @returns FlagName instance with inferred type structure
+   * @param input - A literal string parameter expression
+   * @returns Param instance with inferred type structure
    *
    * @example
    * ```typescript
-   * const flag1 = FlagName.fromString('-v --verbose')
+   * const flag1 = Param.fromString('-v --verbose')
    * // Type: { canonical: 'verbose', short: 'v', long: 'verbose', ... }
    *
-   * const flag2 = FlagName.fromString('--foo-bar')
+   * const flag2 = Param.fromString('--foo-bar')
    * // Type: { canonical: 'fooBar', long: 'fooBar', ... } (kebab → camel)
    *
    * // Type error: long flag too short
-   * const flag3 = FlagName.fromString('--v')
+   * const flag3 = Param.fromString('--v')
    * // Error: "A long flag must be two (2) or more characters..."
    *
    * // This will cause a type error:
    * const expr: string = getExpression()
-   * const flag = FlagName.fromString(expr)  // Error: string not assignable
-   * // Use this instead: FlagName.decodeSync(expr)
+   * const flag = Param.fromString(expr)  // Error: string not assignable
+   * // Use this instead: Param.decodeSync(expr)
    * ```
    */
   static fromString = <const $input extends string>(
-    $input: FlagName.Analyze<$input> extends string ? Ts.Err.StaticError<FlagName.Analyze<$input>>
+    $input: Param.Analyze<$input> extends string ? Ts.Err.StaticError<Param.Analyze<$input>>
       : $input,
   ) => {
-    return S.decodeSync(FlagName.String)($input as any) as any
+    return S.decodeSync(Param.String)($input as any) as any
   }
 
   /**
-   * @see {@link Analyzer.analyze}
+   * Runtime analyzer function.
+   * @see {@link analyze}
    */
-  static Analyzer = Analyzer
+  static analyze = analyze
 }
 
 // ============================================================================
@@ -261,15 +331,15 @@ export class FlagName extends S.Class<FlagName>('FlagName')({
 // ============================================================================
 
 /**
- * Type-level utilities for FlagName.
+ * Type-level utilities for Param.
  */
-export namespace FlagName {
+export namespace Param {
   // ==========================================================================
   // Public Name Types
   // ==========================================================================
 
   /**
-   * Parsed flag name structure.
+   * Parsed parameter name structure.
    */
   export type Name = {
     expression: string
@@ -283,7 +353,7 @@ export namespace FlagName {
   }
 
   /**
-   * Empty flag name (initial parsing state).
+   * Empty parameter name (initial parsing state).
    */
   export type NameEmpty = {
     expression: string
@@ -312,10 +382,12 @@ export namespace FlagName {
    * Parser error types.
    */
   export namespace Errors {
-    export type TrailingPipe =
-      `Error: You have a trailing pipe. Pipes are for adding aliases. Add more names after your pipe or remove it.`
-    export type Empty = `Error: You must specify at least one name for your flag.`
-    export type Unknown = `Error: Cannot parse your flag expression.`
+    export type TrailingPipe = Ts.Err.StaticError<
+      'Trailing pipe in parameter expression',
+      { tip: 'Pipes are for adding aliases. Add more names after your pipe or remove it' }
+    >
+    export type Empty = Ts.Err.StaticError<'You must specify at least one name for your parameter'>
+    export type Unknown = Ts.Err.StaticError<'Cannot parse your parameter expression'>
   }
 
   // ==========================================================================
@@ -323,26 +395,41 @@ export namespace FlagName {
   // ==========================================================================
 
   /**
-   * Validation checks for flag names.
+   * Validation checks for parameter names.
    */
   export namespace Checks {
     /**
-     * Error message types for flag name validation failures.
+     * Error message types for parameter name validation failures.
      */
     export namespace Messages {
-      export type WithHeader<$Body extends string> = `Error(s):\n${$Body}`
-      export type LongTooShort<$Variant extends string> =
-        `A long flag must be two (2) or more characters but you have: '--${$Variant}'.`
-      export type AliasDuplicate<$Variant extends string> = `Your alias "${$Variant}" is a duplicate.`
-      export type ShortTooLong<$Variant extends string> =
-        `A short flag must be exactly one (1) character but you have: '-${$Variant}'.`
-      export type AlreadyTaken<$Variant extends string> =
-        `The name "${$Variant}" cannot be used because it is already used for another flag.`
-      export type Reserved<$Variant extends string> = `The name "${$Variant}" cannot be used because it is reserved.`
+      export type LongTooShort<$Variant extends string> = Ts.Err.StaticError<
+        'Long flag must be two or more characters',
+        { variant: $Variant; received: `--${$Variant}` }
+      >
+
+      export type AliasDuplicate<$Variant extends string> = Ts.Err.StaticError<
+        'Duplicate alias',
+        { variant: $Variant }
+      >
+
+      export type ShortTooLong<$Variant extends string> = Ts.Err.StaticError<
+        'Short flag must be exactly one character',
+        { variant: $Variant; received: `-${$Variant}` }
+      >
+
+      export type AlreadyTaken<$Variant extends string> = Ts.Err.StaticError<
+        'Name already used for another parameter',
+        { variant: $Variant }
+      >
+
+      export type Reserved<$Variant extends string> = Ts.Err.StaticError<
+        'Name is reserved',
+        { variant: $Variant }
+      >
     }
 
     /**
-     * Validation check types for flag names.
+     * Validation check types for parameter names.
      * Each check has a predicate and an error message.
      */
     export namespace Kinds {
@@ -381,7 +468,7 @@ export namespace FlagName {
      */
     export interface Result {
       predicate: boolean
-      message: string
+      message: Ts.Err.StaticErrorLike
     }
 
     /**
@@ -395,10 +482,10 @@ export namespace FlagName {
     export type BaseChecks<
       $Variant extends string,
       $limits extends SomeLimits,
-      $FlagName extends Name,
+      $Param extends Name,
     > = FilterFailures<
       [
-        Kinds.AliasDuplicate<$FlagName, $Variant>,
+        Kinds.AliasDuplicate<$Param, $Variant>,
         Kinds.AlreadyTaken<$limits, $Variant>,
         Kinds.Reserved<$limits, $Variant>,
       ]
@@ -410,8 +497,8 @@ export namespace FlagName {
     export type LongChecks<
       $Variant extends string,
       $limits extends SomeLimits,
-      $FlagName extends Name,
-    > = FilterFailures<[...BaseChecks<$Variant, $limits, $FlagName>, Kinds.LongTooShort<$Variant>]>
+      $Param extends Name,
+    > = FilterFailures<[...BaseChecks<$Variant, $limits, $Param>, Kinds.LongTooShort<$Variant>]>
 
     /**
      * Validation checks specific to short flags (-f).
@@ -419,19 +506,17 @@ export namespace FlagName {
     export type ShortChecks<
       $Variant extends string,
       $limits extends SomeLimits,
-      $FlagName extends Name,
-    > = FilterFailures<[...BaseChecks<$Variant, $limits, $FlagName>, Kinds.ShortTooLong<$Variant>]>
+      $Param extends Name,
+    > = FilterFailures<[...BaseChecks<$Variant, $limits, $Param>, Kinds.ShortTooLong<$Variant>]>
 
     /**
-     * Format validation failures into a single error message string.
+     * Return the first validation failure message.
+     * Since messages are now structured Ts.Err.StaticError objects, we return the first one.
      */
-    export type ReportFailures<$Results extends [...Result[]], $Accumulator extends string = ''> = $Results extends
-      [infer Head extends Result, ...infer Tail extends Result[]]
-      ? Head['predicate'] extends true
-        ? $Accumulator extends '' ? ReportFailures<Tail, Messages.WithHeader<Head['message']>>
-        : ReportFailures<Tail, `${$Accumulator}\n${Head['message']}`>
-      : ReportFailures<Tail, $Accumulator>
-      : $Accumulator
+    export type ReportFailures<$Results extends [...Result[]]> = $Results extends
+      [infer Head extends Result, ...infer Tail extends Result[]] ? Head['predicate'] extends true ? Head['message']
+      : ReportFailures<Tail>
+      : never
 
     /**
      * Filter a list of validation checks down to only the failures (predicate = true).
@@ -505,7 +590,7 @@ export namespace FlagName {
   >
 
   /**
-   * Analyze a CLI flag expression into a Name type.
+   * Analyze a CLI parameter expression into a Name type.
    *
    * This is a recursive type-level parser that handles:
    * - Short flags: `-v`
@@ -579,7 +664,7 @@ export namespace FlagName {
   /**
    * Check if an {@link Analyze} result is a parse error.
    *
-   * Returns `true` if the result is an error string, `false` if it's a parsed name.
+   * Returns `true` if the result is a Ts.Err.StaticError, `false` if it's a parsed name.
    *
    * @example
    * ```typescript
@@ -587,23 +672,23 @@ export namespace FlagName {
    * type Invalid = IsParseError<Analyze<'--v'>>         // true
    * ```
    */
-  export type IsParseError<$result> = $result extends string ? true : false
+  export type IsParseError<$result> = Ts.Err.Is<$result>
 
   /**
-   * Extract the canonical name from a successful parse, or the error message from a failed parse.
+   * Extract the canonical name from a successful parse, or the error object from a failed parse.
    *
    * @example
    * ```typescript
    * type Success = GetCanonicalNameOrError<Analyze<'-v --verbose'>>  // 'verbose'
-   * type Error = GetCanonicalNameOrError<Analyze<'--v'>>             // 'Error: A long flag must be two (2) or more characters...'
+   * type Error = GetCanonicalNameOrError<Analyze<'--v'>>             // Ts.Err.StaticError<...>
    * ```
    */
-  export type GetCanonicalNameOrError<$result> = $result extends string ? $result
-    : $result extends FlagName ? $result['canonical']
+  export type GetCanonicalNameOrError<$result> = Ts.Err.Is<$result> extends true ? $result
+    : $result extends Name ? $result['canonical']
     : never
 
   /**
-   * Extract all possible flag names as a union type from a successful parse.
+   * Extract all possible parameter names as a union type from a successful parse.
    *
    * Returns `never` if the parse failed.
    *
@@ -622,7 +707,7 @@ export namespace FlagName {
    * // never
    * ```
    */
-  export type GetNames<$result> = $result extends FlagName ?
+  export type GetNames<$result> = $result extends Param ?
       | ($result['long'] extends string ? $result['long'] : never)
       | ($result['short'] extends string ? $result['short'] : never)
       | $result['aliases']['long'][number]
