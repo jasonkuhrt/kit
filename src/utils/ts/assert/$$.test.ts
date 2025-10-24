@@ -345,13 +345,650 @@ test('equiv errors', () => {
 
 test('extractor - parameters', () => {
   type Fn = (a: number, b: number) => number
-  type _Pass = Assert.parameters.exact<[number, number], Fn>
-  attest({} as _Pass).type.toString.snap()
+  type _Pass = Assert.parameters.exact.of<[number, number], Fn>
+  attest({} as Assert.parameters.exact.of<[string, string], Fn>).type.toString.snap(`{
+  ERROR_________: "EXPECTED only overlaps with ACTUAL"
+  expected______: [string, string]
+  actual________: [a: number, b: number]
+  diff_missing__: {
+    [iterator]: () => ArrayIterator<string>
+    [unscopables]: {
+      [x: number]: boolean | undefined
+      length?: boolean
+      toString?: boolean
+      toLocaleString?: boolean
+      pop?: boolean
+      push?: boolean
+      concat?: boolean
+      join?: boolean
+      reverse?: boolean
+      shift?: boolean
+      slice?: boolean
+      sort?: boolean
+      splice?: boolean
+      unshift?: boolean
+      indexOf?: boolean
+      lastIndexOf?: boolean
+      every?: boolean
+      some?: boolean
+      forEach?: boolean
+      map?: boolean
+      filter?: boolean
+      reduce?: boolean
+      reduceRight?: boolean
+      find?: boolean
+      findIndex?: boolean
+      fill?: boolean
+      copyWithin?: boolean
+      entries?: boolean
+      keys?: boolean
+      values?: boolean
+      includes?: boolean
+      flatMap?: boolean
+      flat?: boolean
+      at?: boolean
+      findLast?: boolean
+      findLastIndex?: boolean
+      toReversed?: boolean
+      toSorted?: boolean
+      toSpliced?: boolean
+      with?: boolean
+      [Symbol.iterator]?: boolean
+      readonly [Symbol.unscopables]?: boolean
+    }
+    map: <U>(
+      callbackfn: (
+        value: string,
+        index: number,
+        array: string[]
+      ) => U,
+      thisArg?: any
+    ) => U[]
+    length: 2
+    toString: () => string
+    toLocaleString: {
+      (): string
+      (
+        locales: string | string[],
+        options?:
+          | (NumberFormatOptions & DateTimeFormatOptions)
+          | undefined
+      ): string
+    }
+    pop: () => string | undefined
+    push: (...items: string[]) => number
+    concat: {
+      (...items: ConcatArray<string>[]): string[]
+      (...items: (string | ConcatArray<string>)[]): string[]
+    }
+    join: (separator?: string | undefined) => string
+    reverse: () => string[]
+    shift: () => string | undefined
+    slice: (
+      start?: number | undefined,
+      end?: number | undefined
+    ) => string[]
+    sort: (
+      compareFn?:
+        | ((a: string, b: string) => number)
+        | undefined
+    ) => [string, string]
+    splice: {
+      (
+        start: number,
+        deleteCount?: number | undefined
+      ): string[]
+      (
+        start: number,
+        deleteCount: number,
+        ...items: string[]
+      ): string[]
+    }
+    unshift: (...items: string[]) => number
+    indexOf: (
+      searchElement: string,
+      fromIndex?: number | undefined
+    ) => number
+    lastIndexOf: (
+      searchElement: string,
+      fromIndex?: number | undefined
+    ) => number
+    every: {
+      <S extends string>(
+        predicate: (
+          value: string,
+          index: number,
+          array: string[]
+        ) => value is S,
+        thisArg?: any
+      ): this is S[]
+      (
+        predicate: (
+          value: string,
+          index: number,
+          array: string[]
+        ) => unknown,
+        thisArg?: any
+      ): boolean
+    }
+    some: (
+      predicate: (
+        value: string,
+        index: number,
+        array: string[]
+      ) => unknown,
+      thisArg?: any
+    ) => boolean
+    forEach: (
+      callbackfn: (
+        value: string,
+        index: number,
+        array: string[]
+      ) => void,
+      thisArg?: any
+    ) => void
+    filter: {
+      <S extends string>(
+        predicate: (
+          value: string,
+          index: number,
+          array: string[]
+        ) => value is S,
+        thisArg?: any
+      ): S[]
+      (
+        predicate: (
+          value: string,
+          index: number,
+          array: string[]
+        ) => unknown,
+        thisArg?: any
+      ): string[]
+    }
+    reduce: {
+      (
+        callbackfn: (
+          previousValue: string,
+          currentValue: string,
+          currentIndex: number,
+          array: string[]
+        ) => string
+      ): string
+      (
+        callbackfn: (
+          previousValue: string,
+          currentValue: string,
+          currentIndex: number,
+          array: string[]
+        ) => string,
+        initialValue: string
+      ): string
+      <U>(
+        callbackfn: (
+          previousValue: U,
+          currentValue: string,
+          currentIndex: number,
+          array: string[]
+        ) => U,
+        initialValue: U
+      ): U
+    }
+    reduceRight: {
+      (
+        callbackfn: (
+          previousValue: string,
+          currentValue: string,
+          currentIndex: number,
+          array: string[]
+        ) => string
+      ): string
+      (
+        callbackfn: (
+          previousValue: string,
+          currentValue: string,
+          currentIndex: number,
+          array: string[]
+        ) => string,
+        initialValue: string
+      ): string
+      <U>(
+        callbackfn: (
+          previousValue: U,
+          currentValue: string,
+          currentIndex: number,
+          array: string[]
+        ) => U,
+        initialValue: U
+      ): U
+    }
+    find: {
+      <S extends string>(
+        predicate: (
+          value: string,
+          index: number,
+          obj: string[]
+        ) => value is S,
+        thisArg?: any
+      ): S | undefined
+      (
+        predicate: (
+          value: string,
+          index: number,
+          obj: string[]
+        ) => unknown,
+        thisArg?: any
+      ): string | undefined
+    }
+    findIndex: (
+      predicate: (
+        value: string,
+        index: number,
+        obj: string[]
+      ) => unknown,
+      thisArg?: any
+    ) => number
+    fill: (
+      value: string,
+      start?: number | undefined,
+      end?: number | undefined
+    ) => [string, string]
+    copyWithin: (
+      target: number,
+      start: number,
+      end?: number | undefined
+    ) => [string, string]
+    entries: () => ArrayIterator<[number, string]>
+    keys: () => ArrayIterator<number>
+    values: () => ArrayIterator<string>
+    includes: (
+      searchElement: string,
+      fromIndex?: number | undefined
+    ) => boolean
+    flatMap: <U, This = undefined>(
+      callback: (
+        this: This,
+        value: string,
+        index: number,
+        array: string[]
+      ) => U | readonly U[],
+      thisArg?: This | undefined
+    ) => U[]
+    flat: <A, D extends number = 1>(
+      this: A,
+      depth?: D | undefined
+    ) => FlatArray<A, D>[]
+    at: (index: number) => string | undefined
+    findLast: {
+      <S extends string>(
+        predicate: (
+          value: string,
+          index: number,
+          array: string[]
+        ) => value is S,
+        thisArg?: any
+      ): S | undefined
+      (
+        predicate: (
+          value: string,
+          index: number,
+          array: string[]
+        ) => unknown,
+        thisArg?: any
+      ): string | undefined
+    }
+    findLastIndex: (
+      predicate: (
+        value: string,
+        index: number,
+        array: string[]
+      ) => unknown,
+      thisArg?: any
+    ) => number
+    toReversed: () => string[]
+    toSorted: (
+      compareFn?:
+        | ((a: string, b: string) => number)
+        | undefined
+    ) => string[]
+    toSpliced: {
+      (
+        start: number,
+        deleteCount: number,
+        ...items: string[]
+      ): string[]
+      (
+        start: number,
+        deleteCount?: number | undefined
+      ): string[]
+    }
+    with: (index: number, value: string) => string[]
+  }
+  diff_excess___: {
+    [iterator]: () => ArrayIterator<number>
+    [unscopables]: {
+      [x: number]: boolean | undefined
+      length?: boolean
+      toString?: boolean
+      toLocaleString?: boolean
+      pop?: boolean
+      push?: boolean
+      concat?: boolean
+      join?: boolean
+      reverse?: boolean
+      shift?: boolean
+      slice?: boolean
+      sort?: boolean
+      splice?: boolean
+      unshift?: boolean
+      indexOf?: boolean
+      lastIndexOf?: boolean
+      every?: boolean
+      some?: boolean
+      forEach?: boolean
+      map?: boolean
+      filter?: boolean
+      reduce?: boolean
+      reduceRight?: boolean
+      find?: boolean
+      findIndex?: boolean
+      fill?: boolean
+      copyWithin?: boolean
+      entries?: boolean
+      keys?: boolean
+      values?: boolean
+      includes?: boolean
+      flatMap?: boolean
+      flat?: boolean
+      at?: boolean
+      findLast?: boolean
+      findLastIndex?: boolean
+      toReversed?: boolean
+      toSorted?: boolean
+      toSpliced?: boolean
+      with?: boolean
+      [Symbol.iterator]?: boolean
+      readonly [Symbol.unscopables]?: boolean
+    }
+    map: <U>(
+      callbackfn: (
+        value: number,
+        index: number,
+        array: number[]
+      ) => U,
+      thisArg?: any
+    ) => U[]
+    length: 2
+    toString: () => string
+    toLocaleString: {
+      (): string
+      (
+        locales: string | string[],
+        options?:
+          | (NumberFormatOptions & DateTimeFormatOptions)
+          | undefined
+      ): string
+    }
+    pop: () => number | undefined
+    push: (...items: number[]) => number
+    concat: {
+      (...items: ConcatArray<number>[]): number[]
+      (...items: (number | ConcatArray<number>)[]): number[]
+    }
+    join: (separator?: string | undefined) => string
+    reverse: () => number[]
+    shift: () => number | undefined
+    slice: (
+      start?: number | undefined,
+      end?: number | undefined
+    ) => number[]
+    sort: (
+      compareFn?:
+        | ((a: number, b: number) => number)
+        | undefined
+    ) => [a: number, b: number]
+    splice: {
+      (
+        start: number,
+        deleteCount?: number | undefined
+      ): number[]
+      (
+        start: number,
+        deleteCount: number,
+        ...items: number[]
+      ): number[]
+    }
+    unshift: (...items: number[]) => number
+    indexOf: (
+      searchElement: number,
+      fromIndex?: number | undefined
+    ) => number
+    lastIndexOf: (
+      searchElement: number,
+      fromIndex?: number | undefined
+    ) => number
+    every: {
+      <S extends number>(
+        predicate: (
+          value: number,
+          index: number,
+          array: number[]
+        ) => value is S,
+        thisArg?: any
+      ): this is S[]
+      (
+        predicate: (
+          value: number,
+          index: number,
+          array: number[]
+        ) => unknown,
+        thisArg?: any
+      ): boolean
+    }
+    some: (
+      predicate: (
+        value: number,
+        index: number,
+        array: number[]
+      ) => unknown,
+      thisArg?: any
+    ) => boolean
+    forEach: (
+      callbackfn: (
+        value: number,
+        index: number,
+        array: number[]
+      ) => void,
+      thisArg?: any
+    ) => void
+    filter: {
+      <S extends number>(
+        predicate: (
+          value: number,
+          index: number,
+          array: number[]
+        ) => value is S,
+        thisArg?: any
+      ): S[]
+      (
+        predicate: (
+          value: number,
+          index: number,
+          array: number[]
+        ) => unknown,
+        thisArg?: any
+      ): number[]
+    }
+    reduce: {
+      (
+        callbackfn: (
+          previousValue: number,
+          currentValue: number,
+          currentIndex: number,
+          array: number[]
+        ) => number
+      ): number
+      (
+        callbackfn: (
+          previousValue: number,
+          currentValue: number,
+          currentIndex: number,
+          array: number[]
+        ) => number,
+        initialValue: number
+      ): number
+      <U>(
+        callbackfn: (
+          previousValue: U,
+          currentValue: number,
+          currentIndex: number,
+          array: number[]
+        ) => U,
+        initialValue: U
+      ): U
+    }
+    reduceRight: {
+      (
+        callbackfn: (
+          previousValue: number,
+          currentValue: number,
+          currentIndex: number,
+          array: number[]
+        ) => number
+      ): number
+      (
+        callbackfn: (
+          previousValue: number,
+          currentValue: number,
+          currentIndex: number,
+          array: number[]
+        ) => number,
+        initialValue: number
+      ): number
+      <U>(
+        callbackfn: (
+          previousValue: U,
+          currentValue: number,
+          currentIndex: number,
+          array: number[]
+        ) => U,
+        initialValue: U
+      ): U
+    }
+    find: {
+      <S extends number>(
+        predicate: (
+          value: number,
+          index: number,
+          obj: number[]
+        ) => value is S,
+        thisArg?: any
+      ): S | undefined
+      (
+        predicate: (
+          value: number,
+          index: number,
+          obj: number[]
+        ) => unknown,
+        thisArg?: any
+      ): number | undefined
+    }
+    findIndex: (
+      predicate: (
+        value: number,
+        index: number,
+        obj: number[]
+      ) => unknown,
+      thisArg?: any
+    ) => number
+    fill: (
+      value: number,
+      start?: number | undefined,
+      end?: number | undefined
+    ) => [a: number, b: number]
+    copyWithin: (
+      target: number,
+      start: number,
+      end?: number | undefined
+    ) => [a: number, b: number]
+    entries: () => ArrayIterator<[number, number]>
+    keys: () => ArrayIterator<number>
+    values: () => ArrayIterator<number>
+    includes: (
+      searchElement: number,
+      fromIndex?: number | undefined
+    ) => boolean
+    flatMap: <U, This = undefined>(
+      callback: (
+        this: This,
+        value: number,
+        index: number,
+        array: number[]
+      ) => U | readonly U[],
+      thisArg?: This | undefined
+    ) => U[]
+    flat: <A, D extends number = 1>(
+      this: A,
+      depth?: D | undefined
+    ) => FlatArray<A, D>[]
+    at: (index: number) => number | undefined
+    findLast: {
+      <S extends number>(
+        predicate: (
+          value: number,
+          index: number,
+          array: number[]
+        ) => value is S,
+        thisArg?: any
+      ): S | undefined
+      (
+        predicate: (
+          value: number,
+          index: number,
+          array: number[]
+        ) => unknown,
+        thisArg?: any
+      ): number | undefined
+    }
+    findLastIndex: (
+      predicate: (
+        value: number,
+        index: number,
+        array: number[]
+      ) => unknown,
+      thisArg?: any
+    ) => number
+    toReversed: () => number[]
+    toSorted: (
+      compareFn?:
+        | ((a: number, b: number) => number)
+        | undefined
+    ) => number[]
+    toSpliced: {
+      (
+        start: number,
+        deleteCount: number,
+        ...items: number[]
+      ): number[]
+      (
+        start: number,
+        deleteCount?: number | undefined
+      ): number[]
+    }
+    with: (index: number, value: number) => number[]
+  }
+  diff_mismatch_: {
+    [x: number]: { expected: string; actual: number }
+    0: { expected: string; actual: number }
+    1: { expected: string; actual: number }
+  }
+  tip___________: "Types share some values but differ"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
+}`)
 })
 
 test('extractor - awaited', () => {
-  type _Pass = Assert.awaited.exact<number, Promise<number>>
-  attest({} as Assert.awaited.exact<string, Promise<number>>).type.toString.snap(`{
+  type _Pass = Assert.awaited.exact.of<number, Promise<number>>
+  attest({} as Assert.awaited.exact.of<string, Promise<number>>).type.toString.snap(`{
   ERROR_________: "EXPECTED and ACTUAL are disjoint"
   expected______: string
   actual________: number
