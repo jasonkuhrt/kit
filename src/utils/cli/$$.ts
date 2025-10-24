@@ -1,4 +1,4 @@
-export { ArgToken } from './arg-token/$.js'
+export { Arg } from './arg/arg.js'
 export * from './cli.js'
-export { FlagName } from './flag-name/$.js'
+export { Param } from './param/param.js'
 export { Tex } from './tex/$.js'
