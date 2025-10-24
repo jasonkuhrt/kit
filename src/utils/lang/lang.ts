@@ -1,18 +1,16 @@
 import type { Prom } from '#prom'
+import { CoreLang } from '#lang/core'
 import * as fc from 'fast-check'
 
-// Import from core for local use and re-export
-import type {
-  Primitive,
-  TypeGuard,
-  TypeGuardImplementation,
-  TypeGuardImplementationInput,
-  TypeofTypes,
-} from './core/$$.js'
-import { typeGuard, TypeofTypesEnum } from './core/$$.js'
+// Re-export types from core namespace
+export type Primitive = CoreLang.Primitive
+export type TypeGuard<$Type> = CoreLang.TypeGuard<$Type>
+export type TypeGuardImplementation = CoreLang.TypeGuardImplementation
+export type TypeGuardImplementationInput = CoreLang.TypeGuardImplementationInput
+export type TypeofTypes = CoreLang.TypeofTypes
 
-export type { Primitive, TypeGuard, TypeGuardImplementation, TypeGuardImplementationInput, TypeofTypes }
-export { typeGuard, TypeofTypesEnum }
+// Re-export values from core namespace
+export const { typeGuard, TypeofTypesEnum } = CoreLang
 
 /**
  * A type guard that excludes a specific type.

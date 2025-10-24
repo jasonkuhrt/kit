@@ -6,7 +6,7 @@ import type { Builder, BuilderInternal } from './helpers.js'
 import { toInternalBuilder } from './helpers.js'
 
 export const defaults = {
-  terminalWidth: (typeof process !== 'undefined' && process.stdout?.columns) ?? 120,
+  terminalWidth: typeof process !== 'undefined' ? (process.stdout?.columns ?? 120) : 120,
 } as const
 
 export interface RootBuilder extends BlockBuilder<RootBuilder> {
