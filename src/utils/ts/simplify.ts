@@ -4,16 +4,6 @@ import type { GetPreservedTypes } from './global-settings.ts'
 import type * as Kind from './kind.js'
 import type * as Union from './union.js'
 
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Public API
-//
-//
-//
-//
-
 /**
  * Simplify a type to a specific depth.
  *
@@ -64,7 +54,7 @@ export type To<
   SN = $T | $Seen
 > =
   // Depth 0 - stop recursing
-  $DepthRemaining extends Num.LiteralZero                                                              ? $T :
+  $DepthRemaining extends Num.LiteralZero                                                       ? $T :
   // Check for circular reference - prevent infinite recursion
   Union.IsHas<$Seen, $T> extends true                                                           ? $T :
   // Check if type should be preserved (includes built-ins + user-registered types)
