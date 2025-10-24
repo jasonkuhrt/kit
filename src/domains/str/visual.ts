@@ -33,9 +33,15 @@ import { pad as strPad } from './text.js'
 
 /**
  * Shared segmenter instance for grapheme cluster counting.
+ *
+ * Uses explicit 'en-US' locale to ensure consistent behavior across environments.
+ * Different Node.js versions have different ICU data, causing Intl.Segmenter
+ * to produce different results when no locale is specified. This caused issue #41
+ * where table column widths differed between local (Node 22.x) and CI (Node 24.x).
+ *
  * @internal
  */
-const segmenter = new Intl.Segmenter()
+const segmenter = new Intl.Segmenter('en-US', { granularity: 'grapheme' })
 
 /**
  * Remove all ANSI escape codes from text.

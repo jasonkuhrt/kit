@@ -25,6 +25,29 @@ Test.on(Str.Visual.width)
   )
   .test()
 
+// Regression test for issue #41: Ensure width calculation is consistent across environments
+// Different Node.js versions have different ICU data, which affects Intl.Segmenter behavior.
+// Using explicit locale ('en-US') ensures deterministic grapheme segmentation.
+test('width: cross-environment consistency (issue #41)', () => {
+  // Basic ASCII - should always be consistent
+  expect(Str.Visual.width('Environment (1)')).toBe(15)
+  expect(Str.Visual.width('Name')).toBe(4)
+  expect(Str.Visual.width('Type')).toBe(4)
+  expect(Str.Visual.width('Default')).toBe(7)
+
+  // With ANSI codes - visual width ignores escape codes
+  expect(Str.Visual.width('\x1b[32mEnvironment (1)\x1b[0m')).toBe(15)
+
+  // Grapheme clusters - these are sensitive to ICU version
+  expect(Str.Visual.width('é')).toBe(1) // e + combining accent
+  expect(Str.Visual.width('👨‍👩‍👧‍👦')).toBe(1) // Family emoji
+  expect(Str.Visual.width('🇺🇸')).toBe(1) // Flag emoji
+
+  // Mixed content that might appear in table headers
+  expect(Str.Visual.width('Status ✓')).toBe(8)
+  expect(Str.Visual.width('Count: 42')).toBe(9)
+})
+
 // dprint-ignore
 Test.on(Str.Visual.pad)
   .casesInput(
