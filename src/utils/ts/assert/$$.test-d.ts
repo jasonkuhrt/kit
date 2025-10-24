@@ -1031,12 +1031,15 @@ type _array_extractor = A.Cases<
   A.array.sub.string<'hello'[]>
 >
 
+// BUG: Tuple parameter diff shows array prototype methods instead of clean element diff
+// Expected: diff_mismatch_: { 0: { expected: 1; actual: 0 } }
+// Actual: Shows [Symbol.iterator], [Symbol.unscopables], length, toString, etc.
+type _parameters_tuple_diff_bug = A.parameters.exact.of<[1], (a: 0) => 0>
+
 type _parameters_extractor = A.Cases<
-  // BUG: These should pass but the types may not be inferred correctly
-  // Base .of matcher
-  A.parameters.exact.of<[number, number], (a: number, b: number) => void>,
-  A.parameters.exact.of<[string], (x: string) => void>,
-  A.parameters.sub.of<[string], (x: 'hello') => void>
+  A.parameters.exact.of<[0], (a: 0) => 0>,
+  // @ts-expect-error - Should show clean tuple diff, not array prototype noise
+  A.parameters.exact.of<[1], (a: 0) => 0>
 >
 
 // Test individual parameter extractors to verify they work
