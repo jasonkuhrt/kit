@@ -225,6 +225,7 @@
     "release": "GITHUB_TOKEN=$(gh auth token) dripip stable",
     "prepack": "pnpm build",
     "test:unit": "vitest",
+    "test:unit:types": "VITEST_TYPE_CHECK=true vitest",
     "test": "vitest",
     "test:type-errors": "pnpm test error-messages --run",
     "bench": "tsx scripts/bench.ts",

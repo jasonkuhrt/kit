@@ -2,7 +2,7 @@ import { Block } from '../nodes/block.js'
 import { Leaf } from '../nodes/leaf.js'
 import type { ListParameters } from '../nodes/list.js'
 import { List } from '../nodes/list.js'
-import type { NodeImplementor } from './helpers.js'
+import type { BuilderInternal, NodeImplementor } from './helpers.js'
 import { toInternalBuilder } from './helpers.js'
 
 type Childish = string | Block | null

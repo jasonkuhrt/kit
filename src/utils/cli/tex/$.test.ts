@@ -112,6 +112,18 @@ Test.describe(`block`)
     expect(renderTex(input)).toMatchSnapshot()
   })
 
+it(`block > spanRange > setting min should preserve default max (issue #36)`, () => {
+  // Regression test for issue #36: setting only min loses the default max
+  const builder = Tex.Tex({ spanRange: { cross: { min: 8 } } })
+  const params = builder._.node.parameters
+
+  // Should preserve default max (120 from defaults.terminalWidth, or process.stdout.columns if set)
+  // Test that max is defined and is a reasonable terminal width value
+  expect(params.spanRange?.cross?.max).toBeDefined()
+  expect(typeof params.spanRange?.cross?.max).toBe('number')
+  expect(params.spanRange?.cross?.max).toBeGreaterThan(0)
+})
+
 it(`block > orientation > ansi does not contribute to column width calculation`, () => {
   const builder = Tex.Tex({ orientation: `horizontal` })
     .block(($) => $.block(`1a`).block(ansis.red(`1b`)).block(`1c`))
