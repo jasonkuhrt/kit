@@ -2,8 +2,8 @@ import { Test } from '#test'
 import { Ts } from '#ts'
 import { Schema as S } from 'effect'
 import { describe, expect, test } from 'vitest'
-import { ArgToken } from './arg-token.js'
 import * as Analyzer from './analyzer.js'
+import { ArgToken } from './arg-token.js'
 
 // =============================================================================
 // Type-Level Analysis Tests

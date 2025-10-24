@@ -22,16 +22,14 @@ import type { Analysis } from './analyzer.js'
  */
 type CamelCase<$S extends string> = $S extends `${infer __first__}-${infer __rest__}`
   ? `${__first__}${Capitalize<CamelCase<__rest__>>}`
-  : $S extends `${infer __first__}_${infer __rest__}`
-  ? `${__first__}${Capitalize<CamelCase<__rest__>>}`
+  : $S extends `${infer __first__}_${infer __rest__}` ? `${__first__}${Capitalize<CamelCase<__rest__>>}`
   : $S
 
 /**
  * Split a string on "=" and extract name and value.
  * Returns tuple: [name, value | null]
  */
-type SplitOnEquals<$S extends string> = $S extends `${infer __name__}=${infer __value__}`
-  ? [__name__, __value__]
+type SplitOnEquals<$S extends string> = $S extends `${infer __name__}=${infer __value__}` ? [__name__, __value__]
   : [$S, null]
 
 // ============================================================================
@@ -118,19 +116,17 @@ export type AnalysisSeparator = {
  */
 export type Analyze<$S extends string> =
   // Non-literal string fallback
-  string extends $S                         ? Analysis :
-  // Separator: exactly "--"
-  $S extends '--'                           ? AnalysisSeparator :
-  // Long flag: starts with "--" (but not "---")
-  $S extends `--${infer __rest__}`          ?
-    __rest__ extends `-${string}`           ? AnalysisPositional<$S> // Malformed: "---something"
-                                            : AnalysisLongFlag<__rest__, $S> :
-  // Short flag: starts with "-" (but not "--")
-  $S extends `-${infer __rest__}`           ?
-    __rest__ extends `-${string}`           ? AnalysisPositional<$S> // Malformed: "---something" (caught above, but defensive)
-                                            : AnalysisShortFlag<__rest__, $S> :
-  // Positional: doesn't match any flag pattern
-                                              AnalysisPositional<$S>
+  string extends $S ? Analysis
+    // Separator: exactly "--"
+    : $S extends '--' ? AnalysisSeparator
+    // Long flag: starts with "--" (but not "---")
+    : $S extends `--${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositional<$S> // Malformed: "---something"
+      : AnalysisLongFlag<__rest__, $S>
+    // Short flag: starts with "-" (but not "--")
+    : $S extends `-${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositional<$S> // Malformed: "---something" (caught above, but defensive)
+      : AnalysisShortFlag<__rest__, $S>
+    // Positional: doesn't match any flag pattern
+    : AnalysisPositional<$S>
 
 // ============================================================================
 // Utility Type Exports
