@@ -3,7 +3,7 @@ command = "pnpm docs:build"
 publish = "docs/.vitepress/dist"
 
 [build.environment]
-NODE_VERSION = "22"
+NODE_VERSION = "24"
 
 # Deploy previews for pull requests
 [context.deploy-preview]

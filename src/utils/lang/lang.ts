@@ -1,5 +1,5 @@
-import type { Prom } from '#prom'
 import { CoreLang } from '#lang/core'
+import type { Prom } from '#prom'
 import * as fc from 'fast-check'
 
 // Re-export types from core namespace
