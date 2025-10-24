@@ -345,13 +345,13 @@ test('equiv errors', () => {
 
 test('extractor - parameters', () => {
   type Fn = (a: number, b: number) => number
-  type _Pass = Assert.parameters.exact.ofAs<[number, number], Fn>
-  attest({} as _Pass).type.toString.snap("Assert.parameters.exact.ofAs<[number, number], Fn>")
+  type _Pass = Assert.parameters.exact<[number, number], Fn>
+  attest({} as _Pass).type.toString.snap()
 })
 
 test('extractor - awaited', () => {
-  type _Pass = Assert.awaited.exact.of<number, Promise<number>>
-  attest({} as Assert.awaited.exact.of<string, Promise<number>>).type.toString.snap(`{
+  type _Pass = Assert.awaited.exact<number, Promise<number>>
+  attest({} as Assert.awaited.exact<string, Promise<number>>).type.toString.snap(`{
   ERROR_________: "EXPECTED and ACTUAL are disjoint"
   expected______: string
   actual________: number

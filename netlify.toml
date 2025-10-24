@@ -4,6 +4,7 @@ publish = "docs/.vitepress/dist"
 
 [build.environment]
 NODE_VERSION = "24"
+NODE_OPTIONS = "--max-old-space-size=4096"
 
 # Deploy previews for pull requests
 [context.deploy-preview]
