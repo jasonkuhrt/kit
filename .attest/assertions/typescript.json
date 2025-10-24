@@ -665,10 +665,10 @@
             },
             "args": [
                 {
-                    "type": "Assert.parameters.exact.ofAs<[number, number], Fn>",
+                    "type": "never",
                     "relationships": {
                         "args": [
-                            "none"
+                            "equality"
                         ],
                         "typeArgs": []
                     }
@@ -686,7 +686,7 @@
                 },
                 "end": {
                     "line": 354,
-                    "char": 65
+                    "char": 62
                 }
             },
             "args": [
@@ -963,18 +963,6 @@
             "typeArgs": [],
             "errors": [],
             "completions": {}
-        }
-    ],
-    "updates": [
-        {
-            "position": {
-                "method": "",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit_feat-37-tex-remove-global-state-access/src/utils/ts/assert/$$.test.ts",
-                "line": 349,
-                "char": 37
-            },
-            "serializedValue": "Assert.parameters.exact.ofAs<[number, number], Fn>",
-            "snapFunctionName": "snap"
         }
     ]
 }

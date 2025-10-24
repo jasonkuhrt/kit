@@ -1,8 +1,4 @@
-import { cleanup, setup } from '@ark/attest'
-
-export async function globalSetup() {
-  await setup()
-}
+import { cleanup } from '@ark/attest'
 
 export function teardown() {
   cleanup()
