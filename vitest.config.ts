@@ -2,8 +2,8 @@ import { setup } from '@ark/attest'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { defineConfig } from 'vitest/config'
 
-// Run attest type checking in CI or when explicitly requested via VITEST_TYPE_CHECK env var
-if (process.env[`CI`] || process.env[`VITEST_TYPE_CHECK`] === `true`) {
+// Run attest type checking only when explicitly requested via ATTEST env var
+if (process.env[`ATTEST`] === `true`) {
   setup()
 }
 

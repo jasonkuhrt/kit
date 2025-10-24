@@ -22,13 +22,6 @@ jobs:
       - uses: ./.github/actions/setup
       - run: pnpm build
       - run: pnpm check:package
-  types:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-      - run: pnpm build
-      - run: pnpm check:types
   layers:
     runs-on: ubuntu-latest
     steps:
@@ -49,4 +42,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - run: pnpm build
-      - run: pnpm test --run
+      - run: pnpm test:unit --run
+  test-types:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: pnpm build
+      - run: pnpm test:types

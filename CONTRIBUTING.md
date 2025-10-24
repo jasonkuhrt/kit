@@ -237,6 +237,31 @@ pnpm test               # Run tests
 
 ## Testing
 
+### Running Tests
+
+Tests are separated into two independent categories:
+
+**Runtime Tests (`test:unit`)**
+- Tests runtime behavior in `.test.ts` files
+- Does NOT validate type-level assertions (attest snapshots)
+- Fast feedback loop for development
+- Run locally: `pnpm test:unit [pattern] [--run]`
+- CI job: `test-unit`
+
+**Type Tests (`test:types`)**
+- Validates TypeScript type correctness (`.test-d.ts` files via `tsc`)
+- Validates attest type snapshots (`.snap()` calls in `.test.ts` files)
+- More comprehensive but slower
+- Run locally: `pnpm test:types`
+- CI job: `test-types`
+
+**Both (`test`)**
+- Runs both runtime and type tests sequentially
+- Run locally: `pnpm test [--run]` (defaults to watch mode for unit tests)
+- Use this before pushing to ensure everything passes in CI
+
+### Writing Tests
+
 - Do colocate tests to modules.
 - For modules that have simple interfaces prefer putting all tests into `$.test.ts` and then access the interface(s) under test via the module namespace. For example this layout:
 
