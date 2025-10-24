@@ -6,20 +6,29 @@ import type { Builder, BuilderInternal } from './helpers.js'
 import { toInternalBuilder } from './helpers.js'
 
 export const defaults = {
-  terminalWidth: 120,
+  terminalWidth: typeof process !== 'undefined' ? (process.stdout?.columns ?? 120) : 120,
 } as const
 
 export interface RootBuilder extends BlockBuilder<RootBuilder> {
   render(): string
 }
 
-export const createRootBuilder = (parameters?: BlockParameters): RootBuilder & BuilderInternal<Block> => {
+export const createRootBuilder = (
+  parameters?: BlockParameters & {
+    /**
+     * Terminal width in characters for rendering.
+     * If not provided, uses defaults.terminalWidth (process.stdout.columns at module load time, or 120).
+     *
+     * @default defaults.terminalWidth
+     */
+    terminalWidth?: number
+  },
+): RootBuilder & BuilderInternal<Block> => {
   const builder = createBlockBuilder({ getSuperChain: () => builder }) as RootBuilder
   const builderInternal = toInternalBuilder(builder)
 
-  const defaultWidth = process.stdout.columns ?? defaults.terminalWidth
-
-  const { spanRange, ...otherParameters } = parameters ?? {}
+  const { terminalWidth, spanRange, ...otherParameters } = parameters ?? {}
+  const defaultWidth = terminalWidth ?? defaults.terminalWidth
 
   builderInternal._.node.setParameters({
     spanRange: {

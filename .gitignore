@@ -17,4 +17,6 @@ docs/.vitepress/cache/
 
 # Local Netlify folder
 .netlify
-+.claude/*.local.md
+
+# Claude local context (flo-generated)
+.claude/*.local.md

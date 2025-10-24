@@ -51,7 +51,7 @@ export type { RootBuilder } from './chain/root.js'
  * Create a root text layout builder.
  *
  * @category CLI/Text Rendering
- * @param parameters - Optional block parameters for the root container
+ * @param parameters - Optional block parameters for the root container, including terminalWidth
  * @returns A root builder with chainable methods and `.render()` to generate output
  *
  * @example
@@ -62,8 +62,13 @@ export type { RootBuilder } from './chain/root.js'
  *   .text('World')
  *   .render()
  *
- * // With root-level configuration
- * Tex.Tex({ maxWidth: 80, padding: { left: 2 } })
+ * // With explicit terminal width (useful for testing or fixed-width output)
+ * Tex.Tex({ terminalWidth: 80 })
+ *   .text('Content')
+ *   .render()
+ *
+ * // With other root-level configuration
+ * Tex.Tex({ terminalWidth: 120, padding: { left: 2 } })
  *   .text('Content')
  *   .render()
  * ```

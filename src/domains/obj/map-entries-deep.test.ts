@@ -53,7 +53,7 @@ Test.on(Obj.mapEntriesDeep)
     [{ $name: 'alice', age: 25, $email: 'alice@example.com' }, combinedTransform],
   ])
   .describeInputs('non-plain objects (Date, RegExp, etc.)', [
-    [{ $date: new Date(0) as any },  stripDollarPrefix],
-    [{ nested: { $created: new Date('2024-01-01') as any } },  stripDollarPrefix],
+    [{ $pattern: /test/i as any },  stripDollarPrefix],
+    [{ nested: { $regex: /[a-z]+/ as any } },  stripDollarPrefix],
   ])
   .test()

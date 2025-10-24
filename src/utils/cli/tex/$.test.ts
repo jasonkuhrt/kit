@@ -117,7 +117,7 @@ it(`block > spanRange > setting min should preserve default max (issue #36)`, ()
   const builder = Tex.Tex({ spanRange: { cross: { min: 8 } } })
   const params = builder._.node.parameters
 
-  // Should preserve default max (120 from defaults.terminalWidth, or process.stdout.columns if set)
+  // Should preserve default max (defaults.terminalWidth: process.stdout.columns at load time, or 120)
   // Test that max is defined and is a reasonable terminal width value
   expect(params.spanRange?.cross?.max).toBeDefined()
   expect(typeof params.spanRange?.cross?.max).toBe('number')
@@ -263,4 +263,34 @@ it(`table > builder > rows > single arg or vargs`, () => {
   expect(Tex.Tex().table(($) => $.rows([`r1c1`, `r1c2`], [`r2c1`, `r2c2`])).render()).toEqual(
     Tex.Tex().table([[`r1c1`, `r1c2`], [`r2c1`, `r2c2`]]).render(),
   )
+})
+
+it(`terminalWidth parameter`, () => {
+  // Test that explicit terminalWidth parameter sets spanRange.cross.max correctly
+  const builder50 = Tex.Tex({ terminalWidth: 50 })
+  const builder100 = Tex.Tex({ terminalWidth: 100 })
+
+  expect(builder50._.node.parameters.spanRange?.cross?.max).toBe(50)
+  expect(builder100._.node.parameters.spanRange?.cross?.max).toBe(100)
+})
+
+it(`terminalWidth parameter > falls back to defaults`, () => {
+  // Test fallback: explicit terminalWidth > defaults.terminalWidth
+  const builderWithExplicit = Tex.Tex({ terminalWidth: 80 })
+  expect(builderWithExplicit._.node.parameters.spanRange?.cross?.max).toBe(80)
+
+  // Without explicit terminalWidth, should use defaults.terminalWidth
+  // (which is process.stdout.columns at module load time, or 120)
+  const builderWithoutExplicit = Tex.Tex()
+  const maxWidth = builderWithoutExplicit._.node.parameters.spanRange?.cross?.max
+
+  expect(maxWidth).toBeDefined()
+  expect(typeof maxWidth).toBe(`number`)
+  expect(maxWidth).toBeGreaterThan(0)
+})
+
+it(`terminalWidth parameter > does not override explicit spanRange.cross.max`, () => {
+  // If user explicitly sets spanRange.cross.max, it should take precedence over terminalWidth
+  const builder = Tex.Tex({ terminalWidth: 50, spanRange: { cross: { max: 100 } } })
+  expect(builder._.node.parameters.spanRange?.cross?.max).toBe(100)
 })

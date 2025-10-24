@@ -191,27 +191,27 @@ exports[`mixed structures > mapEntriesDeep({ str: 'hello', arr: [ 1, 'two', { ne
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`non-plain objects (Date, RegExp, etc.) > mapEntriesDeep({ $date: Wed Dec 31 1969 19:00:00 GMT-0500 (Eastern Standard Time) }, (key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0) 1`] = `
+exports[`non-plain objects (Date, RegExp, etc.) > mapEntriesDeep({ $pattern: /test/i }, (key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 {
-  $date: Wed Dec 31 1969 19:00:00 GMT-0500 (Eastern Standard Time)
+  $pattern: /test/i
 }
 ────────────────────────────────────────────────────
 (key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
-  date: Wed Dec 31 1969 19:00:00 GMT-0500 (Eastern Standard Time)
+  pattern: /test/i
 }
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`non-plain objects (Date, RegExp, etc.) > mapEntriesDeep({ nested: { $created: Sun Dec 31 2023 19:00:00 GMT-0500 (Eastern Standard Time) ..., (key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0) 1`] = `
+exports[`non-plain objects (Date, RegExp, etc.) > mapEntriesDeep({ nested: { $regex: /[a-z]+/ } }, (key, value) => key.startsWith("$") ? { key: key.slice(1), value } : void 0) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 {
   nested: {
-    $created: Sun Dec 31 2023 19:00:00 GMT-0500 (Eastern Standard Time)
+    $regex: /[a-z]+/
   }
 }
 ────────────────────────────────────────────────────
@@ -219,7 +219,7 @@ exports[`non-plain objects (Date, RegExp, etc.) > mapEntriesDeep({ nested: { $cr
 ╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
 {
   nested: {
-    created: Sun Dec 31 2023 19:00:00 GMT-0500 (Eastern Standard Time)
+    regex: /[a-z]+/
   }
 }
 ╚══════════════════════════════════════════════════╝"

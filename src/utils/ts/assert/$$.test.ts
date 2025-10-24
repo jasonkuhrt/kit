@@ -33,6 +33,7 @@ test('exact error - string vs number', () => {
   expected______: string
   actual________: number
   tip___________: "Types share no values"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -49,6 +50,7 @@ test('exact error - SingleOperation case', () => {
     result: { a: string | null }
   }
   tip___________: "Types share some values but differ"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -61,6 +63,7 @@ test('exact error - with built-in types preserved', () => {
   actual________: B
   diff_mismatch_: { a: { expected: Date; actual: number } }
   tip___________: "Types share some values but differ"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -77,6 +80,7 @@ test('exact error - diff with missing, excess, and mismatched', () => {
     id: { expected: string; actual: number }
   }
   tip___________: "Types share some values but differ"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -91,6 +95,7 @@ test('exact error - optionality difference', () => {
     x: { expected: 1; actual: 1 | undefined }
   }
   tip___________: "ACTUAL is wider than EXPECTED"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -103,6 +108,7 @@ test('exact value mode - basic type mismatches', () => {
     expected______: string
     actual________: 42
     tip___________: "Types share no values"
+    HIERARCHY_____: readonly ["root", "assert", ...string[]]
   }
 ]`)
 
@@ -118,6 +124,7 @@ test('exact value mode - basic type mismatches', () => {
       a: { expected: string; actual: number }
     }
     tip___________: "Types share some values but differ"
+    HIERARCHY_____: readonly ["root", "assert", ...string[]]
   }
 ]`)
 })
@@ -177,6 +184,7 @@ test('exact value mode - complex type aliases in signatures', () => {
       }
     }
     tip___________: "Types share some values but differ"
+    HIERARCHY_____: readonly ["root", "assert", ...string[]]
   }
 ]`)
 })
@@ -196,6 +204,7 @@ test('error with custom metadata', () => {
   actual________: { a: number }
   location______: "src/file.ts:42"
   hint__________: "Use string"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -206,6 +215,7 @@ test('error with tip string (backward compat)', () => {
   expected______: string
   actual________: number
   tip___________: "Use string"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -223,6 +233,7 @@ test('error with tuple of tips', () => {
   tip_a_________: "Use string"
   tip_b_________: "Check docs"
   tip_c_________: "See example"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -237,6 +248,7 @@ test('user-defined types preserved with preserveTypes setting', () => {
   actual________: B
   diff_mismatch_: { a: { expected: Foo; actual: Date } }
   tip___________: "Types share some values but differ"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -251,6 +263,7 @@ test('multiple preserved types from different augmentations', () => {
     a: { expected: Bar; actual: { a: number; b: number } }
   }
   tip___________: "Types share some values but differ"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -261,6 +274,7 @@ test('sub error - string does not extend hello', () => {
   ERROR_________: "ACTUAL does not extend EXPECTED"
   expected______: "hello"
   actual________: string
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -283,6 +297,7 @@ test('subNot error - hello extends string', () => {
   ERROR_________: "ACTUAL extends EXPECTED but should not"
   expected______: string
   actual________: "hello"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -293,16 +308,19 @@ test('equiv errors', () => {
   ERROR_________: "EXPECTED and ACTUAL are disjoint"
   expected______: string
   actual________: number
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
   attest({} as Assert.equiv.of<string, 'hello'>).type.toString.snap(`{
   ERROR_________: "ACTUAL extends EXPECTED but not vice versa"
   expected______: string
   actual________: "hello"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
   attest({} as Assert.equiv.of<'hello', string>).type.toString.snap(`{
   ERROR_________: "EXPECTED extends ACTUAL but not vice versa"
   expected______: "hello"
   actual________: string
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -327,25 +345,13 @@ test('equiv errors', () => {
 
 test('extractor - parameters', () => {
   type Fn = (a: number, b: number) => number
-  type _Pass = Assert.parameters.exact.of<[number, number], Fn>
   attest({} as Assert.parameters.exact.of<[string, string], Fn>).type.toString.snap(`{
   ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: [string, string]
   actual________: [a: number, b: number]
-  diff_missing__: ExcludeKeys<
-    [string, string],
-    number | "0" | "1"
-  >
-  diff_excess___: ExcludeKeys<
-    [a: number, b: number],
-    number | "0" | "1"
-  >
-  diff_mismatch_: {
-    [x: number]: { expected: string; actual: number }
-    0: { expected: string; actual: number }
-    1: { expected: string; actual: number }
-  }
+  diff_mismatch_: [[string, number], [string, number]]
   tip___________: "Types share some values but differ"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -356,6 +362,7 @@ test('extractor - awaited', () => {
   expected______: string
   actual________: number
   tip___________: "Types share no values"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -366,6 +373,7 @@ test('extractor - array', () => {
   expected______: number
   actual________: string
   tip___________: "Types share no values"
+  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -378,6 +386,7 @@ test('extractor error - array on non-array', () => {
   expected______: "Type must extend array (readonly any[])"
   actual________: string
   attempted_____: "array extractor"
+  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
@@ -388,6 +397,7 @@ test('extractor error - awaited on non-Promise string', () => {
   expected______: "Type must extend PromiseLike<any>"
   actual________: string
   attempted_____: "awaited extractor"
+  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
@@ -398,6 +408,7 @@ test('extractor error - parameters on non-function', () => {
   expected______: "Type must extend function ((...args: any) => any)"
   actual________: string
   attempted_____: "parameters extractor"
+  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
@@ -408,6 +419,7 @@ test('extractor error - returned on non-function', () => {
   expected______: "Type must extend function ((...args: any) => any)"
   actual________: string
   attempted_____: "returned extractor"
+  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
@@ -425,6 +437,7 @@ test('extractor - awaited with union containing Promise (type-level)', () => {
   expected______: "Type must extend PromiseLike<any>"
   actual________: string
   attempted_____: "awaited extractor"
+  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
@@ -440,6 +453,7 @@ test('extractor - array with union containing array (type-level)', () => {
   expected______: "Type must extend array (readonly any[])"
   actual________: string
   attempted_____: "array extractor"
+  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
@@ -457,6 +471,7 @@ test('extractor - awaited value-level API', () => {
   expected______: "Type must extend PromiseLike<any>"
   actual________: "hello"
   attempted_____: "awaited extractor"
+  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
@@ -472,6 +487,7 @@ test('extractor - array value-level API', () => {
   expected______: "Type must extend array (readonly any[])"
   actual________: "hello"
   attempted_____: "array extractor"
+  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
@@ -487,5 +503,6 @@ test('extractor - returned value-level API', () => {
   expected______: "Type must extend function ((...args: any) => any)"
   actual________: "hello"
   attempted_____: "returned extractor"
+  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
