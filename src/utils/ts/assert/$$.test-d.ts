@@ -1031,6 +1031,18 @@ type _array_extractor = A.Cases<
   A.array.sub.string<'hello'[]>
 >
 
+type _parameters_extractor = A.Cases<
+  // BUG: These should pass but the types may not be inferred correctly
+  // Base .of matcher
+  A.parameters.exact.of<[number, number], (a: number, b: number) => void>,
+  A.parameters.exact.of<[string], (x: string) => void>,
+  A.parameters.sub.of<[string], (x: 'hello') => void>
+>
+
+// Test individual parameter extractors to verify they work
+type _parameters_exact_test = A.parameters.exact.of<[number, number], (a: number, b: number) => void>
+type _check_if_never = _parameters_exact_test extends never ? 'IS NEVER' : 'NOT NEVER'
+
 //
 // Type-Level Error Cases
 //
