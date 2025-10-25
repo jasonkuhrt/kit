@@ -50,8 +50,8 @@ export type Apply<$Kind, $Args> =
  * ```
  */
 export interface Kind<$Params = unknown, $Return = unknown> {
-  readonly parameters: $Params
-  readonly return: $Return
+  parameters: $Params
+  return: $Return
 }
 
 /**
