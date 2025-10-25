@@ -12,7 +12,7 @@ test('Arg.fromString > long flag', () => {
     name: 'verbose'
     negated: false
     value: null
-    original: '--verbose'
+    original: string
   }>().on(r)
 })
 
@@ -26,7 +26,7 @@ test('Arg.fromString > long flag with value', () => {
     name: 'count'
     negated: false
     value: '5'
-    original: '--count=5'
+    original: string
   }>().on(r)
 })
 
@@ -35,7 +35,7 @@ test('Arg.fromString > negated long flag', () => {
   const e = ArgLongFlag.make({ name: 'verbose', negated: true, value: null, original: '--no-verbose' })
   expect(ArgLongFlag.is(r)).toBe(true)
   expect(r).toMatchObject(e)
-  Ts.Assert.exact.ofAs<{ _tag: 'long-flag'; name: 'verbose'; negated: true; value: null; original: '--no-verbose' }>()
+  Ts.Assert.exact.ofAs<{ _tag: 'long-flag'; name: 'verbose'; negated: true; value: null; original: string }>()
     .on(r)
 })
 
@@ -44,7 +44,7 @@ test('Arg.fromString > short flag', () => {
   const e = ArgShortFlag.make({ name: 'v', value: null, original: '-v' })
   expect(ArgShortFlag.is(r)).toBe(true)
   expect(r).toMatchObject(e)
-  Ts.Assert.exact.ofAs<{ _tag: 'short-flag'; name: 'v'; value: null; original: '-v' }>().on(r)
+  Ts.Assert.exact.ofAs<{ _tag: 'short-flag'; name: 'v'; value: null; original: string }>().on(r)
 })
 
 test('Arg.fromString > short flag with value', () => {
@@ -52,7 +52,7 @@ test('Arg.fromString > short flag with value', () => {
   const e = ArgShortFlag.make({ name: 'n', value: '10', original: '-n=10' })
   expect(ArgShortFlag.is(r)).toBe(true)
   expect(r).toMatchObject(e)
-  Ts.Assert.exact.ofAs<{ _tag: 'short-flag'; name: 'n'; value: '10'; original: '-n=10' }>().on(r)
+  Ts.Assert.exact.ofAs<{ _tag: 'short-flag'; name: 'n'; value: '10'; original: string }>().on(r)
 })
 
 test('Arg.fromString > short flag cluster', () => {
@@ -68,8 +68,8 @@ test('Arg.fromString > short flag cluster', () => {
     {
       _tag: 'short-flag-cluster'
       additionalShortFlagNames: ['a', 'b']
-      shortFlag: { _tag: 'short-flag'; name: 'c'; value: null; original: '-c' }
-      original: '-abc'
+      shortFlag: { _tag: 'short-flag'; name: 'c'; value: null; original: string }
+      original: string
     }
   >().on(r)
 })
@@ -87,8 +87,8 @@ test('Arg.fromString > short flag cluster with value', () => {
     {
       _tag: 'short-flag-cluster'
       additionalShortFlagNames: ['x', 'y']
-      shortFlag: { _tag: 'short-flag'; name: 'z'; value: 'foo'; original: '-z=foo' }
-      original: '-xyz=foo'
+      shortFlag: { _tag: 'short-flag'; name: 'z'; value: 'foo'; original: string }
+      original: string
     }
   >().on(r)
 })
@@ -101,7 +101,7 @@ test('Arg.fromString > positional', () => {
   Ts.Assert.exact.ofAs<{
     _tag: 'positional'
     value: 'file.txt'
-    original: 'file.txt'
+    original: string
   }>().on(r)
 })
 

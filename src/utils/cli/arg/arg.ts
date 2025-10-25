@@ -33,7 +33,6 @@ export interface AnalysisLongFlagLiteral<
   $Name extends string = string,
   $Negated extends boolean = boolean,
   $Value extends string | null = string | null,
-  $Original extends string = string,
 > extends ArgLongFlag {
   /**
    * Flag name in camelCase, without dashes and without negation prefix.
@@ -54,7 +53,7 @@ export interface AnalysisLongFlagLiteral<
   /** Value from equals syntax, or null if no value (e.g., "5" from "--count=5") */
   value: $Value
   /** Original input string */
-  original: $Original
+  original: string
 }
 
 /**
@@ -70,14 +69,13 @@ export type AnalysisLongFlag = AnalysisLongFlagLiteral
 export interface AnalysisShortFlagLiteral<
   $Name extends string = string,
   $Value extends string | null = string | null,
-  $Original extends string = string,
 > extends ArgShortFlag {
   /** Flag name - single character (e.g., "v" from "-v") */
   name: $Name
   /** Value from equals syntax, or null if no value (e.g., "5" from "-v=5") */
   value: $Value
   /** Original input string */
-  original: $Original
+  original: string
 }
 
 /**
@@ -105,14 +103,13 @@ export type AnalysisShortFlag = AnalysisShortFlagLiteral
 export interface AnalysisShortFlagClusterLiteral<
   $AdditionalNames extends string[] = string[],
   $ShortFlag extends AnalysisShortFlagLiteral = AnalysisShortFlagLiteral,
-  $Original extends string = string,
 > extends ArgShortFlagCluster {
   /** Names of all flags except the last (minimum 1) */
   additionalShortFlagNames: $AdditionalNames
   /** The last flag in the cluster (receives any value) */
   shortFlag: $ShortFlag
   /** Original input string */
-  original: $Original
+  original: string
 }
 
 /**
@@ -127,12 +124,11 @@ export type AnalysisShortFlagCluster = AnalysisShortFlagClusterLiteral
  */
 export interface AnalysisPositionalLiteral<
   $Value extends string = string,
-  $Original extends string = string,
 > extends ArgPositional {
   /** The positional argument value */
   value: $Value
   /** Original input string (same as value) */
-  original: $Original
+  original: string
 }
 
 /**
@@ -660,15 +656,14 @@ export namespace Arg {
       // Separator: exactly "--"
       : $S extends '--' ? AnalysisSeparatorLiteral
       // Long flag: starts with "--" (but not "---")
-      : $S extends `--${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositionalLiteral<$S, $S> // Malformed: "---something"
+      : $S extends `--${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositionalLiteral<$S> // Malformed: "---something"
         : AnalysisLongFlagLiteral<
           DetectNegation<CamelCase<SplitOnEquals<__rest__>[0]>>['baseName'],
           DetectNegation<CamelCase<SplitOnEquals<__rest__>[0]>>['negated'],
-          SplitOnEquals<__rest__>[1],
-          $S
+          SplitOnEquals<__rest__>[1]
         >
       // Short flag or cluster: starts with "-" (but not "--")
-      : $S extends `-${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositionalLiteral<$S, $S> // Malformed: "---something"
+      : $S extends `-${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositionalLiteral<$S> // Malformed: "---something"
         : SplitOnEquals<__rest__>[0] extends `${string}${string}${infer ___}` // Multi-char (2+)
           ? SplitChars<SplitOnEquals<__rest__>[0]> extends infer __chars__ extends [string, string, ...string[]]
             ? SplitLastChar<__chars__> extends
@@ -677,20 +672,17 @@ export namespace Arg {
                 __additional__,
                 AnalysisShortFlagLiteral<
                   __last__,
-                  SplitOnEquals<__rest__>[1],
-                  SplitOnEquals<__rest__>[1] extends null ? `-${__last__}` : `-${__last__}=${SplitOnEquals<__rest__>[1]}`
-                >,
-                $S
+                  SplitOnEquals<__rest__>[1]
+                >
               >
             : never
             : never
           : AnalysisShortFlagLiteral<
             SplitOnEquals<__rest__>[0],
-            SplitOnEquals<__rest__>[1],
-            $S
+            SplitOnEquals<__rest__>[1]
           >
       // Positional: doesn't match any flag pattern
-      : AnalysisPositionalLiteral<$S, $S>
+      : AnalysisPositionalLiteral<$S>
 
   // ==========================================================================
   // Utility Type Exports
