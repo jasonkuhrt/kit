@@ -165,6 +165,21 @@ We maintain some consistent operation names across data structures:
 
 ## Development Workflow
 
+### Automated PR Reviews
+
+This repository uses AI-powered automated code reviews for all pull requests. When you open or update a PR:
+
+1. **Automatic Review**: An AI reviewer (GPT-4o) analyzes your code changes
+2. **Intelligent Feedback**: Receives comments on:
+   - Code quality and best practices
+   - Potential bugs and type safety issues
+   - Performance improvements
+   - Security concerns
+   - Consistency with repository patterns
+3. **Interactive**: You can respond to review comments for clarification
+
+See [`.github/PR_REVIEW.md`](.github/PR_REVIEW.md) for complete documentation.
+
 ### Setup
 
 ```bash
