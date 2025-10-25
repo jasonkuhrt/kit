@@ -245,6 +245,8 @@ import { Test } from '../$.js'
   // Concrete type - unwrapped form allowed
   Test.on(unaryNum).casesInput(1, 2, 3)
 
+  Test.on(unaryNum).describe('1', [[1, 1]]).describe('2', [[2, 2]])
+
   // Unknown type - MUST use wrapped form
   Test.on(unaryUnknown).casesInput([1], [2], [3])
 
