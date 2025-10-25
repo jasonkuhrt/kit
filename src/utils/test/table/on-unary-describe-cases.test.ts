@@ -28,7 +28,7 @@ describe('Test.on(unary).describe(name, cases) pattern', () => {
   // Expected: unary function should accept [input, output] not [[input], output]
   Test.on(upperCase)
     .describe('failing pattern: on > describe(name, cases)', [
-      ['hello', 'HELLO'],  // Type error: should work for unary
+      ['hello', 'HELLO'], // Type error: should work for unary
       ['world', 'WORLD'],
     ])
     .test()
@@ -53,7 +53,7 @@ describe('Test.on(unary).describe(name, cases) pattern', () => {
   const add = (a: number, b: number) => a + b
   Test.on(add)
     .describe('addition', [
-      [[1, 2], 3],  // Correctly requires [[args], output]
+      [[1, 2], 3], // Correctly requires [[args], output]
       [[5, 5], 10],
     ])
     .test()
