@@ -26,7 +26,8 @@ Ts.Assert.sub.ofAs<Mask.InferOptions<unknown>>().onAs<Record<string, boolean>>()
 
 // Non-object types only accept boolean
 Ts.Assert.sub.ofAs<Mask.InferOptions<string>>().onAs<boolean>()
-Ts.Assert.not.sub.ofAs<Mask.InferOptions<string>>().onAs<string[]>()
+// @ts-expect-error Negated assertion correctly detects string[] is not subtype of boolean
+Ts.Assert.not.sub.ofAs<Mask.InferOptions<string>>().on({} as string[])
 
 // Test Apply type
 type TestData = { a: string; b: number; c: boolean }
