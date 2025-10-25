@@ -102,7 +102,7 @@ describe('General Object, any, unknown, never, and Fallbacks', () => {
 describe('Union Types', () => {
   test('union of primitives', () => {
     // union order is not deterministic so we have to be a bit loose here.
-    Ts.Assert.exact.ofAs<'any'>().onAs<P<number | null>>().toExtend<'number | null' | 'null | number'>()
+    Ts.Assert.sub.ofAs<'number | null' | 'null | number'>().onAs<P<number | null>>()
   })
 
   test('union including any, unknown, never', () => {

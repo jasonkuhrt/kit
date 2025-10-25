@@ -15,9 +15,9 @@ Test.property('preserves object references', fc.oneof(fc.object(), fc.array(fc.a
 })
 
 test('type: preserves input types', () => {
-  A<number>().on(Fn.identity(5))
-  A<string>().on(Fn.identity('hello'))
-  A<boolean>().on(Fn.identity(true))
+  A<5>().on(Fn.identity(5))
+  A<'hello'>().on(Fn.identity('hello'))
+  A<true>().on(Fn.identity(true))
   A<null>().on(Fn.identity(null))
   A<undefined>().on(Fn.identity(undefined))
 

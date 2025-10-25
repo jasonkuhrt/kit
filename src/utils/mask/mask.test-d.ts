@@ -7,7 +7,7 @@ const A = Ts.Assert.exact.ofAs
 type User = { name: string; email: string; age: number; password: string }
 
 // Boolean is always valid
-Ts.Assert.exact.ofAs<Pick<TestData, 'a' | 'c'>>().onAs<boolean>().toMatchTypeOf<Mask.InferOptions<User>>()
+Ts.Assert.sub.ofAs<Mask.InferOptions<User>>().onAs<boolean>()
 
 // Array of keys
 Ts.Assert.sub.ofAs<Mask.InferOptions<User>>().onAs<('name' | 'email')[]>()

@@ -32,6 +32,6 @@ describe('types', () => {
   })
   test('error: parameter: key: if target value not conforming to PropertyKey', () => {
     type e = Parameters<typeof Group.by<ab, 'date'>>[1]
-    Ts.Assert.exact.ofAs<Group.ErrorInvalidGroupKey<ab, 'date'>>().onAs<e>()
+    A<Group.ErrorInvalidGroupKey<ab, 'date'>>().on({} as e)
   })
 })
