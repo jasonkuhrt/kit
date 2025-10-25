@@ -18,7 +18,5 @@ test('type: preserves input types', () => {
   Ts.Assert.exact.ofAs<true>().on(Fn.identity(true))
   Ts.Assert.exact.ofAs<null>().on(Fn.identity(null))
   Ts.Assert.exact.ofAs<undefined>().on(Fn.identity(undefined))
-
-  const obj = { a: 1 } as const
-  Ts.Assert.sub.ofAs<{ readonly a: 1 }>().on(Fn.identity(obj))
+  Ts.Assert.sub.ofAs<{ readonly a: 1 }>().on(Fn.identity({ a: 1 } as const))
 })

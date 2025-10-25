@@ -2,7 +2,7 @@ import { Sch } from '#sch'
 import { Ts } from '#ts'
 import { Schema as S } from 'effect'
 
-const A = Ts.Assert.exact.ofAs
+const A = Ts.Assert.exact
 
 // Test Tagged Struct utilities
 {
@@ -11,18 +11,18 @@ const A = Ts.Assert.exact.ofAs
   const AB = S.Union(SchemaA, SchemaB)
 
   // ExtractByTag tests
-  A<typeof SchemaA>().onAs<Sch.Tagged.ExtractByTag<'A', typeof SchemaA>>()
+  A.of(SchemaA).onAs<Sch.Tagged.ExtractByTag<'A', typeof SchemaA>>()
   // @ts-expect-error Testing never type
-  A<never>().onAs<Sch.Tagged.ExtractByTag<'Wrong', typeof SchemaA>>()
-  A<typeof SchemaA>().onAs<Sch.Tagged.ExtractByTag<'A', typeof AB>>()
-  A<typeof SchemaB>().onAs<Sch.Tagged.ExtractByTag<'B', typeof AB>>()
+  A.ofAs<never>().onAs<Sch.Tagged.ExtractByTag<'Wrong', typeof SchemaA>>()
+  A.of(SchemaA).onAs<Sch.Tagged.ExtractByTag<'A', typeof AB>>()
+  A.of(SchemaB).onAs<Sch.Tagged.ExtractByTag<'B', typeof AB>>()
   // @ts-expect-error Testing never type
-  A<never>().onAs<Sch.Tagged.ExtractByTag<'C', typeof AB>>()
+  A.ofAs<never>().onAs<Sch.Tagged.ExtractByTag<'C', typeof AB>>()
 
   // DoesTaggedUnionContainTag tests
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'A', typeof AB>>()
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'B', typeof AB>>()
-  A<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'Wrong', typeof AB>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'A', typeof AB>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'B', typeof AB>>()
+  A.ofAs<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'Wrong', typeof AB>>()
 }
 
 // Test Union ADT type utilities
@@ -41,15 +41,15 @@ const A = Ts.Assert.exact.ofAs
   const make = Sch.Union.makeMake(LifecycleEvent)
 
   // Test that factory function has correct signature
-  A<Sch.Union.FnMake<typeof LifecycleEvent>>().on(make)
+  A.ofAs<Sch.Union.FnMake<typeof LifecycleEvent>>().on(make)
 
   // Test GetTags utility type
-  A<'LifecycleEventAdded' | 'LifecycleEventRemoved'>().onAs<
+  A.ofAs<'LifecycleEventAdded' | 'LifecycleEventRemoved'>().onAs<
     Sch.Union.GetTags<typeof LifecycleEvent>
   >()
 
   // Test OmitTag utility type
-  A<{ field: string }>().onAs<Sch.Tagged.OmitTag<{ _tag: 'test'; field: string }>>()
+  A.ofAs<{ field: string }>().onAs<Sch.Tagged.OmitTag<{ _tag: 'test'; field: string }>>()
 }
 
 // Test with complex schemas
@@ -61,28 +61,28 @@ const A = Ts.Assert.exact.ofAs
   const SimpleUnion = S.Union(UserCreated, UserDeleted, UserUpdated)
 
   // Should extract UserCreated
-  A<typeof UserCreated>().onAs<Sch.Tagged.ExtractByTag<'UserCreated', typeof SimpleUnion>>()
+  A.of(UserCreated).onAs<Sch.Tagged.ExtractByTag<'UserCreated', typeof SimpleUnion>>()
 
   // Should extract UserDeleted
-  A<typeof UserDeleted>().onAs<Sch.Tagged.ExtractByTag<'UserDeleted', typeof SimpleUnion>>()
+  A.of(UserDeleted).onAs<Sch.Tagged.ExtractByTag<'UserDeleted', typeof SimpleUnion>>()
 
   // Should return never for non-existent tag
   // @ts-expect-error Testing never type
-  A<never>().onAs<Sch.Tagged.ExtractByTag<'UserArchived', typeof SimpleUnion>>()
+  A.ofAs<never>().onAs<Sch.Tagged.ExtractByTag<'UserArchived', typeof SimpleUnion>>()
 
   // Test DoesTaggedUnionContainTag predicate
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'UserCreated', typeof SimpleUnion>>()
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'UserDeleted', typeof SimpleUnion>>()
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'UserUpdated', typeof SimpleUnion>>()
-  A<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'UserArchived', typeof SimpleUnion>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'UserCreated', typeof SimpleUnion>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'UserDeleted', typeof SimpleUnion>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'UserUpdated', typeof SimpleUnion>>()
+  A.ofAs<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'UserArchived', typeof SimpleUnion>>()
 }
 
 // Test single TaggedStruct (not a union)
 {
   const SingleStruct = S.TaggedStruct('SingleStruct', { data: S.String })
 
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'SingleStruct', typeof SingleStruct>>()
-  A<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'OtherStruct', typeof SingleStruct>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'SingleStruct', typeof SingleStruct>>()
+  A.ofAs<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'OtherStruct', typeof SingleStruct>>()
 }
 
 // Test complex tag formats
@@ -94,10 +94,10 @@ const A = Ts.Assert.exact.ofAs
 
   const ComplexUnion = S.Union(CamelCase, SnakeCase, KebabCase, MixedCase)
 
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'CamelCaseTag', typeof ComplexUnion>>()
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'snake_case_tag', typeof ComplexUnion>>()
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'kebab-case-tag', typeof ComplexUnion>>()
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'Mixed_Case-Tag', typeof ComplexUnion>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'CamelCaseTag', typeof ComplexUnion>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'snake_case_tag', typeof ComplexUnion>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'kebab-case-tag', typeof ComplexUnion>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'Mixed_Case-Tag', typeof ComplexUnion>>()
 }
 
 // Test Suspend unwrapping in unions
@@ -113,13 +113,13 @@ const A = Ts.Assert.exact.ofAs
   const SuspendUnion = S.Union(SuspendedDirectEvent, SuspendedSuspendedEvent)
 
   // Should find DirectEvent even though it's wrapped in suspend
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'DirectEvent', typeof SuspendUnion>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'DirectEvent', typeof SuspendUnion>>()
 
   // Should find SuspendedEvent even though it's wrapped in suspend
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'SuspendedEvent', typeof SuspendUnion>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'SuspendedEvent', typeof SuspendUnion>>()
 
   // Should not find non-existent tag
-  A<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'NonExistentEvent', typeof SuspendUnion>>()
+  A.ofAs<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'NonExistentEvent', typeof SuspendUnion>>()
 }
 
 // Test mixed suspended and direct schemas
@@ -132,12 +132,12 @@ const A = Ts.Assert.exact.ofAs
   const MixedSuspendUnion = S.Union(MixedA, MixedB, SuspendedMixedC)
 
   // Should find direct schemas
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'MixedA', typeof MixedSuspendUnion>>()
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'MixedB', typeof MixedSuspendUnion>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'MixedA', typeof MixedSuspendUnion>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'MixedB', typeof MixedSuspendUnion>>()
 
   // Should find suspended schema
-  A<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'MixedC', typeof MixedSuspendUnion>>()
+  A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'MixedC', typeof MixedSuspendUnion>>()
 
   // Should not find non-existent
-  A<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'MixedD', typeof MixedSuspendUnion>>()
+  A.ofAs<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'MixedD', typeof MixedSuspendUnion>>()
 }
