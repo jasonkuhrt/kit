@@ -302,9 +302,9 @@ test('type: mode is conditional to key', () => {
   c({ key: kop, mode: 'auto' })
   c({ key: kop, mode: 'strong' })
   // ━ Via object key
+  // @ts-expect-error
   c({ key: ko, mode: 'strong' })
   c({ key: ko, mode: 'auto' })
-  // @ts-expect-error
   c({ key: ko, mode: 'weak' })
   // ━ Via unknown key
   c({ mode: modeAny as any })
