@@ -25,9 +25,16 @@ export type Analysis =
 
 /**
  * Long flag analysis (starts with `--`).
+ *
+ * Generic interface that extends the Effect Schema class to preserve literal types
+ * for type-level analysis while maintaining structural compatibility.
  */
-export interface AnalysisLongFlag {
-  _tag: 'long-flag'
+export interface AnalysisLongFlagLiteral<
+  $Name extends string = string,
+  $Negated extends boolean = boolean,
+  $Value extends string | null = string | null,
+  $Original extends string = string,
+> extends ArgLongFlag {
   /**
    * Flag name in camelCase, without dashes and without negation prefix.
    *
@@ -35,7 +42,7 @@ export interface AnalysisLongFlag {
    * - `"--foo-bar"` → `"fooBar"`
    * - `"--no-verbose"` → `"verbose"` (negation prefix stripped)
    */
-  name: string
+  name: $Name
   /**
    * Whether this flag has a negation prefix (`--no-*` pattern).
    *
@@ -43,32 +50,46 @@ export interface AnalysisLongFlag {
    * - `"--verbose"` → `false`
    * - `"--no-verbose"` → `true`
    */
-  negated: boolean
+  negated: $Negated
   /** Value from equals syntax, or null if no value (e.g., "5" from "--count=5") */
-  value: string | null
+  value: $Value
   /** Original input string */
-  original: string
+  original: $Original
 }
 
 /**
- * Short flag analysis (starts with `-` but not `--`).
+ * Long flag analysis with widened types (for runtime use).
  */
-export interface AnalysisShortFlag {
-  _tag: 'short-flag'
+export type AnalysisLongFlag = AnalysisLongFlagLiteral
+
+/**
+ * Short flag analysis (starts with `-` but not `--`).
+ *
+ * Generic interface that extends the Effect Schema class to preserve literal types.
+ */
+export interface AnalysisShortFlagLiteral<
+  $Name extends string = string,
+  $Value extends string | null = string | null,
+  $Original extends string = string,
+> extends ArgShortFlag {
   /** Flag name - single character (e.g., "v" from "-v") */
-  name: string
+  name: $Name
   /** Value from equals syntax, or null if no value (e.g., "5" from "-v=5") */
-  value: string | null
+  value: $Value
   /** Original input string */
-  original: string
+  original: $Original
 }
+
+/**
+ * Short flag analysis with widened types (for runtime use).
+ */
+export type AnalysisShortFlag = AnalysisShortFlagLiteral
 
 /**
  * Short flag cluster analysis (multi-character short flag like `-abc`).
  *
+ * Generic interface that extends the Effect Schema class to preserve literal types.
  * Represents clustered short flags where the last flag receives any value.
- * The first n-1 flags are represented as names only (they never have values).
- * The last flag is a full AnalysisShortFlag object with its value.
  *
  * @example
  * ```typescript
@@ -79,48 +100,64 @@ export interface AnalysisShortFlag {
  *   shortFlag: { _tag: 'short-flag', name: 'c', value: null, original: '-c' },
  *   original: '-abc'
  * }
- *
- * // analyze('-abc=foo')
- * {
- *   _tag: 'short-flag-cluster',
- *   additionalShortFlagNames: ['a', 'b'],
- *   shortFlag: { _tag: 'short-flag', name: 'c', value: 'foo', original: '-c=foo' },
- *   original: '-abc=foo'
- * }
  * ```
  */
-export interface AnalysisShortFlagCluster {
-  _tag: 'short-flag-cluster'
+export interface AnalysisShortFlagClusterLiteral<
+  $AdditionalNames extends string[] = string[],
+  $ShortFlag extends AnalysisShortFlagLiteral = AnalysisShortFlagLiteral,
+  $Original extends string = string,
+> extends ArgShortFlagCluster {
   /** Names of all flags except the last (minimum 1) */
-  additionalShortFlagNames: string[]
+  additionalShortFlagNames: $AdditionalNames
   /** The last flag in the cluster (receives any value) */
-  shortFlag: AnalysisShortFlag
+  shortFlag: $ShortFlag
   /** Original input string */
-  original: string
+  original: $Original
 }
 
 /**
- * Positional argument analysis (doesn't start with `-`).
+ * Short flag cluster analysis with widened types (for runtime use).
  */
-export interface AnalysisPositional {
-  _tag: 'positional'
+export type AnalysisShortFlagCluster = AnalysisShortFlagClusterLiteral
+
+/**
+ * Positional argument analysis (doesn't start with `-`).
+ *
+ * Generic interface that extends the Effect Schema class to preserve literal types.
+ */
+export interface AnalysisPositionalLiteral<
+  $Value extends string = string,
+  $Original extends string = string,
+> extends ArgPositional {
   /** The positional argument value */
-  value: string
+  value: $Value
   /** Original input string (same as value) */
-  original: string
+  original: $Original
 }
+
+/**
+ * Positional argument analysis with widened types (for runtime use).
+ */
+export type AnalysisPositional = AnalysisPositionalLiteral
 
 /**
  * Separator analysis (exactly `--`).
  *
  * Used to separate flags from positional arguments.
  * Everything after `--` should be treated as positional, even if it looks like a flag.
+ *
+ * Generic interface that extends the Effect Schema class.
  */
-export interface AnalysisSeparator {
-  _tag: 'separator'
+export interface AnalysisSeparatorLiteral extends ArgSeparator {
+  value: null
   /** Always "--" */
   original: '--'
 }
+
+/**
+ * Separator analysis (for runtime use).
+ */
+export type AnalysisSeparator = AnalysisSeparatorLiteral
 
 // ============================================================================
 // Runtime Analyzer
@@ -165,8 +202,8 @@ export interface AnalysisSeparator {
  * // { _tag: 'long-flag', name: 'fooBar', negated: false, value: null, original: '--foo-bar' }
  * ```
  */
-export function analyze<const input extends string>(input: input): Arg.fromString<input> {
-  return analyze_(input) as Arg.fromString<input>
+export function analyze<const input extends string>(input: input): Arg.Analyze<input> {
+  return analyze_(input) as Arg.Analyze<input>
 }
 
 /**
@@ -177,6 +214,7 @@ export function analyze_(input: string): Analysis {
   if (input === '--') {
     return {
       _tag: 'separator',
+      value: null,
       original: '--',
     }
   }
@@ -431,7 +469,7 @@ const ArgNamespace = {
    * ```
    */
   fromString: (<const $input extends string>(
-    $input: Arg.fromString<$input> extends string ? Ts.Err.StaticError<Arg.fromString<$input>>
+    $input: Arg.Analyze<$input> extends string ? Ts.Err.StaticError<Arg.Analyze<$input>>
       : $input,
   ) => {
     return S.decodeSync(ArgNamespace.String)($input as any) as any
@@ -475,8 +513,8 @@ const ArgNamespace = {
  * const arg5 = Arg.fromString('file.txt')
  * // { _tag: 'positional', value: 'file.txt', original: 'file.txt' }
  *
- * // Type-level parsing
- * type Valid = Arg.fromString<'--foo-bar'>
+ * // Type-level analysis (literal preservation)
+ * type Valid = Arg.Analyze<'--foo-bar'>
  * // { _tag: 'long-flag', name: 'fooBar', negated: false, value: null, original: '--foo-bar' }
  * ```
  */
@@ -575,177 +613,145 @@ export namespace Arg {
   // ==========================================================================
 
   /**
-   * Long flag analysis type.
+   * Long flag analysis type (for type-level Arg.Analyze<> use).
    * @param $stripped - The flag without the `--` prefix
    * @param $original - The original input (with `--` prefix)
    */
-  export type AnalysisLongFlag<
+  type AnalysisLongFlagFromString<
     $stripped extends string = string,
     $original extends string = $stripped,
-  > = {
-    _tag: 'long-flag'
-    name: DetectNegation<CamelCase<SplitOnEquals<$stripped>[0]>>['baseName']
-    negated: DetectNegation<CamelCase<SplitOnEquals<$stripped>[0]>>['negated']
-    value: SplitOnEquals<$stripped>[1]
-    original: $original
-  }
+  > = AnalysisLongFlagLiteral<
+    DetectNegation<CamelCase<SplitOnEquals<$stripped>[0]>>['baseName'],
+    DetectNegation<CamelCase<SplitOnEquals<$stripped>[0]>>['negated'],
+    SplitOnEquals<$stripped>[1],
+    $original
+  >
 
   /**
-   * Short flag analysis type.
+   * Short flag analysis type (for type-level Arg.Analyze<> use).
    * @param $stripped - The flag without the `-` prefix
    * @param $original - The original input (with `-` prefix)
    */
-  export type AnalysisShortFlag<
+  type AnalysisShortFlagFromString<
     $stripped extends string = string,
     $original extends string = $stripped,
-  > = {
-    _tag: 'short-flag'
-    name: SplitOnEquals<$stripped>[0]
-    value: SplitOnEquals<$stripped>[1]
-    original: $original
-  }
+  > = AnalysisShortFlagLiteral<
+    SplitOnEquals<$stripped>[0],
+    SplitOnEquals<$stripped>[1],
+    $original
+  >
 
   /**
-   * Short flag cluster analysis type.
-   *
-   * Represents clustered short flags where the last flag receives any value.
-   * The first n-1 flags are represented as names only (they never have values).
-   * The last flag is a full AnalysisShortFlag object with its value.
+   * Short flag cluster analysis type (for type-level Arg.Analyze<> use).
    *
    * @param $stripped - The flag characters without the `-` prefix
    * @param $original - The original input (with `-` prefix)
-   *
-   * @example
-   * ```typescript
-   * type A = AnalysisShortFlagCluster<'abc', '-abc'>
-   * // {
-   * //   _tag: 'short-flag-cluster',
-   * //   additionalShortFlagNames: ['a', 'b'],
-   * //   shortFlag: { _tag: 'short-flag', name: 'c', value: null, original: '-c' },
-   * //   original: '-abc'
-   * // }
-   *
-   * type B = AnalysisShortFlagCluster<'xyz=foo', '-xyz=foo'>
-   * // {
-   * //   _tag: 'short-flag-cluster',
-   * //   additionalShortFlagNames: ['x', 'y'],
-   * //   shortFlag: { _tag: 'short-flag', name: 'z', value: 'foo', original: '-z=foo' },
-   * //   original: '-xyz=foo'
-   * // }
-   * ```
    */
-  export type AnalysisShortFlagCluster<
+  type AnalysisShortFlagClusterFromString<
     $stripped extends string = string,
     $original extends string = $stripped,
   > = SplitChars<SplitOnEquals<$stripped>[0]> extends infer __chars__ extends [string, string, ...string[]]
     ? SplitLastChar<__chars__> extends
-      { additionalNames: infer __additional__ extends string[]; lastChar: infer __last__ extends string } ? {
-        _tag: 'short-flag-cluster'
-        additionalShortFlagNames: __additional__
-        shortFlag: AnalysisShortFlag<
+      { additionalNames: infer __additional__ extends string[]; lastChar: infer __last__ extends string }
+      ? AnalysisShortFlagClusterLiteral<
+        __additional__,
+        AnalysisShortFlagFromString<
           SplitOnEquals<$stripped>[1] extends null ? __last__ : `${__last__}=${SplitOnEquals<$stripped>[1]}`,
           SplitOnEquals<$stripped>[1] extends null ? `-${__last__}` : `-${__last__}=${SplitOnEquals<$stripped>[1]}`
-        >
-        original: $original
-      }
+        >,
+        $original
+      >
     : never
     : never
 
   /**
-   * Positional argument analysis type.
+   * Positional argument analysis type (for type-level Arg.Analyze<> use).
    */
-  export type AnalysisPositional<$S extends string = string> = {
-    _tag: 'positional'
-    value: $S
-    original: $S
-  }
+  type AnalysisPositionalFromString<$S extends string = string> = AnalysisPositionalLiteral<$S, $S>
 
   /**
-   * Separator analysis type.
+   * Separator analysis type (for type-level Arg.Analyze<> use).
    */
-  export type AnalysisSeparator = {
-    _tag: 'separator'
-    original: '--'
-  }
+  type AnalysisSeparatorFromString = AnalysisSeparatorLiteral
 
   // ==========================================================================
   // Main Type-Level Analyzer
   // ==========================================================================
 
   /**
-   * Type-level parser that determines CLI argument structure at compile time.
+   * Type-level analyzer that determines CLI argument structure at compile time.
    *
-   * Mirrors the runtime fromString() function for type-level analysis.
+   * Preserves literal types for precise type-level parsing.
    * Falls back to Analysis union when given non-literal string type.
    *
    * @example
    * ```typescript
-   * type A = Arg.fromString<'--verbose'>
-   * // { _tag: 'long-flag', name: 'verbose', value: null, original: '--verbose' }
+   * type A = Arg.Analyze<'--verbose'>
+   * // { _tag: 'long-flag', name: 'verbose', negated: false, value: null, original: '--verbose' }
    *
-   * type B = Arg.fromString<'--count=5'>
-   * // { _tag: 'long-flag', name: 'count', value: '5', original: '--count=5' }
+   * type B = Arg.Analyze<'--count=5'>
+   * // { _tag: 'long-flag', name: 'count', negated: false, value: '5', original: '--count=5' }
    *
-   * type C = Arg.fromString<'-v'>
+   * type C = Arg.Analyze<'-v'>
    * // { _tag: 'short-flag', name: 'v', value: null, original: '-v' }
    *
-   * type D = Arg.fromString<'-abc'>
-   * // { _tag: 'short-flag-cluster', additionalShortFlagNames: [...], original: '-abc' }
+   * type D = Arg.Analyze<'-abc'>
+   * // { _tag: 'short-flag-cluster', additionalShortFlagNames: ['a', 'b'], ... }
    *
-   * type E = Arg.fromString<'file.txt'>
+   * type E = Arg.Analyze<'file.txt'>
    * // { _tag: 'positional', value: 'file.txt', original: 'file.txt' }
    *
-   * type F = Arg.fromString<'--'>
+   * type F = Arg.Analyze<'--'>
    * // { _tag: 'separator', original: '--' }
    * ```
    */
-  export type fromString<$S extends string> =
+  export type Analyze<$S extends string> =
     // Non-literal string fallback
     string extends $S ? Analysis
       // Separator: exactly "--"
-      : $S extends '--' ? AnalysisSeparator
+      : $S extends '--' ? AnalysisSeparatorFromString
       // Long flag: starts with "--" (but not "---")
-      : $S extends `--${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositional<$S> // Malformed: "---something"
-        : AnalysisLongFlag<__rest__, $S>
+      : $S extends `--${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositionalFromString<$S> // Malformed: "---something"
+        : AnalysisLongFlagFromString<__rest__, $S>
       // Short flag or cluster: starts with "-" (but not "--")
-      : $S extends `-${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositional<$S> // Malformed: "---something"
+      : $S extends `-${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositionalFromString<$S> // Malformed: "---something"
         : SplitOnEquals<__rest__>[0] extends `${string}${string}${infer ___}` // Multi-char (2+)
-          ? AnalysisShortFlagCluster<__rest__, $S>
-        : AnalysisShortFlag<__rest__, $S>
+          ? AnalysisShortFlagClusterFromString<__rest__, $S>
+        : AnalysisShortFlagFromString<__rest__, $S>
       // Positional: doesn't match any flag pattern
-      : AnalysisPositional<$S>
+      : AnalysisPositionalFromString<$S>
 
   // ==========================================================================
   // Utility Type Exports
   // ==========================================================================
 
   /**
-   * Extract just the tag from parsed result.
+   * Extract just the tag from analysis result.
    */
-  export type Tag<$S extends string> = fromString<$S>['_tag']
+  export type AnalyzeTag<$S extends string> = Analyze<$S>['_tag']
 
   /**
-   * Check if argument would be parsed as a long flag.
+   * Check if argument would be analyzed as a long flag.
    */
-  export type IsLongFlag<$S extends string> = Tag<$S> extends 'long-flag' ? true : false
+  export type IsLongFlag<$S extends string> = AnalyzeTag<$S> extends 'long-flag' ? true : false
 
   /**
-   * Check if argument would be parsed as a short flag.
+   * Check if argument would be analyzed as a short flag.
    */
-  export type IsShortFlag<$S extends string> = Tag<$S> extends 'short-flag' ? true : false
+  export type IsShortFlag<$S extends string> = AnalyzeTag<$S> extends 'short-flag' ? true : false
 
   /**
-   * Check if argument would be parsed as positional.
+   * Check if argument would be analyzed as positional.
    */
-  export type IsPositional<$S extends string> = Tag<$S> extends 'positional' ? true : false
+  export type IsPositional<$S extends string> = AnalyzeTag<$S> extends 'positional' ? true : false
 
   /**
-   * Check if argument would be parsed as separator.
+   * Check if argument would be analyzed as separator.
    */
-  export type IsSeparator<$S extends string> = Tag<$S> extends 'separator' ? true : false
+  export type IsSeparator<$S extends string> = AnalyzeTag<$S> extends 'separator' ? true : false
 
   /**
-   * Check if argument would be parsed as any kind of flag (long or short).
+   * Check if argument would be analyzed as any kind of flag (long or short).
    */
-  export type IsFlag<$S extends string> = Tag<$S> extends 'long-flag' | 'short-flag' ? true : false
+  export type IsFlag<$S extends string> = AnalyzeTag<$S> extends 'long-flag' | 'short-flag' ? true : false
 }
