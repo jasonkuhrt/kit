@@ -65,10 +65,10 @@ importers:
         version: 0.19.0
       '@effect/platform':
         specifier: ^0.92.1
-        version: 0.92.1(effect@3.18.1)
+        version: 0.92.1(effect@3.18.4)
       '@effect/vitest':
         specifier: ^0.26.0
-        version: 0.26.0(effect@3.18.1)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.6.1)(tsx@4.20.6))
+        version: 0.26.0(effect@3.18.4)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.6.1)(tsx@4.20.6))
       '@shikijs/transformers':
         specifier: ^3.13.0
         version: 3.13.0
@@ -95,7 +95,7 @@ importers:
         version: 0.10.0
       effect:
         specifier: ^3.18.1
-        version: 3.18.1
+        version: 3.18.4
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -122,7 +122,7 @@ importers:
         version: 5.9.3
       vite-tsconfig-paths:
         specifier: ^5.1.4
-        version: 5.1.4(typescript@5.9.3)(vite@5.4.20(@types/node@24.6.1))
+        version: 5.1.4(typescript@5.9.3)(vite@7.1.7(@types/node@24.6.1)(tsx@4.20.6))
       vitepress:
         specifier: ^1.6.4
         version: 1.6.4(@algolia/client-search@5.39.0)(@types/node@24.6.1)(postcss@8.5.6)(search-insights@2.17.3)(typescript@5.9.3)
@@ -1630,8 +1630,8 @@ packages:
   ecc-jsbn@0.1.2:
     resolution: {integrity: sha512-eh9O+hwRHNbG4BLTjEl3nw044CkGm5X6LoaCf7LPp7UU8Qrt47JYNi6nPX8xjW97TKGKm1ouctg0QSpZe9qrnw==}
 
-  effect@3.18.1:
-    resolution: {integrity: sha512-5aJ7yRlvvkBplMSnhPyol7WYvPenvau12asO3HJhG/126SySWV9D8bscGTbV52XxtC5bwO/VUd5ffjE6uep/1A==}
+  effect@3.18.4:
+    resolution: {integrity: sha512-b1LXQJLe9D11wfnOKAk3PKxuqYshQ0Heez+y5pnkd3jLj1yx9QhM72zZ9uUrOQyNvrs2GZZd/3maL0ZV18YuDA==}
 
   emoji-regex-xs@1.0.0:
     resolution: {integrity: sha512-LRlerrMYoIDrT6jgpeZ2YYl/L8EulRTt5hQcYjy5AInh7HWXKimpqx68aknBFpGL2+/IcogTcaydJEgaTmOpDg==}
@@ -3287,16 +3287,16 @@ snapshots:
   '@dprint/win32-x64@0.50.2':
     optional: true
 
-  '@effect/platform@0.92.1(effect@3.18.1)':
+  '@effect/platform@0.92.1(effect@3.18.4)':
     dependencies:
-      effect: 3.18.1
+      effect: 3.18.4
       find-my-way-ts: 0.1.6
       msgpackr: 1.11.5
       multipasta: 0.2.7
 
-  '@effect/vitest@0.26.0(effect@3.18.1)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.6.1)(tsx@4.20.6))':
+  '@effect/vitest@0.26.0(effect@3.18.4)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.6.1)(tsx@4.20.6))':
     dependencies:
-      effect: 3.18.1
+      effect: 3.18.4
       vitest: 3.2.4(@types/debug@4.1.12)(@types/node@24.6.1)(tsx@4.20.6)
 
   '@esbuild/aix-ppc64@0.21.5':
@@ -4591,7 +4591,7 @@ snapshots:
       jsbn: 0.1.1
       safer-buffer: 2.1.2
 
-  effect@3.18.1:
+  effect@3.18.4:
     dependencies:
       '@standard-schema/spec': 1.0.0
       fast-check: 3.23.2
@@ -6061,13 +6061,13 @@ snapshots:
       - tsx
       - yaml
 
-  vite-tsconfig-paths@5.1.4(typescript@5.9.3)(vite@5.4.20(@types/node@24.6.1)):
+  vite-tsconfig-paths@5.1.4(typescript@5.9.3)(vite@7.1.7(@types/node@24.6.1)(tsx@4.20.6)):
     dependencies:
       debug: 4.4.3
       globrex: 0.1.2
       tsconfck: 3.1.6(typescript@5.9.3)
     optionalDependencies:
-      vite: 5.4.20(@types/node@24.6.1)
+      vite: 7.1.7(@types/node@24.6.1)(tsx@4.20.6)
     transitivePeerDependencies:
       - supports-color
       - typescript
