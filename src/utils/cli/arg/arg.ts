@@ -66,38 +66,35 @@ export interface AnalysisShortFlag {
 /**
  * Short flag cluster analysis (multi-character short flag like `-abc`).
  *
- * Expands clustered short flags into individual flags.
- * Value (if present) is attached only to the last flag.
+ * Represents clustered short flags where the last flag receives any value.
+ * The first n-1 flags are represented as names only (they never have values).
+ * The last flag is a full AnalysisShortFlag object with its value.
  *
  * @example
  * ```typescript
  * // analyze('-abc')
  * {
  *   _tag: 'short-flag-cluster',
- *   flags: [
- *     { _tag: 'short-flag', name: 'a', value: null, original: '-a' },
- *     { _tag: 'short-flag', name: 'b', value: null, original: '-b' },
- *     { _tag: 'short-flag', name: 'c', value: null, original: '-c' }
- *   ],
+ *   additionalShortFlagNames: ['a', 'b'],
+ *   shortFlag: { _tag: 'short-flag', name: 'c', value: null, original: '-c' },
  *   original: '-abc'
  * }
  *
  * // analyze('-abc=foo')
  * {
  *   _tag: 'short-flag-cluster',
- *   flags: [
- *     { _tag: 'short-flag', name: 'a', value: null, original: '-a' },
- *     { _tag: 'short-flag', name: 'b', value: null, original: '-b' },
- *     { _tag: 'short-flag', name: 'c', value: 'foo', original: '-c=foo' }
- *   ],
+ *   additionalShortFlagNames: ['a', 'b'],
+ *   shortFlag: { _tag: 'short-flag', name: 'c', value: 'foo', original: '-c=foo' },
  *   original: '-abc=foo'
  * }
  * ```
  */
 export interface AnalysisShortFlagCluster {
   _tag: 'short-flag-cluster'
-  /** Array of individual short flags (minimum 2) */
-  flags: [AnalysisShortFlag, AnalysisShortFlag, ...AnalysisShortFlag[]]
+  /** Names of all flags except the last (minimum 1) */
+  additionalShortFlagNames: string[]
+  /** The last flag in the cluster (receives any value) */
+  shortFlag: AnalysisShortFlag
   /** Original input string */
   original: string
 }
@@ -237,19 +234,18 @@ export function analyze_(input: string): Analysis {
     // Cluster expansion: multi-character short flag (e.g., "-abc")
     if (name.length > 1) {
       const chars = name.split('')
-      const flags: AnalysisShortFlag[] = chars.map((char, index) => {
-        const isLast = index === chars.length - 1
-        return {
-          _tag: 'short-flag',
-          name: char,
-          value: isLast ? value : null, // Value goes to last flag only
-          original: isLast && value !== null ? `-${char}=${value}` : `-${char}`,
-        }
-      })
+      const lastChar = chars[chars.length - 1]!
+      const additionalChars = chars.slice(0, -1)
 
       return {
         _tag: 'short-flag-cluster',
-        flags: flags as [AnalysisShortFlag, AnalysisShortFlag, ...AnalysisShortFlag[]],
+        additionalShortFlagNames: additionalChars,
+        shortFlag: {
+          _tag: 'short-flag',
+          name: lastChar,
+          value,
+          original: value !== null ? `-${lastChar}=${value}` : `-${lastChar}`,
+        },
         original: input,
       }
     }
@@ -278,7 +274,7 @@ export function analyze_(input: string): Analysis {
 /**
  * Schema for long flag argument (`--verbose`, `--count=5`).
  */
-class ArgLongFlag extends S.TaggedClass<ArgLongFlag>()('long-flag', {
+export class ArgLongFlag extends S.TaggedClass<ArgLongFlag>()('long-flag', {
   name: S.String,
   negated: S.Boolean,
   value: S.NullOr(S.String),
@@ -288,7 +284,7 @@ class ArgLongFlag extends S.TaggedClass<ArgLongFlag>()('long-flag', {
 /**
  * Schema for short flag argument (`-v`, `-n=10`).
  */
-class ArgShortFlag extends S.TaggedClass<ArgShortFlag>()('short-flag', {
+export class ArgShortFlag extends S.TaggedClass<ArgShortFlag>()('short-flag', {
   name: S.String,
   value: S.NullOr(S.String),
   original: S.String,
@@ -299,15 +295,16 @@ class ArgShortFlag extends S.TaggedClass<ArgShortFlag>()('short-flag', {
  *
  * Represents a multi-character short flag that expands into individual flags.
  */
-class ArgShortFlagCluster extends S.TaggedClass<ArgShortFlagCluster>()('short-flag-cluster', {
-  flags: S.Array(ArgShortFlag).pipe(S.minItems(2)),
+export class ArgShortFlagCluster extends S.TaggedClass<ArgShortFlagCluster>()('short-flag-cluster', {
+  shortFlag: ArgShortFlag,
+  additionalShortFlagNames: S.Array(S.String),
   original: S.String,
 }) {}
 
 /**
  * Schema for positional argument (`file.txt`, `123`).
  */
-class ArgPositional extends S.TaggedClass<ArgPositional>()('positional', {
+export class ArgPositional extends S.TaggedClass<ArgPositional>()('positional', {
   value: S.String,
   original: S.String,
 }) {}
@@ -315,7 +312,7 @@ class ArgPositional extends S.TaggedClass<ArgPositional>()('positional', {
 /**
  * Schema for separator argument (`--`).
  */
-class ArgSeparator extends S.TaggedClass<ArgSeparator>()('separator', {
+export class ArgSeparator extends S.TaggedClass<ArgSeparator>()('separator', {
   value: S.Null,
   original: S.Literal('--'),
 }) {}
@@ -367,14 +364,12 @@ const ArgNamespace = {
           case 'short-flag-cluster':
             return ParseResult.succeed(
               new ArgShortFlagCluster({
-                flags: analysis.flags.map(
-                  (f) =>
-                    new ArgShortFlag({
-                      name: f.name,
-                      value: f.value,
-                      original: f.original,
-                    }),
-                ),
+                additionalShortFlagNames: analysis.additionalShortFlagNames,
+                shortFlag: new ArgShortFlag({
+                  name: analysis.shortFlag.name,
+                  value: analysis.shortFlag.value,
+                  original: analysis.shortFlag.original,
+                }),
                 original: analysis.original,
               }),
             )
@@ -559,41 +554,21 @@ export namespace Arg {
     : []
 
   /**
-   * Map an array of characters to AnalysisShortFlag types.
-   * Value is attached only to the last flag in the array.
+   * Split an array of characters into all-but-last (additionalNames) and last character.
    *
    * @example
    * ```typescript
-   * type A = MapToShortFlags<['a', 'b', 'c'], null, '-abc'>
-   * // [
-   * //   { _tag: 'short-flag', name: 'a', value: null, original: '-a' },
-   * //   { _tag: 'short-flag', name: 'b', value: null, original: '-b' },
-   * //   { _tag: 'short-flag', name: 'c', value: null, original: '-c' }
-   * // ]
+   * type A = SplitLastChar<['a', 'b', 'c']>
+   * // { additionalNames: ['a', 'b'], lastChar: 'c' }
    *
-   * type B = MapToShortFlags<['x', 'y'], 'foo', '-xy=foo'>
-   * // [
-   * //   { _tag: 'short-flag', name: 'x', value: null, original: '-x' },
-   * //   { _tag: 'short-flag', name: 'y', value: 'foo', original: '-y=foo' }
-   * // ]
+   * type B = SplitLastChar<['x', 'y']>
+   * // { additionalNames: ['x'], lastChar: 'y' }
    * ```
    */
-  type MapToShortFlags<
-    $chars extends string[],
-    $value extends string | null,
-    $original extends string,
-  > = $chars extends [infer __first__ extends string, ...infer __rest__ extends string[]] ? __rest__['length'] extends 0 // Last flag - attach value
-      ? [
-        AnalysisShortFlag<
-          $value extends null ? __first__ : `${__first__}=${$value}`,
-          $value extends null ? `-${__first__}` : `-${__first__}=${$value}`
-        >,
-      ]
-    : [
-      AnalysisShortFlag<__first__, `-${__first__}`>,
-      ...MapToShortFlags<__rest__, $value, $original>,
-    ]
-    : []
+  type SplitLastChar<$chars extends [string, ...string[]]> = $chars extends
+    [...infer __rest__ extends string[], infer __last__ extends string]
+    ? { additionalNames: __rest__; lastChar: __last__ }
+    : never
 
   // ==========================================================================
   // Analysis Result Types (Type-Level)
@@ -633,8 +608,9 @@ export namespace Arg {
   /**
    * Short flag cluster analysis type.
    *
-   * Expands multi-character short flags into individual flags.
-   * Value (if present) is attached only to the last flag.
+   * Represents clustered short flags where the last flag receives any value.
+   * The first n-1 flags are represented as names only (they never have values).
+   * The last flag is a full AnalysisShortFlag object with its value.
    *
    * @param $stripped - The flag characters without the `-` prefix
    * @param $original - The original input (with `-` prefix)
@@ -644,23 +620,36 @@ export namespace Arg {
    * type A = AnalysisShortFlagCluster<'abc', '-abc'>
    * // {
    * //   _tag: 'short-flag-cluster',
-   * //   flags: [
-   * //     { _tag: 'short-flag', name: 'a', value: null, original: '-a' },
-   * //     { _tag: 'short-flag', name: 'b', value: null, original: '-b' },
-   * //     { _tag: 'short-flag', name: 'c', value: null, original: '-c' }
-   * //   ],
+   * //   additionalShortFlagNames: ['a', 'b'],
+   * //   shortFlag: { _tag: 'short-flag', name: 'c', value: null, original: '-c' },
    * //   original: '-abc'
+   * // }
+   *
+   * type B = AnalysisShortFlagCluster<'xyz=foo', '-xyz=foo'>
+   * // {
+   * //   _tag: 'short-flag-cluster',
+   * //   additionalShortFlagNames: ['x', 'y'],
+   * //   shortFlag: { _tag: 'short-flag', name: 'z', value: 'foo', original: '-z=foo' },
+   * //   original: '-xyz=foo'
    * // }
    * ```
    */
   export type AnalysisShortFlagCluster<
     $stripped extends string = string,
     $original extends string = $stripped,
-  > = {
-    _tag: 'short-flag-cluster'
-    flags: MapToShortFlags<SplitChars<SplitOnEquals<$stripped>[0]>, SplitOnEquals<$stripped>[1], $original>
-    original: $original
-  }
+  > = SplitChars<SplitOnEquals<$stripped>[0]> extends infer __chars__ extends [string, string, ...string[]]
+    ? SplitLastChar<__chars__> extends
+      { additionalNames: infer __additional__ extends string[]; lastChar: infer __last__ extends string } ? {
+        _tag: 'short-flag-cluster'
+        additionalShortFlagNames: __additional__
+        shortFlag: AnalysisShortFlag<
+          SplitOnEquals<$stripped>[1] extends null ? __last__ : `${__last__}=${SplitOnEquals<$stripped>[1]}`,
+          SplitOnEquals<$stripped>[1] extends null ? `-${__last__}` : `-${__last__}=${SplitOnEquals<$stripped>[1]}`
+        >
+        original: $original
+      }
+    : never
+    : never
 
   /**
    * Positional argument analysis type.
