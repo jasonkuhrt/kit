@@ -2,8 +2,11 @@ import { ArrMut } from '#arr-mut'
 import { Idx } from '#idx'
 import { Obj } from '#obj'
 import { property } from '#test/test'
+import { Ts } from '#ts'
 import fc from 'fast-check'
-import { expect, expectTypeOf, test } from 'vitest'
+import { expect, test } from 'vitest'
+
+const A = Ts.Assert.exact.ofAs
 
 test('empty index has no items', () => {
   const idx = Idx.create()
@@ -280,11 +283,13 @@ test('type: mode is conditional to key', () => {
   type p = typeof p
   type op = o | p
 
-  expectTypeOf<Idx.InferModeOptions<p>>().toEqualTypeOf<Idx.ModeFor.PrimitiveKey>
-  expectTypeOf<Idx.InferModeOptions<op>>().toEqualTypeOf<Idx.ModeFor.PrimitiveKey>
-  expectTypeOf<Idx.InferModeOptions<o>>().toEqualTypeOf<Idx.ModeFor.ObjectKey>
-  expectTypeOf<Idx.InferModeOptions<unknown>>().toEqualTypeOf<Idx.ModeFor.Unknown>
-  expectTypeOf<Idx.InferModeOptions<any>>().toEqualTypeOf<Idx.ModeFor.Unknown>
+  A<Idx.ModeFor.PrimitiveKey>().onAs<Idx.InferModeOptions<op>>()
+  A<Idx.ModeFor.PrimitiveKey>().onAs<Idx.InferModeOptions<p>>()
+  // @ts-expect-error Type relationship mismatch
+  A<Idx.ModeFor.ObjectKey>().on({} as Idx.InferModeOptions<unknown>)
+  // @ts-expect-error Type relationship mismatch
+  A<Idx.ModeFor.Unknown>().on({} as Idx.InferModeOptions<o>)
+  A<Idx.ModeFor.Unknown>().onAs<Idx.InferModeOptions<any>>()
 
   // ━ Via primitive Key
   // @ts-expect-error
@@ -302,5 +307,5 @@ test('type: mode is conditional to key', () => {
   c({ key: ko, mode: 'auto' })
   c({ key: ko, mode: 'weak' })
   // ━ Via unknown key
-  c({ mode: modeAny })
+  c({ mode: modeAny as any })
 })

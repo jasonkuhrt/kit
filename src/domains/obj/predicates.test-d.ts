@@ -1,5 +1,7 @@
 import { Obj } from '#obj'
-import { expectTypeOf } from 'vitest'
+import { Ts } from '#ts'
+
+const A = Ts.Assert.exact.ofAs
 
 // HasRequiredKeys tests
 {
@@ -8,10 +10,10 @@ import { expectTypeOf } from 'vitest'
   type Mixed = { a: string; b?: number }
   type Empty = {}
 
-  expectTypeOf<Obj.HasRequiredKeys<AllRequired>>().toEqualTypeOf<true>()
-  expectTypeOf<Obj.HasRequiredKeys<AllOptional>>().toEqualTypeOf<false>()
-  expectTypeOf<Obj.HasRequiredKeys<Mixed>>().toEqualTypeOf<true>()
-  expectTypeOf<Obj.HasRequiredKeys<Empty>>().toEqualTypeOf<false>()
+  A<true>().onAs<Obj.HasRequiredKeys<AllRequired>>()
+  A<false>().onAs<Obj.HasRequiredKeys<AllOptional>>()
+  A<true>().onAs<Obj.HasRequiredKeys<Mixed>>()
+  A<false>().onAs<Obj.HasRequiredKeys<Empty>>()
 }
 
 // HasOptionalKeys tests
@@ -21,48 +23,48 @@ import { expectTypeOf } from 'vitest'
   type Mixed = { a: string; b?: number }
   type Empty = {}
 
-  expectTypeOf<Obj.HasOptionalKeys<AllRequired>>().toEqualTypeOf<false>()
-  expectTypeOf<Obj.HasOptionalKeys<AllOptional>>().toEqualTypeOf<true>()
-  expectTypeOf<Obj.HasOptionalKeys<Mixed>>().toEqualTypeOf<true>()
-  expectTypeOf<Obj.HasOptionalKeys<Empty>>().toEqualTypeOf<false>()
+  A<false>().onAs<Obj.HasOptionalKeys<AllRequired>>()
+  A<true>().onAs<Obj.HasOptionalKeys<AllOptional>>()
+  A<true>().onAs<Obj.HasOptionalKeys<Mixed>>()
+  A<false>().onAs<Obj.HasOptionalKeys<Empty>>()
 }
 
 // RequiredKeys tests
 {
   type Mixed = { a: string; b?: number; c?: boolean }
 
-  expectTypeOf<Obj.RequiredKeys<Mixed>>().toEqualTypeOf<'a'>()
+  A<'a'>().onAs<Obj.RequiredKeys<Mixed>>()
 }
 
 // OptionalKeys tests
 {
   type Mixed = { a: string; b?: number; c?: boolean }
 
-  expectTypeOf<Obj.OptionalKeys<Mixed>>().toEqualTypeOf<'b' | 'c'>()
+  A<'b' | 'c'>().onAs<Obj.OptionalKeys<Mixed>>()
 }
 
 // HasOptionalKey tests
 {
   type TestObj = { a?: string; b: number }
 
-  expectTypeOf<Obj.HasOptionalKey<TestObj, 'a'>>().toEqualTypeOf<true>()
-  expectTypeOf<Obj.HasOptionalKey<TestObj, 'b'>>().toEqualTypeOf<false>()
+  A<true>().onAs<Obj.HasOptionalKey<TestObj, 'a'>>()
+  A<false>().onAs<Obj.HasOptionalKey<TestObj, 'b'>>()
 }
 
 // IsKeyOptional tests
 {
   type TestObj = { a?: string; b: number }
 
-  expectTypeOf<Obj.IsKeyOptional<TestObj, 'a'>>().toEqualTypeOf<true>()
-  expectTypeOf<Obj.IsKeyOptional<TestObj, 'b'>>().toEqualTypeOf<false>()
-  expectTypeOf<Obj.IsKeyOptional<TestObj, 'c'>>().toEqualTypeOf<false>()
+  A<true>().onAs<Obj.IsKeyOptional<TestObj, 'a'>>()
+  A<false>().onAs<Obj.IsKeyOptional<TestObj, 'b'>>()
+  A<false>().onAs<Obj.IsKeyOptional<TestObj, 'c'>>()
 }
 
 // HasKey tests
 {
   type TestObj = { a: string; b: number }
 
-  expectTypeOf<Obj.HasKey<TestObj, 'a'>>().toEqualTypeOf<true>()
-  expectTypeOf<Obj.HasKey<TestObj, 'b'>>().toEqualTypeOf<true>()
-  expectTypeOf<Obj.HasKey<TestObj, 'c'>>().toEqualTypeOf<false>()
+  A<true>().onAs<Obj.HasKey<TestObj, 'a'>>()
+  A<true>().onAs<Obj.HasKey<TestObj, 'b'>>()
+  A<false>().onAs<Obj.HasKey<TestObj, 'c'>>()
 }

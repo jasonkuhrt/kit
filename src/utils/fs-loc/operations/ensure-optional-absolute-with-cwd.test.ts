@@ -1,6 +1,9 @@
 import { FsLoc } from '#fs-loc'
+import { Ts } from '#ts'
 import { Schema as S } from 'effect'
-import { describe, expectTypeOf, it } from 'vitest'
+import { describe, it } from 'vitest'
+
+const A = Ts.Assert.exact.ofAs
 
 // Local helper functions for decoding
 const decodeAbsFile = S.decodeSync(FsLoc.AbsFile.String)
@@ -12,37 +15,37 @@ describe('ensureOptionalAbsoluteWithCwd', () => {
   describe('type inference', () => {
     it('undefined returns AbsDir', () => {
       const result = FsLoc.ensureOptionalAbsoluteWithCwd(undefined)
-      expectTypeOf(result).toEqualTypeOf<FsLoc.AbsDir>()
+      A<FsLoc.AbsDir>().on(result)
     })
 
     it('AbsFile stays AbsFile', () => {
       const absFile = decodeAbsFile('/path/to/file.txt')
       const result = FsLoc.ensureOptionalAbsoluteWithCwd(absFile)
-      expectTypeOf(result).toEqualTypeOf<FsLoc.AbsFile>()
+      A<FsLoc.AbsFile>().on(result)
     })
 
     it('AbsDir stays AbsDir', () => {
       const absDir = decodeAbsDir('/path/to/dir/')
       const result = FsLoc.ensureOptionalAbsoluteWithCwd(absDir)
-      expectTypeOf(result).toEqualTypeOf<FsLoc.AbsDir>()
+      A<FsLoc.AbsDir>().on(result)
     })
 
     it('RelFile becomes AbsFile', () => {
       const relFile = decodeRelFile('./file.txt')
       const result = FsLoc.ensureOptionalAbsoluteWithCwd(relFile)
-      expectTypeOf(result).toEqualTypeOf<FsLoc.AbsFile>()
+      A<FsLoc.AbsFile>().on(result)
     })
 
     it('RelDir becomes AbsDir', () => {
       const relDir = decodeRelDir('./dir/')
       const result = FsLoc.ensureOptionalAbsoluteWithCwd(relDir)
-      expectTypeOf(result).toEqualTypeOf<FsLoc.AbsDir>()
+      A<FsLoc.AbsDir>().on(result)
     })
 
     it('union type with undefined', () => {
       const loc = Math.random() > 0.5 ? decodeRelFile('./file.txt') : undefined
       const result = FsLoc.ensureOptionalAbsoluteWithCwd(loc)
-      expectTypeOf(result).toEqualTypeOf<FsLoc.AbsFile | FsLoc.AbsDir>()
+      A<FsLoc.AbsFile | FsLoc.AbsDir>().on(result)
     })
   })
 })

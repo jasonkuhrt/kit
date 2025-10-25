@@ -1,7 +1,10 @@
 import { property } from '#test/test'
+import { Ts } from '#ts'
 import { Undefined } from '#undefined'
 import fc from 'fast-check'
-import { expect, expectTypeOf, test } from 'vitest'
+import { expect, test } from 'vitest'
+
+const A = Ts.Assert.exact.ofAs
 
 test('undefined detection', () => {
   expect(Undefined.Type.is(undefined)).toBe(true)
@@ -20,6 +23,6 @@ property('filters undefined', fc.array(fc.option(fc.anything())), (arr) => {
 
 test('type narrowing', () => {
   const value = 'hello' as string | undefined
-  if (Undefined.Type.is(value)) expectTypeOf(value).toEqualTypeOf<undefined>()
-  else expectTypeOf(value).toEqualTypeOf<string>()
+  if (Undefined.Type.is(value)) A<undefined>().on(value)
+  else A<string>().on(value)
 })

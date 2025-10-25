@@ -1,6 +1,9 @@
 import { Test } from '#test'
-import { describe, expect, expectTypeOf, it } from 'vitest'
+import { Ts } from '#ts'
+import { describe, expect, it } from 'vitest'
 import { Analyzer } from './$.js'
+
+const A = Ts.Assert.exact.ofAs
 
 describe('Analyzer', () => {
   describe('analyze', () => {
@@ -60,50 +63,50 @@ describe('Analyzer', () => {
   describe('type-level tests', () => {
     it('file with extension type', () => {
       type R = Analyzer.Analyze<'file.txt'>
-      expectTypeOf<R['_tag']>().toEqualTypeOf<'file'>()
+      A<'file'>().onAs<R['_tag']>()
     })
 
     it('directory with trailing slash type', () => {
       type R = Analyzer.Analyze<'dir/'>
-      expectTypeOf<R['_tag']>().toEqualTypeOf<'dir'>()
+      A<'dir'>().onAs<R['_tag']>()
     })
 
     it('directory without extension type', () => {
       type R = Analyzer.Analyze<'src'>
-      expectTypeOf<R['_tag']>().toEqualTypeOf<'dir'>()
+      A<'dir'>().onAs<R['_tag']>()
     })
 
     it('absolute vs relative paths type', () => {
       type Abs = Analyzer.Analyze<'/path/file.txt'>
       type Rel = Analyzer.Analyze<'./path/file.txt'>
-      expectTypeOf<Abs['pathType']>().toEqualTypeOf<'absolute'>()
-      expectTypeOf<Rel['pathType']>().toEqualTypeOf<'relative'>()
+      A<'absolute'>().onAs<Abs['pathType']>()
+      A<'relative'>().onAs<Rel['pathType']>()
     })
 
     it('special directory paths type', () => {
       type Dot = Analyzer.Analyze<'.'>
       type DotSlash = Analyzer.Analyze<'./'>
       type DotDot = Analyzer.Analyze<'..'>
-      expectTypeOf<Dot['_tag']>().toEqualTypeOf<'dir'>()
-      expectTypeOf<DotSlash['_tag']>().toEqualTypeOf<'dir'>()
-      expectTypeOf<DotDot['_tag']>().toEqualTypeOf<'dir'>()
+      A<'dir'>().onAs<Dot['_tag']>()
+      A<'dir'>().onAs<DotSlash['_tag']>()
+      A<'dir'>().onAs<DotDot['_tag']>()
     })
 
     it('hidden files type', () => {
       type NoExt = Analyzer.Analyze<'.gitignore'>
       type WithExt = Analyzer.Analyze<'.env.local'>
-      expectTypeOf<NoExt['_tag']>().toEqualTypeOf<'dir'>()
-      expectTypeOf<WithExt['_tag']>().toEqualTypeOf<'file'>()
+      A<'dir'>().onAs<NoExt['_tag']>()
+      A<'file'>().onAs<WithExt['_tag']>()
     })
 
     it('multiple dots in filename type', () => {
       type R = Analyzer.Analyze<'file.test.ts'>
-      expectTypeOf<R['_tag']>().toEqualTypeOf<'file'>()
+      A<'file'>().onAs<R['_tag']>()
     })
 
     it('root directory type', () => {
       type R = Analyzer.Analyze<'/'>
-      expectTypeOf<R['_tag']>().toEqualTypeOf<'dir'>()
+      A<'dir'>().onAs<R['_tag']>()
     })
   })
 
@@ -111,7 +114,7 @@ describe('Analyzer', () => {
     function processPath(path: string) {
       const result = Analyzer.analyze(path)
       // With non-literal string, should return the union type
-      expectTypeOf(result).toEqualTypeOf<Analyzer.Analysis>()
+      A<Analyzer.Analysis>().on(result)
       return result
     }
 

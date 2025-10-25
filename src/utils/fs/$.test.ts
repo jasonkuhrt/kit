@@ -1,10 +1,13 @@
 import { Fs } from '#fs'
 import { FsLoc } from '#fs-loc'
 import { Test } from '#test'
+import { Ts } from '#ts'
 import '../test/matchers/$.js'
 import { FileSystem } from '@effect/platform'
 import { Array, Effect, Layer, Option } from 'effect'
-import { expect, expectTypeOf, test } from 'vitest'
+import { expect, test } from 'vitest'
+
+const A = Ts.Assert.exact.ofAs
 
 const l = FsLoc.fromString
 
@@ -29,23 +32,17 @@ test('.findFirstUnderDir type inference', () => {
   // Test with only files - should return Option<AbsFile>
   const onlyFiles = [fx.a.rel, fx.b.rel]
   const fileResult = Fs.findFirstUnderDir(absDirTest)(onlyFiles)
-  expectTypeOf(fileResult).toEqualTypeOf<
-    Effect.Effect<Option.Option<FsLoc.AbsFile>, Error, FileSystem.FileSystem>
-  >()
+  A<Effect.Effect<Option.Option<FsLoc.AbsFile>, Error, FileSystem.FileSystem>>().on(fileResult)
 
   // Test with only directories - should return Option<AbsDir>
   const onlyDirs = [fx.dir.rel, l('./test/')]
   const dirResult = Fs.findFirstUnderDir(absDirTest)(onlyDirs)
-  expectTypeOf(dirResult).toEqualTypeOf<
-    Effect.Effect<Option.Option<FsLoc.AbsDir>, Error, FileSystem.FileSystem>
-  >()
+  A<Effect.Effect<Option.Option<FsLoc.AbsDir>, Error, FileSystem.FileSystem>>().on(dirResult)
 
   // Test with mixed - should return Option<Abs>
   const mixed = [fx.a.rel, fx.dir.rel]
   const mixedResult = Fs.findFirstUnderDir(absDirTest)(mixed)
-  expectTypeOf(mixedResult).toEqualTypeOf<
-    Effect.Effect<Option.Option<FsLoc.Groups.Abs.Abs>, Error, FileSystem.FileSystem>
-  >()
+  A<Effect.Effect<Option.Option<FsLoc.Groups.Abs.Abs>, Error, FileSystem.FileSystem>>().on(mixedResult)
 })
 
 // dprint-ignore

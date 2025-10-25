@@ -1,5 +1,5 @@
 import { FsLoc } from '#fs-loc'
-import { Test } from '@wollybeard/kit/test'
+import { Test } from '#test'
 import { Schema as S } from 'effect'
 import { expect } from 'vitest'
 import {

@@ -1,5 +1,7 @@
-import { expectTypeOf } from 'vitest'
+import { Ts } from '#ts'
 import { Test } from '../$.js'
+
+const A = Ts.Assert.exact.ofAs
 
 // Test type inference with .i() and .o() using object cases
 {
@@ -11,8 +13,8 @@ import { Test } from '../$.js'
       { comment: 'case 2', input: 'other', output: 100 },
     )
     .test(({ input, output }) => {
-      expectTypeOf(input).toEqualTypeOf<string>()
-      expectTypeOf(output).toEqualTypeOf<number>()
+      A<string>().on(input)
+      A<number>().on(output)
     })
 }
 
@@ -26,8 +28,8 @@ import { Test } from '../$.js'
       { comment: 'case 2', input: 'other', output: 100 },
     )
     .test(({ input, output }) => {
-      expectTypeOf(input).toEqualTypeOf<string>()
-      expectTypeOf(output).toEqualTypeOf<number>()
+      A<string>().on(input)
+      A<number>().on(output)
     })
 }
 
@@ -42,9 +44,9 @@ import { Test } from '../$.js'
       { comment: 'case 2', input: 'other', output: 100, extra: false },
     )
     .test(({ input, output, extra }) => {
-      expectTypeOf(input).toEqualTypeOf<string>()
-      expectTypeOf(output).toEqualTypeOf<number>()
-      expectTypeOf(extra).toEqualTypeOf<boolean>()
+      A<string>().on(input)
+      A<number>().on(output)
+      A<boolean>().on(extra)
     })
 }
 
@@ -72,10 +74,10 @@ import { Test } from '../$.js'
       { comment: 'case 2', input: 'world', output: 10, extra: 'metadata2', flag: false },
     )
     .test(({ input, output, extra, flag }) => {
-      expectTypeOf(input).toEqualTypeOf<string>()
-      expectTypeOf(output).toEqualTypeOf<number>()
-      expectTypeOf(extra).toEqualTypeOf<string>()
-      expectTypeOf(flag).toEqualTypeOf<boolean>()
+      A<string>().on(input)
+      A<number>().on(output)
+      A<string>().on(extra)
+      A<boolean>().on(flag)
     })
 }
 
@@ -89,8 +91,8 @@ import { Test } from '../$.js'
       ['other', 100],
     )
     .test(({ input, output }) => {
-      expectTypeOf(input).toEqualTypeOf<string>()
-      expectTypeOf(output).toEqualTypeOf<number>()
+      A<string>().on(input)
+      A<number>().on(output)
     })
 }
 
@@ -104,8 +106,8 @@ import { Test } from '../$.js'
       [['world']], // without output (snapshot)
     )
     .test(({ result, output }) => {
-      expectTypeOf(result).toEqualTypeOf<number>()
-      expectTypeOf(output).toEqualTypeOf<number | undefined>()
+      A<number>().on(result)
+      A<number | undefined>().on(output)
     })
 }
 
@@ -121,8 +123,8 @@ import { Test } from '../$.js'
       ['input4', 100], // input + output
     )
     .test(({ input, output }) => {
-      expectTypeOf(input).toEqualTypeOf<string>()
-      expectTypeOf(output).toEqualTypeOf<number>() // NOT undefined - output is required!
+      A<string>().on(input)
+      A<number>().on(output) // NOT undefined - output is required!
     })
 }
 
@@ -136,9 +138,9 @@ import { Test } from '../$.js'
       ['', 0, { a: 0 }],
     )
     .test(({ input, output, a }) => {
-      expectTypeOf(input).toEqualTypeOf<string>()
-      expectTypeOf(output).toEqualTypeOf<number>()
-      expectTypeOf(a).toEqualTypeOf<0>()
+      A<string>().on(input)
+      A<number>().on(output)
+      A<0>().on(a)
     })
 
   Test.describe('context')
@@ -206,8 +208,8 @@ import { Test } from '../$.js'
   Test.on(testFn)
     .casesInput([1, 2], [3, 4], [5, 6])
     .test(({ input, result }) => {
-      expectTypeOf(input).toEqualTypeOf<[number, number]>()
-      expectTypeOf(result).toEqualTypeOf<number>()
+      A<[number, number]>().on(input)
+      A<number>().on(result)
     })
 
   // .casesInput() with generic mode
@@ -215,15 +217,15 @@ import { Test } from '../$.js'
     .inputType<string>()
     .casesInput('a', 'b', 'c')
     .test(({ input }) => {
-      expectTypeOf(input).toEqualTypeOf<string>()
+      A<string>().on(input)
     })
 
   // .describeInputs() with function mode
   Test.on(testFn)
     .describeInputs('edge cases', [[0, 0], [1, 1]])
     .test(({ input, result }) => {
-      expectTypeOf(input).toEqualTypeOf<[number, number]>()
-      expectTypeOf(result).toEqualTypeOf<number>()
+      A<[number, number]>().on(input)
+      A<number>().on(result)
     })
 
   // .describeInputs() with generic mode
@@ -231,7 +233,7 @@ import { Test } from '../$.js'
     .inputType<number>()
     .describeInputs('numbers', [1, 2, 3])
     .test(({ input }) => {
-      expectTypeOf(input).toEqualTypeOf<number>()
+      A<number>().on(input)
     })
 }
 

@@ -1,4 +1,4 @@
-import { Ts } from '@wollybeard/kit'
+import { Ts } from '#ts'
 import type { ConfigManager } from './$.js'
 
 interface a1 {
