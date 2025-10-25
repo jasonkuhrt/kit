@@ -18,8 +18,8 @@ importers:
         specifier: ^1.13.0
         version: 1.13.0
       '@vltpkg/semver':
-        specifier: 0.0.0-30
-        version: 0.0.0-30
+        specifier: 0.0.0-32
+        version: 0.0.0-32
       ansis:
         specifier: ^4.2.0
         version: 4.2.0
@@ -122,7 +122,7 @@ importers:
         version: 5.9.3
       vite-tsconfig-paths:
         specifier: ^5.1.4
-        version: 5.1.4(typescript@5.9.3)(vite@5.4.20(@types/node@24.6.1))
+        version: 5.1.4(typescript@5.9.3)(vite@7.1.7(@types/node@24.6.1)(tsx@4.20.6))
       vitepress:
         specifier: ^1.6.4
         version: 1.6.4(@algolia/client-search@5.39.0)(@types/node@24.6.1)(postcss@8.5.6)(search-insights@2.17.3)(typescript@5.9.3)
@@ -1162,28 +1162,28 @@ packages:
   '@vitest/utils@3.2.4':
     resolution: {integrity: sha512-fB2V0JFrQSMsCo9HiSq3Ezpdv4iYaXRG1Sx8edX3MwxfyNn83mKiGzOcH+Fkxt4MHxr3y42fQi1oeAInqgX2QA==}
 
-  '@vltpkg/dep-id@0.0.0-30':
-    resolution: {integrity: sha512-SvUHQgZJg0d7Mc1yec+5lF2DFiwbEgikCvdqXdxWAxjSdXhj7d6vNUH3MitrZCJPiUpdvOejS4DVHanLfcwI9g==}
+  '@vltpkg/dep-id@0.0.0-32':
+    resolution: {integrity: sha512-3SCCFoCulvT2oe9dEqVljzL5Mp1qfqdTNcBwDrI3iywHjeIk0QH0qzq2I83FrhGGLsbpXQvHWLRwTIAA5UuHrw==}
     engines: {node: '>=22'}
 
-  '@vltpkg/error-cause@0.0.0-30':
-    resolution: {integrity: sha512-j+rjUo0m1C81HdoW7qLgQFHGedg4YypzAYEdrUT04f4DGLZB3Qf9OS1Wd26IzICjMxB8OSAxFqKHikst3KR4wA==}
+  '@vltpkg/error-cause@0.0.0-32':
+    resolution: {integrity: sha512-ZQeKOQ5ZgTxuC2Tfi8JDOn6sj5AO/0R7WO9ORkYN01nhQW9xbUpUkf9EdUZU9kxFSMFuvW3yZwdBo2JB6t1YRw==}
     engines: {node: '>=22'}
 
-  '@vltpkg/fast-split@0.0.0-30':
-    resolution: {integrity: sha512-UhCch9sy30lyR5Ry8knwIi46MGCr8fMQ/Z3TG2dBxH2kkTWKkOPc0s8wa9uz8y0BkE9fqku2gVkTAnz1yCeROg==}
+  '@vltpkg/fast-split@0.0.0-32':
+    resolution: {integrity: sha512-dG+CSvfjy+bCaxuy/3uAcO/yMwV6VaujE21JQlGggPi+X4Htv9LZI62ywGKkWDuUOOth23gN7GoJQnezWoO31A==}
     engines: {node: '>=22'}
 
-  '@vltpkg/semver@0.0.0-30':
-    resolution: {integrity: sha512-GWqy5Rr5L9VeJDE6Yb0BscLehLWc1GWDAShxFFmfGBqr68Vy0DF5YSWb0NvVpfQ0r+uIxA5FK7b7bK0oJKThPw==}
+  '@vltpkg/semver@0.0.0-32':
+    resolution: {integrity: sha512-y+0Diwkm4qc6oez/DYnq8aGsm5UoIasDRgatQ+VBD83kXvvUXOWCcjJzzKXN1m8XRg2Xv/vV4JV5Y/tG/vEe1Q==}
     engines: {node: '>=22'}
 
-  '@vltpkg/spec@0.0.0-30':
-    resolution: {integrity: sha512-0eYijND+UJBNkrEpL7+Ammc6Sjk7bAOZC33PETYXkV3JGl8npoV3o4w3rigtwfZVuedfi81RmMcr0Nb2JjNaMw==}
+  '@vltpkg/spec@0.0.0-32':
+    resolution: {integrity: sha512-CVzG0amE7CIovp96GPLdRmcvmL93RxHR45Edz/QD6qB3auRTWj4SO2Ajfb73b2H0d695EUEeu7UWCvfS95DceA==}
     engines: {node: '>=22'}
 
-  '@vltpkg/types@0.0.0-30':
-    resolution: {integrity: sha512-gUqYAZwVQjmjbM+xnyZNHnpMyXIvDN5nIzifWY9RKJ9XEmPVJg8Nql5zMXXPbr1MekMZzBvqvCgMeoDV53dX2g==}
+  '@vltpkg/types@0.0.0-32':
+    resolution: {integrity: sha512-6EponJdO+J2H8D+Gl/TSkQSyOPJBYFxsG+2nrAGW07+9LtnxMOaAm9HedpJlQWMY9xliZWFGnjPYzYbhhVf+VQ==}
     engines: {node: '>=22'}
 
   '@volar/language-core@2.4.23':
@@ -4080,33 +4080,33 @@ snapshots:
       loupe: 3.2.1
       tinyrainbow: 2.0.0
 
-  '@vltpkg/dep-id@0.0.0-30':
+  '@vltpkg/dep-id@0.0.0-32':
     dependencies:
-      '@vltpkg/error-cause': 0.0.0-30
-      '@vltpkg/spec': 0.0.0-30
-      '@vltpkg/types': 0.0.0-30
+      '@vltpkg/error-cause': 0.0.0-32
+      '@vltpkg/spec': 0.0.0-32
+      '@vltpkg/types': 0.0.0-32
 
-  '@vltpkg/error-cause@0.0.0-30': {}
+  '@vltpkg/error-cause@0.0.0-32': {}
 
-  '@vltpkg/fast-split@0.0.0-30': {}
+  '@vltpkg/fast-split@0.0.0-32': {}
 
-  '@vltpkg/semver@0.0.0-30':
+  '@vltpkg/semver@0.0.0-32':
     dependencies:
-      '@vltpkg/error-cause': 0.0.0-30
-      '@vltpkg/fast-split': 0.0.0-30
-      '@vltpkg/types': 0.0.0-30
+      '@vltpkg/error-cause': 0.0.0-32
+      '@vltpkg/fast-split': 0.0.0-32
+      '@vltpkg/types': 0.0.0-32
 
-  '@vltpkg/spec@0.0.0-30':
+  '@vltpkg/spec@0.0.0-32':
     dependencies:
-      '@vltpkg/error-cause': 0.0.0-30
-      '@vltpkg/semver': 0.0.0-30
+      '@vltpkg/error-cause': 0.0.0-32
+      '@vltpkg/semver': 0.0.0-32
 
-  '@vltpkg/types@0.0.0-30':
+  '@vltpkg/types@0.0.0-32':
     dependencies:
-      '@vltpkg/dep-id': 0.0.0-30
-      '@vltpkg/error-cause': 0.0.0-30
-      '@vltpkg/semver': 0.0.0-30
-      '@vltpkg/spec': 0.0.0-30
+      '@vltpkg/dep-id': 0.0.0-32
+      '@vltpkg/error-cause': 0.0.0-32
+      '@vltpkg/semver': 0.0.0-32
+      '@vltpkg/spec': 0.0.0-32
 
   '@volar/language-core@2.4.23':
     dependencies:
@@ -6061,13 +6061,13 @@ snapshots:
       - tsx
       - yaml
 
-  vite-tsconfig-paths@5.1.4(typescript@5.9.3)(vite@5.4.20(@types/node@24.6.1)):
+  vite-tsconfig-paths@5.1.4(typescript@5.9.3)(vite@7.1.7(@types/node@24.6.1)(tsx@4.20.6)):
     dependencies:
       debug: 4.4.3
       globrex: 0.1.2
       tsconfck: 3.1.6(typescript@5.9.3)
     optionalDependencies:
-      vite: 5.4.20(@types/node@24.6.1)
+      vite: 7.1.7(@types/node@24.6.1)(tsx@4.20.6)
     transitivePeerDependencies:
       - supports-color
       - typescript
