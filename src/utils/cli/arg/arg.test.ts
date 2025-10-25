@@ -2,7 +2,7 @@ import { Test } from '#test'
 import { Ts } from '#ts'
 import { Schema as S } from 'effect'
 import { expect, test } from 'vitest'
-import { Arg } from './arg.js'
+import { type Analysis, Arg } from './arg.js'
 
 // =============================================================================
 // Type-Level Analysis Tests
@@ -10,80 +10,106 @@ import { Arg } from './arg.js'
 
 test('type-level analysis', () => {
   type _pass = Ts.Assert.Cases<
-    // Long flags
-    Ts.Assert.equiv<
-      { _tag: 'long-flag'; name: 'verbose'; value: null; original: '--verbose' },
+    // Long flags (non-negated)
+    Ts.Assert.exact<
+      { _tag: 'long-flag'; name: 'verbose'; negated: false; value: null; original: '--verbose' },
       Arg.Analyze<'--verbose'>
     >,
-    Ts.Assert.equiv<
-      { _tag: 'long-flag'; name: 'fooBar'; value: null; original: '--foo-bar' },
+    Ts.Assert.exact<
+      { _tag: 'long-flag'; name: 'fooBar'; negated: false; value: null; original: '--foo-bar' },
       Arg.Analyze<'--foo-bar'>
     >,
-    Ts.Assert.equiv<
-      { _tag: 'long-flag'; name: 'count'; value: '5'; original: '--count=5' },
+    Ts.Assert.exact<
+      { _tag: 'long-flag'; name: 'count'; negated: false; value: '5'; original: '--count=5' },
       Arg.Analyze<'--count=5'>
     >,
-    Ts.Assert.equiv<
-      { _tag: 'long-flag'; name: 'maxCount'; value: '10'; original: '--max-count=10' },
+    Ts.Assert.exact<
+      { _tag: 'long-flag'; name: 'maxCount'; negated: false; value: '10'; original: '--max-count=10' },
       Arg.Analyze<'--max-count=10'>
     >,
-    Ts.Assert.equiv<
-      { _tag: 'long-flag'; name: 'query'; value: 'a=b'; original: '--query=a=b' },
+    Ts.Assert.exact<
+      { _tag: 'long-flag'; name: 'query'; negated: false; value: 'a=b'; original: '--query=a=b' },
       Arg.Analyze<'--query=a=b'>
     >,
-    Ts.Assert.equiv<
-      { _tag: 'long-flag'; name: 'empty'; value: ''; original: '--empty=' },
+    Ts.Assert.exact<
+      { _tag: 'long-flag'; name: 'empty'; negated: false; value: ''; original: '--empty=' },
       Arg.Analyze<'--empty='>
     >,
+    // Long flags (negated)
+    Ts.Assert.exact<
+      { _tag: 'long-flag'; name: 'verbose'; negated: true; value: null; original: '--no-verbose' },
+      Arg.Analyze<'--no-verbose'>
+    >,
+    Ts.Assert.exact<
+      { _tag: 'long-flag'; name: 'debug'; negated: true; value: null; original: '--no-debug' },
+      Arg.Analyze<'--no-debug'>
+    >,
+    Ts.Assert.exact<
+      { _tag: 'long-flag'; name: 'debugMode'; negated: true; value: null; original: '--no-debug-mode' },
+      Arg.Analyze<'--no-debug-mode'>
+    >,
+    Ts.Assert.exact<
+      { _tag: 'long-flag'; name: 'verbose'; negated: true; value: 'true'; original: '--no-verbose=true' },
+      Arg.Analyze<'--no-verbose=true'>
+    >,
+    // Edge cases: NOT negated (lowercase after 'no')
+    Ts.Assert.exact<
+      { _tag: 'long-flag'; name: 'notice'; negated: false; value: null; original: '--notice' },
+      Arg.Analyze<'--notice'>
+    >,
+    Ts.Assert.exact<
+      { _tag: 'long-flag'; name: 'node'; negated: false; value: null; original: '--node' },
+      Arg.Analyze<'--node'>
+    >,
     // Short flags
-    Ts.Assert.equiv<
+    Ts.Assert.exact<
       { _tag: 'short-flag'; name: 'v'; value: null; original: '-v' },
       Arg.Analyze<'-v'>
     >,
-    Ts.Assert.equiv<
+    Ts.Assert.exact<
       { _tag: 'short-flag'; name: 'n'; value: '10'; original: '-n=10' },
       Arg.Analyze<'-n=10'>
     >,
-    Ts.Assert.equiv<
+    Ts.Assert.exact<
       { _tag: 'short-flag'; name: 'q'; value: 'x=y'; original: '-q=x=y' },
       Arg.Analyze<'-q=x=y'>
     >,
-    Ts.Assert.equiv<
+    Ts.Assert.exact<
       { _tag: 'short-flag'; name: 'e'; value: ''; original: '-e=' },
       Arg.Analyze<'-e='>
     >,
     // Positional
-    Ts.Assert.equiv<
+    Ts.Assert.exact<
       { _tag: 'positional'; value: 'file.txt'; original: 'file.txt' },
       Arg.Analyze<'file.txt'>
     >,
-    Ts.Assert.equiv<
+    Ts.Assert.exact<
       { _tag: 'positional'; value: '123'; original: '123' },
       Arg.Analyze<'123'>
     >,
-    Ts.Assert.equiv<
+    Ts.Assert.exact<
       { _tag: 'positional'; value: './path/to/file'; original: './path/to/file' },
       Arg.Analyze<'./path/to/file'>
     >,
-    Ts.Assert.equiv<
+    Ts.Assert.exact<
       { _tag: 'positional'; value: 'https://example.com'; original: 'https://example.com' },
       Arg.Analyze<'https://example.com'>
     >,
-    Ts.Assert.equiv<
+    Ts.Assert.exact<
       { _tag: 'positional'; value: 'key=value'; original: 'key=value' },
       Arg.Analyze<'key=value'>
     >,
     // Separator
-    Ts.Assert.equiv<
+    Ts.Assert.exact<
       { _tag: 'separator'; original: '--' },
       Arg.Analyze<'--'>
     >,
     // Edge cases
-    Ts.Assert.equiv<
+    Ts.Assert.exact<
       { _tag: 'positional'; value: '---foo'; original: '---foo' },
       Arg.Analyze<'---foo'>
     >,
-    Ts.Assert.equiv<
+    Ts.Assert.exact<
       { _tag: 'positional'; value: ''; original: '' },
       Arg.Analyze<''>
     >
@@ -97,18 +123,26 @@ test('type-level analysis', () => {
 // dprint-ignore
 Test.on(Arg.analyze)
   .cases(
-    // Long flags
-    ['--verbose',        { _tag: 'long-flag',  name: 'verbose',  value: null,  original: '--verbose' }],
-    ['--foo-bar',        { _tag: 'long-flag',  name: 'fooBar',   value: null,  original: '--foo-bar' }],
-    ['--count=5',        { _tag: 'long-flag',  name: 'count',    value: '5',   original: '--count=5' }],
-    ['--max-count=10',   { _tag: 'long-flag',  name: 'maxCount', value: '10',  original: '--max-count=10' }],
-    ['--query=a=b',      { _tag: 'long-flag',  name: 'query',    value: 'a=b', original: '--query=a=b' }],
-    ['--empty=',         { _tag: 'long-flag',  name: 'empty',    value: '',    original: '--empty=' }],
+    // Long flags (non-negated)
+    ['--verbose',        { _tag: 'long-flag',  name: 'verbose',    negated: false, value: null,  original: '--verbose' }],
+    ['--foo-bar',        { _tag: 'long-flag',  name: 'fooBar',     negated: false, value: null,  original: '--foo-bar' }],
+    ['--count=5',        { _tag: 'long-flag',  name: 'count',      negated: false, value: '5',   original: '--count=5' }],
+    ['--max-count=10',   { _tag: 'long-flag',  name: 'maxCount',   negated: false, value: '10',  original: '--max-count=10' }],
+    ['--query=a=b',      { _tag: 'long-flag',  name: 'query',      negated: false, value: 'a=b', original: '--query=a=b' }],
+    ['--empty=',         { _tag: 'long-flag',  name: 'empty',      negated: false, value: '',    original: '--empty=' }],
+    // Long flags (negated)
+    ['--no-verbose',     { _tag: 'long-flag',  name: 'verbose',    negated: true,  value: null,  original: '--no-verbose' }],
+    ['--no-debug',       { _tag: 'long-flag',  name: 'debug',      negated: true,  value: null,  original: '--no-debug' }],
+    ['--no-debug-mode',  { _tag: 'long-flag',  name: 'debugMode',  negated: true,  value: null,  original: '--no-debug-mode' }],
+    ['--no-verbose=true',{ _tag: 'long-flag',  name: 'verbose',    negated: true,  value: 'true', original: '--no-verbose=true' }],
+    // Edge cases: NOT negated (lowercase after 'no')
+    ['--notice',         { _tag: 'long-flag',  name: 'notice',     negated: false, value: null,  original: '--notice' }],
+    ['--node',           { _tag: 'long-flag',  name: 'node',       negated: false, value: null,  original: '--node' }],
     // Short flags
-    ['-v',               { _tag: 'short-flag', name: 'v',        value: null,  original: '-v' }],
-    ['-n=10',            { _tag: 'short-flag', name: 'n',        value: '10',  original: '-n=10' }],
-    ['-q=x=y',           { _tag: 'short-flag', name: 'q',        value: 'x=y', original: '-q=x=y' }],
-    ['-e=',              { _tag: 'short-flag', name: 'e',        value: '',    original: '-e=' }],
+    ['-v',               { _tag: 'short-flag', name: 'v',          value: null,  original: '-v' }],
+    ['-n=10',            { _tag: 'short-flag', name: 'n',          value: '10',  original: '-n=10' }],
+    ['-q=x=y',           { _tag: 'short-flag', name: 'q',          value: 'x=y', original: '-q=x=y' }],
+    ['-e=',              { _tag: 'short-flag', name: 'e',          value: '',    original: '-e=' }],
     // Positional
     ['file.txt',         { _tag: 'positional', value: 'file.txt',            original: 'file.txt' }],
     ['123',              { _tag: 'positional', value: '123',                 original: '123' }],
@@ -127,7 +161,7 @@ Test.on(Arg.analyze)
 // Effect Schema Tests
 // =============================================================================
 
-const decodeString = S.decodeSync(Arg.String)
+const decodeString = S.decodeSync(Arg.String) as (input: string) => Analysis
 
 // Simple snapshot tests for Effect Schema decoding
 test('Effect Schema decoding works', () => {
@@ -138,6 +172,23 @@ test('Effect Schema decoding works', () => {
   expect(result1._tag).toBe('long-flag')
   expect(result2._tag).toBe('short-flag')
   expect(result3._tag).toBe('positional')
+})
+
+test('Effect Schema decoding with negated flags', () => {
+  const result1 = decodeString('--no-verbose')
+  const result2 = decodeString('--no-debug-mode')
+
+  expect(result1._tag).toBe('long-flag')
+  if (result1._tag === 'long-flag') {
+    expect(result1.name).toBe('verbose')
+    expect(result1.negated).toBe(true)
+  }
+
+  expect(result2._tag).toBe('long-flag')
+  if (result2._tag === 'long-flag') {
+    expect(result2.name).toBe('debugMode')
+    expect(result2.negated).toBe(true)
+  }
 })
 
 // =============================================================================
@@ -155,4 +206,22 @@ test('fromString with literal strings', () => {
   expect(arg2._tag).toBe('short-flag')
   expect(arg3._tag).toBe('positional')
   expect(arg4._tag).toBe('separator')
+})
+
+test('fromString with negated flags', () => {
+  const arg1 = Arg.fromString('--no-verbose')
+  const arg2 = Arg.fromString('--no-debug-mode')
+
+  // Runtime verification (types are already verified by fromString signature)
+  expect(arg1._tag).toBe('long-flag')
+  if (arg1._tag === 'long-flag') {
+    expect(arg1.name).toBe('verbose')
+    expect(arg1.negated).toBe(true)
+  }
+
+  expect(arg2._tag).toBe('long-flag')
+  if (arg2._tag === 'long-flag') {
+    expect(arg2.name).toBe('debugMode')
+    expect(arg2.negated).toBe(true)
+  }
 })
