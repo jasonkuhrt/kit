@@ -1,49 +1,51 @@
-import { expectTypeOf } from 'vitest'
+import { Ts } from '#ts'
 import { Mask } from './$.js'
+
+const A = Ts.Assert.exact.ofAs
 
 // Test InferOptions type
 type User = { name: string; email: string; age: number; password: string }
 
 // Boolean is always valid
-expectTypeOf<boolean>().toMatchTypeOf<Mask.InferOptions<User>>()
+Ts.Assert.exact.ofAs<Pick<TestData, 'a' | 'c'>>().onAs<boolean>().toMatchTypeOf<Mask.InferOptions<User>>()
 
 // Array of keys
-expectTypeOf<('name' | 'email')[]>().toMatchTypeOf<Mask.InferOptions<User>>()
-expectTypeOf<('name' | 'email' | 'age' | 'password')[]>().toMatchTypeOf<Mask.InferOptions<User>>()
+Ts.Assert.sub.ofAs<Mask.InferOptions<User>>().onAs<('name' | 'email')[]>()
+Ts.Assert.sub.ofAs<Mask.InferOptions<User>>().onAs<('name' | 'email' | 'age' | 'password')[]>()
 
 // Partial record with boolean values
-expectTypeOf<{ name?: boolean; email?: boolean }>().toMatchTypeOf<Mask.InferOptions<User>>()
-expectTypeOf<{ name?: boolean; email?: boolean; age?: boolean; password?: boolean }>().toMatchTypeOf<
-  Mask.InferOptions<User>
+Ts.Assert.sub.ofAs<Mask.InferOptions<User>>().onAs<{ name?: boolean; email?: boolean }>()
+Ts.Assert.sub.ofAs<Mask.InferOptions<User>>().onAs<
+  { name?: boolean; email?: boolean; age?: boolean; password?: boolean }
 >()
 
 // Unknown type accepts all options
-expectTypeOf<boolean>().toMatchTypeOf<Mask.InferOptions<unknown>>()
-expectTypeOf<string[]>().toMatchTypeOf<Mask.InferOptions<unknown>>()
-expectTypeOf<Record<string, boolean>>().toMatchTypeOf<Mask.InferOptions<unknown>>()
+Ts.Assert.sub.ofAs<Mask.InferOptions<unknown>>().onAs<boolean>()
+Ts.Assert.sub.ofAs<Mask.InferOptions<unknown>>().onAs<string[]>()
+Ts.Assert.sub.ofAs<Mask.InferOptions<unknown>>().onAs<Record<string, boolean>>()
 
 // Non-object types only accept boolean
-expectTypeOf<boolean>().toMatchTypeOf<Mask.InferOptions<string>>()
-expectTypeOf<string[]>().not.toMatchTypeOf<Mask.InferOptions<string>>()
+Ts.Assert.sub.ofAs<Mask.InferOptions<string>>().onAs<boolean>()
+Ts.Assert.not.sub.ofAs<Mask.InferOptions<string>>().onAs<string[]>()
 
 // Test Apply type
 type TestData = { a: string; b: number; c: boolean }
 
 // Binary mask - show
 type ShowResult = Mask.Apply<TestData, { type: 'binary'; show: true }>
-expectTypeOf<ShowResult>().toEqualTypeOf<TestData>()
+A<TestData>().onAs<ShowResult>()
 
 // Binary mask - hide
 type HideResult = Mask.Apply<TestData, { type: 'binary'; show: false }>
-expectTypeOf<HideResult>().toEqualTypeOf<undefined>()
+A<undefined>().onAs<HideResult>()
 
 // Properties mask - allow mode
 type AllowResult = Mask.Apply<TestData, { type: 'properties'; mode: 'allow'; properties: ['a', 'c'] }>
-expectTypeOf<AllowResult>().toEqualTypeOf<Pick<TestData, 'a' | 'c'>>()
+A<Pick<TestData, 'a' | 'c'>>().onAs<AllowResult>()
 
 // Properties mask - deny mode
 type DenyResult = Mask.Apply<TestData, { type: 'properties'; mode: 'deny'; properties: ['b'] }>
-expectTypeOf<DenyResult>().toEqualTypeOf<Omit<TestData, 'b'>>()
+Ts.Assert.exact.ofAs<Omit<TestData, 'b'>>().onAs<DenyResult>()
 
 // Test mask creation and application
 const userMask = Mask.pick<User>(['name', 'email'])
@@ -69,20 +71,20 @@ const _exactMaskedTypeTest: ExactMaskedType = { name: 'test', email: 'test@examp
 
 // Test semantic constructors
 const showMask = Mask.show()
-expectTypeOf(showMask).toEqualTypeOf<Mask.BinaryMask>()
+A<Mask.BinaryMask>().on(showMask)
 
 const hideMask = Mask.hide()
-expectTypeOf(hideMask).toEqualTypeOf<Mask.BinaryMask>()
+A<Mask.BinaryMask>().on(hideMask)
 
 const pickMask = Mask.pick<User>(['name', 'email'])
-expectTypeOf(pickMask).toEqualTypeOf<Mask.PropertiesMask<User>>()
+Ts.Assert.exact.ofAs<Mask.PropertiesMask<User>>().on(pickMask)
 
 const omitMask = Mask.omit<User>(['password'])
-expectTypeOf(omitMask).toEqualTypeOf<Mask.PropertiesMask<User>>()
+Ts.Assert.exact.ofAs<Mask.PropertiesMask<User>>().on(omitMask)
 
 // Test GetDataType
 type ExtractedType1 = Mask.GetDataType<Mask.BinaryMask<User>>
-expectTypeOf<ExtractedType1>().toEqualTypeOf<User>()
+A<User>().onAs<ExtractedType1>()
 
 type ExtractedType2 = Mask.GetDataType<Mask.PropertiesMask<User>>
-expectTypeOf<ExtractedType2>().toEqualTypeOf<User>()
+A<User>().onAs<ExtractedType2>()

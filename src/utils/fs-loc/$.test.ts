@@ -1,9 +1,12 @@
 import { Test } from '#test'
+import { Ts } from '#ts'
 import '../test/matchers/$.js'
 import { Schema as S } from 'effect'
-import { describe, expect, expectTypeOf, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { FsLoc } from './$.js'
 import './$.test-matchers.js'
+
+const A = Ts.Assert.exact.ofAs
 
 const P = FsLoc.Path
 const F = FsLoc.File
@@ -105,25 +108,25 @@ describe('.fromString', () => {
   it('returns AbsFile for absolute file paths', () => {
     const result = FsLoc.fromString('/path/file.txt')
     expect(result._tag).toBe('LocAbsFile')
-    expectTypeOf(result).toEqualTypeOf<FsLoc.AbsFile>()
+    A<FsLoc.AbsFile>().on(result)
   })
 
   it('returns RelFile for relative file paths', () => {
     const result = FsLoc.fromString('file.txt')
     expect(result._tag).toBe('LocRelFile')
-    expectTypeOf(result).toEqualTypeOf<FsLoc.RelFile>()
+    A<FsLoc.RelFile>().on(result)
   })
 
   it('returns AbsDir for absolute directory paths', () => {
     const result = FsLoc.fromString('/home/')
     expect(result._tag).toBe('LocAbsDir')
-    expectTypeOf(result).toEqualTypeOf<FsLoc.AbsDir>()
+    A<FsLoc.AbsDir>().on(result)
   })
 
   it('returns RelDir for relative directory paths', () => {
     const result = FsLoc.fromString('./src/')
     expect(result._tag).toBe('LocRelDir')
-    expectTypeOf(result).toEqualTypeOf<FsLoc.RelDir>()
+    A<FsLoc.RelDir>().on(result)
   })
 
   it('type-errors when given non-literal string', () => {

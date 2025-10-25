@@ -1,7 +1,10 @@
 import { Fn } from '#fn'
 import { Test } from '#test'
+import { Ts } from '#ts'
 import fc from 'fast-check'
-import { expect, expectTypeOf, test } from 'vitest'
+import { expect, test } from 'vitest'
+
+const A = Ts.Assert.exact.ofAs
 
 Test.property('returns a function that always returns the initial value', fc.anything(), (value) => {
   const constantFn = Fn.constant(value)
@@ -38,15 +41,15 @@ Test.property(
 
 test('type: preserves value types in returned function', () => {
   const constantNumber = Fn.constant(42)
-  expectTypeOf(constantNumber).toEqualTypeOf<() => number>()
-  expectTypeOf(constantNumber()).toEqualTypeOf<number>()
+  A<() => number>().on(constantNumber)
+  A<number>().on(constantNumber())
 
   const constantString = Fn.constant('hello')
-  expectTypeOf(constantString).toEqualTypeOf<() => string>()
-  expectTypeOf(constantString()).toEqualTypeOf<string>()
+  A<() => string>().on(constantString)
+  A<string>().on(constantString())
 
   const obj = { a: 1 } as const
   const constantObj = Fn.constant(obj)
-  expectTypeOf(constantObj).toEqualTypeOf<() => { readonly a: 1 }>()
-  expectTypeOf(constantObj()).toEqualTypeOf<{ readonly a: 1 }>()
+  A<() => { readonly a: 1 }>().on(constantObj)
+  A<{ readonly a: 1 }>().on(constantObj())
 })

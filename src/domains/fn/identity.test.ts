@@ -1,7 +1,10 @@
 import { Fn } from '#fn'
 import { Test } from '#test'
+import { Ts } from '#ts'
 import fc from 'fast-check'
-import { expect, expectTypeOf, test } from 'vitest'
+import { expect, test } from 'vitest'
+
+const A = Ts.Assert.exact.ofAs
 
 Test.property('returns input unchanged for any value', fc.anything(), (value) => {
   expect(Fn.identity(value)).toBe(value)
@@ -12,12 +15,12 @@ Test.property('preserves object references', fc.oneof(fc.object(), fc.array(fc.a
 })
 
 test('type: preserves input types', () => {
-  expectTypeOf(Fn.identity(5)).toEqualTypeOf<number>()
-  expectTypeOf(Fn.identity('hello')).toEqualTypeOf<string>()
-  expectTypeOf(Fn.identity(true)).toEqualTypeOf<boolean>()
-  expectTypeOf(Fn.identity(null)).toEqualTypeOf<null>()
-  expectTypeOf(Fn.identity(undefined)).toEqualTypeOf<undefined>()
+  A<number>().on(Fn.identity(5))
+  A<string>().on(Fn.identity('hello'))
+  A<boolean>().on(Fn.identity(true))
+  A<null>().on(Fn.identity(null))
+  A<undefined>().on(Fn.identity(undefined))
 
   const obj = { a: 1 } as const
-  expectTypeOf(Fn.identity(obj)).toEqualTypeOf<{ readonly a: 1 }>()
+  A<{ readonly a: 1 }>().on(Fn.identity(obj))
 })

@@ -1,6 +1,9 @@
 import { Str } from '#str'
+import { Ts } from '#ts'
 import { Option } from 'effect'
-import { describe, expectTypeOf, test } from 'vitest'
+import { describe, test } from 'vitest'
+
+const A = Ts.Assert.exact.ofAs
 
 // We are only interested in type-level testing here so
 // the string and regex runtime value does not matter.
@@ -11,24 +14,24 @@ describe('groups', () => {
   test('can infer from inline or pattern', () => {
     type matches = { groups: ['first'] }
     const match = Str.match<matches>(s, re)
-    expectTypeOf(match).toMatchTypeOf<Option.Option<any>>()
+    Ts.Assert.sub.ofAs<Option.Option<any>>().on(match)
     // Type-level test for the groups property
     type MatchType = typeof match extends Option.Option<infer R> ? R : never
-    expectTypeOf<MatchType['groups']>().toEqualTypeOf<{ first: string }>()
+    A<{ first: string }>().onAs<MatchType['groups']>()
     const pattern = Str.pattern<matches>(re)
     const match2 = Str.match(s, pattern)
-    expectTypeOf(match2).toEqualTypeOf(match)
+    Ts.Assert.exact.ofAs<typeof match>().on(match2)
   })
   test('optionals: can infer from inline or pattern', () => {
     type matches = { groups: ['first' | undefined] }
     const match = Str.match<matches>(s, re)
-    expectTypeOf(match).toMatchTypeOf<Option.Option<any>>()
+    Ts.Assert.sub.ofAs<Option.Option<any>>().on(match)
     // Type-level test for the groups property
     type MatchType = typeof match extends Option.Option<infer R> ? R : never
-    expectTypeOf<MatchType['groups']>().toEqualTypeOf<{ first?: string }>()
+    A<{ first?: string }>().onAs<MatchType['groups']>()
     const pattern = Str.pattern<matches>(re)
     const match2 = Str.match(s, pattern)
-    expectTypeOf(match2).toEqualTypeOf(match)
+    Ts.Assert.exact.ofAs<typeof match>().on(match2)
   })
 })
 
@@ -36,25 +39,25 @@ describe('indicies', () => {
   test('can infer from inline or pattern', () => {
     type matches = { indicies: [string] }
     const match = Str.match<matches>(s, re)
-    expectTypeOf(match).toMatchTypeOf<Option.Option<any>>()
+    Ts.Assert.sub.ofAs<Option.Option<any>>().on(match)
     // Type-level test for the indicies
     type MatchType = typeof match extends Option.Option<infer R> ? R : never
-    expectTypeOf<MatchType>().toMatchTypeOf<[string, string] & { groups: undefined }>()
+    Ts.Assert.sub.ofAs<[string, string] & { groups: undefined }>().onAs<MatchType>()
     const pattern = Str.pattern<matches>(re)
     const match2 = Str.match(s, pattern)
-    expectTypeOf(match2).toEqualTypeOf(match)
+    Ts.Assert.exact.ofAs<typeof match>().on(match2)
   })
 
   test('optionals: can infer from inline or pattern', () => {
     type matches = { indicies: [string | undefined] }
     const match = Str.match<matches>(s, re)
-    expectTypeOf(match).toMatchTypeOf<Option.Option<any>>()
+    Ts.Assert.sub.ofAs<Option.Option<any>>().on(match)
     // Type-level test for the indicies
     type MatchType = typeof match extends Option.Option<infer R> ? R : never
-    expectTypeOf<MatchType>().toMatchTypeOf<[string, string | undefined] & { groups: undefined }>()
+    Ts.Assert.sub.ofAs<[string, string | undefined] & { groups: undefined }>().onAs<MatchType>()
     const pattern = Str.pattern<matches>(re)
     const match2 = Str.match(s, pattern)
-    expectTypeOf(match2).toEqualTypeOf(match)
+    Ts.Assert.exact.ofAs<typeof match>().on(match2)
   })
 })
 

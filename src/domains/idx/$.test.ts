@@ -2,8 +2,11 @@ import { ArrMut } from '#arr-mut'
 import { Idx } from '#idx'
 import { Obj } from '#obj'
 import { property } from '#test/test'
+import { Ts } from '#ts'
 import fc from 'fast-check'
-import { expect, expectTypeOf, test } from 'vitest'
+import { expect, test } from 'vitest'
+
+const A = Ts.Assert.exact.ofAs
 
 test('empty index has no items', () => {
   const idx = Idx.create()
@@ -280,11 +283,11 @@ test('type: mode is conditional to key', () => {
   type p = typeof p
   type op = o | p
 
-  expectTypeOf<Idx.InferModeOptions<p>>().toEqualTypeOf<Idx.ModeFor.PrimitiveKey>
-  expectTypeOf<Idx.InferModeOptions<op>>().toEqualTypeOf<Idx.ModeFor.PrimitiveKey>
-  expectTypeOf<Idx.InferModeOptions<o>>().toEqualTypeOf<Idx.ModeFor.ObjectKey>
-  expectTypeOf<Idx.InferModeOptions<unknown>>().toEqualTypeOf<Idx.ModeFor.Unknown>
-  expectTypeOf<Idx.InferModeOptions<any>>().toEqualTypeOf<Idx.ModeFor.Unknown>
+  Ts.Assert.exact.ofAs<Idx.ModeFor.PrimitiveKey>().onAs<Idx.InferModeOptions<op>>()
+  Ts.Assert.exact.ofAs<Idx.ModeFor.PrimitiveKey>().onAs<Idx.InferModeOptions<p>>()
+  Ts.Assert.exact.ofAs<Idx.ModeFor.ObjectKey>().onAs<Idx.InferModeOptions<unknown>>()
+  Ts.Assert.exact.ofAs<Idx.ModeFor.Unknown>().onAs<Idx.InferModeOptions<o>>()
+  Ts.Assert.exact.ofAs<Idx.ModeFor.Unknown>().onAs<Idx.InferModeOptions<any>>()
 
   // ━ Via primitive Key
   // @ts-expect-error

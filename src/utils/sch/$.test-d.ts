@@ -1,6 +1,8 @@
 import { Sch } from '#sch'
+import { Ts } from '#ts'
 import { Schema as S } from 'effect'
-import { expectTypeOf } from 'vitest'
+
+const A = Ts.Assert.exact.ofAs
 
 // Test Tagged Struct utilities
 {
@@ -9,16 +11,16 @@ import { expectTypeOf } from 'vitest'
   const AB = S.Union(A, B)
 
   // ExtractByTag tests
-  expectTypeOf<Sch.Tagged.ExtractByTag<'A', typeof A>>().toEqualTypeOf<typeof A>()
-  expectTypeOf<Sch.Tagged.ExtractByTag<'Wrong', typeof A>>().toEqualTypeOf<never>()
-  expectTypeOf<Sch.Tagged.ExtractByTag<'A', typeof AB>>().toEqualTypeOf<typeof A>()
-  expectTypeOf<Sch.Tagged.ExtractByTag<'B', typeof AB>>().toEqualTypeOf<typeof B>()
-  expectTypeOf<Sch.Tagged.ExtractByTag<'C', typeof AB>>().toEqualTypeOf<never>()
+  Ts.Assert.exact.ofAs<typeof A>().onAs<Sch.Tagged.ExtractByTag<'A', typeof A>>()
+  Ts.Assert.exact.ofAs<never>().onAs<Sch.Tagged.ExtractByTag<'Wrong', typeof A>>()
+  Ts.Assert.exact.ofAs<typeof A>().onAs<Sch.Tagged.ExtractByTag<'A', typeof AB>>()
+  Ts.Assert.exact.ofAs<typeof B>().onAs<Sch.Tagged.ExtractByTag<'B', typeof AB>>()
+  Ts.Assert.exact.ofAs<never>().onAs<Sch.Tagged.ExtractByTag<'C', typeof AB>>()
 
   // DoesTaggedUnionContainTag tests
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'A', typeof AB>>().toEqualTypeOf<true>()
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'B', typeof AB>>().toEqualTypeOf<true>()
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'Wrong', typeof AB>>().toEqualTypeOf<false>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'A', typeof AB>>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'B', typeof AB>>()
+  Ts.Assert.exact.ofAs<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'Wrong', typeof AB>>()
 }
 
 // Test Union ADT type utilities
@@ -37,15 +39,15 @@ import { expectTypeOf } from 'vitest'
   const make = Sch.Union.makeMake(LifecycleEvent)
 
   // Test that factory function has correct signature
-  expectTypeOf(make).toEqualTypeOf<Sch.Union.FnMake<typeof LifecycleEvent>>()
+  Ts.Assert.exact.ofAs<Sch.Union.FnMake<typeof LifecycleEvent>>().on(make)
 
   // Test GetTags utility type
-  expectTypeOf<Sch.Union.GetTags<typeof LifecycleEvent>>()
-    .toEqualTypeOf<'LifecycleEventAdded' | 'LifecycleEventRemoved'>()
+  Ts.Assert.exact.ofAs<'LifecycleEventAdded' | 'LifecycleEventRemoved'>().onAs<
+    Sch.Union.GetTags<typeof LifecycleEvent>
+  >()
 
   // Test OmitTag utility type
-  expectTypeOf<Sch.Tagged.OmitTag<{ _tag: 'test'; field: string }>>()
-    .toEqualTypeOf<{ field: string }>()
+  Ts.Assert.exact.ofAs<{ field: string }>().onAs<Sch.Tagged.OmitTag<{ _tag: 'test'; field: string }>>()
 }
 
 // Test with complex schemas
@@ -57,36 +59,27 @@ import { expectTypeOf } from 'vitest'
   const SimpleUnion = S.Union(UserCreated, UserDeleted, UserUpdated)
 
   // Should extract UserCreated
-  expectTypeOf<Sch.Tagged.ExtractByTag<'UserCreated', typeof SimpleUnion>>()
-    .toEqualTypeOf<typeof UserCreated>()
+  Ts.Assert.exact.ofAs<typeof UserCreated>().onAs<Sch.Tagged.ExtractByTag<'UserCreated', typeof SimpleUnion>>()
 
   // Should extract UserDeleted
-  expectTypeOf<Sch.Tagged.ExtractByTag<'UserDeleted', typeof SimpleUnion>>()
-    .toEqualTypeOf<typeof UserDeleted>()
+  Ts.Assert.exact.ofAs<typeof UserDeleted>().onAs<Sch.Tagged.ExtractByTag<'UserDeleted', typeof SimpleUnion>>()
 
   // Should return never for non-existent tag
-  expectTypeOf<Sch.Tagged.ExtractByTag<'UserArchived', typeof SimpleUnion>>()
-    .toEqualTypeOf<never>()
+  Ts.Assert.exact.ofAs<never>().onAs<Sch.Tagged.ExtractByTag<'UserArchived', typeof SimpleUnion>>()
 
   // Test DoesTaggedUnionContainTag predicate
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'UserCreated', typeof SimpleUnion>>()
-    .toEqualTypeOf<true>()
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'UserDeleted', typeof SimpleUnion>>()
-    .toEqualTypeOf<true>()
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'UserUpdated', typeof SimpleUnion>>()
-    .toEqualTypeOf<true>()
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'UserArchived', typeof SimpleUnion>>()
-    .toEqualTypeOf<false>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'UserCreated', typeof SimpleUnion>>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'UserDeleted', typeof SimpleUnion>>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'UserUpdated', typeof SimpleUnion>>()
+  Ts.Assert.exact.ofAs<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'UserArchived', typeof SimpleUnion>>()
 }
 
 // Test single TaggedStruct (not a union)
 {
   const SingleStruct = S.TaggedStruct('SingleStruct', { data: S.String })
 
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'SingleStruct', typeof SingleStruct>>()
-    .toEqualTypeOf<true>()
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'OtherStruct', typeof SingleStruct>>()
-    .toEqualTypeOf<false>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'SingleStruct', typeof SingleStruct>>()
+  Ts.Assert.exact.ofAs<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'OtherStruct', typeof SingleStruct>>()
 }
 
 // Test complex tag formats
@@ -98,14 +91,10 @@ import { expectTypeOf } from 'vitest'
 
   const ComplexUnion = S.Union(CamelCase, SnakeCase, KebabCase, MixedCase)
 
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'CamelCaseTag', typeof ComplexUnion>>()
-    .toEqualTypeOf<true>()
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'snake_case_tag', typeof ComplexUnion>>()
-    .toEqualTypeOf<true>()
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'kebab-case-tag', typeof ComplexUnion>>()
-    .toEqualTypeOf<true>()
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'Mixed_Case-Tag', typeof ComplexUnion>>()
-    .toEqualTypeOf<true>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'CamelCaseTag', typeof ComplexUnion>>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'snake_case_tag', typeof ComplexUnion>>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'kebab-case-tag', typeof ComplexUnion>>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'Mixed_Case-Tag', typeof ComplexUnion>>()
 }
 
 // Test Suspend unwrapping in unions
@@ -121,16 +110,13 @@ import { expectTypeOf } from 'vitest'
   const SuspendUnion = S.Union(SuspendedDirectEvent, SuspendedSuspendedEvent)
 
   // Should find DirectEvent even though it's wrapped in suspend
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'DirectEvent', typeof SuspendUnion>>()
-    .toEqualTypeOf<true>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'DirectEvent', typeof SuspendUnion>>()
 
   // Should find SuspendedEvent even though it's wrapped in suspend
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'SuspendedEvent', typeof SuspendUnion>>()
-    .toEqualTypeOf<true>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'SuspendedEvent', typeof SuspendUnion>>()
 
   // Should not find non-existent tag
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'NonExistentEvent', typeof SuspendUnion>>()
-    .toEqualTypeOf<false>()
+  Ts.Assert.exact.ofAs<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'NonExistentEvent', typeof SuspendUnion>>()
 }
 
 // Test mixed suspended and direct schemas
@@ -143,16 +129,12 @@ import { expectTypeOf } from 'vitest'
   const MixedSuspendUnion = S.Union(MixedA, MixedB, SuspendedMixedC)
 
   // Should find direct schemas
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'MixedA', typeof MixedSuspendUnion>>()
-    .toEqualTypeOf<true>()
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'MixedB', typeof MixedSuspendUnion>>()
-    .toEqualTypeOf<true>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'MixedA', typeof MixedSuspendUnion>>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'MixedB', typeof MixedSuspendUnion>>()
 
   // Should find suspended schema
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'MixedC', typeof MixedSuspendUnion>>()
-    .toEqualTypeOf<true>()
+  Ts.Assert.exact.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'MixedC', typeof MixedSuspendUnion>>()
 
   // Should not find non-existent
-  expectTypeOf<Sch.Tagged.DoesTaggedUnionContainTag<'MixedD', typeof MixedSuspendUnion>>()
-    .toEqualTypeOf<false>()
+  Ts.Assert.exact.ofAs<false>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'MixedD', typeof MixedSuspendUnion>>()
 }

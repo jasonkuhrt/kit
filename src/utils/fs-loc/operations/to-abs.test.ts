@@ -1,7 +1,10 @@
 import { FsLoc } from '#fs-loc'
 import { Test } from '#test'
+import { Ts } from '#ts'
 import '../$.test-matchers.js'
-import { describe, expect, expectTypeOf, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
+
+const A = Ts.Assert.exact.ofAs
 
 const l = FsLoc.fromString
 
