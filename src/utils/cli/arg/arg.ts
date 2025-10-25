@@ -317,7 +317,9 @@ export class ArgLongFlag extends S.TaggedClass<ArgLongFlag>()('long-flag', {
   negated: S.Boolean,
   value: S.NullOr(S.String),
   original: S.String,
-}) {}
+}) {
+  static is = S.is(ArgLongFlag)
+}
 
 /**
  * Schema for short flag argument (`-v`, `-n=10`).
@@ -326,7 +328,9 @@ export class ArgShortFlag extends S.TaggedClass<ArgShortFlag>()('short-flag', {
   name: S.String,
   value: S.NullOr(S.String),
   original: S.String,
-}) {}
+}) {
+  static is = S.is(ArgShortFlag)
+}
 
 /**
  * Schema for short flag cluster argument (`-abc`, `-xyz=value`).
@@ -337,7 +341,9 @@ export class ArgShortFlagCluster extends S.TaggedClass<ArgShortFlagCluster>()('s
   shortFlag: ArgShortFlag,
   additionalShortFlagNames: S.Array(S.String),
   original: S.String,
-}) {}
+}) {
+  static is = S.is(ArgShortFlagCluster)
+}
 
 /**
  * Schema for positional argument (`file.txt`, `123`).
@@ -345,7 +351,9 @@ export class ArgShortFlagCluster extends S.TaggedClass<ArgShortFlagCluster>()('s
 export class ArgPositional extends S.TaggedClass<ArgPositional>()('positional', {
   value: S.String,
   original: S.String,
-}) {}
+}) {
+  static is = S.is(ArgPositional)
+}
 
 /**
  * Schema for separator argument (`--`).
@@ -353,7 +361,9 @@ export class ArgPositional extends S.TaggedClass<ArgPositional>()('positional', 
 export class ArgSeparator extends S.TaggedClass<ArgSeparator>()('separator', {
   value: S.Null,
   original: S.Literal('--'),
-}) {}
+}) {
+  static is = S.is(ArgSeparator)
+}
 
 const _ArgSchema = S.Union(ArgLongFlag, ArgShortFlag, ArgShortFlagCluster, ArgPositional, ArgSeparator)
 
@@ -468,12 +478,12 @@ const ArgNamespace = {
    * // Use this instead: Arg.decodeSync(expr)
    * ```
    */
-  fromString: (<const $input extends string>(
+  fromString: <const $input extends string>(
     $input: Arg.Analyze<$input> extends string ? Ts.Err.StaticError<Arg.Analyze<$input>>
       : $input,
-  ) => {
+  ): Arg.Analyze<$input> => {
     return S.decodeSync(ArgNamespace.String)($input as any) as any
-  }) as any,
+  },
 
   /**
    * Runtime analyzer function.
