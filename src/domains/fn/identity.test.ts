@@ -13,11 +13,11 @@ Test.property('preserves object references', fc.oneof(fc.object(), fc.array(fc.a
 })
 
 test('type: preserves input types', () => {
-  Ts.Assert.sub.ofAs<number>().on(Fn.identity(5))
-  Ts.Assert.sub.ofAs<string>().on(Fn.identity('hello'))
-  Ts.Assert.sub.ofAs<boolean>().on(Fn.identity(true))
-  Ts.Assert.sub.ofAs<null>().on(Fn.identity(null))
-  Ts.Assert.sub.ofAs<undefined>().on(Fn.identity(undefined))
+  Ts.Assert.exact.ofAs<0>().on(Fn.identity(0))
+  Ts.Assert.exact.ofAs<''>().on(Fn.identity(''))
+  Ts.Assert.exact.ofAs<true>().on(Fn.identity(true))
+  Ts.Assert.exact.ofAs<null>().on(Fn.identity(null))
+  Ts.Assert.exact.ofAs<undefined>().on(Fn.identity(undefined))
 
   const obj = { a: 1 } as const
   Ts.Assert.sub.ofAs<{ readonly a: 1 }>().on(Fn.identity(obj))
