@@ -12,12 +12,14 @@ import { ParseResult, Schema as S } from 'effect'
  * Discriminated union representing different types of CLI arguments:
  * - Long flags: `--verbose`, `--count=5`
  * - Short flags: `-v`, `-n=10`
+ * - Short flag clusters: `-abc` (expands to `-a`, `-b`, `-c`)
  * - Positional arguments: `file.txt`, `123`
  * - Separator: `--`
  */
 export type Analysis =
   | AnalysisLongFlag
   | AnalysisShortFlag
+  | AnalysisShortFlagCluster
   | AnalysisPositional
   | AnalysisSeparator
 
@@ -57,6 +59,45 @@ export interface AnalysisShortFlag {
   name: string
   /** Value from equals syntax, or null if no value (e.g., "5" from "-v=5") */
   value: string | null
+  /** Original input string */
+  original: string
+}
+
+/**
+ * Short flag cluster analysis (multi-character short flag like `-abc`).
+ *
+ * Expands clustered short flags into individual flags.
+ * Value (if present) is attached only to the last flag.
+ *
+ * @example
+ * ```typescript
+ * // analyze('-abc')
+ * {
+ *   _tag: 'short-flag-cluster',
+ *   flags: [
+ *     { _tag: 'short-flag', name: 'a', value: null, original: '-a' },
+ *     { _tag: 'short-flag', name: 'b', value: null, original: '-b' },
+ *     { _tag: 'short-flag', name: 'c', value: null, original: '-c' }
+ *   ],
+ *   original: '-abc'
+ * }
+ *
+ * // analyze('-abc=foo')
+ * {
+ *   _tag: 'short-flag-cluster',
+ *   flags: [
+ *     { _tag: 'short-flag', name: 'a', value: null, original: '-a' },
+ *     { _tag: 'short-flag', name: 'b', value: null, original: '-b' },
+ *     { _tag: 'short-flag', name: 'c', value: 'foo', original: '-c=foo' }
+ *   ],
+ *   original: '-abc=foo'
+ * }
+ * ```
+ */
+export interface AnalysisShortFlagCluster {
+  _tag: 'short-flag-cluster'
+  /** Array of individual short flags (minimum 2) */
+  flags: [AnalysisShortFlag, AnalysisShortFlag, ...AnalysisShortFlag[]]
   /** Original input string */
   original: string
 }
@@ -190,9 +231,30 @@ export function analyze_(input: string): Analysis {
     }
 
     const [rawName, ...valueParts] = withoutPrefix.split('=')
-    const name = rawName ?? '' // Short flags are already single char, no case conversion needed
+    const name = rawName ?? ''
     const value = valueParts.length > 0 ? valueParts.join('=') : null
 
+    // Cluster expansion: multi-character short flag (e.g., "-abc")
+    if (name.length > 1) {
+      const chars = name.split('')
+      const flags: AnalysisShortFlag[] = chars.map((char, index) => {
+        const isLast = index === chars.length - 1
+        return {
+          _tag: 'short-flag',
+          name: char,
+          value: isLast ? value : null, // Value goes to last flag only
+          original: isLast && value !== null ? `-${char}=${value}` : `-${char}`,
+        }
+      })
+
+      return {
+        _tag: 'short-flag-cluster',
+        flags: flags as [AnalysisShortFlag, AnalysisShortFlag, ...AnalysisShortFlag[]],
+        original: input,
+      }
+    }
+
+    // Single character short flag
     return {
       _tag: 'short-flag',
       name,
@@ -233,6 +295,16 @@ class ArgShortFlag extends S.TaggedClass<ArgShortFlag>()('short-flag', {
 }) {}
 
 /**
+ * Schema for short flag cluster argument (`-abc`, `-xyz=value`).
+ *
+ * Represents a multi-character short flag that expands into individual flags.
+ */
+class ArgShortFlagCluster extends S.TaggedClass<ArgShortFlagCluster>()('short-flag-cluster', {
+  flags: S.Array(ArgShortFlag).pipe(S.minItems(2)),
+  original: S.String,
+}) {}
+
+/**
  * Schema for positional argument (`file.txt`, `123`).
  */
 class ArgPositional extends S.TaggedClass<ArgPositional>()('positional', {
@@ -248,7 +320,7 @@ class ArgSeparator extends S.TaggedClass<ArgSeparator>()('separator', {
   original: S.Literal('--'),
 }) {}
 
-const _ArgSchema = S.Union(ArgLongFlag, ArgShortFlag, ArgPositional, ArgSeparator)
+const _ArgSchema = S.Union(ArgLongFlag, ArgShortFlag, ArgShortFlagCluster, ArgPositional, ArgSeparator)
 
 const ArgNamespace = {
   /**
@@ -288,6 +360,21 @@ const ArgNamespace = {
               new ArgShortFlag({
                 name: analysis.name,
                 value: analysis.value,
+                original: analysis.original,
+              }),
+            )
+
+          case 'short-flag-cluster':
+            return ParseResult.succeed(
+              new ArgShortFlagCluster({
+                flags: analysis.flags.map(
+                  (f) =>
+                    new ArgShortFlag({
+                      name: f.name,
+                      value: f.value,
+                      original: f.original,
+                    }),
+                ),
                 original: analysis.original,
               }),
             )
@@ -455,6 +542,59 @@ export namespace Arg {
     : { negated: false; baseName: $Name }
     : { negated: false; baseName: $Name }
 
+  /**
+   * Split a string into an array of characters.
+   *
+   * @example
+   * ```typescript
+   * type A = SplitChars<'abc'>
+   * // ['a', 'b', 'c']
+   *
+   * type B = SplitChars<'x'>
+   * // ['x']
+   * ```
+   */
+  type SplitChars<$S extends string> = $S extends `${infer __first__}${infer __rest__}`
+    ? [__first__, ...SplitChars<__rest__>]
+    : []
+
+  /**
+   * Map an array of characters to AnalysisShortFlag types.
+   * Value is attached only to the last flag in the array.
+   *
+   * @example
+   * ```typescript
+   * type A = MapToShortFlags<['a', 'b', 'c'], null, '-abc'>
+   * // [
+   * //   { _tag: 'short-flag', name: 'a', value: null, original: '-a' },
+   * //   { _tag: 'short-flag', name: 'b', value: null, original: '-b' },
+   * //   { _tag: 'short-flag', name: 'c', value: null, original: '-c' }
+   * // ]
+   *
+   * type B = MapToShortFlags<['x', 'y'], 'foo', '-xy=foo'>
+   * // [
+   * //   { _tag: 'short-flag', name: 'x', value: null, original: '-x' },
+   * //   { _tag: 'short-flag', name: 'y', value: 'foo', original: '-y=foo' }
+   * // ]
+   * ```
+   */
+  type MapToShortFlags<
+    $chars extends string[],
+    $value extends string | null,
+    $original extends string,
+  > = $chars extends [infer __first__ extends string, ...infer __rest__ extends string[]] ? __rest__['length'] extends 0 // Last flag - attach value
+      ? [
+        AnalysisShortFlag<
+          $value extends null ? __first__ : `${__first__}=${$value}`,
+          $value extends null ? `-${__first__}` : `-${__first__}=${$value}`
+        >,
+      ]
+    : [
+      AnalysisShortFlag<__first__, `-${__first__}`>,
+      ...MapToShortFlags<__rest__, $value, $original>,
+    ]
+    : []
+
   // ==========================================================================
   // Analysis Result Types (Type-Level)
   // ==========================================================================
@@ -487,6 +627,38 @@ export namespace Arg {
     _tag: 'short-flag'
     name: SplitOnEquals<$stripped>[0]
     value: SplitOnEquals<$stripped>[1]
+    original: $original
+  }
+
+  /**
+   * Short flag cluster analysis type.
+   *
+   * Expands multi-character short flags into individual flags.
+   * Value (if present) is attached only to the last flag.
+   *
+   * @param $stripped - The flag characters without the `-` prefix
+   * @param $original - The original input (with `-` prefix)
+   *
+   * @example
+   * ```typescript
+   * type A = AnalysisShortFlagCluster<'abc', '-abc'>
+   * // {
+   * //   _tag: 'short-flag-cluster',
+   * //   flags: [
+   * //     { _tag: 'short-flag', name: 'a', value: null, original: '-a' },
+   * //     { _tag: 'short-flag', name: 'b', value: null, original: '-b' },
+   * //     { _tag: 'short-flag', name: 'c', value: null, original: '-c' }
+   * //   ],
+   * //   original: '-abc'
+   * // }
+   * ```
+   */
+  export type AnalysisShortFlagCluster<
+    $stripped extends string = string,
+    $original extends string = $stripped,
+  > = {
+    _tag: 'short-flag-cluster'
+    flags: MapToShortFlags<SplitChars<SplitOnEquals<$stripped>[0]>, SplitOnEquals<$stripped>[1], $original>
     original: $original
   }
 
@@ -528,13 +700,16 @@ export namespace Arg {
    * type C = Analyze<'-v'>
    * // { _tag: 'short-flag', name: 'v', value: null, original: '-v' }
    *
-   * type D = Analyze<'file.txt'>
+   * type D = Analyze<'-abc'>
+   * // { _tag: 'short-flag-cluster', flags: [...], original: '-abc' }
+   *
+   * type E = Analyze<'file.txt'>
    * // { _tag: 'positional', value: 'file.txt', original: 'file.txt' }
    *
-   * type E = Analyze<'--'>
+   * type F = Analyze<'--'>
    * // { _tag: 'separator', original: '--' }
    *
-   * type F = Analyze<'--foo-bar'>
+   * type G = Analyze<'--foo-bar'>
    * // { _tag: 'long-flag', name: 'fooBar', value: null, original: '--foo-bar' }
    * ```
    */
@@ -546,8 +721,10 @@ export namespace Arg {
       // Long flag: starts with "--" (but not "---")
       : $S extends `--${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositional<$S> // Malformed: "---something"
         : AnalysisLongFlag<__rest__, $S>
-      // Short flag: starts with "-" (but not "--")
-      : $S extends `-${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositional<$S> // Malformed: "---something" (caught above, but defensive)
+      // Short flag or cluster: starts with "-" (but not "--")
+      : $S extends `-${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositional<$S> // Malformed: "---something"
+        : SplitOnEquals<__rest__>[0] extends `${string}${string}${infer ___}` // Multi-char (2+)
+          ? AnalysisShortFlagCluster<__rest__, $S>
         : AnalysisShortFlag<__rest__, $S>
       // Positional: doesn't match any flag pattern
       : AnalysisPositional<$S>

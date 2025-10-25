@@ -61,7 +61,7 @@ test('type-level analysis', () => {
       { _tag: 'long-flag'; name: 'node'; negated: false; value: null; original: '--node' },
       Arg.Analyze<'--node'>
     >,
-    // Short flags
+    // Short flags (single character)
     Ts.Assert.exact<
       { _tag: 'short-flag'; name: 'v'; value: null; original: '-v' },
       Arg.Analyze<'-v'>
@@ -77,6 +77,54 @@ test('type-level analysis', () => {
     Ts.Assert.exact<
       { _tag: 'short-flag'; name: 'e'; value: ''; original: '-e=' },
       Arg.Analyze<'-e='>
+    >,
+    // Short flag clusters
+    Ts.Assert.exact<
+      {
+        _tag: 'short-flag-cluster'
+        flags: [
+          { _tag: 'short-flag'; name: 'a'; value: null; original: '-a' },
+          { _tag: 'short-flag'; name: 'b'; value: null; original: '-b' },
+        ]
+        original: '-ab'
+      },
+      Arg.Analyze<'-ab'>
+    >,
+    Ts.Assert.exact<
+      {
+        _tag: 'short-flag-cluster'
+        flags: [
+          { _tag: 'short-flag'; name: 'a'; value: null; original: '-a' },
+          { _tag: 'short-flag'; name: 'b'; value: null; original: '-b' },
+          { _tag: 'short-flag'; name: 'c'; value: null; original: '-c' },
+        ]
+        original: '-abc'
+      },
+      Arg.Analyze<'-abc'>
+    >,
+    Ts.Assert.exact<
+      {
+        _tag: 'short-flag-cluster'
+        flags: [
+          { _tag: 'short-flag'; name: 'x'; value: null; original: '-x' },
+          { _tag: 'short-flag'; name: 'y'; value: null; original: '-y' },
+          { _tag: 'short-flag'; name: 'z'; value: 'foo'; original: '-z=foo' },
+        ]
+        original: '-xyz=foo'
+      },
+      Arg.Analyze<'-xyz=foo'>
+    >,
+    Ts.Assert.exact<
+      {
+        _tag: 'short-flag-cluster'
+        flags: [
+          { _tag: 'short-flag'; name: 'v'; value: null; original: '-v' },
+          { _tag: 'short-flag'; name: 'x'; value: null; original: '-x' },
+          { _tag: 'short-flag'; name: 'f'; value: ''; original: '-f=' },
+        ]
+        original: '-vxf='
+      },
+      Arg.Analyze<'-vxf='>
     >,
     // Positional
     Ts.Assert.exact<
@@ -138,11 +186,16 @@ Test.on(Arg.analyze)
     // Edge cases: NOT negated (lowercase after 'no')
     ['--notice',         { _tag: 'long-flag',  name: 'notice',     negated: false, value: null,  original: '--notice' }],
     ['--node',           { _tag: 'long-flag',  name: 'node',       negated: false, value: null,  original: '--node' }],
-    // Short flags
+    // Short flags (single character)
     ['-v',               { _tag: 'short-flag', name: 'v',          value: null,  original: '-v' }],
     ['-n=10',            { _tag: 'short-flag', name: 'n',          value: '10',  original: '-n=10' }],
     ['-q=x=y',           { _tag: 'short-flag', name: 'q',          value: 'x=y', original: '-q=x=y' }],
     ['-e=',              { _tag: 'short-flag', name: 'e',          value: '',    original: '-e=' }],
+    // Short flag clusters
+    ['-ab',              { _tag: 'short-flag-cluster', flags: [{ _tag: 'short-flag', name: 'a', value: null, original: '-a' }, { _tag: 'short-flag', name: 'b', value: null, original: '-b' }], original: '-ab' }],
+    ['-abc',             { _tag: 'short-flag-cluster', flags: [{ _tag: 'short-flag', name: 'a', value: null, original: '-a' }, { _tag: 'short-flag', name: 'b', value: null, original: '-b' }, { _tag: 'short-flag', name: 'c', value: null, original: '-c' }], original: '-abc' }],
+    ['-xyz=foo',         { _tag: 'short-flag-cluster', flags: [{ _tag: 'short-flag', name: 'x', value: null, original: '-x' }, { _tag: 'short-flag', name: 'y', value: null, original: '-y' }, { _tag: 'short-flag', name: 'z', value: 'foo', original: '-z=foo' }], original: '-xyz=foo' }],
+    ['-vxf=',            { _tag: 'short-flag-cluster', flags: [{ _tag: 'short-flag', name: 'v', value: null, original: '-v' }, { _tag: 'short-flag', name: 'x', value: null, original: '-x' }, { _tag: 'short-flag', name: 'f', value: '', original: '-f=' }], original: '-vxf=' }],
     // Positional
     ['file.txt',         { _tag: 'positional', value: 'file.txt',            original: 'file.txt' }],
     ['123',              { _tag: 'positional', value: '123',                 original: '123' }],
@@ -191,6 +244,37 @@ test('Effect Schema decoding with negated flags', () => {
   }
 })
 
+test('Effect Schema decoding with short flag clusters', () => {
+  const result1 = decodeString('-ab')
+  const result2 = decodeString('-abc')
+  const result3 = decodeString('-xyz=foo')
+
+  expect(result1._tag).toBe('short-flag-cluster')
+  if (result1._tag === 'short-flag-cluster') {
+    expect(result1.flags).toHaveLength(2)
+    expect(result1.flags[0].name).toBe('a')
+    expect(result1.flags[1].name).toBe('b')
+    expect(result1.flags[0].value).toBe(null)
+    expect(result1.flags[1].value).toBe(null)
+  }
+
+  expect(result2._tag).toBe('short-flag-cluster')
+  if (result2._tag === 'short-flag-cluster') {
+    expect(result2.flags).toHaveLength(3)
+    expect(result2.flags[0].name).toBe('a')
+    expect(result2.flags[1].name).toBe('b')
+    expect(result2.flags[2]!.name).toBe('c')
+  }
+
+  expect(result3._tag).toBe('short-flag-cluster')
+  if (result3._tag === 'short-flag-cluster') {
+    expect(result3.flags).toHaveLength(3)
+    expect(result3.flags[0].value).toBe(null)
+    expect(result3.flags[1].value).toBe(null)
+    expect(result3.flags[2]!.value).toBe('foo') // Value on last flag only
+  }
+})
+
 // =============================================================================
 // fromString Tests
 // =============================================================================
@@ -223,5 +307,29 @@ test('fromString with negated flags', () => {
   if (arg2._tag === 'long-flag') {
     expect(arg2.name).toBe('debugMode')
     expect(arg2.negated).toBe(true)
+  }
+})
+
+test('fromString with short flag clusters', () => {
+  const arg1 = Arg.fromString('-ab')
+  const arg2 = Arg.fromString('-abc')
+  const arg3 = Arg.fromString('-xyz=foo')
+
+  // Runtime verification (types are already verified by fromString signature)
+  expect(arg1._tag).toBe('short-flag-cluster')
+  if (arg1._tag === 'short-flag-cluster') {
+    expect(arg1.flags).toHaveLength(2)
+    expect(arg1.flags[0].name).toBe('a')
+    expect(arg1.flags[1].name).toBe('b')
+  }
+
+  expect(arg2._tag).toBe('short-flag-cluster')
+  if (arg2._tag === 'short-flag-cluster') {
+    expect(arg2.flags).toHaveLength(3)
+  }
+
+  expect(arg3._tag).toBe('short-flag-cluster')
+  if (arg3._tag === 'short-flag-cluster') {
+    expect(arg3.flags[2].value).toBe('foo') // Value on last flag only
   }
 })
