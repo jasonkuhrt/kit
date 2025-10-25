@@ -622,67 +622,6 @@ export namespace Arg {
   // Analysis Result Types (Type-Level)
   // ==========================================================================
 
-  /**
-   * Long flag analysis type (for type-level Arg.Analyze<> use).
-   * @param $stripped - The flag without the `--` prefix
-   * @param $original - The original input (with `--` prefix)
-   */
-  type AnalysisLongFlagFromString<
-    $stripped extends string = string,
-    $original extends string = $stripped,
-  > = AnalysisLongFlagLiteral<
-    DetectNegation<CamelCase<SplitOnEquals<$stripped>[0]>>['baseName'],
-    DetectNegation<CamelCase<SplitOnEquals<$stripped>[0]>>['negated'],
-    SplitOnEquals<$stripped>[1],
-    $original
-  >
-
-  /**
-   * Short flag analysis type (for type-level Arg.Analyze<> use).
-   * @param $stripped - The flag without the `-` prefix
-   * @param $original - The original input (with `-` prefix)
-   */
-  type AnalysisShortFlagFromString<
-    $stripped extends string = string,
-    $original extends string = $stripped,
-  > = AnalysisShortFlagLiteral<
-    SplitOnEquals<$stripped>[0],
-    SplitOnEquals<$stripped>[1],
-    $original
-  >
-
-  /**
-   * Short flag cluster analysis type (for type-level Arg.Analyze<> use).
-   *
-   * @param $stripped - The flag characters without the `-` prefix
-   * @param $original - The original input (with `-` prefix)
-   */
-  type AnalysisShortFlagClusterFromString<
-    $stripped extends string = string,
-    $original extends string = $stripped,
-  > = SplitChars<SplitOnEquals<$stripped>[0]> extends infer __chars__ extends [string, string, ...string[]]
-    ? SplitLastChar<__chars__> extends
-      { additionalNames: infer __additional__ extends string[]; lastChar: infer __last__ extends string }
-      ? AnalysisShortFlagClusterLiteral<
-        __additional__,
-        AnalysisShortFlagFromString<
-          SplitOnEquals<$stripped>[1] extends null ? __last__ : `${__last__}=${SplitOnEquals<$stripped>[1]}`,
-          SplitOnEquals<$stripped>[1] extends null ? `-${__last__}` : `-${__last__}=${SplitOnEquals<$stripped>[1]}`
-        >,
-        $original
-      >
-    : never
-    : never
-
-  /**
-   * Positional argument analysis type (for type-level Arg.Analyze<> use).
-   */
-  type AnalysisPositionalFromString<$S extends string = string> = AnalysisPositionalLiteral<$S, $S>
-
-  /**
-   * Separator analysis type (for type-level Arg.Analyze<> use).
-   */
-  type AnalysisSeparatorFromString = AnalysisSeparatorLiteral
 
   // ==========================================================================
   // Main Type-Level Analyzer
@@ -719,17 +658,39 @@ export namespace Arg {
     // Non-literal string fallback
     string extends $S ? Analysis
       // Separator: exactly "--"
-      : $S extends '--' ? AnalysisSeparatorFromString
+      : $S extends '--' ? AnalysisSeparatorLiteral
       // Long flag: starts with "--" (but not "---")
-      : $S extends `--${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositionalFromString<$S> // Malformed: "---something"
-        : AnalysisLongFlagFromString<__rest__, $S>
+      : $S extends `--${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositionalLiteral<$S, $S> // Malformed: "---something"
+        : AnalysisLongFlagLiteral<
+          DetectNegation<CamelCase<SplitOnEquals<__rest__>[0]>>['baseName'],
+          DetectNegation<CamelCase<SplitOnEquals<__rest__>[0]>>['negated'],
+          SplitOnEquals<__rest__>[1],
+          $S
+        >
       // Short flag or cluster: starts with "-" (but not "--")
-      : $S extends `-${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositionalFromString<$S> // Malformed: "---something"
+      : $S extends `-${infer __rest__}` ? __rest__ extends `-${string}` ? AnalysisPositionalLiteral<$S, $S> // Malformed: "---something"
         : SplitOnEquals<__rest__>[0] extends `${string}${string}${infer ___}` // Multi-char (2+)
-          ? AnalysisShortFlagClusterFromString<__rest__, $S>
-        : AnalysisShortFlagFromString<__rest__, $S>
+          ? SplitChars<SplitOnEquals<__rest__>[0]> extends infer __chars__ extends [string, string, ...string[]]
+            ? SplitLastChar<__chars__> extends
+              { additionalNames: infer __additional__ extends string[]; lastChar: infer __last__ extends string }
+              ? AnalysisShortFlagClusterLiteral<
+                __additional__,
+                AnalysisShortFlagLiteral<
+                  __last__,
+                  SplitOnEquals<__rest__>[1],
+                  SplitOnEquals<__rest__>[1] extends null ? `-${__last__}` : `-${__last__}=${SplitOnEquals<__rest__>[1]}`
+                >,
+                $S
+              >
+            : never
+            : never
+          : AnalysisShortFlagLiteral<
+            SplitOnEquals<__rest__>[0],
+            SplitOnEquals<__rest__>[1],
+            $S
+          >
       // Positional: doesn't match any flag pattern
-      : AnalysisPositionalFromString<$S>
+      : AnalysisPositionalLiteral<$S, $S>
 
   // ==========================================================================
   // Utility Type Exports
