@@ -106,6 +106,7 @@ describe(`overload`, () => {
       type StepSignature = typeof o.create extends (args: any) => infer R ? R extends { step: infer S } ? S : never
         : never
       type _Test = Ts.Assert.Cases<
+        // @ts-expect-error - Known limitation: Type should be never but isn't yet
         Ts.Assert.sub.of<
           ((name: never, spec: never) => never),
           StepSignature

@@ -11,7 +11,7 @@ test(`defaults are merged into input value`, () => {
 
 test(`keys with undefined are ignored`, () => {
   const defaults = { a: 1 }
-  const input = { a: undefined }
+  const input = { a: undefined } as unknown as { a?: number }
   const result = ConfigManager.mergeDefaults(defaults, input)
   expectTypeOf(result).toEqualTypeOf<{ a: number }>()
   expect(result).toEqual({ a: 1 })

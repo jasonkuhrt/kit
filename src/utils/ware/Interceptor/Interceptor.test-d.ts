@@ -40,7 +40,7 @@ describe(`interceptor constructor`, () => {
   test(`trigger arguments are optional`, () => {
     const p = b0.step({ name: `a`, run: () => results.a }).done()
     const triggerA = Ts.as<PipelineGetTrigger<typeof p, 'a'>>()
-    Ts.Assert.parameters.sub.ofAs<[params?: { input?: initialInput }]>().on(triggerA)
+    Ts.Assert.parameters.sub.ofAs<[parameters?: { input?: initialInput } | undefined]>().on(triggerA)
   })
 
   // --- slots ---
