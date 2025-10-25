@@ -3,77 +3,84 @@ import { Schema as S } from 'effect'
 import { expect, test } from 'vitest'
 import { Arg, ArgLongFlag, ArgPositional, ArgSeparator, ArgShortFlag, ArgShortFlagCluster } from './arg.js'
 
-test('Arg.fromString', () => {
-  // Long flag
-  const r1 = Arg.fromString('--verbose')
-  const e1 = ArgLongFlag.make({ name: 'verbose', negated: false, value: null, original: '--verbose' })
-  expect(S.is(ArgLongFlag)(r1)).toBe(true)
-  expect(r1).toMatchObject(e1)
-  Ts.Assert.exact.ofAs<typeof e1>().on(r1)
+test('Arg.fromString > long flag', () => {
+  const r = Arg.fromString('--verbose')
+  const e = ArgLongFlag.make({ name: 'verbose', negated: false, value: null, original: '--verbose' })
+  expect(S.is(ArgLongFlag)(r)).toBe(true)
+  expect(r).toMatchObject(e)
+  Ts.Assert.exact.ofAs<typeof e>().on(r)
+})
 
-  // Long flag with value
-  const r2 = Arg.fromString('--count=5')
-  const e2 = ArgLongFlag.make({ name: 'count', negated: false, value: '5', original: '--count=5' })
-  expect(S.is(ArgLongFlag)(r2)).toBe(true)
-  expect(r2).toMatchObject(e2)
-  Ts.Assert.exact.ofAs<typeof e2>().on(r2)
+test('Arg.fromString > long flag with value', () => {
+  const r = Arg.fromString('--count=5')
+  const e = ArgLongFlag.make({ name: 'count', negated: false, value: '5', original: '--count=5' })
+  expect(S.is(ArgLongFlag)(r)).toBe(true)
+  expect(r).toMatchObject(e)
+  Ts.Assert.exact.ofAs<typeof e>().on(r)
+})
 
-  // Negated long flag
-  const r3 = Arg.fromString('--no-verbose')
-  const e3 = ArgLongFlag.make({ name: 'verbose', negated: true, value: null, original: '--no-verbose' })
-  expect(S.is(ArgLongFlag)(r3)).toBe(true)
-  expect(r3).toMatchObject(e3)
-  Ts.Assert.exact.ofAs<typeof e3>().on(r3)
+test('Arg.fromString > negated long flag', () => {
+  const r = Arg.fromString('--no-verbose')
+  const e = ArgLongFlag.make({ name: 'verbose', negated: true, value: null, original: '--no-verbose' })
+  expect(S.is(ArgLongFlag)(r)).toBe(true)
+  expect(r).toMatchObject(e)
+  Ts.Assert.exact.ofAs<typeof e>().on(r)
+})
 
-  // Short flag
-  const r4 = Arg.fromString('-v')
-  const e4 = ArgShortFlag.make({ name: 'v', value: null, original: '-v' })
-  expect(S.is(ArgShortFlag)(r4)).toBe(true)
-  expect(r4).toMatchObject(e4)
-  Ts.Assert.exact.ofAs<typeof e4>().on(r4)
+test('Arg.fromString > short flag', () => {
+  const r = Arg.fromString('-v')
+  const e = ArgShortFlag.make({ name: 'v', value: null, original: '-v' })
+  expect(S.is(ArgShortFlag)(r)).toBe(true)
+  expect(r).toMatchObject(e)
+  Ts.Assert.exact.ofAs<typeof e>().on(r)
+})
 
-  // Short flag with value
-  const r5 = Arg.fromString('-n=10')
-  const e5 = ArgShortFlag.make({ name: 'n', value: '10', original: '-n=10' })
-  expect(S.is(ArgShortFlag)(r5)).toBe(true)
-  expect(r5).toMatchObject(e5)
-  Ts.Assert.exact.ofAs<typeof e5>().on(r5)
+test('Arg.fromString > short flag with value', () => {
+  const r = Arg.fromString('-n=10')
+  const e = ArgShortFlag.make({ name: 'n', value: '10', original: '-n=10' })
+  expect(S.is(ArgShortFlag)(r)).toBe(true)
+  expect(r).toMatchObject(e)
+  Ts.Assert.exact.ofAs<typeof e>().on(r)
+})
 
-  // Short flag cluster (no value)
-  const r6 = Arg.fromString('-abc')
-  const e6 = ArgShortFlagCluster.make({
+test('Arg.fromString > short flag cluster', () => {
+  const r = Arg.fromString('-abc')
+  const e = ArgShortFlagCluster.make({
     additionalShortFlagNames: ['a', 'b'],
     shortFlag: ArgShortFlag.make({ name: 'c', value: null, original: '-c' }),
     original: '-abc',
   })
-  expect(S.is(ArgShortFlagCluster)(r6)).toBe(true)
-  expect(r6).toMatchObject(e6)
-  Ts.Assert.exact.ofAs<typeof e6>().on(r6)
+  expect(S.is(ArgShortFlagCluster)(r)).toBe(true)
+  expect(r).toMatchObject(e)
+  Ts.Assert.exact.ofAs<typeof e>().on(r)
+})
 
-  // Short flag cluster (with value)
-  const r7 = Arg.fromString('-xyz=foo')
-  const e7 = ArgShortFlagCluster.make({
+test('Arg.fromString > short flag cluster with value', () => {
+  const r = Arg.fromString('-xyz=foo')
+  const e = ArgShortFlagCluster.make({
     additionalShortFlagNames: ['x', 'y'],
     shortFlag: ArgShortFlag.make({ name: 'z', value: 'foo', original: '-z=foo' }),
     original: '-xyz=foo',
   })
-  expect(S.is(ArgShortFlagCluster)(r7)).toBe(true)
-  expect(r7).toMatchObject(e7)
-  Ts.Assert.exact.ofAs<typeof e7>().on(r7)
+  expect(S.is(ArgShortFlagCluster)(r)).toBe(true)
+  expect(r).toMatchObject(e)
+  Ts.Assert.exact.ofAs<typeof e>().on(r)
+})
 
-  // Positional
-  const r8 = Arg.fromString('file.txt')
-  const e8 = ArgPositional.make({ value: 'file.txt', original: 'file.txt' })
-  expect(S.is(ArgPositional)(r8)).toBe(true)
-  expect(r8).toMatchObject(e8)
-  Ts.Assert.exact.ofAs<typeof e8>().on(r8)
+test('Arg.fromString > positional', () => {
+  const r = Arg.fromString('file.txt')
+  const e = ArgPositional.make({ value: 'file.txt', original: 'file.txt' })
+  expect(S.is(ArgPositional)(r)).toBe(true)
+  expect(r).toMatchObject(e)
+  Ts.Assert.exact.ofAs<typeof e>().on(r)
+})
 
-  // Separator
-  const r9 = Arg.fromString('--')
-  const e9 = ArgSeparator.make({ value: null, original: '--' })
-  expect(S.is(ArgSeparator)(r9)).toBe(true)
-  expect(r9).toMatchObject(e9)
-  Ts.Assert.exact.ofAs<typeof e9>().on(r9)
+test('Arg.fromString > separator', () => {
+  const r = Arg.fromString('--')
+  const e = ArgSeparator.make({ value: null, original: '--' })
+  expect(S.is(ArgSeparator)(r)).toBe(true)
+  expect(r).toMatchObject(e)
+  Ts.Assert.exact.ofAs<typeof e>().on(r)
 })
 
 test('Arg.Analyze type-level literal preservation', () => {
