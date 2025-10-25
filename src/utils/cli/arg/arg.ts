@@ -26,8 +26,22 @@ export type Analysis =
  */
 export interface AnalysisLongFlag {
   _tag: 'long-flag'
-  /** Flag name in camelCase, without dashes (e.g., "fooBar" from "--foo-bar") */
+  /**
+   * Flag name in camelCase, without dashes and without negation prefix.
+   *
+   * @example
+   * - `"--foo-bar"` → `"fooBar"`
+   * - `"--no-verbose"` → `"verbose"` (negation prefix stripped)
+   */
   name: string
+  /**
+   * Whether this flag has a negation prefix (`--no-*` pattern).
+   *
+   * @example
+   * - `"--verbose"` → `false`
+   * - `"--no-verbose"` → `true`
+   */
+  negated: boolean
   /** Value from equals syntax, or null if no value (e.g., "5" from "--count=5") */
   value: string | null
   /** Original input string */
@@ -89,10 +103,13 @@ export interface AnalysisSeparator {
  * @example
  * ```typescript
  * analyze('--verbose')
- * // { _tag: 'long-flag', name: 'verbose', value: null, original: '--verbose' }
+ * // { _tag: 'long-flag', name: 'verbose', negated: false, value: null, original: '--verbose' }
+ *
+ * analyze('--no-verbose')
+ * // { _tag: 'long-flag', name: 'verbose', negated: true, value: null, original: '--no-verbose' }
  *
  * analyze('--count=5')
- * // { _tag: 'long-flag', name: 'count', value: '5', original: '--count=5' }
+ * // { _tag: 'long-flag', name: 'count', negated: false, value: '5', original: '--count=5' }
  *
  * analyze('-v')
  * // { _tag: 'short-flag', name: 'v', value: null, original: '-v' }
@@ -107,7 +124,7 @@ export interface AnalysisSeparator {
  * // { _tag: 'separator', original: '--' }
  *
  * analyze('--foo-bar')
- * // { _tag: 'long-flag', name: 'fooBar', value: null, original: '--foo-bar' }
+ * // { _tag: 'long-flag', name: 'fooBar', negated: false, value: null, original: '--foo-bar' }
  * ```
  */
 export function analyze<const input extends string>(input: input): Arg.Analyze<input> {
@@ -140,12 +157,20 @@ export function analyze_(input: string): Analysis {
     }
 
     const [rawName, ...valueParts] = withoutPrefix.split('=')
-    const name = Str.Case.camel(rawName ?? '')
+    const camelName = Str.Case.camel(rawName ?? '')
     const value = valueParts.length > 0 ? valueParts.join('=') : null
+
+    // Detect negation prefix pattern: /^no([A-Z])/
+    const negationMatch = /^no([A-Z])/.exec(camelName)
+    const negated = negationMatch !== null
+    const name = negated
+      ? camelName.charAt(2).toLowerCase() + camelName.slice(3) // Strip 'no' prefix and lowercase first char
+      : camelName
 
     return {
       _tag: 'long-flag',
       name,
+      negated,
       value,
       original: input,
     }
@@ -185,47 +210,47 @@ export function analyze_(input: string): Analysis {
 }
 
 // ============================================================================
-// Effect Schema Class
+// Effect Schema Definitions
 // ============================================================================
 
 /**
- * CLI argument token with structural analysis.
- *
- * Represents a parsed and analyzed CLI argument with:
- * - Tag indicating type (long-flag, short-flag, positional, separator)
- * - Name (for flags)
- * - Value (for flags with equals syntax)
- * - Original input string
- *
- * This is a pure structural parser - it only understands syntax.
- * It does NOT validate against schemas or handle semantic concerns.
- *
- * @example
- * ```typescript
- * // Create from string
- * const arg1 = Arg.fromString('--verbose')
- * // { _tag: 'long-flag', name: 'verbose', value: null, original: '--verbose' }
- *
- * const arg2 = Arg.fromString('--count=5')
- * // { _tag: 'long-flag', name: 'count', value: '5', original: '--count=5' }
- *
- * const arg3 = Arg.fromString('-v')
- * // { _tag: 'short-flag', name: 'v', value: null, original: '-v' }
- *
- * const arg4 = Arg.fromString('file.txt')
- * // { _tag: 'positional', value: 'file.txt', original: 'file.txt' }
- *
- * // Type-level analysis with validation
- * type Valid = Arg.Analyze<'--foo-bar'>
- * // { _tag: 'long-flag', name: 'fooBar', value: null, original: '--foo-bar' }
- * ```
+ * Schema for long flag argument (`--verbose`, `--count=5`).
  */
-export class Arg extends S.Class<Arg>('Arg')({
-  _tag: S.Literal('long-flag', 'short-flag', 'positional', 'separator'),
-  name: S.optional(S.String),
+class ArgLongFlag extends S.TaggedClass<ArgLongFlag>()('long-flag', {
+  name: S.String,
+  negated: S.Boolean,
   value: S.NullOr(S.String),
   original: S.String,
-}) {
+}) {}
+
+/**
+ * Schema for short flag argument (`-v`, `-n=10`).
+ */
+class ArgShortFlag extends S.TaggedClass<ArgShortFlag>()('short-flag', {
+  name: S.String,
+  value: S.NullOr(S.String),
+  original: S.String,
+}) {}
+
+/**
+ * Schema for positional argument (`file.txt`, `123`).
+ */
+class ArgPositional extends S.TaggedClass<ArgPositional>()('positional', {
+  value: S.String,
+  original: S.String,
+}) {}
+
+/**
+ * Schema for separator argument (`--`).
+ */
+class ArgSeparator extends S.TaggedClass<ArgSeparator>()('separator', {
+  value: S.Null,
+  original: S.Literal('--'),
+}) {}
+
+const _ArgSchema = S.Union(ArgLongFlag, ArgShortFlag, ArgPositional, ArgSeparator)
+
+const ArgNamespace = {
   /**
    * Schema for parsing from/encoding to string representation.
    * Use this when you need to accept string argument expressions.
@@ -237,22 +262,22 @@ export class Arg extends S.Class<Arg>('Arg')({
    * })
    * ```
    */
-  static String = S.transformOrFail(
+  String: S.transformOrFail(
     S.String,
-    Arg,
+    _ArgSchema,
     {
       strict: true,
       decode: (input, _options, _ast) => {
         // Use runtime analyzer to parse the argument
-        const analysis = analyze(input)
+        const analysis = analyze_(input)
 
         // Transform analysis result into Arg format
         switch (analysis._tag) {
           case 'long-flag':
             return ParseResult.succeed(
-              new Arg({
-                _tag: 'long-flag',
+              new ArgLongFlag({
                 name: analysis.name,
+                negated: analysis.negated,
                 value: analysis.value,
                 original: analysis.original,
               }),
@@ -260,8 +285,7 @@ export class Arg extends S.Class<Arg>('Arg')({
 
           case 'short-flag':
             return ParseResult.succeed(
-              new Arg({
-                _tag: 'short-flag',
+              new ArgShortFlag({
                 name: analysis.name,
                 value: analysis.value,
                 original: analysis.original,
@@ -270,8 +294,7 @@ export class Arg extends S.Class<Arg>('Arg')({
 
           case 'positional':
             return ParseResult.succeed(
-              new Arg({
-                _tag: 'positional',
+              new ArgPositional({
                 value: analysis.value,
                 original: analysis.original,
               }),
@@ -279,8 +302,7 @@ export class Arg extends S.Class<Arg>('Arg')({
 
           case 'separator':
             return ParseResult.succeed(
-              new Arg({
-                _tag: 'separator',
+              new ArgSeparator({
                 value: null,
                 original: analysis.original,
               }),
@@ -292,7 +314,7 @@ export class Arg extends S.Class<Arg>('Arg')({
         return ParseResult.succeed(decoded.original)
       },
     },
-  )
+  ) as any,
 
   /**
    * Create a typed Arg from a literal string with compile-time analysis.
@@ -309,12 +331,15 @@ export class Arg extends S.Class<Arg>('Arg')({
    * @example
    * ```typescript
    * const arg1 = Arg.fromString('--verbose')
-   * // Type: { _tag: 'long-flag', name: 'verbose', value: null, ... }
+   * // Type: { _tag: 'long-flag', name: 'verbose', negated: false, value: null, ... }
    *
-   * const arg2 = Arg.fromString('--count=5')
-   * // Type: { _tag: 'long-flag', name: 'count', value: '5', ... }
+   * const arg2 = Arg.fromString('--no-verbose')
+   * // Type: { _tag: 'long-flag', name: 'verbose', negated: true, value: null, ... }
    *
-   * const arg3 = Arg.fromString('-v')
+   * const arg3 = Arg.fromString('--count=5')
+   * // Type: { _tag: 'long-flag', name: 'count', negated: false, value: '5', ... }
+   *
+   * const arg4 = Arg.fromString('-v')
    * // Type: { _tag: 'short-flag', name: 'v', value: null, ... }
    *
    * // This will cause a type error:
@@ -323,19 +348,57 @@ export class Arg extends S.Class<Arg>('Arg')({
    * // Use this instead: Arg.decodeSync(expr)
    * ```
    */
-  static fromString = <const $input extends string>(
+  fromString: (<const $input extends string>(
     $input: Arg.Analyze<$input> extends string ? Ts.Err.StaticError<Arg.Analyze<$input>>
       : $input,
   ) => {
-    return S.decodeSync(Arg.String)($input as any) as any
-  }
+    return S.decodeSync(ArgNamespace.String)($input as any) as any
+  }) as any,
 
   /**
    * Runtime analyzer function.
    * @see {@link analyze}
    */
-  static analyze = analyze
+  analyze: analyze_,
 }
+
+/**
+ * CLI argument token with structural analysis.
+ *
+ * Represents a parsed and analyzed CLI argument with:
+ * - Tag indicating type (long-flag, short-flag, positional, separator)
+ * - Name (for flags)
+ * - Negation status (for long flags with --no-* pattern)
+ * - Value (for flags with equals syntax)
+ * - Original input string
+ *
+ * This is a pure structural parser - it only understands syntax.
+ * It does NOT validate against schemas or handle semantic concerns.
+ *
+ * @example
+ * ```typescript
+ * // Create from string
+ * const arg1 = Arg.fromString('--verbose')
+ * // { _tag: 'long-flag', name: 'verbose', negated: false, value: null, original: '--verbose' }
+ *
+ * const arg2 = Arg.fromString('--no-verbose')
+ * // { _tag: 'long-flag', name: 'verbose', negated: true, value: null, original: '--no-verbose' }
+ *
+ * const arg3 = Arg.fromString('--count=5')
+ * // { _tag: 'long-flag', name: 'count', negated: false, value: '5', original: '--count=5' }
+ *
+ * const arg4 = Arg.fromString('-v')
+ * // { _tag: 'short-flag', name: 'v', value: null, original: '-v' }
+ *
+ * const arg5 = Arg.fromString('file.txt')
+ * // { _tag: 'positional', value: 'file.txt', original: 'file.txt' }
+ *
+ * // Type-level analysis with validation
+ * type Valid = Arg.Analyze<'--foo-bar'>
+ * // { _tag: 'long-flag', name: 'fooBar', negated: false, value: null, original: '--foo-bar' }
+ * ```
+ */
+export const Arg: typeof _ArgSchema & typeof ArgNamespace = Object.assign(_ArgSchema, ArgNamespace)
 
 /**
  * Type-level utilities for Arg.
@@ -365,6 +428,33 @@ export namespace Arg {
   type SplitOnEquals<$S extends string> = $S extends `${infer __name__}=${infer __value__}` ? [__name__, __value__]
     : [$S, null]
 
+  /**
+   * Extract first character from a string.
+   */
+  type FirstChar<$S extends string> = $S extends `${infer __first__}${string}` ? __first__ : never
+
+  /**
+   * Detect negation prefix pattern in camelCase names.
+   *
+   * Pattern: `/^no([A-Z].+)/` - 'no' followed by a capital letter
+   *
+   * @example
+   * ```typescript
+   * type A = DetectNegation<'noVerbose'>
+   * // { negated: true, baseName: 'verbose' }
+   *
+   * type B = DetectNegation<'verbose'>
+   * // { negated: false, baseName: 'verbose' }
+   *
+   * type C = DetectNegation<'notice'>
+   * // { negated: false, baseName: 'notice' } - lowercase after 'no'
+   * ```
+   */
+  type DetectNegation<$Name extends string> = $Name extends `no${infer __rest__}`
+    ? FirstChar<__rest__> extends Uppercase<FirstChar<__rest__>> ? { negated: true; baseName: Uncapitalize<__rest__> }
+    : { negated: false; baseName: $Name }
+    : { negated: false; baseName: $Name }
+
   // ==========================================================================
   // Analysis Result Types (Type-Level)
   // ==========================================================================
@@ -379,7 +469,8 @@ export namespace Arg {
     $original extends string = $stripped,
   > = {
     _tag: 'long-flag'
-    name: CamelCase<SplitOnEquals<$stripped>[0]>
+    name: DetectNegation<CamelCase<SplitOnEquals<$stripped>[0]>>['baseName']
+    negated: DetectNegation<CamelCase<SplitOnEquals<$stripped>[0]>>['negated']
     value: SplitOnEquals<$stripped>[1]
     original: $original
   }
