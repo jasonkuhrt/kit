@@ -197,7 +197,7 @@ type T = Ts.Assert.exact<Expected, Actual>
 
 ## Configuration
 
-Assertion behavior can be configured via global settings. See KitLibrarySettings.Ts.Assert.Settings for available options.
+Assertion behavior can be configured via global settings. See KitLibrarySettings.Ts.Assert for available options.
 
 ## Import
 

@@ -242,102 +242,149 @@ declare global {
         // Empty by default - users augment this interface
       }
 
-      namespace Error {
-        export type GetPreservedTypes<$T extends object> = [keyof $T] extends [never] ? never
-          : $T[keyof $T]
+      /**
+       * Configuration for TypeScript error rendering.
+       *
+       * These settings apply to all TS errors (StaticError, StaticErrorAssertion, etc.).
+       * Augment this interface in your project to customize behavior.
+       */
+      interface Error {
+        /**
+         * Minimum key length for error message alignment.
+         *
+         * All keys in error messages will be padded with underscores to this length
+         * for visual alignment.
+         *
+         * @default 14
+         *
+         * @example
+         * ```typescript
+         * // In your project: types/kit-settings.d.ts
+         * declare global {
+         *   namespace KitLibrarySettings {
+         *     namespace Ts {
+         *       interface Error {
+         *         errorKeyLength: 16
+         *       }
+         *     }
+         *   }
+         * }
+         * export {}
+         * ```
+         */
+        errorKeyLength: 14
 
         /**
-         * Configuration interface for TypeScript error rendering.
+         * Controls how errors are rendered in IDE hovers.
          *
-         * These settings apply to all TS errors (StaticError, StaticErrorAssertion, etc.).
-         * Augment this interface in your project to customize behavior.
+         * - `true`: Show full error object with all fields (ERROR, expected, actual, tip, etc.)
+         * - `false`: Show only the error message string for cleaner hovers
+         *
+         * **Use `true` for debugging** - See all available context about the type mismatch
+         * **Use `false` for cleaner UI** - Reduce hover noise when you just need the message
+         *
+         * @default true
+         *
+         * @example
+         * ```typescript
+         * // With renderErrors: true (default)
+         * // Hover shows: { ERROR_________: "...", expected______: ..., actual________: ..., tip___________: "..." }
+         *
+         * // With renderErrors: false
+         * // Hover shows: "EXPECTED and ACTUAL are disjoint"
+         * ```
          */
-        interface Settings {
-          /**
-           * Minimum key length for error message alignment.
-           *
-           * All keys in error messages will be padded with underscores to this length
-           * for visual alignment.
-           *
-           * @default 14
-           *
-           * @example
-           * ```typescript
-           * // In your project: types/kit-settings.d.ts
-           * declare global {
-           *   namespace KitLibrarySettings {
-           *     namespace Ts {
-           *       namespace Error {
-           *         interface Settings {
-           *           errorKeyLength: 16
-           *         }
-           *       }
-           *     }
-           *   }
-           * }
-           * export {}
-           * ```
-           */
-          errorKeyLength: 14
-
-          /**
-           * Controls how errors are rendered in IDE hovers.
-           *
-           * - `true`: Show full error object with all fields (ERROR, expected, actual, tip, etc.)
-           * - `false`: Show only the error message string for cleaner hovers
-           *
-           * **Use `true` for debugging** - See all available context about the type mismatch
-           * **Use `false` for cleaner UI** - Reduce hover noise when you just need the message
-           *
-           * @default true
-           *
-           * @example
-           * ```typescript
-           * // With renderErrors: true (default)
-           * // Hover shows: { ERROR_________: "...", expected______: ..., actual________: ..., tip___________: "..." }
-           *
-           * // With renderErrors: false
-           * // Hover shows: "EXPECTED and ACTUAL are disjoint"
-           * ```
-           */
-          renderErrors: boolean
-        }
+        renderErrors: boolean
       }
 
-      namespace Assert {
+      /**
+       * Configuration for type test assertions.
+       *
+       * Augment this interface in your project to customize behavior.
+       * Inherits error rendering settings from {@link KitLibrarySettings.Ts.Error}.
+       */
+      interface Assert {
         /**
-         * Configuration interface for type test assertions.
+         * When `true`, using {@link bid} when {@link exact} would work shows a type error.
          *
-         * Augment this interface in your project to customize behavior.
-         * Inherits error rendering settings from {@link KitLibrarySettings.Ts.Error.Settings}.
+         * This enforces using the most precise assertion available, helping maintain
+         * stronger type guarantees in your tests.
+         *
+         * **Recommended:** `true` for new projects to enforce best practices.
+         *
+         * @default false
+         *
+         * @example
+         * ```typescript
+         * // With lintBidForExactPossibility: false (default)
+         * Ts.Assert.bid<string, string>()('hello')  // ✓ Allowed
+         *
+         * // With lintBidForExactPossibility: true
+         * Ts.Assert.bid<string, string>()('hello')  // ✗ Error: Use exact() instead
+         * Ts.Assert.exact<string, string>()('hello') // ✓ Correct
+         *
+         * // bid() still works when only bidirectional (not exact)
+         * Ts.Assert.bid<string & {}, string>()('hello') // ✓ Allowed (not structurally equal)
+         * ```
          */
-        interface Settings {
-          /**
-           * When `true`, using {@link bid} when {@link exact} would work shows a type error.
-           *
-           * This enforces using the most precise assertion available, helping maintain
-           * stronger type guarantees in your tests.
-           *
-           * **Recommended:** `true` for new projects to enforce best practices.
-           *
-           * @default false
-           *
-           * @example
-           * ```typescript
-           * // With lintBidForExactPossibility: false (default)
-           * Ts.Assert.bid<string, string>()('hello')  // ✓ Allowed
-           *
-           * // With lintBidForExactPossibility: true
-           * Ts.Assert.bid<string, string>()('hello')  // ✗ Error: Use exact() instead
-           * Ts.Assert.exact<string, string>()('hello') // ✓ Correct
-           *
-           * // bid() still works when only bidirectional (not exact)
-           * Ts.Assert.bid<string & {}, string>()('hello') // ✓ Allowed (not structurally equal)
-           * ```
-           */
-          // todo: rename exact terminology
-          lintBidForExactPossibility: boolean
-        }
+        // todo: rename exact terminology
+        lintBidForExactPossibility: boolean
+
+        /**
+         * Show detailed diff information in type assertion errors.
+         *
+         * When enabled, assertion errors include structured diff fields:
+         * - `diff_missing__`: Properties in expected but not in actual
+         * - `diff_excess___`: Properties in actual but not in expected
+         * - `diff_mismatch_`: Properties with different types
+         *
+         * **When useful:**
+         * - Debugging complex type mismatches with many properties
+         * - Understanding structural differences between large types
+         * - Working with deeply nested object types
+         *
+         * **When NOT useful:**
+         * - Simple primitive type mismatches (e.g., `string` vs `number`)
+         * - Very complex types where diff becomes unreadable in IDE hovers
+         * - When you want cleaner, more concise error messages
+         *
+         * **Performance impact:**
+         * - Computing diffs uses recursive type operations
+         * - Can slow down type checking, especially for large types
+         * - Disabled by default for better performance and cleaner errors
+         *
+         * @default false
+         *
+         * @example
+         * ```typescript
+         * // Default behavior (showDiff: false)
+         * Assert.exact.ofAs<{ a: 1 }>().onAs<{ a: 2 }>()
+         * // Error shows: "EXPECTED only overlaps with ACTUAL"
+         * // With tip but no diff fields
+         *
+         * // Opt-in to detailed diff
+         * declare global {
+         *   namespace KitLibrarySettings {
+         *     namespace Ts {
+         *       interface Assert {
+         *         showDiff: true
+         *       }
+         *     }
+         *   }
+         * }
+         * export {}
+         *
+         * // Now shows full structured diff:
+         * // {
+         * //   ERROR: "EXPECTED only overlaps with ACTUAL",
+         * //   expected: { a: 1 },
+         * //   actual: { a: 2 },
+         * //   diff_mismatch_: { a: { expected: 1, actual: 2 } },
+         * //   tip: "Types share some values but differ"
+         * // }
+         * ```
+         */
+        showDiff: boolean
       }
     }
   }
@@ -387,8 +434,8 @@ declare global {
  *
  * @internal
  */
-export type GetErrorSetting<K extends keyof KitLibrarySettings.Ts.Error.Settings> =
-  KitLibrarySettings.Ts.Error.Settings[K]
+export type GetErrorSetting<K extends keyof KitLibrarySettings.Ts.Error> =
+  KitLibrarySettings.Ts.Error[K]
 
 /**
  * Get the renderErrors setting with proper default handling.
@@ -399,6 +446,24 @@ export type GetErrorSetting<K extends keyof KitLibrarySettings.Ts.Error.Settings
  * @internal
  */
 export type GetRenderErrors<$Value = GetErrorSetting<'renderErrors'>> = boolean extends $Value ? true : $Value
+
+/**
+ * Helper type to read an assert setting with proper defaults.
+ *
+ * @internal
+ */
+export type GetAssertSetting<K extends keyof KitLibrarySettings.Ts.Assert> =
+  KitLibrarySettings.Ts.Assert[K]
+
+/**
+ * Get the showDiff setting with proper default handling.
+ *
+ * - If the setting is exactly `boolean` (not extended to true/false), defaults to `false`
+ * - Otherwise uses the extended value
+ *
+ * @internal
+ */
+export type GetShowDiff<$Value = GetAssertSetting<'showDiff'>> = boolean extends $Value ? false : $Value
 
 /**
  * Extract all preserved types from the Ts.PreserveTypes registry.

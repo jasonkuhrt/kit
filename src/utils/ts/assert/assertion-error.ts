@@ -42,7 +42,7 @@ export type StaticErrorAssertion<
   $Expected = unknown,
   $Actual = unknown,
   $MetaInput extends MetaInput = never,
-  ___$ErrorKeyLength extends number = KitLibrarySettings.Ts.Error.Settings['errorKeyLength'],
+  ___$ErrorKeyLength extends number = KitLibrarySettings.Ts.Error['errorKeyLength'],
 > = Ts.Err.StaticError<
   $Message,
   {

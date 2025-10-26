@@ -2,6 +2,22 @@
  * Type-level test assertion that requires the result to be never (no error).
  * Used in type-level test suites to ensure a type evaluates to never (success).
  *
+ * Generally prefer value-level API instead.
+ *
+ * **Problem**: Individual `Case<>` assertions don't actually catch type errors at compile time
+ * due to internal casting. Errors only appear when wrapped in `Cases<>`, which has its own issues.
+ *
+ * **Better Alternative**: Use value-level API which reports ALL errors simultaneously:
+ * ```ts
+ * // ❌ Type-level - doesn't catch errors reliably
+ * type _ = Ts.Assert.Case<Assert.exact<string, number>>  // May silently pass!
+ *
+ * // ✅ Value-level - shows all errors
+ * Assert.exact.ofAs<string>().onAs<number>()  // Error shown immediately
+ * ```
+ *
+ * @see {@link Cases} for batch assertions (also discouraged)
+ *
  * @example
  * ```ts
  * type MyTests = [
@@ -15,6 +31,46 @@ export type Case<$Result extends never> = $Result
 /**
  * Type-level batch assertion helper that accepts multiple assertions.
  * Each type parameter must extend never (no error), allowing batch type assertions.
+ *
+ * Generally prefer value-level API instead.
+ *
+ * **Fatal Flaw**: TypeScript **short-circuits on the first failing assertion** and never
+ * evaluates remaining parameters. With dozens of test cases, this makes debugging extremely
+ * slow - you fix one error, run again, see the next error, fix it, repeat.
+ *
+ * **This is a fundamental TypeScript limitation and cannot be fixed.**
+ *
+ * **Better Alternative**: Use value-level API which reports ALL errors simultaneously:
+ * ```ts
+ * // ❌ Type-level Cases - only shows FIRST error
+ * type _ = Ts.Assert.Cases<
+ *   Assert.exact<string, string>,   // ✓ Pass
+ *   Assert.exact<number, string>,   // ✗ ERROR - TypeScript stops here!
+ *   Assert.exact<boolean, boolean>, // Never checked - you won't see errors here
+ *   Assert.exact<symbol, string>    // Never checked - you won't see errors here
+ * >
+ *
+ * // ✅ Value-level - shows ALL errors at once
+ * Assert.exact.ofAs<string>().onAs<string>()   // ✓ Pass
+ * Assert.exact.ofAs<number>().onAs<string>()   // ✗ Error shown
+ * Assert.exact.ofAs<boolean>().onAs<boolean>() // ✓ Pass
+ * Assert.exact.ofAs<symbol>().onAs<string>()   // ✗ Error shown (both line 2 and 4 visible!)
+ *
+ * // Alternative: Individual type aliases (also shows all errors)
+ * type _pass1 = Assert.exact.of<string, string>
+ * type _fail1 = Assert.exact.of<number, string>  // Error shown
+ * type _pass2 = Assert.exact.of<boolean, boolean>
+ * type _fail2 = Assert.exact.of<symbol, string>  // Error shown (all errors visible)
+ * ```
+ *
+ * **Additional Limitations**:
+ * - Limited to 100 type parameters (arbitrary hard limit)
+ * - Cannot be aliased for brevity
+ * - Worse error messages than value-level API
+ *
+ * **Only use this if explicitly instructed** - kept for backward compatibility only.
+ *
+ * @see Value-level API: `Assert.exact.ofAs<Expected>().on(value)` for the recommended approach
  *
  * @example
  * ```ts

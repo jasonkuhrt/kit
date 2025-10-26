@@ -528,7 +528,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * ## Configuration
  *
  * Assertion behavior can be configured via global settings.
- * See {@link KitLibrarySettings.Ts.Assert.Settings} for available options.
+ * See {@link KitLibrarySettings.Ts.Assert} for available options.
  *
  * @example
  * ```typescript
@@ -597,7 +597,7 @@ type StaticErrorAssertion<
   $Actual = unknown,
   $Meta extends string | readonly string[] | Record<string, any> = never,
   ___$ErrorKeyLength extends number =
-    KitLibrarySettings.Ts.Assert.Settings['errorKeyLength'],
+    KitLibrarySettings.Ts.Error['errorKeyLength'],
 > =
   // Check what kind of $Meta we have
   [$Meta] extends [never]
