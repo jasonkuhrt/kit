@@ -8,21 +8,35 @@ if [ -z "$STAGED_FILES" ]; then
   exit 0
 fi
 
+# Store stash count before we stash
+STASH_COUNT_BEFORE=$(git stash list | wc -l)
+
 # Stash unstaged changes (keeping index intact)
 # This handles partial staging - unstaged changes are safely stashed
 STASH_NAME="pre-commit-$(date +%s)"
 git stash push --keep-index --include-untracked -m "$STASH_NAME" > /dev/null 2>&1
-STASH_CREATED=$?
+
+# Check if stash was actually created (could fail if no unstaged changes)
+STASH_COUNT_AFTER=$(git stash list | wc -l)
+STASH_CREATED=0
+if [ "$STASH_COUNT_AFTER" -gt "$STASH_COUNT_BEFORE" ]; then
+  STASH_CREATED=1
+fi
 
 # Format the staged files
-pnpm fix:format
+pnpm fix:format > /dev/null 2>&1
 
 # Re-stage the formatted files (only what was originally staged)
-echo "$STAGED_FILES" | xargs git add
+echo "$STAGED_FILES" | xargs git add 2>/dev/null
 
-# Restore unstaged changes if we created a stash
-if [ $STASH_CREATED -eq 0 ]; then
-  git stash pop --index > /dev/null 2>&1
+# MUST restore stash if we created one
+# Ignore errors - conflicts are expected and are formatting-related by definition
+if [ $STASH_CREATED -eq 1 ]; then
+  # Try to pop with index first, if that fails try without index
+  git stash pop --index > /dev/null 2>&1 || git stash pop > /dev/null 2>&1 || true
+
+  # If stash pop had conflicts, user will see them in git status
+  # This is expected behavior for partial staging + formatting
 fi
 
 # Always succeed (never block commit)
