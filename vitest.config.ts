@@ -8,7 +8,6 @@ if (process.env[`ATTEST`] === `true`) {
 }
 
 export default defineConfig({
-  // @ts-expect-error
   plugins: [tsconfigPaths()],
   test: {
     globals: false,
