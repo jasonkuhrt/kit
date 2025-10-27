@@ -1,4 +1,4 @@
-import type * as Kind from '../../kind.js'
+import type { Fn } from '#fn'
 import { builder } from '../builder-singleton.js'
 import type { ExactKind } from '../kinds/relators.js'
 
@@ -24,7 +24,7 @@ import type { ExactKind } from '../kinds/relators.js'
  * type _ = Assert.exact.of<string, number>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, $Actual]>
+type of_<$Expected, $Actual> = Fn.Kind.Apply<ExactKind, [$Expected, $Actual]>
 const of_ = builder.exact.of
 
 /**
@@ -39,7 +39,7 @@ const of_ = builder.exact.of
  * type _ = Assert.exact.string<number>
  * ```
  */
-type string_<$Actual> = Kind.Apply<ExactKind, [string, $Actual]>
+type string_<$Actual> = Fn.Kind.Apply<ExactKind, [string, $Actual]>
 const string_ = builder.exact.string
 
 /**
@@ -54,7 +54,7 @@ const string_ = builder.exact.string
  * type _ = Assert.exact.number<string>
  * ```
  */
-type number_<$Actual> = Kind.Apply<ExactKind, [number, $Actual]>
+type number_<$Actual> = Fn.Kind.Apply<ExactKind, [number, $Actual]>
 const number_ = builder.exact.number
 
 /**
@@ -69,7 +69,7 @@ const number_ = builder.exact.number
  * type _ = Assert.exact.bigint<string>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<ExactKind, [bigint, $Actual]>
+type bigint_<$Actual> = Fn.Kind.Apply<ExactKind, [bigint, $Actual]>
 const bigint_ = builder.exact.bigint
 
 /**
@@ -84,7 +84,7 @@ const bigint_ = builder.exact.bigint
  * type _ = Assert.exact.boolean<string>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<ExactKind, [boolean, $Actual]>
+type boolean_<$Actual> = Fn.Kind.Apply<ExactKind, [boolean, $Actual]>
 const boolean_ = builder.exact.boolean
 
 /**
@@ -100,7 +100,7 @@ const boolean_ = builder.exact.boolean
  * type _ = Assert.exact.true<boolean>
  * ```
  */
-type true_<$Actual> = Kind.Apply<ExactKind, [true, $Actual]>
+type true_<$Actual> = Fn.Kind.Apply<ExactKind, [true, $Actual]>
 const true_ = builder.exact.true
 
 /**
@@ -116,7 +116,7 @@ const true_ = builder.exact.true
  * type _ = Assert.exact.false<boolean>
  * ```
  */
-type false_<$Actual> = Kind.Apply<ExactKind, [false, $Actual]>
+type false_<$Actual> = Fn.Kind.Apply<ExactKind, [false, $Actual]>
 const false_ = builder.exact.false
 
 /**
@@ -131,7 +131,7 @@ const false_ = builder.exact.false
  * type _ = Assert.exact.undefined<string>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<ExactKind, [undefined, $Actual]>
+type undefined_<$Actual> = Fn.Kind.Apply<ExactKind, [undefined, $Actual]>
 const undefined_ = builder.exact.undefined
 
 /**
@@ -146,7 +146,7 @@ const undefined_ = builder.exact.undefined
  * type _ = Assert.exact.null<string>
  * ```
  */
-type null_<$Actual> = Kind.Apply<ExactKind, [null, $Actual]>
+type null_<$Actual> = Fn.Kind.Apply<ExactKind, [null, $Actual]>
 const null_ = builder.exact.null
 
 /**
@@ -161,7 +161,7 @@ const null_ = builder.exact.null
  * type _ = Assert.exact.symbol<string>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<ExactKind, [symbol, $Actual]>
+type symbol_<$Actual> = Fn.Kind.Apply<ExactKind, [symbol, $Actual]>
 const symbol_ = builder.exact.symbol
 
 /**
@@ -176,7 +176,7 @@ const symbol_ = builder.exact.symbol
  * type _ = Assert.exact.Date<string>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<ExactKind, [Date, $Actual]>
+type Date_<$Actual> = Fn.Kind.Apply<ExactKind, [Date, $Actual]>
 const Date_ = builder.exact.Date
 
 /**
@@ -191,7 +191,7 @@ const Date_ = builder.exact.Date
  * type _ = Assert.exact.RegExp<string>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<ExactKind, [RegExp, $Actual]>
+type RegExp_<$Actual> = Fn.Kind.Apply<ExactKind, [RegExp, $Actual]>
 const RegExp_ = builder.exact.RegExp
 
 /**
@@ -206,7 +206,7 @@ const RegExp_ = builder.exact.RegExp
  * type _ = Assert.exact.Error<string>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<ExactKind, [Error, $Actual]>
+type Error_<$Actual> = Fn.Kind.Apply<ExactKind, [Error, $Actual]>
 const Error_ = builder.exact.Error
 
 /**
@@ -221,7 +221,7 @@ const Error_ = builder.exact.Error
  * type _ = Assert.exact.unknown<string>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, $Actual]>
+type unknown_<$Actual> = Fn.Kind.Apply<ExactKind, [unknown, $Actual]>
 const unknown_ = builder.exact.unknown
 
 /**
@@ -236,7 +236,7 @@ const unknown_ = builder.exact.unknown
  * type _ = Assert.exact.any<string>
  * ```
  */
-type any_<$Actual> = Kind.Apply<ExactKind, [any, $Actual]>
+type any_<$Actual> = Fn.Kind.Apply<ExactKind, [any, $Actual]>
 const any_ = builder.exact.any
 
 /**
@@ -251,7 +251,7 @@ const any_ = builder.exact.any
  * type _ = Assert.exact.never<string>
  * ```
  */
-type never_<$Actual> = Kind.Apply<ExactKind, [never, $Actual]>
+type never_<$Actual> = Fn.Kind.Apply<ExactKind, [never, $Actual]>
 const never_ = builder.exact.never
 
 const ofAs_ = <$Type>() => builder.exact.ofAs<$Type>()

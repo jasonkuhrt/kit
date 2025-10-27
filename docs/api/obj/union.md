@@ -50,11 +50,7 @@ These utilities use distributive conditional types to properly handle each union
 ```typescript
 type Keys<
   $Union extends object,
-> =
-  $Union extends __FORCE_DISTRIBUTION__ ?
-
-  keyof $Union
-
+> = $Union extends __FORCE_DISTRIBUTION__ ? keyof $Union
   : never
 ```
 
@@ -77,11 +73,11 @@ Common use cases:
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // The problem with built-in keyof
-type A = { x: string, y: number }
-type B = { x: boolean, z: string }
+type A = { x: string; y: number }
+type B = { x: boolean; z: string }
 
-type Problem = keyof (A | B)  // 'x' (only keys in BOTH types)
-type Solution = Obj.Union.Keys<A | B>  // 'x' | 'y' | 'z' (all keys)
+type Problem = keyof (A | B) // 'x' (only keys in BOTH types)
+type Solution = Obj.Union.Keys<A | B> // 'x' | 'y' | 'z' (all keys)
 ```
 
 ```typescript twoslash
@@ -89,8 +85,8 @@ type Solution = Obj.Union.Keys<A | B>  // 'x' | 'y' | 'z' (all keys)
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Real-world: Type-safe property picker for discriminated unions
-type Circle = { kind: 'circle', radius: number }
-type Square = { kind: 'square', size: number }
+type Circle = { kind: 'circle'; radius: number }
+type Square = { kind: 'square'; size: number }
 type Shape = Circle | Square
 
 type AllShapeKeys = Obj.Union.Keys<Shape>
@@ -98,7 +94,7 @@ type AllShapeKeys = Obj.Union.Keys<Shape>
 
 function getProperty<K extends AllShapeKeys>(
   shape: Shape,
-  key: K
+  key: K,
 ): Obj.Union.ValueAt<Shape, K> {
   return (shape as any)[key]
 }
@@ -112,7 +108,7 @@ import { Obj } from '@wollybeard/kit/obj'
 type Partial1 = { a?: string }
 type Partial2 = { b?: number }
 
-type Keys = Obj.Union.Keys<Partial1 | Partial2>  // 'a' | 'b'
+type Keys = Obj.Union.Keys<Partial1 | Partial2> // 'a' | 'b'
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ValueAt`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/obj/union.ts#L206" /> {#t-value-at-206}
@@ -121,13 +117,9 @@ type Keys = Obj.Union.Keys<Partial1 | Partial2>  // 'a' | 'b'
 type ValueAt<
   $Union extends object,
   $Key extends PropertyKey,
-> =
-  $Union extends __FORCE_DISTRIBUTION__ ?
-
-  $Key extends keyof $Union
-  ? $Union[$Key]
+> = $Union extends __FORCE_DISTRIBUTION__
+  ? $Key extends keyof $Union ? $Union[$Key]
   : never
-
   : never
 ```
 
@@ -154,11 +146,11 @@ Common use cases:
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // The problem with built-in indexed access
-type A = { x: string, y: number }
-type B = { x: boolean, z: string }
+type A = { x: string; y: number }
+type B = { x: boolean; z: string }
 
-type Problem = (A | B)['y']  // any (unsafe - 'y' not in B!)
-type Solution = Obj.Union.ValueAt<A | B, 'y'>  // number (correct!)
+type Problem = (A | B)['y'] // any (unsafe - 'y' not in B!)
+type Solution = Obj.Union.ValueAt<A | B, 'y'> // number (correct!)
 ```
 
 ```typescript twoslash
@@ -166,10 +158,10 @@ type Solution = Obj.Union.ValueAt<A | B, 'y'>  // number (correct!)
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Keys in all members produce value union
-type A = { x: string, y: number }
-type B = { x: boolean, z: string }
+type A = { x: string; y: number }
+type B = { x: boolean; z: string }
 
-type X = Obj.Union.ValueAt<A | B, 'x'>  // string | boolean
+type X = Obj.Union.ValueAt<A | B, 'x'> // string | boolean
 ```
 
 ```typescript twoslash
@@ -177,8 +169,8 @@ type X = Obj.Union.ValueAt<A | B, 'x'>  // string | boolean
 import { Obj } from '@wollybeard/kit/obj'
 // ---cut---
 // Real-world: Type-safe discriminant extraction
-type Success = { status: 'success', data: string }
-type Error = { status: 'error', message: string }
+type Success = { status: 'success'; data: string }
+type Error = { status: 'error'; message: string }
 type Result = Success | Error
 
 type Status = Obj.Union.ValueAt<Result, 'status'>
@@ -196,7 +188,7 @@ import { Obj } from '@wollybeard/kit/obj'
 type A = { x: string }
 type B = { y: number }
 
-type Missing = Obj.Union.ValueAt<A | B, 'z'>  // never
+type Missing = Obj.Union.ValueAt<A | B, 'z'> // never
 ```
 
 ```typescript twoslash

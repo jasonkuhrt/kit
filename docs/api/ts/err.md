@@ -51,14 +51,15 @@ type StaticError<
   $Message extends string = string,
   $Meta extends Record<string, any> = {},
   $Hierarchy extends readonly string[] = readonly ['root', ...string[]],
-  ___$Obj = StaticErrorLike<$Message> & $Meta & { HIERARCHY___: $Hierarchy }
-> = Simplify.Top<{
-  [k in keyof ___$Obj
-  as k extends string
-  ? PadKeyTo14<k>
-  : k
-  ]: ___$Obj[k]
-}>
+  ___$Obj = StaticErrorLike<$Message> & $Meta & { HIERARCHY___: $Hierarchy },
+> = Simplify.Top<
+  {
+    [
+      k in keyof ___$Obj as k extends string ? PadKeyTo14<k>
+        : k
+    ]: ___$Obj[k]
+  }
+>
 ```
 
 General-purpose static type-level error with flexible metadata.
@@ -86,7 +87,10 @@ type E1 = StaticError<'Invalid operation'>
 // { ERROR_________: 'Invalid operation' }
 
 // Error with metadata
-type E2 = StaticError<'Key not found', { key: 'foo'; available: ['bar', 'baz'] }>
+type E2 = StaticError<
+  'Key not found',
+  { key: 'foo'; available: ['bar', 'baz'] }
+>
 // {
 //   ERROR_________: 'Key not found'
 //   key___________: 'foo'
@@ -116,10 +120,10 @@ $T
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type A = Is<StaticError<'msg'>>  // true
-type B = Is<string>  // false
-type C = Is<{ ERROR_________: 'msg' }>  // true (structural)
-type D = Is<string | StaticError<'msg'>>  // boolean (distributes: false | true)
+type A = Is<StaticError<'msg'>> // true
+type B = Is<string> // false
+type C = Is<{ ERROR_________: 'msg' }> // true (structural)
+type D = Is<string | StaticError<'msg'>> // boolean (distributes: false | true)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Render`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/err.ts#L159" /> {#t-render-159}
@@ -127,8 +131,8 @@ type D = Is<string | StaticError<'msg'>>  // boolean (distributes: false | true)
 ```typescript
 type Render<$Error extends StaticErrorLike> =
   KitLibrarySettings.Ts.Error['renderErrors'] extends false
-  ? $Error['ERROR_________']
-  : $Error
+    ? $Error['ERROR_________']
+    : $Error
 ```
 
 Renders an error based on the `renderErrors` setting.
@@ -161,7 +165,7 @@ type E = Render<StaticError<'msg', { key: 'value' }>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `CROSS`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/err.ts#L178" /> {#c-cross-178}
 
 ```typescript
-"✕"
+'✕'
 ```
 
 Cross mark
@@ -171,7 +175,7 @@ Cross mark
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `WARNING`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/err.ts#L184" /> {#c-warning-184}
 
 ```typescript
-"⚠"
+'⚠'
 ```
 
 Warning sign
@@ -181,7 +185,7 @@ Warning sign
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `LIGHTNING`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/err.ts#L190" /> {#c-lightning-190}
 
 ```typescript
-"⚡"
+'⚡'
 ```
 
 Lightning bolt
@@ -191,7 +195,7 @@ Lightning bolt
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `EXCLUSION`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/err.ts#L196" /> {#c-exclusion-196}
 
 ```typescript
-"⊘"
+'⊘'
 ```
 
 Exclusion symbol
@@ -201,7 +205,7 @@ Exclusion symbol
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `EMPTY_SET`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/err.ts#L202" /> {#c-empty_set-202}
 
 ```typescript
-"∅"
+'∅'
 ```
 
 Empty set

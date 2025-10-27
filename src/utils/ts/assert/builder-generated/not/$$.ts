@@ -1,4 +1,4 @@
-import type * as Kind from '../../../kind.js'
+import type { Fn } from '#fn'
 import { builder } from '../../builder-singleton.js'
 import type { EquivKind, ExactKind, SubKind } from '../../kinds/relators.js'
 
@@ -11,6 +11,6 @@ export const any = builder.not.any
 export const unknown = builder.not.unknown
 export const never = builder.not.never
 export const empty = builder.not.empty
-export type exact<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, $Actual, true]>
-export type equiv<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, $Actual, true]>
-export type sub<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, $Actual, true]>
+export type exact<$Expected, $Actual> = Fn.Kind.Apply<ExactKind, [$Expected, $Actual, true]>
+export type equiv<$Expected, $Actual> = Fn.Kind.Apply<EquivKind, [$Expected, $Actual, true]>
+export type sub<$Expected, $Actual> = Fn.Kind.Apply<SubKind, [$Expected, $Actual, true]>

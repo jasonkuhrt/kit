@@ -1,5 +1,5 @@
+import type { Fn } from '#fn'
 import type { Inhabitance, SENTINEL } from '#ts/ts'
-import type * as Kind from '../../kind.js'
 import type * as Path from '../../path.js'
 import type { ExtractorRegistry } from '../../path.js'
 import type { EquivKind, EquivNoExcessKind, ExactKind, SubKind, SubNoExcessKind } from '../kinds/relators.js'
@@ -172,7 +172,7 @@ export type BuilderExtractorsConditionalMaybe<
  */
 export type BuilderExtractorsConditional<$State extends S> = {
   readonly [K in keyof Path.GetApplicableExtractors<$State['actual_type']> & keyof ExtractorRegistry]: Builder<
-    S.SetActualType<$State, Kind.Apply<ExtractorRegistry[K], [$State['actual_type']]>>
+    S.SetActualType<$State, Fn.Kind.Apply<ExtractorRegistry[K], [$State['actual_type']]>>
   >
 }
 
@@ -268,6 +268,30 @@ export interface BuilderSettings<$State extends S> {
    * Negate the assertion (inverts the relation check).
    */
   readonly not: Builder<S.SetNegated<$State>>
+
+  /**
+   * Apply a custom extractor function to transform the actual type.
+   *
+   * Extracts the `.kind` property from the extractor and adds it to the transformation chain.
+   * Allows using pre-composed extractors from `Extract` namespace or custom extractors.
+   *
+   * @param extractor - An Extractor function with `.kind` property
+   * @returns Builder with extractor added to transformation chain
+   *
+   * @example
+   * ```ts
+   * import { Extract, Ts } from '@wollybeard/kit'
+   *
+   * // Using pre-composed extractor
+   * const promise = Promise.resolve(42)
+   * Ts.Assert.extract(Extract.awaited).exact.of(42).on(promise)
+   *
+   * // Using composed extractors
+   * const composed = Fn.compose(Extract.awaited, Extract.returned)
+   * Ts.Assert.extract(composed).exact.of(42).on(value)
+   * ```
+   */
+  extract<$Extractor extends Fn.Extractor>(extractor: $Extractor): Builder<S.AddExtractor<$State, $Extractor['kind']>>
 
   /**
    * Configure inference mode to narrow (literals with readonly preserved).

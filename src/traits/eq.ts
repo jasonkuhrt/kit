@@ -1,3 +1,4 @@
+import type { Fn } from '#fn'
 import { Traitor } from '#traitor'
 import type { Ts } from '#ts'
 import type { Type } from '#type'
@@ -63,8 +64,8 @@ export interface Eq<$A = any> extends
   >
 {
   // @ts-expect-error - PrivateKind pattern: unknown will be overridden via intersection
-  [Ts.Kind.PrivateKindReturn]: Eq<this[Ts.Kind.PrivateKindParameters][0]>
-  [Ts.Kind.PrivateKindParameters]: unknown
+  [Fn.Kind.PrivateKindReturn]: Eq<this[Fn.Kind.PrivateKindParameters][0]>
+  [Fn.Kind.PrivateKindParameters]: unknown
 }
 
 /**

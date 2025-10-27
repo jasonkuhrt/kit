@@ -30,85 +30,200 @@ import { sub } from '@wollybeard/kit/ts'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L222" /> {#c-any-222}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetAllowAny<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>, SubKind>>, any>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetAllowAny<
+      State.SetRelator<
+        State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>,
+        SubKind
+      >
+    >,
+    any
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L78" /> {#c-bigint-78}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>, SubKind>, bigint>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetRelator<
+      State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>,
+      SubKind
+    >,
+    bigint
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boolean`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L94" /> {#c-boolean-94}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>, SubKind>, boolean>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetRelator<
+      State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>,
+      SubKind
+    >,
+    boolean
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L158" /> {#c-date-158}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>, SubKind>, Date>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetRelator<
+      State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>,
+      SubKind
+    >,
+    Date
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L190" /> {#c-error-190}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>, SubKind>, Error>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetRelator<
+      State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>,
+      SubKind
+    >,
+    Error
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `never`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L238" /> {#c-never-238}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetAllowNever<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>, SubKind>>, never>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetAllowNever<
+      State.SetRelator<
+        State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>,
+        SubKind
+      >
+    >,
+    never
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L126" /> {#c-null-126}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>, SubKind>, null>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetRelator<
+      State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>,
+      SubKind
+    >,
+    null
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `number`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L62" /> {#c-number-62}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>, SubKind>, number>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetRelator<
+      State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>,
+      SubKind
+    >,
+    number
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L30" /> {#c-of-30}
 
 ```typescript
-InputExpectedAsValueNarrow<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>, SubKind>>
+InputExpectedAsValueNarrow<
+  State.SetRelator<
+    State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>,
+    SubKind
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L174" /> {#c-reg-exp-174}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>, SubKind>, RegExp>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetRelator<
+      State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>,
+      SubKind
+    >,
+    RegExp
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L46" /> {#c-string-46}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>, SubKind>, string>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetRelator<
+      State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>,
+      SubKind
+    >,
+    string
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L142" /> {#c-symbol-142}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>, SubKind>, symbol>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetRelator<
+      State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>,
+      SubKind
+    >,
+    symbol
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L110" /> {#c-undefined-110}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>, SubKind>, undefined>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetRelator<
+      State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>,
+      SubKind
+    >,
+    undefined
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `unknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L206" /> {#c-unknown-206}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetAllowUnknown<State.SetRelator<State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>, SubKind>>, unknown>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetAllowUnknown<
+      State.SetRelator<
+        State.SetNegated<State.AddExtractor<State.Empty, Awaited$>>,
+        SubKind
+      >
+    >,
+    unknown
+  >
+>
 ```
 
 ## Types
@@ -116,7 +231,10 @@ InputActualAsValueNarrow<State.SetExpectedType<State.SetAllowUnknown<State.SetRe
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L221" /> {#t-any-221}
 
 ```typescript
-type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type any_<$Actual> = Kind.Apply<
+  SubKind,
+  [any, Kind.Apply<Path.Awaited$, [$Actual]>, true]
+>
 ```
 
 Pre-curried matcher for any. Extraction chain: Promise → T
@@ -137,7 +255,10 @@ type _ = Assert.awaited.sub.any<Promise<string>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L77" /> {#t-bigint-77}
 
 ```typescript
-type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type bigint_<$Actual> = Kind.Apply<
+  SubKind,
+  [bigint, Kind.Apply<Path.Awaited$, [$Actual]>, true]
+>
 ```
 
 Pre-curried matcher for bigint. Extraction chain: Promise → T
@@ -158,7 +279,10 @@ type _ = Assert.awaited.sub.bigint<Promise<string>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `boolean`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L93" /> {#t-boolean-93}
 
 ```typescript
-type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type boolean_<$Actual> = Kind.Apply<
+  SubKind,
+  [boolean, Kind.Apply<Path.Awaited$, [$Actual]>, true]
+>
 ```
 
 Pre-curried matcher for boolean. Extraction chain: Promise → T
@@ -179,7 +303,10 @@ type _ = Assert.awaited.sub.boolean<Promise<string>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L157" /> {#t-date-157}
 
 ```typescript
-type Date_<$Actual> = Kind.Apply<SubKind, [Date, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type Date_<$Actual> = Kind.Apply<
+  SubKind,
+  [Date, Kind.Apply<Path.Awaited$, [$Actual]>, true]
+>
 ```
 
 Pre-curried matcher for Date. Extraction chain: Promise → T
@@ -200,7 +327,10 @@ type _ = Assert.awaited.sub.Date<Promise<string>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L189" /> {#t-error-189}
 
 ```typescript
-type Error_<$Actual> = Kind.Apply<SubKind, [Error, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type Error_<$Actual> = Kind.Apply<
+  SubKind,
+  [Error, Kind.Apply<Path.Awaited$, [$Actual]>, true]
+>
 ```
 
 Pre-curried matcher for Error. Extraction chain: Promise → T
@@ -221,7 +351,10 @@ type _ = Assert.awaited.sub.Error<Promise<string>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `never`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L237" /> {#t-never-237}
 
 ```typescript
-type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type never_<$Actual> = Kind.Apply<
+  SubKind,
+  [never, Kind.Apply<Path.Awaited$, [$Actual]>, true]
+>
 ```
 
 Pre-curried matcher for never. Extraction chain: Promise → T
@@ -242,7 +375,10 @@ type _ = Assert.awaited.sub.never<Promise<string>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L125" /> {#t-null-125}
 
 ```typescript
-type null_<$Actual> = Kind.Apply<SubKind, [null, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type null_<$Actual> = Kind.Apply<
+  SubKind,
+  [null, Kind.Apply<Path.Awaited$, [$Actual]>, true]
+>
 ```
 
 Pre-curried matcher for null. Extraction chain: Promise → T
@@ -263,7 +399,10 @@ type _ = Assert.awaited.sub.null<Promise<string>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `number`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L61" /> {#t-number-61}
 
 ```typescript
-type number_<$Actual> = Kind.Apply<SubKind, [number, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type number_<$Actual> = Kind.Apply<
+  SubKind,
+  [number, Kind.Apply<Path.Awaited$, [$Actual]>, true]
+>
 ```
 
 Pre-curried matcher for number. Extraction chain: Promise → T
@@ -284,7 +423,10 @@ type _ = Assert.awaited.sub.number<Promise<string>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L29" /> {#t-of-29}
 
 ```typescript
-type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type of_<$Expected, $Actual> = Kind.Apply<
+  SubKind,
+  [$Expected, Kind.Apply<Path.Awaited$, [$Actual]>, true]
+>
 ```
 
 awaited + sub relation matchers.
@@ -294,7 +436,10 @@ Extraction: extracts the resolved type from a Promise Relation: subtype relation
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L173" /> {#t-reg-exp-173}
 
 ```typescript
-type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type RegExp_<$Actual> = Kind.Apply<
+  SubKind,
+  [RegExp, Kind.Apply<Path.Awaited$, [$Actual]>, true]
+>
 ```
 
 Pre-curried matcher for RegExp. Extraction chain: Promise → T
@@ -315,7 +460,10 @@ type _ = Assert.awaited.sub.RegExp<Promise<string>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L45" /> {#t-string-45}
 
 ```typescript
-type string_<$Actual> = Kind.Apply<SubKind, [string, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type string_<$Actual> = Kind.Apply<
+  SubKind,
+  [string, Kind.Apply<Path.Awaited$, [$Actual]>, true]
+>
 ```
 
 Pre-curried matcher for string. Extraction chain: Promise → T
@@ -336,7 +484,10 @@ type _ = Assert.awaited.sub.string<Promise<number>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L141" /> {#t-symbol-141}
 
 ```typescript
-type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type symbol_<$Actual> = Kind.Apply<
+  SubKind,
+  [symbol, Kind.Apply<Path.Awaited$, [$Actual]>, true]
+>
 ```
 
 Pre-curried matcher for symbol. Extraction chain: Promise → T
@@ -357,7 +508,10 @@ type _ = Assert.awaited.sub.symbol<Promise<string>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L109" /> {#t-undefined-109}
 
 ```typescript
-type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type undefined_<$Actual> = Kind.Apply<
+  SubKind,
+  [undefined, Kind.Apply<Path.Awaited$, [$Actual]>, true]
+>
 ```
 
 Pre-curried matcher for undefined. Extraction chain: Promise → T
@@ -378,7 +532,10 @@ type _ = Assert.awaited.sub.undefined<Promise<string>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `unknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/awaited/not/sub.ts#L205" /> {#t-unknown-205}
 
 ```typescript
-type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type unknown_<$Actual> = Kind.Apply<
+  SubKind,
+  [unknown, Kind.Apply<Path.Awaited$, [$Actual]>, true]
+>
 ```
 
 Pre-curried matcher for unknown. Extraction chain: Promise → T

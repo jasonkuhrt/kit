@@ -145,7 +145,7 @@ Str.Code.TS.typeAliasWithOptions({
   type: 'T | Error',
   parameters: ['T'],
   tsDoc: 'A result that may be successful or an error',
-  export: true
+  export: true,
 })
 // /**
 //  * A result that may be successful or an error
@@ -172,7 +172,7 @@ Str.Code.TS.interfaceDecl({
   name: 'User',
   block: 'id: string\nname: string',
   tsDoc: 'Represents a user',
-  export: true
+  export: true,
 })
 // /**
 //  * Represents a user
@@ -317,7 +317,7 @@ Str.Code.TS.field('data', 'Data', { readonly: true })
 Str.Code.TS.field('value', 'number', {
   readonly: true,
   optional: true,
-  tsDoc: 'The current value'
+  tsDoc: 'The current value',
 })
 // /**
 //  * The current value

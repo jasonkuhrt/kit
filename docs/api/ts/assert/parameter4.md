@@ -31,47 +31,63 @@ import { parameter4 } from '@wollybeard/kit/ts'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `awaited`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter4/$$.ts#L11" /> {#c-awaited-11}
 
 ```typescript
-Builder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, Awaited$>>
+Builder<
+  State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, Awaited$>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `returned`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter4/$$.ts#L12" /> {#c-returned-12}
 
 ```typescript
-Builder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, Returned>>
+Builder<
+  State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, Returned>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter4/$$.ts#L13" /> {#c-array-13}
 
 ```typescript
-Builder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, ArrayElement>>
+Builder<
+  State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, ArrayElement>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameters`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter4/$$.ts#L14" /> {#c-parameters-14}
 
 ```typescript
-Builder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, Parameters$>>
+Builder<
+  State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, Parameters$>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameter1`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter4/$$.ts#L15" /> {#c-parameter1-15}
 
 ```typescript
-Builder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, Parameter1>>
+Builder<
+  State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, Parameter1>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameter2`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter4/$$.ts#L16" /> {#c-parameter2-16}
 
 ```typescript
-Builder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, Parameter2>>
+Builder<
+  State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, Parameter2>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameter3`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter4/$$.ts#L17" /> {#c-parameter3-17}
 
 ```typescript
-Builder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, Parameter3>>
+Builder<
+  State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, Parameter3>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `parameter5`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/parameter4/$$.ts#L18" /> {#c-parameter5-18}
 
 ```typescript
-Builder<State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, Parameter5>>
+Builder<
+  State.AddExtractor<State.AddExtractor<State.Empty, Parameter4>, Parameter5>
+>
 ```

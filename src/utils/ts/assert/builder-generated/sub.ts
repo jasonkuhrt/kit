@@ -1,4 +1,4 @@
-import type * as Kind from '../../kind.js'
+import type { Fn } from '#fn'
 import { builder } from '../builder-singleton.js'
 import type { SubKind, SubNoExcessKind } from '../kinds/relators.js'
 
@@ -24,7 +24,7 @@ import type { SubKind, SubNoExcessKind } from '../kinds/relators.js'
  * type _ = Assert.sub.of<string, number>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, $Actual]>
+type of_<$Expected, $Actual> = Fn.Kind.Apply<SubKind, [$Expected, $Actual]>
 const of_ = builder.sub.of
 
 /**
@@ -39,7 +39,7 @@ const of_ = builder.sub.of
  * type _ = Assert.sub.string<number>
  * ```
  */
-type string_<$Actual> = Kind.Apply<SubKind, [string, $Actual]>
+type string_<$Actual> = Fn.Kind.Apply<SubKind, [string, $Actual]>
 const string_ = builder.sub.string
 
 /**
@@ -54,7 +54,7 @@ const string_ = builder.sub.string
  * type _ = Assert.sub.number<string>
  * ```
  */
-type number_<$Actual> = Kind.Apply<SubKind, [number, $Actual]>
+type number_<$Actual> = Fn.Kind.Apply<SubKind, [number, $Actual]>
 const number_ = builder.sub.number
 
 /**
@@ -69,7 +69,7 @@ const number_ = builder.sub.number
  * type _ = Assert.sub.bigint<string>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, $Actual]>
+type bigint_<$Actual> = Fn.Kind.Apply<SubKind, [bigint, $Actual]>
 const bigint_ = builder.sub.bigint
 
 /**
@@ -84,7 +84,7 @@ const bigint_ = builder.sub.bigint
  * type _ = Assert.sub.boolean<string>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, $Actual]>
+type boolean_<$Actual> = Fn.Kind.Apply<SubKind, [boolean, $Actual]>
 const boolean_ = builder.sub.boolean
 
 /**
@@ -99,7 +99,7 @@ const boolean_ = builder.sub.boolean
  * type _ = Assert.sub.true<false>
  * ```
  */
-type true_<$Actual> = Kind.Apply<SubKind, [true, $Actual]>
+type true_<$Actual> = Fn.Kind.Apply<SubKind, [true, $Actual]>
 const true_ = builder.sub.true
 
 /**
@@ -114,7 +114,7 @@ const true_ = builder.sub.true
  * type _ = Assert.sub.false<true>
  * ```
  */
-type false_<$Actual> = Kind.Apply<SubKind, [false, $Actual]>
+type false_<$Actual> = Fn.Kind.Apply<SubKind, [false, $Actual]>
 const false_ = builder.sub.false
 
 /**
@@ -129,7 +129,7 @@ const false_ = builder.sub.false
  * type _ = Assert.sub.undefined<string>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, $Actual]>
+type undefined_<$Actual> = Fn.Kind.Apply<SubKind, [undefined, $Actual]>
 const undefined_ = builder.sub.undefined
 
 /**
@@ -144,7 +144,7 @@ const undefined_ = builder.sub.undefined
  * type _ = Assert.sub.null<string>
  * ```
  */
-type null_<$Actual> = Kind.Apply<SubKind, [null, $Actual]>
+type null_<$Actual> = Fn.Kind.Apply<SubKind, [null, $Actual]>
 const null_ = builder.sub.null
 
 /**
@@ -159,7 +159,7 @@ const null_ = builder.sub.null
  * type _ = Assert.sub.symbol<string>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, $Actual]>
+type symbol_<$Actual> = Fn.Kind.Apply<SubKind, [symbol, $Actual]>
 const symbol_ = builder.sub.symbol
 
 /**
@@ -174,7 +174,7 @@ const symbol_ = builder.sub.symbol
  * type _ = Assert.sub.Date<string>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<SubKind, [Date, $Actual]>
+type Date_<$Actual> = Fn.Kind.Apply<SubKind, [Date, $Actual]>
 const Date_ = builder.sub.Date
 
 /**
@@ -189,7 +189,7 @@ const Date_ = builder.sub.Date
  * type _ = Assert.sub.RegExp<string>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, $Actual]>
+type RegExp_<$Actual> = Fn.Kind.Apply<SubKind, [RegExp, $Actual]>
 const RegExp_ = builder.sub.RegExp
 
 /**
@@ -204,7 +204,7 @@ const RegExp_ = builder.sub.RegExp
  * type _ = Assert.sub.Error<string>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<SubKind, [Error, $Actual]>
+type Error_<$Actual> = Fn.Kind.Apply<SubKind, [Error, $Actual]>
 const Error_ = builder.sub.Error
 
 /**
@@ -219,7 +219,7 @@ const Error_ = builder.sub.Error
  * type _ = Assert.sub.unknown<string>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, $Actual]>
+type unknown_<$Actual> = Fn.Kind.Apply<SubKind, [unknown, $Actual]>
 const unknown_ = builder.sub.unknown
 
 /**
@@ -234,7 +234,7 @@ const unknown_ = builder.sub.unknown
  * type _ = Assert.sub.any<string>
  * ```
  */
-type any_<$Actual> = Kind.Apply<SubKind, [any, $Actual]>
+type any_<$Actual> = Fn.Kind.Apply<SubKind, [any, $Actual]>
 const any_ = builder.sub.any
 
 /**
@@ -249,7 +249,7 @@ const any_ = builder.sub.any
  * type _ = Assert.sub.never<string>
  * ```
  */
-type never_<$Actual> = Kind.Apply<SubKind, [never, $Actual]>
+type never_<$Actual> = Fn.Kind.Apply<SubKind, [never, $Actual]>
 const never_ = builder.sub.never
 
 const ofAs_ = <$Type>() => builder.sub.ofAs<$Type>()
@@ -257,7 +257,7 @@ const ofAs_ = <$Type>() => builder.sub.ofAs<$Type>()
  * No-excess variant of sub relation.
  * Checks that actual has no excess properties beyond expected.
  */
-type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, $Actual]>
+type noExcess_<$Expected, $Actual> = Fn.Kind.Apply<SubNoExcessKind, [$Expected, $Actual]>
 const noExcess_ = builder.sub.noExcess
 const noExcessAs_ = <$Type>() => builder.sub.noExcessAs<$Type>()
 

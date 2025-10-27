@@ -1,12 +1,12 @@
+import type { Fn } from '#fn'
 import type { Obj } from '#obj'
 import type { Ts } from '#ts'
-import type { Kind } from '#ts/ts'
 import type { GetShowDiff } from '../../global-settings.js'
 import type { IsAny, IsNever } from '../../inhabitance.js'
 import type { Relation } from '../../relation.js'
 import type { StaticErrorAssertion } from '../assertion-error.js'
 
-interface AssertionKind extends Kind.Kind {}
+interface AssertionKind extends Fn.Kind.Kind {}
 
 /**
  * Conditionally compute diff information based on showDiff setting.

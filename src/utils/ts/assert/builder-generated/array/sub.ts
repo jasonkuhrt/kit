@@ -1,4 +1,4 @@
-import type * as Kind from '../../../kind.js'
+import type { Fn } from '#fn'
 import type * as Path from '../../../path.js'
 import { builder } from '../../builder-singleton.js'
 import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
@@ -26,7 +26,7 @@ import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
  * type _ = Assert.array.sub.of<string, number[]>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type of_<$Expected, $Actual> = Fn.Kind.Apply<SubKind, [$Expected, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const of_ = builder.array.sub.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.array.sub.of
  * type _ = Assert.array.sub.string<number[]>
  * ```
  */
-type string_<$Actual> = Kind.Apply<SubKind, [string, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type string_<$Actual> = Fn.Kind.Apply<SubKind, [string, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const string_ = builder.array.sub.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.array.sub.string
  * type _ = Assert.array.sub.number<string[]>
  * ```
  */
-type number_<$Actual> = Kind.Apply<SubKind, [number, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type number_<$Actual> = Fn.Kind.Apply<SubKind, [number, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const number_ = builder.array.sub.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.array.sub.number
  * type _ = Assert.array.sub.bigint<string[]>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type bigint_<$Actual> = Fn.Kind.Apply<SubKind, [bigint, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const bigint_ = builder.array.sub.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.array.sub.bigint
  * type _ = Assert.array.sub.boolean<string[]>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type boolean_<$Actual> = Fn.Kind.Apply<SubKind, [boolean, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const boolean_ = builder.array.sub.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.array.sub.boolean
  * type _ = Assert.array.sub.undefined<string[]>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type undefined_<$Actual> = Fn.Kind.Apply<SubKind, [undefined, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const undefined_ = builder.array.sub.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.array.sub.undefined
  * type _ = Assert.array.sub.null<string[]>
  * ```
  */
-type null_<$Actual> = Kind.Apply<SubKind, [null, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type null_<$Actual> = Fn.Kind.Apply<SubKind, [null, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const null_ = builder.array.sub.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.array.sub.null
  * type _ = Assert.array.sub.symbol<string[]>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type symbol_<$Actual> = Fn.Kind.Apply<SubKind, [symbol, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const symbol_ = builder.array.sub.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.array.sub.symbol
  * type _ = Assert.array.sub.Date<string[]>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<SubKind, [Date, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type Date_<$Actual> = Fn.Kind.Apply<SubKind, [Date, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const Date_ = builder.array.sub.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.array.sub.Date
  * type _ = Assert.array.sub.RegExp<string[]>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type RegExp_<$Actual> = Fn.Kind.Apply<SubKind, [RegExp, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const RegExp_ = builder.array.sub.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.array.sub.RegExp
  * type _ = Assert.array.sub.Error<string[]>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<SubKind, [Error, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type Error_<$Actual> = Fn.Kind.Apply<SubKind, [Error, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const Error_ = builder.array.sub.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.array.sub.Error
  * type _ = Assert.array.sub.unknown<string[]>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type unknown_<$Actual> = Fn.Kind.Apply<SubKind, [unknown, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const unknown_ = builder.array.sub.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.array.sub.unknown
  * type _ = Assert.array.sub.any<string[]>
  * ```
  */
-type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type any_<$Actual> = Fn.Kind.Apply<SubKind, [any, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const any_ = builder.array.sub.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.array.sub.any
  * type _ = Assert.array.sub.never<string[]>
  * ```
  */
-type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type never_<$Actual> = Fn.Kind.Apply<SubKind, [never, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const never_ = builder.array.sub.never
 
 const ofAs_ = <$Type>() => builder.array.sub.ofAs<$Type>()
@@ -242,7 +242,10 @@ const ofAs_ = <$Type>() => builder.array.sub.ofAs<$Type>()
  * No-excess variant of sub relation.
  * Checks that actual has no excess properties beyond expected.
  */
-type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type noExcess_<$Expected, $Actual> = Fn.Kind.Apply<
+  SubNoExcessKind,
+  [$Expected, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]
+>
 const noExcess_ = builder.array.sub.noExcess
 const noExcessAs_ = <$Type>() => builder.array.sub.noExcessAs<$Type>()
 

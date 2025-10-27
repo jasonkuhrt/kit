@@ -179,9 +179,9 @@ returned.awaited<string>()(() => Promise.resolve('x')) // OK
 Assert on function parameter type:
 
 ```typescript
-parameter<string>()((x: string) => { }) // OK
-parameter2<number>()((a: string, b: number) => { }) // OK (2nd param)
-parameters<[string, number]>()((x: string, y: number) => { }) // OK (all)
+parameter<string>()((x: string) => {}) // OK
+parameter2<number>()((a: string, b: number) => {}) // OK (2nd param)
+parameters<[string, number]>()((x: string, y: number) => {}) // OK (all)
 ```
 
 ## Special Types (Legacy - see Unary Relators above)
@@ -300,7 +300,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
 // [!code word:Assert:1]
 // [!code word:not:1]
  * Ts.Assert[.not].<relation>.<extractor?>.<extractor?>...<TypeParams>
- * 
+ *
 ```
  *
  * Where:
@@ -333,7 +333,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
   * Ts.Assert.exact.returned.awaited<User>()(asyncFn)
 // [!code word:as:1]
   * Ts.Assert.not.sub.of.as<number>()(value)
-  * 
+  *
 ```
  *
  * ## Relations
@@ -348,7 +348,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
   * type T = Ts.Assert.exact<1 | 2, 2 | 1>             // ✗ Fail (different structure)
 // [!code word:exact:1]
     * type T = Ts.Assert.exact<string & {}, string>      // ✗ Fail (different structure)
-      * 
+      *
 ```
  *
  * ### `equiv` - Mutual Assignability (Semantic Equality)
@@ -361,7 +361,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
   * type T = Ts.Assert.equiv<string & {}, string>      // ✓ Pass (both compute to string)
 // [!code word:equiv:1]
     * type T = Ts.Assert.equiv<string, number>           // ✗ Fail (not mutually assignable)
-      * 
+      *
 ```
  *
  * ### `sub` - Subtype Checking
@@ -374,7 +374,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
   * type T = Ts.Assert.sub<object, { a: 1 }>           // ✓ Pass (more specific extends less)
 // [!code word:sub:1]
     * type T = Ts.Assert.sub<'hello', string>            // ✗ Fail (string doesn't extend 'hello')
-      * 
+      *
 ```
  *
  * ## Extractors
@@ -392,7 +392,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * type T = Ts.Assert.equiv.Never<never>              // ✓ Pass
 // [!code word:any:1]
   * Ts.Assert.exact.any()(value)                       // Value level (lowercase)
-  * 
+  *
 ```
  *
  * ### Containers
@@ -405,7 +405,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * type T = Ts.Assert.sub.array<number, (1 | 2 | 3)[]>  // ✓ Pass
 // [!code word:indexed:1]
   * type T = Ts.Assert.exact.indexed<0, string, [string, number]>  // ✓ Pass
-    * 
+    *
 ```
  *
  * ### Transformations (Chainable)
@@ -427,7 +427,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
 // [!code word:array:1]
 // [!code word:resolve:1]
   * Ts.Assert.sub.awaited.array<number>()(Promise.resolve([1, 2, 3]))
-  * 
+  *
 ```
  *
  * ### Functions
@@ -440,7 +440,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * type T = Ts.Assert.exact.parameter<string, (x: string) => void>
 // [!code word:parameter2:1]
   * type T = Ts.Assert.sub.parameter2<number, (a: string, b: number) => void>
-    * 
+    *
 ```
  *
  * ### Objects
@@ -450,7 +450,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * type Config = { id: string; name: string; debug: boolean }
 // [!code word:properties:1]
   * type T = Ts.Assert.exact.properties<{ id: string }, Config>  // ✓ Pass
-    * 
+    *
 ```
  *
  * ### Modifiers
@@ -463,7 +463,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
   * type T = Ts.Assert.sub.noExcess<Options, { timeout: 5000, retry: true }>  // ✓ Allows literals
 // [!code word:noExcess:1]
     * type T = Ts.Assert.sub.noExcess<Options, { timeout: 5000, retrys: true }> // ✗ Catches typo!
-      * 
+      *
 ```
  *
  * **`equiv.noExcess`** - Special case (optional property typos in equiv types):
@@ -474,7 +474,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
     * type T = Ts.Assert.equiv<Schema, Response>          // ✓ Pass (mutually assignable)
 // [!code word:noExcess:1]
       * type T = Ts.Assert.equiv.noExcess<Schema, Response> // ✗ Fail (catches typo!)
-        * 
+        *
 ```
  *
  * ## Negation
@@ -489,7 +489,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
   * type T = Ts.Assert.not.sub.awaited<X, Promise<Y>>        // ✓ Pass if Y doesn't extend X
 // [!code word:awaited:1]
     * Ts.Assert.not.exact.returned.awaited<X>()(fn)            // Value level
-    * 
+    *
 ```
  *
  * ## Value Level vs Type Level
@@ -500,7 +500,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * type T = Ts.Assert.exact<A, B>
 // [!code word:awaited:1]
   * type T = Ts.Assert.sub.awaited<X, Promise<Y>>
-    * 
+    *
 ```
  *
  * **Value Level**: Relations require `.is`, extractors work directly
@@ -520,7 +520,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * Ts.Assert.exact.returned.is<X>()(fn)            // Terminal check
 // [!code word:awaited:1]
   * Ts.Assert.exact.returned.awaited<X>()(fn)       // Chained check
-  * 
+  *
 ```
  *
  * ## Why `.is` for Identity?
@@ -545,7 +545,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * //   excess: { email: string }
  * //   mismatched: { id: { expected: string, actual: number } }
  * // }
- * 
+ *
 ```
  *
  * ## Configuration
@@ -569,7 +569,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  *   }
  * }
  * export { }
- * 
+ *
 ```
  */
 ````
@@ -619,7 +619,8 @@ type StaticErrorAssertion<
   $Expected = unknown,
   $Actual = unknown,
   $MetaInput extends MetaInput = never,
-  ___$ErrorKeyLength extends number = KitLibrarySettings.Ts.Error['errorKeyLength'],
+  ___$ErrorKeyLength extends number =
+    KitLibrarySettings.Ts.Error['errorKeyLength'],
 > = Ts.Err.StaticError<
   $Message,
   {
@@ -667,16 +668,36 @@ import { Ts } from '@wollybeard/kit/ts'
 type E1 = StaticErrorAssertion<'Types mismatch', string, number>
 
 // With a single tip
-type E2 = StaticErrorAssertion<'Types mismatch', string, number, 'Use String() to convert'>
+type E2 = StaticErrorAssertion<
+  'Types mismatch',
+  string,
+  number,
+  'Use String() to convert'
+>
 
 // With multiple tips
-type E3 = StaticErrorAssertion<'Types mismatch', string, number, ['Tip 1', 'Tip 2']>
+type E3 = StaticErrorAssertion<
+  'Types mismatch',
+  string,
+  number,
+  ['Tip 1', 'Tip 2']
+>
 
 // With metadata object
-type E4 = StaticErrorAssertion<'Types mismatch', string, number, { operation: 'concat' }>
+type E4 = StaticErrorAssertion<
+  'Types mismatch',
+  string,
+  number,
+  { operation: 'concat' }
+>
 
 // With tip and metadata
-type E5 = StaticErrorAssertion<'Types mismatch', string, number, { tip: 'Use String()', diff_missing: { x: number } }>
+type E5 = StaticErrorAssertion<
+  'Types mismatch',
+  string,
+  number,
+  { tip: 'Use String()'; diff_missing: { x: number } }
+>
 ```
 
 ## Other
@@ -684,25 +705,25 @@ type E5 = StaticErrorAssertion<'Types mismatch', string, number, { tip: 'Use Str
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L8" /> {#c-any-8}
 
 ```typescript
-InputActualForUnaryRelatorNarrow<State.Empty, "any">
+InputActualForUnaryRelatorNarrow<State.Empty, 'any'>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `unknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L9" /> {#c-unknown-9}
 
 ```typescript
-InputActualForUnaryRelatorNarrow<State.Empty, "unknown">
+InputActualForUnaryRelatorNarrow<State.Empty, 'unknown'>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `never`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L10" /> {#c-never-10}
 
 ```typescript
-InputActualForUnaryRelatorNarrow<State.Empty, "never">
+InputActualForUnaryRelatorNarrow<State.Empty, 'never'>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `empty`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L11" /> {#c-empty-11}
 
 ```typescript
-InputActualForUnaryRelatorNarrow<State.Empty, "empty">
+InputActualForUnaryRelatorNarrow<State.Empty, 'empty'>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `on`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L14" /> {#c-on-14}
@@ -720,25 +741,25 @@ InputActualAsType<State.Empty>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `inferNarrow`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L18" /> {#c-infer-narrow-18}
 
 ```typescript
-Builder<State.SetInferMode<State.Empty, "narrow">>
+Builder<State.SetInferMode<State.Empty, 'narrow'>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `inferWide`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L19" /> {#c-infer-wide-19}
 
 ```typescript
-Builder<State.SetInferMode<State.Empty, "wide">>
+Builder<State.SetInferMode<State.Empty, 'wide'>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `inferAuto`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L20" /> {#c-infer-auto-20}
 
 ```typescript
-Builder<State.SetInferMode<State.Empty, "auto">>
+Builder<State.SetInferMode<State.Empty, 'auto'>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `setInfer`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L21" /> {#c-set-infer-21}
 
 ```typescript
-<$Mode>(mode: $Mode) => Builder<State.SetInferMode<State.Empty, $Mode>>
+;(<$Mode>(mode: $Mode) => Builder<State.SetInferMode<State.Empty, $Mode>>)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Case`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/cases.ts#L29" /> {#t-case-29}
@@ -776,8 +797,8 @@ Assert.exact.ofAs<string>().onAs<number>()
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type MyTests = [
-  Ts.Assert.Case<Equal<string, string>>,  // OK - evaluates to never (success)
-  Ts.Assert.Case<Equal<string, number>>,  // Error - doesn't extend never (returns error)
+  Ts.Assert.Case<Equal<string, string>>, // OK - evaluates to never (success)
+  Ts.Assert.Case<Equal<string, number>>, // Error - doesn't extend never (returns error)
 ]
 ```
 
@@ -970,15 +991,15 @@ type _fail2 = Assert.exact.of<symbol, string>
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Assert.Cases<
-  Equal<string, string>,     // ✓ Pass (returns never)
-  Extends<string, 'hello'>,  // ✓ Pass (returns never)
-  Never<never>               // ✓ Pass (returns never)
+  Equal<string, string>, // ✓ Pass (returns never)
+  Extends<string, 'hello'>, // ✓ Pass (returns never)
+  Never<never> // ✓ Pass (returns never)
 >
 
 // Type error if any assertion fails
 type _ = Ts.Assert.Cases<
-  Equal<string, string>,     // ✓ Pass (returns never)
-  Equal<string, number>,     // ✗ Fail - Type error here (returns StaticErrorAssertion)
-  Extends<string, 'hello'>   // ✓ Pass (returns never)
+  Equal<string, string>, // ✓ Pass (returns never)
+  Equal<string, number>, // ✗ Fail - Type error here (returns StaticErrorAssertion)
+  Extends<string, 'hello'> // ✓ Pass (returns never)
 >
 ```

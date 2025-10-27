@@ -1,3 +1,4 @@
+import type { Fn } from '#fn'
 import { Traitor } from '#traitor'
 import type { Ts } from '#ts'
 import * as fc from 'fast-check'
@@ -63,8 +64,8 @@ export interface Arb<$Type = unknown> extends
   >
 {
   // @ts-expect-error - PrivateKind pattern: unknown will be overridden via intersection
-  [Ts.Kind.PrivateKindReturn]: Arb<this[Ts.Kind.PrivateKindParameters][0]>
-  [Ts.Kind.PrivateKindParameters]: unknown
+  [Fn.Kind.PrivateKindReturn]: Arb<this[Fn.Kind.PrivateKindParameters][0]>
+  [Fn.Kind.PrivateKindParameters]: unknown
 }
 
 //

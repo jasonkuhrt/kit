@@ -13,14 +13,14 @@ type _warm_weakset = Simplify.All<WeakSet<object>>
 type _warm_promise = Simplify.All<Promise<0>>
 
 // Warmup HKT custom traverser
+import type { Fn } from '#fn'
 import type { Num } from '#num'
-import type * as Kind from './kind.js'
 
 interface Box<T> {
   readonly value: T
 }
 
-interface BoxTraverser extends Kind.Kind {
+interface BoxTraverser extends Fn.Kind.Kind {
   return: this['parameters'] extends [
     infer $T,
     infer $DN extends Num.Literal,

@@ -21,7 +21,7 @@ import * as Paka from '@wollybeard/kit/paka'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ExportLevel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L13" /> {#c-export-level-13}
 
 ```typescript
-Enums<{ readonly value: "value"; readonly type: "type"; }>
+Enums<{ readonly value: 'value'; readonly type: 'type' }>
 ```
 
 Export level distinguishes between runtime values and type-only exports.
@@ -29,7 +29,14 @@ Export level distinguishes between runtime values and type-only exports.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `ValueExportType`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L19" /> {#c-value-export-type-19}
 
 ```typescript
-Enums<{ readonly function: "function"; readonly const: "const"; readonly class: "class"; readonly namespace: "namespace"; }>
+Enums<
+  {
+    readonly function: 'function'
+    readonly const: 'const'
+    readonly class: 'class'
+    readonly namespace: 'namespace'
+  }
+>
 ```
 
 Value export types
@@ -39,7 +46,15 @@ Value export types
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `TypeExportType`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L32" /> {#c-type-export-type-32}
 
 ```typescript
-Enums<{ readonly interface: "interface"; readonly 'type-alias': "type-alias"; readonly enum: "enum"; readonly union: "union"; readonly intersection: "intersection"; }>
+Enums<
+  {
+    readonly interface: 'interface'
+    readonly 'type-alias': 'type-alias'
+    readonly enum: 'enum'
+    readonly union: 'union'
+    readonly intersection: 'intersection'
+  }
+>
 ```
 
 Type export types
@@ -49,7 +64,13 @@ Type export types
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `BuilderMethodCategory`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L50" /> {#c-builder-method-category-50}
 
 ```typescript
-Enums<{ readonly chainable: "chainable"; readonly terminal: "terminal"; readonly transform: "transform"; }>
+Enums<
+  {
+    readonly chainable: 'chainable'
+    readonly terminal: 'terminal'
+    readonly transform: 'transform'
+  }
+>
 ```
 
 Builder method classification based on return type.
@@ -72,7 +93,15 @@ Union of all possible documentation provenance types.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `SignatureModel`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/paka/schema.ts#L517" /> {#c-signature-model-517}
 
 ```typescript
-Union<[typeof FunctionSignatureModel, typeof BuilderSignatureModel, typeof ClassSignatureModel, typeof TypeSignatureModel, typeof ValueSignatureModel]>
+Union<
+  [
+    typeof FunctionSignatureModel,
+    typeof BuilderSignatureModel,
+    typeof ClassSignatureModel,
+    typeof TypeSignatureModel,
+    typeof ValueSignatureModel,
+  ]
+>
 ```
 
 Signature model
@@ -217,13 +246,24 @@ Function/method parameter. Captures parameter name, type, modifiers, and JSDoc d
 
 ```typescript twoslash
 // @noErrors
-import { Paka } from '@wollybeard/kit/paka'
-// ---cut---
-// (items: T[], fn?: (item: T) => U, ...rest: unknown[])
-[
-  { name: 'items', type: 'T[]', optional: false, rest: false, description: 'Array of items to process' },
-  { name: 'fn', type: '(item: T) => U', optional: true, rest: false, description: 'Transform function' },
-  { name: 'rest', type: 'unknown[]', optional: false, rest: true }
+import { Paka } from '@wollybeard/kit/paka' // ---cut---
+ // (items: T[], fn?: (item: T) => U, ...rest: unknown[])
+;[
+  {
+    name: 'items',
+    type: 'T[]',
+    optional: false,
+    rest: false,
+    description: 'Array of items to process',
+  },
+  {
+    name: 'fn',
+    type: '(item: T) => U',
+    optional: true,
+    rest: false,
+    description: 'Transform function',
+  },
+  { name: 'rest', type: 'unknown[]', optional: false, rest: true },
 ]
 ```
 
@@ -410,17 +450,34 @@ Class property. Captures property name, type, modifiers, and JSDoc description.
 
 ```typescript twoslash
 // @noErrors
-import { Paka } from '@wollybeard/kit/paka'
-// ---cut---
-// class User {
+import { Paka } from '@wollybeard/kit/paka' // ---cut---
+ // class User {
 //   readonly id: string
 //   name?: string
 //   static count: number
 // }
-[
-  { name: 'id', type: 'string', optional: false, readonly: true, static: false },
-  { name: 'name', type: 'string', optional: true, readonly: false, static: false },
-  { name: 'count', type: 'number', optional: false, readonly: false, static: true }
+;[
+  {
+    name: 'id',
+    type: 'string',
+    optional: false,
+    readonly: true,
+    static: false,
+  },
+  {
+    name: 'name',
+    type: 'string',
+    optional: true,
+    readonly: false,
+    static: false,
+  },
+  {
+    name: 'count',
+    type: 'number',
+    optional: false,
+    readonly: false,
+    static: true,
+  },
 ]
 ```
 

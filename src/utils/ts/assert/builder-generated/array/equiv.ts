@@ -1,4 +1,4 @@
-import type * as Kind from '../../../kind.js'
+import type { Fn } from '#fn'
 import type * as Path from '../../../path.js'
 import { builder } from '../../builder-singleton.js'
 import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
@@ -26,7 +26,7 @@ import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
  * type _ = Assert.array.equiv.of<string, number[]>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type of_<$Expected, $Actual> = Fn.Kind.Apply<EquivKind, [$Expected, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const of_ = builder.array.equiv.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.array.equiv.of
  * type _ = Assert.array.equiv.string<number[]>
  * ```
  */
-type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type string_<$Actual> = Fn.Kind.Apply<EquivKind, [string, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const string_ = builder.array.equiv.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.array.equiv.string
  * type _ = Assert.array.equiv.number<string[]>
  * ```
  */
-type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type number_<$Actual> = Fn.Kind.Apply<EquivKind, [number, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const number_ = builder.array.equiv.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.array.equiv.number
  * type _ = Assert.array.equiv.bigint<string[]>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type bigint_<$Actual> = Fn.Kind.Apply<EquivKind, [bigint, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const bigint_ = builder.array.equiv.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.array.equiv.bigint
  * type _ = Assert.array.equiv.boolean<string[]>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type boolean_<$Actual> = Fn.Kind.Apply<EquivKind, [boolean, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const boolean_ = builder.array.equiv.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.array.equiv.boolean
  * type _ = Assert.array.equiv.undefined<string[]>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type undefined_<$Actual> = Fn.Kind.Apply<EquivKind, [undefined, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const undefined_ = builder.array.equiv.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.array.equiv.undefined
  * type _ = Assert.array.equiv.null<string[]>
  * ```
  */
-type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type null_<$Actual> = Fn.Kind.Apply<EquivKind, [null, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const null_ = builder.array.equiv.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.array.equiv.null
  * type _ = Assert.array.equiv.symbol<string[]>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type symbol_<$Actual> = Fn.Kind.Apply<EquivKind, [symbol, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const symbol_ = builder.array.equiv.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.array.equiv.symbol
  * type _ = Assert.array.equiv.Date<string[]>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type Date_<$Actual> = Fn.Kind.Apply<EquivKind, [Date, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const Date_ = builder.array.equiv.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.array.equiv.Date
  * type _ = Assert.array.equiv.RegExp<string[]>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type RegExp_<$Actual> = Fn.Kind.Apply<EquivKind, [RegExp, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const RegExp_ = builder.array.equiv.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.array.equiv.RegExp
  * type _ = Assert.array.equiv.Error<string[]>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type Error_<$Actual> = Fn.Kind.Apply<EquivKind, [Error, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const Error_ = builder.array.equiv.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.array.equiv.Error
  * type _ = Assert.array.equiv.unknown<string[]>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type unknown_<$Actual> = Fn.Kind.Apply<EquivKind, [unknown, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const unknown_ = builder.array.equiv.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.array.equiv.unknown
  * type _ = Assert.array.equiv.any<string[]>
  * ```
  */
-type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type any_<$Actual> = Fn.Kind.Apply<EquivKind, [any, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const any_ = builder.array.equiv.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.array.equiv.any
  * type _ = Assert.array.equiv.never<string[]>
  * ```
  */
-type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Path.ArrayElement, [$Actual]>]>
+type never_<$Actual> = Fn.Kind.Apply<EquivKind, [never, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
 const never_ = builder.array.equiv.never
 
 const ofAs_ = <$Type>() => builder.array.equiv.ofAs<$Type>()
@@ -242,9 +242,9 @@ const ofAs_ = <$Type>() => builder.array.equiv.ofAs<$Type>()
  * No-excess variant of equiv relation.
  * Checks that actual has no excess properties beyond expected.
  */
-type noExcess_<$Expected, $Actual> = Kind.Apply<
+type noExcess_<$Expected, $Actual> = Fn.Kind.Apply<
   EquivNoExcessKind,
-  [$Expected, Kind.Apply<Path.ArrayElement, [$Actual]>]
+  [$Expected, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]
 >
 const noExcess_ = builder.array.equiv.noExcess
 const noExcessAs_ = <$Type>() => builder.array.equiv.noExcessAs<$Type>()

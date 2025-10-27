@@ -1,4 +1,4 @@
-import type * as Kind from '../../../../kind.js'
+import type { Fn } from '#fn'
 import type * as Path from '../../../../path.js'
 import { builder } from '../../../builder-singleton.js'
 import type { EquivKind } from '../../../kinds/relators.js'
@@ -26,7 +26,7 @@ import type { EquivKind } from '../../../kinds/relators.js'
  * type _ = Assert.returned.equiv.of<string, () => number>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Path.Returned, [$Actual]>, true]>
+type of_<$Expected, $Actual> = Fn.Kind.Apply<EquivKind, [$Expected, Fn.Kind.Apply<Path.Returned, [$Actual]>, true]>
 const of_ = builder.returned.not.equiv.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.returned.not.equiv.of
  * type _ = Assert.returned.equiv.string<() => number>
  * ```
  */
-type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<Path.Returned, [$Actual]>, true]>
+type string_<$Actual> = Fn.Kind.Apply<EquivKind, [string, Fn.Kind.Apply<Path.Returned, [$Actual]>, true]>
 const string_ = builder.returned.not.equiv.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.returned.not.equiv.string
  * type _ = Assert.returned.equiv.number<() => string>
  * ```
  */
-type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<Path.Returned, [$Actual]>, true]>
+type number_<$Actual> = Fn.Kind.Apply<EquivKind, [number, Fn.Kind.Apply<Path.Returned, [$Actual]>, true]>
 const number_ = builder.returned.not.equiv.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.returned.not.equiv.number
  * type _ = Assert.returned.equiv.bigint<() => string>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<Path.Returned, [$Actual]>, true]>
+type bigint_<$Actual> = Fn.Kind.Apply<EquivKind, [bigint, Fn.Kind.Apply<Path.Returned, [$Actual]>, true]>
 const bigint_ = builder.returned.not.equiv.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.returned.not.equiv.bigint
  * type _ = Assert.returned.equiv.boolean<() => string>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<Path.Returned, [$Actual]>, true]>
+type boolean_<$Actual> = Fn.Kind.Apply<EquivKind, [boolean, Fn.Kind.Apply<Path.Returned, [$Actual]>, true]>
 const boolean_ = builder.returned.not.equiv.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.returned.not.equiv.boolean
  * type _ = Assert.returned.equiv.undefined<() => string>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<Path.Returned, [$Actual]>, true]>
+type undefined_<$Actual> = Fn.Kind.Apply<EquivKind, [undefined, Fn.Kind.Apply<Path.Returned, [$Actual]>, true]>
 const undefined_ = builder.returned.not.equiv.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.returned.not.equiv.undefined
  * type _ = Assert.returned.equiv.null<() => string>
  * ```
  */
-type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<Path.Returned, [$Actual]>, true]>
+type null_<$Actual> = Fn.Kind.Apply<EquivKind, [null, Fn.Kind.Apply<Path.Returned, [$Actual]>, true]>
 const null_ = builder.returned.not.equiv.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.returned.not.equiv.null
  * type _ = Assert.returned.equiv.symbol<() => string>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<Path.Returned, [$Actual]>, true]>
+type symbol_<$Actual> = Fn.Kind.Apply<EquivKind, [symbol, Fn.Kind.Apply<Path.Returned, [$Actual]>, true]>
 const symbol_ = builder.returned.not.equiv.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.returned.not.equiv.symbol
  * type _ = Assert.returned.equiv.Date<() => string>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<Path.Returned, [$Actual]>, true]>
+type Date_<$Actual> = Fn.Kind.Apply<EquivKind, [Date, Fn.Kind.Apply<Path.Returned, [$Actual]>, true]>
 const Date_ = builder.returned.not.equiv.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.returned.not.equiv.Date
  * type _ = Assert.returned.equiv.RegExp<() => string>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<Path.Returned, [$Actual]>, true]>
+type RegExp_<$Actual> = Fn.Kind.Apply<EquivKind, [RegExp, Fn.Kind.Apply<Path.Returned, [$Actual]>, true]>
 const RegExp_ = builder.returned.not.equiv.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.returned.not.equiv.RegExp
  * type _ = Assert.returned.equiv.Error<() => string>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<Path.Returned, [$Actual]>, true]>
+type Error_<$Actual> = Fn.Kind.Apply<EquivKind, [Error, Fn.Kind.Apply<Path.Returned, [$Actual]>, true]>
 const Error_ = builder.returned.not.equiv.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.returned.not.equiv.Error
  * type _ = Assert.returned.equiv.unknown<() => string>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Path.Returned, [$Actual]>, true]>
+type unknown_<$Actual> = Fn.Kind.Apply<EquivKind, [unknown, Fn.Kind.Apply<Path.Returned, [$Actual]>, true]>
 const unknown_ = builder.returned.not.equiv.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.returned.not.equiv.unknown
  * type _ = Assert.returned.equiv.any<() => string>
  * ```
  */
-type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Path.Returned, [$Actual]>, true]>
+type any_<$Actual> = Fn.Kind.Apply<EquivKind, [any, Fn.Kind.Apply<Path.Returned, [$Actual]>, true]>
 const any_ = builder.returned.not.equiv.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.returned.not.equiv.any
  * type _ = Assert.returned.equiv.never<() => string>
  * ```
  */
-type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Path.Returned, [$Actual]>, true]>
+type never_<$Actual> = Fn.Kind.Apply<EquivKind, [never, Fn.Kind.Apply<Path.Returned, [$Actual]>, true]>
 const never_ = builder.returned.not.equiv.never
 
 const ofAs_ = <$Type>() => builder.returned.not.equiv.ofAs<$Type>()
