@@ -1,4 +1,4 @@
-import type * as Kind from '../../../../kind.js'
+import type { Fn } from '#fn'
 import type * as Path from '../../../../path.js'
 import { builder } from '../../../builder-singleton.js'
 import type { SubKind } from '../../../kinds/relators.js'
@@ -26,7 +26,7 @@ import type { SubKind } from '../../../kinds/relators.js'
  * type _ = Assert.awaited.sub.of<string, Promise<number>>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type of_<$Expected, $Actual> = Fn.Kind.Apply<SubKind, [$Expected, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const of_ = builder.awaited.not.sub.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.awaited.not.sub.of
  * type _ = Assert.awaited.sub.string<Promise<number>>
  * ```
  */
-type string_<$Actual> = Kind.Apply<SubKind, [string, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type string_<$Actual> = Fn.Kind.Apply<SubKind, [string, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const string_ = builder.awaited.not.sub.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.awaited.not.sub.string
  * type _ = Assert.awaited.sub.number<Promise<string>>
  * ```
  */
-type number_<$Actual> = Kind.Apply<SubKind, [number, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type number_<$Actual> = Fn.Kind.Apply<SubKind, [number, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const number_ = builder.awaited.not.sub.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.awaited.not.sub.number
  * type _ = Assert.awaited.sub.bigint<Promise<string>>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<SubKind, [bigint, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type bigint_<$Actual> = Fn.Kind.Apply<SubKind, [bigint, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const bigint_ = builder.awaited.not.sub.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.awaited.not.sub.bigint
  * type _ = Assert.awaited.sub.boolean<Promise<string>>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<SubKind, [boolean, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type boolean_<$Actual> = Fn.Kind.Apply<SubKind, [boolean, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const boolean_ = builder.awaited.not.sub.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.awaited.not.sub.boolean
  * type _ = Assert.awaited.sub.undefined<Promise<string>>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<SubKind, [undefined, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type undefined_<$Actual> = Fn.Kind.Apply<SubKind, [undefined, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const undefined_ = builder.awaited.not.sub.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.awaited.not.sub.undefined
  * type _ = Assert.awaited.sub.null<Promise<string>>
  * ```
  */
-type null_<$Actual> = Kind.Apply<SubKind, [null, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type null_<$Actual> = Fn.Kind.Apply<SubKind, [null, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const null_ = builder.awaited.not.sub.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.awaited.not.sub.null
  * type _ = Assert.awaited.sub.symbol<Promise<string>>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<SubKind, [symbol, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type symbol_<$Actual> = Fn.Kind.Apply<SubKind, [symbol, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const symbol_ = builder.awaited.not.sub.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.awaited.not.sub.symbol
  * type _ = Assert.awaited.sub.Date<Promise<string>>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<SubKind, [Date, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type Date_<$Actual> = Fn.Kind.Apply<SubKind, [Date, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const Date_ = builder.awaited.not.sub.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.awaited.not.sub.Date
  * type _ = Assert.awaited.sub.RegExp<Promise<string>>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<SubKind, [RegExp, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type RegExp_<$Actual> = Fn.Kind.Apply<SubKind, [RegExp, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const RegExp_ = builder.awaited.not.sub.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.awaited.not.sub.RegExp
  * type _ = Assert.awaited.sub.Error<Promise<string>>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<SubKind, [Error, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type Error_<$Actual> = Fn.Kind.Apply<SubKind, [Error, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const Error_ = builder.awaited.not.sub.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.awaited.not.sub.Error
  * type _ = Assert.awaited.sub.unknown<Promise<string>>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type unknown_<$Actual> = Fn.Kind.Apply<SubKind, [unknown, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const unknown_ = builder.awaited.not.sub.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.awaited.not.sub.unknown
  * type _ = Assert.awaited.sub.any<Promise<string>>
  * ```
  */
-type any_<$Actual> = Kind.Apply<SubKind, [any, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type any_<$Actual> = Fn.Kind.Apply<SubKind, [any, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const any_ = builder.awaited.not.sub.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.awaited.not.sub.any
  * type _ = Assert.awaited.sub.never<Promise<string>>
  * ```
  */
-type never_<$Actual> = Kind.Apply<SubKind, [never, Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+type never_<$Actual> = Fn.Kind.Apply<SubKind, [never, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
 const never_ = builder.awaited.not.sub.never
 
 const ofAs_ = <$Type>() => builder.awaited.not.sub.ofAs<$Type>()

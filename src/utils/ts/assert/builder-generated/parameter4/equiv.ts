@@ -1,4 +1,4 @@
-import type * as Kind from '../../../kind.js'
+import type { Fn } from '#fn'
 import type * as Path from '../../../path.js'
 import { builder } from '../../builder-singleton.js'
 import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
@@ -26,7 +26,7 @@ import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
  * type _ = Assert.parameter4.equiv.of<string, (arg: number) => any>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type of_<$Expected, $Actual> = Fn.Kind.Apply<EquivKind, [$Expected, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]>
 const of_ = builder.parameter4.equiv.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.parameter4.equiv.of
  * type _ = Assert.parameter4.equiv.string<(arg: number) => any>
  * ```
  */
-type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type string_<$Actual> = Fn.Kind.Apply<EquivKind, [string, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]>
 const string_ = builder.parameter4.equiv.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.parameter4.equiv.string
  * type _ = Assert.parameter4.equiv.number<(arg: string) => any>
  * ```
  */
-type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type number_<$Actual> = Fn.Kind.Apply<EquivKind, [number, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]>
 const number_ = builder.parameter4.equiv.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.parameter4.equiv.number
  * type _ = Assert.parameter4.equiv.bigint<(arg: string) => any>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type bigint_<$Actual> = Fn.Kind.Apply<EquivKind, [bigint, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]>
 const bigint_ = builder.parameter4.equiv.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.parameter4.equiv.bigint
  * type _ = Assert.parameter4.equiv.boolean<(arg: string) => any>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type boolean_<$Actual> = Fn.Kind.Apply<EquivKind, [boolean, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]>
 const boolean_ = builder.parameter4.equiv.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.parameter4.equiv.boolean
  * type _ = Assert.parameter4.equiv.undefined<(arg: string) => any>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type undefined_<$Actual> = Fn.Kind.Apply<EquivKind, [undefined, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]>
 const undefined_ = builder.parameter4.equiv.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.parameter4.equiv.undefined
  * type _ = Assert.parameter4.equiv.null<(arg: string) => any>
  * ```
  */
-type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type null_<$Actual> = Fn.Kind.Apply<EquivKind, [null, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]>
 const null_ = builder.parameter4.equiv.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.parameter4.equiv.null
  * type _ = Assert.parameter4.equiv.symbol<(arg: string) => any>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type symbol_<$Actual> = Fn.Kind.Apply<EquivKind, [symbol, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]>
 const symbol_ = builder.parameter4.equiv.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.parameter4.equiv.symbol
  * type _ = Assert.parameter4.equiv.Date<(arg: string) => any>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type Date_<$Actual> = Fn.Kind.Apply<EquivKind, [Date, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]>
 const Date_ = builder.parameter4.equiv.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.parameter4.equiv.Date
  * type _ = Assert.parameter4.equiv.RegExp<(arg: string) => any>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type RegExp_<$Actual> = Fn.Kind.Apply<EquivKind, [RegExp, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]>
 const RegExp_ = builder.parameter4.equiv.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.parameter4.equiv.RegExp
  * type _ = Assert.parameter4.equiv.Error<(arg: string) => any>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type Error_<$Actual> = Fn.Kind.Apply<EquivKind, [Error, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]>
 const Error_ = builder.parameter4.equiv.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.parameter4.equiv.Error
  * type _ = Assert.parameter4.equiv.unknown<(arg: string) => any>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type unknown_<$Actual> = Fn.Kind.Apply<EquivKind, [unknown, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]>
 const unknown_ = builder.parameter4.equiv.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.parameter4.equiv.unknown
  * type _ = Assert.parameter4.equiv.any<(arg: string) => any>
  * ```
  */
-type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type any_<$Actual> = Fn.Kind.Apply<EquivKind, [any, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]>
 const any_ = builder.parameter4.equiv.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.parameter4.equiv.any
  * type _ = Assert.parameter4.equiv.never<(arg: string) => any>
  * ```
  */
-type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type never_<$Actual> = Fn.Kind.Apply<EquivKind, [never, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]>
 const never_ = builder.parameter4.equiv.never
 
 const ofAs_ = <$Type>() => builder.parameter4.equiv.ofAs<$Type>()
@@ -242,7 +242,10 @@ const ofAs_ = <$Type>() => builder.parameter4.equiv.ofAs<$Type>()
  * No-excess variant of equiv relation.
  * Checks that actual has no excess properties beyond expected.
  */
-type noExcess_<$Expected, $Actual> = Kind.Apply<EquivNoExcessKind, [$Expected, Kind.Apply<Path.Parameter4, [$Actual]>]>
+type noExcess_<$Expected, $Actual> = Fn.Kind.Apply<
+  EquivNoExcessKind,
+  [$Expected, Fn.Kind.Apply<Path.Parameter4, [$Actual]>]
+>
 const noExcess_ = builder.parameter4.equiv.noExcess
 const noExcessAs_ = <$Type>() => builder.parameter4.equiv.noExcessAs<$Type>()
 

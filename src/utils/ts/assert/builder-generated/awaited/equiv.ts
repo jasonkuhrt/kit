@@ -1,4 +1,4 @@
-import type * as Kind from '../../../kind.js'
+import type { Fn } from '#fn'
 import type * as Path from '../../../path.js'
 import { builder } from '../../builder-singleton.js'
 import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
@@ -26,7 +26,7 @@ import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
  * type _ = Assert.awaited.equiv.of<string, Promise<number>>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type of_<$Expected, $Actual> = Fn.Kind.Apply<EquivKind, [$Expected, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]>
 const of_ = builder.awaited.equiv.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.awaited.equiv.of
  * type _ = Assert.awaited.equiv.string<Promise<number>>
  * ```
  */
-type string_<$Actual> = Kind.Apply<EquivKind, [string, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type string_<$Actual> = Fn.Kind.Apply<EquivKind, [string, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]>
 const string_ = builder.awaited.equiv.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.awaited.equiv.string
  * type _ = Assert.awaited.equiv.number<Promise<string>>
  * ```
  */
-type number_<$Actual> = Kind.Apply<EquivKind, [number, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type number_<$Actual> = Fn.Kind.Apply<EquivKind, [number, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]>
 const number_ = builder.awaited.equiv.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.awaited.equiv.number
  * type _ = Assert.awaited.equiv.bigint<Promise<string>>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type bigint_<$Actual> = Fn.Kind.Apply<EquivKind, [bigint, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]>
 const bigint_ = builder.awaited.equiv.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.awaited.equiv.bigint
  * type _ = Assert.awaited.equiv.boolean<Promise<string>>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type boolean_<$Actual> = Fn.Kind.Apply<EquivKind, [boolean, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]>
 const boolean_ = builder.awaited.equiv.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.awaited.equiv.boolean
  * type _ = Assert.awaited.equiv.undefined<Promise<string>>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type undefined_<$Actual> = Fn.Kind.Apply<EquivKind, [undefined, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]>
 const undefined_ = builder.awaited.equiv.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.awaited.equiv.undefined
  * type _ = Assert.awaited.equiv.null<Promise<string>>
  * ```
  */
-type null_<$Actual> = Kind.Apply<EquivKind, [null, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type null_<$Actual> = Fn.Kind.Apply<EquivKind, [null, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]>
 const null_ = builder.awaited.equiv.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.awaited.equiv.null
  * type _ = Assert.awaited.equiv.symbol<Promise<string>>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type symbol_<$Actual> = Fn.Kind.Apply<EquivKind, [symbol, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]>
 const symbol_ = builder.awaited.equiv.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.awaited.equiv.symbol
  * type _ = Assert.awaited.equiv.Date<Promise<string>>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<EquivKind, [Date, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type Date_<$Actual> = Fn.Kind.Apply<EquivKind, [Date, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]>
 const Date_ = builder.awaited.equiv.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.awaited.equiv.Date
  * type _ = Assert.awaited.equiv.RegExp<Promise<string>>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type RegExp_<$Actual> = Fn.Kind.Apply<EquivKind, [RegExp, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]>
 const RegExp_ = builder.awaited.equiv.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.awaited.equiv.RegExp
  * type _ = Assert.awaited.equiv.Error<Promise<string>>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<EquivKind, [Error, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type Error_<$Actual> = Fn.Kind.Apply<EquivKind, [Error, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]>
 const Error_ = builder.awaited.equiv.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.awaited.equiv.Error
  * type _ = Assert.awaited.equiv.unknown<Promise<string>>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type unknown_<$Actual> = Fn.Kind.Apply<EquivKind, [unknown, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]>
 const unknown_ = builder.awaited.equiv.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.awaited.equiv.unknown
  * type _ = Assert.awaited.equiv.any<Promise<string>>
  * ```
  */
-type any_<$Actual> = Kind.Apply<EquivKind, [any, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type any_<$Actual> = Fn.Kind.Apply<EquivKind, [any, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]>
 const any_ = builder.awaited.equiv.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.awaited.equiv.any
  * type _ = Assert.awaited.equiv.never<Promise<string>>
  * ```
  */
-type never_<$Actual> = Kind.Apply<EquivKind, [never, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type never_<$Actual> = Fn.Kind.Apply<EquivKind, [never, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]>
 const never_ = builder.awaited.equiv.never
 
 const ofAs_ = <$Type>() => builder.awaited.equiv.ofAs<$Type>()
@@ -242,7 +242,10 @@ const ofAs_ = <$Type>() => builder.awaited.equiv.ofAs<$Type>()
  * No-excess variant of equiv relation.
  * Checks that actual has no excess properties beyond expected.
  */
-type noExcess_<$Expected, $Actual> = Kind.Apply<EquivNoExcessKind, [$Expected, Kind.Apply<Path.Awaited$, [$Actual]>]>
+type noExcess_<$Expected, $Actual> = Fn.Kind.Apply<
+  EquivNoExcessKind,
+  [$Expected, Fn.Kind.Apply<Path.Awaited$, [$Actual]>]
+>
 const noExcess_ = builder.awaited.equiv.noExcess
 const noExcessAs_ = <$Type>() => builder.awaited.equiv.noExcessAs<$Type>()
 

@@ -1,3 +1,4 @@
+import type { Fn } from '#fn'
 import { Traitor } from '#traitor'
 import type { Ts } from '#ts'
 
@@ -86,11 +87,11 @@ export interface Type<$Value = any> extends
       isnt?(value: unknown): boolean
     }
   >,
-  Ts.Kind.Private
+  Fn.Kind.Private
 {
   // @ts-expect-error - PrivateKind pattern: unknown will be overridden via intersection
-  [Ts.Kind.PrivateKindReturn]: Type<this[Ts.Kind.PrivateKindParameters][0]>
-  [Ts.Kind.PrivateKindParameters]: unknown
+  [Fn.Kind.PrivateKindReturn]: Type<this[Fn.Kind.PrivateKindParameters][0]>
+  [Fn.Kind.PrivateKindParameters]: unknown
 }
 
 //

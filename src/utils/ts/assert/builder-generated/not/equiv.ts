@@ -1,4 +1,4 @@
-import type * as Kind from '../../../kind.js'
+import type { Fn } from '#fn'
 import { builder } from '../../builder-singleton.js'
 import type { EquivKind } from '../../kinds/relators.js'
 
@@ -24,7 +24,7 @@ import type { EquivKind } from '../../kinds/relators.js'
  * type _ = Assert.equiv.of<string, number>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<EquivKind, [$Expected, $Actual, true]>
+type of_<$Expected, $Actual> = Fn.Kind.Apply<EquivKind, [$Expected, $Actual, true]>
 const of_ = builder.not.equiv.of
 
 /**
@@ -39,7 +39,7 @@ const of_ = builder.not.equiv.of
  * type _ = Assert.equiv.string<number>
  * ```
  */
-type string_<$Actual> = Kind.Apply<EquivKind, [string, $Actual, true]>
+type string_<$Actual> = Fn.Kind.Apply<EquivKind, [string, $Actual, true]>
 const string_ = builder.not.equiv.string
 
 /**
@@ -54,7 +54,7 @@ const string_ = builder.not.equiv.string
  * type _ = Assert.equiv.number<string>
  * ```
  */
-type number_<$Actual> = Kind.Apply<EquivKind, [number, $Actual, true]>
+type number_<$Actual> = Fn.Kind.Apply<EquivKind, [number, $Actual, true]>
 const number_ = builder.not.equiv.number
 
 /**
@@ -69,7 +69,7 @@ const number_ = builder.not.equiv.number
  * type _ = Assert.equiv.bigint<string>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<EquivKind, [bigint, $Actual, true]>
+type bigint_<$Actual> = Fn.Kind.Apply<EquivKind, [bigint, $Actual, true]>
 const bigint_ = builder.not.equiv.bigint
 
 /**
@@ -84,7 +84,7 @@ const bigint_ = builder.not.equiv.bigint
  * type _ = Assert.equiv.boolean<string>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<EquivKind, [boolean, $Actual, true]>
+type boolean_<$Actual> = Fn.Kind.Apply<EquivKind, [boolean, $Actual, true]>
 const boolean_ = builder.not.equiv.boolean
 
 /**
@@ -99,7 +99,7 @@ const boolean_ = builder.not.equiv.boolean
  * type _ = Assert.equiv.undefined<string>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<EquivKind, [undefined, $Actual, true]>
+type undefined_<$Actual> = Fn.Kind.Apply<EquivKind, [undefined, $Actual, true]>
 const undefined_ = builder.not.equiv.undefined
 
 /**
@@ -114,7 +114,7 @@ const undefined_ = builder.not.equiv.undefined
  * type _ = Assert.equiv.null<string>
  * ```
  */
-type null_<$Actual> = Kind.Apply<EquivKind, [null, $Actual, true]>
+type null_<$Actual> = Fn.Kind.Apply<EquivKind, [null, $Actual, true]>
 const null_ = builder.not.equiv.null
 
 /**
@@ -129,7 +129,7 @@ const null_ = builder.not.equiv.null
  * type _ = Assert.equiv.symbol<string>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<EquivKind, [symbol, $Actual, true]>
+type symbol_<$Actual> = Fn.Kind.Apply<EquivKind, [symbol, $Actual, true]>
 const symbol_ = builder.not.equiv.symbol
 
 /**
@@ -144,7 +144,7 @@ const symbol_ = builder.not.equiv.symbol
  * type _ = Assert.equiv.Date<string>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<EquivKind, [Date, $Actual, true]>
+type Date_<$Actual> = Fn.Kind.Apply<EquivKind, [Date, $Actual, true]>
 const Date_ = builder.not.equiv.Date
 
 /**
@@ -159,7 +159,7 @@ const Date_ = builder.not.equiv.Date
  * type _ = Assert.equiv.RegExp<string>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<EquivKind, [RegExp, $Actual, true]>
+type RegExp_<$Actual> = Fn.Kind.Apply<EquivKind, [RegExp, $Actual, true]>
 const RegExp_ = builder.not.equiv.RegExp
 
 /**
@@ -174,7 +174,7 @@ const RegExp_ = builder.not.equiv.RegExp
  * type _ = Assert.equiv.Error<string>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<EquivKind, [Error, $Actual, true]>
+type Error_<$Actual> = Fn.Kind.Apply<EquivKind, [Error, $Actual, true]>
 const Error_ = builder.not.equiv.Error
 
 /**
@@ -189,7 +189,7 @@ const Error_ = builder.not.equiv.Error
  * type _ = Assert.equiv.unknown<string>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<EquivKind, [unknown, $Actual, true]>
+type unknown_<$Actual> = Fn.Kind.Apply<EquivKind, [unknown, $Actual, true]>
 const unknown_ = builder.not.equiv.unknown
 
 /**
@@ -204,7 +204,7 @@ const unknown_ = builder.not.equiv.unknown
  * type _ = Assert.equiv.any<string>
  * ```
  */
-type any_<$Actual> = Kind.Apply<EquivKind, [any, $Actual, true]>
+type any_<$Actual> = Fn.Kind.Apply<EquivKind, [any, $Actual, true]>
 const any_ = builder.not.equiv.any
 
 /**
@@ -219,7 +219,7 @@ const any_ = builder.not.equiv.any
  * type _ = Assert.equiv.never<string>
  * ```
  */
-type never_<$Actual> = Kind.Apply<EquivKind, [never, $Actual, true]>
+type never_<$Actual> = Fn.Kind.Apply<EquivKind, [never, $Actual, true]>
 const never_ = builder.not.equiv.never
 
 const ofAs_ = <$Type>() => builder.not.equiv.ofAs<$Type>()

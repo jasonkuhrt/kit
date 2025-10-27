@@ -1,4 +1,4 @@
-import type * as Kind from '../../../../kind.js'
+import type { Fn } from '#fn'
 import type * as Path from '../../../../path.js'
 import { builder } from '../../../builder-singleton.js'
 import type { ExactKind } from '../../../kinds/relators.js'
@@ -26,7 +26,7 @@ import type { ExactKind } from '../../../kinds/relators.js'
  * type _ = Assert.array.exact.of<string, number[]>
  * ```
  */
-type of_<$Expected, $Actual> = Kind.Apply<ExactKind, [$Expected, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+type of_<$Expected, $Actual> = Fn.Kind.Apply<ExactKind, [$Expected, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const of_ = builder.array.not.exact.of
 
 /**
@@ -42,7 +42,7 @@ const of_ = builder.array.not.exact.of
  * type _ = Assert.array.exact.string<number[]>
  * ```
  */
-type string_<$Actual> = Kind.Apply<ExactKind, [string, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+type string_<$Actual> = Fn.Kind.Apply<ExactKind, [string, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const string_ = builder.array.not.exact.string
 
 /**
@@ -58,7 +58,7 @@ const string_ = builder.array.not.exact.string
  * type _ = Assert.array.exact.number<string[]>
  * ```
  */
-type number_<$Actual> = Kind.Apply<ExactKind, [number, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+type number_<$Actual> = Fn.Kind.Apply<ExactKind, [number, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const number_ = builder.array.not.exact.number
 
 /**
@@ -74,7 +74,7 @@ const number_ = builder.array.not.exact.number
  * type _ = Assert.array.exact.bigint<string[]>
  * ```
  */
-type bigint_<$Actual> = Kind.Apply<ExactKind, [bigint, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+type bigint_<$Actual> = Fn.Kind.Apply<ExactKind, [bigint, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const bigint_ = builder.array.not.exact.bigint
 
 /**
@@ -90,7 +90,7 @@ const bigint_ = builder.array.not.exact.bigint
  * type _ = Assert.array.exact.boolean<string[]>
  * ```
  */
-type boolean_<$Actual> = Kind.Apply<ExactKind, [boolean, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+type boolean_<$Actual> = Fn.Kind.Apply<ExactKind, [boolean, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const boolean_ = builder.array.not.exact.boolean
 
 /**
@@ -106,7 +106,7 @@ const boolean_ = builder.array.not.exact.boolean
  * type _ = Assert.array.exact.undefined<string[]>
  * ```
  */
-type undefined_<$Actual> = Kind.Apply<ExactKind, [undefined, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+type undefined_<$Actual> = Fn.Kind.Apply<ExactKind, [undefined, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const undefined_ = builder.array.not.exact.undefined
 
 /**
@@ -122,7 +122,7 @@ const undefined_ = builder.array.not.exact.undefined
  * type _ = Assert.array.exact.null<string[]>
  * ```
  */
-type null_<$Actual> = Kind.Apply<ExactKind, [null, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+type null_<$Actual> = Fn.Kind.Apply<ExactKind, [null, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const null_ = builder.array.not.exact.null
 
 /**
@@ -138,7 +138,7 @@ const null_ = builder.array.not.exact.null
  * type _ = Assert.array.exact.symbol<string[]>
  * ```
  */
-type symbol_<$Actual> = Kind.Apply<ExactKind, [symbol, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+type symbol_<$Actual> = Fn.Kind.Apply<ExactKind, [symbol, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const symbol_ = builder.array.not.exact.symbol
 
 /**
@@ -154,7 +154,7 @@ const symbol_ = builder.array.not.exact.symbol
  * type _ = Assert.array.exact.Date<string[]>
  * ```
  */
-type Date_<$Actual> = Kind.Apply<ExactKind, [Date, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+type Date_<$Actual> = Fn.Kind.Apply<ExactKind, [Date, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const Date_ = builder.array.not.exact.Date
 
 /**
@@ -170,7 +170,7 @@ const Date_ = builder.array.not.exact.Date
  * type _ = Assert.array.exact.RegExp<string[]>
  * ```
  */
-type RegExp_<$Actual> = Kind.Apply<ExactKind, [RegExp, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+type RegExp_<$Actual> = Fn.Kind.Apply<ExactKind, [RegExp, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const RegExp_ = builder.array.not.exact.RegExp
 
 /**
@@ -186,7 +186,7 @@ const RegExp_ = builder.array.not.exact.RegExp
  * type _ = Assert.array.exact.Error<string[]>
  * ```
  */
-type Error_<$Actual> = Kind.Apply<ExactKind, [Error, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+type Error_<$Actual> = Fn.Kind.Apply<ExactKind, [Error, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const Error_ = builder.array.not.exact.Error
 
 /**
@@ -202,7 +202,7 @@ const Error_ = builder.array.not.exact.Error
  * type _ = Assert.array.exact.unknown<string[]>
  * ```
  */
-type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+type unknown_<$Actual> = Fn.Kind.Apply<ExactKind, [unknown, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const unknown_ = builder.array.not.exact.unknown
 
 /**
@@ -218,7 +218,7 @@ const unknown_ = builder.array.not.exact.unknown
  * type _ = Assert.array.exact.any<string[]>
  * ```
  */
-type any_<$Actual> = Kind.Apply<ExactKind, [any, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+type any_<$Actual> = Fn.Kind.Apply<ExactKind, [any, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const any_ = builder.array.not.exact.any
 
 /**
@@ -234,7 +234,7 @@ const any_ = builder.array.not.exact.any
  * type _ = Assert.array.exact.never<string[]>
  * ```
  */
-type never_<$Actual> = Kind.Apply<ExactKind, [never, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+type never_<$Actual> = Fn.Kind.Apply<ExactKind, [never, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
 const never_ = builder.array.not.exact.never
 
 const ofAs_ = <$Type>() => builder.array.not.exact.ofAs<$Type>()

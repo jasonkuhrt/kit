@@ -1,7 +1,7 @@
 // dprint-ignore-file
 import type { Num } from '#num'
 import { Ts } from '#ts'
-import type * as Kind from './kind.js'
+import type { Fn } from '#fn'
 import type * as Simplify from './simplify.js'
 
 const A = Ts.Assert.exact
@@ -67,7 +67,7 @@ interface Box<T> {
   readonly value: T
 }
 
-interface BoxTraverser extends Kind.Kind {
+interface BoxTraverser extends Fn.Kind.Kind {
   return: this['parameters'] extends [infer $T, infer $DN extends Num.Literal, infer $SN]
     ? $T extends Box<infer V> ? Box<Simplify.To<$DN, V, $SN>>
     : never

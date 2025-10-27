@@ -1,4 +1,4 @@
-import type * as Kind from '../../kind.js'
+import type { Fn } from '#fn'
 import type { SENTINEL } from '../../ts.js'
 
 //
@@ -46,7 +46,7 @@ export interface State {
    * // Extracts: Promise<() => number> -> number -> number -> assert equals 42
    * ```
    */
-  actual_extractors: readonly Kind.Kind[]
+  actual_extractors: readonly Fn.Kind.Kind[]
 
   /**
    * The expected type to compare against.
@@ -74,7 +74,7 @@ export interface State {
    * Assert.sub.of(expected)(actual)    // matcher_relator: SubKind
    * ```
    */
-  matcher_relator: undefined | Kind.Kind
+  matcher_relator: undefined | Fn.Kind.Kind
 
   /**
    * Whether the assertion is negated (inverts the check).
@@ -195,7 +195,7 @@ export namespace State {
 
   export type AddActualExtractor<
     $State extends State,
-    $Extractor extends Kind.Kind,
+    $Extractor extends Fn.Kind.Kind,
   > = {
     actual_type: $State['actual_type']
     actual_extractors: [...$State['actual_extractors'], $Extractor]
@@ -227,7 +227,7 @@ export namespace State {
 
   export type SetRelator<
     $State extends State,
-    $Relator extends Kind.Kind,
+    $Relator extends Fn.Kind.Kind,
   > = {
     actual_type: $State['actual_type']
     actual_extractors: $State['actual_extractors']
@@ -316,6 +316,6 @@ export namespace State {
    */
   export type AddExtractor<
     $State extends State,
-    $Extractor extends Kind.Kind,
+    $Extractor extends Fn.Kind.Kind,
   > = AddActualExtractor<$State, $Extractor>
 }

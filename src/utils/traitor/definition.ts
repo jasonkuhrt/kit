@@ -67,13 +67,13 @@ export type GetAppliedInternalInterface<
   $Definition extends Definition,
   $Domain extends Domain,
 > = GetInternalInterface<
-  Ts.Kind.MaybePrivateApplyOr<$Definition, [$Domain['_type']], $Definition>
+  Fn.Kind.MaybePrivateApplyOr<$Definition, [$Domain['_type']], $Definition>
 >
 
 export type GetAppliedInterface<
   $Definition extends Definition,
   $Domain extends Domain,
-> = Ts.Kind.MaybePrivateApplyOr<
+> = Fn.Kind.MaybePrivateApplyOr<
   $Definition,
   [$Domain['_type']],
   $Definition

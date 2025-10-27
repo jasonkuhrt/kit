@@ -1,3 +1,4 @@
+import { Fn } from '#fn'
 import { Ts } from '#ts'
 import { attest } from '@ark/attest'
 import { test } from 'vitest'
@@ -475,4 +476,25 @@ test('extractor - returned value-level API', () => {
   attempted_____: "returned extractor"
   HIERARCHY_____: readonly ["root", ...string[]]
 }`)
+})
+
+//
+//
+// .extract() Method Tests
+//
+//
+
+test('.extract() - type signature exists', () => {
+  // Verify .extract() method exists on Assert builder
+  type _HasExtract = typeof Assert extends { extract: (...args: any[]) => any } ? true : false
+  type _Check = Ts.Assert.exact<_HasExtract, true>
+})
+
+test('.extract() - composition preserves .kind metadata', () => {
+  // Compose awaited and returned extractors
+  const composed = Fn.compose(Ts.Extract.awaited, Ts.Extract.returned)
+
+  // Verify compose preserves .kind property
+  type _HasKind = typeof composed extends { kind: any } ? true : false
+  type _Check = Ts.Assert.exact<_HasKind, true>
 })

@@ -1,4 +1,4 @@
-import type * as Kind from '../../../../kind.js'
+import type { Fn } from '#fn'
 import type * as Path from '../../../../path.js'
 import { builder } from '../../../builder-singleton.js'
 import type { EquivKind, ExactKind, SubKind } from '../../../kinds/relators.js'
@@ -12,12 +12,15 @@ export const any = builder.not.array.any
 export const unknown = builder.not.array.unknown
 export const never = builder.not.array.never
 export const empty = builder.not.array.empty
-export type exact<$Expected, $Actual> = Kind.Apply<
+export type exact<$Expected, $Actual> = Fn.Kind.Apply<
   ExactKind,
-  [$Expected, Kind.Apply<Path.ArrayElement, [$Actual]>, true]
+  [$Expected, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]
 >
-export type equiv<$Expected, $Actual> = Kind.Apply<
+export type equiv<$Expected, $Actual> = Fn.Kind.Apply<
   EquivKind,
-  [$Expected, Kind.Apply<Path.ArrayElement, [$Actual]>, true]
+  [$Expected, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]
 >
-export type sub<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, Kind.Apply<Path.ArrayElement, [$Actual]>, true]>
+export type sub<$Expected, $Actual> = Fn.Kind.Apply<
+  SubKind,
+  [$Expected, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>, true]
+>

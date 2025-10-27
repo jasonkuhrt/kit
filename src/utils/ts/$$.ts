@@ -1,15 +1,5 @@
 export * from './ts.js'
 
-// @ts-expect-error Duplicate identifier
-export * as Kind from './kind.js'
-/**
- * Higher-kinded type utilities for type-level programming.
- * Provides type-level functions and utilities for simulating higher-kinded types in TypeScript.
- *
- * @category Higher-Kinded Types
- */
-export namespace Kind {}
-
 export * from './print.js'
 
 // @ts-expect-error Duplicate identifier
@@ -23,6 +13,16 @@ export * as SimpleSignature from './simple-signature.js'
 export namespace SimpleSignature {}
 
 export * as Assert from './assert/$$.js'
+
+// @ts-expect-error Duplicate identifier
+export * as Extract from '../extract/$$.js'
+/**
+ * Pre-composed extractors for type assertions and value extraction.
+ * Combine runtime extraction with type-level transformations.
+ *
+ * @category Extract
+ */
+export namespace Extract {}
 
 // @ts-expect-error Duplicate identifier
 export * as Inhabitance from './inhabitance.js'

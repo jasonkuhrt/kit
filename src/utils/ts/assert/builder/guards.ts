@@ -1,7 +1,7 @@
+import type { Fn } from '#fn'
 import type { Ts } from '#ts'
 import type { Inhabitance } from '#ts/ts'
 import type { IsAny, IsNever, IsUnknown } from '../../inhabitance.js'
-import type * as Kind from '../../kind.js'
 import type * as Path from '../../path.js'
 import type { BooleanCase, StripReadonlyDeep } from '../../ts.js'
 import type { StaticErrorAssertion } from '../assertion-error.js'
@@ -103,10 +103,10 @@ type ApplyAssertion<
   $Expected,
   $Actual,
   $State extends State,
-  $Relator extends Kind.Kind,
+  $Relator extends Fn.Kind.Kind,
   ___$ExpectedNormalized = NormalizeForComparison<$Expected, $State>,
   ___$ActualNormalized = NormalizeForComparison<$Actual, $State>,
-> = Kind.Apply<$Relator, [___$ExpectedNormalized, ___$ActualNormalized]>
+> = Fn.Kind.Apply<$Relator, [___$ExpectedNormalized, ___$ActualNormalized]>
 
 /**
  * Pure validation - returns Error | never.
@@ -117,7 +117,7 @@ type Validate<
   $Expected,
   $RawActual,
   $State extends State,
-  $Relator extends Kind.Kind,
+  $Relator extends Fn.Kind.Kind,
   ___$ActualExtracted = Path.ApplyExtractors<$State['actual_extractors'], $RawActual>,
   ___$Error = ApplyAssertion<$Expected, ___$ActualExtracted, $State, $Relator>,
 > =
@@ -167,7 +167,7 @@ export type GuardAgainstAnyNeverUnknown<
 export type GuardActual<
   $actual,
   $State extends State,
-> = $State['matcher_relator'] extends Kind.Kind ? Guard<
+> = $State['matcher_relator'] extends Fn.Kind.Kind ? Guard<
     $actual,
     Validate<$State['expected_type'], $actual, $State, $State['matcher_relator']>
   >
@@ -176,7 +176,7 @@ export type GuardActual<
 export type GuardExpected<
   $expected,
   $State extends State,
-> = $State['matcher_relator'] extends Kind.Kind ? Guard<
+> = $State['matcher_relator'] extends Fn.Kind.Kind ? Guard<
     $expected,
     Validate<$State['actual_type'], $expected, $State, $State['matcher_relator']>
   >

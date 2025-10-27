@@ -1,7 +1,7 @@
+import type { Fn } from '#fn'
 import { type Num } from '#num'
 import type { Ts } from '#ts'
 import type { GetPreservedTypes } from './global-settings.ts'
-import type * as Kind from './kind.js'
 import type * as Union from './union.js'
 
 /**
@@ -77,7 +77,7 @@ export type To<
     [K in keyof KitLibrarySettings.Simplify.Traversables]:
       KitLibrarySettings.Simplify.Traversables[K] extends { extends: infer __traverse_constraint__, traverse: infer __traverse_kind__ }
         ? $T extends __traverse_constraint__
-          ? [Ts.SENTINEL, Kind.Apply<__traverse_kind__, [$T, DN, SN]>]
+          ? [Ts.SENTINEL, Fn.Kind.Apply<__traverse_kind__, [$T, DN, SN]>]
           : never // pattern doesn't match
         : never // entry malformed
   }[keyof KitLibrarySettings.Simplify.Traversables] extends infer __custom_registry_result__

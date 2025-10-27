@@ -1,6 +1,6 @@
+import type { Fn } from '#fn'
 import type { Obj } from '#obj'
 import type { StaticError } from './err.js'
-import * as Kind from './kind.js'
 import type { ShowInTemplate } from './ts.js'
 
 //
@@ -92,7 +92,7 @@ export type ValidateAndExtract<
  * Transforms $Actual by awaiting it.
  * Used by `.awaited` assertions to check what a Promise resolves to.
  */
-export interface Awaited$ extends Kind.Kind {
+export interface Awaited$ extends Fn.Kind.Kind {
   constraint: PromiseLike<any>
   extractorName: 'awaited'
   parameters: [$Actual: unknown]
@@ -112,7 +112,7 @@ export interface Awaited$ extends Kind.Kind {
  *
  * Used by `.returned` assertions to check what a function returns.
  */
-export interface Returned extends Kind.Kind {
+export interface Returned extends Fn.Kind.Kind {
   constraint: (...args: any[]) => any
   extractorName: 'returned'
   parameters: [$Actual: unknown]
@@ -132,7 +132,7 @@ export interface Returned extends Kind.Kind {
  *
  * Used for property access in extraction chains.
  */
-export interface Indexed extends Kind.Kind {
+export interface Indexed extends Fn.Kind.Kind {
   constraint: unknown
   extractorName: 'indexed'
   parameters: [$Actual: unknown, $Key: PropertyKey]
@@ -148,7 +148,7 @@ export interface Indexed extends Kind.Kind {
  *
  * Used by `.array` assertions to check array element types.
  */
-export interface ArrayElement extends Kind.Kind {
+export interface ArrayElement extends Fn.Kind.Kind {
   constraint: readonly any[]
   extractorName: 'array'
   parameters: [$Actual: unknown]
@@ -169,7 +169,7 @@ export interface ArrayElement extends Kind.Kind {
  *
  * Used for extracting function parameters by index.
  */
-export interface Parameter extends Kind.Kind {
+export interface Parameter extends Fn.Kind.Kind {
   constraint: (...args: any[]) => any
   extractorName: 'parameter'
   parameters: [$Actual: unknown, $Index: number]
@@ -189,7 +189,7 @@ export interface Parameter extends Kind.Kind {
  *
  * Used by `.parameters` assertions to check function parameter tuple type.
  */
-export interface Parameters$ extends Kind.Kind {
+export interface Parameters$ extends Fn.Kind.Kind {
   constraint: (...args: any[]) => any
   extractorName: 'parameters'
   parameters: [$Actual: unknown]
@@ -209,7 +209,7 @@ export interface Parameters$ extends Kind.Kind {
  *
  * Used by `.parameter1` assertions.
  */
-export interface Parameter1 extends Kind.Kind {
+export interface Parameter1 extends Fn.Kind.Kind {
   constraint: (...args: any[]) => any
   extractorName: 'parameter1'
   parameters: [$Actual: unknown]
@@ -229,7 +229,7 @@ export interface Parameter1 extends Kind.Kind {
  *
  * Used by `.parameter2` assertions.
  */
-export interface Parameter2 extends Kind.Kind {
+export interface Parameter2 extends Fn.Kind.Kind {
   constraint: (...args: any[]) => any
   extractorName: 'parameter2'
   parameters: [$Actual: unknown]
@@ -249,7 +249,7 @@ export interface Parameter2 extends Kind.Kind {
  *
  * Used by `.parameter3` assertions.
  */
-export interface Parameter3 extends Kind.Kind {
+export interface Parameter3 extends Fn.Kind.Kind {
   constraint: (...args: any[]) => any
   extractorName: 'parameter3'
   parameters: [$Actual: unknown]
@@ -269,7 +269,7 @@ export interface Parameter3 extends Kind.Kind {
  *
  * Used by `.parameter4` assertions.
  */
-export interface Parameter4 extends Kind.Kind {
+export interface Parameter4 extends Fn.Kind.Kind {
   constraint: (...args: any[]) => any
   extractorName: 'parameter4'
   parameters: [$Actual: unknown]
@@ -289,7 +289,7 @@ export interface Parameter4 extends Kind.Kind {
  *
  * Used by `.parameter5` assertions.
  */
-export interface Parameter5 extends Kind.Kind {
+export interface Parameter5 extends Fn.Kind.Kind {
   constraint: (...args: any[]) => any
   extractorName: 'parameter5'
   parameters: [$Actual: unknown]
@@ -309,7 +309,7 @@ export interface Parameter5 extends Kind.Kind {
  *
  * Used for extracting specific tuple elements by index.
  */
-export interface TupleAt<$Index extends number> extends Kind.Kind {
+export interface TupleAt<$Index extends number> extends Fn.Kind.Kind {
   constraint: readonly any[]
   extractorName: 'tupleAt'
   parameters: [$Actual: unknown]
@@ -340,7 +340,7 @@ export interface TupleAt<$Index extends number> extends Kind.Kind {
  *
  * Used by `.noExcess` to ensure no extra properties beyond expected type.
  */
-export interface NoExcess extends Kind.Kind {
+export interface NoExcess extends Fn.Kind.Kind {
   constraint: unknown
   extractorName: 'noExcess'
   parameters: [$Expected: unknown, $Actual: unknown]
@@ -375,9 +375,9 @@ export interface NoExcess extends Kind.Kind {
  * // Applies: Promise<number[]> → number[] → number
  * ```
  */
-export type ApplyExtractors<$Extractors extends readonly Kind.Kind[], $Actual> = $Extractors extends
-  readonly [infer __first__ extends Kind.Kind, ...infer __rest__ extends Kind.Kind[]]
-  ? ApplyExtractors<__rest__, Kind.Apply<__first__, [$Actual]>>
+export type ApplyExtractors<$Extractors extends readonly Fn.Kind.Kind[], $Actual> = $Extractors extends
+  readonly [infer __first__ extends Fn.Kind.Kind, ...infer __rest__ extends Fn.Kind.Kind[]]
+  ? ApplyExtractors<__rest__, Fn.Kind.Apply<__first__, [$Actual]>>
   : $Actual
 
 //
