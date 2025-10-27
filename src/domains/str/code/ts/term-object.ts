@@ -13,8 +13,8 @@
 
 import { Obj } from '../../../obj/$.js'
 import { Str } from '../../$.js'
-import * as TS from './ts.js'
 import * as TSDoc from '../tsdoc/$.js'
+import * as TS from './ts.js'
 
 // ============================================================================
 // Types
@@ -237,8 +237,12 @@ export const termObjectFields = (object: TermObject | DirectiveTermObject): stri
     .map(([key, value]: [string, any]): [string, DirectiveField] => {
       value
       if (value === null) return [key, { $VALUE: null, $OPTIONAL: false, $TS_DOC: null }]
-      if (isDirectiveTermObject(value)) return [key, { $VALUE: directiveTermObject(value), $OPTIONAL: false, $TS_DOC: null }]
-      if (isDirectiveField(value)) return [key, value]
+      if (isDirectiveTermObject(value)) {
+        return [key, { $VALUE: directiveTermObject(value), $OPTIONAL: false, $TS_DOC: null }]
+      }
+      if (isDirectiveField(value)) {
+        return [key, value]
+      }
       // dprint-ignore
       if (Str.Type.is(value) || typeof value === `number` || typeof value === `boolean`) return [key, {$VALUE: String(value), $OPTIONAL: false, $TS_DOC: null}]
       return [key, { $VALUE: termObject(value as any), $OPTIONAL: false, $TS_DOC: null }]
