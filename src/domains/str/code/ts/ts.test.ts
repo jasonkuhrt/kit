@@ -44,6 +44,15 @@ vtTest('TS.object > empty object', () => {
   expect(result).toBe('{}')
 })
 
+// dprint-ignore
+Test.describe('TS.boolean > boolean literal')
+  .on(TS.boolean)
+  .cases(
+    [[true],                                            'true'],
+    [[false],                                           'false'],
+  )
+  .test()
+
 // ============================================================================
 // Type Definitions
 // ============================================================================
@@ -132,6 +141,54 @@ vtTest('TS.interfaceDecl > empty interface', () => {
   })
   expect(result).toBe('export interface Empty {}')
 })
+
+vtTest('TS.union > union type alias', () => {
+  const result = TS.union('Status', ['Active', 'Inactive', 'Pending'])
+  expect(result).toBe('type Status =\n| Active\n| Inactive\n| Pending')
+})
+
+vtTest('TS.union > filters falsy values', () => {
+  const result = TS.union('Result', ['Success', '', 'Failure'])
+  expect(result).toBe('type Result =\n| Success\n| Failure')
+})
+
+vtTest('TS.unionItems > union items without type wrapper', () => {
+  const result = TS.unionItems(['string', 'number', null])
+  expect(result).toBe('string\n| number')
+})
+
+vtTest('TS.unionItems > filters null values', () => {
+  const result = TS.unionItems(['string', null, 'boolean'])
+  expect(result).toBe('string\n| boolean')
+})
+
+// dprint-ignore
+Test.describe('TS.tuple > tuple type')
+  .on(TS.tuple)
+  .cases(
+    [[['string', 'number', 'boolean']],                 '[string, number, boolean]'],
+    [[['string']],                                      '[string]'],
+    [[[]]  ,                                            '[]'],
+  )
+  .test()
+
+// dprint-ignore
+Test.describe('TS.nullable > nullable type')
+  .on(TS.nullable)
+  .cases(
+    [['string'],                                        'string | null'],
+    [['User'],                                          'User | null'],
+  )
+  .test()
+
+// dprint-ignore
+Test.describe('TS.intersection > intersection type')
+  .on(TS.intersection)
+  .cases(
+    [['Base', 'Mixin'],                                 'Base & Mixin'],
+    [['User', 'Permissions'],                           'User & Permissions'],
+  )
+  .test()
 
 // ============================================================================
 // Exports
@@ -222,3 +279,77 @@ vtTest('TS.importNamed > with type', () => {
   const result = TS.importNamed({ names: 'Type', from: './types', type: true })
   expect(result).toBe("import type { Type } from './types'")
 })
+
+// ============================================================================
+// Namespaces
+// ============================================================================
+
+// dprint-ignore
+Test.describe('TS.namespace > namespace declaration')
+  .on(TS.namespace)
+  .cases(
+    [['Utils', 'export const foo = 1'],                 'namespace Utils {\nexport const foo = 1\n}'],
+    [['Types', 'export type T = string'],               'namespace Types {\nexport type T = string\n}'],
+  )
+  .test()
+
+// ============================================================================
+// Expressions
+// ============================================================================
+
+// dprint-ignore
+Test.describe('TS.propertyAccess > property access expression')
+  .on(TS.propertyAccess)
+  .cases(
+    [['Math', 'PI'],                                    'Math.PI'],
+    [['console', 'log'],                                'console.log'],
+    [['obj', 'property'],                               'obj.property'],
+  )
+  .test()
+
+// ============================================================================
+// Variable Declarations
+// ============================================================================
+
+// dprint-ignore
+Test.describe('TS.constDecl > const declaration')
+  .on(TS.constDecl)
+  .cases(
+    [['foo', '1'],                                      'const foo = 1'],
+    [['name', '"Alice"'],                               'const name = "Alice"'],
+    [['items', '[1, 2, 3]'],                            'const items = [1, 2, 3]'],
+  )
+  .test()
+
+// dprint-ignore
+Test.describe('TS.constDeclTyped > typed const declaration')
+  .on(TS.constDeclTyped)
+  .cases(
+    [['foo', 'number', '1'],                            'const foo: number = 1'],
+    [['name', 'string', '"Alice"'],                     'const name: string = "Alice"'],
+    [['items', 'number[]', '[1, 2, 3]'],                'const items: number[] = [1, 2, 3]'],
+  )
+  .test()
+
+// ============================================================================
+// Object Members
+// ============================================================================
+
+// dprint-ignore
+Test.describe('TS.objectFromFields > wrap fields in object braces')
+  .on(TS.objectFromFields)
+  .cases(
+    [['a: string'],                                     '{\na: string\n}'],
+    [['a: string\nb: number'],                          '{\na: string\nb: number\n}'],
+  )
+  .test()
+
+// dprint-ignore
+Test.describe('TS.fields > join field declarations')
+  .on(TS.fields)
+  .cases(
+    [[['a: string', 'b: number']],                      'a: string\nb: number'],
+    [[['id: string']],                                  'id: string'],
+    [[[]]  ,                                            ''],
+  )
+  .test()

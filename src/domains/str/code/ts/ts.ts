@@ -61,6 +61,20 @@ export const object = (entries: readonly (readonly [string, string])[]): string 
   return block(fields)
 }
 
+/**
+ * Generate a boolean literal.
+ *
+ * @example
+ * ```ts
+ * boolean(true)
+ * // 'true'
+ *
+ * boolean(false)
+ * // 'false'
+ * ```
+ */
+export const boolean = (value: boolean): string => value ? `true` : `false`
+
 // ============================================================================
 // Type Definitions
 // ============================================================================
@@ -223,6 +237,62 @@ export const interfaceDecl = (options: InterfaceOptions): string => {
   return `${tsDocFormatted}${exportKeyword}interface ${name}${typeParams}${extendsStr} ${blockFormatted}`
 }
 
+/**
+ * Generate a union type alias.
+ *
+ * @example
+ * ```ts
+ * union('Status', ['Active', 'Inactive', 'Pending'])
+ * // 'type Status =\n| Active\n| Inactive\n| Pending'
+ * ```
+ */
+export const union = (name: string, types: string[]): string =>
+  `type ${name} =\n| ${types.filter(Boolean).join(`\n| `)}`
+
+/**
+ * Generate union items without the type wrapper.
+ *
+ * @example
+ * ```ts
+ * unionItems(['string', 'number', null])
+ * // 'string\n| number'
+ * ```
+ */
+export const unionItems = (types: (string | null)[]): string => types.filter(t => t !== null).join(`\n| `)
+
+/**
+ * Generate a tuple type.
+ *
+ * @example
+ * ```ts
+ * tuple(['string', 'number', 'boolean'])
+ * // '[string, number, boolean]'
+ * ```
+ */
+export const tuple = (types: string[]): string => `[${types.join(`, `)}]`
+
+/**
+ * Make a type nullable.
+ *
+ * @example
+ * ```ts
+ * nullable('string')
+ * // 'string | null'
+ * ```
+ */
+export const nullable = (type: string): string => `${type} | null`
+
+/**
+ * Create an intersection type.
+ *
+ * @example
+ * ```ts
+ * intersection('Base', 'Mixin')
+ * // 'Base & Mixin'
+ * ```
+ */
+export const intersection = (a: string, b: string): string => `${a} & ${b}`
+
 // ============================================================================
 // Exports
 // ============================================================================
@@ -323,6 +393,62 @@ export const reexportNamed = (input: {
 }
 
 // ============================================================================
+// Namespaces
+// ============================================================================
+
+/**
+ * Generate a namespace declaration.
+ *
+ * @example
+ * ```ts
+ * namespace('Utils', 'export const foo = 1')
+ * // 'namespace Utils {\nexport const foo = 1\n}'
+ * ```
+ */
+export const namespace = (name: string, content: string): string => `namespace ${name} {\n${content}\n}`
+
+// ============================================================================
+// Expressions
+// ============================================================================
+
+/**
+ * Generate a property access expression.
+ *
+ * @example
+ * ```ts
+ * propertyAccess('Math', 'PI')
+ * // 'Math.PI'
+ * ```
+ */
+export const propertyAccess = (object: string, property: string): string => `${object}.${property}`
+
+// ============================================================================
+// Variable Declarations
+// ============================================================================
+
+/**
+ * Generate a const declaration.
+ *
+ * @example
+ * ```ts
+ * constDecl('foo', '1')
+ * // 'const foo = 1'
+ * ```
+ */
+export const constDecl = (name: string, value: string): string => `const ${name} = ${value}`
+
+/**
+ * Generate a typed const declaration.
+ *
+ * @example
+ * ```ts
+ * constDeclTyped('foo', 'number', '1')
+ * // 'const foo: number = 1'
+ * ```
+ */
+export const constDeclTyped = (name: string, type: string, value: string): string => `const ${name}: ${type} = ${value}`
+
+// ============================================================================
 // Object Members
 // ============================================================================
 
@@ -386,6 +512,28 @@ export const field = (
   const optionalModifier = options?.optional ? `?` : ``
   return `${tsDocFormatted}${readonlyModifier}${name}${optionalModifier}: ${type}`
 }
+
+/**
+ * Wrap fields string in object braces.
+ *
+ * @example
+ * ```ts
+ * objectFromFields('a: string\nb: number')
+ * // '{\na: string\nb: number\n}'
+ * ```
+ */
+export const objectFromFields = (fields: string): string => `{\n${fields}\n}`
+
+/**
+ * Join field declarations with newlines.
+ *
+ * @example
+ * ```ts
+ * fields(['a: string', 'b: number'])
+ * // 'a: string\nb: number'
+ * ```
+ */
+export const fields = (fieldDecls: string[]): string => fieldDecls.join(`\n`)
 
 // ============================================================================
 // Imports
