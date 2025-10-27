@@ -1,3 +1,4 @@
+import { Test } from '#test'
 import { describe, expect, test } from 'vitest'
 import * as Extract from './$$.js'
 
@@ -20,15 +21,14 @@ describe('Extract', () => {
       expect(Extract.returned).toHaveProperty('kind')
     })
 
-    test('runtime behavior: calls function', () => {
-      const fn = () => 'hello'
-      expect(Extract.returned(fn)).toBe('hello')
-    })
-
-    test('calls function with no arguments', () => {
-      const fn = (x?: number) => x ?? 'no args'
-      expect(Extract.returned(fn)).toBe('no args')
-    })
+    Test.describe('returned > runtime behavior')
+      .on(Extract.returned)
+      .cases(
+        [[() => 'hello'], 'hello'],
+        [[() => 42], 42],
+        [[(x?: number) => x ?? 'no args'], 'no args'],
+      )
+      .test()
   })
 
   describe('array', () => {
@@ -37,14 +37,14 @@ describe('Extract', () => {
       expect(Extract.array).toHaveProperty('kind')
     })
 
-    test('runtime behavior: returns first element', () => {
-      expect(Extract.array(['a', 'b', 'c'])).toBe('a')
-      expect(Extract.array([1, 2, 3])).toBe(1)
-    })
-
-    test('returns undefined for empty array', () => {
-      expect(Extract.array([])).toBeUndefined()
-    })
+    Test.describe('array > runtime behavior')
+      .on(Extract.array)
+      .cases(
+        [[['a', 'b', 'c']], 'a'],
+        [[[1, 2, 3]], 1],
+        [[[]], undefined],
+      )
+      .test()
   })
 
   describe('prop', () => {
@@ -54,25 +54,26 @@ describe('Extract', () => {
       expect(getName).toHaveProperty('kind')
     })
 
-    test('runtime behavior: accesses property', () => {
-      const getName = Extract.prop('name')
-      expect(getName({ name: 'Alice', age: 30 })).toBe('Alice')
-    })
+    Test.describe('prop > string key')
+      .on(Extract.prop('name'))
+      .cases(
+        [[{ name: 'Alice', age: 30 }], 'Alice'],
+        [[{}], undefined],
+      )
+      .test()
 
-    test('works with number keys', () => {
-      const getFirst = Extract.prop(0)
-      expect(getFirst(['a', 'b', 'c'])).toBe('a')
-    })
+    Test.describe('prop > number key')
+      .on(Extract.prop(0))
+      .cases(
+        [[['a', 'b', 'c']], 'a'],
+        [[[1, 2, 3]], 1],
+      )
+      .test()
 
     test('works with symbol keys', () => {
       const sym = Symbol('test')
       const getSym = Extract.prop(sym)
       expect(getSym({ [sym]: 'value' })).toBe('value')
-    })
-
-    test('returns undefined for missing property', () => {
-      const getName = Extract.prop('name')
-      expect(getName({})).toBeUndefined()
     })
   })
 
