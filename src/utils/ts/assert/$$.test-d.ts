@@ -55,25 +55,6 @@ type __ = [
 // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 //
 //
-// Rules:
-// - Every relation group must cover all extractors
-// - Every test must be one line
-// - Every extractor section follows a 10-line pattern covering both API styles:
-//
-//   1. .of(expected).on(actual)             - Simple inferred value-level
-//   2. .on(actual).of(expected)          - Value-first API
-//   3. .ofAs<Type>().on(actual)             - Type-explicit value-level
-//   4. .onAs<Type>().of(expected)        - Type-first API
-//   5. .ofAs<Type>().onAs<Type>()          - Type-level assertion (deprecated .as)
-//   6. .onAs(actual).ofAs<Type>()        - Value-first with type-level
-//   7. .ofAs<Type>().on(wrongValue)         - Failing case (with @ts-expect-error)
-//   8. .onAs<Type>().of(wrongValue)      - Failing value-first (no @ts-expect-error)
-//   9. .ofAs<Type>().onAs<WrongType>()     - Failing type-level (with @ts-expect-error, deprecated .as)
-//   10. .onAs<Type>().ofAs<WrongType>()  - Failing value-first type-level (no @ts-expect-error)
-//
-// Note: Lines 5 and 9 use deprecated `.as()` method on actual receiver
-//
-//
 
 //
 //
@@ -828,12 +809,20 @@ A.not.unknown($u)
 // ━━━━━━━━━━━━━━ • never (unary relator)
 //
 A.never($n)
+// todo
+// A.never.onAs<$n>()
 A.on($n).never()
 A.not.never(a)
+// todo
+// A.not.never.onAs<a>()
 // @ts-expect-error
 A.never(a)
 // @ts-expect-error
+A.never.onAs<a>()
+// @ts-expect-error
 A.not.never($n)
+// todo
+// A.not.never.onAs<$n>()
 
 //
 // ━━━━━━━━━━━━━━ • empty (unary relator - NEW)
@@ -1042,10 +1031,6 @@ type _parameters_extractor = A.Cases<
   A.parameters.exact.of<[1], (a: 0) => 0>
 >
 
-// Test individual parameter extractors to verify they work
-type _parameters_exact_test = A.parameters.exact.of<[number, number], (a: number, b: number) => void>
-type _check_if_never = _parameters_exact_test extends never ? 'IS NEVER' : 'NOT NEVER'
-
 //
 // Type-Level Error Cases
 //
@@ -1193,3 +1178,34 @@ type _extractor_availability = [
   A.exact.of<BaseKeys | AllExtractors,                                                                                               keyof ReturnType<typeof A.on<any>>>,                                        // any - all extractors available
   A.exact.of<BaseKeys | AllExtractors,                                                                                               keyof ReturnType<typeof A.on<unknown>>>,                                    // unknown - all extractors available
 ]
+
+//
+//
+//
+//
+//
+// showDiff Setting
+//
+// ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+//
+//
+//
+//
+
+// Default behavior (showDiff: false) - error contains tip but no diff fields
+// @ts-expect-error - EXPECTED only overlaps with ACTUAL
+A.exact.ofAs<{ a: 1 }>().onAs<{ a: 2 }>()
+
+// To enable diff, augment the global settings:
+// declare global {
+//   namespace KitLibrarySettings {
+//     namespace Ts {
+//       interface Assert {
+//         showDiff: true
+//       }
+//     }
+//   }
+// }
+// export {}
+
+// When enabled, the error will include diff_missing__, diff_excess___, diff_mismatch_ fields

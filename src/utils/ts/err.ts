@@ -138,7 +138,7 @@ export type Is<$T> = $T extends StaticErrorLike ? true : false
  * When `renderErrors` is `true` (default), returns the full error object.
  * When `false`, extracts just the error message string for cleaner IDE hovers.
  *
- * Uses the generic {@link KitLibrarySettings.Ts.Error.Settings.renderErrors} setting.
+ * Uses the generic {@link KitLibrarySettings.Ts.Error.renderErrors} setting.
  *
  * @template $Error - The full StaticErrorLike object or error type
  *
@@ -157,7 +157,7 @@ export type Is<$T> = $T extends StaticErrorLike ? true : false
  */
 // dprint-ignore
 export type Render<$Error extends StaticErrorLike> =
-  KitLibrarySettings.Ts.Error.Settings['renderErrors'] extends false
+  KitLibrarySettings.Ts.Error['renderErrors'] extends false
     ? $Error['ERROR_________']
     : $Error
 

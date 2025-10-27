@@ -6,6 +6,8 @@ on:
 jobs:
   release-canary:
     runs-on: ubuntu-latest
+    # Temporarily disabled - enable when ready for automated canary releases
+    if: false
     steps:
       - uses: prisma-labs/dripip@master
         with:

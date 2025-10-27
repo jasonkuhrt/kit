@@ -7,8 +7,9 @@ NODE_VERSION = "24"
 NODE_OPTIONS = "--max-old-space-size=4096"
 
 # Deploy previews for pull requests
+# Disabled for PRs to reduce unnecessary builds
 [context.deploy-preview]
-command = "pnpm docs:build"
+ignore = "exit 0"
 
 # Production builds
 [context.production]
