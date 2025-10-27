@@ -10,7 +10,8 @@
     "**/*-lock.yaml",
     "**/.dprint",
     "**/pnpm-lock.yaml",
-    "**/node_modules"
+    "**/node_modules",
+    "docs/"
   ],
   "plugins": [
     "https://plugins.dprint.dev/typescript-0.95.4.wasm",

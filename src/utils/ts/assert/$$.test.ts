@@ -44,11 +44,6 @@ test('exact error - SingleOperation case', () => {
   ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: A<{}>
   actual________: B
-  diff_missing__: { query: {} }
-  diff_excess___: {
-    name: "default"
-    result: { a: string | null }
-  }
   tip___________: "Types share some values but differ"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
@@ -61,7 +56,6 @@ test('exact error - with built-in types preserved', () => {
   ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: A
   actual________: B
-  diff_mismatch_: { a: { expected: Date; actual: number } }
   tip___________: "Types share some values but differ"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
@@ -74,11 +68,6 @@ test('exact error - diff with missing, excess, and mismatched', () => {
   ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: E
   actual________: A
-  diff_missing__: { age: number }
-  diff_excess___: { email: string }
-  diff_mismatch_: {
-    id: { expected: string; actual: number }
-  }
   tip___________: "Types share some values but differ"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
@@ -91,9 +80,6 @@ test('exact error - optionality difference', () => {
   ERROR_________: "ACTUAL is supertype of EXPECTED"
   expected______: E
   actual________: A
-  diff_mismatch_: {
-    x: { expected: 1; actual: 1 | undefined }
-  }
   tip___________: "ACTUAL is wider than EXPECTED"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
@@ -119,10 +105,6 @@ test('exact value mode - basic type mismatches', () => {
     ERROR_________: "EXPECTED only overlaps with ACTUAL"
     expected______: { a: string }
     actual________: { a: number; b: number }
-    diff_excess___: { b: number }
-    diff_mismatch_: {
-      a: { expected: string; actual: number }
-    }
     tip___________: "Types share some values but differ"
     HIERARCHY_____: readonly ["root", "assert", ...string[]]
   }
@@ -175,13 +157,6 @@ test('exact value mode - complex type aliases in signatures', () => {
       user: { name: string; age: string }
       tags: string[]
       extra: boolean
-    }
-    diff_excess___: { extra: boolean }
-    diff_mismatch_: {
-      user: {
-        expected: { name: string; age: number }
-        actual: { name: string; age: string }
-      }
     }
     tip___________: "Types share some values but differ"
     HIERARCHY_____: readonly ["root", "assert", ...string[]]
@@ -246,7 +221,6 @@ test('user-defined types preserved with preserveTypes setting', () => {
   ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: A
   actual________: B
-  diff_mismatch_: { a: { expected: Foo; actual: Date } }
   tip___________: "Types share some values but differ"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
@@ -259,9 +233,6 @@ test('multiple preserved types from different augmentations', () => {
   ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: A
   actual________: B
-  diff_mismatch_: {
-    a: { expected: Bar; actual: { a: number; b: number } }
-  }
   tip___________: "Types share some values but differ"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
@@ -349,7 +320,6 @@ test('extractor - parameters', () => {
   ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: [string, string]
   actual________: [a: number, b: number]
-  diff_mismatch_: [[string, number], [string, number]]
   tip___________: "Types share some values but differ"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
