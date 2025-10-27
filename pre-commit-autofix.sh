@@ -1,4 +1,29 @@
 #!/usr/bin/env sh
+#
+# Pre-commit Hook: Auto-fix with Safe Partial Staging
+#
+# WHAT IT DOES:
+# - Runs `pnpm fix` on staged files
+# - Auto-stages fixed files
+# - Never blocks commits
+# - Safely handles partial staging (files with both staged and unstaged changes)
+#
+# CONVENTION REQUIRED:
+# - Project must have `pnpm fix` script
+# - All `fix:*` scripts must be non-blocking (always exit 0)
+# - Example: "fix:lint": "oxlint --fix src || exit 0"
+#
+# USAGE:
+# Copy this file to .husky/pre-commit and make it executable:
+#   cp pre-commit-autofix.sh .husky/pre-commit
+#   chmod +x .husky/pre-commit
+#
+# SAFETY:
+# - Stashes unstaged changes before fixing
+# - Only re-stages files that were originally staged
+# - Guaranteed stash cleanup (never leaves orphaned stashes)
+# - Handles merge conflicts gracefully
+#
 
 # Check if there are staged files
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)

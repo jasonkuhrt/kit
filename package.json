@@ -225,7 +225,7 @@
     "build:emit": "pnpm build --noCheck",
     "build:clean": "pnpm tsc --build tsconfig.build.json --clean && rm -rf build",
     "fix:format": "dprint fmt",
-    "fix:lint": "oxlint --fix --fix-suggestions src",
+    "fix:lint": "oxlint --fix --fix-suggestions src || exit 0",
     "check:format": "dprint check",
     "check:lint": "oxlint src",
     "check:types": "tsc",
