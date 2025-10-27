@@ -26,7 +26,10 @@ fi
 # Format the staged files
 pnpm fix:format > /dev/null 2>&1
 
-# Re-stage the formatted files (only what was originally staged)
+# Auto-fix lint issues (non-blocking)
+pnpm oxlint --fix --fix-suggestions src > /dev/null 2>&1 || true
+
+# Re-stage the formatted and linted files (only what was originally staged)
 echo "$STAGED_FILES" | xargs git add 2>/dev/null
 
 # MUST restore stash if we created one
