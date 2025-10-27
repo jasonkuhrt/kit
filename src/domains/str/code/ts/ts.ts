@@ -4,10 +4,15 @@
  * Provides functions for generating TypeScript syntax elements like
  * types, interfaces, imports, exports, and object literals.
  *
+ * Features universal composability - most functions accept string | TermObject.
+ *
  * @module
  */
 
 import * as TSDoc from '../tsdoc/$.js'
+import * as Reserved from './reserved.js'
+import type { DirectiveField, TermObject, TermObjectLike } from './term-object.js'
+import * as TermObjectModule from './term-object.js'
 
 // ============================================================================
 // Literals
@@ -29,11 +34,38 @@ export const string = (str: string): string => `"${str}"`
  *
  * @example
  * ```ts
- * list(['a', 'b', 'c'])
+ * arrayLiteral(['a', 'b', 'c'])
  * // '[a, b, c]'
+ *
+ * arrayLiteral([])
+ * // '[]'
  * ```
  */
-export const list = (items: string[]): string => `[${items.join(`, `)}]`
+export const arrayLiteral = (items: string[]): string => `[${items.join(`, `)}]`
+
+/**
+ * @deprecated Use {@link arrayLiteral} instead.
+ * Kept for backwards compatibility.
+ */
+export const list = arrayLiteral
+
+/**
+ * Generate an array type (Array<T> syntax).
+ *
+ * @example
+ * ```ts
+ * arrayType('string')
+ * // 'Array<string>'
+ *
+ * arrayType('User')
+ * // 'Array<User>'
+ *
+ * // Nested arrays
+ * arrayType(arrayType('string'))
+ * // 'Array<Array<string>>'
+ * ```
+ */
+export const arrayType = (elementType: string): string => `Array<${elementType}>`
 
 /**
  * Wrap content in curly braces.
@@ -46,19 +78,65 @@ export const list = (items: string[]): string => `[${items.join(`, `)}]`
  */
 export const block = (content: string): string => `{\n${content}\n}`
 
+// ============================================================================
+// Objects
+// ============================================================================
+
 /**
- * Generate an object literal from entries.
+ * Generate a TypeScript object literal or type.
+ *
+ * Supports multiple input formats for maximum flexibility:
+ * - Plain object: `{ name: 'string', age: 'number' }`
+ * - Tuple array: `[['name', 'string'], ['age', 'number']]`
+ * - Directive object with $spread, $fields, $literal
+ * - Nested objects for composition
  *
  * @example
  * ```ts
- * object([['name', '"Alice"'], ['age', '30']])
- * // '{\nname: "Alice",\nage: 30\n}'
+ * // From plain object
+ * object({ id: 'string', name: 'string' })
+ * // '{\nid: string,\nname: string\n}'
+ *
+ * // From tuples
+ * object([['id', 'string'], ['name', 'string']])
+ * // '{\nid: string,\nname: string\n}'
+ *
+ * // With spread
+ * object({
+ *   $spread: ['BaseType'],
+ *   $fields: { id: 'string' }
+ * })
+ * // '{\n...BaseType,\nid: string\n}'
+ *
+ * // Nested composition
+ * object({
+ *   user: object({ id: 'string', name: 'string' }),
+ *   meta: object({ created: 'Date' })
+ * })
  * ```
  */
-export const object = (entries: readonly (readonly [string, string])[]): string => {
-  if (entries.length === 0) return `{}`
-  const fields = entries.map(([key, value]) => `${key}: ${value}`).join(`,\n`)
-  return block(fields)
+export const object = (input: TermObjectLike): string => TermObjectModule.termObject(input)
+
+/**
+ * Create a directive field with metadata (TSDoc, optional, readonly).
+ *
+ * @example
+ * ```ts
+ * object({
+ *   id: objectField$({
+ *     value: 'string',
+ *     tsDoc: 'User ID',
+ *     optional: false
+ *   })
+ * })
+ * ```
+ */
+export const objectField$ = (input: {
+  tsDoc?: null | string
+  optional?: boolean
+  value: string | TermObject
+}): DirectiveField => {
+  return TermObjectModule.objectField$(input as any) as any
 }
 
 /**
@@ -145,9 +223,9 @@ export interface TypeAliasOptions {
   name: string
 
   /**
-   * Type expression
+   * Type expression (string or TermObject for object types)
    */
-  type: string
+  type: string | TermObject
 
   /**
    * Optional JSDoc comment content (will be formatted automatically)
@@ -157,7 +235,7 @@ export interface TypeAliasOptions {
   /**
    * Optional type parameters (e.g., `['T', 'U extends string']`)
    */
-  parameters?: string[] | null
+  parameters?: string[] | string | null
 
   /**
    * Whether to export the type (default: true)
@@ -167,6 +245,8 @@ export interface TypeAliasOptions {
 
 /**
  * Generate a type alias with optional JSDoc and type parameters.
+ *
+ * Accepts TermObject for type parameter to enable composition.
  *
  * @example
  * ```ts
@@ -181,6 +261,13 @@ export interface TypeAliasOptions {
  * //  * A result that may be successful or an error
  * //  *\/
  * // export type Result<T> = T | Error
+ *
+ * // With TermObject
+ * typeAliasWithOptions({
+ *   name: 'User',
+ *   type: object({ id: 'string', name: 'string' }),
+ *   export: true
+ * })
  * ```
  */
 export const typeAliasWithOptions = (options: TypeAliasOptions): string => {
@@ -194,10 +281,39 @@ export const typeAliasWithOptions = (options: TypeAliasOptions): string => {
 
   const tsDocFormatted = tsDoc ? TSDoc.format(tsDoc) + `\n` : ``
   const exportKeyword = shouldExport ? `export ` : ``
-  const typeParams = parameters && parameters.length > 0 ? `<${parameters.join(`, `)}>` : ``
+  const params = parameters
+    ? typeof parameters === 'string'
+      ? parameters
+      : parameters.length > 0
+      ? `<${parameters.join(`, `)}>`
+      : ``
+    : ``
+  const type_ = typeof type === 'string' ? type : TermObjectModule.termObject(type)
 
-  return `${tsDocFormatted}${exportKeyword}type ${name}${typeParams} = ${type}`
+  const escapedName = Reserved.escapeReserved(name)
+  const isReserved = escapedName !== name
+
+  if (isReserved) {
+    // Reserved keyword - use re-export pattern
+    return `${tsDocFormatted}type ${escapedName}${params} = ${type_}\nexport { type ${escapedName} as ${name} }`
+  }
+
+  return `${tsDocFormatted}${exportKeyword}type ${escapedName}${params} = ${type_}`
 }
+
+/**
+ * Alias for {@link typeAliasWithOptions} with `$` suffix to indicate it returns Raw-compatible string.
+ *
+ * @example
+ * ```ts
+ * const userType = typeAlias$({
+ *   name: 'User',
+ *   type: object({ id: 'string' }),
+ *   export: true
+ * })
+ * ```
+ */
+export const typeAlias$ = typeAliasWithOptions
 
 /**
  * Options for generating an interface.
@@ -209,9 +325,9 @@ export interface InterfaceOptions {
   name: string
 
   /**
-   * Interface body (fields)
+   * Interface body (fields) - accepts string, TermObject, or tuples
    */
-  block?: string
+  block?: string | TermObject | [string, string | DirectiveField][]
 
   /**
    * Optional JSDoc comment content (will be formatted automatically)
@@ -221,12 +337,12 @@ export interface InterfaceOptions {
   /**
    * Optional type parameters (e.g., `['T', 'U extends string']`)
    */
-  parameters?: string[] | null
+  parameters?: string[] | string | null
 
   /**
    * Optional extends clause (e.g., `['Base', 'Mixin']`)
    */
-  extends?: string[] | null
+  extends?: string[] | string | null
 
   /**
    * Whether to export the interface (default: true)
@@ -236,6 +352,8 @@ export interface InterfaceOptions {
 
 /**
  * Generate an interface declaration.
+ *
+ * Accepts TermObject or plain objects for the block parameter to enable composition.
  *
  * @example
  * ```ts
@@ -252,12 +370,25 @@ export interface InterfaceOptions {
  * //   id: string
  * //   name: string
  * // }
+ *
+ * // With plain object
+ * interfaceDecl({
+ *   name: 'User',
+ *   block: { id: 'string', name: 'string' },
+ *   export: true
+ * })
+ *
+ * // With tuples
+ * interfaceDecl({
+ *   name: 'Point',
+ *   block: [['x', 'number'], ['y', 'number']]
+ * })
  * ```
  */
 export const interfaceDecl = (options: InterfaceOptions): string => {
   const {
     name,
-    block: blockContent = '',
+    block: blockContent,
     tsDoc = null,
     parameters = null,
     extends: extendsClause = null,
@@ -265,13 +396,62 @@ export const interfaceDecl = (options: InterfaceOptions): string => {
   } = options
 
   const tsDocFormatted = tsDoc ? TSDoc.format(tsDoc) + `\n` : ``
-  const exportKeyword = shouldExport ? `export ` : ``
-  const typeParams = parameters && parameters.length > 0 ? `<${parameters.join(`, `)}>` : ``
-  const extendsStr = extendsClause && extendsClause.length > 0 ? ` extends ${extendsClause.join(`, `)}` : ``
-  const blockFormatted = blockContent ? block(blockContent) : `{}`
+  const typeParams = parameters
+    ? typeof parameters === 'string'
+      ? parameters
+      : parameters.length > 0
+      ? `<${parameters.join(`, `)}>`
+      : ``
+    : ``
+  const extendsStr = extendsClause
+    ? typeof extendsClause === 'string'
+      ? ` extends ${extendsClause}`
+      : extendsClause.length > 0
+      ? ` extends ${extendsClause.join(`, `)}`
+      : ``
+    : ``
 
-  return `${tsDocFormatted}${exportKeyword}interface ${name}${typeParams}${extendsStr} ${blockFormatted}`
+  let blockFormatted: string
+  if (!blockContent) {
+    blockFormatted = `{}`
+  } else if (typeof blockContent === 'string') {
+    blockFormatted = block(blockContent)
+  } else if (Array.isArray(blockContent)) {
+    blockFormatted = TermObjectModule.termObject(Object.fromEntries(blockContent))
+  } else {
+    blockFormatted = TermObjectModule.termObject(blockContent)
+  }
+
+  const escapedName = Reserved.escapeReserved(name)
+  const isReserved = escapedName !== name
+
+  const interfaceDeclaration = `interface ${escapedName}${typeParams}${extendsStr} ${blockFormatted}`
+
+  if (shouldExport === false) {
+    return tsDocFormatted + interfaceDeclaration
+  }
+
+  if (isReserved) {
+    // Reserved keyword - use re-export pattern
+    return `${tsDocFormatted}${interfaceDeclaration}\nexport { type ${escapedName} as ${name} }`
+  }
+
+  return `${tsDocFormatted}export ${interfaceDeclaration}`
 }
+
+/**
+ * Alias for {@link interfaceDecl} with `$` suffix to indicate it returns Raw-compatible string.
+ *
+ * @example
+ * ```ts
+ * const userInterface = interface$({
+ *   name: 'User',
+ *   block: { id: 'string' },
+ *   export: true
+ * })
+ * ```
+ */
+export const interface$ = interfaceDecl
 
 /**
  * Generate a union type alias.
@@ -577,13 +757,29 @@ export const reexportNamed = (input: {
 /**
  * Generate a namespace declaration.
  *
+ * @param name - Namespace name
+ * @param content - Namespace content
+ * @param options - Options
+ * @param options.escapeReserved - Whether to escape reserved keywords (default: true)
+ *
  * @example
  * ```ts
  * namespace('Utils', 'export const foo = 1')
  * // 'namespace Utils {\nexport const foo = 1\n}'
+ *
+ * namespace('interface', 'export const foo = 1', { escapeReserved: true })
+ * // 'namespace $interface {\nexport const foo = 1\n}'
  * ```
  */
-export const namespace = (name: string, content: string): string => `namespace ${name} {\n${content}\n}`
+export const namespace = (
+  name: string,
+  content: string,
+  options?: { escapeReserved?: boolean },
+): string => {
+  const shouldEscape = options?.escapeReserved ?? true
+  const name_ = shouldEscape ? Reserved.escapeReserved(name) : name
+  return `namespace ${name_} {\n${content}\n}`
+}
 
 // ============================================================================
 // Expressions
@@ -607,24 +803,40 @@ export const propertyAccess = (object: string, property: string): string => `${o
 /**
  * Generate a const declaration.
  *
+ * Accepts TermObject for value parameter to enable composition.
+ *
  * @example
  * ```ts
  * constDecl('foo', '1')
  * // 'const foo = 1'
+ *
+ * constDecl('user', object({ id: '"123"', name: '"Alice"' }))
+ * // 'const user = {\n  id: "123",\n  name: "Alice"\n}'
  * ```
  */
-export const constDecl = (name: string, value: string): string => `const ${name} = ${value}`
+export const constDecl = (name: string, value: string | TermObject): string => {
+  const value_ = typeof value === 'string' ? value : TermObjectModule.termObject(value)
+  return `const ${name} = ${value_}`
+}
 
 /**
  * Generate a typed const declaration.
+ *
+ * Accepts TermObject for value parameter to enable composition.
  *
  * @example
  * ```ts
  * constDeclTyped('foo', 'number', '1')
  * // 'const foo: number = 1'
+ *
+ * constDeclTyped('config', 'Config', object({ timeout: '5000' }))
+ * // 'const config: Config = {\n  timeout: 5000\n}'
  * ```
  */
-export const constDeclTyped = (name: string, type: string, value: string): string => `const ${name}: ${type} = ${value}`
+export const constDeclTyped = (name: string, type: string, value: string | TermObject): string => {
+  const value_ = typeof value === 'string' ? value : TermObjectModule.termObject(value)
+  return `const ${name}: ${type} = ${value_}`
+}
 
 // ============================================================================
 // Functions
@@ -889,8 +1101,10 @@ export interface FieldOptions {
 /**
  * Generate a field/property for an interface or object type.
  *
+ * Accepts TermObject for type parameter to enable composition.
+ *
  * @param name - Field name
- * @param type - Field type
+ * @param type - Field type (string or TermObject for nested objects)
  * @param options - Optional modifiers and documentation
  * @returns Formatted field declaration
  *
@@ -905,6 +1119,9 @@ export interface FieldOptions {
  * field('data', 'Data', { readonly: true })
  * // 'readonly data: Data'
  *
+ * field('user', object({ id: 'string', name: 'string' }))
+ * // 'user: {\n  id: string,\n  name: string\n}'
+ *
  * field('value', 'number', {
  *   readonly: true,
  *   optional: true,
@@ -918,25 +1135,15 @@ export interface FieldOptions {
  */
 export const field = (
   name: string,
-  type: string,
+  type: string | TermObject,
   options?: FieldOptions,
 ): string => {
   const tsDocFormatted = options?.tsDoc ? TSDoc.format(options.tsDoc) + `\n` : ``
   const readonlyModifier = options?.readonly ? `readonly ` : ``
   const optionalModifier = options?.optional ? `?` : ``
-  return `${tsDocFormatted}${readonlyModifier}${name}${optionalModifier}: ${type}`
+  const type_ = typeof type === 'string' ? type : TermObjectModule.termObject(type)
+  return `${tsDocFormatted}${readonlyModifier}${name}${optionalModifier}: ${type_}`
 }
-
-/**
- * Wrap fields string in object braces.
- *
- * @example
- * ```ts
- * objectFromFields('a: string\nb: number')
- * // '{\na: string\nb: number\n}'
- * ```
- */
-export const objectFromFields = (fields: string): string => `{\n${fields}\n}`
 
 /**
  * Join field declarations with newlines.
@@ -948,6 +1155,18 @@ export const objectFromFields = (fields: string): string => `{\n${fields}\n}`
  * ```
  */
 export const fields = (fieldDecls: string[]): string => fieldDecls.join(`\n`)
+
+/**
+ * @deprecated Use {@link block} directly instead.
+ * This function is just an alias for block() and is kept for backwards compatibility.
+ *
+ * @example
+ * ```ts
+ * objectFromFields('a: string\nb: number')
+ * // '{\na: string\nb: number\n}'
+ * ```
+ */
+export const objectFromFields = block
 
 // ============================================================================
 // Imports

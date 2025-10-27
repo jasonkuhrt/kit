@@ -215,9 +215,14 @@ export const directiveTermObject = (objectWith: DirectiveTermObject): string => 
  * ```
  */
 export const termObject = (object: TermObjectLike): string => {
-  if (Array.isArray(object)) return termObject(Object.fromEntries(object))
+  if (Array.isArray(object)) {
+    if (object.length === 0) return `{}`
+    return termObject(Object.fromEntries(object))
+  }
   if (isDirectiveTermObject(object)) return directiveTermObject(object)
-  return TS.block(termObjectFields(object))
+  const fields = termObjectFields(object)
+  if (fields === ``) return `{}`
+  return TS.block(fields)
 }
 
 /**
