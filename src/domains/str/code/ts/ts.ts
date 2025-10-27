@@ -75,6 +75,42 @@ export const object = (entries: readonly (readonly [string, string])[]): string 
  */
 export const boolean = (value: boolean): string => value ? `true` : `false`
 
+/**
+ * Generate a number literal.
+ *
+ * @example
+ * ```ts
+ * number(42)
+ * // '42'
+ *
+ * number(3.14)
+ * // '3.14'
+ * ```
+ */
+export const number = (value: number): string => String(value)
+
+/**
+ * Generate a null literal.
+ *
+ * @example
+ * ```ts
+ * nullLiteral()
+ * // 'null'
+ * ```
+ */
+export const nullLiteral = (): string => `null`
+
+/**
+ * Generate an undefined literal.
+ *
+ * @example
+ * ```ts
+ * undefinedLiteral()
+ * // 'undefined'
+ * ```
+ */
+export const undefinedLiteral = (): string => `undefined`
+
 // ============================================================================
 // Type Definitions
 // ============================================================================
@@ -293,6 +329,148 @@ export const nullable = (type: string): string => `${type} | null`
  */
 export const intersection = (a: string, b: string): string => `${a} & ${b}`
 
+/**
+ * Generate a conditional type.
+ *
+ * @example
+ * ```ts
+ * conditional('T', 'string', 'number', 'boolean')
+ * // 'T extends string ? number : boolean'
+ * ```
+ */
+export const conditional = (check: string, extends_: string, trueType: string, falseType: string): string =>
+  `${check} extends ${extends_} ? ${trueType} : ${falseType}`
+
+/**
+ * Generate a mapped type.
+ *
+ * @example
+ * ```ts
+ * mapped('K', 'keyof T', 'T[K]')
+ * // '{ [K in keyof T]: T[K] }'
+ * ```
+ */
+export const mapped = (key: string, constraint: string, value: string): string =>
+  `{ [${key} in ${constraint}]: ${value} }`
+
+/**
+ * Generate a template literal type.
+ *
+ * @example
+ * ```ts
+ * templateLiteral(['Hello ', '${T}', '!'])
+ * // '`Hello ${T}!`'
+ * ```
+ */
+export const templateLiteral = (parts: string[]): string => `\`${parts.join(``)}\``
+
+// ============================================================================
+// Type Operators
+// ============================================================================
+
+/**
+ * Generate a typeof operator.
+ *
+ * @example
+ * ```ts
+ * typeOf('value')
+ * // 'typeof value'
+ * ```
+ */
+export const typeOf = (expression: string): string => `typeof ${expression}`
+
+/**
+ * Generate a keyof operator.
+ *
+ * @example
+ * ```ts
+ * keyOf('User')
+ * // 'keyof User'
+ * ```
+ */
+export const keyOf = (type: string): string => `keyof ${type}`
+
+/**
+ * Generate an indexed access type.
+ *
+ * @example
+ * ```ts
+ * indexedAccess('User', 'id')
+ * // 'User["id"]'
+ * ```
+ */
+export const indexedAccess = (type: string, key: string): string => `${type}["${key}"]`
+
+// ============================================================================
+// Utility Types
+// ============================================================================
+
+/**
+ * Generate a Partial utility type.
+ *
+ * @example
+ * ```ts
+ * partial('User')
+ * // 'Partial<User>'
+ * ```
+ */
+export const partial = (type: string): string => `Partial<${type}>`
+
+/**
+ * Generate a Required utility type.
+ *
+ * @example
+ * ```ts
+ * required('User')
+ * // 'Required<User>'
+ * ```
+ */
+export const required = (type: string): string => `Required<${type}>`
+
+/**
+ * Generate a Readonly utility type.
+ *
+ * @example
+ * ```ts
+ * readonly('User')
+ * // 'Readonly<User>'
+ * ```
+ */
+export const readonly = (type: string): string => `Readonly<${type}>`
+
+/**
+ * Generate a Pick utility type.
+ *
+ * @example
+ * ```ts
+ * pick('User', ['id', 'name'])
+ * // 'Pick<User, "id" | "name">'
+ * ```
+ */
+export const pick = (type: string, keys: string[]): string => `Pick<${type}, ${keys.map(k => `"${k}"`).join(` | `)}>`
+
+/**
+ * Generate an Omit utility type.
+ *
+ * @example
+ * ```ts
+ * omit('User', ['password'])
+ * // 'Omit<User, "password">'
+ * ```
+ */
+export const omit = (type: string, keys: string[]): string => `Omit<${type}, ${keys.map(k => `"${k}"`).join(` | `)}>`
+
+/**
+ * Generate a Record utility type.
+ *
+ * @example
+ * ```ts
+ * record('string', 'number')
+ * // 'Record<string, number>'
+ * ```
+ */
+export const record = (keyType: string, valueType: string): string => `Record<${keyType}, ${valueType}>`
+
 // ============================================================================
 // Exports
 // ============================================================================
@@ -449,6 +627,242 @@ export const constDecl = (name: string, value: string): string => `const ${name}
 export const constDeclTyped = (name: string, type: string, value: string): string => `const ${name}: ${type} = ${value}`
 
 // ============================================================================
+// Functions
+// ============================================================================
+
+/**
+ * Options for generating a function declaration.
+ */
+export interface FunctionDeclOptions {
+  /**
+   * Function name
+   */
+  name: string
+
+  /**
+   * Parameters as strings (e.g., ['a: number', 'b: string'])
+   */
+  params?: string[]
+
+  /**
+   * Return type
+   */
+  returnType?: string | null
+
+  /**
+   * Function body
+   */
+  body?: string | null
+
+  /**
+   * Whether the function is async
+   */
+  async?: boolean
+
+  /**
+   * Whether to export the function
+   */
+  export?: boolean
+
+  /**
+   * Optional JSDoc comment
+   */
+  tsDoc?: string | null
+}
+
+/**
+ * Generate a function declaration.
+ *
+ * @example
+ * ```ts
+ * functionDecl({
+ *   name: 'add',
+ *   params: ['a: number', 'b: number'],
+ *   returnType: 'number',
+ *   body: 'return a + b'
+ * })
+ * // 'function add(a: number, b: number): number {\nreturn a + b\n}'
+ * ```
+ */
+export const functionDecl = (options: FunctionDeclOptions): string => {
+  const {
+    name,
+    params = [],
+    returnType = null,
+    body = null,
+    async: isAsync = false,
+    export: shouldExport = false,
+    tsDoc = null,
+  } = options
+
+  const tsDocFormatted = tsDoc ? TSDoc.format(tsDoc) + `\n` : ``
+  const exportKeyword = shouldExport ? `export ` : ``
+  const asyncKeyword = isAsync ? `async ` : ``
+  const returnTypeStr = returnType ? `: ${returnType}` : ``
+  const paramsStr = params.join(`, `)
+  const bodyStr = body ? ` {\n${body}\n}` : ` {}`
+
+  return `${tsDocFormatted}${exportKeyword}${asyncKeyword}function ${name}(${paramsStr})${returnTypeStr}${bodyStr}`
+}
+
+/**
+ * Generate an arrow function expression.
+ *
+ * @example
+ * ```ts
+ * arrowFunction(['x'], 'x * 2')
+ * // '(x) => x * 2'
+ *
+ * arrowFunction(['a: number', 'b: number'], 'return a + b', 'number')
+ * // '(a: number, b: number): number => return a + b'
+ * ```
+ */
+export const arrowFunction = (params: string[], body: string, returnType?: string): string => {
+  const paramsStr = params.length === 1 && !params[0].includes(`:`) ? params[0] : `(${params.join(`, `)})`
+  const returnTypeStr = returnType ? `: ${returnType}` : ``
+  return `${paramsStr}${returnTypeStr} => ${body}`
+}
+
+// ============================================================================
+// Classes
+// ============================================================================
+
+/**
+ * Options for generating a class declaration.
+ */
+export interface ClassDeclOptions {
+  /**
+   * Class name
+   */
+  name: string
+
+  /**
+   * Class body
+   */
+  body?: string | null
+
+  /**
+   * Extends clause
+   */
+  extends?: string | null
+
+  /**
+   * Implements clause
+   */
+  implements?: string[] | null
+
+  /**
+   * Type parameters
+   */
+  parameters?: string[] | null
+
+  /**
+   * Whether to export the class
+   */
+  export?: boolean
+
+  /**
+   * Whether the class is abstract
+   */
+  abstract?: boolean
+
+  /**
+   * Optional JSDoc comment
+   */
+  tsDoc?: string | null
+}
+
+/**
+ * Generate a class declaration.
+ *
+ * @example
+ * ```ts
+ * classDecl({
+ *   name: 'User',
+ *   body: 'constructor(public id: string) {}'
+ * })
+ * // 'class User {\nconstructor(public id: string) {}\n}'
+ * ```
+ */
+export const classDecl = (options: ClassDeclOptions): string => {
+  const {
+    name,
+    body = null,
+    extends: extendsClause = null,
+    implements: implementsClause = null,
+    parameters = null,
+    export: shouldExport = false,
+    abstract: isAbstract = false,
+    tsDoc = null,
+  } = options
+
+  const tsDocFormatted = tsDoc ? TSDoc.format(tsDoc) + `\n` : ``
+  const exportKeyword = shouldExport ? `export ` : ``
+  const abstractKeyword = isAbstract ? `abstract ` : ``
+  const typeParams = parameters && parameters.length > 0 ? `<${parameters.join(`, `)}>` : ``
+  const extendsStr = extendsClause ? ` extends ${extendsClause}` : ``
+  const implementsStr = implementsClause && implementsClause.length > 0
+    ? ` implements ${implementsClause.join(`, `)}`
+    : ``
+  const bodyStr = body ? ` {\n${body}\n}` : ` {}`
+
+  return `${tsDocFormatted}${exportKeyword}${abstractKeyword}class ${name}${typeParams}${extendsStr}${implementsStr}${bodyStr}`
+}
+
+// ============================================================================
+// Control Flow & Expressions
+// ============================================================================
+
+/**
+ * Generate an if statement.
+ *
+ * @example
+ * ```ts
+ * ifStatement('x > 0', 'return true', 'return false')
+ * // 'if (x > 0) {\nreturn true\n} else {\nreturn false\n}'
+ * ```
+ */
+export const ifStatement = (condition: string, thenBlock: string, elseBlock?: string): string => {
+  const elseStr = elseBlock ? ` else {\n${elseBlock}\n}` : ``
+  return `if (${condition}) {\n${thenBlock}\n}${elseStr}`
+}
+
+/**
+ * Generate a ternary expression.
+ *
+ * @example
+ * ```ts
+ * ternary('x > 0', 'positive', 'negative')
+ * // 'x > 0 ? positive : negative'
+ * ```
+ */
+export const ternary = (condition: string, trueValue: string, falseValue: string): string =>
+  `${condition} ? ${trueValue} : ${falseValue}`
+
+/**
+ * Generate a function call.
+ *
+ * @example
+ * ```ts
+ * call('add', ['1', '2'])
+ * // 'add(1, 2)'
+ * ```
+ */
+export const call = (fn: string, args: string[]): string => `${fn}(${args.join(`, `)})`
+
+/**
+ * Generate a method call.
+ *
+ * @example
+ * ```ts
+ * methodCall('console', 'log', ['"hello"'])
+ * // 'console.log("hello")'
+ * ```
+ */
+export const methodCall = (object: string, method: string, args: string[]): string =>
+  `${object}.${method}(${args.join(`, `)})`
+
+// ============================================================================
 // Object Members
 // ============================================================================
 
@@ -600,3 +1014,191 @@ export const importNamed = (input: {
 
   return `import ${typePrefix}{ ${namesStr} } from '${input.from}'`
 }
+
+// ============================================================================
+// Builder Pattern
+// ============================================================================
+
+/**
+ * Builder for creating union type declarations with a fluent API.
+ */
+class UnionBuilder {
+  private constructor(
+    private name: string,
+    private variants: string[] = [],
+  ) {}
+
+  /**
+   * Add a variant to the union.
+   */
+  variant(type: string): this {
+    this.variants.push(type)
+    return this
+  }
+
+  /**
+   * Build the union type declaration.
+   */
+  build(): string {
+    return union(this.name, this.variants)
+  }
+
+  /**
+   * Create a new union builder.
+   */
+  static create(name: string): UnionBuilder {
+    return new UnionBuilder(name)
+  }
+}
+
+/**
+ * Builder for creating object type declarations with a fluent API.
+ */
+class ObjectBuilder {
+  private constructor(
+    private fields_: string[] = [],
+  ) {}
+
+  /**
+   * Add a field to the object.
+   */
+  field(name: string, type: string, options?: FieldOptions): this {
+    this.fields_.push(field(name, type, options))
+    return this
+  }
+
+  /**
+   * Build the object type as a string of fields.
+   */
+  buildFields(): string {
+    return fields(this.fields_)
+  }
+
+  /**
+   * Build the object type wrapped in braces.
+   */
+  build(): string {
+    return objectFromFields(this.buildFields())
+  }
+
+  /**
+   * Create a new object builder.
+   */
+  static create(): ObjectBuilder {
+    return new ObjectBuilder()
+  }
+}
+
+/**
+ * Builder for creating interface declarations with a fluent API.
+ */
+class InterfaceBuilder {
+  private constructor(
+    private name: string,
+    private fields_: string[] = [],
+    private options: Partial<InterfaceOptions> = {},
+  ) {}
+
+  /**
+   * Add a field to the interface.
+   */
+  field(name: string, type: string, options?: FieldOptions): this {
+    this.fields_.push(field(name, type, options))
+    return this
+  }
+
+  /**
+   * Set the extends clause.
+   */
+  extends(...types: string[]): this {
+    this.options.extends = types
+    return this
+  }
+
+  /**
+   * Set type parameters.
+   */
+  parameters(...params: string[]): this {
+    this.options.parameters = params
+    return this
+  }
+
+  /**
+   * Set JSDoc comment.
+   */
+  tsDoc(doc: string): this {
+    this.options.tsDoc = doc
+    return this
+  }
+
+  /**
+   * Set export modifier.
+   */
+  export(shouldExport = true): this {
+    this.options.export = shouldExport
+    return this
+  }
+
+  /**
+   * Build the interface declaration.
+   */
+  build(): string {
+    return interfaceDecl({
+      name: this.name,
+      block: fields(this.fields_),
+      ...this.options,
+    })
+  }
+
+  /**
+   * Create a new interface builder.
+   */
+  static create(name: string): InterfaceBuilder {
+    return new InterfaceBuilder(name)
+  }
+}
+
+/**
+ * Type builder namespace providing fluent APIs for complex type construction.
+ *
+ * @example
+ * ```ts
+ * // Union type
+ * Type.union('Status')
+ *   .variant('Active')
+ *   .variant('Inactive')
+ *   .build()
+ * // 'type Status =\n| Active\n| Inactive'
+ *
+ * // Object type
+ * Type.object()
+ *   .field('id', 'string')
+ *   .field('name', 'string', { optional: true })
+ *   .build()
+ * // '{\nid: string\nname?: string\n}'
+ *
+ * // Interface
+ * Type.interface('User')
+ *   .field('id', 'string')
+ *   .field('name', 'string')
+ *   .export()
+ *   .build()
+ * // 'export interface User {\nid: string\nname: string\n}'
+ * ```
+ */
+export const Type = {
+  /**
+   * Create a union type builder.
+   */
+  union: (name: string) => UnionBuilder.create(name),
+
+  /**
+   * Create an object type builder.
+   */
+  object: () => ObjectBuilder.create(),
+
+  /**
+   * Create an interface declaration builder.
+   */
+  interface: (name: string) => InterfaceBuilder.create(name),
+} as const

@@ -353,3 +353,347 @@ Test.describe('TS.fields > join field declarations')
     [[[]]  ,                                            ''],
   )
   .test()
+
+// ============================================================================
+// New Literals
+// ============================================================================
+
+// dprint-ignore
+Test.describe('TS.number > number literal')
+  .on(TS.number)
+  .cases(
+    [[42],                                              '42'],
+    [[3.14],                                            '3.14'],
+    [[0],                                               '0'],
+    [[-5],                                              '-5'],
+  )
+  .test()
+
+// dprint-ignore
+Test.describe('TS.nullLiteral > null literal')
+  .on(TS.nullLiteral)
+  .cases(
+    [[],                                                'null'],
+  )
+  .test()
+
+// dprint-ignore
+Test.describe('TS.undefinedLiteral > undefined literal')
+  .on(TS.undefinedLiteral)
+  .cases(
+    [[],                                                'undefined'],
+  )
+  .test()
+
+// ============================================================================
+// Type-Level Features
+// ============================================================================
+
+// dprint-ignore
+Test.describe('TS.conditional > conditional type')
+  .on(TS.conditional)
+  .cases(
+    [['T', 'string', 'number', 'boolean'],              'T extends string ? number : boolean'],
+    [['A', 'B', 'C', 'D'],                              'A extends B ? C : D'],
+  )
+  .test()
+
+// dprint-ignore
+Test.describe('TS.mapped > mapped type')
+  .on(TS.mapped)
+  .cases(
+    [['K', 'keyof T', 'T[K]'],                          '{ [K in keyof T]: T[K] }'],
+    [['P', 'string', 'boolean'],                        '{ [P in string]: boolean }'],
+  )
+  .test()
+
+vtTest('TS.templateLiteral > template literal type', () => {
+  const result = TS.templateLiteral(['Hello ', '${T}', '!'])
+  expect(result).toBe('`Hello ${T}!`')
+})
+
+vtTest('TS.templateLiteral > empty parts', () => {
+  const result = TS.templateLiteral([])
+  expect(result).toBe('``')
+})
+
+// ============================================================================
+// Type Operators
+// ============================================================================
+
+// dprint-ignore
+Test.describe('TS.typeOf > typeof operator')
+  .on(TS.typeOf)
+  .cases(
+    [['value'],                                         'typeof value'],
+    [['obj.prop'],                                      'typeof obj.prop'],
+  )
+  .test()
+
+// dprint-ignore
+Test.describe('TS.keyOf > keyof operator')
+  .on(TS.keyOf)
+  .cases(
+    [['User'],                                          'keyof User'],
+    [['Record<string, any>'],                           'keyof Record<string, any>'],
+  )
+  .test()
+
+// dprint-ignore
+Test.describe('TS.indexedAccess > indexed access type')
+  .on(TS.indexedAccess)
+  .cases(
+    [['User', 'id'],                                    'User["id"]'],
+    [['Config', 'port'],                                'Config["port"]'],
+  )
+  .test()
+
+// ============================================================================
+// Utility Types
+// ============================================================================
+
+// dprint-ignore
+Test.describe('TS.partial > Partial utility type')
+  .on(TS.partial)
+  .cases(
+    [['User'],                                          'Partial<User>'],
+    [['Config'],                                        'Partial<Config>'],
+  )
+  .test()
+
+// dprint-ignore
+Test.describe('TS.required > Required utility type')
+  .on(TS.required)
+  .cases(
+    [['User'],                                          'Required<User>'],
+    [['Options'],                                       'Required<Options>'],
+  )
+  .test()
+
+// dprint-ignore
+Test.describe('TS.readonly > Readonly utility type')
+  .on(TS.readonly)
+  .cases(
+    [['User'],                                          'Readonly<User>'],
+    [['State'],                                         'Readonly<State>'],
+  )
+  .test()
+
+vtTest('TS.pick > Pick utility type', () => {
+  const result = TS.pick('User', ['id', 'name'])
+  expect(result).toBe('Pick<User, "id" | "name">')
+})
+
+vtTest('TS.pick > single key', () => {
+  const result = TS.pick('User', ['id'])
+  expect(result).toBe('Pick<User, "id">')
+})
+
+vtTest('TS.omit > Omit utility type', () => {
+  const result = TS.omit('User', ['password'])
+  expect(result).toBe('Omit<User, "password">')
+})
+
+vtTest('TS.omit > multiple keys', () => {
+  const result = TS.omit('User', ['password', 'salt'])
+  expect(result).toBe('Omit<User, "password" | "salt">')
+})
+
+// dprint-ignore
+Test.describe('TS.record > Record utility type')
+  .on(TS.record)
+  .cases(
+    [['string', 'number'],                              'Record<string, number>'],
+    [['number', 'User'],                                'Record<number, User>'],
+  )
+  .test()
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+vtTest('TS.functionDecl > basic function', () => {
+  const result = TS.functionDecl({
+    name: 'add',
+    params: ['a: number', 'b: number'],
+    returnType: 'number',
+    body: 'return a + b',
+  })
+  expect(result).toContain('function add(a: number, b: number): number {')
+  expect(result).toContain('return a + b')
+})
+
+vtTest('TS.functionDecl > async function', () => {
+  const result = TS.functionDecl({
+    name: 'fetchData',
+    async: true,
+    returnType: 'Promise<Data>',
+  })
+  expect(result).toContain('async function fetchData()')
+})
+
+vtTest('TS.functionDecl > exported function', () => {
+  const result = TS.functionDecl({
+    name: 'helper',
+    export: true,
+  })
+  expect(result).toContain('export function helper()')
+})
+
+// dprint-ignore
+Test.describe('TS.arrowFunction > arrow function')
+  .on(TS.arrowFunction)
+  .cases(
+    [[['x'], 'x * 2'],                                  'x => x * 2'],
+    [[['a', 'b'], 'a + b'],                             '(a, b) => a + b'],
+    [[['n: number'], 'n * 2', 'number'],                '(n: number): number => n * 2'],
+  )
+  .test()
+
+// ============================================================================
+// Classes
+// ============================================================================
+
+vtTest('TS.classDecl > basic class', () => {
+  const result = TS.classDecl({
+    name: 'User',
+    body: 'constructor(public id: string) {}',
+  })
+  expect(result).toContain('class User {')
+  expect(result).toContain('constructor(public id: string) {}')
+})
+
+vtTest('TS.classDecl > with extends', () => {
+  const result = TS.classDecl({
+    name: 'Admin',
+    extends: 'User',
+  })
+  expect(result).toContain('class Admin extends User {')
+})
+
+vtTest('TS.classDecl > with implements', () => {
+  const result = TS.classDecl({
+    name: 'Service',
+    implements: ['IService', 'Disposable'],
+  })
+  expect(result).toContain('class Service implements IService, Disposable {')
+})
+
+vtTest('TS.classDecl > abstract class', () => {
+  const result = TS.classDecl({
+    name: 'Base',
+    abstract: true,
+  })
+  expect(result).toContain('abstract class Base {')
+})
+
+vtTest('TS.classDecl > exported class', () => {
+  const result = TS.classDecl({
+    name: 'Helper',
+    export: true,
+  })
+  expect(result).toContain('export class Helper {')
+})
+
+vtTest('TS.classDecl > with type parameters', () => {
+  const result = TS.classDecl({
+    name: 'Container',
+    parameters: ['T'],
+  })
+  expect(result).toContain('class Container<T> {')
+})
+
+// ============================================================================
+// Control Flow & Expressions
+// ============================================================================
+
+vtTest('TS.ifStatement > with else', () => {
+  const result = TS.ifStatement('x > 0', 'return true', 'return false')
+  expect(result).toContain('if (x > 0) {')
+  expect(result).toContain('return true')
+  expect(result).toContain('} else {')
+  expect(result).toContain('return false')
+})
+
+vtTest('TS.ifStatement > without else', () => {
+  const result = TS.ifStatement('enabled', 'doSomething()')
+  expect(result).toContain('if (enabled) {')
+  expect(result).toContain('doSomething()')
+  expect(result).not.toContain('else')
+})
+
+// dprint-ignore
+Test.describe('TS.ternary > ternary expression')
+  .on(TS.ternary)
+  .cases(
+    [['x > 0', 'positive', 'negative'],                 'x > 0 ? positive : negative'],
+    [['enabled', 'yes', 'no'],                          'enabled ? yes : no'],
+  )
+  .test()
+
+// dprint-ignore
+Test.describe('TS.call > function call')
+  .on(TS.call)
+  .cases(
+    [['add', ['1', '2']],                               'add(1, 2)'],
+    [['process', []],                                   'process()'],
+  )
+  .test()
+
+// dprint-ignore
+Test.describe('TS.methodCall > method call')
+  .on(TS.methodCall)
+  .cases(
+    [['console', 'log', ['"hello"']],                   'console.log("hello")'],
+    [['obj', 'method', ['arg1', 'arg2']],               'obj.method(arg1, arg2)'],
+  )
+  .test()
+
+// ============================================================================
+// Builder Pattern
+// ============================================================================
+
+vtTest('TS.Type.union > builder pattern', () => {
+  const result = TS.Type.union('Status')
+    .variant('Active')
+    .variant('Inactive')
+    .variant('Pending')
+    .build()
+  expect(result).toBe('type Status =\n| Active\n| Inactive\n| Pending')
+})
+
+vtTest('TS.Type.object > builder pattern', () => {
+  const result = TS.Type.object()
+    .field('id', 'string')
+    .field('name', 'string', { optional: true })
+    .build()
+  expect(result).toContain('{\nid: string')
+  expect(result).toContain('name?: string')
+})
+
+vtTest('TS.Type.interface > builder pattern', () => {
+  const result = TS.Type.interface('User')
+    .field('id', 'string')
+    .field('name', 'string')
+    .export()
+    .build()
+  expect(result).toContain('export interface User {')
+  expect(result).toContain('id: string')
+  expect(result).toContain('name: string')
+})
+
+vtTest('TS.Type.interface > with extends', () => {
+  const result = TS.Type.interface('Admin')
+    .extends('User', 'Permissions')
+    .field('role', 'string')
+    .build()
+  expect(result).toContain('interface Admin extends User, Permissions {')
+})
+
+vtTest('TS.Type.interface > with type parameters', () => {
+  const result = TS.Type.interface('Container')
+    .parameters('T')
+    .field('value', 'T')
+    .build()
+  expect(result).toContain('interface Container<T> {')
+})
