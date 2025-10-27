@@ -162,7 +162,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
           }
         ]
       },
-      _tag: 'SimpleEntrypoint'
+      _tag: 'DrillableNamespaceEntrypoint'
     }
   ],
   metadata: {

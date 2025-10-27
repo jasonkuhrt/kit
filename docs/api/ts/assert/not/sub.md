@@ -17,179 +17,109 @@ import { sub } from '@wollybeard/kit/ts'
 
 :::
 
-## Constants
+## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L208" /> {#c-array-208}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `ofAs`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L225" /> {#f-of-as-225}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.SetNegated<State.Empty>, SubKind>,
-    any[],
-    false,
-    false
-  >
->
+<$Type>(): DispatchAfterInput<State.SetExpectedType<State.SetRelator<State.SetNegated<State.Empty>, SubKind>, $Type>>
+```
+
+## Constants
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L208" /> {#c-any-208}
+
+```typescript
+InputActualAsValueNarrow<State.SetExpectedType<State.SetAllowAny<State.SetRelator<State.SetNegated<State.Empty>, SubKind>>, any>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L73" /> {#c-bigint-73}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.SetNegated<State.Empty>, SubKind>,
-    bigint,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.Empty>, SubKind>, bigint>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boolean`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L88" /> {#c-boolean-88}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.SetNegated<State.Empty>, SubKind>,
-    boolean,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.Empty>, SubKind>, boolean>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L148" /> {#c-date-148}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.SetNegated<State.Empty>, SubKind>,
-    Date,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.Empty>, SubKind>, Date>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L178" /> {#c-error-178}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.SetNegated<State.Empty>, SubKind>,
-    Error,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.Empty>, SubKind>, Error>>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `never`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L223" /> {#c-never-223}
+
+```typescript
+InputActualAsValueNarrow<State.SetExpectedType<State.SetAllowNever<State.SetRelator<State.SetNegated<State.Empty>, SubKind>>, never>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L118" /> {#c-null-118}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.SetNegated<State.Empty>, SubKind>,
-    null,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.Empty>, SubKind>, null>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `number`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L58" /> {#c-number-58}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.SetNegated<State.Empty>, SubKind>,
-    number,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.Empty>, SubKind>, number>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L28" /> {#c-of-28}
 
 ```typescript
-InputMatcherArgFactory<State.SetRelator<State.SetNegated<State.Empty>, SubKind>>
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Promise`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L193" /> {#c-promise-193}
-
-```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.SetNegated<State.Empty>, SubKind>,
-    Promise<any>,
-    false,
-    false
-  >
->
+InputExpectedAsValueNarrow<State.SetRelator<State.SetNegated<State.Empty>, SubKind>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L163" /> {#c-reg-exp-163}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.SetNegated<State.Empty>, SubKind>,
-    RegExp,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.Empty>, SubKind>, RegExp>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L43" /> {#c-string-43}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.SetNegated<State.Empty>, SubKind>,
-    string,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.Empty>, SubKind>, string>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L133" /> {#c-symbol-133}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.SetNegated<State.Empty>, SubKind>,
-    symbol,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.Empty>, SubKind>, symbol>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L103" /> {#c-undefined-103}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.SetNegated<State.Empty>, SubKind>,
-    undefined,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.SetNegated<State.Empty>, SubKind>, undefined>>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `unknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L193" /> {#c-unknown-193}
+
+```typescript
+InputActualAsValueNarrow<State.SetExpectedType<State.SetAllowUnknown<State.SetRelator<State.SetNegated<State.Empty>, SubKind>>, unknown>>
 ```
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L207" /> {#t-array-207}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L207" /> {#t-any-207}
 
 ```typescript
-type Array_<$Actual> = Kind.Apply<SubKind, [any[], $Actual, true]>
+type any_<$Actual> = Kind.Apply<SubKind, [any, $Actual, true]>
 ```
 
-Pre-curried matcher for any[].
+Pre-curried matcher for any.
 
 **Examples:**
 
@@ -198,10 +128,10 @@ Pre-curried matcher for any[].
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // ✓ Pass
-type _ = Assert.sub.Array<any[]>
+type _ = Assert.sub.any<any>
 
 // ✗ Fail
-type _ = Assert.sub.Array<string>
+type _ = Assert.sub.any<string>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L72" /> {#t-bigint-72}
@@ -288,6 +218,27 @@ type _ = Assert.sub.Error<Error>
 type _ = Assert.sub.Error<string>
 ```
 
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `never`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L222" /> {#t-never-222}
+
+```typescript
+type never_<$Actual> = Kind.Apply<SubKind, [never, $Actual, true]>
+```
+
+Pre-curried matcher for never.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// ✓ Pass
+type _ = Assert.sub.never<never>
+
+// ✗ Fail
+type _ = Assert.sub.never<string>
+```
+
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L117" /> {#t-null-117}
 
 ```typescript
@@ -339,27 +290,6 @@ type of_<$Expected, $Actual> = Kind.Apply<SubKind, [$Expected, $Actual, true]>
 base + sub relation matchers.
 
 Direct type assertion Relation: subtype relation (extends)
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Promise`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L192" /> {#t-promise-192}
-
-```typescript
-type Promise_<$Actual> = Kind.Apply<SubKind, [Promise<any>, $Actual, true]>
-```
-
-Pre-curried matcher for Promise.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Ts } from '@wollybeard/kit/ts'
-// ---cut---
-// ✓ Pass
-type _ = Assert.sub.Promise<Promise<any>>
-
-// ✗ Fail
-type _ = Assert.sub.Promise<string>
-```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L162" /> {#t-reg-exp-162}
 
@@ -443,4 +373,25 @@ type _ = Assert.sub.undefined<undefined>
 
 // ✗ Fail
 type _ = Assert.sub.undefined<string>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `unknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/sub.ts#L192" /> {#t-unknown-192}
+
+```typescript
+type unknown_<$Actual> = Kind.Apply<SubKind, [unknown, $Actual, true]>
+```
+
+Pre-curried matcher for unknown.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// ✓ Pass
+type _ = Assert.sub.unknown<unknown>
+
+// ✗ Fail
+type _ = Assert.sub.unknown<string>
 ```

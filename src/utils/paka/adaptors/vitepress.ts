@@ -1,7 +1,7 @@
 import { FsLoc } from '#fs-loc'
 import { Str } from '#str'
 import { Match } from 'effect'
-import { writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import type {
@@ -48,6 +48,35 @@ const deriveModuleName = (path: string): string => {
     .split('-')
     .map(part => part.charAt(0).toUpperCase() + part.slice(1))
     .join('')
+}
+
+/**
+ * Detect if a module is a pure wrapper namespace.
+ *
+ * A pure wrapper is a module with ONLY one export which is a namespace,
+ * and the namespace name matches the module name (case-insensitive).
+ *
+ * Example: `test/$.ts` exports only `Test` namespace → pure wrapper
+ *
+ * @param moduleName - The module name (e.g., 'Test')
+ * @param module - The module to check
+ * @returns true if module is a pure wrapper namespace
+ */
+const isPureWrapperNamespace = (moduleName: string, module: Module): boolean => {
+  const exports = module.exports
+
+  // Must have exactly one export
+  if (exports.length !== 1) return false
+
+  const singleExport = exports[0]!
+
+  // Must be a value export of type namespace
+  if (singleExport._tag !== 'value' || singleExport.type !== 'namespace') {
+    return false
+  }
+
+  // Namespace name must match module name (case-insensitive)
+  return singleExport.name.toLowerCase() === moduleName.toLowerCase()
 }
 
 /**
@@ -122,104 +151,143 @@ export const apiSidebar: DefaultTheme.SidebarItem[] = ${JSON.stringify(sidebar, 
 }
 
 /**
+ * Determine which modules are drillable from the main entrypoint.
+ * Drillable modules are those re-exported from the main '.' export.
+ *
+ * @param model - The extracted interface model
+ * @returns Set of module names (lowercase) that are drillable from main
+ */
+const getDrillableModules = (model: InterfaceModel): Set<string> => {
+  const drillable = new Set<string>()
+
+  // Find the main entrypoint export file
+  const mainExportPath = join(process.cwd(), 'build/exports/index.js')
+
+  try {
+    const content = readFileSync(mainExportPath, 'utf-8')
+
+    // Match export statements like: export * from '#arr'
+    const exportPattern = /export\s+\*\s+from\s+['"]#([^'"]+)['"]/g
+    let match
+
+    while ((match = exportPattern.exec(content)) !== null) {
+      const moduleName = match[1]!
+      drillable.add(moduleName.toLowerCase())
+    }
+  } catch (error) {
+    // If file doesn't exist or can't be read, assume all modules are drillable
+    // This is a safe default for development
+    console.warn('Could not read main exports file, assuming all modules are drillable')
+    model.entrypoints.forEach((ep: any) => {
+      const moduleName = ep.path.replace(/^\.\//, '')
+      drillable.add(moduleName.toLowerCase())
+    })
+  }
+
+  return drillable
+}
+
+/**
  * Generate VitePress sidebar configuration from interface model.
  *
  * @param model - The extracted interface model
  * @param categoryOrder - Optional category ordering (defaults to alphabetical)
- * @returns Sidebar items grouped by category
+ * @returns Sidebar items grouped by entrypoint, then by category
  */
 export const generateSidebar = (
   model: InterfaceModel,
   categoryOrder?: string[],
-): Array<{ text: string; items: Array<{ text: string; link: string; items?: any[]; collapsed?: boolean }> }> => {
-  const categories = new Map<string, Array<{ text: string; link: string; items?: any[]; collapsed?: boolean }>>()
+): Array<{ text: string; items: Array<{ text: string; link?: string; items?: any[]; collapsed?: boolean }> }> => {
+  // Determine which modules are drillable from main
+  const drillableModules = getDrillableModules(model)
 
-  // Process each entrypoint
+  // Group entrypoints: drillable from main vs standalone-only
+  const mainEntrypoints: any[] = []
+  const standaloneEntrypoints: any[] = []
+
   for (const entrypoint of model.entrypoints) {
-    // Both entrypoint types have path and module, but TS union narrowing doesn't work
     const ep = entrypoint as any
+    const moduleName = ep.path.replace(/^\.\//, '').toLowerCase()
 
-    // Extract the module name from path (e.g., "./arr" -> "arr")
-    const moduleName = ep.path.replace(/^\.\//, '')
-
-    // Create title case for display (e.g., "arr" -> "Arr")
-    const displayName = moduleName.charAt(0).toUpperCase() + moduleName.slice(1)
-
-    // Find namespace exports with nested modules
-    const namespaceExports = ep.module.namespaceExports
-      .map((exp: any) => ({
-        text: exp.name,
-        link: `/api/${moduleName}/${exp.name.toLowerCase()}`,
-      }))
-      .sort((a: any, b: any) => a.text.localeCompare(b.text))
-
-    // Check if module description came from external .md file
-    const hasExternalReadme = ep.module.hasExternalReadme
-
-    // Create sidebar item
-    const item: { text: string; link: string; items?: any[]; collapsed?: boolean } = {
-      text: displayName,
-      link: `/api/${moduleName}`,
+    if (drillableModules.has(moduleName)) {
+      mainEntrypoints.push(ep)
+    } else {
+      standaloneEntrypoints.push(ep)
     }
-
-    // If has external README, create nested structure with Exports + namespaces
-    if (hasExternalReadme) {
-      item.items = [
-        { text: 'Exports', link: `/api/${moduleName}/exports` },
-        ...namespaceExports,
-      ]
-      item.collapsed = true
-    } else if (namespaceExports.length > 0) {
-      // Otherwise, just add namespace items if any exist
-      item.items = namespaceExports
-      item.collapsed = true
-    }
-
-    // Use category from module JSDoc, default to 'Other' if not specified
-    const category = ep.module.category ?? 'Other'
-
-    // Add to category group
-    if (!categories.has(category)) {
-      categories.set(category, [])
-    }
-    categories.get(category)!.push(item)
   }
 
-  // Build final sidebar structure
   const sidebar: Array<
-    { text: string; items: Array<{ text: string; link: string; items?: any[]; collapsed?: boolean }> }
+    { text: string; items: Array<{ text: string; link?: string; items?: any[]; collapsed?: boolean }> }
   > = []
 
-  // Determine category order
-  let sortedCategories: string[]
-  if (categoryOrder) {
-    // Use provided order, but include any missing categories alphabetically at the end
-    const orderedSet = new Set(categoryOrder)
-    const missingCategories = Array.from(categories.keys())
-      .filter((cat) => !orderedSet.has(cat) && cat !== 'Other')
-      .sort()
-    sortedCategories = [...categoryOrder.filter((cat) => categories.has(cat)), ...missingCategories]
-    // Ensure "Other" is always last if it exists
-    if (categories.has('Other') && !sortedCategories.includes('Other')) {
-      sortedCategories.push('Other')
+  // Helper to create sidebar items for a set of entrypoints
+  const createSidebarItemsForEntrypoints = (entrypoints: any[]): any[] => {
+    const items: any[] = []
+
+    for (const ep of entrypoints) {
+      const moduleName = ep.path.replace(/^\.\//, '')
+      const displayName = moduleName.charAt(0).toUpperCase() + moduleName.slice(1)
+
+      // Check if this module is a pure wrapper namespace
+      const isPureWrapper = isPureWrapperNamespace(displayName, ep.module)
+
+      // Find namespace exports with nested modules
+      const namespaceExports = ep.module.namespaceExports
+        .map((exp: any) => {
+          // For pure wrappers, use '~' instead of namespace name
+          const linkSegment = isPureWrapper ? '~' : exp.name.toLowerCase()
+          return {
+            text: exp.name,
+            link: `/api/${moduleName}/${linkSegment}`,
+          }
+        })
+        .sort((a: any, b: any) => a.text.localeCompare(b.text))
+
+      const hasExternalReadme = ep.module.hasExternalReadme
+
+      const item: { text: string; link: string; items?: any[]; collapsed?: boolean } = {
+        text: displayName,
+        link: `/api/${moduleName}`,
+      }
+
+      // Don't add nested items for pure wrappers - they're just namespace wrappers
+      if (!isPureWrapper) {
+        if (hasExternalReadme) {
+          item.items = [
+            { text: 'Exports', link: `/api/${moduleName}/exports` },
+            ...namespaceExports,
+          ]
+          item.collapsed = true
+        } else if (namespaceExports.length > 0) {
+          item.items = namespaceExports
+          item.collapsed = true
+        }
+      }
+
+      items.push(item)
     }
-  } else {
-    // Default to alphabetical, with "Other" last
-    sortedCategories = Array.from(categories.keys()).sort((a, b) => {
-      if (a === 'Other') return 1
-      if (b === 'Other') return -1
-      return a.localeCompare(b)
+
+    // Sort items alphabetically
+    return items.sort((a, b) => a.text.localeCompare(b.text))
+  }
+
+  // Add main entrypoint section
+  if (mainEntrypoints.length > 0) {
+    const items = createSidebarItemsForEntrypoints(mainEntrypoints)
+    sidebar.push({
+      text: '/',
+      items,
     })
   }
 
-  for (const categoryName of sortedCategories) {
-    const items = categories.get(categoryName)
-    if (items && items.length > 0) {
-      sidebar.push({
-        text: categoryName,
-        items: items.sort((a, b) => a.text.localeCompare(b.text)),
-      })
-    }
+  // Add standalone entrypoint sections
+  for (const ep of standaloneEntrypoints) {
+    const moduleName = ep.path.replace(/^\.\//, '')
+
+    sidebar.push({
+      text: `/${moduleName}`,
+      items: createSidebarItemsForEntrypoints([ep]),
+    })
   }
 
   return sidebar
@@ -329,9 +397,24 @@ const generateNamespacePages = (entrypoint: Entrypoint, module: Module, breadcru
 
   const namespaceExports = module.namespaceExports
 
+  // Check if the CURRENT module is a pure wrapper
+  // (has single namespace export matching the module name)
+  const currentModuleName = breadcrumbs[breadcrumbs.length - 1]
+  const isPureWrapper = currentModuleName && isPureWrapperNamespace(currentModuleName, module)
+
   for (const nsExport of namespaceExports) {
     const newBreadcrumbs = [...breadcrumbs, nsExport.name]
-    const urlPath = newBreadcrumbs.map(Md.kebab).join('/')
+
+    // Build URL segments
+    const urlSegments = newBreadcrumbs.map(Md.kebab)
+
+    // If parent module is a pure wrapper, use '~' instead of namespace name
+    if (isPureWrapper) {
+      // Replace the namespace name with '~'
+      urlSegments[urlSegments.length - 1] = '~'
+    }
+
+    const urlPath = urlSegments.join('/')
 
     if (!nsExport.module) continue
 

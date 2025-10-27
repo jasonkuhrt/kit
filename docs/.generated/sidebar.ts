@@ -3,129 +3,134 @@ import type { DefaultTheme } from 'vitepress'
 
 export const apiSidebar: DefaultTheme.SidebarItem[] = [
   {
-    'text': 'Domains',
-    'items': [
+    "text": "/",
+    "items": [
       {
-        'text': 'Arr',
-        'link': '/api/arr',
+        "text": "Arr",
+        "link": "/api/arr"
       },
       {
-        'text': 'Err',
-        'link': '/api/err',
+        "text": "Err",
+        "link": "/api/err"
       },
       {
-        'text': 'Fn',
-        'link': '/api/fn',
+        "text": "Fn",
+        "link": "/api/fn"
       },
       {
-        'text': 'Json',
-        'link': '/api/json',
+        "text": "Html",
+        "link": "/api/html"
       },
       {
-        'text': 'Num',
-        'link': '/api/num',
+        "text": "Json",
+        "link": "/api/json"
       },
       {
-        'text': 'Obj',
-        'link': '/api/obj',
-        'items': [
+        "text": "Num",
+        "link": "/api/num"
+      },
+      {
+        "text": "Obj",
+        "link": "/api/obj",
+        "items": [
           {
-            'text': 'Union',
-            'link': '/api/obj/union',
-          },
+            "text": "Union",
+            "link": "/api/obj/union"
+          }
         ],
-        'collapsed': true,
+        "collapsed": true
       },
       {
-        'text': 'Prom',
-        'link': '/api/prom',
+        "text": "Paka",
+        "link": "/api/paka"
       },
       {
-        'text': 'Rec',
-        'link': '/api/rec',
+        "text": "Prom",
+        "link": "/api/prom"
       },
       {
-        'text': 'Str',
-        'link': '/api/str',
-        'items': [
+        "text": "Rec",
+        "link": "/api/rec"
+      },
+      {
+        "text": "Str",
+        "link": "/api/str",
+        "items": [
           {
-            'text': 'Char',
-            'link': '/api/str/char',
+            "text": "Char",
+            "link": "/api/str/char"
           },
           {
-            'text': 'Code',
-            'link': '/api/str/code',
+            "text": "Code",
+            "link": "/api/str/code"
           },
           {
-            'text': 'Text',
-            'link': '/api/str/text',
+            "text": "Text",
+            "link": "/api/str/text"
           },
           {
-            'text': 'Visual',
-            'link': '/api/str/visual',
-          },
+            "text": "Visual",
+            "link": "/api/str/visual"
+          }
         ],
-        'collapsed': true,
+        "collapsed": true
       },
-    ],
+      {
+        "text": "Ts",
+        "link": "/api/ts",
+        "items": [
+          {
+            "text": "Assert",
+            "link": "/api/ts/assert"
+          },
+          {
+            "text": "Err",
+            "link": "/api/ts/err"
+          },
+          {
+            "text": "Inhabitance",
+            "link": "/api/ts/inhabitance"
+          },
+          {
+            "text": "Kind",
+            "link": "/api/ts/kind"
+          },
+          {
+            "text": "SENTINEL",
+            "link": "/api/ts/sentinel"
+          },
+          {
+            "text": "SimpleSignature",
+            "link": "/api/ts/simplesignature"
+          },
+          {
+            "text": "Simplify",
+            "link": "/api/ts/simplify"
+          },
+          {
+            "text": "Union",
+            "link": "/api/ts/union"
+          },
+          {
+            "text": "VariancePhantom",
+            "link": "/api/ts/variancephantom"
+          }
+        ],
+        "collapsed": true
+      },
+      {
+        "text": "Value",
+        "link": "/api/value"
+      }
+    ]
   },
   {
-    'text': 'Utils',
-    'items': [
+    "text": "/test",
+    "items": [
       {
-        'text': 'Html',
-        'link': '/api/html',
-      },
-      {
-        'text': 'Paka',
-        'link': '/api/paka',
-      },
-      {
-        'text': 'Test',
-        'link': '/api/test',
-        'items': [
-          {
-            'text': 'Test',
-            'link': '/api/test/test',
-          },
-        ],
-        'collapsed': true,
-      },
-      {
-        'text': 'Ts',
-        'link': '/api/ts',
-        'items': [
-          {
-            'text': 'Assert',
-            'link': '/api/ts/assert',
-          },
-          {
-            'text': 'Kind',
-            'link': '/api/ts/kind',
-          },
-          {
-            'text': 'SENTINEL',
-            'link': '/api/ts/sentinel',
-          },
-          {
-            'text': 'SimpleSignature',
-            'link': '/api/ts/simplesignature',
-          },
-          {
-            'text': 'Union',
-            'link': '/api/ts/union',
-          },
-          {
-            'text': 'VariancePhantom',
-            'link': '/api/ts/variancephantom',
-          },
-        ],
-        'collapsed': true,
-      },
-      {
-        'text': 'Value',
-        'link': '/api/value',
-      },
-    ],
-  },
+        "text": "Test",
+        "link": "/api/test"
+      }
+    ]
+  }
 ]

@@ -77,56 +77,56 @@ Test.Test.property(
 <$fn extends Fn.AnyAny>($fn: $fn): TestBuilder
 
   // Chainable methods:
-// [!code word:skip:1]
+  // [!code word:skip:1]
   .only(): TestBuilder
-// [!code word:skipIf:1]
+    // [!code word:skipIf:1]
     .skip(reason ?: string | undefined): TestBuilder
-// [!code word:concurrent:1]
+      // [!code word:concurrent:1]
       .skipIf(condition: () => boolean): TestBuilder
-// [!code word:tags:1]
+        // [!code word:tags:1]
         .concurrent(): TestBuilder
-// [!code word:name:1]
+          // [!code word:name:1]
           .tags(tags: string[]): TestBuilder
-// [!code word:onlyMatching:1]
+            // [!code word:onlyMatching:1]
             .name(template: string): TestBuilder
-// [!code word:inputType:1]
+              // [!code word:inputType:1]
               .onlyMatching(matcher: string): TestBuilder
-// [!code word:contextType:1]
+                // [!code word:contextType:1]
                 .inputType<I>(): TestBuilder
-// [!code word:matrix:1]
+                  // [!code word:matrix:1]
                   .contextType < Ctx extends { } = { }> (): TestBuilder
-// [!code word:snapshotSerializer:1]
+                    // [!code word:snapshotSerializer:1]
                     .matrix<$values extends Rec.AnyReadonlyKeyTo<Arr.Any>>(values: $values): TestBuilder
-// [!code word:snapshotSchemas:1]
+                      // [!code word:snapshotSchemas:1]
                       .snapshotSerializer(serializer: (output: any, context: { i: State["input"]; n: string; o: State["output"]; } & State["context"]) => string): TestBuilder
-// [!code word:on:1]
+                        // [!code word:on:1]
                         .snapshotSchemas(schemas: any[]): TestBuilder
-// [!code word:cases:1]
+                          // [!code word:cases:1]
                           .on<Fn extends Fn.AnyAny>(fn: Fn): TestBuilder
-// [!code word:case:1]
+                            // [!code word:case:1]
                             .cases < Cases extends readonly any[] = readonly[] > (...cases ?: State["fn"] extends undefined ? GenericCase < State["input"], State["output"], State["context"] > [] : State["fn"] extends AnyAny ? (FunctionCase<EffectiveInput<State>, EffectiveOutput<State>, State["context"]> | ((ctx: State["context"]) => FunctionCase<EffectiveInput<State>, EffectiveOutput<State>, State["context"]>))[] : GenericCase < State["input"], State["output"], State["context"] > []): TestBuilder
-// [!code word:case:1]
+                              // [!code word:case:1]
                               .case(...args ?: State["fn"] extends undefined ? GenericCaseSingleParams<State["input"], State["output"], State["context"]> : State["fn"] extends AnyAny ? CaseSingleParams<EffectiveInput<State>, EffectiveOutput<State>> : never): TestBuilder
-// [!code word:case$:1]
+                                // [!code word:case$:1]
                                 .case(name: string, runner: (context: State["context"]) => any): TestBuilder
-// [!code word:casesInput:1]
+                                  // [!code word:casesInput:1]
                                   .case$(caseObj: GenericCase<State["input"], State["output"], State["context"]>): TestBuilder
-// [!code word:describeInputs:1]
+                                    // [!code word:describeInputs:1]
                                     .casesInput(...inputs ?: UnwrappedInput < State > []): TestBuilder
-// [!code word:describe:1]
+                                      // [!code word:describe:1]
                                       .describeInputs(name: string, inputs: readonly UnwrappedInput < State > []): TestBuilder
-// [!code word:describe:1]
+                                        // [!code word:describe:1]
                                         .describe(name: string, cases: readonly(State["fn"] extends undefined ? GenericCase<State["input"], State["output"], State["context"]> : State["fn"] extends AnyAny ? FunctionCase<EffectiveInput<State>, EffectiveOutput<State>, State["context"]> : GenericCase<State["input"], State["output"], State["context"]>)[]): TestBuilder
-// [!code word:onSetup:1]
+                                          // [!code word:onSetup:1]
                                           .describe < ChildContext extends object = {}, ChildI = State['input'], ChildO = State['output'] > (name: string, callback: (builder: TestBuilder<State>) => TestBuilder<{ context: ChildContext; input: ChildI; output: ChildO; fn: State["fn"]; matrix: State["matrix"]; }>): TestBuilder
-// [!code word:outputType:1]
+                                            // [!code word:outputType:1]
                                             .onSetup<Ctx extends object>(factory: () => Ctx): TestBuilder
 
                                               // Terminal methods:
-// [!code word:outputDefault:1]
+                                              // [!code word:outputDefault:1]
                                               .outputType<O>(): State["fn"] extends undefined ? TestBuilder<UpdateState<State, { output: O; }>> : never
                                                 .outputDefault<R>(provider: State["output"] extends undefined ? (context: State["context"]) => R : (context: State["context"]) => State["output"]): State["output"] extends undefined ? TestBuilder<UpdateState<State, { output: R; }>> : TestBuilder<State>
-// [!code word:test:1]
+                                                  // [!code word:test:1]
                                                   .onOutput<MappedInput>(mapper: State["fn"] extends undefined ? never : State["fn"] extends AnyAny ? (output: MappedInput, context: { i: EffectiveInput<State>; n: string; o: MappedInput; } & State["context"]) => EffectiveOutput<State> : never): State["fn"] extends undefined ? never : State["fn"] extends AnyAny ? TestBuilder<UpdateState<State, { output: MappedInput; }>> : never
                                                     .test(): void
 // [!code word:test:1]
@@ -209,6 +209,7 @@ Test.on(createUser)
   // [!code word:input:1]
   .onOutput((partial, context) => ({
     ...defaultUser,
+    // [!code word:input:1]
     name: context.input[0],
     ...partial,
   }))
@@ -276,40 +277,40 @@ HELLO
             .name(template: string): TestBuilder
               .onlyMatching(matcher: string): TestBuilder
                 .inputType<I>(): TestBuilder
-// [!code word:matrix:1]
+                  // [!code word:matrix:1]
                   .contextType<Ctx extends {} = { }> (): TestBuilder
-// [!code word:snapshotSerializer:1]
+                    // [!code word:snapshotSerializer:1]
                     .matrix<$values extends Rec.AnyReadonlyKeyTo<Arr.Any>>(values: $values): TestBuilder
-// [!code word:snapshotSchemas:1]
+                      // [!code word:snapshotSchemas:1]
                       .snapshotSerializer(serializer: (output: any, context: { i: State["input"]; n: string; o: State["output"]; } & State["context"]) => string): TestBuilder
-// [!code word:on:1]
+                        // [!code word:on:1]
                         .snapshotSchemas(schemas: any[]): TestBuilder
-// [!code word:cases:1]
+                          // [!code word:cases:1]
                           .on<Fn extends Fn.AnyAny>(fn: Fn): TestBuilder
-// [!code word:case:1]
+                            // [!code word:case:1]
                             .cases < Cases extends readonly any[] = readonly[] > (...cases ?: State["fn"] extends undefined ? GenericCase < State["input"], State["output"], State["context"] > [] : State["fn"] extends AnyAny ? (FunctionCase<EffectiveInput<State>, EffectiveOutput<State>, State["context"]> | ((ctx: State["context"]) => FunctionCase<EffectiveInput<State>, EffectiveOutput<State>, State["context"]>))[] : GenericCase < State["input"], State["output"], State["context"] > []): TestBuilder
-// [!code word:case:1]
+                              // [!code word:case:1]
                               .case(...args ?: State["fn"] extends undefined ? GenericCaseSingleParams<State["input"], State["output"], State["context"]> : State["fn"] extends AnyAny ? CaseSingleParams<EffectiveInput<State>, EffectiveOutput<State>> : never): TestBuilder
-// [!code word:case$:1]
+                                // [!code word:case$:1]
                                 .case(name: string, runner: (context: State["context"]) => any): TestBuilder
-// [!code word:casesInput:1]
+                                  // [!code word:casesInput:1]
                                   .case$(caseObj: GenericCase<State["input"], State["output"], State["context"]>): TestBuilder
-// [!code word:describeInputs:1]
+                                    // [!code word:describeInputs:1]
                                     .casesInput(...inputs ?: UnwrappedInput < State > []): TestBuilder
-// [!code word:describe:1]
+                                      // [!code word:describe:1]
                                       .describeInputs(name: string, inputs: readonly UnwrappedInput < State > []): TestBuilder
-// [!code word:describe:1]
+                                        // [!code word:describe:1]
                                         .describe(name: string, cases: readonly(State["fn"] extends undefined ? GenericCase<State["input"], State["output"], State["context"]> : State["fn"] extends AnyAny ? FunctionCase<EffectiveInput<State>, EffectiveOutput<State>, State["context"]> : GenericCase<State["input"], State["output"], State["context"]>)[]): TestBuilder
-// [!code word:onSetup:1]
+                                          // [!code word:onSetup:1]
                                           .describe < ChildContext extends object = {}, ChildI = State['input'], ChildO = State['output'] > (name: string, callback: (builder: TestBuilder<State>) => TestBuilder<{ context: ChildContext; input: ChildI; output: ChildO; fn: State["fn"]; matrix: State["matrix"]; }>): TestBuilder
-// [!code word:outputType:1]
+                                            // [!code word:outputType:1]
                                             .onSetup<Ctx extends object>(factory: () => Ctx): TestBuilder
 
                                               // Terminal methods:
-// [!code word:outputDefault:1]
+                                              // [!code word:outputDefault:1]
                                               .outputType<O>(): State["fn"] extends undefined ? TestBuilder<UpdateState<State, { output: O; }>> : never
                                                 .outputDefault<R>(provider: State["output"] extends undefined ? (context: State["context"]) => R : (context: State["context"]) => State["output"]): State["output"] extends undefined ? TestBuilder<UpdateState<State, { output: R; }>> : TestBuilder<State>
-// [!code word:test:1]
+                                                  // [!code word:test:1]
                                                   .onOutput<MappedInput>(mapper: State["fn"] extends undefined ? never : State["fn"] extends AnyAny ? (output: MappedInput, context: { i: EffectiveInput<State>; n: string; o: MappedInput; } & State["context"]) => EffectiveOutput<State> : never): State["fn"] extends undefined ? never : State["fn"] extends AnyAny ? TestBuilder<UpdateState<State, { output: MappedInput; }>> : never
                                                     .test(): void
 // [!code word:test:1]

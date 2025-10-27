@@ -197,6 +197,7 @@
     "./semver": "./build/domains/semver/$$.js",
     "./str": "./build/domains/str/$$.js",
     "./test": "./build/utils/test/$.js",
+    "./test/~": "./build/utils/test/$$.js",
     "./traitor": "./build/utils/traitor/$$.js",
     "./tree": "./build/domains/tree/$$.js",
     "./ts": "./build/utils/ts/$$.js",

@@ -49,12 +49,11 @@ import { Ts } from '@wollybeard/kit/ts'
 type Transform<T> = T extends string ? Uppercase<T> : T
 
 // With marker - explicitly documents that distribution is desired
-type Transform<T> = T extends __FORCE_DISTRIBUTION__
-  ? T extends string ? Uppercase<T> : T
-  : never
+type Transform<T> = T extends __FORCE_DISTRIBUTION__ ? T extends string ? Uppercase<T> : T : never
 
 // More typical usage pattern
-type MapUnion<T> = T extends __FORCE_DISTRIBUTION__ ? TransformSingleMember<T>
+type MapUnion<T> = T extends __FORCE_DISTRIBUTION__
+  ? TransformSingleMember<T>
   : never
 ```
 
@@ -85,8 +84,8 @@ Include only types that extend a constraint (opposite of Exclude). Filters a uni
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T = Union.Include<string | number | boolean, string | number> // string | number
-type T2 = Union.Include<'a' | 'b' | 1 | 2, string> // 'a' | 'b'
+type T = Union.Include<string | number | boolean, string | number>  // string | number
+type T2 = Union.Include<'a' | 'b' | 1 | 2, string>  // 'a' | 'b'
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ToTuple`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L59" /> {#t-to-tuple-59}
@@ -108,14 +107,13 @@ Convert a union type to a tuple type.
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T = Union.ToTuple<'a' | 'b' | 'c'> // ['a', 'b', 'c']
+type T = Union.ToTuple<'a' | 'b' | 'c'>  // ['a', 'b', 'c']
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `ToIntersection`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L75" /> {#t-to-intersection-75}
 
 ```typescript
-type ToIntersection<$U> = ($U extends any ? (k: $U) => void : never) extends
-  ((k: infer __i__) => void) ? __i__
+type ToIntersection<$U> = ($U extends any ? (k: $U) => void : never) extends ((k: infer __i__) => void) ? __i__
   : never
 ```
 
@@ -128,14 +126,13 @@ Convert a union type to an intersection type.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type U = { a: string } | { b: number }
-type I = Union.ToIntersection<U> // { a: string } & { b: number }
+type I = Union.ToIntersection<U>  // { a: string } & { b: number }
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `LastOf`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L86" /> {#t-last-of-86}
 
 ```typescript
-type LastOf<$T> = ToIntersection<$T extends any ? () => $T : never> extends
-  () => infer __r__ ? __r__
+type LastOf<$T> = ToIntersection<$T extends any ? () => $T : never> extends () => infer __r__ ? __r__
   : never
 ```
 
@@ -147,7 +144,7 @@ Get the last type in a union.
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T = Union.LastOf<'a' | 'b' | 'c'> // 'c'
+type T = Union.LastOf<'a' | 'b' | 'c'>  // 'c'
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Expanded`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L97" /> {#t-expanded-97}
@@ -164,7 +161,7 @@ Force union distribution in conditional types.
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T = Union.Expanded<'a' | 'b'> // 'a' | 'b' (forced distribution)
+type T = Union.Expanded<'a' | 'b'>  // 'a' | 'b' (forced distribution)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IgnoreAnyOrUnknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L102" /> {#t-ignore-any-or-unknown-102}
@@ -178,11 +175,14 @@ Union that ignores any and unknown.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsAnyMemberExtends`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L114" /> {#t-is-any-member-extends-114}
 
 ```typescript
-type IsAnyMemberExtends<$Union, $Type> = (
-  // [1] Force distribution
-  $Union extends any ? ($Union /* member */ extends $Type ? true : false)
-    : never // [1]
-) extends false ? false
+type IsAnyMemberExtends<$Union, $Type> =
+  (
+    // [1] Force distribution
+    $Union extends any ?
+    ($Union /* member */ extends $Type ? true : false) :
+    never // [1]
+  ) extends false
+  ? false
   : true
 ```
 
@@ -194,14 +194,15 @@ Check if any member of a union extends a type.
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type T1 = Union.IsAnyMemberExtends<string | number, string> // true
-type T2 = Union.IsAnyMemberExtends<number | boolean, string> // false
+type T1 = Union.IsAnyMemberExtends<string | number, string>  // true
+type T2 = Union.IsAnyMemberExtends<number | boolean, string>  // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsHas`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L162" /> {#t-is-has-162}
 
 ```typescript
-type IsHas<$Type, $LookingFor> = _IsHas<$Type, $LookingFor> extends false
+type IsHas<$Type, $LookingFor> =
+  _IsHas<$Type, $LookingFor> extends false
   ? false
   : true
 ```
@@ -224,16 +225,17 @@ $LookingFor
 // @noErrors
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
-type HasString = Union.IsHas<string | number | boolean, string> // true
-type HasDate = Union.IsHas<string | number, Date> // false
-type HasLiteral = Union.IsHas<'a' | 'b' | 'c', 'b'> // true
+type HasString = Union.IsHas<string | number | boolean, string>  // true
+type HasDate = Union.IsHas<string | number, Date>                // false
+type HasLiteral = Union.IsHas<'a' | 'b' | 'c', 'b'>             // true
 
 // Useful in conditional types
-type ProcessValue<T> = Union.IsHas<T, Promise<any>> extends true ? 'async'
+type ProcessValue<T> = Union.IsHas<T, Promise<any>> extends true
+  ? 'async'
   : 'sync'
 
-type R1 = ProcessValue<string | Promise<string>> // 'async'
-type R2 = ProcessValue<string | number> // 'sync'
+type R1 = ProcessValue<string | Promise<string>>  // 'async'
+type R2 = ProcessValue<string | number>           // 'sync'
 ```
 
 ```typescript twoslash
@@ -242,12 +244,12 @@ import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Works with complex types
 type Events = { type: 'click' } | { type: 'hover' } | { type: 'focus' }
-type HasClick = Union.IsHas<Events, { type: 'click' }> // true
+type HasClick = Union.IsHas<Events, { type: 'click' }>  // true
 
 // Check for any promise in union
 type MaybeAsync<T> = Union.IsHas<T, Promise<any>>
-type R3 = MaybeAsync<string | Promise<number>> // true
-type R4 = MaybeAsync<string | number> // false
+type R3 = MaybeAsync<string | Promise<number>>  // true
+type R4 = MaybeAsync<string | number>           // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Merge`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L182" /> {#t-merge-182}
@@ -255,9 +257,9 @@ type R4 = MaybeAsync<string | number> // false
 ```typescript
 type Merge<$U> = {
   [
-    k in (
-      $U extends any ? keyof $U : never
-    )
+  k in (
+    $U extends any ? keyof $U : never
+  )
   ]: $U extends any ? (k extends keyof $U ? $U[k] : never) : never
 }
 ```
@@ -271,15 +273,16 @@ Merge all members of a union into a single type.
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type U = { a: string } | { b: number }
-type M = Union.Merge<U> // { a: string; b: number }
+type M = Union.Merge<U>  // { a: string; b: number }
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Is`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/union.ts#L231" /> {#t-is-231}
 
 ```typescript
-type Is<$Type> = [$Type] extends [never] ? false
-  : [$Type] extends [ToIntersection<$Type>] ? false
-  : true
+type Is<$Type> =
+  [$Type] extends [never] ? false :
+  [$Type] extends [ToIntersection<$Type>] ? false :
+  true
 ```
 
 Check if a type is a union type.
@@ -297,18 +300,18 @@ The check works by: 1. First checking if the type is `never` (not a union) 2. Th
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Union types return true
-type T1 = Union.Is<string | number> // true
-type T2 = Union.Is<'a' | 'b' | 'c'> // true
-type T3 = Union.Is<{ a: 1 } | { b: 2 }> // true
+type T1 = Union.Is<string | number>              // true
+type T2 = Union.Is<'a' | 'b' | 'c'>             // true
+type T3 = Union.Is<{ a: 1 } | { b: 2 }>         // true
 
 // Single types return false
-type T4 = Union.Is<string> // false
-type T5 = Union.Is<number> // false
-type T6 = Union.Is<{ a: string }> // false
+type T4 = Union.Is<string>                       // false
+type T5 = Union.Is<number>                       // false
+type T6 = Union.Is<{ a: string }>               // false
 
 // Special cases
-type T7 = Union.Is<never> // false
-type T8 = Union.Is<any> // false
+type T7 = Union.Is<never>                        // false
+type T8 = Union.Is<any>                          // false
 ```
 
 ```typescript twoslash
@@ -316,9 +319,10 @@ type T8 = Union.Is<any> // false
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // Conditional logic based on union detection
-type ProcessType<T> = Union.Is<T> extends true ? 'multiple options'
+type ProcessType<T> = Union.Is<T> extends true
+  ? 'multiple options'
   : 'single option'
 
-type R1 = ProcessType<string | number> // 'multiple options'
-type R2 = ProcessType<string> // 'single option'
+type R1 = ProcessType<string | number>  // 'multiple options'
+type R2 = ProcessType<string>           // 'single option'
 ```

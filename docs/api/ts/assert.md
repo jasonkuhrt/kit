@@ -58,7 +58,57 @@ Ts.Assert.exact<string, number>()
 // Must provide: (error: { ERROR: "...", expected: string, actual: number })
 ```
 
-## Relations
+## Unary Relators
+
+Relators that check properties of a single type (no comparison). Available at top-level and directly executable.
+
+### `any` / `unknown` / `never`
+
+Check if type is an edge case:
+
+```typescript
+// [!code word:any:1]
+Assert.any(x as any) // ✅
+// [!code word:unknown:1]
+Assert.unknown(x as unknown) // ✅
+// [!code word:never:1]
+Assert.never(x as never) // ✅
+
+// With negation
+// [!code word:any:1]
+Assert.not.any(x as string) // ✅
+
+// Note: Also available under binary relators for backward compat
+// [!code word:any:1]
+Assert.exact.any(x as any) // ✅ (same behavior)
+```
+
+### `empty`
+
+Assert type is empty:
+
+```typescript
+// [!code word:empty:1]
+Assert.empty([]) // ✅ empty array
+// [!code word:empty:1]
+Assert.empty('' as const) // ✅ empty string
+// [!code word:empty:1]
+Assert.empty({} as Record<string, never>) // ✅ empty object
+
+// With negation
+// [!code word:empty:1]
+Assert.not.empty([1]) // ✅ not empty
+
+// Common mistakes
+// [!code word:empty:1]
+Assert.empty({}) // ❌ {} = non-nullish!
+```
+
+**Important:** `{}` means "non-nullish", not empty. Use `Record<PropertyKey, never>`.
+
+## Binary Relators
+
+Binary relators compare two types (expected vs actual).
 
 ### `exact`
 
@@ -129,41 +179,14 @@ returned.awaited<string>()(() => Promise.resolve('x')) // OK
 Assert on function parameter type:
 
 ```typescript
-parameter<string>()((x: string) => {}) // OK
-parameter2<number>()((a: string, b: number) => {}) // OK (2nd param)
-parameters<[string, number]>()((x: string, y: number) => {}) // OK (all)
+parameter<string>()((x: string) => { }) // OK
+parameter2<number>()((a: string, b: number) => { }) // OK (2nd param)
+parameters<[string, number]>()((x: string, y: number) => { }) // OK (all)
 ```
 
-## Special Types
+## Special Types (Legacy - see Unary Relators above)
 
-### `never`
-
-Unary assertion - expects never type:
-
-```typescript
-never()(null as never) // OK
-never<never>() // OK (TTA mode)
-never<string>() // ❌
-```
-
-### `any` / `unknown`
-
-Unary assertions for special types:
-
-```typescript
-any()(null as any) // OK
-unknown()(null as unknown) // OK
-```
-
-### `empty`
-
-Assert array/object is empty:
-
-```typescript
-empty()([]) // OK
-empty()({}) // OK
-empty()([1]) // ❌
-```
+These matchers are available under binary relators for backward compatibility, but work identically to their top-level unary relator counterparts.
 
 ## Collection Types
 
@@ -277,7 +300,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
 // [!code word:Assert:1]
 // [!code word:not:1]
  * Ts.Assert[.not].<relation>.<extractor?>.<extractor?>...<TypeParams>
- *
+ * 
 ```
  *
  * Where:
@@ -310,7 +333,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
   * Ts.Assert.exact.returned.awaited<User>()(asyncFn)
 // [!code word:as:1]
   * Ts.Assert.not.sub.of.as<number>()(value)
-  *
+  * 
 ```
  *
  * ## Relations
@@ -325,7 +348,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
   * type T = Ts.Assert.exact<1 | 2, 2 | 1>             // ✗ Fail (different structure)
 // [!code word:exact:1]
     * type T = Ts.Assert.exact<string & {}, string>      // ✗ Fail (different structure)
-      *
+      * 
 ```
  *
  * ### `equiv` - Mutual Assignability (Semantic Equality)
@@ -338,7 +361,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
   * type T = Ts.Assert.equiv<string & {}, string>      // ✓ Pass (both compute to string)
 // [!code word:equiv:1]
     * type T = Ts.Assert.equiv<string, number>           // ✗ Fail (not mutually assignable)
-      *
+      * 
 ```
  *
  * ### `sub` - Subtype Checking
@@ -351,7 +374,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
   * type T = Ts.Assert.sub<object, { a: 1 }>           // ✓ Pass (more specific extends less)
 // [!code word:sub:1]
     * type T = Ts.Assert.sub<'hello', string>            // ✗ Fail (string doesn't extend 'hello')
-      *
+      * 
 ```
  *
  * ## Extractors
@@ -369,7 +392,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * type T = Ts.Assert.equiv.Never<never>              // ✓ Pass
 // [!code word:any:1]
   * Ts.Assert.exact.any()(value)                       // Value level (lowercase)
-  *
+  * 
 ```
  *
  * ### Containers
@@ -382,7 +405,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * type T = Ts.Assert.sub.array<number, (1 | 2 | 3)[]>  // ✓ Pass
 // [!code word:indexed:1]
   * type T = Ts.Assert.exact.indexed<0, string, [string, number]>  // ✓ Pass
-    *
+    * 
 ```
  *
  * ### Transformations (Chainable)
@@ -404,7 +427,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
 // [!code word:array:1]
 // [!code word:resolve:1]
   * Ts.Assert.sub.awaited.array<number>()(Promise.resolve([1, 2, 3]))
-  *
+  * 
 ```
  *
  * ### Functions
@@ -417,7 +440,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * type T = Ts.Assert.exact.parameter<string, (x: string) => void>
 // [!code word:parameter2:1]
   * type T = Ts.Assert.sub.parameter2<number, (a: string, b: number) => void>
-    *
+    * 
 ```
  *
  * ### Objects
@@ -427,7 +450,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * type Config = { id: string; name: string; debug: boolean }
 // [!code word:properties:1]
   * type T = Ts.Assert.exact.properties<{ id: string }, Config>  // ✓ Pass
-    *
+    * 
 ```
  *
  * ### Modifiers
@@ -440,7 +463,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
   * type T = Ts.Assert.sub.noExcess<Options, { timeout: 5000, retry: true }>  // ✓ Allows literals
 // [!code word:noExcess:1]
     * type T = Ts.Assert.sub.noExcess<Options, { timeout: 5000, retrys: true }> // ✗ Catches typo!
-      *
+      * 
 ```
  *
  * **`equiv.noExcess`** - Special case (optional property typos in equiv types):
@@ -451,7 +474,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
     * type T = Ts.Assert.equiv<Schema, Response>          // ✓ Pass (mutually assignable)
 // [!code word:noExcess:1]
       * type T = Ts.Assert.equiv.noExcess<Schema, Response> // ✗ Fail (catches typo!)
-        *
+        * 
 ```
  *
  * ## Negation
@@ -466,7 +489,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
   * type T = Ts.Assert.not.sub.awaited<X, Promise<Y>>        // ✓ Pass if Y doesn't extend X
 // [!code word:awaited:1]
     * Ts.Assert.not.exact.returned.awaited<X>()(fn)            // Value level
-    *
+    * 
 ```
  *
  * ## Value Level vs Type Level
@@ -477,7 +500,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * type T = Ts.Assert.exact<A, B>
 // [!code word:awaited:1]
   * type T = Ts.Assert.sub.awaited<X, Promise<Y>>
-    *
+    * 
 ```
  *
  * **Value Level**: Relations require `.is`, extractors work directly
@@ -497,7 +520,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * Ts.Assert.exact.returned.is<X>()(fn)            // Terminal check
 // [!code word:awaited:1]
   * Ts.Assert.exact.returned.awaited<X>()(fn)       // Chained check
-  *
+  * 
 ```
  *
  * ## Why `.is` for Identity?
@@ -522,7 +545,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * //   excess: { email: string }
  * //   mismatched: { id: { expected: string, actual: number } }
  * // }
- *
+ * 
 ```
  *
  * ## Configuration
@@ -546,7 +569,7 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  *   }
  * }
  * export { }
- *
+ * 
 ```
  */
 ````
@@ -588,82 +611,28 @@ import { Assert } from '@wollybeard/kit/ts'
 
 ## Utils
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StaticErrorAssertion`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/assertion-error.ts#L84" /> {#t-static-error-assertion-84}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `StaticErrorAssertion`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/assertion-error.ts#L40" /> {#t-static-error-assertion-40}
 
 ```typescript
 type StaticErrorAssertion<
   $Message extends string = string,
   $Expected = unknown,
   $Actual = unknown,
-  $Meta extends string | readonly string[] | Record<string, any> = never,
-  ___$ErrorKeyLength extends number =
-    KitLibrarySettings.Ts.Error['errorKeyLength'],
-> =
-  // Check what kind of $Meta we have
-  [$Meta] extends [never]
-    // No meta - just error, expected, actual
-    ? {
-      [
-        k in keyof {
-          ERROR: $Message
-          expected: $Expected
-          actual: $Actual
-        } as k extends string ? Str.PadEnd<k, ___$ErrorKeyLength, '_'> : k
-      ]: { ERROR: $Message; expected: $Expected; actual: $Actual }[k]
-    }
-    : [$Meta] extends [string]
-    // String tip - render as { tip: $Meta }
-      ? Simplify<
-        {
-          [
-            k in keyof ({
-              ERROR: $Message
-              expected: $Expected
-              actual: $Actual
-            } & { tip: $Meta }) as k extends string
-              ? Str.PadEnd<k, ___$ErrorKeyLength, '_'>
-              : k
-          ]: ({ ERROR: $Message; expected: $Expected; actual: $Actual } & {
-            tip: $Meta
-          })[k]
-        }
-      >
-    : [$Meta] extends [readonly string[]]
-    // Tuple of tips - render as { tip_a, tip_b, ... }
-      ? Simplify<
-        {
-          [
-            k in keyof ({
-              ERROR: $Message
-              expected: $Expected
-              actual: $Actual
-            } & TupleToTips<$Meta>) as k extends string
-              ? Str.PadEnd<k, ___$ErrorKeyLength, '_'>
-              : k
-          ]: (
-            & { ERROR: $Message; expected: $Expected; actual: $Actual }
-            & TupleToTips<$Meta>
-          )[k]
-        }
-      >
-    // Object - spread $Meta directly
-    : Simplify<
-      {
-        [
-          k in keyof (
-            & { ERROR: $Message; expected: $Expected; actual: $Actual }
-            & $Meta
-          ) as k extends string ? Str.PadEnd<k, ___$ErrorKeyLength, '_'> : k
-        ]: ({ ERROR: $Message; expected: $Expected; actual: $Actual } & $Meta)[
-          k
-        ]
-      }
-    >
+  $MetaInput extends MetaInput = never,
+  ___$ErrorKeyLength extends number = KitLibrarySettings.Ts.Error['errorKeyLength'],
+> = Ts.Err.StaticError<
+  $Message,
+  {
+    expected: $Expected
+    actual: $Actual
+  } & NormalizeMetaInput<$MetaInput>,
+  readonly ['root', 'assert', ...string[]]
+>
 ```
 
 Represents a static assertion error at the type level, optimized for type testing.
 
-This is a simpler, more focused error type compared to StaticError. It's specifically designed for type assertions where you need to communicate expected vs. actual types.
+This is a simpler, more focused error type compared to Ts.StaticError. It's specifically designed for type assertions where you need to communicate expected vs. actual types.
 
 Supports three forms of metadata:
 
@@ -684,7 +653,7 @@ $Actual
 
 - The actual type that was provided
 
-$Meta
+$MetaInput
 
 - Optional metadata: string tip, tuple of tips, or object with custom fields
 
@@ -698,47 +667,107 @@ import { Ts } from '@wollybeard/kit/ts'
 type E1 = StaticErrorAssertion<'Types mismatch', string, number>
 
 // With a single tip
-type E2 = StaticErrorAssertion<
-  'Types mismatch',
-  string,
-  number,
-  'Use String() to convert'
->
+type E2 = StaticErrorAssertion<'Types mismatch', string, number, 'Use String() to convert'>
 
 // With multiple tips
-type E3 = StaticErrorAssertion<
-  'Types mismatch',
-  string,
-  number,
-  ['Tip 1', 'Tip 2']
->
+type E3 = StaticErrorAssertion<'Types mismatch', string, number, ['Tip 1', 'Tip 2']>
 
 // With metadata object
-type E4 = StaticErrorAssertion<
-  'Types mismatch',
-  string,
-  number,
-  { operation: 'concat' }
->
+type E4 = StaticErrorAssertion<'Types mismatch', string, number, { operation: 'concat' }>
 
 // With tip and metadata
-type E5 = StaticErrorAssertion<
-  'Types mismatch',
-  string,
-  number,
-  { tip: 'Use String()'; diff_missing: { x: number } }
->
+type E5 = StaticErrorAssertion<'Types mismatch', string, number, { tip: 'Use String()', diff_missing: { x: number } }>
 ```
 
 ## Other
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Case`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/cases.ts#L13" /> {#t-case-13}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L8" /> {#c-any-8}
+
+```typescript
+InputActualForUnaryRelatorNarrow<State.Empty, "any">
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `unknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L9" /> {#c-unknown-9}
+
+```typescript
+InputActualForUnaryRelatorNarrow<State.Empty, "unknown">
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `never`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L10" /> {#c-never-10}
+
+```typescript
+InputActualForUnaryRelatorNarrow<State.Empty, "never">
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `empty`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L11" /> {#c-empty-11}
+
+```typescript
+InputActualForUnaryRelatorNarrow<State.Empty, "empty">
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `on`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L14" /> {#c-on-14}
+
+```typescript
+InputActualAsValueNarrow<State.Empty>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `onAs`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L15" /> {#c-on-as-15}
+
+```typescript
+InputActualAsType<State.Empty>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `inferNarrow`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L18" /> {#c-infer-narrow-18}
+
+```typescript
+Builder<State.SetInferMode<State.Empty, "narrow">>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `inferWide`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L19" /> {#c-infer-wide-19}
+
+```typescript
+Builder<State.SetInferMode<State.Empty, "wide">>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `inferAuto`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L20" /> {#c-infer-auto-20}
+
+```typescript
+Builder<State.SetInferMode<State.Empty, "auto">>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `setInfer`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/$$.ts#L21" /> {#c-set-infer-21}
+
+```typescript
+<$Mode>(mode: $Mode) => Builder<State.SetInferMode<State.Empty, $Mode>>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Case`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/cases.ts#L29" /> {#t-case-29}
 
 ```typescript
 type Case<$Result extends never> = $Result
 ```
 
 Type-level test assertion that requires the result to be never (no error). Used in type-level test suites to ensure a type evaluates to never (success).
+
+Generally prefer value-level API instead.
+
+**Problem**: Individual `Case<>` assertions don't actually catch type errors at compile time due to internal casting. Errors only appear when wrapped in `Cases<>`, which has its own issues.
+
+**Better Alternative**: Use value-level API which reports ALL errors simultaneously:
+
+```ts
+// ❌ Type-level
+- doesn't catch errors reliably
+type _ = Ts.Assert.Case<Assert.exact<string, number>>
+
+// May silently pass!
+
+// ✅ Value-level
+- shows all errors
+Assert.exact.ofAs<string>().onAs<number>()
+
+// Error shown immediately
+```
 
 **Examples:**
 
@@ -747,12 +776,12 @@ Type-level test assertion that requires the result to be never (no error). Used 
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type MyTests = [
-  Ts.Assert.Case<Equal<string, string>>, // OK - evaluates to never (success)
-  Ts.Assert.Case<Equal<string, number>>, // Error - doesn't extend never (returns error)
+  Ts.Assert.Case<Equal<string, string>>,  // OK - evaluates to never (success)
+  Ts.Assert.Case<Equal<string, number>>,  // Error - doesn't extend never (returns error)
 ]
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Cases`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/cases.ts#L35" /> {#t-cases-35}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Cases`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/cases.ts#L91" /> {#t-cases-91}
 
 ```typescript
 type Cases<
@@ -861,6 +890,79 @@ type Cases<
 
 Type-level batch assertion helper that accepts multiple assertions. Each type parameter must extend never (no error), allowing batch type assertions.
 
+Generally prefer value-level API instead.
+
+**Fatal Flaw**: TypeScript **short-circuits on the first failing assertion** and never evaluates remaining parameters. With dozens of test cases, this makes debugging extremely slow
+
+- you fix one error, run again, see the next error, fix it, repeat.
+
+**This is a fundamental TypeScript limitation and cannot be fixed.**
+
+**Better Alternative**: Use value-level API which reports ALL errors simultaneously:
+
+```ts
+// ❌ Type-level Cases
+- only shows FIRST error
+type _ = Ts.Assert.Cases<
+
+
+Assert.exact<string, string>,
+
+ // ✓ Pass
+
+
+Assert.exact<number, string>,
+
+ // ✗ ERROR
+- TypeScript stops here!
+
+
+Assert.exact<boolean, boolean>, // Never checked
+- you won't see errors here
+
+
+Assert.exact<symbol, string>
+
+
+
+// Never checked
+- you won't see errors here
+>
+
+// ✅ Value-level
+- shows ALL errors at once
+Assert.exact.ofAs<string>().onAs<string>()
+
+ // ✓ Pass
+Assert.exact.ofAs<number>().onAs<string>()
+
+ // ✗ Error shown
+Assert.exact.ofAs<boolean>().onAs<boolean>() // ✓ Pass
+Assert.exact.ofAs<symbol>().onAs<string>()
+
+ // ✗ Error shown (both line 2 and 4 visible!)
+
+// Alternative: Individual type aliases (also shows all errors)
+type _pass1 = Assert.exact.of<string, string>
+type _fail1 = Assert.exact.of<number, string>
+
+// Error shown
+type _pass2 = Assert.exact.of<boolean, boolean>
+type _fail2 = Assert.exact.of<symbol, string>
+
+// Error shown (all errors visible)
+```
+
+**Additional Limitations**:
+
+- Limited to 100 type parameters (arbitrary hard limit)
+- Cannot be aliased for brevity
+- Worse error messages than value-level API
+
+**Only use this if explicitly instructed**
+
+- kept for backward compatibility only.
+
 **Examples:**
 
 ```typescript twoslash
@@ -868,15 +970,15 @@ Type-level batch assertion helper that accepts multiple assertions. Each type pa
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 type _ = Ts.Assert.Cases<
-  Equal<string, string>, // ✓ Pass (returns never)
-  Extends<string, 'hello'>, // ✓ Pass (returns never)
-  Never<never> // ✓ Pass (returns never)
+  Equal<string, string>,     // ✓ Pass (returns never)
+  Extends<string, 'hello'>,  // ✓ Pass (returns never)
+  Never<never>               // ✓ Pass (returns never)
 >
 
 // Type error if any assertion fails
 type _ = Ts.Assert.Cases<
-  Equal<string, string>, // ✓ Pass (returns never)
-  Equal<string, number>, // ✗ Fail - Type error here (returns StaticErrorAssertion)
-  Extends<string, 'hello'> // ✓ Pass (returns never)
+  Equal<string, string>,     // ✓ Pass (returns never)
+  Equal<string, number>,     // ✗ Fail - Type error here (returns StaticErrorAssertion)
+  Extends<string, 'hello'>   // ✓ Pass (returns never)
 >
 ```

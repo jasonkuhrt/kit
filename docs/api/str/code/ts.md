@@ -145,7 +145,7 @@ Str.Code.TS.typeAliasWithOptions({
   type: 'T | Error',
   parameters: ['T'],
   tsDoc: 'A result that may be successful or an error',
-  export: true,
+  export: true
 })
 // /**
 //  * A result that may be successful or an error
@@ -172,7 +172,7 @@ Str.Code.TS.interfaceDecl({
   name: 'User',
   block: 'id: string\nname: string',
   tsDoc: 'Represents a user',
-  export: true,
+  export: true
 })
 // /**
 //  * Represents a user
@@ -279,7 +279,53 @@ Str.Code.TS.reexportNamed({ names: { oldName: 'newName' }, from: './path' })
 Str.Code.TS.reexportNamed({ names: 'Name', from: './path', type: true })
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `importAll`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L341" /> {#f-import-all-341}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `field`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L379" /> {#f-field-379}
+
+```typescript
+(name: string, type: string, options?: FieldOptions | undefined): string
+```
+
+**Parameters:**
+
+- `name` - Field name
+- `type` - Field type
+- `options` - Optional modifiers and documentation
+
+**Returns:** Formatted field declaration
+
+Generate a field/property for an interface or object type.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+// [!code word:field:1]
+Str.Code.TS.field('id', 'string')
+// 'id: string'
+
+// [!code word:field:1]
+Str.Code.TS.field('name', 'string', { optional: true })
+// 'name?: string'
+
+// [!code word:field:1]
+Str.Code.TS.field('data', 'Data', { readonly: true })
+// 'readonly data: Data'
+
+// [!code word:field:1]
+Str.Code.TS.field('value', 'number', {
+  readonly: true,
+  optional: true,
+  tsDoc: 'The current value'
+})
+// /**
+//  * The current value
+//  *\/
+// readonly value?: number
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `importAll`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L406" /> {#f-import-all-406}
 
 ```typescript
 (input: { as: string; from: string; type?: boolean; }): string
@@ -300,7 +346,7 @@ Str.Code.TS.importAll({ as: 'Name', from: './path', type: true })
 // 'import type * as Name from './path''
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `importNamed`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L369" /> {#f-import-named-369}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `importNamed`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L434" /> {#f-import-named-434}
 
 ```typescript
 (input: { names: string | string[] | Record<string, string>; from: string; type?: boolean; }): string
@@ -401,3 +447,26 @@ interface InterfaceOptions {
 ```
 
 Options for generating an interface.
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `FieldOptions`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/code/ts/ts.ts#L332" /> {#i-field-options-332}
+
+```typescript
+interface FieldOptions {
+  /**
+   * Optional JSDoc comment content (will be formatted automatically)
+   */
+  tsDoc?: string | null
+
+  /**
+   * Whether the field is optional (adds `?`)
+   */
+  optional?: boolean
+
+  /**
+   * Whether the field is readonly (adds `readonly `)
+   */
+  readonly?: boolean
+}
+```
+
+Options for generating a field/property in an interface or type.

@@ -68,7 +68,7 @@ Add two numbers together.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L48" /> {#c-add-with-48}
 
 ```typescript
-;((a: number) => (b: number) => number)
+(a: number) => (b: number) => number
 ```
 
 Create a function that adds a specific number to any other number. This is useful when you want to add the same number multiple times.
@@ -91,7 +91,7 @@ Subtract one number from another. Takes the second number away from the first nu
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L88" /> {#c-subtract-with-88}
 
 ```typescript
-;((a: number) => (b: number) => number)
+(a: number) => (b: number) => number
 ```
 
 Create a function that subtracts other numbers from a specific number. This is useful when you have a starting value and want to subtract various amounts from it.
@@ -114,7 +114,7 @@ Multiply two numbers together. This gives you the result of adding a number to i
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L132" /> {#c-multiply-with-132}
 
 ```typescript
-;((b: number) => (a: number) => number)
+(b: number) => (a: number) => number
 ```
 
 Create a function that multiplies any number by a specific factor. This is useful for scaling values or converting units.
@@ -168,7 +168,7 @@ Find the smaller of two numbers. Returns whichever number is less.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `minWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L866" /> {#c-min-with-866}
 
 ```typescript
-;((a: number) => (b: number) => number)
+(a: number) => (b: number) => number
 ```
 
 Create a function that finds the minimum with a fixed first value. Useful for clamping or limiting values.
@@ -191,7 +191,7 @@ Find the larger of two numbers. Returns whichever number is greater.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `maxWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L910" /> {#c-max-with-910}
 
 ```typescript
-;((a: number) => (b: number) => number)
+(a: number) => (b: number) => number
 ```
 
 Create a function that finds the maximum with a fixed first value. Useful for ensuring minimum values.
@@ -250,7 +250,7 @@ Raise a number to a power (exponentiation). This multiplies the base number by i
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L230" /> {#c-power-with-230}
 
 ```typescript
-;((exponent: number) => (base: number) => number)
+(exponent: number) => (base: number) => number
 ```
 
 Create a function that raises any number to a specific power. This is useful for repeated exponentiations.
@@ -383,7 +383,7 @@ Find the greatest common divisor (GCD) of two integers. The GCD is the largest p
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `gcdWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L971" /> {#c-gcd-with-971}
 
 ```typescript
-;((a: Int) => (b: Int) => Natural)
+(a: Int) => (b: Int) => Natural
 ```
 
 Create a function that finds the GCD with a fixed first value. Useful for finding common factors with a specific number.
@@ -406,7 +406,7 @@ Find the least common multiple (LCM) of two integers. The LCM is the smallest po
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `lcmWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L1020" /> {#c-lcm-with-1020}
 
 ```typescript
-;((a: Int) => (b: Int) => Whole)
+(a: Int) => (b: Int) => Whole
 ```
 
 Create a function that finds the LCM with a fixed first value. Useful for finding common multiples with a specific number.
@@ -636,7 +636,7 @@ Round a number to the nearest integer or to a specific number of decimal places.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `roundWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L286" /> {#c-round-with-286}
 
 ```typescript
-;((precision?: number | undefined) => (value: number) => number)
+(precision?: number | undefined) => (value: number) => number
 ```
 
 Create a function that rounds numbers to a specific number of decimal places. This is useful when you need consistent precision across multiple values.
@@ -787,7 +787,7 @@ Calculate the angle from the positive x-axis to a point (x, y). This is like ata
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `atan2With`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L762" /> {#c-atan2with-762}
 
 ```typescript
-;((y: Finite) => (x: Finite) => Radians)
+(y: Finite) => (x: Finite) => Radians
 ```
 
 Create a function that calculates atan2 with a fixed y value. Useful for repeated calculations with the same y offset.
@@ -811,13 +811,13 @@ Provides number equality comparison using strict equality (===). Handles special
 import { Num } from '@wollybeard/kit'
 
 // [!code word:is:1]
-Num.Eq.is(42, 42) // true
+Num.Eq.is(42, 42)           // true
 // [!code word:is:1]
-Num.Eq.is(3.14, 3.14) // true
+Num.Eq.is(3.14, 3.14)       // true
 // [!code word:is:1]
-Num.Eq.is(0, -0) // true (positive and negative zero are equal)
+Num.Eq.is(0, -0)            // true (positive and negative zero are equal)
 // [!code word:is:1]
-Num.Eq.is(NaN, NaN) // false (NaN is never equal to itself)
+Num.Eq.is(NaN, NaN)         // false (NaN is never equal to itself)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Type`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/traits/type.ts#L20" /> {#c-type-20}
@@ -837,13 +837,13 @@ Provides type checking for number values using typeof.
 import { Num } from '@wollybeard/kit'
 
 // [!code word:is:1]
-Num.Type.is(42) // true
+Num.Type.is(42)            // true
 // [!code word:is:1]
-Num.Type.is(3.14) // true
+Num.Type.is(3.14)          // true
 // [!code word:is:1]
-Num.Type.is(NaN) // true (NaN is a number)
+Num.Type.is(NaN)           // true (NaN is a number)
 // [!code word:is:1]
-Num.Type.is('42') // false
+Num.Type.is('42')          // false
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Floor`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/math.ts#L292" /> {#t-floor-292}
@@ -1046,18 +1046,40 @@ Create a function that calculates modulo with a fixed dividend.
 
 Create a function that calculates modulo with a fixed divisor. Useful for wrapping values in a fixed range.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `NumberLiteral`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L169" /> {#t-number-literal-169}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[U]`</span> `Literal`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L169" /> {#u-literal-169}
 
 ```typescript
-type NumberLiteral = number
+type Literal =
+  | LiteralZero
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12
+  | 13
+  | 14
+  | 15
+  | 16
+  | 17
+  | 18
+  | 19
+  | 20
+  | LiteralInfinity
 ```
 
 Number literal type.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PlusOne`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L174" /> {#t-plus-one-174}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `PlusOne`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L200" /> {#t-plus-one-200}
 
 ```typescript
-type PlusOne<$n extends NumberLiteral> = [
+type PlusOne<$n extends Literal> = [
   1,
   2,
   3,
@@ -1078,7 +1100,7 @@ type PlusOne<$n extends NumberLiteral> = [
   18,
   19,
   20,
-  21,
+  never,
 ][
   $n
 ]
@@ -1086,11 +1108,11 @@ type PlusOne<$n extends NumberLiteral> = [
 
 Add one to a number literal type.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MinusOne`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L203" /> {#t-minus-one-203}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `MinusOne`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/operations.ts#L229" /> {#t-minus-one-229}
 
 ```typescript
-type MinusOne<$n extends NumberLiteral> = [
-  -1,
+type MinusOne<$n extends Literal> = [
+  never,
   0,
   1,
   2,

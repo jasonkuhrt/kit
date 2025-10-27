@@ -81,7 +81,7 @@ Err.inspect(error)
 Err.inspect(error, {
   color: false,
   stackTraceColumns: 200,
-  showHelp: false,
+  showHelp: false
 })
 
 // Hide stack traces (useful for test snapshots)
@@ -141,7 +141,7 @@ console.log(Err.inspect(contextError))
 // Aggregate error with multiple failures
 const errors = [
   new Error('Database connection failed'),
-  new Error('Redis timeout'),
+  new Error('Redis timeout')
 ]
 const aggregate = new AggregateError(errors, 'Multiple services failed')
 // [!code word:log:1]
@@ -297,9 +297,7 @@ console.log(`Filtered ${result.stats.filteredFrames} frames`)
 // [!code word:log:1]
 // [!code word:shownFrames:1]
 // [!code word:totalFrames:1]
-console.log(
-  `Showing ${result.stats.shownFrames} of ${result.stats.totalFrames} total`,
-)
+console.log(`Showing ${result.stats.shownFrames} of ${result.stats.totalFrames} total`)
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[I]`</span> `CleanStackResult`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/stack.ts#L207" /> {#i-clean-stack-result-207}
@@ -347,7 +345,7 @@ const error = new Error('Something failed')
 const result = Err.cleanStackWithStats(error.stack, {
   removeInternal: true,
   filterPatterns: ['node_modules'],
-  maxFrames: 10,
+  maxFrames: 10
 })
 
 // [!code word:log:1]
@@ -449,13 +447,13 @@ const data = await Err.tryCatch(fetch(url)) // Response | Error
 
 // With custom predicates
 const isNetworkError = (e: unknown): e is NetworkError =>
-  // [!code word:name:1]
+// [!code word:name:1]
   e instanceof Error && e.name === 'NetworkError'
 
 // [!code word:tryCatch:1]
 const response = Err.tryCatch(
   () => fetch(url),
-  [isNetworkError],
+  [isNetworkError]
 ) // Response | NetworkError
 ```
 
@@ -497,7 +495,7 @@ const error = parseJsonSafe('invalid') // SyntaxError
 
 // With custom error predicates
 const isNetworkError = (e: unknown): e is NetworkError =>
-  // [!code word:name:1]
+// [!code word:name:1]
   e instanceof Error && e.name === 'NetworkError'
 
 // [!code word:tryCatchify:1]
@@ -568,28 +566,28 @@ import { Err } from '@wollybeard/kit/err'
 // [!code word:tryOrRethrow:1]
 const data = await Err.tryOrRethrow(
   fetchData,
-  'Failed to fetch data',
+  'Failed to fetch data'
 )
 
 // With options
 // [!code word:tryOrRethrow:1]
 const user = await Err.tryOrRethrow(
   () => fetchUser(userId),
-  { message: 'Failed to fetch user', context: { userId } },
+  { message: 'Failed to fetch user', context: { userId } }
 )
 
 // With wrapper function
 // [!code word:tryOrRethrow:1]
 const result = await Err.tryOrRethrow(
   riskyOperation,
-  wrapWith('Operation failed'),
+  wrapWith('Operation failed')
 )
 
 // Custom error wrapper
 // [!code word:tryOrRethrow:1]
 const config = await Err.tryOrRethrow(
   loadConfig,
-  (cause) => new ConfigError('Failed to load config', { cause }),
+  (cause) => new ConfigError('Failed to load config', { cause })
 )
 ```
 
@@ -621,14 +619,14 @@ import { Err } from '@wollybeard/kit/err'
 // [!code word:tryAllOrRethrow:1]
 const [users, posts] = await Err.tryAllOrRethrow(
   [fetchUsers, fetchPosts],
-  'Failed to load data',
+  'Failed to load data'
 )
 
 // With context
 // [!code word:tryAllOrRethrow:1]
 const [config, schema, data] = await Err.tryAllOrRethrow(
   [loadConfig, loadSchema, loadData],
-  { message: 'Failed to initialize', context: { env: 'production' } },
+  { message: 'Failed to initialize', context: { env: 'production' } }
 )
 ```
 
@@ -662,23 +660,23 @@ import { Err } from '@wollybeard/kit/err'
 // Sync function with sync fallback
 // [!code word:tryOr:1]
 const data = Err.tryOr(
-  // [!code word:parse:1]
+// [!code word:parse:1]
   () => JSON.parse(input),
-  { error: 'Invalid JSON' },
+  { error: 'Invalid JSON' }
 )
 
 // Async function with sync fallback
 // [!code word:tryOr:1]
 const config = await Err.tryOr(
   async () => loadConfig(),
-  () => getDefaultConfig(),
+  () => getDefaultConfig()
 )
 
 // Async function with async fallback
 // [!code word:tryOr:1]
 const data = await Err.tryOr(
   async () => fetchFromPrimary(),
-  async () => fetchFromSecondary(),
+  async () => fetchFromSecondary()
 )
 
 // This would be a TYPE ERROR:
@@ -718,14 +716,14 @@ import { Err } from '@wollybeard/kit/err'
 // [!code word:tryOrAsync:1]
 const data = await Err.tryOrAsync(
   () => readFileSync('config.json'),
-  async () => fetchDefaultConfig(),
+  async () => fetchDefaultConfig()
 )
 
 // Ensures consistent Promise return
 // [!code word:tryOrAsync:1]
 const result = await Err.tryOrAsync(
   () => 42,
-  () => 'fallback',
+  () => 'fallback'
 ) // Always Promise<number | string>
 ```
 
@@ -821,7 +819,7 @@ const result2 = orDefault(() => getLatestData())
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `tryOrUndefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L351" /> {#c-try-or-undefined-351}
 
 ```typescript
-;(<success>(fn: () => success) => TryOrReturn<success, undefined>)
+<success>(fn: () => success) => TryOrReturn<success, undefined>
 ```
 
 Try to execute a function and return undefined if it throws. Shorthand for `tryOrWith(undefined)`.
@@ -841,7 +839,7 @@ const data = Err.tryOrUndefined(() => localStorage.getItem('key'))
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `tryOrNull`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/try.ts#L365" /> {#c-try-or-null-365}
 
 ```typescript
-;(<success>(fn: () => success) => TryOrReturn<success, null>)
+<success>(fn: () => success) => TryOrReturn<success, null>
 ```
 
 Try to execute a function and return null if it throws. Shorthand for `tryOrWith(null)`.
@@ -920,12 +918,12 @@ const controller = new AbortController()
 controller.abort()
 
 try {
-  // [!code word:signal:1]
+// [!code word:signal:1]
   await fetch(url, { signal: controller.signal })
 } catch (error) {
-  // [!code word:isAbortError:1]
+// [!code word:isAbortError:1]
   if (Err.isAbortError(error)) {
-    // [!code word:log:1]
+// [!code word:log:1]
     console.log('Request was aborted')
   }
 }
@@ -936,9 +934,7 @@ try {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[∩]`</span> `ContextualError`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/contextual.ts#L6" /> {#intersection-contextual-error-6}
 
 ```typescript
-type ContextualError<
-  $Context extends Record<string, unknown> = Record<string, unknown>,
-> = Error & {
+type ContextualError<$Context extends Record<string, unknown> = Record<string, unknown>> = Error & {
   context: $Context
 }
 ```
@@ -1006,7 +1002,7 @@ const safe = Err.throwNull(maybeNull, 'Custom error message')
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `defaultThrowNullMessage`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/$$.ts#L52" /> {#c-default-throw-null-message-52}
 
 ```typescript
-'Unexpected null value.'
+"Unexpected null value."
 ```
 
 Default error message used by throwNull when no custom message is provided.
@@ -1068,7 +1064,7 @@ import { Err } from '@wollybeard/kit/err'
 const error = Err.createContextualError('Failed to fetch user', {
   userId: '123',
   endpoint: '/api/users',
-  statusCode: 404,
+  statusCode: 404
 })
 
 // [!code word:log:1]
@@ -1119,7 +1115,7 @@ import { Err } from '@wollybeard/kit/err'
 try {
   await fetchData()
 } catch (error) {
-  // [!code word:wrap:1]
+// [!code word:wrap:1]
   throw Err.wrap(error, 'Failed to fetch data')
 }
 
@@ -1127,10 +1123,10 @@ try {
 try {
   await fetchUser(userId)
 } catch (error) {
-  // [!code word:wrap:1]
+// [!code word:wrap:1]
   throw Err.wrap(error, {
     message: 'Failed to fetch user',
-    context: { userId },
+    context: { userId }
   })
 }
 ```
@@ -1138,7 +1134,7 @@ try {
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/wrap.ts#L83" /> {#c-wrap-on-83}
 
 ```typescript
-;((cause: unknown) => (messageOrOptions: string | WrapOptions) => Error)
+(cause: unknown) => (messageOrOptions: string | WrapOptions) => Error
 ```
 
 Curried version of wrap that takes the error first. Useful for error handling pipelines.
@@ -1157,7 +1153,7 @@ throw wrapFetchError('Failed to fetch data')
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/err/wrap.ts#L108" /> {#c-wrap-with-108}
 
 ```typescript
-;((messageOrOptions: string | WrapOptions) => (cause: unknown) => Error)
+(messageOrOptions: string | WrapOptions) => (cause: unknown) => Error
 ```
 
 Curried version of wrap that takes the message/options first. Useful for creating reusable error wrappers.
@@ -1181,7 +1177,7 @@ try {
 // [!code word:wrapWith:1]
 const wrapAsUserError = Err.wrapWith({
   message: 'Failed to process user',
-  context: { operation: 'update' },
+  context: { operation: 'update' }
 })
 ```
 

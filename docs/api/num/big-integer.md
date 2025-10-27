@@ -312,7 +312,7 @@ BigInteger
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L129" /> {#c-add-on-129}
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+((a: BigInteger) => (b: BigInteger) => BigInteger)
 ```
 
 Create a function that operates on a specific BigInteger by adding to it. Data-first pattern: the fixed value is the first parameter.
@@ -320,7 +320,7 @@ Create a function that operates on a specific BigInteger by adding to it. Data-f
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L147" /> {#c-add-with-147}
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+((b: BigInteger) => (a: BigInteger) => BigInteger)
 ```
 
 Create a function that adds with a specific BigInteger value. Data-second pattern: the fixed value is the second parameter.
@@ -328,7 +328,7 @@ Create a function that adds with a specific BigInteger value. Data-second patter
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L177" /> {#c-subtract-with-177}
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+((b: BigInteger) => (a: BigInteger) => BigInteger)
 ```
 
 Create a function that subtracts with a specific BigInteger. Data-second pattern: the fixed value is the second parameter (subtrahend).
@@ -336,7 +336,7 @@ Create a function that subtracts with a specific BigInteger. Data-second pattern
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L191" /> {#c-subtract-on-191}
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+((a: BigInteger) => (b: BigInteger) => BigInteger)
 ```
 
 Create a function that operates on a specific BigInteger by subtracting from it. Data-first pattern: the fixed value is the first parameter (minuend).
@@ -344,7 +344,7 @@ Create a function that operates on a specific BigInteger by subtracting from it.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L227" /> {#c-multiply-on-227}
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+((a: BigInteger) => (b: BigInteger) => BigInteger)
 ```
 
 Create a function that operates on a specific BigInteger by multiplying it. Data-first pattern: the fixed value is the first parameter.
@@ -352,7 +352,7 @@ Create a function that operates on a specific BigInteger by multiplying it. Data
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L244" /> {#c-multiply-with-244}
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+((b: BigInteger) => (a: BigInteger) => BigInteger)
 ```
 
 Create a function that multiplies with a specific BigInteger. Data-second pattern: the fixed value is the second parameter (multiplier).
@@ -360,7 +360,7 @@ Create a function that multiplies with a specific BigInteger. Data-second patter
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L281" /> {#c-divide-on-281}
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+((a: BigInteger) => (b: BigInteger) => BigInteger)
 ```
 
 Create a function that operates on a specific BigInteger by dividing it. Data-first pattern: the fixed value is the first parameter (dividend).
@@ -368,7 +368,7 @@ Create a function that operates on a specific BigInteger by dividing it. Data-fi
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L298" /> {#c-divide-with-298}
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+((b: BigInteger) => (a: BigInteger) => BigInteger)
 ```
 
 Create a function that divides by a specific BigInteger. Data-second pattern: the fixed value is the second parameter (divisor).
@@ -376,7 +376,7 @@ Create a function that divides by a specific BigInteger. Data-second pattern: th
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `remainderOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L335" /> {#c-remainder-on-335}
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => BigInteger)
+((a: BigInteger) => (b: BigInteger) => BigInteger)
 ```
 
 Create a function that operates on a specific BigInteger to get its remainder. Data-first pattern: the fixed value is the first parameter (dividend).
@@ -384,7 +384,7 @@ Create a function that operates on a specific BigInteger to get its remainder. D
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `remainderWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L351" /> {#c-remainder-with-351}
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => BigInteger)
+((b: BigInteger) => (a: BigInteger) => BigInteger)
 ```
 
 Create a function that gets remainder with a specific divisor. Data-second pattern: the fixed value is the second parameter (divisor).
@@ -392,7 +392,7 @@ Create a function that gets remainder with a specific divisor. Data-second patte
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L388" /> {#c-power-on-388}
 
 ```typescript
-;((base: BigInteger) => (exponent: BigInteger) => BigInteger)
+((base: BigInteger) => (exponent: BigInteger) => BigInteger)
 ```
 
 Create a function that operates on a specific BigInteger base by raising it to powers. Data-first pattern: the fixed value is the first parameter (base).
@@ -400,7 +400,7 @@ Create a function that operates on a specific BigInteger base by raising it to p
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L406" /> {#c-power-with-406}
 
 ```typescript
-;((exponent: BigInteger) => (base: BigInteger) => BigInteger)
+((exponent: BigInteger) => (base: BigInteger) => BigInteger)
 ```
 
 Create a function that raises to a specific power. Data-second pattern: the fixed value is the second parameter (exponent).
@@ -408,7 +408,7 @@ Create a function that raises to a specific power. Data-second pattern: the fixe
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L456" /> {#c-compare-on-456}
 
 ```typescript
-;((a: BigInteger) => (b: BigInteger) => 0 | 1 | -1)
+((a: BigInteger) => (b: BigInteger) => 0 | 1 | -1)
 ```
 
 Create a function that operates on a specific BigInteger by comparing it. Data-first pattern: the fixed value is the first parameter.
@@ -416,7 +416,7 @@ Create a function that operates on a specific BigInteger by comparing it. Data-f
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/big-integer/big-integer.ts#L474" /> {#c-compare-with-474}
 
 ```typescript
-;((b: BigInteger) => (a: BigInteger) => 0 | 1 | -1)
+((b: BigInteger) => (a: BigInteger) => 0 | 1 | -1)
 ```
 
 Create a function that compares with a specific BigInteger. Data-second pattern: the fixed value is the second parameter.

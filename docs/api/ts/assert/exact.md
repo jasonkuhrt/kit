@@ -17,169 +17,127 @@ import { exact } from '@wollybeard/kit/ts'
 
 :::
 
-## Constants
+## Functions
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L208" /> {#c-array-208}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `ofAs`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L257" /> {#f-of-as-257}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, ExactKind>,
-    any[],
-    false,
-    false
-  >
->
+<$Type>(): DispatchAfterInput<State.SetExpectedType<State.SetRelator<State.Empty, ExactKind>, $Type>>
+```
+
+## Constants
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L240" /> {#c-any-240}
+
+```typescript
+InputActualAsValueNarrow<State.SetExpectedType<State.SetAllowAny<State.SetRelator<State.Empty, ExactKind>>, any>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L73" /> {#c-bigint-73}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, ExactKind>,
-    bigint,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, ExactKind>, bigint>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boolean`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L88" /> {#c-boolean-88}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, ExactKind>,
-    boolean,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, ExactKind>, boolean>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L148" /> {#c-date-148}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L180" /> {#c-date-180}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, Date, false, false>
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, ExactKind>, Date>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L178" /> {#c-error-178}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L210" /> {#c-error-210}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, ExactKind>,
-    Error,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, ExactKind>, Error>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L118" /> {#c-null-118}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `false`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L120" /> {#c-false-120}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<State.SetRelator<State.Empty, ExactKind>, null, false, false>
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, ExactKind>, false>>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `never`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L255" /> {#c-never-255}
+
+```typescript
+InputActualAsValueNarrow<State.SetExpectedType<State.SetAllowNever<State.SetRelator<State.Empty, ExactKind>>, never>>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `noExcess`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L259" /> {#c-no-excess-259}
+
+```typescript
+never
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L150" /> {#c-null-150}
+
+```typescript
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, ExactKind>, null>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `number`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L58" /> {#c-number-58}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, ExactKind>,
-    number,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, ExactKind>, number>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L28" /> {#c-of-28}
 
 ```typescript
-InputMatcherArgFactory<State.SetRelator<State.Empty, ExactKind>>
+InputExpectedAsValueNarrow<State.SetRelator<State.Empty, ExactKind>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Promise`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L193" /> {#c-promise-193}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L195" /> {#c-reg-exp-195}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, ExactKind>,
-    Promise<any>,
-    false,
-    false
-  >
->
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L163" /> {#c-reg-exp-163}
-
-```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, ExactKind>,
-    RegExp,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, ExactKind>, RegExp>>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L43" /> {#c-string-43}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, ExactKind>,
-    string,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, ExactKind>, string>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L133" /> {#c-symbol-133}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L165" /> {#c-symbol-165}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, ExactKind>,
-    symbol,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, ExactKind>, symbol>>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L103" /> {#c-undefined-103}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `true`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L104" /> {#c-true-104}
 
 ```typescript
-InputActualFactory<
-  State.SetMatcher<
-    State.SetRelator<State.Empty, ExactKind>,
-    undefined,
-    false,
-    false
-  >
->
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, ExactKind>, true>>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L135" /> {#c-undefined-135}
+
+```typescript
+InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, ExactKind>, undefined>>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `unknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L225" /> {#c-unknown-225}
+
+```typescript
+InputActualAsValueNarrow<State.SetExpectedType<State.SetAllowUnknown<State.SetRelator<State.Empty, ExactKind>>, unknown>>
 ```
 
 ## Types
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Array`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L207" /> {#t-array-207}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L239" /> {#t-any-239}
 
 ```typescript
-type Array_<$Actual> = Kind.Apply<ExactKind, [any[], $Actual]>
+type any_<$Actual> = Kind.Apply<ExactKind, [any, $Actual]>
 ```
 
-Pre-curried matcher for any[].
+Pre-curried matcher for any.
 
 **Examples:**
 
@@ -188,10 +146,10 @@ Pre-curried matcher for any[].
 import { Ts } from '@wollybeard/kit/ts'
 // ---cut---
 // ✓ Pass
-type _ = Assert.exact.Array<any[]>
+type _ = Assert.exact.any<any>
 
 // ✗ Fail
-type _ = Assert.exact.Array<string>
+type _ = Assert.exact.any<string>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L72" /> {#t-bigint-72}
@@ -236,7 +194,7 @@ type _ = Assert.exact.boolean<boolean>
 type _ = Assert.exact.boolean<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L147" /> {#t-date-147}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L179" /> {#t-date-179}
 
 ```typescript
 type Date_<$Actual> = Kind.Apply<ExactKind, [Date, $Actual]>
@@ -257,7 +215,7 @@ type _ = Assert.exact.Date<Date>
 type _ = Assert.exact.Date<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L177" /> {#t-error-177}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L209" /> {#t-error-209}
 
 ```typescript
 type Error_<$Actual> = Kind.Apply<ExactKind, [Error, $Actual]>
@@ -278,7 +236,56 @@ type _ = Assert.exact.Error<Error>
 type _ = Assert.exact.Error<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L117" /> {#t-null-117}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `false`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L119" /> {#t-false-119}
+
+```typescript
+type false_<$Actual> = Kind.Apply<ExactKind, [false, $Actual]>
+```
+
+Pre-curried matcher for false literal.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// ✓ Pass
+type _ = Assert.exact.false<false>
+
+// ✗ Fail
+type _ = Assert.exact.false<true>
+type _ = Assert.exact.false<boolean>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `never`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L254" /> {#t-never-254}
+
+```typescript
+type never_<$Actual> = Kind.Apply<ExactKind, [never, $Actual]>
+```
+
+Pre-curried matcher for never.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// ✓ Pass
+type _ = Assert.exact.never<never>
+
+// ✗ Fail
+type _ = Assert.exact.never<string>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `noExcess`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L258" /> {#t-no-excess-258}
+
+```typescript
+type noExcess_ = never
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L149" /> {#t-null-149}
 
 ```typescript
 type null_<$Actual> = Kind.Apply<ExactKind, [null, $Actual]>
@@ -330,28 +337,7 @@ base + exact relation matchers.
 
 Direct type assertion Relation: exact structural equality
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `Promise`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L192" /> {#t-promise-192}
-
-```typescript
-type Promise_<$Actual> = Kind.Apply<ExactKind, [Promise<any>, $Actual]>
-```
-
-Pre-curried matcher for Promise.
-
-**Examples:**
-
-```typescript twoslash
-// @noErrors
-import { Ts } from '@wollybeard/kit/ts'
-// ---cut---
-// ✓ Pass
-type _ = Assert.exact.Promise<Promise<any>>
-
-// ✗ Fail
-type _ = Assert.exact.Promise<string>
-```
-
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L162" /> {#t-reg-exp-162}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L194" /> {#t-reg-exp-194}
 
 ```typescript
 type RegExp_<$Actual> = Kind.Apply<ExactKind, [RegExp, $Actual]>
@@ -393,7 +379,7 @@ type _ = Assert.exact.string<string>
 type _ = Assert.exact.string<number>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L132" /> {#t-symbol-132}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L164" /> {#t-symbol-164}
 
 ```typescript
 type symbol_<$Actual> = Kind.Apply<ExactKind, [symbol, $Actual]>
@@ -414,7 +400,29 @@ type _ = Assert.exact.symbol<symbol>
 type _ = Assert.exact.symbol<string>
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L102" /> {#t-undefined-102}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `true`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L103" /> {#t-true-103}
+
+```typescript
+type true_<$Actual> = Kind.Apply<ExactKind, [true, $Actual]>
+```
+
+Pre-curried matcher for true literal.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// ✓ Pass
+type _ = Assert.exact.true<true>
+
+// ✗ Fail
+type _ = Assert.exact.true<false>
+type _ = Assert.exact.true<boolean>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L134" /> {#t-undefined-134}
 
 ```typescript
 type undefined_<$Actual> = Kind.Apply<ExactKind, [undefined, $Actual]>
@@ -433,4 +441,25 @@ type _ = Assert.exact.undefined<undefined>
 
 // ✗ Fail
 type _ = Assert.exact.undefined<string>
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `unknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/exact.ts#L224" /> {#t-unknown-224}
+
+```typescript
+type unknown_<$Actual> = Kind.Apply<ExactKind, [unknown, $Actual]>
+```
+
+Pre-curried matcher for unknown.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Ts } from '@wollybeard/kit/ts'
+// ---cut---
+// ✓ Pass
+type _ = Assert.exact.unknown<unknown>
+
+// ✗ Fail
+type _ = Assert.exact.unknown<string>
 ```

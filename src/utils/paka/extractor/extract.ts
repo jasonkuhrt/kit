@@ -112,19 +112,6 @@ export const extractFromFiles = (params: {
     }
 
     // Check for Drillable Namespace Pattern
-    // Detection criteria vary by entrypoint type:
-    //
-    // For main entrypoint '.':
-    // 1. Main entrypoint has namespace export: export * as Name from './path'
-    // 2. Namespace name (PascalCase) converts to kebab-case
-    // 3. Subpath export ./kebab-name exists in package.json
-    // 4. Both namespace export and subpath export resolve to same source file
-    //
-    // For subpath entrypoints (e.g., './arr'):
-    // 1. Check if sibling $.ts file exists (e.g., arr/$.ts when entrypoint points to arr/$$.ts)
-    // 2. Check if $.ts has namespace export matching the entrypoint name
-    // 3. Check if namespace export points to the entrypoint's target file
-    // 4. If so, use $.ts as source and mark as drillable
     let actualSourceFile = sourceFile
     let namespaceDescription: string | undefined
     let namespaceCategory: string | undefined
@@ -183,45 +170,66 @@ export const extractFromFiles = (params: {
         }
       }
     } else {
-      // For subpath entrypoints, check if there's a sibling $.ts file with matching namespace export
-      // Example: './arr' points to 'arr/$$.ts', check if 'arr/$.ts' exists with 'export * as Arr from "./$$.js"'
+      // For subpath entrypoints, detect drillable namespace pattern in two ways:
+      //
+      // Pattern A: Entrypoint file itself has namespace export pointing to barrel
+      // Example: './test' → 'test/$.ts' with 'export * as Test from './$$.js''
+      //
+      // Pattern B: Another file in same directory has namespace export pointing to entrypoint
+      // Example: './arr' → 'arr/$$.ts', and 'arr/$.ts' has 'export * as Arr from './$$.js''
+
       const sourceFileDir = sourceFile.getDirectory()
-      const sourceStem = sourceFile.getBaseNameWithoutExtension()
+      const expectedNsName = Str.Case.pascal(packagePath.replace(/^\.\//, ''))
 
-      // Check if this is a barrel file ($$.ts)
-      if (sourceStem === '$$') {
-        const siblingNamespaceFile = sourceFileDir.getSourceFile('$.ts')
+      // Pattern A: Check if entrypoint file has namespace export pointing elsewhere
+      const entrypointExports = sourceFile.getExportDeclarations()
+      for (const exportDecl of entrypointExports) {
+        const namespaceExport = exportDecl.getNamespaceExport()
+        if (!namespaceExport) continue
 
-        if (siblingNamespaceFile) {
-          // Check if the namespace file has a namespace export matching the entrypoint name
-          const exportDeclarations = siblingNamespaceFile.getExportDeclarations()
+        const nsName = namespaceExport.getName()
+        if (nsName.toLowerCase() === expectedNsName.toLowerCase()) {
+          const nsReferencedFile = exportDecl.getModuleSpecifierSourceFile()
+          if (nsReferencedFile && nsReferencedFile.getFilePath() !== sourceFile.getFilePath()) {
+            isDrillableNamespace = true
+            actualSourceFile = nsReferencedFile
+            const namespaceDecl = sourceFile.getModules().find((m) => m.getName() === nsName)
+            if (namespaceDecl) {
+              const jsdoc = parseJSDoc(namespaceDecl)
+              namespaceDescription = jsdoc.description
+              namespaceCategory = jsdoc.category
+            } else {
+              const jsdoc = parseJSDoc(exportDecl)
+              namespaceDescription = jsdoc.description
+              namespaceCategory = jsdoc.category
+            }
+            break
+          }
+        }
+      }
 
-          // Extract expected namespace name from packagePath (e.g., './arr' -> 'Arr')
-          const expectedNsName = Str.Case.pascal(packagePath.replace(/^\.\//, ''))
+      // Pattern B: Check if other files in directory have namespace export pointing to entrypoint
+      if (!isDrillableNamespace) {
+        for (const siblingFile of sourceFileDir.getSourceFiles()) {
+          if (siblingFile.getFilePath() === sourceFile.getFilePath()) continue
 
-          for (const exportDecl of exportDeclarations) {
+          const siblingExports = siblingFile.getExportDeclarations()
+          for (const exportDecl of siblingExports) {
             const namespaceExport = exportDecl.getNamespaceExport()
             if (!namespaceExport) continue
 
             const nsName = namespaceExport.getName()
-
-            // Check if namespace name matches entrypoint name (case-insensitive)
             if (nsName.toLowerCase() === expectedNsName.toLowerCase()) {
-              // Check if namespace export points to the barrel file
               const nsReferencedFile = exportDecl.getModuleSpecifierSourceFile()
               if (nsReferencedFile && nsReferencedFile.getFilePath() === sourceFile.getFilePath()) {
-                // This is a drillable namespace!
                 isDrillableNamespace = true
-                // Keep actualSourceFile as the barrel file ($$.ts), not the namespace wrapper
-                // We want to extract the barrel's contents, just use the wrapper's JSDoc
-                // Extract JSDoc: prefer namespace declaration (better IDE experience) over export declaration (fallback)
-                const namespaceDecl = siblingNamespaceFile.getModules().find((m) => m.getName() === nsName)
+                // Keep actualSourceFile as the barrel (entrypoint), use sibling's JSDoc
+                const namespaceDecl = siblingFile.getModules().find((m) => m.getName() === nsName)
                 if (namespaceDecl) {
                   const jsdoc = parseJSDoc(namespaceDecl)
                   namespaceDescription = jsdoc.description
                   namespaceCategory = jsdoc.category
                 } else {
-                  // Fallback: read JSDoc from export * as declaration
                   const jsdoc = parseJSDoc(exportDecl)
                   namespaceDescription = jsdoc.description
                   namespaceCategory = jsdoc.category
@@ -230,6 +238,7 @@ export const extractFromFiles = (params: {
               }
             }
           }
+          if (isDrillableNamespace) break
         }
       }
     }
@@ -441,45 +450,66 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
         }
       }
     } else {
-      // For subpath entrypoints, check if there's a sibling $.ts file with matching namespace export
-      // Example: './arr' points to 'arr/$$.ts', check if 'arr/$.ts' exists with 'export * as Arr from "./$$.js"'
+      // For subpath entrypoints, detect drillable namespace pattern in two ways:
+      //
+      // Pattern A: Entrypoint file itself has namespace export pointing to barrel
+      // Example: './test' → 'test/$.ts' with 'export * as Test from './$$.js''
+      //
+      // Pattern B: Another file in same directory has namespace export pointing to entrypoint
+      // Example: './arr' → 'arr/$$.ts', and 'arr/$.ts' has 'export * as Arr from './$$.js''
+
       const sourceFileDir = sourceFile.getDirectory()
-      const sourceStem = sourceFile.getBaseNameWithoutExtension()
+      const expectedNsName = Str.Case.pascal(packagePath.replace(/^\.\//, ''))
 
-      // Check if this is a barrel file ($$.ts)
-      if (sourceStem === '$$') {
-        const siblingNamespaceFile = sourceFileDir.getSourceFile('$.ts')
+      // Pattern A: Check if entrypoint file has namespace export pointing elsewhere
+      const entrypointExports = sourceFile.getExportDeclarations()
+      for (const exportDecl of entrypointExports) {
+        const namespaceExport = exportDecl.getNamespaceExport()
+        if (!namespaceExport) continue
 
-        if (siblingNamespaceFile) {
-          // Check if the namespace file has a namespace export matching the entrypoint name
-          const exportDeclarations = siblingNamespaceFile.getExportDeclarations()
+        const nsName = namespaceExport.getName()
+        if (nsName.toLowerCase() === expectedNsName.toLowerCase()) {
+          const nsReferencedFile = exportDecl.getModuleSpecifierSourceFile()
+          if (nsReferencedFile && nsReferencedFile.getFilePath() !== sourceFile.getFilePath()) {
+            isDrillableNamespace = true
+            actualSourceFile = nsReferencedFile
+            const namespaceDecl = sourceFile.getModules().find((m) => m.getName() === nsName)
+            if (namespaceDecl) {
+              const jsdoc = parseJSDoc(namespaceDecl)
+              namespaceDescription = jsdoc.description
+              namespaceCategory = jsdoc.category
+            } else {
+              const jsdoc = parseJSDoc(exportDecl)
+              namespaceDescription = jsdoc.description
+              namespaceCategory = jsdoc.category
+            }
+            break
+          }
+        }
+      }
 
-          // Extract expected namespace name from packagePath (e.g., './arr' -> 'Arr')
-          const expectedNsName = Str.Case.pascal(packagePath.replace(/^\.\//, ''))
+      // Pattern B: Check if other files in directory have namespace export pointing to entrypoint
+      if (!isDrillableNamespace) {
+        for (const siblingFile of sourceFileDir.getSourceFiles()) {
+          if (siblingFile.getFilePath() === sourceFile.getFilePath()) continue
 
-          for (const exportDecl of exportDeclarations) {
+          const siblingExports = siblingFile.getExportDeclarations()
+          for (const exportDecl of siblingExports) {
             const namespaceExport = exportDecl.getNamespaceExport()
             if (!namespaceExport) continue
 
             const nsName = namespaceExport.getName()
-
-            // Check if namespace name matches entrypoint name (case-insensitive)
             if (nsName.toLowerCase() === expectedNsName.toLowerCase()) {
-              // Check if namespace export points to the barrel file
               const nsReferencedFile = exportDecl.getModuleSpecifierSourceFile()
               if (nsReferencedFile && nsReferencedFile.getFilePath() === sourceFile.getFilePath()) {
-                // This is a drillable namespace!
                 isDrillableNamespace = true
-                // Keep actualSourceFile as the barrel file ($$.ts), not the namespace wrapper
-                // We want to extract the barrel's contents, just use the wrapper's JSDoc
-                // Extract JSDoc: prefer namespace declaration (better IDE experience) over export declaration (fallback)
-                const namespaceDecl = siblingNamespaceFile.getModules().find((m) => m.getName() === nsName)
+                // Keep actualSourceFile as the barrel (entrypoint), use sibling's JSDoc
+                const namespaceDecl = siblingFile.getModules().find((m) => m.getName() === nsName)
                 if (namespaceDecl) {
                   const jsdoc = parseJSDoc(namespaceDecl)
                   namespaceDescription = jsdoc.description
                   namespaceCategory = jsdoc.category
                 } else {
-                  // Fallback: read JSDoc from export * as declaration
                   const jsdoc = parseJSDoc(exportDecl)
                   namespaceDescription = jsdoc.description
                   namespaceCategory = jsdoc.category
@@ -488,6 +518,7 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
               }
             }
           }
+          if (isDrillableNamespace) break
         }
       }
     }

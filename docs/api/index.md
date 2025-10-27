@@ -71,16 +71,17 @@ These functions measure and manipulate strings based on their visual appearance,
 
 Enhanced test utilities for table-driven testing with Vitest.
 
-- [`Test`](/api/test/test) - Custom Vitest matchers for Effect Schema and equivalence testing.
-
 ## [Ts](/api/ts)
 
 TypeScript type utilities and type-level programming helpers.
 
 - [`Assert`](/api/ts/assert)
+- [`Err`](/api/ts/err) - Error utilities for working with static type-level errors.
+- [`Inhabitance`](/api/ts/inhabitance) - Type utilities for classifying types by their inhabitance in TypeScript's type lattice.
 - [`Kind`](/api/ts/kind) - Higher-kinded type utilities for type-level programming. Provides type-level functions and utilities for simulating higher-kinded types in TypeScript.
 - [`SENTINEL`](/api/ts/sentinel) - Utilities for working with the SENTINEL type.
 - [`SimpleSignature`](/api/ts/simplesignature) - Utilities for working with the `__simpleSignature` phantom type pattern. Allows complex generic functions to provide simpler signatures for type inference.
+- [`Simplify`](/api/ts/simplify) - Type simplification utilities for flattening and expanding types. All functions automatically preserve globally registered types from KitLibrarySettings.Ts.PreserveTypes.
 - [`Union`](/api/ts/union) - Utilities for working with union types at the type level.
 - [`VariancePhantom`](/api/ts/variancephantom) - Phantom type helpers for controlling type variance (covariance, contravariance, invariance, bivariance).
 

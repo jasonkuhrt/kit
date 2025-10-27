@@ -25,7 +25,31 @@ import { Visual } from '@wollybeard/kit/str'
 
 ## Text Formatting
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `width`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L66" /> {#f-width-66}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `strip`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L64" /> {#c-strip-64}
+
+```typescript
+(s: string) => string
+```
+
+Remove all ANSI escape codes from text.
+
+Strips color codes, styles, cursor movements, and other escape sequences, leaving only the raw visible text.
+
+**Examples:**
+
+```typescript twoslash
+// @noErrors
+import { Str } from '@wollybeard/kit/str'
+// ---cut---
+const colored = '\x1b[31mred\x1b[0m text'
+// [!code word:strip:1]
+Str.Visual.strip(colored)  // 'red text'
+
+// [!code word:strip:1]
+Str.Visual.strip('plain text')  // 'plain text' (unchanged)
+```
+
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `width`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L92" /> {#f-width-92}
 
 ```typescript
 (text: string): number
@@ -52,24 +76,24 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // ANSI codes are stripped
 // [!code word:width:1]
-Str.Visual.width('\x1b[31mred\x1b[0m') // 3
+Str.Visual.width('\x1b[31mred\x1b[0m')  // 3
 
 // Grapheme clusters count as 1
 // [!code word:width:1]
-Str.Visual.width('👨‍👩‍👧‍👦') // 1 (family emoji)
+Str.Visual.width('👨‍👩‍👧‍👦')              // 1 (family emoji)
 // [!code word:width:1]
-Str.Visual.width('é') // 1 (e + combining accent)
+Str.Visual.width('é')                   // 1 (e + combining accent)
 // [!code word:width:1]
-Str.Visual.width('🇺🇸') // 1 (flag emoji)
+Str.Visual.width('🇺🇸')                  // 1 (flag emoji)
 
 // Empty string
 // [!code word:width:1]
-Str.Visual.width('') // 0
+Str.Visual.width('')                    // 0
 // [!code word:width:1]
-Str.Visual.width('\x1b[31m\x1b[0m') // 0 (only ANSI codes)
+Str.Visual.width('\x1b[31m\x1b[0m')     // 0 (only ANSI codes)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pad`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L102" /> {#f-pad-102}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `pad`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L128" /> {#f-pad-128}
 
 ```typescript
 (text: string, size: number, side?: "left" | "right" = `left`, char?: string = defaultPadCharacter): string
@@ -96,36 +120,30 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Regular text
 // [!code word:pad:1]
-Str.Visual.pad('hi', 5, 'right') // 'hi   ' (visual width 5)
+Str.Visual.pad('hi', 5, 'right')  // 'hi   ' (visual width 5)
 
 // With ANSI codes - padding accounts for escape codes
 const colored = '\x1b[31mOK\x1b[0m'
 // [!code word:pad:1]
-Str.Visual.pad(colored, 5, 'right') // Adds 3 spaces (visual: "OK   ")
+Str.Visual.pad(colored, 5, 'right')  // Adds 3 spaces (visual: "OK   ")
 
 // Text already wider than target size
 // [!code word:pad:1]
-Str.Visual.pad('hello', 3, 'left') // 'hello' (unchanged)
+Str.Visual.pad('hello', 3, 'left')  // 'hello' (unchanged)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L119" /> {#c-pad-on-119}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L145" /> {#c-pad-on-145}
 
 ```typescript
-;((text: string) =>
-(size: number) =>
-(side?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
+(text: string) => (size: number) => (side?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
 Curried version of pad with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L133" /> {#c-pad-with-133}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `padWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L159" /> {#c-pad-with-159}
 
 ```typescript
-;((size: number) =>
-(text: string) =>
-(side?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
+(size: number) => (text: string) => (side?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
 Curried version of pad with size first.
@@ -138,10 +156,10 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // [!code word:padWith:1]
 const pad10 = Str.Visual.padWith(10)
-pad10('\x1b[32mSuccess\x1b[0m', 'right') // Visual width 10
+pad10('\x1b[32mSuccess\x1b[0m', 'right')  // Visual width 10
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `span`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L161" /> {#f-span-161}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `span`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L187" /> {#f-span-187}
 
 ```typescript
 (text: string, width: number, align?: "left" | "right" = `left`, char?: string = defaultPadCharacter): string
@@ -168,36 +186,30 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Left-align (pad right)
 // [!code word:span:1]
-Str.Visual.span('hi', 5, 'left') // 'hi   '
+Str.Visual.span('hi', 5, 'left')     // 'hi   '
 
 // Right-align (pad left)
 // [!code word:span:1]
-Str.Visual.span('hi', 5, 'right') // '   hi'
+Str.Visual.span('hi', 5, 'right')    // '   hi'
 
 // With ANSI codes
 const colored = '\x1b[34mID\x1b[0m'
 // [!code word:span:1]
-Str.Visual.span(colored, 6, 'left') // Visual: "ID    "
+Str.Visual.span(colored, 6, 'left')  // Visual: "ID    "
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L176" /> {#c-span-on-176}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L202" /> {#c-span-on-202}
 
 ```typescript
-;((text: string) =>
-(width: number) =>
-(align?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
+(text: string) => (width: number) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
 Curried version of span with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L191" /> {#c-span-with-191}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `spanWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L217" /> {#c-span-with-217}
 
 ```typescript
-;((width: number) =>
-(text: string) =>
-(align?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
+(width: number) => (text: string) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
 Curried version of span with width first.
@@ -210,11 +222,11 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // [!code word:spanWith:1]
 const span8 = Str.Visual.spanWith(8)
-span8('Name', 'left') // 'Name    '
-span8('Age', 'right') // '     Age'
+span8('Name', 'left')   // 'Name    '
+span8('Age', 'right')   // '     Age'
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fit`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L234" /> {#f-fit-234}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `fit`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L260" /> {#f-fit-260}
 
 ```typescript
 (text: string, width: number, align?: "left" | "right" = `left`, char?: string = defaultPadCharacter): string
@@ -246,49 +258,43 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Text too long - gets cropped
 // [!code word:fit:1]
-Str.Visual.fit('hello world', 5, 'left') // 'hello'
+Str.Visual.fit('hello world', 5, 'left')  // 'hello'
 
 // Text too short - gets padded
 // [!code word:fit:1]
-Str.Visual.fit('hi', 5, 'left') // 'hi   '
+Str.Visual.fit('hi', 5, 'left')           // 'hi   '
 // [!code word:fit:1]
-Str.Visual.fit('hi', 5, 'right') // '   hi'
+Str.Visual.fit('hi', 5, 'right')          // '   hi'
 
 // Perfect fit - unchanged
 // [!code word:fit:1]
-Str.Visual.fit('exact', 5, 'left') // 'exact'
+Str.Visual.fit('exact', 5, 'left')        // 'exact'
 
 // With ANSI codes
 const colored = '\x1b[31mvery long colored text\x1b[0m'
 // [!code word:fit:1]
-Str.Visual.fit(colored, 8, 'left') // '\x1b[31mvery lon\x1b[0m' (visual: "very lon")
+Str.Visual.fit(colored, 8, 'left')        // '\x1b[31mvery lon\x1b[0m' (visual: "very lon")
 
 // Use case: Fixed-width table columns
 const columns = ['Name', 'Email', 'Status'].map(
-  // [!code word:fit:1]
-  (header, i) => Str.Visual.fit(header, [10, 20, 8][i], 'left'),
+// [!code word:fit:1]
+  (header, i) => Str.Visual.fit(header, [10, 20, 8][i], 'left')
 )
 // ['Name      ', 'Email               ', 'Status  ']
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L250" /> {#c-fit-on-250}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L276" /> {#c-fit-on-276}
 
 ```typescript
-;((text: string) =>
-(width: number) =>
-(align?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
+(text: string) => (width: number) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
 Curried version of fit with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L269" /> {#c-fit-with-269}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fitWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L295" /> {#c-fit-with-295}
 
 ```typescript
-;((width: number) =>
-(text: string) =>
-(align?: 'left' | 'right' | undefined) =>
-(char?: string | undefined) => string)
+(width: number) => (text: string) => (align?: "left" | "right" | undefined) => (char?: string | undefined) => string
 ```
 
 Curried version of fit with width first.
@@ -305,12 +311,12 @@ const nameColumn = Str.Visual.fitWith(20)
 // [!code word:fitWith:1]
 const statusColumn = Str.Visual.fitWith(10)
 
-nameColumn('John Doe', 'left') // 'John Doe            '
-statusColumn('Active', 'left') // 'Active    '
+nameColumn('John Doe', 'left')         // 'John Doe            '
+statusColumn('Active', 'left')         // 'Active    '
 statusColumn('Very Long Status', 'left') // 'Very Long '
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `take`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L295" /> {#f-take-295}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `take`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L321" /> {#f-take-321}
 
 ```typescript
 (text: string, size: number): string
@@ -335,30 +341,30 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // Regular text
 // [!code word:take:1]
-Str.Visual.take('hello', 3) // 'hel'
+Str.Visual.take('hello', 3)  // 'hel'
 
 // With ANSI codes
 const colored = '\x1b[31mhello\x1b[0m world'
 // [!code word:take:1]
-Str.Visual.take(colored, 5) // '\x1b[31mhello\x1b[0m' (visual: "hello")
+Str.Visual.take(colored, 5)  // '\x1b[31mhello\x1b[0m' (visual: "hello")
 
 // With emoji
 // [!code word:take:1]
-Str.Visual.take('👋 hello', 2) // '👋 ' (emoji + space)
+Str.Visual.take('👋 hello', 2)  // '👋 ' (emoji + space)
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L312" /> {#c-take-on-312}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L338" /> {#c-take-on-338}
 
 ```typescript
-;((text: string) => (size: number) => string)
+(text: string) => (size: number) => string
 ```
 
 Curried version of take with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L326" /> {#c-take-with-326}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L352" /> {#c-take-with-352}
 
 ```typescript
-;((size: number) => (text: string) => string)
+(size: number) => (text: string) => string
 ```
 
 Curried version of take with size first.
@@ -371,10 +377,10 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // [!code word:takeWith:1]
 const take10 = Str.Visual.takeWith(10)
-take10('a long string here') // First 10 visual chars
+take10('a long string here')  // First 10 visual chars
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `takeWords`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L356" /> {#f-take-words-356}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `takeWords`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L382" /> {#f-take-words-382}
 
 ```typescript
 (text: string, size: number): { taken: string; remaining: string; }
@@ -414,24 +420,18 @@ Str.Visual.takeWords(colored, 7)
 // { taken: '\x1b[32mone\x1b[0m two', remaining: 'three' }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWordsOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L399" /> {#c-take-words-on-399}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWordsOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L425" /> {#c-take-words-on-425}
 
 ```typescript
-;((text: string) => (size: number) => {
-  taken: string
-  remaining: string
-})
+(text: string) => (size: number) => { taken: string; remaining: string; }
 ```
 
 Curried version of takeWords with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWordsWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L414" /> {#c-take-words-with-414}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `takeWordsWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L440" /> {#c-take-words-with-440}
 
 ```typescript
-;((size: number) => (text: string) => {
-  taken: string
-  remaining: string
-})
+(size: number) => (text: string) => { taken: string; remaining: string; }
 ```
 
 Curried version of takeWords with size first.
@@ -448,7 +448,7 @@ take20('Lorem ipsum dolor sit amet')
 // { taken: 'Lorem ipsum dolor', remaining: 'sit amet' }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `wrap`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L443" /> {#f-wrap-443}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `wrap`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L469" /> {#f-wrap-469}
 
 ```typescript
 (text: string, width: number): string[]
@@ -488,7 +488,7 @@ Str.Visual.wrap(colored, 12)
 // ['\x1b[31mthis is red\x1b[0m', 'text and', 'normal']
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L466" /> {#c-wrap-on-466}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L492" /> {#c-wrap-on-492}
 
 ```typescript
 (text: string) => (width: number) => string[]
@@ -496,7 +496,7 @@ Str.Visual.wrap(colored, 12)
 
 Curried version of wrap with text first.
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L480" /> {#c-wrap-with-480}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `wrapWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L506" /> {#c-wrap-with-506}
 
 ```typescript
 (width: number) => (text: string) => string[]
@@ -512,10 +512,10 @@ import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // [!code word:wrapWith:1]
 const wrap80 = Str.Visual.wrapWith(80)
-wrap80('long text here...') // Wraps to 80 columns
+wrap80('long text here...')  // Wraps to 80 columns
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `size`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L507" /> {#f-size-507}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `size`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L533" /> {#f-size-533}
 
 ```typescript
 (text: string): { maxWidth: number; height: number; }
@@ -553,7 +553,7 @@ Str.Visual.size('')
 // { maxWidth: 0, height: 0 }
 ```
 
-### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `maxWidth`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L535" /> {#f-max-width-535}
+### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[F]`</span> `maxWidth`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/str/visual.ts#L561" /> {#f-max-width-561}
 
 ```typescript
 (text: string): number
@@ -576,9 +576,9 @@ Convenience function that returns just the width from size. Useful when you only
 import { Str } from '@wollybeard/kit/str'
 // ---cut---
 // [!code word:maxWidth:1]
-Str.Visual.maxWidth('short\nlonger line\nhi') // 11
+Str.Visual.maxWidth('short\nlonger line\nhi')  // 11
 
 // With ANSI codes
 // [!code word:maxWidth:1]
-Str.Visual.maxWidth('\x1b[31mred\x1b[0m\n\x1b[32mgreen\x1b[0m') // 5
+Str.Visual.maxWidth('\x1b[31mred\x1b[0m\n\x1b[32mgreen\x1b[0m')  // 5
 ```
