@@ -1,11 +1,10 @@
 import type { Obj } from '#obj'
 import type { Ts } from '#ts'
 import type { Kind } from '#ts/ts'
+import type { GetShowDiff } from '../../global-settings.js'
 import type { IsAny, IsNever } from '../../inhabitance.js'
 import type { Relation } from '../../relation.js'
 import type { StaticErrorAssertion } from '../assertion-error.js'
-import type { GetShowDiff } from '../../global-settings.js'
-// import type { AssertionKind } from '../helpers.js'
 
 interface AssertionKind extends Kind.Kind {}
 

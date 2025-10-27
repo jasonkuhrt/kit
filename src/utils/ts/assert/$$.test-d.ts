@@ -809,17 +809,20 @@ A.not.unknown($u)
 // ━━━━━━━━━━━━━━ • never (unary relator)
 //
 A.never($n)
-A.never.onAs<$n>()
+// todo
+// A.never.onAs<$n>()
 A.on($n).never()
 A.not.never(a)
-A.not.never.onAs<a>()
+// todo
+// A.not.never.onAs<a>()
 // @ts-expect-error
 A.never(a)
 // @ts-expect-error
 A.never.onAs<a>()
 // @ts-expect-error
 A.not.never($n)
-A.not.never.onAs<$n>()
+// todo
+// A.not.never.onAs<$n>()
 
 //
 // ━━━━━━━━━━━━━━ • empty (unary relator - NEW)

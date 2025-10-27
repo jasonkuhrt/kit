@@ -123,6 +123,9 @@ The project uses a highly modular architecture with 30+ specialized modules in `
 4. **Error Handling**: Use the `err` module's `try` utilities for consistent error handling patterns
 
 5. **Testing**: Tests use Vitest and follow the pattern `*.test.ts` or `*.test-d.ts` for type tests
+   - **Type Assertions**: Use value-level `Assert.exact.ofAs<E>().on(value)` API (reports ALL errors)
+   - **DO NOT use `Assert.Cases<>` or `Assert.Case<>`** unless explicitly instructed - they short-circuit on first failure
+   - See `~/.claude/CLAUDE.md` "Type Testing" section for detailed rationale
 
 6. **Type-Level Transformations**: Prefer conditional types over function overloads:
    ```typescript

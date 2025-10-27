@@ -434,8 +434,7 @@ declare global {
  *
  * @internal
  */
-export type GetErrorSetting<K extends keyof KitLibrarySettings.Ts.Error> =
-  KitLibrarySettings.Ts.Error[K]
+export type GetErrorSetting<K extends keyof KitLibrarySettings.Ts.Error> = KitLibrarySettings.Ts.Error[K]
 
 /**
  * Get the renderErrors setting with proper default handling.
@@ -452,8 +451,7 @@ export type GetRenderErrors<$Value = GetErrorSetting<'renderErrors'>> = boolean 
  *
  * @internal
  */
-export type GetAssertSetting<K extends keyof KitLibrarySettings.Ts.Assert> =
-  KitLibrarySettings.Ts.Assert[K]
+export type GetAssertSetting<K extends keyof KitLibrarySettings.Ts.Assert> = KitLibrarySettings.Ts.Assert[K]
 
 /**
  * Get the showDiff setting with proper default handling.
