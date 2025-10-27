@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+# Auto-format code before commit
+pnpm fix:format
+
+# Stage any formatting changes
+git add -u
+
+# Always succeed (never block commit)
+exit 0
