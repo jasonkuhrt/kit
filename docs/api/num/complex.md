@@ -356,7 +356,7 @@ Creates a human-readable string in standard mathematical notation (a + bi). Hand
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L107" /> {#c-from-with-107}
 
 ```typescript
-((real: number) => (imaginary?: number | undefined) => Complex)
+;((real: number) => (imaginary?: number | undefined) => Complex)
 ```
 
 Create a function that constructs complex numbers with a fixed real part. Useful for creating pure imaginary numbers or series.
@@ -364,7 +364,7 @@ Create a function that constructs complex numbers with a fixed real part. Useful
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L122" /> {#c-from-on-122}
 
 ```typescript
-((imaginary?: number | undefined) => (real: number) => Complex)
+;((imaginary?: number | undefined) => (real: number) => Complex)
 ```
 
 Create a function that constructs complex numbers with a fixed imaginary part. Useful for creating real numbers or series with constant imaginary component.
@@ -396,7 +396,7 @@ One complex number (1 + 0i).
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L217" /> {#c-add-on-217}
 
 ```typescript
-((a: Complex) => (b: Complex) => Complex)
+;((a: Complex) => (b: Complex) => Complex)
 ```
 
 Create a function that adds its input to a specific complex number.
@@ -406,7 +406,7 @@ This is the data-first curried version where the input becomes the first paramet
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L242" /> {#c-add-with-242}
 
 ```typescript
-((b: Complex) => (a: Complex) => Complex)
+;((b: Complex) => (a: Complex) => Complex)
 ```
 
 Create a function that adds a specific complex number to other complex numbers.
@@ -416,7 +416,7 @@ This is the data-second curried version where the fixed value is added to variou
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L270" /> {#c-subtract-with-270}
 
 ```typescript
-((a: Complex) => (b: Complex) => Complex)
+;((a: Complex) => (b: Complex) => Complex)
 ```
 
 Create a function that subtracts from a specific complex number.
@@ -424,7 +424,7 @@ Create a function that subtracts from a specific complex number.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `subtractOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L286" /> {#c-subtract-on-286}
 
 ```typescript
-((a: Complex) => (b: Complex) => Complex)
+;((a: Complex) => (b: Complex) => Complex)
 ```
 
 Create a function that subtracts from a specific complex number.
@@ -434,7 +434,7 @@ This is the data-first curried version where the input becomes the subtrahend. U
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L332" /> {#c-multiply-on-332}
 
 ```typescript
-((a: Complex) => (b: Complex) => Complex)
+;((a: Complex) => (b: Complex) => Complex)
 ```
 
 Create a function that multiplies a specific complex number by others.
@@ -444,7 +444,7 @@ This is the data-first curried version where the input becomes the second factor
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L359" /> {#c-multiply-with-359}
 
 ```typescript
-((b: Complex) => (a: Complex) => Complex)
+;((b: Complex) => (a: Complex) => Complex)
 ```
 
 Create a function that multiplies with a specific complex number.
@@ -454,7 +454,7 @@ This is the data-second curried version where the fixed multiplier is applied to
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L408" /> {#c-divide-with-408}
 
 ```typescript
-((a: Complex) => (b: Complex) => Complex)
+;((a: Complex) => (b: Complex) => Complex)
 ```
 
 Create a function that divides from a specific complex number.
@@ -464,7 +464,7 @@ This creates a function where the provided complex number is the dividend (numer
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `divideOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L430" /> {#c-divide-on-430}
 
 ```typescript
-((a: Complex) => (b: Complex) => Complex)
+;((a: Complex) => (b: Complex) => Complex)
 ```
 
 Create a function that divides a specific complex number by others.
@@ -474,7 +474,7 @@ This is the data-first curried version where the input becomes the divisor. Usef
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L684" /> {#c-power-on-684}
 
 ```typescript
-((z: Complex) => (n: number) => Complex)
+;((z: Complex) => (n: number) => Complex)
 ```
 
 Create a function that raises a specific complex number to various powers.
@@ -484,7 +484,7 @@ This is the data-first curried version where the input becomes the exponent. Use
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `powerWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L719" /> {#c-power-with-719}
 
 ```typescript
-((n: number) => (z: Complex) => Complex)
+;((n: number) => (z: Complex) => Complex)
 ```
 
 Create a function that raises complex numbers to a specific power.
@@ -494,7 +494,7 @@ This is the data-second curried version where the fixed exponent is applied to v
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `equalsOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L898" /> {#c-equals-on-898}
 
 ```typescript
-((a: Complex) => (b: Complex) => (tolerance?: number | undefined) => boolean)
+;((a: Complex) => (b: Complex) => (tolerance?: number | undefined) => boolean)
 ```
 
 Create a function that checks if its input equals a specific complex number.
@@ -504,7 +504,7 @@ This is the data-first curried version where the reference value is the first pa
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `equalsWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/complex/complex.ts#L932" /> {#c-equals-with-932}
 
 ```typescript
-((b: Complex) => (a: Complex) => (tolerance?: number | undefined) => boolean)
+;((b: Complex) => (a: Complex) => (tolerance?: number | undefined) => boolean)
 ```
 
 Create a function that checks equality with a specific complex number.

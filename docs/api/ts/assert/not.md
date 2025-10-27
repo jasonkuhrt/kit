@@ -30,23 +30,23 @@ import { not } from '@wollybeard/kit/ts'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/$$.ts#L10" /> {#c-any-10}
 
 ```typescript
-InputActualForUnaryRelatorNarrow<State.SetNegated<State.Empty>, "any">
+InputActualForUnaryRelatorNarrow<State.SetNegated<State.Empty>, 'any'>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `unknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/$$.ts#L11" /> {#c-unknown-11}
 
 ```typescript
-InputActualForUnaryRelatorNarrow<State.SetNegated<State.Empty>, "unknown">
+InputActualForUnaryRelatorNarrow<State.SetNegated<State.Empty>, 'unknown'>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `never`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/$$.ts#L12" /> {#c-never-12}
 
 ```typescript
-InputActualForUnaryRelatorNarrow<State.SetNegated<State.Empty>, "never">
+InputActualForUnaryRelatorNarrow<State.SetNegated<State.Empty>, 'never'>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `empty`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/not/$$.ts#L13" /> {#c-empty-13}
 
 ```typescript
-InputActualForUnaryRelatorNarrow<State.SetNegated<State.Empty>, "empty">
+InputActualForUnaryRelatorNarrow<State.SetNegated<State.Empty>, 'empty'>
 ```

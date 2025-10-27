@@ -66,7 +66,8 @@ type _ = Ts.Test.Cases<
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsUnknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/inhabitance.ts#L59" /> {#t-is-unknown-59}
 
 ```typescript
-type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true) : false
+type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true)
+  : false
 ```
 
 Check if a type is `unknown`.
@@ -114,9 +115,8 @@ type _ = Ts.Test.Cases<
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsAnyOrUnknownOrNever`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/inhabitance.ts#L90" /> {#t-is-any-or-unknown-or-never-90}
 
 ```typescript
-type IsAnyOrUnknownOrNever<T> =
-  [T] extends [never] ? true /* never */ :
-  unknown extends T ? true /* any or unknown, we don't care which */
+type IsAnyOrUnknownOrNever<T> = [T] extends [never] ? true /* never */
+  : unknown extends T ? true /* any or unknown, we don't care which */
   : false
 ```
 
@@ -139,13 +139,11 @@ type _ = Ts.Test.Cases<
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `GetCase`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/inhabitance.ts#L96" /> {#t-get-case-96}
 
 ```typescript
-type GetCase<T> =
-  [T] extends [never] ? Case.Never :
-  unknown extends T ? (
-    0 extends (1 & T)
-    ? Case.Any
-    : Case.Unknown
-  )
+type GetCase<T> = [T] extends [never] ? Case.Never
+  : unknown extends T ? (
+      0 extends (1 & T) ? Case.Any
+        : Case.Unknown
+    )
   : Case.Proper
 ```
 
@@ -162,11 +160,9 @@ type Case =
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `IsEmpty`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/inhabitance.ts#L143" /> {#t-is-empty-143}
 
 ```typescript
-type IsEmpty<$T> =
-  $T extends readonly [] ? true :
-  $T extends '' ? true :
-  $T extends object
-  ? keyof $T extends never ? true : false
+type IsEmpty<$T> = $T extends readonly [] ? true
+  : $T extends '' ? true
+  : $T extends object ? keyof $T extends never ? true : false
   : false
 ```
 
@@ -194,6 +190,6 @@ type _ = Ts.Test.Cases<
   Ts.Test.equal<IsEmpty<[1]>, false>,
   Ts.Test.equal<IsEmpty<'hello'>, false>,
   Ts.Test.equal<IsEmpty<{ a: 1 }>, false>,
-  Ts.Test.equal<IsEmpty<{}>, false>  // {} = non-nullish, not empty!
+  Ts.Test.equal<IsEmpty<{}>, false> // {} = non-nullish, not empty!
 >
 ```

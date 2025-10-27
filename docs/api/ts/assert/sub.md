@@ -36,61 +36,87 @@ import { sub } from '@wollybeard/kit/ts'
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `any`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L238" /> {#c-any-238}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetAllowAny<State.SetRelator<State.Empty, SubKind>>, any>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetAllowAny<State.SetRelator<State.Empty, SubKind>>,
+    any
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `bigint`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L73" /> {#c-bigint-73}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, bigint>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, bigint>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `boolean`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L88" /> {#c-boolean-88}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, boolean>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, boolean>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Date`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L178" /> {#c-date-178}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, Date>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, Date>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `Error`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L208" /> {#c-error-208}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, Error>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, Error>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `false`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L118" /> {#c-false-118}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, false>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, false>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `never`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L253" /> {#c-never-253}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetAllowNever<State.SetRelator<State.Empty, SubKind>>, never>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetAllowNever<State.SetRelator<State.Empty, SubKind>>,
+    never
+  >
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `noExcess`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L261" /> {#c-no-excess-261}
 
 ```typescript
-InputExpectedAsValueNarrow<State.SetRelator<State.SetRelator<State.Empty, SubKind>, SubNoExcessKind>>
+InputExpectedAsValueNarrow<
+  State.SetRelator<State.SetRelator<State.Empty, SubKind>, SubNoExcessKind>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `null`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L148" /> {#c-null-148}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, null>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, null>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `number`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L58" /> {#c-number-58}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, number>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, number>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `of`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L28" /> {#c-of-28}
@@ -102,37 +128,52 @@ InputExpectedAsValueNarrow<State.SetRelator<State.Empty, SubKind>>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `RegExp`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L193" /> {#c-reg-exp-193}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, RegExp>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, RegExp>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `string`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L43" /> {#c-string-43}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, string>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, string>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `symbol`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L163" /> {#c-symbol-163}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, symbol>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, symbol>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `true`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L103" /> {#c-true-103}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, true>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, true>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `undefined`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L133" /> {#c-undefined-133}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, undefined>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<State.SetRelator<State.Empty, SubKind>, undefined>
+>
 ```
 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `unknown`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L223" /> {#c-unknown-223}
 
 ```typescript
-InputActualAsValueNarrow<State.SetExpectedType<State.SetAllowUnknown<State.SetRelator<State.Empty, SubKind>>, unknown>>
+InputActualAsValueNarrow<
+  State.SetExpectedType<
+    State.SetAllowUnknown<State.SetRelator<State.Empty, SubKind>>,
+    unknown
+  >
+>
 ```
 
 ## Types
@@ -287,7 +328,10 @@ type _ = Assert.sub.never<string>
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[T]`</span> `noExcess`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/utils/ts/assert/builder-generated/sub.ts#L260" /> {#t-no-excess-260}
 
 ```typescript
-type noExcess_<$Expected, $Actual> = Kind.Apply<SubNoExcessKind, [$Expected, $Actual]>
+type noExcess_<$Expected, $Actual> = Kind.Apply<
+  SubNoExcessKind,
+  [$Expected, $Actual]
+>
 ```
 
 No-excess variant of sub relation. Checks that actual has no excess properties beyond expected.

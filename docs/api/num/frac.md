@@ -184,7 +184,7 @@ Compare two fractions.
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L100" /> {#c-from-with-100}
 
 ```typescript
-((numerator: Natural) => (denominator: Natural) => Frac)
+;((numerator: Natural) => (denominator: Natural) => Frac)
 ```
 
 Create a function that constructs fractions with a fixed numerator. Useful for creating series of fractions.
@@ -192,7 +192,7 @@ Create a function that constructs fractions with a fixed numerator. Useful for c
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `fromOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L115" /> {#c-from-on-115}
 
 ```typescript
-((denominator: Natural) => (numerator: Natural) => Frac)
+;((denominator: Natural) => (numerator: Natural) => Frac)
 ```
 
 Create a function that constructs fractions with a fixed denominator. Useful for working with common denominators.
@@ -200,7 +200,7 @@ Create a function that constructs fractions with a fixed denominator. Useful for
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L260" /> {#c-add-on-260}
 
 ```typescript
-((a: Frac) => (b: Frac) => Ratio)
+;((a: Frac) => (b: Frac) => Ratio)
 ```
 
 Create a function that adds to a specific fraction. Data-first pattern: fix the first argument.
@@ -208,7 +208,7 @@ Create a function that adds to a specific fraction. Data-first pattern: fix the 
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `addWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L274" /> {#c-add-with-274}
 
 ```typescript
-((b: Frac) => (a: Frac) => Ratio)
+;((b: Frac) => (a: Frac) => Ratio)
 ```
 
 Create a function that adds with a specific fraction. Data-second pattern: fix the second argument.
@@ -216,7 +216,7 @@ Create a function that adds with a specific fraction. Data-second pattern: fix t
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L311" /> {#c-multiply-on-311}
 
 ```typescript
-((a: Frac) => (b: Frac) => Frac)
+;((a: Frac) => (b: Frac) => Frac)
 ```
 
 Create a function that multiplies a specific fraction. Data-first pattern: fix the first argument.
@@ -224,7 +224,7 @@ Create a function that multiplies a specific fraction. Data-first pattern: fix t
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `multiplyWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L325" /> {#c-multiply-with-325}
 
 ```typescript
-((b: Frac) => (a: Frac) => Frac)
+;((b: Frac) => (a: Frac) => Frac)
 ```
 
 Create a function that multiplies with a specific fraction. Data-second pattern: fix the second argument.
@@ -232,7 +232,7 @@ Create a function that multiplies with a specific fraction. Data-second pattern:
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareOn`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L355" /> {#c-compare-on-355}
 
 ```typescript
-((a: Frac) => (b: Frac) => 0 | 1 | -1)
+;((a: Frac) => (b: Frac) => 0 | 1 | -1)
 ```
 
 Create a function that compares a specific fraction. Data-first pattern: fix the first argument.
@@ -240,7 +240,7 @@ Create a function that compares a specific fraction. Data-first pattern: fix the
 ### <span style="opacity: 0.6; font-weight: normal; font-size: 0.85em;">`[C]`</span> `compareWith`<SourceLink inline href="https://github.com/jasonkuhrt/kit/blob/main/./src/domains/num/frac/frac.ts#L369" /> {#c-compare-with-369}
 
 ```typescript
-((b: Frac) => (a: Frac) => 0 | 1 | -1)
+;((b: Frac) => (a: Frac) => 0 | 1 | -1)
 ```
 
 Create a function that compares with a specific fraction. Data-second pattern: fix the second argument.

@@ -27,44 +27,49 @@ type To<
   $T,
   $Seen = never,
   DN extends Num.Literal = Num.NatDec<$DepthRemaining>,
-  SN = $T | $Seen
+  SN = $T | $Seen,
 > =
   // Depth 0 - stop recursing
-  $DepthRemaining extends Num.LiteralZero ? $T :
-  // Check for circular reference - prevent infinite recursion
-  Union.IsHas<$Seen, $T> extends true ? $T :
-  // Check if type should be preserved (includes built-ins + user-registered types)
-  $T extends GetPreservedTypes ? $T :
-  // Handle arrays and tuples - preserve structure with mapped type
-  $T extends readonly any[] ? { [K in keyof $T]: To<DN, $T[K], SN> } :
-  // Handle Map - traverse both key and value types
-  $T extends Map<infer __key__, infer __value__> ? Map<To<DN, __key__, SN>, To<DN, __value__, SN>> :
-  // Handle Set - traverse element type
-  $T extends Set<infer __element__> ? Set<To<DN, __element__, SN>> :
-  // Handle Promise - traverse resolved type
-  $T extends Promise<infer __resolved__> ? Promise<To<DN, __resolved__, SN>> :
-  // Handle WeakMap - traverse both key and value types
-  $T extends WeakMap<infer __key__, infer __value__> ? WeakMap<To<DN, __key__, SN>, To<DN, __value__, SN>> :
-  // Handle WeakSet - traverse element type
-  $T extends WeakSet<infer __element__> ? WeakSet<To<DN, __element__, SN>> :
-  // Try custom types (user-registered via KitLibrarySettings.Simplify.Traversables)
-  // Let-Style Binding
-  {
-    [K in keyof KitLibrarySettings.Simplify.Traversables]:
-    KitLibrarySettings.Simplify.Traversables[K] extends { extends: infer __traverse_constraint__, traverse: infer __traverse_kind__ }
-    ? $T extends __traverse_constraint__
-    ? [Ts.SENTINEL, Kind.Apply<__traverse_kind__, [$T, DN, SN]>]
-    : never // pattern doesn't match
-    : never // entry malformed
-  }[keyof KitLibrarySettings.Simplify.Traversables] extends infer __custom_registry_result__
-  ? [__custom_registry_result__] extends [never]
-  ? $T extends object
-  ? { [k in keyof $T]: To<DN, $T[k], SN> } & {}
-  : $T
-  : __custom_registry_result__ extends [Ts.SENTINEL, infer __apply_return__]
-  ? __apply_return__
-  : never // impossible - we've either we dealt with apply return or skipped apply
-  : never
+  $DepthRemaining extends Num.LiteralZero ? $T
+    // Check for circular reference - prevent infinite recursion
+    : Union.IsHas<$Seen, $T> extends true ? $T
+    // Check if type should be preserved (includes built-ins + user-registered types)
+    : $T extends GetPreservedTypes ? $T
+    // Handle arrays and tuples - preserve structure with mapped type
+    : $T extends readonly any[] ? { [K in keyof $T]: To<DN, $T[K], SN> }
+    // Handle Map - traverse both key and value types
+    : $T extends Map<infer __key__, infer __value__>
+      ? Map<To<DN, __key__, SN>, To<DN, __value__, SN>>
+    // Handle Set - traverse element type
+    : $T extends Set<infer __element__> ? Set<To<DN, __element__, SN>>
+    // Handle Promise - traverse resolved type
+    : $T extends Promise<infer __resolved__> ? Promise<To<DN, __resolved__, SN>>
+    // Handle WeakMap - traverse both key and value types
+    : $T extends WeakMap<infer __key__, infer __value__>
+      ? WeakMap<To<DN, __key__, SN>, To<DN, __value__, SN>>
+    // Handle WeakSet - traverse element type
+    : $T extends WeakSet<infer __element__> ? WeakSet<To<DN, __element__, SN>>
+    // Try custom types (user-registered via KitLibrarySettings.Simplify.Traversables)
+    // Let-Style Binding
+    : {
+      [K in keyof KitLibrarySettings.Simplify.Traversables]:
+        KitLibrarySettings.Simplify.Traversables[K] extends {
+          extends: infer __traverse_constraint__
+          traverse: infer __traverse_kind__
+        }
+          ? $T extends __traverse_constraint__
+            ? [Ts.SENTINEL, Kind.Apply<__traverse_kind__, [$T, DN, SN]>]
+          : never // pattern doesn't match
+          : never // entry malformed
+    }[keyof KitLibrarySettings.Simplify.Traversables] extends
+      infer __custom_registry_result__
+      ? [__custom_registry_result__] extends [never]
+        ? $T extends object ? { [k in keyof $T]: To<DN, $T[k], SN> } & {}
+        : $T
+      : __custom_registry_result__ extends [Ts.SENTINEL, infer __apply_return__]
+        ? __apply_return__
+      : never // impossible - we've either we dealt with apply return or skipped apply
+    : never
 ```
 
 Simplify a type to a specific depth.
