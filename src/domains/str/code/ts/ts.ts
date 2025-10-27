@@ -718,7 +718,7 @@ export const functionDecl = (options: FunctionDeclOptions): string => {
  * ```
  */
 export const arrowFunction = (params: string[], body: string, returnType?: string): string => {
-  const paramsStr = params.length === 1 && !params[0].includes(`:`) ? params[0] : `(${params.join(`, `)})`
+  const paramsStr = params.length === 1 && params[0] && !params[0].includes(`:`) ? params[0] : `(${params.join(`, `)})`
   const returnTypeStr = returnType ? `: ${returnType}` : ``
   return `${paramsStr}${returnTypeStr} => ${body}`
 }
