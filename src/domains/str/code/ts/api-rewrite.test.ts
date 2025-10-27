@@ -55,7 +55,7 @@ describe('Object Generation - Core API', () => {
     expect(TS.object({
       id: 'string',
       name: 'string',
-      age: 'number'
+      age: 'number',
     })).toMatchInlineSnapshot(`
       "{
       id: string,
@@ -73,12 +73,12 @@ describe('Object Generation - Core API', () => {
     expect(TS.object({
       user: TS.object({
         id: 'string',
-        name: 'string'
+        name: 'string',
       }),
       meta: TS.object({
         created: 'Date',
-        updated: 'Date'
-      })
+        updated: 'Date',
+      }),
     })).toMatchInlineSnapshot(`
       "{
       user: {
@@ -96,7 +96,7 @@ describe('Object Generation - Core API', () => {
   test('object - from tuples', () => {
     expect(TS.object([
       ['id', 'string'],
-      ['name', 'string']
+      ['name', 'string'],
     ])).toMatchInlineSnapshot(`
       "{
       id: string,
@@ -110,8 +110,8 @@ describe('Object Generation - Core API', () => {
       $spread: ['BaseType', 'Mixin'],
       $fields: {
         id: 'string',
-        name: 'string'
-      }
+        name: 'string',
+      },
     })).toMatchInlineSnapshot(`
       "{
       ...BaseType,
@@ -126,8 +126,8 @@ describe('Object Generation - Core API', () => {
     expect(TS.object({
       $literal: '// Custom comment',
       $fields: {
-        id: 'string'
-      }
+        id: 'string',
+      },
     })).toMatchInlineSnapshot(`
       "{
 
@@ -142,13 +142,13 @@ describe('Object Generation - Core API', () => {
       id: TS.objectField$({
         value: 'string',
         tsDoc: 'User ID',
-        optional: false
+        optional: false,
       }),
       name: TS.objectField$({
         value: 'string',
         tsDoc: 'User name',
-        optional: true
-      })
+        optional: true,
+      }),
     })).toMatchInlineSnapshot(`
       "{
       /**
@@ -170,10 +170,13 @@ describe('Field Generation', () => {
   })
 
   test('field - with TermObject type', () => {
-    expect(TS.field('user', TS.object({
-      id: 'string',
-      name: 'string'
-    }))).toMatchInlineSnapshot(`
+    expect(TS.field(
+      'user',
+      TS.object({
+        id: 'string',
+        name: 'string',
+      }),
+    )).toMatchInlineSnapshot(`
       "user: {
       id: string,
       name: string
@@ -191,7 +194,7 @@ describe('Field Generation', () => {
 
   test('field - with tsDoc', () => {
     expect(TS.field('id', 'string', {
-      tsDoc: 'Unique identifier'
+      tsDoc: 'Unique identifier',
     })).toMatchInlineSnapshot(`
       "/**
       * Unique identifier
@@ -204,7 +207,7 @@ describe('Field Generation', () => {
     expect(TS.field('metadata', TS.object({ key: 'string' }), {
       optional: true,
       readonly: true,
-      tsDoc: 'Optional metadata'
+      tsDoc: 'Optional metadata',
     })).toMatchInlineSnapshot(`
       "/**
       * Optional metadata
@@ -222,10 +225,13 @@ describe('Const Declarations', () => {
   })
 
   test('constDecl - with TermObject', () => {
-    expect(TS.constDecl('user', TS.object({
-      id: '"123"',
-      name: '"Alice"'
-    }))).toMatchInlineSnapshot(`
+    expect(TS.constDecl(
+      'user',
+      TS.object({
+        id: '"123"',
+        name: '"Alice"',
+      }),
+    )).toMatchInlineSnapshot(`
       "const user = {
       id: "123",
       name: "Alice"
@@ -238,10 +244,14 @@ describe('Const Declarations', () => {
   })
 
   test('constDeclTyped - with TermObject value', () => {
-    expect(TS.constDeclTyped('config', 'Config', TS.object({
-      timeout: '5000',
-      retries: '3'
-    }))).toMatchInlineSnapshot(`
+    expect(TS.constDeclTyped(
+      'config',
+      'Config',
+      TS.object({
+        timeout: '5000',
+        retries: '3',
+      }),
+    )).toMatchInlineSnapshot(`
       "const config: Config = {
       timeout: 5000,
       retries: 3
@@ -256,10 +266,13 @@ describe('Type Aliases', () => {
   })
 
   test('typeAlias - with TermObject', () => {
-    expect(TS.typeAlias('User', TS.object({
-      id: 'string',
-      name: 'string'
-    }))).toMatchInlineSnapshot(`
+    expect(TS.typeAlias(
+      'User',
+      TS.object({
+        id: 'string',
+        name: 'string',
+      }),
+    )).toMatchInlineSnapshot(`
       "type User = {
       id: string,
       name: string
@@ -271,7 +284,7 @@ describe('Type Aliases', () => {
     expect(TS.typeAlias$({
       name: 'Point',
       type: TS.object({ x: 'number', y: 'number' }),
-      export: true
+      export: true,
     })).toMatchInlineSnapshot(`
       "export type Point = {
       x: number,
@@ -285,7 +298,7 @@ describe('Type Aliases', () => {
       name: 'UserId',
       type: 'string',
       tsDoc: 'Unique user identifier',
-      export: true
+      export: true,
     })).toMatchInlineSnapshot(`
       "/**
       * Unique user identifier
@@ -298,7 +311,7 @@ describe('Type Aliases', () => {
     expect(TS.typeAlias$({
       name: 'Result',
       type: TS.object({ value: 'T', error: 'E' }),
-      parameters: ['T', 'E = Error']
+      parameters: ['T', 'E = Error'],
     })).toMatchInlineSnapshot(`
       "export type Result<T, E = Error> = {
       value: T,
@@ -312,7 +325,7 @@ describe('Interface Declarations', () => {
   test('interfaceDecl - simple', () => {
     expect(TS.interfaceDecl({
       name: 'User',
-      block: TS.object({ id: 'string', name: 'string' })
+      block: TS.object({ id: 'string', name: 'string' }),
     })).toMatchInlineSnapshot(`
       "export interface User {
       {
@@ -326,7 +339,7 @@ describe('Interface Declarations', () => {
   test('interfaceDecl - with plain object block', () => {
     expect(TS.interfaceDecl({
       name: 'User',
-      block: { id: 'string', name: 'string' }
+      block: { id: 'string', name: 'string' },
     })).toMatchInlineSnapshot(`
       "export interface User {
       id: string,
@@ -339,7 +352,7 @@ describe('Interface Declarations', () => {
     expect(TS.interfaceDecl({
       name: 'Admin',
       extends: ['User', 'Auditable'],
-      block: { permissions: 'string[]' }
+      block: { permissions: 'string[]' },
     })).toMatchInlineSnapshot(`
       "export interface Admin extends User, Auditable {
       permissions: string[]
@@ -351,7 +364,7 @@ describe('Interface Declarations', () => {
     expect(TS.interfaceDecl({
       name: 'Container',
       parameters: ['T'],
-      block: { value: 'T' }
+      block: { value: 'T' },
     })).toMatchInlineSnapshot(`
       "export interface Container<T> {
       value: T
@@ -364,7 +377,7 @@ describe('Interface Declarations', () => {
       name: 'User',
       block: { id: 'string' },
       tsDoc: 'Represents a user in the system',
-      export: true
+      export: true,
     })).toMatchInlineSnapshot(`
       "/**
       * Represents a user in the system
@@ -378,7 +391,7 @@ describe('Interface Declarations', () => {
   test('interfaceDecl - from tuples', () => {
     expect(TS.interfaceDecl({
       name: 'Point',
-      block: [['x', 'number'], ['y', 'number']]
+      block: [['x', 'number'], ['y', 'number']],
     })).toMatchInlineSnapshot(`
       "export interface Point {
       x: number,
@@ -399,7 +412,7 @@ describe('Namespace Declarations', () => {
 
   test('namespace - with reserved keyword escaping', () => {
     expect(TS.namespace('interface', 'export const foo = 1', {
-      escapeReserved: true
+      escapeReserved: true,
     })).toMatchInlineSnapshot(`
       "namespace $interface {
       export const foo = 1
@@ -409,7 +422,7 @@ describe('Namespace Declarations', () => {
 
   test('namespace - no escaping when disabled', () => {
     expect(TS.namespace('MyNamespace', 'export const foo = 1', {
-      escapeReserved: false
+      escapeReserved: false,
     })).toMatchInlineSnapshot(`
       "namespace MyNamespace {
       export const foo = 1
@@ -425,17 +438,17 @@ describe('Composition - Kitchen Sink', () => {
         id: 'string',
         profile: TS.object({
           name: 'string',
-          avatar: 'string'
+          avatar: 'string',
         }),
         settings: TS.object({
           theme: '"light" | "dark"',
-          notifications: 'boolean'
-        })
+          notifications: 'boolean',
+        }),
       }),
       metadata: TS.object({
         created: 'Date',
-        tags: TS.arrayType('string')
-      })
+        tags: TS.arrayType('string'),
+      }),
     })).toMatchInlineSnapshot(`
       "{
       user: {
@@ -458,20 +471,23 @@ describe('Composition - Kitchen Sink', () => {
   })
 
   test('const with complex nested object', () => {
-    expect(TS.constDecl('config', TS.object({
-      api: TS.object({
-        endpoint: '"/api/v1"',
-        timeout: '5000',
-        headers: TS.object({
-          'Content-Type': '"application/json"',
-          'Authorization': '"Bearer token"'
-        })
+    expect(TS.constDecl(
+      'config',
+      TS.object({
+        api: TS.object({
+          endpoint: '"/api/v1"',
+          timeout: '5000',
+          headers: TS.object({
+            'Content-Type': '"application/json"',
+            'Authorization': '"Bearer token"',
+          }),
+        }),
+        features: TS.object({
+          darkMode: 'true',
+          analytics: 'false',
+        }),
       }),
-      features: TS.object({
-        darkMode: 'true',
-        analytics: 'false'
-      })
-    }))).toMatchInlineSnapshot(`
+    )).toMatchInlineSnapshot(`
       "const config = {
       api: {
       endpoint: "/api/v1",
@@ -497,17 +513,17 @@ describe('Composition - Kitchen Sink', () => {
         data: 'T',
         meta: TS.object({
           page: 'number',
-          total: 'number'
+          total: 'number',
         }),
         links: TS.object({
           self: 'string',
-          next: 'string | null'
+          next: 'string | null',
         }),
         errors: TS.arrayType(TS.object({
           code: 'string',
-          message: 'string'
-        }))
-      }
+          message: 'string',
+        })),
+      },
     })).toMatchInlineSnapshot(`
       "export interface ApiResponse<T> {
       data: T,
@@ -534,7 +550,7 @@ describe('Builder Pattern', () => {
     code.interface({
       name: 'User',
       block: { id: 'string', name: 'string' },
-      export: true
+      export: true,
     })
     expect(code.build()).toMatchInlineSnapshot(`
       "export interface User {
@@ -551,17 +567,21 @@ describe('Builder Pattern', () => {
     code.interface({
       name: 'User',
       block: { id: 'string', name: 'string' },
-      export: true
+      export: true,
     })
     code.type({
       name: 'UserId',
       type: 'string',
-      export: true
+      export: true,
     })
-    code.const('defaultUser', TS.object({
-      id: '"0"',
-      name: '"Guest"'
-    }), { export: true })
+    code.const(
+      'defaultUser',
+      TS.object({
+        id: '"0"',
+        name: '"Guest"',
+      }),
+      { export: true },
+    )
     expect(code.build()).toMatchInlineSnapshot(`
       "export interface User {
       {
@@ -595,16 +615,20 @@ describe('Builder Pattern', () => {
 
   test('builder - with nested composition', () => {
     const code = TS.builder()
-    code.const('config', TS.object({
-      database: TS.object({
-        host: '"localhost"',
-        port: '5432'
+    code.const(
+      'config',
+      TS.object({
+        database: TS.object({
+          host: '"localhost"',
+          port: '5432',
+        }),
+        cache: TS.object({
+          enabled: 'true',
+          ttl: '3600',
+        }),
       }),
-      cache: TS.object({
-        enabled: 'true',
-        ttl: '3600'
-      })
-    }), { export: true })
+      { export: true },
+    )
     expect(code.build()).toMatchInlineSnapshot(`
       "export const config = {
       database: {
@@ -628,7 +652,7 @@ describe('Builder Pattern', () => {
         params: [],
         returnType: 'void',
         body: 'console.log("helper")',
-        export: true
+        export: true,
       })
     })
     expect(code.build()).toMatchInlineSnapshot(`
@@ -647,7 +671,7 @@ describe('Template Function', () => {
     const userInterface = TS.interface$({
       name: 'User',
       block: { id: 'string', name: 'string' },
-      export: true
+      export: true,
     })
 
     const result = TS.template`
@@ -669,12 +693,14 @@ describe('Template Function', () => {
 
   test('template - with composed objects', () => {
     const result = TS.template`
-      export const config = ${TS.object({
+      export const config = ${
+      TS.object({
         api: TS.object({
           url: '"/api"',
-          timeout: '5000'
-        })
-      })}
+          timeout: '5000',
+        }),
+      })
+    }
     `
     expect(result).toMatchInlineSnapshot(`
       "
@@ -692,12 +718,12 @@ describe('Template Function', () => {
     const typeDecl = TS.typeAlias$({
       name: 'UserId',
       type: 'string',
-      export: true
+      export: true,
     })
     const interfaceDecl = TS.interface$({
       name: 'User',
       block: { id: 'UserId', name: 'string' },
-      export: true
+      export: true,
     })
 
     const result = TS.template`
@@ -722,7 +748,7 @@ describe('Factory Function', () => {
       b.interface({
         name,
         block: fields,
-        export: true
+        export: true,
       })
     })
 
@@ -746,14 +772,18 @@ describe('Factory Function', () => {
 
   test('factory - with nested composition', () => {
     const generateConfig = TS.factory<[serviceName: string]>((b, serviceName) => {
-      b.const(`${serviceName}Config`, TS.object({
-        service: `"${serviceName}"`,
-        endpoint: '"/api"',
-        settings: TS.object({
-          timeout: '5000',
-          retries: '3'
-        })
-      }), { export: true })
+      b.const(
+        `${serviceName}Config`,
+        TS.object({
+          service: `"${serviceName}"`,
+          endpoint: '"/api"',
+          settings: TS.object({
+            timeout: '5000',
+            retries: '3',
+          }),
+        }),
+        { export: true },
+      )
     })
 
     expect(generateConfig('auth')).toMatchInlineSnapshot(`
@@ -783,22 +813,26 @@ describe('Factory Function', () => {
       b.type({
         name: `${entityName}Id`,
         type: 'string',
-        export: true
+        export: true,
       })
       b.interface({
         name: entityName,
         block: {
           id: `${entityName}Id`,
           createdAt: 'Date',
-          updatedAt: 'Date'
+          updatedAt: 'Date',
         },
-        export: true
+        export: true,
       })
-      b.const(`default${entityName}`, TS.object({
-        id: '"0"',
-        createdAt: 'new Date()',
-        updatedAt: 'new Date()'
-      }), { export: true })
+      b.const(
+        `default${entityName}`,
+        TS.object({
+          id: '"0"',
+          createdAt: 'new Date()',
+          updatedAt: 'new Date()',
+        }),
+        { export: true },
+      )
     })
 
     expect(generateModule('User')).toMatchInlineSnapshot(`
@@ -824,7 +858,7 @@ describe('Reserved Keyword Handling', () => {
     expect(TS.interfaceDecl({
       name: 'interface',
       block: { id: 'string' },
-      export: true
+      export: true,
     })).toMatchInlineSnapshot(`
       "interface $interface {
       id: string
@@ -837,7 +871,7 @@ describe('Reserved Keyword Handling', () => {
     expect(TS.typeAlias$({
       name: 'class',
       type: 'string',
-      export: true
+      export: true,
     })).toMatchInlineSnapshot(`
       "type $class = string
       export { type $class as class }"
@@ -846,7 +880,7 @@ describe('Reserved Keyword Handling', () => {
 
   test('namespace with reserved name', () => {
     expect(TS.namespace('interface', 'export const foo = 1', {
-      escapeReserved: true
+      escapeReserved: true,
     })).toMatchInlineSnapshot(`
       "namespace $interface {
       export const foo = 1
@@ -894,7 +928,7 @@ describe('Edge Cases', () => {
   test('null values in object', () => {
     expect(TS.object({
       id: 'string',
-      deleted: 'null'
+      deleted: 'null',
     })).toMatchInlineSnapshot(`
       "{
       id: string,
@@ -906,8 +940,8 @@ describe('Edge Cases', () => {
   test('deeply nested empty objects', () => {
     expect(TS.object({
       a: TS.object({
-        b: TS.object({})
-      })
+        b: TS.object({}),
+      }),
     })).toMatchInlineSnapshot(`
       "{
       a: {
@@ -920,7 +954,7 @@ describe('Edge Cases', () => {
   test('interface with no block', () => {
     expect(TS.interfaceDecl({
       name: 'Empty',
-      export: true
+      export: true,
     })).toMatchInlineSnapshot(`"export interface Empty {}"`)
   })
 })

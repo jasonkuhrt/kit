@@ -52,8 +52,7 @@ export const raw = (code: string): Raw => ({ __raw: true, code })
  *
  * @internal
  */
-export const isRaw = (value: unknown): value is Raw =>
-  typeof value === 'object' && value !== null && '__raw' in value
+export const isRaw = (value: unknown): value is Raw => typeof value === 'object' && value !== null && '__raw' in value
 
 // ============================================================================
 // Builder
@@ -168,13 +167,13 @@ export const builder = (): Builder => {
   builderFn.interface = (options) => {
     const interfaceOptions: TS.InterfaceOptions = options.block
       ? {
-          ...options,
-          block: typeof options.block === 'string'
-            ? options.block
-            : Array.isArray(options.block)
-            ? TermObjectModule.termObject(Object.fromEntries(options.block))
-            : TermObjectModule.termObject(options.block),
-        }
+        ...options,
+        block: typeof options.block === 'string'
+          ? options.block
+          : Array.isArray(options.block)
+          ? TermObjectModule.termObject(Object.fromEntries(options.block))
+          : TermObjectModule.termObject(options.block),
+      }
       : { ...options }
     lines.push(TS.interfaceDecl(interfaceOptions))
   }
