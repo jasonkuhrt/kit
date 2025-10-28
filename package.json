@@ -172,7 +172,7 @@
     "./color": "./build/domains/color/$$.js",
     "./dir": "./build/utils/dir/$$.js",
     "./err": "./build/utils/err/$$.js",
-    "./fn": "./build/domains/fn/$.js",
+    "./fn": "./build/domains/fn/$$.js",
     "./fs": "./build/utils/fs/$$.js",
     "./group": "./build/domains/group/$$.js",
     "./html": "./build/utils/html/$$.js",
@@ -209,10 +209,10 @@
     "./fs-loc": "./build/utils/fs-loc/$$.js",
     "./paka": "./build/utils/paka/$$.js",
     "./log": "./build/utils/log/$$.js",
-    "./ware": "./build/utils/ware/$.js",
+    "./ware": "./build/utils/ware/$$.js",
     "./mutable-builder": "./build/utils/mutable-builder/$$.js",
-    "./configurator": "./build/utils/configurator/$.js",
-    "./config-manager": "./build/utils/config-manager/$.js"
+    "./configurator": "./build/utils/configurator/$$.js",
+    "./config-manager": "./build/utils/config-manager/$$.js"
   },
   "scripts": {
     "r": "libra refresh && pnpm fix:format",
