@@ -1,10 +1,11 @@
 import type { Ts } from '#ts'
 import type { Tup } from '#tup'
 import type { Undefined } from '#undefined'
-import type { IsAny, IsUnknown } from 'type-fest'
 
 // Utility type from Graffle prelude
-type IntersectionIgnoreNeverOrAny<$T> = IsAny<$T> extends true ? unknown : $T extends never ? unknown : $T
+type IntersectionIgnoreNeverOrAny<$T> = Ts.Inhabitance.IsAny<$T> extends true ? unknown
+  : $T extends never ? unknown
+  : $T
 import type { PipelineDefinition } from '../$$.js'
 import type { Overload } from '../Overload/$.js'
 import type { Config } from '../PipelineDefinition/Config.js'
@@ -135,7 +136,7 @@ export namespace Pipeline {
             VAR_StepDefs[i],
             $PipelineDef['overloads']
           >
-      readonly run: IsUnknown<VAR_StepDefs[i]['run']> extends true
+      readonly run: Ts.Inhabitance.IsUnknown<VAR_StepDefs[i]['run']> extends true
         ? StepRunner
         : Undefined.Exclude<VAR_StepDefs[i]['run']>
     }
@@ -152,7 +153,7 @@ export namespace Pipeline {
   type InferStepSlots_<$Step extends StepDefinition, $Overloads extends readonly Overload.Data[]> =
     Tup.IntersectItems<{
       [$Index in keyof $Overloads]:
-        IsUnknown<$Overloads[$Index]['steps'][$Step['name']]> extends true
+        Ts.Inhabitance.IsUnknown<$Overloads[$Index]['steps'][$Step['name']]> extends true
           ? unknown
           : $Overloads[$Index]['steps'][$Step['name']]['slots']
     }>

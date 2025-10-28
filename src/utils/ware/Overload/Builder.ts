@@ -1,8 +1,10 @@
 import type { ConfigManager } from '#config-manager'
-import { Configurator } from '#configurator/configurator'
+import { Configurator } from '#configurator'
 import { createMutableBuilder } from '#mutable-builder/mutable-builder'
 import type { Tup } from '#tup'
 import type { Writable } from 'type-fest'
+// for resolving '... cannot be named ...' error
+export type { Writable } from 'type-fest'
 import type { PipelineDefinition } from '../PipelineDefinition/$.js'
 import type { StepDefinition } from '../StepDefinition.js'
 import type { Data, DataEmpty } from './Data.js'
@@ -10,7 +12,7 @@ import type { Data, DataEmpty } from './Data.js'
 export const create: Create = (parameters) => {
   const data: Writable<Data> = {
     discriminant: parameters.discriminant,
-    configurator: Configurator.$.empty,
+    configurator: Configurator.empty,
     steps: {},
     configurationMount: undefined,
   }
@@ -24,7 +26,7 @@ export const create: Create = (parameters) => {
     data,
     builder: {
       configurator(configuratorTypeInput) {
-        data.configurator = Configurator.$.normalizeDataInput(configuratorTypeInput)
+        data.configurator = Configurator.normalizeDataInput(configuratorTypeInput)
       },
       step,
       stepWithExtendedInput() {
@@ -58,7 +60,7 @@ export interface Builder<
   /**
    * TODO
    */
-  configurator: <$Configurator extends Configurator>(
+  configurator: <$Configurator extends Configurator.Configurator>(
     configurator:
       | $Configurator
       | Configurator.Builder<$Configurator>

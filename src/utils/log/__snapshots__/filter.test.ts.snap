@@ -460,120 +460,120 @@ exports[`parse > app1 1`] = `
 
 exports[`parse syntax errors > ! 1`] = `
 [
-  [Error: Invalid filter pattern: "!"],
+  [ContextualError: Invalid filter pattern: "!"],
 ]
 `;
 
 exports[`parse syntax errors > ** 1`] = `
 [
-  [Error: Invalid filter pattern: "**"],
+  [ContextualError: Invalid filter pattern: "**"],
 ]
 `;
 
 exports[`parse syntax errors > *+ 1`] = `
 [
-  [Error: Invalid filter pattern: "*+"],
+  [ContextualError: Invalid filter pattern: "*+"],
 ]
 `;
 
 exports[`parse syntax errors > *a 1`] = `
 [
-  [Error: Invalid filter pattern: "*a"],
+  [ContextualError: Invalid filter pattern: "*a"],
 ]
 `;
 
 exports[`parse syntax errors > , 1`] = `
 [
-  [Error: Invalid filter pattern: ",. There must be at least one pattern present."],
+  [ContextualError: Invalid filter pattern: ",. There must be at least one pattern present."],
 ]
 `;
 
 exports[`parse syntax errors > .. 1`] = `
 [
-  [Error: Invalid filter pattern: ".."],
+  [ContextualError: Invalid filter pattern: ".."],
 ]
 `;
 
 exports[`parse syntax errors > .a. 1`] = `
 [
-  [Error: Invalid filter pattern: ".a."],
+  [ContextualError: Invalid filter pattern: ".a."],
 ]
 `;
 
 exports[`parse syntax errors > <empty> 1`] = `
 [
-  [Error: Invalid filter pattern: ". There must be at least one pattern present."],
+  [ContextualError: Invalid filter pattern: ". There must be at least one pattern present."],
 ]
 `;
 
 exports[`parse syntax errors > <whitespace> 1`] = `
 [
-  [Error: Invalid filter pattern: " . There must be at least one pattern present."],
+  [ContextualError: Invalid filter pattern: " . There must be at least one pattern present."],
 ]
 `;
 
 exports[`parse syntax errors > @ 1`] = `
 [
-  [Error: Invalid filter pattern: "@"],
+  [ContextualError: Invalid filter pattern: "@"],
 ]
 `;
 
 exports[`parse syntax errors > @1 1`] = `
 [
-  [Error: Invalid filter pattern: "@1"],
+  [ContextualError: Invalid filter pattern: "@1"],
 ]
 `;
 
 exports[`parse syntax errors > a! 1`] = `
 [
-  [Error: Invalid filter pattern: "a!"],
+  [ContextualError: Invalid filter pattern: "a!"],
 ]
 `;
 
 exports[`parse syntax errors > a+ 1`] = `
 [
-  [Error: Invalid filter pattern: "a+"],
+  [ContextualError: Invalid filter pattern: "a+"],
 ]
 `;
 
 exports[`parse syntax errors > a. 1`] = `
 [
-  [Error: Invalid filter pattern: "a."],
+  [ContextualError: Invalid filter pattern: "a."],
 ]
 `;
 
 exports[`parse syntax errors > a:@1 1`] = `
 [
-  [Error: Invalid filter pattern: "a:@1"],
+  [ContextualError: Invalid filter pattern: "a:@1"],
 ]
 `;
 
 exports[`parse syntax errors > a@ 1`] = `
 [
-  [Error: Invalid filter pattern: "a@"],
+  [ContextualError: Invalid filter pattern: "a@"],
 ]
 `;
 
 exports[`parse syntax errors > a@*! 1`] = `
 [
-  [Error: Invalid filter pattern: "a@*!"],
+  [ContextualError: Invalid filter pattern: "a@*!"],
 ]
 `;
 
 exports[`parse syntax errors > a@*+ 1`] = `
 [
-  [Error: Invalid filter pattern: "a@*+"],
+  [ContextualError: Invalid filter pattern: "a@*+"],
 ]
 `;
 
 exports[`parse syntax errors > a@*- 1`] = `
 [
-  [Error: Invalid filter pattern: "a@*-"],
+  [ContextualError: Invalid filter pattern: "a@*-"],
 ]
 `;
 
 exports[`parse syntax errors > a@+* 1`] = `
 [
-  [Error: Invalid filter pattern: "a@+*"],
+  [ContextualError: Invalid filter pattern: "a@+*"],
 ]
 `;

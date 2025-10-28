@@ -305,9 +305,12 @@ export const parseUnsafe = (defaults: Defaults, pattern: string): Parsed[] => {
 type ParseError = Err.ContextualError<{ pattern: string; hint: string | undefined }>
 
 const createInvalidPattern = (pattern: string, hint?: string): ParseError => {
-  return Err.createContextualError(`Invalid filter pattern: "${pattern}${hint ? `. ${hint}` : ``}"`, {
-    pattern,
-    hint,
+  return new Err.ContextualError({
+    message: `Invalid filter pattern: "${pattern}${hint ? `. ${hint}` : ``}"`,
+    context: {
+      pattern,
+      hint,
+    },
   })
 }
 

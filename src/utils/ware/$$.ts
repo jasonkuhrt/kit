@@ -6,3 +6,8 @@ export * from './PipelineDefinition/$.js'
 export * from './Result.js'
 export * from './run/runner.js'
 export { StepDefinition } from './StepDefinition.js'
+
+// needed else error of  ... 'this is likely not portable'
+export * from './Overload/Data.ts'
+export * from './StepRunner.ts'
+export * from './StepTrigger.ts'

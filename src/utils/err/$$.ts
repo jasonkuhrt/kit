@@ -3,6 +3,10 @@ import { inspect, type InspectOptions } from './inspect.js'
 
 export * from './contextual.js'
 
+export * from './internal.js'
+
+export * from './aggregate.js'
+
 export * from './inspect.js'
 
 export * from './stack.js'

@@ -1,4 +1,4 @@
-import { Configurator } from '#configurator/configurator'
+import { Configurator } from '#configurator'
 import { Ts } from '#ts'
 import { describe, test } from 'vitest'
 import type { initialInput } from '../_.test-helpers.js'

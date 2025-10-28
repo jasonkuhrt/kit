@@ -1,10 +1,10 @@
-import type { Configurator } from '#configurator/configurator'
+import type { Configurator } from '#configurator'
 import type { Ts } from '#ts'
 import type { StepDefinition } from '../StepDefinition.js'
 
 export interface Data<
   $Discriminant extends Discriminant = Discriminant,
-  $Configurator extends Configurator = Configurator,
+  $Configurator extends Configurator.Configurator = Configurator.Configurator,
   $Steps extends Record<string, StepDefinition> = Record<string, StepDefinition>,
   $ConfigurationMount extends string | undefined = string | undefined,
 > {

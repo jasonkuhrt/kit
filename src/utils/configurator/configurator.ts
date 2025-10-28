@@ -5,29 +5,29 @@ import type { HasRequiredKeys } from 'type-fest'
 // Data Type
 // ----------------------------
 
-export type ConfiguratorAny = Configurator<
-  Configurator.Configuration,
-  Configurator.Configuration,
-  Configurator.Configuration,
-  Configurator.InputResolverGeneric<
-    Configurator.InputResolver.$Func<
-      Configurator.Configuration,
-      Configurator.Configuration,
-      Configurator.Configuration
+export type Any = Configurator<
+  Configuration,
+  Configuration,
+  Configuration,
+  InputResolverGeneric<
+    InputResolver.$Func<
+      Configuration,
+      Configuration,
+      Configuration
     >
   >
 >
 
 // dprint-ignore
 export interface Configurator<
-  $Input 			              extends Configurator.Configuration =
-                                    Configurator.Configuration,
+  $Input 			              extends Configuration =
+                                    Configuration,
   $Normalized 	            extends $Input =
                                     Required<$Input>,
   $Default 		              extends Partial<$Normalized> =
                                     Partial<$Normalized>,
-	$InputResolver            extends Configurator.InputResolverGeneric<Configurator.InputResolver.$Func<$Input, $Normalized, $Default>> =
-                                    Configurator.InputResolverGeneric<Configurator.InputResolver.Standard_ShallowMerge$Func<$Input, $Normalized, $Default>>
+	$InputResolver            extends InputResolverGeneric<InputResolver.$Func<$Input, $Normalized, $Default>> =
+                                    InputResolverGeneric<InputResolver.Standard_ShallowMerge$Func<$Input, $Normalized, $Default>>
   // $InputResolver            extends Configurator.InputResolverTyped<Configurator.InputResolver.$Func<$Input, $Normalized, $Default>> =
                                     // Configurator.InputResolverTyped<Configurator.InputResolver.Standard_ShallowMerge$Func<$Input, $Normalized, $Default>>
 
@@ -37,14 +37,14 @@ export interface Configurator<
   readonly default: $Default
   readonly inputResolver: $InputResolver
   // Computed Properties
-  readonly normalizedIncremental: Configurator.Incrementify<$Normalized, $Default>
+  readonly normalizedIncremental: Incrementify<$Normalized, $Default>
 }
 
-type ConfiguratorTypeLevel = Pick<Configurator.States.Empty, 'input' | 'normalized' | 'normalizedIncremental'>
+type ConfiguratorTypeLevel = Pick<States.Empty, 'input' | 'normalized' | 'normalizedIncremental'>
 
-export const Configurator = (): Configurator.States.BuilderEmpty => {
-  const state = { ...$.empty }
-  const builder: Configurator.States.BuilderEmpty = {
+export const create = (): States.BuilderEmpty => {
+  const state = { ...empty }
+  const builder: States.BuilderEmpty = {
     [BuilderTypeSymbol]: true,
     default(default_) {
       state.default = default_
@@ -58,7 +58,7 @@ export const Configurator = (): Configurator.States.BuilderEmpty => {
     },
     inputResolver(inputResolverInit) {
       // todo: wrap resolver with object freezer.
-      state.inputResolver = $.createInputResolver(inputResolverInit)
+      state.inputResolver = createInputResolver(inputResolverInit)
       return builder as any
     },
     return() {
@@ -68,78 +68,73 @@ export const Configurator = (): Configurator.States.BuilderEmpty => {
   return builder
 }
 
-export namespace $ {
-  export const createInputResolver: Configurator.InputResolver.Create = (_) => {
-    const inputResolver = (parameters: any) => {
-      const result = _(parameters)
-      if (result === null) return parameters.current
-      return result
-    }
-    return inputResolver as any
+export const createInputResolver: InputResolver.Create = (_) => {
+  const inputResolver = (parameters: any) => {
+    const result = _(parameters)
+    if (result === null) return parameters.current
+    return result
   }
-
-  export const normalizeDataInput = <configuratorTypeInput extends Configurator.DataInput>(
-    configuratorTypeInput: configuratorTypeInput,
-  ): Configurator => {
-    if (isBuilder(configuratorTypeInput)) {
-      return configuratorTypeInput.return()
-    }
-    if (typeof configuratorTypeInput === `function`) {
-      return configuratorTypeInput(Configurator()).return()
-    }
-    return configuratorTypeInput
-  }
-
-  export const standardInputResolver_shallowMerge = createInputResolver(({ current, input }) =>
-    Obj.spreadShallow(current, input)
-  )
-
-  export const empty: Configurator.States.Empty = {
-    default: {},
-    inputResolver: standardInputResolver_shallowMerge,
-    // Type Level
-    ...({} as ConfiguratorTypeLevel),
-  }
-
-  export const InputResolver$FuncSymbol = Symbol(`InputResolver$Func`)
+  return inputResolver as any
 }
 
-Configurator.$ = $
+export const normalizeDataInput = <configuratorTypeInput extends DataInput>(
+  configuratorTypeInput: configuratorTypeInput,
+): Configurator => {
+  if (isBuilder(configuratorTypeInput)) {
+    return configuratorTypeInput.return()
+  }
+  if (typeof configuratorTypeInput === `function`) {
+    return configuratorTypeInput(create()).return()
+  }
+  return configuratorTypeInput
+}
+
+export const standardInputResolver_shallowMerge = createInputResolver(({ current, input }) =>
+  Obj.spreadShallow(current, input)
+)
+
+export const empty: States.Empty = {
+  default: {},
+  inputResolver: standardInputResolver_shallowMerge,
+  // Type Level
+  ...({} as ConfiguratorTypeLevel),
+}
+
+export const InputResolver$FuncSymbol = Symbol(`InputResolver$Func`)
+
+const isBuilder = (value: any): value is Builder<Configurator> =>
+  typeof value === `object` && value !== null && BuilderTypeSymbol in value
 
 const BuilderTypeSymbol = Symbol(`Builder`)
 
-const isBuilder = (value: any): value is Configurator.Builder<Configurator> =>
-  typeof value === `object` && value !== null && BuilderTypeSymbol in value
+export type InferParameters<$Configurator extends Configurator> = HasRequiredKeys<$Configurator['input']> extends true
+  ? [configuration: $Configurator['input']]
+  : [configuration?: $Configurator['input']]
 
-export namespace Configurator {
-  export type InferParameters<$Configurator extends Configurator> = HasRequiredKeys<$Configurator['input']> extends true
-    ? [configuration: $Configurator['input']]
-    : [configuration?: $Configurator['input']]
+export type DataInput<$Configurator extends Configurator = Configurator> =
+  | $Configurator
+  | Builder<$Configurator>
+  | BuilderProviderCallback<$Configurator>
 
-  export type DataInput<$Configurator extends Configurator = Configurator> =
-    | $Configurator
-    | Configurator.Builder<$Configurator>
-    | Configurator.BuilderProviderCallback<$Configurator>
+// export type TypeInput =
+//   | Configurator
+//   | Configurator.Builder<Configurator>
+//   | Configurator.BuilderProviderCallback<Configurator>
+// ----------------------------
+// Builder
+// ----------------------------
 
-  // export type TypeInput =
-  //   | Configurator
-  //   | Configurator.Builder<Configurator>
-  //   | Configurator.BuilderProviderCallback<Configurator>
-  // ----------------------------
-  // Builder
-  // ----------------------------
+export interface BuilderProviderCallback<$ProgressiveConfigurator extends Configurator> {
+  (builder: States.BuilderEmpty): Builder<$ProgressiveConfigurator>
+}
 
-  export interface BuilderProviderCallback<$ProgressiveConfigurator extends Configurator> {
-    (builder: States.BuilderEmpty): Builder<$ProgressiveConfigurator>
-  }
+export namespace States {
+  export type Empty = Configurator<{}>
+  export type BuilderEmpty = Builder<Empty>
+}
 
-  export namespace States {
-    export type Empty = Configurator<{}>
-    export type BuilderEmpty = Builder<Empty>
-  }
-
-  // dprint-ignore
-  export interface Builder<$Configurator extends Configurator> {
+// dprint-ignore
+export interface Builder<$Configurator extends Configurator> {
     [BuilderTypeSymbol]: true
     // [$.SymbolBuilderData]: $Configurator
 
@@ -165,53 +160,53 @@ export namespace Configurator {
 					$Configurator['default']
 				>,
       ) => Builder<Configurator<$Configurator['input'], $Configurator['normalized'], $Configurator['default'], InputResolverGeneric<$Func>>>
-      
+
       return: () => $Configurator
   }
 
-  // ----------------------------
-  // Input Resolver
-  // ----------------------------
-  export interface InputResolverGeneric<
-    $$Func extends InputResolver.$Func = InputResolver.Standard_ShallowMerge$Func<
-      Configuration,
-      Configuration,
-      Configuration
-    >,
-  > {
-    (parameters: { current: Configuration; input: Configuration }): Configuration
-    [$.InputResolver$FuncSymbol]: $$Func
+// ----------------------------
+// Input Resolver
+// ----------------------------
+export interface InputResolverGeneric<
+  $$Func extends InputResolver.$Func = InputResolver.Standard_ShallowMerge$Func<
+    Configuration,
+    Configuration,
+    Configuration
+  >,
+> {
+  (parameters: { current: Configuration; input: Configuration }): Configuration
+  [InputResolver$FuncSymbol]: $$Func
+}
+
+export interface InputResolverTyped<
+  $$Func extends InputResolver.$Func = InputResolver.Standard_ShallowMerge$Func<
+    Configuration,
+    Configuration,
+    Configuration
+  >,
+> {
+  <
+    current extends Configuration,
+    input extends Configuration,
+  >(parameters: { current: current; input: input }): ApplyInputResolver$Func<$$Func, current, input>
+  [InputResolver$FuncSymbol]: $$Func
+}
+
+export namespace InputResolver {
+  export interface Standard_ShallowMerge$Func<
+    $Input extends Configuration,
+    $Normalized extends $Input,
+    $Default extends Partial<$Normalized>,
+  > extends $Func<$Input, $Normalized, $Default> {
+    return: Standard_ShallowMerge<
+      // @ts-expect-error
+      this['parameters']
+    >
   }
 
-  export interface InputResolverTyped<
-    $$Func extends InputResolver.$Func = InputResolver.Standard_ShallowMerge$Func<
-      Configuration,
-      Configuration,
-      Configuration
-    >,
-  > {
-    <
-      current extends Configuration,
-      input extends Configuration,
-    >(parameters: { current: current; input: input }): ApplyInputResolver$Func<$$Func, current, input>
-    [$.InputResolver$FuncSymbol]: $$Func
-  }
-
-  export namespace InputResolver {
-    export interface Standard_ShallowMerge$Func<
-      $Input extends Configuration,
-      $Normalized extends $Input,
-      $Default extends Partial<$Normalized>,
-    > extends $Func<$Input, $Normalized, $Default> {
-      return: Standard_ShallowMerge<
-        // @ts-expect-error
-        this['parameters']
-      >
-    }
-
-    // todo use a prelude shallowMergeWithoutUndefined
-    // dprint-ignore
-    export type Standard_ShallowMerge<$Parameters extends Parameters> =
+  // todo use a prelude shallowMergeWithoutUndefined
+  // dprint-ignore
+  export type Standard_ShallowMerge<$Parameters extends Parameters> =
       & $Parameters['input']
       // Only keep current keys that are NOT in input.
       & {
@@ -221,99 +216,98 @@ export namespace Configurator {
             $Parameters['current'][_]
         }
 
-    export interface Create {
-      <
-        $Input extends Configuration,
-        $Normalized extends $Input,
-        $Default extends Partial<$Normalized>,
-        $InputResolver$Func extends $Func<$Input, $Normalized, $Default> = never,
-      >(inputResolver: Init<$Input, $Normalized, $Default>): InputResolverGeneric<$InputResolver$Func>
-    }
-
-    export interface Init<
+  export interface Create {
+    <
       $Input extends Configuration,
       $Normalized extends $Input,
       $Default extends Partial<$Normalized>,
-    > {
-      (parameters: Parameters<$Input, $Normalized, $Default>): null | Partial<$Normalized>
-    }
-
-    export type $FuncSymbol = typeof $.InputResolver$FuncSymbol
-
-    // todo we cannot strongly type parameters becaues of case of input:
-    // {a?:1} + normalized: {a?:1} + input: {} <-- leads to {a?:1} instead of {}!
-    // because intersection doesn't constrain to more specific type.
-    export interface $Func<
-      $Input extends Configuration = Configuration,
-      $Normalized extends $Input = $Input,
-      // todo
-
-      $Default extends Partial<$Normalized> = Partial<$Normalized>,
-    > {
-      parameters: unknown // Parameters<$Input, $Normalized, $Default>
-      return: object
-    }
-
-    export interface Parameters<
-      $Input extends Configuration = Configuration,
-      $Normalized extends $Input = $Input,
-      $Default extends Partial<$Normalized> = Partial<$Normalized>,
-    > {
-      readonly input: $Input
-      readonly current: Simplify<Incrementify<$Normalized, $Default>>
-    }
+      $InputResolver$Func extends $Func<$Input, $Normalized, $Default> = never,
+    >(inputResolver: Init<$Input, $Normalized, $Default>): InputResolverGeneric<$InputResolver$Func>
   }
 
-  // -------------
-  // Helpers
-  // -------------
-
-  export type ApplyConfiguratorInputResolver$Func<
-    $Configurator extends Configurator,
-    $Current extends $Configurator['normalizedIncremental'],
-    $Input extends $Configurator['input'],
-    __ = ApplyInputResolver$Func<
-      $Configurator['inputResolver'][InputResolver.$FuncSymbol],
-      $Current,
-      $Input
-    >,
-  > = __
-
-  export type ApplyInputResolver$Func<
-    $$Func extends InputResolver.$Func,
-    $Current extends Configuration,
+  export interface Init<
     $Input extends Configuration,
-    __ = (
-      & $$Func
-      & {
-        parameters: {
-          current: $Current
-          input: $Input
-        }
-      }
-    )['return'],
-  > = __
+    $Normalized extends $Input,
+    $Default extends Partial<$Normalized>,
+  > {
+    (parameters: Parameters<$Input, $Normalized, $Default>): null | Partial<$Normalized>
+  }
 
-  export type Incrementify<
-    $Normalized extends Configuration,
-    $Default extends Configuration,
-    __Optional = {
-      [k in keyof $Normalized as k extends keyof $Default ? never : k]?: $Normalized[k]
-    },
-    // If property shows up in $Default, then it can never be undefined.
-    __Guaranteed = {
-      [k in keyof $Normalized as k extends keyof $Default ? k : never]: $Normalized[k]
-    },
-    __ =
-      & __Optional
-      & __Guaranteed,
-  > = __
+  export type $FuncSymbol = typeof InputResolver$FuncSymbol
 
-  export type Configuration = object
+  // todo we cannot strongly type parameters becaues of case of input:
+  // {a?:1} + normalized: {a?:1} + input: {} <-- leads to {a?:1} instead of {}!
+  // because intersection doesn't constrain to more specific type.
+  export interface $Func<
+    $Input extends Configuration = Configuration,
+    $Normalized extends $Input = $Input,
+    // todo
 
-  export type Simplify<$Type> =
-    & {
-      [_ in keyof $Type]: $Type[_]
-    }
-    & {}
+    $Default extends Partial<$Normalized> = Partial<$Normalized>,
+  > {
+    parameters: unknown // Parameters<$Input, $Normalized, $Default>
+    return: object
+  }
+
+  export interface Parameters<
+    $Input extends Configuration = Configuration,
+    $Normalized extends $Input = $Input,
+    $Default extends Partial<$Normalized> = Partial<$Normalized>,
+  > {
+    readonly input: $Input
+    readonly current: Simplify<Incrementify<$Normalized, $Default>>
+  }
 }
+
+// -------------
+// Helpers
+// -------------
+
+export type ApplyConfiguratorInputResolver$Func<
+  $Configurator extends Configurator,
+  $Current extends $Configurator['normalizedIncremental'],
+  $Input extends $Configurator['input'],
+  __ = ApplyInputResolver$Func<
+    $Configurator['inputResolver'][InputResolver.$FuncSymbol],
+    $Current,
+    $Input
+  >,
+> = __
+
+export type ApplyInputResolver$Func<
+  $$Func extends InputResolver.$Func,
+  $Current extends Configuration,
+  $Input extends Configuration,
+  __ = (
+    & $$Func
+    & {
+      parameters: {
+        current: $Current
+        input: $Input
+      }
+    }
+  )['return'],
+> = __
+
+export type Incrementify<
+  $Normalized extends Configuration,
+  $Default extends Configuration,
+  __Optional = {
+    [k in keyof $Normalized as k extends keyof $Default ? never : k]?: $Normalized[k]
+  },
+  // If property shows up in $Default, then it can never be undefined.
+  __Guaranteed = {
+    [k in keyof $Normalized as k extends keyof $Default ? k : never]: $Normalized[k]
+  },
+  __ =
+    & __Optional
+    & __Guaranteed,
+> = __
+
+export type Configuration = object
+
+export type Simplify<$Type> =
+  & {
+    [_ in keyof $Type]: $Type[_]
+  }
+  & {}
