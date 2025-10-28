@@ -1,6 +1,6 @@
+import { Bldr } from '#bldr'
 import type { ConfigManager } from '#config-manager'
 import { Configurator } from '#configurator'
-import { createMutableBuilder } from '#mutable-builder/mutable-builder'
 import type { Tup } from '#tup'
 import type { Writable } from 'type-fest'
 // for resolving '... cannot be named ...' error
@@ -22,7 +22,7 @@ export const create: Create = (parameters) => {
       name,
     } as unknown as StepDefinition
   }
-  return createMutableBuilder({
+  return Bldr.createMutable({
     data,
     builder: {
       configurator(configuratorTypeInput) {

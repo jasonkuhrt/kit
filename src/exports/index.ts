@@ -25,7 +25,7 @@ export * from '#undefined'
 export * from '#url'
 
 // Utils
-export * from '#builder'
+export * from '#bldr'
 export * from '#cli'
 export * from '#codec'
 export * from '#config-manager'

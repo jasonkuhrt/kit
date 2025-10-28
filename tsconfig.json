@@ -79,8 +79,8 @@
       "#url/url": ["./src/domains/url/$$.ts"],
 
       // Utils
-      "#builder": ["./src/utils/builder/$.ts"],
-      "#builder/builder": ["./src/utils/builder/$$.ts"],
+      "#bldr": ["./src/utils/bldr/$.ts"],
+      "#bldr/bldr": ["./src/utils/bldr/$$.ts"],
       "#cache": ["./src/utils/cache/$.ts"],
       "#cache/cache": ["./src/utils/cache/$$.ts"],
       "#cli": ["./src/utils/cli/$.ts"],
@@ -123,8 +123,6 @@
       "#manifest/manifest": ["./src/utils/manifest/$$.ts"],
       "#mask": ["./src/utils/mask/$.ts"],
       "#mask/mask": ["./src/utils/mask/$$.ts"],
-      "#mutable-builder": ["./src/utils/mutable-builder/$.ts"],
-      "#mutable-builder/mutable-builder": ["./src/utils/mutable-builder/$$.ts"],
       "#name": ["./src/utils/name/$.ts"],
       "#name/name": ["./src/utils/name/$$.ts"],
       "#package-manager": ["./src/utils/package-manager/$.ts"],
