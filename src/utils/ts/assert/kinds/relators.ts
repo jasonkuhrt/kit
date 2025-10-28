@@ -11,8 +11,8 @@ interface AssertionKind extends Fn.Kind.Kind {}
 /**
  * Conditionally compute diff information based on showDiff setting.
  *
- * When showDiff is false (default): Returns just the tip
- * When showDiff is true: Returns diff merged with tip
+ * When showDiff is false (default): Returns just the tip (or empty object if tip is never)
+ * When showDiff is true: Returns diff merged with tip (or just diff if tip is never)
  *
  * @internal
  */
@@ -20,10 +20,14 @@ interface AssertionKind extends Fn.Kind.Kind {}
 type MaybeWithDiff<
   $Expected,
   $Actual,
-  $Tip extends string,
+  $Tip extends string | never,
 > = GetShowDiff extends true
-  ? Obj.ComputeDiff<$Expected, $Actual> & { tip: $Tip }
-  : { tip: $Tip }
+  ? [never] extends [$Tip]
+    ? Obj.ComputeDiff<$Expected, $Actual>  // No tip, just diff
+    : Obj.ComputeDiff<$Expected, $Actual> & { tip: $Tip }
+  : [never] extends [$Tip]
+    ? {}  // No tip, empty object
+    : { tip: $Tip }
 
 /**
  * Exact assertion kind - checks for exact structural equality.
@@ -64,14 +68,14 @@ export interface ExactKind extends AssertionKind {
                       'ACTUAL is subtype of EXPECTED',
                       this['parameters'][0],
                       this['parameters'][1],
-                      MaybeWithDiff<this['parameters'][0], this['parameters'][1], 'ACTUAL is narrower than EXPECTED'>
+                      MaybeWithDiff<this['parameters'][0], this['parameters'][1], never>
                     >
                   : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.supertype
                     ? StaticErrorAssertion<
                           'ACTUAL is supertype of EXPECTED',
                           this['parameters'][0],
                           this['parameters'][1],
-                          MaybeWithDiff<this['parameters'][0], this['parameters'][1], 'ACTUAL is wider than EXPECTED'>
+                          MaybeWithDiff<this['parameters'][0], this['parameters'][1], never>
                         >
                       : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.overlapping
                         ? StaticErrorAssertion<
@@ -102,14 +106,14 @@ export interface ExactKind extends AssertionKind {
                     'ACTUAL is subtype of EXPECTED',
                     this['parameters'][0],
                     this['parameters'][1],
-                    MaybeWithDiff<this['parameters'][0], this['parameters'][1], 'ACTUAL is narrower than EXPECTED'>
+                    MaybeWithDiff<this['parameters'][0], this['parameters'][1], never>
                   >
                 : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.supertype
                   ? StaticErrorAssertion<
                         'ACTUAL is supertype of EXPECTED',
                         this['parameters'][0],
                         this['parameters'][1],
-                        MaybeWithDiff<this['parameters'][0], this['parameters'][1], 'ACTUAL is wider than EXPECTED'>
+                        MaybeWithDiff<this['parameters'][0], this['parameters'][1], never>
                       >
                     : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.overlapping
                       ? StaticErrorAssertion<
@@ -140,14 +144,14 @@ export interface ExactKind extends AssertionKind {
                   'ACTUAL is subtype of EXPECTED',
                   this['parameters'][0],
                   this['parameters'][1],
-                  MaybeWithDiff<this['parameters'][0], this['parameters'][1], 'ACTUAL is narrower than EXPECTED'>
+                  MaybeWithDiff<this['parameters'][0], this['parameters'][1], never>
                 >
               : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.supertype
                 ? StaticErrorAssertion<
                       'ACTUAL is supertype of EXPECTED',
                       this['parameters'][0],
                       this['parameters'][1],
-                      MaybeWithDiff<this['parameters'][0], this['parameters'][1], 'ACTUAL is wider than EXPECTED'>
+                      MaybeWithDiff<this['parameters'][0], this['parameters'][1], never>
                     >
                   : Relation.GetRelation<this['parameters'][0], this['parameters'][1]> extends Relation.overlapping
                     ? StaticErrorAssertion<

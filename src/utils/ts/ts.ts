@@ -306,6 +306,81 @@ export type ExtendsExact<$Input, $Constraint> =
 export type NotExtends<$A, $B> = [$A] extends [$B] ? false : true
 
 /**
+ * Assert that a type extends a constraint, returning the type if valid, `never` otherwise.
+ *
+ * This is a type-level assertion utility useful for enforcing constraints in conditional types.
+ * Unlike standard `extends` clauses, this allows you to "assert" a constraint and get back
+ * the original type or `never` for use in further type logic.
+ *
+ * @template $Type - The type to check
+ * @template $Constraint - The constraint that $Type must extend
+ * @returns `$Type` if it extends `$Constraint`, otherwise `never`
+ *
+ * @example
+ * ```ts
+ * type T1 = AssertExtends<string, string>     // string
+ * type T2 = AssertExtends<'hello', string>    // 'hello'
+ * type T3 = AssertExtends<number, string>     // never
+ * type T4 = AssertExtends<42, number>         // 42
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Using in type-level logic
+ * type EnsureArray<T> = AssertExtends<T, any[]>
+ *
+ * type Valid = EnsureArray<string[]>    // string[]
+ * type Invalid = EnsureArray<string>    // never
+ * ```
+ *
+ * @category Type Utilities
+ */
+// dprint-ignore
+export type AssertExtends<$Type, $Constraint> =
+  $Type extends $Constraint
+    ? $Type
+    : never
+
+/**
+ * Assert that a type extends `object`.
+ * Convenience wrapper around {@link AssertExtends} for object types.
+ *
+ * @template $Type - The type to check
+ * @returns `$Type` if it extends `object`, otherwise `never`
+ *
+ * @example
+ * ```ts
+ * type T1 = AssertExtendsObject<{ x: number }>  // { x: number }
+ * type T2 = AssertExtendsObject<string[]>       // string[]
+ * type T3 = AssertExtendsObject<string>         // never
+ * type T4 = AssertExtendsObject<number>         // never
+ * ```
+ *
+ * @category Type Utilities
+ */
+// dprint-ignore
+export type AssertExtendsObject<$Type> = AssertExtends<$Type, object>
+
+/**
+ * Assert that a type extends `string`.
+ * Convenience wrapper around {@link AssertExtends} for string types.
+ *
+ * @template $Type - The type to check
+ * @returns `$Type` if it extends `string`, otherwise `never`
+ *
+ * @example
+ * ```ts
+ * type T1 = AssertExtendsString<string>      // string
+ * type T2 = AssertExtendsString<'hello'>     // 'hello'
+ * type T3 = AssertExtendsString<number>      // never
+ * type T4 = AssertExtendsString<boolean>     // never
+ * ```
+ *
+ * @category Type Utilities
+ */
+export type AssertExtendsString<$Type> = AssertExtends<$Type, string>
+
+/**
  * Make all properties in an object mutable (removes readonly modifiers).
  *
  * @example

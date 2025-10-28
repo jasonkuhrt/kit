@@ -97,3 +97,34 @@ export type IsKeyOptional<$T extends Undefined.Maybe<object>, $K extends string>
  * ```
  */
 export type HasKey<$T extends object, $K extends string> = $K extends keyof $T ? true : false
+
+/**
+ * Check if an object has any keys.
+ *
+ * @category Type Utilities
+ *
+ * @example
+ * ```ts
+ * type T1 = HasKeys<{ a: string }>  // true
+ * type T2 = HasKeys<{}>  // false
+ * type T3 = HasKeys<Record<string, never>>  // false
+ * ```
+ */
+export type HasKeys<$T> = keyof $T extends never ? false : true
+
+/**
+ * Check if an object has an index signature.
+ *
+ * Returns `true` if the object allows any string key (index signature), `false` otherwise.
+ *
+ * @category Type Utilities
+ *
+ * @example
+ * ```ts
+ * type T1 = IsHasIndexType<Record<string, any>>  // true
+ * type T2 = IsHasIndexType<{ [key: string]: number }>  // true
+ * type T3 = IsHasIndexType<{ a: string }>  // false
+ * type T4 = IsHasIndexType<{ a: string; [key: string]: any }>  // true
+ * ```
+ */
+export type IsHasIndexType<$T> = string extends keyof $T ? true : false

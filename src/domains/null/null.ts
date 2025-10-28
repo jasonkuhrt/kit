@@ -81,3 +81,42 @@ export type Maybe<$T> = $T | null
  * ```
  */
 export type Exclude<T> = T extends null ? never : T
+
+/**
+ * Check if a value is not null.
+ *
+ * Type guard that narrows a type by excluding `null`.
+ * Useful for filtering null values while preserving type safety.
+ *
+ * @param value - The value to check
+ * @returns True if the value is not null, with type narrowing to {@link Exclude}
+ *
+ * @example
+ * ```ts
+ * const value: string | null = getValue()
+ * if (isNonNull(value)) {
+ *   // value is string here
+ *   console.log(value.toUpperCase())
+ * }
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Filtering arrays
+ * const items: (string | null)[] = ['a', null, 'b', null, 'c']
+ * const nonNull = items.filter(isNonNull)
+ * // nonNull: string[]
+ * ```
+ *
+ * @example
+ * ```ts
+ * // With complex types
+ * type User = { name: string } | null
+ * const users: User[] = [{ name: 'Alice' }, null, { name: 'Bob' }]
+ * const validUsers = users.filter(isNonNull)
+ * // validUsers: { name: string }[]
+ * ```
+ */
+export const isNonNull = <$Value>(value: $Value): value is Exclude<$Value> => {
+  return value !== null
+}

@@ -1,6 +1,5 @@
 import { Lang } from '#lang'
 import { Obj } from '#obj'
-import { Ts } from '#ts'
 import type { GetDataType, Mask } from './mask.js'
 
 /**
@@ -104,7 +103,7 @@ export const applyExact = <
   data,
   mask extends Mask<any>,
 >(
-  data: Obj.NoExcess<GetDataType<mask>, data>,
+  data: Obj.NoExcess<data, GetDataType<mask>>,
   mask: mask,
 ): Apply<data, mask> => {
   return applyInternal(data, mask) as Apply<data, mask>

@@ -81,7 +81,6 @@ test('exact error - optionality difference', () => {
   ERROR_________: "ACTUAL is supertype of EXPECTED"
   expected______: E
   actual________: A
-  tip___________: "ACTUAL is wider than EXPECTED"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
