@@ -167,6 +167,7 @@
     "./arr": "./build/domains/arr/$$.js",
     "./arr-mut": "./build/domains/arr-mut/$$.js",
     "./bool": "./build/domains/bool/$$.js",
+    "./builder": "./build/utils/builder/$$.js",
     "./cli": "./build/utils/cli/$$.js",
     "./codec": "./build/utils/codec/$$.js",
     "./color": "./build/domains/color/$$.js",

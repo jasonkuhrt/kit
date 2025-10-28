@@ -79,6 +79,8 @@
       "#url/url": ["./src/domains/url/$$.ts"],
 
       // Utils
+      "#builder": ["./src/utils/builder/$.ts"],
+      "#builder/builder": ["./src/utils/builder/$$.ts"],
       "#cache": ["./src/utils/cache/$.ts"],
       "#cache/cache": ["./src/utils/cache/$$.ts"],
       "#cli": ["./src/utils/cli/$.ts"],
