@@ -9,5 +9,6 @@ export { StepDefinition } from './StepDefinition.js'
 
 // needed else error of  ... 'this is likely not portable'
 export * from './Overload/Data.ts'
+export * from './PipelineDefinition/Updaters.ts'
 export * from './StepRunner.ts'
 export * from './StepTrigger.ts'
