@@ -12,5 +12,5 @@ export * as Fn from './$$.js'
  */
 export namespace Fn {}
 
-// Re-export Kind namespace at top level for easier access
+// Re-export Kind at top level for easier access
 export * as Kind from './kind.js'
