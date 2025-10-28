@@ -119,7 +119,7 @@
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; tip___________: \"Types share no values\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
           "relationships": {
             "args": [
               "equality"
@@ -135,17 +135,17 @@
     {
       "location": {
         "start": {
-          "line": 44,
+          "line": 43,
           "char": 3
         },
         "end": {
-          "line": 44,
+          "line": 43,
           "char": 38
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A<{}>; actual________: B; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A<{}>; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
           "relationships": {
             "args": [
               "equality"
@@ -161,17 +161,17 @@
     {
       "location": {
         "start": {
-          "line": 56,
+          "line": 54,
           "char": 3
         },
         "end": {
-          "line": 56,
+          "line": 54,
           "char": 38
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
           "relationships": {
             "args": [
               "equality"
@@ -187,17 +187,17 @@
     {
       "location": {
         "start": {
-          "line": 68,
+          "line": 65,
           "char": 3
         },
         "end": {
-          "line": 68,
+          "line": 65,
           "char": 38
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: E; actual________: A; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: E; actual________: A; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
           "relationships": {
             "args": [
               "equality"
@@ -213,17 +213,17 @@
     {
       "location": {
         "start": {
-          "line": 80,
+          "line": 76,
           "char": 3
         },
         "end": {
-          "line": 80,
+          "line": 76,
           "char": 38
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"ACTUAL is supertype of EXPECTED\"; expected______: E; actual________: A; tip___________: \"ACTUAL is wider than EXPECTED\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \"ACTUAL is supertype of EXPECTED\"; expected______: E; actual________: A; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
           "relationships": {
             "args": [
               "equality"
@@ -239,17 +239,17 @@
     {
       "location": {
         "start": {
-          "line": 92,
+          "line": 87,
           "char": 3
         },
         "end": {
-          "line": 92,
+          "line": 87,
           "char": 12
         }
       },
       "args": [
         {
-          "type": "[{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: 42; tip___________: \"Types share no values\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
+          "type": "[{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: 42; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
           "relationships": {
             "args": [
               "equality"
@@ -265,17 +265,17 @@
     {
       "location": {
         "start": {
-          "line": 104,
+          "line": 98,
           "char": 3
         },
         "end": {
-          "line": 104,
+          "line": 98,
           "char": 13
         }
       },
       "args": [
         {
-          "type": "[{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: { a: string; }; actual________: { a: number; b: number; }; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
+          "type": "[{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: { a: string; }; actual________: { a: number; b: number; }; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
           "relationships": {
             "args": [
               "equality"
@@ -291,11 +291,11 @@
     {
       "location": {
         "start": {
-          "line": 126,
+          "line": 119,
           "char": 3
         },
         "end": {
-          "line": 126,
+          "line": 119,
           "char": 18
         }
       },
@@ -317,11 +317,11 @@
     {
       "location": {
         "start": {
-          "line": 133,
+          "line": 126,
           "char": 3
         },
         "end": {
-          "line": 133,
+          "line": 126,
           "char": 20
         }
       },
@@ -343,11 +343,11 @@
     {
       "location": {
         "start": {
-          "line": 137,
+          "line": 130,
           "char": 3
         },
         "end": {
-          "line": 137,
+          "line": 130,
           "char": 25
         }
       },
@@ -369,17 +369,17 @@
     {
       "location": {
         "start": {
-          "line": 148,
+          "line": 141,
           "char": 3
         },
         "end": {
-          "line": 148,
+          "line": 141,
           "char": 13
         }
       },
       "args": [
         {
-          "type": "[actual: { ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: { id: string; user: { name: string; age: number; }; tags: string[]; }; actual________: { id: string; user: { name: string; age: string; }; tags: string[]; extra: boolean; }; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
+          "type": "[actual: { ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: { id: string; user: { name: string; age: number; }; tags: string[]; }; actual________: { id: string; user: { name: string; age: string; }; tags: string[]; extra: boolean; }; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
           "relationships": {
             "args": [
               "equality"
@@ -395,11 +395,11 @@
     {
       "location": {
         "start": {
-          "line": 177,
+          "line": 169,
           "char": 3
         },
         "end": {
-          "line": 177,
+          "line": 169,
           "char": 18
         }
       },
@@ -421,11 +421,11 @@
     {
       "location": {
         "start": {
-          "line": 189,
+          "line": 181,
           "char": 3
         },
         "end": {
-          "line": 189,
+          "line": 181,
           "char": 18
         }
       },
@@ -447,11 +447,11 @@
     {
       "location": {
         "start": {
-          "line": 205,
+          "line": 197,
           "char": 3
         },
         "end": {
-          "line": 205,
+          "line": 197,
           "char": 18
         }
       },
@@ -473,17 +473,17 @@
     {
       "location": {
         "start": {
-          "line": 221,
+          "line": 213,
           "char": 3
         },
         "end": {
-          "line": 221,
+          "line": 213,
           "char": 38
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
           "relationships": {
             "args": [
               "equality"
@@ -499,17 +499,17 @@
     {
       "location": {
         "start": {
-          "line": 233,
+          "line": 224,
           "char": 3
         },
         "end": {
-          "line": 233,
+          "line": 224,
           "char": 38
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
           "relationships": {
             "args": [
               "equality"
@@ -525,11 +525,11 @@
     {
       "location": {
         "start": {
-          "line": 245,
+          "line": 235,
           "char": 3
         },
         "end": {
-          "line": 245,
+          "line": 235,
           "char": 47
         }
       },
@@ -551,11 +551,11 @@
     {
       "location": {
         "start": {
-          "line": 268,
+          "line": 258,
           "char": 3
         },
         "end": {
-          "line": 268,
+          "line": 258,
           "char": 48
         }
       },
@@ -577,11 +577,11 @@
     {
       "location": {
         "start": {
-          "line": 279,
+          "line": 269,
           "char": 3
         },
         "end": {
-          "line": 279,
+          "line": 269,
           "char": 48
         }
       },
@@ -603,11 +603,11 @@
     {
       "location": {
         "start": {
-          "line": 285,
+          "line": 275,
           "char": 3
         },
         "end": {
-          "line": 285,
+          "line": 275,
           "char": 49
         }
       },
@@ -629,11 +629,11 @@
     {
       "location": {
         "start": {
-          "line": 291,
+          "line": 281,
           "char": 3
         },
         "end": {
-          "line": 291,
+          "line": 281,
           "char": 49
         }
       },
@@ -655,17 +655,17 @@
     {
       "location": {
         "start": {
-          "line": 320,
+          "line": 310,
           "char": 3
         },
         "end": {
-          "line": 320,
+          "line": 310,
           "char": 65
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: [string, string]; actual________: [a: number, b: number]; tip___________: \"Types share some values but differ\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: [string, string]; actual________: [a: number, b: number]; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
           "relationships": {
             "args": [
               "equality"
@@ -681,17 +681,17 @@
     {
       "location": {
         "start": {
-          "line": 331,
+          "line": 320,
           "char": 3
         },
         "end": {
-          "line": 331,
+          "line": 320,
           "char": 65
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; tip___________: \"Types share no values\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
           "relationships": {
             "args": [
               "equality"
@@ -707,17 +707,17 @@
     {
       "location": {
         "start": {
-          "line": 342,
+          "line": 330,
           "char": 3
         },
         "end": {
-          "line": 342,
+          "line": 330,
           "char": 53
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: number; actual________: string; tip___________: \"Types share no values\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: number; actual________: string; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
           "relationships": {
             "args": [
               "equality"
@@ -733,11 +733,11 @@
     {
       "location": {
         "start": {
-          "line": 355,
+          "line": 342,
           "char": 3
         },
         "end": {
-          "line": 355,
+          "line": 342,
           "char": 27
         }
       },
@@ -759,11 +759,11 @@
     {
       "location": {
         "start": {
-          "line": 366,
+          "line": 353,
           "char": 3
         },
         "end": {
-          "line": 366,
+          "line": 353,
           "char": 27
         }
       },
@@ -785,11 +785,11 @@
     {
       "location": {
         "start": {
-          "line": 377,
+          "line": 364,
           "char": 3
         },
         "end": {
-          "line": 377,
+          "line": 364,
           "char": 27
         }
       },
@@ -811,11 +811,11 @@
     {
       "location": {
         "start": {
-          "line": 388,
+          "line": 375,
           "char": 3
         },
         "end": {
-          "line": 388,
+          "line": 375,
           "char": 27
         }
       },
@@ -837,11 +837,11 @@
     {
       "location": {
         "start": {
-          "line": 406,
+          "line": 393,
           "char": 3
         },
         "end": {
-          "line": 406,
+          "line": 393,
           "char": 23
         }
       },
@@ -863,11 +863,11 @@
     {
       "location": {
         "start": {
-          "line": 422,
+          "line": 409,
           "char": 3
         },
         "end": {
-          "line": 422,
+          "line": 409,
           "char": 23
         }
       },
@@ -889,11 +889,11 @@
     {
       "location": {
         "start": {
-          "line": 440,
+          "line": 427,
           "char": 3
         },
         "end": {
-          "line": 440,
+          "line": 427,
           "char": 23
         }
       },
@@ -915,11 +915,11 @@
     {
       "location": {
         "start": {
-          "line": 456,
+          "line": 443,
           "char": 3
         },
         "end": {
-          "line": 456,
+          "line": 443,
           "char": 23
         }
       },
@@ -941,11 +941,11 @@
     {
       "location": {
         "start": {
-          "line": 472,
+          "line": 459,
           "char": 3
         },
         "end": {
-          "line": 472,
+          "line": 459,
           "char": 23
         }
       },

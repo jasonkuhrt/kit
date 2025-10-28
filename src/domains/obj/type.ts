@@ -1,4 +1,5 @@
 import type { Str } from '#str'
+import type { GetPreservedTypes } from '../../utils/ts/global-settings.js'
 import { type IsEmpty } from './diff.js'
 
 // todo: Arr.Any/Unknown, Prom.Any/Unknown, etc. -- but this has no generics, we need a new term pattern here, e.g.: "Some", "Data", "Datum", "Item", "Element", "Value", "$", ... ?
@@ -20,6 +21,32 @@ export type Any = object
  * @category Type Utilities
  */
 export type Empty = Record<string, never>
+
+/**
+ * Frozen empty object singleton.
+ * Use this instead of `{}` for better performance and immutability guarantees.
+ *
+ * @category Constants
+ *
+ * @example
+ * ```ts
+ * const opts = options ?? emptyObject
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Type is properly inferred
+ * type T = typeof emptyObject  // {}
+ * ```
+ */
+export const emptyObject = Object.freeze({})
+
+/**
+ * Type of the {@link emptyObject} constant.
+ *
+ * @category Type Utilities
+ */
+export type EmptyObject = typeof emptyObject
 
 /**
  * Subtract properties present in $B from $A (shallow operation).
@@ -77,14 +104,15 @@ export const empty = (): Empty => Object.freeze({}) as Empty
 /**
  * Enforces that a type has no excess properties beyond those defined in the expected type.
  *
- * This utility intersects the actual type with a record that marks all excess keys as `never`,
- * causing TypeScript to reject values with properties not present in the expected type.
- * Particularly useful in generic contexts where excess property checking is bypassed.
+ * This utility recursively validates that the actual type contains no properties beyond those
+ * in the expected type, checking nested objects as well. TypeScript will reject values with
+ * excess properties at any depth. Particularly useful in generic contexts where excess property
+ * checking is bypassed.
  *
  * @category Type Utilities
  *
- * @template $Expected - The type defining allowed properties
- * @template $Actual - The actual type to check for excess properties
+ * @template $Value - The actual type to check for excess properties
+ * @template $Constraint - The type defining allowed properties
  *
  * @example
  * ```ts
@@ -95,9 +123,20 @@ export const empty = (): Empty => Object.freeze({}) as Empty
  * test1({ name: 'Alice', age: 30, extra: true })  // ✓ No error (excess allowed)
  *
  * // With NoExcess - rejects excess
- * function test2<T extends User>(input: Obj.NoExcess<User, T>): void {}
+ * function test2<T extends User>(input: Obj.NoExcess<T, User>): void {}
  * test2({ name: 'Alice', age: 30, extra: true })  // ✗ Error: 'extra' is never
  * test2({ name: 'Alice', age: 30 })  // ✓ OK
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Nested objects - validates recursively
+ * type UserProfile = { profile: { name: string; age: number } }
+ *
+ * function setProfile<T extends UserProfile>(data: Obj.NoExcess<T, UserProfile>): void {}
+ *
+ * setProfile({ profile: { name: 'Alice', age: 30 } })  // ✓ OK
+ * setProfile({ profile: { name: 'Alice', age: 30, extra: true } })  // ✗ Error: nested excess
  * ```
  *
  * @example
@@ -105,27 +144,54 @@ export const empty = (): Empty => Object.freeze({}) as Empty
  * // Using with optional properties
  * type Config = { id: string; debug?: boolean }
  *
- * function configure<T extends Config>(config: Obj.NoExcess<Config, T>): void {}
+ * function configure<T extends Config>(config: Obj.NoExcess<T, Config>): void {}
  *
  * configure({ id: 'test' })  // ✓ OK - optional omitted
  * configure({ id: 'test', debug: true })  // ✓ OK - optional included
  * configure({ id: 'test', invalid: 'x' })  // ✗ Error: 'invalid' is never
  * ```
  *
+ * @example
+ * ```ts
+ * // Preserved types - built-in types are not recursed into
+ * type Config = { timestamp: Date; count: number }
+ *
+ * function setConfig<T extends Config>(config: Obj.NoExcess<T, Config>): void {}
+ *
+ * setConfig({ timestamp: new Date(), count: 5 })  // ✓ OK - Date is preserved
+ * setConfig({ timestamp: new Date(), count: 5, extra: true })  // ✗ Error: 'extra' is never
+ * // Note: Date's internal properties are NOT validated (Date is preserved)
+ * ```
+ *
  * @remarks
- * This works by creating a type that's the intersection of:
- * 1. The actual type as-is
- * 2. A record marking excess keys (keys in Actual but not in Expected) as `never`
+ * This works by recursively mapping over the actual type's keys:
+ * - Excess keys (not in Expected) are marked as `never`
+ * - Valid keys recursively validate their nested values
+ * - Preserved types (Date, Error, RegExp, etc.) are not recursed into
+ *
+ * Preserved types are registered via {@link KitLibrarySettings.Ts.PreserveTypes} and include
+ * built-in types (Date, Error, RegExp, Function) and branded primitives (Effect types, etc.).
  *
  * When a property is typed as `never`, TypeScript requires that it either:
  * - Not be present at all, OR
  * - Have a value that extends `never` (which is impossible for non-never types)
  *
- * This forces a type error when excess properties are provided.
+ * This forces a type error when excess properties are provided at any depth.
  *
  * @see {@link NoExcessNonEmpty} for non-empty variant
  */
-export type NoExcess<$Expected, $Actual> = $Actual & Record<Exclude<keyof $Actual, keyof $Expected>, never>
+// dprint-ignore
+export type NoExcess<$Value, $Constraint> =
+  $Value extends GetPreservedTypes ? $Value :
+  $Value extends object
+    ? $Constraint extends object
+      ? { [k in keyof $Value]:
+          k extends keyof $Constraint
+            ? NoExcess<$Value[k], $Constraint[k]>
+            : never
+        }
+      : $Value
+    : $Value
 
 /**
  * Like {@link NoExcess} but also requires the object to be non-empty.
@@ -145,8 +211,8 @@ export type NoExcess<$Expected, $Actual> = $Actual & Record<Exclude<keyof $Actua
  * type T3 = NoExcessNonEmpty<{ name: 'Bob', age: 30 }, User> // ✗ Fail - excess
  * ```
  */
-export type NoExcessNonEmpty<$Value extends object, $Constraint> = IsEmpty<$Value> extends true ? never
-  : NoExcess<$Constraint, $Value>
+export type NoExcessNonEmpty<$Value, $Constraint> = IsEmpty<$Value> extends true ? never
+  : NoExcess<$Value, $Constraint>
 
 //
 //

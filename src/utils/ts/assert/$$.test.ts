@@ -33,7 +33,6 @@ test('exact error - string vs number', () => {
   ERROR_________: "EXPECTED and ACTUAL are disjoint"
   expected______: string
   actual________: number
-  tip___________: "Types share no values"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
@@ -45,7 +44,6 @@ test('exact error - SingleOperation case', () => {
   ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: A<{}>
   actual________: B
-  tip___________: "Types share some values but differ"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
@@ -57,7 +55,6 @@ test('exact error - with built-in types preserved', () => {
   ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: A
   actual________: B
-  tip___________: "Types share some values but differ"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
@@ -69,7 +66,6 @@ test('exact error - diff with missing, excess, and mismatched', () => {
   ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: E
   actual________: A
-  tip___________: "Types share some values but differ"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
@@ -81,7 +77,6 @@ test('exact error - optionality difference', () => {
   ERROR_________: "ACTUAL is supertype of EXPECTED"
   expected______: E
   actual________: A
-  tip___________: "ACTUAL is wider than EXPECTED"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
@@ -94,7 +89,6 @@ test('exact value mode - basic type mismatches', () => {
     ERROR_________: "EXPECTED and ACTUAL are disjoint"
     expected______: string
     actual________: 42
-    tip___________: "Types share no values"
     HIERARCHY_____: readonly ["root", "assert", ...string[]]
   }
 ]`)
@@ -106,7 +100,6 @@ test('exact value mode - basic type mismatches', () => {
     ERROR_________: "EXPECTED only overlaps with ACTUAL"
     expected______: { a: string }
     actual________: { a: number; b: number }
-    tip___________: "Types share some values but differ"
     HIERARCHY_____: readonly ["root", "assert", ...string[]]
   }
 ]`)
@@ -159,7 +152,6 @@ test('exact value mode - complex type aliases in signatures', () => {
       tags: string[]
       extra: boolean
     }
-    tip___________: "Types share some values but differ"
     HIERARCHY_____: readonly ["root", "assert", ...string[]]
   }
 ]`)
@@ -222,7 +214,6 @@ test('user-defined types preserved with preserveTypes setting', () => {
   ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: A
   actual________: B
-  tip___________: "Types share some values but differ"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
@@ -234,7 +225,6 @@ test('multiple preserved types from different augmentations', () => {
   ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: A
   actual________: B
-  tip___________: "Types share some values but differ"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
@@ -321,7 +311,6 @@ test('extractor - parameters', () => {
   ERROR_________: "EXPECTED only overlaps with ACTUAL"
   expected______: [string, string]
   actual________: [a: number, b: number]
-  tip___________: "Types share some values but differ"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
@@ -332,7 +321,6 @@ test('extractor - awaited', () => {
   ERROR_________: "EXPECTED and ACTUAL are disjoint"
   expected______: string
   actual________: number
-  tip___________: "Types share no values"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
@@ -343,7 +331,6 @@ test('extractor - array', () => {
   ERROR_________: "EXPECTED and ACTUAL are disjoint"
   expected______: number
   actual________: string
-  tip___________: "Types share no values"
   HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })

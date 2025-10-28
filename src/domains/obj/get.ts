@@ -304,6 +304,20 @@ export const values = <$T extends object>(obj: $T): values<$T> => {
 export type values<$Obj extends object> = $Obj[keyof $Obj][]
 
 /**
+ * Get the union of all value types from an object, or return empty object if no keys.
+ *
+ * @category Type Utilities
+ *
+ * @example
+ * ```ts
+ * type T1 = ValuesOrEmptyObject<{ a: string; b: number }>  // string | number
+ * type T2 = ValuesOrEmptyObject<{}>  // {}
+ * type T3 = ValuesOrEmptyObject<Record<string, never>>  // {}
+ * ```
+ */
+export type ValuesOrEmptyObject<$T> = keyof $T extends never ? {} : $T[keyof $T]
+
+/**
  * Get value at key, or return fallback if key doesn't exist.
  *
  * @category Type Utilities

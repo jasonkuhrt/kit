@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import type { Buffer } from 'node:buffer'
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -15,7 +14,7 @@ const getMarkdownFormatter = async () => {
     const { createFromBuffer } = await import('@dprint/formatter')
     const { getPath } = await import('@dprint/markdown')
     const buffer = await readFile(getPath())
-    const formatter = createFromBuffer(buffer as ArrayBuffer | Uint8Array)
+    const formatter = createFromBuffer(buffer as any)
 
     return {
       formatText: (fileText: string) => {
