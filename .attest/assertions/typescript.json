@@ -1,112 +1,22 @@
 {
-    "src/utils/ts/err.test.ts": [
-        {
-            "location": {
-                "start": {
-                    "line": 6,
-                    "char": 3
-                },
-                "end": {
-                    "line": 6,
-                    "char": 39
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"msg\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
+  "src/utils/ts/err.test.ts": [
+    {
+      "location": {
+        "start": {
+          "line": 6,
+          "char": 3
         },
-        {
-            "location": {
-                "start": {
-                    "line": 13,
-                    "char": 3
-                },
-                "end": {
-                    "line": 13,
-                    "char": 59
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"msg\"; a_____________: \"a\"; b_____________: \"b\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 22,
-                    "char": 3
-                },
-                "end": {
-                    "line": 22,
-                    "char": 75
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"msg\"; a_____________: \"a\"; b_____________: \"b\"; c_____________: \"c\"; d_____________: \"d\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
-        },
-        {
-            "location": {
-                "start": {
-                    "line": 34,
-                    "char": 3
-                },
-                "end": {
-                    "line": 34,
-                    "char": 73
-                }
-            },
-            "args": [
-                {
-                    "type": "{ ERROR_________: \"msg\"; veryLongKeyName: \"x\"; s_____________: \"y\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
-            ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
+        "end": {
+          "line": 6,
+          "char": 39
         }
-    ],
-    "src/utils/ts/assert/$$.test.ts": [
+      },
+      "args": [
         {
+<<<<<<< Updated upstream
+          "type": "{ ERROR_________: \"msg\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+=======
             "location": {
                 "start": {
                     "line": 32,
@@ -133,52 +43,270 @@
             "completions": {}
         },
         {
-<<<<<<< Updated upstream
-          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-          "relationships": {
-=======
             "location": {
                 "start": {
-                    "line": 44,
+                    "line": 43,
                     "char": 3
                 },
                 "end": {
-                    "line": 44,
+                    "line": 43,
                     "char": 38
                 }
             },
 >>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A<{}>; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
+<<<<<<< Updated upstream
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 13,
+          "char": 3
+        },
+        "end": {
+          "line": 13,
+          "char": 59
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"msg\"; a_____________: \"a\"; b_____________: \"b\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 22,
+          "char": 3
+        },
+        "end": {
+          "line": 22,
+          "char": 75
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"msg\"; a_____________: \"a\"; b_____________: \"b\"; c_____________: \"c\"; d_____________: \"d\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 34,
+          "char": 3
+        },
+        "end": {
+          "line": 34,
+          "char": 73
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"msg\"; veryLongKeyName: \"x\"; s_____________: \"y\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    }
+  ],
+  "src/utils/ts/assert/$$.test.ts": [
+    {
+      "location": {
+        "start": {
+          "line": 32,
+          "char": 3
+        },
+        "end": {
+          "line": 32,
+          "char": 48
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 43,
+          "char": 3
+        },
+        "end": {
+          "line": 43,
+          "char": 38
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A<{}>; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 54,
+          "char": 3
+        },
+        "end": {
+          "line": 54,
+          "char": 38
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 65,
+          "char": 3
+        },
+        "end": {
+          "line": 65,
+          "char": 38
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: E; actual________: A; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 76,
+          "char": 3
+        },
+        "end": {
+          "line": 76,
+          "char": 38
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \"ACTUAL is supertype of EXPECTED\"; expected______: E; actual________: A; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 87,
+          "char": 3
+        },
+        "end": {
+          "line": 87,
+          "char": 12
+        }
+      },
+      "args": [
+        {
+          "type": "[{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: 42; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
+          "relationships": {
+=======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
         {
-<<<<<<< Updated upstream
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A<{}>; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-          "relationships": {
-=======
             "location": {
                 "start": {
-                    "line": 56,
+                    "line": 54,
                     "char": 3
                 },
                 "end": {
-                    "line": 56,
+                    "line": 54,
                     "char": 38
                 }
             },
->>>>>>> Stashed changes
             "args": [
                 {
                     "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
@@ -195,21 +323,16 @@
             "completions": {}
         },
         {
-<<<<<<< Updated upstream
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-          "relationships": {
-=======
             "location": {
                 "start": {
-                    "line": 68,
+                    "line": 65,
                     "char": 3
                 },
                 "end": {
-                    "line": 68,
+                    "line": 65,
                     "char": 38
                 }
             },
->>>>>>> Stashed changes
             "args": [
                 {
                     "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: E; actual________: A; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
@@ -226,21 +349,16 @@
             "completions": {}
         },
         {
-<<<<<<< Updated upstream
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: E; actual________: A; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-          "relationships": {
-=======
             "location": {
                 "start": {
-                    "line": 80,
+                    "line": 76,
                     "char": 3
                 },
                 "end": {
-                    "line": 80,
+                    "line": 76,
                     "char": 38
                 }
             },
->>>>>>> Stashed changes
             "args": [
                 {
                     "type": "{ ERROR_________: \"ACTUAL is supertype of EXPECTED\"; expected______: E; actual________: A; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
@@ -257,21 +375,16 @@
             "completions": {}
         },
         {
-<<<<<<< Updated upstream
-          "type": "{ ERROR_________: \"ACTUAL is supertype of EXPECTED\"; expected______: E; actual________: A; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-          "relationships": {
-=======
             "location": {
                 "start": {
-                    "line": 91,
+                    "line": 87,
                     "char": 3
                 },
                 "end": {
-                    "line": 91,
+                    "line": 87,
                     "char": 12
                 }
             },
->>>>>>> Stashed changes
             "args": [
                 {
                     "type": "[{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: 42; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
@@ -283,31 +396,6 @@
                     }
                 }
             ],
-<<<<<<< Updated upstream
-            "typeArgs": []
-          }
-        }
-      ],
-      "typeArgs": [],
-      "errors": [],
-      "completions": {}
-    },
-    {
-      "location": {
-        "start": {
-          "line": 91,
-          "char": 3
-        },
-        "end": {
-          "line": 91,
-          "char": 12
-        }
-      },
-      "args": [
-        {
-          "type": "[{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: 42; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
-          "relationships": {
-=======
             "typeArgs": [],
             "errors": [],
             "completions": {}
@@ -315,25 +403,17 @@
         {
             "location": {
                 "start": {
-                    "line": 103,
+                    "line": 98,
                     "char": 3
                 },
                 "end": {
-                    "line": 103,
+                    "line": 98,
                     "char": 13
                 }
             },
 >>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "[{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: { a: string; }; actual________: { a: number; b: number; }; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -347,11 +427,11 @@
     {
       "location": {
         "start": {
-          "line": 103,
+          "line": 98,
           "char": 3
         },
         "end": {
-          "line": 103,
+          "line": 98,
           "char": 13
         }
       },
@@ -367,25 +447,17 @@
         {
             "location": {
                 "start": {
-                    "line": 125,
+                    "line": 119,
                     "char": 3
                 },
                 "end": {
-                    "line": 125,
+                    "line": 119,
                     "char": 18
                 }
             },
 >>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "(actual: 42, error: \"⚠ Types are not exactly equal\", expected: string) => void",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -399,42 +471,37 @@
     {
       "location": {
         "start": {
-          "line": 125,
+          "line": 119,
           "char": 3
         },
         "end": {
-          "line": 125,
+          "line": 119,
           "char": 18
         }
       },
       "args": [
+        {
+          "type": "(actual: 42, error: \"⚠ Types are not exactly equal\", expected: string) => void",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 132,
+                    "line": 126,
                     "char": 3
                 },
                 "end": {
-                    "line": 132,
+                    "line": 126,
                     "char": 20
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "(actual: string) => void",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -448,42 +515,37 @@
     {
       "location": {
         "start": {
-          "line": 132,
+          "line": 126,
           "char": 3
         },
         "end": {
-          "line": 132,
+          "line": 126,
           "char": 20
         }
       },
       "args": [
+        {
+          "type": "(actual: string) => void",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 136,
+                    "line": 130,
                     "char": 3
                 },
                 "end": {
-                    "line": 136,
+                    "line": 130,
                     "char": 25
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "(actual: CB, error: \"⚠ Types are not exactly equal\", expected: CA) => void",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -497,42 +559,37 @@
     {
       "location": {
         "start": {
-          "line": 136,
+          "line": 130,
           "char": 3
         },
         "end": {
-          "line": 136,
+          "line": 130,
           "char": 25
         }
       },
       "args": [
+        {
+          "type": "(actual: CB, error: \"⚠ Types are not exactly equal\", expected: CA) => void",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 147,
+                    "line": 141,
                     "char": 3
                 },
                 "end": {
-                    "line": 147,
+                    "line": 141,
                     "char": 13
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "[actual: { ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: { id: string; user: { name: string; age: number; }; tags: string[]; }; actual________: { id: string; user: { name: string; age: string; }; tags: string[]; extra: boolean; }; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -546,11 +603,11 @@
     {
       "location": {
         "start": {
-          "line": 147,
+          "line": 141,
           "char": 3
         },
         "end": {
-          "line": 147,
+          "line": 141,
           "char": 13
         }
       },
@@ -566,25 +623,17 @@
         {
             "location": {
                 "start": {
-                    "line": 176,
+                    "line": 169,
                     "char": 3
                 },
                 "end": {
-                    "line": 176,
+                    "line": 169,
                     "char": 18
                 }
             },
 >>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"Custom validation failed\"; expected______: { a: string; }; actual________: { a: number; }; location______: \"src/file.ts:42\"; hint__________: \"Use string\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -598,42 +647,37 @@
     {
       "location": {
         "start": {
-          "line": 176,
+          "line": 169,
           "char": 3
         },
         "end": {
-          "line": 176,
+          "line": 169,
           "char": 18
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"Custom validation failed\"; expected______: { a: string; }; actual________: { a: number; }; location______: \"src/file.ts:42\"; hint__________: \"Use string\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 188,
+                    "line": 181,
                     "char": 3
                 },
                 "end": {
-                    "line": 188,
+                    "line": 181,
                     "char": 18
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"Type mismatch\"; expected______: string; actual________: number; tip___________: \"Use string\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -647,42 +691,37 @@
     {
       "location": {
         "start": {
-          "line": 188,
+          "line": 181,
           "char": 3
         },
         "end": {
-          "line": 188,
+          "line": 181,
           "char": 18
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"Type mismatch\"; expected______: string; actual________: number; tip___________: \"Use string\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 204,
+                    "line": 197,
                     "char": 3
                 },
                 "end": {
-                    "line": 204,
+                    "line": 197,
                     "char": 18
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"Type mismatch\"; expected______: string; actual________: number; tip_a_________: \"Use string\"; tip_b_________: \"Check docs\"; tip_c_________: \"See example\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -696,42 +735,37 @@
     {
       "location": {
         "start": {
-          "line": 204,
+          "line": 197,
           "char": 3
         },
         "end": {
-          "line": 204,
+          "line": 197,
           "char": 18
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"Type mismatch\"; expected______: string; actual________: number; tip_a_________: \"Use string\"; tip_b_________: \"Check docs\"; tip_c_________: \"See example\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 220,
+                    "line": 213,
                     "char": 3
                 },
                 "end": {
-                    "line": 220,
+                    "line": 213,
                     "char": 38
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -745,11 +779,11 @@
     {
       "location": {
         "start": {
-          "line": 220,
+          "line": 213,
           "char": 3
         },
         "end": {
-          "line": 220,
+          "line": 213,
           "char": 38
         }
       },
@@ -765,25 +799,17 @@
         {
             "location": {
                 "start": {
-                    "line": 232,
+                    "line": 224,
                     "char": 3
                 },
                 "end": {
-                    "line": 232,
+                    "line": 224,
                     "char": 38
                 }
             },
 >>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -797,11 +823,11 @@
     {
       "location": {
         "start": {
-          "line": 232,
+          "line": 224,
           "char": 3
         },
         "end": {
-          "line": 232,
+          "line": 224,
           "char": 38
         }
       },
@@ -817,25 +843,17 @@
         {
             "location": {
                 "start": {
-                    "line": 244,
+                    "line": 235,
                     "char": 3
                 },
                 "end": {
-                    "line": 244,
+                    "line": 235,
                     "char": 47
                 }
             },
 >>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"ACTUAL does not extend EXPECTED\"; expected______: \"hello\"; actual________: string; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -849,42 +867,37 @@
     {
       "location": {
         "start": {
-          "line": 244,
+          "line": 235,
           "char": 3
         },
         "end": {
-          "line": 244,
+          "line": 235,
           "char": 47
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"ACTUAL does not extend EXPECTED\"; expected______: \"hello\"; actual________: string; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 267,
+                    "line": 258,
                     "char": 3
                 },
                 "end": {
-                    "line": 267,
+                    "line": 258,
                     "char": 48
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"ACTUAL extends EXPECTED but should not\"; expected______: string; actual________: \"hello\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -898,42 +911,37 @@
     {
       "location": {
         "start": {
-          "line": 267,
+          "line": 258,
           "char": 3
         },
         "end": {
-          "line": 267,
+          "line": 258,
           "char": 48
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"ACTUAL extends EXPECTED but should not\"; expected______: string; actual________: \"hello\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 278,
+                    "line": 269,
                     "char": 3
                 },
                 "end": {
-                    "line": 278,
+                    "line": 269,
                     "char": 48
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -947,42 +955,37 @@
     {
       "location": {
         "start": {
-          "line": 278,
+          "line": 269,
           "char": 3
         },
         "end": {
-          "line": 278,
+          "line": 269,
           "char": 48
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 284,
+                    "line": 275,
                     "char": 3
                 },
                 "end": {
-                    "line": 284,
+                    "line": 275,
                     "char": 49
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"ACTUAL extends EXPECTED but not vice versa\"; expected______: string; actual________: \"hello\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -996,42 +999,37 @@
     {
       "location": {
         "start": {
-          "line": 284,
+          "line": 275,
           "char": 3
         },
         "end": {
-          "line": 284,
+          "line": 275,
           "char": 49
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"ACTUAL extends EXPECTED but not vice versa\"; expected______: string; actual________: \"hello\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 290,
+                    "line": 281,
                     "char": 3
                 },
                 "end": {
-                    "line": 290,
+                    "line": 281,
                     "char": 49
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"EXPECTED extends ACTUAL but not vice versa\"; expected______: \"hello\"; actual________: string; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -1045,42 +1043,37 @@
     {
       "location": {
         "start": {
-          "line": 290,
+          "line": 281,
           "char": 3
         },
         "end": {
-          "line": 290,
+          "line": 281,
           "char": 49
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"EXPECTED extends ACTUAL but not vice versa\"; expected______: \"hello\"; actual________: string; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 319,
+                    "line": 310,
                     "char": 3
                 },
                 "end": {
-                    "line": 319,
+                    "line": 310,
                     "char": 65
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: [string, string]; actual________: [a: number, b: number]; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -1094,11 +1087,11 @@
     {
       "location": {
         "start": {
-          "line": 319,
+          "line": 310,
           "char": 3
         },
         "end": {
-          "line": 319,
+          "line": 310,
           "char": 65
         }
       },
@@ -1114,25 +1107,17 @@
         {
             "location": {
                 "start": {
-                    "line": 330,
+                    "line": 320,
                     "char": 3
                 },
                 "end": {
-                    "line": 330,
+                    "line": 320,
                     "char": 65
                 }
             },
 >>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -1146,11 +1131,11 @@
     {
       "location": {
         "start": {
-          "line": 330,
+          "line": 320,
           "char": 3
         },
         "end": {
-          "line": 330,
+          "line": 320,
           "char": 65
         }
       },
@@ -1166,25 +1151,17 @@
         {
             "location": {
                 "start": {
-                    "line": 341,
+                    "line": 330,
                     "char": 3
                 },
                 "end": {
-                    "line": 341,
+                    "line": 330,
                     "char": 53
                 }
             },
 >>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: number; actual________: string; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -1198,11 +1175,11 @@
     {
       "location": {
         "start": {
-          "line": 341,
+          "line": 330,
           "char": 3
         },
         "end": {
-          "line": 341,
+          "line": 330,
           "char": 53
         }
       },
@@ -1218,25 +1195,17 @@
         {
             "location": {
                 "start": {
-                    "line": 354,
+                    "line": 342,
                     "char": 3
                 },
                 "end": {
-                    "line": 354,
+                    "line": 342,
                     "char": 27
                 }
             },
 >>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: string; attempted_____: \"array extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -1250,42 +1219,37 @@
     {
       "location": {
         "start": {
-          "line": 354,
+          "line": 342,
           "char": 3
         },
         "end": {
-          "line": 354,
+          "line": 342,
           "char": 27
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: string; attempted_____: \"array extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 365,
+                    "line": 353,
                     "char": 3
                 },
                 "end": {
-                    "line": 365,
+                    "line": 353,
                     "char": 27
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: string; attempted_____: \"awaited extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -1299,42 +1263,37 @@
     {
       "location": {
         "start": {
-          "line": 365,
+          "line": 353,
           "char": 3
         },
         "end": {
-          "line": 365,
+          "line": 353,
           "char": 27
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: string; attempted_____: \"awaited extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 376,
+                    "line": 364,
                     "char": 3
                 },
                 "end": {
-                    "line": 376,
+                    "line": 364,
                     "char": 27
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"Cannot extract parameters from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: string; attempted_____: \"parameters extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -1348,42 +1307,37 @@
     {
       "location": {
         "start": {
-          "line": 376,
+          "line": 364,
           "char": 3
         },
         "end": {
-          "line": 376,
+          "line": 364,
           "char": 27
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract parameters from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: string; attempted_____: \"parameters extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 387,
+                    "line": 375,
                     "char": 3
                 },
                 "end": {
-                    "line": 387,
+                    "line": 375,
                     "char": 27
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"Cannot extract returned from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: string; attempted_____: \"returned extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -1397,42 +1351,37 @@
     {
       "location": {
         "start": {
-          "line": 387,
+          "line": 375,
           "char": 3
         },
         "end": {
-          "line": 387,
+          "line": 375,
           "char": 27
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract returned from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: string; attempted_____: \"returned extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 405,
+                    "line": 393,
                     "char": 3
                 },
                 "end": {
-                    "line": 405,
+                    "line": 393,
                     "char": 23
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: string; attempted_____: \"awaited extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -1446,42 +1395,37 @@
     {
       "location": {
         "start": {
-          "line": 405,
+          "line": 393,
           "char": 3
         },
         "end": {
-          "line": 405,
+          "line": 393,
           "char": 23
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: string; attempted_____: \"awaited extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 421,
+                    "line": 409,
                     "char": 3
                 },
                 "end": {
-                    "line": 421,
+                    "line": 409,
                     "char": 23
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: string; attempted_____: \"array extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -1495,42 +1439,37 @@
     {
       "location": {
         "start": {
-          "line": 421,
+          "line": 409,
           "char": 3
         },
         "end": {
-          "line": 421,
+          "line": 409,
           "char": 23
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: string; attempted_____: \"array extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 439,
+                    "line": 427,
                     "char": 3
                 },
                 "end": {
-                    "line": 439,
+                    "line": 427,
                     "char": 23
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: \"hello\"; attempted_____: \"awaited extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -1544,42 +1483,37 @@
     {
       "location": {
         "start": {
-          "line": 439,
+          "line": 427,
           "char": 3
         },
         "end": {
-          "line": 439,
+          "line": 427,
           "char": 23
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: \"hello\"; attempted_____: \"awaited extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 455,
+                    "line": 443,
                     "char": 3
                 },
                 "end": {
-                    "line": 455,
+                    "line": 443,
                     "char": 23
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: \"hello\"; attempted_____: \"array extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
 <<<<<<< Updated upstream
             "typeArgs": []
@@ -1593,46 +1527,40 @@
     {
       "location": {
         "start": {
-          "line": 455,
+          "line": 443,
           "char": 3
         },
         "end": {
-          "line": 455,
+          "line": 443,
           "char": 23
         }
       },
       "args": [
+        {
+          "type": "{ ERROR_________: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: \"hello\"; attempted_____: \"array extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
 =======
             "typeArgs": [],
             "errors": [],
             "completions": {}
         },
->>>>>>> Stashed changes
         {
             "location": {
                 "start": {
-                    "line": 471,
+                    "line": 459,
                     "char": 3
                 },
                 "end": {
-                    "line": 471,
+                    "line": 459,
                     "char": 23
                 }
             },
+>>>>>>> Stashed changes
             "args": [
-                {
-                    "type": "{ ERROR_________: \"Cannot extract returned from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: \"hello\"; attempted_____: \"returned extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
-                    "relationships": {
-                        "args": [
-                            "equality"
-                        ],
-                        "typeArgs": []
-                    }
-                }
+              "equality"
             ],
-            "typeArgs": [],
-            "errors": [],
-            "completions": {}
+            "typeArgs": []
+          }
         }
 <<<<<<< Updated upstream
       ],
@@ -1643,266 +1571,28 @@
     {
       "location": {
         "start": {
-          "line": 471,
+          "line": 459,
           "char": 3
         },
         "end": {
-          "line": 471,
+          "line": 459,
           "char": 23
         }
       },
       "args": [
-=======
-    ],
-    "updates": [
         {
-            "position": {
-                "method": "",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-                "line": 32,
-                "char": 63
-            },
-            "serializedValue": "{\n  ERROR_________: \"EXPECTED and ACTUAL are disjoint\"\n  expected______: string\n  actual________: number\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-            "snapFunctionName": "snap"
-        },
->>>>>>> Stashed changes
-        {
-            "position": {
-                "method": "",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-                "line": 44,
-                "char": 53
-            },
-            "serializedValue": "{\n  ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n  expected______: A<{}>\n  actual________: B\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-            "snapFunctionName": "snap"
-        },
-        {
-            "position": {
-                "method": "",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-                "line": 56,
-                "char": 53
-            },
-            "serializedValue": "{\n  ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n  expected______: A\n  actual________: B\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-            "snapFunctionName": "snap"
-        },
-        {
-            "position": {
-                "method": "",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-                "line": 68,
-                "char": 53
-            },
-            "serializedValue": "{\n  ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n  expected______: E\n  actual________: A\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-            "snapFunctionName": "snap"
-        },
-        {
-            "position": {
-                "method": "",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-                "line": 91,
-                "char": 27
-            },
-            "serializedValue": "[\n  {\n    ERROR_________: \"EXPECTED and ACTUAL are disjoint\"\n    expected______: string\n    actual________: 42\n    HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n  }\n]",
-            "snapFunctionName": "snap"
-        },
-        {
-            "position": {
-                "method": "",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-                "line": 103,
-                "char": 28
-            },
-            "serializedValue": "[\n  {\n    ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n    expected______: { a: string }\n    actual________: { a: number; b: number }\n    HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n  }\n]",
-            "snapFunctionName": "snap"
-        },
-        {
-            "position": {
-                "method": "",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-                "line": 147,
-                "char": 28
-            },
-            "serializedValue": "[\n  actual: {\n    ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n    expected______: {\n      id: string\n      user: { name: string; age: number }\n      tags: string[]\n    }\n    actual________: {\n      id: string\n      user: { name: string; age: string }\n      tags: string[]\n      extra: boolean\n    }\n    HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n  }\n]",
-            "snapFunctionName": "snap"
-        },
-        {
-            "position": {
-                "method": "",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-                "line": 220,
-                "char": 53
-            },
-            "serializedValue": "{\n  ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n  expected______: A\n  actual________: B\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-            "snapFunctionName": "snap"
-        },
-        {
-            "position": {
-                "method": "",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-                "line": 232,
-                "char": 53
-            },
-            "serializedValue": "{\n  ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n  expected______: A\n  actual________: B\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-            "snapFunctionName": "snap"
-        },
-        {
-            "position": {
-                "method": "",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-                "line": 319,
-                "char": 80
-            },
-            "serializedValue": "{\n  ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n  expected______: [string, string]\n  actual________: [a: number, b: number]\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-            "snapFunctionName": "snap"
-        },
-        {
-            "position": {
-                "method": "",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-                "line": 330,
-                "char": 80
-            },
-            "serializedValue": "{\n  ERROR_________: \"EXPECTED and ACTUAL are disjoint\"\n  expected______: string\n  actual________: number\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-            "snapFunctionName": "snap"
-        },
-        {
-            "position": {
-                "method": "",
-                "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-                "line": 341,
-                "char": 68
-            },
-            "serializedValue": "{\n  ERROR_________: \"EXPECTED and ACTUAL are disjoint\"\n  expected______: number\n  actual________: string\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-            "snapFunctionName": "snap"
+          "type": "{ ERROR_________: \"Cannot extract returned from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: \"hello\"; attempted_____: \"returned extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
         }
-<<<<<<< Updated upstream
       ],
       "typeArgs": [],
       "errors": [],
       "completions": {}
-    }
-  ],
-  "updates": [
-    {
-      "position": {
-        "method": "",
-        "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-        "line": 32,
-        "char": 63
-      },
-      "serializedValue": "{\n  ERROR_________: \"EXPECTED and ACTUAL are disjoint\"\n  expected______: string\n  actual________: number\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-      "snapFunctionName": "snap"
-    },
-    {
-      "position": {
-        "method": "",
-        "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-        "line": 44,
-        "char": 53
-      },
-      "serializedValue": "{\n  ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n  expected______: A<{}>\n  actual________: B\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-      "snapFunctionName": "snap"
-    },
-    {
-      "position": {
-        "method": "",
-        "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-        "line": 56,
-        "char": 53
-      },
-      "serializedValue": "{\n  ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n  expected______: A\n  actual________: B\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-      "snapFunctionName": "snap"
-    },
-    {
-      "position": {
-        "method": "",
-        "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-        "line": 68,
-        "char": 53
-      },
-      "serializedValue": "{\n  ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n  expected______: E\n  actual________: A\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-      "snapFunctionName": "snap"
-    },
-    {
-      "position": {
-        "method": "",
-        "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-        "line": 91,
-        "char": 27
-      },
-      "serializedValue": "[\n  {\n    ERROR_________: \"EXPECTED and ACTUAL are disjoint\"\n    expected______: string\n    actual________: 42\n    HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n  }\n]",
-      "snapFunctionName": "snap"
-    },
-    {
-      "position": {
-        "method": "",
-        "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-        "line": 103,
-        "char": 28
-      },
-      "serializedValue": "[\n  {\n    ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n    expected______: { a: string }\n    actual________: { a: number; b: number }\n    HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n  }\n]",
-      "snapFunctionName": "snap"
-    },
-    {
-      "position": {
-        "method": "",
-        "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-        "line": 147,
-        "char": 28
-      },
-      "serializedValue": "[\n  actual: {\n    ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n    expected______: {\n      id: string\n      user: { name: string; age: number }\n      tags: string[]\n    }\n    actual________: {\n      id: string\n      user: { name: string; age: string }\n      tags: string[]\n      extra: boolean\n    }\n    HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n  }\n]",
-      "snapFunctionName": "snap"
-    },
-    {
-      "position": {
-        "method": "",
-        "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-        "line": 220,
-        "char": 53
-      },
-      "serializedValue": "{\n  ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n  expected______: A\n  actual________: B\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-      "snapFunctionName": "snap"
-    },
-    {
-      "position": {
-        "method": "",
-        "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-        "line": 232,
-        "char": 53
-      },
-      "serializedValue": "{\n  ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n  expected______: A\n  actual________: B\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-      "snapFunctionName": "snap"
-    },
-    {
-      "position": {
-        "method": "",
-        "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-        "line": 319,
-        "char": 80
-      },
-      "serializedValue": "{\n  ERROR_________: \"EXPECTED only overlaps with ACTUAL\"\n  expected______: [string, string]\n  actual________: [a: number, b: number]\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-      "snapFunctionName": "snap"
-    },
-    {
-      "position": {
-        "method": "",
-        "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-        "line": 330,
-        "char": 80
-      },
-      "serializedValue": "{\n  ERROR_________: \"EXPECTED and ACTUAL are disjoint\"\n  expected______: string\n  actual________: number\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-      "snapFunctionName": "snap"
-    },
-    {
-      "position": {
-        "method": "",
-        "file": "/Users/jasonkuhrt/projects/jasonkuhrt/kit/src/utils/ts/assert/$$.test.ts",
-        "line": 341,
-        "char": 68
-      },
-      "serializedValue": "{\n  ERROR_________: \"EXPECTED and ACTUAL are disjoint\"\n  expected______: number\n  actual________: string\n  HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]\n}",
-      "snapFunctionName": "snap"
     }
   ]
 =======
