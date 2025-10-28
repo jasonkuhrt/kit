@@ -84,6 +84,23 @@ export const isPrimitive = (value: unknown): value is Primitive => {
 }
 
 /**
+ * Check if a value is a symbol.
+ *
+ * @param value - The value to check.
+ * @returns True if the value is a symbol.
+ *
+ * @example
+ * ```ts
+ * isSymbol(Symbol('test')) // true
+ * isSymbol('hello') // false
+ * isSymbol(42) // false
+ * ```
+ */
+export const isSymbol = (value: unknown): value is symbol => {
+  return typeof value === TypeofTypesEnum.symbol
+}
+
+/**
  * Extract the narrowed type from a type guard function.
  *
  * @example

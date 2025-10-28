@@ -61,3 +61,45 @@ interface StaticErrorGuardNotSubtype<$Reference, $Value> extends
     { guard: $Reference; value: $Value; tip: `Since your value type has no overlap with ${Show<$Reference>} this will always return false.` }
   >
 {}
+
+/**
+ * Extract the guarded type from a type guard function.
+ *
+ * Useful for getting the narrowed type from type guard predicates without
+ * having to manually extract it from the function signature.
+ *
+ * @template $T - A type guard function type
+ * @returns The type that the guard narrows to, or `never` if not a type guard
+ *
+ * @example
+ * ```ts
+ * function isString(value: unknown): value is string {
+ *   return typeof value === 'string'
+ * }
+ *
+ * type StringType = GuardedType<typeof isString>  // string
+ * ```
+ *
+ * @example
+ * ```ts
+ * // With generic type guards
+ * function isArray<T>(value: unknown): value is T[] {
+ *   return Array.isArray(value)
+ * }
+ *
+ * type ArrayType = GuardedType<typeof isArray>  // unknown[]
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Non-guard functions return never
+ * function notAGuard(x: any): boolean {
+ *   return true
+ * }
+ *
+ * type NoGuard = GuardedType<typeof notAGuard>  // never
+ * ```
+ *
+ * @category Type Utilities
+ */
+export type GuardedType<$T> = $T extends (x: any) => x is infer __u__ ? __u__ : never

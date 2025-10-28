@@ -171,3 +171,39 @@ export const toRec = (headers: Headers): Record<string, string> => {
 
   return result
 }
+
+export const mergeInitWithStrategySet = (baseHeaders?: HeadersInit, additionalHeaders?: HeadersInit) => {
+  const base = new Headers(baseHeaders)
+  const additional = new Headers(additionalHeaders)
+  for (const [key, value] of additional) {
+    if (value === UnsetValue) {
+      base.delete(key)
+    } else {
+      base.set(key, value) // todo append instead of set?
+    }
+  }
+  return base
+}
+
+export const UnsetValue = ``
+
+/**
+ * Merges two sets of headers, with the second set taking precedence for duplicate keys
+ */
+export function mergeInitWithStrategyMerge(base?: HeadersInit, additional?: HeadersInit): Headers | undefined {
+  if (!additional) return base instanceof Headers ? base : base ? new Headers(base) : undefined
+  if (!base) return new Headers(additional)
+
+  const base_ = new Headers(base)
+  const additional_ = new Headers(additional)
+
+  for (const [key, value] of additional_) {
+    if (value === UnsetValue) {
+      base_.delete(key)
+    } else {
+      base_.append(key, value)
+    }
+  }
+
+  return base_
+}

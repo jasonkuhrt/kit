@@ -5,6 +5,7 @@
     "@tsconfig/node-lts/tsconfig.json"
   ],
   "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ES2023"],
     // Package
     "module": "nodenext",
     "moduleResolution": "nodenext",

@@ -191,9 +191,16 @@ export const imageXIcon = `image/x-icon`
 export type imageXIcon = typeof imageXIcon
 
 /**
+ * TODO
+ */
+export const applicationGraphqlResponse = `application/graphql-response+json`
+export type applicationGraphqlResponse = typeof applicationGraphqlResponse
+
+/**
  * Union type of all supported MIME types.
  */
 export type Any =
+  | applicationGraphqlResponse
   | applicationJson
   | applicationGraphqlResponseJson
   | multipartFormData
