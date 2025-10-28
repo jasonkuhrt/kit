@@ -27,6 +27,8 @@ export * from '#url'
 // Utils
 export * from '#cli'
 export * from '#codec'
+export * from '#config-manager'
+export * from '#configurator'
 export * from '#dir'
 export * from '#err'
 export * from '#fs'
@@ -50,6 +52,7 @@ export * from '#sch'
 export * from '#traitor'
 export * from '#ts'
 export * from '#value'
+export * from '#ware'
 
 // To satisfy TS
 // e.g.
