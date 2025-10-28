@@ -6,14 +6,6 @@ import { entries } from './get.js'
 import { Type } from './traits/type.js'
 import { type Any } from './type.js'
 
-export * from './path.js'
-
-export * from './get.js'
-
-export * from './merge.js'
-
-export * from './type.js'
-
 /**
  * Assert that a value is an object.
  * Throws a TypeError if the value is not an object (including null).
@@ -179,6 +171,104 @@ export const getPrivateState = <state extends Any>(obj: Any): state => {
  */
 export const hasNonUndefinedKeys = (object: object): boolean => {
   return Object.values(object).some(value => value !== undefined)
+}
+
+/**
+ * Check if a value has a symbol property with a specific value, using fuzzy matching.
+ *
+ * This utility handles cases where symbols might be different instances due to module loading
+ * issues (e.g., when using vitest or other tools that may load the same module multiple times).
+ * It first attempts a direct symbol lookup (fast path), then falls back to matching by symbol
+ * description if the direct lookup fails.
+ *
+ * @category Predicates
+ *
+ * @param value - The value to check (must be an object)
+ * @param symbol - The symbol to look for
+ * @param expectedValue - The expected value of the symbol property
+ * @returns True if the value has the symbol property with the expected value
+ *
+ * @example
+ * ```ts
+ * const Transport = Symbol('Transport')
+ * const http = { [Transport]: 'http' }
+ *
+ * Obj.hasSymbolLike(http, Transport, 'http')  // true
+ * Obj.hasSymbolLike(http, Transport, 'https') // false
+ * Obj.hasSymbolLike({}, Transport, 'http')    // false
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Handles symbol instance mismatches in test environments
+ * // where the same module might be loaded multiple times
+ * const sym1 = Symbol('id')
+ * const sym2 = Symbol('id') // Different instance, same description
+ * const obj = { [sym1]: 'value' }
+ *
+ * Obj.hasSymbolLike(obj, sym2, 'value') // true (via fallback)
+ * ```
+ */
+export const hasSymbolLike = (value: unknown, symbol: symbol, expectedValue: unknown): boolean => {
+  if (!Type.is(value)) {
+    return false
+  }
+
+  // Fast path: direct symbol check
+  if ((value as any)[symbol] === expectedValue) {
+    return true
+  }
+
+  // Fallback: check for any symbol with matching description and value
+  // This handles cases where the symbol might be different instances due to module loading
+  const symbols = Object.getOwnPropertySymbols(value)
+  const expectedSymbolString = symbol.toString()
+
+  for (const sym of symbols) {
+    if (sym.toString() === expectedSymbolString && (value as any)[sym] === expectedValue) {
+      return true
+    }
+  }
+
+  return false
+}
+
+/**
+ * Curried version of {@link hasSymbolLike}.
+ * Returns a predicate function that checks if a value has a symbol property with a specific value.
+ *
+ * @category Predicates
+ *
+ * @param symbol - The symbol to look for
+ * @param expectedValue - The expected value of the symbol property
+ * @returns A predicate function that checks for the symbol property
+ *
+ * @example
+ * ```ts
+ * const Transport = Symbol('Transport')
+ * const isHttpTransport = Obj.hasSymbolLikeWith(Transport, 'http')
+ *
+ * isHttpTransport({ [Transport]: 'http' })  // true
+ * isHttpTransport({ [Transport]: 'https' }) // false
+ * isHttpTransport({})                       // false
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Useful for filtering
+ * const Kind = Symbol('Kind')
+ * const objects = [
+ *   { [Kind]: 'user' },
+ *   { [Kind]: 'post' },
+ *   { [Kind]: 'user' }
+ * ]
+ *
+ * const users = objects.filter(Obj.hasSymbolLikeWith(Kind, 'user'))
+ * // Result: [{ [Kind]: 'user' }, { [Kind]: 'user' }]
+ * ```
+ */
+export const hasSymbolLikeWith = (symbol: symbol, expectedValue: unknown) => (value: unknown): boolean => {
+  return hasSymbolLike(value, symbol, expectedValue)
 }
 
 // Note: spreadShallow moved to merge.ts
