@@ -68,7 +68,7 @@ export const Configurator = (): Configurator.States.BuilderEmpty => {
   return builder
 }
 
-namespace $ {
+export namespace $ {
   export const createInputResolver: Configurator.InputResolver.Create = (_) => {
     const inputResolver = (parameters: any) => {
       const result = _(parameters)

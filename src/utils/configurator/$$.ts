@@ -13,3 +13,8 @@ export type Builder<$C extends C> = C.Builder<$C>
 export type Configuration = C.Configuration
 export type DataInput<$C extends C = C> = C.DataInput<$C>
 export type InferParameters<$C extends C> = C.InferParameters<$C>
+export namespace States {
+  export type Empty = C.States.Empty
+  export type BuilderEmpty = C.States.BuilderEmpty
+}
+export { $ } from './configurator.js'
