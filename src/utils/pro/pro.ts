@@ -1,18 +1,18 @@
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { Lang } from '#lang'
 import { Schema as S } from 'effect'
 
 /**
  * Get the current working directory as an AbsDir.
- * @returns The current working directory as a {@link FsLoc.AbsDir}
+ * @returns The current working directory as a {@link Fs.Path.AbsDir}
  * @example
  * ```ts
  * import { Pro } from '#pro'
  *
  * const currentDir = Pro.cwd()
- * // Returns FsLoc.AbsDir
+ * // Returns Fs.Path.AbsDir
  * ```
  */
-export const cwd = (): FsLoc.AbsDir => {
-  return S.decodeSync(FsLoc.AbsDir.String)(Lang.process.cwd())
+export const cwd = (): Fs.Path.AbsDir => {
+  return Fs.Path.AbsDir.fromString(Lang.process.cwd())
 }

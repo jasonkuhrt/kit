@@ -1,5 +1,4 @@
 import { Fs } from '#fs'
-import { FsLoc } from '#fs-loc'
 import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
 import { Schema as S } from 'effect'
@@ -12,7 +11,7 @@ import * as NodePath from 'node:path'
  * This is the core data type that operations work with.
  */
 export interface Dir {
-  readonly base: FsLoc.AbsDir
+  readonly base: Fs.Path.AbsDir
 }
 
 /**
@@ -27,9 +26,9 @@ export interface Dir {
  * ```
  */
 export const create = (
-  base: FsLoc.Inputs.Input.AbsDir,
+  base: Fs.Path.Input.AbsDir,
 ): Dir => ({
-  base: FsLoc.normalizeInput(base) as FsLoc.AbsDir,
+  base: Fs.Path.normalizeDynamicInput(Fs.Path.AbsDir.Schema)(base) as Fs.Path.AbsDir,
 })
 
 /**
@@ -54,7 +53,7 @@ export const createTemp = (): Effect.Effect<Dir, PlatformError, Scope.Scope | Fi
       NodeOs.tmpdir(),
       `kit-dir-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     )
-    const absDir = S.decodeSync(FsLoc.AbsDir.String)(tempBase + '/')
+    const absDir = S.decodeSync(Fs.Path.AbsDir.Schema)(tempBase + '/')
 
     // Create the directory
     yield* Fs.write(absDir, { recursive: true })
@@ -87,7 +86,7 @@ export const createTempUnsafe = (): Effect.Effect<Dir, PlatformError, FileSystem
       NodeOs.tmpdir(),
       `kit-dir-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     )
-    const absDir = S.decodeSync(FsLoc.AbsDir.String)(tempBase + '/')
+    const absDir = S.decodeSync(Fs.Path.AbsDir.Schema)(tempBase + '/')
 
     // Create the directory
     yield* Fs.write(absDir, { recursive: true })

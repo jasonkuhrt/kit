@@ -1,5 +1,4 @@
 import { Fs } from '#fs'
-import { FsLoc } from '#fs-loc'
 import { Error as PlatformError, FileSystem } from '@effect/platform'
 import { Effect } from 'effect'
 import type { Dir } from './dir.js'
@@ -35,12 +34,12 @@ const executeOperation = (
   Effect.gen(function*() {
     switch (op.type) {
       case 'file': {
-        const absPath = FsLoc.join(dir.base, op.path)
+        const absPath = Fs.Path.join(dir.base, op.path)
         yield* Fs.write(absPath, op.content)
         break
       }
       case 'dir': {
-        const absPath = FsLoc.join(dir.base, op.path)
+        const absPath = Fs.Path.join(dir.base, op.path)
         yield* Fs.write(absPath, { recursive: true })
 
         // Execute nested operations with updated base
@@ -53,24 +52,24 @@ const executeOperation = (
         break
       }
       case 'remove': {
-        const absPath = FsLoc.join(dir.base, op.path)
+        const absPath = Fs.Path.join(dir.base, op.path)
         yield* Fs.remove(absPath, { recursive: true, force: true })
         break
       }
       case 'clear': {
-        const absPath = FsLoc.join(dir.base, op.path)
+        const absPath = Fs.Path.join(dir.base, op.path)
         yield* Fs.clear(absPath)
         break
       }
       case 'move-file': {
-        const fromPath = FsLoc.join(dir.base, op.from) as FsLoc.AbsFile
-        const toPath = FsLoc.join(dir.base, op.to) as FsLoc.AbsFile
+        const fromPath = Fs.Path.join(dir.base, op.from) as Fs.Path.AbsFile
+        const toPath = Fs.Path.join(dir.base, op.to) as Fs.Path.AbsFile
         yield* Fs.rename(fromPath, toPath)
         break
       }
       case 'move-dir': {
-        const fromPath = FsLoc.join(dir.base, op.from) as FsLoc.AbsDir
-        const toPath = FsLoc.join(dir.base, op.to) as FsLoc.AbsDir
+        const fromPath = Fs.Path.join(dir.base, op.from) as Fs.Path.AbsDir
+        const toPath = Fs.Path.join(dir.base, op.to) as Fs.Path.AbsDir
         yield* Fs.rename(fromPath, toPath)
         break
       }

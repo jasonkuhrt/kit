@@ -77,8 +77,8 @@ describe('withBase', () => {
       const s2 = s1.withBase(input.to)
 
       expect(s1.base).not.toBe(s2.base)
-      expect(s1.base.path.segments).toEqual(input.from === '/' ? [] : [input.from.slice(1, -1)])
-      expect(s2.base.path.segments).toEqual(input.to === '/' ? [] : [input.to.slice(1, -1)])
+      expect(s1.base.segments).toEqual(input.from === '/' ? [] : [input.from.slice(1, -1)])
+      expect(s2.base.segments).toEqual(input.to === '/' ? [] : [input.to.slice(1, -1)])
       expect(s1.operations).toEqual(s2.operations)
     })
 })
@@ -213,7 +213,7 @@ describe('edge cases', () => {
     .test(({ input, output }) => {
       const s = spec(input.base)
       expect(s.operations).toHaveLength(0)
-      expect(s.base.path.segments).toHaveLength(output.segmentCount)
+      expect(s.base.segments).toHaveLength(output.segmentCount)
     })
 
   // dprint-ignore

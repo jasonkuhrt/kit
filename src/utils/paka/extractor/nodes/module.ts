@@ -1,4 +1,4 @@
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { Schema as S } from 'effect'
 import { existsSync, readFileSync } from 'node:fs'
 import { basename, dirname, extname, join } from 'node:path'
@@ -104,7 +104,7 @@ const createNamespaceExport = (
     const guideProv = overrideJsdoc.guide
       ? isWrapperMarkdown
         ? MdFileProvenance.make({
-          filePath: S.decodeSync(FsLoc.RelFile.String)(
+          filePath: S.decodeSync(Fs.Path.RelFile.Schema)(
             absoluteToRelative(exportDecl.getSourceFile().getFilePath().replace(/\.ts$/, '.md')),
           ),
         })
@@ -133,7 +133,7 @@ const createNamespaceExport = (
     category: jsdoc.category,
     tags: jsdoc.tags,
     sourceLocation: SourceLocation.make({
-      file: S.decodeSync(FsLoc.RelFile.String)(
+      file: S.decodeSync(Fs.Path.RelFile.Schema)(
         absoluteToRelative(exportDecl.getSourceFile().getFilePath()),
       ),
       line: exportDecl.getStartLineNumber(),
@@ -238,7 +238,7 @@ const shouldFilterExport = (exportName: string, jsdoc: JSDocInfo, options: Modul
  */
 export const extractModuleFromFile = (
   sourceFile: SourceFile,
-  location: FsLoc.RelFile,
+  location: Fs.Path.RelFile,
   options: ModuleExtractionOptions = {},
 ): Module => {
   const { filterInternal = true, filterUnderscoreExports = false } = options
@@ -258,7 +258,7 @@ export const extractModuleFromFile = (
 
       if (referencedFile) {
         // Extract the referenced module with its file location
-        const nestedLocation = S.decodeSync(FsLoc.RelFile.String)(
+        const nestedLocation = S.decodeSync(Fs.Path.RelFile.Schema)(
           absoluteToRelative(referencedFile.getFilePath()),
         )
         const nestedModule = extractModuleFromFile(referencedFile, nestedLocation, options)
@@ -298,7 +298,7 @@ export const extractModuleFromFile = (
             const nsName = nestedNsExport.getName()
             const nsFile = nestedExportDecl.getModuleSpecifierSourceFile()
             if (nsFile) {
-              const nsLocation = S.decodeSync(FsLoc.RelFile.String)(
+              const nsLocation = S.decodeSync(Fs.Path.RelFile.Schema)(
                 absoluteToRelative(nsFile.getFilePath()),
               )
               const nestedModule = extractModuleFromFile(nsFile, nsLocation, options)
@@ -392,7 +392,7 @@ export const extractModuleFromFile = (
   if (markdownFilePath) {
     docGuide = readFileSync(markdownFilePath, 'utf-8')
     docGuideProv = MdFileProvenance.make({
-      filePath: S.decodeSync(FsLoc.RelFile.String)(absoluteToRelative(markdownFilePath)),
+      filePath: S.decodeSync(Fs.Path.RelFile.Schema)(absoluteToRelative(markdownFilePath)),
     })
 
     // Warn if both exist
@@ -436,7 +436,7 @@ export const extractModuleFromFile = (
  */
 export const extractModule = (
   moduleDecl: ModuleDeclaration,
-  location: FsLoc.RelFile,
+  location: Fs.Path.RelFile,
   options: ModuleExtractionOptions = {},
 ): Module => {
   const body = moduleDecl.getBody()

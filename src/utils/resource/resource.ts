@@ -1,4 +1,4 @@
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { FileSystem } from '@effect/platform'
 import { Effect, Option, ParseResult, Schema, Schema as S } from 'effect'
 
@@ -44,17 +44,17 @@ export interface Resource<T = unknown, R = FileSystem.FileSystem> {
   /**
    * Read the resource from disk
    */
-  read: (dirPath: FsLoc.AbsDir) => Effect.Effect<Option.Option<T>, ResourceError, R>
+  read: (dirPath: Fs.Path.AbsDir) => Effect.Effect<Option.Option<T>, ResourceError, R>
 
   /**
    * Write the resource to disk
    */
-  write: (value: T, dirPath: FsLoc.AbsDir) => Effect.Effect<void, ResourceError, R>
+  write: (value: T, dirPath: Fs.Path.AbsDir) => Effect.Effect<void, ResourceError, R>
 
   /**
    * Read the resource or return empty value if not found
    */
-  readOrEmpty: (dirPath: FsLoc.AbsDir) => Effect.Effect<T, ResourceError, R>
+  readOrEmpty: (dirPath: Fs.Path.AbsDir) => Effect.Effect<T, ResourceError, R>
 }
 
 /**
@@ -106,13 +106,13 @@ export const createResource = <T, R = never>(
   codec: Codec<T, R>,
   emptyValue: T,
 ): Resource<T, FileSystem.FileSystem | R> => ({
-  read: (dirPath: FsLoc.AbsDir) =>
+  read: (dirPath: Fs.Path.AbsDir) =>
     Effect.gen(function*() {
       const fs = yield* FileSystem.FileSystem
       const dirPathDecoded = dirPath
-      const filePathDecoded = S.decodeSync(FsLoc.RelFile.String)(filename)
-      const fullPath = FsLoc.join(dirPathDecoded, filePathDecoded)
-      const filePath = FsLoc.encodeSync(fullPath)
+      const filePathDecoded = S.decodeSync(Fs.Path.RelFile.Schema)(filename)
+      const fullPath = Fs.Path.join(dirPathDecoded, filePathDecoded)
+      const filePath = fullPath.toString()
       const exists = yield* fs.exists(filePath).pipe(
         Effect.mapError((error) =>
           new ReadError({
@@ -140,14 +140,14 @@ export const createResource = <T, R = never>(
       return Option.some(decoded)
     }),
 
-  write: (value: T, dirPath: FsLoc.AbsDir) =>
+  write: (value: T, dirPath: Fs.Path.AbsDir) =>
     Effect.gen(function*() {
       const fs = yield* FileSystem.FileSystem
       const dirPathDecoded = dirPath
-      const filePathDecoded = S.decodeSync(FsLoc.RelFile.String)(filename)
-      const fullPath = FsLoc.join(dirPathDecoded, filePathDecoded)
-      const filePath = FsLoc.encodeSync(fullPath)
-      const parentDir = FsLoc.encodeSync(FsLoc.up(fullPath))
+      const filePathDecoded = S.decodeSync(Fs.Path.RelFile.Schema)(filename)
+      const fullPath = Fs.Path.join(dirPathDecoded, filePathDecoded)
+      const filePath = fullPath.toString()
+      const parentDir = Fs.Path.up(fullPath).toString()
 
       const content = yield* codec.encode(value, filename)
 
@@ -172,13 +172,13 @@ export const createResource = <T, R = never>(
       )
     }),
 
-  readOrEmpty: (dirPath: FsLoc.AbsDir) =>
+  readOrEmpty: (dirPath: Fs.Path.AbsDir) =>
     Effect.gen(function*() {
       const fs = yield* FileSystem.FileSystem
       const dirPathDecoded = dirPath
-      const filePathDecoded = S.decodeSync(FsLoc.RelFile.String)(filename)
-      const fullPath = FsLoc.join(dirPathDecoded, filePathDecoded)
-      const filePath = FsLoc.encodeSync(fullPath)
+      const filePathDecoded = S.decodeSync(Fs.Path.RelFile.Schema)(filename)
+      const fullPath = Fs.Path.join(dirPathDecoded, filePathDecoded)
+      const filePath = fullPath.toString()
       const exists = yield* fs.exists(filePath).pipe(
         Effect.mapError((error) =>
           new ReadError({

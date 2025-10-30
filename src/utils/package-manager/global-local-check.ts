@@ -1,4 +1,4 @@
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { Pro } from '#pro'
 import { FileSystem } from '@effect/platform'
 import { Schema as S } from 'effect'
@@ -41,13 +41,13 @@ const findPackageInAncestors = (packageName: string): Effect.Effect<string | nul
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
     const currentDir = Pro.cwd()
-    const packageJsonRel = S.decodeSync(FsLoc.RelFile.String)('package.json')
+    const packageJsonRel = S.decodeSync(Fs.Path.RelFile.Schema)('package.json')
 
     // Start with package.json in current directory
-    let packageJsonPath = FsLoc.join(currentDir, packageJsonRel)
+    let packageJsonPath = Fs.Path.join(currentDir, packageJsonRel)
 
     while (true) {
-      const packageJsonPathString = FsLoc.encodeSync(packageJsonPath)
+      const packageJsonPathString = packageJsonPath.toString()
 
       try {
         const content = yield* fs.readFileString(packageJsonPathString)
@@ -59,20 +59,20 @@ const findPackageInAncestors = (packageName: string): Effect.Effect<string | nul
           || pkg.peerDependencies?.[packageName]
         ) {
           // Return the directory containing this package.json
-          const dir = FsLoc.up(packageJsonPath)
-          return FsLoc.encodeSync(dir)
+          const dir = Fs.Path.up(packageJsonPath)
+          return dir.toString()
         }
       } catch {
         // No package.json at this path, continue
       }
 
       // Check if we're at root
-      if (FsLoc.isRoot(packageJsonPath)) {
+      if (Fs.Path.isRoot(packageJsonPath)) {
         break
       }
 
       // Move package.json up one directory
-      packageJsonPath = FsLoc.up(packageJsonPath)
+      packageJsonPath = Fs.Path.up(packageJsonPath)
     }
 
     return null

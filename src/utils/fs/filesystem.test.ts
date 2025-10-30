@@ -1,9 +1,8 @@
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import '../fs-loc/$.test-matchers.js'
 import { FileSystem } from '@effect/platform'
 import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer, Option } from 'effect'
-import * as Fs from './filesystem.js'
 
 describe('filesystem operations', () => {
   it.effect('.exists', () =>
@@ -412,8 +411,8 @@ describe('path-returning operations', () => {
         mockFs as FileSystem.FileSystem,
       )
 
-      expect(FsLoc.FsLocLoose.is(result)).toBe(true)
-      expect(FsLoc.FsLocLoose.encodeSync(result)).toBe('/real/path/file.txt')
+      expect(Fs.Path.is(result)).toBe(true)
+      expect(result.toString()).toBe('/real/path/file.txt')
       expect(mockFs.realPath).toHaveBeenCalledWith('/test/link.txt')
     }))
 

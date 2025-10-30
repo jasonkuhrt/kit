@@ -1,4 +1,4 @@
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { expect, test } from 'vitest'
 import {
   Docs,
@@ -34,7 +34,7 @@ test('demotes H2 headings in JSDoc descriptions to H4', () => {
     }),
     examples: [],
     tags: {},
-    sourceLocation: SourceLocation.make({ file: FsLoc.fromString('./test.ts'), line: 1 }),
+    sourceLocation: SourceLocation.make({ file: Fs.Path.fromLiteral('./test.ts'), line: 1 }),
   })
 
   // The description should have H2 headings demoted to H4
@@ -78,7 +78,7 @@ test('renders @param documentation', () => {
     signature: sig,
     examples: [],
     tags: {},
-    sourceLocation: SourceLocation.make({ file: FsLoc.fromString('./test.ts'), line: 1 }),
+    sourceLocation: SourceLocation.make({ file: Fs.Path.fromLiteral('./test.ts'), line: 1 }),
   })
 
   const fnSig = mockExport.signature as typeof FunctionSignatureModel.Type
@@ -105,7 +105,7 @@ test('renders @returns documentation', () => {
     signature: sig,
     examples: [],
     tags: {},
-    sourceLocation: SourceLocation.make({ file: FsLoc.fromString('./test.ts'), line: 1 }),
+    sourceLocation: SourceLocation.make({ file: Fs.Path.fromLiteral('./test.ts'), line: 1 }),
   })
 
   const fnSig = mockExport.signature as typeof FunctionSignatureModel.Type
@@ -131,7 +131,7 @@ test('renders @throws documentation', () => {
     signature: sig,
     examples: [],
     tags: {},
-    sourceLocation: SourceLocation.make({ file: FsLoc.fromString('./test.ts'), line: 1 }),
+    sourceLocation: SourceLocation.make({ file: Fs.Path.fromLiteral('./test.ts'), line: 1 }),
   })
 
   const fnSig = mockExport.signature as typeof FunctionSignatureModel.Type
