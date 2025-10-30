@@ -218,8 +218,8 @@ describe('Operations', () => {
           'index.ts',
         ],
         [
-          [Fs.Path.RelFile.fromString('src/README')],
-          'README',
+          [Fs.Path.RelFile.fromString('src/README.md')],
+          'README.md',
         ],
         [[Fs.Path.AbsDir.fromString('/home/user/docs/')], 'docs'],
         [[Fs.Path.AbsDir.fromString('/')], ''],
@@ -247,8 +247,8 @@ describe('Operations', () => {
           '.ts',
         ],
         [
-          [Fs.Path.RelFile.fromString('src/README')],
-          null,
+          [Fs.Path.RelFile.fromString('src/README.md')],
+          '.md',
         ],
         [[Fs.Path.AbsDir.fromString('/home/user/')], null],
       )

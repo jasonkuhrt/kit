@@ -25,7 +25,7 @@ const project = Dir
 
 Test
   .on(extractFromFiles)
-  .snapshotSchemas([Fs.Path])
+  .snapshotSchemas([Fs.Path.Schema])
   .casesInput(
     // Entrypoint filtering
     {

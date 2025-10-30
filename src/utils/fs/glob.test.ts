@@ -16,9 +16,8 @@ describe('Glob', () => {
       expect(result).toBeInstanceOf(Array)
       expect(result.length).toBeGreaterThan(0)
 
-      // Verify we get FsLoc objects
+      // Verify we get Path objects
       expect(result[0]).toHaveProperty('_tag')
-      expect(result[0]).toHaveProperty('path')
     })
 
     test('returns absolute FsLocs with absolute option', async () => {
@@ -30,7 +29,6 @@ describe('Glob', () => {
 
       // Verify we get absolute paths
       expect(result[0]).toHaveProperty('_tag')
-      expect(result[0]).toHaveProperty('path')
     })
 
     test('accepts Fs.Path.AbsDir for cwd option', async () => {
@@ -43,9 +41,8 @@ describe('Glob', () => {
       expect(result).toBeInstanceOf(Array)
       expect(result.length).toBeGreaterThan(0)
 
-      // Verify we get FsLoc objects relative to the cwd
+      // Verify we get Path objects relative to the cwd
       expect(result[0]).toHaveProperty('_tag')
-      expect(result[0]).toHaveProperty('path')
     })
   })
 
@@ -57,9 +54,8 @@ describe('Glob', () => {
       expect(result).toBeInstanceOf(Array)
       expect(result.length).toBeGreaterThan(0)
 
-      // Verify we get FsLoc objects
+      // Verify we get Path objects
       expect(result[0]).toHaveProperty('_tag')
-      expect(result[0]).toHaveProperty('path')
     })
 
     test('handles errors gracefully', () => {
@@ -79,9 +75,8 @@ describe('Glob', () => {
       expect(result).toBeInstanceOf(Array)
       expect(result.length).toBeGreaterThan(0)
 
-      // Verify we get FsLoc objects relative to the cwd
+      // Verify we get Path objects relative to the cwd
       expect(result[0]).toHaveProperty('_tag')
-      expect(result[0]).toHaveProperty('path')
     })
   })
 })
