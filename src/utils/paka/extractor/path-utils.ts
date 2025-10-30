@@ -10,21 +10,21 @@
  *
  * Transformation rules:
  * 1. Replace build directory prefix with source directory prefix
- * 2. Replace barrel file extension ($$.js -> $$.ts)
+ * 2. Replace barrel file extension (__.js -> __.ts)
  * 3. Replace regular JS extension with TS extension
  *
  * @example
  * buildToSourcePath('./build/utils/test/_.js')
- * // => './src/utils/test/$.ts'
+ * // => './src/utils/test/_.ts'
  *
  * @example
  * buildToSourcePath('./build/arr/__.js')
- * // => './src/arr/$$.ts'
+ * // => './src/arr/__.ts'
  */
 export const buildToSourcePath = (buildPath: string): string => {
   return buildPath
     .replace(/^\.\/build\//, './src/')
-    .replace(/\$\$\.js$/, '$$$$.ts') // $$$$ = two literal $ chars in replacement
+    .replace(/__\.js$/, '__.ts')
     .replace(/\.js$/, '.ts')
 }
 
