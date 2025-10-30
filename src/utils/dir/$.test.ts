@@ -1,4 +1,4 @@
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { FsMemory } from '#fs-memory'
 import { FileSystem } from '@effect/platform'
 import { Effect, Schema as S } from 'effect'
@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest'
 import { Dir } from './$.js'
 
 // Local helper function for decoding
-const decodeAbsDir = S.decodeSync(FsLoc.AbsDir.String)
+const decodeAbsDir = S.decodeSync(Fs.Path.AbsDir.Schema)
 
 describe('Dir', () => {
   describe('chaining API', () => {
@@ -247,10 +247,10 @@ describe('Dir', () => {
   describe('create functions', () => {
     it('creates a Dir with absolute path', () => {
       const dir = Dir.create('/absolute/path')
-      expect(dir.base.path.segments).toEqual(['absolute', 'path'])
+      expect(dir.base.segments).toEqual(['absolute', 'path'])
     })
 
-    it('creates a Dir with FsLoc.AbsDir', () => {
+    it('creates a Dir with Fs.Path.AbsDir', () => {
       const absDir = decodeAbsDir('/test/')
       const dir = Dir.create(absDir)
       expect(dir.base).toBe(absDir)
@@ -263,12 +263,12 @@ describe('Dir', () => {
         .file('README.md', '# Test')
         .dir('src/', _ => _.file('index.ts', 'export {}'))
 
-      expect(spec.base.path.segments).toEqual(['test'])
+      expect(spec.base.segments).toEqual(['test'])
       expect(spec.operations).toHaveLength(2)
       expect(spec.operations[0]).toEqual({
         type: 'file',
         path: expect.objectContaining({
-          file: expect.objectContaining({ stem: 'README', extension: '.md' }),
+          fileName: expect.objectContaining({ stem: 'README', extension: '.md' }),
         }),
         content: '# Test',
       })
@@ -287,7 +287,7 @@ describe('Dir', () => {
       expect(spec.operations[1]).toEqual({
         type: 'file',
         path: expect.objectContaining({
-          file: expect.objectContaining({ stem: 'env', extension: '.txt' }),
+          fileName: expect.objectContaining({ stem: 'env', extension: '.txt' }),
         }),
         content: 'DEBUG=true',
       })
@@ -299,8 +299,8 @@ describe('Dir', () => {
 
       const spec2 = spec1.withBase('/project2')
 
-      expect(spec1.base.path.segments).toEqual(['project1'])
-      expect(spec2.base.path.segments).toEqual(['project2'])
+      expect(spec1.base.segments).toEqual(['project1'])
+      expect(spec2.base.segments).toEqual(['project2'])
       expect(spec1.operations).toEqual(spec2.operations)
     })
 
@@ -320,21 +320,21 @@ describe('Dir', () => {
       expect(merged.operations[0]).toEqual({
         type: 'file',
         path: expect.objectContaining({
-          file: expect.objectContaining({ stem: 'a', extension: '.txt' }),
+          fileName: expect.objectContaining({ stem: 'a', extension: '.txt' }),
         }),
         content: 'A',
       })
       expect(merged.operations[1]).toEqual({
         type: 'file',
         path: expect.objectContaining({
-          file: expect.objectContaining({ stem: 'b', extension: '.txt' }),
+          fileName: expect.objectContaining({ stem: 'b', extension: '.txt' }),
         }),
         content: 'B',
       })
       expect(merged.operations[2]).toEqual({
         type: 'file',
         path: expect.objectContaining({
-          file: expect.objectContaining({ stem: 'c', extension: '.txt' }),
+          fileName: expect.objectContaining({ stem: 'c', extension: '.txt' }),
         }),
         content: 'C',
       })

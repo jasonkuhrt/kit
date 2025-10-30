@@ -1,4 +1,4 @@
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { Str } from '#str'
 import { Match } from 'effect'
 import { readFileSync, writeFileSync } from 'node:fs'

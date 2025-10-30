@@ -1,5 +1,5 @@
 import { Dir } from '#dir'
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { Test } from '#test'
 import { beforeEach, vi } from 'vitest'
 import { extractFromFiles } from './extract.js'
@@ -25,7 +25,7 @@ const project = Dir
 
 Test
   .on(extractFromFiles)
-  .snapshotSchemas([FsLoc.FsLoc])
+  .snapshotSchemas([Fs.Path.Schema])
   .casesInput(
     // Entrypoint filtering
     {

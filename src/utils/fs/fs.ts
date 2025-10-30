@@ -1,6 +1,6 @@
-import { FsLoc } from '#fs-loc'
 import { FileSystem } from '@effect/platform'
 import { Effect, Option } from 'effect'
+import { Path } from './path/$.js'
 
 /**
  * Type helper to infer return type based on input relative paths.
@@ -8,9 +8,9 @@ import { Effect, Option } from 'effect'
  * - If all paths are RelDir, returns AbsDir
  * - If mixed, returns union of AbsFile | AbsDir
  */
-type InferReturnType<T extends FsLoc.Groups.Rel.Rel> = T extends FsLoc.RelFile ? FsLoc.AbsFile
-  : T extends FsLoc.RelDir ? FsLoc.AbsDir
-  : FsLoc.Groups.Abs.Abs
+type InferReturnType<T extends Path.$Rel> = T extends Path.RelFile ? Path.AbsFile
+  : T extends Path.RelDir ? Path.AbsDir
+  : Path.$Abs
 
 /**
  * Find the first existing path under a directory.
@@ -25,12 +25,12 @@ type InferReturnType<T extends FsLoc.Groups.Rel.Rel> = T extends FsLoc.RelFile ?
  * @example
  * ```ts
  * import { Fs } from '#fs'
- * import { FsLoc } from '#fs-loc'
+ * import { Fs } from '#fs'
  *
- * const dir = FsLoc.AbsDir.decodeStringSync('/project/')
+ * const dir = Path.AbsDir.decodeStringSync('/project/')
  * const paths = [
- *   FsLoc.RelFile.decodeStringSync('./config.local.json'),
- *   FsLoc.RelFile.decodeStringSync('./config.json')
+ *   Path.RelFile.decodeStringSync('./config.local.json'),
+ *   Path.RelFile.decodeStringSync('./config.json')
  * ]
  *
  * const result = yield* Fs.findFirstUnderDir(dir)(paths)
@@ -38,9 +38,9 @@ type InferReturnType<T extends FsLoc.Groups.Rel.Rel> = T extends FsLoc.RelFile ?
  * ```
  */
 export const findFirstUnderDir = (
-  dir: FsLoc.AbsDir,
+  dir: Path.AbsDir,
 ) =>
-<paths extends FsLoc.Groups.Rel.Rel>(
+<paths extends Path.$Rel>(
   paths: readonly paths[],
 ): Effect.Effect<
   Option.Option<InferReturnType<paths>>,
@@ -54,8 +54,8 @@ export const findFirstUnderDir = (
     const checks = yield* Effect.all(
       paths.map((relativePath) => {
         // Join to get absolute path for checking
-        const absolutePath = FsLoc.join(dir, relativePath as FsLoc.Groups.Rel.Rel)
-        const pathStr = FsLoc.encodeSync(absolutePath)
+        const absolutePath = Path.join(dir, relativePath as Path.$Rel)
+        const pathStr = absolutePath.toString()
         return fs.exists(pathStr).pipe(
           // Return the absolute path if it exists (this is what we want!)
           Effect.map(exists => exists ? absolutePath : undefined),

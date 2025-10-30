@@ -1,5 +1,5 @@
 import { ArrMut } from '#arr-mut'
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { Lang } from '#lang'
 import { Str } from '#str'
 import { Schema as S } from 'effect'
@@ -24,12 +24,12 @@ import { type CommandTarget, getCommandTarget } from './commend-target.js'
  * //   test.js
  * //   $default.js
  *
- * const commandsDir = FsLoc.AbsDir.decodeStringSync('/path/to/commands/')
+ * const commandsDir = Fs.Path.AbsDir.decodeStringSync('/path/to/commands/')
  * await dispatch(commandsDir)
  * // If argv is ['node', 'cli.js', 'build'], imports and executes build.js
  * // If argv is ['node', 'cli.js'], imports and executes $default.js
  */
-export const dispatch = async (commandsDirPath: FsLoc.AbsDir) => {
+export const dispatch = async (commandsDirPath: Fs.Path.AbsDir) => {
   const commandPointers = await discoverCommandPointers(commandsDirPath)
 
   const argv = parseArgvOrThrow(Lang.process.argv)
@@ -73,7 +73,7 @@ const getModuleName = (commandTarget: CommandTarget): string => {
  * @throws {Error} Exits process if the commands directory is not found
  *
  * @example
- * const commandsDir = FsLoc.AbsDir.decodeStringSync('/path/to/commands/')
+ * const commandsDir = Fs.Path.AbsDir.decodeStringSync('/path/to/commands/')
  * const commands = await discoverCommandPointers(commandsDir)
  * // Returns:
  * // [
@@ -83,11 +83,11 @@ const getModuleName = (commandTarget: CommandTarget): string => {
  * // ]
  */
 export const discoverCommandPointers = async (
-  commandsDirPath: FsLoc.AbsDir,
+  commandsDirPath: Fs.Path.AbsDir,
 ): Promise<{ name: string; filePath: string }[]> => {
   let commandsDirFileNamesRelative: string[] | null = null
 
-  const commandsDirPathString = FsLoc.encodeSync(commandsDirPath)
+  const commandsDirPathString = Fs.Path.toString(commandsDirPath)
 
   try {
     const entries = await NodeFileSystem.readdir(commandsDirPathString, { withFileTypes: true })
@@ -103,19 +103,19 @@ export const discoverCommandPointers = async (
 
   return pipe(
     commandsDirFileNamesRelative,
-    Array.map((fileName) => S.decodeSync(FsLoc.RelFile.String)(fileName)),
+    Array.map((fileName) => S.decodeSync(Fs.Path.RelFile.Schema)(fileName)),
     Array.filter(filePath => {
-      const filename = filePath.file.extension
-        ? `${filePath.file.stem}${filePath.file.extension}`
-        : filePath.file.stem
-      return !FsLoc.Extension.Extensions.buildArtifacts.some((ext: string) => filename.endsWith(ext))
+      const filename = filePath.fileName.extension
+        ? `${filePath.fileName.stem}${filePath.fileName.extension}`
+        : filePath.fileName.stem
+      return !Fs.Path.Extension.Extensions.buildArtifacts.some((ext: string) => filename.endsWith(ext))
     }),
     Array.map(filePath => {
-      const name = filePath.file.stem
-      const absolutePath = FsLoc.join(commandsDirPath, filePath)
+      const name = filePath.fileName.stem
+      const absolutePath = Fs.Path.join(commandsDirPath, filePath)
       return {
         name,
-        filePath: FsLoc.encodeSync(absolutePath),
+        filePath: Fs.Path.toString(absolutePath),
       }
     }),
   )

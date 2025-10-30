@@ -1,4 +1,4 @@
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { Ts } from '#ts'
 import { Effect } from 'effect'
 import { glob, globSync } from './glob.js'
@@ -8,22 +8,22 @@ type _GlobOnlyFiles = Ts.Assert.Cases<
   // onlyFiles: true with relative paths (default)
   Ts.Assert.exact.of<
     ReturnType<typeof glob<{ onlyFiles: true }>>,
-    Effect.Effect<FsLoc.RelFile[], Error>
+    Effect.Effect<Fs.Path.RelFile[], Error>
   >,
   // onlyFiles: true with absolute paths
   Ts.Assert.exact.of<
     ReturnType<typeof glob<{ onlyFiles: true; absolute: true }>>,
-    Effect.Effect<FsLoc.AbsFile[], Error>
+    Effect.Effect<Fs.Path.AbsFile[], Error>
   >,
   // Default behavior (onlyFiles is default true when options is undefined)
   Ts.Assert.exact.of<
     ReturnType<typeof glob<undefined>>,
-    Effect.Effect<FsLoc.RelFile[], Error>
+    Effect.Effect<Fs.Path.RelFile[], Error>
   >,
   // Empty options object (should behave as default - onlyFiles true)
   Ts.Assert.exact.of<
     ReturnType<typeof glob<{}>>,
-    Effect.Effect<FsLoc.RelFile[], Error>
+    Effect.Effect<Fs.Path.RelFile[], Error>
   >
 >
 
@@ -32,12 +32,12 @@ type _GlobOnlyDirectories = Ts.Assert.Cases<
   // onlyDirectories: true with relative paths
   Ts.Assert.exact.of<
     ReturnType<typeof glob<{ onlyDirectories: true }>>,
-    Effect.Effect<FsLoc.RelDir[], Error>
+    Effect.Effect<Fs.Path.RelDir[], Error>
   >,
   // onlyDirectories: true with absolute paths
   Ts.Assert.exact.of<
     ReturnType<typeof glob<{ onlyDirectories: true; absolute: true }>>,
-    Effect.Effect<FsLoc.AbsDir[], Error>
+    Effect.Effect<Fs.Path.AbsDir[], Error>
   >
 >
 
@@ -46,12 +46,12 @@ type _GlobBothFilesAndDirs = Ts.Assert.Cases<
   // onlyFiles: false with relative paths
   Ts.Assert.exact.of<
     ReturnType<typeof glob<{ onlyFiles: false }>>,
-    Effect.Effect<FsLoc.Groups.Rel.Rel[], Error>
+    Effect.Effect<Fs.Path.$Rel[], Error>
   >,
   // onlyFiles: false with absolute paths
   Ts.Assert.exact.of<
     ReturnType<typeof glob<{ onlyFiles: false; absolute: true }>>,
-    Effect.Effect<FsLoc.Groups.Abs.Abs[], Error>
+    Effect.Effect<Fs.Path.$Abs[], Error>
   >
 >
 
@@ -60,27 +60,27 @@ type _GlobSyncTypes = Ts.Assert.Cases<
   // onlyFiles: true with relative paths
   Ts.Assert.exact.of<
     ReturnType<typeof globSync<{ onlyFiles: true }>>,
-    Effect.Effect<FsLoc.RelFile[], Error>
+    Effect.Effect<Fs.Path.RelFile[], Error>
   >,
   // onlyFiles: true with absolute paths
   Ts.Assert.exact.of<
     ReturnType<typeof globSync<{ onlyFiles: true; absolute: true }>>,
-    Effect.Effect<FsLoc.AbsFile[], Error>
+    Effect.Effect<Fs.Path.AbsFile[], Error>
   >,
   // onlyDirectories: true with relative paths
   Ts.Assert.exact.of<
     ReturnType<typeof globSync<{ onlyDirectories: true }>>,
-    Effect.Effect<FsLoc.RelDir[], Error>
+    Effect.Effect<Fs.Path.RelDir[], Error>
   >,
   // onlyDirectories: true with absolute paths
   Ts.Assert.exact.of<
     ReturnType<typeof globSync<{ onlyDirectories: true; absolute: true }>>,
-    Effect.Effect<FsLoc.AbsDir[], Error>
+    Effect.Effect<Fs.Path.AbsDir[], Error>
   >,
   // Default behavior
   Ts.Assert.exact.of<
     ReturnType<typeof globSync<undefined>>,
-    Effect.Effect<FsLoc.RelFile[], Error>
+    Effect.Effect<Fs.Path.RelFile[], Error>
   >
 >
 
@@ -88,6 +88,6 @@ type _GlobSyncTypes = Ts.Assert.Cases<
 type _UserExample = Ts.Assert.Cases<
   Ts.Assert.exact.of<
     ReturnType<typeof glob<{ absolute: true; onlyFiles: true }>>,
-    Effect.Effect<FsLoc.AbsFile[], Error>
+    Effect.Effect<Fs.Path.AbsFile[], Error>
   >
 >

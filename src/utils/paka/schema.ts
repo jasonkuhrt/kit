@@ -1,5 +1,5 @@
 import { Arr } from '#arr'
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { Str } from '#str'
 import { Schema as S } from 'effect'
 
@@ -92,7 +92,7 @@ export class ImportExample extends S.Class<ImportExample>('ImportExample')({
  */
 export class SourceLocation extends S.Class<SourceLocation>('SourceLocation')({
   /** Relative file path from project root - portable across systems */
-  file: FsLoc.RelFile,
+  file: Fs.Path.RelFile.Schema,
   /** Line number where the export is defined */
   line: S.Number,
 }) {}
@@ -121,7 +121,7 @@ export class MdFileProvenance extends S.TaggedClass<MdFileProvenance>()(
   'md-file',
   {
     /** Relative path to the source markdown file */
-    filePath: FsLoc.RelFile,
+    filePath: Fs.Path.RelFile.Schema,
   },
 ) {}
 
@@ -554,7 +554,7 @@ const BaseExportFields = {
  * Following the graphql-kit pattern for circular schemas with instance methods.
  */
 export interface Module {
-  readonly location: S.Schema.Type<typeof FsLoc.RelFile>
+  readonly location: S.Schema.Type<typeof Fs.Path.RelFile>
   readonly docs?: Docs | undefined
   readonly docsProvenance?: DocsProvenance | undefined
   readonly category?: string | undefined
@@ -562,7 +562,7 @@ export interface Module {
 }
 
 export interface ModuleEncoded {
-  readonly location: S.Schema.Encoded<typeof FsLoc.RelFile>
+  readonly location: S.Schema.Encoded<typeof Fs.Path.RelFile>
   readonly docs?: Docs | undefined
   readonly docsProvenance?: DocsProvenance | undefined
   readonly category?: string | undefined
@@ -584,7 +584,7 @@ export class Module extends S.Class<Module>('Module')({
    * Source file location relative to project root.
    * Portable across package registry, GitHub repo, local dev, etc.
    */
-  location: FsLoc.RelFile,
+  location: Fs.Path.RelFile.Schema,
   /** Documentation content (description and guide) */
   docs: S.optional(Docs),
   /** Provenance tracking for documentation sources */

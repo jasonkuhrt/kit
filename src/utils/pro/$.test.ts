@@ -1,4 +1,4 @@
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { Pro } from '#pro'
 import { describe, expect, test } from 'vitest'
 
@@ -8,19 +8,19 @@ describe('Pro', () => {
       const result = Pro.cwd()
 
       // Should be an AbsDir
-      expect(FsLoc.AbsDir.is(result)).toBe(true)
+      expect(Fs.Path.AbsDir.is(result)).toBe(true)
 
       // Should match process.cwd()
       const expectedPath = process.cwd()
-      const actualPath = FsLoc.encodeSync(result)
+      const actualPath = result.toString()
 
-      // FsLoc.AbsDir always has trailing slash
+      // Fs.Path.AbsDir always has trailing slash
       expect(actualPath).toBe(expectedPath.endsWith('/') ? expectedPath : expectedPath + '/')
     })
 
     test('returns a valid absolute path', () => {
       const result = Pro.cwd()
-      const encoded = FsLoc.encodeSync(result)
+      const encoded = result.toString()
 
       // Should start with /
       expect(encoded.startsWith('/')).toBe(true)

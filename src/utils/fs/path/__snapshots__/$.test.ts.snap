@@ -1,0 +1,235 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`.decodeSync - AbsDir > fn('/') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+/
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "/"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - AbsDir > fn('/a/b/c/d/e/') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+/a/b/c/d/e/
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "/a/b/c/d/e/"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - AbsDir > fn('/home') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+/home
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "/home"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - AbsDir > fn('/home/') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+/home/
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "/home/"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - AbsDir > fn('/my documents/projects/') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+/my documents/projects/
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "/my documents/projects/"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - AbsDir > fn('/usr/local/bin/') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+/usr/local/bin/
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "/usr/local/bin/"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - AbsFile > fn('/.config.json') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+/.config.json
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "/.config.json"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - AbsFile > fn('/a/b/c/d/e.js') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+/a/b/c/d/e.js
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "/a/b/c/d/e.js"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - AbsFile > fn('/archive.tar.gz') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+/archive.tar.gz
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "/archive.tar.gz"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - AbsFile > fn('/file.txt') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+/file.txt
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "/file.txt"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - AbsFile > fn('/home/user/doc.pdf') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+/home/user/doc.pdf
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "/home/user/doc.pdf"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - AbsFile > fn('/my docs/file name.txt') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+/my docs/file name.txt
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "/my docs/file name.txt"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - RelDir > fn('../') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+../
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "../"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - RelDir > fn('../../lib/') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+../../lib/
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "../../lib/"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - RelDir > fn('../src/lib/utils/') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+../src/lib/utils/
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "../src/lib/utils/"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - RelDir > fn('./') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+./
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "./"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - RelDir > fn('./src/') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+./src/
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "./src/"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - RelDir > fn('src') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+src
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "src"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - RelDir > fn('src/') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+src/
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "src/"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - RelDir > fn('src/components/') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+src/components/
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "src/components/"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - RelFile > fn('../../lib/util.js') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+../../lib/util.js
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "../../lib/util.js"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - RelFile > fn('../file.txt') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+../file.txt
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "../file.txt"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - RelFile > fn('./file.txt') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+./file.txt
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "./file.txt"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - RelFile > fn('./src/components/App.tsx') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+./src/components/App.tsx
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "./src/components/App.tsx"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - RelFile > fn('file.txt') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+file.txt
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "file.txt"
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`.decodeSync - RelFile > fn('src/index.ts') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+src/index.ts
+╠══════════════════════════════════════════════════╣ THEN THROWS PARSEERROR
+ParseError: Expected (FsPathAbsFile (Encoded side) <-> FsPathAbsFile) | (FsPathAbsDir (Encoded side) <-> FsPathAbsDir) | (FsPathRelFile (Encoded side) <-> FsPathRelFile) | (FsPathRelDir (Encoded side) <-> FsPathRelDir), actual "src/index.ts"
+╚══════════════════════════════════════════════════╝"
+`;

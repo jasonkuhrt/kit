@@ -1,4 +1,4 @@
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { Match, Schema as S } from 'effect'
 import { type ExportedDeclarations, Node } from 'ts-morph'
 import {
@@ -40,7 +40,7 @@ export const extractExport = (name: string, decl: ExportedDeclarations): Export 
 
   // Get source location
   const sourceLocation = SourceLocation.make({
-    file: S.decodeSync(FsLoc.RelFile.String)(absoluteToRelative(decl.getSourceFile().getFilePath())),
+    file: S.decodeSync(Fs.Path.RelFile.Schema)(absoluteToRelative(decl.getSourceFile().getFilePath())),
     line: decl.getStartLineNumber(),
   })
 
@@ -74,7 +74,7 @@ export const extractExport = (name: string, decl: ExportedDeclarations): Export 
   // Check if this should be forced to namespace (via @namespace tag)
   // This allows runtime objects to be treated as namespaces in docs
   if (jsdoc.forceNamespace && level === 'value') {
-    const location = S.decodeSync(FsLoc.RelFile.String)(
+    const location = S.decodeSync(Fs.Path.RelFile.Schema)(
       absoluteToRelative(decl.getSourceFile().getFilePath()),
     )
     return ValueExport.make({
@@ -89,7 +89,7 @@ export const extractExport = (name: string, decl: ExportedDeclarations): Export 
 
   // Handle namespace exports (extract nested module)
   if (level === 'value' && type === 'namespace' && Node.isModuleDeclaration(decl)) {
-    const location = S.decodeSync(FsLoc.RelFile.String)(
+    const location = S.decodeSync(Fs.Path.RelFile.Schema)(
       absoluteToRelative(decl.getSourceFile().getFilePath()),
     )
     const nestedModule = extractModule(decl, location)

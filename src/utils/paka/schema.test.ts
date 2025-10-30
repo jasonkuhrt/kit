@@ -1,4 +1,4 @@
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { Test } from '#test'
 import { Schema as S } from 'effect'
 import { expect } from 'vitest'
@@ -43,7 +43,7 @@ Test.describe('DrillableNamespaceEntrypoint.getImportExamples > top-level (singl
     const entrypoint = DrillableNamespaceEntrypoint.make({
       path: '.',
       module: Module.make({
-        location: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+        location: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
         exports: [],
       }),
     })
@@ -85,7 +85,7 @@ Test.describe('DrillableNamespaceEntrypoint.getImportExamples > 2-level nested')
     const entrypoint = DrillableNamespaceEntrypoint.make({
       path: '.',
       module: Module.make({
-        location: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+        location: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
         exports: [],
       }),
     })
@@ -115,7 +115,7 @@ Test.describe('DrillableNamespaceEntrypoint.getImportExamples > 3-level nested')
     const entrypoint = DrillableNamespaceEntrypoint.make({
       path: '.',
       module: Module.make({
-        location: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+        location: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
         exports: [],
       }),
     })
@@ -136,7 +136,7 @@ Test.describe('DrillableNamespaceEntrypoint.getImportExamples > edge cases')
     const entrypoint = DrillableNamespaceEntrypoint.make({
       path: '.',
       module: Module.make({
-        location: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+        location: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
         exports: [],
       }),
     })
@@ -170,7 +170,7 @@ Test.describe('SimpleEntrypoint.getImportExamples > simple entrypoints')
     const entrypoint = SimpleEntrypoint.make({
       path: input.path,
       module: Module.make({
-        location: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+        location: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
         exports: [],
       }),
     })
@@ -198,7 +198,7 @@ Test.describe('SimpleEntrypoint.moduleName')
     const entrypoint = SimpleEntrypoint.make({
       path: input.path,
       module: Module.make({
-        location: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+        location: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
         exports: [],
       }),
     })
@@ -218,7 +218,7 @@ Test.describe('SimpleEntrypoint.kebabName')
     const entrypoint = SimpleEntrypoint.make({
       path: input.path,
       module: Module.make({
-        location: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+        location: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
         exports: [],
       }),
     })
@@ -243,7 +243,7 @@ Test.describe('Module export filtering getters')
       examples: [],
       tags: {},
       sourceLocation: SourceLocation.make({
-        file: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+        file: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
         line: 1,
       }),
     })
@@ -255,7 +255,7 @@ Test.describe('Module export filtering getters')
       examples: [],
       tags: {},
       sourceLocation: SourceLocation.make({
-        file: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+        file: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
         line: 2,
       }),
     })
@@ -267,7 +267,7 @@ Test.describe('Module export filtering getters')
       examples: [],
       tags: {},
       sourceLocation: SourceLocation.make({
-        file: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+        file: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
         line: 3,
       }),
     })
@@ -279,11 +279,11 @@ Test.describe('Module export filtering getters')
       examples: [],
       tags: {},
       module: Module.make({
-        location: S.decodeSync(FsLoc.RelFile.String)('./test-ns.ts'),
+        location: S.decodeSync(Fs.Path.RelFile.Schema)('./test-ns.ts'),
         exports: [],
       }),
       sourceLocation: SourceLocation.make({
-        file: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+        file: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
         line: 4,
       }),
     })
@@ -295,13 +295,13 @@ Test.describe('Module export filtering getters')
       examples: [],
       tags: {},
       sourceLocation: SourceLocation.make({
-        file: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+        file: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
         line: 5,
       }),
     })
 
     const module = Module.make({
-      location: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+      location: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
       exports: [functionExport, constantExport, classExport, namespaceExport, typeExport],
     })
 
@@ -338,14 +338,14 @@ Test.describe('Module.hasCategories')
         tags: {},
         category: exp.category,
         sourceLocation: SourceLocation.make({
-          file: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+          file: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
           line: 1,
         }),
       })
     )
 
     const module = Module.make({
-      location: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+      location: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
       exports,
     })
 
@@ -361,12 +361,12 @@ Test.describe('Module.hasExternalReadme')
   )
   .test(({ input, output }) => {
     const module = Module.make({
-      location: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+      location: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
       exports: [],
       docsProvenance: input.hasExternal
         ? DocsProvenance.make({
           description: MdFileProvenance.make({
-            filePath: S.decodeSync(FsLoc.RelFile.String)('./README.md'),
+            filePath: S.decodeSync(Fs.Path.RelFile.Schema)('./README.md'),
           }),
         })
         : undefined,
@@ -396,7 +396,7 @@ Test.describe('ValueExport.typeIcon')
       examples: [],
       tags: {},
       sourceLocation: SourceLocation.make({
-        file: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+        file: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
         line: 1,
       }),
     })
@@ -422,7 +422,7 @@ Test.describe('TypeExport.typeIcon')
       examples: [],
       tags: {},
       sourceLocation: SourceLocation.make({
-        file: S.decodeSync(FsLoc.RelFile.String)('./test.ts'),
+        file: S.decodeSync(Fs.Path.RelFile.Schema)('./test.ts'),
         line: 1,
       }),
     })

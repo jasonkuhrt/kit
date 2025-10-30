@@ -147,7 +147,6 @@
       "#ts/test": ["./src/utils/ts/test/$$.ts"],
       "#value": ["./src/utils/value/$.ts"],
       "#value/value": ["./src/utils/value/$$.ts"],
-      "#fs-loc": ["./src/utils/fs-loc/$.ts"],
       "#deps/effect": ["./src/deps/effect.ts"],
 
       // Platform and wildcard

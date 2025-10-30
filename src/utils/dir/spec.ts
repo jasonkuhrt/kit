@@ -1,5 +1,4 @@
 import { Fs } from '#fs'
-import { FsLoc } from '#fs-loc'
 import type { Json } from '#json'
 import { Schema as S } from 'effect'
 import { join } from 'node:path'
@@ -16,19 +15,19 @@ export interface Layout {
  * Represents a single file system operation to be executed.
  */
 export type Operation =
-  | { type: 'file'; path: FsLoc.RelFile; content: any } // Keep as any to preserve original types
-  | { type: 'dir'; path: FsLoc.RelDir; operations: Operation[] }
-  | { type: 'remove'; path: FsLoc.RelFile | FsLoc.RelDir }
-  | { type: 'clear'; path: FsLoc.RelDir }
-  | { type: 'move-file'; from: FsLoc.RelFile; to: FsLoc.RelFile }
-  | { type: 'move-dir'; from: FsLoc.RelDir; to: FsLoc.RelDir }
+  | { type: 'file'; path: Fs.Path.RelFile; content: any } // Keep as any to preserve original types
+  | { type: 'dir'; path: Fs.Path.RelDir; operations: Operation[] }
+  | { type: 'remove'; path: Fs.Path.RelFile | Fs.Path.RelDir }
+  | { type: 'clear'; path: Fs.Path.RelDir }
+  | { type: 'move-file'; from: Fs.Path.RelFile; to: Fs.Path.RelFile }
+  | { type: 'move-dir'; from: Fs.Path.RelDir; to: Fs.Path.RelDir }
 
 /**
  * A specification for directory operations.
  * This is a pure data structure that accumulates operations without executing them.
  */
 export interface SpecBuilder {
-  readonly base: FsLoc.AbsDir
+  readonly base: Fs.Path.AbsDir
   readonly operations: ReadonlyArray<Operation>
 
   /**
@@ -46,9 +45,9 @@ export interface SpecBuilder {
    *   .file('image.png', uint8Array)
    * ```
    */
-  file<path extends FsLoc.RelFile | string>(
-    path: FsLoc.Inputs.Guard.RelFile<path>,
-    content: path extends FsLoc.RelFile ? Fs.InferFileContent<path>
+  file<path extends Fs.Path.RelFile | string>(
+    path: Fs.Path.Guard.RelFile<path>,
+    content: path extends Fs.Path.RelFile ? Fs.InferFileContent<path>
       : path extends string ? string | Uint8Array | Json.Object // Dynamic path, allow all content types
       : never,
   ): SpecBuilder
@@ -68,8 +67,8 @@ export interface SpecBuilder {
    *   .dir('tests') // empty directory
    * ```
    */
-  dir<path extends FsLoc.RelDir | string>(
-    path: FsLoc.Inputs.Guard.RelDir<path>,
+  dir<path extends Fs.Path.RelDir | string>(
+    path: Fs.Path.Guard.RelDir<path>,
     builder?: (_: SpecBuilder) => SpecBuilder,
   ): SpecBuilder
 
@@ -122,8 +121,8 @@ export interface SpecBuilder {
    * spec.remove('old-file.txt')
    * ```
    */
-  remove<path extends FsLoc.Groups.Rel.Rel | string>(
-    path: FsLoc.Inputs.Guard.Rel<path>,
+  remove<path extends Fs.Path.$Rel | string>(
+    path: Fs.Path.Guard.Rel<path>,
   ): SpecBuilder
 
   /**
@@ -137,8 +136,8 @@ export interface SpecBuilder {
    * spec.clear('build/')
    * ```
    */
-  clear<path extends FsLoc.RelDir | string>(
-    path: FsLoc.Inputs.Guard.RelDir<path>,
+  clear<path extends Fs.Path.RelDir | string>(
+    path: Fs.Path.Guard.RelDir<path>,
   ): SpecBuilder
 
   /**
@@ -154,11 +153,11 @@ export interface SpecBuilder {
    * ```
    */
   move<
-    from extends FsLoc.RelFile | string,
-    to extends FsLoc.RelFile | string,
+    from extends Fs.Path.RelFile | string,
+    to extends Fs.Path.RelFile | string,
   >(
-    from: FsLoc.Inputs.Guard.RelFile<from>,
-    to: FsLoc.Inputs.Guard.RelFile<to>,
+    from: Fs.Path.Guard.RelFile<from>,
+    to: Fs.Path.Guard.RelFile<to>,
   ): SpecBuilder
 
   /**
@@ -174,11 +173,11 @@ export interface SpecBuilder {
    * ```
    */
   move<
-    from extends FsLoc.RelDir | string,
-    to extends FsLoc.RelDir | string,
+    from extends Fs.Path.RelDir | string,
+    to extends Fs.Path.RelDir | string,
   >(
-    from: FsLoc.Inputs.Guard.RelDir<from>,
-    to: FsLoc.Inputs.Guard.RelDir<to>,
+    from: Fs.Path.Guard.RelDir<from>,
+    to: Fs.Path.Guard.RelDir<to>,
   ): SpecBuilder
 
   /**
@@ -201,16 +200,16 @@ export interface SpecBuilder {
    * ```
    */
   // Overload for file paths - requires content
-  add<path extends FsLoc.RelFile | string>(
-    path: FsLoc.Inputs.Guard.RelFile<path>,
-    content: path extends FsLoc.RelFile ? Fs.InferFileContent<path>
+  add<path extends Fs.Path.RelFile | string>(
+    path: Fs.Path.Guard.RelFile<path>,
+    content: path extends Fs.Path.RelFile ? Fs.InferFileContent<path>
       : path extends string ? string | Uint8Array | Json.Object
       : never,
   ): SpecBuilder
 
   // Overload for directory paths - optional builder
-  add<path extends FsLoc.RelDir | string>(
-    path: FsLoc.Inputs.Guard.RelDir<path>,
+  add<path extends Fs.Path.RelDir | string>(
+    path: Fs.Path.Guard.RelDir<path>,
     builder?: (_: SpecBuilder) => SpecBuilder,
   ): SpecBuilder
 
@@ -226,7 +225,7 @@ export interface SpecBuilder {
    * const spec2 = spec1.withBase('/other')
    * ```
    */
-  withBase(base: FsLoc.Inputs.Input.AbsDir): SpecBuilder
+  withBase(base: Fs.Path.Input.AbsDir): SpecBuilder
 
   /**
    * Merge multiple specs into this one.
@@ -262,7 +261,7 @@ export interface SpecBuilder {
 
   // TODO: Add import feature
   // Import would read from absolute paths outside the sandbox to seed the spec
-  // Signature: import(source: FsLoc.AbsFile | FsLoc.AbsDir, dest?: string): SpecBuilder
+  // Signature: import(source: Fs.Path.AbsFile | Fs.Path.AbsDir, dest?: string): SpecBuilder
   // This would be a chain-only operation (not in spec) that executes immediately
   // Alternative: Dir.specFromDisk('/absolute/path') to create a spec from existing filesystem
 }
@@ -330,28 +329,28 @@ export const toLayout = (spec: SpecBuilder): Layout => {
  * ```
  */
 export const spec = (
-  base: FsLoc.Inputs.Input.AbsDir,
+  base: Fs.Path.Input.AbsDir,
 ): SpecBuilder => {
-  const absBase = FsLoc.normalizeInput(base) as FsLoc.AbsDir
+  const absBase = Fs.Path.normalizeDynamicInput(Fs.Path.AbsDir.Schema)(base) as Fs.Path.AbsDir
   const operations: Operation[] = []
 
-  const createSpec = (baseDir: FsLoc.AbsDir, ops: Operation[]): SpecBuilder => {
+  const createSpec = (baseDir: Fs.Path.AbsDir, ops: Operation[]): SpecBuilder => {
     const self: SpecBuilder = {
       base: baseDir,
       operations: ops,
 
       file(path, content) {
         const relFile = typeof path === 'string'
-          ? S.decodeSync(FsLoc.RelFile.String)(path as string)
-          : path as FsLoc.RelFile
+          ? S.decodeSync(Fs.Path.RelFile.Schema)(path as string)
+          : path as Fs.Path.RelFile
         const newOps = [...ops, { type: 'file' as const, path: relFile, content }]
         return createSpec(baseDir, newOps)
       },
 
       dir(path, builder?) {
         const relDir = typeof path === 'string'
-          ? S.decodeSync(FsLoc.RelDir.String)(path as string)
-          : path as FsLoc.RelDir
+          ? S.decodeSync(Fs.Path.RelDir.Schema)(path as string)
+          : path as Fs.Path.RelDir
 
         if (builder) {
           // Create a sub-spec to collect nested operations
@@ -384,24 +383,24 @@ export const spec = (
 
       remove(path) {
         const fsPath = typeof path === 'string'
-          ? FsLoc.decodeSync(path) as FsLoc.Groups.Rel.Rel
+          ? Fs.Path.fromString(path) as Fs.Path.$Rel
           : path
         // Determine if it's a file or directory for the operation
-        const operationPath = FsLoc.Groups.File.is(fsPath)
-          ? fsPath as FsLoc.RelFile
-          : fsPath as FsLoc.RelDir
+        const operationPath = Fs.Path.$File.is(fsPath)
+          ? fsPath as Fs.Path.RelFile
+          : fsPath as Fs.Path.RelDir
         const newOps = [...ops, { type: 'remove' as const, path: operationPath }]
         return createSpec(baseDir, newOps)
       },
 
       clear(path) {
-        let relDir: FsLoc.RelDir
+        let relDir: Fs.Path.RelDir
         if (typeof path === 'string') {
           // Handle special case for current directory
           const dirPath = path === '.' ? './' : path as string
-          relDir = S.decodeSync(FsLoc.RelDir.String)(dirPath)
+          relDir = S.decodeSync(Fs.Path.RelDir.Schema)(dirPath)
         } else {
-          relDir = path as FsLoc.RelDir
+          relDir = path as Fs.Path.RelDir
         }
         const newOps = [...ops, { type: 'clear' as const, path: relDir }]
         return createSpec(baseDir, newOps)
@@ -410,49 +409,43 @@ export const spec = (
       move(from: any, to: any) {
         // Handle string inputs
         if (typeof from === 'string' && typeof to === 'string') {
-          const fromLoc = FsLoc.FsLocLoose.decodeSync(from)
-          const toLoc = FsLoc.FsLocLoose.decodeSync(to)
+          const fromLoc = Fs.Path.fromString(from)
+          const toLoc = Fs.Path.fromString(to)
 
           // Check if both are files or both are directories
-          if (fromLoc.file && toLoc.file) {
-            // Both are files - reconstruct as RelFile
-            const fromFile = FsLoc.RelFile.make({
-              path: (fromLoc.path as any),
-              file: fromLoc.file,
-            })
-            const toFile = FsLoc.RelFile.make({
-              path: (toLoc.path as any),
-              file: toLoc.file,
-            })
-            const newOps = [...ops, { type: 'move-file' as const, from: fromFile, to: toFile }]
+          if (Fs.Path.$File.is(fromLoc) && Fs.Path.$File.is(toLoc)) {
+            // Both are files
+            const newOps = [...ops, {
+              type: 'move-file' as const,
+              from: fromLoc as Fs.Path.RelFile,
+              to: toLoc as Fs.Path.RelFile,
+            }]
             return createSpec(baseDir, newOps)
-          } else if (!fromLoc.file && !toLoc.file) {
-            // Both are directories - reconstruct as RelDir
-            const fromDir = FsLoc.RelDir.make({
-              path: (fromLoc.path as any),
-            })
-            const toDir = FsLoc.RelDir.make({
-              path: (toLoc.path as any),
-            })
-            const newOps = [...ops, { type: 'move-dir' as const, from: fromDir, to: toDir }]
+          } else if (!Fs.Path.$File.is(fromLoc) && !Fs.Path.$File.is(toLoc)) {
+            // Both are directories
+            const newOps = [...ops, {
+              type: 'move-dir' as const,
+              from: fromLoc as Fs.Path.RelDir,
+              to: toLoc as Fs.Path.RelDir,
+            }]
             return createSpec(baseDir, newOps)
           } else {
             throw new Error('Cannot move between file and directory')
           }
         } else {
           // Already typed - TypeScript ensures they match via overloads
-          if (FsLoc.Groups.File.is(from)) {
+          if (Fs.Path.$File.is(from)) {
             const newOps = [...ops, {
               type: 'move-file' as const,
-              from: from as FsLoc.RelFile,
-              to: to as FsLoc.RelFile,
+              from: from as Fs.Path.RelFile,
+              to: to as Fs.Path.RelFile,
             }]
             return createSpec(baseDir, newOps)
           } else {
             const newOps = [...ops, {
               type: 'move-dir' as const,
-              from: from as FsLoc.RelDir,
-              to: to as FsLoc.RelDir,
+              from: from as Fs.Path.RelDir,
+              to: to as Fs.Path.RelDir,
             }]
             return createSpec(baseDir, newOps)
           }
@@ -462,38 +455,43 @@ export const spec = (
       add(path: any, contentOrBuilder?: any) {
         // Determine if path is a file or directory
         if (typeof path === 'string') {
-          const parsed = FsLoc.FsLocLoose.decodeSync(path)
-          if (parsed.file) {
-            // It's a file - treat as file operation
-            const relFile = FsLoc.RelFile.make({
-              path: (parsed.path as any),
-              file: parsed.file,
-            })
-            const newOps = [...ops, { type: 'file' as const, path: relFile, content: contentOrBuilder }]
+          const parsed = Fs.Path.fromString(path)
+          if (Fs.Path.$File.is(parsed)) {
+            // It's a file - already correctly typed
+            const newOps = [...ops, {
+              type: 'file' as const,
+              path: parsed as Fs.Path.RelFile,
+              content: contentOrBuilder,
+            }]
             return createSpec(baseDir, newOps)
           } else {
-            // It's a directory - treat as directory operation
-            const relDir = FsLoc.RelDir.make({
-              path: (parsed.path as any),
-            })
+            // It's a directory - already correctly typed
             if (contentOrBuilder && typeof contentOrBuilder === 'function') {
               // Has a builder function
               const subSpec = createSpec(baseDir, [])
               const result = contentOrBuilder(subSpec)
               const subOps = result.operations as Operation[]
-              const newOps = [...ops, { type: 'dir' as const, path: relDir, operations: subOps }]
+              const newOps = [...ops, {
+                type: 'dir' as const,
+                path: parsed as Fs.Path.RelDir,
+                operations: subOps,
+              }]
               return createSpec(baseDir, newOps)
             } else {
               // Empty directory
-              const newOps = [...ops, { type: 'dir' as const, path: relDir, operations: [] }]
+              const newOps = [...ops, {
+                type: 'dir' as const,
+                path: parsed as Fs.Path.RelDir,
+                operations: [],
+              }]
               return createSpec(baseDir, newOps)
             }
           }
         } else {
           // Already typed FsLoc
-          if (FsLoc.Groups.File.is(path)) {
+          if (Fs.Path.$File.is(path)) {
             // It's a file
-            const newOps = [...ops, { type: 'file' as const, path: path as FsLoc.RelFile, content: contentOrBuilder }]
+            const newOps = [...ops, { type: 'file' as const, path: path as Fs.Path.RelFile, content: contentOrBuilder }]
             return createSpec(baseDir, newOps)
           } else {
             // It's a directory
@@ -501,10 +499,10 @@ export const spec = (
               const subSpec = createSpec(baseDir, [])
               const result = contentOrBuilder(subSpec)
               const subOps = result.operations as Operation[]
-              const newOps = [...ops, { type: 'dir' as const, path: path as FsLoc.RelDir, operations: subOps }]
+              const newOps = [...ops, { type: 'dir' as const, path: path as Fs.Path.RelDir, operations: subOps }]
               return createSpec(baseDir, newOps)
             } else {
-              const newOps = [...ops, { type: 'dir' as const, path: path as FsLoc.RelDir, operations: [] }]
+              const newOps = [...ops, { type: 'dir' as const, path: path as Fs.Path.RelDir, operations: [] }]
               return createSpec(baseDir, newOps)
             }
           }
@@ -512,9 +510,9 @@ export const spec = (
       },
 
       withBase(
-        newBase: FsLoc.Inputs.Input.AbsDir,
+        newBase: Fs.Path.Input.AbsDir,
       ): SpecBuilder {
-        const absNewBase = FsLoc.normalizeInput(newBase) as FsLoc.AbsDir
+        const absNewBase = Fs.Path.normalizeDynamicInput(Fs.Path.AbsDir.Schema)(newBase) as Fs.Path.AbsDir
         return createSpec(absNewBase, ops)
       },
 

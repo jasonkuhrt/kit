@@ -1,5 +1,5 @@
 import type { Dir } from '#dir'
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { Pat } from '#pat'
 import { Str } from '#str'
 import { Schema as S } from 'effect'
@@ -251,7 +251,7 @@ export const extractFromFiles = (params: {
     const relativeSourcePath = locationPath.replace(/^\.\//, '')
     let module = extractModuleFromFile(
       actualSourceFile,
-      S.decodeSync(FsLoc.RelFile.String)(relativeSourcePath),
+      S.decodeSync(Fs.Path.RelFile.Schema)(relativeSourcePath),
       { filterInternal: true, filterUnderscoreExports },
     )
 
@@ -531,7 +531,7 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
     const relativeSourcePath = locationPath.replace(/^\.\//, '')
     let module = extractModuleFromFile(
       actualSourceFile,
-      S.decodeSync(FsLoc.RelFile.String)(relativeSourcePath),
+      S.decodeSync(Fs.Path.RelFile.Schema)(relativeSourcePath),
       { filterInternal: true, filterUnderscoreExports },
     )
 

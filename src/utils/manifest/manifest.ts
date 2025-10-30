@@ -1,4 +1,4 @@
-import { FsLoc } from '#fs-loc'
+import { Fs } from '#fs'
 import { createSchemaResource, type Resource } from '#resource/resource'
 import { Semver } from '#semver'
 import { Effect, Option, Schema as S } from 'effect'
@@ -128,19 +128,19 @@ export const emptyManifest = Manifest.make()
  * Resource for reading/writing package.json with Schema validation
  */
 export const resource: Resource<Manifest> = {
-  read: (dirPath: FsLoc.AbsDir) =>
+  read: (dirPath: Fs.Path.AbsDir) =>
     createSchemaResource(
       'package.json',
       Manifest,
       emptyManifest,
     ).read(dirPath),
-  write: (value: Manifest, dirPath: FsLoc.AbsDir) =>
+  write: (value: Manifest, dirPath: Fs.Path.AbsDir) =>
     createSchemaResource(
       'package.json',
       Manifest,
       emptyManifest,
     ).write(value, dirPath),
-  readOrEmpty: (dirPath: FsLoc.AbsDir) =>
+  readOrEmpty: (dirPath: Fs.Path.AbsDir) =>
     createSchemaResource(
       'package.json',
       Manifest,
@@ -153,12 +153,12 @@ export const resource: Resource<Manifest> = {
  * @deprecated Use resource instead and call toMutable() on the result if needed
  */
 export const resourceMutable: Resource<ManifestMutable> = {
-  read: (dirPath: FsLoc.AbsDir) =>
+  read: (dirPath: Fs.Path.AbsDir) =>
     resource.read(dirPath).pipe(
       Effect.map(Option.map((m) => m.toMutable())),
     ),
-  write: (value: ManifestMutable, dirPath: FsLoc.AbsDir) => resource.write(Manifest.make(value), dirPath),
-  readOrEmpty: (dirPath: FsLoc.AbsDir) =>
+  write: (value: ManifestMutable, dirPath: Fs.Path.AbsDir) => resource.write(Manifest.make(value), dirPath),
+  readOrEmpty: (dirPath: Fs.Path.AbsDir) =>
     resource.readOrEmpty(dirPath).pipe(
       Effect.map((m) => m.toMutable()),
     ),

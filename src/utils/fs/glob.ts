@@ -1,18 +1,18 @@
-import { FsLoc } from '#fs-loc'
 import { Effect, Schema as S } from 'effect'
 import * as TinyGlobby from 'tinyglobby'
+import { Path } from './path/$.js'
 
 /**
  * Options for globbing file patterns, excluding the patterns parameter.
- * The `cwd` option only accepts {@link FsLoc.AbsDir} or URL for type safety.
+ * The `cwd` option only accepts {@link Path.AbsDir} or URL for type safety.
  */
 export type GlobOptions = Omit<TinyGlobby.GlobOptions, 'patterns' | 'cwd'> & {
   /**
    * The working directory in which to search. Results will be returned relative to this directory.
-   * Only accepts {@link FsLoc.AbsDir} or URL for type-safe filesystem paths.
-   * @default process.cwd() as FsLoc.AbsDir
+   * Only accepts {@link Path.AbsDir} or URL for type-safe filesystem paths.
+   * @default process.cwd() as Path.AbsDir
    */
-  cwd?: FsLoc.AbsDir | URL
+  cwd?: Path.AbsDir | URL
 }
 
 /**
@@ -23,15 +23,15 @@ export type GlobOptions = Omit<TinyGlobby.GlobOptions, 'patterns' | 'cwd'> & {
  * - If absolute is true, returns absolute locations
  * - Otherwise returns relative locations
  */
-type InferGlobReturn<O extends GlobOptions | undefined> = O extends undefined ? FsLoc.RelFile // Explicit undefined type param
-  : O extends { onlyDirectories: true; absolute: true } ? FsLoc.AbsDir
-  : O extends { onlyDirectories: true } ? FsLoc.RelDir
-  : O extends { onlyFiles: false; absolute: true } ? FsLoc.Groups.Abs.Abs
-  : O extends { onlyFiles: false } ? FsLoc.Groups.Rel.Rel
-  : O extends { onlyFiles: true; absolute: true } ? FsLoc.AbsFile
-  : O extends { onlyFiles: true } ? FsLoc.RelFile
-  : O extends { absolute: true } ? FsLoc.AbsFile // onlyFiles defaults to true
-  : O extends GlobOptions ? FsLoc.RelFile // Default case for bare GlobOptions/{}
+type InferGlobReturn<O extends GlobOptions | undefined> = O extends undefined ? Path.RelFile // Explicit undefined type param
+  : O extends { onlyDirectories: true; absolute: true } ? Path.AbsDir
+  : O extends { onlyDirectories: true } ? Path.RelDir
+  : O extends { onlyFiles: false; absolute: true } ? Path.$Abs
+  : O extends { onlyFiles: false } ? Path.$Rel
+  : O extends { onlyFiles: true; absolute: true } ? Path.AbsFile
+  : O extends { onlyFiles: true } ? Path.RelFile
+  : O extends { absolute: true } ? Path.AbsFile // onlyFiles defaults to true
+  : O extends GlobOptions ? Path.RelFile // Default case for bare GlobOptions/{}
   : never // Should never reach here
 
 /**
@@ -51,7 +51,7 @@ type InferGlobReturn<O extends GlobOptions | undefined> = O extends undefined ? 
  * @example
  * ```ts
  * import { Fs } from '#fs'
- * import { FsLoc } from '#fs-loc'
+ * import { Fs } from '#fs'
  * import { Effect } from 'effect'
  *
  * const program = Effect.gen(function* () {
@@ -65,11 +65,11 @@ type InferGlobReturn<O extends GlobOptions | undefined> = O extends undefined ? 
  *   const dirs = yield* Fs.glob('src/**', { onlyDirectories: true })
  *
  *   // Search from a specific directory using FsLoc
- *   const srcDir = FsLoc.AbsDir.decodeStringSync('/path/to/project/')
+ *   const srcDir = Path.AbsDir.decodeStringSync('/path/to/project/')
  *   const srcFiles = yield* Fs.glob('**' + '/*.ts', { cwd: srcDir })
  *
  *   // Get string path from FsLoc
- *   const path = FsLoc.encodeSync(relFiles[0])
+ *   const path = Path.encodeSync(relFiles[0])
  * })
  *
  * Effect.runPromise(program)
@@ -81,9 +81,9 @@ export const glob = <O extends GlobOptions | undefined = undefined>(
 ): Effect.Effect<InferGlobReturn<O>[], Error> =>
   Effect.tryPromise({
     try: () => {
-      // Convert FsLoc.AbsDir to string for TinyGlobby
-      const tinyGlobbyOptions = options && options.cwd && FsLoc.AbsDir.is(options.cwd)
-        ? { ...options, cwd: S.encodeSync(FsLoc.AbsDir.String)(options.cwd) }
+      // Convert Path.AbsDir to string for TinyGlobby
+      const tinyGlobbyOptions = options && options.cwd && Path.AbsDir.is(options.cwd)
+        ? { ...options, cwd: S.encodeSync(Path.AbsDir.Schema)(options.cwd) }
         : options
       return TinyGlobby.glob(pattern, tinyGlobbyOptions as TinyGlobby.GlobOptions)
     },
@@ -97,7 +97,7 @@ export const glob = <O extends GlobOptions | undefined = undefined>(
             const normalizedPath = path.startsWith('/') || path.startsWith('./') || path.startsWith('../')
               ? path
               : `./${path}`
-            return FsLoc.decodeSync(normalizedPath) as InferGlobReturn<O>
+            return Path.fromString(normalizedPath) as InferGlobReturn<O>
           }),
         catch: (error) => new Error(`Failed to decode glob results: ${String(error)}`),
       })
@@ -121,12 +121,12 @@ export const glob = <O extends GlobOptions | undefined = undefined>(
  * @example
  * ```ts
  * import { Fs } from '#fs'
- * import { FsLoc } from '#fs-loc'
+ * import { Fs } from '#fs'
  * import { Effect } from 'effect'
  *
  * const program = Effect.gen(function* () {
  *   // Search from a specific directory using FsLoc
- *   const distDir = FsLoc.AbsDir.decodeStringSync('./dist/')
+ *   const distDir = Path.AbsDir.decodeStringSync('./dist/')
  *   const relFiles = yield* Fs.globSync('**' + '/*.js', { cwd: distDir })
  *
  *   // Returns absolute files only
@@ -145,9 +145,9 @@ export const globSync = <O extends GlobOptions | undefined = undefined>(
 ): Effect.Effect<InferGlobReturn<O>[], Error> =>
   Effect.try({
     try: () => {
-      // Convert FsLoc.AbsDir to string for TinyGlobby
-      const tinyGlobbyOptions = options && options.cwd && FsLoc.AbsDir.is(options.cwd)
-        ? { ...options, cwd: S.encodeSync(FsLoc.AbsDir.String)(options.cwd) }
+      // Convert Path.AbsDir to string for TinyGlobby
+      const tinyGlobbyOptions = options && options.cwd && Path.AbsDir.is(options.cwd)
+        ? { ...options, cwd: S.encodeSync(Path.AbsDir.Schema)(options.cwd) }
         : options
       return TinyGlobby.globSync(pattern, tinyGlobbyOptions as TinyGlobby.GlobOptions)
     },
@@ -161,7 +161,7 @@ export const globSync = <O extends GlobOptions | undefined = undefined>(
             const normalizedPath = path.startsWith('/') || path.startsWith('./') || path.startsWith('../')
               ? path
               : `./${path}`
-            return FsLoc.decodeSync(normalizedPath) as InferGlobReturn<O>
+            return Path.fromString(normalizedPath) as InferGlobReturn<O>
           }),
         catch: (error) => new Error(`Failed to decode glob results: ${String(error)}`),
       })
