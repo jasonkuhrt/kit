@@ -1,5 +1,5 @@
 import { Fs } from '#fs'
-import '../fs-loc/$.test-matchers.js'
+import '../fs/path/$.test-matchers.js'
 import { FileSystem } from '@effect/platform'
 import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer, Option } from 'effect'
