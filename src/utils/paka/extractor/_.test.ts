@@ -1,7 +1,7 @@
 import { Dir } from '#dir'
 import { Fs } from '#fs'
 import { Test } from '#test'
-import { beforeEach, vi } from 'vitest'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { extractFromFiles } from './extract.js'
 
 // Mock Date to ensure consistent snapshots
@@ -233,3 +233,52 @@ Test
     },
   )
   .test()
+
+describe('Path transformation with tsconfig', () => {
+  test('uses outDir/rootDir from tsconfig.build.json when present', () => {
+    const layout = Dir
+      .spec('/')
+      .add('package.json', {
+        name: 'test-pkg',
+        version: '1.0.0',
+        exports: {
+          './foo': './build/foo/__.js', // Points to BUILD path
+        },
+      })
+      .add('tsconfig.build.json', {
+        compilerOptions: {
+          outDir: './build',
+          rootDir: './src',
+        },
+      })
+      .add(
+        'src/foo/__.ts',
+        `
+        /** Foo function */
+        export const foo = () => 'foo'
+      `,
+      )
+      .toLayout()
+
+    const model = extractFromFiles({
+      projectRoot: '/',
+      files: layout,
+    })
+
+    // Should successfully extract from ./src/foo/__.ts
+    // (transformed from ./build/foo/__.js)
+    expect(model.entrypoints).toHaveLength(1)
+
+    const entrypoint = model.entrypoints[0]
+    expect(entrypoint).toBeDefined()
+
+    // Check it's a SimpleEntrypoint and has the module
+    if (entrypoint?._tag === 'SimpleEntrypoint') {
+      expect(entrypoint.module.exports).toContainEqual(
+        expect.objectContaining({ name: 'foo' }),
+      )
+    } else {
+      throw new Error('Expected SimpleEntrypoint')
+    }
+  })
+})
