@@ -14,11 +14,9 @@
  *
  * @module
  */
+export * as Memory from '../fs-memory/$$.js'
 export * from './filesystem.js'
 export * from './fs.js'
 export * from './glob.js'
-
-// Namespaced exports demonstrating the naming convention
-export * as Memory from '../fs-memory/$$.js'
 export { PathAnalyzer } from './path-analyzer/$$.js'
 export * from './path/$.js'

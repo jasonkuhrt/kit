@@ -1,6 +1,6 @@
-import { Fs } from '#fs'
 import { FileSystem } from '@effect/platform'
 import { Effect, Option } from 'effect'
+import { Path } from './path/$.js'
 
 /**
  * Type helper to infer return type based on input relative paths.
@@ -8,9 +8,9 @@ import { Effect, Option } from 'effect'
  * - If all paths are RelDir, returns AbsDir
  * - If mixed, returns union of AbsFile | AbsDir
  */
-type InferReturnType<T extends Fs.Path.$Rel> = T extends Fs.Path.RelFile ? Fs.Path.AbsFile
-  : T extends Fs.Path.RelDir ? Fs.Path.AbsDir
-  : Fs.Path.$Abs
+type InferReturnType<T extends Path.$Rel> = T extends Path.RelFile ? Path.AbsFile
+  : T extends Path.RelDir ? Path.AbsDir
+  : Path.$Abs
 
 /**
  * Find the first existing path under a directory.
@@ -27,10 +27,10 @@ type InferReturnType<T extends Fs.Path.$Rel> = T extends Fs.Path.RelFile ? Fs.Pa
  * import { Fs } from '#fs'
  * import { Fs } from '#fs'
  *
- * const dir = Fs.Path.AbsDir.decodeStringSync('/project/')
+ * const dir = Path.AbsDir.decodeStringSync('/project/')
  * const paths = [
- *   Fs.Path.RelFile.decodeStringSync('./config.local.json'),
- *   Fs.Path.RelFile.decodeStringSync('./config.json')
+ *   Path.RelFile.decodeStringSync('./config.local.json'),
+ *   Path.RelFile.decodeStringSync('./config.json')
  * ]
  *
  * const result = yield* Fs.findFirstUnderDir(dir)(paths)
@@ -38,9 +38,9 @@ type InferReturnType<T extends Fs.Path.$Rel> = T extends Fs.Path.RelFile ? Fs.Pa
  * ```
  */
 export const findFirstUnderDir = (
-  dir: Fs.Path.AbsDir,
+  dir: Path.AbsDir,
 ) =>
-<paths extends Fs.Path.$Rel>(
+<paths extends Path.$Rel>(
   paths: readonly paths[],
 ): Effect.Effect<
   Option.Option<InferReturnType<paths>>,
@@ -54,7 +54,7 @@ export const findFirstUnderDir = (
     const checks = yield* Effect.all(
       paths.map((relativePath) => {
         // Join to get absolute path for checking
-        const absolutePath = Fs.Path.join(dir, relativePath as Fs.Path.$Rel)
+        const absolutePath = Path.join(dir, relativePath as Path.$Rel)
         const pathStr = absolutePath.toString()
         return fs.exists(pathStr).pipe(
           // Return the absolute path if it exists (this is what we want!)
