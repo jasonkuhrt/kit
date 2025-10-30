@@ -1,5 +1,5 @@
 import { Schema as S } from 'effect'
-import type { Path } from '../$.js'
+import type { Path } from '../_.js'
 import type { normalize } from '../inputs.js'
 import { Schema } from '../Schema.js'
 

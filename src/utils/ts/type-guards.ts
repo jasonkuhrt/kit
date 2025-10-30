@@ -1,4 +1,4 @@
-import type { Simplify } from './$$.js'
+import type { Simplify } from './__.js'
 import type { StaticError } from './err.js'
 import type { Show, ShowInTemplate } from './ts.js'
 

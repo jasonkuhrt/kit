@@ -1,8 +1,8 @@
 import { Ts } from '#ts'
 import { test } from 'vitest'
-import { Pipeline } from '../$$.js'
 import type { initialInput } from '../_.test-helpers.js'
-import { PipelineDefinition } from '../PipelineDefinition/$.js'
+import { Pipeline } from '../__.js'
+import { PipelineDefinition } from '../PipelineDefinition/_.js'
 import type { Result } from '../Result.js'
 
 const def = PipelineDefinition.create().input<initialInput>()

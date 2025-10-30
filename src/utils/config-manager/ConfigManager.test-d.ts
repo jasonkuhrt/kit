@@ -1,5 +1,5 @@
 import { Ts } from '#ts'
-import type { ConfigManager } from './$.js'
+import type { ConfigManager } from './_.js'
 
 interface a1 {
   a: { b: number }

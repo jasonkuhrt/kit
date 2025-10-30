@@ -3,8 +3,8 @@
  * Represents an angle measured in degrees.
  */
 
-import type { Finite } from '../finite/$$.js'
-import { is as isFinite } from '../finite/$$.js'
+import type { Finite } from '../finite/__.js'
+import { is as isFinite } from '../finite/__.js'
 
 import type { Brand } from 'effect'
 

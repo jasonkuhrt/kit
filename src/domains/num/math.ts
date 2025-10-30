@@ -1,14 +1,14 @@
 import { CoreFn as Fn } from '#fn/core'
-import type { Degrees } from './degrees/$$.js'
-import type { Finite } from './finite/$$.js'
-import type { InRange } from './in-range/$$.js'
-import type { Int } from './int/$$.js'
-import type { Natural } from './natural/$$.js'
-import type { NonNegative } from './non-negative/$$.js'
-import type { NonZero } from './non-zero/$$.js'
-import type { Positive } from './positive/$$.js'
-import type { Radians } from './radians/$$.js'
-import type { Whole } from './whole/$$.js'
+import type { Degrees } from './degrees/__.js'
+import type { Finite } from './finite/__.js'
+import type { InRange } from './in-range/__.js'
+import type { Int } from './int/__.js'
+import type { Natural } from './natural/__.js'
+import type { NonNegative } from './non-negative/__.js'
+import type { NonZero } from './non-zero/__.js'
+import type { Positive } from './positive/__.js'
+import type { Radians } from './radians/__.js'
+import type { Whole } from './whole/__.js'
 
 /**
  * Add two numbers together.
@@ -198,7 +198,7 @@ export const divideWith = (divisor: NonZero) => (dividend: number): number => {
  * power(9, 0.5) // 3 (fractional powers give roots: square root of 9)
  *
  * // For type-safe operations with finite numbers:
- * import { finite } from './finite/$$.js'
+ * import { finite } from './finite/__.js'
  * power(finite(2), finite(3)) // Guarantees finite inputs
  */
 export const power = (base: number, exponent: number): number => {
@@ -302,7 +302,7 @@ export type Floor<_T extends number> = Int
  * @returns The largest integer less than or equal to the value
  *
  * @example
- * import { finite } from './finite/$$.js'
+ * import { finite } from './finite/__.js'
  *
  * floor(finite(4.9)) // 4
  * floor(finite(4.1)) // 4
@@ -337,7 +337,7 @@ export type Ceil<_T extends number> = Int
  * @returns The smallest integer greater than or equal to the value
  *
  * @example
- * import { finite } from './finite/$$.js'
+ * import { finite } from './finite/__.js'
  *
  * ceil(finite(4.1)) // 5
  * ceil(finite(4.9)) // 5
@@ -373,7 +373,7 @@ export type Trunc<_T extends number> = Int
  * @returns The integer part of the number
  *
  * @example
- * import { finite } from './finite/$$.js'
+ * import { finite } from './finite/__.js'
  *
  * trunc(finite(4.9)) // 4
  * trunc(finite(4.1)) // 4
@@ -411,8 +411,8 @@ export type Sqrt<T extends number> = T extends Positive ? Positive
  * @returns The square root of the value
  *
  * @example
- * import { from as nonNegative } from './non-negative/$$.js'
- * import { from as positive } from './positive/$$.js'
+ * import { from as nonNegative } from './non-negative/__.js'
+ * import { from as positive } from './positive/__.js'
  *
  * sqrt(nonNegative(9)) // 3 (because 3 × 3 = 9)
  * sqrt(nonNegative(16)) // 4 (because 4 × 4 = 16)
@@ -463,7 +463,7 @@ export const cbrt = (value: number): number => {
  * @returns The natural logarithm of the value
  *
  * @example
- * import { from as positive } from './positive/$$.js'
+ * import { from as positive } from './positive/__.js'
  *
  * log(positive(E)) // 1 (because e^1 = e)
  * log(positive(1)) // 0 (because e^0 = 1)
@@ -487,7 +487,7 @@ export const log = (value: Positive): number => {
  * @returns The base-10 logarithm of the value
  *
  * @example
- * import { from as positive } from './positive/$$.js'
+ * import { from as positive } from './positive/__.js'
  *
  * log10(positive(10)) // 1 (because 10^1 = 10)
  * log10(positive(100)) // 2 (because 10^2 = 100)
@@ -514,7 +514,7 @@ export const log10 = (value: Positive): number => {
  * @returns The base-2 logarithm of the value
  *
  * @example
- * import { from as positive } from './positive/$$.js'
+ * import { from as positive } from './positive/__.js'
  *
  * log2(positive(2)) // 1 (because 2^1 = 2)
  * log2(positive(4)) // 2 (because 2^2 = 4)
@@ -548,7 +548,7 @@ export type Sin<_T extends number> = InRange<-1, 1>
  * @returns The sine of the angle, always between -1 and 1
  *
  * @example
- * import { finite } from './finite/$$.js'
+ * import { finite } from './finite/__.js'
  *
  * sin(finite(0)) // 0
  * sin(finite(PI / 2)) // 1 (sine of 90 degrees)
@@ -583,7 +583,7 @@ export type Cos<_T extends number> = InRange<-1, 1>
  * @returns The cosine of the angle, always between -1 and 1
  *
  * @example
- * import { finite } from './finite/$$.js'
+ * import { finite } from './finite/__.js'
  *
  * cos(finite(0)) // 1
  * cos(finite(PI / 2)) // 0 (cosine of 90 degrees)
@@ -612,7 +612,7 @@ export const cos = <T extends Finite>(radians: T): Cos<T> => {
  * @returns The tangent of the angle
  *
  * @example
- * import { finite } from './finite/$$.js'
+ * import { finite } from './finite/__.js'
  *
  * tan(finite(0)) // 0
  * tan(finite(PI / 4)) // 1 (tangent of 45 degrees)
@@ -641,7 +641,7 @@ export const tan = (radians: Finite): number => {
  * @returns The angle in radians, between -PI/2 and PI/2
  *
  * @example
- * import { inRange } from './in-range/$$.js'
+ * import { inRange } from './in-range/__.js'
  *
  * asin(inRange(0, -1, 1)) // 0 (angle whose sine is 0)
  * asin(inRange(1, -1, 1)) // PI/2 (angle whose sine is 1, which is 90 degrees)
@@ -671,7 +671,7 @@ export const asin = (value: InRange<-1, 1>): Radians => {
  * @returns The angle in radians, between 0 and PI
  *
  * @example
- * import { inRange } from './in-range/$$.js'
+ * import { inRange } from './in-range/__.js'
  *
  * acos(inRange(1, -1, 1)) // 0 (angle whose cosine is 1, which is 0 degrees)
  * acos(inRange(0, -1, 1)) // PI/2 (angle whose cosine is 0, which is 90 degrees)
@@ -702,7 +702,7 @@ export const acos = (value: InRange<-1, 1>): Radians => {
  * @returns The angle in radians, between -PI/2 and PI/2
  *
  * @example
- * import { finite } from './finite/$$.js'
+ * import { finite } from './finite/__.js'
  *
  * atan(finite(0)) // 0 (angle whose tangent is 0)
  * atan(finite(1)) // PI/4 (angle whose tangent is 1, which is 45 degrees)
@@ -732,7 +732,7 @@ export const atan = (value: Finite): Radians => {
  * @returns The angle in radians, between -PI and PI
  *
  * @example
- * import { finite } from './finite/$$.js'
+ * import { finite } from './finite/__.js'
  *
  * atan2(finite(0), finite(1)) // 0 (point on positive x-axis)
  * atan2(finite(1), finite(0)) // PI/2 (point on positive y-axis)
@@ -772,7 +772,7 @@ export const atan2With = Fn.curry(atan2)
  * @returns The angle in radians
  *
  * @example
- * import { degrees } from './degrees/$$.js'
+ * import { degrees } from './degrees/__.js'
  *
  * degToRad(degrees(0)) // 0
  * degToRad(degrees(90)) // PI/2 (about 1.571)
@@ -802,7 +802,7 @@ export const degToRad = (degrees: Degrees): Radians => {
  * @returns The angle in degrees
  *
  * @example
- * import { radians } from './radians/$$.js'
+ * import { radians } from './radians/__.js'
  *
  * radToDeg(radians(0)) // 0
  * radToDeg(radians(PI / 2)) // 90
@@ -921,7 +921,7 @@ export const maxWith = Fn.curry(max)
  * @returns The greatest common divisor as a positive integer
  *
  * @example
- * import { from as int } from './int/$$.js'
+ * import { from as int } from './int/__.js'
  *
  * gcd(int(12), int(8)) // 4 (both 12 and 8 are divisible by 4)
  * gcd(int(15), int(25)) // 5 (both 15 and 25 are divisible by 5)
@@ -982,7 +982,7 @@ export const gcdWith = Fn.curry(gcd)
  * @returns The least common multiple as a non-negative integer
  *
  * @example
- * import { from as int } from './int/$$.js'
+ * import { from as int } from './int/__.js'
  *
  * lcm(int(4), int(6)) // 12 (smallest number divisible by both 4 and 6)
  * lcm(int(3), int(5)) // 15 (3 and 5 have no common factors)

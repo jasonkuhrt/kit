@@ -1,9 +1,9 @@
 import type { Path } from '#fs/fs'
 import { Match } from 'effect'
-import { AbsDir } from '../AbsDir/$.js'
-import { AbsFile } from '../AbsFile/$.js'
-import { RelDir } from '../RelDir/$.js'
-import { RelFile } from '../RelFile/$.js'
+import { AbsDir } from '../AbsDir/_.js'
+import { AbsFile } from '../AbsFile/_.js'
+import { RelDir } from '../RelDir/_.js'
+import { RelFile } from '../RelFile/_.js'
 import type { FileName } from '../types/fileName.js'
 
 /**

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Num } from './$.js'
+import { Num } from './_.js'
 
 describe('num predicates with branded types', () => {
   describe('isFinite', () => {

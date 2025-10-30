@@ -1,5 +1,5 @@
 import { Test } from '#test'
-import { Arr } from './$.js'
+import { Arr } from './_.js'
 
 Test.on(Arr.transpose<number>)
   .cases(

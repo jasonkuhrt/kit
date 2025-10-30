@@ -3,7 +3,7 @@
  * A safe integer is within Number.MIN_SAFE_INTEGER and Number.MAX_SAFE_INTEGER.
  */
 
-import type { Int } from '../int/$$.js'
+import type { Int } from '../int/__.js'
 
 import type { Brand } from 'effect'
 

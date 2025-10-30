@@ -1,5 +1,5 @@
 import { Test } from '#test'
-import { Str } from '../$.js'
+import { Str } from '../_.js'
 import type { BorderInput, Padding, PaddingInput } from './box.js'
 
 // Helper to create and encode a box with padding

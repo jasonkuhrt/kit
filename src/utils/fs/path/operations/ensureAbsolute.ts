@@ -1,9 +1,9 @@
 import type { Path } from '#fs/fs'
 import { Pro } from '#pro'
 import { Schema as S } from 'effect'
-import type { $Abs } from '../$Abs/$.js'
-import { $Abs as Abs } from '../$Abs/$.js'
-import type { AbsDir } from '../AbsDir/$.js'
+import type { $Abs } from '../$Abs/_.js'
+import { $Abs as Abs } from '../$Abs/_.js'
+import type { AbsDir } from '../AbsDir/_.js'
 import { join } from './join.js'
 
 /**

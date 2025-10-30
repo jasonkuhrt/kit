@@ -1,8 +1,8 @@
 import { Schema as S } from 'effect'
-import { AbsDir } from './AbsDir/$.js'
-import { AbsFile } from './AbsFile/$.js'
-import { RelDir } from './RelDir/$.js'
-import { RelFile } from './RelFile/$.js'
+import { AbsDir } from './AbsDir/_.js'
+import { AbsFile } from './AbsFile/_.js'
+import { RelDir } from './RelDir/_.js'
+import { RelFile } from './RelFile/_.js'
 
 // needed to avoid '...canot be naned...' errors
 import type { RefineSchemaId, TypeId } from 'effect/Schema'

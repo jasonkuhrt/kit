@@ -31,16 +31,16 @@ Every module follows a consistent pattern:
 
 ```
 src/module-name/
-├── $$.ts             # Barrel exports (all functions/types)
-├── $.ts              # Namespace export
-├── $.test.ts         # Module tests
+├── __.ts             # Barrel exports (all functions/types)
+├── _.ts              # Namespace export
+├── _.test.ts         # Module tests
 └── *.ts              # Implementation files
 ```
 
-The `$` and `$$` naming convention:
+The `_` and `__` naming convention:
 
-- `$$` (barrel file) - Exports all individual functions/types from the module
-- `$` (namespace file) - Creates and exports the namespace object
+- `__` (barrel file) - Exports all individual functions/types from the module
+- `_` (namespace file) - Creates and exports the namespace object
 
 ### Import System
 
@@ -184,22 +184,22 @@ pnpm test               # Run tests
 ### Adding a New Module
 
 1. **Create module directory**: `src/new-module/`
-2. **Create barrel file**: `src/new-module/$$.ts`
+2. **Create barrel file**: `src/new-module/__.ts`
    ```typescript
    export * from './implementation.js'
    export * from './types.js'
    // etc.
    ```
-3. **Create namespace file**: `src/new-module/$.ts`
+3. **Create namespace file**: `src/new-module/_.ts`
    ```typescript
-   export * as NewModule from './$$.js'
+   export * as NewModule from './__.js'
    ```
 4. **Add import mapping**: Update `package.json`
    ```json
    {
      "imports": {
-       "#new-module": "./src/new-module/$.ts",
-       "#new-module/new-module": "./src/new-module/$$.ts"
+       "#new-module": "./src/new-module/_.ts",
+       "#new-module/new-module": "./src/new-module/__.ts"
      }
    }
    ```
@@ -266,30 +266,30 @@ Tests are separated into two independent categories:
 ### Writing Tests
 
 - Do colocate tests to modules.
-- For modules that have simple interfaces prefer putting all tests into `$.test.ts` and then access the interface(s) under test via the module namespace. For example this layout:
+- For modules that have simple interfaces prefer putting all tests into `_.test.ts` and then access the interface(s) under test via the module namespace. For example this layout:
 
   ```
-  src/foo/{$.ts, $.test.ts, $$.ts, implementation.ts}
+  src/foo/{_.ts, _.test.ts, __.ts, implementation.ts}
   ```
 
   With this content:
 
   ```ts
-  // $.ts
-  export * as Foo from './$$.js'
+  // _.ts
+  export * as Foo from './__.js'
   ```
 
   ```ts
-  // $.test.ts
-  import { Foo } from './$.js'
+  // _.test.ts
+  import { Foo } from './_.js'
 
   test('...', () => { Foo... })
   ```
 
-- For modules with complex parts you may create a test file for each such part, while still keeping the rest of the simpler tests, if any, in `$.test.ts`. Example:
+- For modules with complex parts you may create a test file for each such part, while still keeping the rest of the simpler tests, if any, in `_.test.ts`. Example:
 
   ```
-  src/bar/{$.ts, $.test.ts, $$.ts, bar.ts, thing-complex.ts, thing-complex.test.ts}
+  src/bar/{_.ts, _.test.ts, __.ts, bar.ts, thing-complex.ts, thing-complex.test.ts}
   ```
 
 - Prefer using Vitest `test.for` feature to cover many cases in a succinct way. Use Kit's own `Test` module to support writing such tests.

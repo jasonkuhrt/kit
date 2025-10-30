@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, test } from 'vitest'
-import { Str } from '../$.js'
+import { Str } from '../_.js'
 
 describe('Str.Eq implementation', () => {
   test('equal strings', () => {

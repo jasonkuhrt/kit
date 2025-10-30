@@ -3,7 +3,7 @@ import { Ts } from '#ts'
 import { describe, test } from 'vitest'
 import type { initialInput } from '../_.test-helpers.js'
 import { results, slots, stepA, stepB } from '../_.test-helpers.js'
-import { PipelineDefinition } from './$.js'
+import { PipelineDefinition } from './_.js'
 import type { Config } from './Config.js'
 
 const b0 = PipelineDefinition.create().input<initialInput>()

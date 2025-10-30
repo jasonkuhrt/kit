@@ -9,7 +9,7 @@ import {
 } from './definition.js'
 import { getInternal } from './definition.js'
 import type { Domain } from './domain.js'
-import { Registry } from './registry/$.js'
+import { Registry } from './registry/_.js'
 
 // Internal default registry for when none is provided
 const defaultRegistry = Registry.create()

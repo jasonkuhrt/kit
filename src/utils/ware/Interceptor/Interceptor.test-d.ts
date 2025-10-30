@@ -1,10 +1,10 @@
 import { Ts } from '#ts'
 import type { Undefined } from '#undefined'
 import { describe, test } from 'vitest'
-import type { Interceptor } from '../$$.js'
-import { Pipeline, PipelineDefinition } from '../$$.js'
 import type { initialInput } from '../_.test-helpers.js'
 import { results, slots } from '../_.test-helpers.js'
+import type { Interceptor } from '../__.js'
+import { Pipeline, PipelineDefinition } from '../__.js'
 import type { StepTriggerEnvelope } from '../StepTriggerEnvelope.js'
 
 const b0 = PipelineDefinition.create().input<initialInput>()

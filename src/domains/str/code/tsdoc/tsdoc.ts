@@ -8,7 +8,7 @@
  */
 
 import { lines as splitIntoLines, unlines as joinLines } from '../../text.js'
-import * as Md from '../md/$.js'
+import * as Md from '../md/_.js'
 
 // ============================================================================
 // Core Formatting

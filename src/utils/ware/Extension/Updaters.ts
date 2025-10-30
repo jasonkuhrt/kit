@@ -1,6 +1,6 @@
 import type { ConfigManager } from '#config-manager'
-import type { Overload } from '../Overload/$.js'
-import type { Extension } from './$.js'
+import type { Overload } from '../Overload/_.js'
+import type { Extension } from './_.js'
 
 export namespace Updaters {
   export type AddOverload<

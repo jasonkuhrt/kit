@@ -1,6 +1,6 @@
 import { Ts } from '#ts'
 import { describe, expect, test } from 'vitest'
-import { ConfigManager } from './$.js'
+import { ConfigManager } from './_.js'
 
 const A = Ts.Assert.exact.ofAs
 

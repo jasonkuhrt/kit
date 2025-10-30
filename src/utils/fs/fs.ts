@@ -1,6 +1,6 @@
 import { FileSystem } from '@effect/platform'
 import { Effect, Option } from 'effect'
-import { Path } from './path/$.js'
+import { Path } from './path/_.js'
 
 /**
  * Type helper to infer return type based on input relative paths.

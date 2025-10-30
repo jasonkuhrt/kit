@@ -1,10 +1,10 @@
 import { Match } from 'effect'
-import type { $Dir } from '../$Dir/$.js'
-import type { $Rel } from '../$Rel/$.js'
-import { AbsDir } from '../AbsDir/$.js'
-import { AbsFile } from '../AbsFile/$.js'
-import { RelDir } from '../RelDir/$.js'
-import { RelFile } from '../RelFile/$.js'
+import type { $Dir } from '../$Dir/_.js'
+import type { $Rel } from '../$Rel/_.js'
+import { AbsDir } from '../AbsDir/_.js'
+import { AbsFile } from '../AbsFile/_.js'
+import { RelDir } from '../RelDir/_.js'
+import { RelFile } from '../RelFile/_.js'
 import { resolveSegments } from './_internal.js'
 
 /**

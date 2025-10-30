@@ -1,7 +1,7 @@
 import { Fs } from '#fs'
 import { Test } from '#test'
 import { describe, expect, it } from 'vitest'
-import type { Path } from '../$.js'
+import type { Path } from '../_.js'
 
 const l = Fs.Path.fromString
 

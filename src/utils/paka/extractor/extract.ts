@@ -3,7 +3,7 @@ import { Fs } from '#fs'
 import { Pat } from '#pat'
 import { Str } from '#str'
 import { Schema as S } from 'effect'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { Project } from 'ts-morph'
 import {
@@ -21,7 +21,7 @@ import {
 } from '../schema.js'
 import { parseJSDoc } from './nodes/jsdoc.js'
 import { extractModuleFromFile } from './nodes/module.js'
-import { buildToSourcePath } from './path-utils.js'
+import { createBuildToSourcePath } from './path-utils.js'
 
 /**
  * Pure extraction function that processes files without I/O.
@@ -33,7 +33,7 @@ import { buildToSourcePath } from './path-utils.js'
  * @example
  * ```ts
  * const layout = Dir.spec('/')
- *   .add('package.json', { name: 'x', exports: { './foo': './build/foo/$.js' } })
+ *   .add('package.json', { name: 'x', exports: { './foo': './build/foo/_.js' } })
  *   .add('src/foo/$.ts', 'export const bar = () => {}')
  *   .toLayout()
  *
@@ -84,6 +84,35 @@ export const extractFromFiles = (params: {
       const contentStr = typeof content === 'string' ? content : new TextDecoder().decode(content)
       project.createSourceFile(filePath, contentStr)
     }
+  }
+
+  // Check if files layout includes a tsconfig and extract outDir/rootDir
+  const tsconfigBuildPath = join(projectRoot, 'tsconfig.build.json')
+  const tsconfigPath = join(projectRoot, 'tsconfig.json')
+
+  let buildToSourcePath: (path: string) => string
+
+  if (files[tsconfigBuildPath] || files[tsconfigPath]) {
+    // Parse tsconfig from files (simple JSON parse - no extends resolution needed for tests)
+    const tsconfigContent = files[tsconfigBuildPath] || files[tsconfigPath]
+    const tsconfig = JSON.parse(
+      typeof tsconfigContent === 'string' ? tsconfigContent : new TextDecoder().decode(tsconfigContent),
+    )
+
+    const { outDir, rootDir } = tsconfig.compilerOptions || {}
+
+    buildToSourcePath = createBuildToSourcePath(
+      outDir && rootDir
+        ? {
+          outDir: join(projectRoot, outDir),
+          rootDir: join(projectRoot, rootDir),
+          projectRoot,
+        }
+        : undefined,
+    )
+  } else {
+    // No tsconfig - just extension transformation
+    buildToSourcePath = createBuildToSourcePath()
   }
 
   // Determine which entrypoints to extract
@@ -173,10 +202,10 @@ export const extractFromFiles = (params: {
       // For subpath entrypoints, detect drillable namespace pattern in two ways:
       //
       // Pattern A: Entrypoint file itself has namespace export pointing to barrel
-      // Example: './test' → 'test/$.ts' with 'export * as Test from './$$.js''
+      // Example: './test' → 'test/$.ts' with 'export * as Test from './__.js''
       //
       // Pattern B: Another file in same directory has namespace export pointing to entrypoint
-      // Example: './arr' → 'arr/$$.ts', and 'arr/$.ts' has 'export * as Arr from './$$.js''
+      // Example: './arr' → 'arr/$$.ts', and 'arr/$.ts' has 'export * as Arr from './__.js''
 
       const sourceFileDir = sourceFile.getDirectory()
       const expectedNsName = Str.Case.pascal(packagePath.replace(/^\.\//, ''))
@@ -337,7 +366,7 @@ export type ExtractConfig = {
 export const extract = (config: ExtractConfig): InterfaceModel => {
   const {
     projectRoot,
-    tsconfigPath = join(projectRoot, 'tsconfig.json'),
+    tsconfigPath,
     entrypoints: targetEntrypoints,
     extractorVersion = '0.1.0',
     matching,
@@ -348,10 +377,43 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
   const packageJsonPath = join(projectRoot, 'package.json')
   const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
 
+  // Detect tsconfig with preference for build config
+  const resolvedTsconfigPath = tsconfigPath ?? (() => {
+    const buildConfigPath = join(projectRoot, 'tsconfig.build.json')
+    const regularConfigPath = join(projectRoot, 'tsconfig.json')
+
+    // Prefer tsconfig.build.json (contains outDir/rootDir for builds)
+    if (existsSync(buildConfigPath)) {
+      return buildConfigPath
+    }
+
+    // Fallback to tsconfig.json
+    if (existsSync(regularConfigPath)) {
+      return regularConfigPath
+    }
+
+    // Let ts-morph throw its native error for missing config
+    return regularConfigPath
+  })()
+
   // Create TypeScript project
   const project = new Project({
-    tsConfigFilePath: tsconfigPath,
+    tsConfigFilePath: resolvedTsconfigPath,
   })
+
+  // Get compiler options (may have outDir/rootDir or not)
+  const compilerOptions = project.getCompilerOptions()
+
+  // Create transformer (conditional on tsconfig having outDir/rootDir)
+  const buildToSourcePath = createBuildToSourcePath(
+    compilerOptions.outDir && compilerOptions.rootDir
+      ? {
+        outDir: compilerOptions.outDir,
+        rootDir: compilerOptions.rootDir,
+        projectRoot,
+      }
+      : undefined, // No transformation, just extension change
+  )
 
   // Determine which entrypoints to extract
   const exportsField = packageJson.exports as Record<string, string> | undefined
@@ -453,10 +515,10 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
       // For subpath entrypoints, detect drillable namespace pattern in two ways:
       //
       // Pattern A: Entrypoint file itself has namespace export pointing to barrel
-      // Example: './test' → 'test/$.ts' with 'export * as Test from './$$.js''
+      // Example: './test' → 'test/$.ts' with 'export * as Test from './__.js''
       //
       // Pattern B: Another file in same directory has namespace export pointing to entrypoint
-      // Example: './arr' → 'arr/$$.ts', and 'arr/$.ts' has 'export * as Arr from './$$.js''
+      // Example: './arr' → 'arr/$$.ts', and 'arr/$.ts' has 'export * as Arr from './__.js''
 
       const sourceFileDir = sourceFile.getDirectory()
       const expectedNsName = Str.Case.pascal(packagePath.replace(/^\.\//, ''))

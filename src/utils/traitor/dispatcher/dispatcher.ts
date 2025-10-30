@@ -3,7 +3,7 @@ import { Prox } from '#prox'
 import type { MethodConfig } from '../definition.js'
 import { defaultDomainCheck, traitMethodConfigs } from '../definition.js'
 import { detectDomain } from '../domain.js'
-import type { Registry } from '../registry/$.js'
+import type { Registry } from '../registry/_.js'
 import type { MethodName, TraitName } from '../types.js'
 
 export const createTraitProxy = <$Interface>(

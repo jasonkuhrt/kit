@@ -4,9 +4,9 @@
  */
 
 import { CoreFn as Fn } from '#fn/core'
-import type { Int } from '../int/$$.js'
+import type { Int } from '../int/__.js'
 import { gcd } from '../math.js'
-import type { NonZero } from '../non-zero/$$.js'
+import type { NonZero } from '../non-zero/__.js'
 
 import type { Brand } from 'effect'
 

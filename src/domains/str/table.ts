@@ -1,4 +1,4 @@
-import { Char } from './char/$.js'
+import { Char } from './char/_.js'
 import { repeatOn } from './replace.js'
 
 /**

@@ -5,27 +5,63 @@
  * These utilities handle the conversions between these different path formats.
  */
 
+import { relative } from 'node:path'
+
 /**
- * Convert a build path to its corresponding source path.
+ * Create a build path to source path transformer.
  *
- * Transformation rules:
- * 1. Replace build directory prefix with source directory prefix
- * 2. Replace barrel file extension ($$.js -> $$.ts)
- * 3. Replace regular JS extension with TS extension
+ * Behavior depends on whether TypeScript configuration is provided:
+ * - **With tsconfig** (outDir/rootDir defined): Transforms directory AND extension
+ * - **Without tsconfig**: Only transforms extension (.js → .ts)
+ *
+ * This allows tests to point package.json directly to source files (no directory
+ * transformation needed), while real builds can use tsconfig to map build artifacts
+ * to their source locations.
+ *
+ * @param config - Optional compiler options from tsconfig
+ * @returns Transformer function that converts build paths to source paths
  *
  * @example
- * buildToSourcePath('./build/utils/test/$.js')
- * // => './src/utils/test/$.ts'
+ * // With tsconfig (outDir/rootDir defined) - full transformation
+ * const transformer = createBuildToSourcePath({
+ *   outDir: '/project/build',
+ *   rootDir: '/project/src',
+ *   projectRoot: '/project'
+ * })
+ * transformer('./build/arr/__.js')
+ * // => './src/arr/__.ts'
  *
  * @example
- * buildToSourcePath('./build/arr/$$.js')
- * // => './src/arr/$$.ts'
+ * // Without tsconfig - only extension transformation
+ * const transformer = createBuildToSourcePath()
+ * transformer('./src/arr/__.js')
+ * // => './src/arr/__.ts'
  */
-export const buildToSourcePath = (buildPath: string): string => {
-  return buildPath
-    .replace(/^\.\/build\//, './src/')
-    .replace(/\$\$\.js$/, '$$$$.ts') // $$$$ = two literal $ chars in replacement
-    .replace(/\.js$/, '.ts')
+export const createBuildToSourcePath = (config?: {
+  /** Absolute path to build output directory from tsconfig */
+  outDir: string
+  /** Absolute path to source root directory from tsconfig */
+  rootDir: string
+  /** Project root directory (for making paths relative) */
+  projectRoot: string
+}) => {
+  // If config provided, do directory transformation
+  if (config?.outDir && config?.rootDir) {
+    // Convert absolute paths to relative (with ./ prefix)
+    const buildDirRel = './' + relative(config.projectRoot, config.outDir)
+    const sourceDirRel = './' + relative(config.projectRoot, config.rootDir)
+
+    return (buildPath: string): string => {
+      return buildPath
+        .replace(buildDirRel, sourceDirRel)
+        .replace(/\.js$/, '.ts')
+    }
+  }
+
+  // No config - only transform extension
+  return (buildPath: string): string => {
+    return buildPath.replace(/\.js$/, '.ts')
+  }
 }
 
 /**

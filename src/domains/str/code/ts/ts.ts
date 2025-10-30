@@ -9,7 +9,7 @@
  * @module
  */
 
-import * as TSDoc from '../tsdoc/$.js'
+import * as TSDoc from '../tsdoc/_.js'
 import * as Reserved from './reserved.js'
 import type { DirectiveField, TermObject, TermObjectLike } from './term-object.js'
 import * as TermObjectModule from './term-object.js'

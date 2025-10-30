@@ -1,5 +1,5 @@
 import { CoreFn as Fn } from '#fn/core'
-import { Char } from './char/$.js'
+import { Char } from './char/_.js'
 import { prependWith, repeat } from './replace.js'
 import { joinWith, splitWith } from './split.js'
 

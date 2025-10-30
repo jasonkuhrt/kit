@@ -1,7 +1,7 @@
 import { Fn } from '#fn'
 import { removeSurroundingSpaceRegular } from './replace.js'
 import { unlines } from './text.js'
-import { Tpl } from './tpl/$.js'
+import { Tpl } from './tpl/_.js'
 
 /**
  * Default render function for string builders.

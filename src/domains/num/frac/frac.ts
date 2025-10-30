@@ -4,11 +4,11 @@
  */
 
 import { CoreFn as Fn } from '#fn/core'
-import type { Int } from '../int/$$.js'
-import type { Natural } from '../natural/$$.js'
-import type { NonZero } from '../non-zero/$$.js'
-import type { Ratio } from '../ratio/$$.js'
-import * as Ratio_ from '../ratio/$$.js'
+import type { Int } from '../int/__.js'
+import type { Natural } from '../natural/__.js'
+import type { NonZero } from '../non-zero/__.js'
+import type { Ratio } from '../ratio/__.js'
+import * as Ratio_ from '../ratio/__.js'
 
 import type { Brand } from 'effect'
 
