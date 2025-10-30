@@ -1,6 +1,6 @@
 import type { Tup } from '#tup'
 import type { Result } from '../Result.js'
-import type { PipelineDefinition } from './$.js'
+import type { PipelineDefinition } from './_.js'
 
 export namespace Utilities {
   // dprint-ignore

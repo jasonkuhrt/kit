@@ -1,6 +1,6 @@
 import type { Path } from '#fs/fs'
 import { Match } from 'effect'
-import type { $File } from '../$File/$.js'
+import type { $File } from '../$File/_.js'
 import type { Guard, Input } from '../inputs.js'
 import { normalizeDynamic } from '../inputs.js'
 import { Schema } from '../Schema.js'

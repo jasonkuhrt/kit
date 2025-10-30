@@ -1,5 +1,5 @@
-import { AbsDir } from './AbsDir/$.js'
-import { RelDir } from './RelDir/$.js'
+import { AbsDir } from './AbsDir/_.js'
+import { RelDir } from './RelDir/_.js'
 
 export const stringSeparator = '/'
 

@@ -47,8 +47,8 @@ The pattern requires a specific file organization:
 
 ```
 src/utils/err/
-├── $.ts           # Public API (points to $$.ts)
-├── $$.ts          # Re-exports from implementation
+├── _.ts           # Public API (points to __.ts)
+├── __.ts          # Re-exports from implementation
 └── err.ts         # Implementation
 ```
 
@@ -67,14 +67,14 @@ export const toString = (error: Error): string => {
 }
 ```
 
-**2. Internal barrel (`$$.ts`):**
+**2. Internal barrel (`__.ts`):**
 
 ```typescript
 // Re-exports everything from implementation
 export * from './err.js'
 ```
 
-**3. Public API (`$.ts`):**
+**3. Public API (`_.ts`):**
 
 ```typescript
 /**
@@ -82,10 +82,10 @@ export * from './err.js'
  *
  * Provides functions for working with JavaScript errors.
  */
-export * as Err from './$$.js'
+export * as Err from './__.js'
 ```
 
-The key is the **`export * as Err from './$$.js'`** pattern in the public API file. This creates the drillable namespace.
+The key is the **`export * as Err from './__.js'`** pattern in the public API file. This creates the drillable namespace.
 
 ### Package Configuration
 
@@ -95,7 +95,7 @@ Your `package.json` must expose both entry points:
 {
   "exports": {
     ".": "./build/index.js", // Main package entry
-    "./err": "./build/utils/err/$.js" // Subpath entry
+    "./err": "./build/utils/err/_.js" // Subpath entry
   }
 }
 ```
@@ -104,8 +104,8 @@ Your `package.json` must expose both entry points:
 
 The documentation generator automatically detects the Drillable Namespace Pattern by looking for:
 
-1. An entrypoint file with `export * as Name from './$'` or similar pattern
-2. The pattern references an implementation file (often `$$.ts`)
+1. An entrypoint file with `export * as Name from './_'` or similar pattern
+2. The pattern references an implementation file (often `__.ts`)
 3. The package exports both the main entry and the subpath
 
 When detected, the API documentation will show both import forms:

@@ -5,7 +5,7 @@ import type { Tup } from '#tup'
 import type { Writable } from 'type-fest'
 // for resolving '... cannot be named ...' error
 export type { Writable } from 'type-fest'
-import type { PipelineDefinition } from '../PipelineDefinition/$.js'
+import type { PipelineDefinition } from '../PipelineDefinition/_.js'
 import type { StepDefinition } from '../StepDefinition.js'
 import type { Data, DataEmpty } from './Data.js'
 

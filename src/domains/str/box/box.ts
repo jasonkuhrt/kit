@@ -1,9 +1,9 @@
 import { ParseResult, Schema as S } from 'effect'
-import { Char } from '../char/$.js'
+import { Char } from '../char/_.js'
 import { indentBy, lines, unlines } from '../text.js'
 import { applyStyle, extractChar, extractStyle } from './ansi.js'
-import { AxisHand } from './axishand/$.js'
-import { Clockhand } from './clockhand/$.js'
+import { AxisHand } from './axishand/_.js'
+import { Clockhand } from './clockhand/_.js'
 import type { CharStyle, Style, StyledText } from './style.js'
 
 /**

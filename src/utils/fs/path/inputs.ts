@@ -1,15 +1,15 @@
 import type { Path } from '#fs/fs'
 import type { Ts } from '#ts'
 import { Schema as S } from 'effect'
-import type { Analyzer } from '../path-analyzer/codec-string/$.js'
+import type { Analyzer } from '../path-analyzer/codec-string/_.js'
 import type { $Abs } from './$Abs/$.ts'
 import type { $Dir } from './$Dir/$.ts'
 import type { $File } from './$File/$.ts'
 import type { $Rel } from './$Rel/$.ts'
-import { AbsDir } from './AbsDir/$.js'
-import { AbsFile } from './AbsFile/$.js'
-import { RelDir } from './RelDir/$.js'
-import { RelFile } from './RelFile/$.js'
+import { AbsDir } from './AbsDir/_.js'
+import { AbsFile } from './AbsFile/_.js'
+import { RelDir } from './RelDir/_.js'
+import { RelFile } from './RelFile/_.js'
 
 /**
  * Input type for Path APIs that accepts either a Path type or a string.
@@ -39,22 +39,22 @@ export namespace Input {
   /**
    * Input that accepts a relative file path.
    */
-  export type RelFile = Input<import('./RelFile/$.js').RelFile>
+  export type RelFile = Input<import('./RelFile/_.js').RelFile>
 
   /**
    * Input that accepts a relative directory path.
    */
-  export type RelDir = Input<import('./RelDir/$.js').RelDir>
+  export type RelDir = Input<import('./RelDir/_.js').RelDir>
 
   /**
    * Input that accepts an absolute file path.
    */
-  export type AbsFile = Input<import('./AbsFile/$.js').AbsFile>
+  export type AbsFile = Input<import('./AbsFile/_.js').AbsFile>
 
   /**
    * Input that accepts an absolute directory path.
    */
-  export type AbsDir = Input<import('./AbsDir/$.js').AbsDir>
+  export type AbsDir = Input<import('./AbsDir/_.js').AbsDir>
 
   /**
    * Input that accepts any file path (absolute or relative).
@@ -150,25 +150,25 @@ export namespace Guard {
    * Validates that input is a relative file path.
    * Relative files must not start with `/` and must have an extension.
    */
-  export type RelFile<$input extends Input> = Guard<$input, import('./RelFile/$.js').RelFile>
+  export type RelFile<$input extends Input> = Guard<$input, import('./RelFile/_.js').RelFile>
 
   /**
    * Validates that input is a relative directory path.
    * Relative directories must not start with `/` and should end with `/` or have no extension.
    */
-  export type RelDir<$input extends Input> = Guard<$input, import('./RelDir/$.js').RelDir>
+  export type RelDir<$input extends Input> = Guard<$input, import('./RelDir/_.js').RelDir>
 
   /**
    * Validates that input is an absolute file path.
    * Absolute files must start with `/` and have an extension.
    */
-  export type AbsFile<$input extends Input> = Guard<$input, import('./AbsFile/$.js').AbsFile>
+  export type AbsFile<$input extends Input> = Guard<$input, import('./AbsFile/_.js').AbsFile>
 
   /**
    * Validates that input is an absolute directory path.
    * Absolute directories must start with `/` and should end with `/` or have no extension.
    */
-  export type AbsDir<$input extends Input> = Guard<$input, import('./AbsDir/$.js').AbsDir>
+  export type AbsDir<$input extends Input> = Guard<$input, import('./AbsDir/_.js').AbsDir>
 
   /**
    * Validates that input is a file path (either absolute or relative).

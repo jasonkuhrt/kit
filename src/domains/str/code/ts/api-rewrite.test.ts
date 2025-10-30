@@ -6,7 +6,7 @@
  */
 
 import { describe, expect, test } from 'vitest'
-import * as TS from './$.js'
+import * as TS from './_.js'
 
 describe('Basic Literals', () => {
   test('string literal', () => {

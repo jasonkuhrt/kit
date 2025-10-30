@@ -3,8 +3,8 @@
  * An even integer is divisible by 2.
  */
 
-import type { Int } from '../int/$$.js'
-import { Int as IntNs } from '../int/$.js'
+import { Int as IntNs } from '../int/_.js'
+import type { Int } from '../int/__.js'
 
 import type { Brand } from 'effect'
 

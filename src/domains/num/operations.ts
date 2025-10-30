@@ -2,12 +2,12 @@
  * Core numeric operations that work with branded types.
  */
 
-import type { Negative } from './negative/$$.js'
-import type { NonNegative } from './non-negative/$$.js'
-import type { NonPositive } from './non-positive/$$.js'
-import type { NonZero } from './non-zero/$$.js'
-import type { Positive } from './positive/$$.js'
-import type { Zero } from './zero/$$.js'
+import type { Negative } from './negative/__.js'
+import type { NonNegative } from './non-negative/__.js'
+import type { NonPositive } from './non-positive/__.js'
+import type { NonZero } from './non-zero/__.js'
+import type { Positive } from './positive/__.js'
+import type { Zero } from './zero/__.js'
 
 /**
  * Type predicate to check if value is a number.
@@ -109,7 +109,7 @@ export type Mod<_T extends number, _U extends NonZero> = NonNegative
  * @returns The positive remainder
  *
  * @example
- * import { nonZero } from './non-zero/$$.js'
+ * import { nonZero } from './non-zero/__.js'
  *
  * mod(7, nonZero(3)) // 1
  * mod(-7, nonZero(3)) // 2 (not -1)
@@ -132,7 +132,7 @@ export const mod = <T extends number, U extends NonZero>(dividend: T, divisor: U
  * @returns A function that takes a divisor and returns the modulo
  *
  * @example
- * import { nonZero } from './non-zero/$$.js'
+ * import { nonZero } from './non-zero/__.js'
  *
  * const mod7 = modOn(7)
  * mod7(nonZero(3)) // 1
@@ -150,7 +150,7 @@ export const modOn = <T extends number>(dividend: T) => <U extends NonZero>(divi
  * @returns A function that takes a dividend and returns the modulo
  *
  * @example
- * import { nonZero } from './non-zero/$$.js'
+ * import { nonZero } from './non-zero/__.js'
  *
  * const mod24 = modWith(nonZero(24)) // For 24-hour time
  * mod24(25) // 1 (25 hours = 1 AM next day)

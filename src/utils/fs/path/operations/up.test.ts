@@ -1,6 +1,6 @@
 import { Fs } from '#fs'
 import { Test } from '#test'
-import type { Path } from '../$.js'
+import type { Path } from '../_.js'
 import '../$.test-matchers.js'
 import { describe, expect } from 'vitest'
 

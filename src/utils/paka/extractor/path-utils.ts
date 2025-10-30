@@ -14,11 +14,11 @@
  * 3. Replace regular JS extension with TS extension
  *
  * @example
- * buildToSourcePath('./build/utils/test/$.js')
+ * buildToSourcePath('./build/utils/test/_.js')
  * // => './src/utils/test/$.ts'
  *
  * @example
- * buildToSourcePath('./build/arr/$$.js')
+ * buildToSourcePath('./build/arr/__.js')
  * // => './src/arr/$$.ts'
  */
 export const buildToSourcePath = (buildPath: string): string => {

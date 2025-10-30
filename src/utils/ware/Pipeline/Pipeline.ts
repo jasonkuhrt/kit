@@ -6,8 +6,8 @@ import type { Undefined } from '#undefined'
 type IntersectionIgnoreNeverOrAny<$T> = Ts.Inhabitance.IsAny<$T> extends true ? unknown
   : $T extends never ? unknown
   : $T
-import type { PipelineDefinition } from '../$$.js'
-import type { Overload } from '../Overload/$.js'
+import type { PipelineDefinition } from '../__.js'
+import type { Overload } from '../Overload/_.js'
 import type { Config } from '../PipelineDefinition/Config.js'
 import type { Step } from '../Step.js'
 import type { StepDefinition } from '../StepDefinition.js'

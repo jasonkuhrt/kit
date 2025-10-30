@@ -1,6 +1,6 @@
 import { Test } from '#test'
 import { expect, test } from 'vitest'
-import { Str } from './$.js'
+import { Str } from './_.js'
 
 // dprint-ignore
 Test.on(Str.Visual.width)

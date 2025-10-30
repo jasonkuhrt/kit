@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { Registry } from '../registry/$.js'
+import { Registry } from '../registry/_.js'
 import { createTraitProxy } from './dispatcher.js'
 
 describe('createTraitProxy with Prox domain', () => {

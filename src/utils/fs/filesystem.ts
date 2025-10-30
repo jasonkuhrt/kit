@@ -11,7 +11,7 @@ import type { Json } from '#json'
 import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
 import { Effect, Schema as S, Scope, Sink, Stream } from 'effect'
-import { Path } from './path/$.js'
+import { Path } from './path/_.js'
 
 /**
  * Type utility to infer content type from file path.

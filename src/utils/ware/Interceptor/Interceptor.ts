@@ -1,6 +1,6 @@
 import type { Prom } from '#prom'
 import type { Ts } from '#ts'
-import type { Pipeline } from '../$$.js'
+import type { Pipeline } from '../__.js'
 import type { ResultSuccess } from '../Result.js'
 import type { Step } from '../Step.js'
 import type { StepTrigger } from '../StepTrigger.js'

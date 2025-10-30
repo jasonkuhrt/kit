@@ -1,5 +1,5 @@
 import { Ts } from '#ts'
-import { Mask } from './$.js'
+import { Mask } from './_.js'
 
 const A = Ts.Assert.exact.ofAs
 

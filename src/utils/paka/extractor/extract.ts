@@ -33,7 +33,7 @@ import { buildToSourcePath } from './path-utils.js'
  * @example
  * ```ts
  * const layout = Dir.spec('/')
- *   .add('package.json', { name: 'x', exports: { './foo': './build/foo/$.js' } })
+ *   .add('package.json', { name: 'x', exports: { './foo': './build/foo/_.js' } })
  *   .add('src/foo/$.ts', 'export const bar = () => {}')
  *   .toLayout()
  *
@@ -173,10 +173,10 @@ export const extractFromFiles = (params: {
       // For subpath entrypoints, detect drillable namespace pattern in two ways:
       //
       // Pattern A: Entrypoint file itself has namespace export pointing to barrel
-      // Example: './test' → 'test/$.ts' with 'export * as Test from './$$.js''
+      // Example: './test' → 'test/$.ts' with 'export * as Test from './__.js''
       //
       // Pattern B: Another file in same directory has namespace export pointing to entrypoint
-      // Example: './arr' → 'arr/$$.ts', and 'arr/$.ts' has 'export * as Arr from './$$.js''
+      // Example: './arr' → 'arr/$$.ts', and 'arr/$.ts' has 'export * as Arr from './__.js''
 
       const sourceFileDir = sourceFile.getDirectory()
       const expectedNsName = Str.Case.pascal(packagePath.replace(/^\.\//, ''))
@@ -453,10 +453,10 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
       // For subpath entrypoints, detect drillable namespace pattern in two ways:
       //
       // Pattern A: Entrypoint file itself has namespace export pointing to barrel
-      // Example: './test' → 'test/$.ts' with 'export * as Test from './$$.js''
+      // Example: './test' → 'test/$.ts' with 'export * as Test from './__.js''
       //
       // Pattern B: Another file in same directory has namespace export pointing to entrypoint
-      // Example: './arr' → 'arr/$$.ts', and 'arr/$.ts' has 'export * as Arr from './$$.js''
+      // Example: './arr' → 'arr/$$.ts', and 'arr/$.ts' has 'export * as Arr from './__.js''
 
       const sourceFileDir = sourceFile.getDirectory()
       const expectedNsName = Str.Case.pascal(packagePath.replace(/^\.\//, ''))

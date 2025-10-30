@@ -1,5 +1,5 @@
 import { Test } from '#test'
-import { Clockhand } from './$.js'
+import { Clockhand } from './_.js'
 
 // dprint-ignore
 Test.on(Clockhand.parse<number>)

@@ -1,6 +1,6 @@
 import * as fc from 'fast-check'
 import { describe, expect, test } from 'vitest'
-import { Num } from './$.js'
+import { Num } from './_.js'
 
 describe('range generation', () => {
   describe('range', () => {

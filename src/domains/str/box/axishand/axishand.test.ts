@@ -1,5 +1,5 @@
 import { Test } from '#test'
-import { AxisHand } from './$.js'
+import { AxisHand } from './_.js'
 
 // dprint-ignore
 Test.on(AxisHand.parse)

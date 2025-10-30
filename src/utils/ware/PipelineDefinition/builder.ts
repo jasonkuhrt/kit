@@ -1,11 +1,11 @@
 import type { ConfigManager } from '#config-manager'
 import type { Tup } from '#tup'
-import type { Extension } from '../Extension/$.js'
-import { Overload } from '../Overload/$.js'
+import type { Extension } from '../Extension/_.js'
+import { Overload } from '../Overload/_.js'
 import { Pipeline } from '../Pipeline/Pipeline.js'
 import type { StepDefinition } from '../StepDefinition.js'
 import type { StepRunner } from '../StepRunner.js'
-import type { PipelineDefinition } from './$.js'
+import type { PipelineDefinition } from './_.js'
 import { type Options, resolveOptions } from './Config.js'
 
 /**

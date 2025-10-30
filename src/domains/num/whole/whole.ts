@@ -4,10 +4,10 @@
  * These include zero and all the natural numbers.
  */
 
-import type { Int } from '../int/$$.js'
-import { is as isInt } from '../int/$$.js'
-import type { NonNegative } from '../non-negative/$$.js'
-import { is as isNonNegative } from '../non-negative/$$.js'
+import type { Int } from '../int/__.js'
+import { is as isInt } from '../int/__.js'
+import type { NonNegative } from '../non-negative/__.js'
+import { is as isNonNegative } from '../non-negative/__.js'
 
 import type { Brand } from 'effect'
 

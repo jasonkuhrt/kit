@@ -3,7 +3,7 @@
  * that supports both development debugging and production logging.
  */
 
-import { Log } from '../src/utils/log/$.js'
+import { Log } from '../src/utils/log/_.js'
 
 // Create a root logger
 const log = Log.create()

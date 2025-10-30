@@ -1,5 +1,5 @@
 import { Match, ParseResult, Schema as S } from 'effect'
-import { Analyzer } from '../../path-analyzer/codec-string/$.js'
+import { Analyzer } from '../../path-analyzer/codec-string/_.js'
 import * as Extension from './extension.js'
 
 /**

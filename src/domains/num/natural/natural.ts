@@ -4,10 +4,10 @@
  * These are the numbers used for counting things.
  */
 
-import type { Int } from '../int/$$.js'
-import { is as isInt } from '../int/$$.js'
-import type { Positive } from '../positive/$$.js'
-import { is as isPositive } from '../positive/$$.js'
+import type { Int } from '../int/__.js'
+import { is as isInt } from '../int/__.js'
+import type { Positive } from '../positive/__.js'
+import { is as isPositive } from '../positive/__.js'
 
 import type { Brand } from 'effect'
 

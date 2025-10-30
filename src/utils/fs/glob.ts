@@ -1,6 +1,6 @@
 import { Effect, Schema as S } from 'effect'
 import * as TinyGlobby from 'tinyglobby'
-import { Path } from './path/$.js'
+import { Path } from './path/_.js'
 
 /**
  * Options for globbing file patterns, excluding the patterns parameter.

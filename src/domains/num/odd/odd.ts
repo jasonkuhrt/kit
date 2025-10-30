@@ -3,8 +3,8 @@
  * An odd integer is not divisible by 2.
  */
 
-import type { Int } from '../int/$$.js'
-import { is as isInt } from '../int/$$.js'
+import type { Int } from '../int/__.js'
+import { is as isInt } from '../int/__.js'
 
 import type { Brand } from 'effect'
 

@@ -3,7 +3,7 @@
  * A prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself.
  */
 
-import type { Natural } from '../natural/$$.js'
+import type { Natural } from '../natural/__.js'
 
 import type { Brand } from 'effect'
 

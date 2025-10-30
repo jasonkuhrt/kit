@@ -1,7 +1,7 @@
 import { Effect, Schema } from 'effect'
 import { Schema as S } from 'effect'
 import { describe, expect, test } from 'vitest'
-import { Manifest, type ManifestMutable, ManifestSchemaMutable, parseMoniker } from './$$.js'
+import { Manifest, type ManifestMutable, ManifestSchemaMutable, parseMoniker } from './__.js'
 
 describe('Manifest', () => {
   test('validates a minimal package.json', () => {

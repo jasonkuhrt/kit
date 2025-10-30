@@ -3,7 +3,7 @@
  * A float is a finite number that is not an integer.
  */
 
-import type { Finite } from '../finite/$$.js'
+import type { Finite } from '../finite/__.js'
 
 import type { Brand } from 'effect'
 

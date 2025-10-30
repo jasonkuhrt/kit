@@ -526,7 +526,7 @@ function generateExtractorBarrelFile(extractorName: string, barrelPath: string):
     .join('\n')
 
   // Part 2: Export 'not' namespace (type+value)
-  const notExport = `export * as not from './not/$$.js'`
+  const notExport = `export * as not from './not/__.js'`
 
   // Part 3: Export other extractors as value-only builder proxy references
   const otherExtractors = Object.keys(EXTRACTORS).filter((name) => name !== extractorName)

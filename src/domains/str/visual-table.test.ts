@@ -1,5 +1,5 @@
 import { Test } from '#test'
-import { Str } from './$.js'
+import { Str } from './_.js'
 
 // dprint-ignore
 Test.on(Str.Visual.Table.render)
