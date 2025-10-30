@@ -1,9 +1,9 @@
 export * as Headers from './headers.js'
 export * as Method from './method.js'
 export * as MimeType from './mime-type.js'
-export * as Req from './req.ts'
+export * as Req from './req.js'
 export * as Response from './response.js'
-export * as SearchParams from './search-params.ts'
+export * as SearchParams from './search-params.js'
 export * from './status/_.js'
 
 import type * as _Method from './method.js'

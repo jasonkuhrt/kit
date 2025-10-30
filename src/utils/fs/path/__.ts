@@ -1,8 +1,8 @@
 // Union schemas with string codec baked in
-export * from './$Abs/$.ts'
-export * from './$Dir/$.ts'
-export * from './$File/$.ts'
-export * from './$Rel/$.ts'
+export * from './$Abs/_.js'
+export * from './$Dir/_.js'
+export * from './$File/_.js'
+export * from './$Rel/_.js'
 
 // Individual member schemas with string codec baked in
 export * from './AbsDir/_.js'
@@ -11,7 +11,7 @@ export * from './RelDir/_.js'
 export * from './RelFile/_.js'
 
 // Top-level Any schema with string codec baked in
-export * from './Schema.ts'
+export * from './Schema.js'
 
 // Operations
 export * from './operations/__.js'

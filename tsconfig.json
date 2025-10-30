@@ -147,6 +147,8 @@
       "#ts/test": ["./src/utils/ts/test/__.ts"],
       "#value": ["./src/utils/value/_.ts"],
       "#value/value": ["./src/utils/value/__.ts"],
+      "#ware": ["./src/utils/ware/_.ts"],
+      "#ware/ware": ["./src/utils/ware/__.ts"],
       "#deps/effect": ["./src/deps/effect.ts"],
 
       // Platform and wildcard

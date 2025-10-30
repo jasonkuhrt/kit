@@ -1,3 +1,3 @@
-export * as $Abs from './$$.ts'
+export * as $Abs from './__.js'
 
-export type $Abs = typeof import('./$$.ts').Schema.Type
+export type $Abs = typeof import('./__.js').Schema.Type

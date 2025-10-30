@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { Configurator } from './$.ts'
+import { Configurator } from './_.js'
 
 test(`if input resolver returns null, reference to current is returned`, () => {
   const c = Configurator.create().input().inputResolver(() => null).return()
