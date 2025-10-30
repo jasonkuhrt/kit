@@ -1,0 +1,1627 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js","./a":"./a.js"}}',
+    '/i.ts': '',
+    '/a.ts': 'export const _ = 0'
+  },
+  entrypoints: [ '.' ]
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: []
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 2`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': 'export const _ = 0'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: '_',
+            signature: {
+              type: '0',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 1
+            },
+            type: 'const',
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 3`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js","./a":"./a.js"}}',
+    '/i.ts': 'export * as A from \\'./a.js\\'',
+    '/a.ts': 'export const _ = 0'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './a.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: '_',
+            signature: {
+              type: '0',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './a.ts',
+              line: 1
+            },
+            type: 'const',
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'DrillableNamespaceEntrypoint'
+    },
+    {
+      path: './a',
+      module: {
+        location: './a.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: '_',
+            signature: {
+              type: '0',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './a.ts',
+              line: 1
+            },
+            type: 'const',
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'DrillableNamespaceEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 4`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': 'export const a = 1\\n/** @internal */\\nexport const b = 2'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'a',
+            signature: {
+              type: '1',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 1
+            },
+            type: 'const',
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 5`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': 'export const a = 1\\nexport const _b = 2'
+  },
+  filterUnderscoreExports: true
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'a',
+            signature: {
+              type: '1',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 1
+            },
+            type: 'const',
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 6`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': 'export const a = 1\\nexport const _b = 2'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'a',
+            signature: {
+              type: '1',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 1
+            },
+            type: 'const',
+            _tag: 'value'
+          },
+          {
+            name: '_b',
+            signature: {
+              type: '2',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 2
+            },
+            type: 'const',
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 7`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': 'export const a = 1\\n          /** @internal */\\n          export const b = 2\\n          export const _c = 3\\n          /** @internal */\\n          export const _d = 4'
+  },
+  filterUnderscoreExports: true
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'a',
+            signature: {
+              type: '1',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 1
+            },
+            type: 'const',
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 8`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': '// @ts-expect-error Duplicate identifier\\n          export * as U from \\'./u.js\\'\\n          /** Shadow @category C */\\n          export namespace U {}',
+    '/u.ts': '/** Nested */\\nexport const a = 1'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'U',
+            signature: {
+              text: 'export * as U',
+              _tag: 'TypeSignatureModel'
+            },
+            docs: {
+              description: 'Shadow',
+              guide: undefined
+            },
+            docsProvenance: {
+              description: {
+                shadowNamespace: true,
+                _tag: 'jsdoc'
+              },
+              guide: undefined
+            },
+            examples: [],
+            deprecated: undefined,
+            category: 'C',
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 2
+            },
+            type: 'namespace',
+            module: {
+              location: './u.ts',
+              docs: {
+                description: 'Nested',
+                guide: undefined
+              },
+              docsProvenance: {
+                description: {
+                  shadowNamespace: false,
+                  _tag: 'jsdoc'
+                },
+                guide: undefined
+              },
+              category: undefined,
+              exports: [
+                {
+                  name: 'a',
+                  signature: {
+                    type: '1',
+                    _tag: 'ValueSignatureModel'
+                  },
+                  signatureSimple: undefined,
+                  docs: {
+                    description: 'Nested',
+                    guide: undefined
+                  },
+                  docsProvenance: {
+                    description: {
+                      shadowNamespace: false,
+                      _tag: 'jsdoc'
+                    },
+                    guide: undefined
+                  },
+                  examples: [],
+                  deprecated: undefined,
+                  category: undefined,
+                  tags: {},
+                  sourceLocation: {
+                    file: './u.ts',
+                    line: 2
+                  },
+                  type: 'const',
+                  _tag: 'value'
+                }
+              ]
+            },
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 9`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': 'export * as U from \\'./u.js\\'',
+    '/u.ts': '/** Nested */\\nexport const a = 1'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'U',
+            signature: {
+              text: 'export * as U',
+              _tag: 'TypeSignatureModel'
+            },
+            docs: {
+              description: 'Nested',
+              guide: undefined
+            },
+            docsProvenance: {
+              description: {
+                shadowNamespace: false,
+                _tag: 'jsdoc'
+              },
+              guide: undefined
+            },
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 1
+            },
+            type: 'namespace',
+            module: {
+              location: './u.ts',
+              docs: '[Circular]',
+              docsProvenance: '[Circular]',
+              category: undefined,
+              exports: [
+                {
+                  name: 'a',
+                  signature: {
+                    type: '1',
+                    _tag: 'ValueSignatureModel'
+                  },
+                  signatureSimple: undefined,
+                  docs: {
+                    description: 'Nested',
+                    guide: undefined
+                  },
+                  docsProvenance: {
+                    description: {
+                      shadowNamespace: false,
+                      _tag: 'jsdoc'
+                    },
+                    guide: undefined
+                  },
+                  examples: [],
+                  deprecated: undefined,
+                  category: undefined,
+                  tags: {},
+                  sourceLocation: {
+                    file: './u.ts',
+                    line: 2
+                  },
+                  type: 'const',
+                  _tag: 'value'
+                }
+              ]
+            },
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 10`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': '// @ts-expect-error Duplicate identifier\\n          export * as U from \\'./u.js\\'\\n          /** Shadow @category C */\\n          export namespace U {}\\n          export const b = 1',
+    '/u.ts': '/** Nested */\\nexport const a = 1'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'U',
+            signature: {
+              text: 'export * as U',
+              _tag: 'TypeSignatureModel'
+            },
+            docs: {
+              description: 'Shadow',
+              guide: undefined
+            },
+            docsProvenance: {
+              description: {
+                shadowNamespace: true,
+                _tag: 'jsdoc'
+              },
+              guide: undefined
+            },
+            examples: [],
+            deprecated: undefined,
+            category: 'C',
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 2
+            },
+            type: 'namespace',
+            module: {
+              location: './u.ts',
+              docs: {
+                description: 'Nested',
+                guide: undefined
+              },
+              docsProvenance: {
+                description: {
+                  shadowNamespace: false,
+                  _tag: 'jsdoc'
+                },
+                guide: undefined
+              },
+              category: undefined,
+              exports: [
+                {
+                  name: 'a',
+                  signature: {
+                    type: '1',
+                    _tag: 'ValueSignatureModel'
+                  },
+                  signatureSimple: undefined,
+                  docs: {
+                    description: 'Nested',
+                    guide: undefined
+                  },
+                  docsProvenance: {
+                    description: {
+                      shadowNamespace: false,
+                      _tag: 'jsdoc'
+                    },
+                    guide: undefined
+                  },
+                  examples: [],
+                  deprecated: undefined,
+                  category: undefined,
+                  tags: {},
+                  sourceLocation: {
+                    file: './u.ts',
+                    line: 2
+                  },
+                  type: 'const',
+                  _tag: 'value'
+                }
+              ]
+            },
+            _tag: 'value'
+          },
+          {
+            name: 'b',
+            signature: {
+              type: '1',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 5
+            },
+            type: 'const',
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 11`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': 'export const a = () => 1',
+    '/i.md': 'M'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'a',
+            signature: {
+              overloads: [
+                {
+                  typeParameters: [],
+                  parameters: [],
+                  returnType: 'number',
+                  returnDoc: undefined,
+                  throws: []
+                }
+              ],
+              _tag: 'FunctionSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 1
+            },
+            type: 'function',
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 12`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': 'export const a = () => 1',
+    '/README.md': 'R'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'a',
+            signature: {
+              overloads: [
+                {
+                  typeParameters: [],
+                  parameters: [],
+                  returnType: 'number',
+                  returnDoc: undefined,
+                  throws: []
+                }
+              ],
+              _tag: 'FunctionSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 1
+            },
+            type: 'function',
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 13`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': 'export const a = () => 1',
+    '/i.md': 'M',
+    '/README.md': 'R'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'a',
+            signature: {
+              overloads: [
+                {
+                  typeParameters: [],
+                  parameters: [],
+                  returnType: 'number',
+                  returnDoc: undefined,
+                  throws: []
+                }
+              ],
+              _tag: 'FunctionSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 1
+            },
+            type: 'function',
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 14`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': 'export * as U from \\'./u.js\\'',
+    '/i.md': 'W',
+    '/u.ts': '/** N */\\nexport const a = 1'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'U',
+            signature: {
+              text: 'export * as U',
+              _tag: 'TypeSignatureModel'
+            },
+            docs: {
+              description: 'N',
+              guide: undefined
+            },
+            docsProvenance: {
+              description: {
+                shadowNamespace: false,
+                _tag: 'jsdoc'
+              },
+              guide: undefined
+            },
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 1
+            },
+            type: 'namespace',
+            module: {
+              location: './u.ts',
+              docs: '[Circular]',
+              docsProvenance: '[Circular]',
+              category: undefined,
+              exports: [
+                {
+                  name: 'a',
+                  signature: {
+                    type: '1',
+                    _tag: 'ValueSignatureModel'
+                  },
+                  signatureSimple: undefined,
+                  docs: {
+                    description: 'N',
+                    guide: undefined
+                  },
+                  docsProvenance: {
+                    description: {
+                      shadowNamespace: false,
+                      _tag: 'jsdoc'
+                    },
+                    guide: undefined
+                  },
+                  examples: [],
+                  deprecated: undefined,
+                  category: undefined,
+                  tags: {},
+                  sourceLocation: {
+                    file: './u.ts',
+                    line: 2
+                  },
+                  type: 'const',
+                  _tag: 'value'
+                }
+              ]
+            },
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 15`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': 'export * as U from \\'./u.js\\'\\nexport const b = 2',
+    '/i.md': 'M',
+    '/u.ts': '/** N */\\nexport const a = 1'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'U',
+            signature: {
+              text: 'export * as U',
+              _tag: 'TypeSignatureModel'
+            },
+            docs: {
+              description: 'N',
+              guide: undefined
+            },
+            docsProvenance: {
+              description: {
+                shadowNamespace: false,
+                _tag: 'jsdoc'
+              },
+              guide: undefined
+            },
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 1
+            },
+            type: 'namespace',
+            module: {
+              location: './u.ts',
+              docs: '[Circular]',
+              docsProvenance: '[Circular]',
+              category: undefined,
+              exports: [
+                {
+                  name: 'a',
+                  signature: {
+                    type: '1',
+                    _tag: 'ValueSignatureModel'
+                  },
+                  signatureSimple: undefined,
+                  docs: {
+                    description: 'N',
+                    guide: undefined
+                  },
+                  docsProvenance: {
+                    description: {
+                      shadowNamespace: false,
+                      _tag: 'jsdoc'
+                    },
+                    guide: undefined
+                  },
+                  examples: [],
+                  deprecated: undefined,
+                  category: undefined,
+                  tags: {},
+                  sourceLocation: {
+                    file: './u.ts',
+                    line: 2
+                  },
+                  type: 'const',
+                  _tag: 'value'
+                }
+              ]
+            },
+            _tag: 'value'
+          },
+          {
+            name: 'b',
+            signature: {
+              type: '2',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 2
+            },
+            type: 'const',
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 16`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': '// @ts-expect-error Duplicate identifier\\n          export * as U from \\'./u.js\\'\\n          /** S @category C */\\n          export namespace U {}',
+    '/i.md': 'M',
+    '/u.ts': '/** N */\\nexport const a = 1'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'U',
+            signature: {
+              text: 'export * as U',
+              _tag: 'TypeSignatureModel'
+            },
+            docs: {
+              description: 'S',
+              guide: undefined
+            },
+            docsProvenance: {
+              description: {
+                shadowNamespace: true,
+                _tag: 'jsdoc'
+              },
+              guide: undefined
+            },
+            examples: [],
+            deprecated: undefined,
+            category: 'C',
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 2
+            },
+            type: 'namespace',
+            module: {
+              location: './u.ts',
+              docs: {
+                description: 'N',
+                guide: undefined
+              },
+              docsProvenance: {
+                description: {
+                  shadowNamespace: false,
+                  _tag: 'jsdoc'
+                },
+                guide: undefined
+              },
+              category: undefined,
+              exports: [
+                {
+                  name: 'a',
+                  signature: {
+                    type: '1',
+                    _tag: 'ValueSignatureModel'
+                  },
+                  signatureSimple: undefined,
+                  docs: {
+                    description: 'N',
+                    guide: undefined
+                  },
+                  docsProvenance: {
+                    description: {
+                      shadowNamespace: false,
+                      _tag: 'jsdoc'
+                    },
+                    guide: undefined
+                  },
+                  examples: [],
+                  deprecated: undefined,
+                  category: undefined,
+                  tags: {},
+                  sourceLocation: {
+                    file: './u.ts',
+                    line: 2
+                  },
+                  type: 'const',
+                  _tag: 'value'
+                }
+              ]
+            },
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 17`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': '/** foo \`bar\` */\\nexport type T = string'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: {
+          description: 'foo \`bar\`',
+          guide: undefined
+        },
+        docsProvenance: {
+          description: {
+            shadowNamespace: false,
+            _tag: 'jsdoc'
+          },
+          guide: undefined
+        },
+        category: undefined,
+        exports: [
+          {
+            name: 'T',
+            signature: {
+              text: 'type T = string',
+              _tag: 'TypeSignatureModel'
+            },
+            signatureSimple: undefined,
+            docs: {
+              description: 'foo \`bar\`',
+              guide: undefined
+            },
+            docsProvenance: {
+              description: {
+                shadowNamespace: false,
+                _tag: 'jsdoc'
+              },
+              guide: undefined
+            },
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 2
+            },
+            type: 'type-alias',
+            _tag: 'type'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 18`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js"}}',
+    '/i.ts': 'export interface foo { (): number }\\nexport const foo = 1'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'foo',
+            signature: {
+              text: 'interface foo { (): number }',
+              _tag: 'TypeSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 1
+            },
+            type: 'interface',
+            _tag: 'type'
+          },
+          {
+            name: 'foo',
+            signature: {
+              type: '1',
+              _tag: 'ValueSignatureModel'
+            },
+            signatureSimple: undefined,
+            examples: [],
+            deprecated: undefined,
+            category: undefined,
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 2
+            },
+            type: 'const',
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 19`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js","./arr":"./arr/__.js"}}',
+    '/i.ts': '// @ts-expect-error Duplicate identifier\\n          export * as Arr from \\'./arr/__.js\\'\\n          /** Array utilities @category Domains */\\n          export namespace Arr {}',
+    '/arr/$.ts': '// @ts-expect-error Duplicate identifier\\n          export * as Arr from \\'./__.js\\'\\n          /** Array utilities @category Domains */\\n          export namespace Arr {}',
+    '/arr/$$.ts': 'export const map = 1'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: undefined,
+        docsProvenance: undefined,
+        category: undefined,
+        exports: [
+          {
+            name: 'Arr',
+            signature: {
+              text: 'export namespace Arr {}',
+              _tag: 'TypeSignatureModel'
+            },
+            signatureSimple: undefined,
+            docs: {
+              description: 'Array utilities',
+              guide: undefined
+            },
+            docsProvenance: {
+              description: {
+                shadowNamespace: false,
+                _tag: 'jsdoc'
+              },
+              guide: undefined
+            },
+            examples: [],
+            deprecated: undefined,
+            category: 'Domains',
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 4
+            },
+            type: 'namespace',
+            module: {
+              location: './i.ts',
+              docs: {
+                description: 'Array utilities',
+                guide: undefined
+              },
+              docsProvenance: {
+                description: {
+                  shadowNamespace: true,
+                  _tag: 'jsdoc'
+                },
+                guide: undefined
+              },
+              category: 'Domains',
+              exports: []
+            },
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 20`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js","./str":"./str/__.js"}}',
+    '/i.ts': '/** String utilities @category Domains */\\n          export * as Str from \\'./str/__.js\\'',
+    '/str/$.ts': '/** String utilities @category Domains */\\n          export * as Str from \\'./__.js\\'',
+    '/str/$$.ts': 'export const trim = 1'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: {
+          description: 'String utilities',
+          guide: undefined
+        },
+        docsProvenance: {
+          description: {
+            shadowNamespace: false,
+            _tag: 'jsdoc'
+          },
+          guide: undefined
+        },
+        category: 'Domains',
+        exports: []
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.j...) 21`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+{
+  files: {
+    '/package.json': '{"name":"x","version":"0.0.0","exports":{".":"./i.js","./num":"./num/__.js"}}',
+    '/i.ts': '/** Export doc @category Wrong */\\n          export * as Num from \\'./num/__.js\\'\\n          /** Shadow doc @category Domains */\\n          export namespace Num {}',
+    '/num/$.ts': '/** Export doc @category Wrong */\\n          export * as Num from \\'./__.js\\'\\n          /** Shadow doc @category Domains */\\n          export namespace Num {}',
+    '/num/$$.ts': 'export const add = 1'
+  }
+}
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  name: 'x',
+  version: '0.0.0',
+  entrypoints: [
+    {
+      path: '.',
+      module: {
+        location: './i.ts',
+        docs: {
+          description: 'Export doc',
+          guide: undefined
+        },
+        docsProvenance: {
+          description: {
+            shadowNamespace: false,
+            _tag: 'jsdoc'
+          },
+          guide: undefined
+        },
+        category: 'Wrong',
+        exports: [
+          {
+            name: 'Num',
+            signature: {
+              text: 'export namespace Num {}',
+              _tag: 'TypeSignatureModel'
+            },
+            signatureSimple: undefined,
+            docs: {
+              description: 'Shadow doc',
+              guide: undefined
+            },
+            docsProvenance: {
+              description: {
+                shadowNamespace: false,
+                _tag: 'jsdoc'
+              },
+              guide: undefined
+            },
+            examples: [],
+            deprecated: undefined,
+            category: 'Domains',
+            tags: {},
+            sourceLocation: {
+              file: './i.ts',
+              line: 4
+            },
+            type: 'namespace',
+            module: {
+              location: './i.ts',
+              docs: {
+                description: 'Shadow doc',
+                guide: undefined
+              },
+              docsProvenance: {
+                description: {
+                  shadowNamespace: true,
+                  _tag: 'jsdoc'
+                },
+                guide: undefined
+              },
+              category: 'Domains',
+              exports: []
+            },
+            _tag: 'value'
+          }
+        ]
+      },
+      _tag: 'SimpleEntrypoint'
+    }
+  ],
+  metadata: {
+    extractedAt: {},
+    extractorVersion: '0.1.0'
+  }
+}
+╚══════════════════════════════════════════════════╝"
+`;
