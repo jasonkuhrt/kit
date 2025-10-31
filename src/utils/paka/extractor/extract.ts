@@ -15,6 +15,7 @@ import {
   type InterfaceModel,
   JSDocProvenance,
   Module,
+  ModuleDocs,
   Package,
   PackageMetadata,
   SimpleEntrypoint,
@@ -299,7 +300,7 @@ export const extractFromFiles = (params: {
         location: module.location,
         exports: module.exports,
         docs: namespaceDescription
-          ? Docs.make({
+          ? ModuleDocs.make({
             description: namespaceDescription,
             guide: module.docs?.guide,
           })
@@ -612,7 +613,7 @@ export const extract = (config: ExtractConfig): InterfaceModel => {
         location: module.location,
         exports: module.exports,
         docs: namespaceDescription
-          ? Docs.make({
+          ? ModuleDocs.make({
             description: namespaceDescription,
             guide: module.docs?.guide,
           })

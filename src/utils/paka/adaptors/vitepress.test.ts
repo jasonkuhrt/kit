@@ -1,9 +1,13 @@
 import { Fs } from '#fs'
-import { expect, test } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import {
   Docs,
+  Feature,
   FunctionSignature,
   FunctionSignatureModel,
+  Home,
+  Module,
+  ModuleDocs,
   Parameter,
   SourceLocation,
   TypeParameter,
@@ -139,4 +143,27 @@ test('renders @throws documentation', () => {
     'Error if value is negative',
     'TypeError if value is not a number',
   ])
+})
+
+test('Home schema supports landing page with hero, highlights, and body', () => {
+  const home = Home.make({
+    hero: { name: 'Test', text: 'Description', tagline: 'Tagline' },
+    highlights: [Feature.make({ title: 'Feature', body: 'Details' })],
+    body: [{ _tag: 'content' as const, title: 'Section', body: 'Content' }, { _tag: 'exports' as const }],
+  })
+
+  expect(home.hero?.name).toBe('Test')
+  expect(home.highlights).toHaveLength(1)
+  expect(home.body).toHaveLength(2)
+  expect(home.body?.[1]?._tag).toBe('exports')
+})
+
+test('Module with home field enables landing page layout', () => {
+  const module = Module.make({
+    location: Fs.Path.fromLiteral('./test.ts'),
+    docs: ModuleDocs.make({ home: Home.make({ hero: { name: 'Test' } }) }),
+    exports: [],
+  })
+
+  expect(module.docs?.home).toBeDefined()
 })
