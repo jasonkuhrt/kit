@@ -1,6 +1,6 @@
 import { Fs } from '#fs'
 import { Schema as S } from 'effect'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, dirname, extname, join } from 'node:path'
 import { type ExportDeclaration, type ModuleDeclaration, Node, type SourceFile } from 'ts-morph'
 import {
@@ -9,10 +9,12 @@ import {
   JSDocProvenance,
   MdFileProvenance,
   Module,
+  ModuleDocs,
   SourceLocation,
   TypeSignatureModel,
   ValueExport,
 } from '../../schema.js'
+import { parseHomePage } from '../home-page.js'
 import { absoluteToRelative } from '../path-utils.js'
 import { extractExport } from './export.js'
 import { type JSDocInfo, parseJSDoc } from './jsdoc.js'
@@ -62,6 +64,102 @@ const findModuleReadme = (sourceFilePath: string): string | undefined => {
 }
 
 /**
+ * Find home page markdown for a namespace export.
+ *
+ * Convention: Any *.home.md file in the parent directory (alphabetically first if multiple).
+ *
+ * Example: For `export * as Union from './union.js'` in `obj/__.ts`,
+ *          looks for *.home.md files in `obj/` directory.
+ *
+ * Valid examples:
+ * - obj/union.home.md
+ * - obj/_.home.md
+ * - obj/index.home.md
+ *
+ * @param exportDeclFile - Source file containing the namespace export declaration
+ * @returns Absolute path to home page markdown if found, undefined otherwise
+ */
+const findNamespaceHomePagePath = (exportDeclFile: string): string | undefined => {
+  const dir = dirname(exportDeclFile)
+
+  try {
+    const files = readdirSync(dir)
+    const homeFiles = files.filter((f: string) => f.endsWith('.home.md')).sort()
+
+    if (homeFiles.length === 0) return undefined
+
+    const firstHomeFile = homeFiles[0]!
+
+    // Warn if multiple home page files found
+    if (homeFiles.length > 1) {
+      console.warn(
+        `Warning: Multiple .home.md files found in ${dir}:\n`
+          + homeFiles.map((f: string) => `  - ${f}`).join('\n')
+          + '\n'
+          + `Using first alphabetically: ${firstHomeFile}`,
+      )
+    }
+
+    return join(dir, firstHomeFile)
+  } catch {
+    // Directory read error - return undefined
+    return undefined
+  }
+}
+
+/**
+ * Read home page markdown content.
+ */
+const findNamespaceHomePage = (exportDeclFile: string): string | undefined => {
+  const path = findNamespaceHomePagePath(exportDeclFile)
+  return path ? readFileSync(path, 'utf-8') : undefined
+}
+
+/**
+ * Extract and add home page to a nested module if a *.home.md file exists.
+ *
+ * @param nestedModule - The module to potentially add home page to
+ * @param exportDeclFilePath - Path to file containing the namespace export declaration
+ * @param nsName - Namespace name (for error messages)
+ * @returns Updated module with home page, or original module if no home page found
+ */
+const addHomePageIfExists = (
+  nestedModule: Module,
+  exportDeclFilePath: string,
+  nsName: string,
+): Module => {
+  const homePageMarkdown = findNamespaceHomePage(exportDeclFilePath)
+  if (!homePageMarkdown) return nestedModule
+
+  try {
+    const homePagePath = findNamespaceHomePagePath(exportDeclFilePath)!
+    const home = parseHomePage(homePageMarkdown, homePagePath)
+
+    // Update ModuleDocs with home
+    const existingDocs = nestedModule.docs
+    const updatedDocs = ModuleDocs.make({
+      description: existingDocs?.description,
+      guide: existingDocs?.guide,
+      home: home,
+    })
+
+    // Mutate docs field directly (we're still in extraction phase, not yet exposed)
+    // @ts-expect-error - Mutating during extraction phase before immutability contract applies
+    nestedModule.docs = updatedDocs
+
+    return nestedModule
+
+    // Note: No provenance needed for home - it can only come from *.home.md files
+  } catch (error) {
+    // Re-throw with context about which namespace failed
+    if (error instanceof Error) {
+      throw new Error(`Failed to parse home page for namespace '${nsName}':\n${error.message}`)
+    }
+    throw error
+  }
+}
+
+/**
  * Create a namespace export from an export declaration and its nested module.
  *
  * This helper consolidates the common logic for creating namespace exports
@@ -86,7 +184,7 @@ const createNamespaceExport = (
   const jsdoc = overrideJsdoc ?? parseJSDoc(exportDecl)
 
   // Build docs and docsProvenance for namespace export
-  let docs: typeof Docs.Type | undefined
+  let docs: typeof ModuleDocs.Type | undefined
   let docsProvenance: typeof DocsProvenance.Type | undefined
 
   if (overrideJsdoc) {
@@ -94,7 +192,7 @@ const createNamespaceExport = (
     const description = overrideJsdoc.description || nestedModule.docs?.description
     const guide = overrideJsdoc.guide || nestedModule.docs?.guide
 
-    docs = description || guide ? Docs.make({ description, guide }) : undefined
+    docs = description || guide ? ModuleDocs.make({ description, guide }) : undefined
 
     // Track provenance
     const descriptionProv = overrideJsdoc.description
@@ -261,7 +359,10 @@ export const extractModuleFromFile = (
         const nestedLocation = S.decodeSync(Fs.Path.RelFile.Schema)(
           absoluteToRelative(referencedFile.getFilePath()),
         )
-        const nestedModule = extractModuleFromFile(referencedFile, nestedLocation, options)
+        let nestedModule = extractModuleFromFile(referencedFile, nestedLocation, options)
+
+        // Check for namespace home page
+        nestedModule = addHomePageIfExists(nestedModule, sourceFile.getFilePath(), nsName)
 
         // Check if this namespace export should be filtered
         const jsdoc = parseJSDoc(exportDecl)
@@ -301,7 +402,10 @@ export const extractModuleFromFile = (
               const nsLocation = S.decodeSync(Fs.Path.RelFile.Schema)(
                 absoluteToRelative(nsFile.getFilePath()),
               )
-              const nestedModule = extractModuleFromFile(nsFile, nsLocation, options)
+              let nestedModule = extractModuleFromFile(nsFile, nsLocation, options)
+
+              // Check for namespace home page
+              nestedModule = addHomePageIfExists(nestedModule, referencedFile.getFilePath(), nsName)
 
               // Check if this namespace export should be filtered
               const jsdoc = parseJSDoc(nestedExportDecl)
@@ -408,7 +512,7 @@ export const extractModuleFromFile = (
   }
 
   const docs = docDescription || docGuide
-    ? Docs.make({ description: docDescription, guide: docGuide })
+    ? ModuleDocs.make({ description: docDescription, guide: docGuide })
     : undefined
 
   const docsProvenance = docDescriptionProv || docGuideProv
@@ -501,7 +605,7 @@ export const extractModule = (
   const category = jsdoc.category
 
   const docs = description || guide
-    ? Docs.make({ description, guide })
+    ? ModuleDocs.make({ description, guide })
     : undefined
 
   const docsProvenance = description || guide

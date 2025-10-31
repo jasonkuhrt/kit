@@ -143,8 +143,65 @@ export class Docs extends S.Class<Docs>('Docs')({
 }) {}
 
 /**
+ * Landing page feature card.
+ */
+export class Feature extends S.Class<Feature>('Feature')({
+  /** Feature title (from ## heading) */
+  title: S.String,
+  /** Feature description (markdown content) */
+  body: S.String,
+}) {}
+
+/**
+ * Landing page body section (content or exports marker).
+ */
+export const BodySection = S.Union(
+  S.Struct({
+    _tag: S.Literal('exports'),
+  }),
+  S.Struct({
+    _tag: S.Literal('content'),
+    title: S.String,
+    body: S.String,
+  }),
+)
+export type BodySection = S.Schema.Type<typeof BodySection>
+
+/**
+ * Landing page structured content.
+ * At least one of hero, highlights, or body must be present (validated during parsing).
+ */
+export class Home extends S.Class<Home>('Home')({
+  /** Hero section (optional - fallback to module.name if missing) */
+  hero: S.optional(
+    S.Struct({
+      name: S.optional(S.String),
+      text: S.optional(S.String),
+      tagline: S.optional(S.String),
+    }),
+  ),
+  /** Feature cards (optional) */
+  highlights: S.optional(S.Array(Feature)),
+  /** Body sections with exports insertion points (optional) */
+  body: S.optional(S.Array(BodySection)),
+}) {}
+
+/**
+ * Module-specific documentation with landing page support.
+ */
+export class ModuleDocs extends S.Class<ModuleDocs>('ModuleDocs')({
+  /** Brief technical description */
+  description: S.optional(S.String),
+  /** Long-form guide content */
+  guide: S.optional(S.String),
+  /** Landing page content (triggers hero layout) */
+  home: S.optional(Home),
+}) {}
+
+/**
  * Provenance tracking for documentation sources.
  * Maps each doc field (description/guide) to its source.
+ * Note: home field doesn't need provenance - it can only come from *.home.md files.
  */
 export class DocsProvenance extends S.Class<DocsProvenance>('DocsProvenance')({
   /** Provenance for the description field */
@@ -555,7 +612,7 @@ const BaseExportFields = {
  */
 export interface Module {
   readonly location: S.Schema.Type<typeof Fs.Path.RelFile>
-  readonly docs?: Docs | undefined
+  readonly docs?: ModuleDocs | undefined
   readonly docsProvenance?: DocsProvenance | undefined
   readonly category?: string | undefined
   readonly exports: Export[]
@@ -563,7 +620,7 @@ export interface Module {
 
 export interface ModuleEncoded {
   readonly location: S.Schema.Encoded<typeof Fs.Path.RelFile>
-  readonly docs?: Docs | undefined
+  readonly docs?: ModuleDocs | undefined
   readonly docsProvenance?: DocsProvenance | undefined
   readonly category?: string | undefined
   readonly exports: ExportEncoded[]
@@ -585,8 +642,8 @@ export class Module extends S.Class<Module>('Module')({
    * Portable across package registry, GitHub repo, local dev, etc.
    */
   location: Fs.Path.RelFile.Schema,
-  /** Documentation content (description and guide) */
-  docs: S.optional(Docs),
+  /** Documentation content (description, guide, and optional home page) */
+  docs: S.optional(ModuleDocs),
   /** Provenance tracking for documentation sources */
   docsProvenance: S.optional(DocsProvenance),
   /** Category from @category tag for grouping in sidebar */

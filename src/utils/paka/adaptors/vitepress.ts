@@ -5,9 +5,11 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import type {
+  BodySection,
   Entrypoint,
   Example,
   Export,
+  Feature,
   ImportExample,
   InterfaceModel,
   Module,
@@ -435,10 +437,22 @@ const generateNamespacePages = (entrypoint: Entrypoint, module: Module, breadcru
 }
 
 /**
+ * Check if module should use landing page layout.
+ */
+const shouldUseLandingPage = (module: Module): boolean => {
+  return module.docs?.home !== undefined
+}
+
+/**
  * Generate markdown content for a page.
  */
 const generatePageContent = (page: Page, context: Context): string => {
   const { entrypoint, module, breadcrumbs, pageType } = page
+
+  // Check for landing page layout first
+  if (shouldUseLandingPage(module)) {
+    return generateLandingPage(page, context)
+  }
 
   // Handle overview pages (just README)
   if (pageType === 'overview') {
@@ -452,22 +466,18 @@ const generatePageContent = (page: Page, context: Context): string => {
 
   // Handle exports pages (skip README)
   if (pageType === 'exports') {
-    // Separate namespace exports from regular exports
-    const namespaceExports = module.namespaceExports
-    const regularExports = module.regularExports
-
-    // Add breadcrumbs to context for namespace usage in examples
-    const contextWithBreadcrumbs = { ...context, breadcrumbs }
-
-    return Md.sections(
-      Md.heading(1, breadcrumbs.join('.')),
-      renderImportSection(entrypoint, context.packageName, [breadcrumbs[0]!]), // Use module name only
-      namespaceExports.length > 0 ? renderNamespacesSection(namespaceExports, [breadcrumbs[0]!]) : '',
-      renderExportsSection(regularExports, contextWithBreadcrumbs),
-    )
+    return generateStandardExportsPage(page, context)
   }
 
   // Default behavior for single-page modules
+  return generateStandardPage(page, context)
+}
+
+/**
+ * Generate standard doc page (existing logic).
+ */
+const generateStandardPage = (page: Page, context: Context): string => {
+  const { entrypoint, module, breadcrumbs } = page
   const namespaceExports = module.namespaceExports
   const regularExports = module.regularExports
 
@@ -484,6 +494,82 @@ const generatePageContent = (page: Page, context: Context): string => {
     namespaceExports.length > 0 ? renderNamespacesSection(namespaceExports, breadcrumbs) : '',
     renderExportsSection(regularExports, contextWithBreadcrumbs),
   )
+}
+
+/**
+ * Generate standard exports page.
+ */
+const generateStandardExportsPage = (page: Page, context: Context): string => {
+  const { entrypoint, module, breadcrumbs } = page
+  const namespaceExports = module.namespaceExports
+  const regularExports = module.regularExports
+
+  // Add breadcrumbs to context for namespace usage in examples
+  const contextWithBreadcrumbs = { ...context, breadcrumbs }
+
+  return Md.sections(
+    Md.heading(1, breadcrumbs.join('.')),
+    renderImportSection(entrypoint, context.packageName, [breadcrumbs[0]!]), // Use module name only
+    namespaceExports.length > 0 ? renderNamespacesSection(namespaceExports, [breadcrumbs[0]!]) : '',
+    renderExportsSection(regularExports, contextWithBreadcrumbs),
+  )
+}
+
+/**
+ * Generate landing page with hero layout.
+ */
+const generateLandingPage = (page: Page, context: Context): string => {
+  const { entrypoint, module, breadcrumbs } = page
+  const home = module.docs!.home!
+
+  // Build VitePress frontmatter
+  const heroName = home.hero?.name ?? breadcrumbs.join('.')
+  const heroText = home.hero?.text ?? ''
+  const heroTagline = home.hero?.tagline ?? ''
+
+  const features = home.highlights?.map((h: Feature) => ({
+    title: h.title,
+    details: h.body,
+  })) ?? []
+
+  // Build body content
+  const regularExports = module.regularExports
+  const contextWithBreadcrumbs = { ...context, breadcrumbs }
+
+  const bodyContent = home.body
+    ?.map((section: BodySection) => {
+      if (section._tag === 'exports') {
+        return renderExportsSection(regularExports, contextWithBreadcrumbs)
+      } else {
+        return `## ${section.title}\n\n${section.body}`
+      }
+    })
+    .join('\n\n') ?? ''
+
+  // Combine frontmatter + body
+  const frontmatterYaml = [
+    '---',
+    `layout: home`,
+    `sidebar: false`,
+    '',
+    'hero:',
+    `  name: ${JSON.stringify(heroName)}`,
+    `  text: ${JSON.stringify(heroText)}`,
+    `  tagline: ${JSON.stringify(heroTagline)}`,
+    '',
+    'features:',
+    ...features.map((f: { title: string; details: string }) => [
+      `  - title: ${JSON.stringify(f.title)}`,
+      `    details: ${JSON.stringify(f.details)}`,
+    ]).flat(),
+    '---',
+  ].join('\n')
+
+  return [
+    frontmatterYaml,
+    '',
+    bodyContent,
+  ].join('\n')
 }
 
 /**
