@@ -761,6 +761,7 @@ export const reexportNamed = (input: {
  * @param content - Namespace content
  * @param options - Options
  * @param options.escapeReserved - Whether to escape reserved keywords (default: true)
+ * @param options.export - Whether to export the namespace (default: false)
  *
  * @example
  * ```ts
@@ -769,16 +770,20 @@ export const reexportNamed = (input: {
  *
  * namespace('interface', 'export const foo = 1', { escapeReserved: true })
  * // 'namespace $interface {\nexport const foo = 1\n}'
+ *
+ * namespace('Utils', 'export const foo = 1', { export: true })
+ * // 'export namespace Utils {\nexport const foo = 1\n}'
  * ```
  */
 export const namespace = (
   name: string,
   content: string,
-  options?: { escapeReserved?: boolean },
+  options?: { escapeReserved?: boolean; export?: boolean },
 ): string => {
   const shouldEscape = options?.escapeReserved ?? true
   const name_ = shouldEscape ? Reserved.escapeReserved(name) : name
-  return `namespace ${name_} {\n${content}\n}`
+  const exportPrefix = options?.export ? `export ` : ``
+  return `${exportPrefix}namespace ${name_} {\n${content}\n}`
 }
 
 // ============================================================================

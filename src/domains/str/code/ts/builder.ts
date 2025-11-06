@@ -131,7 +131,7 @@ export interface Builder {
   /**
    * Add a namespace declaration with nested builder.
    */
-  namespace(name: string, callback: (builder: Builder) => void): void
+  namespace(name: string, callback: (builder: Builder) => void, options?: { export?: boolean }): void
 
   /**
    * Build and return the final code string.
@@ -188,10 +188,10 @@ export const builder = (): Builder => {
     lines.push(TS.functionDecl(options))
   }
 
-  builderFn.namespace = (name, callback) => {
+  builderFn.namespace = (name, callback, options) => {
     const nested = builder()
     callback(nested)
-    lines.push(TS.namespace(name, nested.build()))
+    lines.push(TS.namespace(name, nested.build(), options?.export ? { export: options.export } : undefined))
   }
 
   builderFn.build = () => lines.join('\n')
