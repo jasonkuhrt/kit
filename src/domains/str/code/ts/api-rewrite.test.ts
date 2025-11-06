@@ -554,10 +554,8 @@ describe('Builder Pattern', () => {
     })
     expect(code.build()).toMatchInlineSnapshot(`
       "export interface User {
-      {
       id: string,
       name: string
-      }
       }"
     `)
   })
@@ -584,10 +582,8 @@ describe('Builder Pattern', () => {
     )
     expect(code.build()).toMatchInlineSnapshot(`
       "export interface User {
-      {
       id: string,
       name: string
-      }
       }
       export type UserId = string
       export const defaultUser = {
@@ -605,9 +601,7 @@ describe('Builder Pattern', () => {
     expect(code.build()).toMatchInlineSnapshot(`
       "// Custom header comment
       export interface User {
-      {
       id: string
-      }
       }
       // Footer comment"
     `)
@@ -754,18 +748,14 @@ describe('Factory Function', () => {
 
     expect(generateInterface('User', { id: 'string', name: 'string' })).toMatchInlineSnapshot(`
       "export interface User {
-      {
       id: string,
       name: string
-      }
       }"
     `)
     expect(generateInterface('Post', { title: 'string', body: 'string' })).toMatchInlineSnapshot(`
       "export interface Post {
-      {
       title: string,
       body: string
-      }
       }"
     `)
   })
@@ -838,11 +828,9 @@ describe('Factory Function', () => {
     expect(generateModule('User')).toMatchInlineSnapshot(`
       "export type UserId = string
       export interface User {
-      {
       id: UserId,
       createdAt: Date,
       updatedAt: Date
-      }
       }
       export const defaultUser = {
       id: "0",
@@ -895,21 +883,15 @@ describe('Reserved Keyword Handling', () => {
     code.interface({ name: 'function', block: { type: 'string' }, export: true })
     expect(code.build()).toMatchInlineSnapshot(`
       "interface $interface {
-      {
       id: string
-      }
       }
       export { type $interface as interface }
       interface $class {
-      {
       name: string
-      }
       }
       export { type $class as class }
       interface $function {
-      {
       type: string
-      }
       }
       export { type $function as function }"
     `)

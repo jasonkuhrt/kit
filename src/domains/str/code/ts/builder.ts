@@ -165,22 +165,11 @@ export const builder = (): Builder => {
   }) as Builder
 
   builderFn.interface = (options) => {
-    const interfaceOptions: TS.InterfaceOptions = options.block
-      ? {
-        ...options,
-        block: typeof options.block === 'string'
-          ? options.block
-          : Array.isArray(options.block)
-          ? TermObjectModule.termObject(Object.fromEntries(options.block))
-          : TermObjectModule.termObject(options.block),
-      }
-      : { ...options }
-    lines.push(TS.interfaceDecl(interfaceOptions))
+    lines.push(TS.interfaceDecl(options))
   }
 
   builderFn.type = (options) => {
-    const type = typeof options.type === 'string' ? options.type : TermObjectModule.termObject(options.type)
-    lines.push(TS.typeAliasWithOptions({ ...options, type }))
+    lines.push(TS.typeAliasWithOptions(options))
   }
 
   builderFn.const = (name, value, options) => {
