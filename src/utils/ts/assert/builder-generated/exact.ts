@@ -88,7 +88,7 @@ type boolean_<$Actual> = Fn.Kind.Apply<ExactKind, [boolean, $Actual]>
 const boolean_ = builder.exact.boolean
 
 /**
- * Pre-curried matcher for true literal.
+ * Pre-curried matcher for true.
  *
  * @example
  * ```typescript
@@ -96,15 +96,14 @@ const boolean_ = builder.exact.boolean
  * type _ = Assert.exact.true<true>
  *
  * // ✗ Fail
- * type _ = Assert.exact.true<false>
- * type _ = Assert.exact.true<boolean>
+ * type _ = Assert.exact.true<string>
  * ```
  */
 type true_<$Actual> = Fn.Kind.Apply<ExactKind, [true, $Actual]>
 const true_ = builder.exact.true
 
 /**
- * Pre-curried matcher for false literal.
+ * Pre-curried matcher for false.
  *
  * @example
  * ```typescript
@@ -112,8 +111,7 @@ const true_ = builder.exact.true
  * type _ = Assert.exact.false<false>
  *
  * // ✗ Fail
- * type _ = Assert.exact.false<true>
- * type _ = Assert.exact.false<boolean>
+ * type _ = Assert.exact.false<string>
  * ```
  */
 type false_<$Actual> = Fn.Kind.Apply<ExactKind, [false, $Actual]>

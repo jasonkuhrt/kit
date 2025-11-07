@@ -1,4 +1,5 @@
 import type { Fn } from '#fn'
+import type { Either } from 'effect'
 import type * as Path from '../../../../path.js'
 import { builder } from '../../../builder-singleton.js'
 import type { SubKind } from '../../../kinds/relators.js'
@@ -26,7 +27,11 @@ import type { SubKind } from '../../../kinds/relators.js'
  * type _ = Assert.parameter4.sub.of<string, (arg: number) => any>
  * ```
  */
-type of_<$Expected, $Actual> = Fn.Kind.Apply<SubKind, [$Expected, Fn.Kind.Apply<Path.Parameter4, [$Actual]>, true]>
+// dprint-ignore
+type of_<$Expected, $Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [$Expected, __actual__, true]>
+                                                                         : never
 const of_ = builder.parameter4.not.sub.of
 
 /**
@@ -42,7 +47,11 @@ const of_ = builder.parameter4.not.sub.of
  * type _ = Assert.parameter4.sub.string<(arg: number) => any>
  * ```
  */
-type string_<$Actual> = Fn.Kind.Apply<SubKind, [string, Fn.Kind.Apply<Path.Parameter4, [$Actual]>, true]>
+// dprint-ignore
+type string_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [string, __actual__, true]>
+                                                                         : never
 const string_ = builder.parameter4.not.sub.string
 
 /**
@@ -58,7 +67,11 @@ const string_ = builder.parameter4.not.sub.string
  * type _ = Assert.parameter4.sub.number<(arg: string) => any>
  * ```
  */
-type number_<$Actual> = Fn.Kind.Apply<SubKind, [number, Fn.Kind.Apply<Path.Parameter4, [$Actual]>, true]>
+// dprint-ignore
+type number_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [number, __actual__, true]>
+                                                                         : never
 const number_ = builder.parameter4.not.sub.number
 
 /**
@@ -74,7 +87,11 @@ const number_ = builder.parameter4.not.sub.number
  * type _ = Assert.parameter4.sub.bigint<(arg: string) => any>
  * ```
  */
-type bigint_<$Actual> = Fn.Kind.Apply<SubKind, [bigint, Fn.Kind.Apply<Path.Parameter4, [$Actual]>, true]>
+// dprint-ignore
+type bigint_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [bigint, __actual__, true]>
+                                                                         : never
 const bigint_ = builder.parameter4.not.sub.bigint
 
 /**
@@ -90,8 +107,52 @@ const bigint_ = builder.parameter4.not.sub.bigint
  * type _ = Assert.parameter4.sub.boolean<(arg: string) => any>
  * ```
  */
-type boolean_<$Actual> = Fn.Kind.Apply<SubKind, [boolean, Fn.Kind.Apply<Path.Parameter4, [$Actual]>, true]>
+// dprint-ignore
+type boolean_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [boolean, __actual__, true]>
+                                                                         : never
 const boolean_ = builder.parameter4.not.sub.boolean
+
+/**
+ * Pre-curried matcher for true.
+ * Extraction chain: (p1: any, p2: any, p3: any, p4: T, ...) => any → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameter4.sub.true<(arg: true) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameter4.sub.true<(arg: string) => any>
+ * ```
+ */
+// dprint-ignore
+type true_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [true, __actual__, true]>
+                                                                         : never
+const true_ = builder.parameter4.not.sub.true
+
+/**
+ * Pre-curried matcher for false.
+ * Extraction chain: (p1: any, p2: any, p3: any, p4: T, ...) => any → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameter4.sub.false<(arg: false) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameter4.sub.false<(arg: string) => any>
+ * ```
+ */
+// dprint-ignore
+type false_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [false, __actual__, true]>
+                                                                         : never
+const false_ = builder.parameter4.not.sub.false
 
 /**
  * Pre-curried matcher for undefined.
@@ -106,7 +167,11 @@ const boolean_ = builder.parameter4.not.sub.boolean
  * type _ = Assert.parameter4.sub.undefined<(arg: string) => any>
  * ```
  */
-type undefined_<$Actual> = Fn.Kind.Apply<SubKind, [undefined, Fn.Kind.Apply<Path.Parameter4, [$Actual]>, true]>
+// dprint-ignore
+type undefined_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [undefined, __actual__, true]>
+                                                                         : never
 const undefined_ = builder.parameter4.not.sub.undefined
 
 /**
@@ -122,7 +187,11 @@ const undefined_ = builder.parameter4.not.sub.undefined
  * type _ = Assert.parameter4.sub.null<(arg: string) => any>
  * ```
  */
-type null_<$Actual> = Fn.Kind.Apply<SubKind, [null, Fn.Kind.Apply<Path.Parameter4, [$Actual]>, true]>
+// dprint-ignore
+type null_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [null, __actual__, true]>
+                                                                         : never
 const null_ = builder.parameter4.not.sub.null
 
 /**
@@ -138,7 +207,11 @@ const null_ = builder.parameter4.not.sub.null
  * type _ = Assert.parameter4.sub.symbol<(arg: string) => any>
  * ```
  */
-type symbol_<$Actual> = Fn.Kind.Apply<SubKind, [symbol, Fn.Kind.Apply<Path.Parameter4, [$Actual]>, true]>
+// dprint-ignore
+type symbol_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [symbol, __actual__, true]>
+                                                                         : never
 const symbol_ = builder.parameter4.not.sub.symbol
 
 /**
@@ -154,7 +227,11 @@ const symbol_ = builder.parameter4.not.sub.symbol
  * type _ = Assert.parameter4.sub.Date<(arg: string) => any>
  * ```
  */
-type Date_<$Actual> = Fn.Kind.Apply<SubKind, [Date, Fn.Kind.Apply<Path.Parameter4, [$Actual]>, true]>
+// dprint-ignore
+type Date_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [Date, __actual__, true]>
+                                                                         : never
 const Date_ = builder.parameter4.not.sub.Date
 
 /**
@@ -170,7 +247,11 @@ const Date_ = builder.parameter4.not.sub.Date
  * type _ = Assert.parameter4.sub.RegExp<(arg: string) => any>
  * ```
  */
-type RegExp_<$Actual> = Fn.Kind.Apply<SubKind, [RegExp, Fn.Kind.Apply<Path.Parameter4, [$Actual]>, true]>
+// dprint-ignore
+type RegExp_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [RegExp, __actual__, true]>
+                                                                         : never
 const RegExp_ = builder.parameter4.not.sub.RegExp
 
 /**
@@ -186,7 +267,11 @@ const RegExp_ = builder.parameter4.not.sub.RegExp
  * type _ = Assert.parameter4.sub.Error<(arg: string) => any>
  * ```
  */
-type Error_<$Actual> = Fn.Kind.Apply<SubKind, [Error, Fn.Kind.Apply<Path.Parameter4, [$Actual]>, true]>
+// dprint-ignore
+type Error_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [Error, __actual__, true]>
+                                                                         : never
 const Error_ = builder.parameter4.not.sub.Error
 
 /**
@@ -202,7 +287,11 @@ const Error_ = builder.parameter4.not.sub.Error
  * type _ = Assert.parameter4.sub.unknown<(arg: string) => any>
  * ```
  */
-type unknown_<$Actual> = Fn.Kind.Apply<SubKind, [unknown, Fn.Kind.Apply<Path.Parameter4, [$Actual]>, true]>
+// dprint-ignore
+type unknown_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [unknown, __actual__, true]>
+                                                                         : never
 const unknown_ = builder.parameter4.not.sub.unknown
 
 /**
@@ -218,7 +307,11 @@ const unknown_ = builder.parameter4.not.sub.unknown
  * type _ = Assert.parameter4.sub.any<(arg: string) => any>
  * ```
  */
-type any_<$Actual> = Fn.Kind.Apply<SubKind, [any, Fn.Kind.Apply<Path.Parameter4, [$Actual]>, true]>
+// dprint-ignore
+type any_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [any, __actual__, true]>
+                                                                         : never
 const any_ = builder.parameter4.not.sub.any
 
 /**
@@ -234,7 +327,11 @@ const any_ = builder.parameter4.not.sub.any
  * type _ = Assert.parameter4.sub.never<(arg: string) => any>
  * ```
  */
-type never_<$Actual> = Fn.Kind.Apply<SubKind, [never, Fn.Kind.Apply<Path.Parameter4, [$Actual]>, true]>
+// dprint-ignore
+type never_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter4, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [never, __actual__, true]>
+                                                                         : never
 const never_ = builder.parameter4.not.sub.never
 
 const ofAs_ = <$Type>() => builder.parameter4.not.sub.ofAs<$Type>()
@@ -245,6 +342,7 @@ export {
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  false_ as false,
   never_ as never,
   null_ as null,
   number_ as number,
@@ -253,6 +351,7 @@ export {
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
+  true_ as true,
   undefined_ as undefined,
   unknown_ as unknown,
 }

@@ -12,5 +12,7 @@ export const unknown = builder.not.unknown
 export const never = builder.not.never
 export const empty = builder.not.empty
 export type exact<$Expected, $Actual> = Fn.Kind.Apply<ExactKind, [$Expected, $Actual, true]>
+
 export type equiv<$Expected, $Actual> = Fn.Kind.Apply<EquivKind, [$Expected, $Actual, true]>
+
 export type sub<$Expected, $Actual> = Fn.Kind.Apply<SubKind, [$Expected, $Actual, true]>

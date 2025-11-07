@@ -88,7 +88,7 @@ type boolean_<$Actual> = Fn.Kind.Apply<EquivKind, [boolean, $Actual]>
 const boolean_ = builder.equiv.boolean
 
 /**
- * Pre-curried matcher for true literal.
+ * Pre-curried matcher for true.
  *
  * @example
  * ```typescript
@@ -96,14 +96,14 @@ const boolean_ = builder.equiv.boolean
  * type _ = Assert.equiv.true<true>
  *
  * // ✗ Fail
- * type _ = Assert.equiv.true<false>
+ * type _ = Assert.equiv.true<string>
  * ```
  */
 type true_<$Actual> = Fn.Kind.Apply<EquivKind, [true, $Actual]>
 const true_ = builder.equiv.true
 
 /**
- * Pre-curried matcher for false literal.
+ * Pre-curried matcher for false.
  *
  * @example
  * ```typescript
@@ -111,7 +111,7 @@ const true_ = builder.equiv.true
  * type _ = Assert.equiv.false<false>
  *
  * // ✗ Fail
- * type _ = Assert.equiv.false<true>
+ * type _ = Assert.equiv.false<string>
  * ```
  */
 type false_<$Actual> = Fn.Kind.Apply<EquivKind, [false, $Actual]>

@@ -88,6 +88,36 @@ type boolean_<$Actual> = Fn.Kind.Apply<EquivKind, [boolean, $Actual, true]>
 const boolean_ = builder.not.equiv.boolean
 
 /**
+ * Pre-curried matcher for true.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.equiv.true<true>
+ *
+ * // ✗ Fail
+ * type _ = Assert.equiv.true<string>
+ * ```
+ */
+type true_<$Actual> = Fn.Kind.Apply<EquivKind, [true, $Actual, true]>
+const true_ = builder.not.equiv.true
+
+/**
+ * Pre-curried matcher for false.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.equiv.false<false>
+ *
+ * // ✗ Fail
+ * type _ = Assert.equiv.false<string>
+ * ```
+ */
+type false_<$Actual> = Fn.Kind.Apply<EquivKind, [false, $Actual, true]>
+const false_ = builder.not.equiv.false
+
+/**
  * Pre-curried matcher for undefined.
  *
  * @example
@@ -230,6 +260,7 @@ export {
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  false_ as false,
   never_ as never,
   null_ as null,
   number_ as number,
@@ -238,6 +269,7 @@ export {
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
+  true_ as true,
   undefined_ as undefined,
   unknown_ as unknown,
 }

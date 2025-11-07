@@ -6,13 +6,21 @@ import * as Assert from './__.js'
 
 // Shared type aliases for tests
 type CA = { id: string; user: { name: string; age: number }; tags: string[] }
-type CB = { id: string; user: { name: string; age: string }; tags: string[]; extra: boolean }
+type CB = {
+  id: string
+  user: { name: string; age: string }
+  tags: string[]
+  extra: boolean
+}
 
 class Foo {
   constructor(public ts_assert_fixture_a: Date) {}
 }
 class Bar {
-  constructor(public ts_assert_fixture_a: string, public ts_assert_fixture_b: number) {}
+  constructor(
+    public ts_assert_fixture_a: string,
+    public ts_assert_fixture_b: number,
+  ) {}
 }
 
 export {}
@@ -29,55 +37,60 @@ declare global {
 // exact() Tests
 
 test('exact error - string vs number', () => {
-  attest({} as Assert.exact.of<string, number>).type.toString.snap(`{
-  ERROR_________: "EXPECTED and ACTUAL are disjoint"
+  type E = Ts.Err.Show<Assert.exact<string, number>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "EXPECTED and ACTUAL are disjoint"
   expected______: string
   actual________: number
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
 test('exact error - SingleOperation case', () => {
   type A<T = {}> = { query: T }
   type B = { name: 'default'; result: { a: string | null } }
-  attest({} as Assert.exact.of<A, B>).type.toString.snap(`{
-  ERROR_________: "EXPECTED only overlaps with ACTUAL"
+  type E = Ts.Err.Show<Assert.exact<A, B>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "EXPECTED only overlaps with ACTUAL"
   expected______: A<{}>
   actual________: B
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
 test('exact error - with built-in types preserved', () => {
   type A = { a: Date; b: string }
   type B = { a: number; b: string }
-  attest({} as Assert.exact.of<A, B>).type.toString.snap(`{
-  ERROR_________: "EXPECTED only overlaps with ACTUAL"
+  type E = Ts.Err.Show<Assert.exact<A, B>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "EXPECTED only overlaps with ACTUAL"
   expected______: A
   actual________: B
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
 test('exact error - diff with missing, excess, and mismatched', () => {
-  type E = { id: string; name: string; age: number }
-  type A = { id: number; name: string; email: string }
-  attest({} as Assert.exact.of<E, A>).type.toString.snap(`{
-  ERROR_________: "EXPECTED only overlaps with ACTUAL"
-  expected______: E
-  actual________: A
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
+  type Expected = { id: string; name: string; age: number }
+  type Actual = { id: number; name: string; email: string }
+  type E = Ts.Err.Show<Assert.exact<Expected, Actual>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "EXPECTED only overlaps with ACTUAL"
+  expected______: Expected
+  actual________: Actual
 }`)
 })
 
 test('exact error - optionality difference', () => {
-  type E = { x: 1 }
-  type A = { x?: 1 }
-  attest({} as Assert.exact.of<E, A>).type.toString.snap(`{
-  ERROR_________: "ACTUAL is supertype of EXPECTED"
-  expected______: E
-  actual________: A
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
+  type Expected = { x: 1 }
+  type Actual = { x?: 1 }
+  type E = Ts.Err.Show<Assert.exact<Expected, Actual>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "ACTUAL is supertype of EXPECTED"
+  expected______: Expected
+  actual________: Actual
 }`)
 })
 
@@ -86,10 +99,10 @@ test('exact value mode - basic type mismatches', () => {
   const p = Ts.as<Parameters<typeof fn>>()
   attest(p).type.toString.snap(`[
   {
-    ERROR_________: "EXPECTED and ACTUAL are disjoint"
+    ERROR_________: ".assert"
+    message_______: "EXPECTED and ACTUAL are disjoint"
     expected______: string
     actual________: 42
-    HIERARCHY_____: readonly ["root", "assert", ...string[]]
   }
 ]`)
 
@@ -97,21 +110,20 @@ test('exact value mode - basic type mismatches', () => {
   const p2 = Ts.as<Parameters<typeof fn2>>()
   attest(p2).type.toString.snap(`[
   {
-    ERROR_________: "EXPECTED only overlaps with ACTUAL"
+    ERROR_________: ".assert"
+    message_______: "EXPECTED only overlaps with ACTUAL"
     expected______: { a: string }
     actual________: { a: number; b: number }
-    HIERARCHY_____: readonly ["root", "assert", ...string[]]
   }
 ]`)
 })
 
-// Note: never handling is now covered by guard tests
-
 test('exact value mode - parameter-based error feedback', () => {
-  type IsExact<E, A> = E extends A ? A extends E ? true : false : false
+  type IsExact<E, A> = E extends A ? (A extends E ? true : false) : false
   type ExactV1<E> = <A>(
     actual: A,
-    ...errorInfo: IsExact<E, A> extends true ? [] : [error: '⚠ Types are not exactly equal', expected: E]
+    ...errorInfo: IsExact<E, A> extends true ? []
+      : [error: '⚠ Types are not exactly equal', expected: E]
   ) => void
 
   const exactV1 = (() => {}) as ExactV1<string>
@@ -135,12 +147,12 @@ test('exact value mode - parameter-based error feedback', () => {
 })
 
 test('exact value mode - complex type aliases in signatures', () => {
-  const exactComplexA = Assert.exact.ofAs<CA>().on
-  const fnComplexError = exactComplexA<CB>
-  const p3 = Ts.as<Parameters<typeof fnComplexError>>()
-  attest(p3).type.toString.snap(`[
+  const on = Assert.exact.ofAs<CA>().on<CB>
+  type P = Parameters<typeof on>
+  attest({} as P).type.toString.snap(`[
   actual: {
-    ERROR_________: "EXPECTED only overlaps with ACTUAL"
+    ERROR_________: ".assert"
+    message_______: "EXPECTED only overlaps with ACTUAL"
     expected______: {
       id: string
       user: { name: string; age: number }
@@ -152,7 +164,6 @@ test('exact value mode - complex type aliases in signatures', () => {
       tags: string[]
       extra: boolean
     }
-    HIERARCHY_____: readonly ["root", "assert", ...string[]]
   }
 ]`)
 })
@@ -160,48 +171,54 @@ test('exact value mode - complex type aliases in signatures', () => {
 // StaticErrorAssertion Tests
 
 test('error with custom metadata', () => {
-  type e = Assert.StaticErrorAssertion<
-    'Custom validation failed',
-    { a: string },
-    { a: number },
-    { location: 'src/file.ts:42'; hint: 'Use string' }
+  type E = Ts.Err.Show<
+    Assert.StaticErrorAssertion<
+      'Custom validation failed',
+      { a: string },
+      { a: number },
+      { location: 'src/file.ts:42'; hint: 'Use string' }
+    >
   >
-  attest({} as e).type.toString.snap(`{
-  ERROR_________: "Custom validation failed"
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "Custom validation failed"
   expected______: { a: string }
   actual________: { a: number }
   location______: "src/file.ts:42"
   hint__________: "Use string"
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
-test('error with tip string (backward compat)', () => {
-  type e = Assert.StaticErrorAssertion<'Type mismatch', string, number, 'Use string'>
-  attest({} as e).type.toString.snap(`{
-  ERROR_________: "Type mismatch"
+test('error with tip string', () => {
+  type E = Ts.Err.Show<
+    Assert.StaticErrorAssertion<'Type mismatch', string, number, 'Use string'>
+  >
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "Type mismatch"
   expected______: string
   actual________: number
   tip___________: "Use string"
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
 test('error with tuple of tips', () => {
-  type e = Assert.StaticErrorAssertion<
-    'Type mismatch',
-    string,
-    number,
-    ['Use string', 'Check docs', 'See example']
+  type E = Ts.Err.Show<
+    Assert.StaticErrorAssertion<
+      'Type mismatch',
+      string,
+      number,
+      ['Use string', 'Check docs', 'See example']
+    >
   >
-  attest({} as e).type.toString.snap(`{
-  ERROR_________: "Type mismatch"
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "Type mismatch"
   expected______: string
   actual________: number
   tip_a_________: "Use string"
   tip_b_________: "Check docs"
   tip_c_________: "See example"
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -210,33 +227,35 @@ test('error with tuple of tips', () => {
 test('user-defined types preserved with preserveTypes setting', () => {
   type A = { a: Foo; b: string }
   type B = { a: Date; b: string }
-  attest({} as Assert.exact.of<A, B>).type.toString.snap(`{
-  ERROR_________: "EXPECTED only overlaps with ACTUAL"
+  type E = Ts.Err.Show<Assert.exact<A, B>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "EXPECTED only overlaps with ACTUAL"
   expected______: A
   actual________: B
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
 test('multiple preserved types from different augmentations', () => {
   type A = { a: Bar; b: string }
   type B = { a: { a: number; b: number }; b: string }
-  attest({} as Assert.exact.of<A, B>).type.toString.snap(`{
-  ERROR_________: "EXPECTED only overlaps with ACTUAL"
+  type E = Ts.Err.Show<Assert.exact<A, B>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "EXPECTED only overlaps with ACTUAL"
   expected______: A
   actual________: B
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
 // sub() Tests
 
 test('sub error - string does not extend hello', () => {
-  attest({} as Assert.sub.of<'hello', string>).type.toString.snap(`{
-  ERROR_________: "ACTUAL does not extend EXPECTED"
+  attest({} as Ts.Err.Show<Assert.sub<'hello', string>>).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "ACTUAL does not extend EXPECTED"
   expected______: "hello"
   actual________: string
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -255,34 +274,35 @@ test('sub error - string does not extend hello', () => {
 // subNot() Tests
 
 test('subNot error - hello extends string', () => {
-  attest({} as Assert.not.sub<string, 'hello'>).type.toString.snap(`{
-  ERROR_________: "ACTUAL extends EXPECTED but should not"
+  attest({} as Ts.Err.Show<Assert.not.sub<string, 'hello'>>).type.toString
+    .snap(`{
+  ERROR_________: ".assert"
+  message_______: "ACTUAL extends EXPECTED but should not"
   expected______: string
   actual________: "hello"
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
 // equiv() Tests
 
 test('equiv errors', () => {
-  attest({} as Assert.equiv.of<string, number>).type.toString.snap(`{
-  ERROR_________: "EXPECTED and ACTUAL are disjoint"
+  attest({} as Ts.Err.Show<Assert.equiv<string, number>>).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "EXPECTED and ACTUAL are disjoint"
   expected______: string
   actual________: number
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
-  attest({} as Assert.equiv.of<string, 'hello'>).type.toString.snap(`{
-  ERROR_________: "ACTUAL extends EXPECTED but not vice versa"
+  attest({} as Ts.Err.Show<Assert.equiv<string, 'hello'>>).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "ACTUAL extends EXPECTED but not vice versa"
   expected______: string
   actual________: "hello"
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
-  attest({} as Assert.equiv.of<'hello', string>).type.toString.snap(`{
-  ERROR_________: "EXPECTED extends ACTUAL but not vice versa"
+  attest({} as Ts.Err.Show<Assert.equiv<'hello', string>>).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "EXPECTED extends ACTUAL but not vice versa"
   expected______: "hello"
   actual________: string
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
@@ -307,77 +327,80 @@ test('equiv errors', () => {
 
 test('extractor - parameters', () => {
   type Fn = (a: number, b: number) => number
-  attest({} as Assert.parameters.exact.of<[string, string], Fn>).type.toString.snap(`{
-  ERROR_________: "EXPECTED only overlaps with ACTUAL"
+  type E = Ts.Err.Show<Assert.parameters.exact<[string, string], Fn>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "EXPECTED only overlaps with ACTUAL"
   expected______: [string, string]
   actual________: [a: number, b: number]
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
 test('extractor - awaited', () => {
-  type _Pass = Assert.awaited.exact.of<number, Promise<number>>
-  attest({} as Assert.awaited.exact.of<string, Promise<number>>).type.toString.snap(`{
-  ERROR_________: "EXPECTED and ACTUAL are disjoint"
+  type _Pass = Assert.awaited.exact<number, Promise<number>>
+  type E = Ts.Err.Show<Assert.awaited.exact<string, Promise<number>>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "EXPECTED and ACTUAL are disjoint"
   expected______: string
   actual________: number
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
 test('extractor - array', () => {
   type _Pass = Assert.array.exact<string, string[]>
-  attest({} as Assert.array.exact<number, string[]>).type.toString.snap(`{
-  ERROR_________: "EXPECTED and ACTUAL are disjoint"
+  type E = Ts.Err.Show<Assert.array.exact<number, string[]>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".assert"
+  message_______: "EXPECTED and ACTUAL are disjoint"
   expected______: number
   actual________: string
-  HIERARCHY_____: readonly ["root", "assert", ...string[]]
 }`)
 })
 
 // Extractor Resolution Errors - Value-Second API
 
 test('extractor error - array on non-array', () => {
-  type ParamError = Assert.array.exact.of<number, string>
-  attest({} as ParamError).type.toString.snap(`{
-  ERROR_________: "Cannot extract array from incompatible type"
+  type E = Ts.Err.Show<Assert.array.exact<number, string>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".path.extractor-incompatible"
+  message_______: "Cannot extract array from incompatible type"
   expected______: "Type must extend array (readonly any[])"
   actual________: string
   attempted_____: "array extractor"
-  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
 test('extractor error - awaited on non-Promise string', () => {
-  type ParamError = Assert.awaited.exact.of<number, string>
-  attest({} as ParamError).type.toString.snap(`{
-  ERROR_________: "Cannot extract awaited from incompatible type"
+  type E = Ts.Err.Show<Assert.awaited.exact<number, string>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".path.extractor-incompatible"
+  message_______: "Cannot extract awaited from incompatible type"
   expected______: "Type must extend PromiseLike<any>"
   actual________: string
   attempted_____: "awaited extractor"
-  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
 test('extractor error - parameters on non-function', () => {
-  type ParamError = Assert.parameters.exact.of<[number], string>
-  attest({} as ParamError).type.toString.snap(`{
-  ERROR_________: "Cannot extract parameters from incompatible type"
+  type E = Ts.Err.Show<Assert.parameters.exact<[number], string>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".path.extractor-incompatible"
+  message_______: "Cannot extract parameters from incompatible type"
   expected______: "Type must extend function ((...args: any) => any)"
   actual________: string
   attempted_____: "parameters extractor"
-  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
 test('extractor error - returned on non-function', () => {
-  type ParamError = Assert.returned.exact.of<number, string>
-  attest({} as ParamError).type.toString.snap(`{
-  ERROR_________: "Cannot extract returned from incompatible type"
+  type E = Ts.Err.Show<Assert.returned.exact<number, string>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".path.extractor-incompatible"
+  message_______: "Cannot extract returned from incompatible type"
   expected______: "Type must extend function ((...args: any) => any)"
   actual________: string
   attempted_____: "returned extractor"
-  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
@@ -386,32 +409,32 @@ test('extractor error - returned on non-function', () => {
 test('extractor - awaited with union containing Promise (type-level)', () => {
   // Union with Promise should NOT error - the Promise part is valid
   type MixedUnion = string | Promise<number>
-  type _Pass = Assert.awaited.exact.of<number, MixedUnion> // Should pass - extracts from Promise part
+  type _Pass = Assert.awaited.exact<number, MixedUnion> // Should pass - extracts from Promise part
 
   // Pure string should error
-  type _Error = Assert.awaited.exact.of<number, string>
-  attest({} as _Error).type.toString.snap(`{
-  ERROR_________: "Cannot extract awaited from incompatible type"
+  type E = Ts.Err.Show<Assert.awaited.exact<number, string>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".path.extractor-incompatible"
+  message_______: "Cannot extract awaited from incompatible type"
   expected______: "Type must extend PromiseLike<any>"
   actual________: string
   attempted_____: "awaited extractor"
-  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
 test('extractor - array with union containing array (type-level)', () => {
   // Union with array should NOT error - the array part is valid
   type MixedUnion = string | number[]
-  type _Pass = Assert.array.exact.of<number, MixedUnion> // Should pass - extracts from array part
+  type _Pass = Assert.array.exact<number, MixedUnion> // Should pass - extracts from array part
 
   // Pure string should error
-  type _Error = Assert.array.exact.of<number, string>
-  attest({} as _Error).type.toString.snap(`{
-  ERROR_________: "Cannot extract array from incompatible type"
+  type E = Ts.Err.Show<Assert.array.exact<number, string>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".path.extractor-incompatible"
+  message_______: "Cannot extract array from incompatible type"
   expected______: "Type must extend array (readonly any[])"
   actual________: string
   attempted_____: "array extractor"
-  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
@@ -419,49 +442,49 @@ test('extractor - array with union containing array (type-level)', () => {
 
 test('extractor - awaited value-level API', () => {
   const promiseValue = Promise.resolve(42)
-  type _Pass = Assert.awaited.exact.of<number, typeof promiseValue>
+  type _Pass = Assert.awaited.exact<number, typeof promiseValue>
 
   // Error case - string is not a Promise
   const stringValue = 'hello'
-  type _Error = Assert.awaited.exact.of<number, typeof stringValue>
-  attest({} as _Error).type.toString.snap(`{
-  ERROR_________: "Cannot extract awaited from incompatible type"
+  type E = Ts.Err.Show<Assert.awaited.exact<number, typeof stringValue>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".path.extractor-incompatible"
+  message_______: "Cannot extract awaited from incompatible type"
   expected______: "Type must extend PromiseLike<any>"
   actual________: "hello"
   attempted_____: "awaited extractor"
-  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
 test('extractor - array value-level API', () => {
   const arrayValue = [1, 2, 3]
-  type _Pass = Assert.array.exact.of<number, typeof arrayValue>
+  type _Pass = Assert.array.exact<number, typeof arrayValue>
 
   // Error case - string is not an array
   const stringValue = 'hello'
-  type _Error = Assert.array.exact.of<number, typeof stringValue>
-  attest({} as _Error).type.toString.snap(`{
-  ERROR_________: "Cannot extract array from incompatible type"
+  type E = Ts.Err.Show<Assert.array.exact<number, typeof stringValue>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".path.extractor-incompatible"
+  message_______: "Cannot extract array from incompatible type"
   expected______: "Type must extend array (readonly any[])"
   actual________: "hello"
   attempted_____: "array extractor"
-  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
 test('extractor - returned value-level API', () => {
   const fnValue = () => 42
-  type _Pass = Assert.returned.exact.of<number, typeof fnValue>
+  type _Pass = Assert.returned.exact<number, typeof fnValue>
 
   // Error case - string is not a function
   const stringValue = 'hello'
-  type _Error = Assert.returned.exact.of<number, typeof stringValue>
-  attest({} as _Error).type.toString.snap(`{
-  ERROR_________: "Cannot extract returned from incompatible type"
+  type E = Ts.Err.Show<Assert.returned.exact<number, typeof stringValue>>
+  attest({} as E).type.toString.snap(`{
+  ERROR_________: ".path.extractor-incompatible"
+  message_______: "Cannot extract returned from incompatible type"
   expected______: "Type must extend function ((...args: any) => any)"
   actual________: "hello"
   attempted_____: "returned extractor"
-  HIERARCHY_____: readonly ["root", ...string[]]
 }`)
 })
 
@@ -473,7 +496,8 @@ test('extractor - returned value-level API', () => {
 
 test('.extract() - type signature exists', () => {
   // Verify .extract() method exists on Assert builder
-  type _HasExtract = typeof Assert extends { extract: (...args: any[]) => any } ? true : false
+  type _HasExtract = typeof Assert extends { extract: (...args: any[]) => any } ? true
+    : false
   type _Check = Ts.Assert.exact<_HasExtract, true>
 })
 

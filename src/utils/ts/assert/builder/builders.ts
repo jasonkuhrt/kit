@@ -1,14 +1,17 @@
 import type { Fn } from '#fn'
 import type { Inhabitance, SENTINEL } from '#ts/ts'
+import type { Either } from 'effect'
 import type * as Path from '../../path.js'
 import type { ExtractorRegistry } from '../../path.js'
 import type { EquivKind, EquivNoExcessKind, ExactKind, SubKind, SubNoExcessKind } from '../kinds/relators.js'
 import type {
+  AssertActual,
+  AssertExpected,
+  AssertUnaryRelator,
+  CheckAgainstAnyNeverUnknown,
   GuardActual,
-  GuardAgainstAnyNeverUnknown,
   GuardExpected,
-  GuardUnaryRelator,
-  OnlyFailingChecks,
+  OnlyAssertionErrorsAndShow,
 } from './guards.js'
 import type { State as S } from './state.js'
 
@@ -89,20 +92,25 @@ export interface InputActualForUnaryRelatorNarrow<
   $State extends S,
   $Kind extends 'any' | 'unknown' | 'never' | 'empty',
 > {
-  <const $actual>(value: $actual, ...params: OnlyFailingChecks<[GuardUnaryRelator<$actual, $State, $Kind>]>): void
+  <const $actual>(
+    value: $actual,
+    ...params: OnlyAssertionErrorsAndShow<[AssertUnaryRelator<$actual, $State, $Kind>]>
+  ): void
 }
 
 export interface InputActualForUnaryRelatorWide<$State extends S, $Kind extends 'any' | 'unknown' | 'never' | 'empty'> {
-  <$actual>(value: $actual, ...params: OnlyFailingChecks<[GuardUnaryRelator<$actual, $State, $Kind>]>): void
+  <$actual>(value: $actual, ...params: OnlyAssertionErrorsAndShow<[AssertUnaryRelator<$actual, $State, $Kind>]>): void
 }
 
 export type ExecuteUnaryRelator<
   $State extends S,
   $Kind extends 'any' | 'unknown' | 'never' | 'empty',
-  ___ActualExtracted = Path.ApplyExtractors<$State['actual_extractors'], $State['actual_type']>,
-> = (
-  ...params: OnlyFailingChecks<[GuardUnaryRelator<___ActualExtracted, $State, $Kind>]>
-) => void
+  ___ExtractionResult = Path.ApplyExtractors<$State['actual_extractors'], $State['actual_type']>,
+> = ___ExtractionResult extends Either.Left<infer ERROR, infer _>
+  ? (...params: OnlyAssertionErrorsAndShow<[ERROR]>) => void // Extraction failed - propagate error
+  : ___ExtractionResult extends Either.Right<infer _, infer VALUE>
+    ? (...params: OnlyAssertionErrorsAndShow<[AssertUnaryRelator<VALUE, $State, $Kind>]>) => void // Extraction succeeded
+  : never
 
 //
 //
@@ -146,16 +154,26 @@ export type BuilderExtractors<
  * Each extractor returns a builder with that extractor added to the chain.
  */
 export type BuilderExtractorsConstant<$State extends S> = {
-  readonly [K in keyof ExtractorRegistry]: Builder<S.AddExtractor<$State, ExtractorRegistry[K]>>
+  readonly [K in keyof ExtractorRegistry]: Builder<S.AddActualExtractor<$State, ExtractorRegistry[K]>>
 }
+
+/**
+ * Unwrap Either.Right to get the success value after extraction.
+ * Used to determine what extractors are applicable to the transformed type.
+ */
+type UnwrapExtractionResult<$Result> = $Result extends Either.Right<infer _, infer __value__> ? __value__
+  : $Result // If Left, extraction failed - shouldn't happen in conditional context
 
 export type BuilderExtractorsConditionalMaybe<
   $State extends S,
-  ___$ActualIsEmpty extends boolean = SENTINEL.IsEmpty<$State['actual_type']>,
-  ___$ActualInhabitanceCase extends Inhabitance.Case = Inhabitance.GetCase<$State['actual_type']>,
+  ___$ActualAfterExtraction = UnwrapExtractionResult<
+    Path.ApplyExtractors<$State['actual_extractors'], $State['actual_type']>
+  >,
+  ___$ActualIsEmpty extends boolean = SENTINEL.IsEmpty<___$ActualAfterExtraction>,
+  ___$ActualInhabitanceCase extends Inhabitance.Case = Inhabitance.GetCase<___$ActualAfterExtraction>,
 > = ___$ActualIsEmpty extends true ? BuilderExtractorsConstant<$State> // Empty sentinel - use constant (HKT) extractors
   : {
-    'proper': BuilderExtractorsConditional<$State>
+    'proper': BuilderExtractorsConditionalAfterExtraction<$State, ___$ActualAfterExtraction>
     // else constant extractors only
     'any': BuilderExtractorsConstant<$State>
     'unknown': BuilderExtractorsConstant<$State>
@@ -163,16 +181,34 @@ export type BuilderExtractorsConditionalMaybe<
   }[___$ActualInhabitanceCase]
 
 /**
- * Conditional extractors based on actual type structure.
+ * Conditional extractors based on the type AFTER applying the extraction chain.
+ *
+ * This variant is used when extractors have already been added to the state.
+ * It checks applicability against the transformed type, not the raw actual type.
+ *
+ * @param $State - Current builder state
+ * @param $ActualAfterExtraction - The actual type after applying all extractors in the chain
+ */
+export type BuilderExtractorsConditionalAfterExtraction<$State extends S, $ActualAfterExtraction> = {
+  readonly [K in keyof Path.GetApplicableExtractors<$ActualAfterExtraction> & keyof ExtractorRegistry]: Builder<
+    S.AddActualExtractor<$State, ExtractorRegistry[K]>
+  >
+}
+
+/**
+ * Conditional extractors based on actual type structure (no prior extraction).
  *
  * Uses Path.GetApplicableExtractors to determine which extractors are valid for the type,
- * then applies each extractor from the registry and wraps in a Builder.
+ * then adds each extractor to the transformation chain (like BuilderExtractorsConstant).
  *
- * Type analysis logic lives in ts/path, this just orchestrates builders.
+ * The difference from Constant is that Conditional only exposes applicable extractors,
+ * while Constant exposes all extractors (for HKT use cases).
+ *
+ * Extraction happens later during validation, not here.
  */
 export type BuilderExtractorsConditional<$State extends S> = {
   readonly [K in keyof Path.GetApplicableExtractors<$State['actual_type']> & keyof ExtractorRegistry]: Builder<
-    S.SetActualType<$State, Fn.Kind.Apply<ExtractorRegistry[K], [$State['actual_type']]>>
+    S.AddActualExtractor<$State, ExtractorRegistry[K]>
   >
 }
 
@@ -219,9 +255,9 @@ export interface BuilderMatchers<
   readonly RegExp: InputActualDispatch<S.SetExpectedType<$State, RegExp>>
   readonly Error: InputActualDispatch<S.SetExpectedType<$State, Error>>
 
-  readonly unknown: InputActualDispatch<S.SetExpectedType<S.SetAllowUnknown<$State>, unknown>>
-  readonly any: InputActualDispatch<S.SetExpectedType<S.SetAllowAny<$State>, any>>
-  readonly never: InputActualDispatch<S.SetExpectedType<S.SetAllowNever<$State>, never>>
+  readonly unknown: UnaryRelatorDispatch<S.SetExpectedType<S.SetAllowUnknown<$State>, unknown>, 'unknown'>
+  readonly any: UnaryRelatorDispatch<S.SetExpectedType<S.SetAllowAny<$State>, any>, 'any'>
+  readonly never: UnaryRelatorDispatch<S.SetExpectedType<S.SetAllowNever<$State>, never>, 'never'>
 
   /**
    * NoExcess modifier - adds excess property checking to relation.
@@ -291,7 +327,9 @@ export interface BuilderSettings<$State extends S> {
    * Ts.Assert.extract(composed).exact.of(42).on(value)
    * ```
    */
-  extract<$Extractor extends Fn.Extractor>(extractor: $Extractor): Builder<S.AddExtractor<$State, $Extractor['kind']>>
+  extract<$Extractor extends Fn.Extractor>(
+    extractor: $Extractor,
+  ): Builder<S.AddActualExtractor<$State, $Extractor['kind']>>
 
   /**
    * Configure inference mode to narrow (literals with readonly preserved).
@@ -363,9 +401,9 @@ export type InputExpectedAsTypeParam<
 > = {
   'either': []
   // Trigger
-  'expected': OnlyFailingChecks<[
-    GuardExpected<$expected, $State>,
-    ...GuardAgainstAnyNeverUnknown<$State['actual_type'], $expected, $State>,
+  'expected': OnlyAssertionErrorsAndShow<[
+    AssertExpected<$expected, $State>,
+    ...CheckAgainstAnyNeverUnknown<$State['actual_type'], $expected, $State>,
   ]>
   // Awaiting actual now
   'actual': []
@@ -382,7 +420,7 @@ export type InputExpectedAsValueParams<
   // Expected missing, actual IS set - validate expected against actual
   'expected': [
     expected: GuardExpected<$expected, $State>,
-    ...GuardAgainstAnyNeverUnknown<$State['actual_type'], $expected, $State>,
+    ...CheckAgainstAnyNeverUnknown<$State['actual_type'], $expected, $State>,
   ]
   // Impossible - expected already set
   'actual': never
@@ -437,7 +475,7 @@ export type InputActualAsValueParams<
   // trigger
   'actual': [
     actual: GuardActual<$actual, $State>,
-    ...GuardAgainstAnyNeverUnknown<NoInfer<$actual>, $State['expected_type'], $State>,
+    ...CheckAgainstAnyNeverUnknown<NoInfer<$actual>, $State['expected_type'], $State>,
   ]
   // Impossible, only at the end of the chain can this happen
   'complete': never
@@ -460,9 +498,9 @@ export type InputActualAsTypeParam<
   // Impossible
   'expected': never
   // Expected-first mode - apply guards to validate actual matches expected
-  'actual': OnlyFailingChecks<[
-    GuardActual<$actual, $State>,
-    ...GuardAgainstAnyNeverUnknown<$actual, $State['expected_type'], $State>,
+  'actual': OnlyAssertionErrorsAndShow<[
+    AssertActual<$actual, $State>,
+    ...CheckAgainstAnyNeverUnknown<$actual, $State['expected_type'], $State>,
   ]>
   // Impossible
   'complete': never
@@ -496,8 +534,8 @@ export type DispatchAfterInput<$State extends S> = {
 //
 
 type ExecuteLone<$State extends S> = (
-  ...errors: OnlyFailingChecks<[
-    GuardActual<$State['actual_type'], $State>,
-    ...GuardAgainstAnyNeverUnknown<$State['actual_type'], $State['expected_type'], $State>,
+  ...errors: OnlyAssertionErrorsAndShow<[
+    AssertActual<$State['actual_type'], $State>,
+    ...CheckAgainstAnyNeverUnknown<$State['actual_type'], $State['expected_type'], $State>,
   ]>
 ) => void

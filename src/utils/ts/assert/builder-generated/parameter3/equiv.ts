@@ -1,4 +1,5 @@
 import type { Fn } from '#fn'
+import type { Either } from 'effect'
 import type * as Path from '../../../path.js'
 import { builder } from '../../builder-singleton.js'
 import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
@@ -26,7 +27,11 @@ import type { EquivKind, EquivNoExcessKind } from '../../kinds/relators.js'
  * type _ = Assert.parameter3.equiv.of<string, (arg: number) => any>
  * ```
  */
-type of_<$Expected, $Actual> = Fn.Kind.Apply<EquivKind, [$Expected, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]>
+// dprint-ignore
+type of_<$Expected, $Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [$Expected, __actual__]>
+                                                                         : never
 const of_ = builder.parameter3.equiv.of
 
 /**
@@ -42,7 +47,11 @@ const of_ = builder.parameter3.equiv.of
  * type _ = Assert.parameter3.equiv.string<(arg: number) => any>
  * ```
  */
-type string_<$Actual> = Fn.Kind.Apply<EquivKind, [string, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]>
+// dprint-ignore
+type string_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [string, __actual__]>
+                                                                         : never
 const string_ = builder.parameter3.equiv.string
 
 /**
@@ -58,7 +67,11 @@ const string_ = builder.parameter3.equiv.string
  * type _ = Assert.parameter3.equiv.number<(arg: string) => any>
  * ```
  */
-type number_<$Actual> = Fn.Kind.Apply<EquivKind, [number, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]>
+// dprint-ignore
+type number_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [number, __actual__]>
+                                                                         : never
 const number_ = builder.parameter3.equiv.number
 
 /**
@@ -74,7 +87,11 @@ const number_ = builder.parameter3.equiv.number
  * type _ = Assert.parameter3.equiv.bigint<(arg: string) => any>
  * ```
  */
-type bigint_<$Actual> = Fn.Kind.Apply<EquivKind, [bigint, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]>
+// dprint-ignore
+type bigint_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [bigint, __actual__]>
+                                                                         : never
 const bigint_ = builder.parameter3.equiv.bigint
 
 /**
@@ -90,8 +107,52 @@ const bigint_ = builder.parameter3.equiv.bigint
  * type _ = Assert.parameter3.equiv.boolean<(arg: string) => any>
  * ```
  */
-type boolean_<$Actual> = Fn.Kind.Apply<EquivKind, [boolean, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]>
+// dprint-ignore
+type boolean_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [boolean, __actual__]>
+                                                                         : never
 const boolean_ = builder.parameter3.equiv.boolean
+
+/**
+ * Pre-curried matcher for true.
+ * Extraction chain: (p1: any, p2: any, p3: T, ...) => any → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameter3.equiv.true<(arg: true) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameter3.equiv.true<(arg: string) => any>
+ * ```
+ */
+// dprint-ignore
+type true_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [true, __actual__]>
+                                                                         : never
+const true_ = builder.parameter3.equiv.true
+
+/**
+ * Pre-curried matcher for false.
+ * Extraction chain: (p1: any, p2: any, p3: T, ...) => any → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.parameter3.equiv.false<(arg: false) => any>
+ *
+ * // ✗ Fail
+ * type _ = Assert.parameter3.equiv.false<(arg: string) => any>
+ * ```
+ */
+// dprint-ignore
+type false_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [false, __actual__]>
+                                                                         : never
+const false_ = builder.parameter3.equiv.false
 
 /**
  * Pre-curried matcher for undefined.
@@ -106,7 +167,11 @@ const boolean_ = builder.parameter3.equiv.boolean
  * type _ = Assert.parameter3.equiv.undefined<(arg: string) => any>
  * ```
  */
-type undefined_<$Actual> = Fn.Kind.Apply<EquivKind, [undefined, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]>
+// dprint-ignore
+type undefined_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [undefined, __actual__]>
+                                                                         : never
 const undefined_ = builder.parameter3.equiv.undefined
 
 /**
@@ -122,7 +187,11 @@ const undefined_ = builder.parameter3.equiv.undefined
  * type _ = Assert.parameter3.equiv.null<(arg: string) => any>
  * ```
  */
-type null_<$Actual> = Fn.Kind.Apply<EquivKind, [null, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]>
+// dprint-ignore
+type null_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [null, __actual__]>
+                                                                         : never
 const null_ = builder.parameter3.equiv.null
 
 /**
@@ -138,7 +207,11 @@ const null_ = builder.parameter3.equiv.null
  * type _ = Assert.parameter3.equiv.symbol<(arg: string) => any>
  * ```
  */
-type symbol_<$Actual> = Fn.Kind.Apply<EquivKind, [symbol, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]>
+// dprint-ignore
+type symbol_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [symbol, __actual__]>
+                                                                         : never
 const symbol_ = builder.parameter3.equiv.symbol
 
 /**
@@ -154,7 +227,11 @@ const symbol_ = builder.parameter3.equiv.symbol
  * type _ = Assert.parameter3.equiv.Date<(arg: string) => any>
  * ```
  */
-type Date_<$Actual> = Fn.Kind.Apply<EquivKind, [Date, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]>
+// dprint-ignore
+type Date_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [Date, __actual__]>
+                                                                         : never
 const Date_ = builder.parameter3.equiv.Date
 
 /**
@@ -170,7 +247,11 @@ const Date_ = builder.parameter3.equiv.Date
  * type _ = Assert.parameter3.equiv.RegExp<(arg: string) => any>
  * ```
  */
-type RegExp_<$Actual> = Fn.Kind.Apply<EquivKind, [RegExp, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]>
+// dprint-ignore
+type RegExp_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [RegExp, __actual__]>
+                                                                         : never
 const RegExp_ = builder.parameter3.equiv.RegExp
 
 /**
@@ -186,7 +267,11 @@ const RegExp_ = builder.parameter3.equiv.RegExp
  * type _ = Assert.parameter3.equiv.Error<(arg: string) => any>
  * ```
  */
-type Error_<$Actual> = Fn.Kind.Apply<EquivKind, [Error, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]>
+// dprint-ignore
+type Error_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [Error, __actual__]>
+                                                                         : never
 const Error_ = builder.parameter3.equiv.Error
 
 /**
@@ -202,7 +287,11 @@ const Error_ = builder.parameter3.equiv.Error
  * type _ = Assert.parameter3.equiv.unknown<(arg: string) => any>
  * ```
  */
-type unknown_<$Actual> = Fn.Kind.Apply<EquivKind, [unknown, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]>
+// dprint-ignore
+type unknown_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [unknown, __actual__]>
+                                                                         : never
 const unknown_ = builder.parameter3.equiv.unknown
 
 /**
@@ -218,7 +307,11 @@ const unknown_ = builder.parameter3.equiv.unknown
  * type _ = Assert.parameter3.equiv.any<(arg: string) => any>
  * ```
  */
-type any_<$Actual> = Fn.Kind.Apply<EquivKind, [any, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]>
+// dprint-ignore
+type any_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [any, __actual__]>
+                                                                         : never
 const any_ = builder.parameter3.equiv.any
 
 /**
@@ -234,7 +327,11 @@ const any_ = builder.parameter3.equiv.any
  * type _ = Assert.parameter3.equiv.never<(arg: string) => any>
  * ```
  */
-type never_<$Actual> = Fn.Kind.Apply<EquivKind, [never, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]>
+// dprint-ignore
+type never_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [never, __actual__]>
+                                                                         : never
 const never_ = builder.parameter3.equiv.never
 
 const ofAs_ = <$Type>() => builder.parameter3.equiv.ofAs<$Type>()
@@ -242,10 +339,15 @@ const ofAs_ = <$Type>() => builder.parameter3.equiv.ofAs<$Type>()
  * No-excess variant of equiv relation.
  * Checks that actual has no excess properties beyond expected.
  */
-type noExcess_<$Expected, $Actual> = Fn.Kind.Apply<
-  EquivNoExcessKind,
-  [$Expected, Fn.Kind.Apply<Path.Parameter3, [$Actual]>]
->
+// dprint-ignore
+type noExcess_<
+  $Expected,
+  $Actual,
+  __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>,
+> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivNoExcessKind, [$Expected, __actual__]>
+                                                                         : never
 const noExcess_ = builder.parameter3.equiv.noExcess
 const noExcessAs_ = <$Type>() => builder.parameter3.equiv.noExcessAs<$Type>()
 
@@ -255,6 +357,7 @@ export {
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  false_ as false,
   never_ as never,
   noExcess_ as noExcess,
   noExcessAs_ as noExcessAs,
@@ -265,6 +368,7 @@ export {
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
+  true_ as true,
   undefined_ as undefined,
   unknown_ as unknown,
 }

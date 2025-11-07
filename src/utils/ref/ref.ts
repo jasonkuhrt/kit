@@ -166,37 +166,46 @@ export const isValueEquality = (value: Lang.Value): value is Lang.Primitive => {
 /**
  * Error type for when primitive types are used with Ref operations.
  */
-export type ErrorPrimitiveType<T> = Ts.Simplify.Top<
+export interface ErrorPrimitiveType<T> extends
   Ts.Err.StaticError<
-    `Ref operations only work with reference types.`,
-    { ProvidedType: T; tip: `Use domain Eq traits for primitives (e.g., Str.Eq.is, Num.Eq.is).` }
+    ['ref', 'primitive-type'],
+    {
+      message: `Ref operations only work with reference types.`
+      ProvidedType: T
+      tip: `Use domain Eq traits for primitives (e.g., Str.Eq.is, Num.Eq.is).`
+    }
   >
->
+{}
 
 /**
  * Error type for comparing identical primitive literals.
  */
-export type ErrorNotComparableSamePrimitive<T> = Ts.Simplify.Top<
+export interface ErrorNotComparableSamePrimitive<T> extends
   Ts.Err.StaticError<
-    `Comparing ${Ts.ShowInTemplate<T>} to itself is meaningless.`,
-    { Type: T; tip: `This comparison would always return true.` }
+    ['ref', 'not-comparable-same-primitive'],
+    {
+      message: `Comparing ${Ts.ShowInTemplate<T>} to itself is meaningless.`
+      Type: T
+      tip: `This comparison would always return true.`
+    }
   >
->
+{}
 
 /**
  * Error type for comparing types with no overlap.
  */
-export type ErrorNotComparableOverlap<A, B> = Ts.Simplify.Top<
+export interface ErrorNotComparableOverlap<A, B> extends
   Ts.Err.StaticError<
-    `Cannot compare structurally different types ${Ts.ShowInTemplate<A>} and ${Ts.ShowInTemplate<B>}.`,
+    ['ref', 'not-comparable-overlap'],
     {
+      message: `Cannot compare structurally different types ${Ts.ShowInTemplate<A>} and ${Ts.ShowInTemplate<B>}.`
       TypeA: A
       TypeB: B
       tip:
         `While rare, different types can refer to the same instance if an object has properties from both types. Use @ts-expect-error if this is intentional.`
     }
   >
->
+{}
 
 /**
  * Validate that a type is a reference type (not a primitive).

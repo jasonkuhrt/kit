@@ -1,4 +1,5 @@
 import type { Fn } from '#fn'
+import type { Either } from 'effect'
 import type * as Path from '../../../../path.js'
 import { builder } from '../../../builder-singleton.js'
 import type { EquivKind, ExactKind, SubKind } from '../../../kinds/relators.js'
@@ -12,12 +13,32 @@ export const any = builder.not.awaited.any
 export const unknown = builder.not.awaited.unknown
 export const never = builder.not.awaited.never
 export const empty = builder.not.awaited.empty
-export type exact<$Expected, $Actual> = Fn.Kind.Apply<
-  ExactKind,
-  [$Expected, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]
->
-export type equiv<$Expected, $Actual> = Fn.Kind.Apply<
-  EquivKind,
-  [$Expected, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]
->
-export type sub<$Expected, $Actual> = Fn.Kind.Apply<SubKind, [$Expected, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+export type exact<
+  $Expected,
+  $Actual,
+  __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>,
+> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<ExactKind, [$Expected, __actual__, true]>
+                                                                         : never
+
+// dprint-ignore
+export type equiv<
+  $Expected,
+  $Actual,
+  __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>,
+> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [$Expected, __actual__, true]>
+                                                                         : never
+
+// dprint-ignore
+export type sub<
+  $Expected,
+  $Actual,
+  __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>,
+> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [$Expected, __actual__, true]>
+                                                                         : never

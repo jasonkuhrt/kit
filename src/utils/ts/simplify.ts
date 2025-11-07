@@ -8,7 +8,7 @@ import type * as Union from './union.js'
  * Simplify a type to a specific depth.
  *
  * Recursively flattens intersections and mapped types while preserving:
- * - Error types ({@link Ts.Err.StaticErrorLike})
+ * - Error types ({@link Ts.Err.StaticError})
  * - Built-in primitives (Date, Error, RegExp, Function)
  * - Globally registered types ({@link KitLibrarySettings.Ts.PreserveTypes})
  *

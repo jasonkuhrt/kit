@@ -1,16 +1,6 @@
 import type { Fn } from '#fn'
 import type { SENTINEL } from '../../ts.js'
 
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Builder State
-//
-//
-//
-//
-
 /**
  * Assertion builder state tracking the current configuration and position in the API chain.
  *
@@ -310,12 +300,4 @@ export namespace State {
     matcher_allowAny: $State['matcher_allowAny']
     matcher_allowNever: true
   }
-
-  /**
-   * @deprecated Use AddActualExtractor instead
-   */
-  export type AddExtractor<
-    $State extends State,
-    $Extractor extends Fn.Kind.Kind,
-  > = AddActualExtractor<$State, $Extractor>
 }

@@ -1,5 +1,6 @@
 import type { Fn } from '#fn'
 import type { Obj } from '#obj'
+import type { Either } from 'effect'
 import type { StaticError } from './err.js'
 import type { ShowInTemplate } from './ts.js'
 
@@ -18,18 +19,18 @@ import type { ShowInTemplate } from './ts.js'
  * These use StaticError for consistent error formatting.
  */
 type PathErrorKeyNotFound<$Key, $Actual> = StaticError<
-  'Key does not exist on type',
-  { key: $Key; actual: $Actual }
+  ['path', 'key-not-found'],
+  { message: 'Key does not exist on type'; key: $Key; actual: $Actual }
 >
 
 type PathErrorArrayExtract<$Actual> = StaticError<
-  'Failed to extract array element from type',
-  { expected: readonly any[]; actual: $Actual }
+  ['path', 'array-extract'],
+  { message: 'Failed to extract array element from type'; expected: readonly any[]; actual: $Actual }
 >
 
 type PathErrorTupleExtract<$Actual> = StaticError<
-  'Failed to extract tuple element from type',
-  { expected: readonly any[]; actual: $Actual }
+  ['path', 'tuple-extract'],
+  { message: 'Failed to extract tuple element from type'; expected: readonly any[]; actual: $Actual }
 >
 
 /**
@@ -67,11 +68,19 @@ export type ValidateAndExtract<
   $Constraint,
   $ExtractorName extends string,
   $ExtractionLogic,
-> = IsDisjoint<$Actual, $Constraint> extends true ? StaticError<
-    `Cannot extract ${$ExtractorName} from incompatible type`,
-    { expected: FormatConstraint<$Constraint>; actual: $Actual; attempted: `${$ExtractorName} extractor` }
+> = IsDisjoint<$Actual, $Constraint> extends true ? Either.Left<
+    StaticError<
+      ['path', 'extractor-incompatible'],
+      {
+        message: `Cannot extract ${$ExtractorName} from incompatible type`
+        expected: FormatConstraint<$Constraint>
+        actual: $Actual
+        attempted: `${$ExtractorName} extractor`
+      }
+    >,
+    never
   >
-  : $ExtractionLogic
+  : Either.Right<never, $ExtractionLogic>
 
 //
 //
@@ -136,8 +145,9 @@ export interface Indexed extends Fn.Kind.Kind {
   constraint: unknown
   extractorName: 'indexed'
   parameters: [$Actual: unknown, $Key: PropertyKey]
-  return: this['parameters'][1] extends keyof this['parameters'][0] ? this['parameters'][0][this['parameters'][1]]
-    : PathErrorKeyNotFound<this['parameters'][1], this['parameters'][0]>
+  return: this['parameters'][1] extends keyof this['parameters'][0]
+    ? Either.Right<never, this['parameters'][0][this['parameters'][1]]>
+    : Either.Left<PathErrorKeyNotFound<this['parameters'][1], this['parameters'][0]>, never>
 }
 
 /**
@@ -347,8 +357,13 @@ export interface NoExcess extends Fn.Kind.Kind {
   return: this['parameters'] extends [infer __expected__, infer __actual__]
     ? [keyof Obj.SubtractShallow<__actual__, __expected__>] extends [never] ? __actual__
     : StaticError<
-      'Type has excess properties',
-      { expected: __expected__; actual: __actual__; excess: keyof Obj.SubtractShallow<__actual__, __expected__> }
+      ['path', 'excess-properties'],
+      {
+        message: 'Type has excess properties'
+        expected: __expected__
+        actual: __actual__
+        excess: keyof Obj.SubtractShallow<__actual__, __expected__>
+      }
     >
     : never
 }
@@ -377,8 +392,25 @@ export interface NoExcess extends Fn.Kind.Kind {
  */
 export type ApplyExtractors<$Extractors extends readonly Fn.Kind.Kind[], $Actual> = $Extractors extends
   readonly [infer __first__ extends Fn.Kind.Kind, ...infer __rest__ extends Fn.Kind.Kind[]]
-  ? ApplyExtractors<__rest__, Fn.Kind.Apply<__first__, [$Actual]>>
-  : $Actual
+  ? Fn.Kind.Apply<__first__, [$Actual]> extends infer ___result___
+    ? ___result___ extends Either.Left<infer __error__, infer _> ? Either.Left<__error__, never> // Short-circuit on error
+    : ___result___ extends Either.Right<infer _, infer __value__> ? ApplyExtractors<__rest__, __value__> // Continue with unwrapped value
+    : never // Shouldn't happen - extractor must return Either
+  : never
+  : Either.Right<never, $Actual> // No extractors - wrap in success
+
+/**
+ * Unwrap Either to get the value or error for type-level shortcuts.
+ *
+ * - Left<E, never> → E (propagate error)
+ * - Right<never, V> → V (extract value)
+ *
+ * Used by generated type-level assertion shortcuts to unwrap extractor results
+ * before passing to relators.
+ */
+export type UnwrapEither<$Result> = $Result extends Either.Left<infer __error__, infer _> ? __error__
+  : $Result extends Either.Right<infer _, infer __value__> ? __value__
+  : never
 
 //
 //

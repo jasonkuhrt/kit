@@ -1,4 +1,5 @@
 import type { Fn } from '#fn'
+import type { Either } from 'effect'
 import type * as Path from '../../../../path.js'
 import { builder } from '../../../builder-singleton.js'
 import type { SubKind } from '../../../kinds/relators.js'
@@ -26,7 +27,11 @@ import type { SubKind } from '../../../kinds/relators.js'
  * type _ = Assert.awaited.sub.of<string, Promise<number>>
  * ```
  */
-type of_<$Expected, $Actual> = Fn.Kind.Apply<SubKind, [$Expected, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+type of_<$Expected, $Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [$Expected, __actual__, true]>
+                                                                         : never
 const of_ = builder.awaited.not.sub.of
 
 /**
@@ -42,7 +47,11 @@ const of_ = builder.awaited.not.sub.of
  * type _ = Assert.awaited.sub.string<Promise<number>>
  * ```
  */
-type string_<$Actual> = Fn.Kind.Apply<SubKind, [string, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+type string_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [string, __actual__, true]>
+                                                                         : never
 const string_ = builder.awaited.not.sub.string
 
 /**
@@ -58,7 +67,11 @@ const string_ = builder.awaited.not.sub.string
  * type _ = Assert.awaited.sub.number<Promise<string>>
  * ```
  */
-type number_<$Actual> = Fn.Kind.Apply<SubKind, [number, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+type number_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [number, __actual__, true]>
+                                                                         : never
 const number_ = builder.awaited.not.sub.number
 
 /**
@@ -74,7 +87,11 @@ const number_ = builder.awaited.not.sub.number
  * type _ = Assert.awaited.sub.bigint<Promise<string>>
  * ```
  */
-type bigint_<$Actual> = Fn.Kind.Apply<SubKind, [bigint, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+type bigint_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [bigint, __actual__, true]>
+                                                                         : never
 const bigint_ = builder.awaited.not.sub.bigint
 
 /**
@@ -90,8 +107,52 @@ const bigint_ = builder.awaited.not.sub.bigint
  * type _ = Assert.awaited.sub.boolean<Promise<string>>
  * ```
  */
-type boolean_<$Actual> = Fn.Kind.Apply<SubKind, [boolean, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+type boolean_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [boolean, __actual__, true]>
+                                                                         : never
 const boolean_ = builder.awaited.not.sub.boolean
+
+/**
+ * Pre-curried matcher for true.
+ * Extraction chain: Promise<T> → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.awaited.sub.true<Promise<true>>
+ *
+ * // ✗ Fail
+ * type _ = Assert.awaited.sub.true<Promise<string>>
+ * ```
+ */
+// dprint-ignore
+type true_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [true, __actual__, true]>
+                                                                         : never
+const true_ = builder.awaited.not.sub.true
+
+/**
+ * Pre-curried matcher for false.
+ * Extraction chain: Promise<T> → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.awaited.sub.false<Promise<false>>
+ *
+ * // ✗ Fail
+ * type _ = Assert.awaited.sub.false<Promise<string>>
+ * ```
+ */
+// dprint-ignore
+type false_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [false, __actual__, true]>
+                                                                         : never
+const false_ = builder.awaited.not.sub.false
 
 /**
  * Pre-curried matcher for undefined.
@@ -106,7 +167,11 @@ const boolean_ = builder.awaited.not.sub.boolean
  * type _ = Assert.awaited.sub.undefined<Promise<string>>
  * ```
  */
-type undefined_<$Actual> = Fn.Kind.Apply<SubKind, [undefined, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+type undefined_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [undefined, __actual__, true]>
+                                                                         : never
 const undefined_ = builder.awaited.not.sub.undefined
 
 /**
@@ -122,7 +187,11 @@ const undefined_ = builder.awaited.not.sub.undefined
  * type _ = Assert.awaited.sub.null<Promise<string>>
  * ```
  */
-type null_<$Actual> = Fn.Kind.Apply<SubKind, [null, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+type null_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [null, __actual__, true]>
+                                                                         : never
 const null_ = builder.awaited.not.sub.null
 
 /**
@@ -138,7 +207,11 @@ const null_ = builder.awaited.not.sub.null
  * type _ = Assert.awaited.sub.symbol<Promise<string>>
  * ```
  */
-type symbol_<$Actual> = Fn.Kind.Apply<SubKind, [symbol, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+type symbol_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [symbol, __actual__, true]>
+                                                                         : never
 const symbol_ = builder.awaited.not.sub.symbol
 
 /**
@@ -154,7 +227,11 @@ const symbol_ = builder.awaited.not.sub.symbol
  * type _ = Assert.awaited.sub.Date<Promise<string>>
  * ```
  */
-type Date_<$Actual> = Fn.Kind.Apply<SubKind, [Date, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+type Date_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [Date, __actual__, true]>
+                                                                         : never
 const Date_ = builder.awaited.not.sub.Date
 
 /**
@@ -170,7 +247,11 @@ const Date_ = builder.awaited.not.sub.Date
  * type _ = Assert.awaited.sub.RegExp<Promise<string>>
  * ```
  */
-type RegExp_<$Actual> = Fn.Kind.Apply<SubKind, [RegExp, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+type RegExp_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [RegExp, __actual__, true]>
+                                                                         : never
 const RegExp_ = builder.awaited.not.sub.RegExp
 
 /**
@@ -186,7 +267,11 @@ const RegExp_ = builder.awaited.not.sub.RegExp
  * type _ = Assert.awaited.sub.Error<Promise<string>>
  * ```
  */
-type Error_<$Actual> = Fn.Kind.Apply<SubKind, [Error, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+type Error_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [Error, __actual__, true]>
+                                                                         : never
 const Error_ = builder.awaited.not.sub.Error
 
 /**
@@ -202,7 +287,11 @@ const Error_ = builder.awaited.not.sub.Error
  * type _ = Assert.awaited.sub.unknown<Promise<string>>
  * ```
  */
-type unknown_<$Actual> = Fn.Kind.Apply<SubKind, [unknown, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+type unknown_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [unknown, __actual__, true]>
+                                                                         : never
 const unknown_ = builder.awaited.not.sub.unknown
 
 /**
@@ -218,7 +307,11 @@ const unknown_ = builder.awaited.not.sub.unknown
  * type _ = Assert.awaited.sub.any<Promise<string>>
  * ```
  */
-type any_<$Actual> = Fn.Kind.Apply<SubKind, [any, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+type any_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [any, __actual__, true]>
+                                                                         : never
 const any_ = builder.awaited.not.sub.any
 
 /**
@@ -234,7 +327,11 @@ const any_ = builder.awaited.not.sub.any
  * type _ = Assert.awaited.sub.never<Promise<string>>
  * ```
  */
-type never_<$Actual> = Fn.Kind.Apply<SubKind, [never, Fn.Kind.Apply<Path.Awaited$, [$Actual]>, true]>
+// dprint-ignore
+type never_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Awaited$, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [never, __actual__, true]>
+                                                                         : never
 const never_ = builder.awaited.not.sub.never
 
 const ofAs_ = <$Type>() => builder.awaited.not.sub.ofAs<$Type>()
@@ -245,6 +342,7 @@ export {
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  false_ as false,
   never_ as never,
   null_ as null,
   number_ as number,
@@ -253,6 +351,7 @@ export {
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
+  true_ as true,
   undefined_ as undefined,
   unknown_ as unknown,
 }

@@ -3,8 +3,7 @@ import type { Ts } from '#ts'
 /**
  * Represents a static assertion error at the type level, optimized for type testing.
  *
- * This is a simpler, more focused error type compared to {@link Ts.StaticError}. It's specifically
- * designed for type assertions where you need to communicate expected vs. actual types.
+ * This is specifically designed for type assertions where you need to communicate expected vs. actual types.
  *
  * Supports three forms of metadata:
  * - Single string tip: `StaticErrorAssertion<'msg', E, A, 'tip'>`
@@ -37,20 +36,21 @@ import type { Ts } from '#ts'
  *
  * @category Utils
  */
-export type StaticErrorAssertion<
+export interface StaticErrorAssertion<
   $Message extends string = string,
   $Expected = unknown,
   $Actual = unknown,
   $MetaInput extends MetaInput = never,
-  ___$ErrorKeyLength extends number = KitLibrarySettings.Ts.Error['errorKeyLength'],
-> = Ts.Err.StaticError<
-  $Message,
-  {
-    expected: $Expected
-    actual: $Actual
-  } & NormalizeMetaInput<$MetaInput>,
-  readonly ['root', 'assert', ...string[]]
->
+> extends
+  Ts.Err.StaticError<
+    ['assert'],
+    {
+      message: $Message
+      expected: $Expected
+      actual: $Actual
+    } & NormalizeMetaInput<$MetaInput>
+  >
+{}
 
 /**
  * Normalizes metadata input into a consistent object shape.
@@ -74,25 +74,23 @@ export namespace StaticErrorAssertion {
   /**
    * Type guard to check if a type is specifically a {@link StaticErrorAssertion}.
    *
-   * This distinguishes assertion library errors from other domain error types that may also
-   * have an `ERROR_________` property. It checks both:
-   * 1. The type is a `StaticErrorLike` (has `ERROR_________` property)
-   * 2. The `HIERARCHY_____` (padded to 14 chars) matches `readonly ['root', 'assert', ...]` (from assertion library)
+   * This distinguishes assertion library errors from other domain error types.
+   * It checks both:
+   * 1. The type is an error (has `ERROR_______` tuple)
+   * 2. The hierarchy starts with `['assert', ...]`
    *
    * @template $T - The type to check
    *
    * @example
    * ```ts
-   * type AssertError = StaticErrorAssertion<'Types mismatch', string, number>
-   * type DomainError = { ERROR_________: 'Custom error'; HIERARCHY___: readonly ['root', 'domain'] }
+   * interface AssertError extends StaticErrorAssertion<string, number> {}
+   * interface DomainError extends Ts.Err.StaticError<['domain']> {}
    *
    * type T1 = StaticErrorAssertion.Is<AssertError>  // true
    * type T2 = StaticErrorAssertion.Is<DomainError>  // false
    * type T3 = StaticErrorAssertion.Is<string>       // false
    * ```
    */
-  export type Is<$T> = Ts.Err.Is<$T> extends true
-    ? $T extends { readonly HIERARCHY_____: readonly ['root', 'assert', ...any[]] } ? true
-    : false
+  export type Is<$T> = $T extends Ts.Err.StaticError<['assert']> ? true
     : false
 }

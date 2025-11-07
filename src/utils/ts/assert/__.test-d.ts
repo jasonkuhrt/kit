@@ -396,7 +396,7 @@ A.onAs<obj>().sub.noExcess(objExcess)
 // @ts-expect-error
 A.sub.noExcessAs<obj>().on(objExcessOptional)
 // @ts-expect-error
-A.onAs<obj>().sub.noExcess(objExcessOptional)
+A.onAs<objExcessOptional>().sub.noExcess(obj)
 // @ts-expect-error
 A.sub.noExcessAs<obj>().onAs<objExcess>()
 // @ts-expect-error
@@ -404,7 +404,7 @@ A.onAs<obj>().sub.noExcessAs<objExcess>()
 // @ts-expect-error
 A.sub.noExcessAs<obj>().onAs<objExcessOptional>()
 // @ts-expect-error
-A.onAs<obj>().sub.noExcessAs<objExcessOptional>()
+A.onAs<objExcessOptional>().sub.noExcessAs<obj>()
 
 //
 //
@@ -578,7 +578,7 @@ A.onAs<obj>().equiv.noExcess(objExcess)
 // @ts-expect-error
 A.equiv.noExcessAs<obj>().on(objExcessOptional)
 // @ts-expect-error
-A.onAs<obj>().equiv.noExcess(objExcessOptional)
+A.onAs<objExcessOptional>().equiv.noExcess(obj)
 // @ts-expect-error
 A.equiv.noExcessAs<obj>().onAs<objExcess>()
 // @ts-expect-error
@@ -586,7 +586,7 @@ A.onAs<obj>().equiv.noExcessAs<objExcess>()
 // @ts-expect-error
 A.equiv.noExcessAs<obj>().onAs<objExcessOptional>()
 // @ts-expect-error
-A.onAs<obj>().equiv.noExcessAs<objExcessOptional>()
+A.onAs<objExcessOptional>().equiv.noExcessAs<obj>()
 
 //
 //
@@ -1227,8 +1227,8 @@ A.exact.ofAs<{ a: 1 }>().onAs<{ a: 2 }>()
 // Previously, ApplyAssertion was missing the 3rd parameter ($State['matcher_negated']),
 // causing all negated assertions to incorrectly use non-negated logic.
 
-type E1 = Ts.Err.StaticError<'E1', {}, ['root', 'E1']>
-type E2 = Ts.Err.StaticError<'E2', {}, ['root', 'E2']>
+interface E1 extends Ts.Err.StaticError<['test', 'E1'], { message: 'E1' }> {}
+interface E2 extends Ts.Err.StaticError<['test', 'E2'], { message: 'E2' }> {}
 A.exact.ofAs<E1>().onAs<E1>()
 A.not.exact.ofAs<E1>().onAs<E2>()
 

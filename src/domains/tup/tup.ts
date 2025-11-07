@@ -1,5 +1,7 @@
 import type { Num } from '#num'
 
+export type Ensure<$H> = $H extends readonly any[] ? $H : [$H]
+
 /**
  * Push a value onto the end of a tuple type.
  *

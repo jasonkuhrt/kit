@@ -55,6 +55,8 @@ const MATCHERS: Matcher[] = [
   { name: 'number', typeExpr: 'number', description: 'number' },
   { name: 'bigint', typeExpr: 'bigint', description: 'bigint' },
   { name: 'boolean', typeExpr: 'boolean', description: 'boolean' },
+  { name: 'true', typeExpr: 'true', description: 'true' },
+  { name: 'false', typeExpr: 'false', description: 'false' },
   { name: 'undefined', typeExpr: 'undefined', description: 'undefined' },
   { name: 'null', typeExpr: 'null', description: 'null' },
   { name: 'symbol', typeExpr: 'symbol', description: 'symbol' },
@@ -247,21 +249,24 @@ function calculateImportPaths(combo: Combination) {
   const sourceFile = combo.outputPath
   const rootDir = path.join(process.cwd(), 'src/utils/ts')
 
-  const kindPath = getRelativePath(sourceFile, path.join(rootDir, 'kind.js'))
   const extractorsPath = getRelativePath(sourceFile, path.join(rootDir, 'path.js'))
   const relatorsPath = getRelativePath(sourceFile, path.join(rootDir, 'assert/kinds/relators.js'))
   const builderPath = getRelativePath(sourceFile, path.join(rootDir, 'assert/builder-singleton.js'))
 
-  return { kindPath, extractorsPath, relatorsPath, builderPath }
+  return { extractorsPath, relatorsPath, builderPath }
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Template Generation
 
 function generateFileHeader(combo: Combination): string {
-  const { kindPath, extractorsPath, relatorsPath, builderPath } = calculateImportPaths(combo)
+  const { extractorsPath, relatorsPath, builderPath } = calculateImportPaths(combo)
 
   const extractorImports = combo.extractors.length > 0
     ? `import type * as Path from '${extractorsPath}'\n`
+    : ''
+
+  const eitherImport = combo.extractors.length > 0
+    ? `import type { Either } from 'effect'\n`
     : ''
 
   // Add noExcess kinds for sub/equiv
@@ -272,8 +277,8 @@ function generateFileHeader(combo: Combination): string {
     relatorKinds.push('EquivNoExcessKind')
   }
 
-  return `import type * as Kind from '${kindPath}'
-${extractorImports}import type { ${relatorKinds.join(', ')} } from '${relatorsPath}'
+  return `import type { Fn } from '#fn'
+${extractorImports}${eitherImport}import type { ${relatorKinds.join(', ')} } from '${relatorsPath}'
 import { builder } from '${builderPath}'
 `
 }
@@ -301,7 +306,7 @@ function buildExtractorChain(extractors: Extractor[], actualType: string): strin
   if (extractors.length === 0) return actualType
 
   return extractors.reduce(
-    (inner, extractor) => `Kind.Apply<Path.${extractor.kindName}, [${inner}]>`,
+    (inner, extractor) => `Fn.Kind.Apply<Path.${extractor.kindName}, [${inner}]>`,
     actualType,
   )
 }
@@ -396,13 +401,25 @@ function generateMatcherType(matcher: Matcher, combo: Combination): string {
   const extractorChain = buildExtractorChain(combo.extractors, '$Actual')
 
   const expectedType = matcher.name === 'of' ? '$Expected' : matcher.typeExpr
-  const typeParams = matcher.name === 'of' ? '<$Expected, $Actual>' : '<$Actual>'
-
-  // Add negation parameter if negated
   const negatedParam = combo.negated ? ', true' : ''
 
-  const typeDef =
-    `type ${matcher.name}_${typeParams} = Kind.Apply<${combo.relator.kindName}, [${expectedType}, ${extractorChain}${negatedParam}]>`
+  let typeDef: string
+  if (combo.extractors.length > 0) {
+    // Inline Either unwrapping with intermediate type parameter
+    const typeParams = matcher.name === 'of'
+      ? '<$Expected, $Actual, __$ActualExtracted = ' + extractorChain + '>'
+      : '<$Actual, __$ActualExtracted = ' + extractorChain + '>'
+
+    typeDef = `// dprint-ignore\ntype ${matcher.name}_${typeParams} =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<${combo.relator.kindName}, [${expectedType}, __actual__${negatedParam}]>
+                                                                         : never`
+  } else {
+    // No extractors - direct application
+    const typeParams = matcher.name === 'of' ? '<$Expected, $Actual>' : '<$Actual>'
+    typeDef =
+      `type ${matcher.name}_${typeParams} = Fn.Kind.Apply<${combo.relator.kindName}, [${expectedType}, $Actual${negatedParam}]>`
+  }
 
   // Pre-configured matchers are already functions in BuilderMatchers interface
   // No need to chain .on - they're accessed directly from builder
@@ -446,14 +463,34 @@ function generateMatcherFile(combo: Combination): string {
   if (!combo.negated && (combo.relator.name === 'sub' || combo.relator.name === 'equiv')) {
     const extractorChain = buildExtractorChain(combo.extractors, '$Actual')
     const noExcessKind = combo.relator.name === 'sub' ? 'SubNoExcessKind' : 'EquivNoExcessKind'
-    noExcessDecls = `
+
+    if (combo.extractors.length > 0) {
+      noExcessDecls = `
 /**
  * No-excess variant of ${combo.relator.name} relation.
  * Checks that actual has no excess properties beyond expected.
  */
-type noExcess_<$Expected, $Actual> = Kind.Apply<${noExcessKind}, [$Expected, ${extractorChain}]>
+// dprint-ignore
+type noExcess_<
+  $Expected,
+  $Actual,
+  __$ActualExtracted = ${extractorChain},
+> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<${noExcessKind}, [$Expected, __actual__]>
+                                                                         : never
 const noExcess_ = ${buildRuntimeChain(combo, 'noExcess')}
 const noExcessAs_ = <$Type>() => ${buildRuntimeChain(combo, 'noExcessAs')}<$Type>()`
+    } else {
+      noExcessDecls = `
+/**
+ * No-excess variant of ${combo.relator.name} relation.
+ * Checks that actual has no excess properties beyond expected.
+ */
+type noExcess_<$Expected, $Actual> = Fn.Kind.Apply<${noExcessKind}, [$Expected, $Actual]>
+const noExcess_ = ${buildRuntimeChain(combo, 'noExcess')}
+const noExcessAs_ = <$Type>() => ${buildRuntimeChain(combo, 'noExcessAs')}<$Type>()`
+    }
   } else if (combo.relator.name === 'exact') {
     // For exact, noExcess is never (just reference it from builder for completeness)
     noExcessDecls = `\ntype noExcess_ = never\nconst noExcess_ = ${buildRuntimeChain(combo, 'noExcess')}`
@@ -476,8 +513,8 @@ function generateBarrelFile(dirPath: string, exports: string[]): string {
   // Relators are files
   // 'not' is a special directory
   const relPaths = exports.map((name) => {
-    if (name in EXTRACTORS) return `./${name}/$$.js`
-    if (name === 'not') return `./${name}/$$.js`
+    if (name in EXTRACTORS) return `./${name}/__.js`
+    if (name === 'not') return `./${name}/__.js`
     return `./${name}.js`
   })
 
@@ -488,17 +525,16 @@ function generateBarrelFile(dirPath: string, exports: string[]): string {
 
   // Add type-level shorthand for relators (main barrel only has base relators, no extractors)
   const rootDir = path.join(process.cwd(), 'src/utils/ts')
-  const kindPath = getRelativePath(dirPath, path.join(rootDir, 'kind.js'))
   const relatorsPath = getRelativePath(dirPath, path.join(rootDir, 'assert/kinds/relators.js'))
 
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
 
-  const imports = `import type * as Kind from '${kindPath}'
+  const imports = `import type { Fn } from '#fn'
 import type { ${relatorKinds} } from '${relatorsPath}'`
 
   const typeShorthands = Object.keys(RELATORS).map((relatorName) => {
     const relator = RELATORS[relatorName]!
-    return `export type ${relatorName}<$Expected, $Actual> = Kind.Apply<${relator.kindName}, [$Expected, $Actual]>`
+    return `export type ${relatorName}<$Expected, $Actual> = Fn.Kind.Apply<${relator.kindName}, [$Expected, $Actual]>`
   }).join('\n')
 
   return `${imports}
@@ -516,7 +552,6 @@ function generateExtractorBarrelFile(extractorName: string, barrelPath: string):
   // Calculate relative paths
   const rootDir = path.join(process.cwd(), 'src/utils/ts')
   const builderPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/builder-singleton.js'))
-  const kindPath = getRelativePath(barrelPath, path.join(rootDir, 'kind.js'))
   const extractorsPath = getRelativePath(barrelPath, path.join(rootDir, 'path.js'))
   const relatorsPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/kinds/relators.js'))
 
@@ -539,15 +574,25 @@ function generateExtractorBarrelFile(extractorName: string, barrelPath: string):
   const extractor = EXTRACTORS[extractorName]!
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
 
-  const imports = `import type * as Kind from '${kindPath}'
+  const imports = `import type { Fn } from '#fn'
 import { builder } from '${builderPath}'
 import type * as Path from '${extractorsPath}'
+import type { Either } from 'effect'
 import type { ${relatorKinds} } from '${relatorsPath}'`
+
+  const extractorChain = `Fn.Kind.Apply<Path.${extractor.kindName}, [$Actual]>`
 
   const typeShorthands = Object.keys(RELATORS).map((relatorName) => {
     const relator = RELATORS[relatorName]!
-    return `export type ${relatorName}<$Expected, $Actual> = Kind.Apply<${relator.kindName}, [$Expected, Kind.Apply<Path.${extractor.kindName}, [$Actual]>]>`
-  }).join('\n')
+    return `// dprint-ignore\nexport type ${relatorName}<
+  $Expected,
+  $Actual,
+  __$ActualExtracted = ${extractorChain},
+> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<${relator.kindName}, [$Expected, __actual__]>
+                                                                         : never`
+  }).join('\n\n')
 
   return `${imports}
 
@@ -564,7 +609,6 @@ ${typeShorthands}
 function generateNotBarrelFile(barrelPath: string, extractors: Extractor[]): string {
   // Calculate relative paths
   const rootDir = path.join(process.cwd(), 'src/utils/ts')
-  const kindPath = getRelativePath(barrelPath, path.join(rootDir, 'kind.js'))
   const extractorsPath = getRelativePath(barrelPath, path.join(rootDir, 'path.js'))
   const relatorsPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/kinds/relators.js'))
   const builderPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/builder-singleton.js'))
@@ -588,19 +632,32 @@ export const empty = ${builderPrefix}.empty`
 
   // Add type-level shorthand for negated relators
   const extractorImports = extractors.length > 0
-    ? `import type * as Path from '${extractorsPath}'\n`
+    ? `import type * as Path from '${extractorsPath}'\nimport type { Either } from 'effect'\n`
     : ''
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
 
-  const imports = `import type * as Kind from '${kindPath}'
+  const imports = `import type { Fn } from '#fn'
 import { builder } from '${builderPath}'
 ${extractorImports}import type { ${relatorKinds} } from '${relatorsPath}'`
 
   const typeShorthands = Object.keys(RELATORS).map((relatorName) => {
     const relator = RELATORS[relatorName]!
-    const extractorChain = buildExtractorChain(extractors, '$Actual')
-    return `export type ${relatorName}<$Expected, $Actual> = Kind.Apply<${relator.kindName}, [$Expected, ${extractorChain}, true]>`
-  }).join('\n')
+
+    if (extractors.length > 0) {
+      const extractorChain = buildExtractorChain(extractors, '$Actual')
+      return `// dprint-ignore\nexport type ${relatorName}<
+  $Expected,
+  $Actual,
+  __$ActualExtracted = ${extractorChain},
+> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<${relator.kindName}, [$Expected, __actual__, true]>
+                                                                         : never`
+    } else {
+      // No extractors
+      return `export type ${relatorName}<$Expected, $Actual> = Fn.Kind.Apply<${relator.kindName}, [$Expected, $Actual, true]>`
+    }
+  }).join('\n\n')
 
   return `${imports}
 
@@ -694,7 +751,7 @@ function writeGeneratedFiles() {
   const barrelFiles: Array<{ path: string; exports: string[] }> = [
     // Main barrel
     {
-      path: path.join(OUTPUT_DIR, '$$.ts'),
+      path: path.join(OUTPUT_DIR, '__.ts'),
       exports: [
         'exact',
         'equiv',
@@ -712,27 +769,27 @@ function writeGeneratedFiles() {
       ],
     },
     // Not barrel (root level)
-    { path: path.join(OUTPUT_DIR, 'not', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'not', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
     // Single extractor barrels
-    { path: path.join(OUTPUT_DIR, 'awaited', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'returned', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'array', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'parameters', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'parameter1', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'parameter2', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'parameter3', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'parameter4', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'parameter5', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'awaited', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'returned', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'array', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'parameters', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'parameter1', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'parameter2', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'parameter3', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'parameter4', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'parameter5', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
     // Not barrels (extractor level)
-    { path: path.join(OUTPUT_DIR, 'awaited', 'not', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'returned', 'not', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'array', 'not', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'parameters', 'not', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'parameter1', 'not', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'parameter2', 'not', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'parameter3', 'not', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'parameter4', 'not', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
-    { path: path.join(OUTPUT_DIR, 'parameter5', 'not', '$$.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'awaited', 'not', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'returned', 'not', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'array', 'not', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'parameters', 'not', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'parameter1', 'not', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'parameter2', 'not', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'parameter3', 'not', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'parameter4', 'not', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
+    { path: path.join(OUTPUT_DIR, 'parameter5', 'not', '__.ts'), exports: ['exact', 'equiv', 'sub'] },
     // Chained extractor barrels - DISABLED (no 2+ level extractors)
   ]
 

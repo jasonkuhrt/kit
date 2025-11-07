@@ -2,6 +2,16 @@ import { Str } from '#str'
 import type { Ts } from '#ts'
 import { ParseResult, Schema as S } from 'effect'
 
+/**
+ * Error for CLI argument parsing failures.
+ */
+export interface ErrorArgParse<$message extends string> extends
+  Ts.Err.StaticError<
+    ['cli', 'arg', 'parse'],
+    { message: $message }
+  >
+{}
+
 // ============================================================================
 // Analysis Result Types
 // ============================================================================
@@ -436,7 +446,7 @@ const ArgNamespace = {
    * ```
    */
   fromString: (<const $input extends string>(
-    $input: Arg.Analyze<$input> extends string ? Ts.Err.StaticError<Arg.Analyze<$input>>
+    $input: Arg.Analyze<$input> extends string ? ErrorArgParse<Arg.Analyze<$input>>
       : $input,
   ) => {
     return S.decodeSync(ArgNamespace.String)($input as any) as any

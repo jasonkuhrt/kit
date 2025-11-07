@@ -1,3 +1,4 @@
+import * as Err from './err.js'
 /**
  * Global settings for Kit library type testing utilities.
  *
@@ -423,7 +424,7 @@ declare global {
         _Error: Error
         _RegExp: RegExp
         // Assertion errors - preserve exact/actual structure for error messages
-        _assertErrors: { HIERARCHY___: readonly ['root', 'assert', ...any[]] }
+        _assertErrors: Err.StaticError<['assert']>
       }
     }
   }

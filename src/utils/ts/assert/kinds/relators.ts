@@ -1,6 +1,5 @@
 import type { Fn } from '#fn'
 import type { Obj } from '#obj'
-import type { Ts } from '#ts'
 import type { GetShowDiff } from '../../global-settings.js'
 import type { IsAny, IsNever } from '../../inhabitance.js'
 import type { Relation } from '../../relation.js'
@@ -353,16 +352,16 @@ type InvertSubResult<$Expected, $Actual> = $Actual extends $Expected ? StaticErr
  *
  * Returns never if no excess, otherwise StaticErrorAssertion with excess keys.
  */
-type CheckNoExcess<$Expected, $Actual> = $Actual extends infer __actual__
-  ? $Expected extends infer __expected__ ? [keyof Obj.SubtractShallow<__actual__, __expected__>] extends [never] ? never
+// dprint-ignore
+type CheckNoExcess<$Expected, $Actual> =
+  [keyof Obj.SubtractShallow<$Actual, $Expected>] extends [never]
+    ? never
     : StaticErrorAssertion<
       'ACTUAL has excess properties not in EXPECTED',
-      __expected__,
-      __actual__,
-      { excess: keyof Obj.SubtractShallow<__actual__, __expected__> }
+      $Expected,
+      $Actual,
+      { excess: keyof Obj.SubtractShallow<$Actual, $Expected> }
     >
-  : never
-  : never
 
 /**
  * Sub + NoExcess kind - checks subtype relation AND no excess properties.

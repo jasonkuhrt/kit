@@ -203,10 +203,10 @@ The API documentation explicitly shows both forms, helping users choose.
 
 To convert an existing module to use the Drillable Namespace Pattern:
 
-1. **Create the file structure** if not already present (`$.ts`, `$$.ts`, implementation)
-2. **Add the export pattern** in `$.ts`:
+1. **Create the file structure** if not already present (`_.ts`, `__.ts`, implementation)
+2. **Add the export pattern** in `_.ts`:
    ```typescript
-   export * as ModuleName from './$$.js'
+   export * as ModuleName from './__.js'
    ```
 3. **Update package.json** to expose the subpath
 4. **Add JSDoc** to describe the module's purpose

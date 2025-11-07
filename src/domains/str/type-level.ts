@@ -78,6 +78,20 @@ export type Split<S extends string, D extends string, Acc extends string[] = []>
 export type Contains<S extends string, C extends string> = S extends `${string}${C}${string}` ? true : false
 
 /**
+ * Error for when a string literal is required but a general string type was provided.
+ */
+export interface ErrorNotLiteral<T, $ErrorMessage extends string> extends
+  Ts.Err.StaticError<
+    ['str', 'not-literal'],
+    {
+      message: $ErrorMessage
+      ReceivedType: T
+      tip: 'Use a string literal instead of string type'
+    }
+  >
+{}
+
+/**
  * Constraint that only accepts literal strings.
  * Returns StaticError for non-literal string type with customizable error message.
  * @category Type-Level Utilities
@@ -87,11 +101,7 @@ export type Contains<S extends string, C extends string> = S extends `${string}$
 export type LiteralOnly<
   T extends string,
   $ErrorMessage extends string = 'Expected a literal string',
-> = string extends T ? Ts.Err.StaticError<
-    $ErrorMessage,
-    { ReceivedType: T; tip: 'Use a string literal instead of string type' }
-  >
-  : T
+> = string extends T ? ErrorNotLiteral<T, $ErrorMessage> : T
 
 /**
  * Pad a string to a target length by appending a fill character.

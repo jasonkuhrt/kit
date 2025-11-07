@@ -1,4 +1,5 @@
 import type { Fn } from '#fn'
+import type { Either } from 'effect'
 import type * as Path from '../../../path.js'
 import { builder } from '../../builder-singleton.js'
 import type { EquivKind, ExactKind, SubKind } from '../../kinds/relators.js'
@@ -16,6 +17,32 @@ export const parameter1 = builder.parameter5.parameter1
 export const parameter2 = builder.parameter5.parameter2
 export const parameter3 = builder.parameter5.parameter3
 export const parameter4 = builder.parameter5.parameter4
-export type exact<$Expected, $Actual> = Fn.Kind.Apply<ExactKind, [$Expected, Fn.Kind.Apply<Path.Parameter5, [$Actual]>]>
-export type equiv<$Expected, $Actual> = Fn.Kind.Apply<EquivKind, [$Expected, Fn.Kind.Apply<Path.Parameter5, [$Actual]>]>
-export type sub<$Expected, $Actual> = Fn.Kind.Apply<SubKind, [$Expected, Fn.Kind.Apply<Path.Parameter5, [$Actual]>]>
+// dprint-ignore
+export type exact<
+  $Expected,
+  $Actual,
+  __$ActualExtracted = Fn.Kind.Apply<Path.Parameter5, [$Actual]>,
+> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<ExactKind, [$Expected, __actual__]>
+                                                                         : never
+
+// dprint-ignore
+export type equiv<
+  $Expected,
+  $Actual,
+  __$ActualExtracted = Fn.Kind.Apply<Path.Parameter5, [$Actual]>,
+> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [$Expected, __actual__]>
+                                                                         : never
+
+// dprint-ignore
+export type sub<
+  $Expected,
+  $Actual,
+  __$ActualExtracted = Fn.Kind.Apply<Path.Parameter5, [$Actual]>,
+> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [$Expected, __actual__]>
+                                                                         : never

@@ -2,6 +2,16 @@ import { Str } from '#str'
 import type { Ts } from '#ts'
 import { ParseResult, Schema as S } from 'effect'
 
+/**
+ * Error for CLI parameter parsing failures.
+ */
+export interface ErrorParamParse<$message extends string> extends
+  Ts.Err.StaticError<
+    ['cli', 'param', 'parse'],
+    { message: $message }
+  >
+{}
+
 // ============================================================================
 // Type-Level Utilities (Internal)
 // ============================================================================
@@ -313,7 +323,7 @@ export class Param extends S.Class<Param>('Param')({
    * ```
    */
   static fromString = <const $input extends string>(
-    $input: Param.Analyze<$input> extends string ? Ts.Err.StaticError<Param.Analyze<$input>>
+    $input: Param.Analyze<$input> extends string ? ErrorParamParse<Param.Analyze<$input>>
       : $input,
   ) => {
     return S.decodeSync(Param.String)($input as any) as any
@@ -382,12 +392,29 @@ export namespace Param {
    * Parser error types.
    */
   export namespace Errors {
-    export type TrailingPipe = Ts.Err.StaticError<
-      'Trailing pipe in parameter expression',
-      { tip: 'Pipes are for adding aliases. Add more names after your pipe or remove it' }
-    >
-    export type Empty = Ts.Err.StaticError<'You must specify at least one name for your parameter'>
-    export type Unknown = Ts.Err.StaticError<'Cannot parse your parameter expression'>
+    export interface TrailingPipe extends
+      Ts.Err.StaticError<
+        ['cli', 'param', 'trailing-pipe'],
+        {
+          message: 'Trailing pipe in parameter expression'
+          tip: 'Pipes are for adding aliases. Add more names after your pipe or remove it'
+        }
+      >
+    {}
+
+    export interface Empty extends
+      Ts.Err.StaticError<
+        ['cli', 'param', 'empty'],
+        { message: 'You must specify at least one name for your parameter' }
+      >
+    {}
+
+    export interface Unknown extends
+      Ts.Err.StaticError<
+        ['cli', 'param', 'unknown'],
+        { message: 'Cannot parse your parameter expression' }
+      >
+    {}
   }
 
   // ==========================================================================
@@ -402,30 +429,57 @@ export namespace Param {
      * Error message types for parameter name validation failures.
      */
     export namespace Messages {
-      export type LongTooShort<$Variant extends string> = Ts.Err.StaticError<
-        'Long flag must be two or more characters',
-        { variant: $Variant; received: `--${$Variant}` }
-      >
+      export interface LongTooShort<$Variant extends string> extends
+        Ts.Err.StaticError<
+          readonly ['cli', 'param', 'check', 'long-too-short'],
+          {
+            message: 'Long flag must be two or more characters'
+            variant: $Variant
+            received: `--${$Variant}`
+          }
+        >
+      {}
 
-      export type AliasDuplicate<$Variant extends string> = Ts.Err.StaticError<
-        'Duplicate alias',
-        { variant: $Variant }
-      >
+      export interface AliasDuplicate<$Variant extends string> extends
+        Ts.Err.StaticError<
+          readonly ['cli', 'param', 'check', 'alias-duplicate'],
+          {
+            message: 'Duplicate alias'
+            variant: $Variant
+          }
+        >
+      {}
 
-      export type ShortTooLong<$Variant extends string> = Ts.Err.StaticError<
-        'Short flag must be exactly one character',
-        { variant: $Variant; received: `-${$Variant}` }
-      >
+      export interface ShortTooLong<$Variant extends string> extends
+        Ts.Err.StaticError<
+          readonly ['cli', 'param', 'check', 'short-too-long'],
+          {
+            message: 'Short flag must be exactly one character'
+            variant: $Variant
+            received: `-${$Variant}`
+          }
+        >
+      {}
 
-      export type AlreadyTaken<$Variant extends string> = Ts.Err.StaticError<
-        'Name already used for another parameter',
-        { variant: $Variant }
-      >
+      export interface AlreadyTaken<$Variant extends string> extends
+        Ts.Err.StaticError<
+          readonly ['cli', 'param', 'check', 'already-taken'],
+          {
+            message: 'Name already used for another parameter'
+            variant: $Variant
+          }
+        >
+      {}
 
-      export type Reserved<$Variant extends string> = Ts.Err.StaticError<
-        'Name is reserved',
-        { variant: $Variant }
-      >
+      export interface Reserved<$Variant extends string> extends
+        Ts.Err.StaticError<
+          readonly ['cli', 'param', 'check', 'reserved'],
+          {
+            message: 'Name is reserved'
+            variant: $Variant
+          }
+        >
+      {}
     }
 
     /**
@@ -468,7 +522,7 @@ export namespace Param {
      */
     export interface Result {
       predicate: boolean
-      message: Ts.Err.StaticErrorLike
+      message: Ts.Err.StaticError
     }
 
     /**

@@ -88,6 +88,36 @@ type boolean_<$Actual> = Fn.Kind.Apply<ExactKind, [boolean, $Actual, true]>
 const boolean_ = builder.not.exact.boolean
 
 /**
+ * Pre-curried matcher for true.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.exact.true<true>
+ *
+ * // ✗ Fail
+ * type _ = Assert.exact.true<string>
+ * ```
+ */
+type true_<$Actual> = Fn.Kind.Apply<ExactKind, [true, $Actual, true]>
+const true_ = builder.not.exact.true
+
+/**
+ * Pre-curried matcher for false.
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.exact.false<false>
+ *
+ * // ✗ Fail
+ * type _ = Assert.exact.false<string>
+ * ```
+ */
+type false_<$Actual> = Fn.Kind.Apply<ExactKind, [false, $Actual, true]>
+const false_ = builder.not.exact.false
+
+/**
  * Pre-curried matcher for undefined.
  *
  * @example
@@ -232,6 +262,7 @@ export {
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  false_ as false,
   never_ as never,
   noExcess_ as noExcess,
   null_ as null,
@@ -241,6 +272,7 @@ export {
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
+  true_ as true,
   undefined_ as undefined,
   unknown_ as unknown,
 }

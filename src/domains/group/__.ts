@@ -31,12 +31,14 @@ export type by<
       }
     : never
 
-export type ErrorInvalidGroupKey<obj extends object, key extends keyof obj> =
-  // dprint-ignore
-  Ts.Err.StaticError<
-    `The value at your chosen key ${Ts.Show<key>} is not a subtype of allowed property key types (${Ts.Show<PropertyKey>}) and so cannot be used to group your objects.`,
-    { your_key_type: obj[key] }
-  >
+// dprint-ignore
+export interface ErrorInvalidGroupKey<obj extends object, key extends keyof obj> extends Ts.Err.StaticError<
+  readonly ['group', 'invalid-key'],
+  {
+    message: `The value at your chosen key ${Ts.Show<key>} is not a subtype of allowed property key types (${Ts.Show<PropertyKey>}) and so cannot be used to group your objects.`
+    your_key_type: obj[key]
+  }
+> {}
 
 // interface PrivateState {
 //   key: PropertyKey

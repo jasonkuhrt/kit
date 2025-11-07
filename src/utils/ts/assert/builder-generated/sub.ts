@@ -88,7 +88,7 @@ type boolean_<$Actual> = Fn.Kind.Apply<SubKind, [boolean, $Actual]>
 const boolean_ = builder.sub.boolean
 
 /**
- * Pre-curried matcher for true literal.
+ * Pre-curried matcher for true.
  *
  * @example
  * ```typescript
@@ -96,14 +96,14 @@ const boolean_ = builder.sub.boolean
  * type _ = Assert.sub.true<true>
  *
  * // ✗ Fail
- * type _ = Assert.sub.true<false>
+ * type _ = Assert.sub.true<string>
  * ```
  */
 type true_<$Actual> = Fn.Kind.Apply<SubKind, [true, $Actual]>
 const true_ = builder.sub.true
 
 /**
- * Pre-curried matcher for false literal.
+ * Pre-curried matcher for false.
  *
  * @example
  * ```typescript
@@ -111,7 +111,7 @@ const true_ = builder.sub.true
  * type _ = Assert.sub.false<false>
  *
  * // ✗ Fail
- * type _ = Assert.sub.false<true>
+ * type _ = Assert.sub.false<string>
  * ```
  */
 type false_<$Actual> = Fn.Kind.Apply<SubKind, [false, $Actual]>

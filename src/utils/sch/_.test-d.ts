@@ -12,12 +12,10 @@ const A = Ts.Assert.exact
 
   // ExtractByTag tests
   A.of(SchemaA).onAs<Sch.Tagged.ExtractByTag<'A', typeof SchemaA>>()
-  // @ts-expect-error Testing never type
-  A.ofAs<never>().onAs<Sch.Tagged.ExtractByTag<'Wrong', typeof SchemaA>>()
+  A.never({} as Sch.Tagged.ExtractByTag<'Wrong', typeof SchemaA>)
   A.of(SchemaA).onAs<Sch.Tagged.ExtractByTag<'A', typeof AB>>()
   A.of(SchemaB).onAs<Sch.Tagged.ExtractByTag<'B', typeof AB>>()
-  // @ts-expect-error Testing never type
-  A.ofAs<never>().onAs<Sch.Tagged.ExtractByTag<'C', typeof AB>>()
+  A.never({} as Sch.Tagged.ExtractByTag<'C', typeof AB>)
 
   // DoesTaggedUnionContainTag tests
   A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'A', typeof AB>>()
@@ -67,8 +65,7 @@ const A = Ts.Assert.exact
   A.of(UserDeleted).onAs<Sch.Tagged.ExtractByTag<'UserDeleted', typeof SimpleUnion>>()
 
   // Should return never for non-existent tag
-  // @ts-expect-error Testing never type
-  A.ofAs<never>().onAs<Sch.Tagged.ExtractByTag<'UserArchived', typeof SimpleUnion>>()
+  A.never({} as Sch.Tagged.ExtractByTag<'UserArchived', typeof SimpleUnion>)
 
   // Test DoesTaggedUnionContainTag predicate
   A.ofAs<true>().onAs<Sch.Tagged.DoesTaggedUnionContainTag<'UserCreated', typeof SimpleUnion>>()

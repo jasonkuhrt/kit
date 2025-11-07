@@ -3,17 +3,17 @@
     {
       "location": {
         "start": {
-          "line": 6,
+          "line": 12,
           "char": 3
         },
         "end": {
-          "line": 6,
-          "char": 39
+          "line": 12,
+          "char": 28
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"msg\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "type": "{ ERROR_________: \".parse.param\"; message_______: \"Invalid param\"; input_________: string; }",
           "relationships": {
             "args": [
               "equality"
@@ -29,17 +29,17 @@
     {
       "location": {
         "start": {
-          "line": 13,
+          "line": 21,
           "char": 3
         },
         "end": {
-          "line": 13,
-          "char": 59
+          "line": 21,
+          "char": 28
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"msg\"; a_____________: \"a\"; b_____________: \"b\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "type": "{ ERROR_________: \".domain\"; message_______: \"Error\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -55,52 +55,80 @@
     {
       "location": {
         "start": {
-          "line": 22,
+          "line": 30,
           "char": 3
         },
         "end": {
-          "line": 22,
-          "char": 75
+          "line": 30,
+          "char": 35
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"msg\"; a_____________: \"a\"; b_____________: \"b\"; c_____________: \"c\"; d_____________: \"d\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "type": "true",
           "relationships": {
             "args": [
               "equality"
             ],
-            "typeArgs": []
+            "typeArgs": [
+              "equality"
+            ]
           }
         }
       ],
-      "typeArgs": [],
+      "typeArgs": [
+        {
+          "type": "true",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": [
+              "equality"
+            ]
+          }
+        }
+      ],
       "errors": [],
       "completions": {}
     },
     {
       "location": {
         "start": {
-          "line": 34,
+          "line": 35,
           "char": 3
         },
         "end": {
-          "line": 34,
-          "char": 73
+          "line": 35,
+          "char": 36
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"msg\"; veryLongKeyName: \"x\"; s_____________: \"y\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "type": "false",
           "relationships": {
             "args": [
               "equality"
             ],
-            "typeArgs": []
+            "typeArgs": [
+              "equality"
+            ]
           }
         }
       ],
-      "typeArgs": [],
+      "typeArgs": [
+        {
+          "type": "false",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": [
+              "equality"
+            ]
+          }
+        }
+      ],
       "errors": [],
       "completions": {}
     }
@@ -109,17 +137,17 @@
     {
       "location": {
         "start": {
-          "line": 32,
+          "line": 41,
           "char": 3
         },
         "end": {
-          "line": 32,
-          "char": 48
+          "line": 41,
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; }",
           "relationships": {
             "args": [
               "equality"
@@ -135,43 +163,17 @@
     {
       "location": {
         "start": {
-          "line": 43,
+          "line": 53,
           "char": 3
         },
         "end": {
-          "line": 43,
-          "char": 38
+          "line": 53,
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A<{}>; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-          "relationships": {
-            "args": [
-              "equality"
-            ],
-            "typeArgs": []
-          }
-        }
-      ],
-      "typeArgs": [],
-      "errors": [],
-      "completions": {}
-    },
-    {
-      "location": {
-        "start": {
-          "line": 54,
-          "char": 3
-        },
-        "end": {
-          "line": 54,
-          "char": 38
-        }
-      },
-      "args": [
-        {
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"EXPECTED only overlaps with ACTUAL\"; expected______: A<{}>; actual________: B; }",
           "relationships": {
             "args": [
               "equality"
@@ -192,12 +194,12 @@
         },
         "end": {
           "line": 65,
-          "char": 38
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: E; actual________: A; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; }",
           "relationships": {
             "args": [
               "equality"
@@ -213,17 +215,17 @@
     {
       "location": {
         "start": {
-          "line": 76,
+          "line": 77,
           "char": 3
         },
         "end": {
-          "line": 76,
-          "char": 38
+          "line": 77,
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"ACTUAL is supertype of EXPECTED\"; expected______: E; actual________: A; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"EXPECTED only overlaps with ACTUAL\"; expected______: Expected; actual________: Actual; }",
           "relationships": {
             "args": [
               "equality"
@@ -239,17 +241,43 @@
     {
       "location": {
         "start": {
-          "line": 87,
+          "line": 89,
           "char": 3
         },
         "end": {
-          "line": 87,
+          "line": 89,
+          "char": 18
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \".assert\"; message_______: \"ACTUAL is supertype of EXPECTED\"; expected______: Expected; actual________: Actual; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 100,
+          "char": 3
+        },
+        "end": {
+          "line": 100,
           "char": 12
         }
       },
       "args": [
         {
-          "type": "[{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: 42; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
+          "type": "[{ ERROR_________: \".assert\"; message_______: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: 42; }]",
           "relationships": {
             "args": [
               "equality"
@@ -265,17 +293,17 @@
     {
       "location": {
         "start": {
-          "line": 98,
+          "line": 111,
           "char": 3
         },
         "end": {
-          "line": 98,
+          "line": 111,
           "char": 13
         }
       },
       "args": [
         {
-          "type": "[{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: { a: string; }; actual________: { a: number; b: number; }; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
+          "type": "[{ ERROR_________: \".assert\"; message_______: \"EXPECTED only overlaps with ACTUAL\"; expected______: { a: string; }; actual________: { a: number; b: number; }; }]",
           "relationships": {
             "args": [
               "equality"
@@ -291,11 +319,11 @@
     {
       "location": {
         "start": {
-          "line": 119,
+          "line": 131,
           "char": 3
         },
         "end": {
-          "line": 119,
+          "line": 131,
           "char": 18
         }
       },
@@ -317,11 +345,11 @@
     {
       "location": {
         "start": {
-          "line": 126,
+          "line": 138,
           "char": 3
         },
         "end": {
-          "line": 126,
+          "line": 138,
           "char": 20
         }
       },
@@ -343,11 +371,11 @@
     {
       "location": {
         "start": {
-          "line": 130,
+          "line": 142,
           "char": 3
         },
         "end": {
-          "line": 130,
+          "line": 142,
           "char": 25
         }
       },
@@ -369,43 +397,17 @@
     {
       "location": {
         "start": {
-          "line": 141,
+          "line": 152,
           "char": 3
         },
         "end": {
-          "line": 141,
-          "char": 13
-        }
-      },
-      "args": [
-        {
-          "type": "[actual: { ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: { id: string; user: { name: string; age: number; }; tags: string[]; }; actual________: { id: string; user: { name: string; age: string; }; tags: string[]; extra: boolean; }; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }]",
-          "relationships": {
-            "args": [
-              "equality"
-            ],
-            "typeArgs": []
-          }
-        }
-      ],
-      "typeArgs": [],
-      "errors": [],
-      "completions": {}
-    },
-    {
-      "location": {
-        "start": {
-          "line": 169,
-          "char": 3
-        },
-        "end": {
-          "line": 169,
+          "line": 152,
           "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"Custom validation failed\"; expected______: { a: string; }; actual________: { a: number; }; location______: \"src/file.ts:42\"; hint__________: \"Use string\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "[actual: { ERROR_________: \".assert\"; message_______: \"EXPECTED only overlaps with ACTUAL\"; expected______: { id: string; user: { name: string; age: number; }; tags: string[]; }; actual________: { id: string; user: { name: string; age: string; }; tags: string[]; extra: boolean; }; }]",
           "relationships": {
             "args": [
               "equality"
@@ -421,17 +423,17 @@
     {
       "location": {
         "start": {
-          "line": 181,
+          "line": 182,
           "char": 3
         },
         "end": {
-          "line": 181,
+          "line": 182,
           "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"Type mismatch\"; expected______: string; actual________: number; tip___________: \"Use string\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"Custom validation failed\"; expected______: { a: string; }; actual________: { a: number; }; location______: \"src/file.ts:42\"; hint__________: \"Use string\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -447,17 +449,17 @@
     {
       "location": {
         "start": {
-          "line": 197,
+          "line": 196,
           "char": 3
         },
         "end": {
-          "line": 197,
+          "line": 196,
           "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"Type mismatch\"; expected______: string; actual________: number; tip_a_________: \"Use string\"; tip_b_________: \"Check docs\"; tip_c_________: \"See example\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"Type mismatch\"; expected______: string; actual________: number; tip___________: \"Use string\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -473,17 +475,17 @@
     {
       "location": {
         "start": {
-          "line": 213,
+          "line": 214,
           "char": 3
         },
         "end": {
-          "line": 213,
-          "char": 38
+          "line": 214,
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"Type mismatch\"; expected______: string; actual________: number; tip_a_________: \"Use string\"; tip_b_________: \"Check docs\"; tip_c_________: \"See example\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -499,17 +501,17 @@
     {
       "location": {
         "start": {
-          "line": 224,
+          "line": 231,
           "char": 3
         },
         "end": {
-          "line": 224,
-          "char": 38
+          "line": 231,
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; }",
           "relationships": {
             "args": [
               "equality"
@@ -525,17 +527,17 @@
     {
       "location": {
         "start": {
-          "line": 235,
+          "line": 243,
           "char": 3
         },
         "end": {
-          "line": 235,
-          "char": 47
+          "line": 243,
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"ACTUAL does not extend EXPECTED\"; expected______: \"hello\"; actual________: string; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"EXPECTED only overlaps with ACTUAL\"; expected______: A; actual________: B; }",
           "relationships": {
             "args": [
               "equality"
@@ -551,17 +553,17 @@
     {
       "location": {
         "start": {
-          "line": 258,
+          "line": 254,
           "char": 3
         },
         "end": {
-          "line": 258,
-          "char": 48
+          "line": 254,
+          "char": 57
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"ACTUAL extends EXPECTED but should not\"; expected______: string; actual________: \"hello\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"ACTUAL does not extend EXPECTED\"; expected______: \"hello\"; actual________: string; }",
           "relationships": {
             "args": [
               "equality"
@@ -577,17 +579,17 @@
     {
       "location": {
         "start": {
-          "line": 269,
+          "line": 277,
           "char": 3
         },
         "end": {
-          "line": 269,
-          "char": 48
+          "line": 277,
+          "char": 61
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"ACTUAL extends EXPECTED but should not\"; expected______: string; actual________: \"hello\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -603,17 +605,17 @@
     {
       "location": {
         "start": {
-          "line": 275,
+          "line": 289,
           "char": 3
         },
         "end": {
-          "line": 275,
-          "char": 49
+          "line": 289,
+          "char": 58
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"ACTUAL extends EXPECTED but not vice versa\"; expected______: string; actual________: \"hello\"; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; }",
           "relationships": {
             "args": [
               "equality"
@@ -629,17 +631,17 @@
     {
       "location": {
         "start": {
-          "line": 281,
+          "line": 295,
           "char": 3
         },
         "end": {
-          "line": 281,
-          "char": 49
+          "line": 295,
+          "char": 59
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED extends ACTUAL but not vice versa\"; expected______: \"hello\"; actual________: string; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"ACTUAL extends EXPECTED but not vice versa\"; expected______: string; actual________: \"hello\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -655,17 +657,17 @@
     {
       "location": {
         "start": {
-          "line": 310,
+          "line": 301,
           "char": 3
         },
         "end": {
-          "line": 310,
-          "char": 65
+          "line": 301,
+          "char": 59
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED only overlaps with ACTUAL\"; expected______: [string, string]; actual________: [a: number, b: number]; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"EXPECTED extends ACTUAL but not vice versa\"; expected______: \"hello\"; actual________: string; }",
           "relationships": {
             "args": [
               "equality"
@@ -681,43 +683,17 @@
     {
       "location": {
         "start": {
-          "line": 320,
+          "line": 331,
           "char": 3
         },
         "end": {
-          "line": 320,
-          "char": 65
+          "line": 331,
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
-          "relationships": {
-            "args": [
-              "equality"
-            ],
-            "typeArgs": []
-          }
-        }
-      ],
-      "typeArgs": [],
-      "errors": [],
-      "completions": {}
-    },
-    {
-      "location": {
-        "start": {
-          "line": 330,
-          "char": 3
-        },
-        "end": {
-          "line": 330,
-          "char": 53
-        }
-      },
-      "args": [
-        {
-          "type": "{ ERROR_________: \"EXPECTED and ACTUAL are disjoint\"; expected______: number; actual________: string; HIERARCHY_____: readonly [\"root\", \"assert\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"EXPECTED only overlaps with ACTUAL\"; expected______: [string, string]; actual________: [a: number, b: number]; }",
           "relationships": {
             "args": [
               "equality"
@@ -738,12 +714,12 @@
         },
         "end": {
           "line": 342,
-          "char": 27
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: string; attempted_____: \"array extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"EXPECTED and ACTUAL are disjoint\"; expected______: string; actual________: number; }",
           "relationships": {
             "args": [
               "equality"
@@ -764,12 +740,12 @@
         },
         "end": {
           "line": 353,
-          "char": 27
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: string; attempted_____: \"awaited extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "type": "{ ERROR_________: \".assert\"; message_______: \"EXPECTED and ACTUAL are disjoint\"; expected______: number; actual________: string; }",
           "relationships": {
             "args": [
               "equality"
@@ -785,17 +761,17 @@
     {
       "location": {
         "start": {
-          "line": 364,
+          "line": 365,
           "char": 3
         },
         "end": {
-          "line": 364,
-          "char": 27
+          "line": 365,
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"Cannot extract parameters from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: string; attempted_____: \"parameters extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: string; attempted_____: \"array extractor\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -811,17 +787,17 @@
     {
       "location": {
         "start": {
-          "line": 375,
+          "line": 376,
           "char": 3
         },
         "end": {
-          "line": 375,
-          "char": 27
+          "line": 376,
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"Cannot extract returned from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: string; attempted_____: \"returned extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: string; attempted_____: \"awaited extractor\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -837,17 +813,17 @@
     {
       "location": {
         "start": {
-          "line": 393,
+          "line": 387,
           "char": 3
         },
         "end": {
-          "line": 393,
-          "char": 23
+          "line": 387,
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: string; attempted_____: \"awaited extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract parameters from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: string; attempted_____: \"parameters extractor\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -863,17 +839,17 @@
     {
       "location": {
         "start": {
-          "line": 409,
+          "line": 398,
           "char": 3
         },
         "end": {
-          "line": 409,
-          "char": 23
+          "line": 398,
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: string; attempted_____: \"array extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract returned from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: string; attempted_____: \"returned extractor\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -889,17 +865,17 @@
     {
       "location": {
         "start": {
-          "line": 427,
+          "line": 416,
           "char": 3
         },
         "end": {
-          "line": 427,
-          "char": 23
+          "line": 416,
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: \"hello\"; attempted_____: \"awaited extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: string; attempted_____: \"awaited extractor\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -915,17 +891,17 @@
     {
       "location": {
         "start": {
-          "line": 443,
+          "line": 432,
           "char": 3
         },
         "end": {
-          "line": 443,
-          "char": 23
+          "line": 432,
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: \"hello\"; attempted_____: \"array extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: string; attempted_____: \"array extractor\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -941,17 +917,69 @@
     {
       "location": {
         "start": {
-          "line": 459,
+          "line": 450,
           "char": 3
         },
         "end": {
-          "line": 459,
-          "char": 23
+          "line": 450,
+          "char": 18
         }
       },
       "args": [
         {
-          "type": "{ ERROR_________: \"Cannot extract returned from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: \"hello\"; attempted_____: \"returned extractor\"; HIERARCHY_____: readonly [\"root\", ...string[]]; }",
+          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: \"hello\"; attempted_____: \"awaited extractor\"; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 466,
+          "char": 3
+        },
+        "end": {
+          "line": 466,
+          "char": 18
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: \"hello\"; attempted_____: \"array extractor\"; }",
+          "relationships": {
+            "args": [
+              "equality"
+            ],
+            "typeArgs": []
+          }
+        }
+      ],
+      "typeArgs": [],
+      "errors": [],
+      "completions": {}
+    },
+    {
+      "location": {
+        "start": {
+          "line": 482,
+          "char": 3
+        },
+        "end": {
+          "line": 482,
+          "char": 18
+        }
+      },
+      "args": [
+        {
+          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract returned from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: \"hello\"; attempted_____: \"returned extractor\"; }",
           "relationships": {
             "args": [
               "equality"

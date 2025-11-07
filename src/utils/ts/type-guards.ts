@@ -57,8 +57,8 @@ type ValidateIsSupertype<$Reference, $Value> =
 interface StaticErrorGuardNotSubtype<$Reference, $Value> extends
   // dprint-ignore
   StaticError<
-    `This type guard for ${ShowInTemplate<$Reference>} cannot be used against the given value ${ShowInTemplate<$Value>} because it is not a supertype.`,
-    { guard: $Reference; value: $Value; tip: `Since your value type has no overlap with ${Show<$Reference>} this will always return false.` }
+    ['type-guard', 'not-subtype'],
+    { message: `This type guard for ${ShowInTemplate<$Reference>} cannot be used against the given value ${ShowInTemplate<$Value>} because it is not a supertype.`; guard: $Reference; value: $Value; tip: `Since your value type has no overlap with ${Show<$Reference>} this will always return false.` }
   >
 {}
 

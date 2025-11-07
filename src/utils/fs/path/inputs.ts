@@ -12,6 +12,43 @@ import { RelDir } from './RelDir/_.js'
 import { RelFile } from './RelFile/_.js'
 
 /**
+ * Error for when a string must be a literal to be statically parsed.
+ */
+export interface ErrorStringNotLiteral extends
+  Ts.Err.StaticError<
+    ['fs', 'path', 'string-not-literal'],
+    { message: 'When giving a string, it must be a literal so that it can be statically parsed.' }
+  >
+{}
+
+/**
+ * Error for when path validation fails.
+ */
+export interface ErrorPathValidation<$tag, $input> extends
+  Ts.Err.StaticError<
+    ['fs', 'path', 'validation'],
+    {
+      message: GetValidationError<$tag>['message']
+      received: $input
+      tip: GetValidationError<$tag>['hint']
+    }
+  >
+{}
+
+/**
+ * Error for when input must be a Path type or string.
+ */
+export interface ErrorMustBePathOrString<$input> extends
+  Ts.Err.StaticError<
+    ['fs', 'path', 'must-be-path-or-string'],
+    {
+      message: 'Must be a Path type or string'
+      received: $input
+    }
+  >
+{}
+
+/**
  * Input type for Path APIs that accepts either a Path type or a string.
  *
  * When a string is provided, it will be validated at compile time if it's a literal,
@@ -89,7 +126,7 @@ export namespace Input {
  * validation fails at compile time. The StaticError type provides helpful
  * error messages to guide users toward correct path formats.
  */
-export type InputOrError<$path extends Path = Path> = Input<$path> | Ts.Err.StaticErrorLike
+export type InputOrError<$path extends Path = Path> = Input<$path> | Ts.Err.StaticError
 
 /**
  * Validates an input against a target Path type.
@@ -116,11 +153,11 @@ export type Guard<
   ___actualPath extends Path = $input extends string ? FromAnalysis<Analyzer.Analyze<$input>> : $input,
 > =
   string extends $input
-    ? Ts.Simplify.Top<Ts.Err.StaticError<'When giving a string, it must be a literal so that it can be statically parsed.'>> :
+    ? ErrorStringNotLiteral :
   ___actualPath['_tag'] extends $targetPath['_tag']
     ? $input :
   // else
-    Ts.Simplify.Top<Ts.Err.StaticError<GetValidationError<$targetPath['_tag']>['message'], { received: $input; tip: GetValidationError<$targetPath['_tag']>['hint'] }>>
+    ErrorPathValidation<$targetPath['_tag'], $input>
 
 export type FromAnalysis<$analysis extends Analyzer.Analysis> = $analysis extends { _tag: 'file'; pathType: 'absolute' }
   ? AbsFile
@@ -195,12 +232,12 @@ export namespace Guard {
    */
   export type Any<$input> = $input extends Path ? $input
     : $input extends string ? $input
-    : Ts.Err.StaticError<'Must be a Path type or string', { received: $input }>
+    : ErrorMustBePathOrString<$input>
 }
 
 // dprint-ignore
 export type normalize<$input extends InputOrError> =
-  $input extends Ts.Err.StaticErrorLike     ? never :
+  $input extends Ts.Err.StaticError         ? never :
   $input extends string                     ? FromAnalysis<Analyzer.Analyze<$input>> :
                                               $input
 

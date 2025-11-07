@@ -12,26 +12,55 @@ import type { Simplify } from '#ts/ts'
 //
 
 /**
- * Structural interface for all static type-level errors.
+ * Base interface for all static type-level errors.
  *
- * All type-level error types must extend this interface by having an `ERROR_________` field
- * and a `HIERARCHY___` field for hierarchical categorization.
- * This allows error detection via structural typing and enables selective preservation.
+ * Errors are identified by their hierarchical path in the `ERROR_______` field.
+ * Additional error context (metadata, messages, etc.) goes in the `CONTEXT_____` field.
+ *
+ * The empty array `[]` represents the root of the error hierarchy.
+ *
+ * @template $Hierarchy - Error hierarchy path as a tuple (e.g., `['parse', 'param']`)
+ * @template $Context - Arbitrary context object with error-specific data
  *
  * @example
  * ```ts
- * // Check if a type is an error
- * type IsError<$T> = $T extends StaticErrorLike ? true : false
+ * // Simple error with no context
+ * interface ParseError extends StaticError<['parse']> {}
  *
- * // Pass through errors in type transformations
- * type Transform<$T> = $T extends StaticErrorLike ? $T : ActualTransform<$T>
+ * // Error with context
+ * interface InvalidKeyError extends StaticError<
+ *   ['group', 'invalid-key'],
+ *   { key: string; message: string }
+ * > {}
+ *
+ * // Check if a type is an error
+ * type IsError<$T> = $T extends { ERROR_______: readonly [...string[]] } ? true : false
  * ```
  *
  * @category Error Messages
  */
-export interface StaticErrorLike<$Message extends string = string> {
-  ERROR_________: $Message
+/**
+ * Normalize hierarchy input - convert string to [string] array.
+ * @internal
+ */
+// todo use Tup.ensure helper for this
+type NormalizeHierarchyInput<$H> = $H extends readonly string[] ? $H
+  : $H extends string ? [$H]
+  : readonly string[]
+
+export interface StaticError<
+  // todo with readonly
+  // $HierarchyInput extends ArrMut.Maybe<string>
+  $HierarchyInput extends readonly string[] | string = readonly string[],
+  $Context extends object = object,
+> {
+  ERROR_______: readonly [...NormalizeHierarchyInput<$HierarchyInput>, ...string[]]
+  CONTEXT_____: $Context
 }
+
+export interface StaticErrorMessage<
+  $Message extends string,
+> extends StaticError<[], { message: $Message }> {}
 
 /**
  * Pad a key to 14 characters with underscores - optimized with zero recursion.
@@ -60,48 +89,6 @@ type PadKeyTo14<$Key extends string> =
       : $Key  // >= 14, already long enough
     : $Key
 
-/**
- * General-purpose static type-level error with flexible metadata.
- *
- * This is the base error type for creating custom error messages at the type level.
- * For assertion-specific errors with expected/actual fields, use {@link StaticErrorAssertion}.
- *
- * The error message and metadata fields are automatically padded to align keys for better readability.
- *
- * @template $Message - A string literal type describing the error
- * @template $Meta - Optional metadata object with custom fields
- *
- * @example
- * ```ts
- * // Simple error with just a message
- * type E1 = StaticError<'Invalid operation'>
- * // { ERROR_________: 'Invalid operation' }
- *
- * // Error with metadata
- * type E2 = StaticError<'Key not found', { key: 'foo'; available: ['bar', 'baz'] }>
- * // {
- * //   ERROR_________: 'Key not found'
- * //   key___________: 'foo'
- * //   available_____: ['bar', 'baz']
- * // }
- * ```
- *
- * @category Error Messages
- */
-// dprint-ignore
-export type StaticError<
-  $Message extends string = string,
-  $Meta extends Record<string, any> = {},
-  $Hierarchy extends readonly string[] = readonly ['root', ...string[]],
-  ___$Obj = StaticErrorLike<$Message> & $Meta & { HIERARCHY___: $Hierarchy }
-> = Simplify.Top<{
-  [k  in keyof ___$Obj
-      as k extends string
-        ? PadKeyTo14<k>
-        : k
-  ]: ___$Obj[k]
-}>
-
 //
 //
 //
@@ -118,48 +105,114 @@ export type StaticError<
  * This type distributes over unions, checking each member.
  *
  * @template $T - The type to check
- * @returns true if $T extends StaticErrorLike, false otherwise
+ * @returns true if $T extends StaticError, false otherwise
  *
  * @example
  * ```ts
- * type A = Is<StaticError<'msg'>>  // true
+ * type A = Is<StaticError<['parse']>>  // true
  * type B = Is<string>  // false
- * type C = Is<{ ERROR_________: 'msg' }>  // true (structural)
- * type D = Is<string | StaticError<'msg'>>  // boolean (distributes: false | true)
+ * type C = Is<{ ERROR_______: ['custom'] }>  // true (structural compatibility)
+ * type D = Is<string | StaticError<['parse']>>  // boolean (distributes: false | true)
  * ```
  *
  * @category Error Utilities
  */
-export type Is<$T> = $T extends StaticErrorLike ? true : false
+export type Is<$T> = $T extends StaticError ? true : false
 
 /**
- * Renders an error based on the `renderErrors` setting.
+ * Convert hierarchy array to dot-separated path string.
+ * @internal
+ */
+type HierarchyToPath<$Hierarchy extends readonly string[]> = $Hierarchy extends
+  readonly [infer __first__ extends string, ...infer __rest__ extends string[]] ? __rest__ extends [] ? `.${__first__}`
+  : `.${__first__}${HierarchyToPath<__rest__>}`
+  : ''
+
+/**
+ * Extract hierarchy from StaticError ERROR field and convert to path string.
+ * Extracts from the ERROR field directly to get the normalized hierarchy.
+ * @internal
+ */
+type ExtractHierarchy<
+  $Error extends StaticError,
+> = HierarchyToPath<$Error['ERROR_______']>
+
+/**
+ * Display an error with formatted hierarchy and context.
  *
- * When `renderErrors` is `true` (default), returns the full error object.
- * When `false`, extracts just the error message string for cleaner IDE hovers.
+ * Shows the error with consistent key formatting:
+ * - `ERROR_______` key displays the hierarchy tuple (without readonly)
+ * - All other keys are padded to 14 characters for visual alignment
  *
- * Uses the generic {@link KitLibrarySettings.Ts.Error.renderErrors} setting.
- *
- * @template $Error - The full StaticErrorLike object or error type
+ * @template $Error - The StaticError to display
  *
  * @example
  * ```ts
- * // With renderErrors: true (default)
- * type E = Render<StaticError<'msg', { key: 'value' }>>
- * // { ERROR_________: 'msg', key___________: 'value' }
+ * interface ParseError extends StaticError<
+ *   ['parse', 'param'],
+ *   { input: string; message: string }
+ * > {}
  *
- * // With renderErrors: false
- * type E = Render<StaticError<'msg', { key: 'value' }>>
- * // 'msg'
+ * type Displayed = Show<ParseError>
+ * // {
+ * //   ERROR_______: ['parse', 'param']
+ * //   input________: string
+ * //   message______: string
+ * // }
  * ```
  *
  * @category Error Utilities
  */
 // dprint-ignore
-export type Render<$Error extends StaticErrorLike> =
+export type Show<
+  $Error extends StaticError,
+  ___$Context extends object = object extends $Error['CONTEXT_____'] ? {} : $Error['CONTEXT_____'],
+  ___$Error extends string = ExtractHierarchy<$Error>
+> =
+Simplify.Top<{
+  [k in keyof (
+    & { ERROR_______: ___$Error }
+    & ___$Context
+  ) as k extends string ? PadKeyTo14<k> : k]: (
+    & { ERROR_______: ___$Error }
+    & ___$Context
+  )[k]
+}>
+
+export type ShowOrPassthrogh<$T> = $T extends StaticError ? Show<$T> : $T
+
+/**
+ * Renders an error based on the `renderErrors` setting.
+ *
+ * When `renderErrors` is `true` (default), returns the full formatted error via {@link Show}.
+ * When `false`, extracts just the error message string for cleaner IDE hovers.
+ *
+ * Uses the {@link KitLibrarySettings.Ts.Error.renderErrors} setting.
+ *
+ * @template $Error - The StaticError to render
+ *
+ * @example
+ * ```ts
+ * interface MyError extends StaticError<['parse'], { message: 'Invalid input' }> {}
+ *
+ * // With renderErrors: true (default)
+ * type Full = Render<MyError>
+ * // { ERROR_______: ['parse'], message_______: 'Invalid input' }
+ *
+ * // With renderErrors: false
+ * type Compact = Render<MyError>
+ * // 'Invalid input'
+ * ```
+ *
+ * @category Error Display
+ */
+// dprint-ignore
+export type Render<$Error extends StaticError> =
   KitLibrarySettings.Ts.Error['renderErrors'] extends false
-    ? $Error['ERROR_________']
-    : $Error
+    ? $Error['CONTEXT_____'] extends { message: infer __message__ extends string }
+      ? __message__
+      : Show<$Error>
+    : Show<$Error>
 
 //
 //

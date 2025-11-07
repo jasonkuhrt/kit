@@ -1,4 +1,5 @@
 import type { Fn } from '#fn'
+import type { Either } from 'effect'
 import type * as Path from '../../../path.js'
 import { builder } from '../../builder-singleton.js'
 import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
@@ -26,7 +27,11 @@ import type { SubKind, SubNoExcessKind } from '../../kinds/relators.js'
  * type _ = Assert.array.sub.of<string, number[]>
  * ```
  */
-type of_<$Expected, $Actual> = Fn.Kind.Apply<SubKind, [$Expected, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
+// dprint-ignore
+type of_<$Expected, $Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [$Expected, __actual__]>
+                                                                         : never
 const of_ = builder.array.sub.of
 
 /**
@@ -42,7 +47,11 @@ const of_ = builder.array.sub.of
  * type _ = Assert.array.sub.string<number[]>
  * ```
  */
-type string_<$Actual> = Fn.Kind.Apply<SubKind, [string, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
+// dprint-ignore
+type string_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [string, __actual__]>
+                                                                         : never
 const string_ = builder.array.sub.string
 
 /**
@@ -58,7 +67,11 @@ const string_ = builder.array.sub.string
  * type _ = Assert.array.sub.number<string[]>
  * ```
  */
-type number_<$Actual> = Fn.Kind.Apply<SubKind, [number, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
+// dprint-ignore
+type number_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [number, __actual__]>
+                                                                         : never
 const number_ = builder.array.sub.number
 
 /**
@@ -74,7 +87,11 @@ const number_ = builder.array.sub.number
  * type _ = Assert.array.sub.bigint<string[]>
  * ```
  */
-type bigint_<$Actual> = Fn.Kind.Apply<SubKind, [bigint, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
+// dprint-ignore
+type bigint_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [bigint, __actual__]>
+                                                                         : never
 const bigint_ = builder.array.sub.bigint
 
 /**
@@ -90,8 +107,52 @@ const bigint_ = builder.array.sub.bigint
  * type _ = Assert.array.sub.boolean<string[]>
  * ```
  */
-type boolean_<$Actual> = Fn.Kind.Apply<SubKind, [boolean, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
+// dprint-ignore
+type boolean_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [boolean, __actual__]>
+                                                                         : never
 const boolean_ = builder.array.sub.boolean
+
+/**
+ * Pre-curried matcher for true.
+ * Extraction chain: T[] → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.array.sub.true<true[]>
+ *
+ * // ✗ Fail
+ * type _ = Assert.array.sub.true<string[]>
+ * ```
+ */
+// dprint-ignore
+type true_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [true, __actual__]>
+                                                                         : never
+const true_ = builder.array.sub.true
+
+/**
+ * Pre-curried matcher for false.
+ * Extraction chain: T[] → T
+ *
+ * @example
+ * ```typescript
+ * // ✓ Pass
+ * type _ = Assert.array.sub.false<false[]>
+ *
+ * // ✗ Fail
+ * type _ = Assert.array.sub.false<string[]>
+ * ```
+ */
+// dprint-ignore
+type false_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [false, __actual__]>
+                                                                         : never
+const false_ = builder.array.sub.false
 
 /**
  * Pre-curried matcher for undefined.
@@ -106,7 +167,11 @@ const boolean_ = builder.array.sub.boolean
  * type _ = Assert.array.sub.undefined<string[]>
  * ```
  */
-type undefined_<$Actual> = Fn.Kind.Apply<SubKind, [undefined, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
+// dprint-ignore
+type undefined_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [undefined, __actual__]>
+                                                                         : never
 const undefined_ = builder.array.sub.undefined
 
 /**
@@ -122,7 +187,11 @@ const undefined_ = builder.array.sub.undefined
  * type _ = Assert.array.sub.null<string[]>
  * ```
  */
-type null_<$Actual> = Fn.Kind.Apply<SubKind, [null, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
+// dprint-ignore
+type null_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [null, __actual__]>
+                                                                         : never
 const null_ = builder.array.sub.null
 
 /**
@@ -138,7 +207,11 @@ const null_ = builder.array.sub.null
  * type _ = Assert.array.sub.symbol<string[]>
  * ```
  */
-type symbol_<$Actual> = Fn.Kind.Apply<SubKind, [symbol, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
+// dprint-ignore
+type symbol_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [symbol, __actual__]>
+                                                                         : never
 const symbol_ = builder.array.sub.symbol
 
 /**
@@ -154,7 +227,11 @@ const symbol_ = builder.array.sub.symbol
  * type _ = Assert.array.sub.Date<string[]>
  * ```
  */
-type Date_<$Actual> = Fn.Kind.Apply<SubKind, [Date, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
+// dprint-ignore
+type Date_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [Date, __actual__]>
+                                                                         : never
 const Date_ = builder.array.sub.Date
 
 /**
@@ -170,7 +247,11 @@ const Date_ = builder.array.sub.Date
  * type _ = Assert.array.sub.RegExp<string[]>
  * ```
  */
-type RegExp_<$Actual> = Fn.Kind.Apply<SubKind, [RegExp, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
+// dprint-ignore
+type RegExp_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [RegExp, __actual__]>
+                                                                         : never
 const RegExp_ = builder.array.sub.RegExp
 
 /**
@@ -186,7 +267,11 @@ const RegExp_ = builder.array.sub.RegExp
  * type _ = Assert.array.sub.Error<string[]>
  * ```
  */
-type Error_<$Actual> = Fn.Kind.Apply<SubKind, [Error, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
+// dprint-ignore
+type Error_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [Error, __actual__]>
+                                                                         : never
 const Error_ = builder.array.sub.Error
 
 /**
@@ -202,7 +287,11 @@ const Error_ = builder.array.sub.Error
  * type _ = Assert.array.sub.unknown<string[]>
  * ```
  */
-type unknown_<$Actual> = Fn.Kind.Apply<SubKind, [unknown, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
+// dprint-ignore
+type unknown_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [unknown, __actual__]>
+                                                                         : never
 const unknown_ = builder.array.sub.unknown
 
 /**
@@ -218,7 +307,11 @@ const unknown_ = builder.array.sub.unknown
  * type _ = Assert.array.sub.any<string[]>
  * ```
  */
-type any_<$Actual> = Fn.Kind.Apply<SubKind, [any, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
+// dprint-ignore
+type any_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [any, __actual__]>
+                                                                         : never
 const any_ = builder.array.sub.any
 
 /**
@@ -234,7 +327,11 @@ const any_ = builder.array.sub.any
  * type _ = Assert.array.sub.never<string[]>
  * ```
  */
-type never_<$Actual> = Fn.Kind.Apply<SubKind, [never, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]>
+// dprint-ignore
+type never_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [never, __actual__]>
+                                                                         : never
 const never_ = builder.array.sub.never
 
 const ofAs_ = <$Type>() => builder.array.sub.ofAs<$Type>()
@@ -242,10 +339,15 @@ const ofAs_ = <$Type>() => builder.array.sub.ofAs<$Type>()
  * No-excess variant of sub relation.
  * Checks that actual has no excess properties beyond expected.
  */
-type noExcess_<$Expected, $Actual> = Fn.Kind.Apply<
-  SubNoExcessKind,
-  [$Expected, Fn.Kind.Apply<Path.ArrayElement, [$Actual]>]
->
+// dprint-ignore
+type noExcess_<
+  $Expected,
+  $Actual,
+  __$ActualExtracted = Fn.Kind.Apply<Path.ArrayElement, [$Actual]>,
+> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubNoExcessKind, [$Expected, __actual__]>
+                                                                         : never
 const noExcess_ = builder.array.sub.noExcess
 const noExcessAs_ = <$Type>() => builder.array.sub.noExcessAs<$Type>()
 
@@ -255,6 +357,7 @@ export {
   boolean_ as boolean,
   Date_ as Date,
   Error_ as Error,
+  false_ as false,
   never_ as never,
   noExcess_ as noExcess,
   noExcessAs_ as noExcessAs,
@@ -265,6 +368,7 @@ export {
   RegExp_ as RegExp,
   string_ as string,
   symbol_ as symbol,
+  true_ as true,
   undefined_ as undefined,
   unknown_ as unknown,
 }

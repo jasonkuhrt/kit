@@ -79,10 +79,17 @@ type ValidateComparable<A, B> = Ts.Relation.GetRelation<A, B> extends Ts.Relatio
 /**
  * Error type for comparing types with no overlap.
  */
-type ErrorDisjointTypes<A, B> = Ts.Err.StaticError<
-  `Cannot compare disjoint types ${Ts.ShowInTemplate<A>} and ${Ts.ShowInTemplate<B>}`,
-  { TypeA: A; TypeB: B; tip: `These types have no overlap. This comparison will always return false.` }
->
+interface ErrorDisjointTypes<A, B> extends
+  Ts.Err.StaticError<
+    ['eq', 'disjoint-types'],
+    {
+      message: `Cannot compare disjoint types ${Ts.ShowInTemplate<A>} and ${Ts.ShowInTemplate<B>}`
+      TypeA: A
+      TypeB: B
+      tip: `These types have no overlap. This comparison will always return false.`
+    }
+  >
+{}
 
 //
 //

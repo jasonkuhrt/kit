@@ -19,6 +19,21 @@ import type { GetKindCase } from './type-level.js'
 //
 
 /**
+ * Error for when string length exceeds the fast path limit and slow mode is not enabled.
+ */
+export interface ErrorLengthExceedsLimit<$S extends string> extends
+  Ts.Err.StaticError<
+    ['str', 'length', 'exceeds-limit'],
+    {
+      message: 'String length exceeds fast path limit (20 chars)'
+      hint: 'Pass true as second parameter or set KitLibrarySettings.Perf.Settings.allowSlow to true'
+      limit: '0-20 chars (fast) | 21-4000 chars (slow, opt-in)'
+      received: $S
+    }
+  >
+{}
+
+/**
  * Fast path for string length (0-20 characters).
  * Uses nested pattern matching for exact length detection.
  * Detects template literals with string interpolations and returns `number`.
@@ -211,14 +226,7 @@ export type Length<
   literal: LengthFast<$S> extends never
     ? NormalizeAllowSlow<$AllowSlow> extends true
       ? LengthSlow<$S>
-      : Ts.Err.StaticError<
-          'String length exceeds fast path limit (20 chars)',
-          {
-            hint: 'Pass true as second parameter or set KitLibrarySettings.Perf.Settings.allowSlow to true'
-            limit: '0-20 chars (fast) | 21-4000 chars (slow, opt-in)'
-            received: $S
-          }
-        >
+      : ErrorLengthExceedsLimit<$S>
     : LengthFast<$S>
 }[GetKindCase<$S>]
 

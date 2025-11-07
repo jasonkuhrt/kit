@@ -2,40 +2,35 @@ import { attest } from '@ark/attest'
 import { test } from 'vitest'
 import type * as Err from './err.js'
 
-test('StaticError - message only', () => {
-  attest({} as Err.StaticError<'msg'>).type.toString.snap(`{
-  ERROR_________: "msg"
-  HIERARCHY_____: readonly ["root", ...string[]]
+test('Show - formats error with padded keys', () => {
+  interface E extends
+    Err.StaticError<
+      ['parse', 'param'],
+      { message: 'Invalid param'; input: string }
+    >
+  {}
+  attest({} as Err.Show<E>).type.toString.snap(`{
+  ERROR_________: ".parse.param"
+  message_______: "Invalid param"
+  input_________: string
 }`)
 })
 
-test('StaticError - with metadata', () => {
-  attest({} as Err.StaticError<'msg', { a: 'a'; b: 'b' }>).type.toString.snap(`{
-  ERROR_________: "msg"
-  a_____________: "a"
-  b_____________: "b"
-  HIERARCHY_____: readonly ["root", ...string[]]
+test('Show - strips readonly from hierarchy', () => {
+  interface E extends Err.StaticError<['domain'], { message: 'Error' }> {}
+  attest({} as Err.Show<E>).type.toString.snap(`{
+  ERROR_________: ".domain"
+  message_______: "Error"
 }`)
 })
 
-test('StaticError - with multiple metadata fields', () => {
-  attest({} as Err.StaticError<'msg', { a: 'a'; b: 'b'; c: 'c'; d: 'd' }>).type
-    .toString.snap(`{
-  ERROR_________: "msg"
-  a_____________: "a"
-  b_____________: "b"
-  c_____________: "c"
-  d_____________: "d"
-  HIERARCHY_____: readonly ["root", ...string[]]
-}`)
+test('Is - detects StaticError', () => {
+  interface MyError extends Err.StaticError<['test']> {}
+  type _result = Err.Is<MyError>
+  attest<_result>(true as _result).equals(true)
 })
 
-test('StaticError - with long key name', () => {
-  attest({} as Err.StaticError<'msg', { veryLongKeyName: 'x'; s: 'y' }>).type
-    .toString.snap(`{
-  ERROR_________: "msg"
-  veryLongKeyName: "x"
-  s_____________: "y"
-  HIERARCHY_____: readonly ["root", ...string[]]
-}`)
+test('Is - rejects non-error', () => {
+  type _result = Err.Is<string>
+  attest<_result>(false as _result).equals(false)
 })
