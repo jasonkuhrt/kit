@@ -1209,3 +1209,48 @@ A.exact.ofAs<{ a: 1 }>().onAs<{ a: 2 }>()
 // export {}
 
 // When enabled, the error will include diff_missing__, diff_excess___, diff_mismatch_ fields
+
+//
+//
+//
+//
+//
+// Type Assertions on non-assertion static errors
+//
+// ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+//
+//
+//
+//
+
+// Regression test: Negation flag must be passed to relators (bug fixed in ApplyAssertion)
+// Previously, ApplyAssertion was missing the 3rd parameter ($State['matcher_negated']),
+// causing all negated assertions to incorrectly use non-negated logic.
+
+type E1 = Ts.Err.StaticError<'E1', {}, ['root', 'E1']>
+type E2 = Ts.Err.StaticError<'E2', {}, ['root', 'E2']>
+A.exact.ofAs<E1>().onAs<E1>()
+A.not.exact.ofAs<E1>().onAs<E2>()
+
+//
+//
+//
+//
+//
+// Negation
+//
+// ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+//
+//
+//
+//
+
+// @ts-expect-error
+A.not.exact.ofAs<a>().onAs<a>()
+A.not.exact.ofAs<a>().onAs<b>()
+// @ts-expect-error
+A.not.equiv.ofAs<a>().onAs<a>()
+A.not.equiv.ofAs<a>().onAs<b>()
+// @ts-expect-error
+A.not.sub.ofAs<a>().onAs<a>()
+A.not.sub.ofAs<a>().onAs<b>()

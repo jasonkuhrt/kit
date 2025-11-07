@@ -106,7 +106,8 @@ type ApplyAssertion<
   $Relator extends Fn.Kind.Kind,
   ___$ExpectedNormalized = NormalizeForComparison<$Expected, $State>,
   ___$ActualNormalized = NormalizeForComparison<$Actual, $State>,
-> = Fn.Kind.Apply<$Relator, [___$ExpectedNormalized, ___$ActualNormalized]>
+> = Fn.Kind.Apply<$Relator, [___$ExpectedNormalized, ___$ActualNormalized, $State['matcher_negated']]>
+// > = Fn.Kind.Apply<$Relator, [___$ExpectedNormalized, ___$ActualNormalized]>
 
 /**
  * Pure validation - returns Error | never.
@@ -122,21 +123,21 @@ type Validate<
   ___$Error = ApplyAssertion<$Expected, ___$ActualExtracted, $State, $Relator>,
 > =
   // Check extraction error first
-  Ts.Err.Is<___$ActualExtracted> extends true
+  StaticErrorAssertion.Is<___$ActualExtracted> extends true
     ? ___$ActualExtracted
     // Check unknown - only allowed with flag
     : IsUnknown<___$ActualExtracted> extends true
       ? $State['matcher_allowUnknown'] extends true
         ? [___$Error] extends [never]
           ? never
-          : Ts.Err.Is<___$Error> extends true
+          : StaticErrorAssertion.Is<___$Error> extends true
             ? ___$Error
             : StaticErrorAssertion<'Unexpected error type in guard', unknown, unknown>
         : StaticErrorAssertion<'Type unknown is not a valid actual type to assertion on unless flag has been set'>
       // Regular validation
       : [___$Error] extends [never]
         ? never
-        : Ts.Err.Is<___$Error> extends true
+        : StaticErrorAssertion.Is<___$Error> extends true
           ? ___$Error
           : StaticErrorAssertion<'Unexpected error type in guard', unknown, unknown>
 
@@ -185,11 +186,11 @@ export type GuardExpected<
 // dprint-ignore
 export type OnlyFailingChecks<$Results extends readonly any[]> =
   $Results extends [infer __first__, ...infer __rest__]
-    ? IsNever<__first__> extends true      ? OnlyFailingChecks<__rest__>
-    : IsAny<__first__> extends true        ? OnlyFailingChecks<__rest__>
-    : Ts.Err.Is<__first__> extends true       ? [__first__, ...OnlyFailingChecks<__rest__>]
-                                           : OnlyFailingChecks<__rest__>
-    : []
+    ? IsNever<__first__> extends true                         ? OnlyFailingChecks<__rest__>
+    : IsAny<__first__> extends true                           ? OnlyFailingChecks<__rest__>
+    : StaticErrorAssertion.Is<__first__> extends true         ? [__first__, ...OnlyFailingChecks<__rest__>]
+                                                              : OnlyFailingChecks<__rest__>
+                                                              : []
 
 // // dprint-ignore
 // export type GetRestParamsForDisplayingGuard<$Result> =

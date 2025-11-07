@@ -50,7 +50,7 @@ export interface ExactKind extends AssertionKind {
     // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
     IsAny<this['parameters'][1]> extends false
       ? IsNever<this['parameters'][1]> extends false
-        ? Ts.Err.Is<this['parameters'][1]> extends true
+        ? StaticErrorAssertion.Is<this['parameters'][1]> extends true
           ? this['parameters'][1]
           : this['parameters'][2] extends true
             ? InvertExactResult<this['parameters'][0], this['parameters'][1]>
@@ -196,7 +196,7 @@ export interface EquivKind extends AssertionKind {
     // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
     IsAny<this['parameters'][1]> extends false
       ? IsNever<this['parameters'][1]> extends false
-        ? Ts.Err.Is<this['parameters'][1]> extends true
+        ? StaticErrorAssertion.Is<this['parameters'][1]> extends true
           ? this['parameters'][1]
           : this['parameters'][2] extends true
             ? InvertEquivResult<this['parameters'][0], this['parameters'][1]>
@@ -310,7 +310,7 @@ export interface SubKind extends AssertionKind {
     // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
     IsAny<this['parameters'][1]> extends false
       ? IsNever<this['parameters'][1]> extends false
-        ? Ts.Err.Is<this['parameters'][1]> extends true
+        ? StaticErrorAssertion.Is<this['parameters'][1]> extends true
           ? this['parameters'][1]
           : this['parameters'][2] extends true
             ? InvertSubResult<this['parameters'][0], this['parameters'][1]>
@@ -383,7 +383,7 @@ export interface SubNoExcessKind extends AssertionKind {
     // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
     IsAny<this['parameters'][1]> extends false
       ? IsNever<this['parameters'][1]> extends false
-        ? Ts.Err.Is<this['parameters'][1]> extends true
+        ? StaticErrorAssertion.Is<this['parameters'][1]> extends true
           ? this['parameters'][1]
           : this['parameters'][2] extends true
             ? InvertSubNoExcessResult<this['parameters'][0], this['parameters'][1]>
@@ -442,7 +442,7 @@ export interface EquivNoExcessKind extends AssertionKind {
     // Check if $Actual is already an error from extraction - pass it through (but exclude any/never first!)
     IsAny<this['parameters'][1]> extends false
       ? IsNever<this['parameters'][1]> extends false
-        ? Ts.Err.Is<this['parameters'][1]> extends true
+        ? StaticErrorAssertion.Is<this['parameters'][1]> extends true
           ? this['parameters'][1]
           : this['parameters'][2] extends true
             ? InvertEquivNoExcessResult<this['parameters'][0], this['parameters'][1]>

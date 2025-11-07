@@ -69,3 +69,30 @@ export type NormalizeMetaInput<$MetaInput extends MetaInput = never> =
         : $MetaInput
 
 export type MetaInput = string | readonly string[] | Record<string, any>
+
+export namespace StaticErrorAssertion {
+  /**
+   * Type guard to check if a type is specifically a {@link StaticErrorAssertion}.
+   *
+   * This distinguishes assertion library errors from other domain error types that may also
+   * have an `ERROR_________` property. It checks both:
+   * 1. The type is a `StaticErrorLike` (has `ERROR_________` property)
+   * 2. The `HIERARCHY_____` (padded to 14 chars) matches `readonly ['root', 'assert', ...]` (from assertion library)
+   *
+   * @template $T - The type to check
+   *
+   * @example
+   * ```ts
+   * type AssertError = StaticErrorAssertion<'Types mismatch', string, number>
+   * type DomainError = { ERROR_________: 'Custom error'; HIERARCHY___: readonly ['root', 'domain'] }
+   *
+   * type T1 = StaticErrorAssertion.Is<AssertError>  // true
+   * type T2 = StaticErrorAssertion.Is<DomainError>  // false
+   * type T3 = StaticErrorAssertion.Is<string>       // false
+   * ```
+   */
+  export type Is<$T> = Ts.Err.Is<$T> extends true
+    ? $T extends { readonly HIERARCHY_____: readonly ['root', 'assert', ...any[]] } ? true
+    : false
+    : false
+}
