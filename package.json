@@ -242,7 +242,6 @@
     "check": "pnpm run '/check:.*/'",
     "fix": "pnpm run '/fix:.*/'",
     "prebuild": "pnpm build:clean",
-    "prepare": "husky",
     "docs:dev": "pnpm run '/docs:dev:(generate|serve)/'",
     "docs:dev:twoslash": "TWOSLASH=true pnpm run '/docs:dev:(generate|serve)/'",
     "docs:dev:generate": "tsx watch --watch-path=src --exclude '**/*.test.ts' --exclude '**/*.test-d.ts' src/utils/paka/cli.ts generate",
@@ -250,8 +249,7 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "docs:generate": "tsx src/utils/paka/cli.ts generate",
-    "generate:test-namespaces": "tsx scripts/generate-test-namespaces/index.ts",
-    "toggle:precommit": "if [ -f .husky/pre-commit ]; then mv .husky/pre-commit .husky/pre-commit.disabled && echo '✗ Pre-commit hook disabled'; else mv .husky/pre-commit.disabled .husky/pre-commit && echo '✓ Pre-commit hook enabled'; fi"
+    "generate:test-namespaces": "tsx scripts/generate-test-namespaces/index.ts"
   },
   "devDependencies": {
     "@ark/attest": "^0.50.0",

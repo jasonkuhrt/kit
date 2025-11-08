@@ -8,6 +8,7 @@ import type {
   AssertActual,
   AssertExpected,
   AssertUnaryRelator,
+  AssertUnaryRelatorValue,
   CheckAgainstAnyNeverUnknown,
   GuardActual,
   GuardExpected,
@@ -29,9 +30,9 @@ export type Builder<$State extends S> =
   & BuilderBinaryRelators<$State>
   & BuilderExtractors<$State>
   & BuilderSettings<$State>
-  & BuilderActualInputIfMissingActual<$State>
+  & BuilderActualInputIfMissing<$State>
 
-export type BuilderActualInputIfMissingActual<$State extends S> = {
+export type BuilderActualInputIfMissing<$State extends S> = {
   'actual': BuilderActualInput<$State>
   'either': BuilderActualInput<$State>
   'expected': {}
@@ -109,7 +110,7 @@ export type ExecuteUnaryRelator<
 > = ___ExtractionResult extends Either.Left<infer ERROR, infer _>
   ? (...params: OnlyAssertionErrorsAndShow<[ERROR]>) => void // Extraction failed - propagate error
   : ___ExtractionResult extends Either.Right<infer _, infer VALUE>
-    ? (...params: OnlyAssertionErrorsAndShow<[AssertUnaryRelator<VALUE, $State, $Kind>]>) => void // Extraction succeeded
+    ? (...params: OnlyAssertionErrorsAndShow<[AssertUnaryRelatorValue<VALUE, $State, $Kind>]>) => void // Extraction succeeded
   : never
 
 //
@@ -250,14 +251,13 @@ export interface BuilderMatchers<
   readonly undefined: InputActualDispatch<S.SetExpectedType<$State, undefined>>
   readonly null: InputActualDispatch<S.SetExpectedType<$State, null>>
   readonly symbol: InputActualDispatch<S.SetExpectedType<$State, symbol>>
-
   readonly Date: InputActualDispatch<S.SetExpectedType<$State, Date>>
   readonly RegExp: InputActualDispatch<S.SetExpectedType<$State, RegExp>>
   readonly Error: InputActualDispatch<S.SetExpectedType<$State, Error>>
-
   readonly unknown: UnaryRelatorDispatch<S.SetExpectedType<S.SetAllowUnknown<$State>, unknown>, 'unknown'>
   readonly any: UnaryRelatorDispatch<S.SetExpectedType<S.SetAllowAny<$State>, any>, 'any'>
   readonly never: UnaryRelatorDispatch<S.SetExpectedType<S.SetAllowNever<$State>, never>, 'never'>
+  // readonly empty: UnaryRelatorDispatch<$State, 'empty'> // todo: do we need this??????
 
   /**
    * NoExcess modifier - adds excess property checking to relation.
@@ -281,13 +281,6 @@ export interface BuilderMatchers<
     exact: never
   }[$RelatorKind['name']]
 }
-
-export type InputActualDispatch<$State extends S> = {
-  'either': never
-  'expected': never
-  'actual': InputActualAsValue<$State>
-  'complete': ExecuteLone<$State>
-}[S.InputNextCase<$State>]
 
 //
 //
@@ -437,6 +430,13 @@ export type InputExpectedAsValueParams<
 //
 //
 //
+
+export type InputActualDispatch<$State extends S> = {
+  'either': never
+  'expected': never
+  'actual': InputActualAsValue<$State>
+  'complete': ExecuteLone<$State>
+}[S.InputNextCase<$State>]
 
 export interface BuilderActualInput<
   $State extends S,

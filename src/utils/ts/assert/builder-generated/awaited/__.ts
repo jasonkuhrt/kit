@@ -17,6 +17,11 @@ export const parameter2 = builder.awaited.parameter2
 export const parameter3 = builder.awaited.parameter3
 export const parameter4 = builder.awaited.parameter4
 export const parameter5 = builder.awaited.parameter5
+// Unary relators
+export const any = builder.awaited.any
+export const unknown = builder.awaited.unknown
+export const never = builder.awaited.never
+export const empty = builder.awaited.empty
 // dprint-ignore
 export type exact<
   $Expected,

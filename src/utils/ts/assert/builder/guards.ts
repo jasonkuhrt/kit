@@ -217,11 +217,30 @@ export type AssertUnaryRelator<
   $actual,
   $State extends State,
   $Kind extends 'any' | 'unknown' | 'never' | 'empty',
+  ___$ExtractionResult = Path.ApplyExtractors<$State['actual_extractors'], $actual>,
+> = ___$ExtractionResult extends Either.Left<infer __error__, infer _> ? __error__ // Extraction failed - propagate error
+  : ___$ExtractionResult extends Either.Right<infer _, infer __value__> ? {
+      'any': AssertUnaryRelatorEdgeType<__value__, $State, 'any'>
+      'unknown': AssertUnaryRelatorEdgeType<__value__, $State, 'unknown'>
+      'never': AssertUnaryRelatorEdgeType<__value__, $State, 'never'>
+      'empty': AssertUnaryRelatorEmpty<__value__, $State>
+    }[$Kind]
+  : never
+
+/**
+ * Unary relator assertion on an already-extracted value.
+ * Used by ExecuteUnaryRelator which has already applied extractors.
+ * Does NOT apply extractors - works directly on the provided value.
+ */
+export type AssertUnaryRelatorValue<
+  $value,
+  $State extends State,
+  $Kind extends 'any' | 'unknown' | 'never' | 'empty',
 > = {
-  'any': AssertUnaryRelatorEdgeType<$actual, $State, 'any'>
-  'unknown': AssertUnaryRelatorEdgeType<$actual, $State, 'unknown'>
-  'never': AssertUnaryRelatorEdgeType<$actual, $State, 'never'>
-  'empty': AssertUnaryRelatorEmpty<$actual, $State>
+  'any': AssertUnaryRelatorEdgeType<$value, $State, 'any'>
+  'unknown': AssertUnaryRelatorEdgeType<$value, $State, 'unknown'>
+  'never': AssertUnaryRelatorEdgeType<$value, $State, 'never'>
+  'empty': AssertUnaryRelatorEmpty<$value, $State>
 }[$Kind]
 
 /**

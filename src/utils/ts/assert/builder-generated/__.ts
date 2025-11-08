@@ -1,4 +1,5 @@
 import type { Fn } from '#fn'
+import { builder } from '../builder-singleton.js'
 import type { EquivKind, ExactKind, SubKind } from '../kinds/relators.js'
 
 export * as array from './array/__.js'
@@ -14,6 +15,11 @@ export * as parameter5 from './parameter5/__.js'
 export * as parameters from './parameters/__.js'
 export * as returned from './returned/__.js'
 export * as sub from './sub.js'
+// Unary relators
+export const any = builder.any
+export const unknown = builder.unknown
+export const never = builder.never
+export const empty = builder.empty
 export type exact<$Expected, $Actual> = Fn.Kind.Apply<ExactKind, [$Expected, $Actual]>
 export type equiv<$Expected, $Actual> = Fn.Kind.Apply<EquivKind, [$Expected, $Actual]>
 export type sub<$Expected, $Actual> = Fn.Kind.Apply<SubKind, [$Expected, $Actual]>

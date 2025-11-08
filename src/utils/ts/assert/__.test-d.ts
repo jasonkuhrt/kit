@@ -731,6 +731,8 @@ A.on($n).exact.of(a)
 A.exact.of(a).onAs<$n>()
 // @ts-expect-error
 A.onAs<$n>().exact.of(a)
+// With extractor
+A.awaited.exact.never({} as Promise<never>)
 
 //
 //
@@ -753,6 +755,8 @@ A.on($a).exact.of(a)
 A.exact.of(a).onAs<$a>()
 // @ts-expect-error
 A.onAs<$a>().exact.of(a)
+// With extractor
+A.awaited.exact.any({} as Promise<any>)
 
 //
 //
@@ -775,6 +779,8 @@ A.on($u).exact.of(a)
 A.exact.of(a).onAs<$u>()
 // @ts-expect-error
 A.onAs<$u>().exact.of(a)
+// With extractor
+A.awaited.exact.unknown({} as Promise<unknown>)
 
 //
 //
@@ -831,6 +837,7 @@ A.not.never($n)
 // Pass cases - empty values
 A.empty({})
 A.empty([])
+A.awaited.empty({} as Promise<[]>)
 A.on([]).empty()
 A.empty([] as const)
 A.empty([] as readonly [])

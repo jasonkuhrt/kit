@@ -17,6 +17,11 @@ export const parameter1 = builder.parameter5.parameter1
 export const parameter2 = builder.parameter5.parameter2
 export const parameter3 = builder.parameter5.parameter3
 export const parameter4 = builder.parameter5.parameter4
+// Unary relators
+export const any = builder.parameter5.any
+export const unknown = builder.parameter5.unknown
+export const never = builder.parameter5.never
+export const empty = builder.parameter5.empty
 // dprint-ignore
 export type exact<
   $Expected,

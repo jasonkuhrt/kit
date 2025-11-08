@@ -526,11 +526,21 @@ function generateBarrelFile(dirPath: string, exports: string[]): string {
   // Add type-level shorthand for relators (main barrel only has base relators, no extractors)
   const rootDir = path.join(process.cwd(), 'src/utils/ts')
   const relatorsPath = getRelativePath(dirPath, path.join(rootDir, 'assert/kinds/relators.js'))
+  const builderPath = getRelativePath(dirPath, path.join(rootDir, 'assert/builder-singleton.js'))
 
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
 
   const imports = `import type { Fn } from '#fn'
+import { builder } from '${builderPath}'
 import type { ${relatorKinds} } from '${relatorsPath}'`
+
+  // Root-level unary relator exports
+  const unaryRelatorExports = `
+// Unary relators
+export const any = builder.any
+export const unknown = builder.unknown
+export const never = builder.never
+export const empty = builder.empty`
 
   const typeShorthands = Object.keys(RELATORS).map((relatorName) => {
     const relator = RELATORS[relatorName]!
@@ -539,7 +549,7 @@ import type { ${relatorKinds} } from '${relatorsPath}'`
 
   return `${imports}
 
-${reExports}
+${reExports}${unaryRelatorExports}
 ${typeShorthands}
 `
 }
@@ -570,6 +580,14 @@ function generateExtractorBarrelFile(extractorName: string, barrelPath: string):
       + otherExtractors.map((name) => `export const ${name} = builder.${extractorName}.${name}`).join('\n')
     : ''
 
+  // Part 3.5: Export unary relators from builder singleton
+  const unaryRelatorExports = `
+// Unary relators
+export const any = builder.${extractorName}.any
+export const unknown = builder.${extractorName}.unknown
+export const never = builder.${extractorName}.never
+export const empty = builder.${extractorName}.empty`
+
   // Part 4: Add type-level shorthand for relators (allows omitting .of)
   const extractor = EXTRACTORS[extractorName]!
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
@@ -597,7 +615,7 @@ import type { ${relatorKinds} } from '${relatorsPath}'`
   return `${imports}
 
 ${relatorExports}
-${notExport}${extractorExports}
+${notExport}${extractorExports}${unaryRelatorExports}
 ${typeShorthands}
 `
 }
