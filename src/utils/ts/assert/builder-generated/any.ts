@@ -1,4 +1,5 @@
-import type { Inhabitance } from '#ts/ts'
+import type { Fn } from '#fn'
+import type { AssertAnyKind } from '../asserts.ts'
 import { builder } from '../builder-singleton.js'
 
 /**
@@ -15,7 +16,7 @@ import { builder } from '../builder-singleton.js'
  * Assert.any(value as string)
  * ```
  */
-type any_<$Actual> = Inhabitance.GetCase<$Actual> extends 'any' ? never : { ERROR: 'Type is not any'; actual: $Actual }
+type any_<$Actual> = Fn.Kind.Apply<AssertAnyKind, [$Actual]>
 const any_ = builder.any
 
 export { any_ as any }

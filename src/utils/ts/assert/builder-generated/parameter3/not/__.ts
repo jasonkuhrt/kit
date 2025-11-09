@@ -1,8 +1,8 @@
 import type { Fn } from '#fn'
 import type { Either } from 'effect'
 import type * as Path from '../../../../path.js'
+import type { AssertEquivKind, AssertExactKind, AssertSubKind } from '../../../asserts.ts'
 import { builder } from '../../../builder-singleton.js'
-import type { EquivKind, ExactKind, SubKind } from '../../../kinds/relators.js'
 
 export * as equiv from './equiv.js'
 export * as exact from './exact.js'
@@ -20,7 +20,7 @@ export type exact<
   __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>,
 > =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<ExactKind, [$Expected, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [$Expected, __actual__, true]>
                                                                          : never
 
 // dprint-ignore
@@ -30,7 +30,7 @@ export type equiv<
   __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>,
 > =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<EquivKind, [$Expected, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [$Expected, __actual__, true]>
                                                                          : never
 
 // dprint-ignore
@@ -40,5 +40,5 @@ export type sub<
   __$ActualExtracted = Fn.Kind.Apply<Path.Parameter3, [$Actual]>,
 > =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [$Expected, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [$Expected, __actual__, true]>
                                                                          : never

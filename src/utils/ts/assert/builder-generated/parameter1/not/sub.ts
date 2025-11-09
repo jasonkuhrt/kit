@@ -1,8 +1,8 @@
 import type { Fn } from '#fn'
 import type { Either } from 'effect'
 import type * as Path from '../../../../path.js'
+import type { AssertSubKind } from '../../../asserts.ts'
 import { builder } from '../../../builder-singleton.js'
-import type { SubKind } from '../../../kinds/relators.js'
 
 /**
  * parameter1 + sub relation matchers.
@@ -30,7 +30,7 @@ import type { SubKind } from '../../../kinds/relators.js'
 // dprint-ignore
 type of_<$Expected, $Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [$Expected, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [$Expected, __actual__, true]>
                                                                          : never
 const of_ = builder.parameter1.not.sub.of
 
@@ -50,7 +50,7 @@ const of_ = builder.parameter1.not.sub.of
 // dprint-ignore
 type string_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [string, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [string, __actual__, true]>
                                                                          : never
 const string_ = builder.parameter1.not.sub.string
 
@@ -70,7 +70,7 @@ const string_ = builder.parameter1.not.sub.string
 // dprint-ignore
 type number_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [number, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [number, __actual__, true]>
                                                                          : never
 const number_ = builder.parameter1.not.sub.number
 
@@ -90,7 +90,7 @@ const number_ = builder.parameter1.not.sub.number
 // dprint-ignore
 type bigint_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [bigint, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [bigint, __actual__, true]>
                                                                          : never
 const bigint_ = builder.parameter1.not.sub.bigint
 
@@ -110,7 +110,7 @@ const bigint_ = builder.parameter1.not.sub.bigint
 // dprint-ignore
 type boolean_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [boolean, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [boolean, __actual__, true]>
                                                                          : never
 const boolean_ = builder.parameter1.not.sub.boolean
 
@@ -130,7 +130,7 @@ const boolean_ = builder.parameter1.not.sub.boolean
 // dprint-ignore
 type true_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [true, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [true, __actual__, true]>
                                                                          : never
 const true_ = builder.parameter1.not.sub.true
 
@@ -150,7 +150,7 @@ const true_ = builder.parameter1.not.sub.true
 // dprint-ignore
 type false_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [false, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [false, __actual__, true]>
                                                                          : never
 const false_ = builder.parameter1.not.sub.false
 
@@ -170,7 +170,7 @@ const false_ = builder.parameter1.not.sub.false
 // dprint-ignore
 type undefined_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [undefined, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [undefined, __actual__, true]>
                                                                          : never
 const undefined_ = builder.parameter1.not.sub.undefined
 
@@ -190,7 +190,7 @@ const undefined_ = builder.parameter1.not.sub.undefined
 // dprint-ignore
 type null_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [null, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [null, __actual__, true]>
                                                                          : never
 const null_ = builder.parameter1.not.sub.null
 
@@ -210,7 +210,7 @@ const null_ = builder.parameter1.not.sub.null
 // dprint-ignore
 type symbol_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [symbol, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [symbol, __actual__, true]>
                                                                          : never
 const symbol_ = builder.parameter1.not.sub.symbol
 
@@ -230,7 +230,7 @@ const symbol_ = builder.parameter1.not.sub.symbol
 // dprint-ignore
 type Date_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [Date, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [Date, __actual__, true]>
                                                                          : never
 const Date_ = builder.parameter1.not.sub.Date
 
@@ -250,7 +250,7 @@ const Date_ = builder.parameter1.not.sub.Date
 // dprint-ignore
 type RegExp_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [RegExp, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [RegExp, __actual__, true]>
                                                                          : never
 const RegExp_ = builder.parameter1.not.sub.RegExp
 
@@ -270,7 +270,7 @@ const RegExp_ = builder.parameter1.not.sub.RegExp
 // dprint-ignore
 type Error_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [Error, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [Error, __actual__, true]>
                                                                          : never
 const Error_ = builder.parameter1.not.sub.Error
 
@@ -290,7 +290,7 @@ const Error_ = builder.parameter1.not.sub.Error
 // dprint-ignore
 type unknown_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [unknown, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [unknown, __actual__, true]>
                                                                          : never
 const unknown_ = builder.parameter1.not.sub.unknown
 
@@ -310,7 +310,7 @@ const unknown_ = builder.parameter1.not.sub.unknown
 // dprint-ignore
 type any_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [any, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [any, __actual__, true]>
                                                                          : never
 const any_ = builder.parameter1.not.sub.any
 
@@ -330,7 +330,7 @@ const any_ = builder.parameter1.not.sub.any
 // dprint-ignore
 type never_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Path.Parameter1, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
-  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<SubKind, [never, __actual__, true]>
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [never, __actual__, true]>
                                                                          : never
 const never_ = builder.parameter1.not.sub.never
 

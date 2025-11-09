@@ -1,6 +1,6 @@
 import type { Fn } from '#fn'
+import type { AssertEquivKind, AssertEquivNoExcessKind } from '../asserts.ts'
 import { builder } from '../builder-singleton.js'
-import type { EquivKind, EquivNoExcessKind } from '../kinds/relators.js'
 
 /**
  * base + equiv relation matchers.
@@ -24,7 +24,7 @@ import type { EquivKind, EquivNoExcessKind } from '../kinds/relators.js'
  * type _ = Assert.equiv.of<string, number>
  * ```
  */
-type of_<$Expected, $Actual> = Fn.Kind.Apply<EquivKind, [$Expected, $Actual]>
+type of_<$Expected, $Actual> = Fn.Kind.Apply<AssertEquivKind, [$Expected, $Actual]>
 const of_ = builder.equiv.of
 
 /**
@@ -39,7 +39,7 @@ const of_ = builder.equiv.of
  * type _ = Assert.equiv.string<number>
  * ```
  */
-type string_<$Actual> = Fn.Kind.Apply<EquivKind, [string, $Actual]>
+type string_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [string, $Actual]>
 const string_ = builder.equiv.string
 
 /**
@@ -54,7 +54,7 @@ const string_ = builder.equiv.string
  * type _ = Assert.equiv.number<string>
  * ```
  */
-type number_<$Actual> = Fn.Kind.Apply<EquivKind, [number, $Actual]>
+type number_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [number, $Actual]>
 const number_ = builder.equiv.number
 
 /**
@@ -69,7 +69,7 @@ const number_ = builder.equiv.number
  * type _ = Assert.equiv.bigint<string>
  * ```
  */
-type bigint_<$Actual> = Fn.Kind.Apply<EquivKind, [bigint, $Actual]>
+type bigint_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [bigint, $Actual]>
 const bigint_ = builder.equiv.bigint
 
 /**
@@ -84,7 +84,7 @@ const bigint_ = builder.equiv.bigint
  * type _ = Assert.equiv.boolean<string>
  * ```
  */
-type boolean_<$Actual> = Fn.Kind.Apply<EquivKind, [boolean, $Actual]>
+type boolean_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [boolean, $Actual]>
 const boolean_ = builder.equiv.boolean
 
 /**
@@ -99,7 +99,7 @@ const boolean_ = builder.equiv.boolean
  * type _ = Assert.equiv.true<string>
  * ```
  */
-type true_<$Actual> = Fn.Kind.Apply<EquivKind, [true, $Actual]>
+type true_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [true, $Actual]>
 const true_ = builder.equiv.true
 
 /**
@@ -114,7 +114,7 @@ const true_ = builder.equiv.true
  * type _ = Assert.equiv.false<string>
  * ```
  */
-type false_<$Actual> = Fn.Kind.Apply<EquivKind, [false, $Actual]>
+type false_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [false, $Actual]>
 const false_ = builder.equiv.false
 
 /**
@@ -129,7 +129,7 @@ const false_ = builder.equiv.false
  * type _ = Assert.equiv.undefined<string>
  * ```
  */
-type undefined_<$Actual> = Fn.Kind.Apply<EquivKind, [undefined, $Actual]>
+type undefined_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [undefined, $Actual]>
 const undefined_ = builder.equiv.undefined
 
 /**
@@ -144,7 +144,7 @@ const undefined_ = builder.equiv.undefined
  * type _ = Assert.equiv.null<string>
  * ```
  */
-type null_<$Actual> = Fn.Kind.Apply<EquivKind, [null, $Actual]>
+type null_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [null, $Actual]>
 const null_ = builder.equiv.null
 
 /**
@@ -159,7 +159,7 @@ const null_ = builder.equiv.null
  * type _ = Assert.equiv.symbol<string>
  * ```
  */
-type symbol_<$Actual> = Fn.Kind.Apply<EquivKind, [symbol, $Actual]>
+type symbol_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [symbol, $Actual]>
 const symbol_ = builder.equiv.symbol
 
 /**
@@ -174,7 +174,7 @@ const symbol_ = builder.equiv.symbol
  * type _ = Assert.equiv.Date<string>
  * ```
  */
-type Date_<$Actual> = Fn.Kind.Apply<EquivKind, [Date, $Actual]>
+type Date_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [Date, $Actual]>
 const Date_ = builder.equiv.Date
 
 /**
@@ -189,7 +189,7 @@ const Date_ = builder.equiv.Date
  * type _ = Assert.equiv.RegExp<string>
  * ```
  */
-type RegExp_<$Actual> = Fn.Kind.Apply<EquivKind, [RegExp, $Actual]>
+type RegExp_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [RegExp, $Actual]>
 const RegExp_ = builder.equiv.RegExp
 
 /**
@@ -204,7 +204,7 @@ const RegExp_ = builder.equiv.RegExp
  * type _ = Assert.equiv.Error<string>
  * ```
  */
-type Error_<$Actual> = Fn.Kind.Apply<EquivKind, [Error, $Actual]>
+type Error_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [Error, $Actual]>
 const Error_ = builder.equiv.Error
 
 /**
@@ -219,7 +219,7 @@ const Error_ = builder.equiv.Error
  * type _ = Assert.equiv.unknown<string>
  * ```
  */
-type unknown_<$Actual> = Fn.Kind.Apply<EquivKind, [unknown, $Actual]>
+type unknown_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [unknown, $Actual]>
 const unknown_ = builder.equiv.unknown
 
 /**
@@ -234,7 +234,7 @@ const unknown_ = builder.equiv.unknown
  * type _ = Assert.equiv.any<string>
  * ```
  */
-type any_<$Actual> = Fn.Kind.Apply<EquivKind, [any, $Actual]>
+type any_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [any, $Actual]>
 const any_ = builder.equiv.any
 
 /**
@@ -249,7 +249,7 @@ const any_ = builder.equiv.any
  * type _ = Assert.equiv.never<string>
  * ```
  */
-type never_<$Actual> = Fn.Kind.Apply<EquivKind, [never, $Actual]>
+type never_<$Actual> = Fn.Kind.Apply<AssertEquivKind, [never, $Actual]>
 const never_ = builder.equiv.never
 
 const ofAs_ = <$Type>() => builder.equiv.ofAs<$Type>()
@@ -257,7 +257,7 @@ const ofAs_ = <$Type>() => builder.equiv.ofAs<$Type>()
  * No-excess variant of equiv relation.
  * Checks that actual has no excess properties beyond expected.
  */
-type noExcess_<$Expected, $Actual> = Fn.Kind.Apply<EquivNoExcessKind, [$Expected, $Actual]>
+type noExcess_<$Expected, $Actual> = Fn.Kind.Apply<AssertEquivNoExcessKind, [$Expected, $Actual]>
 const noExcess_ = builder.equiv.noExcess
 const noExcessAs_ = <$Type>() => builder.equiv.noExcessAs<$Type>()
 

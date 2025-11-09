@@ -8,6 +8,8 @@
 import type { Lang } from '#lang'
 
 export namespace Relation {
+  export type Relation = equivalent | subtype | supertype | overlapping | disjoint
+
   /**
    * Type constant for equivalent relation.
    */

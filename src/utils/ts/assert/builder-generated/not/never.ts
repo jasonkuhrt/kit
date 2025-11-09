@@ -1,4 +1,5 @@
-import type { Inhabitance } from '#ts/ts'
+import type { Fn } from '#fn'
+import type { AssertNeverKind } from '../../asserts.ts'
 import { builder } from '../../builder-singleton.js'
 
 /**
@@ -15,9 +16,7 @@ import { builder } from '../../builder-singleton.js'
  * Assert.not.never(value as never)
  * ```
  */
-type never_<$Actual> = Inhabitance.GetCase<$Actual> extends 'never'
-  ? { ERROR: 'Type is never, but expected not never'; actual: $Actual }
-  : never
+type never_<$Actual> = Fn.Kind.Apply<AssertNeverKind, [$Actual, true]>
 const never_ = builder.not.never
 
 export { never_ as never }

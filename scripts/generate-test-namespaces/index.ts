@@ -123,24 +123,63 @@ const EXTRACTOR_METADATA: Record<string, { description: string; inputDesc: strin
 const RELATORS: Record<string, Relator> = {
   exact: {
     name: 'exact',
-    kindName: 'ExactKind',
+    kindName: 'AssertExactKind',
     description: 'exact structural equality',
     passExample: 'string extends string',
     failExample: '"hello" not exact match for string',
   },
   equiv: {
     name: 'equiv',
-    kindName: 'EquivKind',
+    kindName: 'AssertEquivKind',
     description: 'mutual assignability (equivalent types)',
     passExample: 'string & {} ≡ string',
     failExample: 'string not equivalent to number',
   },
   sub: {
     name: 'sub',
-    kindName: 'SubKind',
+    kindName: 'AssertSubKind',
     description: 'subtype relation (extends)',
     passExample: '"hello" extends string',
     failExample: 'string does not extend "hello"',
+  },
+}
+
+interface UnaryRelator {
+  name: string
+  kindName: string
+  description: string
+  passExample: string
+  failExample: string
+}
+
+const UNARY_RELATORS: Record<string, UnaryRelator> = {
+  any: {
+    name: 'any',
+    kindName: 'AssertAnyKind',
+    description: 'asserts type is `any`',
+    passExample: 'type _ = Assert.any<any>',
+    failExample: 'type _ = Assert.any<string>',
+  },
+  unknown: {
+    name: 'unknown',
+    kindName: 'AssertUnknownKind',
+    description: 'asserts type is `unknown`',
+    passExample: 'type _ = Assert.unknown<unknown>',
+    failExample: 'type _ = Assert.unknown<string>',
+  },
+  never: {
+    name: 'never',
+    kindName: 'AssertNeverKind',
+    description: 'asserts type is `never`',
+    passExample: 'type _ = Assert.never<never>',
+    failExample: 'type _ = Assert.never<string>',
+  },
+  empty: {
+    name: 'empty',
+    kindName: 'AssertEmptyKind',
+    description: "asserts type is empty (`[]`, `''`, or `Record<PropertyKey, never>`)",
+    passExample: 'type _ = Assert.empty<[]>',
+    failExample: 'type _ = Assert.empty<[1]>',
   },
 }
 
@@ -250,7 +289,7 @@ function calculateImportPaths(combo: Combination) {
   const rootDir = path.join(process.cwd(), 'src/utils/ts')
 
   const extractorsPath = getRelativePath(sourceFile, path.join(rootDir, 'path.js'))
-  const relatorsPath = getRelativePath(sourceFile, path.join(rootDir, 'assert/kinds/relators.js'))
+  const relatorsPath = getRelativePath(sourceFile, path.join(rootDir, 'assert/asserts.js'))
   const builderPath = getRelativePath(sourceFile, path.join(rootDir, 'assert/builder-singleton.js'))
 
   return { extractorsPath, relatorsPath, builderPath }
@@ -272,9 +311,9 @@ function generateFileHeader(combo: Combination): string {
   // Add noExcess kinds for sub/equiv
   const relatorKinds = [combo.relator.kindName]
   if (!combo.negated && combo.relator.name === 'sub') {
-    relatorKinds.push('SubNoExcessKind')
+    relatorKinds.push('AssertSubNoExcessKind')
   } else if (!combo.negated && combo.relator.name === 'equiv') {
-    relatorKinds.push('EquivNoExcessKind')
+    relatorKinds.push('AssertEquivNoExcessKind')
   }
 
   return `import type { Fn } from '#fn'
@@ -462,7 +501,7 @@ function generateMatcherFile(combo: Combination): string {
   let noExcessDecls = ''
   if (!combo.negated && (combo.relator.name === 'sub' || combo.relator.name === 'equiv')) {
     const extractorChain = buildExtractorChain(combo.extractors, '$Actual')
-    const noExcessKind = combo.relator.name === 'sub' ? 'SubNoExcessKind' : 'EquivNoExcessKind'
+    const noExcessKind = combo.relator.name === 'sub' ? 'AssertSubNoExcessKind' : 'AssertEquivNoExcessKind'
 
     if (combo.extractors.length > 0) {
       noExcessDecls = `
@@ -525,7 +564,7 @@ function generateBarrelFile(dirPath: string, exports: string[]): string {
 
   // Add type-level shorthand for relators (main barrel only has base relators, no extractors)
   const rootDir = path.join(process.cwd(), 'src/utils/ts')
-  const relatorsPath = getRelativePath(dirPath, path.join(rootDir, 'assert/kinds/relators.js'))
+  const relatorsPath = getRelativePath(dirPath, path.join(rootDir, 'assert/asserts.js'))
   const builderPath = getRelativePath(dirPath, path.join(rootDir, 'assert/builder-singleton.js'))
 
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
@@ -563,7 +602,7 @@ function generateExtractorBarrelFile(extractorName: string, barrelPath: string):
   const rootDir = path.join(process.cwd(), 'src/utils/ts')
   const builderPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/builder-singleton.js'))
   const extractorsPath = getRelativePath(barrelPath, path.join(rootDir, 'path.js'))
-  const relatorsPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/kinds/relators.js'))
+  const relatorsPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/asserts.js'))
 
   // Part 1: Export relators as dual namespaces (type+value)
   const relatorExports = Object.keys(RELATORS)
@@ -628,7 +667,7 @@ function generateNotBarrelFile(barrelPath: string, extractors: Extractor[]): str
   // Calculate relative paths
   const rootDir = path.join(process.cwd(), 'src/utils/ts')
   const extractorsPath = getRelativePath(barrelPath, path.join(rootDir, 'path.js'))
-  const relatorsPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/kinds/relators.js'))
+  const relatorsPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/asserts.js'))
   const builderPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/builder-singleton.js'))
 
   // Export relators as dual namespaces (type+value)
@@ -682,6 +721,67 @@ ${extractorImports}import type { ${relatorKinds} } from '${relatorsPath}'`
 ${relatorExports}
 ${unaryRelatorExports}
 ${typeShorthands}
+`
+}
+
+/**
+ * Generate a unary relator file (any, unknown, never, empty).
+ * These files provide both type-level and value-level assertions for edge types.
+ */
+function generateUnaryRelatorFile(unaryRelator: UnaryRelator, negated: boolean): string {
+  const rootDir = path.join(process.cwd(), 'src/utils/ts')
+  const outputPath = negated
+    ? path.join(OUTPUT_DIR, 'not', `${unaryRelator.name}.ts`)
+    : path.join(OUTPUT_DIR, `${unaryRelator.name}.ts`)
+
+  const relatorsPath = getRelativePath(outputPath, path.join(rootDir, 'assert/asserts.js'))
+  const builderPath = getRelativePath(outputPath, path.join(rootDir, 'assert/builder-singleton.js'))
+
+  const imports = `import type { Fn } from '#fn'
+import { builder } from '${builderPath}'
+import type { ${unaryRelator.kindName} } from '${relatorsPath}'`
+
+  const description = negated
+    ? unaryRelator.description.replace('asserts type is', 'asserts type is NOT')
+    : unaryRelator.description
+
+  const passExample = negated
+    ? unaryRelator.failExample.replace('_ = Assert.', '_ = Assert.not.')
+    : unaryRelator.passExample
+
+  const failExample = negated
+    ? unaryRelator.passExample.replace('_ = Assert.', '_ = Assert.not.')
+    : unaryRelator.failExample
+
+  const jsdoc = `
+/**
+ * Unary relator${negated ? ' (negated)' : ''} - ${description}.
+ *
+ * @example
+ * \`\`\`typescript
+ * // ✓ Pass
+ * ${passExample}
+ * Assert${negated ? '.not' : ''}.${unaryRelator.name}(value as ${negated ? 'string' : unaryRelator.name})
+ *
+ * // ✗ Fail
+ * ${failExample}
+ * Assert${negated ? '.not' : ''}.${unaryRelator.name}(value as ${negated ? unaryRelator.name : 'string'})
+ * \`\`\`
+ */`
+
+  const negatedParam = negated ? ', true' : ''
+  const typeDef =
+    `type ${unaryRelator.name}_<$Actual> = Fn.Kind.Apply<${unaryRelator.kindName}, [$Actual${negatedParam}]>`
+  const constDef = `const ${unaryRelator.name}_ = builder${negated ? '.not' : ''}.${unaryRelator.name}`
+  const exportDef = `export { ${unaryRelator.name}_ as ${unaryRelator.name} }`
+
+  return `${imports}
+
+${jsdoc}
+${typeDef}
+${constDef}
+
+${exportDef}
 `
 }
 
@@ -763,6 +863,27 @@ function writeGeneratedFiles() {
     fs.writeFileSync(combo.outputPath, content, 'utf-8')
     filesWritten++
     console.log(`  ✓ ${path.relative(process.cwd(), combo.outputPath)}`)
+  }
+
+  // Generate unary relator files (any, unknown, never, empty)
+  for (const unaryRelatorName of Object.keys(UNARY_RELATORS)) {
+    const unaryRelator = UNARY_RELATORS[unaryRelatorName]!
+
+    // Normal version
+    const normalPath = path.join(OUTPUT_DIR, `${unaryRelator.name}.ts`)
+    const normalContent = generateUnaryRelatorFile(unaryRelator, false)
+    ensureDir(path.dirname(normalPath))
+    fs.writeFileSync(normalPath, normalContent, 'utf-8')
+    filesWritten++
+    console.log(`  ✓ ${path.relative(process.cwd(), normalPath)}`)
+
+    // Negated version (in 'not' subdirectory)
+    const negatedPath = path.join(OUTPUT_DIR, 'not', `${unaryRelator.name}.ts`)
+    const negatedContent = generateUnaryRelatorFile(unaryRelator, true)
+    ensureDir(path.dirname(negatedPath))
+    fs.writeFileSync(negatedPath, negatedContent, 'utf-8')
+    filesWritten++
+    console.log(`  ✓ ${path.relative(process.cwd(), negatedPath)}`)
   }
 
   // Generate barrel files

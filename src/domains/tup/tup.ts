@@ -273,6 +273,31 @@ export type GetNextIndexOr<$Items extends readonly any[], $Index extends Num.Lit
   OrDefault<GetAtNextIndex<$Items, $Index>, $Or>
 
 /**
+ * Drop N elements from the start of a tuple.
+ *
+ * @template $Tuple - The readonly tuple
+ * @template $N - Number of elements to drop (0-4 supported)
+ *
+ * @example
+ * ```ts
+ * type Items = ['a', 'b', 'c', 'd', 'e']
+ * type T1 = Tup.Tail<Items, 0>  // ['a', 'b', 'c', 'd', 'e']
+ * type T2 = Tup.Tail<Items, 1>  // ['b', 'c', 'd', 'e']
+ * type T3 = Tup.Tail<Items, 2>  // ['c', 'd', 'e']
+ * type T4 = Tup.Tail<Items, 3>  // ['d', 'e']
+ * ```
+ */
+// dprint-ignore
+export type Tail<$Tuple extends readonly unknown[], $N extends number> =
+  $Tuple extends readonly []                                        ? [] :
+  $N extends 0                                                      ? $Tuple :
+  $N extends 1                                                      ? $Tuple extends readonly [any, ...infer __rest__] ? __rest__ : [] :
+  $N extends 2                                                      ? $Tuple extends readonly [any, any, ...infer __rest__] ? __rest__ : [] :
+  $N extends 3                                                      ? $Tuple extends readonly [any, any, any, ...infer __rest__] ? __rest__ : [] :
+  $N extends 4                                                      ? $Tuple extends readonly [any, any, any, any, ...infer __rest__] ? __rest__ : [] :
+                                                                      never // Only 0-4 supported
+
+/**
  * Drop items from the start of a tuple until reaching the specified index.
  *
  * @template $Items - The readonly tuple

@@ -3,17 +3,26 @@ import type { Inhabitance, SENTINEL } from '#ts/ts'
 import type { Either } from 'effect'
 import type * as Path from '../../path.js'
 import type { ExtractorRegistry } from '../../path.js'
-import type { EquivKind, EquivNoExcessKind, ExactKind, SubKind, SubNoExcessKind } from '../kinds/relators.js'
+import type {
+  AssertAnyKind,
+  AssertEmptyKind,
+  AssertEquivKind,
+  AssertEquivNoExcessKind,
+  AssertExactKind,
+  AssertNeverKind,
+  AssertSubKind,
+  AssertSubNoExcessKind,
+  AssertUnknownKind,
+} from '../asserts.ts'
 import type {
   AssertActual,
+  AssertEdgeType,
   AssertExpected,
   AssertUnaryRelator,
   AssertUnaryRelatorValue,
-  CheckAgainstAnyNeverUnknown,
-  GuardActual,
-  GuardExpected,
   OnlyAssertionErrorsAndShow,
-} from './guards.js'
+} from './asserts.ts'
+import type { GuardActual, GuardExpected } from './guards.ts'
 import type { State as S } from './state.js'
 
 //
@@ -57,33 +66,33 @@ export interface BuilderUnaryRelators<$State extends S> {
   /**
    * Assert type is `any`.
    */
-  readonly any: UnaryRelatorDispatch<$State, 'any'>
+  readonly any: UnaryRelatorDispatch<$State, AssertAnyKind>
 
   /**
    * Assert type is `unknown`.
    */
-  readonly unknown: UnaryRelatorDispatch<$State, 'unknown'>
+  readonly unknown: UnaryRelatorDispatch<$State, AssertUnknownKind>
 
   /**
    * Assert type is `never`.
    */
-  readonly never: UnaryRelatorDispatch<$State, 'never'>
+  readonly never: UnaryRelatorDispatch<$State, AssertNeverKind>
 
   /**
    * Assert type is empty ([], keyof T extends never, or '').
    * Note: {} is non-nullish, not empty!
    */
-  readonly empty: UnaryRelatorDispatch<$State, 'empty'>
+  readonly empty: UnaryRelatorDispatch<$State, AssertEmptyKind>
 }
 
-type UnaryRelatorDispatch<$State extends S, $Kind extends 'any' | 'unknown' | 'never' | 'empty'> = {
+type UnaryRelatorDispatch<$State extends S, $Kind extends Fn.Kind.Kind> = {
   'complete': ExecuteUnaryRelator<$State, $Kind>
   'either': InputActualForUnaryRelator<$State, $Kind>
   'actual': InputActualForUnaryRelator<$State, $Kind>
   'expected': ExecuteUnaryRelator<$State, $Kind> // Unary relators execute when we have actual (no expected needed)
 }[S.InputNextCase<$State>]
 
-export type InputActualForUnaryRelator<$State extends S, $Kind extends 'any' | 'unknown' | 'never' | 'empty'> = {
+export type InputActualForUnaryRelator<$State extends S, $Kind extends Fn.Kind.Kind> = {
   'auto': InputActualForUnaryRelatorNarrow<$State, $Kind>
   'narrow': InputActualForUnaryRelatorNarrow<$State, $Kind>
   'wide': InputActualForUnaryRelatorWide<$State, $Kind>
@@ -91,7 +100,7 @@ export type InputActualForUnaryRelator<$State extends S, $Kind extends 'any' | '
 
 export interface InputActualForUnaryRelatorNarrow<
   $State extends S,
-  $Kind extends 'any' | 'unknown' | 'never' | 'empty',
+  $Kind extends Fn.Kind.Kind,
 > {
   <const $actual>(
     value: $actual,
@@ -99,13 +108,13 @@ export interface InputActualForUnaryRelatorNarrow<
   ): void
 }
 
-export interface InputActualForUnaryRelatorWide<$State extends S, $Kind extends 'any' | 'unknown' | 'never' | 'empty'> {
+export interface InputActualForUnaryRelatorWide<$State extends S, $Kind extends Fn.Kind.Kind> {
   <$actual>(value: $actual, ...params: OnlyAssertionErrorsAndShow<[AssertUnaryRelator<$actual, $State, $Kind>]>): void
 }
 
 export type ExecuteUnaryRelator<
   $State extends S,
-  $Kind extends 'any' | 'unknown' | 'never' | 'empty',
+  $Kind extends Fn.Kind.Kind,
   ___ExtractionResult = Path.ApplyExtractors<$State['actual_extractors'], $State['actual_type']>,
 > = ___ExtractionResult extends Either.Left<infer ERROR, infer _>
   ? (...params: OnlyAssertionErrorsAndShow<[ERROR]>) => void // Extraction failed - propagate error
@@ -127,9 +136,9 @@ export type ExecuteUnaryRelator<
  * Return Matchers interface for providing expected type.
  */
 export interface BuilderBinaryRelators<$State extends S> {
-  readonly exact: BuilderMatchers<S.SetRelator<$State, ExactKind>, ExactKind>
-  readonly equiv: BuilderMatchers<S.SetRelator<$State, EquivKind>, EquivKind>
-  readonly sub: BuilderMatchers<S.SetRelator<$State, SubKind>, SubKind>
+  readonly exact: BuilderMatchers<S.SetRelator<$State, AssertExactKind>, AssertExactKind>
+  readonly equiv: BuilderMatchers<S.SetRelator<$State, AssertEquivKind>, AssertEquivKind>
+  readonly sub: BuilderMatchers<S.SetRelator<$State, AssertSubKind>, AssertSubKind>
 }
 
 //
@@ -216,7 +225,7 @@ export type BuilderExtractorsConditional<$State extends S> = {
 /**
  * Valid relator kinds for use in Relator interface.
  */
-type RelatorKind = ExactKind | EquivKind | SubKind
+type RelatorKind = AssertExactKind | AssertEquivKind | AssertSubKind
 
 //
 //
@@ -254,10 +263,10 @@ export interface BuilderMatchers<
   readonly Date: InputActualDispatch<S.SetExpectedType<$State, Date>>
   readonly RegExp: InputActualDispatch<S.SetExpectedType<$State, RegExp>>
   readonly Error: InputActualDispatch<S.SetExpectedType<$State, Error>>
-  readonly unknown: UnaryRelatorDispatch<S.SetExpectedType<S.SetAllowUnknown<$State>, unknown>, 'unknown'>
-  readonly any: UnaryRelatorDispatch<S.SetExpectedType<S.SetAllowAny<$State>, any>, 'any'>
-  readonly never: UnaryRelatorDispatch<S.SetExpectedType<S.SetAllowNever<$State>, never>, 'never'>
-  // readonly empty: UnaryRelatorDispatch<$State, 'empty'> // todo: do we need this??????
+  readonly unknown: UnaryRelatorDispatch<S.SetExpectedType<S.SetAllowUnknown<$State>, unknown>, AssertUnknownKind>
+  readonly any: UnaryRelatorDispatch<S.SetExpectedType<S.SetAllowAny<$State>, any>, AssertAnyKind>
+  readonly never: UnaryRelatorDispatch<S.SetExpectedType<S.SetAllowNever<$State>, never>, AssertNeverKind>
+  // readonly empty: UnaryRelatorDispatch<$State, EmptyKind> // todo: do we need this??????
 
   /**
    * NoExcess modifier - adds excess property checking to relation.
@@ -267,8 +276,8 @@ export interface BuilderMatchers<
    * - `exact.noExcess`: Not available (exact already requires exact match)
    */
   readonly noExcess: {
-    sub: InputExpectedAsValue<S.SetRelator<$State, SubNoExcessKind>>
-    equiv: InputExpectedAsValue<S.SetRelator<$State, EquivNoExcessKind>>
+    sub: InputExpectedAsValue<S.SetRelator<$State, AssertSubNoExcessKind>>
+    equiv: InputExpectedAsValue<S.SetRelator<$State, AssertEquivNoExcessKind>>
     exact: never
   }[$RelatorKind['name']]
 
@@ -276,8 +285,8 @@ export interface BuilderMatchers<
    * Type-explicit variant of noExcess.
    */
   readonly noExcessAs: {
-    sub: InputExpectedAsType<S.SetRelator<$State, SubNoExcessKind>>
-    equiv: InputExpectedAsType<S.SetRelator<$State, EquivNoExcessKind>>
+    sub: InputExpectedAsType<S.SetRelator<$State, AssertSubNoExcessKind>>
+    equiv: InputExpectedAsType<S.SetRelator<$State, AssertEquivNoExcessKind>>
     exact: never
   }[$RelatorKind['name']]
 }
@@ -375,17 +384,17 @@ export type InputExpectedAsValue<$State extends S> = {
 
 // dprint-ignore
 export interface InputExpectedAsValueNarrow<$State extends S> {
-  <const $expected>(...params: InputExpectedAsValueParams<$State, $expected>): DispatchAfterInput<S.SetExpectedType<$State, $expected>>
+  <const $expected>(...params: InputExpectedAsValueParams<$State, $expected>): Dispatch_AfterInputEither<S.SetExpectedType<$State, $expected>>
 }
 // dprint-ignore
 export interface InputExpectedAsValueWide<$State extends S> {
-        <$expected>(...params: InputExpectedAsValueParams<$State, $expected>): DispatchAfterInput<S.SetExpectedType<$State, $expected>>
+        <$expected>(...params: InputExpectedAsValueParams<$State, $expected>): Dispatch_AfterInputEither<S.SetExpectedType<$State, $expected>>
 }
 
 export interface InputExpectedAsType<$State extends S> {
   <$Type>(
     ...errors: InputExpectedAsTypeParam<$State, $Type>
-  ): DispatchAfterInput<S.SetExpectedType<$State, $Type>>
+  ): Dispatch_AfterInputEither<S.SetExpectedType<$State, $Type>>
 }
 
 export type InputExpectedAsTypeParam<
@@ -435,7 +444,7 @@ export type InputActualDispatch<$State extends S> = {
   'either': never
   'expected': never
   'actual': InputActualAsValue<$State>
-  'complete': ExecuteLone<$State>
+  'complete': ExecuteNullary<$State>
 }[S.InputNextCase<$State>]
 
 export interface BuilderActualInput<
@@ -455,11 +464,11 @@ export type InputActualAsValue<
 
 // dprint-ignore
 export interface InputActualAsValueNarrow<$State extends S> {
-  <const $actual>(...params: InputActualAsValueParams<$State, $actual>): DispatchAfterInput<S.SetActualType<$State,$actual>>
+  <const $actual>(...params: InputActualAsValueParams<$State, $actual>): Dispatch_AfterInputEither<S.SetActualType<$State,$actual>>
 }
 // dprint-ignore
 export interface InputActualAsValueWide<$State extends S> {
-        <$actual>(...params: InputActualAsValueParams<$State, $actual>): DispatchAfterInput<S.SetActualType<$State,$actual>>
+        <$actual>(...params: InputActualAsValueParams<$State, $actual>): Dispatch_AfterInputEither<S.SetActualType<$State,$actual>>
 }
 
 export type InputActualAsValueParams<
@@ -486,7 +495,7 @@ export type InputActualAsValueParams<
 export interface InputActualAsType<$State extends S> {
   <$actual>(
     ...errors: InputActualAsTypeParam<$State, $actual>
-  ): DispatchAfterInput<S.SetActualType<$State, $actual>>
+  ): Dispatch_AfterInputEither<S.SetActualType<$State, $actual>>
 }
 
 export type InputActualAsTypeParam<
@@ -516,7 +525,7 @@ export type InputActualAsTypeParam<
 //
 //
 
-export type DispatchAfterInput<$State extends S> = {
+export type Dispatch_AfterInputEither<$State extends S> = {
   'either': never
   'expected': Builder<$State>
   'actual': Builder<$State>
@@ -533,9 +542,31 @@ export type DispatchAfterInput<$State extends S> = {
 //
 //
 
-type ExecuteLone<$State extends S> = (
+type ExecuteNullary<$State extends S> = (
   ...errors: OnlyAssertionErrorsAndShow<[
     AssertActual<$State['actual_type'], $State>,
     ...CheckAgainstAnyNeverUnknown<$State['actual_type'], $State['expected_type'], $State>,
   ]>
 ) => void
+
+//
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Helpers
+//
+//
+
+/**
+ * Unified guard for never/any/unknown validation.
+ * Checks both actual and expected values, returns tuple of 0-2 errors.
+ */
+export type CheckAgainstAnyNeverUnknown<
+  $actual,
+  $expected,
+  $State extends S,
+> = OnlyAssertionErrorsAndShow<[
+  AssertEdgeType<$actual, $State>,
+  AssertEdgeType<$expected, $State>,
+]>

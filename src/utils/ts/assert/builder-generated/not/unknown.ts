@@ -1,4 +1,5 @@
-import type { Inhabitance } from '#ts/ts'
+import type { Fn } from '#fn'
+import type { AssertUnknownKind } from '../../asserts.ts'
 import { builder } from '../../builder-singleton.js'
 
 /**
@@ -15,9 +16,7 @@ import { builder } from '../../builder-singleton.js'
  * Assert.not.unknown(value as unknown)
  * ```
  */
-type unknown_<$Actual> = Inhabitance.GetCase<$Actual> extends 'unknown'
-  ? { ERROR: 'Type is unknown, but expected not unknown'; actual: $Actual }
-  : never
+type unknown_<$Actual> = Fn.Kind.Apply<AssertUnknownKind, [$Actual, true]>
 const unknown_ = builder.not.unknown
 
 export { unknown_ as unknown }
