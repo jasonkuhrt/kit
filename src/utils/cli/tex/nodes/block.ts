@@ -189,12 +189,18 @@ export class Block extends Node {
   render(context: RenderContext) {
     const orientation = this.parameters.orientation ?? `vertical`
 
+    // Extract spanRange constraint and merge with parent maxWidth
+    const ownMaxWidth = this.parameters.spanRange?.cross?.max
+    const effectiveMaxWidth = ownMaxWidth !== undefined && context.maxWidth !== undefined
+      ? Math.min(ownMaxWidth, context.maxWidth)
+      : ownMaxWidth ?? context.maxWidth
+
     // Render all children first
     const renderedChildren: string[] = []
     for (let index = 0; index < this.children.length; index++) {
       const child = this.children[index]!
       const rendered = child.render({
-        maxWidth: context.maxWidth,
+        maxWidth: effectiveMaxWidth,
         height: context.height,
         color: this.parameters.color,
         index: {
@@ -227,8 +233,16 @@ export class Block extends Node {
     if (this.parameters.span) {
       this.box = Str.Box.span(this.box, this.parameters.span)
     }
+    // Apply spanRange but exclude cross.max since we already used it for wrapping via effectiveMaxWidth
     if (this.parameters.spanRange) {
-      this.box = Str.Box.spanRange(this.box, this.parameters.spanRange)
+      const spanRangeForBox = {
+        main: this.parameters.spanRange.main,
+        cross: this.parameters.spanRange.cross ? { min: this.parameters.spanRange.cross.min } : undefined,
+      }
+      // Only apply if there are constraints besides cross.max
+      if (spanRangeForBox.main || spanRangeForBox.cross?.min) {
+        this.box = Str.Box.spanRange(this.box, spanRangeForBox as any)
+      }
     }
     if (this.parameters.gap) {
       this.box = Str.Box.gap(this.box, this.parameters.gap)

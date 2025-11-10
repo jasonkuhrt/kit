@@ -47,7 +47,16 @@ export const createRootBuilder = (
 }
 
 export const render = (builder: Builder): string => {
-  const result = toInternalBuilder(builder)._.node.render({
+  const internalBuilder = toInternalBuilder(builder)
+  const rootNode = internalBuilder._.node
+
+  // Extract spanRange constraint from root block (if it has one)
+  const maxWidth = `spanRange` in rootNode.parameters
+    ? rootNode.parameters.spanRange?.cross?.max
+    : undefined
+
+  const result = rootNode.render({
+    maxWidth,
     index: {
       isFirst: true,
       isLast: true,

@@ -549,6 +549,30 @@ export interface TestBuilder<State extends BuilderTypeState> {
   ): TestBuilder<State>
 
   /**
+   * Configure snapshot rendering options.
+   *
+   * Controls what sections are included in snapshot output, allowing for
+   * more concise snapshots when argument details are not needed.
+   *
+   * @param config - Snapshot configuration options
+   * @param config.arguments - Whether to include the "GIVEN ARGUMENTS" section (default: true)
+   *
+   * @example
+   * ```ts
+   * // Hide verbose argument section in snapshots
+   * Test.on(Tex.render)
+   *   .snapshots({ arguments: false })
+   *   .describeInputs('blocks', [
+   *     Tex.Tex().block('foo'),
+   *     Tex.Tex().block('bar')
+   *   ])
+   *   .test()
+   * // Snapshot shows only the rendered output, not the complex builder objects
+   * ```
+   */
+  snapshots(config: { arguments?: boolean }): TestBuilder<State>
+
+  /**
    * Register Effect schemas for automatic encoding in test snapshots.
    *
    * When schema instances appear in snapshot values (return values, errors, or nested data),

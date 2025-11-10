@@ -170,14 +170,25 @@ test('takeWordsWith', () => {
 // dprint-ignore
 Test.on(Str.Visual.wrap)
   .casesInput(
-    ['hello world', 10],
-    ['hello world here', 10], // Multiple lines
-    ['verylongword more', 8],  // Word longer than width
+    ['xxxxx xxxxx', 10],
+    ['xxxxx xxxxx xxxx', 10], // Multiple lines
+    ['xxxxxxxxxxxx xxxx', 8],  // Word longer than width (default: word-overflow)
     ['', 10],                  // Empty string
-    ['short', 20],             // Width exceeds text
-    ['one\ntwo\nthree', 10],   // Pre-existing newlines
-    ['hello world', 5],        // Very narrow width
+    ['xxxxx', 20],             // Width exceeds text
+    ['xxx\nxxx\nxxxxx', 10],   // Pre-existing newlines
+    ['xxxxx xxxxx', 5],        // Very narrow width
+    ['xxxxxxxxxxxx xxxx', 8, { strategy: 'word-overflow' }], // Strategy: word-overflow (explicit)
+    ['xxxxxxxxxxxx xxxx', 8, { strategy: 'break-word' }],    // Strategy: break-word
+    ['xxxxxxxxxxxx xxxx', 8, { strategy: 'break-word-hyphen-in' }], // Strategy: break-word-hyphen-in
+    ['xxxxxxxxxxxx xxxx', 8, { strategy: 'break-word-hyphen-out' }], // Strategy: break-word-hyphen-out
   )
+  .describeInputs('edge cases', [
+    ['xxxxx', 0],
+    ['xxxxx', 0, { strategy: 'break-word' }],
+    ['xxxxx', 1, { strategy: 'break-word' }],
+    ['xxxxx', 1, { strategy: 'break-word-hyphen-in' }],
+    ['xxxxx', 1, { strategy: 'break-word-hyphen-out' }],
+  ])
   .test()
 
 test('wrap: handles ANSI codes', () => {

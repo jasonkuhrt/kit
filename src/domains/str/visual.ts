@@ -440,6 +440,24 @@ export const takeWordsOn = Fn.curry(takeWords)
 export const takeWordsWith = Fn.flipCurried(takeWordsOn)
 
 /**
+ * Configuration for text wrapping behavior.
+ * @category Text Formatting
+ */
+export interface WrapConfig {
+  /**
+   * Strategy for handling long words that exceed the max width.
+   *
+   * - `'word-overflow'` (default) - Keep whole words intact even if they exceed width
+   * - `'break-word'` - Break long words at width boundary without hyphen
+   * - `'break-word-hyphen-in'` - Break with hyphen counting toward width (e.g., 7 chars + `-` for width 8)
+   * - `'break-word-hyphen-out'` - Break with hyphen not counting toward width (e.g., 8 chars + `-`)
+   *
+   * @default 'word-overflow'
+   */
+  strategy?: 'word-overflow' | 'break-word' | 'break-word-hyphen-in' | 'break-word-hyphen-out'
+}
+
+/**
  * Wrap text to fit within visual width, respecting word boundaries.
  *
  * Breaks text into lines that fit the specified visual width. Respects existing
@@ -447,7 +465,8 @@ export const takeWordsWith = Fn.flipCurried(takeWordsOn)
  *
  * @category Text Formatting
  * @param text - Text to wrap (may contain existing newlines)
- * @param width - Maximum visual width per line
+ * @param maxWidth - Maximum visual width per line
+ * @param config - Optional wrapping configuration
  * @returns Array of wrapped lines
  *
  * @example
@@ -455,6 +474,18 @@ export const takeWordsWith = Fn.flipCurried(takeWordsOn)
  * // Basic wrapping
  * Str.Visual.wrap('hello world here', 10)
  * // ['hello', 'world here']
+ *
+ * // Long word handling (default: word-overflow)
+ * Str.Visual.wrap('verylongword more', 8)
+ * // ['verylongword', 'more']  // Keeps long word intact
+ *
+ * // Break long words without hyphen
+ * Str.Visual.wrap('verylongword more', 8, { strategy: 'break-word' })
+ * // ['verylong', 'word', 'more']
+ *
+ * // Break with hyphen counting toward width
+ * Str.Visual.wrap('verylongword more', 8, { strategy: 'break-word-hyphen-in' })
+ * // ['verylon-', 'gword', 'more']
  *
  * // Respects existing newlines
  * Str.Visual.wrap('line one\nline two is long', 10)
@@ -466,15 +497,99 @@ export const takeWordsWith = Fn.flipCurried(takeWordsOn)
  * // ['\x1b[31mthis is red\x1b[0m', 'text and', 'normal']
  * ```
  */
-export const wrap = (text: string, width: number): string[] => {
+export const wrap = (text: string, maxWidth: number, config: WrapConfig = {}): string[] => {
+  const strategy = config.strategy ?? 'word-overflow'
+
+  // Edge case: maxWidth 0 - return empty string if text is non-empty
+  if (maxWidth === 0) {
+    const stripped = strip(text).trim()
+    return stripped.length > 0 ? [''] : []
+  }
+
+  // Edge case: maxWidth 1
+  if (maxWidth === 1) {
+    // With hyphen-in strategy, can't fit even a single char + hyphen
+    if (strategy === 'break-word-hyphen-in') {
+      const stripped = strip(text).trim()
+      return stripped.length > 0 ? [''] : []
+    }
+
+    // For other strategies, break into individual grapheme clusters (no whitespace)
+    const allText = lines(text).join('') // Flatten existing newlines
+    const stripped = strip(allText) // Remove ANSI codes
+    const noSpaces = stripped.replace(/\s+/g, '') // Remove all whitespace
+
+    if (noSpaces === '') return []
+
+    // Break into individual grapheme clusters
+    const chars: string[] = []
+    for (const segment of segmenter.segment(noSpaces)) {
+      chars.push(segment.segment)
+    }
+
+    // For hyphen-out strategy, add hyphen to all except last
+    if (strategy === 'break-word-hyphen-out') {
+      return chars.map((char, i) => i < chars.length - 1 ? `${char}-` : char)
+    }
+
+    return chars
+  }
+
   const textLines = lines(text)
   const linesFitted = textLines.flatMap((text) => {
-    const fittedLines = []
+    const fittedLines: string[] = []
     let textToConsume = text
     while (textToConsume.length > 0) {
-      const result = takeWords(textToConsume, width)
-      const resultLines = lines(result.taken.replace(/\n$/, ``))
-      fittedLines.push(...resultLines)
+      const result = takeWords(textToConsume, maxWidth)
+
+      // Handle oversized words based on strategy
+      if (width(result.taken) > maxWidth) {
+        if (strategy === 'word-overflow') {
+          // Keep the word intact even if it exceeds width
+          const resultLines = lines(result.taken.replace(/\n$/, ``))
+          fittedLines.push(...resultLines)
+        } else if (strategy === 'break-word') {
+          // Break word at width boundary without hyphen
+          let remaining = result.taken
+          while (remaining.length > 0) {
+            const chunk = take(remaining, maxWidth)
+            fittedLines.push(chunk)
+            remaining = remaining.slice(chunk.length)
+          }
+        } else if (strategy === 'break-word-hyphen-in') {
+          // Break with hyphen counting toward width (take width-1 chars + hyphen)
+          // TODO: Coordinate with existing hyphens in words for natural break points
+          let remaining = result.taken
+          while (remaining.length > 0) {
+            if (width(remaining) <= maxWidth) {
+              // Last chunk fits without breaking
+              fittedLines.push(remaining)
+              break
+            }
+            const chunk = take(remaining, maxWidth - 1) // Reserve 1 for hyphen
+            fittedLines.push(chunk + '-')
+            remaining = remaining.slice(chunk.length)
+          }
+        } else if (strategy === 'break-word-hyphen-out') {
+          // Break with hyphen not counting toward width (take width chars + hyphen)
+          // TODO: Coordinate with existing hyphens in words for natural break points
+          let remaining = result.taken
+          while (remaining.length > 0) {
+            if (width(remaining) <= maxWidth) {
+              // Last chunk fits without breaking
+              fittedLines.push(remaining)
+              break
+            }
+            const chunk = take(remaining, maxWidth)
+            fittedLines.push(chunk + '-')
+            remaining = remaining.slice(chunk.length)
+          }
+        }
+      } else {
+        const resultLines = lines(result.taken.replace(/\n$/, ``))
+        fittedLines.push(...resultLines)
+      }
+
       textToConsume = result.remaining
     }
     return fittedLines

@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`error > fn(' ') 1`] = `
+exports[`fn > error > fn(' ') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 
@@ -11,7 +11,7 @@ ParseError: (string <-> (Param (Encoded side) <-> Param))
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`error > fn('') 1`] = `
+exports[`fn > error > fn('') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 
@@ -22,7 +22,7 @@ ParseError: (string <-> (Param (Encoded side) <-> Param))
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`error > fn('--foo --foo') 1`] = `
+exports[`fn > error > fn('--foo --foo') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 --foo --foo
@@ -33,7 +33,7 @@ ParseError: (string <-> (Param (Encoded side) <-> Param))
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`error > fn('--v') 1`] = `
+exports[`fn > error > fn('--v') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 --v
@@ -44,7 +44,7 @@ ParseError: (string <-> (Param (Encoded side) <-> Param))
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`error > fn('-v -v') 1`] = `
+exports[`fn > error > fn('-v -v') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 -v -v
@@ -55,7 +55,7 @@ ParseError: (string <-> (Param (Encoded side) <-> Param))
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`error > fn('-vv') 1`] = `
+exports[`fn > error > fn('-vv') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 -vv
@@ -66,7 +66,7 @@ ParseError: (string <-> (Param (Encoded side) <-> Param))
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`success > fn('--foo-bar') 1`] = `
+exports[`fn > success > fn('--foo-bar') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 --foo-bar
@@ -84,7 +84,7 @@ Param {
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`success > fn('--verbose') 1`] = `
+exports[`fn > success > fn('--verbose') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 --verbose
@@ -102,7 +102,7 @@ Param {
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`success > fn('-v --verbose -x --extra') 1`] = `
+exports[`fn > success > fn('-v --verbose -x --extra') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 -v --verbose -x --extra
@@ -120,7 +120,7 @@ Param {
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`success > fn('-v --verbose') 1`] = `
+exports[`fn > success > fn('-v --verbose') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 -v --verbose
@@ -138,7 +138,7 @@ Param {
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`success > fn('-v') 1`] = `
+exports[`fn > success > fn('-v') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 -v
@@ -156,7 +156,7 @@ Param {
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`success > fn('v verbose x extra') 1`] = `
+exports[`fn > success > fn('v verbose x extra') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 v verbose x extra

@@ -9,7 +9,7 @@ export class Leaf extends Node {
     this.value = value
   }
   render(context: RenderContext) {
-    const lines = Str.Visual.wrap(this.value, context.maxWidth ?? 1000)
+    const lines = Str.Visual.wrap(this.value, context.maxWidth ?? 1000, { strategy: 'break-word-hyphen-in' })
     const value = lines.join(Str.Char.newline)
     const intrinsicWidth = Math.max(...lines.map((_) => Str.Visual.width(_)))
     const intrinsicHeight = lines.length

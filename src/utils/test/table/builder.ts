@@ -43,6 +43,13 @@ interface Group {
 /**
  * @category Internal
  */
+export interface SnapshotConfig {
+  arguments?: boolean
+}
+
+/**
+ * @category Internal
+ */
 export interface State {
   fn: Option.Option<Fn.AnyAny>
   config: Config
@@ -50,6 +57,7 @@ export interface State {
   defaultOutputProvider: Option.Option<Fn.AnyAny>
   snapshotSerializer: Option.Option<(value: any, context: any) => string>
   snapshotSchemas: Array<any> // Schema<any, any>[] from Effect
+  snapshotConfig: SnapshotConfig
   pendingDescribe: Option.Option<string>
   accumulatedGroups: Group[] // Effect's Array module works with regular arrays
   currentCases: any[] // Effect's Array module works with regular arrays
@@ -74,6 +82,7 @@ export const defaultState: State = {
   defaultOutputProvider: Option.none<Fn.AnyAny>(),
   snapshotSerializer: Option.none(),
   snapshotSchemas: [],
+  snapshotConfig: { arguments: true },
   pendingDescribe: Option.none(),
   accumulatedGroups: [],
   currentCases: [],
@@ -396,6 +405,7 @@ export function create(state: State = defaultState): any {
                   runner,
                   serializer,
                   snapshotContext,
+                  state.snapshotConfig,
                 )
                 expect(formattedSnapshot).toMatchSnapshot()
                 return
@@ -480,6 +490,7 @@ export function create(state: State = defaultState): any {
                   undefined,
                   serializer,
                   snapshotContext,
+                  state.snapshotConfig,
                 )
                 expect(formattedSnapshot).toMatchSnapshot()
               } else {
@@ -516,6 +527,7 @@ export function create(state: State = defaultState): any {
                       undefined,
                       serializer,
                       snapshotContext,
+                      state.snapshotConfig,
                     )
                     expect(formattedSnapshot).toMatchSnapshot()
                   }
@@ -558,6 +570,7 @@ export function create(state: State = defaultState): any {
                   undefined,
                   serializer,
                   context,
+                  state.snapshotConfig,
                 )
                 expect(formattedSnapshot).toMatchSnapshot()
               }
@@ -617,6 +630,13 @@ export function create(state: State = defaultState): any {
       return create({
         ...state,
         snapshotSchemas: schemas,
+      })
+    },
+
+    snapshots(config: SnapshotConfig) {
+      return create({
+        ...state,
+        snapshotConfig: { ...state.snapshotConfig, ...config },
       })
     },
 
@@ -857,18 +877,36 @@ export function create(state: State = defaultState): any {
       // Flush any remaining cases
       const finalState = flushCases(state)
 
-      // Execute all accumulated groups (from .casesIn())
-      for (const group of finalState.accumulatedGroups) {
-        executeTests(
-          fn as ((params: any) => any) | undefined,
-          Option.getOrUndefined(group.describe),
-          group.cases,
-        )
+      // Check if we need a top-level function name wrapper
+      const fnOption = finalState.fn
+      const hasFunctionName = Option.isSome(fnOption)
+
+      // Check if any groups have describe names (nested describe blocks)
+      const hasDescribeGroups = finalState.accumulatedGroups.some(g => Option.isSome(g.describe))
+        || finalState.nestedDescribeGroups.length > 0
+
+      const executeAll = () => {
+        // Execute all accumulated groups (from .casesIn())
+        for (const group of finalState.accumulatedGroups) {
+          executeTests(
+            fn as ((params: any) => any) | undefined,
+            Option.getOrUndefined(group.describe),
+            group.cases,
+          )
+        }
+
+        // Execute all nested describe groups (from .describe(name, callback))
+        for (const nestedGroup of finalState.nestedDescribeGroups) {
+          executeNestedGroup(nestedGroup, fn as ((params: any) => any) | undefined)
+        }
       }
 
-      // Execute all nested describe groups (from .describe(name, callback))
-      for (const nestedGroup of finalState.nestedDescribeGroups) {
-        executeNestedGroup(nestedGroup, fn as ((params: any) => any) | undefined)
+      // Wrap in function name describe block if Test.on(fn) was used AND there are nested describes
+      if (hasFunctionName && hasDescribeGroups) {
+        const fnName = Option.getOrUndefined(fnOption)?.name || 'fn'
+        createNestedDescribe(fnName, executeAll)
+      } else {
+        executeAll()
       }
     },
 

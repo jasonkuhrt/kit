@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`async functions > analyzeFunction(async (a) => { return a + 1; }) 1`] = `
+exports[`analyzeFunction > async functions > analyzeFunction(async (a) => { return a + 1; }) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 async (a) => {
@@ -19,7 +19,7 @@ async (a) => {
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`async functions > analyzeFunction(async (a) => a + 1) 1`] = `
+exports[`analyzeFunction > async functions > analyzeFunction(async (a) => a + 1) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 async (a) => a + 1
@@ -36,7 +36,7 @@ async (a) => a + 1
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`async functions > analyzeFunction(async function f2(a) { return a + 1; }) 1`] = `
+exports[`analyzeFunction > async functions > analyzeFunction(async function f2(a) { return a + 1; }) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 async function f2(a) {
@@ -55,7 +55,7 @@ async function f2(a) {
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`body extraction > analyzeFunction((a) => { const b = a + 1; const c = b * 2; return c; }) 1`] = `
+exports[`analyzeFunction > body extraction > analyzeFunction((a) => { const b = a + 1; const c = b * 2; return c; }) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 (a) => {
@@ -76,7 +76,7 @@ exports[`body extraction > analyzeFunction((a) => { const b = a + 1; const c = b
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`body extraction > analyzeFunction((a) => { return a + 1; }) 1`] = `
+exports[`analyzeFunction > body extraction > analyzeFunction((a) => { return a + 1; }) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 (a) => {
@@ -95,7 +95,7 @@ exports[`body extraction > analyzeFunction((a) => { return a + 1; }) 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`body extraction > analyzeFunction((a) => a + 1) 1`] = `
+exports[`analyzeFunction > body extraction > analyzeFunction((a) => a + 1) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 (a) => a + 1
@@ -112,7 +112,7 @@ exports[`body extraction > analyzeFunction((a) => a + 1) 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`body extraction > analyzeFunction(function f(a) { return a + 1; }) 1`] = `
+exports[`analyzeFunction > body extraction > analyzeFunction(function f(a) { return a + 1; }) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 function f(a) {
@@ -131,7 +131,7 @@ function f(a) {
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`error cases > analyzeFunction('not a function') 1`] = `
+exports[`analyzeFunction > error cases > analyzeFunction('not a function') 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 not a function
@@ -140,7 +140,7 @@ Error: Could not extract groups from function.
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`parameters - destructured > analyzeFunction(({ a, b }) => [a, b]) 1`] = `
+exports[`analyzeFunction > parameters - destructured > analyzeFunction(({ a, b }) => [a, b]) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 ({ a, b }) => [a, b]
@@ -157,7 +157,7 @@ exports[`parameters - destructured > analyzeFunction(({ a, b }) => [a, b]) 1`] =
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`parameters - destructured > analyzeFunction((a, { b, c }) => [a, b, c]) 1`] = `
+exports[`analyzeFunction > parameters - destructured > analyzeFunction((a, { b, c }) => [a, b, c]) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 (a, { b, c }) => [a, b, c]
@@ -178,7 +178,7 @@ exports[`parameters - destructured > analyzeFunction((a, { b, c }) => [a, b, c])
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`parameters - named > analyzeFunction(() => 42) 1`] = `
+exports[`analyzeFunction > parameters - named > analyzeFunction(() => 42) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 () => 42
@@ -190,7 +190,7 @@ exports[`parameters - named > analyzeFunction(() => 42) 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`parameters - named > analyzeFunction((...args) => args) 1`] = `
+exports[`analyzeFunction > parameters - named > analyzeFunction((...args) => args) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 (...args) => args
@@ -207,7 +207,7 @@ exports[`parameters - named > analyzeFunction((...args) => args) 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`parameters - named > analyzeFunction((_a, __b) => _a) 1`] = `
+exports[`analyzeFunction > parameters - named > analyzeFunction((_a, __b) => _a) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 (_a, __b) => _a
@@ -228,7 +228,7 @@ exports[`parameters - named > analyzeFunction((_a, __b) => _a) 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`parameters - named > analyzeFunction((a) => a) 1`] = `
+exports[`analyzeFunction > parameters - named > analyzeFunction((a) => a) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 (a) => a
@@ -245,7 +245,7 @@ exports[`parameters - named > analyzeFunction((a) => a) 1`] = `
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`parameters - named > analyzeFunction((a, b, c) => [a, b, c]) 1`] = `
+exports[`analyzeFunction > parameters - named > analyzeFunction((a, b, c) => [a, b, c]) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
 (a, b, c) => [a, b, c]

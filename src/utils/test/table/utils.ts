@@ -250,7 +250,7 @@ const buildBox = ({ width, parts }: {
       case 'division': {
         // Add separator line only between consecutive divisions
         if (previousPartTag === 'division') {
-          b('─'.repeat(width + 2))
+          b('.'.repeat(width + 2))
         }
         b(part.body)
         previousPartTag = 'division'
@@ -313,6 +313,7 @@ export const formatSnapshotWithInput = (
   runner?: Fn.AnyAny,
   serializer: (value: any, context: any) => string = defaultSnapshotSerializer,
   context: any = {},
+  snapshotConfig: { arguments?: boolean } = { arguments: true },
 ): string => {
   // Fixed width for all boxes
   const width = 50
@@ -325,14 +326,19 @@ export const formatSnapshotWithInput = (
   if (hasInput) {
     const formattedInputs = input.map((i) => serializer(i, context))
 
-    return buildBox({
-      width,
-      parts: [
-        { _tag: 'section', label: ' GIVEN ARGUMENTS' },
-        ...formattedInputs.map(body => ({ _tag: 'division' as const, body })),
-        { _tag: 'section', label: buildOutputLabel(result, 'function', value), body: valueSerialized },
-      ],
-    })
+    // Build parts array conditionally based on config
+    const parts: BoxPart[] = []
+
+    // Include arguments section if enabled
+    if (snapshotConfig.arguments !== false) {
+      parts.push({ _tag: 'section', label: ' GIVEN ARGUMENTS' })
+      parts.push(...formattedInputs.map(body => ({ _tag: 'division' as const, body })))
+    }
+
+    // Always include output section
+    parts.push({ _tag: 'section', label: buildOutputLabel(result, 'function', value), body: valueSerialized })
+
+    return buildBox({ width, parts })
   }
 
   // Runner mode: Show runner function and output
