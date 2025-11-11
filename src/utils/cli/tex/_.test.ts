@@ -126,6 +126,11 @@ Test
             .row(`a`, `b`)
         ),
       ]))
+  .describeInputs(`horizontal padding`, [
+    Tex.Tex({ orientation: `horizontal` })
+      .block({ padding: { crossEnd: 2 } }, `x`)
+      .block(`x`),
+  ])
   .test()
 
 // ========================================
@@ -158,23 +163,6 @@ Test
   .test(({ input }) => {
     expect(Tex.render(input[0])).toEqual(Tex.render(input[1]))
   })
-
-// TODO: Re-enable after fixing horizontal padding bug
-// Test.describe(`block > orientation > horizontal`)
-//   .inputType<{ builder: Tex.Builder; expected: string }>()
-//   .cases(
-//     [
-//       {
-//         builder: Tex.Tex({ orientation: `horizontal` })
-//           .block({ padding: { mainEnd: 2 } }, `A`)
-//           .block(`B`),
-//         expected: `A  B`,
-//       },
-//     ],
-//   )
-//   .test(({ input }) => {
-//     expect(Tex.render(input.builder)).toBe(input.expected)
-//   })
 
 test(`block > orientation > horizontal > ansi`, () => {
   const builder = Tex.Tex({ orientation: `horizontal` })

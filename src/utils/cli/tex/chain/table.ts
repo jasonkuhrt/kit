@@ -4,7 +4,7 @@ import type { TableParameters } from '../nodes/table.js'
 import { Table } from '../nodes/table.js'
 import type { BlockBuilder, BlockMethod, BlockMethodArgs } from './block.js'
 import { resolveBlockMethodArgs } from './block.js'
-import type { BuilderInternal, NodeImplementor } from './helpers.js'
+import type { NodeImplementor } from './helpers.js'
 import { toInternalBuilder } from './helpers.js'
 
 type Childish = BlockBuilder | Block | string | null

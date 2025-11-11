@@ -166,6 +166,13 @@ foo
 ╚══════════════════════════════════════════════════╝"
 `;
 
+exports[`render > horizontal padding > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+x  x
+╚══════════════════════════════════════════════════╝"
+`;
+
 exports[`render > list > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
