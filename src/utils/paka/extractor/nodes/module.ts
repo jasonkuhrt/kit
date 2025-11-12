@@ -118,6 +118,10 @@ const findNamespaceHomePage = (exportDeclFile: string): string | undefined => {
 /**
  * Extract and add home page to a nested module if a *.home.md file exists.
  *
+ * NOTE: Currently disabled due to Effect Schema circular reference validation issues
+ * when using Module.make() with spread operators. Home page extraction will be
+ * re-enabled once the schema validation approach is refactored.
+ *
  * @param nestedModule - The module to potentially add home page to
  * @param exportDeclFilePath - Path to file containing the namespace export declaration
  * @param nsName - Namespace name (for error messages)
@@ -125,38 +129,36 @@ const findNamespaceHomePage = (exportDeclFile: string): string | undefined => {
  */
 const addHomePageIfExists = (
   nestedModule: Module,
-  exportDeclFilePath: string,
-  nsName: string,
+  _exportDeclFilePath: string,
+  _nsName: string,
 ): Module => {
-  const homePageMarkdown = findNamespaceHomePage(exportDeclFilePath)
-  if (!homePageMarkdown) return nestedModule
+  // TODO: Re-enable once Effect Schema validation approach is refactored
+  // const homePageMarkdown = findNamespaceHomePage(exportDeclFilePath)
+  // if (!homePageMarkdown) return nestedModule
+  //
+  // try {
+  //   const homePagePath = findNamespaceHomePagePath(exportDeclFilePath)!
+  //   const home = parseHomePage(homePageMarkdown, homePagePath)
+  //
+  //   // Create ModuleDocs with home
+  //   const existingDocs = nestedModule.docs
+  //   const updatedDocs = ModuleDocs.make({
+  //     description: existingDocs?.description,
+  //     guide: existingDocs?.guide,
+  //     home: home,
+  //   })
+  //
+  //   // Update module (need to find approach that works with Effect Schema validation)
+  //   // ...
+  //
+  // } catch (error) {
+  //   if (error instanceof Error) {
+  //     throw new Error(`Failed to parse home page for namespace '${nsName}':\n${error.message}`)
+  //   }
+  //   throw error
+  // }
 
-  try {
-    const homePagePath = findNamespaceHomePagePath(exportDeclFilePath)!
-    const home = parseHomePage(homePageMarkdown, homePagePath)
-
-    // Update ModuleDocs with home
-    const existingDocs = nestedModule.docs
-    const updatedDocs = ModuleDocs.make({
-      description: existingDocs?.description,
-      guide: existingDocs?.guide,
-      home: home,
-    })
-
-    // Mutate docs field directly (we're still in extraction phase, not yet exposed)
-    // @ts-expect-error - Mutating during extraction phase before immutability contract applies
-    nestedModule.docs = updatedDocs
-
-    return nestedModule
-
-    // Note: No provenance needed for home - it can only come from *.home.md files
-  } catch (error) {
-    // Re-throw with context about which namespace failed
-    if (error instanceof Error) {
-      throw new Error(`Failed to parse home page for namespace '${nsName}':\n${error.message}`)
-    }
-    throw error
-  }
+  return nestedModule
 }
 
 /**
