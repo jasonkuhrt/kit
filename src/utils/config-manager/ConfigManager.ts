@@ -2,7 +2,7 @@ import { Obj } from '#obj'
 import type { Ts } from '#ts'
 import type { Undefined } from '#undefined'
 import type { IsUnknown, PartialDeep } from 'type-fest'
-import { isDate } from 'util/types'
+import { isDate } from '../value/value.js'
 import { type GuardedType, isAnyFunction, type Objekt } from './_prelude.js'
 
 // dprint-ignore
