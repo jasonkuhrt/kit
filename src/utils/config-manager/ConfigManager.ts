@@ -127,8 +127,8 @@ const mergeDefaults_: MergeDefaultsInnerFn = (
 
     if (key in i && i[key] !== undefined) {
       const inputValue = i[key]
-      if (Obj.Type.is(defaultValue)) {
-        if (Obj.Type.is(inputValue)) {
+      if (Obj.is(defaultValue)) {
+        if (Obj.is(inputValue)) {
           const isCustomScalar = customScalars.some(isCustomScalar => isCustomScalar(inputValue))
           if (!isCustomScalar) {
             mergeDefaults_(inputValue, defaultValue, customScalars)

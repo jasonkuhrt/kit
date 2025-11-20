@@ -16,13 +16,13 @@ import { ArrMut } from '#arr-mut'
 import type { Rec } from '#rec'
 import type { Ts } from '#ts'
 import type { Undefined } from '#undefined'
+import { is as isObj } from './is.js'
 import {
   type InferShapeFromPropertyPath,
   normalizePropertyPathInput,
   type PropertyPath,
   type PropertyPathInput,
 } from './path.js'
-import { Type } from './traits/type.js'
 import { type Any } from './type.js'
 
 /**
@@ -125,7 +125,7 @@ export const getOn = (obj: Any) => (pathInput: PropertyPathInput): unknown => {
 
 const _get = (propertyPath: PropertyPath, obj: Any): unknown => {
   return propertyPath.reduce<unknown>((acc, part) => {
-    return Type.is(acc)
+    return isObj(acc)
       ? (acc as Rec.Any)[part]
       : undefined
   }, obj)

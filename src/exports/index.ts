@@ -1,8 +1,3 @@
-// Traits - exported directly at root level
-export * from '#arb'
-export * from '#eq'
-export * from '#type'
-
 // Domains
 export * from '#arr'
 export * from '#arr-mut'
@@ -49,7 +44,6 @@ export * from '#pro'
 export * from '#ref'
 export * from '#resource'
 export * from '#sch'
-export * from '#traitor'
 export * from '#ts'
 export * from '#value'
 export * from '#ware'

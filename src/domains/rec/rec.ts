@@ -65,7 +65,7 @@ export type Value = {
  * @category Type Guards
  */
 export const is = (value: unknown): value is Any => {
-  const proto = Obj.Type.is(value) ? Object.getPrototypeOf(value) : undefined
+  const proto = Obj.is(value) ? Object.getPrototypeOf(value) : undefined
   return (
     typeof value === 'object'
     && value !== null

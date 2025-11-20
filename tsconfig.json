@@ -25,16 +25,6 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": false, // Great for conditional middlewares
     "paths": {
-      // Traits
-      "#Arb": ["./src/traits/arb.ts"],
-      "#Eq": ["./src/traits/eq.ts"],
-      "#Type": ["./src/traits/type.ts"],
-      "#arb": ["./src/traits/arb.ts"],
-      "#eq": ["./src/traits/eq.ts"],
-      "#type": ["./src/traits/type.ts"],
-      "#traits": ["./src/traits/_.ts"],
-      "#traits/traits": ["./src/traits/__.ts"],
-
       // Domains
       "#arr": ["./src/domains/arr/_.ts"],
       "#arr/arr": ["./src/domains/arr/__.ts"],
@@ -140,8 +130,6 @@
       "#sch/sch": ["./src/utils/sch/__.ts"],
       "#test": ["./src/utils/test/_.ts"],
       "#test/test": ["./src/utils/test/__.ts"],
-      "#traitor": ["./src/utils/traitor/_.ts"],
-      "#traitor/traitor": ["./src/utils/traitor/__.ts"],
       "#ts": ["./src/utils/ts/_.ts"],
       "#ts/ts": ["./src/utils/ts/__.ts"],
       "#ts/test": ["./src/utils/ts/test/__.ts"],

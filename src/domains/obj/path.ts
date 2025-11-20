@@ -31,7 +31,7 @@ export type PropertyPathInput = PropertyPathExpression | PropertyPath
 export const normalizePropertyPathInput = <pathInput extends PropertyPathInput>(
   pathInput: pathInput,
 ): normalizePropertyPathInput<pathInput> => {
-  const result = Str.Type.is(pathInput)
+  const result = Str.is(pathInput)
     ? parsePropertyPathExpression(pathInput)
     : pathInput
   return result as any

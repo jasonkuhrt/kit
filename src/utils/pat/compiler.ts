@@ -128,7 +128,7 @@ const compileStringConstraint = (constraint: StringConstraint): S.Schema.Any => 
   let schema: S.Schema.Any = S.String
 
   if (constraint.$length !== undefined) {
-    if (Num.Type.is(constraint.$length)) {
+    if (Num.is(constraint.$length)) {
       schema = schema.pipe(S.length(constraint.$length))
     } else {
       // Nested number constraint
@@ -183,7 +183,7 @@ const compileArrayConstraint = (constraint: ArrayConstraint): S.Schema.Any => {
 
   // Handle length constraint
   if (constraint.$length !== undefined) {
-    if (Num.Type.is(constraint.$length)) {
+    if (Num.is(constraint.$length)) {
       schema = schema.pipe(S.minItems(constraint.$length), S.maxItems(constraint.$length))
     } else {
       const numConstraint = constraint.$length
@@ -224,13 +224,13 @@ const compileCombinator = (combinator: Combinator): S.Schema.Any => {
   }
 
   // Handle '$or' (union)
-  if (combinator.$or !== undefined && Arr.Type.is(combinator.$or)) {
+  if (combinator.$or !== undefined && Arr.is(combinator.$or)) {
     const schemas = combinator.$or.map(toSchema) as S.Schema.Any[]
     return S.Union(...(schemas as [S.Schema.Any, S.Schema.Any, ...S.Schema.Any[]]))
   }
 
   // Handle '$and' (intersection)
-  if (combinator.$and !== undefined && Arr.Type.is(combinator.$and)) {
+  if (combinator.$and !== undefined && Arr.is(combinator.$and)) {
     const schemas = combinator.$and.map(toSchema) as S.Schema.Any[]
     // Use extend for merging schemas (struct intersection)
     return schemas.reduce((acc, schema) => S.extend(acc, schema)) as S.Schema.Any
@@ -267,7 +267,7 @@ export const toSchema = (pattern: unknown): S.Schema.Any => {
 
   // Primitive literals
   if (
-    Str.Type.is(pattern) || Num.Type.is(pattern) || typeof pattern === 'boolean' || typeof pattern === 'bigint'
+    Str.is(pattern) || Num.is(pattern) || typeof pattern === 'boolean' || typeof pattern === 'bigint'
     || pattern === null
   ) {
     return S.Literal(pattern as any)
@@ -280,10 +280,10 @@ export const toSchema = (pattern: unknown): S.Schema.Any => {
     if (keys.length === 1 && keys[0] === '$length') {
       const lengthValue = (pattern as any).$length
       // Generate schemas for both string and array interpretations
-      const stringSchema = Num.Type.is(lengthValue)
+      const stringSchema = Num.is(lengthValue)
         ? S.String.pipe(S.length(lengthValue))
         : compileStringConstraint({ $length: lengthValue })
-      const arraySchema = Num.Type.is(lengthValue)
+      const arraySchema = Num.is(lengthValue)
         ? S.Array(S.Unknown).pipe(S.minItems(lengthValue), S.maxItems(lengthValue))
         : compileArrayConstraint({ $length: lengthValue })
       return S.Union(stringSchema, arraySchema) as any
@@ -309,7 +309,7 @@ export const toSchema = (pattern: unknown): S.Schema.Any => {
   }
 
   // Arrays - check if it's an array value (not a constraint object)
-  if (Arr.Type.is(pattern)) {
+  if (Arr.is(pattern)) {
     // Array literal means tuple matching
     const schemas = pattern.map(toSchema) as S.Schema.Any[]
     return S.Tuple(...(schemas as [S.Schema.Any, ...S.Schema.Any[]]))

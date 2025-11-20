@@ -1,7 +1,7 @@
 import { Bool } from '#bool'
 import { CoreFn as Fn } from '#fn/core'
 import { Pat } from '#pat'
-import { Type } from './traits/type.js'
+import { is } from './is.js'
 
 //
 //
@@ -153,7 +153,7 @@ export type Maybe<$Type> = $Type | $Type[]
  * ```
  */
 export const sure = <value>(value: value): sure<value> => {
-  return Type.is(value) ? value as any : [value] as any
+  return is(value) ? value as any : [value] as any
 }
 
 export type sure<$Type> = $Type extends Any ? $Type : $Type[]
