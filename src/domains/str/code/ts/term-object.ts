@@ -119,7 +119,7 @@ const isDirectiveTermObject = (value: unknown): value is DirectiveTermObject => 
 }
 
 const isFieldPrimitive = (value: unknown): value is TermPrimitive => {
-  return Str.Type.is(value) || typeof value === `number` || typeof value === `boolean` || value === null
+  return Str.is(value) || typeof value === `number` || typeof value === `boolean` || value === null
 }
 
 const DirectiveFieldKeys = {
@@ -133,7 +133,7 @@ const isDirectiveField = (value: unknown): value is DirectiveField => {
 }
 
 const isFieldTuples = (value: unknown): value is TermFieldTuple[] => {
-  return Array.isArray(value) && value.every(([key, _]) => Str.Type.is(key))
+  return Array.isArray(value) && value.every(([key, _]) => Str.is(key))
 }
 
 // ============================================================================
@@ -249,7 +249,7 @@ export const termObjectFields = (object: TermObject | DirectiveTermObject): stri
         return [key, value]
       }
       // dprint-ignore
-      if (Str.Type.is(value) || typeof value === `number` || typeof value === `boolean`) return [key, {$VALUE: String(value), $OPTIONAL: false, $TS_DOC: null}]
+      if (Str.is(value) || typeof value === `number` || typeof value === `boolean`) return [key, {$VALUE: String(value), $OPTIONAL: false, $TS_DOC: null}]
       return [key, { $VALUE: termObject(value as any), $OPTIONAL: false, $TS_DOC: null }]
     })
     .map(([key, field]: [string, DirectiveField]) => {

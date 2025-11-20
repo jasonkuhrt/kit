@@ -288,7 +288,7 @@ export const policyFilter = <
  * // Only includes properties that have actual values
  * ```
  */
-export const omitUndefined = omitWith(Undefined.Type.isnt)
+export const omitUndefined = omitWith(Undefined.isnt)
 
 export interface partition extends
   Ts.SimpleSignature.SimpleSignature<[

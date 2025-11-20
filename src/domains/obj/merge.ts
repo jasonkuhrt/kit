@@ -2,7 +2,7 @@ import { ArrMut } from '#arr-mut'
 import { Lang } from '#lang'
 import type { Rec } from '#rec'
 import type { Ts } from '#ts'
-import { Type } from './traits/type.js'
+import { is as isObj } from './is.js'
 import { type Any } from './type.js'
 
 interface MergeOptions {
@@ -354,12 +354,12 @@ const _mergeWith = <obj1 extends Any, obj2 extends Any>(
     const obj1Value = obj1_AS[k2]
     const obj2Value = obj2_AS[k2]
 
-    if (Type.is(obj2Value) && Type.is(obj1Value)) {
+    if (isObj(obj2Value) && isObj(obj1Value)) {
       obj1_AS[k2] = _mergeWith(options, obj1Value, obj2Value)
       continue
     }
 
-    if (ArrMut.Type.is(obj2Value) && ArrMut.Type.is(obj1Value) && options.array) {
+    if (ArrMut.is(obj2Value) && ArrMut.is(obj1Value) && options.array) {
       options.array(obj1Value, obj2Value)
       obj1_AS[k2] = obj1Value
       continue

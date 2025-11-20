@@ -25,7 +25,7 @@ export type ProcessArgv = [string, ...string[]]
  * isProcessArgvLoose(['node', 123]) // false (non-string element)
  */
 export const isProcessArgvLoose = (value: unknown): value is ProcessArgv => {
-  return ArrMut.Type.is(value) && value.length >= 1 && value.every(Str.Type.is)
+  return ArrMut.is(value) && value.length >= 1 && value.every(Str.is)
 }
 
 // argv

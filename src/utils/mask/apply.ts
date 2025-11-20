@@ -119,7 +119,7 @@ const applyInternal = (data: any, mask: Mask<any>): any => {
   // Handle properties mask
   if (mask.type === 'properties') {
     // Properties mask requires object data
-    if (!Obj.Type.is(data)) {
+    if (!Obj.is(data)) {
       throw new Error('Cannot apply properties mask to non-object data')
     }
 

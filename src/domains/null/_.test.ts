@@ -7,21 +7,21 @@ import { expect, test } from 'vitest'
 const A = Ts.Assert.exact.ofAs
 
 test('null detection', () => {
-  expect(Null.Type.is(null)).toBe(true)
-  expect(!Null.Type.is(null)).toBe(false)
-  expect(Null.Type.is(undefined)).toBe(false)
+  expect(Null.is(null)).toBe(true)
+  expect(!Null.is(null)).toBe(false)
+  expect(Null.is(undefined)).toBe(false)
 })
 
 property('is returns true only for null', fc.anything(), (value) => {
-  expect(Null.Type.is(value)).toBe(value === null)
+  expect(Null.is(value)).toBe(value === null)
 })
 
 property('filters nulls', fc.array(fc.option(fc.anything())), (arr) => {
-  expect(arr.filter(v => !Null.Type.is(v)).every(v => v !== null)).toBe(true)
+  expect(arr.filter(v => !Null.is(v)).every(v => v !== null)).toBe(true)
 })
 
 test('type narrowing', () => {
   const value = 'hello' as string | null
-  if (Null.Type.is(value)) A<null>().on(value)
+  if (Null.is(value)) A<null>().on(value)
   else A<string>().on(value)
 })

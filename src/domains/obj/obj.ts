@@ -3,7 +3,7 @@ import type { Rec } from '#rec'
 import type { Writable } from 'type-fest'
 import { type IsEmpty } from './diff.js'
 import { entries } from './get.js'
-import { Type } from './traits/type.js'
+import { is as isObj } from './is.js'
 import { type Any } from './type.js'
 
 /**
@@ -64,7 +64,7 @@ export function assert(value: unknown): asserts value is object {
  * ```
  */
 export const isShape = <type>(spec: Record<PropertyKey, Lang.TypeofTypes>) => (value: unknown): value is type => {
-  if (!Type.is(value)) return false
+  if (!isObj(value)) return false
   const obj_ = value as Rec.Any
 
   return entries(spec).every(([key, typeofType]) => {
@@ -210,7 +210,7 @@ export const hasNonUndefinedKeys = (object: object): boolean => {
  * ```
  */
 export const hasSymbolLike = (value: unknown, symbol: symbol, expectedValue: unknown): boolean => {
-  if (!Type.is(value)) {
+  if (!isObj(value)) {
     return false
   }
 

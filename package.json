@@ -159,9 +159,6 @@
   "sideEffects": false,
   "exports": {
     ".": "./build/exports/index.js",
-    "./arb": "./build/traits/arb.js",
-    "./eq": "./build/traits/eq.js",
-    "./type": "./build/traits/type.js",
     "./arr": "./build/domains/arr/__.js",
     "./arr-mut": "./build/domains/arr-mut/__.js",
     "./bool": "./build/domains/bool/__.js",
@@ -197,7 +194,6 @@
     "./str": "./build/domains/str/__.js",
     "./test": "./build/utils/test/_.js",
     "./test/~": "./build/utils/test/__.js",
-    "./traitor": "./build/utils/traitor/__.js",
     "./tree": "./build/domains/tree/__.js",
     "./ts": "./build/utils/ts/__.js",
     "./tup": "./build/domains/tup/__.js",

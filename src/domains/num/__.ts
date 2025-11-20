@@ -95,6 +95,3 @@ export type BigInt = BigInteger_
 export * from './math.js'
 export * from './operations.js'
 export * from './range.js'
-export { Arb } from './traits/arb.js'
-export { Eq } from './traits/eq.js'
-export { Type } from './traits/type.js'

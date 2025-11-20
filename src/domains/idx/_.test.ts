@@ -105,7 +105,7 @@ property(
     const idx = Idx.create()
     // Set doesn't work with objects as values, handle separately
     let unique: unknown[]
-    if (values.length > 0 && Obj.Type.is(values[0])) {
+    if (values.length > 0 && Obj.is(values[0])) {
       // For objects, use manual deduplication
       unique = values.filter((v, i) => values.findIndex(v2 => JSON.stringify(v2) === JSON.stringify(v)) === i)
     } else {

@@ -1,7 +1,7 @@
 import { Test } from '#test'
 import { ArrMut } from './_.js'
 
-Test.on(ArrMut.Type.is)
+Test.on(ArrMut.is)
   .cases(
     [[[]], true],
     [[[1, 2, 3]], true],
