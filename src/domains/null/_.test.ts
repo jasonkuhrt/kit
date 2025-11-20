@@ -1,10 +1,10 @@
+import { Assert } from '#assert'
 import { Null } from '#null'
 import { property } from '#test/test'
-import { Ts } from '#ts'
 import fc from 'fast-check'
 import { expect, test } from 'vitest'
 
-const A = Ts.Assert.exact.ofAs
+const A = Assert.Type.exact.ofAs
 
 test('null detection', () => {
   expect(Null.is(null)).toBe(true)

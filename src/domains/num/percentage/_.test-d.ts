@@ -4,8 +4,8 @@ import { test } from 'vitest'
  * Type-level tests for the Percentage module
  */
 
+import { Type as A } from '#assert/assert'
 import { Ts } from '#ts'
-import { Assert } from '#ts/ts'
 import type { InRange } from '../in-range/__.js'
 import type { Percentage } from './__.js'
 import {
@@ -24,9 +24,9 @@ test('Type narrowing works correctly with isPercentage predicate', () => {
 
   // Predicate narrows to Percentage type
   if (isPercentage(value)) {
-    Assert.sub.ofAs<Percentage>().on(value)
+    A.sub.ofAs<Percentage>().on(value)
     // Percentage is also InRange<0, 1>
-    Assert.sub.ofAs<InRange<0, 1>>().on(value)
+    A.sub.ofAs<InRange<0, 1>>().on(value)
   }
 
   // Runtime check confirms the relationship
@@ -44,27 +44,27 @@ test('Type narrowing works correctly with isPercentage predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic percentage constructor
   const pct1 = percentage(0.5)
-  Assert.exact.ofAs<Percentage>().on(pct1)
+  A.exact.ofAs<Percentage>().on(pct1)
 
   // Edge cases
   const pct2 = percentage(0)
-  Assert.exact.ofAs<Percentage>().on(pct2)
+  A.exact.ofAs<Percentage>().on(pct2)
 
   const pct3 = percentage(1)
-  Assert.exact.ofAs<Percentage>().on(pct3)
+  A.exact.ofAs<Percentage>().on(pct3)
 
   // Try constructor
   const try1 = tryPercentage(0.75)
-  Assert.exact.ofAs<Percentage | null>().on(try1)
+  A.exact.ofAs<Percentage | null>().on(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Assert.exact.ofAs<Percentage>().on(try1)
+    A.exact.ofAs<Percentage>().on(try1)
   }
 
   // From percent conversion
   const pct4 = fromPercent(50) // 50% -> 0.5
-  Assert.exact.ofAs<Percentage>().on(pct4)
+  A.exact.ofAs<Percentage>().on(pct4)
 })
 
 // === Type Relationships ===
@@ -74,7 +74,7 @@ test('Percentage has correct relationship with InRange<0, 1>', () => {
 
   // Percentage can be assigned to InRange<0, 1>
   const range: InRange<0, 1> = pct
-  Assert.sub.ofAs<InRange<0, 1>>().on(range)
+  A.sub.ofAs<InRange<0, 1>>().on(range)
 
   // But InRange<0, 1> cannot be directly assigned to Percentage
   const _rangeValue = {} as InRange<0, 1>
@@ -89,51 +89,51 @@ test('Conversion operations have correct types', () => {
 
   // toPercent returns plain number
   const percent = toPercent(pct)
-  Assert.exact.ofAs<number>().on(percent)
+  A.exact.ofAs<number>().on(percent)
 
   // fromPercent returns Percentage
   const fromPct = fromPercent(75)
-  Assert.exact.ofAs<Percentage>().on(fromPct)
+  A.exact.ofAs<Percentage>().on(fromPct)
 
   // clampToPercentage always returns Percentage
   const clamped1 = clampToPercentage(1.5)
-  Assert.exact.ofAs<Percentage>().on(clamped1)
+  A.exact.ofAs<Percentage>().on(clamped1)
 
   const clamped2 = clampToPercentage(-0.5)
-  Assert.exact.ofAs<Percentage>().on(clamped2)
+  A.exact.ofAs<Percentage>().on(clamped2)
 })
 
 // === Type-Level Only Tests ===
 
 // Test that Percentage extends both number and InRange<0, 1>
-type _PercentageRelationships = Ts.Assert.Cases<
+type _PercentageRelationships = A.Cases<
   // Percentage extends number
-  Assert.sub.of<number, Percentage>,
+  A.sub.of<number, Percentage>,
   // Percentage extends InRange<0, 1>
-  Assert.sub.of<InRange<0, 1>, Percentage>,
+  A.sub.of<InRange<0, 1>, Percentage>,
   // InRange<0, 1> does not extend Percentage (Percentage has additional brand)
-  Ts.Assert.not.sub<Percentage, InRange<0, 1>>,
+  A.not.sub<Percentage, InRange<0, 1>>,
   // Percentage does not extend other ranges
-  Ts.Assert.not.sub<Percentage, InRange<0, 100>>,
-  Ts.Assert.not.sub<Percentage, InRange<-1, 1>>
+  A.not.sub<Percentage, InRange<0, 100>>,
+  A.not.sub<Percentage, InRange<-1, 1>>
 >
 
 // Test constructor return types
-type _ConstructorReturnTypes = Ts.Assert.Cases<
-  Assert.exact.of<ReturnType<typeof percentage>, Percentage>,
-  Assert.exact.of<ReturnType<typeof tryPercentage>, Percentage | null>,
-  Assert.exact.of<ReturnType<typeof fromPercent>, Percentage>,
-  Assert.exact.of<ReturnType<typeof clampToPercentage>, Percentage>
+type _ConstructorReturnTypes = A.Cases<
+  A.exact.of<ReturnType<typeof percentage>, Percentage>,
+  A.exact.of<ReturnType<typeof tryPercentage>, Percentage | null>,
+  A.exact.of<ReturnType<typeof fromPercent>, Percentage>,
+  A.exact.of<ReturnType<typeof clampToPercentage>, Percentage>
 >
 
 // Test conversion function types
-type _ConversionTypes = Ts.Assert.Cases<
+type _ConversionTypes = A.Cases<
   // toPercent accepts Percentage and returns number
-  Assert.exact.of<Parameters<typeof toPercent>[0], Percentage>,
-  Assert.exact.of<ReturnType<typeof toPercent>, number>,
+  A.exact.of<Parameters<typeof toPercent>[0], Percentage>,
+  A.exact.of<ReturnType<typeof toPercent>, number>,
   // fromPercent accepts number and returns Percentage
-  Assert.exact.of<Parameters<typeof fromPercent>[0], number>,
-  Assert.exact.of<ReturnType<typeof fromPercent>, Percentage>
+  A.exact.of<Parameters<typeof fromPercent>[0], number>,
+  A.exact.of<ReturnType<typeof fromPercent>, Percentage>
 >
 
 // Demonstrate the dual nature of Percentage

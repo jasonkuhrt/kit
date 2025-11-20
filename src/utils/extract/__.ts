@@ -2,7 +2,7 @@
  * Extract namespace - Pre-composed extractors for type assertions.
  *
  * Extractors combine runtime extraction with type-level transformations,
- * enabling both value extraction and type inference in `Ts.Assert`.
+ * enabling both value extraction and type inference in `A`.
  *
  * @module
  *
@@ -12,7 +12,7 @@
  *
  * // Use extractors in assertions
  * const promise: Promise<number> = Promise.resolve(42)
- * Ts.Assert.extract(Extract.awaited).exact.of(42).on(promise)
+ * A.extract(Extract.awaited).exact.of(42).on(promise)
  *
  * // Compose extractors
  * const composed = Fn.compose(Extract.awaited, Extract.array)

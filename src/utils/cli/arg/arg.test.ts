@@ -1,5 +1,5 @@
+import { Type as A } from '#assert/assert'
 import { Test } from '#test'
-import { Ts } from '#ts'
 import { Schema as S } from 'effect'
 import { expect, test } from 'vitest'
 import { type Analysis, Arg } from './arg.js'
@@ -9,77 +9,77 @@ import { type Analysis, Arg } from './arg.js'
 // =============================================================================
 
 test('type-level analysis', () => {
-  type _pass = Ts.Assert.Cases<
+  type _pass = A.Cases<
     // Long flags (non-negated)
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'long-flag'; name: 'verbose'; negated: false; value: null; original: '--verbose' },
       Arg.Analyze<'--verbose'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'long-flag'; name: 'fooBar'; negated: false; value: null; original: '--foo-bar' },
       Arg.Analyze<'--foo-bar'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'long-flag'; name: 'count'; negated: false; value: '5'; original: '--count=5' },
       Arg.Analyze<'--count=5'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'long-flag'; name: 'maxCount'; negated: false; value: '10'; original: '--max-count=10' },
       Arg.Analyze<'--max-count=10'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'long-flag'; name: 'query'; negated: false; value: 'a=b'; original: '--query=a=b' },
       Arg.Analyze<'--query=a=b'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'long-flag'; name: 'empty'; negated: false; value: ''; original: '--empty=' },
       Arg.Analyze<'--empty='>
     >,
     // Long flags (negated)
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'long-flag'; name: 'verbose'; negated: true; value: null; original: '--no-verbose' },
       Arg.Analyze<'--no-verbose'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'long-flag'; name: 'debug'; negated: true; value: null; original: '--no-debug' },
       Arg.Analyze<'--no-debug'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'long-flag'; name: 'debugMode'; negated: true; value: null; original: '--no-debug-mode' },
       Arg.Analyze<'--no-debug-mode'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'long-flag'; name: 'verbose'; negated: true; value: 'true'; original: '--no-verbose=true' },
       Arg.Analyze<'--no-verbose=true'>
     >,
     // Edge cases: NOT negated (lowercase after 'no')
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'long-flag'; name: 'notice'; negated: false; value: null; original: '--notice' },
       Arg.Analyze<'--notice'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'long-flag'; name: 'node'; negated: false; value: null; original: '--node' },
       Arg.Analyze<'--node'>
     >,
     // Short flags (single character)
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'short-flag'; name: 'v'; value: null; original: '-v' },
       Arg.Analyze<'-v'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'short-flag'; name: 'n'; value: '10'; original: '-n=10' },
       Arg.Analyze<'-n=10'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'short-flag'; name: 'q'; value: 'x=y'; original: '-q=x=y' },
       Arg.Analyze<'-q=x=y'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'short-flag'; name: 'e'; value: ''; original: '-e=' },
       Arg.Analyze<'-e='>
     >,
     // Short flag clusters
-    Ts.Assert.exact<
+    A.exact<
       {
         _tag: 'short-flag-cluster'
         flags: [
@@ -90,7 +90,7 @@ test('type-level analysis', () => {
       },
       Arg.Analyze<'-ab'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       {
         _tag: 'short-flag-cluster'
         flags: [
@@ -102,7 +102,7 @@ test('type-level analysis', () => {
       },
       Arg.Analyze<'-abc'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       {
         _tag: 'short-flag-cluster'
         flags: [
@@ -114,7 +114,7 @@ test('type-level analysis', () => {
       },
       Arg.Analyze<'-xyz=foo'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       {
         _tag: 'short-flag-cluster'
         flags: [
@@ -127,37 +127,37 @@ test('type-level analysis', () => {
       Arg.Analyze<'-vxf='>
     >,
     // Positional
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'positional'; value: 'file.txt'; original: 'file.txt' },
       Arg.Analyze<'file.txt'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'positional'; value: '123'; original: '123' },
       Arg.Analyze<'123'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'positional'; value: './path/to/file'; original: './path/to/file' },
       Arg.Analyze<'./path/to/file'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'positional'; value: 'https://example.com'; original: 'https://example.com' },
       Arg.Analyze<'https://example.com'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'positional'; value: 'key=value'; original: 'key=value' },
       Arg.Analyze<'key=value'>
     >,
     // Separator
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'separator'; original: '--' },
       Arg.Analyze<'--'>
     >,
     // Edge cases
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'positional'; value: '---foo'; original: '---foo' },
       Arg.Analyze<'---foo'>
     >,
-    Ts.Assert.exact<
+    A.exact<
       { _tag: 'positional'; value: ''; original: '' },
       Arg.Analyze<''>
     >

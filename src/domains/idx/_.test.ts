@@ -1,12 +1,12 @@
 import { ArrMut } from '#arr-mut'
+import { Assert } from '#assert'
 import { Idx } from '#idx'
 import { Obj } from '#obj'
 import { property } from '#test/test'
-import { Ts } from '#ts'
 import fc from 'fast-check'
 import { expect, test } from 'vitest'
 
-const A = Ts.Assert.exact.ofAs
+const A = Assert.Type.exact.ofAs
 
 test('empty index has no items', () => {
   const idx = Idx.create()

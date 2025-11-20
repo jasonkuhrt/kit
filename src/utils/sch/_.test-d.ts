@@ -1,8 +1,8 @@
+import { Assert } from '#assert'
 import { Sch } from '#sch'
-import { Ts } from '#ts'
 import { Schema as S } from 'effect'
 
-const A = Ts.Assert.exact
+const A = Assert.Type.exact
 
 // Test Tagged Struct utilities
 {

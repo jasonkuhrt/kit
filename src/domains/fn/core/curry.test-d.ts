@@ -1,9 +1,9 @@
-import { Ts } from '#ts'
+import { Assert } from '#assert'
 import { test } from 'vitest'
 import { fn0p, fn1p, fn1pOptional, fn2p, fn2pOptional, fn3p } from './_test.js'
 import { curry } from './curry.js'
 
-const A = Ts.Assert.exact.ofAs
+const A = Assert.Type.exact.ofAs
 
 test('cannot curry non-function', () => {
   // @ts-expect-error

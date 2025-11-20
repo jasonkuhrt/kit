@@ -70,6 +70,8 @@
       "#url/url": ["./src/domains/url/__.ts"],
 
       // Utils
+      "#assert": ["./src/utils/assert/_.ts"],
+      "#assert/assert": ["./src/utils/assert/__.ts"],
       "#bldr": ["./src/utils/bldr/_.ts"],
       "#bldr/bldr": ["./src/utils/bldr/__.ts"],
       "#cache": ["./src/utils/cache/_.ts"],

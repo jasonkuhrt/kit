@@ -1,10 +1,10 @@
+import { Assert } from '#assert'
 import { Fn } from '#fn'
 import { Test } from '#test'
-import { Ts } from '#ts'
 import fc from 'fast-check'
 import { expect, test } from 'vitest'
 
-const A = Ts.Assert.exact.ofAs
+const A = Assert.Type.exact.ofAs
 
 Test.property('returns a function that always returns the initial value', fc.anything(), (value) => {
   const constantFn = Fn.constant(value)

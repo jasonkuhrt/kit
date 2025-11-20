@@ -1,8 +1,8 @@
-import { Ts } from '#ts'
+import { Assert } from '#assert'
 import { describe, expect, test } from 'vitest'
 import { ConfigManager } from './_.js'
 
-const A = Ts.Assert.exact.ofAs
+const A = Assert.Type.exact.ofAs
 
 test(`defaults are merged into input value`, () => {
   const defaults = { a: 1 }
@@ -101,7 +101,7 @@ test(`works with interface-typed nested-object values`, () => {
 test(`input can be undefined, returns defaults`, () => {
   const defaults = { a: 1 }
   const result = ConfigManager.mergeDefaults(defaults, undefined)
-  Ts.Assert.exact.ofAs<typeof defaults>().on(result)
+  A<typeof defaults>().on(result)
   expect(result).toBe(defaults)
 })
 
@@ -110,14 +110,14 @@ describe(`default custom scalars`, () => {
     const defaults = { a: new Date(0), b: () => 0 }
     const input = {}
     const result = ConfigManager.mergeDefaults(defaults, input)
-    Ts.Assert.exact.ofAs<{ a: Date; b: () => number }>().on(result)
+    A<{ a: Date; b: () => number }>().on(result)
     expect(result).toEqual({ a: defaults.a, b: defaults.b })
   })
   test(`input takes precedence`, () => {
     const defaults = { a: new Date(0), b: () => 0 }
     const input = { a: new Date(1), b: () => 2 }
     const result = ConfigManager.mergeDefaults(defaults, input)
-    Ts.Assert.exact.ofAs<{ a: Date; b: () => number }>().on(result)
+    A<{ a: Date; b: () => number }>().on(result)
     expect(result).toEqual({ a: input.a, b: input.b })
   })
 })

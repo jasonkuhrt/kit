@@ -1,7 +1,7 @@
+import { Assert } from '#assert'
 import { Obj } from '#obj'
-import { Ts } from '#ts'
 
-const A = Ts.Assert.exact.ofAs
+const A = Assert.Type.exact.ofAs
 
 // HasRequiredKeys tests
 {

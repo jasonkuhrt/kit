@@ -1,50 +1,50 @@
-import { Ts } from '#ts'
+import { Assert } from '#assert'
 import { Mask } from './_.js'
 
-const A = Ts.Assert.exact.ofAs
+const A = Assert.Type
 
 // Test InferOptions type
 type User = { name: string; email: string; age: number; password: string }
 
 // Boolean is always valid
-Ts.Assert.sub.ofAs<Mask.InferOptions<User>>().onAs<boolean>()
+A.sub.ofAs<Mask.InferOptions<User>>().onAs<boolean>()
 
 // Array of keys
-Ts.Assert.sub.ofAs<Mask.InferOptions<User>>().onAs<('name' | 'email')[]>()
-Ts.Assert.sub.ofAs<Mask.InferOptions<User>>().onAs<('name' | 'email' | 'age' | 'password')[]>()
+A.sub.ofAs<Mask.InferOptions<User>>().onAs<('name' | 'email')[]>()
+A.sub.ofAs<Mask.InferOptions<User>>().onAs<('name' | 'email' | 'age' | 'password')[]>()
 
 // Partial record with boolean values
-Ts.Assert.sub.ofAs<Mask.InferOptions<User>>().onAs<{ name?: boolean; email?: boolean }>()
-Ts.Assert.sub.ofAs<Mask.InferOptions<User>>().onAs<
+A.sub.ofAs<Mask.InferOptions<User>>().onAs<{ name?: boolean; email?: boolean }>()
+A.sub.ofAs<Mask.InferOptions<User>>().onAs<
   { name?: boolean; email?: boolean; age?: boolean; password?: boolean }
 >()
 
 // Unknown type accepts all options
-Ts.Assert.sub.ofAs<Mask.InferOptions<unknown>>().onAs<boolean>()
-Ts.Assert.sub.ofAs<Mask.InferOptions<unknown>>().onAs<string[]>()
-Ts.Assert.sub.ofAs<Mask.InferOptions<unknown>>().onAs<Record<string, boolean>>()
+A.sub.ofAs<Mask.InferOptions<unknown>>().onAs<boolean>()
+A.sub.ofAs<Mask.InferOptions<unknown>>().onAs<string[]>()
+A.sub.ofAs<Mask.InferOptions<unknown>>().onAs<Record<string, boolean>>()
 
 // Non-object types only accept boolean
-Ts.Assert.exact.ofAs<Mask.InferOptions<string>>().onAs<boolean>()
+A.exact.ofAs<Mask.InferOptions<string>>().onAs<boolean>()
 
 // Test Apply type
 type TestData = { a: string; b: number; c: boolean }
 
 // Binary mask - show
 type ShowResult = Mask.Apply<TestData, { type: 'binary'; show: true }>
-A<TestData>().onAs<ShowResult>()
+A.exact.ofAs<TestData>().onAs<ShowResult>()
 
 // Binary mask - hide
 type HideResult = Mask.Apply<TestData, { type: 'binary'; show: false }>
-A<undefined>().onAs<HideResult>()
+A.exact.ofAs<undefined>().onAs<HideResult>()
 
 // Properties mask - allow mode
 type AllowResult = Mask.Apply<TestData, { type: 'properties'; mode: 'allow'; properties: ['a', 'c'] }>
-A<Pick<TestData, 'a' | 'c'>>().onAs<AllowResult>()
+A.exact.ofAs<Pick<TestData, 'a' | 'c'>>().onAs<AllowResult>()
 
 // Properties mask - deny mode
 type DenyResult = Mask.Apply<TestData, { type: 'properties'; mode: 'deny'; properties: ['b'] }>
-Ts.Assert.exact.ofAs<Omit<TestData, 'b'>>().onAs<DenyResult>()
+A.exact.ofAs<Omit<TestData, 'b'>>().onAs<DenyResult>()
 
 // Test mask creation and application
 const userMask = Mask.pick<User>(['name', 'email'])
@@ -70,20 +70,20 @@ const _exactMaskedTypeTest: ExactMaskedType = { name: 'test', email: 'test@examp
 
 // Test semantic constructors
 const showMask = Mask.show()
-A<Mask.BinaryMask>().on(showMask)
+A.exact.ofAs<Mask.BinaryMask>().on(showMask)
 
 const hideMask = Mask.hide()
-A<Mask.BinaryMask>().on(hideMask)
+A.exact.ofAs<Mask.BinaryMask>().on(hideMask)
 
 const pickMask = Mask.pick<User>(['name', 'email'])
-Ts.Assert.exact.ofAs<Mask.PropertiesMask<User>>().on(pickMask)
+A.exact.ofAs<Mask.PropertiesMask<User>>().on(pickMask)
 
 const omitMask = Mask.omit<User>(['password'])
-Ts.Assert.exact.ofAs<Mask.PropertiesMask<User>>().on(omitMask)
+A.exact.ofAs<Mask.PropertiesMask<User>>().on(omitMask)
 
 // Test GetDataType
 type ExtractedType1 = Mask.GetDataType<Mask.BinaryMask<User>>
-A<User>().onAs<ExtractedType1>()
+A.exact.ofAs<User>().onAs<ExtractedType1>()
 
 type ExtractedType2 = Mask.GetDataType<Mask.PropertiesMask<User>>
-A<User>().onAs<ExtractedType2>()
+A.exact.ofAs<User>().onAs<ExtractedType2>()
