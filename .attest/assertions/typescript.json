@@ -133,7 +133,7 @@
       "completions": {}
     }
   ],
-  "src/utils/ts/assert/__.test.ts": [
+  "src/utils/assert/_.test.ts": [
     {
       "location": {
         "start": {

@@ -4,9 +4,9 @@ import { test } from 'vitest'
  * Type-level tests for the Num module
  */
 
+import { Type as A } from '#assert/assert'
 import { Num } from '#num'
 import { Ts } from '#ts'
-import { Assert } from '#ts/ts'
 
 // === Type Narrowing with Predicates ===
 
@@ -15,36 +15,36 @@ test('Type narrowing works correctly when combining predicates', () => {
 
   // Single predicate narrows type
   if (Num.Finite.is(value)) {
-    Assert.sub.ofAs<Num.Finite>().on(value)
+    A.sub.ofAs<Num.Finite>().on(value)
   }
 
   // Multiple predicates narrow to intersection
   if (Num.Positive.is(value) && Num.Int.is(value)) {
-    Assert.sub.ofAs<Num.Positive & Num.Int>().on(value)
+    A.sub.ofAs<Num.Positive & Num.Int>().on(value)
   }
 
   // Complex narrowing with multiple brands
   if (Num.Finite.is(value) && Num.Positive.is(value) && Num.Int.is(value) && Num.Odd.is(value)) {
-    Assert.sub.ofAs<Num.Finite & Num.Positive & Num.Int & Num.Odd>().on(value)
+    A.sub.ofAs<Num.Finite & Num.Positive & Num.Int & Num.Odd>().on(value)
   }
 
   // Narrowing with incompatible predicates
   if (Num.Zero.is(value)) {
-    Assert.sub.ofAs<Num.Zero>().on(value)
+    A.sub.ofAs<Num.Zero>().on(value)
     // @ts-expect-error - Zero cannot be Positive
-    Assert.sub.ofAs<Num.Positive>().on(value)
+    A.sub.ofAs<Num.Positive>().on(value)
   }
 
   // Range-based narrowing
   if (Num.InRange.is(value, 0, 100)) {
-    Assert.sub.ofAs<Num.InRange<0, 100>>().on(value)
+    A.sub.ofAs<Num.InRange<0, 100>>().on(value)
   }
 
   // Percentage narrowing
   if (Num.Percentage.is(value)) {
-    Assert.sub.ofAs<Num.Percentage>().on(value)
+    A.sub.ofAs<Num.Percentage>().on(value)
     // Percentage is InRange<0, 1> not InRange<0, 100>
-    Assert.sub.ofAs<Num.InRange<0, 1>>().on(value)
+    A.sub.ofAs<Num.InRange<0, 1>>().on(value)
   }
 })
 
@@ -53,55 +53,55 @@ test('Type narrowing works correctly when combining predicates', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Single brand constructors
   const pos = Num.Positive.from(5)
-  Assert.exact.ofAs<Num.Positive>().on(pos)
+  A.exact.ofAs<Num.Positive>().on(pos)
 
   const int = Num.Int.from(42)
-  Assert.exact.ofAs<Num.Int>().on(int)
+  A.exact.ofAs<Num.Int>().on(int)
 
   const finite = Num.Finite.from(3.14)
-  Assert.exact.ofAs<Num.Finite>().on(finite)
+  A.exact.ofAs<Num.Finite>().on(finite)
 
   const zero = Num.Zero.from(0)
-  Assert.exact.ofAs<Num.Zero>().on(zero)
+  A.exact.ofAs<Num.Zero>().on(zero)
 
   const nonZero = Num.NonZero.from(1)
-  Assert.exact.ofAs<Num.NonZero>().on(nonZero)
+  A.exact.ofAs<Num.NonZero>().on(nonZero)
 
   const neg = Num.Negative.from(-5)
-  Assert.exact.ofAs<Num.Negative>().on(neg)
+  A.exact.ofAs<Num.Negative>().on(neg)
 
   const nonNeg = Num.NonNegative.from(0)
-  Assert.exact.ofAs<Num.NonNegative>().on(nonNeg)
+  A.exact.ofAs<Num.NonNegative>().on(nonNeg)
 
   const nonPos = Num.NonPositive.from(0)
-  Assert.exact.ofAs<Num.NonPositive>().on(nonPos)
+  A.exact.ofAs<Num.NonPositive>().on(nonPos)
 
   const even = Num.Even.from(4)
-  Assert.exact.ofAs<Num.Even & Num.Int>().on(even)
+  A.exact.ofAs<Num.Even & Num.Int>().on(even)
 
   const odd = Num.Odd.from(3)
-  Assert.exact.ofAs<Num.Odd & Num.Int>().on(odd)
+  A.exact.ofAs<Num.Odd & Num.Int>().on(odd)
 
   const safeInt = Num.SafeInt.from(1000)
-  Assert.exact.ofAs<Num.SafeInt & Num.Int>().on(safeInt)
+  A.exact.ofAs<Num.SafeInt & Num.Int>().on(safeInt)
 
   const float = Num.Float.from(3.14)
-  Assert.exact.ofAs<Num.Float & Num.Finite>().on(float)
+  A.exact.ofAs<Num.Float & Num.Finite>().on(float)
 
   // Range constructor
   const inRange = Num.InRange.from(50, 0, 100)
-  Assert.exact.ofAs<Num.InRange<0, 100>>().on(inRange)
+  A.exact.ofAs<Num.InRange<0, 100>>().on(inRange)
 
   // Percentage constructor
   const pct = Num.Percentage.from(0.75)
-  Assert.exact.ofAs<Num.Percentage>().on(pct)
+  A.exact.ofAs<Num.Percentage>().on(pct)
 
   // Angle constructors
   const rad = Num.Radians.from(Math.PI)
-  Assert.exact.ofAs<Num.Radians & Num.Finite>().on(rad)
+  A.exact.ofAs<Num.Radians & Num.Finite>().on(rad)
 
   const deg = Num.Degrees.from(180)
-  Assert.exact.ofAs<Num.Degrees & Num.Finite>().on(deg)
+  A.exact.ofAs<Num.Degrees & Num.Finite>().on(deg)
 })
 
 // === Try Constructors ===
@@ -109,19 +109,19 @@ test('Constructor functions produce correctly branded types', () => {
 test('Try constructors return branded types or null', () => {
   // Try constructors have correct return types
   const tryPos = Num.Positive.tryFrom(5)
-  Assert.exact.ofAs<Num.Positive | null>().on(tryPos)
+  A.exact.ofAs<Num.Positive | null>().on(tryPos)
 
   const tryInt = Num.Int.tryFrom(42.5)
-  Assert.exact.ofAs<Num.Int | null>().on(tryInt)
+  A.exact.ofAs<Num.Int | null>().on(tryInt)
 
   const tryFinite = Num.Finite.tryFrom(Infinity)
-  Assert.exact.ofAs<Num.Finite | null>().on(tryFinite)
+  A.exact.ofAs<Num.Finite | null>().on(tryFinite)
 
   // Type narrowing with try constructors
   const value = 42
   const result = Num.Positive.tryFrom(value)
   if (result !== null) {
-    Assert.exact.ofAs<Num.Positive>().on(result)
+    A.exact.ofAs<Num.Positive>().on(result)
   }
 })
 
@@ -130,81 +130,81 @@ test('Try constructors return branded types or null', () => {
 test('Math operations enforce branded type constraints', () => {
   // Basic arithmetic preserves number type
   const sum = Num.add(5, 3)
-  Assert.sub.ofAs<number>().on(sum)
+  A.sub.ofAs<number>().on(sum)
 
   const diff = Num.subtract(10, 3)
-  Assert.sub.ofAs<number>().on(diff)
+  A.sub.ofAs<number>().on(diff)
 
   const product = Num.multiply(4, 5)
-  Assert.sub.ofAs<number>().on(product)
+  A.sub.ofAs<number>().on(product)
 
   const divisor = Num.NonZero.from(2)
   const quotient = Num.divide(10, divisor)
-  Assert.sub.ofAs<number>().on(quotient)
+  A.sub.ofAs<number>().on(quotient)
 
   // Power operations
   const squared = Num.power(3, 2)
-  Assert.sub.ofAs<number>().on(squared)
+  A.sub.ofAs<number>().on(squared)
 
   // Root operations
   const sqrtInput = Num.NonNegative.from(16)
   const sqrtResult = Num.sqrt(sqrtInput)
-  Assert.sub.ofAs<number>().on(sqrtResult)
+  A.sub.ofAs<number>().on(sqrtResult)
 
   // Modulo operations (mod doesn't exist, using % operator)
   const remainder = 10 % 3
-  Assert.sub.ofAs<number>().on(remainder)
+  A.sub.ofAs<number>().on(remainder)
 
   // Absolute value
   const absResult = Num.abs(-5)
-  Assert.sub.ofAs<number>().on(absResult)
+  A.sub.ofAs<number>().on(absResult)
 
   // Sign operations
   const signResult = Num.sign(-5)
-  Assert.sub.ofAs<number>().on(signResult)
+  A.sub.ofAs<number>().on(signResult)
 
   // Rounding operations
   const finiteValue = Num.Finite.from(3.7)
   const rounded = Num.round(finiteValue)
-  Assert.sub.ofAs<number>().on(rounded)
+  A.sub.ofAs<number>().on(rounded)
 
   const floored = Num.floor(finiteValue)
-  Assert.sub.ofAs<number>().on(floored)
+  A.sub.ofAs<number>().on(floored)
 
   const ceiled = Num.ceil(Num.Finite.from(3.2))
-  Assert.sub.ofAs<number>().on(ceiled)
+  A.sub.ofAs<number>().on(ceiled)
 
   const truncated = Num.trunc(finiteValue)
-  Assert.sub.ofAs<number>().on(truncated)
+  A.sub.ofAs<number>().on(truncated)
 
   // Comparison operations
   const minResult = Num.min(5, 3)
-  Assert.sub.ofAs<number>().on(minResult)
+  A.sub.ofAs<number>().on(minResult)
 
   const maxResult = Num.max(5, 3)
-  Assert.sub.ofAs<number>().on(maxResult)
+  A.sub.ofAs<number>().on(maxResult)
 
   const clamped = Num.InRange.clamp(10, 0, 5)
-  Assert.sub.ofAs<number>().on(clamped)
+  A.sub.ofAs<number>().on(clamped)
 
   // Trigonometric operations with Radians
   const rad = Num.Radians.from(Math.PI / 2)
   const sinResult = Num.sin(rad)
-  Assert.sub.ofAs<number>().on(sinResult)
+  A.sub.ofAs<number>().on(sinResult)
 
   const cosResult = Num.cos(rad)
-  Assert.sub.ofAs<number>().on(cosResult)
+  A.sub.ofAs<number>().on(cosResult)
 
   const tanResult = Num.tan(rad)
-  Assert.sub.ofAs<number>().on(tanResult)
+  A.sub.ofAs<number>().on(tanResult)
 
   // Angle conversions
   const deg: Num.Degrees = Num.Degrees.from(180)
   const toRad = Num.degToRad(deg)
-  Assert.sub.ofAs<Num.Radians>().on(toRad)
+  A.sub.ofAs<Num.Radians>().on(toRad)
 
   const toDeg = Num.radToDeg(rad)
-  Assert.sub.ofAs<Num.Degrees>().on(toDeg)
+  A.sub.ofAs<Num.Degrees>().on(toDeg)
 })
 
 // === Branded Type Intersections ===
@@ -219,41 +219,41 @@ test('Branded types can be properly intersected', () => {
   const value = 5
   if (Num.Positive.is(value) && Num.Int.is(value)) {
     const posInt: PositiveInt = value
-    Assert.sub.ofAs<PositiveInt>().on(posInt)
+    A.sub.ofAs<PositiveInt>().on(posInt)
   }
 
   // Complex intersection
   if (Num.Positive.is(value) && Num.Int.is(value) && Num.Odd.is(value)) {
     const posOddInt: PositiveOddInt = value
-    Assert.sub.ofAs<PositiveOddInt>().on(posOddInt)
+    A.sub.ofAs<PositiveOddInt>().on(posOddInt)
   }
 
   // Finite non-zero
   if (Num.Finite.is(value) && Num.NonZero.is(value)) {
     const finiteNonZero: FiniteNonZero = value
-    Assert.sub.ofAs<FiniteNonZero>().on(finiteNonZero)
+    A.sub.ofAs<FiniteNonZero>().on(finiteNonZero)
   }
 })
 
 // === Type-Level Only Tests ===
 
 // Test that branded types extend number
-type _BrandsExtendNumber = Ts.Assert.Cases<
-  Assert.sub.of<number, Num.Positive>,
-  Assert.sub.of<number, Num.Negative>,
-  Assert.sub.of<number, Num.Zero>,
-  Assert.sub.of<number, Num.NonZero>,
-  Assert.sub.of<number, Num.Int>,
-  Assert.sub.of<number, Num.Float>,
-  Assert.sub.of<number, Num.Finite>,
-  Assert.sub.of<number, Num.SafeInt>,
-  Assert.sub.of<number, Num.Even>,
-  Assert.sub.of<number, Num.Odd>,
-  Assert.sub.of<number, Num.NonNegative>,
-  Assert.sub.of<number, Num.NonPositive>,
-  Assert.sub.of<number, Num.Percentage>,
-  Assert.sub.of<number, Num.Radians>,
-  Assert.sub.of<number, Num.Degrees>
+type _BrandsExtendNumber = A.Cases<
+  A.sub.of<number, Num.Positive>,
+  A.sub.of<number, Num.Negative>,
+  A.sub.of<number, Num.Zero>,
+  A.sub.of<number, Num.NonZero>,
+  A.sub.of<number, Num.Int>,
+  A.sub.of<number, Num.Float>,
+  A.sub.of<number, Num.Finite>,
+  A.sub.of<number, Num.SafeInt>,
+  A.sub.of<number, Num.Even>,
+  A.sub.of<number, Num.Odd>,
+  A.sub.of<number, Num.NonNegative>,
+  A.sub.of<number, Num.NonPositive>,
+  A.sub.of<number, Num.Percentage>,
+  A.sub.of<number, Num.Radians>,
+  A.sub.of<number, Num.Degrees>
 >
 
 // Test brand relationships
@@ -275,31 +275,31 @@ test('Brand exclusivity', () => {
 })
 
 // Test range type parameter constraints
-type _RangeTypes = Ts.Assert.Cases<
-  Assert.sub.of<number, Num.InRange<0, 100>>,
-  Assert.sub.of<number, Num.InRange<-10, 10>>,
-  Assert.sub.of<Num.InRange<0, 1>, Num.Percentage>
+type _RangeTypes = A.Cases<
+  A.sub.of<number, Num.InRange<0, 100>>,
+  A.sub.of<number, Num.InRange<-10, 10>>,
+  A.sub.of<Num.InRange<0, 1>, Num.Percentage>
 >
 
 // Test that arithmetic operations return base number type
-type _ArithmeticReturnTypes = Ts.Assert.Cases<
-  Assert.exact.of<ReturnType<typeof Num.add>, number>,
-  Assert.exact.of<ReturnType<typeof Num.multiply>, number>,
-  Assert.exact.of<ReturnType<typeof Num.subtract>, number>,
-  Assert.exact.of<ReturnType<typeof Num.round>, number>
+type _ArithmeticReturnTypes = A.Cases<
+  A.exact.of<ReturnType<typeof Num.add>, number>,
+  A.exact.of<ReturnType<typeof Num.multiply>, number>,
+  A.exact.of<ReturnType<typeof Num.subtract>, number>,
+  A.exact.of<ReturnType<typeof Num.round>, number>
 >
 
 // Test angle conversion types
-type _AngleConversions = Ts.Assert.Cases<
-  Assert.exact.of<Parameters<typeof Num.degToRad>[0], Num.Degrees>,
-  Assert.exact.of<ReturnType<typeof Num.degToRad>, Num.Radians>,
-  Assert.exact.of<Parameters<typeof Num.radToDeg>[0], Num.Radians>,
-  Assert.exact.of<ReturnType<typeof Num.radToDeg>, Num.Degrees>
+type _AngleConversions = A.Cases<
+  A.exact.of<Parameters<typeof Num.degToRad>[0], Num.Degrees>,
+  A.exact.of<ReturnType<typeof Num.degToRad>, Num.Radians>,
+  A.exact.of<Parameters<typeof Num.radToDeg>[0], Num.Radians>,
+  A.exact.of<ReturnType<typeof Num.radToDeg>, Num.Degrees>
 >
 
 // Test curried function types
-type _CurriedFunctions = Ts.Assert.Cases<
-  Assert.sub.of<(b: number) => number, ReturnType<typeof Num.addWith>>,
-  Assert.sub.of<(b: number) => number, ReturnType<typeof Num.multiplyWith>>,
-  Assert.sub.of<(b: number) => number, ReturnType<typeof Num.divideWith>>
+type _CurriedFunctions = A.Cases<
+  A.sub.of<(b: number) => number, ReturnType<typeof Num.addWith>>,
+  A.sub.of<(b: number) => number, ReturnType<typeof Num.multiplyWith>>,
+  A.sub.of<(b: number) => number, ReturnType<typeof Num.divideWith>>
 >

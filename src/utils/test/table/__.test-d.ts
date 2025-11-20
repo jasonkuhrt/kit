@@ -1,7 +1,7 @@
-import { Ts } from '#ts'
+import { Assert } from '#assert'
 import { Test } from '../_.js'
 
-const A = Ts.Assert.exact.ofAs
+const A = Assert.Type.exact.ofAs
 
 // Test type inference with .i() and .o() using object cases
 {

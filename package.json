@@ -49,6 +49,8 @@
     "#fs/fs": "./build/utils/fs/__.js",
     "#idx": "./build/domains/idx/_.js",
     "#idx/idx": "./build/domains/idx/__.js",
+    "#assert": "./build/utils/assert/_.js",
+    "#assert/assert": "./build/utils/assert/__.js",
     "#pat": "./build/utils/pat/_.js",
     "#pat/pat": "./build/utils/pat/__.js",
     "#ts": "./build/utils/ts/_.js",

@@ -1,12 +1,12 @@
+import { Assert } from '#assert'
 import { Fs } from '#fs'
 import { Test } from '#test'
-import { Ts } from '#ts'
 import '../test/matchers/_.js'
 import { FileSystem } from '@effect/platform'
 import { Array, Effect, Layer, Option } from 'effect'
 import { expect, test } from 'vitest'
 
-const A = Ts.Assert.exact.ofAs
+const A = Assert.Type.exact.ofAs
 
 const l = Fs.Path.fromLiteral
 

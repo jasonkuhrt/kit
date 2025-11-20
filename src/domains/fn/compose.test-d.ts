@@ -2,6 +2,7 @@
  * Type-level tests for compose function.
  */
 
+import { Type as A } from '#assert/assert'
 import { Ts } from '#ts'
 import type * as Path from '../../utils/ts/path.js'
 import { compose, compose2, type ComposeKind } from './compose.js'
@@ -33,7 +34,7 @@ const _composed_fn3 = compose(toString, add1, double)
 
 // compose2 infers types correctly
 const _composed2_fn = compose2(add1, double)
-Ts.Assert.exact.ofAs<(x: number) => number>().on(_composed2_fn)
+A.exact.ofAs<(x: number) => number>().on(_composed2_fn)
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Extractor composition
@@ -47,22 +48,22 @@ const _composed_ext = compose(ext1, ext2)
 
 // Should be an Extractor
 // Note: Type-level composition tests commented out due to TypeScript depth limitations
-// Ts.Assert.sub.ofAs<Extractor>().on(_composed_ext)
+// A.sub.ofAs<Extractor>().on(_composed_ext)
 
 // Should have .kind property with composed Kind
-// Ts.Assert.sub.ofAs<{ kind: ComposeKind<Path.Returned, Path.Awaited$> }>().on(_composed_ext)
+// A.sub.ofAs<{ kind: ComposeKind<Path.Returned, Path.Awaited$> }>().on(_composed_ext)
 
 // Input type from second extractor
 // type _input_type = Parameters<typeof _composed_ext>[0]
-// Ts.Assert.exact.ofAs<boolean>().onAs<_input_type>()
+// A.exact.ofAs<boolean>().onAs<_input_type>()
 
 // Output type from first extractor
 // type _output_type = ReturnType<typeof _composed_ext>
-// Ts.Assert.exact.ofAs<string>().onAs<_output_type>
+// A.exact.ofAs<string>().onAs<_output_type>
 
 // compose2 with extractors
 const _composed2_ext = compose2(ext1, ext2)
-// Ts.Assert.sub.ofAs<Extractor>().on(_composed2_ext)
-// Ts.Assert.sub.ofAs<{ kind: ComposeKind<Path.Returned, Path.Awaited$> }>().on(_composed2_ext)
+// A.sub.ofAs<Extractor>().on(_composed2_ext)
+// A.sub.ofAs<{ kind: ComposeKind<Path.Returned, Path.Awaited$> }>().on(_composed2_ext)
 
 // Note: Runtime behavior and .kind preservation verified in compose.test.ts

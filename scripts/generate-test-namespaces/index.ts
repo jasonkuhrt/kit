@@ -183,7 +183,7 @@ const UNARY_RELATORS: Record<string, UnaryRelator> = {
   },
 }
 
-const OUTPUT_DIR = path.join(process.cwd(), 'src/utils/ts/assert/builder-generated')
+const OUTPUT_DIR = path.join(process.cwd(), 'src/utils/assert/builder-generated')
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Registry Loading
 
@@ -286,11 +286,11 @@ function getRelativePath(from: string, to: string): string {
 function calculateImportPaths(combo: Combination) {
   // Calculate proper relative paths from source to target files
   const sourceFile = combo.outputPath
-  const rootDir = path.join(process.cwd(), 'src/utils/ts')
+  const srcDir = path.join(process.cwd(), 'src/utils')
 
-  const extractorsPath = getRelativePath(sourceFile, path.join(rootDir, 'path.js'))
-  const relatorsPath = getRelativePath(sourceFile, path.join(rootDir, 'assert/asserts.js'))
-  const builderPath = getRelativePath(sourceFile, path.join(rootDir, 'assert/builder-singleton.js'))
+  const extractorsPath = getRelativePath(sourceFile, path.join(srcDir, 'ts/path.js'))
+  const relatorsPath = getRelativePath(sourceFile, path.join(srcDir, 'assert/asserts.js'))
+  const builderPath = getRelativePath(sourceFile, path.join(srcDir, 'assert/builder-singleton.js'))
 
   return { extractorsPath, relatorsPath, builderPath }
 }
@@ -301,7 +301,7 @@ function generateFileHeader(combo: Combination): string {
   const { extractorsPath, relatorsPath, builderPath } = calculateImportPaths(combo)
 
   const extractorImports = combo.extractors.length > 0
-    ? `import type * as Path from '${extractorsPath}'\n`
+    ? `import { Ts } from '#ts'\n`
     : ''
 
   const eitherImport = combo.extractors.length > 0
@@ -345,7 +345,7 @@ function buildExtractorChain(extractors: Extractor[], actualType: string): strin
   if (extractors.length === 0) return actualType
 
   return extractors.reduce(
-    (inner, extractor) => `Fn.Kind.Apply<Path.${extractor.kindName}, [${inner}]>`,
+    (inner, extractor) => `Fn.Kind.Apply<Ts.Path.${extractor.kindName}, [${inner}]>`,
     actualType,
   )
 }
@@ -563,9 +563,9 @@ function generateBarrelFile(dirPath: string, exports: string[]): string {
     .join('\n')
 
   // Add type-level shorthand for relators (main barrel only has base relators, no extractors)
-  const rootDir = path.join(process.cwd(), 'src/utils/ts')
-  const relatorsPath = getRelativePath(dirPath, path.join(rootDir, 'assert/asserts.js'))
-  const builderPath = getRelativePath(dirPath, path.join(rootDir, 'assert/builder-singleton.js'))
+  const srcDir = path.join(process.cwd(), 'src/utils')
+  const relatorsPath = getRelativePath(dirPath, path.join(srcDir, 'assert/asserts.js'))
+  const builderPath = getRelativePath(dirPath, path.join(srcDir, 'assert/builder-singleton.js'))
 
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
 
@@ -599,10 +599,10 @@ ${typeShorthands}
  */
 function generateExtractorBarrelFile(extractorName: string, barrelPath: string): string {
   // Calculate relative paths
-  const rootDir = path.join(process.cwd(), 'src/utils/ts')
-  const builderPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/builder-singleton.js'))
-  const extractorsPath = getRelativePath(barrelPath, path.join(rootDir, 'path.js'))
-  const relatorsPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/asserts.js'))
+  const srcDir = path.join(process.cwd(), 'src/utils')
+  const builderPath = getRelativePath(barrelPath, path.join(srcDir, 'assert/builder-singleton.js'))
+  const extractorsPath = getRelativePath(barrelPath, path.join(srcDir, 'ts/path.js'))
+  const relatorsPath = getRelativePath(barrelPath, path.join(srcDir, 'assert/asserts.js'))
 
   // Part 1: Export relators as dual namespaces (type+value)
   const relatorExports = Object.keys(RELATORS)
@@ -633,11 +633,11 @@ export const empty = builder.${extractorName}.empty`
 
   const imports = `import type { Fn } from '#fn'
 import { builder } from '${builderPath}'
-import type * as Path from '${extractorsPath}'
+import { Ts } from '#ts'
 import type { Either } from 'effect'
 import type { ${relatorKinds} } from '${relatorsPath}'`
 
-  const extractorChain = `Fn.Kind.Apply<Path.${extractor.kindName}, [$Actual]>`
+  const extractorChain = `Fn.Kind.Apply<Ts.Path.${extractor.kindName}, [$Actual]>`
 
   const typeShorthands = Object.keys(RELATORS).map((relatorName) => {
     const relator = RELATORS[relatorName]!
@@ -665,10 +665,10 @@ ${typeShorthands}
  */
 function generateNotBarrelFile(barrelPath: string, extractors: Extractor[]): string {
   // Calculate relative paths
-  const rootDir = path.join(process.cwd(), 'src/utils/ts')
-  const extractorsPath = getRelativePath(barrelPath, path.join(rootDir, 'path.js'))
-  const relatorsPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/asserts.js'))
-  const builderPath = getRelativePath(barrelPath, path.join(rootDir, 'assert/builder-singleton.js'))
+  const srcDir = path.join(process.cwd(), 'src/utils')
+  const extractorsPath = getRelativePath(barrelPath, path.join(srcDir, 'ts/path.js'))
+  const relatorsPath = getRelativePath(barrelPath, path.join(srcDir, 'assert/asserts.js'))
+  const builderPath = getRelativePath(barrelPath, path.join(srcDir, 'assert/builder-singleton.js'))
 
   // Export relators as dual namespaces (type+value)
   const relatorExports = Object.keys(RELATORS)
@@ -689,7 +689,7 @@ export const empty = ${builderPrefix}.empty`
 
   // Add type-level shorthand for negated relators
   const extractorImports = extractors.length > 0
-    ? `import type * as Path from '${extractorsPath}'\nimport type { Either } from 'effect'\n`
+    ? `import { Ts } from '#ts'\nimport type { Either } from 'effect'\n`
     : ''
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
 
@@ -729,13 +729,13 @@ ${typeShorthands}
  * These files provide both type-level and value-level assertions for edge types.
  */
 function generateUnaryRelatorFile(unaryRelator: UnaryRelator, negated: boolean): string {
-  const rootDir = path.join(process.cwd(), 'src/utils/ts')
+  const srcDir = path.join(process.cwd(), 'src/utils')
   const outputPath = negated
     ? path.join(OUTPUT_DIR, 'not', `${unaryRelator.name}.ts`)
     : path.join(OUTPUT_DIR, `${unaryRelator.name}.ts`)
 
-  const relatorsPath = getRelativePath(outputPath, path.join(rootDir, 'assert/asserts.js'))
-  const builderPath = getRelativePath(outputPath, path.join(rootDir, 'assert/builder-singleton.js'))
+  const relatorsPath = getRelativePath(outputPath, path.join(srcDir, 'assert/asserts.js'))
+  const builderPath = getRelativePath(outputPath, path.join(srcDir, 'assert/builder-singleton.js'))
 
   const imports = `import type { Fn } from '#fn'
 import { builder } from '${builderPath}'

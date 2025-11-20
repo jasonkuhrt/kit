@@ -1,9 +1,9 @@
-import { Ts } from '#ts'
+import { Assert } from '#assert'
 import { describe, test } from 'vitest'
 import { _, fn1p, fn2p } from './_test.js'
 import { bind } from './base.js'
 
-const A = Ts.Assert.exact.ofAs
+const A = Assert.Type.exact.ofAs
 
 describe('bind', () => {
   test('fn must have parameters', () => {

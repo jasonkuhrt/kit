@@ -14,8 +14,8 @@
  * const promise = Promise.resolve(42)
  * const value = Extract.awaited(promise) // Runtime: identity (assumes resolved)
  *
- * // Use in Ts.Assert
- * Ts.Assert.extract(Extract.awaited).exact.of(42).on(promise)
+ * // Use in A
+ * A.extract(Extract.awaited).exact.of(42).on(promise)
  * ```
  */
 
@@ -127,7 +127,7 @@ export const prop = <$Key extends PropertyKey>(key: $Key): Fn.Extractor<any, any
  * Builder chain key for first function parameter extraction.
  *
  * **IMPORTANT**: This is NOT a callable extractor. It exists solely to enable
- * runtime builder chaining like `Ts.Assert.parameter1.parameter2.exact...`.
+ * runtime builder chaining like `A.parameter1.parameter2.exact...`.
  *
  * **Runtime**: Plain object with `.kind` property - not callable.
  * **Type-level**: Uses `Path.Parameter1` Kind for type transformations.
@@ -141,8 +141,8 @@ export const prop = <$Key extends PropertyKey>(key: $Key): Fn.Extractor<any, any
  * type Fn = (a: string, b: number) => void
  * type FirstParam = Apply<Parameter1, [Fn]> // string
  *
- * // Enables builder chaining in Ts.Assert
- * Ts.Assert.parameter1.exact.of('hello').on(fn)
+ * // Enables builder chaining in A
+ * A.parameter1.exact.of('hello').on(fn)
  * ```
  */
 export const parameter1 = {
@@ -153,7 +153,7 @@ export const parameter1 = {
  * Builder chain key for second function parameter extraction.
  *
  * **IMPORTANT**: This is NOT a callable extractor. It exists solely to enable
- * runtime builder chaining like `Ts.Assert.parameter1.parameter2.exact...`.
+ * runtime builder chaining like `A.parameter1.parameter2.exact...`.
  *
  * **Runtime**: Plain object with `.kind` property - not callable.
  * **Type-level**: Uses `Path.Parameter2` Kind for type transformations.
@@ -169,7 +169,7 @@ export const parameter2 = {
  * Builder chain key for third function parameter extraction.
  *
  * **IMPORTANT**: This is NOT a callable extractor. It exists solely to enable
- * runtime builder chaining like `Ts.Assert.parameter1.parameter2.exact...`.
+ * runtime builder chaining like `A.parameter1.parameter2.exact...`.
  *
  * **Runtime**: Plain object with `.kind` property - not callable.
  * **Type-level**: Uses `Path.Parameter3` Kind for type transformations.
@@ -185,7 +185,7 @@ export const parameter3 = {
  * Builder chain key for fourth function parameter extraction.
  *
  * **IMPORTANT**: This is NOT a callable extractor. It exists solely to enable
- * runtime builder chaining like `Ts.Assert.parameter1.parameter2.exact...`.
+ * runtime builder chaining like `A.parameter1.parameter2.exact...`.
  *
  * **Runtime**: Plain object with `.kind` property - not callable.
  * **Type-level**: Uses `Path.Parameter4` Kind for type transformations.
@@ -201,7 +201,7 @@ export const parameter4 = {
  * Builder chain key for fifth function parameter extraction.
  *
  * **IMPORTANT**: This is NOT a callable extractor. It exists solely to enable
- * runtime builder chaining like `Ts.Assert.parameter1.parameter2.exact...`.
+ * runtime builder chaining like `A.parameter1.parameter2.exact...`.
  *
  * **Runtime**: Plain object with `.kind` property - not callable.
  * **Type-level**: Uses `Path.Parameter5` Kind for type transformations.

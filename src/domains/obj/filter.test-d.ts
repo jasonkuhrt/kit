@@ -1,7 +1,7 @@
+import { Assert } from '#assert'
 import { Obj } from '#obj'
-import { Ts } from '#ts'
 
-const A = Ts.Assert.exact.ofAs
+const A = Assert.Type.exact.ofAs
 
 // Test object for all tests
 type TestObj = { a: string; b: number; c: boolean; d: string[] }
@@ -22,7 +22,7 @@ declare const testObj: TestObj
 // Test 3: pick with predicate returns Partial<T>
 {
   const result = Obj.pick(testObj, (key, value) => value !== 'hello')
-  Ts.Assert.exact.ofAs<Partial<TestObj>>().on(result)
+  A<Partial<TestObj>>().on(result)
 
   // All properties are optional
   A<string | undefined>().on(result.a)
@@ -93,7 +93,7 @@ declare const testObj: TestObj
   A<{ array: string[]; readonly ro: string }>().on(omitted)
 
   const pickedFiltered = Obj.pick(complexObj, (key) => key !== 'array')
-  Ts.Assert.exact.ofAs<Partial<ComplexObj>>().on(pickedFiltered)
+  A<Partial<ComplexObj>>().on(pickedFiltered)
 }
 
 // Test 8: Keys parameter type inference
@@ -107,5 +107,5 @@ declare const testObj: TestObj
   const keys2: (keyof TestObj)[] = ['a', 'c']
   const result2 = Obj.policyFilter('allow', testObj, keys2)
   // Result is a union of all possible picks
-  Ts.Assert.exact.ofAs<Pick<TestObj, keyof TestObj>>().on(result2)
+  A<Pick<TestObj, keyof TestObj>>().on(result2)
 }

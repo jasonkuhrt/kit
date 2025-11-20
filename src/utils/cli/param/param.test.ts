@@ -1,3 +1,4 @@
+import { Type as A } from '#assert/assert'
 import { Test } from '#test'
 import { Ts } from '#ts'
 import { Schema as S } from 'effect'
@@ -9,34 +10,34 @@ import { Param } from './param.js'
 // =============================================================================
 
 test('type-level parsing', () => {
-  type _pass = Ts.Assert.Cases<
+  type _pass = A.Cases<
     // Short only
-    Ts.Assert.equiv<
+    A.equiv<
       { expression: string; canonical: 'v'; long: null; short: 'v'; aliases: { short: []; long: [] } },
       Param.Analyze<'-v'>
     >,
     // Short with aliases
-    Ts.Assert.equiv<
+    A.equiv<
       { expression: string; canonical: 'v'; long: null; short: 'v'; aliases: { short: ['x']; long: [] } },
       Param.Analyze<'-v -x'>
     >,
     // Long only
-    Ts.Assert.equiv<
+    A.equiv<
       { expression: string; canonical: 'vv'; long: 'vv'; short: null; aliases: { short: []; long: ['xx'] } },
       Param.Analyze<'--vv --xx'>
     >,
     // Mixed short and long
-    Ts.Assert.equiv<
+    A.equiv<
       { expression: string; canonical: 'vv'; long: 'vv'; short: 'v'; aliases: { short: ['x']; long: ['xx'] } },
       Param.Analyze<'-v --vv -x --xx'>
     >,
     // Kebab case to camelCase
-    Ts.Assert.equiv<
+    A.equiv<
       { expression: string; canonical: 'filePath'; long: 'filePath'; short: null; aliases: { short: []; long: [] } },
       Param.Analyze<'--file-path'>
     >,
     // No prefix (inferred by length)
-    Ts.Assert.equiv<
+    A.equiv<
       { expression: string; canonical: 'vv'; long: 'vv'; short: 'v'; aliases: { short: ['x']; long: ['xx'] } },
       Param.Analyze<'v vv x xx'>
     >
@@ -44,16 +45,16 @@ test('type-level parsing', () => {
 })
 
 test('type-level validation errors', () => {
-  type _pass = Ts.Assert.Cases<
+  type _pass = A.Cases<
     // Empty input - check it's an error
-    Ts.Assert.exact.true<Ts.Err.Is<Param.Analyze<''>>>,
-    Ts.Assert.exact.true<Ts.Err.Is<Param.Analyze<' '>>>,
+    A.exact.true<Ts.Err.Is<Param.Analyze<''>>>,
+    A.exact.true<Ts.Err.Is<Param.Analyze<' '>>>,
     // Long flag too short - check it's an error
-    Ts.Assert.exact.true<Ts.Err.Is<Param.Analyze<'--v'>>>,
+    A.exact.true<Ts.Err.Is<Param.Analyze<'--v'>>>,
     // Short flag too long - check it's an error
-    Ts.Assert.exact.true<Ts.Err.Is<Param.Analyze<'-vv'>>>,
+    A.exact.true<Ts.Err.Is<Param.Analyze<'-vv'>>>,
     // Duplicate aliases - check it's an error
-    Ts.Assert.exact.true<Ts.Err.Is<Param.Analyze<'--vv --vv'>>>
+    A.exact.true<Ts.Err.Is<Param.Analyze<'--vv --vv'>>>
   >
 })
 

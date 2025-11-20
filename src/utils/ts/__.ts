@@ -12,8 +12,6 @@ export * as SimpleSignature from './simple-signature.js'
  */
 export namespace SimpleSignature {}
 
-export * as Assert from './assert/__.js'
-
 // @ts-expect-error Duplicate identifier
 export * as Extract from '../extract/__.js'
 /**
@@ -72,3 +70,5 @@ export * as VariancePhantom from './variance-phantom.js'
  * @category Variance
  */
 export namespace VariancePhantom {}
+
+export * as Settings from './global-settings.js'

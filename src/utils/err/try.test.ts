@@ -1,12 +1,11 @@
+import { Assert } from '#assert'
 import { Err } from '#err'
-import { Fn } from '#fn'
 import { Test } from '#test'
-import { Ts } from '#ts'
 import { describe, expect, test } from 'vitest'
 import { tryAllOrRethrow, tryOr, tryOrRethrow } from './try.js'
 import { wrapWith } from './wrap.js'
 
-const A = Ts.Assert.exact.ofAs
+const A = Assert.Type
 
 const e = new Error('test error')
 const v = 1
@@ -46,7 +45,7 @@ Test.describe('async tryCatch')
 // Type-level test for async tryCatch
 test('async tryCatch type inference', () => {
   const result = Err.tryCatch(fnAsync())
-  Ts.Assert.exact.ofAs<Promise<number | Error>>().on(result)
+  A.exact.ofAs<Promise<number | Error>>().on(result)
 })
 
 // Success cases

@@ -1,8 +1,6 @@
+import { Type as A } from '#assert/assert'
 import { Obj } from '#obj'
-import { Ts } from '#ts'
 import { describe, test } from 'vitest'
-
-const A = Ts.Assert.exact.ofAs
 
 describe('Obj.entries', () => {
   describe('type-level behavior', () => {
@@ -11,7 +9,7 @@ describe('Obj.entries', () => {
       type Entries = Obj.entries<OptionalKeyObj>
 
       // Optional key should not include undefined in value type
-      Ts.Assert.sub.ofAs<['name', string][]>().onAs<Entries>()
+      A.sub.ofAs<['name', string][]>().onAs<Entries>()
     })
 
     test('required key with undefined preserves undefined in value type', () => {
@@ -19,7 +17,7 @@ describe('Obj.entries', () => {
       type Entries = Obj.entries<RequiredUndefinedObj>
 
       // Required key with undefined should preserve undefined in value type
-      Ts.Assert.sub.ofAs<['name', string | undefined][]>().onAs<Entries>()
+      A.sub.ofAs<['name', string | undefined][]>().onAs<Entries>()
     })
 
     test('mixed optional and required keys with complex types', () => {
@@ -40,7 +38,7 @@ describe('Obj.entries', () => {
         | [string, string[]] // hobbies (optional, no undefined)
       )[]
 
-      Ts.Assert.sub.ofAs<ExpectedEntries>().onAs<Entries>()
+      A.sub.ofAs<ExpectedEntries>().onAs<Entries>()
     })
 
     test('object with only optional keys', () => {
@@ -59,7 +57,7 @@ describe('Obj.entries', () => {
         | [string, string] // city
       )[]
 
-      Ts.Assert.sub.ofAs<ExpectedEntries>().onAs<Entries>()
+      A.sub.ofAs<ExpectedEntries>().onAs<Entries>()
     })
 
     test('object with only required keys having undefined', () => {
@@ -76,7 +74,7 @@ describe('Obj.entries', () => {
         | [string, number | undefined]
       )[]
 
-      Ts.Assert.sub.ofAs<ExpectedEntries>().onAs<Entries>()
+      A.sub.ofAs<ExpectedEntries>().onAs<Entries>()
     })
 
     test('nested object structures', () => {
@@ -92,7 +90,7 @@ describe('Obj.entries', () => {
         | [string, { created: Date | undefined }] // metadata (required key, preserve type)
       )[]
 
-      Ts.Assert.sub.ofAs<ExpectedEntries>().onAs<Entries>()
+      A.sub.ofAs<ExpectedEntries>().onAs<Entries>()
     })
 
     test('complex value types with optional vs required distinction', () => {
@@ -116,14 +114,14 @@ describe('Obj.entries', () => {
         | [string, () => void] // optionalFunction (optional, undefined removed)
       )[]
 
-      Ts.Assert.sub.ofAs<ExpectedEntries>().onAs<Entries>()
+      A.sub.ofAs<ExpectedEntries>().onAs<Entries>()
     })
 
     test('empty object', () => {
       type EmptyObj = {}
       type Entries = Obj.entries<EmptyObj>
 
-      Ts.Assert.sub.ofAs<never[]>().onAs<Entries>()
+      A.sub.ofAs<never[]>().onAs<Entries>()
     })
 
     test('object with readonly properties', () => {
@@ -139,7 +137,7 @@ describe('Obj.entries', () => {
         | [string, number | undefined] // age (required, undefined preserved)
       )[]
 
-      Ts.Assert.sub.ofAs<ExpectedEntries>().onAs<Entries>()
+      A.sub.ofAs<ExpectedEntries>().onAs<Entries>()
     })
 
     test('fixed: ExcludeUndefined preserves null for optional keys', () => {
@@ -154,7 +152,7 @@ describe('Obj.entries', () => {
       // NonNullable<string | null | undefined> = string (incorrect)
 
       // This should now correctly preserve null for optional keys
-      Ts.Assert.sub.ofAs<['value', string | null][]>().onAs<Entries>()
+      A.sub.ofAs<['value', string | null][]>().onAs<Entries>()
     })
 
     test('required key with null should preserve null', () => {
@@ -165,7 +163,7 @@ describe('Obj.entries', () => {
       type Entries = Obj.entries<RequiredWithNull>
 
       // Required keys should preserve null correctly
-      Ts.Assert.sub.ofAs<['value', string | null][]>().onAs<Entries>()
+      A.sub.ofAs<['value', string | null][]>().onAs<Entries>()
     })
 
     test('demonstrate correct behavior: only undefined removed from optional keys', () => {
@@ -190,7 +188,7 @@ describe('Obj.entries', () => {
         | ['requiredWithBoth', string | null | undefined] // both preserved
       )[]
 
-      Ts.Assert.sub.ofAs<ExpectedEntries>().onAs<Entries>()
+      A.sub.ofAs<ExpectedEntries>().onAs<Entries>()
     })
   })
 })

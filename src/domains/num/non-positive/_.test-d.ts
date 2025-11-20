@@ -4,8 +4,8 @@ import { test } from 'vitest'
  * Type-level tests for the NonPositive module
  */
 
+import { Type as A } from '#assert/assert'
 import { Ts } from '#ts'
-import { Assert } from '#ts/ts'
 import type { Negative } from '../negative/__.js'
 import type { Positive } from '../positive/__.js'
 import type { Zero } from '../zero/__.js'
@@ -19,7 +19,7 @@ test('Type narrowing works correctly with isNonPositive predicate', () => {
 
   // Predicate narrows to NonPositive type
   if (isNonPositive(value)) {
-    Assert.sub.ofAs<NonPositive>().on(value)
+    A.sub.ofAs<NonPositive>().on(value)
   }
 
   // Works with zero and negative values
@@ -37,32 +37,32 @@ test('Type narrowing works correctly with isNonPositive predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic non-positive constructor
   const np1 = nonPositive(-5)
-  Assert.exact.ofAs<NonPositive>().on(np1)
+  A.exact.ofAs<NonPositive>().on(np1)
 
   // Zero is non-positive
   const np2 = nonPositive(0)
-  Assert.exact.ofAs<NonPositive>().on(np2)
+  A.exact.ofAs<NonPositive>().on(np2)
 
   // Large negative values
   const np3 = nonPositive(-1000)
-  Assert.exact.ofAs<NonPositive>().on(np3)
+  A.exact.ofAs<NonPositive>().on(np3)
 
   // Small negative values
   const np4 = nonPositive(-0.001)
-  Assert.exact.ofAs<NonPositive>().on(np4)
+  A.exact.ofAs<NonPositive>().on(np4)
 
   // Try constructor
   const try1 = tryNonPositive(-42)
-  Assert.exact.ofAs<NonPositive | null>().on(try1)
+  A.exact.ofAs<NonPositive | null>().on(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Assert.exact.ofAs<NonPositive>().on(try1)
+    A.exact.ofAs<NonPositive>().on(try1)
   }
 
   // Try with positive returns null
   const try2 = tryNonPositive(1)
-  Assert.exact.ofAs<NonPositive | null>().on(try2)
+  A.exact.ofAs<NonPositive | null>().on(try2)
 })
 
 // === Type Relationships ===
@@ -72,7 +72,7 @@ test('NonPositive has correct relationships with other sign brands', () => {
 
   // NonPositive can be assigned to number
   const asNumber: number = npVal
-  Assert.sub.ofAs<number>().on(asNumber)
+  A.sub.ofAs<number>().on(asNumber)
 
   // NonPositive and Positive are mutually exclusive
   const _posVal = {} as Positive
@@ -99,40 +99,40 @@ test('NonPositive has correct relationships with other sign brands', () => {
 // === Type-Level Only Tests ===
 
 // Test brand relationships
-type _NonPositiveRelationships = Ts.Assert.Cases<
+type _NonPositiveRelationships = A.Cases<
   // NonPositive extends number
-  Assert.sub.of<number, NonPositive>,
+  A.sub.of<number, NonPositive>,
   // number does not extend NonPositive
-  Ts.Assert.not.sub<NonPositive, number>,
+  A.not.sub<NonPositive, number>,
   // NonPositive and Positive are mutually exclusive
-  Ts.Assert.not.sub<NonPositive, Positive>,
-  Ts.Assert.not.sub<Positive, NonPositive>,
+  A.not.sub<NonPositive, Positive>,
+  A.not.sub<Positive, NonPositive>,
   // Negative and NonPositive are separate brands (no subtype relationship)
-  Ts.Assert.not.sub<NonPositive, Negative>,
-  Ts.Assert.not.sub<Negative, NonPositive>,
+  A.not.sub<NonPositive, Negative>,
+  A.not.sub<Negative, NonPositive>,
   // Zero and NonPositive are separate brands (no subtype relationship)
-  Ts.Assert.not.sub<NonPositive, Zero>,
-  Ts.Assert.not.sub<Zero, NonPositive>,
+  A.not.sub<NonPositive, Zero>,
+  A.not.sub<Zero, NonPositive>,
   // NonPositive does not extend Negative (includes zero)
-  Ts.Assert.not.sub<NonPositive, Negative>,
+  A.not.sub<NonPositive, Negative>,
   // NonPositive does not extend Zero (includes negatives)
-  Ts.Assert.not.sub<NonPositive, Zero>
+  A.not.sub<NonPositive, Zero>
 >
 
 // Test constructor return types
-type _ConstructorReturnTypes = Ts.Assert.Cases<
-  Assert.exact.of<ReturnType<typeof nonPositive>, NonPositive>,
-  Assert.exact.of<ReturnType<typeof tryNonPositive>, NonPositive | null>
+type _ConstructorReturnTypes = A.Cases<
+  A.exact.of<ReturnType<typeof nonPositive>, NonPositive>,
+  A.exact.of<ReturnType<typeof tryNonPositive>, NonPositive | null>
 >
 
 // Test the conceptual nature of NonPositive
-type _NonPositiveConceptual = Ts.Assert.Cases<
+type _NonPositiveConceptual = A.Cases<
   // NonPositive conceptually includes negative and zero values
   // But at the type level, they are separate brands
-  Ts.Assert.not.sub<Negative, NonPositive>,
-  Ts.Assert.not.sub<Zero, NonPositive>,
+  A.not.sub<Negative, NonPositive>,
+  A.not.sub<Zero, NonPositive>,
   // NonPositive is its own brand, not literally Negative | Zero
-  Ts.Assert.not.sub<NonPositive, Negative | Zero>
+  A.not.sub<NonPositive, Negative | Zero>
 >
 
 // Demonstrate type safety with NonPositive
@@ -148,7 +148,7 @@ test('NonPositive enables specific numeric constraints', () => {
   const value = -5
   const np = nonPositive(value)
   const result = processNonPositive(np)
-  Assert.sub.ofAs<string>().on(result)
+  A.sub.ofAs<string>().on(result)
 
   // Cannot pass positive values
   // @ts-expect-error - Cannot assign positive number to NonPositive

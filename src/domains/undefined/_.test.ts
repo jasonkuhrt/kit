@@ -1,10 +1,10 @@
+import { Assert } from '#assert'
 import { property } from '#test/test'
-import { Ts } from '#ts'
 import { Undefined } from '#undefined'
 import fc from 'fast-check'
 import { expect, test } from 'vitest'
 
-const A = Ts.Assert.exact.ofAs
+const A = Assert.Type.exact.ofAs
 
 test('undefined detection', () => {
   expect(Undefined.is(undefined)).toBe(true)

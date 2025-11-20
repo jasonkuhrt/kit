@@ -1,7 +1,5 @@
+import { Type as A } from '#assert/assert'
 import { Obj } from '#obj'
-import { Ts } from '#ts'
-
-const A = Ts.Assert
 
 // Fixtures
 type a = { name: string; age: number }

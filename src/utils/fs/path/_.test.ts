@@ -1,10 +1,6 @@
 import { Fs } from '#fs'
 import { Test } from '#test'
-import { Ts } from '#ts'
-import { Schema as S } from 'effect'
 import { describe, expect, test } from 'vitest'
-
-const A = Ts.Assert.exact.ofAs
 
 // === String Decoding Tests ===
 

@@ -1,9 +1,9 @@
 import { ArrMut } from '#arr-mut'
+import { Assert } from '#assert'
 import { Group } from '#group'
-import { Ts } from '#ts'
 import { describe, expect, test } from 'vitest'
 
-const A = Ts.Assert.exact.ofAs
+const A = Assert.Type.exact.ofAs
 
 const a = { type: 'A' as const, a: 1 as const, date: new Date() }
 const b = { type: 'B' as const, b: 2 as const, date: new Date() }

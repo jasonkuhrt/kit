@@ -1,3 +1,4 @@
+import type { Type as A } from '#assert/assert'
 import { Pat } from '#pat'
 import { Ts } from '#ts'
 import * as S from 'effect/Schema'
@@ -141,20 +142,20 @@ const _user = { name: 'Alice', age: 30 }
 const _patternFromValue = Pat.patternFor(_user)
 
 // dprint-ignore
-type _PatternForValueTest = Ts.Assert.Cases<
-  Ts.Assert.exact.of<typeof _patternFromValue, Pat.PatternForValue<typeof _user>>
+type _PatternForValueTest = A.Cases<
+  A.exact.of<typeof _patternFromValue, Pat.PatternForValue<typeof _user>>
 >
 
 const _patternFromSchema = Pat.patternForSchema(UserSchema)
 
 // dprint-ignore
-type _PatternForSchemaTest = Ts.Assert.Cases<
-  Ts.Assert.exact.of<typeof _patternFromSchema, Pat.PatternForSchema<typeof UserSchema>>
+type _PatternForSchemaTest = A.Cases<
+  A.exact.of<typeof _patternFromSchema, Pat.PatternForSchema<typeof UserSchema>>
 >
 
 const _patternFromV1Schema = Pat.patternForV1Schema(zodSchema)
 
 // dprint-ignore
-type _PatternForV1SchemaTest = Ts.Assert.Cases<
-  Ts.Assert.exact.of<typeof _patternFromV1Schema, Pat.PatternForV1Schema<typeof zodSchema>>
+type _PatternForV1SchemaTest = A.Cases<
+  A.exact.of<typeof _patternFromV1Schema, Pat.PatternForV1Schema<typeof zodSchema>>
 >

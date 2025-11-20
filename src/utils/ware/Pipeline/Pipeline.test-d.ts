@@ -1,3 +1,4 @@
+import { Type as A } from '#assert/assert'
 import { Ts } from '#ts'
 import { test } from 'vitest'
 import type { results } from '../_.test-helpers.js'
@@ -12,12 +13,12 @@ const b0 = PipelineDefinition.create().input<initialInput>()
 test(`returns a pipeline`, () => {
   const p0 = b0.type
   const exP0 = Pipeline.create(p0)
-  Ts.Assert.sub.ofAs<
+  A.sub.ofAs<
     { config: Config; steps: readonly []; input: initialInput; output: initialInput }
   >().on(exP0)
   const p1 = b0.step(stepA).type
   const exP1 = Pipeline.create(p1)
-  Ts.Assert.sub.ofAs<
+  A.sub.ofAs<
     { config: Config; steps: readonly [{ name: 'a' }]; input: initialInput; output: results['a'] }
   >().on(exP1)
 })
@@ -44,7 +45,7 @@ test(`overload input extensions become a pipeline union input`, () => {
     .overload(o => o.create({ discriminant: d2 }).configurator($ => $.input<{ ol2: 2 }>()))
     .type
   const p = Pipeline.create(pDef)
-  Ts.Assert.sub.ofAs<
+  A.sub.ofAs<
     | (initialInput & dObject & { ol1: 1 })
     | (initialInput & dObject2 & { ol2: 2 })
   >().on(p.input)
@@ -55,7 +56,7 @@ test(`overload step input/output becomes union to step input/output`, () => {
     b0.step(`a`).overload(o => o.create({ discriminant: d1 }).step(`a`, { run: () => ({ olb: 1 as const }) }))
       .type
   const p = Pipeline.create(pDef)
-  Ts.Assert.sub.ofAs<
+  A.sub.ofAs<
     readonly [{
       name: 'a'
       input: dObject & initialInput
@@ -82,7 +83,7 @@ test(`overloads steps slots all merge onto respective pipeline step (no unions)`
     )
     .type
   const p = Pipeline.create(pDef)
-  Ts.Assert.sub.ofAs<
+  A.sub.ofAs<
     readonly [{
       name: 'a'
       slots: { m: slots['m']; n: slots['n'] }

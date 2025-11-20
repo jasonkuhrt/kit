@@ -4,8 +4,8 @@ import { test } from 'vitest'
  * Type-level tests for the NonZero module
  */
 
+import { Type as A } from '#assert/assert'
 import { Ts } from '#ts'
-import { Assert } from '#ts/ts'
 import type { Zero } from '../zero/__.js'
 import type { NonZero } from './__.js'
 import {
@@ -25,7 +25,7 @@ test('Type narrowing works correctly with isNonZero predicate', () => {
 
   // Predicate narrows to NonZero type
   if (isNonZero(value)) {
-    Assert.sub.ofAs<NonZero>().on(value)
+    A.sub.ofAs<NonZero>().on(value)
   }
 
   // Works with different numeric values
@@ -43,28 +43,28 @@ test('Type narrowing works correctly with isNonZero predicate', () => {
 test('Constructor functions produce correctly branded types', () => {
   // Basic non-zero constructor
   const nz1 = nonZero(5)
-  Assert.exact.ofAs<NonZero>().on(nz1)
+  A.exact.ofAs<NonZero>().on(nz1)
 
   // Negative non-zero
   const nz2 = nonZero(-10)
-  Assert.exact.ofAs<NonZero>().on(nz2)
+  A.exact.ofAs<NonZero>().on(nz2)
 
   // Small non-zero values
   const nz3 = nonZero(0.001)
-  Assert.exact.ofAs<NonZero>().on(nz3)
+  A.exact.ofAs<NonZero>().on(nz3)
 
   // Try constructor
   const try1 = tryNonZero(42)
-  Assert.exact.ofAs<NonZero | null>().on(try1)
+  A.exact.ofAs<NonZero | null>().on(try1)
 
   // Type narrowing with try constructor
   if (try1 !== null) {
-    Assert.exact.ofAs<NonZero>().on(try1)
+    A.exact.ofAs<NonZero>().on(try1)
   }
 
   // Try with zero returns null
   const try2 = tryNonZero(0)
-  Assert.exact.ofAs<NonZero | null>().on(try2)
+  A.exact.ofAs<NonZero | null>().on(try2)
 })
 
 // === Safe Division Operations ===
@@ -74,18 +74,18 @@ test('Safe division operations have correct types', () => {
 
   // safeDivide requires NonZero divisor and returns number
   const result1 = safeDivide(10, divisor)
-  Assert.sub.ofAs<number>().on(result1)
+  A.sub.ofAs<number>().on(result1)
 
   // safeDiv accepts any number and returns number | null
   const result2 = safeDiv(10, 2)
-  Assert.sub.ofAs<number | null>().on(result2)
+  A.sub.ofAs<number | null>().on(result2)
 
   const result3 = safeDiv(10, 0)
-  Assert.sub.ofAs<number | null>().on(result3)
+  A.sub.ofAs<number | null>().on(result3)
 
   // Type narrowing with safeDiv
   if (result2 !== null) {
-    Assert.sub.ofAs<number>().on(result2)
+    A.sub.ofAs<number>().on(result2)
   }
 })
 
@@ -97,7 +97,7 @@ test('NonZero has correct relationship with Zero', () => {
 
   // NonZero can be assigned to number
   const asNumber: number = nonZeroVal
-  Assert.sub.ofAs<number>().on(asNumber)
+  A.sub.ofAs<number>().on(asNumber)
 
   // NonZero and Zero are mutually exclusive
   // @ts-expect-error - NonZero is not assignable to Zero
@@ -110,42 +110,42 @@ test('NonZero has correct relationship with Zero', () => {
 // === Type-Level Only Tests ===
 
 // Test brand relationships
-type _NonZeroRelationships = Ts.Assert.Cases<
+type _NonZeroRelationships = A.Cases<
   // NonZero extends number
-  Assert.sub.of<number, NonZero>,
+  A.sub.of<number, NonZero>,
   // number does not extend NonZero
-  Ts.Assert.not.sub<NonZero, number>,
+  A.not.sub<NonZero, number>,
   // NonZero is distinct from Zero
-  Ts.Assert.not.sub<NonZero, Zero>,
-  Ts.Assert.not.sub<Zero, NonZero>
+  A.not.sub<NonZero, Zero>,
+  A.not.sub<Zero, NonZero>
 >
 
 // Test constructor and operation return types
-type _FunctionReturnTypes = Ts.Assert.Cases<
+type _FunctionReturnTypes = A.Cases<
   // Constructor return types
-  Assert.exact.of<ReturnType<typeof nonZero>, NonZero>,
-  Assert.exact.of<ReturnType<typeof tryNonZero>, NonZero | null>,
+  A.exact.of<ReturnType<typeof nonZero>, NonZero>,
+  A.exact.of<ReturnType<typeof tryNonZero>, NonZero | null>,
   // Division operation types
-  Assert.exact.of<ReturnType<typeof safeDivide>, number>,
-  Assert.exact.of<ReturnType<typeof safeDiv>, number | null>
+  A.exact.of<ReturnType<typeof safeDivide>, number>,
+  A.exact.of<ReturnType<typeof safeDiv>, number | null>
 >
 
 // Test safe division parameter types
-type _SafeDivisionParameters = Ts.Assert.Cases<
+type _SafeDivisionParameters = A.Cases<
   // safeDivide requires NonZero as second parameter
-  Assert.exact.of<Parameters<typeof safeDivide>[0], number>,
-  Assert.exact.of<Parameters<typeof safeDivide>[1], NonZero>,
+  A.exact.of<Parameters<typeof safeDivide>[0], number>,
+  A.exact.of<Parameters<typeof safeDivide>[1], NonZero>,
   // safeDiv accepts regular numbers
-  Assert.exact.of<Parameters<typeof safeDiv>[0], number>,
-  Assert.exact.of<Parameters<typeof safeDiv>[1], number>
+  A.exact.of<Parameters<typeof safeDiv>[0], number>,
+  A.exact.of<Parameters<typeof safeDiv>[1], number>
 >
 
 // Test curried function types
-type _CurriedFunctions = Ts.Assert.Cases<
+type _CurriedFunctions = A.Cases<
   // safeDivOn returns a function that may return null
-  Assert.sub.of<(divisor: number) => number | null, ReturnType<typeof safeDivOn>>,
+  A.sub.of<(divisor: number) => number | null, ReturnType<typeof safeDivOn>>,
   // safeDivWith returns a function that may return null
-  Assert.sub.of<(dividend: number) => number | null, ReturnType<typeof safeDivWith>>
+  A.sub.of<(dividend: number) => number | null, ReturnType<typeof safeDivWith>>
 >
 
 // Demonstrate type safety with division
@@ -197,7 +197,7 @@ test('NonZero practical type safety examples', () => {
   // Usage
   const denom = getDenominator(4)
   const ratio = _calculateRatio(12, denom)
-  Assert.sub.ofAs<number>().on(ratio)
+  A.sub.ofAs<number>().on(ratio)
 })
 
 // Test combinations with other brands
