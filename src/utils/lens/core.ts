@@ -28,7 +28,8 @@ export type IsDisjoint<$T, $Constraint> = [Extract<$T, $Constraint>] extends [ne
  * Format a constraint type for display in error messages.
  * Provides human-readable descriptions for common type patterns.
  */
-export type FormatConstraint<$Constraint> = $Constraint extends readonly any[] ? 'Type must extend array (readonly any[])'
+export type FormatConstraint<$Constraint> = $Constraint extends readonly any[]
+  ? 'Type must extend array (readonly any[])'
   : $Constraint extends PromiseLike<any> ? 'Type must extend PromiseLike<any>'
   : $Constraint extends (...args: any) => any ? 'Type must extend function ((...args: any) => any)'
   : Ts.ShowInTemplate<$Constraint>

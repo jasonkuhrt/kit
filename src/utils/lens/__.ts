@@ -1,9 +1,9 @@
 // Core operations
 export type {
+  FormatConstraint,
   Get,
   GetApplicableLenses,
   IsDisjoint,
-  FormatConstraint,
   LensErrorArrayExtract,
   LensErrorKeyNotFound,
   LensErrorTupleExtract,

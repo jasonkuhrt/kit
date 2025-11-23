@@ -1,7 +1,6 @@
 import type { Fn } from '#fn'
-import { builder } from '../builder-singleton.js'
 import type { AssertNeverKind } from '../asserts.js'
-
+import { builder } from '../builder-singleton.js'
 
 /**
  * Unary relator - asserts type is `never`.

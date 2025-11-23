@@ -1,6 +1,6 @@
+import type { Lens } from '#lens'
 import { Test } from '#test'
 import { describe, expect, test } from 'vitest'
-import type { Lens } from '#lens'
 import { compose, compose2 } from './compose.js'
 import type { Extractor } from './extractor.js'
 

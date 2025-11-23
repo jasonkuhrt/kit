@@ -10,8 +10,7 @@ import type { LensErrorKeyNotFound } from '../core.js'
  * type T = Get<{ a: string; b: number }, 'a'> // string
  * ```
  */
-export type Get<$T, $Key extends PropertyKey> = $Key extends keyof $T
-  ? Either.Right<never, $T[$Key]>
+export type Get<$T, $Key extends PropertyKey> = $Key extends keyof $T ? Either.Right<never, $T[$Key]>
   : Either.Left<LensErrorKeyNotFound<$Key, $T>, never>
 
 /**

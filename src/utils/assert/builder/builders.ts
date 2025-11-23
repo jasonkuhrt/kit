@@ -199,10 +199,9 @@ export type BuilderExtractorsConditionalMaybe<
  * @param $ActualAfterExtraction - The actual type after applying all extractors in the chain
  */
 export type BuilderExtractorsConditionalAfterExtraction<$State extends S, $ActualAfterExtraction> = {
-  readonly [K in keyof Lens.GetApplicableLenses<$ActualAfterExtraction> & keyof Lens.LensRegistry]:
-    Builder<
-      S.AddActualExtractor<$State, Lens.LensRegistry[K]>
-    >
+  readonly [K in keyof Lens.GetApplicableLenses<$ActualAfterExtraction> & keyof Lens.LensRegistry]: Builder<
+    S.AddActualExtractor<$State, Lens.LensRegistry[K]>
+  >
 }
 
 /**
@@ -217,10 +216,9 @@ export type BuilderExtractorsConditionalAfterExtraction<$State extends S, $Actua
  * Extraction happens later during validation, not here.
  */
 export type BuilderExtractorsConditional<$State extends S> = {
-  readonly [K in keyof Lens.GetApplicableLenses<$State['actual_type']> & keyof Lens.LensRegistry]:
-    Builder<
-      S.AddActualExtractor<$State, Lens.LensRegistry[K]>
-    >
+  readonly [K in keyof Lens.GetApplicableLenses<$State['actual_type']> & keyof Lens.LensRegistry]: Builder<
+    S.AddActualExtractor<$State, Lens.LensRegistry[K]>
+  >
 }
 
 /**

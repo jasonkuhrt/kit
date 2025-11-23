@@ -3,8 +3,8 @@
  */
 
 import { Type as A } from '#assert/assert'
-import { Ts } from '#ts'
 import type { Lens } from '#lens'
+import { Ts } from '#ts'
 import { compose, compose2, type ComposeKind } from './compose.js'
 import type { Extractor } from './extractor.js'
 
