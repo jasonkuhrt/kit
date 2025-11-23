@@ -1,6 +1,6 @@
 export * from './ts.js'
 
-export * from './print.js'
+export * from './traits/display.js'
 
 // @ts-expect-error Duplicate identifier
 export * as SimpleSignature from './simple-signature.js'

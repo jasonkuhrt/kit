@@ -9,3 +9,15 @@ export * as Kind from './kind.js'
 export * from './partial/__.js'
 export * from './pipe.js'
 export * from './predicates.js'
+
+/**
+ * Display handler for Function type.
+ * @internal
+ */
+declare global {
+  namespace KitTraits.Display {
+    interface Handlers<$Type> {
+      _function: $Type extends Function ? 'Function' : never
+    }
+  }
+}

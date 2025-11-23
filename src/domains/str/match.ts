@@ -245,3 +245,15 @@ export const isNotMatchAnyOn = Fn.curry(isNotMatchAny)
  * @returns Function that takes a value and returns boolean
  */
 export const isNotMatchAnyWith = Fn.flipCurried(isNotMatchAnyOn)
+
+/**
+ * Display handler for RegExp type.
+ * @internal
+ */
+declare global {
+  namespace KitTraits.Display {
+    interface Handlers<$Type> {
+      _regExp: $Type extends RegExp ? 'RegExp' : never
+    }
+  }
+}

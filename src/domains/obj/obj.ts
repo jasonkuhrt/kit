@@ -344,3 +344,15 @@ export type ToParametersExact<
 export type PropertyKeyToString<$Key extends PropertyKey> = $Key extends string ? $Key
   : $Key extends number ? `${$Key}`
   : never
+
+/**
+ * Display handler for symbol type.
+ * @internal
+ */
+declare global {
+  namespace KitTraits.Display {
+    interface Handlers<$Type> {
+      _symbol: $Type extends symbol ? 'symbol' : never
+    }
+  }
+}
