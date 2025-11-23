@@ -1,4 +1,4 @@
-import { ArrMut } from '#arr-mut'
+import { Arr } from '#arr'
 import { CoreFn as Fn } from '#fn/core'
 import type { Undefined } from '#undefined'
 import { Option } from 'effect'
@@ -19,7 +19,7 @@ export type RegExpMatchResult<$Matches extends Matches> =
   & {
       groups:
         $Matches['groups'] extends readonly [MatchItem,... readonly MatchItem[]]
-          ? ArrMut.ReduceWithIntersection<ToGroupsProperties<$Matches['groups']>>
+          ? Arr.ReduceWithIntersection<ToGroupsProperties<$Matches['groups']>>
           : undefined
     }
   & (
@@ -171,7 +171,7 @@ export const isntMatchWith = Fn.flipCurried(isntMatchOn)
 
 // Any
 
-export type PatternsInput = ArrMut.Maybe<string | RegExp>
+export type PatternsInput = Arr.Maybe<string | RegExp>
 
 /**
  * Check if a string matches any of the provided patterns.
@@ -187,7 +187,7 @@ export type PatternsInput = ArrMut.Maybe<string | RegExp>
  * ```
  */
 export const isMatchAny = (value: string, patterns: PatternsInput): boolean => {
-  const patterns_ = ArrMut.sure(patterns)
+  const patterns_ = Arr.sure(patterns)
   return patterns_.some(isMatchOn(value))
 }
 

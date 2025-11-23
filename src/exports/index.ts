@@ -1,6 +1,5 @@
 // Domains
 export * from '#arr'
-export * from '#arr-mut'
 export * from '#bool'
 export * from '#fn'
 export * from '#group'

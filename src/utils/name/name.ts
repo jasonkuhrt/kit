@@ -1,4 +1,4 @@
-import { ArrMut } from '#arr-mut'
+import { Arr } from '#arr'
 
 /**
  * Generates a random name in the format "adjective color animal".
@@ -17,9 +17,9 @@ import { ArrMut } from '#arr-mut'
  * // names might be ["Bold Crimson Tiger", "Gentle Gold Panda", "Mysterious Navy Owl"]
  */
 export const generate = (): string => {
-  const randomAdjective = ArrMut.getRandomly(adjectives)
-  const randomNoun = ArrMut.getRandomly(animals)
-  const randomColor = ArrMut.getRandomly(colors)
+  const randomAdjective = Arr.getRandomly(adjectives)
+  const randomNoun = Arr.getRandomly(animals)
+  const randomColor = Arr.getRandomly(colors)
   return `${randomAdjective} ${randomColor} ${randomNoun}`
 }
 

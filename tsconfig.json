@@ -28,8 +28,6 @@
       // Domains
       "#arr": ["./src/domains/arr/_.ts"],
       "#arr/arr": ["./src/domains/arr/__.ts"],
-      "#arr-mut": ["./src/domains/arr-mut/_.ts"],
-      "#arr-mut/arr-mut": ["./src/domains/arr-mut/__.ts"],
       "#bool": ["./src/domains/bool/_.ts"],
       "#bool/bool": ["./src/domains/bool/__.ts"],
       "#fn": ["./src/domains/fn/_.ts"],
