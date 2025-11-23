@@ -264,3 +264,16 @@ export function maybeAsync<T, R = T, E = unknown>(
 
   return envelope.value as any
 }
+
+/**
+ * Display handler for Promise type.
+ * @internal
+ */
+import type { Display } from '#ts/ts'
+declare global {
+  namespace KitTraits.Display {
+    interface Handlers<$Type> {
+      _promise: $Type extends Promise<infer __value__> ? `Promise<${Display<__value__>}>` : never
+    }
+  }
+}

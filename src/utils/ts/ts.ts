@@ -2,7 +2,7 @@ import type { Str } from '#str'
 import type { Brand } from 'effect'
 import type { GetPreservedTypes } from './global-settings.ts'
 import type { IsAny, IsNever, IsUnknown } from './inhabitance.js'
-import type { Print } from './print.js'
+import type { Display } from './traits/display.js'
 
 // Re-export error utilities
 export type * as Err from './err.js'
@@ -156,10 +156,10 @@ export type TupleToLettered<$Values extends readonly string[], $Prefix extends s
 }
 
 /**
- * Like {@link Print} but adds additional styling to display the rendered type in a sentence.
+ * Like {@link Display} but adds additional styling to display the rendered type in a sentence.
  *
  * Useful for type-level error messages where you want to clearly distinguish type names
- * from surrounding text. Wraps the printed type with backticks (\`) like inline code in Markdown.
+ * from surrounding text. Wraps the displayed type with backticks (\`) like inline code in Markdown.
  *
  * @template $Type - The type to format and display
  *
@@ -178,9 +178,9 @@ export type TupleToLettered<$Values extends readonly string[], $Prefix extends s
  * >
  * ```
  *
- * @category Type Printing
+ * @category Type Display
  */
-export type Show<$Type> = `\`${Print<$Type>}\``
+export type Show<$Type> = `\`${Display<$Type>}\``
 
 /**
  * Version of {@link Show} but uses single quotes instead of backticks.
@@ -209,9 +209,9 @@ export type Show<$Type> = `\`${Print<$Type>}\``
  * // Displays as: "Type is 'number'" (cleaner)
  * ```
  *
- * @category Type Printing
+ * @category Type Display
  */
-export type ShowInTemplate<$Type> = `'${Print<$Type>}'`
+export type ShowInTemplate<$Type> = `'${Display<$Type>}'`
 
 /**
  * Utilities for working with union types at the type level.

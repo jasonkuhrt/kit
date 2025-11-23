@@ -234,3 +234,24 @@ export const transpose = <$T>(rows: readonly (readonly $T[])[]): $T[][] => {
 }
 
 // TODO: Add immutable array operations that wrap ArrMut with copy semantics
+
+/**
+ * Display handlers for Array types.
+ * @internal
+ */
+import type { Display } from '#ts/ts'
+declare global {
+  namespace KitTraits.Display {
+    // dprint-ignore
+    interface Handlers<$Type> {
+      // Array (mutable)
+      _array: $Type extends (infer __element__)[] ? `Array<${Display<__element__>}>` : never
+      // ReadonlyArray - only matches if NOT also a mutable array
+      _readonlyArray: $Type extends readonly (infer __element__)[]
+        ? $Type extends (infer __unused__)[]
+          ? never  // It's mutable, let _array handler win
+          : `ReadonlyArray<${Display<__element__>}>`
+        : never
+    }
+  }
+}

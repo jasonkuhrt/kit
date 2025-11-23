@@ -83,3 +83,15 @@ export const format = (milliseconds: number): Formatted => {
 
   return { value, unit }
 }
+
+/**
+ * Display handler for Date type.
+ * @internal
+ */
+declare global {
+  namespace KitTraits.Display {
+    interface Handlers<$Type> {
+      _date: $Type extends Date ? 'Date' : never
+    }
+  }
+}
