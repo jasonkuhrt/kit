@@ -208,10 +208,15 @@ tuple<[string, number]>()(['a', 1]) // OK
 
 ### `indexed`
 
-Assert type at specific index:
+Extract and assert on index signature value type:
 
 ```typescript
-indexed<0, string>()(['a', 1]) // OK - first element is string
+// For types with string index signatures
+A.exact.indexed<number, Record<string, number>>  // OK - value type is number
+A.exact.indexed<Foo, { [k: string]: Foo }>       // OK - value type is Foo
+
+// Error: no index signature
+A.exact.indexed<string, { name: string }>        // Error - no index signature
 ```
 
 ## Properties
@@ -398,13 +403,13 @@ Key length configured via `KitLibrarySettings.Ts.Assert.errorKeyLength`.
  * ### Containers
  * - `.array<Element, T>` - Check array element type
  * - `.tuple<[...], T>` - Check tuple structure
- * - `.indexed<N, Element, T>` - Check specific array/tuple element
+ * - `.indexed<Element, T>` - Extract value type from index signature
  *
  * ```typescript
 // [!code word:array:1]
  * type T = Ts.Assert.sub.array<number, (1 | 2 | 3)[]>  // ✓ Pass
 // [!code word:indexed:1]
-  * type T = Ts.Assert.exact.indexed<0, string, [string, number]>  // ✓ Pass
+  * type T = Ts.Assert.exact.indexed<number, Record<string, number>>  // ✓ Pass
     *
 ```
  *

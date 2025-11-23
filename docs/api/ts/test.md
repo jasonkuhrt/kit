@@ -76,11 +76,11 @@ type T = Ts.Assert.equiv.Never<never> // ✓ Pass
 Ts.Assert.exact.any()(value) // Value level (lowercase)
 ```
 
-### Containers - `.array<Element, T>` - Check array element type - `.tuple<[...], T>` - Check tuple structure - `.indexed<N, Element, T>` - Check specific array/tuple element
+### Containers - `.array<Element, T>` - Check array element type - `.tuple<[...], T>` - Check tuple structure - `.indexed<Element, T>` - Extract value type from index signature
 
 ```typescript
 type T = Ts.Assert.sub.array<number, (1 | 2 | 3)[]> // ✓ Pass
-type T = Ts.Assert.exact.indexed<0, string, [string, number]> // ✓ Pass
+type T = Ts.Assert.exact.indexed<number, Record<string, number>> // ✓ Pass
 ```
 
 ### Transformations (Chainable) - `.awaited` - Extract resolved type from Promise - `.returned` - Extract return type from function
