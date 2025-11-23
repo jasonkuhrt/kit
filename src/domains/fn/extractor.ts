@@ -13,12 +13,12 @@
  * @example
  * ```ts
  * import { Fn } from '@wollybeard/kit'
- * import type * as Path from '#ts/path'
+ * import type { Lens } from '@wollybeard/kit'
  *
  * // Create an awaited extractor
  * const awaited: Fn.Extractor<Promise<any>, any> = Object.assign(
  *   (value: Promise<any>) => value, // Runtime (identity - assumes resolved)
- *   { kind: {} as Path.Awaited$ }    // Type-level metadata
+ *   { kind: {} as Lens.Awaited.$Get }    // Type-level metadata
  * )
  *
  * // Use in composition

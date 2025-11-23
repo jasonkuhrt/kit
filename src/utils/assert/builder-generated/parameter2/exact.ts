@@ -1,5 +1,5 @@
 import type { Fn } from '#fn'
-import { Ts } from '#ts'
+import { Lens } from '#lens'
 import type { Either } from 'effect'
 import type { AssertExactKind } from '../../asserts.js'
 import { builder } from '../../builder-singleton.js'
@@ -10,6 +10,7 @@ import { builder } from '../../builder-singleton.js'
  * Extraction: extracts the second parameter type from a function
  * Relation: exact structural equality
  */
+
 
 /**
  * Base matcher accepting any expected type.
@@ -28,11 +29,12 @@ import { builder } from '../../builder-singleton.js'
  * ```
  */
 // dprint-ignore
-type of_<$Expected, $Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type of_<$Expected, $Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [$Expected, __actual__]>
                                                                          : never
 const of_ = builder.parameter2.exact.of
+
 
 /**
  * Pre-curried matcher for string.
@@ -48,11 +50,12 @@ const of_ = builder.parameter2.exact.of
  * ```
  */
 // dprint-ignore
-type string_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type string_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [string, __actual__]>
                                                                          : never
 const string_ = builder.parameter2.exact.string
+
 
 /**
  * Pre-curried matcher for number.
@@ -68,11 +71,12 @@ const string_ = builder.parameter2.exact.string
  * ```
  */
 // dprint-ignore
-type number_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type number_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [number, __actual__]>
                                                                          : never
 const number_ = builder.parameter2.exact.number
+
 
 /**
  * Pre-curried matcher for bigint.
@@ -88,11 +92,12 @@ const number_ = builder.parameter2.exact.number
  * ```
  */
 // dprint-ignore
-type bigint_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type bigint_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [bigint, __actual__]>
                                                                          : never
 const bigint_ = builder.parameter2.exact.bigint
+
 
 /**
  * Pre-curried matcher for boolean.
@@ -108,11 +113,12 @@ const bigint_ = builder.parameter2.exact.bigint
  * ```
  */
 // dprint-ignore
-type boolean_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type boolean_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [boolean, __actual__]>
                                                                          : never
 const boolean_ = builder.parameter2.exact.boolean
+
 
 /**
  * Pre-curried matcher for true.
@@ -128,11 +134,12 @@ const boolean_ = builder.parameter2.exact.boolean
  * ```
  */
 // dprint-ignore
-type true_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type true_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [true, __actual__]>
                                                                          : never
 const true_ = builder.parameter2.exact.true
+
 
 /**
  * Pre-curried matcher for false.
@@ -148,11 +155,12 @@ const true_ = builder.parameter2.exact.true
  * ```
  */
 // dprint-ignore
-type false_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type false_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [false, __actual__]>
                                                                          : never
 const false_ = builder.parameter2.exact.false
+
 
 /**
  * Pre-curried matcher for undefined.
@@ -168,11 +176,12 @@ const false_ = builder.parameter2.exact.false
  * ```
  */
 // dprint-ignore
-type undefined_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type undefined_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [undefined, __actual__]>
                                                                          : never
 const undefined_ = builder.parameter2.exact.undefined
+
 
 /**
  * Pre-curried matcher for null.
@@ -188,11 +197,12 @@ const undefined_ = builder.parameter2.exact.undefined
  * ```
  */
 // dprint-ignore
-type null_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type null_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [null, __actual__]>
                                                                          : never
 const null_ = builder.parameter2.exact.null
+
 
 /**
  * Pre-curried matcher for symbol.
@@ -208,11 +218,12 @@ const null_ = builder.parameter2.exact.null
  * ```
  */
 // dprint-ignore
-type symbol_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type symbol_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [symbol, __actual__]>
                                                                          : never
 const symbol_ = builder.parameter2.exact.symbol
+
 
 /**
  * Pre-curried matcher for Date.
@@ -228,11 +239,12 @@ const symbol_ = builder.parameter2.exact.symbol
  * ```
  */
 // dprint-ignore
-type Date_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type Date_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [Date, __actual__]>
                                                                          : never
 const Date_ = builder.parameter2.exact.Date
+
 
 /**
  * Pre-curried matcher for RegExp.
@@ -248,11 +260,12 @@ const Date_ = builder.parameter2.exact.Date
  * ```
  */
 // dprint-ignore
-type RegExp_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type RegExp_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [RegExp, __actual__]>
                                                                          : never
 const RegExp_ = builder.parameter2.exact.RegExp
+
 
 /**
  * Pre-curried matcher for Error.
@@ -268,11 +281,12 @@ const RegExp_ = builder.parameter2.exact.RegExp
  * ```
  */
 // dprint-ignore
-type Error_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type Error_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [Error, __actual__]>
                                                                          : never
 const Error_ = builder.parameter2.exact.Error
+
 
 /**
  * Pre-curried matcher for unknown.
@@ -288,11 +302,12 @@ const Error_ = builder.parameter2.exact.Error
  * ```
  */
 // dprint-ignore
-type unknown_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type unknown_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [unknown, __actual__]>
                                                                          : never
 const unknown_ = builder.parameter2.exact.unknown
+
 
 /**
  * Pre-curried matcher for any.
@@ -308,11 +323,12 @@ const unknown_ = builder.parameter2.exact.unknown
  * ```
  */
 // dprint-ignore
-type any_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type any_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [any, __actual__]>
                                                                          : never
 const any_ = builder.parameter2.exact.any
+
 
 /**
  * Pre-curried matcher for never.
@@ -328,7 +344,7 @@ const any_ = builder.parameter2.exact.any
  * ```
  */
 // dprint-ignore
-type never_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter2, [$Actual]>> =
+type never_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Lens.Parameter2.$Get, [$Actual]>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [never, __actual__]>
                                                                          : never
@@ -339,22 +355,22 @@ type noExcess_ = never
 const noExcess_ = builder.parameter2.exact.noExcess
 
 export {
-  any_ as any,
+  of_ as of,
+  string_ as string,
+  number_ as number,
   bigint_ as bigint,
   boolean_ as boolean,
-  Date_ as Date,
-  Error_ as Error,
-  false_ as false,
-  never_ as never,
-  noExcess_ as noExcess,
-  null_ as null,
-  number_ as number,
-  of_ as of,
-  ofAs_ as ofAs,
-  RegExp_ as RegExp,
-  string_ as string,
-  symbol_ as symbol,
   true_ as true,
+  false_ as false,
   undefined_ as undefined,
+  null_ as null,
+  symbol_ as symbol,
+  Date_ as Date,
+  RegExp_ as RegExp,
+  Error_ as Error,
   unknown_ as unknown,
+  any_ as any,
+  never_ as never,
+  ofAs_ as ofAs,
+  noExcess_ as noExcess,
 }

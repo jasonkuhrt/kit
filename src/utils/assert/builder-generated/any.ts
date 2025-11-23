@@ -1,6 +1,7 @@
 import type { Fn } from '#fn'
-import type { AssertAnyKind } from '../asserts.js'
 import { builder } from '../builder-singleton.js'
+import type { AssertAnyKind } from '../asserts.js'
+
 
 /**
  * Unary relator - asserts type is `any`.

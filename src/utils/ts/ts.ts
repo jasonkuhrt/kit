@@ -10,9 +10,6 @@ export type * as Err from './err.js'
 // Re-export inhabitance utilities
 export type { IsAny, IsNever, IsUnknown } from './inhabitance.js'
 
-// Re-export path extraction utilities
-export type * as Path from './path.js'
-
 /**
  * Cast any value to a specific type for testing purposes.
  * Useful for type-level testing where you need to create a value with a specific type.

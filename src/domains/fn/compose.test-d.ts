@@ -4,7 +4,7 @@
 
 import { Type as A } from '#assert/assert'
 import { Ts } from '#ts'
-import type * as Path from '../../utils/ts/path.js'
+import type { Lens } from '#lens'
 import { compose, compose2, type ComposeKind } from './compose.js'
 import type { Extractor } from './extractor.js'
 
@@ -13,7 +13,7 @@ import type { Extractor } from './extractor.js'
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 // ComposeKind should apply $K2 first, then $K1
-type _composed_kind_test = ComposeKind<Path.Returned, Path.Awaited$>
+type _composed_kind_test = ComposeKind<Lens.Returned.$Get, Lens.Awaited.$Get>
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Regular function composition
@@ -40,8 +40,8 @@ A.exact.ofAs<(x: number) => number>().on(_composed2_fn)
 // Extractor composition
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-declare const ext1: Extractor<number, string> & { kind: Path.Returned }
-declare const ext2: Extractor<boolean, number> & { kind: Path.Awaited$ }
+declare const ext1: Extractor<number, string> & { kind: Lens.Returned.$Get }
+declare const ext2: Extractor<boolean, number> & { kind: Lens.Awaited.$Get }
 
 // compose preserves Extractor type and .kind property
 const _composed_ext = compose(ext1, ext2)
@@ -51,7 +51,7 @@ const _composed_ext = compose(ext1, ext2)
 // A.sub.ofAs<Extractor>().on(_composed_ext)
 
 // Should have .kind property with composed Kind
-// A.sub.ofAs<{ kind: ComposeKind<Path.Returned, Path.Awaited$> }>().on(_composed_ext)
+// A.sub.ofAs<{ kind: ComposeKind<Lens.Returned.$Get, Lens.Awaited.$Get> }>().on(_composed_ext)
 
 // Input type from second extractor
 // type _input_type = Parameters<typeof _composed_ext>[0]
@@ -64,6 +64,6 @@ const _composed_ext = compose(ext1, ext2)
 // compose2 with extractors
 const _composed2_ext = compose2(ext1, ext2)
 // A.sub.ofAs<Extractor>().on(_composed2_ext)
-// A.sub.ofAs<{ kind: ComposeKind<Path.Returned, Path.Awaited$> }>().on(_composed2_ext)
+// A.sub.ofAs<{ kind: ComposeKind<Lens.Returned.$Get, Lens.Awaited.$Get> }>().on(_composed2_ext)
 
 // Note: Runtime behavior and .kind preservation verified in compose.test.ts

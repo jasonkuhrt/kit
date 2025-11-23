@@ -154,6 +154,8 @@
     "#configurator/configurator": "./build/utils/configurator/__.js",
     "#config-manager": "./build/utils/config-manager/_.js",
     "#config-manager/config-manager": "./build/utils/config-manager/__.js",
+    "#lens": "./build/utils/lens/_.js",
+    "#lens/lens": "./build/utils/lens/__.js",
     "#*": {
       "default": "./build/*.js"
     }
@@ -207,7 +209,8 @@
     "./log": "./build/utils/log/__.js",
     "./ware": "./build/utils/ware/__.js",
     "./configurator": "./build/utils/configurator/__.js",
-    "./config-manager": "./build/utils/config-manager/__.js"
+    "./config-manager": "./build/utils/config-manager/__.js",
+    "./lens": "./build/utils/lens/__.js"
   },
   "scripts": {
     "r": "libra refresh && pnpm fix:format",

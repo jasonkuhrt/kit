@@ -196,13 +196,13 @@ function loadExtractorRegistry(): Record<string, string> {
     tsConfigFilePath: path.join(process.cwd(), 'tsconfig.json'),
   })
 
-  const pathFilePath = path.join(process.cwd(), 'src/utils/ts/path.ts')
-  const sourceFile = project.addSourceFileAtPath(pathFilePath)
+  const registryFilePath = path.join(process.cwd(), 'src/utils/lens/registry.ts')
+  const sourceFile = project.addSourceFileAtPath(registryFilePath)
 
-  // Find the ExtractorRegistry interface
-  const registryInterface = sourceFile.getInterface('ExtractorRegistry')
+  // Find the LensRegistry interface
+  const registryInterface = sourceFile.getInterface('LensRegistry')
   if (!registryInterface) {
-    throw new Error('ExtractorRegistry interface not found in path.ts')
+    throw new Error('LensRegistry interface not found in registry.ts')
   }
 
   const registry: Record<string, string> = {}
@@ -288,20 +288,20 @@ function calculateImportPaths(combo: Combination) {
   const sourceFile = combo.outputPath
   const srcDir = path.join(process.cwd(), 'src/utils')
 
-  const extractorsPath = getRelativePath(sourceFile, path.join(srcDir, 'ts/path.js'))
+  const lensPath = getRelativePath(sourceFile, path.join(srcDir, 'lens/__.js'))
   const relatorsPath = getRelativePath(sourceFile, path.join(srcDir, 'assert/asserts.js'))
   const builderPath = getRelativePath(sourceFile, path.join(srcDir, 'assert/builder-singleton.js'))
 
-  return { extractorsPath, relatorsPath, builderPath }
+  return { lensPath, relatorsPath, builderPath }
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Template Generation
 
 function generateFileHeader(combo: Combination): string {
-  const { extractorsPath, relatorsPath, builderPath } = calculateImportPaths(combo)
+  const { lensPath, relatorsPath, builderPath } = calculateImportPaths(combo)
 
   const extractorImports = combo.extractors.length > 0
-    ? `import { Ts } from '#ts'\n`
+    ? `import { Lens } from '#lens'\n`
     : ''
 
   const eitherImport = combo.extractors.length > 0
@@ -345,7 +345,7 @@ function buildExtractorChain(extractors: Extractor[], actualType: string): strin
   if (extractors.length === 0) return actualType
 
   return extractors.reduce(
-    (inner, extractor) => `Fn.Kind.Apply<Ts.Path.${extractor.kindName}, [${inner}]>`,
+    (inner, extractor) => `Fn.Kind.Apply<Lens.${extractor.kindName}, [${inner}]>`,
     actualType,
   )
 }
@@ -601,7 +601,6 @@ function generateExtractorBarrelFile(extractorName: string, barrelPath: string):
   // Calculate relative paths
   const srcDir = path.join(process.cwd(), 'src/utils')
   const builderPath = getRelativePath(barrelPath, path.join(srcDir, 'assert/builder-singleton.js'))
-  const extractorsPath = getRelativePath(barrelPath, path.join(srcDir, 'ts/path.js'))
   const relatorsPath = getRelativePath(barrelPath, path.join(srcDir, 'assert/asserts.js'))
 
   // Part 1: Export relators as dual namespaces (type+value)
@@ -633,11 +632,11 @@ export const empty = builder.${extractorName}.empty`
 
   const imports = `import type { Fn } from '#fn'
 import { builder } from '${builderPath}'
-import { Ts } from '#ts'
+import { Lens } from '#lens'
 import type { Either } from 'effect'
 import type { ${relatorKinds} } from '${relatorsPath}'`
 
-  const extractorChain = `Fn.Kind.Apply<Ts.Path.${extractor.kindName}, [$Actual]>`
+  const extractorChain = `Fn.Kind.Apply<Lens.${extractor.kindName}, [$Actual]>`
 
   const typeShorthands = Object.keys(RELATORS).map((relatorName) => {
     const relator = RELATORS[relatorName]!
@@ -666,7 +665,6 @@ ${typeShorthands}
 function generateNotBarrelFile(barrelPath: string, extractors: Extractor[]): string {
   // Calculate relative paths
   const srcDir = path.join(process.cwd(), 'src/utils')
-  const extractorsPath = getRelativePath(barrelPath, path.join(srcDir, 'ts/path.js'))
   const relatorsPath = getRelativePath(barrelPath, path.join(srcDir, 'assert/asserts.js'))
   const builderPath = getRelativePath(barrelPath, path.join(srcDir, 'assert/builder-singleton.js'))
 
@@ -689,7 +687,7 @@ export const empty = ${builderPrefix}.empty`
 
   // Add type-level shorthand for negated relators
   const extractorImports = extractors.length > 0
-    ? `import { Ts } from '#ts'\nimport type { Either } from 'effect'\n`
+    ? `import { Lens } from '#lens'\nimport type { Either } from 'effect'\n`
     : ''
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
 

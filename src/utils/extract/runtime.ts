@@ -20,7 +20,7 @@
  */
 
 import type { Fn } from '#fn'
-import type * as Path from '../ts/path.js'
+import type { Lens } from '#lens'
 
 /**
  * Awaited extractor - extracts the resolved type of a Promise.
@@ -43,7 +43,7 @@ import type * as Path from '../ts/path.js'
  */
 export const awaited: Fn.Extractor<Promise<any>, any> = Object.assign(
   (value: Promise<any>) => value, // Identity - assumes caller handles awaiting
-  { kind: {} as Path.Awaited$ },
+  { kind: {} as Lens.Awaited.$Get },
 )
 
 /**
@@ -67,7 +67,7 @@ export const awaited: Fn.Extractor<Promise<any>, any> = Object.assign(
  */
 export const returned: Fn.Extractor<(...args: any[]) => any, any> = Object.assign(
   (fn: (...args: any[]) => any) => fn(),
-  { kind: {} as Path.Returned },
+  { kind: {} as Lens.Returned.$Get },
 )
 
 /**
@@ -90,7 +90,7 @@ export const returned: Fn.Extractor<(...args: any[]) => any, any> = Object.assig
  */
 export const array: Fn.Extractor<any[], any> = Object.assign(
   (arr: any[]) => arr[0],
-  { kind: {} as Path.ArrayElement },
+  { kind: {} as Lens.Array.$Get },
 )
 
 /**
@@ -120,7 +120,7 @@ export const array: Fn.Extractor<any[], any> = Object.assign(
 export const prop = <$Key extends PropertyKey>(key: $Key): Fn.Extractor<any, any> =>
   Object.assign(
     (obj: any) => obj[key],
-    { kind: {} as Path.Indexed },
+    { kind: {} as Lens.Indexed.$Get },
   )
 
 /**
@@ -130,7 +130,7 @@ export const prop = <$Key extends PropertyKey>(key: $Key): Fn.Extractor<any, any
  * runtime builder chaining like `A.parameter1.parameter2.exact...`.
  *
  * **Runtime**: Plain object with `.kind` property - not callable.
- * **Type-level**: Uses `Path.Parameter1` Kind for type transformations.
+ * **Type-level**: Uses `Lens.Parameter1.$Get` Kind for type transformations.
  * **Type behavior**: Extracts `Parameters<T>[0]`.
  *
  * @category Builder Chain Keys
@@ -146,7 +146,7 @@ export const prop = <$Key extends PropertyKey>(key: $Key): Fn.Extractor<any, any
  * ```
  */
 export const parameter1 = {
-  kind: {} as Path.Parameter1,
+  kind: {} as Lens.Parameter1.$Get,
 }
 
 /**
@@ -156,13 +156,13 @@ export const parameter1 = {
  * runtime builder chaining like `A.parameter1.parameter2.exact...`.
  *
  * **Runtime**: Plain object with `.kind` property - not callable.
- * **Type-level**: Uses `Path.Parameter2` Kind for type transformations.
+ * **Type-level**: Uses `Lens.Parameter2.$Get` Kind for type transformations.
  * **Type behavior**: Extracts `Parameters<T>[1]`.
  *
  * @category Builder Chain Keys
  */
 export const parameter2 = {
-  kind: {} as Path.Parameter2,
+  kind: {} as Lens.Parameter2.$Get,
 }
 
 /**
@@ -172,13 +172,13 @@ export const parameter2 = {
  * runtime builder chaining like `A.parameter1.parameter2.exact...`.
  *
  * **Runtime**: Plain object with `.kind` property - not callable.
- * **Type-level**: Uses `Path.Parameter3` Kind for type transformations.
+ * **Type-level**: Uses `Lens.Parameter3.$Get` Kind for type transformations.
  * **Type behavior**: Extracts `Parameters<T>[2]`.
  *
  * @category Builder Chain Keys
  */
 export const parameter3 = {
-  kind: {} as Path.Parameter3,
+  kind: {} as Lens.Parameter3.$Get,
 }
 
 /**
@@ -188,13 +188,13 @@ export const parameter3 = {
  * runtime builder chaining like `A.parameter1.parameter2.exact...`.
  *
  * **Runtime**: Plain object with `.kind` property - not callable.
- * **Type-level**: Uses `Path.Parameter4` Kind for type transformations.
+ * **Type-level**: Uses `Lens.Parameter4.$Get` Kind for type transformations.
  * **Type behavior**: Extracts `Parameters<T>[3]`.
  *
  * @category Builder Chain Keys
  */
 export const parameter4 = {
-  kind: {} as Path.Parameter4,
+  kind: {} as Lens.Parameter4.$Get,
 }
 
 /**
@@ -204,11 +204,11 @@ export const parameter4 = {
  * runtime builder chaining like `A.parameter1.parameter2.exact...`.
  *
  * **Runtime**: Plain object with `.kind` property - not callable.
- * **Type-level**: Uses `Path.Parameter5` Kind for type transformations.
+ * **Type-level**: Uses `Lens.Parameter5.$Get` Kind for type transformations.
  * **Type behavior**: Extracts `Parameters<T>[4]`.
  *
  * @category Builder Chain Keys
  */
 export const parameter5 = {
-  kind: {} as Path.Parameter5,
+  kind: {} as Lens.Parameter5.$Get,
 }

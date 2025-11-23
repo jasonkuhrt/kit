@@ -1,4 +1,5 @@
 import type { Fn } from '#fn'
+import type { Lens } from '#lens'
 import type { Ts } from '#ts'
 import type { Either } from 'effect'
 import type {
@@ -113,7 +114,7 @@ export interface InputActualForUnaryRelatorWide<$State extends S, $Kind extends 
 export type ExecuteUnaryRelator<
   $State extends S,
   $Kind extends Fn.Kind.Kind,
-  ___ExtractionResult = Ts.Path.ApplyExtractors<$State['actual_extractors'], $State['actual_type']>,
+  ___ExtractionResult = Lens.Pipe<$State['actual_type'], $State['actual_extractors']>,
 > = ___ExtractionResult extends Either.Left<infer ERROR, infer _>
   ? (...params: OnlyAssertionErrorsAndShow<[ERROR]>) => void // Extraction failed - propagate error
   : ___ExtractionResult extends Either.Right<infer _, infer VALUE>
@@ -162,7 +163,7 @@ export type BuilderExtractors<
  * Each extractor returns a builder with that extractor added to the chain.
  */
 export type BuilderExtractorsConstant<$State extends S> = {
-  readonly [K in keyof Ts.Path.ExtractorRegistry]: Builder<S.AddActualExtractor<$State, Ts.Path.ExtractorRegistry[K]>>
+  readonly [K in keyof Lens.LensRegistry]: Builder<S.AddActualExtractor<$State, Lens.LensRegistry[K]>>
 }
 
 /**
@@ -175,7 +176,7 @@ type UnwrapExtractionResult<$Result> = $Result extends Either.Right<infer _, inf
 export type BuilderExtractorsConditionalMaybe<
   $State extends S,
   ___$ActualAfterExtraction = UnwrapExtractionResult<
-    Ts.Path.ApplyExtractors<$State['actual_extractors'], $State['actual_type']>
+    Lens.Pipe<$State['actual_type'], $State['actual_extractors']>
   >,
   ___$ActualIsEmpty extends boolean = Ts.SENTINEL.IsEmpty<___$ActualAfterExtraction>,
   ___$ActualInhabitanceCase extends Ts.Inhabitance.Case = Ts.Inhabitance.GetCase<___$ActualAfterExtraction>,
@@ -198,9 +199,9 @@ export type BuilderExtractorsConditionalMaybe<
  * @param $ActualAfterExtraction - The actual type after applying all extractors in the chain
  */
 export type BuilderExtractorsConditionalAfterExtraction<$State extends S, $ActualAfterExtraction> = {
-  readonly [K in keyof Ts.Path.GetApplicableExtractors<$ActualAfterExtraction> & keyof Ts.Path.ExtractorRegistry]:
+  readonly [K in keyof Lens.GetApplicableLenses<$ActualAfterExtraction> & keyof Lens.LensRegistry]:
     Builder<
-      S.AddActualExtractor<$State, Ts.Path.ExtractorRegistry[K]>
+      S.AddActualExtractor<$State, Lens.LensRegistry[K]>
     >
 }
 
@@ -216,9 +217,9 @@ export type BuilderExtractorsConditionalAfterExtraction<$State extends S, $Actua
  * Extraction happens later during validation, not here.
  */
 export type BuilderExtractorsConditional<$State extends S> = {
-  readonly [K in keyof Ts.Path.GetApplicableExtractors<$State['actual_type']> & keyof Ts.Path.ExtractorRegistry]:
+  readonly [K in keyof Lens.GetApplicableLenses<$State['actual_type']> & keyof Lens.LensRegistry]:
     Builder<
-      S.AddActualExtractor<$State, Ts.Path.ExtractorRegistry[K]>
+      S.AddActualExtractor<$State, Lens.LensRegistry[K]>
     >
 }
 
