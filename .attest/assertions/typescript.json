@@ -771,7 +771,7 @@
       },
       "args": [
         {
-          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: string; attempted_____: \"array extractor\"; }",
+          "type": "{ ERROR_________: \".lens.incompatible\"; message_______: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: string; attempted_____: \"array lens\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -797,7 +797,7 @@
       },
       "args": [
         {
-          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: string; attempted_____: \"awaited extractor\"; }",
+          "type": "{ ERROR_________: \".lens.incompatible\"; message_______: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: string; attempted_____: \"awaited lens\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -823,7 +823,7 @@
       },
       "args": [
         {
-          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract parameters from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: string; attempted_____: \"parameters extractor\"; }",
+          "type": "{ ERROR_________: \".lens.incompatible\"; message_______: \"Cannot extract parameters from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: string; attempted_____: \"parameters lens\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -849,7 +849,7 @@
       },
       "args": [
         {
-          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract returned from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: string; attempted_____: \"returned extractor\"; }",
+          "type": "{ ERROR_________: \".lens.incompatible\"; message_______: \"Cannot extract returned from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: string; attempted_____: \"returned lens\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -875,7 +875,7 @@
       },
       "args": [
         {
-          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: string; attempted_____: \"awaited extractor\"; }",
+          "type": "{ ERROR_________: \".lens.incompatible\"; message_______: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: string; attempted_____: \"awaited lens\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -901,7 +901,7 @@
       },
       "args": [
         {
-          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: string; attempted_____: \"array extractor\"; }",
+          "type": "{ ERROR_________: \".lens.incompatible\"; message_______: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: string; attempted_____: \"array lens\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -927,7 +927,7 @@
       },
       "args": [
         {
-          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: \"hello\"; attempted_____: \"awaited extractor\"; }",
+          "type": "{ ERROR_________: \".lens.incompatible\"; message_______: \"Cannot extract awaited from incompatible type\"; expected______: \"Type must extend PromiseLike<any>\"; actual________: \"hello\"; attempted_____: \"awaited lens\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -953,7 +953,7 @@
       },
       "args": [
         {
-          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: \"hello\"; attempted_____: \"array extractor\"; }",
+          "type": "{ ERROR_________: \".lens.incompatible\"; message_______: \"Cannot extract array from incompatible type\"; expected______: \"Type must extend array (readonly any[])\"; actual________: \"hello\"; attempted_____: \"array lens\"; }",
           "relationships": {
             "args": [
               "equality"
@@ -979,7 +979,7 @@
       },
       "args": [
         {
-          "type": "{ ERROR_________: \".path.extractor-incompatible\"; message_______: \"Cannot extract returned from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: \"hello\"; attempted_____: \"returned extractor\"; }",
+          "type": "{ ERROR_________: \".lens.incompatible\"; message_______: \"Cannot extract returned from incompatible type\"; expected______: \"Type must extend function ((...args: any) => any)\"; actual________: \"hello\"; attempted_____: \"returned lens\"; }",
           "relationships": {
             "args": [
               "equality"

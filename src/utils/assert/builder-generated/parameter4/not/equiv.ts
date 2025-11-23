@@ -1,5 +1,5 @@
 import type { Fn } from '#fn'
-import { Ts } from '#ts'
+import { Lens } from '#lens'
 import type { Either } from 'effect'
 import type { AssertEquivKind } from '../../../asserts.js'
 import { builder } from '../../../builder-singleton.js'
@@ -28,7 +28,7 @@ import { builder } from '../../../builder-singleton.js'
  * ```
  */
 // dprint-ignore
-type of_<$Expected, $Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type of_<$Expected, $Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [$Expected, __actual__, true]>
                                                                          : never
@@ -48,7 +48,7 @@ const of_ = builder.parameter4.not.equiv.of
  * ```
  */
 // dprint-ignore
-type string_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type string_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [string, __actual__, true]>
                                                                          : never
@@ -68,7 +68,7 @@ const string_ = builder.parameter4.not.equiv.string
  * ```
  */
 // dprint-ignore
-type number_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type number_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [number, __actual__, true]>
                                                                          : never
@@ -88,7 +88,7 @@ const number_ = builder.parameter4.not.equiv.number
  * ```
  */
 // dprint-ignore
-type bigint_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type bigint_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [bigint, __actual__, true]>
                                                                          : never
@@ -108,7 +108,7 @@ const bigint_ = builder.parameter4.not.equiv.bigint
  * ```
  */
 // dprint-ignore
-type boolean_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type boolean_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [boolean, __actual__, true]>
                                                                          : never
@@ -128,7 +128,7 @@ const boolean_ = builder.parameter4.not.equiv.boolean
  * ```
  */
 // dprint-ignore
-type true_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type true_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [true, __actual__, true]>
                                                                          : never
@@ -148,7 +148,7 @@ const true_ = builder.parameter4.not.equiv.true
  * ```
  */
 // dprint-ignore
-type false_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type false_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [false, __actual__, true]>
                                                                          : never
@@ -168,7 +168,7 @@ const false_ = builder.parameter4.not.equiv.false
  * ```
  */
 // dprint-ignore
-type undefined_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type undefined_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [undefined, __actual__, true]>
                                                                          : never
@@ -188,7 +188,7 @@ const undefined_ = builder.parameter4.not.equiv.undefined
  * ```
  */
 // dprint-ignore
-type null_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type null_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [null, __actual__, true]>
                                                                          : never
@@ -208,7 +208,7 @@ const null_ = builder.parameter4.not.equiv.null
  * ```
  */
 // dprint-ignore
-type symbol_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type symbol_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [symbol, __actual__, true]>
                                                                          : never
@@ -228,7 +228,7 @@ const symbol_ = builder.parameter4.not.equiv.symbol
  * ```
  */
 // dprint-ignore
-type Date_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type Date_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [Date, __actual__, true]>
                                                                          : never
@@ -248,7 +248,7 @@ const Date_ = builder.parameter4.not.equiv.Date
  * ```
  */
 // dprint-ignore
-type RegExp_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type RegExp_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [RegExp, __actual__, true]>
                                                                          : never
@@ -268,7 +268,7 @@ const RegExp_ = builder.parameter4.not.equiv.RegExp
  * ```
  */
 // dprint-ignore
-type Error_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type Error_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [Error, __actual__, true]>
                                                                          : never
@@ -288,7 +288,7 @@ const Error_ = builder.parameter4.not.equiv.Error
  * ```
  */
 // dprint-ignore
-type unknown_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type unknown_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [unknown, __actual__, true]>
                                                                          : never
@@ -308,7 +308,7 @@ const unknown_ = builder.parameter4.not.equiv.unknown
  * ```
  */
 // dprint-ignore
-type any_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type any_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [any, __actual__, true]>
                                                                          : never
@@ -328,7 +328,7 @@ const any_ = builder.parameter4.not.equiv.any
  * ```
  */
 // dprint-ignore
-type never_<$Actual, __$ActualExtracted = Fn.Kind.Apply<Ts.Path.Parameter4, [$Actual]>> =
+type never_<$Actual, __$ActualExtracted = Lens.Parameter4.Get<$Actual>> =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [never, __actual__, true]>
                                                                          : never

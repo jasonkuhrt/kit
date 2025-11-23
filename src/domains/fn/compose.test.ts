@@ -1,6 +1,6 @@
+import type { Lens } from '#lens'
 import { Test } from '#test'
 import { describe, expect, test } from 'vitest'
-import type * as Path from '../../utils/ts/path.js'
 import { compose, compose2 } from './compose.js'
 import type { Extractor } from './extractor.js'
 
@@ -37,12 +37,12 @@ describe('compose > extractors', () => {
   test('composes extractors and preserves .kind metadata', () => {
     const extractor1: Extractor<number, string> = Object.assign(
       (x: number) => x.toString(),
-      { kind: {} as Path.Returned },
+      { kind: {} as Lens.Returned.$Get },
     )
 
     const extractor2: Extractor<boolean, number> = Object.assign(
       (x: boolean) => (x ? 1 : 0),
-      { kind: {} as Path.Awaited$ },
+      { kind: {} as Lens.Awaited.$Get },
     )
 
     const composed = compose(extractor1, extractor2)
@@ -53,9 +53,9 @@ describe('compose > extractors', () => {
   })
 
   test('composes multiple extractors', () => {
-    const ext1: Extractor<number, number> = Object.assign((x: number) => x * 2, { kind: {} as Path.Returned })
-    const ext2: Extractor<number, number> = Object.assign((x: number) => x + 1, { kind: {} as Path.Awaited$ })
-    const ext3: Extractor<number, number> = Object.assign((x: number) => x - 3, { kind: {} as Path.ArrayElement })
+    const ext1: Extractor<number, number> = Object.assign((x: number) => x * 2, { kind: {} as Lens.Returned.$Get })
+    const ext2: Extractor<number, number> = Object.assign((x: number) => x + 1, { kind: {} as Lens.Awaited.$Get })
+    const ext3: Extractor<number, number> = Object.assign((x: number) => x - 3, { kind: {} as Lens.Array.$Get })
 
     const composed = compose(ext1, ext2, ext3)
 
@@ -76,12 +76,12 @@ describe('compose2 > extractors', () => {
   test('composes two extractors with .kind metadata', () => {
     const ext1: Extractor<number, string> = Object.assign(
       (x: number) => x.toString(),
-      { kind: {} as Path.Returned },
+      { kind: {} as Lens.Returned.$Get },
     )
 
     const ext2: Extractor<boolean, number> = Object.assign(
       (x: boolean) => (x ? 1 : 0),
-      { kind: {} as Path.Awaited$ },
+      { kind: {} as Lens.Awaited.$Get },
     )
 
     const composed = compose2(ext1, ext2)

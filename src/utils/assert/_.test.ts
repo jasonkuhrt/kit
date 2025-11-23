@@ -363,44 +363,44 @@ test('extractor - array', () => {
 test('extractor error - array on non-array', () => {
   type E = Ts.Err.Show<A.array.exact<number, string>>
   attest({} as E).type.toString.snap(`{
-  ERROR_________: ".path.extractor-incompatible"
+  ERROR_________: ".lens.incompatible"
   message_______: "Cannot extract array from incompatible type"
   expected______: "Type must extend array (readonly any[])"
   actual________: string
-  attempted_____: "array extractor"
+  attempted_____: "array lens"
 }`)
 })
 
 test('extractor error - awaited on non-Promise string', () => {
   type E = Ts.Err.Show<A.awaited.exact<number, string>>
   attest({} as E).type.toString.snap(`{
-  ERROR_________: ".path.extractor-incompatible"
+  ERROR_________: ".lens.incompatible"
   message_______: "Cannot extract awaited from incompatible type"
   expected______: "Type must extend PromiseLike<any>"
   actual________: string
-  attempted_____: "awaited extractor"
+  attempted_____: "awaited lens"
 }`)
 })
 
 test('extractor error - parameters on non-function', () => {
   type E = Ts.Err.Show<A.parameters.exact<[number], string>>
   attest({} as E).type.toString.snap(`{
-  ERROR_________: ".path.extractor-incompatible"
+  ERROR_________: ".lens.incompatible"
   message_______: "Cannot extract parameters from incompatible type"
   expected______: "Type must extend function ((...args: any) => any)"
   actual________: string
-  attempted_____: "parameters extractor"
+  attempted_____: "parameters lens"
 }`)
 })
 
 test('extractor error - returned on non-function', () => {
   type E = Ts.Err.Show<A.returned.exact<number, string>>
   attest({} as E).type.toString.snap(`{
-  ERROR_________: ".path.extractor-incompatible"
+  ERROR_________: ".lens.incompatible"
   message_______: "Cannot extract returned from incompatible type"
   expected______: "Type must extend function ((...args: any) => any)"
   actual________: string
-  attempted_____: "returned extractor"
+  attempted_____: "returned lens"
 }`)
 })
 
@@ -414,11 +414,11 @@ test('extractor - awaited with union containing Promise (type-level)', () => {
   // Pure string should error
   type E = Ts.Err.Show<A.awaited.exact<number, string>>
   attest({} as E).type.toString.snap(`{
-  ERROR_________: ".path.extractor-incompatible"
+  ERROR_________: ".lens.incompatible"
   message_______: "Cannot extract awaited from incompatible type"
   expected______: "Type must extend PromiseLike<any>"
   actual________: string
-  attempted_____: "awaited extractor"
+  attempted_____: "awaited lens"
 }`)
 })
 
@@ -430,11 +430,11 @@ test('extractor - array with union containing array (type-level)', () => {
   // Pure string should error
   type E = Ts.Err.Show<A.array.exact<number, string>>
   attest({} as E).type.toString.snap(`{
-  ERROR_________: ".path.extractor-incompatible"
+  ERROR_________: ".lens.incompatible"
   message_______: "Cannot extract array from incompatible type"
   expected______: "Type must extend array (readonly any[])"
   actual________: string
-  attempted_____: "array extractor"
+  attempted_____: "array lens"
 }`)
 })
 
@@ -448,11 +448,11 @@ test('extractor - awaited value-level API', () => {
   const stringValue = 'hello'
   type E = Ts.Err.Show<A.awaited.exact<number, typeof stringValue>>
   attest({} as E).type.toString.snap(`{
-  ERROR_________: ".path.extractor-incompatible"
+  ERROR_________: ".lens.incompatible"
   message_______: "Cannot extract awaited from incompatible type"
   expected______: "Type must extend PromiseLike<any>"
   actual________: "hello"
-  attempted_____: "awaited extractor"
+  attempted_____: "awaited lens"
 }`)
 })
 
@@ -464,11 +464,11 @@ test('extractor - array value-level API', () => {
   const stringValue = 'hello'
   type E = Ts.Err.Show<A.array.exact<number, typeof stringValue>>
   attest({} as E).type.toString.snap(`{
-  ERROR_________: ".path.extractor-incompatible"
+  ERROR_________: ".lens.incompatible"
   message_______: "Cannot extract array from incompatible type"
   expected______: "Type must extend array (readonly any[])"
   actual________: "hello"
-  attempted_____: "array extractor"
+  attempted_____: "array lens"
 }`)
 })
 
@@ -480,11 +480,11 @@ test('extractor - returned value-level API', () => {
   const stringValue = 'hello'
   type E = Ts.Err.Show<A.returned.exact<number, typeof stringValue>>
   attest({} as E).type.toString.snap(`{
-  ERROR_________: ".path.extractor-incompatible"
+  ERROR_________: ".lens.incompatible"
   message_______: "Cannot extract returned from incompatible type"
   expected______: "Type must extend function ((...args: any) => any)"
   actual________: "hello"
-  attempted_____: "returned extractor"
+  attempted_____: "returned lens"
 }`)
 })
 

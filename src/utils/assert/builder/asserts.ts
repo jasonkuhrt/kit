@@ -1,4 +1,5 @@
 import type { Fn } from '#fn'
+import type { Lens } from '#lens'
 import type { Ts } from '#ts'
 import type { Either } from 'effect'
 import type { StaticErrorAssertion } from '../assertion-error.ts'
@@ -63,7 +64,7 @@ type Assert<
   $Expected,
   $RawActual,
   $State extends State,
-  ___$ExtractionResult = Ts.Path.ApplyExtractors<$State['actual_extractors'], $RawActual>,
+  ___$ExtractionResult = Fn.Kind.PipeRight<$RawActual, $State['actual_extractors']>,
 > =
   // Check if extraction failed
   ___$ExtractionResult extends Either.Left<infer __error__, infer _>  ? __error__ :
@@ -155,7 +156,7 @@ export type AssertUnaryRelator<
   $actual,
   $State extends State,
   $Kind extends Fn.Kind.Kind,
-  ___$ExtractionResult = Ts.Path.ApplyExtractors<$State['actual_extractors'], $actual>,
+  ___$ExtractionResult = Fn.Kind.PipeRight<$actual, $State['actual_extractors']>,
 > = ___$ExtractionResult extends Either.Left<infer __error__, infer _> ? __error__ // Extraction failed - propagate error
   : ___$ExtractionResult extends Either.Right<infer _, infer __value__>
     ? Fn.Kind.Apply<$Kind, [__value__, $State['matcher_negated']]>

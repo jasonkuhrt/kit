@@ -7,6 +7,8 @@
  * @module
  */
 
+import type { Either } from 'effect'
+
 /**
  * Apply arguments to a kind (higher-kinded type function).
  *
@@ -219,3 +221,40 @@ export type Pipe<$Kinds extends readonly Kind[], $Input> =
   $Kinds extends readonly [infer __first__ extends Kind, ...infer __rest__ extends readonly Kind[]]
     ? Pipe<__rest__, Apply<__first__, [$Input]>>
     : $Input
+
+/**
+ * Apply a tuple of Kinds sequentially with Either short-circuiting.
+ *
+ * Like {@link Pipe}, but each Kind is expected to return `Either<E, A>`.
+ * On `Right`, unwraps the value and continues to the next Kind.
+ * On `Left`, short-circuits and returns the error immediately.
+ *
+ * This is the type-level equivalent of chaining `mapRight` operations.
+ *
+ * @template $Input - The initial type to transform
+ * @template $Kinds - Tuple of Kind functions that return Either
+ *
+ * @example
+ * ```ts
+ * import type { Either } from 'effect'
+ *
+ * // Kinds that return Either for validation/extraction
+ * interface AwaitedKind extends Kind {
+ *   return: Either.Right<never, Awaited<this['parameters'][0]>>
+ * }
+ *
+ * // Compose with short-circuit semantics
+ * type Result = PipeRight<Promise<string[]>, [AwaitedKind, ArrayKind]>
+ * // On success: Either.Right<never, string>
+ * // On error: Either.Left<SomeError, never>
+ * ```
+ */
+// dprint-ignore
+export type PipeRight<$Input, $Kinds extends readonly Kind[]> =
+  $Kinds extends readonly [infer __first__ extends Kind, ...infer __rest__ extends readonly Kind[]]
+    ? Apply<__first__, [$Input]> extends infer ___result___
+      ? ___result___ extends Either.Left<infer __error__, infer _> ? Either.Left<__error__, never>
+      : ___result___ extends Either.Right<infer _, infer __value__> ? PipeRight<__value__, __rest__>
+      : never
+    : never
+  : Either.Right<never, $Input>
