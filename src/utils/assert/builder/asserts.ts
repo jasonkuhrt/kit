@@ -156,7 +156,7 @@ export type AssertUnaryRelator<
   $actual,
   $State extends State,
   $Kind extends Fn.Kind.Kind,
-  ___$ExtractionResult = Lens.Pipe<$actual, $State['actual_extractors']>,
+  ___$ExtractionResult = Fn.Kind.PipeRight<$actual, $State['actual_extractors']>,
 > = ___$ExtractionResult extends Either.Left<infer __error__, infer _> ? __error__ // Extraction failed - propagate error
   : ___$ExtractionResult extends Either.Right<infer _, infer __value__>
     ? Fn.Kind.Apply<$Kind, [__value__, $State['matcher_negated']]>
