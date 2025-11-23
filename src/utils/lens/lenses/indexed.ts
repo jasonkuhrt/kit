@@ -1,46 +1,62 @@
 import type { Fn } from '#fn'
+import type { Rec } from '#rec'
+import type { Ts } from '#ts'
 import type { Either } from 'effect'
-import type { LensErrorKeyNotFound } from '../core.js'
 
 /**
- * Get a property by key from an object.
+ * Error when type does not have an index signature.
+ */
+export type LensErrorNoIndexSignature<$Actual> = Ts.Err.StaticError<
+  ['lens', 'no-index-signature'],
+  { message: 'Type does not have an index signature'; actual: $Actual }
+>
+
+/**
+ * Get the value type from a type's string index signature.
  *
  * @example
  * ```ts
- * type T = Get<{ a: string; b: number }, 'a'> // string
+ * type T1 = Get<Record<string, number>> // Either.Right<number>
+ * type T2 = Get<{ [k: string]: Foo }> // Either.Right<Foo>
+ * type T3 = Get<{ name: string }> // Either.Left<error>
  * ```
  */
-export type Get<$T, $Key extends PropertyKey> = $Key extends keyof $T ? Either.Right<never, $T[$Key]>
-  : Either.Left<LensErrorKeyNotFound<$Key, $T>, never>
+// dprint-ignore
+export type Get<$T> =
+  string extends keyof $T
+    ? Either.Right<never, $T[string]>
+    : Either.Left<LensErrorNoIndexSignature<$T>, never>
 
 /**
- * Set a property by key in an object.
+ * Set the value type of a type's string index signature.
  *
  * @example
  * ```ts
- * type T = Set<{ a: string; b: number }, 'a', boolean> // { a: boolean; b: number }
+ * type T = Set<Record<string, number>, string> // { [x: string]: string }
  * ```
  */
-export type Set<$T, $Key extends PropertyKey, $New> = $Key extends keyof $T
-  ? { [k in keyof $T]: k extends $Key ? $New : $T[k] }
-  : never
+// dprint-ignore
+export type Set<$T, $New> =
+  string extends keyof $T
+    ? { [k in keyof $T]: $New }
+    : never
 
 /**
  * HKT for Get operation.
  */
 export interface $Get extends Fn.Kind.Kind {
-  constraint: unknown
+  constraint: Rec.Any
   lensName: 'indexed'
-  parameters: [$T: unknown, $Key: PropertyKey]
-  return: Get<this['parameters'][0], this['parameters'][1]>
+  parameters: [$T: unknown]
+  return: Get<this['parameters'][0]>
 }
 
 /**
  * HKT for Set operation.
  */
 export interface $Set extends Fn.Kind.Kind {
-  constraint: unknown
+  constraint: Rec.Any
   lensName: 'indexed'
-  parameters: [$T: unknown, $Key: PropertyKey, $New: unknown]
-  return: Set<this['parameters'][0], this['parameters'][1], this['parameters'][2]>
+  parameters: [$T: unknown, $New: unknown]
+  return: Set<this['parameters'][0], this['parameters'][1]>
 }
