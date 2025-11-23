@@ -114,7 +114,7 @@ export interface InputActualForUnaryRelatorWide<$State extends S, $Kind extends 
 export type ExecuteUnaryRelator<
   $State extends S,
   $Kind extends Fn.Kind.Kind,
-  ___ExtractionResult = Lens.Pipe<$State['actual_type'], $State['actual_extractors']>,
+  ___ExtractionResult = Fn.Kind.PipeRight<$State['actual_type'], $State['actual_extractors']>,
 > = ___ExtractionResult extends Either.Left<infer ERROR, infer _>
   ? (...params: OnlyAssertionErrorsAndShow<[ERROR]>) => void // Extraction failed - propagate error
   : ___ExtractionResult extends Either.Right<infer _, infer VALUE>
@@ -176,7 +176,7 @@ type UnwrapExtractionResult<$Result> = $Result extends Either.Right<infer _, inf
 export type BuilderExtractorsConditionalMaybe<
   $State extends S,
   ___$ActualAfterExtraction = UnwrapExtractionResult<
-    Lens.Pipe<$State['actual_type'], $State['actual_extractors']>
+    Fn.Kind.PipeRight<$State['actual_type'], $State['actual_extractors']>
   >,
   ___$ActualIsEmpty extends boolean = Ts.SENTINEL.IsEmpty<___$ActualAfterExtraction>,
   ___$ActualInhabitanceCase extends Ts.Inhabitance.Case = Ts.Inhabitance.GetCase<___$ActualAfterExtraction>,

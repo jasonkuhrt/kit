@@ -7,7 +7,6 @@ export type {
   LensErrorArrayExtract,
   LensErrorKeyNotFound,
   LensErrorTupleExtract,
-  Pipe,
   Set,
   UnwrapEither,
   ValidateAndExtract,

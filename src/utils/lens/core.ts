@@ -127,27 +127,6 @@ export type Get<$Lens extends Fn.Kind.Kind, $T> = Fn.Kind.Apply<$Lens, [$T]>
 export type Set<$Lens extends Fn.Kind.Kind, $T, $New> = Fn.Kind.Apply<$Lens, [$T, $New]>
 
 /**
- * Apply a sequence of Get lenses to a type (left-to-right).
- *
- * Takes a tuple of lens kinds and applies them sequentially from left to right.
- * Each lens transforms the output of the previous one.
- *
- * @example
- * ```ts
- * type T = Pipe<Promise<number[]>, [Awaited.$Get, Array.$Get]>
- * // Applies: Promise<number[]> → number[] → number
- * ```
- */
-export type Pipe<$T, $Lenses extends readonly Fn.Kind.Kind[]> = $Lenses extends
-  readonly [infer __first__ extends Fn.Kind.Kind, ...infer __rest__ extends Fn.Kind.Kind[]]
-  ? Fn.Kind.Apply<__first__, [$T]> extends infer ___result___
-    ? ___result___ extends Either.Left<infer __error__, infer _> ? Either.Left<__error__, never> // Short-circuit on error
-    : ___result___ extends Either.Right<infer _, infer __value__> ? Pipe<__value__, __rest__> // Continue with unwrapped value
-    : never // Shouldn't happen - lens must return Either
-  : never
-  : Either.Right<never, $T> // No lenses - wrap in success
-
-/**
  * Unwrap Either to get the value or error for type-level shortcuts.
  *
  * - Left<E, never> → E (propagate error)

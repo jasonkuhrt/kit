@@ -64,7 +64,7 @@ type Assert<
   $Expected,
   $RawActual,
   $State extends State,
-  ___$ExtractionResult = Lens.Pipe<$RawActual, $State['actual_extractors']>,
+  ___$ExtractionResult = Fn.Kind.PipeRight<$RawActual, $State['actual_extractors']>,
 > =
   // Check if extraction failed
   ___$ExtractionResult extends Either.Left<infer __error__, infer _>  ? __error__ :
