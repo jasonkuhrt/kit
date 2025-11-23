@@ -17,7 +17,7 @@ export const empty = builder.not.awaited.empty
 export type exact<
   $Expected,
   $Actual,
-  __$ActualExtracted = Fn.Kind.Apply<Lens.Awaited.$Get, [$Actual]>,
+  __$ActualExtracted = Lens.Awaited.Get<$Actual>,
 > =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [$Expected, __actual__, true]>
@@ -27,7 +27,7 @@ export type exact<
 export type equiv<
   $Expected,
   $Actual,
-  __$ActualExtracted = Fn.Kind.Apply<Lens.Awaited.$Get, [$Actual]>,
+  __$ActualExtracted = Lens.Awaited.Get<$Actual>,
 > =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [$Expected, __actual__, true]>
@@ -37,7 +37,7 @@ export type equiv<
 export type sub<
   $Expected,
   $Actual,
-  __$ActualExtracted = Fn.Kind.Apply<Lens.Awaited.$Get, [$Actual]>,
+  __$ActualExtracted = Lens.Awaited.Get<$Actual>,
 > =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [$Expected, __actual__, true]>

@@ -341,11 +341,21 @@ function generateFileLevelJSDoc(combo: Combination): string {
 `
 }
 
+/**
+ * Convert HKT kind name to direct type name.
+ * e.g., "Awaited.$Get" → "Awaited.Get"
+ */
+function kindToDirectType(kindName: string): string {
+  return kindName.replace('.$Get', '.Get')
+}
+
 function buildExtractorChain(extractors: Extractor[], actualType: string): string {
   if (extractors.length === 0) return actualType
 
+  // Use direct type application instead of HKT
+  // e.g., Lens.Awaited.Get<$Actual> instead of Fn.Kind.Apply<Lens.Awaited.$Get, [$Actual]>
   return extractors.reduce(
-    (inner, extractor) => `Fn.Kind.Apply<Lens.${extractor.kindName}, [${inner}]>`,
+    (inner, extractor) => `Lens.${kindToDirectType(extractor.kindName)}<${inner}>`,
     actualType,
   )
 }
@@ -636,7 +646,7 @@ import { Lens } from '#lens'
 import type { Either } from 'effect'
 import type { ${relatorKinds} } from '${relatorsPath}'`
 
-  const extractorChain = `Fn.Kind.Apply<Lens.${extractor.kindName}, [$Actual]>`
+  const extractorChain = `Lens.${kindToDirectType(extractor.kindName)}<$Actual>`
 
   const typeShorthands = Object.keys(RELATORS).map((relatorName) => {
     const relator = RELATORS[relatorName]!
