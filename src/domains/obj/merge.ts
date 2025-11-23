@@ -1,4 +1,4 @@
-import { ArrMut } from '#arr-mut'
+import { Arr } from '#arr'
 import { Lang } from '#lang'
 import type { Rec } from '#rec'
 import type { Ts } from '#ts'
@@ -139,7 +139,7 @@ export const mergeWithArrayPush = mergeWith({
 export const mergeWithArrayPushDedupe = mergeWith({
   array: (a, b) => {
     a.push(...b)
-    ArrMut.dedupe(a)
+    Arr.dedupe(a)
   },
 })
 
@@ -359,7 +359,7 @@ const _mergeWith = <obj1 extends Any, obj2 extends Any>(
       continue
     }
 
-    if (ArrMut.is(obj2Value) && ArrMut.is(obj1Value) && options.array) {
+    if (Arr.is(obj2Value) && Arr.is(obj1Value) && options.array) {
       options.array(obj1Value, obj2Value)
       obj1_AS[k2] = obj1Value
       continue

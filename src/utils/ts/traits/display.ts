@@ -1,4 +1,4 @@
-import type { ArrMut } from '#arr-mut'
+import type { Arr } from '#arr'
 import type { IsAny, IsNever, IsUnknown } from '../inhabitance.js'
 import type * as Union from '../union.js'
 
@@ -43,7 +43,7 @@ export type Display<$Type, $Fallback extends string | undefined = undefined> =
   : [$Type] extends [boolean]      ? ([boolean] extends [$Type] ? 'boolean' : `${$Type}`)
 
   // General union types
-  : Union.ToTuple<$Type> extends ArrMut.Any2OrMoreRO ? _DisplayUnion<Union.ToTuple<$Type>>
+  : Union.ToTuple<$Type> extends Arr.Any2OrMore ? _DisplayUnion<Union.ToTuple<$Type>>
 
   // Primitive and literal types (always display, ignoring fallback)
   : $Type extends true             ? 'true'
@@ -71,12 +71,12 @@ export type Display<$Type, $Fallback extends string | undefined = undefined> =
  * @internal
  */
 // dprint-ignore
-export type _DisplayUnion<$Type extends ArrMut.AnyRO> =
-    $Type extends readonly [infer __first__, ...infer __rest__ extends ArrMut.Any1OrMoreRO]
+export type _DisplayUnion<$Type extends Arr.Any> =
+    $Type extends readonly [infer __first__, ...infer __rest__ extends Arr.Any1OrMore]
       ? `${Display<__first__>} | ${_DisplayUnion<__rest__>}`
       : $Type extends readonly [infer __first__]
         ? `${Display<__first__>}`
-        : $Type extends ArrMut.EmptyRO
+        : $Type extends Arr.Empty
           ? ''
           : never
 

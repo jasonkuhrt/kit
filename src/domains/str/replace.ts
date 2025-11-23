@@ -1,4 +1,4 @@
-import { ArrMut } from '#arr-mut'
+import { Arr } from '#arr'
 import { curry, flipCurried } from '#fn/fn'
 import { spaceNoBreak, spaceRegular } from './char/char.js'
 import type { PatternsInput } from './match.js'
@@ -112,7 +112,7 @@ export const stripLeading = replaceLeadingWith(``)
  * ```
  */
 export const replace = (replacement: string, matcher: PatternsInput, value: string): string => {
-  const patterns = ArrMut.sure(matcher)
+  const patterns = Arr.sure(matcher)
   return patterns.reduce<string>((value, pattern) => {
     return value.replaceAll(pattern, replacement)
   }, value)

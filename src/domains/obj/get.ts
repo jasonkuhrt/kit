@@ -12,7 +12,7 @@
  * ```
  */
 
-import { ArrMut } from '#arr-mut'
+import { Arr } from '#arr'
 import type { Rec } from '#rec'
 import type { Ts } from '#ts'
 import type { Undefined } from '#undefined'
@@ -241,8 +241,8 @@ export const keysStrict = <$T extends object>(obj: $T): (keyof $T)[] => {
 export const getRandomly = <obj extends Any>(obj: obj): keyof obj extends never ? undefined : obj[keyof obj] => {
   const keys = toKeys(obj)
 
-  if (ArrMut.isntEmpty(keys)) {
-    const i = ArrMut.randomIndex(keys)
+  if (Arr.isntEmpty(keys)) {
+    const i = Arr.randomIndex(keys)
     const key = keys[i]!
     return obj[key] as any
   }

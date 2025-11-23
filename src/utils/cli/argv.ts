@@ -1,4 +1,4 @@
-import { ArrMut } from '#arr-mut'
+import { Arr } from '#arr'
 import { Str } from '#str'
 
 // Process argv
@@ -25,7 +25,7 @@ export type ProcessArgv = [string, ...string[]]
  * isProcessArgvLoose(['node', 123]) // false (non-string element)
  */
 export const isProcessArgvLoose = (value: unknown): value is ProcessArgv => {
-  return ArrMut.is(value) && value.length >= 1 && value.every(Str.is)
+  return Arr.is(value) && value.length >= 1 && value.every(Str.is)
 }
 
 // argv

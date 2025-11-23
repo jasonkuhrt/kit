@@ -1,4 +1,4 @@
-import { ArrMut } from '#arr-mut'
+import { Arr } from '#arr'
 import { Assert } from '#assert'
 import { Group } from '#group'
 import { describe, expect, test } from 'vitest'
@@ -8,7 +8,7 @@ const A = Assert.Type.exact.ofAs
 const a = { type: 'A' as const, a: 1 as const, date: new Date() }
 const b = { type: 'B' as const, b: 2 as const, date: new Date() }
 const ab = [a, b]
-const abOnKey = { type: ArrMut.getRandomly(['A', 'B'] as const) }
+const abOnKey = { type: Arr.getRandomly(['A', 'B'] as const) }
 type abOnKey = typeof abOnKey
 type a = typeof a
 type b = typeof b

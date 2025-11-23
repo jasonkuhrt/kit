@@ -1,7 +1,7 @@
 // Error classes needed by ware module
 // Copied from Graffle to keep ware self-contained
 
-import { ArrMut } from '#arr-mut'
+import { Arr } from '#arr'
 
 export type Cause = Error | undefined
 export type Context = object
@@ -45,7 +45,7 @@ export class ContextualAggregateError<
 export const partitionAndAggregateErrors = <$Results>(
   results: $Results[],
 ): [Exclude<$Results, Error>[], null | ContextualAggregateError<Extract<$Results, Error>>] => {
-  const [values, errors] = ArrMut.partitionErrors(results)
+  const [values, errors] = Arr.partitionErrors(results)
   const error = errors.length > 0
     ? new ContextualAggregateError(`One or more extensions are invalid.`, {}, errors)
     : null

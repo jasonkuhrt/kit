@@ -1,4 +1,4 @@
-import { ArrMut } from '#arr-mut'
+import { Arr } from '#arr'
 import { Err } from '#err'
 import { Lang } from '#lang'
 import { Str } from '#str'
@@ -439,7 +439,7 @@ export const processLogFilterInput = (
   foundIn: string | undefined = undefined,
 ): null | Parsed[] => {
   const errPatterns = parse(defaults, pattern)
-  const [goodOnes, badOnes] = ArrMut.partitionErrors(errPatterns)
+  const [goodOnes, badOnes] = Arr.partitionErrors(errPatterns)
   let patterns: Parsed[] | null = null
 
   if (badOnes.length) {

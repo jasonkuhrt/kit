@@ -1,4 +1,4 @@
-import { ArrMut } from '#arr-mut'
+import { Arr } from '#arr'
 import type { Lang } from '#lang'
 import type { Ts } from '#ts'
 import type { IsAny } from 'type-fest'
@@ -184,7 +184,7 @@ export type InferModeOptions<$Key> =
  * })
  */
 export const create = <item, key>(options?: Options<item, key>): Idx<item, key> => {
-  const array = ArrMut.create<item>()
+  const array = Arr.create<item>()
   const deletedIndices = new Set<number>()
   let lowestDeletedIndex: number | null = null
   // For now, just use a simple memoization until Effect migration is complete

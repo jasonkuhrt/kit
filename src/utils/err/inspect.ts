@@ -1,4 +1,4 @@
-import { ArrMut } from '#arr-mut'
+import { Arr } from '#arr'
 import { Lang } from '#lang'
 import { Obj } from '#obj'
 import { Rec } from '#rec'
@@ -32,7 +32,7 @@ const makeEnvVarName = (spec: EnvironmentConfigurableOptionSpec) => {
  * @internal
  */
 export type InferOptions<$EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[]> = Ts.Simplify.Top<
-  ArrMut.ReduceWithIntersection<_InferOptions<$EnvironmentConfigurableOptions>>
+  Arr.ReduceWithIntersection<_InferOptions<$EnvironmentConfigurableOptions>>
 >
 
 export type _InferOptions<$EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[]> = {
@@ -52,7 +52,7 @@ interface EnvironmentConfigurableOptionInput<$Spec extends EnvironmentConfigurab
 }
 
 type Resolve<$Specs extends EnvironmentConfigurableOptionSpec[]> = Ts.Simplify.Top<
-  ArrMut.ReduceWithIntersection<_Resovle<$Specs>>
+  Arr.ReduceWithIntersection<_Resovle<$Specs>>
 >
 
 type _Resovle<$Specs extends EnvironmentConfigurableOptionSpec[]> = {

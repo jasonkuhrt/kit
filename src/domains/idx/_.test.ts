@@ -1,4 +1,4 @@
-import { ArrMut } from '#arr-mut'
+import { Arr } from '#arr'
 import { Assert } from '#assert'
 import { Idx } from '#idx'
 import { Obj } from '#obj'
@@ -164,7 +164,7 @@ const c = Idx.create
 // TODO: Rewrite this test to use the new Test.Case API
 // The old CaseInstructions API has been removed
 interface CaseInstructions {
-  set?: ArrMut.Maybe<any>
+  set?: Arr.Maybe<any>
   setAt?: [key: any, item: any]
   get?: [item: any, expectedValue: any]
   getAt?: [key: any, expectedValue: any]
@@ -236,7 +236,7 @@ test.for(cases)('%j', ([_, instructions]: [string, CaseInstructions]) => {
     : c(instructions.options)
 
   if ('set' in instructions) {
-    for (const item of ArrMut.sure(instructions.set)) {
+    for (const item of Arr.sure(instructions.set)) {
       idx.set(item)
     }
   }
@@ -277,7 +277,7 @@ test('type: mode is conditional to key', () => {
   const o = { x: 0 }
   const kp = () => p
   const ko = () => o
-  const kop = () => ArrMut.getRandomly([p, o])
+  const kop = () => Arr.getRandomly([p, o])
   const modeAny = Obj.getRandomly(Idx.Mode)
   type o = typeof o
   type p = typeof p

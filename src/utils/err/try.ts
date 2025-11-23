@@ -1,4 +1,4 @@
-import type { ArrMut } from '#arr-mut'
+import type { Arr } from '#arr'
 import type { Bool } from '#bool'
 import { Fn } from '#fn'
 import { Prom } from '#prom'
@@ -115,7 +115,7 @@ export function tryCatch<returned, thrown>(
 // dprint-ignore
 export function tryCatch<returned, thrown>(
   fn: () => returned,
-  predicates?: ArrMut.NonEmptyRO<Bool.TypePredicate<thrown>>,
+  predicates?: Arr.NonEmpty<Bool.TypePredicate<thrown>>,
 ):
   AwaitedUnion<
     returned,

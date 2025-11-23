@@ -1,4 +1,4 @@
-import { ArrMut } from '#arr-mut'
+import { Arr } from '#arr'
 import { Fs } from '#fs'
 import { Lang } from '#lang'
 import { Str } from '#str'
@@ -35,7 +35,7 @@ export const dispatch = async (commandsDirPath: Fs.Path.AbsDir) => {
   const argv = parseArgvOrThrow(Lang.process.argv)
   const commandTarget = getCommandTarget(argv)
   const moduleTargetName = getModuleName(commandTarget)
-  const commandPointer = ArrMut.findFirstMatching(commandPointers, { name: moduleTargetName })
+  const commandPointer = Arr.findFirstMatching(commandPointers, { name: moduleTargetName })
 
   if (!commandPointer) {
     const availableCommands = commandPointers.map(({ name }) => name).map(_ => `${Str.Char.rightwardsArrow} ${_}`).join(
