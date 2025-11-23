@@ -162,7 +162,6 @@
   "exports": {
     ".": "./build/exports/index.js",
     "./arr": "./build/domains/arr/__.js",
-    "./arr-mut": "./build/domains/arr-mut/__.js",
     "./bool": "./build/domains/bool/__.js",
     "./bldr": "./build/utils/bldr/__.js",
     "./cli": "./build/utils/cli/__.js",
