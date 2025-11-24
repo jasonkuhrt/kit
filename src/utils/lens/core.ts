@@ -1,6 +1,7 @@
 import type { Fn } from '#fn'
 import type { Ts } from '#ts'
 import type { Either } from 'effect'
+import type { Compile, CompileError } from './exp.js'
 
 //
 //
@@ -109,12 +110,37 @@ export type LensErrorTupleExtract<$Actual> = Ts.Err.StaticError<
 /**
  * Apply a Get lens to extract a value from a type.
  *
+ * Supports two calling patterns:
+ *
+ * 1. **Expression mode**: `Get<'.user.name', Data>` - Compile and apply lens expression
+ * 2. **HKT mode**: `Get<Awaited.$Get, Promise<string>>` - Apply HKT directly
+ *
+ * Returns the extracted value type directly (unwrapped from Either).
+ * On error, returns the error type directly.
+ *
  * @example
  * ```ts
- * type T = Get<Awaited.$Get, Promise<string>> // string
+ * // Expression mode - returns unwrapped value
+ * type T1 = Get<'.user.name', { user: { name: string } }> // string
+ * type T2 = Get<'.handler>#', { handler: () => Promise<number> }> // number
+ *
+ * // HKT mode (existing behavior)
+ * type T3 = Get<Awaited.$Get, Promise<string>> // Either.Right<never, string>
  * ```
  */
-export type Get<$Lens extends Fn.Kind.Kind, $T> = Fn.Kind.Apply<$Lens, [$T]>
+// dprint-ignore
+export type Get<$First, $Second> =
+  // Expression mode: string → compile, apply pipeline, unwrap result
+  $First extends string
+    ? Compile<$First> extends Either.Left<infer __error__, infer _>
+      ? __error__
+      : Compile<$First> extends Either.Right<infer _, infer __pipeline__ extends readonly Fn.Kind.Kind[]>
+        ? UnwrapEither<Fn.Kind.PipeRight<$Second, __pipeline__>>
+        : never
+    // HKT mode: apply directly (returns Either-wrapped result)
+    : $First extends Fn.Kind.Kind
+      ? Fn.Kind.Apply<$First, [$Second]>
+      : never
 
 /**
  * Apply a Set lens to replace a value within a type.
