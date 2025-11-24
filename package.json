@@ -26,6 +26,8 @@
     "#obj/obj": "./build/domains/obj/__.js",
     "#str": "./build/domains/str/_.js",
     "#str/str": "./build/domains/str/__.js",
+    "#syn": "./build/domains/syn/_.js",
+    "#syn/syn": "./build/domains/syn/__.js",
     "#bool": "./build/domains/bool/_.js",
     "#bool/bool": "./build/domains/bool/__.js",
     "#null": "./build/domains/null/_.js",

@@ -16,18 +16,6 @@ export type * from './type-level.js'
 export { Empty, isEmpty } from './type.js'
 
 // @ts-expect-error Duplicate identifier
-export * as Code from './code/__.js'
-/**
- * Code generation and documentation utilities.
- *
- * Provides tools for generating markdown, TSDoc/JSDoc, and TypeScript code.
- * Includes safe JSDoc generation with escaping, builder API, and structured tag helpers.
- *
- * @category Code Generation
- */
-export namespace Code {}
-
-// @ts-expect-error Duplicate identifier
 export * as Text from './text.js'
 /**
  * Multi-line text formatting and layout utilities.

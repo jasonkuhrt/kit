@@ -11,8 +11,8 @@
  * @module
  */
 
-import { Obj } from '../../../obj/_.js'
-import { Str } from '../../_.js'
+import { Obj } from '#obj'
+import { Str } from '#str'
 import * as TSDoc from '../tsdoc/_.js'
 import * as TS from './ts.js'
 
