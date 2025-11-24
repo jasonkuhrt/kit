@@ -108,6 +108,8 @@
       "#http/http": ["./src/utils/http/__.ts"],
       "#json": ["./src/utils/json/_.ts"],
       "#json/json": ["./src/utils/json/__.ts"],
+      "#lens": ["./src/utils/lens/_.ts"],
+      "#lens/lens": ["./src/utils/lens/__.ts"],
       "#lang": ["./src/utils/lang/_.ts"],
       "#lang/lang": ["./src/utils/lang/__.ts"],
       "#lang/core": ["./src/utils/lang/core/_.ts"],

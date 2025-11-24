@@ -310,22 +310,22 @@ export interface BuilderSettings<$State extends S> {
    * Apply a custom extractor function to transform the actual type.
    *
    * Extracts the `.kind` property from the extractor and adds it to the transformation chain.
-   * Allows using pre-composed extractors from `Extract` namespace or custom extractors.
+   * Allows using custom extractors created with `Fn.Extractor` and Lens types.
    *
    * @param extractor - An Extractor function with `.kind` property
    * @returns Builder with extractor added to transformation chain
    *
    * @example
    * ```ts
-   * import { Extract, Ts } from '@wollybeard/kit'
+   * import { Fn, Lens } from '@wollybeard/kit'
    *
-   * // Using pre-composed extractor
+   * // Create and use a custom extractor
+   * const awaited: Fn.Extractor = Object.assign(
+   *   (value: Promise<any>) => value,
+   *   { kind: {} as Lens.Awaited.$Get }
+   * )
    * const promise = Promise.resolve(42)
-   * A.extract(Extract.awaited).exact.of(42).on(promise)
-   *
-   * // Using composed extractors
-   * const composed = Fn.compose(Extract.awaited, Extract.returned)
-   * A.extract(composed).exact.of(42).on(value)
+   * A.extract(awaited).exact.of(42).on(promise)
    * ```
    */
   extract<$Extractor extends Fn.Extractor>(

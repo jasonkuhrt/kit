@@ -1,4 +1,5 @@
 import { Fn } from '#fn'
+import { Lens } from '#lens'
 import { Ts } from '#ts'
 import { attest } from '@ark/attest'
 import { test } from 'vitest'
@@ -502,8 +503,18 @@ test('.extract() - type signature exists', () => {
 })
 
 test('.extract() - composition preserves .kind metadata', () => {
+  // Create inline extractors using Lens types
+  const awaited: Fn.Extractor<Promise<any>, any> = Object.assign(
+    (value: Promise<any>) => value,
+    { kind: {} as Lens.Awaited.$Get },
+  )
+  const returned: Fn.Extractor<(...args: any) => any, any> = Object.assign(
+    (value: (...args: any) => any) => value,
+    { kind: {} as Lens.Returned.$Get },
+  )
+
   // Compose awaited and returned extractors
-  const composed = Fn.compose(Ts.Extract.awaited, Ts.Extract.returned)
+  const composed = Fn.compose(awaited, returned)
 
   // Verify compose preserves .kind property
   type _HasKind = typeof composed extends { kind: any } ? true : false
