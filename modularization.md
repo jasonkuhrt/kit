@@ -26,7 +26,6 @@ See also: [modularization.svg](./modularization.svg)
 | configurator    | utils  |       |           |     |
 | dir             | utils  |       |           |     |
 | err             | utils  |       |           |     |
-| extract         | utils  |       |           |     |
 | fn              | domain | 0     |           |     |
 | fs              | utils  |       | fs-memory |     |
 | fs-memory       | utils  |       |           |     |
@@ -61,7 +60,7 @@ See also: [modularization.svg](./modularization.svg)
 | test            | utils  | 1     |           |     |
 | time            | domain |       |           |     |
 | tree            | domain | 0     |           |     |
-| ts              | utils  | 0     | extract   |     |
+| ts              | utils  | 0     |           |     |
 | tup             | domain | 0     |           |     |
 | undefined       | domain | 0     |           |     |
 | url             | domain | 0     |           |     |

@@ -13,16 +13,6 @@ export * as SimpleSignature from './simple-signature.js'
 export namespace SimpleSignature {}
 
 // @ts-expect-error Duplicate identifier
-export * as Extract from '../extract/__.js'
-/**
- * Pre-composed extractors for type assertions and value extraction.
- * Combine runtime extraction with type-level transformations.
- *
- * @category Extract
- */
-export namespace Extract {}
-
-// @ts-expect-error Duplicate identifier
 export * as Inhabitance from './inhabitance.js'
 /**
  * Type utilities for classifying types by their inhabitance in TypeScript's type lattice.
