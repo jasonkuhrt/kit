@@ -1,5 +1,5 @@
 import { Fs } from '#fs'
-import { Str } from '#str'
+import { Syn } from '#syn'
 import { Match } from 'effect'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { mkdirSync } from 'node:fs'
@@ -19,7 +19,7 @@ import type {
 } from '../schema.js'
 
 // Convenient alias for markdown utilities
-const Md = Str.Code.Md
+const Md = Syn.Md
 
 /**
  * Configuration for VitePress generation.

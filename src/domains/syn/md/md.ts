@@ -7,7 +7,10 @@
  * @module
  */
 
-import { lines as splitIntoLines, unlines as joinLines } from '../../text.js'
+import { Str } from '#str'
+
+const splitIntoLines = Str.Text.lines
+const joinLines = Str.Text.unlines
 
 // ============================================================================
 // Type Branding

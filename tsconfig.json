@@ -56,6 +56,8 @@
       "#semver/semver": ["./src/domains/semver/__.ts"],
       "#str": ["./src/domains/str/_.ts"],
       "#str/str": ["./src/domains/str/__.ts"],
+      "#syn": ["./src/domains/syn/_.ts"],
+      "#syn/syn": ["./src/domains/syn/__.ts"],
       "#tree": ["./src/domains/tree/_.ts"],
       "#tree/tree": ["./src/domains/tree/__.ts"],
       "#time": ["./src/domains/time/_.ts"],

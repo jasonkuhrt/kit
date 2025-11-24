@@ -4,13 +4,12 @@ See also: [modularization.svg](./modularization.svg)
 
 ## Circular Dependencies
 
-1. `str` ↔ `obj`
-2. `str/code/ts/term-object` → `str/code/ts/ts` (internal)
-3. `str/visual` → `str/visual-table` (internal)
-4. `cli/tex/chain/block` → `cli/tex/chain/root` (internal)
-5. `cli/tex/chain/block` → `cli/tex/chain/table` (internal)
-6. `fs/path/AbsDir` → `fs/path/constants` (internal)
-7. `paka/extractor/nodes/module` → `paka/extractor/nodes/export` (internal)
+1. `obj` → `str` (type-only: `Str.PadEnd` in `AlignKeys`)
+2. `str/visual` → `str/visual-table` (internal)
+3. `cli/tex/chain/block` → `cli/tex/chain/root` (internal)
+4. `cli/tex/chain/block` → `cli/tex/chain/table` (internal)
+5. `fs/path/AbsDir` → `fs/path/constants` (internal)
+6. `paka/extractor/nodes/module` → `paka/extractor/nodes/export` (internal)
 
 ## Modules
 
@@ -57,7 +56,8 @@ See also: [modularization.svg](./modularization.svg)
 | resource        | utils  | 1     | jsonc     |     |
 | sch             | utils  | 1     |           |     |
 | semver          | domain | 1     |           |     |
-| str             | domain | 0     | obj ⚠️     |     |
+| str             | domain | 0     |           |     |
+| syn             | domain | 1     | str, obj  |     |
 | test            | utils  | 1     |           |     |
 | time            | domain |       |           |     |
 | tree            | domain | 0     |           |     |

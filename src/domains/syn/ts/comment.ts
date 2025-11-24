@@ -7,7 +7,9 @@
  * @module
  */
 
-import * as Text from '../../text.js'
+import { Str } from '#str'
+
+const Text = Str.Text
 
 // ============================================================================
 // Constants

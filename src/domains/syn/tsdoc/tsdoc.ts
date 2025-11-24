@@ -7,8 +7,11 @@
  * @module
  */
 
-import { lines as splitIntoLines, unlines as joinLines } from '../../text.js'
+import { Str } from '#str'
 import * as Md from '../md/_.js'
+
+const splitIntoLines = Str.Text.lines
+const joinLines = Str.Text.unlines
 
 // ============================================================================
 // Core Formatting
