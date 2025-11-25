@@ -1,7 +1,8 @@
-import { Fs } from '#fs'
 import type { Json } from '#json'
 import { Error as PlatformError, FileSystem } from '@effect/platform'
 import { Effect } from 'effect'
+import type { InferFileContent } from '../filesystem.js'
+import { Path } from '../path/_.js'
 import type { Builder } from './builder.js'
 import * as Ops from './operations.js'
 import type { Operation, SpecBuilder } from './spec.js'
@@ -19,15 +20,15 @@ type FS = FileSystem.FileSystem
  */
 export interface DirChain extends SpecBuilder {
   // Override return types to return DirChain instead of DirSpec
-  file<path extends Fs.Path.RelFile | string>(
-    path: Fs.Path.Guard.RelFile<path>,
-    content: path extends Fs.Path.RelFile ? Fs.InferFileContent<path>
+  file<path extends Path.RelFile | string>(
+    path: Path.Guard.RelFile<path>,
+    content: path extends Path.RelFile ? InferFileContent<path>
       : path extends string ? string | Uint8Array | Json.Object
       : never,
   ): DirChain
 
-  dir<path extends Fs.Path.RelDir | string>(
-    path: Fs.Path.Guard.RelDir<path>,
+  dir<path extends Path.RelDir | string>(
+    path: Path.Guard.RelDir<path>,
     builder?: (_: DirChain) => DirChain,
   ): DirChain
 
@@ -41,43 +42,43 @@ export interface DirChain extends SpecBuilder {
     builder: (_: DirChain) => DirChain,
   ): DirChain
 
-  remove<path extends Fs.Path.$Rel | string>(
-    path: Fs.Path.Guard.Rel<path>,
+  remove<path extends Path.$Rel | string>(
+    path: Path.Guard.Rel<path>,
   ): DirChain
 
-  clear<path extends Fs.Path.RelDir | string>(
-    path: Fs.Path.Guard.RelDir<path>,
-  ): DirChain
-
-  move<
-    from extends Fs.Path.RelFile | string,
-    to extends Fs.Path.RelFile | string,
-  >(
-    from: Fs.Path.Guard.RelFile<from>,
-    to: Fs.Path.Guard.RelFile<to>,
+  clear<path extends Path.RelDir | string>(
+    path: Path.Guard.RelDir<path>,
   ): DirChain
 
   move<
-    from extends Fs.Path.RelDir | string,
-    to extends Fs.Path.RelDir | string,
+    from extends Path.RelFile | string,
+    to extends Path.RelFile | string,
   >(
-    from: Fs.Path.Guard.RelDir<from>,
-    to: Fs.Path.Guard.RelDir<to>,
+    from: Path.Guard.RelFile<from>,
+    to: Path.Guard.RelFile<to>,
   ): DirChain
 
-  add<path extends Fs.Path.RelFile | string>(
-    path: Fs.Path.Guard.RelFile<path>,
-    content: path extends Fs.Path.RelFile ? Fs.InferFileContent<path>
+  move<
+    from extends Path.RelDir | string,
+    to extends Path.RelDir | string,
+  >(
+    from: Path.Guard.RelDir<from>,
+    to: Path.Guard.RelDir<to>,
+  ): DirChain
+
+  add<path extends Path.RelFile | string>(
+    path: Path.Guard.RelFile<path>,
+    content: path extends Path.RelFile ? InferFileContent<path>
       : path extends string ? string | Uint8Array | Json.Object
       : never,
   ): DirChain
 
-  add<path extends Fs.Path.RelDir | string>(
-    path: Fs.Path.Guard.RelDir<path>,
+  add<path extends Path.RelDir | string>(
+    path: Path.Guard.RelDir<path>,
     builder?: (_: DirChain) => DirChain,
   ): DirChain
 
-  withBase(base: string | Fs.Path.AbsDir): DirChain
+  withBase(base: string | Path.AbsDir): DirChain
 
   merge(...specs: SpecBuilder[]): DirChain
 

@@ -1,17 +1,18 @@
-import { Fs } from '#fs'
 import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
 import { Schema as S } from 'effect'
 import { Effect, Scope } from 'effect'
 import * as NodeOs from 'node:os'
 import * as NodePath from 'node:path'
+import { remove, write } from '../filesystem.js'
+import { Path } from '../path/_.js'
 
 /**
  * Represents a directory with an absolute base path.
  * This is the core data type that operations work with.
  */
 export interface Builder {
-  readonly base: Fs.Path.AbsDir
+  readonly base: Path.AbsDir
 }
 
 /**
@@ -26,9 +27,9 @@ export interface Builder {
  * ```
  */
 export const create = (
-  base: Fs.Path.Input.AbsDir,
+  base: Path.Input.AbsDir,
 ): Builder => ({
-  base: Fs.Path.normalizeDynamicInput(Fs.Path.AbsDir.Schema)(base) as Fs.Path.AbsDir,
+  base: Path.normalizeDynamicInput(Path.AbsDir.Schema)(base) as Path.AbsDir,
 })
 
 /**
@@ -53,15 +54,15 @@ export const createTemp = (): Effect.Effect<Builder, PlatformError, Scope.Scope 
       NodeOs.tmpdir(),
       `kit-builder-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     )
-    const absDir = S.decodeSync(Fs.Path.AbsDir.Schema)(tempBase + '/')
+    const absDir = S.decodeSync(Path.AbsDir.Schema)(tempBase + '/')
 
     // Create the directory
-    yield* Fs.write(absDir, { recursive: true })
+    yield* write(absDir, { recursive: true })
 
     const builder = create(absDir)
 
     // Add cleanup finalizer
-    yield* Effect.addFinalizer(() => Effect.orDie(Fs.remove(absDir, { recursive: true, force: true })))
+    yield* Effect.addFinalizer(() => Effect.orDie(remove(absDir, { recursive: true, force: true })))
 
     return builder
   })
@@ -86,10 +87,10 @@ export const createTempUnsafe = (): Effect.Effect<Builder, PlatformError, FileSy
       NodeOs.tmpdir(),
       `kit-builder-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     )
-    const absDir = S.decodeSync(Fs.Path.AbsDir.Schema)(tempBase + '/')
+    const absDir = S.decodeSync(Path.AbsDir.Schema)(tempBase + '/')
 
     // Create the directory
-    yield* Fs.write(absDir, { recursive: true })
+    yield* write(absDir, { recursive: true })
 
     return create(absDir)
   })
