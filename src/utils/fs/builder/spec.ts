@@ -263,7 +263,7 @@ export interface SpecBuilder {
   // Import would read from absolute paths outside the sandbox to seed the spec
   // Signature: import(source: Fs.Path.AbsFile | Fs.Path.AbsDir, dest?: string): SpecBuilder
   // This would be a chain-only operation (not in spec) that executes immediately
-  // Alternative: Dir.specFromDisk('/absolute/path') to create a spec from existing filesystem
+  // Alternative: Fs.Builder.specFromDisk('/absolute/path') to create a spec from existing filesystem
 }
 
 /**
@@ -277,8 +277,8 @@ export interface SpecBuilder {
  *
  * @example
  * ```ts
- * const mySpec = Dir.spec('/').add('package.json', { name: 'x' })
- * const layout = Dir.toLayout(mySpec)
+ * const mySpec = Fs.Builder.spec('/').add('package.json', { name: 'x' })
+ * const layout = Fs.Builder.toLayout(mySpec)
  * // { '/package.json': '{"name":"x"}' }
  * ```
  */
@@ -323,7 +323,7 @@ export const toLayout = (spec: SpecBuilder): Layout => {
  *
  * @example
  * ```ts
- * const spec = Dir.spec('/project')
+ * const spec = Fs.Builder.spec('/project')
  *   .file('README.md', '# Title')
  *   .dir('src/', _ => _.file('index.ts', 'export {}'))
  * ```

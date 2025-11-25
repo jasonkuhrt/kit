@@ -2,12 +2,12 @@ import { Fs } from '#fs'
 import { FileSystem } from '@effect/platform'
 import { Effect, Schema as S } from 'effect'
 import { describe, expect, it } from 'vitest'
-import { Dir } from './_.js'
+import { Builder } from './_.js'
 
 // Local helper function for decoding
 const decodeAbsDir = S.decodeSync(Fs.Path.AbsDir.Schema)
 
-describe('Dir', () => {
+describe('Builder', () => {
   describe('chaining API', () => {
     it('creates files and directories', async () => {
       // Setup memory filesystem
@@ -17,9 +17,9 @@ describe('Dir', () => {
         const fs = yield* FileSystem.FileSystem
 
         // Create a directory with chaining
-        const dir = Dir.withChaining(Dir.create('/test'))
+        const builder = Builder.withChaining(Builder.create('/test'))
 
-        yield* dir
+        yield* builder
           .file('README.md', '# Test Project')
           .file('package.json', { name: 'test', version: '1.0.0' })
           .dir('src/', _ =>
@@ -64,9 +64,9 @@ describe('Dir', () => {
         const isDev = true
         const isProd = false
 
-        const dir = Dir.withChaining(Dir.create('/app'))
+        const builder = Builder.withChaining(Builder.create('/app'))
 
-        yield* dir
+        yield* builder
           .file('app.js', 'console.log("app")')
           .when(isDev, _ =>
             _
@@ -104,9 +104,9 @@ describe('Dir', () => {
       const program = Effect.gen(function*() {
         const fs = yield* FileSystem.FileSystem
 
-        const dir = Dir.withChaining(Dir.create('/workspace'))
+        const builder = Builder.withChaining(Builder.create('/workspace'))
 
-        yield* dir
+        yield* builder
           .remove('old.txt')
           .clear('cache/')
           .file('new.txt', 'new content')
@@ -149,9 +149,9 @@ describe('Dir', () => {
       const program = Effect.gen(function*() {
         const fs = yield* FileSystem.FileSystem
 
-        const dir = Dir.withChaining(Dir.create('/project'))
+        const builder = Builder.withChaining(Builder.create('/project'))
 
-        yield* dir
+        yield* builder
           .move('draft.md', 'README.md')
           .move('old-name.txt', 'new-name.txt')
           .commit()
@@ -181,12 +181,12 @@ describe('Dir', () => {
       const program = Effect.gen(function*() {
         const fs = yield* FileSystem.FileSystem
 
-        const dir = Dir.withChaining(Dir.create('/data'))
+        const builder = Builder.withChaining(Builder.create('/data'))
 
         const uint8Array = new Uint8Array([0, 1, 2, 3, 4])
         const buffer = Buffer.from([5, 6, 7, 8, 9])
 
-        yield* dir
+        yield* builder
           .file('data1.bin', uint8Array)
           .file('data2.bin', buffer)
           .commit()
@@ -212,9 +212,9 @@ describe('Dir', () => {
       const program = Effect.gen(function*() {
         const fs = yield* FileSystem.FileSystem
 
-        const dir = Dir.withChaining(Dir.create('/app'))
+        const builder = Builder.withChaining(Builder.create('/app'))
 
-        yield* dir
+        yield* builder
           .dir('src/', _ =>
             _
               .file('index.ts', 'export {}')
@@ -244,21 +244,21 @@ describe('Dir', () => {
   })
 
   describe('create functions', () => {
-    it('creates a Dir with absolute path', () => {
-      const dir = Dir.create('/absolute/path')
-      expect(dir.base.segments).toEqual(['absolute', 'path'])
+    it('creates a Builder with absolute path', () => {
+      const builder = Builder.create('/absolute/path')
+      expect(builder.base.segments).toEqual(['absolute', 'path'])
     })
 
-    it('creates a Dir with Fs.Path.AbsDir', () => {
+    it('creates a Builder with Fs.Path.AbsDir', () => {
       const absDir = decodeAbsDir('/test/')
-      const dir = Dir.create(absDir)
-      expect(dir.base).toBe(absDir)
+      const builder = Builder.create(absDir)
+      expect(builder.base).toBe(absDir)
     })
   })
 
-  describe('DirSpec', () => {
+  describe('SpecBuilder', () => {
     it('creates a spec with operations', () => {
-      const spec = Dir.spec('/test')
+      const spec = Builder.spec('/test')
         .file('README.md', '# Test')
         .dir('src/', _ => _.file('index.ts', 'export {}'))
 
@@ -277,7 +277,7 @@ describe('Dir', () => {
       const isDev = true
       const isProd = false
 
-      const spec = Dir.spec('/app')
+      const spec = Builder.spec('/app')
         .file('main.ts', 'console.log("main")')
         .when(isDev, _ => _.file('env.txt', 'DEBUG=true'))
         .unless(isProd, _ => _.file('dev.config.js', '{}'))
@@ -293,7 +293,7 @@ describe('Dir', () => {
     })
 
     it('supports withBase to change base directory', () => {
-      const spec1 = Dir.spec('/project1')
+      const spec1 = Builder.spec('/project1')
         .file('test.txt', 'content')
 
       const spec2 = spec1.withBase('/project2')
@@ -304,13 +304,13 @@ describe('Dir', () => {
     })
 
     it('supports merge to combine specs', () => {
-      const spec1 = Dir.spec('/test')
+      const spec1 = Builder.spec('/test')
         .file('a.txt', 'A')
 
-      const spec2 = Dir.spec('/test')
+      const spec2 = Builder.spec('/test')
         .file('b.txt', 'B')
 
-      const spec3 = Dir.spec('/test')
+      const spec3 = Builder.spec('/test')
         .file('c.txt', 'C')
 
       const merged = spec1.merge(spec2, spec3)
@@ -343,16 +343,16 @@ describe('Dir', () => {
       const memoryFs = Fs.Memory.layer({})
 
       // Create a spec
-      const spec = Dir.spec('/test')
+      const spec = Builder.spec('/test')
         .file('spec.md', '# From Spec')
         .dir('nested/', _ => _.file('inner.txt', 'nested content'))
 
       const program = Effect.gen(function*() {
         const fs = yield* FileSystem.FileSystem
 
-        // Create a chain from a dir and merge the spec
-        const dir = Dir.create('/test')
-        const chain = Dir.chain(dir)
+        // Create a chain from a builder and merge the spec
+        const builder = Builder.create('/test')
+        const chain = Builder.chain(builder)
 
         // Apply spec operations to chain
         yield* chain.merge(spec).commit()

@@ -1,4 +1,3 @@
-import type { Dir } from '#dir'
 import { Fs } from '#fs'
 import { Pat } from '#pat'
 import { Str } from '#str'
@@ -33,7 +32,7 @@ import { createBuildToSourcePath } from './path-utils.js'
  *
  * @example
  * ```ts
- * const layout = Dir.spec('/')
+ * const layout = Fs.Builder.spec('/')
  *   .add('package.json', { name: 'x', exports: { './foo': './build/foo/_.js' } })
  *   .add('src/foo/$.ts', 'export const bar = () => {}')
  *   .toLayout()
@@ -43,7 +42,7 @@ import { createBuildToSourcePath } from './path-utils.js'
  */
 export const extractFromFiles = (params: {
   projectRoot?: string
-  files: Dir.Layout
+  files: Fs.Builder.Layout
   entrypoints?: string[]
   extractorVersion?: string
   matching?: Pat.PatternForType<Export>

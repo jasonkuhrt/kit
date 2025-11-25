@@ -1,4 +1,3 @@
-import { Dir } from '#dir'
 import { Fs } from '#fs'
 import { Test } from '#test'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
@@ -18,7 +17,7 @@ const packageJson = {
   },
 }
 
-const project = Dir
+const project = Fs.Builder
   .spec('/')
   .add('package.json', packageJson)
   .add('i.ts', ``)
@@ -236,7 +235,7 @@ Test
 
 describe('Path transformation with tsconfig', () => {
   test('uses outDir/rootDir from tsconfig.build.json when present', () => {
-    const layout = Dir
+    const layout = Fs.Builder
       .spec('/')
       .add('package.json', {
         name: 'test-pkg',
