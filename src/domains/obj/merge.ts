@@ -1,6 +1,5 @@
 import { Arr } from '#arr'
 import { Lang } from '#lang'
-import type { Rec } from '#rec'
 import type { Ts } from '#ts'
 import { is as isObj } from './is.js'
 import { type Any } from './type.js'
@@ -347,8 +346,8 @@ const _mergeWith = <obj1 extends Any, obj2 extends Any>(
   obj1: obj1,
   obj2: obj2,
 ): obj1 & obj2 => {
-  const obj1_AS = obj1 as Rec.Value
-  const obj2_AS = obj2 as Rec.Value
+  const obj1_AS = obj1 as Record<PropertyKey, unknown>
+  const obj2_AS = obj2 as Record<PropertyKey, unknown>
 
   for (const k2 in obj2_AS) {
     const obj1Value = obj1_AS[k2]
