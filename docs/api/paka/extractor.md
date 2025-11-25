@@ -40,7 +40,7 @@ Pure extraction function that processes files without I/O. Takes all files as in
 import { Paka } from '@wollybeard/kit/paka'
 // ---cut---
 // [!code word:spec:1]
-const layout = Dir.spec('/')
+const layout = Fs.Builder.spec('/')
   .add('package.json', { name: 'x', exports: { './foo': './build/foo/$.js' } })
   .add('src/foo/$.ts', 'export const bar = () => {}')
   .toLayout()

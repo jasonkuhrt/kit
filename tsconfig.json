@@ -90,8 +90,6 @@
       "#log/log": ["./src/utils/log/__.ts"],
       "#debug": ["./src/utils/debug/_.ts"],
       "#debug/debug": ["./src/utils/debug/__.ts"],
-      "#dir": ["./src/utils/dir/_.ts"],
-      "#dir/dir": ["./src/utils/dir/__.ts"],
       "#err": ["./src/utils/err/_.ts"],
       "#err/err": ["./src/utils/err/__.ts"],
       "#fs": ["./src/utils/fs/_.ts"],

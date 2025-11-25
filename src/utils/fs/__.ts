@@ -14,6 +14,7 @@
  *
  * @module
  */
+export * as Builder from './builder/__.js'
 export * from './filesystem.js'
 export * from './fs.js'
 export * from './glob.js'

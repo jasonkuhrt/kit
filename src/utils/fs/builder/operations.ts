@@ -1,7 +1,8 @@
-import { Fs } from '#fs'
 import { Error as PlatformError, FileSystem } from '@effect/platform'
 import { Effect } from 'effect'
-import type { Dir } from './dir.js'
+import { clear, remove, rename, write } from '../filesystem.js'
+import { Path } from '../path/_.js'
+import type { Builder } from './builder.js'
 import type { Operation } from './spec.js'
 
 type FSError = PlatformError.PlatformError
@@ -10,17 +11,17 @@ type FS = FileSystem.FileSystem
 /**
  * Execute a list of operations on a directory.
  *
- * @param dir - The base directory
+ * @param builder - The base directory
  * @param operations - The operations to execute
  * @returns An Effect that executes all operations
  */
 export const executeOperations = (
-  dir: Dir,
+  builder: Builder,
   operations: Operation[],
 ): Effect.Effect<void, FSError, FS> =>
   Effect.gen(function*() {
     for (const op of operations) {
-      yield* executeOperation(dir, op)
+      yield* executeOperation(builder, op)
     }
   })
 
@@ -28,49 +29,49 @@ export const executeOperations = (
  * Execute a single operation.
  */
 const executeOperation = (
-  dir: Dir,
+  builder: Builder,
   op: Operation,
 ): Effect.Effect<void, FSError, FS> =>
   Effect.gen(function*() {
     switch (op.type) {
       case 'file': {
-        const absPath = Fs.Path.join(dir.base, op.path)
-        yield* Fs.write(absPath, op.content)
+        const absPath = Path.join(builder.base, op.path)
+        yield* write(absPath, op.content)
         break
       }
       case 'dir': {
-        const absPath = Fs.Path.join(dir.base, op.path)
-        yield* Fs.write(absPath, { recursive: true })
+        const absPath = Path.join(builder.base, op.path)
+        yield* write(absPath, { recursive: true })
 
         // Execute nested operations with updated base
         if (op.operations.length > 0) {
-          const subDir = { base: absPath }
+          const subBuilder = { base: absPath }
           for (const subOp of op.operations) {
-            yield* executeOperation(subDir, subOp)
+            yield* executeOperation(subBuilder, subOp)
           }
         }
         break
       }
       case 'remove': {
-        const absPath = Fs.Path.join(dir.base, op.path)
-        yield* Fs.remove(absPath, { recursive: true, force: true })
+        const absPath = Path.join(builder.base, op.path)
+        yield* remove(absPath, { recursive: true, force: true })
         break
       }
       case 'clear': {
-        const absPath = Fs.Path.join(dir.base, op.path)
-        yield* Fs.clear(absPath)
+        const absPath = Path.join(builder.base, op.path)
+        yield* clear(absPath)
         break
       }
       case 'move-file': {
-        const fromPath = Fs.Path.join(dir.base, op.from) as Fs.Path.AbsFile
-        const toPath = Fs.Path.join(dir.base, op.to) as Fs.Path.AbsFile
-        yield* Fs.rename(fromPath, toPath)
+        const fromPath = Path.join(builder.base, op.from) as Path.AbsFile
+        const toPath = Path.join(builder.base, op.to) as Path.AbsFile
+        yield* rename(fromPath, toPath)
         break
       }
       case 'move-dir': {
-        const fromPath = Fs.Path.join(dir.base, op.from) as Fs.Path.AbsDir
-        const toPath = Fs.Path.join(dir.base, op.to) as Fs.Path.AbsDir
-        yield* Fs.rename(fromPath, toPath)
+        const fromPath = Path.join(builder.base, op.from) as Path.AbsDir
+        const toPath = Path.join(builder.base, op.to) as Path.AbsDir
+        yield* rename(fromPath, toPath)
         break
       }
     }
