@@ -175,6 +175,7 @@ export const cloneToMut = <$Group extends Any>(group: $Group): cloneToMut<$Group
  * ```
  */
 export const toImmutable = <$Group extends AnyMut>(group: $Group): toImmutable<$Group> => {
+  if (Object.isFrozen(group)) return group as any
   const result: AnyMut = {}
   for (const k in group) {
     result[k] = Obj.toImmutableMut([...(group[k] as any[])]) as any

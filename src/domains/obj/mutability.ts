@@ -49,7 +49,7 @@ export interface ErrorMutableInputImmutableOutput extends
  * ```
  */
 export const toImmutable = <$obj extends object>(obj: $obj): toImmutable<$obj> => {
-  // todo: copy trait instead of hardcoded copy logic here
+  if (Object.isFrozen(obj)) return obj as toImmutable<$obj>
   const copy = (Array.isArray(obj) ? [...obj] : { ...obj }) as $obj
   return toImmutableMut(copy)
 }
