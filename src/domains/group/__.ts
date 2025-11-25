@@ -31,50 +31,54 @@ export type by<
   $Type extends object,
   $Key extends keyof $Type,
 > =
-  $Type[$Key] extends PropertyKey
-    ? Readonly<{
-        [__group_name__ in $Type[$Key]]?:
-        readonly (
-          // If $Type is a union type we want to extract the relevent members for this group.
-          //
-          // If Extraction results in never then that means its not a union of types but rather
-          // the key value itself is a union. In this case each group  gets the type but narrowed
-          // for the key property.
-          //
-          Ts.Simplify.Top<
-            Extract<$Type, { [_ in $Key]: __group_name__ }> extends never
-              ? $Type & { [_ in $Key]: __group_name__ }
-              : Extract<$Type, { [_ in $Key]: __group_name__ }>
-          >
-        )[]
-      }>
-    : never
+  object extends $Type
+    ? Any
+    : $Type[$Key] extends PropertyKey
+        ? Readonly<{
+            [__group_name__ in $Type[$Key]]?:
+            readonly (
+              // If $Type is a union type we want to extract the relevent members for this group.
+              //
+              // If Extraction results in never then that means its not a union of types but rather
+              // the key value itself is a union. In this case each group  gets the type but narrowed
+              // for the key property.
+              //
+              Ts.Simplify.Top<
+                Extract<$Type, { [_ in $Key]: __group_name__ }> extends never
+                  ? $Type & { [_ in $Key]: __group_name__ }
+                  : Extract<$Type, { [_ in $Key]: __group_name__ }>
+              >
+            )[]
+          }>
+        : never
 
 // dprint-ignore
 export type byToMut<
   $Type extends object,
   $Key extends keyof $Type,
 > =
-  $Type[$Key] extends PropertyKey
-    ? {
-        [__group_name__ in $Type[$Key]]?:
-        Array<
-          (
-            // If $Type is a union type we want to extract the relevent members for this group.
-            //
-            // If Extraction results in never then that means its not a union of types but rather
-            // the key value itself is a union. In this case each group  gets the type but narrowed
-            // for the key property.
-            //
-            Ts.Simplify.Top<
-              Extract<$Type, { [_ in $Key]: __group_name__ }> extends never
-                ? $Type & { [_ in $Key]: __group_name__ }
-                : Extract<$Type, { [_ in $Key]: __group_name__ }>
+  object extends $Type
+    ? AnyMut
+    : $Type[$Key] extends PropertyKey
+        ? {
+            [__group_name__ in $Type[$Key]]?:
+            Array<
+              (
+                // If $Type is a union type we want to extract the relevent members for this group.
+                //
+                // If Extraction results in never then that means its not a union of types but rather
+                // the key value itself is a union. In this case each group  gets the type but narrowed
+                // for the key property.
+                //
+                Ts.Simplify.Top<
+                  Extract<$Type, { [_ in $Key]: __group_name__ }> extends never
+                    ? $Type & { [_ in $Key]: __group_name__ }
+                    : Extract<$Type, { [_ in $Key]: __group_name__ }>
+                >
+              )
             >
-          )
-        >
-      }
-    : never
+          }
+        : never
 
 // dprint-ignore
 export interface ErrorInvalidGroupKey<obj extends object, key extends keyof obj> extends Ts.Err.StaticError<
@@ -151,11 +155,11 @@ export const clone = <$Group extends Any>(group: $Group): $Group => {
  * ```
  */
 export const cloneToMut = <$Group extends Any>(group: $Group): cloneToMut<$Group> => {
-  const result: AnyMut = {}
+  const group_: AnyMut = {}
   for (const k in group) {
-    result[k] = [...(group[k] as any[])]
+    group_[k] = [...(group[k] as any[])]
   }
-  return result as cloneToMut<$Group>
+  return group_ as cloneToMut<$Group>
 }
 
 /**
@@ -292,13 +296,13 @@ export const byToMut = <$Obj extends object, key extends keyof $Obj>(
  * //   2: [{ categoryId: 2, name: 'Mouse' }]
  * // }
  */
-export const by = <obj extends object, key extends keyof obj>(
-  array: obj[],
+export const by = <$Obj extends object, key extends keyof $Obj>(
+  array: $Obj[],
   // dprint-ignore
-  key: ValidateIsGroupableKey<obj, key, ErrorInvalidGroupKey<obj, key>>,
-): by<obj, key> => {
-  const groupSet = byToMut(array, key)
-  return toImmutableMut(groupSet as AnyMut) as any
+  key: ValidateIsGroupableKey<$Obj, key, ErrorInvalidGroupKey<$Obj, key>>,
+): by<$Obj, key> => {
+  const groupSet = byToMut(array, key) as AnyMut
+  return toImmutableMut(groupSet) as any
 }
 
 type ValidateIsGroupableKey<
