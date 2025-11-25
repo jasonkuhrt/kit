@@ -1,5 +1,6 @@
 import { Bool } from '#bool'
 import { CoreFn as Fn } from '#fn/core'
+import { Obj } from '#obj'
 import { Pat } from '#pat'
 import { is } from './is.js'
 
@@ -233,7 +234,7 @@ export type EmptyArray = typeof empty
  * ```
  */
 export const of = <$T extends readonly unknown[]>(...items: $T): Readonly<$T> => {
-  return Object.freeze(items) as Readonly<$T>
+  return Obj.toImmutable(items)
 }
 
 /**
@@ -247,38 +248,7 @@ export const of = <$T extends readonly unknown[]>(...items: $T): Readonly<$T> =>
  * ```
  */
 export const freeze = <$T extends readonly unknown[]>(arr: $T): Readonly<$T> => {
-  return Object.freeze(arr) as Readonly<$T>
-}
-
-/**
- * Check if an array is frozen (immutable).
- *
- * @category Type Guards
- * @example
- * ```ts
- * Arr.isFrozen(Object.freeze([1, 2, 3]))  // true
- * Arr.isFrozen([1, 2, 3])  // false
- * ```
- */
-export const isFrozen = (arr: unknown[]): boolean => {
-  return Object.isFrozen(arr)
-}
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Internal Utilities
-//
-//
-
-/**
- * Preserve mutability of input array on output.
- * If input is frozen, freeze the output; otherwise return mutable.
- * @internal
- */
-const preserveMutability = <$T>(input: Any, output: $T[]): $T[] => {
-  return Object.isFrozen(input) ? Object.freeze(output) as $T[] : output
+  return Obj.toImmutable(arr)
 }
 
 //
@@ -602,7 +572,7 @@ export const equalShallowly = <array1_ extends AnyMut, array2_ extends array1_>(
  * Map over an array with a function, preserving array shape.
  * Frozen arrays produce a new frozen array; mutable arrays produce a mutable array.
  *
- * @param array - The array to map over
+ * @param $array - The array to map over
  * @param fn - The mapping function
  * @returns A new array with mapped values.
  * @example
@@ -611,11 +581,11 @@ export const equalShallowly = <array1_ extends AnyMut, array2_ extends array1_>(
  * map(['a', 'b'], (s, i) => `${s}${i}`) // ['a0', 'b1']
  * ```
  */
-export const map = <array extends Any, newType>(
-  array: array,
-  fn: (value: array[number], index: number) => newType,
-): ReplaceInner<array & AnyMut, newType> => {
-  return preserveMutability(array, (array as any).map(fn)) as any
+export const map = <$array extends Any, newType>(
+  $array: $array,
+  fn: (value: $array[number], index: number) => newType,
+): ReplaceInner<$array & AnyMut, newType> => {
+  return Obj.forwardImmutability($array, $array.map(fn)) as any
 }
 
 /**
@@ -700,7 +670,7 @@ export const transpose = <$T>(rows: readonly (readonly $T[])[]): $T[][] => {
       i++
     }
   }
-  return preserveMutability(rows, columns)
+  return Obj.forwardImmutability(rows, columns) as any
 }
 
 /**
@@ -716,9 +686,9 @@ export const transpose = <$T>(rows: readonly (readonly $T[])[]): $T[][] => {
  * dedupe(['a', 'b', 'a', 'c']) // ['a', 'b', 'c']
  * ```
  */
-export const dedupe = <arr extends readonly unknown[]>(arr: arr): arr => {
-  if (Object.isFrozen(arr)) {
-    return Object.freeze([...new Set(arr)]) as arr
+export const dedupe = <$arr extends readonly unknown[]>(arr: $arr): $arr => {
+  if (Obj.isImmutable(arr)) {
+    return Obj.toImmutable([...new Set(arr)]) as $arr
   }
   // Mutable: dedupe in place
   const mutableArr = arr as any
@@ -772,7 +742,10 @@ export const partition = <item, itemSub extends item>(
     else itemsA.push(value as Exclude<item, itemSub>)
   }
 
-  return [preserveMutability(items, itemsA), preserveMutability(items, itemsB)]
+  if (Obj.isImmutable(items)) {
+    return Obj.toImmutable([Obj.toImmutable(itemsA), Obj.toImmutable(itemsB)]) as any
+  }
+  return [itemsA, itemsB]
 }
 
 /**
@@ -822,7 +795,10 @@ export const partitionErrors = <T>(array: readonly T[]): [Exclude<T, Error>[], E
       values.push(item as any)
     }
   }
-  return [preserveMutability(array, values), preserveMutability(array, errors)]
+  if (Obj.isImmutable(array)) {
+    return Obj.toImmutable([Obj.toImmutable(values), Obj.toImmutable(errors)]) as any
+  }
+  return [values, errors]
 }
 
 //
@@ -892,8 +868,8 @@ export const joinWith = Fn.flipCurried(joinOn)
 export const merge = <T>(array1: readonly T[], array2: readonly T[]): T[] => {
   const result = (array1 as T[]).concat(array2 as T[])
   // If either input is frozen, freeze the result
-  if (Object.isFrozen(array1) || Object.isFrozen(array2)) {
-    return Object.freeze(result) as T[]
+  if (Obj.isImmutable(array1) || Obj.isImmutable(array2)) {
+    return Obj.toImmutable(result) as T[]
   }
   return result
 }
@@ -924,7 +900,9 @@ export const mergeOn = Fn.curry(merge)
  * Display handlers for Array types.
  * @internal
  */
+
 import type { Display } from '#ts/ts'
+
 declare global {
   namespace KitTraits.Display {
     // dprint-ignore

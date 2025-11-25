@@ -271,8 +271,6 @@ export const hasSymbolLikeWith = (symbol: symbol, expectedValue: unknown) => (va
   return hasSymbolLike(value, symbol, expectedValue)
 }
 
-// Note: spreadShallow moved to merge.ts
-
 // dprint-ignore
 export type PartialDeep<$Type> =
   $Type extends Array<infer __inner__>                  ? Array<PartialDeep<__inner__>> :
