@@ -8,4 +8,4 @@
  * @module
  */
 
-export * as FsMemory from './__.js'
+export * as Memory from './__.js'

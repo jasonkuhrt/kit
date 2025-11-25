@@ -51,7 +51,7 @@ export interface DiskLayout {
  *
  * @example
  * ```ts
- * import { MemoryFs } from '#memory-fs'
+ * import { Fs } from '@wollybeard/kit'
  * import { FileSystem } from '@effect/platform'
  * import { Effect } from 'effect'
  *
@@ -67,7 +67,7 @@ export interface DiskLayout {
  * })
  *
  * Effect.runPromise(
- *   Effect.provide(program, MemoryFs.layer(diskLayout))
+ *   Effect.provide(program, Fs.Memory.layer(diskLayout))
  * )
  * ```
  */
@@ -298,9 +298,9 @@ export const layer = (initialDiskLayout: DiskLayout) => {
  *
  * @example
  * ```ts
- * import { MemoryFs } from '#memory-fs'
+ * import { Fs } from '@wollybeard/kit'
  *
- * const testFs = MemoryFs.layerFromDiskLayout({
+ * const testFs = Fs.Memory.layerFromDiskLayout({
  *   '/package.json': '{"name": "test-project"}',
  *   '/src/index.js': 'export default "hello"'
  * })

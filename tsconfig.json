@@ -98,8 +98,6 @@
       "#fs/fs": ["./src/utils/fs/__.ts"],
       "#fs-relative": ["./src/utils/fs-relative/_.ts"],
       "#fs-relative/fs-relative": ["./src/utils/fs-relative/__.ts"],
-      "#fs-memory": ["./src/utils/fs-memory/_.ts"],
-      "#fs-memory/fs-memory": ["./src/utils/fs-memory/__.ts"],
       "#glo": ["./src/utils/glo/_.ts"],
       "#glo/glo": ["./src/utils/glo/__.ts"],
       "#html": ["./src/utils/html/_.ts"],

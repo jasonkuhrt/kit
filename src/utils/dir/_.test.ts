@@ -1,5 +1,4 @@
 import { Fs } from '#fs'
-import { FsMemory } from '#fs-memory'
 import { FileSystem } from '@effect/platform'
 import { Effect, Schema as S } from 'effect'
 import { describe, expect, it } from 'vitest'
@@ -12,7 +11,7 @@ describe('Dir', () => {
   describe('chaining API', () => {
     it('creates files and directories', async () => {
       // Setup memory filesystem
-      const memoryFs = FsMemory.layer({})
+      const memoryFs = Fs.Memory.layer({})
 
       const program = Effect.gen(function*() {
         const fs = yield* FileSystem.FileSystem
@@ -57,7 +56,7 @@ describe('Dir', () => {
     })
 
     it('supports conditional operations', async () => {
-      const memoryFs = FsMemory.layer({})
+      const memoryFs = Fs.Memory.layer({})
 
       const program = Effect.gen(function*() {
         const fs = yield* FileSystem.FileSystem
@@ -95,7 +94,7 @@ describe('Dir', () => {
     })
 
     it('handles remove and clear operations', async () => {
-      const memoryFs = FsMemory.layer({
+      const memoryFs = Fs.Memory.layer({
         '/workspace/old.txt': 'old content',
         '/workspace/cache/file1.txt': 'cache1',
         '/workspace/cache/file2.txt': 'cache2',
@@ -142,7 +141,7 @@ describe('Dir', () => {
     })
 
     it('handles move operations', async () => {
-      const memoryFs = FsMemory.layer({
+      const memoryFs = Fs.Memory.layer({
         '/project/draft.md': 'Draft content',
         '/project/old-name.txt': 'File content',
       })
@@ -177,7 +176,7 @@ describe('Dir', () => {
     })
 
     it('handles binary content', async () => {
-      const memoryFs = FsMemory.layer({})
+      const memoryFs = Fs.Memory.layer({})
 
       const program = Effect.gen(function*() {
         const fs = yield* FileSystem.FileSystem
@@ -208,7 +207,7 @@ describe('Dir', () => {
     })
 
     it('creates nested directory structures', async () => {
-      const memoryFs = FsMemory.layer({})
+      const memoryFs = Fs.Memory.layer({})
 
       const program = Effect.gen(function*() {
         const fs = yield* FileSystem.FileSystem
@@ -341,7 +340,7 @@ describe('Dir', () => {
     })
 
     it('can be used with chain for execution', async () => {
-      const memoryFs = FsMemory.layer({})
+      const memoryFs = Fs.Memory.layer({})
 
       // Create a spec
       const spec = Dir.spec('/test')
