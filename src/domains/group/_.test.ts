@@ -114,6 +114,67 @@ describe('map', () => {
   })
 })
 
+describe('clone', () => {
+  test('frozen input: returns frozen clone (root + buckets)', () => {
+    const frozen = Group.by(ab, 'type')
+    const result = Group.clone(frozen)
+
+    expect(result).not.toBe(frozen)
+    expect(result.A).not.toBe(frozen.A)
+    expect(Object.isFrozen(result)).toBe(true)
+    expect(Object.isFrozen(result.A)).toBe(true)
+    expect(result).toEqual(frozen)
+  })
+
+  test('mutable input: returns mutable clone (root + buckets)', () => {
+    const mutable = Group.byMut(ab, 'type')
+    const result = Group.clone(mutable)
+
+    expect(result).not.toBe(mutable)
+    expect(result.A).not.toBe(mutable.A)
+    expect(Object.isFrozen(result)).toBe(false)
+    expect(Object.isFrozen(result.A)).toBe(false)
+    expect(result).toEqual(mutable)
+  })
+})
+
+describe('cloneToMut', () => {
+  test('returns mutable clone regardless of input', () => {
+    const frozen = Group.by(ab, 'type')
+    const result = Group.cloneToMut(frozen)
+
+    expect(result).not.toBe(frozen)
+    expect(result.A).not.toBe(frozen.A)
+    expect(Object.isFrozen(result)).toBe(false)
+    expect(Object.isFrozen(result.A)).toBe(false)
+    expect(Object.isFrozen(frozen)).toBe(true) // original unchanged
+  })
+})
+
+describe('toImmutable', () => {
+  test('returns frozen clone, original unchanged', () => {
+    const mutable = Group.byMut(ab, 'type')
+    const result = Group.toImmutable(mutable)
+
+    expect(result).not.toBe(mutable)
+    expect(result.A).not.toBe(mutable.A)
+    expect(Object.isFrozen(result)).toBe(true)
+    expect(Object.isFrozen(result.A)).toBe(true)
+    expect(Object.isFrozen(mutable)).toBe(false) // original unchanged
+  })
+})
+
+describe('toImmutableMut', () => {
+  test('freezes in place (root + buckets)', () => {
+    const mutable = Group.byMut(ab, 'type')
+    const result = Group.toImmutableMut(mutable)
+
+    expect(result).toBe(mutable) // same reference
+    expect(Object.isFrozen(result)).toBe(true)
+    expect(Object.isFrozen(result.A)).toBe(true)
+  })
+})
+
 describe('types', () => {
   test('Group.by with key value a union narrows it for each group', () => {
     type g = Group.by<abOnKey, 'type'>

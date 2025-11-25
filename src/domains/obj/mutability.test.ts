@@ -43,9 +43,35 @@ describe('toImmutableMut', () => {
   })
 })
 
-describe('toMutable', () => {
-  test('returns unfrozen copy, original unchanged', () => {
-    const result = Obj.toMutable(immutableObj)
+describe('clone', () => {
+  test('frozen input: returns frozen clone', () => {
+    const result = Obj.clone(immutableObj)
+    expect(Object.isFrozen(result)).toBe(true)
+    expect(result).not.toBe(immutableObj)
+    Assert.Type.exact.ofAs<immutableObj>().on(result)
+  })
+
+  test('mutable input: returns mutable clone', () => {
+    const result = Obj.clone(obj)
+    expect(Object.isFrozen(result)).toBe(false)
+    expect(result).not.toBe(obj)
+    Assert.Type.exact.ofAs<obj>().on(result)
+  })
+
+  test('works with arrays', () => {
+    const frozenResult = Obj.clone(immutableArr)
+    expect(Object.isFrozen(frozenResult)).toBe(true)
+    expect(frozenResult).not.toBe(immutableArr)
+
+    const mutableResult = Obj.clone(arr)
+    expect(Object.isFrozen(mutableResult)).toBe(false)
+    expect(mutableResult).not.toBe(arr)
+  })
+})
+
+describe('cloneToMut', () => {
+  test('returns unfrozen clone, original unchanged', () => {
+    const result = Obj.cloneToMut(immutableObj)
     expect(Object.isFrozen(result)).toBe(false)
     expect(Object.isFrozen(immutableObj)).toBe(true)
     expect(result).not.toBe(immutableObj)
@@ -53,15 +79,15 @@ describe('toMutable', () => {
   })
 
   test('works with arrays', () => {
-    const result = Obj.toMutable(immutableArr)
+    const result = Obj.cloneToMut(immutableArr)
     expect(Object.isFrozen(result)).toBe(false)
     expect(Object.isFrozen(immutableArr)).toBe(true)
     expect(result).not.toBe(immutableArr)
     Assert.Type.exact.ofAs<arr>().on(result)
   })
 
-  test('works on already mutable objects (creates copy)', () => {
-    const result = Obj.toMutable(obj)
+  test('works on already mutable objects (creates clone)', () => {
+    const result = Obj.cloneToMut(obj)
     expect(Object.isFrozen(result)).toBe(false)
     expect(result).not.toBe(obj)
     Assert.Type.exact.ofAs<obj>().on(result)

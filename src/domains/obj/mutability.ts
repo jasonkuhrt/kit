@@ -80,32 +80,54 @@ export const toImmutableMut = <$obj extends object>(obj: $obj): toImmutable<$obj
 export type toImmutable<$Obj extends object> = Readonly<$Obj>
 
 /**
- * Create an unfrozen shallow copy of an object with a mutable type.
- * The inverse of {@link toImmutable}.
+ * Create a shallow clone of an object, preserving its immutability state.
+ * If the input is frozen, the clone is frozen. If mutable, the clone is mutable.
  *
- * Since `Object.freeze` is one-way in JavaScript (objects cannot be unfrozen),
- * this always creates a new object.
+ * @category Clone
  *
- * @category Immutability
+ * @param obj - The object to clone
+ * @returns A new object with the same immutability state as the input
  *
- * @param obj - The object to copy (typically frozen)
+ * @example
+ * ```ts
+ * const frozen = Object.freeze({ a: 1 })
+ * const frozenClone = Obj.clone(frozen)
+ * // frozenClone is frozen, same type as input
+ *
+ * const mutable = { a: 1 }
+ * const mutableClone = Obj.clone(mutable)
+ * // mutableClone is NOT frozen
+ * ```
+ */
+export const clone = <$obj extends object>(obj: $obj): $obj => {
+  const copy = (Array.isArray(obj) ? [...obj] : { ...obj }) as $obj
+  return Object.isFrozen(obj) ? (Object.freeze(copy) as $obj) : copy
+}
+
+/**
+ * Create an unfrozen shallow clone of an object with a mutable type.
+ * Always returns a mutable clone, regardless of input's frozen state.
+ *
+ * @category Clone
+ *
+ * @param obj - The object to clone (typically frozen)
  * @returns A new unfrozen object with mutable type
  *
  * @example
  * ```ts
  * const frozen = Object.freeze({ port: 3000, host: 'localhost' })
- * const mutable = Obj.toMutable(frozen)
+ * const mutable = Obj.cloneToMut(frozen)
  * // mutable is NOT frozen, frozen is still frozen
  * // Type: { port: number; host: string }
  *
  * mutable.port = 8080 // OK
  * ```
  */
-export const toMutable = <$obj extends object>(obj: $obj): toMutable<$obj> => {
-  return (Array.isArray(obj) ? [...obj] : { ...obj }) as toMutable<$obj>
+export const cloneToMut = <$obj extends object>(obj: $obj): cloneToMut<$obj> => {
+  return (Array.isArray(obj) ? [...obj] : { ...obj }) as cloneToMut<$obj>
 }
 
-export type toMutable<$Obj extends object> = { -readonly [K in keyof $Obj]: $Obj[K] }
+export type cloneToMut<$Obj extends object> = { -readonly [K in keyof $Obj]: $Obj[K] }
 
 /**
  * Type guard that checks if an object is frozen (immutable).

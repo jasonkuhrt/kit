@@ -85,6 +85,126 @@ export interface ErrorInvalidGroupKey<obj extends object, key extends keyof obj>
   }
 > {}
 
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Clone & Immutability
+
+/**
+ * Deep immutable type for a group set.
+ * Makes both the root object and all bucket arrays readonly.
+ *
+ * @category Clone
+ */
+export type toImmutable<$Group extends AnyMut> = Readonly<
+  {
+    [K in keyof $Group]: Readonly<$Group[K]>
+  }
+>
+
+/**
+ * Deep mutable type for a group set.
+ * Removes readonly from both the root object and all bucket arrays.
+ *
+ * @category Clone
+ */
+export type cloneToMut<$Group extends Any> = {
+  -readonly [K in keyof $Group]: $Group[K] extends readonly (infer T)[] ? T[] : $Group[K]
+}
+
+/**
+ * Create a structure-aware clone of a group set, preserving its immutability state.
+ * Clones both the root object and all bucket arrays.
+ *
+ * @category Clone
+ *
+ * @param group - The group set to clone
+ * @returns A new group set with the same immutability state as the input
+ *
+ * @example
+ * ```ts
+ * const frozen = Group.by(users, 'role')
+ * const frozenClone = Group.clone(frozen)
+ * // frozenClone is frozen (root + all buckets)
+ * ```
+ */
+export const clone = <$Group extends Any>(group: $Group): $Group => {
+  const result: AnyMut = {}
+  for (const k in group) {
+    result[k] = [...(group[k] as any[])]
+  }
+  return (Object.isFrozen(group) ? toImmutableMut(result) : result) as $Group
+}
+
+/**
+ * Create a structure-aware mutable clone of a group set.
+ * Always returns a mutable clone regardless of input's frozen state.
+ *
+ * @category Clone
+ *
+ * @param group - The group set to clone
+ * @returns A new mutable group set (root + all buckets unfrozen)
+ *
+ * @example
+ * ```ts
+ * const frozen = Group.by(users, 'role')
+ * const mutable = Group.cloneToMut(frozen)
+ * // mutable is NOT frozen, can push to buckets
+ * mutable.admin.push(newAdmin)
+ * ```
+ */
+export const cloneToMut = <$Group extends Any>(group: $Group): cloneToMut<$Group> => {
+  const result: AnyMut = {}
+  for (const k in group) {
+    result[k] = [...(group[k] as any[])]
+  }
+  return result as cloneToMut<$Group>
+}
+
+/**
+ * Create a frozen clone of a group set.
+ * Clones then deep freezes (root + all bucket arrays).
+ *
+ * @category Clone
+ *
+ * @param group - The group set to clone and freeze
+ * @returns A new frozen group set
+ *
+ * @example
+ * ```ts
+ * const mutable = Group.byMut(users, 'role')
+ * const frozen = Group.toImmutable(mutable)
+ * // frozen is frozen (root + all buckets), mutable unchanged
+ * ```
+ */
+export const toImmutable = <$Group extends AnyMut>(group: $Group): toImmutable<$Group> => {
+  const result: AnyMut = {}
+  for (const k in group) {
+    result[k] = Obj.toImmutableMut([...(group[k] as any[])]) as any
+  }
+  return Obj.toImmutableMut(result) as any
+}
+
+/**
+ * Deep freeze a group set in place.
+ * Freezes both the root object and all bucket arrays.
+ *
+ * @category Clone
+ *
+ * @param group - The group set to freeze in place
+ * @returns The same group set, now frozen (root + all buckets)
+ *
+ * @example
+ * ```ts
+ * const group = Group.byMut(users, 'role')
+ * Group.toImmutableMut(group)
+ * // group is now frozen (root + all buckets)
+ * ```
+ */
+export const toImmutableMut = <$Group extends AnyMut>(group: $Group): toImmutable<$Group> => {
+  for (const k in group) {
+    Obj.toImmutableMut(group[k] as any[])
+  }
+  return Obj.toImmutableMut(group) as toImmutable<$Group>
+}
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Construction
 
 /**
@@ -177,13 +297,7 @@ export const by = <obj extends object, key extends keyof obj>(
   key: ValidateIsGroupableKey<obj, key, ErrorInvalidGroupKey<obj, key>>,
 ): by<obj, key> => {
   const groupSet = byMut(array, key)
-
-  // Freeze each array and the group set itself (in place - they're freshly created)
-  for (const groupName in groupSet) {
-    Obj.toImmutableMut(groupSet[groupName] as any[])
-  }
-
-  return Obj.toImmutableMut(groupSet) as any
+  return toImmutableMut(groupSet as AnyMut) as any
 }
 
 type ValidateIsGroupableKey<
@@ -231,7 +345,7 @@ export const merge = <$groupSet extends Any>(
     }
   }
 
-  return (isMut ? result : Obj.toImmutableMut(result)) as any
+  return (isMut ? result : toImmutableMut(result)) as any
 }
 
 export type Mapper<$GroupSet extends Any> = {
@@ -271,5 +385,5 @@ export const map = <
     result[groupName] = handler(groupSet[groupName] as any) as any
   }
 
-  return (isMut ? result : Obj.toImmutableMut(result)) as any
+  return (isMut ? result : toImmutableMut(result)) as any
 }
