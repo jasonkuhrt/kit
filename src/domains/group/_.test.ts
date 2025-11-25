@@ -22,8 +22,8 @@ test('by() returns frozen, byMut() returns mutable', () => {
   expect(Object.isFrozen(frozen) && Object.isFrozen(frozen.A) && Object.isFrozen(frozen.B)).toBe(true)
 
   // byMut() - mutable
-  const mutable = Group.byMut(ab, 'type')
-  A<Group.byMut<ab, 'type'>>().on(mutable)
+  const mutable = Group.byToMut(ab, 'type')
+  A<Group.byToMut<ab, 'type'>>().on(mutable)
   expect(mutable).toEqual({ A: [a], B: [b] })
   expect(Object.isFrozen(mutable) || Object.isFrozen(mutable.A) || Object.isFrozen(mutable.B)).toBe(false)
 })
@@ -44,8 +44,8 @@ describe('merge', () => {
   })
 
   test('dual internals: mutable inputs mutate group1 in place', () => {
-    const mutable1 = Group.byMut(ab, 'type')
-    const mutable2 = Group.byMut(ab, 'type')
+    const mutable1 = Group.byToMut(ab, 'type')
+    const mutable2 = Group.byToMut(ab, 'type')
     const origLength = mutable1.A!.length
 
     const result = Group.merge(mutable1, mutable2)
@@ -58,7 +58,7 @@ describe('merge', () => {
 
   test('OR logic: frozen + mutable creates new frozen result', () => {
     const frozen = Group.by(ab, 'type')
-    const mutable = Group.byMut(ab, 'type')
+    const mutable = Group.byToMut(ab, 'type')
     const origFrozenLength = frozen.A!.length
     const origMutableLength = mutable.A!.length
 
@@ -74,8 +74,8 @@ describe('merge', () => {
     const a2 = { type: 'A' as const, a: 2 as const, date: new Date() }
     const a3 = { type: 'A' as const, a: 3 as const, date: new Date() }
     const items = [a, a2, a3] as const
-    const group1 = Group.byMut([items[0], items[1]], 'type')
-    const group2 = Group.byMut([items[2]], 'type') as any
+    const group1 = Group.byToMut([items[0], items[1]], 'type')
+    const group2 = Group.byToMut([items[2]], 'type') as any
     const result = Group.merge(group1, group2)
 
     expect(result.A).toHaveLength(3)
@@ -98,7 +98,7 @@ describe('map', () => {
 
   test('dual internals: mutable input transforms in place', () => {
     const handlers = { A: (items: any) => items.length, B: (items: any) => items.length }
-    const mutable = Group.byMut(ab, 'type')
+    const mutable = Group.byToMut(ab, 'type')
 
     const result = Group.map(mutable, handlers)
 
@@ -127,7 +127,7 @@ describe('clone', () => {
   })
 
   test('mutable input: returns mutable clone (root + buckets)', () => {
-    const mutable = Group.byMut(ab, 'type')
+    const mutable = Group.byToMut(ab, 'type')
     const result = Group.clone(mutable)
 
     expect(result).not.toBe(mutable)
@@ -153,7 +153,7 @@ describe('cloneToMut', () => {
 
 describe('toImmutable', () => {
   test('returns frozen clone, original unchanged', () => {
-    const mutable = Group.byMut(ab, 'type')
+    const mutable = Group.byToMut(ab, 'type')
     const result = Group.toImmutable(mutable)
 
     expect(result).not.toBe(mutable)
@@ -166,7 +166,7 @@ describe('toImmutable', () => {
 
 describe('toImmutableMut', () => {
   test('freezes in place (root + buckets)', () => {
-    const mutable = Group.byMut(ab, 'type')
+    const mutable = Group.byToMut(ab, 'type')
     const result = Group.toImmutableMut(mutable)
 
     expect(result).toBe(mutable) // same reference

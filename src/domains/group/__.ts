@@ -51,7 +51,7 @@ export type by<
     : never
 
 // dprint-ignore
-export type byMut<
+export type byToMut<
   $Type extends object,
   $Key extends keyof $Type,
 > =
@@ -235,11 +235,11 @@ export const toImmutableMut = <$Group extends AnyMut>(group: $Group): toImmutabl
  * // Can be mutated:
  * usersByRole.admin.push({ id: 3, role: 'admin', name: 'Charlie' })
  */
-export const byMut = <obj extends object, key extends keyof obj>(
-  array: obj[],
+export const byToMut = <$Obj extends object, key extends keyof $Obj>(
+  array: $Obj[],
   // dprint-ignore
-  key: ValidateIsGroupableKey<obj, key, ErrorInvalidGroupKey<obj, key>>,
-): byMut<obj, key> => {
+  key: ValidateIsGroupableKey<$Obj, key, ErrorInvalidGroupKey<$Obj, key>>,
+): byToMut<$Obj, key> => {
   const groupSet = array.reduce((index, item) => {
     // @ts-expect-error
     const indexKey = item[key] as PropertyKey
@@ -297,7 +297,7 @@ export const by = <obj extends object, key extends keyof obj>(
   // dprint-ignore
   key: ValidateIsGroupableKey<obj, key, ErrorInvalidGroupKey<obj, key>>,
 ): by<obj, key> => {
-  const groupSet = byMut(array, key)
+  const groupSet = byToMut(array, key)
   return toImmutableMut(groupSet as AnyMut) as any
 }
 
