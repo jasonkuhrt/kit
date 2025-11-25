@@ -23,6 +23,9 @@ importers:
       ansis:
         specifier: ^4.2.0
         version: 4.2.0
+      arkregex:
+        specifier: ^0.0.3
+        version: 0.0.3
       consola:
         specifier: ^3.4.2
         version: 3.4.2
@@ -246,6 +249,9 @@ packages:
 
   '@ark/util@0.50.0':
     resolution: {integrity: sha512-tIkgIMVRpkfXRQIEf0G2CJryZVtHVrqcWHMDa5QKo0OEEBu0tHkRSIMm4Ln8cd8Bn9TPZtvc/kE2Gma8RESPSg==}
+
+  '@ark/util@0.55.0':
+    resolution: {integrity: sha512-aWFNK7aqSvqFtVsl1xmbTjGbg91uqtJV7Za76YGNEwIO4qLjMfyY8flmmbhooYMuqPCO2jyxu8hve943D+w3bA==}
 
   '@arr/every@1.0.1':
     resolution: {integrity: sha512-UQFQ6SgyJ6LX42W8rHCs8KVc0JS0tzVL9ct4XYedJukskYVWTo49tNiMEK9C2HTyarbNiT/RVIRSY82vH+6sTg==}
@@ -1496,6 +1502,9 @@ packages:
 
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
+
+  arkregex@0.0.3:
+    resolution: {integrity: sha512-bU21QJOJEFJK+BPNgv+5bVXkvRxyAvgnon75D92newgHxkBJTgiFwQxusyViYyJkETsddPlHyspshDQcCzmkNg==}
 
   arktype@2.1.23:
     resolution: {integrity: sha512-tyxNWX6xJVMb2EPJJ3OjgQS1G/vIeQRrZuY4DeBNQmh8n7geS+czgbauQWB6Pr+RXiOO8ChEey44XdmxsqGmfQ==}
@@ -3745,6 +3754,8 @@ snapshots:
 
   '@ark/util@0.50.0': {}
 
+  '@ark/util@0.55.0': {}
+
   '@arr/every@1.0.1': {}
 
   '@babel/code-frame@7.27.1':
@@ -4949,6 +4960,10 @@ snapshots:
       sprintf-js: 1.0.3
 
   argparse@2.0.1: {}
+
+  arkregex@0.0.3:
+    dependencies:
+      '@ark/util': 0.55.0
 
   arktype@2.1.23:
     dependencies:

@@ -1,8 +1,66 @@
-import { Arr } from '#arr'
 import { curry, flipCurried } from '#fn/fn'
+import { Ts } from '#ts'
+import type { Regex } from 'arkregex'
 import { spaceNoBreak, spaceRegular } from './char/char.js'
-import type { PatternsInput } from './match.js'
+import type { RegexMatch } from './match.js'
 import { Empty } from './type.js'
+
+// ============================================================================
+// Replacement Types
+// ============================================================================
+
+/**
+ * Replacement input for typed Regex patterns.
+ * @category Replacement
+ */
+export type ReplacementInput<$Regex extends Regex = Regex> =
+  | string
+  | ReplacementCallback<$Regex>
+
+/**
+ * Replacement input for untyped RegExp patterns.
+ * @category Replacement
+ */
+export type ReplacementInputUntyped =
+  | string
+  | ReplacementCallbackUntyped
+
+/**
+ * Typed callback for Regex patterns - receives {@link RegexMatch} with typed captures.
+ * @category Replacement
+ */
+export type ReplacementCallback<$Regex extends Regex = Regex> = (
+  match: RegexMatch<$Regex>,
+) => string
+
+/**
+ * Untyped callback for RegExp patterns - escape hatch for legacy code.
+ * @category Replacement
+ */
+export type ReplacementCallbackUntyped = (match: string, ...args: any[]) => string
+
+/**
+ * Conditional replacement type based on pattern type.
+ * @internal
+ */
+// dprint-ignore
+export type ReplacementFor<$P> =
+  $P extends Regex ? ReplacementInput<$P> :
+  $P extends RegExp ? ReplacementInputUntyped :
+                      string
+
+/**
+ * Validates pattern for `replaceAll` - ensures Regex has global flag.
+ * Returns StaticError for Regex without 'g' flag.
+ * @internal
+ */
+// dprint-ignore
+export type ValidatePatternAll<$P> =
+  $P extends Regex
+    ? $P['flags'] extends `${string}g${string}`
+      ? $P
+      : Ts.Err.StaticError<'regex-missing-global-flag', { flags: $P['flags'] }>
+    : $P
 
 //
 //
@@ -97,45 +155,186 @@ export const stripLeading = replaceLeadingWith(``)
 //
 
 /**
- * Replace all occurrences of patterns with a replacement string.
+ * Replace matches in a string with a replacement.
+ *
  * @category Transformation
- * @deprecated Use {@link String.replace} or {@link String.replaceAll} from Effect instead
- * @param replacement - The string to replace matches with
- * @param matcher - String or RegExp pattern(s) to match
  * @param value - The string to operate on
- * @returns The string with all matches replaced
+ * @param pattern - Pattern(s) to match
+ * @param replacement - String or callback replacement (typed for Regex patterns)
+ * @returns The string with replacements applied
+ *
  * @example
  * ```typescript
- * replace('_', ' ', 'hello world') // 'hello_world'
- * replace('X', /[aeiou]/g, 'hello') // 'hXllX'
- * replace('-', [' ', '_'], 'hello world_test') // 'hello-world-test'
+ * // String pattern
+ * replace('hello world', ' ', '_')  // 'hello_world'
+ *
+ * // Typed Regex with callback
+ * const p = pattern("(?<name>\\w+)@(?<domain>\\w+)")
+ * replace('user@example.com', p, (m) => {
+ *   return `${m.groups.name} at ${m.groups.domain}`
+ * })
  * ```
  */
-export const replace = (replacement: string, matcher: PatternsInput, value: string): string => {
-  const patterns = Arr.sure(matcher)
-  return patterns.reduce<string>((value, pattern) => {
-    return value.replaceAll(pattern, replacement)
-  }, value)
-}
+export function replace<$P extends string | string[] | RegExp | Regex>(
+  value: string,
+  pattern: $P,
+  replacement: ReplacementFor<$P>,
+): string
+export function replace(
+  value: string,
+  pattern: string | string[] | RegExp | Regex,
+  replacement: string | ReplacementCallback | ReplacementCallbackUntyped,
+): string {
+  // Handle array of string patterns
+  if (Array.isArray(pattern)) {
+    return pattern.reduce<string>((acc, p) => {
+      return acc.replaceAll(p, replacement as string)
+    }, value)
+  }
 
-/**
- * Curried version of {@link replace} with replacement first.
- * @category Transformation
- * @param replacement - The string to replace matches with
- * @returns Function that takes matcher, then value
- */
-export const replaceWith = (replacement: string) => (matcher: PatternsInput) => (value: string): string => {
-  return replace(replacement, matcher, value)
+  // Handle single string pattern
+  if (typeof pattern === 'string') {
+    return value.replaceAll(pattern, replacement as string)
+  }
+
+  // Handle RegExp or Regex with callback wrapper
+  if (typeof replacement === 'function') {
+    return value.replace(pattern as RegExp, (value: string, ...args: any[]) => {
+      // Native callback: (match, ...captures, offset, string, groups?)
+      // Find offset (first number after match) to split captures from metadata
+      const offsetIdx = args.findIndex((arg) => typeof arg === 'number')
+      const captures = args.slice(0, offsetIdx)
+      const offset = args[offsetIdx] as number
+      const input = args[offsetIdx + 1] as string
+      const groups = args[offsetIdx + 2] as Record<string, string | undefined> | undefined
+
+      return (replacement as ReplacementCallback)({
+        value,
+        offset,
+        captures,
+        groups: groups ?? {},
+        input,
+      } as any)
+    })
+  }
+
+  // Handle RegExp or Regex with string replacement
+  return value.replace(pattern as RegExp, replacement)
 }
 
 /**
  * Curried version of {@link replace} with value first.
  * @category Transformation
- * @param value - The string to operate on
- * @returns Function that takes replacement, then matcher
  */
-export const replaceOn = (value: string) => (replacement: string) => (matcher: PatternsInput): string => {
-  return replace(replacement, matcher, value)
+export const replaceOn = curry(replace)
+
+/**
+ * Curried version of {@link replace} with pattern and replacement first.
+ * @category Transformation
+ */
+export const replaceWith = <$P extends string | string[] | RegExp | Regex>(
+  pattern: $P,
+  replacement: ReplacementFor<$P>,
+) =>
+(value: string): string => {
+  return replace(value, pattern as any, replacement as any)
+}
+
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • replaceAll
+//
+//
+
+/**
+ * Replace all matches in a string with a replacement.
+ * For typed Regex patterns, requires the global flag (enforced at type level).
+ *
+ * @category Transformation
+ * @param value - The string to operate on
+ * @param pattern - Pattern(s) to match (Regex requires 'g' flag)
+ * @param replacement - String or callback replacement
+ * @returns The string with all replacements applied
+ *
+ * @example
+ * ```typescript
+ * // String pattern (always replaces all)
+ * replaceAll('a-b-a', 'a', 'X')  // 'X-b-X'
+ *
+ * // Typed Regex with global flag
+ * const p = pattern("\\d+", "g")
+ * replaceAll('a1b2c3', p, m => `[${m.value}]`)  // 'a[1]b[2]c[3]'
+ *
+ * // Non-global Regex causes type error
+ * const bad = pattern("\\d+")
+ * replaceAll('a1b2', bad, 'X')  // ❌ Type error: missing 'g' flag
+ * ```
+ */
+export function replaceAll<$P extends string | string[] | RegExp | Regex>(
+  value: string,
+  pattern: ValidatePatternAll<$P>,
+  replacement: ReplacementFor<$P>,
+): string
+export function replaceAll(
+  value: string,
+  pattern: string | string[] | RegExp | Regex,
+  replacement: string | ReplacementCallback | ReplacementCallbackUntyped,
+): string {
+  // Handle array of string patterns
+  if (Array.isArray(pattern)) {
+    return pattern.reduce<string>((acc, p) => {
+      return acc.replaceAll(p, replacement as string)
+    }, value)
+  }
+
+  // Handle single string pattern
+  if (typeof pattern === 'string') {
+    return value.replaceAll(pattern, replacement as string)
+  }
+
+  // Handle RegExp or Regex with callback wrapper
+  if (typeof replacement === 'function') {
+    return value.replaceAll(pattern as RegExp, (match: string, ...args: any[]) => {
+      // Native callback: (match, ...captures, offset, string, groups?)
+      // Find offset (first number after match) to split captures from metadata
+      const offsetIdx = args.findIndex((arg) => typeof arg === 'number')
+      const captures = args.slice(0, offsetIdx)
+      const offset = args[offsetIdx] as number
+      const input = args[offsetIdx + 1] as string
+      const groups = args[offsetIdx + 2] as Record<string, string | undefined> | undefined
+
+      return (replacement as ReplacementCallback)({
+        value: match,
+        offset,
+        captures,
+        groups: groups ?? {},
+        input,
+      } as any)
+    })
+  }
+
+  // Handle RegExp or Regex with string replacement
+  return value.replaceAll(pattern as RegExp, replacement)
+}
+
+/**
+ * Curried version of {@link replaceAll} with value first.
+ * @category Transformation
+ */
+export const replaceAllOn = curry(replaceAll)
+
+/**
+ * Curried version of {@link replaceAll} with pattern and replacement first.
+ * @category Transformation
+ */
+export const replaceAllWith = <$P extends string | string[] | RegExp | Regex>(
+  pattern: ValidatePatternAll<$P>,
+  replacement: ReplacementFor<$P>,
+) =>
+(value: string): string => {
+  return replaceAll(value, pattern as any, replacement as any)
 }
 
 //
@@ -388,9 +587,8 @@ export const truncateWith = flipCurried(truncateOn)
 
 /**
  * Remove all occurrences of patterns from a string.
- * Alias for `replaceWith('')`.
  * @category Transformation
- * @param matcher - String or RegExp pattern(s) to remove
+ * @param pattern - String or RegExp pattern(s) to remove
  * @returns Function that takes a value and returns the stripped string
  * @example
  * ```typescript
@@ -398,7 +596,7 @@ export const truncateWith = flipCurried(truncateOn)
  * removeVowels('hello world') // 'hll wrld'
  * ```
  */
-export const strip = replaceWith(Empty)
+export const strip = (pattern: string | string[] | RegExp) => replaceWith(pattern, Empty)
 
 /**
  * Remove regular spaces from the beginning and end of a string.

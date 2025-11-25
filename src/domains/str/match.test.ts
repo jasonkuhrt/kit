@@ -1,73 +1,177 @@
-import { Test } from '#test'
+import { Assert } from '#assert'
+import { Str } from '#str'
 import { Option } from 'effect'
-import { expect, test } from 'vitest'
-import { match, pattern, type RegExpMatchResult } from './match.js'
+import { describe, expect, test } from 'vitest'
+import { match, matchAll, pattern, patternWith, type RegexMatch } from './match.js'
+import { replace, replaceAll } from './replace.js'
 
-const regExpMatchResult = (matchString: string, ...groups: string[]): RegExpMatchResult<any> => {
-  return [matchString, ...groups] as RegExpMatchResult<any>
-}
+const A = Assert.Type
 
-// dprint-ignore
-Test.on(match)
-  .describe('basic', [
-    [['hello world', /foo/ ],         Option.none()],
-    [['hello world', /hello/ ],       Option.some(regExpMatchResult('hello')) as any],
-    [['hello world', /hello (\w+)/ ], Option.some(regExpMatchResult('hello world', 'world')) as any]
-  ])
-  .describe('edges', [
-    [['',      /^$/ ],      Option.some(regExpMatchResult('')) as any],
-    [['',      /foo/ ],     Option.none()],
-    [['HELLO', /hello/ ],   Option.none()],
-    [['HELLO', /hello/i ],  Option.some(regExpMatchResult('HELLO')) as any],
-  ])
-  .test(({ result, output }) => {
-    if (Option.isNone(output!)) {
-      expect(Option.isNone(result)).toBe(true)
-    } else {
-      expect(Option.isSome(result)).toBe(true)
-      output!.value.forEach((group: string, idx: number) => {
-        expect(Option.getOrThrow(result)[idx]).toBe(group)
-      })
+// ============================================================================
+// Pattern Tests
+// ============================================================================
+
+describe('pattern', () => {
+  test('creates regex from string', () => {
+    const p = pattern('\\w+')
+    A.exact.ofAs<Str.Regex<string, {}>>().on(p)
+    expect(p).toBeInstanceOf(RegExp)
+  })
+
+  test('preserves flags at type level', () => {
+    const p = pattern('\\d+', 'gi')
+    A.exact.ofAs<Str.Regex<`${bigint}`, { flags: 'gi' }>>().on(p)
+  })
+})
+
+describe('pattern.as', () => {
+  test('manual typing for string', () => {
+    const p = pattern.as<string, { names: { id: string } }>('(?<id>\\w+)')
+    A.exact.ofAs<Str.Regex<string, { names: { id: string } }>>().on(p)
+  })
+
+  test('manual typing for RegExp', () => {
+    const external = /(?<user>\w+)/
+    const typed = pattern.as<string, { names: { user: string } }>(external)
+    A.exact.ofAs<Str.Regex<string, { names: { user: string } }>>().on(typed)
+  })
+})
+
+describe('patternWith', () => {
+  test('curried pattern creation', () => {
+    const withGlobal = patternWith('g')
+    const p = withGlobal('\\d+')
+    A.exact.ofAs<Str.Regex<'\\d+', { flags: 'g' }>>().on(p)
+    expect(p.flags).toBe('g')
+  })
+})
+
+// ============================================================================
+// Match Tests
+// ============================================================================
+
+describe('match', () => {
+  test('returns Option.some with RegexMatch on match', () => {
+    const p = pattern('\\d+')
+    const result = match('a1b', p)
+    A.exact.ofAs<Option.Option<RegexMatch<typeof p>>>().on(result)
+    expect(Option.isSome(result)).toBe(true)
+    if (Option.isSome(result)) {
+      expect(result.value.value).toBe('1')
+      expect(result.value.offset).toBe(1)
+      expect(result.value.input).toBe('a1b')
     }
   })
 
-test('captures named groups with types', () => {
-  type matches = { groups: ['name', 'age'] }
-  const p = pattern<matches>(/(?<name>\w+) is (?<age>\d+)/)
-  const result = match('John is 25', p)
+  test('returns Option.none on no match', () => {
+    const p = pattern('\\d+')
+    const result = match('hello', p)
+    A.exact.ofAs<Option.Option<RegexMatch<typeof p>>>().on(result)
+    expect(Option.isNone(result)).toBe(true)
+  })
 
-  expect(Option.isSome(result)).toBe(true)
-  if (Option.isSome(result)) {
-    expect(result.value.groups.name).toBe('John')
-    expect(result.value.groups.age).toBe('25')
-  }
+  test('string pattern does exact match', () => {
+    const result = match('hello', 'hello')
+    expect(Option.isSome(result)).toBe(true)
+    if (Option.isSome(result)) {
+      expect(result.value.value).toBe('hello')
+      expect(result.value.offset).toBe(0)
+    }
+    expect(Option.isNone(match('hello world', 'hello'))).toBe(true)
+  })
+
+  test('captures positional groups', () => {
+    const p = pattern('(\\w+)@(\\w+)')
+    const result = match('user@example', p)
+    expect(Option.isSome(result)).toBe(true)
+    if (Option.isSome(result)) {
+      expect(result.value.value).toBe('user@example')
+      expect(result.value.captures).toEqual(['user', 'example'])
+    }
+  })
+
+  test('captures named groups', () => {
+    const p = pattern('(?<user>\\w+)@(?<domain>\\w+)')
+    const result = match('john@test', p)
+    expect(Option.isSome(result)).toBe(true)
+    if (Option.isSome(result)) {
+      expect(result.value.groups).toEqual({ user: 'john', domain: 'test' })
+    }
+  })
 })
 
-test('handles optional groups', () => {
-  type matches = { groups: ['required', 'optional' | undefined] }
-  const p = pattern<matches>(/(?<required>\w+)(?:\s+(?<optional>\d+))?/)
-
-  const result1 = match('hello 123', p)
-  expect(Option.isSome(result1)).toBe(true)
-  if (Option.isSome(result1)) {
-    expect(result1.value.groups.required).toBe('hello')
-    expect(result1.value.groups.optional).toBe('123')
-  }
-
-  const result2 = match('hello', p)
-  expect(Option.isSome(result2)).toBe(true)
-  if (Option.isSome(result2)) {
-    expect(result2.value.groups.required).toBe('hello')
-    expect(result2.value.groups.optional).toBeUndefined()
-  }
+describe('matchAll', () => {
+  test('returns iterator', () => {
+    const p = pattern('\\d+', 'g')
+    const result = matchAll('a1 b2 c3', p)
+    A.exact.ofAs<IterableIterator<RegExpExecArray>>().on(result)
+    expect(Array.from(result)).toHaveLength(3)
+  })
 })
 
-test('returns first match with global flag', () => {
-  const result = match('foo bar foo', /foo/g)
-  expect(Option.isSome(result)).toBe(true)
-  if (Option.isSome(result)) {
-    expect(result.value[0]).toBe('foo')
-    // With global flag, match() returns all matches as array items
-    // but our typed version expects the standard match array format
-  }
+describe('isMatch', () => {
+  test('returns boolean', () => {
+    A.exact.ofAs<boolean>().on(Str.isMatch('hello', /hello/))
+    A.exact.ofAs<boolean>().on(Str.isMatch('hello', 'hello'))
+    A.exact.ofAs<boolean>().on(Str.isMatch('hello', pattern('hello')))
+  })
+})
+
+// ============================================================================
+// Replace Tests
+// ============================================================================
+
+describe('replace', () => {
+  test('replaces first occurrence', () => {
+    const result = replace('a1 b2 c3', pattern('\\d+'), 'X')
+    A.exact.ofAs<string>().on(result)
+    expect(result).toBe('aX b2 c3')
+  })
+
+  test('accepts callback with RegexMatch', () => {
+    const p = pattern('\\d+')
+    const result = replace('a1 b2', p, (m) => {
+      A.exact.ofAs<{
+        value: `${bigint}`
+        offset: number
+        captures: []
+        groups: {}
+        input: string
+      }>().on(m)
+      return `[${m.value}]`
+    })
+    A.exact.ofAs<string>().on(result)
+    expect(result).toBe('a[1] b2')
+  })
+})
+
+describe('replaceAll', () => {
+  test('error if given regex pattern is not global', () => {
+    const nonGlobal = pattern('\\d+') // No 'g' flag
+    // Type-only test: @ts-expect-error verifies non-global pattern causes type error
+    // @ts-expect-error - non-global pattern should produce type error
+    const _typeCheck: Parameters<typeof replaceAll>[1] = nonGlobal
+  })
+
+  test('replaces all occurrences', () => {
+    const result = replaceAll('a1 b2 c3', pattern('\\d+', 'g'), 'X')
+    A.exact.ofAs<string>().on(result)
+    expect(result).toBe('aX bX cX')
+  })
+
+  test('accepts callback with RegexMatch', () => {
+    const p = pattern('\\d+', 'g')
+    const result = replaceAll('a1 b2 c3', p, (m) => {
+      A.exact.ofAs<{
+        value: `${bigint}`
+        offset: number
+        captures: []
+        groups: {}
+        input: string
+      }>().on(m)
+      return `[${m.value}]`
+    })
+    A.exact.ofAs<string>().on(result)
+    expect(result).toBe('a[1] b[2] c[3]')
+  })
 })

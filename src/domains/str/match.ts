@@ -1,105 +1,298 @@
 import { Arr } from '#arr'
 import { CoreFn as Fn } from '#fn/core'
-import type { Undefined } from '#undefined'
+import { Ts } from '#ts'
+import { type Regex, regex, type regex as regexTypes } from 'arkregex'
+import type {
+  Flags,
+  IndexedCaptures as PositionalCaptures,
+  NamedCaptures,
+  RegexContext,
+} from 'arkregex/internal/regex.js'
 import { Option } from 'effect'
 
-type MatchItem = string | undefined
+// ============================================================================
+// Types
+// ============================================================================
 
-// dprint-ignore
-type ToGroupsProperties<$MatchItems extends readonly [MatchItem, ...readonly MatchItem[]]> = {
-  [i in keyof $MatchItems]:
-    $MatchItems[i] extends string
-      ? { [_ in $MatchItems[i]]: string }
-      : { [_ in Undefined.Exclude<$MatchItems[i]>]?: string }
-}
+export type { Flags, NamedCaptures, PositionalCaptures, Regex, RegexContext }
 
-// dprint-ignore
-export type RegExpMatchResult<$Matches extends Matches> =
-  & Omit<RegExpMatchArray, 'groups'>
-  & {
-      groups:
-        $Matches['groups'] extends readonly [MatchItem,... readonly MatchItem[]]
-          ? Arr.ReduceWithIntersection<ToGroupsProperties<$Matches['groups']>>
-          : undefined
-    }
-  & (
-      $Matches extends { indicies: readonly [MatchItem,... readonly MatchItem[]] }
-        ? [originalValue: string, ...$Matches['indicies']]
-        : [originalValue: string]
-    )
-
-const RegExpTypeSymbol = Symbol(`RegExpType`)
-
-interface Pattern<$Matches extends Matches> extends RegExp {
-  [RegExpTypeSymbol]: $Matches
-}
+export type PatternInput = string | RegExp | Regex
 
 /**
- * Create a typed pattern from a regular expression.
- * Enables type-safe capture groups when used with {@link match}.
- * @category Pattern Matching
- * @param pattern - The regular expression pattern
- * @returns A typed pattern that preserves capture group information
+ * Result of matching a regex pattern against a string.
+ *
+ * Used as both the return type of {@link match} and the callback parameter
+ * for {@link replace} and {@link replaceAll}.
+ *
  * @example
  * ```typescript
- * const p = pattern<{ groups: ['name', 'age'] }>(/(?<name>\w+) is (?<age>\d+)/)
- * const result = match('John is 25', p)
+ * // Pattern: /(\w+)@(\w+)/g on "foo@bar baz@qux"
+ * // Each match produces:
+ * // { value: "foo@bar", captures: ["foo", "bar"], offset: 0, ... }
+ * // { value: "baz@qux", captures: ["baz", "qux"], offset: 8, ... }
+ * ```
+ *
+ * @category Pattern Matching
+ */
+export type RegexMatch<$Regex extends Regex = Regex> = {
+  /** The entire matched substring. Typed from the pattern (e.g., `` `${bigint}` `` for `\d+`). */
+  value: $Regex['infer']
+  /** Zero-based index where this match starts in the input. */
+  offset: number
+  /** Positional capture groups as a typed tuple. */
+  captures: $Regex['inferCaptures']
+  /** Named capture groups as a typed object. */
+  groups: $Regex['inferNamedCaptures']
+  /** The original input string. */
+  input: string
+}
+
+// ============================================================================
+// Pattern Construction
+// ============================================================================
+
+/**
+ * Create a typed pattern from a regular expression with automatic type inference.
+ * Uses ArkRegex to parse the pattern and infer capture group types at compile time.
+ *
+ * @category Pattern Matching
+ * @param src - The regular expression pattern string
+ * @param flags - Optional regex flags (g, i, m, s, u, v, y, d)
+ * @returns A typed Regex with inferred capture groups
+ *
+ * @example
+ * ```typescript
+ * // Automatic type inference from pattern
+ * const emailPattern = pattern("(?<name>\\w+)@(?<domain>\\w+)")
+ * // Type: Regex<..., { names: { name: string, domain: string } }>
+ *
+ * const result = match('user@example.com', emailPattern)
  * if (Option.isSome(result)) {
- *   console.log(result.value.groups.name) // 'John' (typed)
- *   console.log(result.value.groups.age) // '25' (typed)
+ *   console.log(result.value.groups.name)    // 'user' (typed!)
+ *   console.log(result.value.groups.domain)  // 'example.com' (typed!)
  * }
  * ```
  */
-export const pattern = <matches extends Matches>(pattern: RegExp): Pattern<matches> => {
-  return pattern as any
-}
+export const pattern: PatternFunction = ((src: any, flags?: any) => {
+  return regex(src, flags)
+}) as any
 
-// todo: technically undefined on its own is not valid, it is: string | (string | undefined)
-export type Matches = {
-  groups?: (string | undefined)[]
-  indicies?: (string | undefined)[]
-}
+interface PatternFunction {
+  <$src extends string, $flags extends Flags = ''>(
+    src: $src,
+    flags?: $flags,
+  ): regexTypes.parse<$src, $flags>
 
-// export type MatchesToObject
+  /**
+   * Create a typed pattern with manual type assertions.
+   * Use this as an escape hatch when automatic inference doesn't work or for pre-existing RegExp objects.
+   *
+   * @example
+   * ```typescript
+   * // Manual typing for string patterns
+   * const complex = pattern.as<string, { names: { id: string } }>("...")
+   *
+   * // Manual typing for RegExp literals from libraries
+   * const external: RegExp = someLibrary.getPattern()
+   * const typed = pattern.as<string, { names: { user: string } }>(external)
+   * ```
+   */
+  as: {
+    <$pattern extends string = string, $ctx extends RegexContext = {}>(
+      src: string,
+      flags?: Flags,
+    ): Regex<$pattern, $ctx>
+    <$pattern extends string = string, $ctx extends RegexContext = {}>(
+      regexp: RegExp,
+    ): Regex<$pattern, $ctx>
+  }
+} // Implement .as() method
+
+;(pattern as PatternFunction).as = (
+  (srcOrRegexp: string | RegExp, flags?: Flags): Regex => {
+    if (typeof srcOrRegexp === 'string') {
+      return regex.as(srcOrRegexp, flags) as any
+    }
+    // For RegExp input, cast to Regex with manual type assertion
+    return srcOrRegexp as any
+  }
+) as any
+
+/**
+ * Curried version of {@link pattern} with flags first.
+ *
+ * @category Pattern Matching
+ * @param flags - Regex flags (g, i, m, s, u, v, y, d)
+ * @returns Function that takes a pattern string and returns a typed Regex
+ *
+ * @example
+ * ```typescript
+ * const globalPattern = patternWith('g')
+ * const numbers = globalPattern('\\d+')
+ * matchAll('a1 b2 c3', numbers) // Works with global pattern
+ * ```
+ */
+export const patternWith =
+  <$flags extends Flags>(flags: $flags) => <$src extends string>(src: $src): Regex<$src, { flags: $flags }> => {
+    return pattern(src, flags) as any
+  }
+
+// ============================================================================
+// Match Functions
+// ============================================================================
 
 /**
  * Match a string against a pattern with type-safe results.
+ *
  * @category Pattern Matching
  * @param string - The string to match against
- * @param pattern - Regular expression or typed pattern
+ * @param pattern - String (exact match), RegExp, or typed Regex pattern
  * @returns Option of match result with typed capture groups, or None if no match
+ *
  * @example
  * ```typescript
- * const result = match('hello world', /hello (\w+)/)
+ * // With typed pattern
+ * const p = pattern("(?<name>\\w+) is (?<age>\\d+)")
+ * const result = match('John is 25', p)
  * if (Option.isSome(result)) {
- *   console.log(result.value[0]) // 'hello world'
- *   console.log(result.value[1]) // 'world'
+ *   console.log(result.value.groups.name) // 'John' (typed)
+ *   console.log(result.value.groups.age)  // '25' (typed)
+ * }
+ *
+ * // With plain RegExp (untyped)
+ * const result2 = match('hello world', /hello (\w+)/)
+ * if (Option.isSome(result2)) {
+ *   console.log(result2.value[1]) // 'world'
+ * }
+ *
+ * // With string (exact match)
+ * const result3 = match('hello', 'hello')
+ * if (Option.isSome(result3)) {
+ *   console.log(result3.value[0]) // 'hello'
  * }
  * ```
  */
-export const match = <matches extends Matches>(
+export const match = <$pattern extends string = string, $ctx extends RegexContext = RegexContext>(
   string: string,
-  pattern: RegExp | Pattern<matches>,
-): Option.Option<RegExpMatchResult<matches>> => {
+  pattern: string | RegExp | Regex<$pattern, $ctx>,
+): Option.Option<RegexMatch<Regex<$pattern, $ctx>>> => {
+  if (typeof pattern === 'string') {
+    // String pattern = exact match
+    if (string !== pattern) return Option.none()
+    return Option.some({
+      value: string,
+      offset: 0,
+      captures: [],
+      groups: {},
+      input: string,
+    } as any)
+  }
+
   const result = string.match(pattern)
-  return result ? Option.some(result as any) : Option.none()
+  if (!result) return Option.none()
+
+  // Convert native RegExpMatchArray to RegexMatch
+  const captures = result.slice(1) // Positional captures start at [1]
+  return Option.some({
+    value: result[0],
+    offset: result.index ?? 0,
+    captures,
+    groups: result.groups ?? {},
+    input: result.input ?? string,
+  } as any)
 }
 
-// One
+/**
+ * Curried version of {@link match} with string first.
+ *
+ * @category Pattern Matching
+ */
+export const matchOn = Fn.curry(match)
 
-export type PatternInput = string | RegExp
+/**
+ * Curried version of {@link match} with pattern first.
+ *
+ * @category Pattern Matching
+ */
+export const matchWith = Fn.flipCurried(matchOn)
+
+// ============================================================================
+// Match All
+// ============================================================================
+
+/**
+ * Type-level guard that ensures a Regex has the global flag.
+ * Returns a static error if the flag is missing.
+ */
+// dprint-ignore
+export type GuardGlobalFlag<$R extends Regex> =
+  $R['flags'] extends `${string}g${string}`
+    ? $R
+    : Ts.Err.StaticError<'regex-missing-global-flag', { flags: $R['flags'] }>
+
+/**
+ * Match all occurrences of a pattern in a string.
+ * Requires a pattern with the global flag - enforced at type level.
+ *
+ * @category Pattern Matching
+ * @param string - The string to search in
+ * @param pattern - A Regex pattern with the global flag
+ * @returns Iterable of match results with typed capture groups
+ *
+ * @example
+ * ```typescript
+ * const p = pattern("(?<letter>\\w)(?<digit>\\d)", "g")
+ * const matches = matchAll("a1 b2 c3", p)
+ *
+ * for (const m of matches) {
+ *   console.log(m.groups.letter) // 'a', 'b', 'c' (typed)
+ *   console.log(m.groups.digit)  // '1', '2', '3' (typed)
+ * }
+ *
+ * // Non-global pattern causes compile error:
+ * const nonGlobal = pattern("\\d+")
+ * matchAll("a1 b2", nonGlobal) // ❌ Type error: missing 'g' flag
+ * ```
+ */
+export const matchAll = <$pattern extends string = string, $ctx extends RegexContext = RegexContext>(
+  string: string,
+  pattern: GuardGlobalFlag<Regex<$pattern, $ctx>>,
+): IterableIterator<RegExpExecArray> => {
+  return string.matchAll(pattern as RegExp)
+}
+
+/**
+ * Curried version of {@link matchAll} with string first.
+ *
+ * @category Pattern Matching
+ */
+export const matchAllOn = Fn.curry(matchAll)
+
+/**
+ * Curried version of {@link matchAll} with pattern first.
+ *
+ * @category Pattern Matching
+ */
+export const matchAllWith = Fn.flipCurried(matchAllOn)
+
+// ============================================================================
+// Predicates
+// ============================================================================
 
 /**
  * Check if a string matches a pattern.
+ *
  * @category Predicates
  * @param value - The string to test
- * @param pattern - String for exact match or RegExp for pattern match
+ * @param pattern - String for exact match, RegExp, or typed Regex pattern
  * @returns True if the value matches the pattern
+ *
  * @example
  * ```typescript
- * isMatch('hello', 'hello') // true
- * isMatch('hello', /^h.*o$/) // true
- * isMatch('world', 'hello') // false
+ * isMatch('hello', 'hello')           // true (exact)
+ * isMatch('hello', /^h.*o$/)          // true (regex)
+ * isMatch('hello', pattern('^h.*o$')) // true (typed)
+ * isMatch('world', 'hello')           // false
  * ```
  */
 export const isMatch = (value: string, pattern: PatternInput): boolean => {
@@ -111,43 +304,22 @@ export const isMatch = (value: string, pattern: PatternInput): boolean => {
 
 /**
  * Curried version of {@link isMatch} with value first.
+ *
  * @category Predicates
- * @param value - The string to test
- * @returns Function that takes a pattern and returns boolean
- * @example
- * ```typescript
- * const isHello = isMatchOn('hello')
- * isHello('hello') // true
- * isHello(/^h.*o$/) // true
- * ```
  */
 export const isMatchOn = Fn.curry(isMatch)
 
 /**
  * Curried version of {@link isMatch} with pattern first.
+ *
  * @category Predicates
- * @param pattern - String for exact match or RegExp for pattern match
- * @returns Function that takes a value and returns boolean
- * @example
- * ```typescript
- * const matchesHello = isMatchWith('hello')
- * matchesHello('hello') // true
- * matchesHello('world') // false
- * ```
  */
 export const isMatchWith = Fn.flipCurried(isMatchOn)
 
 /**
  * Check if a string does not match a pattern.
+ *
  * @category Predicates
- * @param pattern - String for exact match or RegExp for pattern match
- * @returns Function that takes a value and returns true if it doesn't match
- * @example
- * ```typescript
- * const notHello = isntMatch('hello')
- * notHello('world') // true
- * notHello('hello') // false
- * ```
  */
 export const isntMatch = (pattern: PatternInput) => (value: string): boolean => {
   return !isMatch(value, pattern)
@@ -155,35 +327,38 @@ export const isntMatch = (pattern: PatternInput) => (value: string): boolean => 
 
 /**
  * Curried version of {@link isntMatch} with value first.
+ *
  * @category Predicates
- * @param value - The string to test
- * @returns Function that takes a pattern and returns boolean
  */
 export const isntMatchOn = Fn.curry(isntMatch)
 
 /**
  * Curried version of {@link isntMatch} with pattern first.
+ *
  * @category Predicates
- * @param pattern - String for exact match or RegExp for pattern match
- * @returns Function that takes a value and returns boolean
  */
 export const isntMatchWith = Fn.flipCurried(isntMatchOn)
 
-// Any
+// ============================================================================
+// Multiple Pattern Predicates
+// ============================================================================
 
-export type PatternsInput = Arr.Maybe<string | RegExp>
+export type PatternsInput = Arr.Maybe<PatternInput>
 
 /**
  * Check if a string matches any of the provided patterns.
+ *
  * @category Predicates
  * @param value - The string to test
- * @param patterns - Array of strings or RegExp patterns (or a single pattern)
+ * @param patterns - Array of strings, RegExp, or Regex patterns (or a single pattern)
  * @returns True if the value matches any pattern
+ *
  * @example
  * ```typescript
- * isMatchAny('hello', ['hello', 'world']) // true
- * isMatchAny('hello', [/^h/, /o$/]) // true
- * isMatchAny('foo', ['hello', 'world']) // false
+ * isMatchAny('hello', ['hello', 'world'])              // true
+ * isMatchAny('hello', [/^h/, /o$/])                    // true
+ * isMatchAny('hello', [pattern('^h'), pattern('o$')])  // true
+ * isMatchAny('foo', ['hello', 'world'])                // false
  * ```
  */
 export const isMatchAny = (value: string, patterns: PatternsInput): boolean => {
@@ -193,38 +368,22 @@ export const isMatchAny = (value: string, patterns: PatternsInput): boolean => {
 
 /**
  * Curried version of {@link isMatchAny} with value first.
+ *
  * @category Predicates
- * @param value - The string to test
- * @returns Function that takes patterns and returns boolean
  */
 export const isMatchAnyOn = Fn.curry(isMatchAny)
 
 /**
  * Curried version of {@link isMatchAny} with patterns first.
+ *
  * @category Predicates
- * @param patterns - Array of strings or RegExp patterns (or a single pattern)
- * @returns Function that takes a value and returns boolean
- * @example
- * ```typescript
- * const matchesGreeting = isMatchAnyWith(['hello', 'hi', /^hey/])
- * matchesGreeting('hello') // true
- * matchesGreeting('hey there') // true
- * matchesGreeting('goodbye') // false
- * ```
  */
 export const isMatchAnyWith = Fn.flipCurried(isMatchAnyOn)
 
 /**
  * Check if a string does not match any of the provided patterns.
+ *
  * @category Predicates
- * @param patternOrPatterns - Array of strings or RegExp patterns (or a single pattern)
- * @returns Function that takes a value and returns true if it doesn't match any pattern
- * @example
- * ```typescript
- * const notGreeting = isNotMatchAny(['hello', 'hi'])
- * notGreeting('goodbye') // true
- * notGreeting('hello') // false
- * ```
  */
 export const isNotMatchAny = (patternOrPatterns: PatternsInput) => (value: string): boolean => {
   return !isMatchAny(value, patternOrPatterns)
@@ -232,17 +391,15 @@ export const isNotMatchAny = (patternOrPatterns: PatternsInput) => (value: strin
 
 /**
  * Curried version of {@link isNotMatchAny} with value first.
+ *
  * @category Predicates
- * @param value - The string to test
- * @returns Function that takes patterns and returns boolean
  */
 export const isNotMatchAnyOn = Fn.curry(isNotMatchAny)
 
 /**
  * Curried version of {@link isNotMatchAny} with patterns first.
+ *
  * @category Predicates
- * @param patternOrPatterns - Array of strings or RegExp patterns (or a single pattern)
- * @returns Function that takes a value and returns boolean
  */
 export const isNotMatchAnyWith = Fn.flipCurried(isNotMatchAnyOn)
 
