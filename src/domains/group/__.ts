@@ -1,35 +1,84 @@
+import { Obj } from '#obj'
 import { Ts } from '#ts'
 import type { Undefined } from '#undefined'
 
-export type Unknown = Record<PropertyKey, unknown[]>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Types - Immutable (default)
 
-export type Any = Record<PropertyKey, any[]>
+/**
+ * Unknown readonly group set type. Use as a constraint for immutable group sets.
+ */
+export type Unknown = Readonly<Record<PropertyKey, readonly unknown[]>>
+
+/**
+ * Any readonly group set type. Use as a constraint for immutable group sets.
+ */
+export type Any = Readonly<Record<PropertyKey, readonly any[]>>
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Types - Mutable (explicit)
+
+/**
+ * Unknown mutable group set type.
+ */
+export type UnknownMut = Record<PropertyKey, unknown[]>
+
+/**
+ * Any mutable group set type.
+ */
+export type AnyMut = Record<PropertyKey, any[]>
 
 // dprint-ignore
 export type by<
   $Type extends object,
   $Key extends keyof $Type,
 > =
-  $Type[$Key] extends PropertyKey
-    ? {
-        [__group_name__ in $Type[$Key]]?:
-        Array<
-          (
-            // If $Type is a union type we want to extract the relevent members for this group.
-            //
-            // If Extraction results in never then that means its not a union of types but rather
-            // the key value itself is a union. In this case each group  gets the type but narrowed
-            // for the key property.
-            //
-            Ts.Simplify.Top<
-              Extract<$Type, { [_ in $Key]: __group_name__ }> extends never
-                ? $Type & { [_ in $Key]: __group_name__ }
-                : Extract<$Type, { [_ in $Key]: __group_name__ }>
+  object extends $Type
+    ? Any
+    : $Type[$Key] extends PropertyKey
+        ? Readonly<{
+            [__group_name__ in $Type[$Key]]?:
+            readonly (
+              // If $Type is a union type we want to extract the relevent members for this group.
+              //
+              // If Extraction results in never then that means its not a union of types but rather
+              // the key value itself is a union. In this case each group  gets the type but narrowed
+              // for the key property.
+              //
+              Ts.Simplify.Top<
+                Extract<$Type, { [_ in $Key]: __group_name__ }> extends never
+                  ? $Type & { [_ in $Key]: __group_name__ }
+                  : Extract<$Type, { [_ in $Key]: __group_name__ }>
+              >
+            )[]
+          }>
+        : never
+
+// dprint-ignore
+export type byToMut<
+  $Type extends object,
+  $Key extends keyof $Type,
+> =
+  object extends $Type
+    ? AnyMut
+    : $Type[$Key] extends PropertyKey
+        ? {
+            [__group_name__ in $Type[$Key]]?:
+            Array<
+              (
+                // If $Type is a union type we want to extract the relevent members for this group.
+                //
+                // If Extraction results in never then that means its not a union of types but rather
+                // the key value itself is a union. In this case each group  gets the type but narrowed
+                // for the key property.
+                //
+                Ts.Simplify.Top<
+                  Extract<$Type, { [_ in $Key]: __group_name__ }> extends never
+                    ? $Type & { [_ in $Key]: __group_name__ }
+                    : Extract<$Type, { [_ in $Key]: __group_name__ }>
+                >
+              )
             >
-          )
-        >
-      }
-    : never
+          }
+        : never
 
 // dprint-ignore
 export interface ErrorInvalidGroupKey<obj extends object, key extends keyof obj> extends Ts.Err.StaticError<
@@ -40,21 +89,183 @@ export interface ErrorInvalidGroupKey<obj extends object, key extends keyof obj>
   }
 > {}
 
-// interface PrivateState {
-//   key: PropertyKey
-// }
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Clone & Immutability
 
 /**
- * Groups an array of objects by the value at a specified key.
+ * Deep immutable type for a group set.
+ * Makes both the root object and all bucket arrays readonly.
  *
- * Creates an index where each unique value at the given key becomes a property
- * containing an array of all objects that have that value.
+ * @category Clone
+ */
+export type toImmutable<$Group extends AnyMut> = Readonly<
+  {
+    [K in keyof $Group]: Readonly<$Group[K]>
+  }
+>
+
+/**
+ * Deep mutable type for a group set.
+ * Removes readonly from both the root object and all bucket arrays.
+ *
+ * @category Clone
+ */
+export type cloneToMut<$Group extends Any> = {
+  -readonly [K in keyof $Group]: $Group[K] extends readonly (infer T)[] ? T[] : $Group[K]
+}
+
+/**
+ * Create a structure-aware clone of a group set, preserving its immutability state.
+ * Clones both the root object and all bucket arrays.
+ *
+ * @category Clone
+ *
+ * @param group - The group set to clone
+ * @returns A new group set with the same immutability state as the input
+ *
+ * @example
+ * ```ts
+ * const frozen = Group.by(users, 'role')
+ * const frozenClone = Group.clone(frozen)
+ * // frozenClone is frozen (root + all buckets)
+ * ```
+ */
+export const clone = <$Group extends Any>(group: $Group): $Group => {
+  const result: AnyMut = {}
+  for (const k in group) {
+    result[k] = [...(group[k] as any[])]
+  }
+  return (Object.isFrozen(group) ? toImmutableMut(result) : result) as $Group
+}
+
+/**
+ * Create a structure-aware mutable clone of a group set.
+ * Always returns a mutable clone regardless of input's frozen state.
+ *
+ * @category Clone
+ *
+ * @param group - The group set to clone
+ * @returns A new mutable group set (root + all buckets unfrozen)
+ *
+ * @example
+ * ```ts
+ * const frozen = Group.by(users, 'role')
+ * const mutable = Group.cloneToMut(frozen)
+ * // mutable is NOT frozen, can push to buckets
+ * mutable.admin.push(newAdmin)
+ * ```
+ */
+export const cloneToMut = <$Group extends Any>(group: $Group): cloneToMut<$Group> => {
+  const group_: AnyMut = {}
+  for (const k in group) {
+    group_[k] = [...(group[k] as any[])]
+  }
+  return group_ as cloneToMut<$Group>
+}
+
+/**
+ * Create a frozen clone of a group set.
+ * Clones then deep freezes (root + all bucket arrays).
+ *
+ * @category Clone
+ *
+ * @param group - The group set to clone and freeze
+ * @returns A new frozen group set
+ *
+ * @example
+ * ```ts
+ * const mutable = Group.byMut(users, 'role')
+ * const frozen = Group.toImmutable(mutable)
+ * // frozen is frozen (root + all buckets), mutable unchanged
+ * ```
+ */
+export const toImmutable = <$Group extends AnyMut>(group: $Group): toImmutable<$Group> => {
+  if (Object.isFrozen(group)) return group as any
+  const result: AnyMut = {}
+  for (const k in group) {
+    result[k] = Obj.toImmutableMut([...(group[k] as any[])]) as any
+  }
+  return Obj.toImmutableMut(result) as any
+}
+
+/**
+ * Deep freeze a group set in place.
+ * Freezes both the root object and all bucket arrays.
+ *
+ * @category Clone
+ *
+ * @param group - The group set to freeze in place
+ * @returns The same group set, now frozen (root + all buckets)
+ *
+ * @example
+ * ```ts
+ * const group = Group.byMut(users, 'role')
+ * Group.toImmutableMut(group)
+ * // group is now frozen (root + all buckets)
+ * ```
+ */
+export const toImmutableMut = <$Group extends AnyMut>(group: $Group): toImmutable<$Group> => {
+  for (const k in group) {
+    Obj.toImmutableMut(group[k] as any[])
+  }
+  return Obj.toImmutableMut(group) as toImmutable<$Group>
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Construction
+
+/**
+ * Groups an array of objects by the value at a specified key, returning a mutable group set.
+ *
+ * Creates a mutable index where each unique value at the given key becomes a property
+ * containing a mutable array of all objects that have that value.
  *
  * @template obj - The type of objects in the array
  * @template key - The key to group by
  * @param array - The array of objects to group
  * @param key - The object key whose values will be used for grouping. Must be a valid property key type (string, number, or symbol)
- * @returns An object where keys are the unique values found at the specified key, and values are arrays of objects
+ * @returns A mutable object where keys are the unique values found at the specified key, and values are mutable arrays of objects
+ *
+ * @example
+ * const users = [
+ *   { id: 1, role: 'admin', name: 'Alice' },
+ *   { id: 2, role: 'user', name: 'Bob' }
+ * ]
+ *
+ * const usersByRole = Group.byMut(users, 'role')
+ * // Result (mutable):
+ * // {
+ * //   admin: [{ id: 1, role: 'admin', name: 'Alice' }],
+ * //   user: [{ id: 2, role: 'user', name: 'Bob' }]
+ * // }
+ * // Can be mutated:
+ * usersByRole.admin.push({ id: 3, role: 'admin', name: 'Charlie' })
+ */
+export const byToMut = <$Obj extends object, key extends keyof $Obj>(
+  array: $Obj[],
+  // dprint-ignore
+  key: ValidateIsGroupableKey<$Obj, key, ErrorInvalidGroupKey<$Obj, key>>,
+): byToMut<$Obj, key> => {
+  const groupSet = array.reduce((index, item) => {
+    // @ts-expect-error
+    const indexKey = item[key] as PropertyKey
+    index[indexKey] ??= []
+    index[indexKey].push(item)
+    return index
+  }, {} as Record<PropertyKey, any[]>)
+
+  return groupSet as any
+}
+
+/**
+ * Groups an array of objects by the value at a specified key.
+ *
+ * Creates a frozen (immutable) index where each unique value at the given key becomes a property
+ * containing a frozen array of all objects that have that value.
+ *
+ * @template obj - The type of objects in the array
+ * @template key - The key to group by
+ * @param array - The array of objects to group
+ * @param key - The object key whose values will be used for grouping. Must be a valid property key type (string, number, or symbol)
+ * @returns A frozen object where keys are the unique values found at the specified key, and values are frozen arrays of objects
  *
  * @example
  * const users = [
@@ -64,7 +275,7 @@ export interface ErrorInvalidGroupKey<obj extends object, key extends keyof obj>
  * ]
  *
  * const usersByRole = Group.by(users, 'role')
- * // Result:
+ * // Result (frozen):
  * // {
  * //   admin: [{ id: 1, role: 'admin', name: 'Alice' }, { id: 3, role: 'admin', name: 'Charlie' }],
  * //   user: [{ id: 2, role: 'user', name: 'Bob' }]
@@ -79,28 +290,19 @@ export interface ErrorInvalidGroupKey<obj extends object, key extends keyof obj>
  * ]
  *
  * const itemsByCategory = Group.by(items, 'categoryId')
- * // Result:
+ * // Result (frozen):
  * // {
  * //   1: [{ categoryId: 1, name: 'Laptop' }, { categoryId: 1, name: 'Keyboard' }],
  * //   2: [{ categoryId: 2, name: 'Mouse' }]
  * // }
  */
-export const by = <obj extends object, key extends keyof obj>(
-  array: obj[],
+export const by = <$Obj extends object, key extends keyof $Obj>(
+  array: $Obj[],
   // dprint-ignore
-  key: ValidateIsGroupableKey<obj, key, ErrorInvalidGroupKey<obj, key>>,
-): by<obj, key> => {
-  const groupSet = array.reduce((index, item) => {
-    // @ts-expect-error
-    const indexKey = item[key] as PropertyKey
-    index[indexKey] ??= []
-    index[indexKey].push(item)
-    return index
-  }, {} as Record<PropertyKey, any[]>)
-
-  // Obj.setPrivateState(groupSet, { key }) // Commented out for simplified migration
-
-  return groupSet as any
+  key: ValidateIsGroupableKey<$Obj, key, ErrorInvalidGroupKey<$Obj, key>>,
+): by<$Obj, key> => {
+  const groupSet = byToMut(array, key) as AnyMut
+  return toImmutableMut(groupSet) as any
 }
 
 type ValidateIsGroupableKey<
@@ -115,42 +317,40 @@ type ValidateIsGroupableKey<
  * Combines the arrays for each group key. If a key exists in both groups,
  * the arrays are concatenated with group2's items appended to group1's items.
  *
+ * Immutability mode is inferred from inputs (OR logic):
+ * - If EITHER input is frozen: returns a new frozen group set
+ * - If BOTH inputs are mutable: mutates group1 in place and returns it
+ *
  * @template groupSet - The type of the group set
- * @param group1 - The first group set (will be mutated)
- * @param group2 - The second group set to merge into the first
- * @returns The merged group set (same reference as group1)
- *
- * @example
- * const group1 = {
- *   admin: [{ id: 1, role: 'admin', name: 'Alice' }],
- *   user: [{ id: 2, role: 'user', name: 'Bob' }]
- * }
- *
- * const group2 = {
- *   admin: [{ id: 3, role: 'admin', name: 'Charlie' }],
- *   guest: [{ id: 4, role: 'guest', name: 'David' }]
- * }
- *
- * const merged = Group.merge(group1, group2)
- * // Result:
- * // {
- * //   admin: [{ id: 1, role: 'admin', name: 'Alice' }, { id: 3, role: 'admin', name: 'Charlie' }],
- * //   user: [{ id: 2, role: 'user', name: 'Bob' }],
- * //   guest: [{ id: 4, role: 'guest', name: 'David' }]
- * // }
+ * @param group1 - The first group set (mutated in place if both inputs are mutable)
+ * @param group2 - The second group set to merge
+ * @returns The merged group set (frozen if either input was frozen, otherwise group1)
  */
-export const merge = <groupSet extends Any>(
-  group1: groupSet,
-  group2: groupSet,
-): groupSet => {
-  const group1_ = group1 as Any
-  const group2_ = group2 as Any
+export const merge = <$groupSet extends Any>(
+  group1: $groupSet,
+  group2: $groupSet,
+): $groupSet => {
+  const mode = Obj.inferImmutabilityMode(group1, group2)
+  const isMut = mode === 'mutable'
+  const result: AnyMut = isMut ? (group1 as any) : {}
 
-  for (const k2 in group2_) {
-    group1_[k2] ??= []
-    group1_[k2].push(...group2_[k2]!)
+  // Copy group1 arrays only if immutable mode
+  if (!isMut) {
+    for (const k in group1) result[k] = [...(group1[k] as any[])]
   }
-  return group1_ as any
+
+  // Merge group2
+  for (const k in group2) {
+    if (result[k]) {
+      isMut
+        ? (result[k] as any[]).push(...(group2[k] as any[]))
+        : (result[k] = [...result[k], ...(group2[k] as any[])])
+    } else {
+      result[k] = [...(group2[k] as any[])]
+    }
+  }
+
+  return (isMut ? result : toImmutableMut(result)) as any
 }
 
 export type Mapper<$GroupSet extends Any> = {
@@ -164,63 +364,31 @@ export type map<$GroupSet extends Any, $Mapper extends Mapper<$GroupSet>> = {
 /**
  * Maps over each group in a group set, transforming the arrays with provided handler functions.
  *
- * Applies a specific handler function to each group based on the group's key.
  * Each handler receives the array of items for its corresponding group.
+ *
+ * Immutability mode is inferred from input:
+ * - If input is frozen: returns a new frozen group set
+ * - If input is mutable: transforms in place and returns the same group set
  *
  * @template groupSet - The type of the group set
  * @template handlers - The type of the handler functions object
- * @param groupSet - The group set to map over
+ * @param groupSet - The group set to map over (mutated in place if mutable)
  * @param handlers - An object where keys match group keys and values are transformation functions
- * @returns A new group set with transformed values
+ * @returns The transformed group set (frozen if input was frozen, otherwise the same mutable input)
  * @throws {Error} If a handler is not provided for a group key that exists in the group set
- *
- * @example
- * const usersByRole = {
- *   admin: [{ id: 1, role: 'admin', name: 'Alice' }, { id: 3, role: 'admin', name: 'Charlie' }],
- *   user: [{ id: 2, role: 'user', name: 'Bob' }]
- * }
- *
- * const userCounts = Group.map(usersByRole, {
- *   admin: (admins) => admins.length,
- *   user: (users) => users.length
- * })
- * // Result: { admin: 2, user: 1 }
- *
- * @example
- * // Transforming to different types
- * const userNames = Group.map(usersByRole, {
- *   admin: (admins) => admins.map(a => a.name),
- *   user: (users) => users.map(u => u.name.toUpperCase())
- * })
- * // Result: { admin: ['Alice', 'Charlie'], user: ['BOB'] }
  */
 export const map = <
   groupSet extends Any,
   handlers extends Mapper<groupSet>,
 >(groupSet: groupSet, handlers: handlers): Ts.Simplify.Top<map<groupSet, handlers>> => {
+  const isMut = !Obj.isImmutable(groupSet)
+  const result: AnyMut = isMut ? (groupSet as any) : {}
+
   for (const groupName in groupSet) {
     const handler = handlers[groupName]
     if (!handler) throw new Error(`No handler for group "${groupName}"`)
-    groupSet[groupName] = handler(groupSet[groupName] as any) as any
+    result[groupName] = handler(groupSet[groupName] as any) as any
   }
-  return groupSet as any
+
+  return (isMut ? result : toImmutableMut(result)) as any
 }
-
-// export const dispatcherManual = <
-//   key extends string,
-//   groupSet extends Any,
-//   handlers extends Mapper<groupSet>,
-// >(groupSet: groupSet, handlers: handlers) => {
-//   const { key } = Obj.getPrivateState<PrivateState>(groupSet)
-
-//   const dispatch = (value: groupSet[keyof groupSet][number]) => {
-//     const groupName = value[key]
-//     if (!groupName) throw new Error(`Invalid value, missing key ${key} expected by group dispatcher`)
-
-//     const handler = handlers[groupName]
-//     if (!handler) throw new Error(`No handler for group "${groupName}"`)
-
-//     return handler(value)
-//   }
-//   return dispatch
-// }
