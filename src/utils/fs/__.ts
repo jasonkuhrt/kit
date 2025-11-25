@@ -14,9 +14,9 @@
  *
  * @module
  */
-export * as Memory from '../fs-memory/__.js'
 export * from './filesystem.js'
 export * from './fs.js'
 export * from './glob.js'
+export * as Memory from './memory/__.js'
 export { PathAnalyzer } from './path-analyzer/__.js'
 export * from './path/_.js'
