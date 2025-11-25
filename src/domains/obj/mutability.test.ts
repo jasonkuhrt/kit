@@ -43,6 +43,31 @@ describe('toImmutableMut', () => {
   })
 })
 
+describe('toMutable', () => {
+  test('returns unfrozen copy, original unchanged', () => {
+    const result = Obj.toMutable(immutableObj)
+    expect(Object.isFrozen(result)).toBe(false)
+    expect(Object.isFrozen(immutableObj)).toBe(true)
+    expect(result).not.toBe(immutableObj)
+    Assert.Type.exact.ofAs<obj>().on(result)
+  })
+
+  test('works with arrays', () => {
+    const result = Obj.toMutable(immutableArr)
+    expect(Object.isFrozen(result)).toBe(false)
+    expect(Object.isFrozen(immutableArr)).toBe(true)
+    expect(result).not.toBe(immutableArr)
+    Assert.Type.exact.ofAs<arr>().on(result)
+  })
+
+  test('works on already mutable objects (creates copy)', () => {
+    const result = Obj.toMutable(obj)
+    expect(Object.isFrozen(result)).toBe(false)
+    expect(result).not.toBe(obj)
+    Assert.Type.exact.ofAs<obj>().on(result)
+  })
+})
+
 describe('isImmutable', () => {
   test('runtime: detects frozen vs mutable objects', () => {
     expect(Obj.isImmutable(immutableObj)).toBe(true)

@@ -80,6 +80,34 @@ export const toImmutableMut = <$obj extends object>(obj: $obj): toImmutable<$obj
 export type toImmutable<$Obj extends object> = Readonly<$Obj>
 
 /**
+ * Create an unfrozen shallow copy of an object with a mutable type.
+ * The inverse of {@link toImmutable}.
+ *
+ * Since `Object.freeze` is one-way in JavaScript (objects cannot be unfrozen),
+ * this always creates a new object.
+ *
+ * @category Immutability
+ *
+ * @param obj - The object to copy (typically frozen)
+ * @returns A new unfrozen object with mutable type
+ *
+ * @example
+ * ```ts
+ * const frozen = Object.freeze({ port: 3000, host: 'localhost' })
+ * const mutable = Obj.toMutable(frozen)
+ * // mutable is NOT frozen, frozen is still frozen
+ * // Type: { port: number; host: string }
+ *
+ * mutable.port = 8080 // OK
+ * ```
+ */
+export const toMutable = <$obj extends object>(obj: $obj): toMutable<$obj> => {
+  return (Array.isArray(obj) ? [...obj] : { ...obj }) as toMutable<$obj>
+}
+
+export type toMutable<$Obj extends object> = { -readonly [K in keyof $Obj]: $Obj[K] }
+
+/**
  * Type guard that checks if an object is frozen (immutable).
  * Narrows the type to `Readonly<T>` when true.
  *
