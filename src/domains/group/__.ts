@@ -178,12 +178,12 @@ export const by = <obj extends object, key extends keyof obj>(
 ): by<obj, key> => {
   const groupSet = byMut(array, key)
 
-  // Freeze each array and the group set itself
+  // Freeze each array and the group set itself (in place - they're freshly created)
   for (const groupName in groupSet) {
-    Obj.toImmutable(groupSet[groupName] as any[])
+    Obj.toImmutableMut(groupSet[groupName] as any[])
   }
 
-  return Obj.toImmutable(groupSet) as any
+  return Obj.toImmutableMut(groupSet) as any
 }
 
 type ValidateIsGroupableKey<
@@ -231,7 +231,7 @@ export const merge = <$groupSet extends Any>(
     }
   }
 
-  return (isMut ? result : Obj.toImmutable(result)) as any
+  return (isMut ? result : Obj.toImmutableMut(result)) as any
 }
 
 export type Mapper<$GroupSet extends Any> = {
@@ -271,5 +271,5 @@ export const map = <
     result[groupName] = handler(groupSet[groupName] as any) as any
   }
 
-  return (isMut ? result : Obj.toImmutable(result)) as any
+  return (isMut ? result : Obj.toImmutableMut(result)) as any
 }

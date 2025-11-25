@@ -234,7 +234,7 @@ export type EmptyArray = typeof empty
  * ```
  */
 export const of = <$T extends readonly unknown[]>(...items: $T): Readonly<$T> => {
-  return Obj.toImmutable(items)
+  return Obj.toImmutableMut(items)
 }
 
 /**
@@ -248,7 +248,7 @@ export const of = <$T extends readonly unknown[]>(...items: $T): Readonly<$T> =>
  * ```
  */
 export const freeze = <$T extends readonly unknown[]>(arr: $T): Readonly<$T> => {
-  return Obj.toImmutable(arr)
+  return Obj.toImmutableMut(arr)
 }
 
 //
@@ -688,7 +688,7 @@ export const transpose = <$T>(rows: readonly (readonly $T[])[]): $T[][] => {
  */
 export const dedupe = <$arr extends readonly unknown[]>(arr: $arr): $arr => {
   if (Obj.isImmutable(arr)) {
-    return Obj.toImmutable([...new Set(arr)]) as $arr
+    return Obj.toImmutableMut([...new Set(arr)]) as $arr
   }
   // Mutable: dedupe in place
   const mutableArr = arr as any
@@ -743,7 +743,7 @@ export const partition = <item, itemSub extends item>(
   }
 
   if (Obj.isImmutable(items)) {
-    return Obj.toImmutable([Obj.toImmutable(itemsA), Obj.toImmutable(itemsB)]) as any
+    return Obj.toImmutableMut([Obj.toImmutableMut(itemsA), Obj.toImmutableMut(itemsB)]) as any
   }
   return [itemsA, itemsB]
 }
@@ -796,7 +796,7 @@ export const partitionErrors = <T>(array: readonly T[]): [Exclude<T, Error>[], E
     }
   }
   if (Obj.isImmutable(array)) {
-    return Obj.toImmutable([Obj.toImmutable(values), Obj.toImmutable(errors)]) as any
+    return Obj.toImmutableMut([Obj.toImmutableMut(values), Obj.toImmutableMut(errors)]) as any
   }
   return [values, errors]
 }
@@ -867,9 +867,9 @@ export const joinWith = Fn.flipCurried(joinOn)
  */
 export const merge = <T>(array1: readonly T[], array2: readonly T[]): T[] => {
   const result = (array1 as T[]).concat(array2 as T[])
-  // If either input is frozen, freeze the result
+  // If either input is frozen, freeze the result (in place - it's freshly created)
   if (Obj.isImmutable(array1) || Obj.isImmutable(array2)) {
-    return Obj.toImmutable(result) as T[]
+    return Obj.toImmutableMut(result) as T[]
   }
   return result
 }

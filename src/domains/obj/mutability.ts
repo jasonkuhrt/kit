@@ -27,24 +27,53 @@ export interface ErrorMutableInputImmutableOutput extends
 //
 
 /**
- * Freeze an object and return it with a readonly type.
+ * Create a frozen shallow copy of an object with a readonly type.
  * Provides both runtime immutability (via Object.freeze) and type-level readonly.
+ *
+ * This creates a new object - the original is not modified.
+ * Use {@link toImmutableMut} if you want to freeze in place.
  *
  * @category Immutability
  *
- * @param obj - The object to freeze
- * @returns The frozen object with readonly type
+ * @param obj - The object to copy and freeze
+ * @returns A new frozen object with readonly type
  *
  * @example
  * ```ts
- * const config = Obj.toImmutable({ port: 3000, host: 'localhost' })
+ * const original = { port: 3000, host: 'localhost' }
+ * const config = Obj.toImmutable(original)
+ * // config is frozen, original is not
  * // Type: Readonly<{ port: number; host: string }>
- * // Runtime: Object.isFrozen(config) === true
  *
  * config.port = 8080 // TypeScript error: Cannot assign to 'port' because it is read-only
  * ```
  */
 export const toImmutable = <$obj extends object>(obj: $obj): toImmutable<$obj> => {
+  // todo: copy trait instead of hardcoded copy logic here
+  const copy = (Array.isArray(obj) ? [...obj] : { ...obj }) as $obj
+  return toImmutableMut(copy)
+}
+
+/**
+ * Freeze an object in place and return it with a readonly type.
+ * Mutates the original object.
+ *
+ * Use {@link toImmutable} for the safer copy-then-freeze behavior.
+ *
+ * @category Immutability
+ *
+ * @param obj - The object to freeze in place
+ * @returns The same object, now frozen, with readonly type
+ *
+ * @example
+ * ```ts
+ * const config = { port: 3000 }
+ * const frozen = Obj.toImmutableMut(config)
+ * // frozen === config (same reference)
+ * // Both are now frozen
+ * ```
+ */
+export const toImmutableMut = <$obj extends object>(obj: $obj): toImmutable<$obj> => {
   return Object.freeze(obj)
 }
 
@@ -159,5 +188,5 @@ export const forwardImmutability = <$input extends object, $output extends objec
   if (!Object.isFrozen(input) && Object.isFrozen(output)) {
     throw new Error('forwardImmutability: mutable input with immutable output is likely a bug')
   }
-  return (Object.isFrozen(input) ? toImmutable(output as object) : output) as $input
+  return (Object.isFrozen(input) ? toImmutableMut(output as object) : output) as $input
 }

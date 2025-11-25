@@ -16,9 +16,27 @@ const arr = [1, 2, 3]
 type arr = typeof arr
 
 describe('toImmutable', () => {
-  test('freezes object at runtime and returns same reference', () => {
-    const input = { a: 1 } // fresh object (toImmutable mutates in place)
-    const result = Obj.toImmutable(input)
+  test('returns frozen copy, original unchanged', () => {
+    const result = Obj.toImmutable(obj)
+    expect(Object.isFrozen(result)).toBe(true)
+    expect(Object.isFrozen(obj)).toBe(false)
+    expect(result).not.toBe(obj)
+    Assert.Type.exact.ofAs<immutableObj>().on(result)
+  })
+
+  test('works with arrays', () => {
+    const result = Obj.toImmutable(arr)
+    expect(Object.isFrozen(result)).toBe(true)
+    expect(Object.isFrozen(arr)).toBe(false)
+    expect(result).not.toBe(arr)
+    Assert.Type.exact.ofAs<immutableArr>().on(result)
+  })
+})
+
+describe('toImmutableMut', () => {
+  test('freezes in place and returns same reference', () => {
+    const input = { a: 1 }
+    const result = Obj.toImmutableMut(input)
     expect(Object.isFrozen(result)).toBe(true)
     expect(result).toBe(input)
     Assert.Type.exact.ofAs<immutableObj>().on(result)
