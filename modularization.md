@@ -14,26 +14,27 @@ See also: [modularization.svg](./modularization.svg)
 
 | Module          | Type   | Level | Deps     | Exp |
 | --------------- | ------ | ----- | -------- | --- |
-| arr             | domain | 0     |          |     |
-| bool            | domain | 0     |          |     |
+| arr             | domain | -1    |          |     |
+| bool            | domain | -1    |          |     |
+| err             | utils  | -1    |          |     |
+| fn              | domain | -1    |          |     |
+| lang            | utils  | -1    |          |     |
+| null            | domain | -1    |          |     |
+| obj             | domain | -1    | str      |     |
+| pat             | utils  | -1    |          |     |
+| rec             | domain | -1    |          |     |
+| str             | domain | -1    |          |     |
+| ts              | utils  | -1    |          |     |
+| tup             | domain | -1    |          |     |
+| undefined       | domain | -1    |          |     |
 | codec           | utils  | 0     |          |     |
-| err             | utils  | 0     |          |     |
-| fn              | domain | 0     |          |     |
 | json            | utils  | 0     |          |     |
 | jsonc           | utils  | 0     |          |     |
-| lang            | utils  | 0     |          |     |
-| null            | domain | 0     |          |     |
 | num             | domain | 0     |          |     |
-| obj             | domain | 0     | str      |     |
 | prom            | domain | 0     |          |     |
 | prox            | domain | 0     |          |     |
-| rec             | domain | 0     |          |     |
 | ref             | utils  | 0     |          |     |
-| str             | domain | 0     |          |     |
 | tree            | domain | 0     |          |     |
-| ts              | utils  | 0     |          |     |
-| tup             | domain | 0     |          |     |
-| undefined       | domain | 0     |          |     |
 | url             | domain | 0     |          |     |
 | value           | utils  | 0     |          |     |
 | color           | domain | 1     |          |     |
@@ -61,7 +62,6 @@ See also: [modularization.svg](./modularization.svg)
 | test            | utils  | 2     |          |     |
 | ware            | utils  | 2     |          |     |
 | mask            | utils  | -     |          | y   |
-| pat             | utils  | -     |          | y   |
 | pro             | utils  | -     |          | y   |
 | time            | domain | -     |          | y   |
 

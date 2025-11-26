@@ -1,5 +1,5 @@
 {
-  "src/utils/assert/_.test.ts": [
+  "src/assert/_.test.ts": [
     {
       "location": {
         "start": {
@@ -859,7 +859,7 @@
       "completions": {}
     }
   ],
-  "src/utils/ts/err.test.ts": [
+  "src/core/ts/err.test.ts": [
     {
       "location": {
         "start": {

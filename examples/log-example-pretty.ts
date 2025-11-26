@@ -3,7 +3,7 @@
  * Run with: LOG_PRETTY=true node --import tsx examples/log-example-pretty.ts
  */
 
-import { Log } from '../src/utils/log/_.js'
+import { Log } from '../src/log/_.js'
 
 // Force pretty mode
 const log = Log.create({ pretty: true })
