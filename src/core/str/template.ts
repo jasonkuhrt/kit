@@ -1,4 +1,3 @@
-import type { Json } from '#json'
 import { Lens } from '#lens'
 
 /**
@@ -34,4 +33,4 @@ export const templateVariablePattern = /\${([^}]+)}/g
  * Maps variable names to their JSON-serializable values.
  * @category Template
  */
-export type TemplateArgs = Record<string, Json.Value>
+export type TemplateArgs = Record<string, unknown>

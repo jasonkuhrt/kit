@@ -1,6 +1,5 @@
 import { Fs } from '#fs'
 import { Lang } from '#lang'
-import { Schema as S } from 'effect'
 
 /**
  * Get the current working directory as an AbsDir.
