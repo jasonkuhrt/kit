@@ -16,7 +16,7 @@ These cycles between non-core modules must be resolved before extracting package
 
 These cycles are within core and don't block package extraction (core is one package):
 
-- arr ↔ obj, arr ↔ pat, rec ↔ obj, ts ↔ str, fn ↔ arr, bool ↔ obj, str ↔ lens
+- arr ↔ obj, arr ↔ pat, rec ↔ obj, ts ↔ str, fn ↔ arr, bool ↔ obj, str ↔ optic
 
 ### Internal (Within Modules)
 
@@ -40,7 +40,7 @@ Cycles within core are acceptable - these will be one package.
 | err       | utils  |      |
 | fn        | domain |      |
 | lang      | utils  |      |
-| lens      | utils  |      |
+| optic     | utils  |      |
 | null      | domain |      |
 | obj       | domain |      |
 | pat       | utils  |      |

@@ -1,5 +1,5 @@
 import type { Fn } from '#fn'
-import { Lens } from '#lens'
+import { Optic } from '#optic'
 import type { Either } from 'effect'
 import type { AssertEquivKind, AssertExactKind, AssertSubKind } from '../../../asserts.js'
 import { builder } from '../../../builder-singleton.js'
@@ -17,7 +17,7 @@ export const empty = builder.not.parameter3.empty
 export type exact<
   $Expected,
   $Actual,
-  __$ActualExtracted = Lens.Parameter3.Get<$Actual>,
+  __$ActualExtracted = Optic.Parameter3.Get<$Actual>,
 > =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [$Expected, __actual__, true]>
@@ -27,7 +27,7 @@ export type exact<
 export type equiv<
   $Expected,
   $Actual,
-  __$ActualExtracted = Lens.Parameter3.Get<$Actual>,
+  __$ActualExtracted = Optic.Parameter3.Get<$Actual>,
 > =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [$Expected, __actual__, true]>
@@ -37,7 +37,7 @@ export type equiv<
 export type sub<
   $Expected,
   $Actual,
-  __$ActualExtracted = Lens.Parameter3.Get<$Actual>,
+  __$ActualExtracted = Optic.Parameter3.Get<$Actual>,
 > =
   __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
   __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [$Expected, __actual__, true]>

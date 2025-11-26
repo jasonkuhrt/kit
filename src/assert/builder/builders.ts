@@ -1,5 +1,5 @@
 import type { Fn } from '#fn'
-import type { Lens } from '#lens'
+import type { Optic } from '#optic'
 import type { Ts } from '#ts'
 import type { Either } from 'effect'
 import type {
@@ -163,7 +163,7 @@ export type BuilderExtractors<
  * Each extractor returns a builder with that extractor added to the chain.
  */
 export type BuilderExtractorsConstant<$State extends S> = {
-  readonly [K in keyof Lens.LensRegistry]: Builder<S.AddActualExtractor<$State, Lens.LensRegistry[K]>>
+  readonly [K in keyof Optic.LensRegistry]: Builder<S.AddActualExtractor<$State, Optic.LensRegistry[K]>>
 }
 
 /**
@@ -199,8 +199,8 @@ export type BuilderExtractorsConditionalMaybe<
  * @param $ActualAfterExtraction - The actual type after applying all extractors in the chain
  */
 export type BuilderExtractorsConditionalAfterExtraction<$State extends S, $ActualAfterExtraction> = {
-  readonly [K in keyof Lens.GetApplicableLenses<$ActualAfterExtraction> & keyof Lens.LensRegistry]: Builder<
-    S.AddActualExtractor<$State, Lens.LensRegistry[K]>
+  readonly [K in keyof Optic.GetApplicableLenses<$ActualAfterExtraction> & keyof Optic.LensRegistry]: Builder<
+    S.AddActualExtractor<$State, Optic.LensRegistry[K]>
   >
 }
 
@@ -216,8 +216,8 @@ export type BuilderExtractorsConditionalAfterExtraction<$State extends S, $Actua
  * Extraction happens later during validation, not here.
  */
 export type BuilderExtractorsConditional<$State extends S> = {
-  readonly [K in keyof Lens.GetApplicableLenses<$State['actual_type']> & keyof Lens.LensRegistry]: Builder<
-    S.AddActualExtractor<$State, Lens.LensRegistry[K]>
+  readonly [K in keyof Optic.GetApplicableLenses<$State['actual_type']> & keyof Optic.LensRegistry]: Builder<
+    S.AddActualExtractor<$State, Optic.LensRegistry[K]>
   >
 }
 
@@ -322,7 +322,7 @@ export interface BuilderSettings<$State extends S> {
    * // Create and use a custom extractor
    * const awaited: Fn.Extractor = Object.assign(
    *   (value: Promise<any>) => value,
-   *   { kind: {} as Lens.Awaited.$Get }
+   *   { kind: {} as Optic.Awaited.$Get }
    * )
    * const promise = Promise.resolve(42)
    * A.extract(awaited).exact.of(42).on(promise)

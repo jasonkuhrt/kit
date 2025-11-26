@@ -1,4 +1,4 @@
-import { Lens } from '#lens'
+import { Optic } from '#optic'
 
 /**
  * Interpolate variables into a template string using ${variable} syntax.
@@ -15,7 +15,7 @@ import { Lens } from '#lens'
  * ```
  */
 export const interpolate = (template: string) => (args: TemplateArgs) => {
-  const get = Lens.getOn(args)
+  const get = Optic.getOn(args)
   return template.replace(templateVariablePattern, (_, parameterName: string) => {
     return String(get(`.${parameterName}`))
   })

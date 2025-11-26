@@ -1,5 +1,5 @@
 import { Fn } from '#fn'
-import { Lens } from '#lens'
+import { Optic } from '#optic'
 import { Ts } from '#ts'
 import { attest } from '@ark/attest'
 import { test } from 'vitest'
@@ -506,11 +506,11 @@ test('.extract() - composition preserves .kind metadata', () => {
   // Create inline extractors using Lens types
   const awaited: Fn.Extractor<Promise<any>, any> = Object.assign(
     (value: Promise<any>) => value,
-    { kind: {} as Lens.Awaited.$Get },
+    { kind: {} as Optic.Awaited.$Get },
   )
   const returned: Fn.Extractor<(...args: any) => any, any> = Object.assign(
     (value: (...args: any) => any) => value,
-    { kind: {} as Lens.Returned.$Get },
+    { kind: {} as Optic.Returned.$Get },
   )
 
   // Compose awaited and returned extractors

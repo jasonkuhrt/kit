@@ -887,6 +887,7 @@ export const mergeOn = Fn.curry(merge)
  * @internal
  */
 
+import { Optic } from '#optic'
 import type { Display } from '#ts/ts'
 
 declare global {

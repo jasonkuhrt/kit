@@ -1,5 +1,5 @@
 import { Assert } from '#assert'
-import { Lens } from '#lens'
+import { Optic } from '#optic'
 import { describe, expect, test } from 'vitest'
 
 const A = Assert.Type
@@ -16,60 +16,60 @@ type Indexed = typeof indexed
 type Tuple = typeof tuple
 
 //
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Lens.get (uncurried)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Optic.get (uncurried)
 //
 
-describe('Lens.get - uncurried', () => {
+describe('Optic.get - uncurried', () => {
   test('.name', () => {
-    const result = Lens.get('.name', user)
+    const result = Optic.get('.name', user)
     expect(result).toBe('Alice')
-    A.exact.ofAs<Lens.Get<'.name', User>>().on(result)
+    A.exact.ofAs<Optic.Get<'.name', User>>().on(result)
     A.exact.ofAs<string>().on(result)
   })
 
   test('.address.city', () => {
-    const result = Lens.get('.address.city', user)
+    const result = Optic.get('.address.city', user)
     expect(result).toBe('NYC')
-    A.exact.ofAs<Lens.Get<'.address.city', User>>().on(result)
+    A.exact.ofAs<Optic.Get<'.address.city', User>>().on(result)
     A.exact.ofAs<string>().on(result)
   })
 
   test("['weird.name']", () => {
     const data = { 'weird.name': 'value' }
-    const result = Lens.get("['weird.name']", data)
+    const result = Optic.get("['weird.name']", data)
     expect(result).toBe('value')
-    A.exact.ofAs<Lens.Get<"['weird.name']", typeof data>>().on(result)
+    A.exact.ofAs<Optic.Get<"['weird.name']", typeof data>>().on(result)
     A.exact.ofAs<string>().on(result)
   })
 
   test('[0]', () => {
-    const result = Lens.get('[0]', tuple)
+    const result = Optic.get('[0]', tuple)
     expect(result).toBe('first')
-    A.exact.ofAs<Lens.Get<'[0]', Tuple>>().on(result)
+    A.exact.ofAs<Optic.Get<'[0]', Tuple>>().on(result)
     A.exact.ofAs<'first'>().on(result)
   })
 })
 
 //
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Lens.getWith (curried, expression first)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Optic.getWith (curried, expression first)
 //
 
-describe('Lens.getWith - curried', () => {
+describe('Optic.getWith - curried', () => {
   test('creates reusable getter', () => {
-    const getName = Lens.getWith('.name')
+    const getName = Optic.getWith('.name')
     const result = getName(user)
     expect(result).toBe('Alice')
     A.exact.ofAs<string>().on(result)
   })
 
   test('pipeline usage', () => {
-    const results = users.map(Lens.getWith('.name'))
+    const results = users.map(Optic.getWith('.name'))
     expect(results).toEqual(['Alice', 'Bob'])
     A.exact.ofAs<string[]>().on(results)
   })
 
   test('nested path', () => {
-    const getCity = Lens.getWith('.address.city')
+    const getCity = Optic.getWith('.address.city')
     const result = getCity(user)
     expect(result).toBe('NYC')
     A.exact.ofAs<string>().on(result)
@@ -77,12 +77,12 @@ describe('Lens.getWith - curried', () => {
 })
 
 //
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Lens.getOn (curried, data first)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Optic.getOn (curried, data first)
 //
 
-describe('Lens.getOn - inverse curried', () => {
+describe('Optic.getOn - inverse curried', () => {
   test('binds to object for multiple extractions', () => {
-    const fromUser = Lens.getOn(user)
+    const fromUser = Optic.getOn(user)
     const name = fromUser('.name')
     const city = fromUser('.address.city')
     expect(name).toBe('Alice')
@@ -92,7 +92,7 @@ describe('Lens.getOn - inverse curried', () => {
   })
 
   test('tuple access', () => {
-    const fromTuple = Lens.getOn(tuple)
+    const fromTuple = Optic.getOn(tuple)
     const first = fromTuple('[0]')
     const second = fromTuple('[1]')
     expect(first).toBe('first')
@@ -106,19 +106,19 @@ describe('Lens.getOn - inverse curried', () => {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Type-Level Only
 //
 
-describe('Lens.Get - type-level only', () => {
+describe('Optic.Get - type-level only', () => {
   test('.items[]', () => {
-    type Result = Lens.Get<'.items[]', { items: number[] }>
+    type Result = Optic.Get<'.items[]', { items: number[] }>
     A.exact.ofAs<number>().onAs<Result>()
   })
 
   test('.data:', () => {
-    type Result = Lens.Get<'.data:', Indexed>
+    type Result = Optic.Get<'.data:', Indexed>
     A.exact.ofAs<number>().onAs<Result>()
   })
 
   test('.users[].name', () => {
-    type Result = Lens.Get<'.users[].name', { users: Users }>
+    type Result = Optic.Get<'.users[].name', { users: Users }>
     A.exact.ofAs<string>().onAs<Result>()
   })
 })
@@ -129,5 +129,5 @@ describe('Lens.Get - type-level only', () => {
 
 // test('value-level get rejects invalid property', () => {
 //   // @ts-expect-error - .bad does not exist on User, should be caught by parameter guard
-//   Lens.get('.bad', user)
+//   Optic.get('.bad', user)
 // })

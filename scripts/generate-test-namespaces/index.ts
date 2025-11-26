@@ -301,7 +301,7 @@ function generateFileHeader(combo: Combination): string {
   const { lensPath, relatorsPath, builderPath } = calculateImportPaths(combo)
 
   const extractorImports = combo.extractors.length > 0
-    ? `import { Lens } from '#lens'\n`
+    ? `import { Optic } from '#optic'\n`
     : ''
 
   const eitherImport = combo.extractors.length > 0
@@ -353,9 +353,9 @@ function buildExtractorChain(extractors: Extractor[], actualType: string): strin
   if (extractors.length === 0) return actualType
 
   // Use direct type application instead of HKT
-  // e.g., Lens.Awaited.Get<$Actual> instead of Fn.Kind.Apply<Lens.Awaited.$Get, [$Actual]>
+  // e.g., Optic.Awaited.Get<$Actual> instead of Fn.Kind.Apply<Optic.Awaited.$Get, [$Actual]>
   return extractors.reduce(
-    (inner, extractor) => `Lens.${kindToDirectType(extractor.kindName)}<${inner}>`,
+    (inner, extractor) => `Optic.${kindToDirectType(extractor.kindName)}<${inner}>`,
     actualType,
   )
 }
@@ -642,11 +642,11 @@ export const empty = builder.${extractorName}.empty`
 
   const imports = `import type { Fn } from '#fn'
 import { builder } from '${builderPath}'
-import { Lens } from '#lens'
+import { Optic } from '#optic'
 import type { Either } from 'effect'
 import type { ${relatorKinds} } from '${relatorsPath}'`
 
-  const extractorChain = `Lens.${kindToDirectType(extractor.kindName)}<$Actual>`
+  const extractorChain = `Optic.${kindToDirectType(extractor.kindName)}<$Actual>`
 
   const typeShorthands = Object.keys(RELATORS).map((relatorName) => {
     const relator = RELATORS[relatorName]!
@@ -697,7 +697,7 @@ export const empty = ${builderPrefix}.empty`
 
   // Add type-level shorthand for negated relators
   const extractorImports = extractors.length > 0
-    ? `import { Lens } from '#lens'\nimport type { Either } from 'effect'\n`
+    ? `import { Optic } from '#optic'\nimport type { Either } from 'effect'\n`
     : ''
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
 

@@ -18,7 +18,7 @@
  * // Create an awaited extractor
  * const awaited: Fn.Extractor<Promise<any>, any> = Object.assign(
  *   (value: Promise<any>) => value, // Runtime (identity - assumes resolved)
- *   { kind: {} as Lens.Awaited.$Get }    // Type-level metadata
+ *   { kind: {} as Optic.Awaited.$Get }    // Type-level metadata
  * )
  *
  * // Use in composition

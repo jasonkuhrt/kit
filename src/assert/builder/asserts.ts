@@ -1,5 +1,5 @@
 import type { Fn } from '#fn'
-import type { Lens } from '#lens'
+import type { Optic } from '#optic'
 import type { Ts } from '#ts'
 import type { Either } from 'effect'
 import type { StaticErrorAssertion } from '../assertion-error.ts'
