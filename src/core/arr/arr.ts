@@ -237,20 +237,6 @@ export const of = <$T extends readonly unknown[]>(...items: $T): Readonly<$T> =>
   return Obj.toImmutableMut(items)
 }
 
-/**
- * Freeze an array, making it immutable.
- *
- * @category Construction
- * @example
- * ```ts
- * const mutable = [1, 2, 3]
- * const immutable = Arr.freeze(mutable)
- * ```
- */
-export const freeze = <$T extends readonly unknown[]>(arr: $T): Readonly<$T> => {
-  return Obj.toImmutableMut(arr)
-}
-
 //
 //
 //
