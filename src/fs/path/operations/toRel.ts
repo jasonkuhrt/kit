@@ -1,4 +1,3 @@
-import { Path } from '#fs/fs'
 import * as NodePath from 'node:path'
 import type { $Abs } from '../$Abs/_.js'
 import type { $Rel } from '../$Rel/_.js'
@@ -6,6 +5,8 @@ import { AbsDir } from '../AbsDir/_.js'
 import { AbsFile } from '../AbsFile/_.js'
 import { RelDir } from '../RelDir/_.js'
 import { RelFile } from '../RelFile/_.js'
+import { fromString } from './fromString.js'
+import { toString } from './toString.js'
 
 /**
  * Type-level toRel operation.
@@ -39,13 +40,13 @@ export const toRel = <
   abs: $abs,
   base: $base,
 ): toRel<$abs> => {
-  const absPath = Path.toString(abs)
-  const basePath = Path.toString(base)
+  const absPath = toString(abs)
+  const basePath = toString(base)
 
   // Calculate relative path using Node.js built-in
   const relativePath = NodePath.relative(basePath, absPath)
 
   // If empty, it means we're at the same location
   const finalPath = relativePath === '' ? '.' : relativePath
-  return Path.fromString(finalPath) as any
+  return fromString(finalPath) as any
 }

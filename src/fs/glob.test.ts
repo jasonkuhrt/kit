@@ -11,7 +11,7 @@ describe('Glob', () => {
   describe('glob', () => {
     test('returns an Effect that resolves to an array of relative FsLoc objects', async () => {
       const result = await Effect.runPromise(
-        Fs.glob('src/utils/fs/*.ts'),
+        Fs.glob('src/fs/*.ts'),
       )
       expect(result).toBeInstanceOf(Array)
       expect(result.length).toBeGreaterThan(0)
@@ -22,7 +22,7 @@ describe('Glob', () => {
 
     test('returns absolute FsLocs with absolute option', async () => {
       const result = await Effect.runPromise(
-        Fs.glob('src/utils/fs/*.ts', { absolute: true }),
+        Fs.glob('src/fs/*.ts', { absolute: true }),
       )
       expect(result).toBeInstanceOf(Array)
       expect(result.length).toBeGreaterThan(0)
@@ -36,7 +36,7 @@ describe('Glob', () => {
       const cwd = Pro.cwd()
       const srcDir = Fs.Path.join(cwd, decodeRelDir('./src/'))
       const result = await Effect.runPromise(
-        Fs.glob('utils/fs/*.ts', { cwd: srcDir }),
+        Fs.glob('fs/*.ts', { cwd: srcDir }),
       )
       expect(result).toBeInstanceOf(Array)
       expect(result.length).toBeGreaterThan(0)
@@ -49,7 +49,7 @@ describe('Glob', () => {
   describe('globSync', () => {
     test('returns an Effect that contains FsLocs synchronously', () => {
       const result = Effect.runSync(
-        Fs.globSync('src/utils/fs/*.ts'),
+        Fs.globSync('src/fs/*.ts'),
       )
       expect(result).toBeInstanceOf(Array)
       expect(result.length).toBeGreaterThan(0)
@@ -70,7 +70,7 @@ describe('Glob', () => {
       const cwd = Pro.cwd()
       const srcDir = Fs.Path.join(cwd, decodeRelDir('./src/'))
       const result = Effect.runSync(
-        Fs.globSync('utils/fs/*.ts', { cwd: srcDir }),
+        Fs.globSync('fs/*.ts', { cwd: srcDir }),
       )
       expect(result).toBeInstanceOf(Array)
       expect(result.length).toBeGreaterThan(0)
