@@ -4,29 +4,58 @@ See also: [modularization.svg](./modularization.svg)
 
 ## Circular Dependencies
 
-1. `str/visual` → `str/visual-table` (internal)
-2. `cli/tex/chain/block` → `cli/tex/chain/root` (internal)
-3. `cli/tex/chain/block` → `cli/tex/chain/table` (internal)
-4. `fs/path/AbsDir` → `fs/path/constants` (internal)
-5. `paka/extractor/nodes/module` → `paka/extractor/nodes/export` (internal)
+### Cross-Module (Blockers)
 
-## Modules
+These cycles between non-core modules must be resolved before extracting packages:
+
+| Cycle    | Notes             |
+| -------- | ----------------- |
+| fs ↔ pro | Mutual dependency |
+
+### Within Core (Acceptable)
+
+These cycles are within core and don't block package extraction (core is one package):
+
+- arr ↔ obj, arr ↔ pat, rec ↔ obj, ts ↔ str, fn ↔ arr, bool ↔ obj, str ↔ lens
+
+### Internal (Within Modules)
+
+These cycles are within a single module and don't block package extraction:
+
+1. `str/visual` → `str/visual-table`
+2. `cli/tex/chain/block` → `cli/tex/chain/root`
+3. `cli/tex/chain/block` → `cli/tex/chain/table`
+4. `fs/path/AbsDir` → `fs/path/constants`
+5. `paka/extractor/nodes/module` → `paka/extractor/nodes/export`
+6. `syn/term-object` → `syn/ts`
+
+## Core Modules (Level -1)
+
+Cycles within core are acceptable - these will be one package.
+
+| Module    | Type   | Deps |
+| --------- | ------ | ---- |
+| arr       | domain |      |
+| bool      | domain |      |
+| err       | utils  |      |
+| fn        | domain |      |
+| lang      | utils  |      |
+| lens      | utils  |      |
+| null      | domain |      |
+| obj       | domain |      |
+| pat       | utils  |      |
+| rec       | domain |      |
+| str       | domain |      |
+| ts        | utils  |      |
+| tup       | domain |      |
+| undefined | domain |      |
+
+## Rest Modules (Level 0+)
+
+No cycles allowed between these modules.
 
 | Module          | Type   | Level | Deps     | Exp |
 | --------------- | ------ | ----- | -------- | --- |
-| arr             | domain | -1    |          |     |
-| bool            | domain | -1    |          |     |
-| err             | utils  | -1    |          |     |
-| fn              | domain | -1    |          |     |
-| lang            | utils  | -1    |          |     |
-| null            | domain | -1    |          |     |
-| obj             | domain | -1    | str      |     |
-| pat             | utils  | -1    |          |     |
-| rec             | domain | -1    |          |     |
-| str             | domain | -1    |          |     |
-| ts              | utils  | -1    |          |     |
-| tup             | domain | -1    |          |     |
-| undefined       | domain | -1    |          |     |
 | codec           | utils  | 0     |          |     |
 | json            | utils  | 0     |          |     |
 | jsonc           | utils  | 0     |          |     |
@@ -43,7 +72,6 @@ See also: [modularization.svg](./modularization.svg)
 | html            | utils  | 1     |          |     |
 | http            | utils  | 1     |          |     |
 | idx             | domain | 1     |          |     |
-| lens            | utils  | 1     |          |     |
 | manifest        | utils  | 1     |          |     |
 | name            | utils  | 1     |          |     |
 | package-manager | utils  | 1     |          |     |
