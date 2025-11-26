@@ -1,5 +1,4 @@
 import type { Lang } from '#lang'
-import type { Rec } from '#rec'
 import type { Writable } from 'type-fest'
 import { type IsEmpty } from './diff.js'
 import { entries } from './get.js'
@@ -65,7 +64,7 @@ export function assert(value: unknown): asserts value is object {
  */
 export const isShape = <type>(spec: Record<PropertyKey, Lang.TypeofTypes>) => (value: unknown): value is type => {
   if (!isObj(value)) return false
-  const obj_ = value as Rec.Any
+  const obj_ = value as Record<PropertyKey, unknown>
 
   return entries(spec).every(([key, typeofType]) => {
     return typeof obj_[key] === typeofType
