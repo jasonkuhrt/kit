@@ -6,6 +6,7 @@ import { type ExportDeclaration, type ModuleDeclaration, Node, type SourceFile }
 import {
   Docs,
   DocsProvenance,
+  Home,
   JSDocProvenance,
   MdFileProvenance,
   Module,
@@ -116,49 +117,28 @@ const findNamespaceHomePage = (exportDeclFile: string): string | undefined => {
 }
 
 /**
- * Extract and add home page to a nested module if a *.home.md file exists.
+ * Try to find and parse a home page for a namespace.
  *
- * NOTE: Currently disabled due to Effect Schema circular reference validation issues
- * when using Module.make() with spread operators. Home page extraction will be
- * re-enabled once the schema validation approach is refactored.
- *
- * @param nestedModule - The module to potentially add home page to
  * @param exportDeclFilePath - Path to file containing the namespace export declaration
  * @param nsName - Namespace name (for error messages)
- * @returns Updated module with home page, or original module if no home page found
+ * @returns Parsed Home if found, undefined otherwise
  */
-const addHomePageIfExists = (
-  nestedModule: Module,
-  _exportDeclFilePath: string,
-  _nsName: string,
-): Module => {
-  // TODO: Re-enable once Effect Schema validation approach is refactored
-  // const homePageMarkdown = findNamespaceHomePage(exportDeclFilePath)
-  // if (!homePageMarkdown) return nestedModule
-  //
-  // try {
-  //   const homePagePath = findNamespaceHomePagePath(exportDeclFilePath)!
-  //   const home = parseHomePage(homePageMarkdown, homePagePath)
-  //
-  //   // Create ModuleDocs with home
-  //   const existingDocs = nestedModule.docs
-  //   const updatedDocs = ModuleDocs.make({
-  //     description: existingDocs?.description,
-  //     guide: existingDocs?.guide,
-  //     home: home,
-  //   })
-  //
-  //   // Update module (need to find approach that works with Effect Schema validation)
-  //   // ...
-  //
-  // } catch (error) {
-  //   if (error instanceof Error) {
-  //     throw new Error(`Failed to parse home page for namespace '${nsName}':\n${error.message}`)
-  //   }
-  //   throw error
-  // }
+const tryParseHomePage = (
+  exportDeclFilePath: string,
+  nsName: string,
+): typeof Home.Type | undefined => {
+  const homePageMarkdown = findNamespaceHomePage(exportDeclFilePath)
+  if (!homePageMarkdown) return undefined
 
-  return nestedModule
+  try {
+    const homePagePath = findNamespaceHomePagePath(exportDeclFilePath)!
+    return parseHomePage(homePageMarkdown, homePagePath)
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Failed to parse home page for namespace '${nsName}':\n${error.message}`)
+    }
+    throw error
+  }
 }
 
 /**
@@ -334,12 +314,14 @@ const shouldFilterExport = (exportName: string, jsdoc: JSDocInfo, options: Modul
  * @param sourceFile - The source file to extract from
  * @param location - Relative file path from project root
  * @param options - Extraction options for filtering
+ * @param home - Optional landing page content (from *.home.md)
  * @returns Module with all exports
  */
 export const extractModuleFromFile = (
   sourceFile: SourceFile,
   location: Fs.Path.RelFile,
   options: ModuleExtractionOptions = {},
+  home?: typeof Home.Type,
 ): Module => {
   const { filterInternal = true, filterUnderscoreExports = false } = options
   const exports = sourceFile.getExportedDeclarations()
@@ -361,10 +343,9 @@ export const extractModuleFromFile = (
         const nestedLocation = S.decodeSync(Fs.Path.RelFile.Schema)(
           absoluteToRelative(referencedFile.getFilePath()),
         )
-        let nestedModule = extractModuleFromFile(referencedFile, nestedLocation, options)
-
-        // Check for namespace home page
-        nestedModule = addHomePageIfExists(nestedModule, sourceFile.getFilePath(), nsName)
+        // Parse home page BEFORE creating module (Effect Schema requires complete data at creation)
+        const nestedHome = tryParseHomePage(sourceFile.getFilePath(), nsName)
+        const nestedModule = extractModuleFromFile(referencedFile, nestedLocation, options, nestedHome)
 
         // Check if this namespace export should be filtered
         const jsdoc = parseJSDoc(exportDecl)
@@ -404,10 +385,9 @@ export const extractModuleFromFile = (
               const nsLocation = S.decodeSync(Fs.Path.RelFile.Schema)(
                 absoluteToRelative(nsFile.getFilePath()),
               )
-              let nestedModule = extractModuleFromFile(nsFile, nsLocation, options)
-
-              // Check for namespace home page
-              nestedModule = addHomePageIfExists(nestedModule, referencedFile.getFilePath(), nsName)
+              // Parse home page BEFORE creating module (Effect Schema requires complete data at creation)
+              const nestedHome = tryParseHomePage(referencedFile.getFilePath(), nsName)
+              const nestedModule = extractModuleFromFile(nsFile, nsLocation, options, nestedHome)
 
               // Check if this namespace export should be filtered
               const jsdoc = parseJSDoc(nestedExportDecl)
@@ -513,8 +493,8 @@ export const extractModuleFromFile = (
     docGuideProv = JSDocProvenance.make({ shadowNamespace: false })
   }
 
-  const docs = docDescription || docGuide
-    ? ModuleDocs.make({ description: docDescription, guide: docGuide })
+  const docs = docDescription || docGuide || home
+    ? ModuleDocs.make({ description: docDescription, guide: docGuide, home })
     : undefined
 
   const docsProvenance = docDescriptionProv || docGuideProv
