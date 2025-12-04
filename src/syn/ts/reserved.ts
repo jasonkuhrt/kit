@@ -71,6 +71,7 @@ export const reservedJavaScriptKeywords = [
  */
 export const reservedTypeScriptTypeNames = [
   `any`,
+  `as`,
   `boolean`,
   `bigint`,
   `never`,
@@ -84,40 +85,13 @@ export const reservedTypeScriptTypeNames = [
 ] as const
 
 /**
- * TypeScript-specific keywords and operators.
- *
- * @see https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates
- * @see https://www.typescriptlang.org/docs/handbook/2/conditional-types.html
- */
-export const reservedTypeScriptKeywords = [
-  `as`, // Type assertion
-  `asserts`, // Assertion signature
-  `infer`, // Conditional type inference
-  `is`, // Type predicate
-  `keyof`, // Keyof operator
-  `namespace`, // Namespace declaration
-  `readonly`, // Readonly modifier
-  `satisfies`, // Satisfies operator
-  `type`, // Type alias
-] as const
-
-/**
- * Contextual keywords that have special meaning in specific contexts.
- * While not strictly reserved, they should be escaped for code generation safety.
- */
-export const contextualKeywords = [
-  `of`, // for-of loop iterator keyword
-] as const
-
-/**
  * Combined list of reserved names for general identifier checking (type and value contexts).
- * Includes JavaScript keywords, TypeScript type names, TypeScript keywords, and contextual keywords.
+ * Includes JavaScript keywords, TypeScript type names, and special iterator keyword.
  */
 export const reservedNames = [
   ...reservedJavaScriptKeywords,
   ...reservedTypeScriptTypeNames,
-  ...reservedTypeScriptKeywords,
-  ...contextualKeywords,
+  `of`, // Iterator keyword
 ] as const
 
 // ============================================================================
