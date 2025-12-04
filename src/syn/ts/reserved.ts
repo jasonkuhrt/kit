@@ -90,6 +90,7 @@ export const reservedTypeScriptTypeNames = [
 export const reservedNames = [
   ...reservedJavaScriptKeywords,
   ...reservedTypeScriptTypeNames,
+  `as`, // TypeScript assertion/operator keyword
   `of`, // Iterator keyword
 ] as const
 
