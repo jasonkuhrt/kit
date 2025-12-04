@@ -86,7 +86,8 @@ export const reservedTypeScriptTypeNames = [
 /**
  * TypeScript-specific keywords and operators.
  *
- * @see https://www.typescriptlang.org/docs/handbook/2/everyday-types.html
+ * @see https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates
+ * @see https://www.typescriptlang.org/docs/handbook/2/conditional-types.html
  */
 export const reservedTypeScriptKeywords = [
   `as`, // Type assertion
