@@ -71,6 +71,7 @@ export const reservedJavaScriptKeywords = [
  */
 export const reservedTypeScriptTypeNames = [
   `any`,
+  `as`,
   `boolean`,
   `bigint`,
   `never`,
