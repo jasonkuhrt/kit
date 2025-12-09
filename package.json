@@ -187,7 +187,6 @@
     "./http": "./build/http/__.js",
     "./idx": "./build/idx/__.js",
     "./json": "./build/json/__.js",
-    "./lens": "./build/lens/__.js",
     "./log": "./build/log/__.js",
     "./manifest": "./build/manifest/__.js",
     "./mask": "./build/mask/__.js",
