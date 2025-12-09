@@ -20,6 +20,7 @@ export * from '#undefined'
 export * from '#url'
 
 // Utils
+export * from '#assert'
 export * from '#bldr'
 export * from '#cli'
 export * from '#codec'
