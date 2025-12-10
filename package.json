@@ -152,6 +152,8 @@
     "#value/value": "./build/value/__.js",
     "#ware": "./build/ware/_.js",
     "#ware/ware": "./build/ware/__.js",
+    "#oak": "./build/oak/_.js",
+    "#oak/oak": "./build/oak/__.js",
     "#*": {
       "default": "./build/*.js"
     }
@@ -185,7 +187,6 @@
     "./http": "./build/http/__.js",
     "./idx": "./build/idx/__.js",
     "./json": "./build/json/__.js",
-    "./lens": "./build/lens/__.js",
     "./log": "./build/log/__.js",
     "./manifest": "./build/manifest/__.js",
     "./mask": "./build/mask/__.js",
@@ -207,7 +208,9 @@
     "./tree": "./build/tree/__.js",
     "./url": "./build/url/__.js",
     "./value": "./build/value/__.js",
-    "./ware": "./build/ware/__.js"
+    "./ware": "./build/ware/__.js",
+    "./oak": "./build/oak/__.js",
+    "./oak/extensions": "./build/oak/extensions/__.js"
   },
   "scripts": {
     "r": "libra refresh && pnpm fix:format",
@@ -280,6 +283,8 @@
   },
   "dependencies": {
     "@microsoft/tsdoc": "^0.15.1",
+    "@standard-schema/spec": "^1.0.0",
+    "alge": "0.8.1",
     "@types/node": "^24.6.1",
     "@types/object-inspect": "^1.13.0",
     "@vltpkg/semver": "^1.0.0-rc.2",
@@ -325,6 +330,12 @@
   },
   "peerDependencies": {
     "@effect/platform": ">=0.90.0 <1.0.0",
-    "effect": "^3.17.0"
+    "effect": "^3.17.0",
+    "zod": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
   }
 }

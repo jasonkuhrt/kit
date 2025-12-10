@@ -52,6 +52,23 @@ export type by<
           }>
         : never
 
+/**
+ * Result type for grouping objects using a function keyer.
+ */
+// dprint-ignore
+export type byFn<
+  $Type extends object,
+  $Key extends PropertyKey,
+> =
+  object extends $Type
+    ? Any
+    : string extends $Key
+        // Wide string type: fall back to Record
+        ? Readonly<Record<string, readonly $Type[]>>
+        : Readonly<{
+            [__group_name__ in $Key]?: readonly $Type[]
+          }>
+
 // dprint-ignore
 export type byToMut<
   $Type extends object,
@@ -79,6 +96,23 @@ export type byToMut<
             >
           }
         : never
+
+/**
+ * Result type for grouping objects using a function keyer (mutable).
+ */
+// dprint-ignore
+export type byFnToMut<
+  $Type extends object,
+  $Key extends PropertyKey,
+> =
+  object extends $Type
+    ? AnyMut
+    : string extends $Key
+        // Wide string type: fall back to Record
+        ? Record<string, $Type[]>
+        : {
+            [__group_name__ in $Key]?: $Type[]
+          }
 
 // dprint-ignore
 export interface ErrorInvalidGroupKey<obj extends object, key extends keyof obj> extends Ts.Err.StaticError<
@@ -218,8 +252,6 @@ export const toImmutableMut = <$Group extends AnyMut>(group: $Group): toImmutabl
  * Creates a mutable index where each unique value at the given key becomes a property
  * containing a mutable array of all objects that have that value.
  *
- * @template obj - The type of objects in the array
- * @template key - The key to group by
  * @param array - The array of objects to group
  * @param key - The object key whose values will be used for grouping. Must be a valid property key type (string, number, or symbol)
  * @returns A mutable object where keys are the unique values found at the specified key, and values are mutable arrays of objects
@@ -239,20 +271,51 @@ export const toImmutableMut = <$Group extends AnyMut>(group: $Group): toImmutabl
  * // Can be mutated:
  * usersByRole.admin.push({ id: 3, role: 'admin', name: 'Charlie' })
  */
-export const byToMut = <$Obj extends object, key extends keyof $Obj>(
+export function byToMut<$Obj extends object, $Key extends keyof $Obj>(
   array: $Obj[],
   // dprint-ignore
-  key: ValidateIsGroupableKey<$Obj, key, ErrorInvalidGroupKey<$Obj, key>>,
-): byToMut<$Obj, key> => {
+  key: ValidateIsGroupableKey<$Obj, $Key, ErrorInvalidGroupKey<$Obj, $Key>>,
+): byToMut<$Obj, $Key>
+
+/**
+ * Groups an array of objects using a function keyer, returning a mutable group set.
+ *
+ * @param array - The array of objects to group
+ * @param keyer - A function that returns the group key for each object
+ * @returns A mutable object where keys are the return values of the keyer function
+ *
+ * @example
+ * const items = [
+ *   { name: 'apple', category: 'fruit' },
+ *   { name: 'carrot', category: 'vegetable' }
+ * ]
+ *
+ * const byCategory = Group.byToMut(items, item => item.category)
+ * // Result (mutable):
+ * // {
+ * //   fruit: [{ name: 'apple', category: 'fruit' }],
+ * //   vegetable: [{ name: 'carrot', category: 'vegetable' }]
+ * // }
+ */
+export function byToMut<$Obj extends object, $Key extends string | number | symbol>(
+  array: $Obj[],
+  keyer: (item: $Obj) => $Key,
+): byFnToMut<$Obj, $Key>
+
+export function byToMut<$Obj extends object>(
+  array: $Obj[],
+  keyOrKeyer: PropertyKey | ((item: $Obj) => PropertyKey),
+): AnyMut {
   const groupSet = array.reduce((index, item) => {
-    // @ts-expect-error
-    const indexKey = item[key] as PropertyKey
+    const indexKey = typeof keyOrKeyer === `function`
+      ? keyOrKeyer(item)
+      : (item as any)[keyOrKeyer] as PropertyKey
     index[indexKey] ??= []
     index[indexKey].push(item)
     return index
   }, {} as Record<PropertyKey, any[]>)
 
-  return groupSet as any
+  return groupSet
 }
 
 /**
@@ -261,8 +324,6 @@ export const byToMut = <$Obj extends object, key extends keyof $Obj>(
  * Creates a frozen (immutable) index where each unique value at the given key becomes a property
  * containing a frozen array of all objects that have that value.
  *
- * @template obj - The type of objects in the array
- * @template key - The key to group by
  * @param array - The array of objects to group
  * @param key - The object key whose values will be used for grouping. Must be a valid property key type (string, number, or symbol)
  * @returns A frozen object where keys are the unique values found at the specified key, and values are frozen arrays of objects
@@ -296,13 +357,57 @@ export const byToMut = <$Obj extends object, key extends keyof $Obj>(
  * //   2: [{ categoryId: 2, name: 'Mouse' }]
  * // }
  */
-export const by = <$Obj extends object, key extends keyof $Obj>(
+export function by<$Obj extends object, $Key extends keyof $Obj>(
   array: $Obj[],
   // dprint-ignore
-  key: ValidateIsGroupableKey<$Obj, key, ErrorInvalidGroupKey<$Obj, key>>,
-): by<$Obj, key> => {
-  const groupSet = byToMut(array, key) as AnyMut
-  return toImmutableMut(groupSet) as any
+  key: ValidateIsGroupableKey<$Obj, $Key, ErrorInvalidGroupKey<$Obj, $Key>>,
+): by<$Obj, $Key>
+
+/**
+ * Groups an array of objects using a function keyer.
+ *
+ * Creates a frozen (immutable) index where each unique return value of the keyer
+ * becomes a property containing a frozen array of all objects with that key.
+ *
+ * @param array - The array of objects to group
+ * @param keyer - A function that returns the group key for each object
+ * @returns A frozen object where keys are the return values of the keyer function
+ *
+ * @example
+ * const items = [
+ *   { name: 'apple', category: 'fruit' },
+ *   { name: 'carrot', category: 'vegetable' }
+ * ]
+ *
+ * const byCategory = Group.by(items, item => item.category)
+ * // Result (frozen):
+ * // {
+ * //   fruit: [{ name: 'apple', category: 'fruit' }],
+ * //   vegetable: [{ name: 'carrot', category: 'vegetable' }]
+ * // }
+ *
+ * @example
+ * // With literal union return type for precise typing
+ * type Status = 'active' | 'inactive'
+ * const users = [
+ *   { name: 'Alice', status: 'active' as Status },
+ *   { name: 'Bob', status: 'inactive' as Status }
+ * ]
+ *
+ * const byStatus = Group.by(users, (u): Status => u.status)
+ * // Type: { active?: readonly User[], inactive?: readonly User[] }
+ */
+export function by<$Obj extends object, $Key extends string | number | symbol>(
+  array: $Obj[],
+  keyer: (item: $Obj) => $Key,
+): byFn<$Obj, $Key>
+
+export function by<$Obj extends object>(
+  array: $Obj[],
+  keyOrKeyer: PropertyKey | ((item: $Obj) => PropertyKey),
+): Any {
+  const groupSet = byToMut(array, keyOrKeyer as any) as AnyMut
+  return toImmutableMut(groupSet)
 }
 
 type ValidateIsGroupableKey<
