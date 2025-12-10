@@ -1,4 +1,5 @@
 import { Cli } from '#cli'
+import { Obj } from '#obj'
 import ansis from 'ansis'
 import { Effect } from 'effect'
 import type { Prompter } from '../lib/Prompter/_.ts'
@@ -18,7 +19,7 @@ export const prompt = (
     if (prompter === null) return parseProgress as ParseProgressPostPrompt
 
     const args: Record<string, any> = {}
-    const parameters = Object.entries(parseProgress.basicParameters)
+    const parameters = Obj.entries(parseProgress.basicParameters)
       .filter((_) => _[1].prompt.enabled)
       .map((_) => _[1].spec)
     const indexTotal = parameters.length
@@ -73,7 +74,7 @@ export const prompt = (
 
     // todo do not mutate
     const parseProgressPostPrompt = parseProgress as ParseProgressPostPrompt
-    for (const [parameterName, arg] of Object.entries(args)) {
+    for (const [parameterName, arg] of Obj.entries(args)) {
       parseProgressPostPrompt.basicParameters[parameterName]!.prompt.arg = arg
     }
 

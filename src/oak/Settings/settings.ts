@@ -1,3 +1,4 @@
+import { Obj } from '#obj'
 import { Str } from '#str'
 import type { BuilderCommandState } from '../builders/command/state.js'
 import type { EventPatternsInput, EventPatternsInputAtLeastOne } from '../eventPatterns.js'
@@ -153,7 +154,9 @@ export const change = (
             || typeof input.parameters.environment.$default !== `boolean`
               && input.parameters.environment.$default.enabled === undefined
           ) {
-            const parameterEnvironmentSpecs = Object.keys(input.parameters.environment).filter((k) => k !== `$default`)
+            const parameterEnvironmentSpecs = Obj.keysStrict(input.parameters.environment).filter((k) =>
+              k !== `$default`
+            )
             current.parameters.environment.$default.enabled = parameterEnvironmentSpecs.length === 0
           }
 

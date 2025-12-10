@@ -1,3 +1,4 @@
+import { Obj } from '#obj'
 import { Alge } from 'alge'
 import { Either } from 'effect'
 import type { ParameterBasic, ParameterBasicInput } from '../../Parameter/basic.js'
@@ -21,7 +22,7 @@ export const createParameters = (
       '-h --help': helpParameter,
     }
     : inputs
-  const outputs = Object.values(inputsWithHelp).flatMap((input): (ParameterBasic | ParameterExclusive)[] =>
+  const outputs = Obj.values(inputsWithHelp).flatMap((input): (ParameterBasic | ParameterExclusive)[] =>
     Alge.match(input)
       .Basic((input) => [parameterBasicCreate(input, settings)])
       .Exclusive((input) => parameterExclusiveCreate(input, settings))

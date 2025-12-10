@@ -151,14 +151,14 @@ export const parse = (
    * Likewise if there are argument errors that are NOT going to be prompted for, we must abort too.
    */
   const argumentErrors = [
-    ...Object.entries(parseProgressPostPromptAnnotation.basicParameters)
+    ...Obj.entries(parseProgressPostPromptAnnotation.basicParameters)
       .map(([_, v]): null | ParseResultBasicError => {
         return v.prompt.enabled === false && v.openingParseResult._tag === `error`
           ? v.openingParseResult
           : null
       })
       .filter((_): _ is ParseResultBasicError => _ !== null),
-    ...Object.entries(parseProgressPostPromptAnnotation.mutuallyExclusiveParameters)
+    ...Obj.entries(parseProgressPostPromptAnnotation.mutuallyExclusiveParameters)
       .map(([_, v]): null | ParseResultExclusiveGroupError => {
         return v._tag === `error` ? v : null
       })
@@ -190,7 +190,7 @@ export const parse = (
     }
   }
 
-  const hasPrompt = Object.values(parseProgressPostPromptAnnotation.basicParameters).some((_) => _.prompt.enabled)
+  const hasPrompt = Obj.values(parseProgressPostPromptAnnotation.basicParameters).some((_) => _.prompt.enabled)
     && argInputsPrompter
 
   /**
@@ -200,7 +200,7 @@ export const parse = (
   const tailProcess = (parseProgressPostPrompts: ParseProgressPostPrompt) => {
     const args = {
       ...Object.fromEntries(
-        Object.entries(parseProgressPostPrompts.basicParameters)
+        Obj.entries(parseProgressPostPrompts.basicParameters)
           .map(([k, v]): [string, ArgumentValue] | null => {
             if (v.prompt.enabled) {
               return [k, v.prompt.arg]
@@ -225,7 +225,7 @@ export const parse = (
           .filter((kv): kv is [string, ArgumentValue] => kv !== null),
       ),
       ...Object.fromEntries(
-        Object.values(parseProgressPostPrompts.mutuallyExclusiveParameters)
+        Obj.values(parseProgressPostPrompts.mutuallyExclusiveParameters)
           .filter((_): _ is ParseResultExclusiveGroupSupplied => _._tag === `supplied`)
           .map((v) => [v.spec.label, v.value]),
       ),
@@ -234,7 +234,7 @@ export const parse = (
     /**
      * Handle the distinct case of no arguments. Sometimes the CLI author wants this to mean "show help".
      */
-    if (settings.helpOnNoArguments && Object.values(args).length === 0) {
+    if (settings.helpOnNoArguments && Obj.values(args).length === 0) {
       settings.onOutput(Help.render(parametersResult.parameters, settings) + `\n`)
       if (!testDebuggingNoExit) process.exit(0)
       throw new Error(`missing args`) // When testing, with process.exit mock, we will reach this case

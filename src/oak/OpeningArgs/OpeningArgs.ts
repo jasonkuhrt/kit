@@ -1,5 +1,6 @@
 import { Err } from '#err'
 import { Group } from '#group'
+import { Obj } from '#obj'
 import { Alge } from 'alge'
 import { Errors } from '../Errors/_.ts'
 import type { ParameterExclusive } from '../Parameter/exclusive.js'
@@ -168,7 +169,7 @@ export const parse = ({
    */
   const exclusiveGroupSpecsByGroupLabel = Group.byToMut(specsByVariant.Exclusive ?? [], (spec) => spec.group.label)
 
-  for (const specs of Object.values(exclusiveGroupSpecsByGroupLabel)) {
+  for (const specs of Obj.values(exclusiveGroupSpecsByGroupLabel)) {
     if (!specs) continue
     const group = specs[0]!.group
     const argsToGroup = specs

@@ -53,45 +53,6 @@ export const stripeNegatePrefixLoose = (name: string): string => {
   return result ? result : name
 }
 
-export const invertTable = <T>(rows: T[][]): T[][] => {
-  const columns: T[][] = []
-  for (const row of rows) {
-    let i = 0
-    for (const col of row) {
-      const column = columns[i] || []
-      column.push(col)
-      columns[i] = column
-      i++
-    }
-  }
-  return columns
-}
-
-export const entries = <O extends object>(
-  obj: O,
-): Exclude<{ [k in keyof O]: [k, O[k]] }[keyof O], undefined>[] => Object.entries(obj) as any
-
 export const casesExhausted = (_: never): never => {
   throw new Error(`Cases exhausted: ${_}`)
-}
-
-export namespace HKT {
-  /**
-   * Model a Higher Kinded Type (HKT).
-   */
-  export interface Fn<Params = unknown, Return = unknown> {
-    params: Params
-    return: Return
-  }
-
-  /**
-   * Apply a Higher Kinded Type (HKT).
-   */
-  export type Call<F extends Fn, P> = (F & { params: P })['return']
-
-  export type ID<T> = IDFn<T>
-
-  export interface IDFn<T> extends HKT.Fn<T> {
-    return: this['params']
-  }
 }

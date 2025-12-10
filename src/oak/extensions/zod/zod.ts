@@ -1,4 +1,5 @@
 import type { Fn } from '#fn'
+import { Obj } from '#obj'
 import type { Ts } from '#ts'
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 import type { z } from 'zod/v4'
@@ -115,7 +116,7 @@ const extractZodMetadata = (
     if (schema._def?.entries) {
       // Native enum
       const enumObj = schema._def.entries
-      const members = Object.values(enumObj)
+      const members = Obj.values(enumObj)
       displayType = members.map((m) => `'${m}'`).join(` | `)
       priority = 4
       schemaType = { _tag: `enum`, values: members }

@@ -1,7 +1,7 @@
+import { Prom } from '#prom'
 import { z } from 'zod/v4'
 import * as Command from '../../_entrypoints/__.js'
 import { Zod } from '../../extensions/__.js'
-import { isPromiseLikeValue } from '../../lib/prelude.js'
 
 // todo enable throw on all tests
 export const $ = Command.create().use(Zod) // .settings({ onError: `throw` })
@@ -18,7 +18,7 @@ export const tryCatch = <T, E extends Error = Error>(
 ): T extends Promise<any> ? Promise<Awaited<T> | E> : T | E => {
   try {
     const result = fn() as any
-    if (isPromiseLikeValue(result)) {
+    if (Prom.isShape(result)) {
       return result.catch((error) => {
         return errorFromMaybeError(error)
       }) as any

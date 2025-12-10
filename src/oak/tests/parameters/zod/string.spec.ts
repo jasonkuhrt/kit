@@ -1,6 +1,6 @@
+import { Obj } from '#obj'
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod/v4'
-import { entries } from '../../../helpers.js'
 import { $, s } from '../../_/helpers.js'
 
 describe(`zod`, () => {
@@ -13,7 +13,7 @@ describe(`zod`, () => {
       ],
     )(`%s`, (_, parameters, input) => {
       expect(
-        entries(parameters)
+        Obj.entries(parameters)
           .reduce((chain: any, data) => chain.parameter(data[0] as any, data[1]), $ as any)
           .parse(input),
       ).toMatchSnapshot()

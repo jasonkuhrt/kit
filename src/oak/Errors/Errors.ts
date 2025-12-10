@@ -1,3 +1,4 @@
+import { Obj } from '#obj'
 import type { OpeningArgs } from '../OpeningArgs/_.ts'
 import type { ParameterExclusive, ParameterExclusiveGroup } from '../Parameter/exclusive.js'
 import type { Parameter } from '../Parameter/types.js'
@@ -74,9 +75,7 @@ export class ErrorMissingArgumentForMutuallyExclusiveParameters extends Error {
   public group: ParameterExclusiveGroup
   constructor(params: { group: ParameterExclusiveGroup }) {
     const message = `Missing argument for one of the following parameters: ${
-      Object.values(
-        params.group.parameters,
-      )
+      Obj.values(params.group.parameters)
         .map((_) => _.name.canonical)
         .join(`, `)
     }`

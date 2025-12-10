@@ -1,3 +1,4 @@
+import { Obj } from '#obj'
 import type { Ts } from '#ts'
 
 export const _ = `*`
@@ -71,7 +72,7 @@ export const match = <D extends SomeData, P extends Pattern<D> | undefined>(data
     if (!(typeof data === `object` && data !== null)) {
       return false
     }
-    const valuePatterns = Object.entries(pattern)
+    const valuePatterns = Obj.entries(pattern)
     if (valuePatterns.length === 0) {
       return true
     }

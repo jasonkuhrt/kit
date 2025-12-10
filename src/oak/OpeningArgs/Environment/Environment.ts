@@ -1,3 +1,4 @@
+import { Obj } from '#obj'
 import { Str } from '#str'
 import { Errors } from '../../Errors/_.ts'
 import type { Index, RequireField } from '../../lib/prelude.js'
@@ -211,7 +212,7 @@ interface Envar {
 }
 
 const normalizeEnvironment = (environment: RawInputs): Envar[] => {
-  return Object.entries(environment)
+  return Obj.entries(environment)
     .map(([name, value]) =>
       value === undefined
         ? value

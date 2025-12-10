@@ -1,5 +1,6 @@
 import { Cli } from '#cli'
 import { Group } from '#group'
+import { Obj } from '#obj'
 import { Str } from '#str'
 import ansis from 'ansis'
 import { Text } from '../lib/Text/_.ts'
@@ -47,7 +48,7 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
   const isAcceptsAnyEnvironmentArgs = basicParameters.filter((_) => _.environment?.enabled).length > 0
   const isAcceptsAnyMutuallyExclusiveParameters = (parametersByTag.Exclusive && parametersByTag.Exclusive.length > 0)
     || false
-  const isEnvironmentEnabled = Object.values(settings.parameters.environment).filter((_) => _.enabled).length > 0
+  const isEnvironmentEnabled = Obj.values(settings.parameters.environment).filter((_) => _.enabled).length > 0
 
   const columnTitles = {
     name: `Name`,
@@ -56,7 +57,7 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
     environment: isEnvironmentEnabled ? `Environment (1)` : null,
   }
 
-  const parametersExclusiveGroups = Object.values(
+  const parametersExclusiveGroups = Obj.values(
     Group.byToMut(parametersByTag.Exclusive ?? [], (_) => _.group.label),
   ).map(
     (_) => _![0]!.group,
@@ -134,7 +135,7 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
                       ``,
                       default_,
                     ],
-                    ...Object.values(parametersExclusive.parameters).map((parameter) => [
+                    ...Obj.values(parametersExclusive.parameters).map((parameter) => [
                       parameterName(parameter),
                       SchemaRuntime.help(parameter.type, settings),
                       parameterDefault(parameter),
