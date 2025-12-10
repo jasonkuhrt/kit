@@ -5,6 +5,7 @@ import type { StandardSchemaV1 } from '@standard-schema/spec'
 import { Option, Schema, SchemaAST } from 'effect'
 import { createExtension } from '../../extension.js'
 import type { Optionality, SchemaType } from '../../schema/oak-schema.js'
+import { Term } from '../../term.js'
 
 export type SupportedType = Schema.Schema.All
 
@@ -210,7 +211,7 @@ const extractSchemaTypeInfo = (
     return {
       schemaType: { _tag: `string` },
       refinements: [],
-      displayType: `string`,
+      displayType: Term.colors.secondary(`string`),
       priority: 1,
     }
   }
@@ -219,7 +220,7 @@ const extractSchemaTypeInfo = (
     return {
       schemaType: { _tag: `number` },
       refinements: [],
-      displayType: `number`,
+      displayType: Term.colors.secondary(`number`),
       priority: 2,
     }
   }
@@ -228,7 +229,7 @@ const extractSchemaTypeInfo = (
     return {
       schemaType: { _tag: `boolean` },
       refinements: [],
-      displayType: `boolean`,
+      displayType: Term.colors.secondary(`boolean`),
       priority: 3,
     }
   }
@@ -238,7 +239,7 @@ const extractSchemaTypeInfo = (
     return {
       schemaType: { _tag: `literal`, value },
       refinements: [],
-      displayType: typeof value === `string` ? `'${value}'` : String(value),
+      displayType: Term.colors.secondary(typeof value === `string` ? `'${value}'` : String(value)),
       priority: 5,
     }
   }
@@ -251,7 +252,7 @@ const extractSchemaTypeInfo = (
   return {
     schemaType: { _tag: `string` },
     refinements: [],
-    displayType: `unknown`,
+    displayType: Term.colors.secondary(`unknown`),
     priority: 0,
   }
 }
@@ -323,7 +324,7 @@ const extractUnionInfo = (
 
   if (allLiterals) {
     const values = ast.types.map((t) => (t as SchemaAST.Literal).literal)
-    const displayType = values.map((v) => (typeof v === `string` ? `'${v}'` : String(v))).join(` | `)
+    const displayType = values.map((v) => Term.colors.secondary(typeof v === `string` ? `'${v}'` : String(v))).join(Term.colors.dim(` | `))
 
     return {
       schemaType: { _tag: `enum`, values },
@@ -333,9 +334,9 @@ const extractUnionInfo = (
     }
   }
 
-  // Mixed union - extract each member
+  // Mixed union - extract each member (already colored from recursive calls)
   const memberInfos = ast.types.map(extractSchemaTypeInfo)
-  const displayType = memberInfos.map((m) => m.displayType).join(` | `)
+  const displayType = memberInfos.map((m) => m.displayType).join(Term.colors.dim(` | `))
 
   return {
     schemaType: { _tag: `union`, members: memberInfos.map((m) => m.schemaType) },

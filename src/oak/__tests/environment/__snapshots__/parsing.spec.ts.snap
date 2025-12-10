@@ -15,7 +15,7 @@ PARAMETERS
 
   [4m[90mName[39m[24m     [4m[90mType[39m[24m                       [4m[90mDefault[39m[24m       [4m[90mEnvironment (1)[39m[24m
                                                                    
-  [1m[32mfoo[39m[22m      'a' | 'b' | 'c'            [1m[30m[101m REQUIRED [49m[39m[22m    [34m✓[39m              
+  [1m[32mfoo[39m[22m      [34m'a'[39m[2m[90m | [39m[22m[34m'b'[39m[2m[90m | [39m[22m[34m'c'[39m            [1m[30m[101m REQUIRED [49m[39m[22m    [34m✓[39m              
                                                                    
   [2m[90m     [39m[22m
   [2m[90mNOTES[39m[22m

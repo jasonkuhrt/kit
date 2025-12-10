@@ -162,7 +162,7 @@ export const help = <___Input, ___Output>(
 ): string => {
   const parts: string[] = []
 
-  // Add display type
+  // Add display type (coloring baked in by schema extension)
   parts.push(displayExpanded(schema))
 
   // Add description if present

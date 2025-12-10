@@ -5,6 +5,7 @@ import type { StandardSchemaV1 } from '@standard-schema/spec'
 import type { z } from 'zod/v4'
 import { createExtension } from '../../extension.js'
 import type { Optionality, SchemaType } from '../../schema/oak-schema.js'
+import { Term } from '../../term.js'
 import { isBoolean, isDefault, isEnum, isLiteral, isNumber, isOptional, isString, isUnion } from './guards.js'
 
 // Supported Zod schema types for CLI parameters
@@ -97,17 +98,17 @@ const extractZodMetadata = (
   let schemaType: SchemaType
 
   if (isString(zodSchema)) {
-    displayType = `string`
+    displayType = Term.colors.secondary(`string`)
     refinements = extractStringRefinements(zodSchema)
     priority = 1
     schemaType = { _tag: `string` }
   } else if (isNumber(zodSchema)) {
-    displayType = `number`
+    displayType = Term.colors.secondary(`number`)
     refinements = extractNumberRefinements(zodSchema)
     priority = 2
     schemaType = { _tag: `number` }
   } else if (isBoolean(zodSchema)) {
-    displayType = `boolean`
+    displayType = Term.colors.secondary(`boolean`)
     priority = 3
     schemaType = { _tag: `boolean` }
   } else if (isEnum(zodSchema)) {
@@ -117,19 +118,19 @@ const extractZodMetadata = (
       // Native enum
       const enumObj = schema._def.entries
       const members = Obj.values(enumObj)
-      displayType = members.map((m) => `'${m}'`).join(` | `)
+      displayType = members.map((m) => Term.colors.secondary(`'${m}'`)).join(Term.colors.dim(` | `))
       priority = 4
       schemaType = { _tag: `enum`, values: members }
     } else {
       // Regular enum
       const members = schema._def?.values as string[] ?? []
-      displayType = members.map((m) => `'${m}'`).join(` | `)
+      displayType = members.map((m) => Term.colors.secondary(`'${m}'`)).join(Term.colors.dim(` | `))
       priority = 4
       schemaType = { _tag: `enum`, values: members }
     }
   } else if (isLiteral(zodSchema)) {
     const value = schema._def?.value
-    displayType = typeof value === `string` ? `'${value}'` : String(value)
+    displayType = Term.colors.secondary(typeof value === `string` ? `'${value}'` : String(value))
     priority = 5
     schemaType = { _tag: `literal`, value }
   } else if (isDefault(zodSchema)) {
@@ -139,7 +140,7 @@ const extractZodMetadata = (
   } else if (isUnion(zodSchema)) {
     const options = (schema._def?.options as z.ZodType[]) ?? []
     const membersMetadata = options.map((opt) => extractZodMetadata(opt))
-    displayType = membersMetadata.map((m) => m.helpHints?.displayType ?? `unknown`).join(` | `)
+    displayType = membersMetadata.map((m) => m.helpHints?.displayType ?? Term.colors.secondary(`unknown`)).join(Term.colors.dim(` | `))
     priority = 0
     schemaType = { _tag: `union`, members: membersMetadata.map((m) => m.schemaType) }
 
