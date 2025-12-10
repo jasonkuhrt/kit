@@ -75,10 +75,7 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
     )
   }
 
-  // Explicitly set terminal width for deterministic rendering (kit 0.87.0+)
-  // Global read happens at module load time, not per-render
-  // Child blocks can safely specify partial spanRange (kit #36 fixed)
-  const HELP_TERMINAL_WIDTH = 120
+  const HELP_TERMINAL_WIDTH = process.stdout?.columns ?? 80
   const output = Cli.Tex.Tex({ terminalWidth: HELP_TERMINAL_WIDTH })
     .block(($) => {
       if (!settings.description) return null

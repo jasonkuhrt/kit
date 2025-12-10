@@ -11,10 +11,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_FOO="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_FOO="..."                                                   
 "
 `;
 
@@ -29,10 +30,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_FOO="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_FOO="..."                                                   
 "
 `;
 
@@ -40,17 +42,19 @@ exports[`Help rendering (skipped in CI - kit#41) > enum > when there are many me
 "
 PARAMETERS
 
-  Name     Type                                                                                                                                Default       Environment (1)
-                                                                                                                                                                            
-  foo      'apple' | 'baby' | 'cannabis' | 'dinosaur' | 'elephant' | 'fanna' | 'goat' | 'house' | 'island' | 'jake' | 'kilomanjara'             REQUIRED     ✓              
-                                                                                                                                                                            
+  Name     Type                                                                                    Default       Environment (1)
+                                                                                                                                
+  foo      'apple' | 'baby' | 'cannabis' | 'dinosaur' | 'elephant' | 'fanna' | 'goat' |             REQUIRED     ✓              
+           'house' | 'island' | 'jake' | 'kilomanjara'                                                                          
+                                                                                                                                
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_FOO="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_FOO="..."                                                   
 "
 `;
 
@@ -65,10 +69,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_FOO="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_FOO="..."                                                   
 "
 `;
 
@@ -76,21 +81,22 @@ exports[`Help rendering (skipped in CI - kit#41) > enums do not mess up alignmen
 "
 PARAMETERS
 
-  Name     Type                                                                                                                               Default       Environment (1)
-                                                                                                                                                                           
-  foo      'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' |             REQUIRED     ✓              
-           'u' | 'v' | 'w' | 'x' | 'y' | 'z'                                                                                                                               
-                                                                                                                                                                           
-  bar      string                                                                                                                             undefined     ✓              
-                                                                                                                                                                           
+  Name     Type                                                                                     Default       Environment (1)
+                                                                                                                                 
+  foo      'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' |             REQUIRED     ✓              
+           'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z'                                           
+                                                                                                                                 
+  bar      string                                                                                   undefined     ✓              
+                                                                                                                                 
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_FOO="..."                                                                                        
-        → CLI_PARAMETER_BAR="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_FOO="..."                                                   
+        → CLI_PARAMETER_BAR="..."                                                   
 "
 `;
 
@@ -107,12 +113,13 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. By default they
-        must be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive), though some parameters deviate (shown in  
-        docs). Examples:                                                                                                 
-        → CLI_PARAMETER_BAR="..."                                                                                        
-        → MOO_FOO="..."                                                                                                  
+  (1)   Parameters can be passed arguments via environment variables. Command line
+        arguments take precedence. Environment variable names are snake cased     
+        versions of the parameter name (or its aliases), case insensitive. By     
+        default they must be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case     
+        insensitive), though some parameters deviate (shown in docs). Examples:   
+        → CLI_PARAMETER_BAR="..."                                                 
+        → MOO_FOO="..."                                                           
 "
 `;
 
@@ -129,12 +136,13 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. By default they
-        must be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive), though some parameters deviate (shown in  
-        docs). Examples:                                                                                                 
-        → CLI_PARAMETER_BAR="..."                                                                                        
-        → MOO_FOO="..."                                                                                                  
+  (1)   Parameters can be passed arguments via environment variables. Command line
+        arguments take precedence. Environment variable names are snake cased     
+        versions of the parameter name (or its aliases), case insensitive. By     
+        default they must be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case     
+        insensitive), though some parameters deviate (shown in docs). Examples:   
+        → CLI_PARAMETER_BAR="..."                                                 
+        → MOO_FOO="..."                                                           
 "
 `;
 
@@ -151,11 +159,12 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_BAR="..."                                                                                        
-        → FOO="..."                                                                                                      
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_BAR="..."                                                   
+        → FOO="..."                                                                 
 "
 `;
 
@@ -172,10 +181,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_BAR="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_BAR="..."                                                   
 "
 `;
 
@@ -201,10 +211,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_FOO="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_FOO="..."                                                   
 "
 `;
 
@@ -224,13 +235,15 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_BAZ="..."                                                                                        
-        → CLI_PARAMETER_BAR="..."                                                                                        
-  (2) This is a set of mutually exclusive parameters. Only one can be provided at a time. If more than one is provided,
-      execution will fail with an input error.                                                                         
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_BAZ="..."                                                   
+        → CLI_PARAMETER_BAR="..."                                                   
+  (2) This is a set of mutually exclusive parameters. Only one can be provided at
+      a time. If more than one is provided, execution will fail with an input    
+      error.                                                                     
 "
 `;
 
@@ -250,13 +263,15 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_BAZ="..."                                                                                        
-        → CLI_PARAMETER_BAR="..."                                                                                        
-  (2) This is a set of mutually exclusive parameters. Only one can be provided at a time. If more than one is provided,
-      execution will fail with an input error.                                                                         
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_BAZ="..."                                                   
+        → CLI_PARAMETER_BAR="..."                                                   
+  (2) This is a set of mutually exclusive parameters. Only one can be provided at
+      a time. If more than one is provided, execution will fail with an input    
+      error.                                                                     
 "
 `;
 
@@ -276,13 +291,15 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_BAR="..."                                                                                        
-        → CLI_PARAMETER_BAZ="..."                                                                                        
-  (2) This is a set of mutually exclusive parameters. Only one can be provided at a time. If more than one is provided,
-      execution will fail with an input error.                                                                         
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_BAR="..."                                                   
+        → CLI_PARAMETER_BAZ="..."                                                   
+  (2) This is a set of mutually exclusive parameters. Only one can be provided at
+      a time. If more than one is provided, execution will fail with an input    
+      error.                                                                     
 "
 `;
 
@@ -302,8 +319,9 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1) This is a set of mutually exclusive parameters. Only one can be provided at a time. If more than one is provided,
-      execution will fail with an input error.                                                                         
+  (1) This is a set of mutually exclusive parameters. Only one can be provided at
+      a time. If more than one is provided, execution will fail with an input    
+      error.                                                                     
 "
 `;
 
@@ -322,10 +340,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_FOO="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_FOO="..."                                                   
 "
 `;
 
@@ -340,10 +359,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_FOO="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_FOO="..."                                                   
 "
 `;
 
@@ -359,10 +379,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_A="..."                                                                                          
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_A="..."                                                     
 "
 `;
 
@@ -377,10 +398,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_FOO="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_FOO="..."                                                   
 "
 `;
 
@@ -395,10 +417,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_FOO="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_FOO="..."                                                   
 "
 `;
 
@@ -413,10 +436,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_FOO="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_FOO="..."                                                   
 "
 `;
 
@@ -432,10 +456,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_A="..."                                                                                          
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_A="..."                                                     
 "
 `;
 
@@ -451,10 +476,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_A="..."                                                                                          
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_A="..."                                                     
 "
 `;
 
@@ -470,10 +496,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_BAR="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_BAR="..."                                                   
 "
 `;
 
@@ -489,10 +516,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_BAR="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_BAR="..."                                                   
 "
 `;
 
@@ -508,10 +536,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_BAR="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_BAR="..."                                                   
 "
 `;
 
@@ -527,10 +556,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_BAR="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_BAR="..."                                                   
 "
 `;
 
@@ -546,10 +576,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_BAR="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_BAR="..."                                                   
 "
 `;
 
@@ -565,10 +596,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_BAR="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_BAR="..."                                                   
 "
 `;
 
@@ -584,10 +616,11 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_BAR="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_BAR="..."                                                   
 "
 `;
 
@@ -603,9 +636,10 @@ PARAMETERS
        
   NOTES
   ━━━━━
-  (1)   Parameters can be passed arguments via environment variables. Command line arguments take precedence. Environment
-        variable names are snake cased versions of the parameter name (or its aliases), case insensitive. They must be   
-        prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples:                                         
-        → CLI_PARAMETER_BAR="..."                                                                                        
+  (1)   Parameters can be passed arguments via environment variables. Command line  
+        arguments take precedence. Environment variable names are snake cased       
+        versions of the parameter name (or its aliases), case insensitive. They must
+        be prefixed with CLI_PARAMETER_ or CLI_PARAM_ (case insensitive). Examples: 
+        → CLI_PARAMETER_BAR="..."                                                   
 "
 `;
