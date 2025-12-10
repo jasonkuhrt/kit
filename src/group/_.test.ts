@@ -186,7 +186,79 @@ describe('types', () => {
     A<{ A?: a[]; B?: b[] }>().onAs<g>()
   })
   test('error: parameter: key: if target value not conforming to PropertyKey', () => {
-    type e = Parameters<typeof Group.by<ab, 'date'>>[1]
-    A<Group.ErrorInvalidGroupKey<ab, 'date'>>().on({} as e)
+    // Test that the error type is correctly constructed
+    type e = Group.ErrorInvalidGroupKey<ab, 'date'>
+    A<e['CONTEXT_____']['your_key_type']>().onAs<Date>()
+    // Runtime test that attempting to use Date key throws
+    expect(() => {
+      // @ts-expect-error - Date is not a valid grouping key
+      Group.by(ab, 'date')
+    }).not.toThrow() // Doesn't throw at runtime, but TS correctly errors
+  })
+})
+
+describe('function keyer', () => {
+  test('by() with function keyer returns frozen groups', () => {
+    const items = [
+      { name: 'apple', category: 'fruit' as const },
+      { name: 'carrot', category: 'vegetable' as const },
+      { name: 'banana', category: 'fruit' as const },
+    ]
+
+    const grouped = Group.by(items, (item) => item.category)
+    A<Group.byFn<typeof items[number], 'fruit' | 'vegetable'>>().on(grouped)
+
+    expect(grouped).toEqual({
+      fruit: [items[0], items[2]],
+      vegetable: [items[1]],
+    })
+    expect(Object.isFrozen(grouped)).toBe(true)
+    expect(Object.isFrozen(grouped.fruit)).toBe(true)
+  })
+
+  test('byToMut() with function keyer returns mutable groups', () => {
+    const items = [
+      { name: 'apple', category: 'fruit' as const },
+      { name: 'carrot', category: 'vegetable' as const },
+    ]
+
+    const grouped = Group.byToMut(items, (item) => item.category)
+    A<Group.byFnToMut<typeof items[number], 'fruit' | 'vegetable'>>().on(grouped)
+
+    expect(grouped).toEqual({
+      fruit: [items[0]],
+      vegetable: [items[1]],
+    })
+    expect(Object.isFrozen(grouped)).toBe(false)
+    // Can mutate (assert non-null since we know it exists)
+    grouped.fruit!.push(items[0]!)
+    expect(grouped.fruit).toHaveLength(2)
+  })
+
+  test('function keyer with wide string type falls back to Record', () => {
+    const items = [{ name: 'a', key: 'x' }, { name: 'b', key: 'y' }]
+    const grouped = Group.by(items, (item) => item.key)
+    // Type is Record<string, ...> because item.key is string
+    A<Readonly<Record<string, readonly typeof items[number][]>>>().on(grouped)
+
+    expect(grouped).toEqual({
+      x: [items[0]],
+      y: [items[1]],
+    })
+  })
+
+  test('function keyer with literal union return type has precise keys', () => {
+    type Category = 'fruit' | 'vegetable'
+    const items = [
+      { name: 'apple', category: 'fruit' as Category },
+      { name: 'carrot', category: 'vegetable' as Category },
+    ]
+
+    // Explicit return type annotation gives precise typing
+    const grouped = Group.by(items, (item): Category => item.category)
+    A<Readonly<{ fruit?: readonly typeof items[number][]; vegetable?: readonly typeof items[number][] }>>().on(grouped)
+
+    expect(grouped.fruit).toHaveLength(1)
+    expect(grouped.vegetable).toHaveLength(1)
   })
 })

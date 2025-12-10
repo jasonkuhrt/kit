@@ -1,7 +1,7 @@
 import { Cli } from '#cli'
+import { Group } from '#group'
 import { Str } from '#str'
 import ansis from 'ansis'
-import { groupBy } from '../lib/prelude.js'
 import { Text } from '../lib/Text/_.ts'
 import type { Parameter } from '../Parameter/types.js'
 import * as SchemaRuntime from '../schema/schema-runtime.js'
@@ -27,7 +27,7 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
   const parametersWithDescription = allParameters.filter((_) =>
     _.type.metadata.description !== null && _.type.metadata.description !== undefined
   )
-  const parametersByTag = groupBy(parameters_, `_tag`)
+  const parametersByTag = Group.byToMut(parameters_, `_tag`)
   const basicParameters = parametersByTag.Basic ?? []
   const allParametersWithoutHelp = allParameters
     .filter((_) => _.name.canonical !== `help`)
@@ -57,9 +57,9 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
   }
 
   const parametersExclusiveGroups = Object.values(
-    groupBy(parametersByTag.Exclusive ?? [], (_) => _.group.label),
+    Group.byToMut(parametersByTag.Exclusive ?? [], (_) => _.group.label),
   ).map(
-    (_) => _[0]!.group,
+    (_) => _![0]!.group,
   )
 
   const noteItems: (Cli.Tex.Block | string | null)[] = []

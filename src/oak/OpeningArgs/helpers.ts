@@ -1,13 +1,11 @@
 import { Str } from '#str'
 import { Either } from 'effect'
-import { negateNamePattern } from '../helpers.js'
+import { negateNamePattern, stripeDashPrefix } from '../helpers.js'
 import type { Parameter } from '../Parameter/types.js'
 import * as SchemaRuntime from '../schema/schema-runtime.js'
 import type { Value } from './types.js'
 
-export const stripeDashPrefix = (flagNameInput: string): string => {
-  return flagNameInput.replace(/^-+/, ``)
-}
+export { stripeDashPrefix }
 
 export const parseSerializedValue = (name: string, serializedValue: string, spec: Parameter): Value => {
   const either = SchemaRuntime.deserialize(spec.type, serializedValue)

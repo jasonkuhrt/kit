@@ -1,3 +1,4 @@
+import { Obj } from '#obj'
 import { Str } from '#str'
 import { Either } from 'effect'
 
@@ -20,8 +21,8 @@ export type Values<T> = T[keyof T]
 
 export const getLowerCaseEnvironment = (): NodeJS.ProcessEnv => lowerCaseObjectKeys(process.env)
 
-export const lowerCaseObjectKeys = (obj: object) =>
-  Object.fromEntries(Object.entries(obj).map(([k, v]) => [k.toLowerCase(), v]))
+export const lowerCaseObjectKeys = <$Obj extends Record<string, unknown>>(obj: $Obj): $Obj =>
+  Obj.mapKeys(obj, (k) => k.toLowerCase()) as $Obj
 
 export const parseEnvironmentVariableBoolean = (serializedValue: string): Either.Either<boolean, Error> => {
   // @ts-expect-error ignore

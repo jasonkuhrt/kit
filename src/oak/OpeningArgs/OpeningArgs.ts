@@ -1,6 +1,7 @@
+import { Err } from '#err'
+import { Group } from '#group'
 import { Alge } from 'alge'
 import { Errors } from '../Errors/_.ts'
-import { errorFromUnknown, groupBy } from '../lib/prelude.js'
 import type { ParameterExclusive } from '../Parameter/exclusive.js'
 import type { Parameter } from '../Parameter/types.js'
 import * as SchemaRuntime from '../schema/schema-runtime.js'
@@ -30,7 +31,7 @@ export const parse = ({
 
   result.globalErrors.push(...lineParseResult.globalErrors, ...envParseResult.globalErrors)
 
-  const specsByVariant = groupBy(parameters, `_tag`)
+  const specsByVariant = Group.byToMut(parameters, `_tag`)
 
   const specVariantsBasic = specsByVariant.Basic ?? []
 
@@ -128,7 +129,7 @@ export const parse = ({
             errors: [
               new Errors.ErrorFailedToGetDefaultArgument({
                 spec: parameter,
-                cause: errorFromUnknown(someError),
+                cause: Err.ensure(someError),
               }),
             ],
           }
@@ -165,9 +166,10 @@ export const parse = ({
    * 4. If a group has more than one parameter with an arg then error
    * 5. If a group has exactly one parameter with an arg then OK
    */
-  const exclusiveGroupSpecsByGroupLabel = groupBy(specsByVariant.Exclusive ?? [], (spec) => spec.group.label)
+  const exclusiveGroupSpecsByGroupLabel = Group.byToMut(specsByVariant.Exclusive ?? [], (spec) => spec.group.label)
 
   for (const specs of Object.values(exclusiveGroupSpecsByGroupLabel)) {
+    if (!specs) continue
     const group = specs[0]!.group
     const argsToGroup = specs
       .map((_) => lineParseResult.reports[_.name.canonical] ?? envParseResult.reports[_.name.canonical])

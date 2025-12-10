@@ -1,3 +1,4 @@
+import { Obj } from '#obj'
 import { Effect } from 'effect'
 import type { RawArgInputs } from '../builders/command/types.js'
 import { createEvent } from '../eventPatterns.js'
@@ -96,18 +97,16 @@ export const parse = (
 
   const parseProgressPostPromptAnnotation = {
     ...openingArgsResult,
-    basicParameters: Object.fromEntries(
-      Object.entries(openingArgsResult.basicParameters).map(([parameterName, openingParseResult]) => {
-        const data = {
-          openingParseResult,
-          spec: openingParseResult.parameter,
-          prompt: {
-            enabled: false,
-          },
-        }
-        return [parameterName, data]
-      }),
-    ),
+    basicParameters: Obj.mapEntries(openingArgsResult.basicParameters, (parameterName, openingParseResult) => {
+      const data = {
+        openingParseResult,
+        spec: openingParseResult.parameter,
+        prompt: {
+          enabled: false,
+        },
+      }
+      return [parameterName, data] as const
+    }),
   }
 
   if (argInputsPrompter) {
