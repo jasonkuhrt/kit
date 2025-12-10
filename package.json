@@ -250,7 +250,13 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "docs:generate": "tsx src/utils/paka/cli.ts generate",
-    "generate:test-namespaces": "tsx scripts/generate-test-namespaces/index.ts"
+    "generate:test-namespaces": "tsx scripts/generate-test-namespaces/index.ts",
+    "oak:intro-effect": "tsx ./src/oak/__examples/intro-effect.ts",
+    "oak:intro-zod": "tsx ./src/oak/__examples/intro-zod.ts",
+    "oak:kitchen-sink": "tsx ./src/oak/__examples/kitchen-sink.ts",
+    "oak:optional-effect": "tsx ./src/oak/__examples/optional-effect.ts",
+    "oak:prompt": "tsx ./src/oak/__examples/prompt.ts",
+    "oak:publish": "tsx ./src/oak/__examples/publish.ts"
   },
   "devDependencies": {
     "@ark/attest": "^0.50.0",
