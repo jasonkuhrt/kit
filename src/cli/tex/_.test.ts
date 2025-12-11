@@ -26,6 +26,10 @@ Test
         Tex.Tex().block({ padding: { mainEnd: 2 } }, `foo`),
         Tex.Tex().block(($) => $.set({ padding: { crossStart: 2 } }).text(`foo`)),
       ])
+      .describeInputs(`padding > string`, [
+        Tex.Tex().block({ padding: { crossStart: `> ` } }, `content`),
+        Tex.Tex().block({ padding: { crossStart: `| `, crossEnd: ` |` } }, `content`),
+      ])
       .describeInputs(`margin`, [
         Tex.Tex().block({ margin: { mainStart: 2 } }, `foo`),
         Tex.Tex().block({ margin: { crossStart: 3 } }, `foo`),
@@ -64,6 +68,17 @@ Test
         Tex.Tex({ spanRange: { cross: { max: 100 } } })
           .block(`foo bar`)
           .block({ border: { edges: { top: `-` } }, span: { cross: 100n } }, `foo`),
+      ])
+      .describeInputs(`style`, [
+        // Basic style application
+        Tex.Tex().block({ style: ansis.red }, `colored text`),
+        Tex.Tex().block({ style: ansis.bold.blue }, `bold blue text`),
+        // Style with border (original bug scenario)
+        Tex.Tex().block({ style: ansis.dim, border: { edges: { left: `|`, right: `|` } } }, `box`),
+        // Nested blocks with different styles (color restoration)
+        Tex.Tex().block({ style: ansis.blue }, ($) =>
+          $.block({ style: ansis.red }, `inner`).text(` outer`)
+        ),
       ]))
   .describeInputs(`text wrapping`, [
     Tex.Tex({ terminalWidth: 20 }).text(`x`.repeat(20)),
@@ -114,16 +129,39 @@ Test
         ),
         Tex.Tex().table(($) => $.row(`alpha\napple\nankle`, `beta\nbanana`)),
       ])
-      .describeInputs(`separators`, [
+      .describeInputs(`gap`, [
         Tex.Tex().table(($) =>
-          $.set({ separators: { row: ` ` } })
+          $.set({ gap: { main: ` `, cross: ` | ` } })
             .headers([`alpha`, `bravo`, `charlie`])
             .row(`a`, `b`)
         ),
         Tex.Tex().table(($) =>
-          $.set({ separators: { column: ` ` } })
+          $.set({ gap: { main: `-`, cross: ` ` } })
             .headers([`alpha`, `bravo`, `charlie`])
             .row(`a`, `b`)
+        ),
+      ])
+      .describeInputs(`gap > intersection`, [
+        Tex.Tex().table(($) =>
+          $.set({ gap: { main: `-`, cross: ` | `, intersection: `+` } })
+            .headers([`alpha`, `bravo`, `charlie`])
+            .row(`a`, `b`)
+        ),
+        Tex.Tex().table(($) =>
+          $.set({ gap: { main: `─`, cross: ` │ `, intersection: `┼` } })
+            .headers([`col1`, `col2`])
+            .row(`row1`, `row2`)
+        ),
+      ])
+      .describeInputs(`style`, [
+        // Table with styled cells
+        Tex.Tex().table(($) =>
+          $.headers([`Name`, `Value`])
+            .row(Tex.block({ style: ansis.bold }, `key`), `value`)
+        ),
+        // Table inside styled block
+        Tex.Tex().block({ style: ansis.dim }, ($) =>
+          $.table(($) => $.row(`a`, `b`).row(`c`, `d`))
         ),
       ]))
   .describeInputs(`horizontal padding`, [
@@ -201,3 +239,106 @@ Test.describe(`spanRange parameter`)
   .test(({ input }) => {
     input.check(input.builder)
   })
+
+test(`table inside padded block respects terminalWidth constraint`, () => {
+  const terminalWidth = 60
+  const padding = 10
+
+  // Use wide content that forces table to use available width
+  const builder = Tex.Tex({ terminalWidth })
+    .block(
+      { padding: { crossStart: padding } },
+      ($) =>
+        $.table(($) =>
+          $.headers([`ParameterName`, `TypeAndDescription`, `DefaultValue`])
+            .row(`verboseLogging`, `Enable detailed logging during command execution process`, `false`)
+            .row(`configFilePath`, `Path to the configuration file to load settings from`, `REQUIRED`)
+        ),
+    )
+
+  const output = Tex.render(builder)
+  const maxLineWidth = Math.max(...Str.Text.lines(output).map(Str.Visual.width))
+
+  // Output should never exceed terminalWidth
+  expect(maxLineWidth).toBeLessThanOrEqual(terminalWidth)
+})
+
+test(`root builder uses COLUMNS env var for default terminalWidth`, () => {
+  const original = process.env[`COLUMNS`]
+  process.env[`COLUMNS`] = `50`
+
+  // Create builder without explicit terminalWidth - should use COLUMNS
+  const builder = Tex.Tex().text(`x`.repeat(100))
+  const output = Tex.render(builder)
+  const maxWidth = Math.max(...Str.Text.lines(output).map(Str.Visual.width))
+
+  process.env[`COLUMNS`] = original
+  expect(maxWidth).toBeLessThanOrEqual(50)
+})
+
+test(`table inside margin block respects terminalWidth constraint`, () => {
+  const terminalWidth = 60
+  const margin = 10
+
+  const builder = Tex.Tex({ terminalWidth })
+    .block(
+      { margin: { crossStart: margin } },
+      ($) =>
+        $.table(($) =>
+          $.headers([`ParameterName`, `TypeAndDescription`, `DefaultValue`])
+            .row(`verboseLogging`, `Enable detailed logging during command execution process`, `false`)
+            .row(`configFilePath`, `Path to the configuration file to load settings from`, `REQUIRED`)
+        ),
+    )
+
+  const output = Tex.render(builder)
+  const maxWidth = Math.max(...Str.Text.lines(output).map(Str.Visual.width))
+  expect(maxWidth).toBeLessThanOrEqual(terminalWidth)
+})
+
+test(`block with empty string creates valid block, not null`, () => {
+  const result = Tex.block({}, ``)
+  expect(result).not.toBeNull()
+  expect(result).toBeInstanceOf(Tex.Block)
+})
+
+test(`block with empty string renders correctly`, () => {
+  const result = Tex.block({}, ``)!.render({
+    maxWidth: 80,
+    index: { total: 1, isLast: true, isFirst: true, position: 0 },
+  })
+  expect(result.value).toBe(``)
+})
+
+test(`table with empty string cell maintains column alignment`, () => {
+  const builder = Tex.Tex().table(($) =>
+    $.row(`a`, `b`, `c`)
+      .row(`x`, ``, `z`) // Empty string should NOT be filtered out
+      .row(`1`, `2`, `3`)
+  )
+  const output = Tex.render(builder)
+  const lines = output.split(`\n`)
+  // All rows should have 3 columns - verify middle row isn't collapsed
+  expect(lines.length).toBeGreaterThanOrEqual(3)
+  // The 'x' and 'z' should be on the same line with proper spacing
+  expect(lines.some(line => line.includes(`x`) && line.includes(`z`))).toBe(true)
+})
+
+test(`table inside bordered block respects terminalWidth constraint`, () => {
+  const terminalWidth = 60
+
+  const builder = Tex.Tex({ terminalWidth })
+    .block(
+      { border: { edges: { left: `|`, right: `|` } } },
+      ($) =>
+        $.table(($) =>
+          $.headers([`ParameterName`, `TypeAndDescription`, `DefaultValue`])
+            .row(`verboseLogging`, `Enable detailed logging during command execution process`, `false`)
+            .row(`configFilePath`, `Path to the configuration file to load settings from`, `REQUIRED`)
+        ),
+    )
+
+  const output = Tex.render(builder)
+  const maxWidth = Math.max(...Str.Text.lines(output).map(Str.Visual.width))
+  expect(maxWidth).toBeLessThanOrEqual(terminalWidth)
+})

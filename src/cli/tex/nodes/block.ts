@@ -19,7 +19,7 @@ export interface BlockParameters {
 
   /**
    * Size constraints along main and cross axes.
-   * Use AxisHand notation for flow-relative sizing.
+   * Use AxisProperty notation for flow-relative sizing.
    *
    * Values can be:
    * - `number` - Absolute size in characters
@@ -37,7 +37,7 @@ export interface BlockParameters {
    * span: { main: 10, cross: 50n }
    * ```
    */
-  span?: Str.SpanInput
+  span?: Str.Box.Span.Input
 
   /**
    * Min/max size constraints along main and cross axes.
@@ -51,7 +51,7 @@ export interface BlockParameters {
    * spanRange: { main: { min: 5, max: 20 } }
    * ```
    */
-  spanRange?: Str.SpanRange
+  spanRange?: Str.Box.SpanRange
 
   /**
    * Space between child blocks (container property).
@@ -66,13 +66,24 @@ export interface BlockParameters {
    * gap: { main: 2, cross: 1 }
    * ```
    */
-  gap?: Str.GapInput
+  gap?: Str.Box.Gap.Input
 
   /**
-   * Color/style function applied to the entire rendered block.
-   * @example `(text) => ansis.red(text)`
+   * Style applied to the entire rendered block.
+   *
+   * Accepts either:
+   * - A declarative Style object: `{ color: { foreground: 'red' }, bold: true }`
+   * - A direct ansis chain: `ansis.red`, `ansis.bold.red.underline`
+   *
+   * Nested blocks restore parent styles automatically via ansis.
+   *
+   * @example
+   * ```typescript
+   * block({ style: ansis.red }, 'text')
+   * block({ style: { color: { foreground: 'red' }, bold: true } }, 'text')
+   * ```
    */
-  color?: (text: string) => string
+  style?: Str.Box.Style | Str.Box.Ansi.AnsiStyle
 
   /**
    * Border configuration using Box's border system.
@@ -101,11 +112,11 @@ export interface BlockParameters {
    * }
    * ```
    */
-  border?: Str.BorderInput
+  border?: Str.Box.BorderInput
 
   /**
    * Padding space inside the block borders using logical properties.
-   * Use AxisHand notation for flow-relative padding.
+   * Use AxisProperty notation for flow-relative padding.
    *
    * @example
    * ```typescript
@@ -122,11 +133,11 @@ export interface BlockParameters {
    * padding: 2
    * ```
    */
-  padding?: Str.AxisHand.Input
+  padding?: Str.Box.Padding.Input
 
   /**
    * Margin space outside the block borders using logical properties.
-   * Use AxisHand notation for flow-relative margins.
+   * Use AxisProperty notation for flow-relative margins.
    *
    * Follows CSS box model: margin → border → padding → content
    * Note: Unlike CSS, margins are additive (don't collapse).
@@ -145,13 +156,13 @@ export interface BlockParameters {
    *   .block('Section 2')
    * ```
    */
-  margin?: Str.AxisHand.Input
+  margin?: Str.Box.Margin.Input
 }
 
 export class Block extends Node {
   children: Node[]
   parameters: BlockParameters
-  private box: Str.Box | null = null
+  private box: Str.Box.Box | null = null
 
   constructor(parameters: BlockParameters, node: Node)
   constructor(parameters: BlockParameters, nodes: Node[])
@@ -195,14 +206,27 @@ export class Block extends Node {
       ? Math.min(ownMaxWidth, context.maxWidth)
       : ownMaxWidth ?? context.maxWidth
 
+    // Calculate horizontal overhead to subtract from child maxWidth
+    // Padding and margin are applied AFTER children render, so children must account for them
+    const padding = this.parameters.padding
+      ? Str.Box.Padding.parse(this.parameters.padding)
+      : null
+    const margin = this.parameters.margin
+      ? Str.Box.Margin.parse(this.parameters.margin)
+      : null
+    const horizontalPadding = padding ? Str.Box.getWidth(padding.crossStart) + Str.Box.getWidth(padding.crossEnd) : 0
+    const horizontalMargin = margin ? Str.Box.getWidth(margin.crossStart) + Str.Box.getWidth(margin.crossEnd) : 0
+    const childMaxWidth = effectiveMaxWidth !== undefined
+      ? effectiveMaxWidth - horizontalPadding - horizontalMargin
+      : undefined
+
     // Render all children first
     const renderedChildren: string[] = []
     for (let index = 0; index < this.children.length; index++) {
       const child = this.children[index]!
       const rendered = child.render({
-        maxWidth: effectiveMaxWidth,
+        maxWidth: childMaxWidth,
         height: context.height,
-        color: this.parameters.color,
         index: {
           total: this.children.length,
           isFirst: index === 0,
@@ -214,7 +238,7 @@ export class Block extends Node {
     }
 
     // Create Box with rendered children
-    this.box = Str.Box.make({
+    this.box = Str.Box.Box.make({
       content: renderedChildren.length === 0
         ? ``
         : renderedChildren.length === 1
@@ -227,12 +251,15 @@ export class Block extends Node {
     if (this.parameters.padding) {
       this.box = Str.Box.pad(this.box, this.parameters.padding)
     }
+
     if (this.parameters.margin) {
       this.box = Str.Box.margin(this.box, this.parameters.margin)
     }
+
     if (this.parameters.span) {
       this.box = Str.Box.span(this.box, this.parameters.span)
     }
+
     // Apply spanRange but exclude cross.max since we already used it for wrapping via effectiveMaxWidth
     if (this.parameters.spanRange) {
       const spanRangeForBox = {
@@ -244,6 +271,7 @@ export class Block extends Node {
         this.box = Str.Box.spanRange(this.box, spanRangeForBox as any)
       }
     }
+
     if (this.parameters.gap) {
       this.box = Str.Box.gap(this.box, this.parameters.gap)
     }
@@ -254,11 +282,14 @@ export class Block extends Node {
     }
 
     // Get Box rendering
-    let value = this.box.toString()
+    let value = Str.Box.render(this.box)
 
-    // Apply color
-    if (this.parameters.color) {
-      value = this.parameters.color(value)
+    // Apply style using ansis chain (handles nested color restoration automatically)
+    if (this.parameters.style) {
+      const ansiChain = Str.Box.Ansi.isAnsiStyle(this.parameters.style)
+        ? this.parameters.style
+        : Str.Box.Ansi.buildAnsiChain(this.parameters.style)
+      value = ansiChain(value)
     }
 
     const { maxWidth: intrinsicWidth, height: intrinsicHeight } = Str.Visual.size(value)

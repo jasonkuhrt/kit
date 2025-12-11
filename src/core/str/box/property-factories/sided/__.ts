@@ -1,55 +1,39 @@
-/**
- * AxisHand provides a logical, orientation-aware coordinate system for box model properties.
- *
- * Unlike physical coordinates (top/left/etc), AxisHand uses logical properties relative to flow direction:
- * - **main axis**: The primary flow direction (set by orientation)
- * - **cross axis**: Perpendicular to the main axis
- *
- * Each axis has **start** and **end** positions, creating a coordinate system that adapts to orientation.
- *
- * @example
- * ```typescript
- * // Global number - all sides
- * AxisHand.parse(2)
- * // → { mainStart: 2, mainEnd: 2, crossStart: 2, crossEnd: 2 }
- *
- * // Axis shorthands
- * AxisHand.parse([2, 4])
- * // → { mainStart: 2, mainEnd: 2, crossStart: 4, crossEnd: 4 }
- *
- * // Binary axis - nested arrays
- * AxisHand.parse([[1, 2], [3, 4]])
- * // → { mainStart: 1, mainEnd: 2, crossStart: 3, crossEnd: 4 }
- *
- * // Per-axis array with shorthand
- * AxisHand.parse([[1, 2], 4])
- * // → { mainStart: 1, mainEnd: 2, crossStart: 4, crossEnd: 4 }
- *
- * // Object syntax
- * AxisHand.parse({ main: [1, 2], cross: 4 })
- * // → { mainStart: 1, mainEnd: 2, crossStart: 4, crossEnd: 4 }
- *
- * // Sparse values
- * AxisHand.parse([[2], [, 4]])
- * // → { mainStart: 2, crossEnd: 4 }
- * ```
- */
+import { ParseResult, Schema as S } from 'effect'
 
 /**
- * Logical properties for box model positioning.
- *
- * These properties are flow-relative and adapt to the orientation:
- * - In vertical orientation: mainStart=top, mainEnd=bottom, crossStart=left, crossEnd=right
- * - In horizontal orientation: mainStart=left, mainEnd=right, crossStart=top, crossEnd=bottom
- *
- * @typeParam $value - The value type (e.g., number, number | bigint)
+ * Logical properties shape for axis property classes.
  */
-export type Logical<$value = number> = {
+export type Logical<$value> = {
   mainStart?: $value
   mainEnd?: $value
   crossStart?: $value
   crossEnd?: $value
 }
+
+/**
+ * Create an Effect Schema class for axis properties.
+ *
+ * Follows the Effect Schema.Class curried pattern for proper type inference.
+ * The returned class is a full Effect Schema class with AST, fields, etc.
+ *
+ * @example
+ * ```typescript
+ * import { Schema as S } from 'effect'
+ * import { Sided } from './property-factories/sided/_.js'
+ *
+ * // Create a Padding class with number | string values
+ * const ValueSchema = S.Union(S.Number, S.String)
+ * export class Padding extends Sided.Class<Padding>('Padding')(ValueSchema) {}
+ * ```
+ */
+export const Class =
+  <Self = never>(identifier: string) => <$valueSchema extends S.Schema.All>(valueSchema: $valueSchema) =>
+    S.Class<Self>(identifier)({
+      mainStart: S.optional(valueSchema),
+      mainEnd: S.optional(valueSchema),
+      crossStart: S.optional(valueSchema),
+      crossEnd: S.optional(valueSchema),
+    })
 
 /**
  * Value specification for a single axis.
@@ -61,7 +45,7 @@ export type Logical<$value = number> = {
  *
  * @typeParam $value - The value type (e.g., number, number | bigint)
  */
-export type AxisValue<$value = number> =
+export type AxisValue<$value> =
   | $value // shorthand: both sides
   | [$value] // [start]
   | [$value, $value] // [start, end]
@@ -70,7 +54,7 @@ export type AxisValue<$value = number> =
   | { start?: $value; end?: $value } // explicit object
 
 /**
- * Input format for AxisHand.
+ * Input format for Sided properties.
  *
  * Supports multiple syntaxes for progressive complexity:
  * 1. Global value: `2` → all sides
@@ -82,26 +66,27 @@ export type AxisValue<$value = number> =
  *
  * @typeParam $value - The value type (e.g., number, number | bigint)
  */
-export type Input<$value = number> =
+export type Input<$value> =
   | $value // all sides
   | [$value, $value] // [main, cross] - axis shorthands
   | [AxisValue<$value>, AxisValue<$value>] // [[main...], [cross...]] - binary axis
   | [AxisValue<$value>] // [[main...]] - main axis only
+  | [undefined, AxisValue<$value>] // [, [cross...]] - cross axis only (sparse)
   | { main?: AxisValue<$value>; cross?: AxisValue<$value> } // object with axes
   | Logical<$value> // explicit logical properties
 
 /**
- * Parse AxisHand input into logical properties.
+ * Parse Sided input into logical properties.
  *
  * Handles all input formats and returns a partial Logical object with only the specified properties.
  *
  * @typeParam $value - The value type (e.g., number, number | bigint)
- * @param input - AxisHand input in any supported format
+ * @param input - Sided input in any supported format
  * @returns Partial logical properties
  */
-export const parse = <$value = number>(input: Input<$value>): Partial<Logical<$value>> => {
-  // Handle primitive value (number, bigint, etc.)
-  if (typeof input === `number` || typeof input === `bigint`) {
+export const parse = <$value>(input: Input<$value>): Partial<Logical<$value>> => {
+  // Handle primitive value (number, bigint, string)
+  if (typeof input === `number` || typeof input === `bigint` || typeof input === `string`) {
     return { mainStart: input, mainEnd: input, crossStart: input, crossEnd: input }
   }
 
@@ -129,11 +114,8 @@ export const parse = <$value = number>(input: Input<$value>): Partial<Logical<$v
   const secondElement = input[1]
 
   // Detect if this is [main, cross] shorthands (both are primitive values)
-  if (
-    input.length === 2
-    && (typeof firstElement === `number` || typeof firstElement === `bigint`)
-    && (typeof secondElement === `number` || typeof secondElement === `bigint`)
-  ) {
+  const isPrimitive = (v: unknown) => typeof v === `number` || typeof v === `bigint` || typeof v === `string`
+  if (input.length === 2 && isPrimitive(firstElement) && isPrimitive(secondElement)) {
     // [main, cross] shorthands
     return {
       mainStart: firstElement as $value,
@@ -170,8 +152,8 @@ const parseAxis = <$value = number>(
   const startKey = axis === `main` ? `mainStart` : `crossStart`
   const endKey = axis === `main` ? `mainEnd` : `crossEnd`
 
-  // Primitive value shorthand (number, bigint, etc.)
-  if (typeof value === `number` || typeof value === `bigint`) {
+  // Primitive value shorthand (number, bigint, string)
+  if (typeof value === `number` || typeof value === `bigint` || typeof value === `string`) {
     return { [startKey]: value, [endKey]: value } as Partial<Logical<$value>>
   }
 
@@ -191,3 +173,69 @@ const parseAxis = <$value = number>(
     ...(valueObj.end !== undefined ? { [endKey]: valueObj.end } : {}),
   } as Partial<Logical<$value>>
 }
+
+/**
+ * Schema for a single axis value.
+ *
+ * Accepts: value | [start, end] | [start] | { start?, end? }
+ */
+const AxisValueSchema = <$valueSchema extends S.Schema.Any>(valueSchema: $valueSchema) =>
+  S.Union(
+    valueSchema,
+    S.Tuple(valueSchema, valueSchema),
+    S.Tuple(valueSchema),
+    S.Tuple(valueSchema, S.Undefined),
+    S.Tuple(S.Undefined, valueSchema),
+    S.Struct({ start: S.optional(valueSchema), end: S.optional(valueSchema) }),
+  )
+
+/**
+ * Schema that accepts Input forms for sided properties.
+ *
+ * Accepts all supported syntaxes:
+ * - Single value: all sides
+ * - [main, cross]: axis shorthands
+ * - [[main...], [cross...]]: binary axis
+ * - { main?, cross? }: object with axes
+ * - { mainStart?, mainEnd?, crossStart?, crossEnd? }: explicit logical
+ */
+export const InputSchema = <$valueSchema extends S.Schema.Any>(valueSchema: $valueSchema) => {
+  const axisSchema = AxisValueSchema(valueSchema)
+  return S.Union(
+    valueSchema, // Single value → all sides
+    S.Tuple(valueSchema, valueSchema), // [main, cross] primitives
+    S.Tuple(axisSchema, axisSchema), // [[main...], [cross...]]
+    S.Tuple(axisSchema), // [[main...]] only
+    S.Tuple(S.Undefined, axisSchema), // [, [cross...]] only (sparse)
+    S.Struct({ main: S.optional(axisSchema), cross: S.optional(axisSchema) }), // { main?, cross? }
+    S.Struct({
+      mainStart: S.optional(valueSchema),
+      mainEnd: S.optional(valueSchema),
+      crossStart: S.optional(valueSchema),
+      crossEnd: S.optional(valueSchema),
+    }), // Explicit logical
+  )
+}
+
+/**
+ * One-way transformation: Input → Logical form.
+ *
+ * Accepts shorthand inputs and normalizes to { mainStart?, mainEnd?, crossStart?, crossEnd? }.
+ * Encoding is forbidden (one-way transformation).
+ */
+export const fromInput = <$valueSchema extends S.Schema.Any>(valueSchema: $valueSchema) =>
+  S.transformOrFail(
+    InputSchema(valueSchema),
+    S.Struct({
+      mainStart: S.optional(valueSchema),
+      mainEnd: S.optional(valueSchema),
+      crossStart: S.optional(valueSchema),
+      crossEnd: S.optional(valueSchema),
+    }),
+    {
+      strict: false,
+      decode: (input) => ParseResult.succeed(parse(input as Input<S.Schema.Type<$valueSchema>>)),
+      encode: (value, _, ast) =>
+        ParseResult.fail(new ParseResult.Forbidden(ast, value, 'One-way transformation')),
+    },
+  )

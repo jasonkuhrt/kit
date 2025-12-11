@@ -186,7 +186,7 @@ export const resolveBlockMethodArgs = (
   const parameters = args.length === 1 ? null : args[0]
   const childrenInput = args.length === 1 ? args[0] : args[1]
   let child: null | Block | NodeImplementor<BlockBuilder> = null
-  if (childrenInput) {
+  if (childrenInput !== null && childrenInput !== undefined) {
     if (typeof childrenInput === `string`) {
       child = new Block(new Leaf(childrenInput))
     } else if (childrenInput instanceof Block) {

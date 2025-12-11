@@ -1,5 +1,5 @@
 import { Str } from '#str'
-import type { RenderContext } from './helpers.js'
+import { MAX_COLUMN_WIDTH, type RenderContext } from './helpers.js'
 import { Node } from './node.js'
 
 export class Leaf extends Node {
@@ -9,18 +9,19 @@ export class Leaf extends Node {
     this.value = value
   }
   render(context: RenderContext) {
-    const lines = Str.Visual.wrap(this.value, context.maxWidth ?? 1000, { strategy: 'break-word-hyphen-in' })
+    // Apply column readability cap - text columns should never exceed MAX_COLUMN_WIDTH
+    const effectiveMaxWidth = Math.min(context.maxWidth ?? MAX_COLUMN_WIDTH, MAX_COLUMN_WIDTH)
+    const lines = Str.Visual.wrap(this.value, effectiveMaxWidth, { strategy: 'break-word-hyphen-in' })
     const value = lines.join(Str.Char.newline)
     const intrinsicWidth = Math.max(...lines.map((_) => Str.Visual.width(_)))
     const intrinsicHeight = lines.length
-    const valueColored = context.color ? context.color(value) : value
     return {
       shape: {
         intrinsicWidth,
         intrinsicHeight,
         desiredWidth: null,
       },
-      value: valueColored,
+      value,
     }
   }
 }

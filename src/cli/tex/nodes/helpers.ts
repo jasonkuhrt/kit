@@ -1,8 +1,15 @@
+/**
+ * Maximum width for a single column of text for readability.
+ *
+ * Text columns beyond 70 characters wide are hard to read.
+ * This caps individual column widths regardless of terminal width.
+ */
+export const MAX_COLUMN_WIDTH = 70
+
 export interface RenderContext {
   maxWidth?: undefined | number
   height?: undefined | number
-  color?: undefined | ((text: string) => string)
-  index: {
+  index?: {
     total: number
     isLast: boolean
     isFirst: boolean

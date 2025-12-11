@@ -5,13 +5,13 @@
  * Run with: tsx src/domains/str/box/color-demo.ts
  */
 
-import { Str } from '#str'
+import { Box } from './_.ts'
 
 console.log('\n=== Box Color Demo ===\n')
 
 // 1. Colored border edges
 console.log('1. Colored border edges (using named colors):')
-const box1 = Str.Box.make({ content: 'Hello, World!' })
+const box1 = Box.Box.make({ content: 'Hello, World!' })
   .border$({
     edges: {
       top: { char: '─', color: { foreground: 'red' } },
@@ -25,7 +25,7 @@ console.log()
 
 // 2. Colored corners with bold style
 console.log('2. Colored corners with bold style:')
-const box2 = Str.Box.make({ content: 'Styled Corners' })
+const box2 = Box.Box.make({ content: 'Styled Corners' })
   .border$({
     edges: '─',
     corners: {
@@ -40,7 +40,7 @@ console.log()
 
 // 3. Fully colored and styled border
 console.log('3. Fully colored and styled border:')
-const box3 = Str.Box.make({ content: 'Fancy Box\nWith Multiple\nLines' })
+const box3 = Box.Box.make({ content: 'Fancy Box\nWith Multiple\nLines' })
   .border$({
     edges: {
       top: { char: '═', color: { foreground: 'cyan' }, bold: true },
@@ -60,7 +60,7 @@ console.log()
 
 // 4. Styled content (StyledText)
 console.log('4. Styled content:')
-const box4 = Str.Box.make({
+const box4 = Box.Box.make({
   content: { text: 'Red Bold Text', color: { foreground: 'red' }, bold: true },
 })
   .border$({ style: 'single' })
@@ -69,7 +69,7 @@ console.log()
 
 // 5. Mixed styled and plain content
 console.log('5. Mixed styled and plain content:')
-const box5 = Str.Box.make({
+const box5 = Box.Box.make({
   content: [
     'Plain text',
     { text: 'Red text', color: { foreground: 'red' } },
@@ -84,7 +84,7 @@ console.log()
 
 // 6. RGB color values
 console.log('6. RGB color values:')
-const box6 = Str.Box.make({ content: 'Custom RGB Colors' })
+const box6 = Box.Box.make({ content: 'Custom RGB Colors' })
   .border$({
     edges: {
       top: { char: '─', color: { foreground: { r: 255, g: 87, b: 51 } } },
@@ -98,7 +98,7 @@ console.log()
 
 // 7. Background colors
 console.log('7. Background colors:')
-const box7 = Str.Box.make({ content: 'Background Colors' })
+const box7 = Box.Box.make({ content: 'Background Colors' })
   .border$({
     edges: {
       top: { char: ' ', color: { foreground: 'white', background: 'blue' } },
@@ -112,7 +112,7 @@ console.log()
 
 // 8. Complex composition with colors
 console.log('8. Complex composition with colors:')
-const innerBox = Str.Box.make({
+const innerBox = Box.Box.make({
   content: { text: 'Inner Content', color: { foreground: 'magenta' }, bold: true },
 })
   .pad$([1, 2])
@@ -125,7 +125,7 @@ const innerBox = Str.Box.make({
     },
   })
 
-const outerBox = Str.Box.make({
+const outerBox = Box.Box.make({
   content: [
     { text: 'Header', color: { foreground: 'cyan' }, bold: true },
     innerBox,

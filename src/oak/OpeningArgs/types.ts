@@ -41,25 +41,25 @@ interface EnvironmentSource {
 }
 
 export type ParseErrorGlobal =
-  | Errors.Global.ErrorUnknownFlag
-  | Errors.Global.ErrorUnknownParameterViaEnvironment
+  | InstanceType<typeof Errors.Global.ErrorUnknownFlag>
+  | InstanceType<typeof Errors.Global.ErrorUnknownParameterViaEnvironment>
 
 export type ParseErrorBasic =
-  | Errors.ErrorMissingArgument
-  | Errors.ErrorInvalidArgument
-  | Errors.ErrorFailedToGetDefaultArgument
-  | Errors.ErrorDuplicateEnvArg
-  | Errors.ErrorDuplicateLineArg
+  | InstanceType<typeof Errors.ErrorMissingArgument>
+  | InstanceType<typeof Errors.ErrorInvalidArgument>
+  | InstanceType<typeof Errors.ErrorFailedToGetDefaultArgument>
+  | InstanceType<typeof Errors.ErrorDuplicateEnvArg>
+  | InstanceType<typeof Errors.ErrorDuplicateLineArg>
 
 export type ParseErrorExclusiveGroup =
-  | Errors.ErrorArgumentsToMutuallyExclusiveParameters
-  | Errors.ErrorMissingArgumentForMutuallyExclusiveParameters
+  | InstanceType<typeof Errors.ErrorArgumentsToMutuallyExclusiveParameters>
+  | InstanceType<typeof Errors.ErrorMissingArgumentForMutuallyExclusiveParameters>
   | ParseErrorBasic
 
 export type ParseError =
   | ParseErrorBasic
   | ParseErrorExclusiveGroup
-  | Errors.ErrorDuplicateEnvArg
+  | InstanceType<typeof Errors.ErrorDuplicateEnvArg>
   | LocalParseErrors
 
 export type ParseResultBasicSupplied = {

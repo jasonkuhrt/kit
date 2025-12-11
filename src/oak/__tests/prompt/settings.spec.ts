@@ -73,7 +73,7 @@ describe(`prompt can be toggled by check on error`, () => {
   describe(`toggle to enabled`, () => {
     const settings = S({
       enabled: true,
-      when: { result: `rejected`, error: `ErrorMissingArgument`, spec: { name: { canonical: `a` } } },
+      when: { result: `rejected`, error: `OakErrorMissingArgument`, spec: { name: { canonical: `a` } } },
     })
     it(`check does match`, async () => {
       memoryPrompter.script.keyPress.push(...foo)
@@ -124,7 +124,7 @@ it(`can be stack of conditional prompts`, async () => {
     when: [
       {
         result: `rejected`,
-        error: `ErrorInvalidArgument`,
+        error: `OakErrorInvalidArgument`,
       },
       {
         result: `accepted`,

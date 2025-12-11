@@ -75,7 +75,7 @@ const args = await Command.create()
       when: [
         {
           result: `rejected`,
-          error: `ErrorMissingArgument`,
+          error: `OakErrorMissingArgument`,
         },
         { result: `omitted` },
       ],

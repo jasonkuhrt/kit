@@ -1,8 +1,8 @@
 import { Test } from '#test'
-import { AxisHand } from './_.js'
+import { Sided } from './_.js'
 
 // dprint-ignore
-Test.on(AxisHand.parse)
+Test.on(Sided.parse)
   .cases(
     // Global number - all sides
     [[2], { mainStart: 2, mainEnd: 2, crossStart: 2, crossEnd: 2 }],

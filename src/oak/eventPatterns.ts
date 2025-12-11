@@ -30,7 +30,7 @@ export interface BasicParameterParseEventAccepted {
 export interface BasicParameterParseEventRejected {
   result: 'rejected'
   spec: ParameterBasicData
-  error: Errors.ErrorMissingArgument['name'] | Errors.ErrorInvalidArgument['name']
+  error: typeof Errors.ErrorMissingArgument._tag | typeof Errors.ErrorInvalidArgument._tag
 }
 
 export const createEvent = (parseResult: OpeningArgs.ParseResultBasic) => {
@@ -53,13 +53,13 @@ export const createEvent = (parseResult: OpeningArgs.ParseResultBasic) => {
         && parseResult.errors.length > 0
         // If there are any other kinds of errors than the two named below then we do not, currently, support prompting for that case.
         && parseResult.errors.filter(
-            (_) => [`ErrorInvalidArgument`, `ErrorMissingArgument`].includes(_.name) === false,
+            (_) => [`OakErrorInvalidArgument`, `OakErrorMissingArgument`].includes(_._tag) === false,
           ).length === 0
     // It is not possible to have invalid argument and missing argument errors at once.
     ? {
       result: `rejected`,
       spec: specData,
-      error: parseResult.errors[0]!.name as `ErrorInvalidArgument` | `ErrorMissingArgument`,
+      error: parseResult.errors[0]!._tag as `OakErrorInvalidArgument` | `OakErrorMissingArgument`,
     }
     : null
 }
@@ -83,6 +83,6 @@ export const eventPatterns = {
   },
   rejectedMissingOrInvalid: {
     result: `rejected`,
-    error: [`ErrorInvalidArgument`, `ErrorMissingArgument`],
+    error: [`OakErrorInvalidArgument`, `OakErrorMissingArgument`],
   },
 } satisfies Record<string, Pattern<BasicParameterParseEvent>>

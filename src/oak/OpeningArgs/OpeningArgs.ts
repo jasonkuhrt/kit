@@ -102,9 +102,11 @@ export const parse = ({
                 parameter,
                 errors: [
                   new Errors.ErrorInvalidArgument({
-                    spec: parameter,
-                    validationErrors: result.left.errors,
-                    value: result.left.value,
+                    context: {
+                      spec: parameter,
+                      validationErrors: result.left.errors,
+                      value: result.left.value,
+                    },
                   }),
                 ],
               }
@@ -129,7 +131,7 @@ export const parse = ({
             parameter,
             errors: [
               new Errors.ErrorFailedToGetDefaultArgument({
-                spec: parameter,
+                context: { spec: parameter },
                 cause: Err.ensure(someError),
               }),
             ],
@@ -145,7 +147,11 @@ export const parse = ({
         return {
           _tag: `error` as const,
           parameter: parameter,
-          errors: [new Errors.ErrorMissingArgument({ parameter })],
+          errors: [
+            new Errors.ErrorMissingArgument({
+              context: { parameter },
+            }),
+          ],
         }
       })
       .optional(() => {
@@ -213,7 +219,7 @@ export const parse = ({
         parameter: group,
         errors: [
           new Errors.ErrorMissingArgumentForMutuallyExclusiveParameters({
-            group,
+            context: { group },
           }),
         ],
       }
@@ -221,12 +227,13 @@ export const parse = ({
     }
 
     if (argsToGroup.length > 1) {
+      const offenses = argsToGroup.map((_) => ({ spec: _.parameter, arg: _ }))
       result.mutuallyExclusiveParameters[group.label] = {
         _tag: `error`,
         parameter: group,
         errors: [
           new Errors.ErrorArgumentsToMutuallyExclusiveParameters({
-            offenses: argsToGroup.map((_) => ({ spec: _.parameter, arg: _ })),
+            context: { group, offenses },
           }),
         ],
       }

@@ -324,7 +324,9 @@ const extractUnionInfo = (
 
   if (allLiterals) {
     const values = ast.types.map((t) => (t as SchemaAST.Literal).literal)
-    const displayType = values.map((v) => Term.colors.secondary(typeof v === `string` ? `'${v}'` : String(v))).join(Term.colors.dim(` | `))
+    const displayType = values.map((v) => Term.colors.secondary(typeof v === `string` ? `'${v}'` : String(v))).join(
+      Term.colors.dim(` | `),
+    )
 
     return {
       schemaType: { _tag: `enum`, values },

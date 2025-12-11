@@ -12,11 +12,10 @@ import { Empty } from './type.js'
  * ```typescript
  * split('a,b,c', ',') // ['a', 'b', 'c']
  * split('hello world', ' ') // ['hello', 'world']
- * split('', ',') // []
+ * split('', ',') // ['']
  * ```
  */
 export const split = (value: string, separator: string): string[] => {
-  if (value === Empty) return []
   return value.split(separator)
 }
 

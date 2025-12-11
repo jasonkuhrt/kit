@@ -32,8 +32,8 @@ type NonNullChildish = Exclude<Childish, null>
  *   .row('Bob', '25')
  * )
  *
- * // Table with custom separators
- * .table({ separators: { column: ' | ' } }, ($) => $
+ * // Table with custom column separator
+ * .table({ gap: { cross: ' | ' } }, ($) => $
  *   .headers(['Col1', 'Col2'])
  *   .row('A', 'B')
  * )

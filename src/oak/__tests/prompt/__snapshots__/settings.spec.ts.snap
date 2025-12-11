@@ -112,7 +112,7 @@ exports[`parameter level > can be passed object > tty output 1`] = `
 "
 `;
 
-exports[`parameter settings overrides default settings > args 1`] = `[ErrorMissingArgument: Missing argument for flag "a".]`;
+exports[`parameter settings overrides default settings > args 1`] = `[OakErrorMissingArgument: Missing argument for flag "a".]`;
 
 exports[`parameter settings overrides default settings > tty output 1`] = `""`;
 
@@ -172,10 +172,10 @@ exports[`prompt can be toggled by check on error > toggle to enabled > check doe
 "
 `;
 
-exports[`prompt can be toggled by check on error > toggle to enabled > check does not match > args 1`] = `[ErrorMissingArgument: Missing argument for flag "b".]`;
+exports[`prompt can be toggled by check on error > toggle to enabled > check does not match > args 1`] = `[OakErrorMissingArgument: Missing argument for flag "b".]`;
 
 exports[`prompt can be toggled by check on error > toggle to enabled > check does not match > tty output 1`] = `""`;
 
-exports[`prompt is disabled by default > args 1`] = `[ErrorMissingArgument: Missing argument for flag "a".]`;
+exports[`prompt is disabled by default > args 1`] = `[OakErrorMissingArgument: Missing argument for flag "a".]`;
 
 exports[`prompt is disabled by default > tty output 1`] = `""`;

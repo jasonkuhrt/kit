@@ -4,9 +4,10 @@ import { z } from 'zod/v4'
 import { $, s } from '../_/helpers.js'
 import { createState } from '../environment/__helpers__.js'
 
-// TODO: Remove skipIf once kit table width issue is fixed (kit#41)
-// These tests fail in CI due to environment-specific table column width distribution
-describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - kit#41)', () => {
+// Fixed terminal width for deterministic snapshots across environments
+const TERMINAL_WIDTH = 100
+
+describe(`Help rendering`, () => {
   // Prevent process.exit() from killing the test runner
   beforeEach(() => {
     vi.spyOn(process, 'exit').mockImplementation(() => undefined as never)
@@ -21,42 +22,42 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
   it(`if command has description it is shown`, () => {
     $.description(`Blah blah blah`)
       .parameter(`foo`, s.optional())
-      .settings({ onOutput })
+      .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
       .parse({ line: [`-h`] })
     expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
   })
 
   it(`if there is optional param it is shown`, () => {
     $.parameter(`a`, s.optional())
-      .settings({ onOutput })
+      .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
       .parse({ line: [`-h`] })
     expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
   })
 
   it(`if parameter has description it is shown`, () => {
     $.parameter(`a`, s.optional().describe(`Blah blah blah.`))
-      .settings({ onOutput })
+      .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
       .parse({ line: [`-h`] })
     expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
   })
 
   it(`long description wraps within column`, () => {
     $.parameter(`a`, s.optional().describe(`Blah blah blah. Blah blah blah. Blah blah blah.`))
-      .settings({ onOutput })
+      .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
       .parse({ line: [`-h`] })
     expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
   })
 
   it(`if parameter has default it is shown`, () => {
     $.parameter(`foo`, s.default(`bar`))
-      .settings({ onOutput })
+      .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
       .parse({ line: [`-h`] })
     expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
   })
 
   it(`if parameter is optional without default then its default shows up as "undefined"`, () => {
     $.parameter(`foo`, s.optional())
-      .settings({ onOutput })
+      .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
       .parse({ line: [`-h`] })
     expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
   })
@@ -68,7 +69,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
         throw new Error(`whoops`)
       }),
     )
-      .settings({ onOutput })
+      .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
       .parse({ line: [`-h`] })
     expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
   })
@@ -80,7 +81,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
         throw new Error(`whoops`)
       }),
     )
-      .settings({ onOutput })
+      .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
       .parse({ line: [`-h`] })
     expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
   })
@@ -119,28 +120,28 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
     ).parameter(
       `bar`,
       s.optional(),
-    ).settings({ onOutput }).parse({ line: [`-h`] })
+    ).settings({ onOutput, terminalWidth: TERMINAL_WIDTH }).parse({ line: [`-h`] })
     expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
   })
 
   describe(`enum`, () => {
     it(`enum members are listed`, () => {
       $.parameter(`foo`, z.enum([`apple`, `dolphin`, `cab`]))
-        .settings({ onOutput })
+        .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
         .parse({ line: [`-h`] })
       expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
     })
 
     it(`optional enum members are listed`, () => {
       $.parameter(`foo`, z.enum([`apple`, `dolphin`, `cab`]).optional())
-        .settings({ onOutput })
+        .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
         .parse({ line: [`-h`] })
       expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
     })
 
     it(`when there is only one enum member it is prefixed with "enum:" to avoid confusion of it looking like the name of a kind of type`, () => {
       $.parameter(`foo`, z.enum([`apple`]))
-        .settings({ onOutput })
+        .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
         .parse({ line: [`-h`] })
       expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
     })
@@ -162,7 +163,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
           `kilomanjara`,
         ]),
       )
-        .settings({ onOutput })
+        .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
         .parse({ line: [`-h`] })
       expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
     })
@@ -171,27 +172,35 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
   describe(`environment`, () => {
     it(`when environment is disabled then environment doc is not shown`, () => {
       $.parameter(`foo`, s)
-        .settings({ onOutput, parameters: { environment: false } })
+        .settings({ onOutput, terminalWidth: TERMINAL_WIDTH, parameters: { environment: false } })
         .parse({ line: [`-h`] })
       expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
     })
     it(`when environment is enabled it shows as the last column`, () => {
       $.parameter(`foo`, s)
-        .settings({ onOutput, parameters: { environment: true } })
+        .settings({ onOutput, terminalWidth: TERMINAL_WIDTH, parameters: { environment: true } })
         .parse({ line: [`-h`] })
       expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
     })
     it(`when environment is disabled for one parameter it has X indicating that`, () => {
       $.parameter(`foo`, s)
         .parameter(`bar`, s)
-        .settings({ onOutput, parameters: { environment: { $default: true, foo: false } } })
+        .settings({
+          onOutput,
+          terminalWidth: TERMINAL_WIDTH,
+          parameters: { environment: { $default: true, foo: false } },
+        })
         .parse({ line: [`-h`] })
       expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
     })
     it(`when environment has custom prefix it is displayed`, () => {
       $.parameter(`foo`, s)
         .parameter(`bar`, s)
-        .settings({ onOutput, parameters: { environment: { $default: true, foo: { prefix: `moo` } } } })
+        .settings({
+          onOutput,
+          terminalWidth: TERMINAL_WIDTH,
+          parameters: { environment: { $default: true, foo: { prefix: `moo` } } },
+        })
         .parse({ line: [`-h`] })
       expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
     })
@@ -200,6 +209,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
         .parameter(`bar`, s)
         .settings({
           onOutput,
+          terminalWidth: TERMINAL_WIDTH,
           parameters: { environment: { $default: true, foo: { prefix: [`moo`, `boo`] } } },
         })
         .parse({ line: [`-h`] })
@@ -208,17 +218,35 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
     it(`when environment has no prefix it is displayed`, () => {
       $.parameter(`foo`, s)
         .parameter(`bar`, s)
-        .settings({ onOutput, parameters: { environment: { $default: true, foo: { prefix: false } } } })
+        .settings({
+          onOutput,
+          terminalWidth: TERMINAL_WIDTH,
+          parameters: { environment: { $default: true, foo: { prefix: false } } },
+        })
         .parse({ line: [`-h`] })
       expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
     })
   })
 
   describe(`exclusive`, () => {
+    describe(`required`, () => {
+      it(`shows REQUIRED aligned in Default column at wide terminal`, () => {
+        // Use wider terminal (200) to expose column alignment issues
+        // Include a basic param with long enum to widen the Type column
+        // which exposes the exclusive header row alignment bug
+        $.parameter(`option`, z.enum([`apple`, `banana`, `cherry`, `dragonfruit`, `elderberry`]).optional())
+          .parametersExclusive(`foo`, (_) => _.parameter(`b bar`, s).parameter(`z baz`, s))
+          .settings({ onOutput, terminalWidth: 200, parameters: { environment: true } })
+          .parse({
+            line: [`-h`],
+          })
+        expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
+      })
+    })
     describe(`optional`, () => {
       it(`shows exclusive parameters as a group`, () => {
         $.parametersExclusive(`foo`, (_) => _.parameter(`b bar`, s).parameter(`z baz`, s).optional())
-          .settings({ onOutput })
+          .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
           .parse({
             line: [`-h`],
           })
@@ -228,7 +256,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
     describe(`default`, () => {
       it(`shows the group default`, () => {
         $.parametersExclusive(`foo`, (_) => _.parameter(`b bar`, s).parameter(`z baz`, s).default(`bar`, `bar_default`))
-          .settings({ onOutput })
+          .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
           .parse({
             line: [`-h`],
           })
@@ -241,7 +269,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
           `foo`,
           (_) => _.parameter(`b bar`, s).parameter(`z baz`, s).default(`bar`, `bar_defaulttttttttttttttttttttt`),
         )
-          .settings({ onOutput })
+          .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
           .parse({
             line: [`-h`],
           })
@@ -251,7 +279,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
     describe(`with environment disabled`, () => {
       it(`shows the group default`, () => {
         $.parametersExclusive(`foo`, (_) => _.parameter(`b bar`, s).parameter(`z baz`, s).default(`bar`, `bar_default`))
-          .settings({ onOutput, parameters: { environment: false } })
+          .settings({ onOutput, terminalWidth: TERMINAL_WIDTH, parameters: { environment: false } })
           .parse({
             line: [`-h`],
           })
@@ -264,7 +292,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
     describe(`condensed pipe style`, () => {
       it(`used when no descriptions given for anything`, () => {
         $.parameter(`b bar`, z.union([z.string(), z.number()]))
-          .settings({ onOutput })
+          .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
           .parse({
             line: [`-h`],
           })
@@ -272,7 +300,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
       })
       it(`used when only overall description given`, () => {
         $.parameter(`b bar`, z.union([z.string(), z.number()]).describe(`Blah blah blah.`))
-          .settings({ onOutput })
+          .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
           .parse({
             line: [`-h`],
           })
@@ -282,7 +310,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
     describe(`expanded style`, () => {
       it(`can be forced via settings`, () => {
         $.parameter(`b bar`, z.union([z.string(), z.number()]))
-          .settings({ onOutput, helpRendering: { union: { mode: `expandAlways` } } })
+          .settings({ onOutput, terminalWidth: TERMINAL_WIDTH, helpRendering: { union: { mode: `expandAlways` } } })
           .parse({ line: [`-h`] })
         expect(ansis.strip(output.value)).toMatchSnapshot(`monochrome`)
       })
@@ -294,7 +322,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
             z.number().describe(`Blah blah blah number.`),
           ]),
         )
-          .settings({ onOutput })
+          .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
           .parse({
             line: [`-h`],
           })
@@ -302,7 +330,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
       })
       it(`shows member on each line if at least one has description`, () => {
         $.parameter(`b bar`, z.union([z.string(), z.number().describe(`Blah blah blah number.`)]))
-          .settings({ onOutput })
+          .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
           .parse({
             line: [`-h`],
           })
@@ -318,7 +346,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
             ])
             .describe(`Blah blah blah overall.`),
         )
-          .settings({ onOutput })
+          .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
           .parse({
             line: [`-h`],
           })
@@ -333,7 +361,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
           .default(1)
           .describe(`Blah blah blah overall.`),
       )
-        .settings({ onOutput })
+        .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
         .parse({
           line: [`-h`],
         })
@@ -347,7 +375,7 @@ describe.skipIf(process.env['CI'] === 'true')('Help rendering (skipped in CI - k
           .optional()
           .describe(`Blah blah blah overall.`),
       )
-        .settings({ onOutput })
+        .settings({ onOutput, terminalWidth: TERMINAL_WIDTH })
         .parse({
           line: [`-h`],
         })

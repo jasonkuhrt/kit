@@ -140,7 +140,9 @@ const extractZodMetadata = (
   } else if (isUnion(zodSchema)) {
     const options = (schema._def?.options as z.ZodType[]) ?? []
     const membersMetadata = options.map((opt) => extractZodMetadata(opt))
-    displayType = membersMetadata.map((m) => m.helpHints?.displayType ?? Term.colors.secondary(`unknown`)).join(Term.colors.dim(` | `))
+    displayType = membersMetadata.map((m) => m.helpHints?.displayType ?? Term.colors.secondary(`unknown`)).join(
+      Term.colors.dim(` | `),
+    )
     priority = 0
     schemaType = { _tag: `union`, members: membersMetadata.map((m) => m.schemaType) }
 

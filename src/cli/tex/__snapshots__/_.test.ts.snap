@@ -157,12 +157,55 @@ foo
 ╚══════════════════════════════════════════════════╝"
 `;
 
+exports[`render > block > padding > string > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+> content
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > block > padding > string > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+| content |
+╚══════════════════════════════════════════════════╝"
+`;
+
 exports[`render > block > span > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
 foo bar
 ---
 foo
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > block > style > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+[31mcolored text[39m
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > block > style > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+[1m[34mbold blue text[39m[22m
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > block > style > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 3`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+[2m|box|[22m
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > block > style > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 4`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+[34m[31minner[34m[39m
+[34m outer[39m
 ╚══════════════════════════════════════════════════╝"
 `;
 
@@ -212,84 +255,58 @@ exports[`render > list > render({ block: [Function: block], set: [Function: set]
 exports[`render > table > column width > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
-alpha            | bravo               | charlieeeeeeeeeeeeeeeeeee | delta
---------------------------------------------------------------------------
-a1               | b1                  | c1                        | d1   
---------------------------------------------------------------------------
-a222222222222222 | b2                  | c2                        | d2   
---------------------------------------------------------------------------
-a3               | b333333333333333333 | c3                        | d3
+alpha            │ bravo               │ charlieeeeeeeeeeeeeeeeeee │ delta
+─────────────────┼─────────────────────┼───────────────────────────┼──────
+a1               │ b1                  │ c1                        │ d1   
+─────────────────┼─────────────────────┼───────────────────────────┼──────
+a222222222222222 │ b2                  │ c2                        │ d2   
+─────────────────┼─────────────────────┼───────────────────────────┼──────
+a3               │ b333333333333333333 │ c3                        │ d3
 ╚══════════════════════════════════════════════════╝"
 `;
 
 exports[`render > table > column width > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
 "
 ╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
-alpha            | bravo               | charlieeeeeeeeeeeeeeeeeee | delta
---------------------------------------------------------------------------
-a1               | b1                  | c1                        | d1   
---------------------------------------------------------------------------
-a222222222222222 | b2                  | c2                        | d2   
-a2               |                     |                           |      
---------------------------------------------------------------------------
-a3               | b333333333333333333 | c3                        | d3
+alpha            │ bravo               │ charlieeeeeeeeeeeeeeeeeee │ delta
+─────────────────┼─────────────────────┼───────────────────────────┼──────
+a1               │ b1                  │ c1                        │ d1   
+─────────────────┼─────────────────────┼───────────────────────────┼──────
+a222222222222222 │ b2                  │ c2                        │ d2   
+a2               │                     │                           │      
+─────────────────┼─────────────────────┼───────────────────────────┼──────
+a3               │ b333333333333333333 │ c3                        │ d3
 ╚══════════════════════════════════════════════════╝"
 `;
 
 exports[`render > table > column width > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 3`] = `
 "
 ╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
-alpha | beta  
-apple | banana
-ankle |
+alpha │ beta  
+apple │ banana
+ankle │
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`render > table > headers > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+exports[`render > table > gap > intersection > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
-alpha | bravo
-╚══════════════════════════════════════════════════╝"
-`;
-
-exports[`render > table > headers > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
-"
-╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
-alpha           | bravo
-                | ~~~~~
------------------------
-a               | b
-╚══════════════════════════════════════════════════╝"
-`;
-
-exports[`render > table > rows > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
-"
-╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
-alpha | bravo
--------------
+alpha | bravo | charlie
+-----+-----+-------
 a     | b
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`render > table > rows > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+exports[`render > table > gap > intersection > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
 "
 ╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
-alpha | bravo
------------------
-a     | b     | c
+col1 │ col2
+────┼────
+row1 │ row2
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`render > table > rows > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 3`] = `
-"
-╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
-a1 | b1
--------
-a3 | b3
-╚══════════════════════════════════════════════════╝"
-`;
-
-exports[`render > table > separators > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+exports[`render > table > gap > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
 "
 ╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
 alpha | bravo | charlie
@@ -298,12 +315,74 @@ a     | b
 ╚══════════════════════════════════════════════════╝"
 `;
 
-exports[`render > table > separators > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+exports[`render > table > gap > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
 "
 ╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
 alpha bravo charlie
 -------------------
 a     b
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > table > headers > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+alpha │ bravo
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > table > headers > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+alpha           │ bravo
+                │ ~~~~~
+────────────────┼──────
+a               │ b
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > table > rows > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+alpha │ bravo
+──────┼──────
+a     │ b
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > table > rows > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+alpha │ bravo
+──────┼───────┼──
+a     │ b     │ c
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > table > rows > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 3`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+a1 │ b1
+───┼───
+a3 │ b3
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > table > style > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+Name │ Value
+─────┼──────
+[1mkey[22m  │ value
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > table > style > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 2`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+[2ma │ b[22m
+[2m──┼──[22m
+[2mc │ d[22m
 ╚══════════════════════════════════════════════════╝"
 `;
 
@@ -349,10 +428,10 @@ xxxxxxxxxxxx
 exports[`render > text wrapping > render({ block: [Function: block], set: [Function: set], table: [Function: table], list...) 5`] = `
 "
 ╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
-col1  | col2                
-----------------------------
-short | xxxxxxxxxxxxxxxxxxx-
-      | xxxxxxxxxxxxxxxxxxx-
-      | xxxxxxxxxxxx
+col1  │ col2                
+──────┼─────────────────────
+short │ xxxxxxxxxxxxxxxxxxx-
+      │ xxxxxxxxxxxxxxxxxxx-
+      │ xxxxxxxxxxxx
 ╚══════════════════════════════════════════════════╝"
 `;

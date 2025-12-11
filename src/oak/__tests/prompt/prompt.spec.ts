@@ -151,7 +151,7 @@ it(`can be explicitly disabled with a "when" condition present`, async () => {
   await run(
     $$.parameter(`a`, {
       type: s.min(2),
-      prompt: { enabled: false, when: { result: `rejected`, error: `ErrorMissingArgument` } },
+      prompt: { enabled: false, when: { result: `rejected`, error: `OakErrorMissingArgument` } },
     }),
   )
 })
@@ -167,7 +167,7 @@ it(`prompt when missing input`, async () => {
   await run(
     $$.parameter(`a`, {
       type: s.min(2),
-      prompt: { when: { result: `rejected`, error: `ErrorMissingArgument` } },
+      prompt: { when: { result: `rejected`, error: `OakErrorMissingArgument` } },
     }),
   )
 })
@@ -183,7 +183,7 @@ it(`prompt when invalid input`, async () => {
   await run(
     $.parameter(`a`, {
       type: s.min(2),
-      prompt: { when: { result: `rejected`, error: `ErrorInvalidArgument` } },
+      prompt: { when: { result: `rejected`, error: `OakErrorInvalidArgument` } },
     }),
   )
 })
@@ -199,7 +199,7 @@ it(`prompt when invalid input OR missing input`, async () => {
   await run(
     $$.parameter(`a`, {
       type: s.min(2),
-      prompt: { when: { result: `rejected`, error: [`ErrorInvalidArgument`, `ErrorMissingArgument`] } },
+      prompt: { when: { result: `rejected`, error: [`OakErrorInvalidArgument`, `OakErrorMissingArgument`] } },
     }),
   )
 })
@@ -281,7 +281,7 @@ it(`array value`, () => {
 //     prompt: {
 //       when: {
 //         result: `rejected`,
-//         error: `ErrorInvalidArgument`,
+//         error: `OakErrorInvalidArgument`,
 //         value: 1,
 //         foo: 2,
 //         blah: 3,

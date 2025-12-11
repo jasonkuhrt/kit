@@ -5,8 +5,20 @@ import { createBlockBuilder } from './block.js'
 import type { Builder, BuilderInternal } from './helpers.js'
 import { toInternalBuilder } from './helpers.js'
 
+/**
+ * Get terminal width from environment.
+ * Priority: COLUMNS env var > process.stdout.columns > fallback
+ */
+const getTerminalWidth = (fallback: number): number => {
+  if (typeof process === `undefined`) return fallback
+  const envColumns = parseInt(process.env[`COLUMNS`] ?? ``, 10)
+  if (!Number.isNaN(envColumns) && envColumns > 0) return envColumns
+  return process.stdout?.columns ?? fallback
+}
+
 export const defaults = {
-  terminalWidth: typeof process !== 'undefined' ? (process.stdout?.columns ?? 120) : 120,
+  /** @deprecated Use getTerminalWidth() for runtime evaluation */
+  terminalWidth: 120,
 } as const
 
 export interface RootBuilder extends BlockBuilder<RootBuilder> {
@@ -17,9 +29,7 @@ export const createRootBuilder = (
   parameters?: BlockParameters & {
     /**
      * Terminal width in characters for rendering.
-     * If not provided, uses defaults.terminalWidth (process.stdout.columns at module load time, or 120).
-     *
-     * @default defaults.terminalWidth
+     * If not provided, detects from COLUMNS env var, then process.stdout.columns, then 120.
      */
     terminalWidth?: number
   },
@@ -28,7 +38,7 @@ export const createRootBuilder = (
   const builderInternal = toInternalBuilder(builder)
 
   const { terminalWidth, spanRange, ...otherParameters } = parameters ?? {}
-  const defaultWidth = terminalWidth ?? defaults.terminalWidth
+  const defaultWidth = terminalWidth ?? getTerminalWidth(defaults.terminalWidth)
 
   builderInternal._.node.setParameters({
     spanRange: {

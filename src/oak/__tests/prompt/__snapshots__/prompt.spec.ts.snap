@@ -91,11 +91,11 @@ exports[`boolean > required > defaults to "no" > tty output 1`] = `
 "
 `;
 
-exports[`can be explicitly disabled > args 1`] = `[ErrorMissingArgument: Missing argument for flag "a".]`;
+exports[`can be explicitly disabled > args 1`] = `[OakErrorMissingArgument: Missing argument for flag "a".]`;
 
 exports[`can be explicitly disabled > tty output 1`] = `""`;
 
-exports[`can be explicitly disabled with a "when" condition present > args 1`] = `[ErrorMissingArgument: Missing argument for flag "a".]`;
+exports[`can be explicitly disabled with a "when" condition present > args 1`] = `[OakErrorMissingArgument: Missing argument for flag "a".]`;
 
 exports[`can be explicitly disabled with a "when" condition present > tty output 1`] = `""`;
 

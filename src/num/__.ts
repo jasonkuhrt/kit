@@ -92,6 +92,7 @@ import type { BigInteger as BigInteger_ } from './big-integer/__.js'
 export { BigInteger as BigInt } from './big-integer/_.js'
 export type BigInt = BigInteger_
 
+export { Allocation } from './allocation/_.js'
 export * from './math.js'
 export * from './operations.js'
 export * from './range.js'

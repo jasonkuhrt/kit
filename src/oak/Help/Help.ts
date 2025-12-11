@@ -49,6 +49,10 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
   const isAcceptsAnyMutuallyExclusiveParameters = (parametersByTag.Exclusive && parametersByTag.Exclusive.length > 0)
     || false
   const isEnvironmentEnabled = Obj.values(settings.parameters.environment).filter((_) => _.enabled).length > 0
+  const parameterEnvironmentMaybe = (parameter: Parameter) => {
+    if (!isEnvironmentEnabled) return null
+    return isEnvironmentEnabled ? parameterEnvironment(parameter, settings) : null
+  }
 
   const columnTitles = {
     name: `Name`,
@@ -75,46 +79,37 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
     )
   }
 
-  const HELP_TERMINAL_WIDTH = process.stdout?.columns ?? 80
-  const output = Cli.Tex.Tex({ terminalWidth: HELP_TERMINAL_WIDTH })
+  const styleHeader = (string: string) => ansis.underline(Term.colors.mute(string))
+
+  const output = Cli.Tex.Tex({ terminalWidth: settings.terminalWidth })
     .block(($) => {
       if (!settings.description) return null
-      return $.block({ padding: [1, 0] }, `ABOUT`).block(
-        { padding: { crossStart: 2 } },
-        settings.description,
-      )
+      return $
+        .block({ padding: [1, 0] }, `ABOUT`)
+        .block({ padding: [0, 2] }, settings.description)
     })
     .block({ padding: [1, 0] }, title(`PARAMETERS`))
-    .block(
-      { padding: { crossStart: 2 } },
-      (__) =>
-        __.table(
-          { separators: { column: `   `, row: null } },
-          (__) =>
-            __.header({ padding: { mainEnd: 1, crossEnd: 2 } }, ansis.underline(Term.colors.mute(columnTitles.name)))
-              .header(
-                {
-                  spanRange: { cross: { min: 8 } },
-                  padding: { crossEnd: 5 },
-                },
-                ansis.underline(Term.colors.mute(columnTitles.typeDescription)),
-              )
-              .header({ padding: { crossEnd: 4 } }, ansis.underline(Term.colors.mute(columnTitles.default)))
-              .header(
-                columnTitles.environment ? ansis.underline(Term.colors.mute(columnTitles.environment)) : null,
-              )
+    .block({ padding: [0, 2] }, ($) =>
+      $
+        .table(
+          { gap: [0, 4] },
+          ($) =>
+            $
+              .header({ padding: [[0, 1]] }, styleHeader(columnTitles.name))
+              .header(styleHeader(columnTitles.typeDescription))
+              .header(styleHeader(columnTitles.default))
+              .header(columnTitles.environment ? styleHeader(columnTitles.environment) : null)
               .rows([
+                // BASIC
                 ...parametersBasicWithoutHelp.map((parameter) => [
                   parameterName(parameter),
-                  Cli.Tex.block(
-                    { padding: { crossEnd: 9, mainEnd: 1 } },
-                    SchemaRuntime.help(parameter.type, settings),
-                  ),
-                  Cli.Tex.block({}, parameterDefault(parameter)),
-                  ...(isEnvironmentEnabled ? [parameterEnvironment(parameter, settings)] : []),
+                  Cli.Tex.block({ padding: [[0, 1]] }, SchemaRuntime.help(parameter.type, settings)),
+                  Cli.Tex.block(parameterDefault(parameter)),
+                  parameterEnvironmentMaybe(parameter),
                 ]),
+                // EXCLUSIVE GROUPS
                 ...parametersExclusiveGroups.flatMap((parametersExclusive) => {
-                  const default_ = parametersExclusive.optionality._tag === `default`
+                  const defaultRendered = parametersExclusive.optionality._tag === `default`
                     ? `${parametersExclusive.optionality.tag}@${
                       String(
                         parametersExclusive.optionality.getValue(),
@@ -123,26 +118,52 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
                     : parametersExclusive.optionality._tag === `optional`
                     ? `undefined`
                     : labels.required
+
                   return [
+                    // OPENING ROW
                     [
                       Cli.Tex.block(
                         { border: { edges: { left: Term.colors.dim(`┌`) } } },
                         Term.colors.dim(`─${parametersExclusive.label} ${`(2)`}`),
                       ),
-                      ``,
-                      default_,
+                      '',
+                      defaultRendered,
+                      ...(isEnvironmentEnabled ? [``] : []),
                     ],
-                    ...Obj.values(parametersExclusive.parameters).map((parameter) => [
-                      parameterName(parameter),
-                      SchemaRuntime.help(parameter.type, settings),
-                      parameterDefault(parameter),
-                      ...(isEnvironmentEnabled ? [parameterEnvironment(parameter, settings)] : []),
-                    ]),
-                    [Cli.Tex.block({ border: { edges: { left: Term.colors.dim(`└`) } } }, Term.colors.dim(`─`))],
+                    // PARAMETER ROWS
+                    ...Obj.values(parametersExclusive.parameters).map((parameter) => {
+                      return [
+                        Cli.Tex.block(
+                          {
+                            border: {
+                              edges: {
+                                left: (ctx) => {
+                                  return ctx.lineIndex === 0
+                                    ? Term.colors.accent('◒ ')
+                                    : Term.colors.dim('│ ')
+                                },
+                              },
+                            },
+                          },
+                          parameterName(parameter),
+                        ),
+                        Cli.Tex.block({ padding: [[0, 1]] }, SchemaRuntime.help(parameter.type, settings)),
+                        Cli.Tex.block(parameterDefault(parameter)),
+                        parameterEnvironmentMaybe(parameter),
+                      ]
+                    }),
+                    // CLOSING ROW
+                    [
+                      Cli.Tex.block({ border: { edges: { left: Term.colors.dim(`└`) } } }, Term.colors.dim(`─`)),
+                      '',
+                      '',
+                      ...(isEnvironmentEnabled ? [``] : []),
+                    ],
                   ]
                 }),
               ]),
-        ).block({ color: Term.colors.dim }, ($) => {
+        )
+        .block({ style: Term.colors.dim }, ($) => {
           if (noteItems.length === 0) {
             return null
           }
@@ -157,8 +178,7 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
             },
             noteItems,
           )
-        }),
-    )
+        }))
     .render()
 
   return output
@@ -221,7 +241,7 @@ const environmentNote = (parameters: Parameter[], settings: Settings.Output) => 
     )
     .map((_) => `${_}="..."`)
 
-  return Cli.Tex.block({ padding: { crossStart: 2 } }, ($) =>
+  return Cli.Tex.block(($) =>
     $.text(content).list(
       {
         bullet: {
@@ -229,7 +249,8 @@ const environmentNote = (parameters: Parameter[], settings: Settings.Output) => 
         },
       },
       examples,
-    ))
+    )
+  )
 }
 
 const parameterDefault = (parameter: Parameter) => {
@@ -260,33 +281,15 @@ const labels = {
 const parameterName = (parameter: Parameter) => {
   const isRequired = (parameter._tag === `Basic` && parameter.type.metadata.optionality._tag === `required`)
     || (parameter._tag === `Exclusive` && parameter.group.optionality._tag === `required`)
+  const nameColor = isRequired ? Term.colors.positiveBold : Term.colors.positive
 
-  const parameters: Cli.Tex.BlockParameters = parameter._tag === `Exclusive`
-    ? {
-      border: {
-        edges: {
-          left: (ctx) =>
-            ctx.lineIndex === 0
-              ? Term.colors.accent(`◒ `)
-              : Term.colors.dim(`${Text.chars.borders.vertical} `),
-        },
-      },
-    }
-    : {
-      padding: {
-        mainEnd: 1,
-      },
-    }
-
-  return Cli.Tex.block(parameters, (__) =>
-    __.block(
-      isRequired
-        ? Term.colors.positiveBold(parameter.name.canonical)
-        : Term.colors.positive(parameter.name.canonical),
-    )
+  return Cli.Tex.block(($) =>
+    $
+      .block({ style: nameColor }, parameter.name.canonical)
       .block(Term.colors.dim(parameter.name.aliases.long.join(`, `)) || null)
       .block(Term.colors.dim(parameter.name.short ?? ``) || null)
-      .block(Term.colors.dim(parameter.name.aliases.long.join(`, `)) || null))
+      .block(Term.colors.dim(parameter.name.aliases.long.join(`, `)) || null)
+  )
 }
 
 const parameterEnvironment = (parameter: Parameter, settings: Settings.Output) => {

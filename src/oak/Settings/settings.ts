@@ -8,6 +8,17 @@ import { parseEnvironmentVariableBooleanOrThrow } from '../helpers.js'
 import { defaultParameterNamePrefixes } from '../OpeningArgs/Environment/Environment.js'
 import type { OakSchema } from '../schema/oak-schema.js'
 
+/**
+ * Get terminal width from environment.
+ * Priority: COLUMNS env var > process.stdout.columns > fallback
+ */
+const getTerminalWidth = (fallback: number): number => {
+  if (typeof process === `undefined`) return fallback
+  const envColumns = parseInt(process.env[`COLUMNS`] ?? ``, 10)
+  if (!Number.isNaN(envColumns) && envColumns > 0) return envColumns
+  return process.stdout?.columns ?? fallback
+}
+
 export type OnErrorReaction = 'exit' | 'throw'
 
 export type PromptInput<$Schema = unknown> =
@@ -27,6 +38,13 @@ export interface Input<$State extends BuilderCommandState.Base = BuilderCommandS
       mode?: 'expandAlways' | 'expandOnParameterDescription'
     }
   }
+  /**
+   * Terminal width to use for help output rendering.
+   *
+   * If not specified, uses `process.stdout.columns` (detected terminal width) or 80 as fallback.
+   * Set explicitly for consistent output across different environments (e.g., in tests or CI).
+   */
+  terminalWidth?: number
   onError?: OnErrorReaction
   onOutput?: (output: string, defaultHandler: (output: string) => void) => void
   prompt?: PromptInput<Values<BuilderCommandState.ToTypes<$State>>>
@@ -61,6 +79,11 @@ export interface Output {
       mode: 'expandAlways' | 'expandOnParameterDescription'
     }
   }
+  /**
+   * Terminal width to use for help output rendering.
+   * Uses detected terminal width or 80 as fallback.
+   */
+  terminalWidth: number
   onError: OnErrorReaction
   onOutput: (output: string) => void
   parameters: {
@@ -122,6 +145,8 @@ export const change = (
       ...input.helpRendering?.union,
     },
   }
+
+  current.terminalWidth = input.terminalWidth ?? current.terminalWidth
 
   current.onOutput = input.onOutput
     ? (_) => {
@@ -217,6 +242,7 @@ export const getDefaults = (lowercaseEnv: NodeJS.ProcessEnv): Output => {
         mode: `expandOnParameterDescription`,
       },
     },
+    terminalWidth: getTerminalWidth(80),
     onError: `exit`,
     onOutput: (_) => process.stdout.write(_),
     parameters: {

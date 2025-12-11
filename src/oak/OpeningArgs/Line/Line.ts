@@ -9,9 +9,12 @@ import type { ArgumentReport } from '../types.js'
 
 export type RawInputs = string[]
 
-export type GlobalParseErrors = Errors.Global.ErrorUnknownFlag
+export type GlobalParseErrors = InstanceType<typeof Errors.Global.ErrorUnknownFlag>
 
-export type LocalParseErrors = Errors.ErrorMissingArgument | Errors.ErrorDuplicateLineArg | Errors.ErrorInvalidArgument
+export type LocalParseErrors =
+  | InstanceType<typeof Errors.ErrorMissingArgument>
+  | InstanceType<typeof Errors.ErrorDuplicateLineArg>
+  | InstanceType<typeof Errors.ErrorInvalidArgument>
 
 interface ParsedInputs {
   globalErrors: GlobalParseErrors[]
@@ -59,7 +62,11 @@ export const parse = (rawLineInputs: RawInputs, parameters: Parameter[]): Parsed
           negated: isNegated(Str.Case.camel(pendingReport.source.name)),
         }
       } else {
-        pendingReport.errors.push(new Errors.ErrorMissingArgument({ parameter: pendingReport.parameter }))
+        pendingReport.errors.push(
+          new Errors.ErrorMissingArgument({
+            context: { parameter: pendingReport.parameter },
+          }),
+        )
       }
     }
   }
@@ -78,7 +85,11 @@ export const parse = (rawLineInputs: RawInputs, parameters: Parameter[]): Parsed
       const flagNameNoDashPrefixNoNegate = stripeNegatePrefixLoose(flagNameNoDashPrefixCamel)
       const parameter = findByName(flagNameNoDashPrefixCamel, parameters)
       if (!parameter) {
-        globalErrors.push(new Errors.Global.ErrorUnknownFlag({ flagName: flagNameNoDashPrefixNoNegate }))
+        globalErrors.push(
+          new Errors.Global.ErrorUnknownFlag({
+            context: { flagName: flagNameNoDashPrefixNoNegate },
+          }),
+        )
         continue
       }
 
@@ -89,8 +100,7 @@ export const parse = (rawLineInputs: RawInputs, parameters: Parameter[]): Parsed
         // duplicated across aliases, make it easy to report a nice message explaining that.
         existing.errors.push(
           new Errors.ErrorDuplicateLineArg({
-            parameter,
-            flagName: flagNameNoDashPrefixNoNegate,
+            context: { parameter, flagName: flagNameNoDashPrefixNoNegate },
           }),
         )
         continue
@@ -123,9 +133,11 @@ export const parse = (rawLineInputs: RawInputs, parameters: Parameter[]): Parsed
           : String(error)
         currentReport.errors.push(
           new Errors.ErrorInvalidArgument({
-            spec: currentReport.parameter,
-            validationErrors: [errorMessage],
-            value: rawLineInput,
+            context: {
+              spec: currentReport.parameter,
+              validationErrors: [errorMessage],
+              value: rawLineInput,
+            },
           }),
         )
       }

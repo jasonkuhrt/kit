@@ -11,9 +11,11 @@ export const defaultParameterNamePrefixes = [`cli_parameter`, `cli_param`]
 
 export type RawInputs = Record<string, string | undefined>
 
-export type LocalParseErrors = Errors.ErrorDuplicateEnvArg | Errors.ErrorInvalidArgument
+export type LocalParseErrors =
+  | InstanceType<typeof Errors.ErrorDuplicateEnvArg>
+  | InstanceType<typeof Errors.ErrorInvalidArgument>
 
-export type GlobalParseErrors = Errors.Global.ErrorUnknownParameterViaEnvironment
+export type GlobalParseErrors = InstanceType<typeof Errors.Global.ErrorUnknownParameterViaEnvironment>
 
 export interface ParsedInputs {
   globalErrors: GlobalParseErrors[]
@@ -48,14 +50,13 @@ export const parse = (environment: RawInputs, specs: Parameter[]): ParsedInputs 
           prefix: match.namespace,
           value: match.value,
         }
-        const e = report.errors.find((_) => _.name === `ErrorDuplicateEnvArg`)
+        const e = report.errors.find((_) => _._tag === `OakErrorDuplicateEnvArg`)
         if (e) {
-          e.instances.push(instance)
+          e.context.instances.push(instance)
         } else {
           report.errors.push(
             new Errors.ErrorDuplicateEnvArg({
-              parameter,
-              instances: [instance],
+              context: { parameter, instances: [instance] },
             }),
           )
         }
@@ -74,10 +75,12 @@ export const parse = (environment: RawInputs, specs: Parameter[]): ParsedInputs 
           : String(error)
         errors.push(
           new Errors.ErrorInvalidArgument({
-            spec: parameter,
-            environmentVariableName: envar.name.raw,
-            validationErrors: [errorMessage],
-            value: match.value,
+            context: {
+              spec: parameter,
+              environmentVariableName: envar.name.raw,
+              validationErrors: [errorMessage],
+              value: match.value,
+            },
           }),
         )
       }

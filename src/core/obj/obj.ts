@@ -312,6 +312,12 @@ export type PartialDeep<$Type> =
 export type Writeable<$Obj extends object> = Writable<$Obj>
 
 /**
+ * Returns the same object but with a writable type.
+ * Identity at runtime, removes readonly at type level.
+ */
+export const asWritable = <$obj extends object>(obj: $obj): Writeable<$obj> => obj as any
+
+/**
  * Convert an object to a parameters tuple.
  *
  * @category Type Utilities

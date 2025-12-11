@@ -14,6 +14,70 @@ import ansis from 'ansis'
 import type { Style } from './style.js'
 
 /**
+ * An ansis style object - a callable function with `.open` and `.close` properties.
+ *
+ * This is the type returned by ansis style chains (e.g., `ansis.red`, `ansis.bold.red.underline`).
+ * The `.open` and `.close` properties contain the ANSI escape codes.
+ *
+ * ansis automatically handles nested styles - when you wrap text that contains
+ * inner ANSI codes, it detects inner resets and replaces them with the outer style,
+ * enabling proper color restoration in nested blocks.
+ *
+ * @category Text Formatting
+ */
+export type AnsiStyle = ((text: string) => string) & { open: string; close: string }
+
+/**
+ * Type guard to check if a value is an AnsiStyle (ansis chain).
+ *
+ * @param value - Value to check
+ * @returns True if value is an AnsiStyle
+ *
+ * @category Text Formatting
+ */
+export const isAnsiStyle = (value: unknown): value is AnsiStyle => {
+  return typeof value === 'function'
+    && typeof (value as any).open === 'string'
+    && typeof (value as any).close === 'string'
+}
+
+/**
+ * Build an ansis style chain from a declarative Style spec.
+ *
+ * @param style - Declarative style specification
+ * @returns An ansis chain that can be called to wrap text
+ *
+ * @category Text Formatting
+ */
+export const buildAnsiChain = (style: Style): AnsiStyle => {
+  let chain: any = ansis
+
+  if (style.bold) chain = chain.bold
+  if (style.dim) chain = chain.dim
+  if (style.italic) chain = chain.italic
+  if (style.underline) chain = chain.underline
+  if (style.strikethrough) chain = chain.strikethrough
+  if (style.inverse) chain = chain.inverse
+  if (style.hidden) chain = chain.hidden
+
+  if (style.color?.foreground) {
+    const colorObj = typeof style.color.foreground === 'string'
+      ? Color.fromString(style.color.foreground)
+      : Color.fromRgb(style.color.foreground)
+    chain = chain.rgb(colorObj.r, colorObj.g, colorObj.b)
+  }
+
+  if (style.color?.background) {
+    const colorObj = typeof style.color.background === 'string'
+      ? Color.fromString(style.color.background)
+      : Color.fromRgb(style.color.background)
+    chain = chain.bgRgb(colorObj.r, colorObj.g, colorObj.b)
+  }
+
+  return chain
+}
+
+/**
  * Apply ANSI styles to text.
  *
  * Takes a Style configuration and wraps the text with appropriate ANSI escape codes.

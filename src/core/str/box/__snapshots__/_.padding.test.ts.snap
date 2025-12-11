@@ -1,0 +1,178 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`render > empty text > render(Box { content: '', padding: Padding { mainStart: 1, crossStart: 2 }, border: Bor...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌──┐
+│  │
+│  │
+└──┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > multi-line text > render(Box { content: 'Hello\\nWorld', padding: Padding { mainStart: 0, mainEnd: 0, cros...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌───────┐
+│  Hello│
+│  World│
+└───────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > multi-line text > render(Box { content: 'Hello\\nWorld', padding: Padding { mainStart: 0, mainEnd: 0, cros...) 2`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌─────────┐
+│  Hello  │
+│  World  │
+└─────────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > multi-line text > render(Box { content: 'Hello\\nWorld', padding: Padding { mainStart: 1, mainEnd: 1, cros...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌─────┐
+│     │
+│Hello│
+│World│
+│     │
+└─────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > multiple sides > render(Box { content: '12345', padding: Padding { mainStart: 0, mainEnd: 0, crossStart:...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌─────────┐
+│  12345  │
+└─────────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > multiple sides > render(Box { content: '12345', padding: Padding { mainStart: 1, mainEnd: 1, crossStart:...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌─────┐
+│     │
+│12345│
+│     │
+└─────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > multiple sides > render(Box { content: '12345', padding: Padding { mainStart: 1, mainEnd: 1, crossStart:...) 2`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌─────────┐
+│         │
+│  12345  │
+│         │
+└─────────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > single side > render(Box { content: '12345', padding: Padding { crossEnd: 2 }, border: Border { edges...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌───────┐
+│12345  │
+└───────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > single side > render(Box { content: '12345', padding: Padding { crossStart: 2 }, border: Border { edg...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌───────┐
+│  12345│
+└───────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > single side > render(Box { content: '12345', padding: Padding { mainStart: 0, mainEnd: 1 }, border: B...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌─────┐
+│12345│
+│     │
+└─────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > single side > render(Box { content: '12345', padding: Padding { mainStart: 1 }, border: Border { edge...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌─────┐
+│     │
+│12345│
+└─────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > string values > render(Box { content: '12345', padding: Padding { mainStart: '>> ' }, border: Border { ...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌────────┐
+│>> 12345│
+└────────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > string values > render(Box { content: '12345', padding: Padding { mainStart: 0, mainEnd: 0, crossStart:...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌───────┐
+│| 12345│
+└───────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > string values > render(Box { content: '12345', padding: Padding { mainStart: 0, mainEnd: 0, crossStart:...) 2`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌─────────┐
+│[ 12345 ]│
+└─────────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > string values > render(Box { content: '12345', padding: Padding { mainStart: 1, crossStart: '» ' }, bor...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌───────┐
+│»      │
+│» 12345│
+└───────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > string values > render(Box { content: 'Hello\\nWorld', padding: Padding { mainStart: '→ ' }, border: Bor...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌───────┐
+│→ Hello│
+│World  │
+└───────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > string values > render(Box { content: 'Hello\\nWorld', padding: Padding { mainStart: 0, mainEnd: 0, cros...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌───────┐
+││ Hello│
+││ World│
+└───────┘
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`render > zero padding > render(Box { content: '12345', padding: Padding { mainStart: 0, mainEnd: 0, crossStart:...) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ THEN RETURNS STRING
+┌─────┐
+│12345│
+└─────┘
+╚══════════════════════════════════════════════════╝"
+`;
