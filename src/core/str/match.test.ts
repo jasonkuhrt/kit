@@ -7,6 +7,10 @@ import { replace, replaceAll } from './replace.js'
 
 const A = Assert.Type
 
+// NOTE: Some type assertions below use `${string}${bigint}${string}${string}` due to an arkregex bug
+// where the + quantifier incorrectly appends ${string} to inferred types.
+// Tracking: https://github.com/arktypeio/arktype/issues/1563
+
 // ============================================================================
 // Pattern Tests
 // ============================================================================
@@ -19,7 +23,7 @@ describe('pattern', () => {
   })
 
   test('preserves flags at type level', () => {
-    const p = pattern('\\d+', 'gi')
+    const p = pattern('^\\d$', 'gi')
     A.exact.ofAs<Str.Regex<`${bigint}`, { flags: 'gi' }>>().on(p)
   })
 })
@@ -132,7 +136,7 @@ describe('replace', () => {
     const p = pattern('\\d+')
     const result = replace('a1 b2', p, (m) => {
       A.exact.ofAs<{
-        value: `${bigint}`
+        value: `${string}${bigint}${string}${string}` // see arkregex bug note at top
         offset: number
         captures: []
         groups: {}
@@ -163,7 +167,7 @@ describe('replaceAll', () => {
     const p = pattern('\\d+', 'g')
     const result = replaceAll('a1 b2 c3', p, (m) => {
       A.exact.ofAs<{
-        value: `${bigint}`
+        value: `${string}${bigint}${string}${string}` // see arkregex bug note at top
         offset: number
         captures: []
         groups: {}

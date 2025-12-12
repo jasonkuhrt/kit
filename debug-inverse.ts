@@ -11,8 +11,10 @@ const builder = $
 
 let output = ''
 builder.settings({
-  onOutput: (s: string) => { output += s },
-  terminalWidth: 100
+  onOutput: (s: string) => {
+    output += s
+  },
+  terminalWidth: 100,
 }).parse({ line: ['-h'] })
 
 // Check for \x1b[7m
@@ -21,7 +23,7 @@ if (output.includes(inverseCode)) {
   console.log('Output contains [7m at positions:')
   let pos = 0
   while ((pos = output.indexOf(inverseCode, pos)) !== -1) {
-    console.log('  Position', pos, '- context:', JSON.stringify(output.slice(Math.max(0, pos-20), pos+30)))
+    console.log('  Position', pos, '- context:', JSON.stringify(output.slice(Math.max(0, pos - 20), pos + 30)))
     pos++
   }
 } else {

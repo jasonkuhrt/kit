@@ -751,10 +751,16 @@ const renderWithContext = (box: Box, context: RenderContext): string => {
 
   // Subtract border, padding, and margin from available span for children
   if (childContext.availableMainSpan !== undefined) {
-    childContext.availableMainSpan = Math.max(0, childContext.availableMainSpan - borderMainConsumption - paddingMainConsumption - marginMainConsumption)
+    childContext.availableMainSpan = Math.max(
+      0,
+      childContext.availableMainSpan - borderMainConsumption - paddingMainConsumption - marginMainConsumption,
+    )
   }
   if (childContext.availableCrossSpan !== undefined) {
-    childContext.availableCrossSpan = Math.max(0, childContext.availableCrossSpan - borderCrossConsumption - paddingCrossConsumption - marginCrossConsumption)
+    childContext.availableCrossSpan = Math.max(
+      0,
+      childContext.availableCrossSpan - borderCrossConsumption - paddingCrossConsumption - marginCrossConsumption,
+    )
   }
 
   // Render content (may be string or nested boxes) with gap

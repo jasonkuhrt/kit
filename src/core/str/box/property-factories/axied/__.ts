@@ -111,7 +111,6 @@ export const fromInput = <$valueSchema extends S.Schema.Any>(valueSchema: $value
     {
       strict: false,
       decode: (input) => ParseResult.succeed(parse(input as Input<S.Schema.Type<$valueSchema>>)),
-      encode: (value, _, ast) =>
-        ParseResult.fail(new ParseResult.Forbidden(ast, value, 'One-way transformation')),
+      encode: (value, _, ast) => ParseResult.fail(new ParseResult.Forbidden(ast, value, 'One-way transformation')),
     },
   )

@@ -8,7 +8,8 @@ if (process.env[`ATTEST`] === `true`) {
 }
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
+  // TODO: Remove cast when fixed: https://github.com/vitest-dev/vitest/issues/9126
+  plugins: [tsconfigPaths() as any],
   test: {
     globals: false,
     globalSetup: ['./vitest.global-setup.ts'],

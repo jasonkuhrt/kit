@@ -76,9 +76,7 @@ Test
         // Style with border (original bug scenario)
         Tex.Tex().block({ style: ansis.dim, border: { edges: { left: `|`, right: `|` } } }, `box`),
         // Nested blocks with different styles (color restoration)
-        Tex.Tex().block({ style: ansis.blue }, ($) =>
-          $.block({ style: ansis.red }, `inner`).text(` outer`)
-        ),
+        Tex.Tex().block({ style: ansis.blue }, ($) => $.block({ style: ansis.red }, `inner`).text(` outer`)),
       ]))
   .describeInputs(`text wrapping`, [
     Tex.Tex({ terminalWidth: 20 }).text(`x`.repeat(20)),
@@ -160,9 +158,7 @@ Test
             .row(Tex.block({ style: ansis.bold }, `key`), `value`)
         ),
         // Table inside styled block
-        Tex.Tex().block({ style: ansis.dim }, ($) =>
-          $.table(($) => $.row(`a`, `b`).row(`c`, `d`))
-        ),
+        Tex.Tex().block({ style: ansis.dim }, ($) => $.table(($) => $.row(`a`, `b`).row(`c`, `d`))),
       ]))
   .describeInputs(`horizontal padding`, [
     Tex.Tex({ orientation: `horizontal` })

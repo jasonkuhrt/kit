@@ -232,7 +232,6 @@ export const fromCornerInput = S.transformOrFail(
   {
     strict: false,
     decode: (input) => ParseResult.succeed(parseCornerInput(input)),
-    encode: (value, _, ast) =>
-      ParseResult.fail(new ParseResult.Forbidden(ast, value, 'One-way transformation')),
+    encode: (value, _, ast) => ParseResult.fail(new ParseResult.Forbidden(ast, value, 'One-way transformation')),
   },
 )
