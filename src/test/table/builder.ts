@@ -941,6 +941,66 @@ export function create(state: State = defaultState): any {
         executeNestedGroup(nestedGroup, effectWrapper)
       }
     },
+
+    testMatrix(tests: Record<string, Fn.AnyAny>): void {
+      const finalState = flushCases(state)
+
+      // For each test implementation, create a describe block
+      for (const [testName, testFn] of Object.entries(tests)) {
+        createNestedDescribe(testName, () => {
+          // Execute all accumulated groups with this callback
+          for (const group of finalState.accumulatedGroups) {
+            executeTests(
+              testFn as ((params: any) => any),
+              Option.getOrUndefined(group.describe),
+              group.cases,
+            )
+          }
+
+          // Execute nested describe groups
+          for (const nestedGroup of finalState.nestedDescribeGroups) {
+            executeNestedGroup(nestedGroup, testFn as ((params: any) => any))
+          }
+        })
+      }
+    },
+
+    testMatrixEffect(tests: Record<string, Fn.AnyAny>): void {
+      const finalState = flushCases(state)
+      const layerOrFactory = Option.getOrUndefined(finalState.layerOrFactory)
+      const layerType = Option.getOrUndefined(finalState.layerType)
+
+      // For each test implementation, create a describe block
+      for (const [testName, testFn] of Object.entries(tests)) {
+        createNestedDescribe(testName, () => {
+          // Create Effect wrapper for this callback
+          const effectWrapper = (params: any) => {
+            const { n, input, output, ...restCtx } = params
+            const effect = testFn({ input, output, n, ...restCtx })
+            const layer = layerType === 'static'
+              ? layerOrFactory
+              : (layerOrFactory as (testCase: any) => Layer.Layer<any>)({ input, output, ...params })
+
+            const effectWithLayer = Effect.provide(effect, layer as any) as Effect.Effect<any, any, never>
+            return Effect.runPromise(effectWithLayer)
+          }
+
+          // Execute all accumulated groups with Effect wrapper
+          for (const group of finalState.accumulatedGroups) {
+            executeTests(
+              effectWrapper,
+              Option.getOrUndefined(group.describe),
+              group.cases,
+            )
+          }
+
+          // Execute nested describe groups
+          for (const nestedGroup of finalState.nestedDescribeGroups) {
+            executeNestedGroup(nestedGroup, effectWrapper)
+          }
+        })
+      }
+    },
   }
 
   return builder

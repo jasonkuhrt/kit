@@ -1,13 +1,21 @@
 import { Arr } from '#arr'
 import { Str } from '#str'
+import { Schema as S } from 'effect'
 
-// Process argv
+// ============================================
+// Process Argv
+// ============================================
 
 /**
- * Usually there is a seconed element too, the script that was executed, but not always.
- * For example in NodeJS Repl it would be missing.
+ * Usually there is a second element too, the script that was executed, but not always.
+ * For example in NodeJS REPL it would be missing.
  */
-export type ProcessArgv = [string, ...string[]]
+export type ProcessArgv = readonly [string, ...string[]]
+
+/**
+ * Schema for process argv - a non-empty array of strings.
+ */
+export const ProcessArgvSchema = S.NonEmptyArray(S.String)
 
 /**
  * Type guard to check if a value is a valid process argv array.
@@ -28,53 +36,82 @@ export const isProcessArgvLoose = (value: unknown): value is ProcessArgv => {
   return Arr.is(value) && value.length >= 1 && value.every(Str.is)
 }
 
-// argv
+// ============================================
+// Argv
+// ============================================
 
+/**
+ * Structured representation of parsed process argv.
+ */
 export interface Argv {
-  execPath: string
+  readonly execPath: string
   /**
    * Not present for example when in a NodeJS REPL.
    */
-  scriptPath: null | string
-  args: string[]
+  readonly scriptPath: null | string
+  readonly args: readonly string[]
 }
 
 /**
- * Parses a process argv array into a structured Argv object.
- *
- * Extracts the executable path, script path (if present), and remaining arguments.
- * Throws an error if the input is not a valid argv array.
- *
- * @param value - The value to parse as argv
- * @returns A structured Argv object with execPath, scriptPath, and args
- * @throws {Error} If the value is not a valid argv array
+ * Schema that transforms raw process argv into a structured {@link Argv} object.
  *
  * @example
- * // Normal CLI execution
- * parseArgvOrThrow(['node', 'script.js', '--verbose', 'input.txt'])
- * // Returns: {
- * //   execPath: 'node',
- * //   scriptPath: 'script.js',
- * //   args: ['--verbose', 'input.txt']
- * // }
+ * ```ts
+ * import { Schema } from 'effect'
  *
- * @example
- * // REPL execution (no script path)
- * parseArgvOrThrow(['node'])
- * // Returns: {
- * //   execPath: 'node',
- * //   scriptPath: null,
- * //   args: []
- * // }
+ * // Decode raw argv
+ * const argv = Schema.decodeUnknownSync(ArgvSchema)(['node', 'script.js', '--verbose'])
+ * // { execPath: 'node', scriptPath: 'script.js', args: ['--verbose'] }
+ * ```
  */
-export const parseArgvOrThrow = (value: unknown): Argv => {
-  if (!isProcessArgvLoose(value)) throw new Error(`Invalid argv: ${value}`)
+export const ArgvSchema: S.Schema<Argv, ProcessArgv> = S.transform(
+  ProcessArgvSchema,
+  S.Struct({
+    execPath: S.String,
+    scriptPath: S.NullOr(S.String),
+    args: S.Array(S.String),
+  }),
+  {
+    strict: true,
+    decode: ([execPath, scriptPath = null, ...args]) => ({
+      execPath,
+      scriptPath,
+      args,
+    }),
+    encode: ({ execPath, scriptPath, args }) =>
+      [execPath, ...(scriptPath ? [scriptPath] : []), ...args] as [string, ...string[]],
+  },
+)
 
-  const [execPath, scriptPath = null, ...args] = value
-
-  return {
-    execPath,
-    scriptPath,
-    args,
-  }
-}
+/**
+ * Parse unknown value into a structured {@link Argv}.
+ *
+ * Returns an Effect that can be yielded in Effect.gen blocks.
+ *
+ * @example
+ * ```ts
+ * import { Effect } from 'effect'
+ *
+ * const program = Effect.gen(function*() {
+ *   const argv = yield* parseArgv(process.argv)
+ *   console.log(argv.execPath, argv.args)
+ * })
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Normal CLI execution
+ * parseArgv(['node', 'script.js', '--verbose', 'input.txt'])
+ * // Effect resolving to:
+ * // { execPath: 'node', scriptPath: 'script.js', args: ['--verbose', 'input.txt'] }
+ * ```
+ *
+ * @example
+ * ```ts
+ * // REPL execution (no script path)
+ * parseArgv(['node'])
+ * // Effect resolving to:
+ * // { execPath: 'node', scriptPath: null, args: [] }
+ * ```
+ */
+export const parseArgv = S.decodeUnknown(ArgvSchema)

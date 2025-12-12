@@ -17,7 +17,15 @@
       "browser": "./build/core/lang/*.browser.js",
       "default": "./build/core/lang/*.node.js"
     },
+    "#platform:env/*": {
+      "deno": "./build/env/*.deno.js",
+      "bun": "./build/env/*.bun.js",
+      "browser": "./build/env/*.browser.js",
+      "default": "./build/env/*.node.js"
+    },
     "#arb": "./build/traits/arb.js",
+    "#env": "./build/env/_.js",
+    "#env/env": "./build/env/__.js",
     "#eq": "./build/traits/eq.js",
     "#type": "./build/traits/type.js",
     "#arr": "./build/core/arr/_.js",
@@ -122,8 +130,6 @@
     "#package-manager/package-manager": "./build/package-manager/__.js",
     "#paka": "./build/paka/_.js",
     "#paka/paka": "./build/paka/__.js",
-    "#pro": "./build/pro/_.js",
-    "#pro/pro": "./build/pro/__.js",
     "#prom": "./build/prom/_.js",
     "#prom/prom": "./build/prom/__.js",
     "#prox": "./build/prox/_.js",

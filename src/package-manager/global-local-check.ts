@@ -1,8 +1,7 @@
+import { Env } from '#env'
 import { Fs } from '#fs'
-import { Pro } from '#pro'
 import { FileSystem } from '@effect/platform'
-import { Schema as S } from 'effect'
-import { Effect } from 'effect'
+import { Effect, Schema as S } from 'effect'
 
 interface GlobalLocalCheckOptions {
   /**
@@ -37,10 +36,13 @@ interface PackageJson {
 /**
  * Check if a package exists in any package.json from the current directory up to root
  */
-const findPackageInAncestors = (packageName: string): Effect.Effect<string | null, Error, FileSystem.FileSystem> =>
+const findPackageInAncestors = (
+  packageName: string,
+): Effect.Effect<string | null, Error, FileSystem.FileSystem | Env.Env> =>
   Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
-    const currentDir = Pro.cwd()
+    const env = yield* Env.Env
+    const currentDir = env.cwd
     const packageJsonRel = S.decodeSync(Fs.Path.RelFile.Schema)('package.json')
 
     // Start with package.json in current directory
@@ -134,7 +136,7 @@ To bypass this check:
  */
 export const checkGlobalVsLocal = (
   options: GlobalLocalCheckOptions,
-): Effect.Effect<void, Error, FileSystem.FileSystem> =>
+): Effect.Effect<void, Error, FileSystem.FileSystem | Env.Env> =>
   Effect.gen(function*() {
     const {
       packageName,
@@ -186,6 +188,6 @@ export const checkGlobalVsLocal = (
  */
 export const checkGlobalVsLocalAsync = (
   options: GlobalLocalCheckOptions,
-): Effect.Effect<void, Error, FileSystem.FileSystem> => {
+): Effect.Effect<void, Error, FileSystem.FileSystem | Env.Env> => {
   return checkGlobalVsLocal(options)
 }

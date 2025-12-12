@@ -4,10 +4,10 @@ import { isNamedParameter } from './parameter.js'
 export type CommandTarget = {
   type: `sub`
   name: string
-  args: string[]
+  args: readonly string[]
 } | {
   type: `default`
-  args: string[]
+  args: readonly string[]
 }
 
 /**

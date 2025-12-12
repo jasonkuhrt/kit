@@ -1,5 +1,5 @@
 import { Arr } from '#arr'
-import { Lang } from '#lang'
+import { Env } from '#env'
 import { Obj } from '#obj'
 import { Rec } from '#rec'
 import { Str } from '#str'
@@ -73,11 +73,11 @@ const resolve = <const specs extends EnvironmentConfigurableOptionSpec[]>(
   const input$ = input as Record<string, any>
 
   for (const spec of specs) {
-    const processValue = Lang.process.env[makeEnvVarName(spec)]
-    if (processValue !== undefined) {
+    const envValue = Env.env.vars[makeEnvVarName(spec)]
+    if (envValue !== undefined) {
       config[spec.name] = {
         spec,
-        value: spec.parse(processValue),
+        value: spec.parse(envValue),
         source: 'environment',
       }
       continue

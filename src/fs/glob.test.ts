@@ -1,82 +1,52 @@
+import { Env } from '#env'
 import { Fs } from '#fs'
-import { Pro } from '#pro'
+import { Test } from '#test'
 import { Effect, Schema as S } from 'effect'
-import { describe, expect, test } from 'vitest'
+import { expect } from 'vitest'
 
-// Local helper functions for decoding
 const decodeRelDir = S.decodeSync(Fs.Path.RelDir.Schema)
 const decodeAbsDir = S.decodeSync(Fs.Path.AbsDir.Schema)
 
-describe('Glob', () => {
-  describe('glob', () => {
-    test('returns an Effect that resolves to an array of relative FsLoc objects', async () => {
-      const result = await Effect.runPromise(
-        Fs.glob('src/fs/*.ts'),
-      )
-      expect(result).toBeInstanceOf(Array)
-      expect(result.length).toBeGreaterThan(0)
+type Input = { pattern: string; options?: { absolute?: boolean; cwd?: 'srcDir' | 'nonexistent' } }
 
-      // Verify we get Path objects
-      expect(result[0]).toHaveProperty('_tag')
+const resolveOptions = (input: Input, srcDir: Fs.Path.AbsDir): Fs.GlobOptions | undefined => {
+  if (input.options?.cwd === 'srcDir') return { ...input.options, cwd: srcDir }
+  if (input.options?.cwd === 'nonexistent') return { cwd: decodeAbsDir('/nonexistent/path/') }
+  if (input.options?.absolute !== undefined) return { absolute: input.options.absolute }
+  return undefined
+}
+
+// dprint-ignore
+Test.describe('glob')
+  .inputType<Input>()
+  .casesInput(
+    { pattern: 'src/fs/*.ts' },
+    { pattern: 'src/fs/*.ts', options: { absolute: true } },
+    { pattern: 'fs/*.ts', options: { cwd: 'srcDir' } },
+    { pattern: '', options: { cwd: 'nonexistent' } },
+  )
+  .matrix({ mode: ['async', 'sync'] as const })
+  .layer(Env.Live)
+  .testEffect(({ input, matrix }) =>
+    Effect.gen(function*() {
+      const env = yield* Env.Env
+      const srcDir = Fs.Path.join(env.cwd, decodeRelDir('./src/')) as Fs.Path.AbsDir
+      const options = resolveOptions(input, srcDir)
+      const glob = matrix.mode === 'async' ? Fs.glob : Fs.globSync
+
+      if (input.options?.cwd === 'nonexistent') {
+        if (matrix.mode === 'async') {
+          const result = yield* Fs.glob(input.pattern, options)
+          expect(result).toEqual([])
+        } else {
+          const effect = Fs.globSync(input.pattern, options)
+          expect(() => Effect.runSync(effect)).not.toThrow()
+        }
+      } else {
+        const result = yield* glob(input.pattern, options)
+        expect(result).toBeInstanceOf(Array)
+        expect(result.length).toBeGreaterThan(0)
+        expect(result[0]).toHaveProperty('_tag')
+      }
     })
-
-    test('returns absolute FsLocs with absolute option', async () => {
-      const result = await Effect.runPromise(
-        Fs.glob('src/fs/*.ts', { absolute: true }),
-      )
-      expect(result).toBeInstanceOf(Array)
-      expect(result.length).toBeGreaterThan(0)
-
-      // Verify we get absolute paths
-      expect(result[0]).toHaveProperty('_tag')
-    })
-
-    test('accepts Fs.Path.AbsDir for cwd option', async () => {
-      // Use Pro.cwd() to get the current directory
-      const cwd = Pro.cwd()
-      const srcDir = Fs.Path.join(cwd, decodeRelDir('./src/'))
-      const result = await Effect.runPromise(
-        Fs.glob('fs/*.ts', { cwd: srcDir }),
-      )
-      expect(result).toBeInstanceOf(Array)
-      expect(result.length).toBeGreaterThan(0)
-
-      // Verify we get Path objects relative to the cwd
-      expect(result[0]).toHaveProperty('_tag')
-    })
-  })
-
-  describe('globSync', () => {
-    test('returns an Effect that contains FsLocs synchronously', () => {
-      const result = Effect.runSync(
-        Fs.globSync('src/fs/*.ts'),
-      )
-      expect(result).toBeInstanceOf(Array)
-      expect(result.length).toBeGreaterThan(0)
-
-      // Verify we get Path objects
-      expect(result[0]).toHaveProperty('_tag')
-    })
-
-    test('handles errors gracefully', () => {
-      // Test with an invalid pattern that might cause an error
-      const nonExistentDir = decodeAbsDir('/nonexistent/path/')
-      const effect = Fs.globSync('', { cwd: nonExistentDir })
-      expect(() => Effect.runSync(effect)).not.toThrow()
-    })
-
-    test('accepts Fs.Path.AbsDir for cwd option', () => {
-      // Use Pro.cwd() to get the current directory
-      const cwd = Pro.cwd()
-      const srcDir = Fs.Path.join(cwd, decodeRelDir('./src/'))
-      const result = Effect.runSync(
-        Fs.globSync('fs/*.ts', { cwd: srcDir }),
-      )
-      expect(result).toBeInstanceOf(Array)
-      expect(result.length).toBeGreaterThan(0)
-
-      // Verify we get Path objects relative to the cwd
-      expect(result[0]).toHaveProperty('_tag')
-    })
-  })
-})
+  )

@@ -1,5 +1,5 @@
+import { Fn } from '#fn'
 import type { Path } from '#fs/fs'
-import { Pro } from '#pro'
 import { Schema as S } from 'effect'
 import type { $Abs } from '../$Abs/_.js'
 import { $Abs as Abs } from '../$Abs/_.js'
@@ -10,15 +10,18 @@ import { join } from './join.js'
  * Type-level ensureAbsolute operation.
  */
 export type ensureAbsolute<
-  L extends Path,
-  B extends AbsDir | undefined = undefined,
-> = L extends $Abs ? L : $Abs
+  $P extends Path,
+  $B extends AbsDir = AbsDir,
+> = $P extends $Abs ? $P : $Abs
 
 /**
  * Ensure a location is absolute, converting relative locations to absolute.
  *
+ * This is a pure function that requires an explicit base directory.
+ * Use curried variant {@link ensureAbsoluteWith} to pre-apply the base.
+ *
  * @param path - The path to ensure is absolute
- * @param base - The base directory to resolve relative paths against (defaults to current working directory)
+ * @param base - The base directory to resolve relative paths against
  * @returns An absolute path
  *
  * @example
@@ -33,50 +36,73 @@ export type ensureAbsolute<
  */
 export const ensureAbsolute = <
   L extends Path,
-  B extends AbsDir | undefined = undefined,
+  B extends AbsDir,
 >(
   path: L,
-  base?: B,
+  base: B,
 ): ensureAbsolute<L, B> => {
   // If already absolute, return as-is
   if (S.is(Abs.Schema)(path)) {
     return path as any
   }
 
-  // Relative path needs a base
-  const resolvedBase = base ?? Pro.cwd()
-
   // Convert relative to absolute using join
-  return join(resolvedBase, path as any) as any
+  return join(base, path as any) as any
 }
+
+/**
+ * Curried variant of {@link ensureAbsolute}.
+ * Pre-apply the path, then apply the base directory.
+ */
+export const ensureAbsoluteOn: <L extends Path>(path: L) => <B extends AbsDir>(base: B) => ensureAbsolute<L, B> = Fn
+  .curry(ensureAbsolute) as any
+
+/**
+ * Curried variant of {@link ensureAbsolute}.
+ * Pre-apply the base directory, then apply to paths.
+ *
+ * @example
+ * ```ts
+ * const cwd = yield* Env.cwd
+ * const toAbs = ensureAbsoluteWith(cwd)
+ * const abs1 = toAbs(relPath1)
+ * const abs2 = toAbs(relPath2)
+ * ```
+ */
+export const ensureAbsoluteWith: <B extends AbsDir>(base: B) => <L extends Path>(path: L) => ensureAbsolute<L, B> = Fn
+  .flipCurried(ensureAbsoluteOn) as any
 
 /**
  * Type-level ensureOptionalAbsolute operation.
  */
 export type ensureOptionalAbsolute<
   L extends Path | undefined,
-  B extends AbsDir | undefined = undefined,
+  B extends AbsDir = AbsDir,
 > = L extends undefined ? undefined : L extends Path ? ensureAbsolute<L, B> : never
 
 /**
  * Ensure an optional location is absolute.
  *
+ * This is a pure function that requires an explicit base directory.
+ * Use curried variant {@link ensureOptionalAbsoluteWith} to pre-apply the base.
+ *
  * @param path - The optional path to ensure is absolute
- * @param base - Optional base directory to resolve against
+ * @param base - Base directory to resolve against
  * @returns An absolute path or undefined if path is undefined
  *
  * @example
  * ```ts
+ * const base = Path.AbsDir.make({ segments: ['home', 'user'] })
  * const path: Path.RelFile | undefined = undefined
- * const result = ensureOptionalAbsolute(path) // undefined
+ * const result = ensureOptionalAbsolute(path, base) // undefined
  * ```
  */
 export const ensureOptionalAbsolute = <
   L extends Path | undefined,
-  B extends AbsDir | undefined = undefined,
+  B extends AbsDir,
 >(
   path: L,
-  base?: B,
+  base: B,
 ): ensureOptionalAbsolute<L, B> => {
   if (path === undefined) {
     return undefined as any
@@ -86,33 +112,27 @@ export const ensureOptionalAbsolute = <
 }
 
 /**
- * Type-level ensureOptionalAbsoluteWithCwd operation.
- * Returns AbsDir when undefined, preserves file/dir distinction for other inputs.
+ * Curried variant of {@link ensureOptionalAbsolute}.
+ * Pre-apply the path, then apply the base directory.
  */
-export type ensureOptionalAbsoluteWithCwd<L extends Path | undefined> = L extends undefined ? AbsDir
-  : L extends Path ? ensureAbsolute<L, AbsDir>
-  : never
+export const ensureOptionalAbsoluteOn: <L extends Path | undefined>(
+  path: L,
+) => <B extends AbsDir>(base: B) => ensureOptionalAbsolute<L, B> = Fn.curry(ensureOptionalAbsolute) as any
 
 /**
- * Ensure an optional location is absolute, using current working directory as default.
- *
- * @param path - The optional path to ensure is absolute
- * @returns An absolute path or current working directory if path is undefined
+ * Curried variant of {@link ensureOptionalAbsolute}.
+ * Pre-apply the base directory, then apply to paths.
  *
  * @example
  * ```ts
- * const path = undefined
- * const result = ensureOptionalAbsoluteWithCwd(path) // returns cwd as AbsDir
+ * const cwd = yield* Env.cwd
+ * const toAbs = ensureOptionalAbsoluteWith(cwd)
+ * const abs1 = toAbs(relPath1)           // absolute path
+ * const abs2 = toAbs(undefined)          // undefined
  * ```
  */
-export const ensureOptionalAbsoluteWithCwd = <L extends Path | undefined>(
-  path: L,
-): ensureOptionalAbsoluteWithCwd<L> => {
-  const base = Pro.cwd()
-
-  if (path === undefined) {
-    return base as any
-  }
-
-  return ensureAbsolute(path, base) as any
-}
+export const ensureOptionalAbsoluteWith: <B extends AbsDir>(
+  base: B,
+) => <L extends Path | undefined>(path: L) => ensureOptionalAbsolute<L, B> = Fn.flipCurried(
+  ensureOptionalAbsoluteOn,
+) as any

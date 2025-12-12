@@ -77,6 +77,8 @@
       "#configurator/configurator": ["./src/configurator/__.ts"],
       "#debug": ["./src/debug/_.ts"],
       "#debug/debug": ["./src/debug/__.ts"],
+      "#env": ["./src/env/_.ts"],
+      "#env/env": ["./src/env/__.ts"],
       "#fs": ["./src/fs/_.ts"],
       "#fs/fs": ["./src/fs/__.ts"],
       "#fs-relative": ["./src/fs-relative/_.ts"],
@@ -111,8 +113,6 @@
       "#package-manager/package-manager": ["./src/package-manager/__.ts"],
       "#paka": ["./src/paka/_.ts"],
       "#paka/paka": ["./src/paka/__.ts"],
-      "#pro": ["./src/pro/_.ts"],
-      "#pro/pro": ["./src/pro/__.ts"],
       "#prom": ["./src/prom/_.ts"],
       "#prom/prom": ["./src/prom/__.ts"],
       "#prox": ["./src/prox/_.ts"],
@@ -147,6 +147,7 @@
 
       // Platform and wildcard
       "#platform:lang/*": ["./src/core/lang/*.node.ts"],
+      "#platform:env/*": ["./src/env/*.node.ts"],
       "#*": ["./src/*"]
     },
 

@@ -1042,6 +1042,34 @@ export interface TestBuilder<State extends BuilderTypeState> {
       : State['fn'] extends Fn.AnyAny ? FunctionTestFn<State>
       : GenericTestFn<State>,
   ): void
+
+  /**
+   * Execute all test cases with multiple named test implementations.
+   * Creates a describe block for each key, running all cases against that callback.
+   *
+   * This is useful when you want to test the same cases with different implementations
+   * or different assertions. Each key in the tests object becomes a describe block name.
+   *
+   * @param tests - Object mapping test names to test callbacks
+   *
+   * @example
+   * ```ts
+   * Test.describe('parser')
+   *   .casesInput(...)
+   *   .testMatrix({
+   *     'strict mode': ({ input }) => { expect(parseStrict(input)).toBeDefined() },
+   *     'loose mode': ({ input }) => { expect(parseLoose(input)).toBeDefined() },
+   *   })
+   * ```
+   */
+  testMatrix(
+    tests: Record<
+      string,
+      State['fn'] extends undefined ? GenericTestFn<State>
+        : State['fn'] extends Fn.AnyAny ? FunctionTestFn<State>
+        : GenericTestFn<State>
+    >,
+  ): void
 }
 
 export type TestBuilderEmpty = TestBuilder<BuilderTypeStateEmpty>
@@ -1069,5 +1097,34 @@ export interface TestBuilderWithLayers<State extends BuilderTypeState, R> extend
     fn: State['fn'] extends undefined ? GenericEffectTestFn<State, R>
       : State['fn'] extends Fn.AnyAny ? FunctionEffectTestFn<State, R>
       : GenericEffectTestFn<State, R>,
+  ): void
+
+  /**
+   * Execute all test cases with multiple named Effect-based test implementations.
+   * Creates a describe block for each key, running all cases against that callback.
+   *
+   * This is useful when you want to test the same cases with different implementations.
+   * Each key in the tests object becomes a describe block name.
+   *
+   * @param tests - Object mapping test names to Effect-returning test callbacks
+   *
+   * @example
+   * ```ts
+   * Test.describe('api')
+   *   .casesInput(...)
+   *   .layer(TestLayer)
+   *   .testMatrixEffect({
+   *     'v1 endpoint': ({ input }) => Effect.gen(function*() { ... }),
+   *     'v2 endpoint': ({ input }) => Effect.gen(function*() { ... }),
+   *   })
+   * ```
+   */
+  testMatrixEffect(
+    tests: Record<
+      string,
+      State['fn'] extends undefined ? GenericEffectTestFn<State, R>
+        : State['fn'] extends Fn.AnyAny ? FunctionEffectTestFn<State, R>
+        : GenericEffectTestFn<State, R>
+    >,
   ): void
 }
