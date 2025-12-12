@@ -30,10 +30,10 @@ Backwards compatibility will ONLY be considered when explicitly mentioned in the
 After making code changes, ensure these checks pass:
 
 1. **Type checking**: `pnpm check:types`
-2. **Tests**: `pnpm test` (for specific modules: `pnpm test src/module-name/`)
+2. **Tests**: `pnpm test:unit src/path/to/file.test.ts --run` (ALWAYS specify path - never run full suite)
 3. **Formatting**: `pnpm fix:format` (always run the formatter to auto-fix any style issues)
 
-Run all checks with: `pnpm check`
+Run all checks with: `pnpm check` (but prefer targeted test runs during development)
 
 ### TypeScript Configuration
 
@@ -62,8 +62,10 @@ pnpm dev            # Watch mode (no type checking)
 pnpm build:clean    # Clean build artifacts
 
 # Testing
-pnpm test           # Run tests with Vitest
-pnpm test:unit      # Same as test
+# CRITICAL: Always specify file path to avoid running entire suite (very slow/costly)
+pnpm test:unit src/path/to/file.test.ts --run  # Run single test file
+pnpm test:unit src/module/ --run               # Run tests in directory
+# NEVER use bare `pnpm test` or `pnpm test:unit` without a path!
 
 # Code Quality
 pnpm check:types        # TypeScript type checking (fast - excludes benchmarks)

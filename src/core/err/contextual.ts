@@ -82,6 +82,7 @@ export interface TaggedContextualErrorClass<
   $Tags extends readonly string[] = readonly string[],
   $Context extends Record<string, unknown> = Record<string, unknown>,
   $Cause extends Error = Error,
+  $CauseEnsured extends boolean = false,
 > {
   readonly _tag: $Tag
   readonly tags: $Tags
@@ -105,7 +106,7 @@ export interface TaggedContextualErrorClass<
    */
   constrain<$NewContext extends Record<string, unknown>>(
     config?: ConstraintConfig<$NewContext>,
-  ): TaggedContextualErrorClass<$Tag, $Tags, $NewContext, $Cause>
+  ): TaggedContextualErrorClass<$Tag, $Tags, $NewContext, $Cause, $CauseEnsured>
 
   /**
    * Constrain the context type for this error class.
@@ -115,25 +116,42 @@ export interface TaggedContextualErrorClass<
     $Tag,
     $Tags,
     $NewContext,
-    $Cause
+    $Cause,
+    $CauseEnsured
   >
 
   /**
-   * Constrain the cause type for this error class.
+   * Constrain the cause type and optionally ensure it's always present.
+   *
+   * @param ensured - If true, cause is always present (not optional). Defaults to false.
+   *
+   * @example
+   * ```typescript
+   * // Optional cause (default)
+   * const MyError = TaggedContextualError('MyError').constrainCause<Error>()
+   *
+   * // Ensured cause (always present)
+   * const MyError = TaggedContextualError('MyError').constrainCause<Error>(true)
+   * ```
    */
-  constrainCause<$NewCause extends Error>(): TaggedContextualErrorClass<$Tag, $Tags, $Context, $NewCause>
+  constrainCause<$NewCause extends Error>(
+    ensured: true,
+  ): TaggedContextualErrorClass<$Tag, $Tags, $Context, $NewCause, true>
+  constrainCause<$NewCause extends Error>(
+    ensured?: false,
+  ): TaggedContextualErrorClass<$Tag, $Tags, $Context, $NewCause, false>
 
-  new(args: {
-    message?: string
-    context: $Context
-    cause?: $Cause
-  }): Cause.YieldableError & {
+  new(
+    args: {
+      message?: string
+      context: $Context
+    } & ($CauseEnsured extends true ? { cause: $Cause } : { cause?: $Cause }),
+  ): Cause.YieldableError & {
     readonly _tag: $Tag
     readonly tags: $Tags
     readonly message?: string
     readonly context: $Context
-    readonly cause?: $Cause
-  }
+  } & ($CauseEnsured extends true ? { readonly cause: $Cause } : { readonly cause?: $Cause })
 }
 
 /**
@@ -181,7 +199,7 @@ export const TaggedContextualError = <
         return this
       }
 
-      static constrainCause() {
+      static constrainCause(_ensured?: boolean) {
         return this
       }
     }

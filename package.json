@@ -152,6 +152,8 @@
     "#value/value": "./build/value/__.js",
     "#ware": "./build/ware/_.js",
     "#ware/ware": "./build/ware/__.js",
+    "#mod": "./build/mod/_.js",
+    "#mod/mod": "./build/mod/__.js",
     "#oak": "./build/oak/_.js",
     "#oak/oak": "./build/oak/__.js",
     "#*": {
@@ -209,6 +211,7 @@
     "./url": "./build/url/__.js",
     "./value": "./build/value/__.js",
     "./ware": "./build/ware/__.js",
+    "./mod": "./build/mod/__.js",
     "./oak": "./build/oak/__.js",
     "./oak/extensions": "./build/oak/extensions/__.js"
   },
