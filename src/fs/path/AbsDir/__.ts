@@ -37,7 +37,7 @@ class AbsDirClass extends S.TaggedClass<AbsDirClass>()('FsPathAbsDir', {
  * })
  * ```
  */
-export const Schema = S.transformOrFail(
+export const Schema: S.Schema<AbsDirClass, string> = S.transformOrFail(
   S.String,
   AbsDirClass,
   {
