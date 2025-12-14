@@ -1,3 +1,4 @@
+import { Obj } from '#obj'
 import { Schema as S } from 'effect'
 import type * as EAST from 'effect/SchemaAST'
 import { isLiteral, isSuspend, isTransformation, isTypeLiteral } from 'effect/SchemaAST'
@@ -161,3 +162,12 @@ export const extractTagsFromUnion = (ast: EAST.Union): string[] => {
 
   return tags
 }
+
+/**
+ * Copy annotations from source AST to target schema if any exist.
+ *
+ * Returns the original schema unchanged if annotations object is empty,
+ * avoiding unnecessary wrapping.
+ */
+export const copyAnnotations = (schema: S.Schema.Any, annotations: EAST.Annotations): S.Schema.Any =>
+  Obj.isEmpty(annotations) ? schema : schema.annotations(annotations as any)

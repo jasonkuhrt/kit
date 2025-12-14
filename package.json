@@ -34,6 +34,7 @@
     "#bool/bool": "./build/core/bool/__.js",
     "#err": "./build/core/err/_.js",
     "#err/err": "./build/core/err/__.js",
+    "#err/core": "./build/core/err/core/_.js",
     "#fn": "./build/core/fn/_.js",
     "#fn/fn": "./build/core/fn/__.js",
     "#fn/core": "./build/core/fn/core/_.js",

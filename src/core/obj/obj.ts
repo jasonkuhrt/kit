@@ -292,6 +292,60 @@ export type PartialDeep<$Type> =
 //
 //
 //
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Constructors
+//
+//
+//
+
+/**
+ * Convert an entries array type to an object type.
+ *
+ * @category Type Utilities
+ */
+// dprint-ignore
+export type FromEntries<$Entries extends readonly (readonly [PropertyKey, unknown])[]> = {
+  [k in $Entries[number] as k[0]]: k[1]
+}
+
+/**
+ * Type-safe version of Object.fromEntries that preserves key types.
+ *
+ * Unlike `Object.fromEntries` which returns `{ [k: string]: V }`, this function
+ * preserves the specific key literals when used with `as const` arrays.
+ *
+ * @category Constructors
+ *
+ * @param entries - Array of key-value pairs
+ * @returns Object with preserved key types
+ *
+ * @example
+ * ```ts
+ * const entries = [['a', 1], ['b', 'hello']] as const
+ * const obj = Obj.fromEntries(entries)
+ * // obj: { a: 1, b: 'hello' }  ✅ Specific keys preserved!
+ *
+ * // Compare to Object.fromEntries:
+ * const obj2 = Object.fromEntries(entries)
+ * // obj2: { [k: string]: 1 | 'hello' }  ❌ Lost key specificity
+ * ```
+ *
+ * @example
+ * ```ts
+ * // Works with dynamic entries too
+ * const keys = ['x', 'y'] as const
+ * const entries = keys.map(k => [k, k.toUpperCase()] as const)
+ * const obj = Obj.fromEntries(entries)
+ * // obj: { x: string, y: string }
+ * ```
+ */
+export const fromEntries = <const $entries extends readonly (readonly [PropertyKey, unknown])[]>(
+  entries: $entries,
+): FromEntries<$entries> => Object.fromEntries(entries) as any
+
+//
+//
+//
+//
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Type Utilities
 //
 //

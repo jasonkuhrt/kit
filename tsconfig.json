@@ -32,6 +32,8 @@
       "#bool/bool": ["./src/core/bool/__.ts"],
       "#err": ["./src/core/err/_.ts"],
       "#err/err": ["./src/core/err/__.ts"],
+      "#err/core": ["./src/core/err/core/_.ts"],
+      "#err/core/core": ["./src/core/err/core/__.ts"],
       "#fn": ["./src/core/fn/_.ts"],
       "#fn/fn": ["./src/core/fn/__.ts"],
       "#fn/core": ["./src/core/fn/core/_.ts"],
