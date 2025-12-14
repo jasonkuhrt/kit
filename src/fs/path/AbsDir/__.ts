@@ -89,7 +89,7 @@ export const make = AbsDirClass.make.bind(AbsDirClass)
  * Throws on invalid input.
  */
 export const fromString = <const input extends string>(input: input) => {
-  return S.decodeSync(Schema)(input) as any
+  return S.decodeSync(Schema)(input)
 }
 
 /**
