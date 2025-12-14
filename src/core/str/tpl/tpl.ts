@@ -450,4 +450,38 @@ export const highlight: {
    * ```
    */
   iso: HighlightTag
+  /**
+   * Template literal with Markdown syntax highlighting and automatic dedenting.
+   * @example
+   * ```typescript
+   * const { md } = Str.Tpl.highlight
+   * const readme = md`
+   *   # My Project
+   *
+   *   A brief description of the project.
+   *
+   *   ## Installation
+   *
+   *   Run the following command:
+   * `
+   * ```
+   */
+  md: HighlightTag
+  /**
+   * Template literal with MDX syntax highlighting and automatic dedenting.
+   * @example
+   * ```typescript
+   * const { mdx } = Str.Tpl.highlight
+   * const content = mdx`
+   *   # Welcome
+   *
+   *   <Alert type="info">
+   *     This is an MDX component!
+   *   </Alert>
+   *
+   *   Regular markdown **works** too.
+   * `
+   * ```
+   */
+  mdx: HighlightTag
 } = Prox.createCachedGetProxy(() => dedent)
