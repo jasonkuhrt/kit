@@ -3,16 +3,21 @@ import type { Path } from '#fs/fs'
 import { Schema as S } from 'effect'
 import type { $Abs } from '../$Abs/_.js'
 import { $Abs as Abs } from '../$Abs/_.js'
+import type { $Rel } from '../$Rel/_.js'
 import type { AbsDir } from '../AbsDir/_.js'
 import { join } from './join.js'
+import type { toAbs } from './toAbs.js'
 
 /**
  * Type-level ensureAbsolute operation.
+ * Maps path types to their absolute counterparts:
+ * - AbsDir → AbsDir (unchanged)
+ * - AbsFile → AbsFile (unchanged)
+ * - RelDir → AbsDir
+ * - RelFile → AbsFile
  */
-export type ensureAbsolute<
-  $P extends Path,
-  $B extends AbsDir = AbsDir,
-> = $P extends $Abs ? $P : $Abs
+export type ensureAbsolute<$P extends Path> =
+  $P extends $Abs ? $P : $P extends $Rel ? toAbs<$P> : never
 
 /**
  * Ensure a location is absolute, converting relative locations to absolute.
@@ -40,7 +45,7 @@ export const ensureAbsolute = <
 >(
   path: L,
   base: B,
-): ensureAbsolute<L, B> => {
+): ensureAbsolute<L> => {
   // If already absolute, return as-is
   if (S.is(Abs.Schema)(path)) {
     return path as any
@@ -54,7 +59,7 @@ export const ensureAbsolute = <
  * Curried variant of {@link ensureAbsolute}.
  * Pre-apply the path, then apply the base directory.
  */
-export const ensureAbsoluteOn: <L extends Path>(path: L) => <B extends AbsDir>(base: B) => ensureAbsolute<L, B> = Fn
+export const ensureAbsoluteOn: <L extends Path>(path: L) => <B extends AbsDir>(base: B) => ensureAbsolute<L> = Fn
   .curry(ensureAbsolute) as any
 
 /**
@@ -69,16 +74,14 @@ export const ensureAbsoluteOn: <L extends Path>(path: L) => <B extends AbsDir>(b
  * const abs2 = toAbs(relPath2)
  * ```
  */
-export const ensureAbsoluteWith: <B extends AbsDir>(base: B) => <L extends Path>(path: L) => ensureAbsolute<L, B> = Fn
+export const ensureAbsoluteWith: <B extends AbsDir>(base: B) => <L extends Path>(path: L) => ensureAbsolute<L> = Fn
   .flipCurried(ensureAbsoluteOn) as any
 
 /**
  * Type-level ensureOptionalAbsolute operation.
  */
-export type ensureOptionalAbsolute<
-  L extends Path | undefined,
-  B extends AbsDir = AbsDir,
-> = L extends undefined ? undefined : L extends Path ? ensureAbsolute<L, B> : never
+export type ensureOptionalAbsolute<L extends Path | undefined> =
+  L extends undefined ? undefined : L extends Path ? ensureAbsolute<L> : never
 
 /**
  * Ensure an optional location is absolute.
@@ -103,7 +106,7 @@ export const ensureOptionalAbsolute = <
 >(
   path: L,
   base: B,
-): ensureOptionalAbsolute<L, B> => {
+): ensureOptionalAbsolute<L> => {
   if (path === undefined) {
     return undefined as any
   }
@@ -117,7 +120,7 @@ export const ensureOptionalAbsolute = <
  */
 export const ensureOptionalAbsoluteOn: <L extends Path | undefined>(
   path: L,
-) => <B extends AbsDir>(base: B) => ensureOptionalAbsolute<L, B> = Fn.curry(ensureOptionalAbsolute) as any
+) => <B extends AbsDir>(base: B) => ensureOptionalAbsolute<L> = Fn.curry(ensureOptionalAbsolute) as any
 
 /**
  * Curried variant of {@link ensureOptionalAbsolute}.
@@ -133,6 +136,6 @@ export const ensureOptionalAbsoluteOn: <L extends Path | undefined>(
  */
 export const ensureOptionalAbsoluteWith: <B extends AbsDir>(
   base: B,
-) => <L extends Path | undefined>(path: L) => ensureOptionalAbsolute<L, B> = Fn.flipCurried(
+) => <L extends Path | undefined>(path: L) => ensureOptionalAbsolute<L> = Fn.flipCurried(
   ensureOptionalAbsoluteOn,
 ) as any
