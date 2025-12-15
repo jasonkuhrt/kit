@@ -203,10 +203,7 @@ test(`block > orientation > horizontal > ansi`, () => {
     .block(`a`)
     .block(ansis.red(`b`))
     .block(`c`)
-  // Skip ANSI snapshots in CI due to environment differences
-  if (!process.env[`CI`]) {
-    expect(Tex.render(builder)).toMatchSnapshot()
-  }
+  expect(Tex.render(builder)).toMatchSnapshot()
 })
 
 Test.describe(`spanRange parameter`)

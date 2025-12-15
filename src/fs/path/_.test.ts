@@ -2,6 +2,8 @@ import { Fs } from '#fs'
 import { Test } from '#test'
 import { describe, expect, test } from 'vitest'
 
+const p = Fs.Path.fromLiteral
+
 // === String Decoding Tests ===
 
 // dprint-ignore
@@ -68,8 +70,9 @@ describe('Constants', () => {
   test('relDirParent represents ../', () => {
     const parent = Fs.Path.relDirParent()
     expect(Fs.Path.RelDir.is(parent)).toBe(true)
-    expect(parent.segments).toEqual(['..'])
-    expect(Fs.Path.RelDir.toString(parent)).toBe('./../')
+    expect(parent.back).toBe(1)
+    expect(parent.segments).toEqual([])
+    expect(Fs.Path.RelDir.toString(parent)).toBe('../')
   })
 })
 
@@ -119,31 +122,39 @@ describe('Operations', () => {
   describe('join', () => {
     Test.on(Fs.Path.join)
       .cases(
-        [
-          [
-            Fs.Path.AbsDir.fromString('/home/user/'),
-            Fs.Path.RelFile.fromString('src/index.ts'),
-          ],
-          Fs.Path.AbsFile.fromString('/home/user/src/index.ts'),
-        ],
-        [
-          [Fs.Path.AbsDir.fromString('/home/user/'), Fs.Path.RelDir.fromString('src/lib/')],
-          Fs.Path.AbsDir.fromString('/home/user/src/lib/'),
-        ],
-        [
-          [
-            Fs.Path.RelDir.fromString('src/'),
-            Fs.Path.RelFile.fromString('lib/utils.ts'),
-          ],
-          Fs.Path.RelFile.fromString('src/lib/utils.ts'),
-        ],
-        [
-          [
-            Fs.Path.AbsDir.fromString('/home/user/src/'),
-            Fs.Path.RelDir.fromString('../docs/'),
-          ],
-          Fs.Path.AbsDir.fromString('/home/user/docs/'),
-        ],
+        // Basic forward joins
+        [[p('/home/user/'), p('src/index.ts')], p('/home/user/src/index.ts')],
+        [[p('/home/user/'), p('src/lib/')], p('/home/user/src/lib/')],
+        [[p('src/'), p('lib/utils.ts')], p('./src/lib/utils.ts')],
+        // Back path joins - consumes base segments
+        [[p('/home/user/src/'), p('../docs/')], p('/home/user/docs/')],
+        [[p('/home/user/src/'), p('../docs/readme.md')], p('/home/user/docs/readme.md')],
+        // Back path that exceeds base (AbsDir - clamped at root)
+        [[p('/home/'), p('../../../other/')], p('/other/')],
+        // Back path that exceeds base (RelDir - propagates remaining back)
+        [[p('src/'), p('../../lib/')], p('../lib/')],
+        [[p('src/'), p('../../../lib/file.ts')], p('../../lib/file.ts')],
+        // RelDir with back as base
+        [[p('../src/'), p('file.ts')], p('../src/file.ts')],
+        [[p('../../'), p('lib/')], p('../../lib/')],
+      )
+      .test()
+  })
+
+  describe('up', () => {
+    Test.on(Fs.Path.up)
+      .cases(
+        // AbsDir
+        [[p('/home/user/docs/')], p('/home/user/')],
+        [[p('/')], p('/')],
+        // RelDir
+        [[p('./src/lib/')], p('./src/')],
+        [[p('./')], p('../')],
+        [[p('../')], p('../../')],
+        [[p('../src/')], p('../')],
+        // RelFile
+        [[p('./src/lib/file.ts')], p('./src/file.ts')],
+        [[p('./file.ts')], p('../file.ts')],
       )
       .test()
   })
@@ -151,17 +162,13 @@ describe('Operations', () => {
   describe('toAbs', () => {
     Test.on(Fs.Path.toAbs)
       .cases(
-        [
-          [
-            Fs.Path.RelFile.fromString('src/index.ts'),
-            Fs.Path.AbsDir.fromString('/home/user/'),
-          ],
-          Fs.Path.AbsFile.fromString('/home/user/src/index.ts'),
-        ],
-        [
-          [Fs.Path.RelDir.fromString('src/lib/'), Fs.Path.AbsDir.fromString('/home/user/')],
-          Fs.Path.AbsDir.fromString('/home/user/src/lib/'),
-        ],
+        // Forward paths
+        [[p('src/index.ts'), p('/home/user/')], p('/home/user/src/index.ts')],
+        [[p('src/lib/'), p('/home/user/')], p('/home/user/src/lib/')],
+        // Back paths - go up from base
+        [[p('../file.ts'), p('/home/user/')], p('/home/file.ts')],
+        [[p('../../'), p('/home/user/src/')], p('/home/')],
+        [[p('../../lib/util.ts'), p('/home/user/src/')], p('/home/lib/util.ts')],
       )
       .test()
   })
@@ -169,24 +176,14 @@ describe('Operations', () => {
   describe('toRel', () => {
     Test.on(Fs.Path.toRel)
       .cases(
-        [
-          [
-            Fs.Path.AbsFile.fromString('/home/user/src/index.ts'),
-            Fs.Path.AbsDir.fromString('/home/user/'),
-          ],
-          Fs.Path.RelFile.fromString('src/index.ts'),
-        ],
-        [
-          [
-            Fs.Path.AbsDir.fromString('/home/user/src/lib/'),
-            Fs.Path.AbsDir.fromString('/home/user/'),
-          ],
-          Fs.Path.RelDir.fromString('src/lib/'),
-        ],
-        [
-          [Fs.Path.AbsDir.fromString('/home/user/'), Fs.Path.AbsDir.fromString('/home/user/')],
-          Fs.Path.RelDir.fromString('./'),
-        ],
+        // Forward paths (path is descendant of base)
+        [[p('/home/user/src/index.ts'), p('/home/user/')], p('./src/index.ts')],
+        [[p('/home/user/src/lib/'), p('/home/user/')], p('./src/lib/')],
+        [[p('/home/user/'), p('/home/user/')], p('./')],
+        // Back paths (path not descendant of base) - Issue #122
+        [[p('/a/b/c/scalars.ts'), p('/a/b/c/graffle/modules/')], p('../../scalars.ts')],
+        [[p('/home/user/docs/'), p('/home/user/src/lib/')], p('../../docs/')],
+        [[p('/other/place/file.ts'), p('/home/user/')], p('../../other/place/file.ts')],
       )
       .test()
   })
@@ -194,14 +191,14 @@ describe('Operations', () => {
   describe('toDir', () => {
     Test.on(Fs.Path.toDir)
       .cases(
-        [
-          [Fs.Path.AbsFile.fromString('/home/user/src/index.ts')],
-          Fs.Path.AbsDir.fromString('/home/user/src/'),
-        ],
-        [
-          [Fs.Path.RelFile.fromString('src/index.ts')],
-          Fs.Path.RelDir.fromString('src/'),
-        ],
+        // Standard cases
+        [[p('/home/user/src/index.ts')], p('/home/user/src/')],
+        [[p('src/index.ts')], p('./src/')],
+        // Back paths - preserve back value
+        [[p('../file.ts')], p('../')],
+        [[p('../../src/file.ts')], p('../../src/')],
+        // File in current dir
+        [[p('./file.ts')], p('./')],
       )
       .test()
   })
@@ -209,16 +206,18 @@ describe('Operations', () => {
   describe('name', () => {
     Test.on(Fs.Path.name)
       .cases(
-        [
-          [Fs.Path.AbsFile.fromString('/home/user/index.ts')],
-          'index.ts',
-        ],
-        [
-          [Fs.Path.RelFile.fromString('src/README.md')],
-          'README.md',
-        ],
-        [[Fs.Path.AbsDir.fromString('/home/user/docs/')], 'docs'],
-        [[Fs.Path.AbsDir.fromString('/')], ''],
+        // Standard cases
+        [[p('/home/user/index.ts')], 'index.ts'],
+        [[p('src/README.md')], 'README.md'],
+        [[p('/home/user/docs/')], 'docs'],
+        [[p('/')], ''],
+        // Back-only paths (empty segments)
+        [[p('./')], ''],
+        [[p('../')], ''],
+        [[p('../../')], ''],
+        // Back paths with fileName still have a name
+        [[p('../file.ts')], 'file.ts'],
+        [[p('../../file.ts')], 'file.ts'],
       )
       .test()
   })
@@ -226,11 +225,14 @@ describe('Operations', () => {
   describe('stem', () => {
     Test.on(Fs.Path.stem)
       .cases(
-        [
-          [Fs.Path.AbsFile.fromString('/home/index.ts')],
-          'index',
-        ],
-        [[Fs.Path.RelDir.fromString('src/lib/')], 'lib'],
+        // Standard cases
+        [[p('/home/index.ts')], 'index'],
+        [[p('src/lib/')], 'lib'],
+        // Back-only paths
+        [[p('./')], ''],
+        [[p('../')], ''],
+        // Back paths with fileName
+        [[p('../file.ts')], 'file'],
       )
       .test()
   })
@@ -238,17 +240,157 @@ describe('Operations', () => {
   describe('extension', () => {
     Test.on(Fs.Path.extension)
       .cases(
-        [
-          [Fs.Path.AbsFile.fromString('/home/index.ts')],
-          '.ts',
-        ],
-        [
-          [Fs.Path.RelFile.fromString('src/README.md')],
-          '.md',
-        ],
-        [[Fs.Path.AbsDir.fromString('/home/user/')], null],
+        [[p('/home/index.ts')], '.ts'],
+        [[p('src/README.md')], '.md'],
+        [[p('/home/user/')], null],
       )
       .test()
+  })
+})
+
+// === Back Field & Normalization Tests ===
+
+describe('Back field model', () => {
+  describe('Internal structure (back and segments)', () => {
+    // RelDir
+    Test.describe('RelDir internal structure')
+      .inputType<string>()
+      .outputType<{ back: number; segments: readonly string[] }>()
+      .cases(
+        // Forward paths (back: 0)
+        ['./', { back: 0, segments: [] }],
+        ['./src/', { back: 0, segments: ['src'] }],
+        ['src/', { back: 0, segments: ['src'] }],
+        ['src/lib/', { back: 0, segments: ['src', 'lib'] }],
+        // Back paths (back > 0)
+        ['../', { back: 1, segments: [] }],
+        ['../../', { back: 2, segments: [] }],
+        ['../src/', { back: 1, segments: ['src'] }],
+        ['../../lib/', { back: 2, segments: ['lib'] }],
+        ['../../lib/utils/', { back: 2, segments: ['lib', 'utils'] }],
+      )
+      .test(({ input, output }) => {
+        const result = Fs.Path.RelDir.fromString(input)
+        expect(result.back).toBe(output.back)
+        expect(result.segments).toEqual(output.segments)
+      })
+
+    // RelFile
+    Test.describe('RelFile internal structure')
+      .inputType<string>()
+      .outputType<{ back: number; segments: readonly string[] }>()
+      .cases(
+        // Forward paths (back: 0)
+        ['file.txt', { back: 0, segments: [] }],
+        ['./file.txt', { back: 0, segments: [] }],
+        ['src/file.txt', { back: 0, segments: ['src'] }],
+        ['./src/file.txt', { back: 0, segments: ['src'] }],
+        ['src/lib/file.txt', { back: 0, segments: ['src', 'lib'] }],
+        // Back paths (back > 0)
+        ['../file.txt', { back: 1, segments: [] }],
+        ['../../file.txt', { back: 2, segments: [] }],
+        ['../src/file.txt', { back: 1, segments: ['src'] }],
+        ['../../lib/file.txt', { back: 2, segments: ['lib'] }],
+        ['../../lib/utils/file.txt', { back: 2, segments: ['lib', 'utils'] }],
+      )
+      .test(({ input, output }) => {
+        const result = Fs.Path.RelFile.fromString(input)
+        expect(result.back).toBe(output.back)
+        expect(result.segments).toEqual(output.segments)
+      })
+  })
+
+  describe('Normalization (.. resolution)', () => {
+    // RelDir normalization
+    Test.describe('RelDir normalization')
+      .inputType<string>()
+      .outputType<{ back: number; segments: readonly string[] }>()
+      .cases(
+        // Inline .. that can be resolved
+        ['./a/../b/', { back: 0, segments: ['b'] }],
+        ['a/b/../c/', { back: 0, segments: ['a', 'c'] }],
+        ['a/b/c/../../d/', { back: 0, segments: ['a', 'd'] }],
+        ['a/b/c/../../../d/', { back: 0, segments: ['d'] }],
+        // Inline .. that escapes (becomes back)
+        ['a/../../../b/', { back: 2, segments: ['b'] }],
+        ['a/b/../../c/../../../d/', { back: 2, segments: ['d'] }],
+      )
+      .test(({ input, output }) => {
+        const result = Fs.Path.RelDir.fromString(input)
+        expect(result.back).toBe(output.back)
+        expect(result.segments).toEqual(output.segments)
+      })
+
+    // RelFile normalization
+    Test.describe('RelFile normalization')
+      .inputType<string>()
+      .outputType<{ back: number; segments: readonly string[] }>()
+      .cases(
+        // Inline .. that can be resolved
+        ['./a/../file.txt', { back: 0, segments: [] }],
+        ['a/b/../file.txt', { back: 0, segments: ['a'] }],
+        ['a/b/c/../../file.txt', { back: 0, segments: ['a'] }],
+        // Inline .. that escapes (becomes back)
+        ['a/../../../file.txt', { back: 2, segments: [] }],
+        ['a/b/../../c/../../../file.txt', { back: 2, segments: [] }],
+      )
+      .test(({ input, output }) => {
+        const result = Fs.Path.RelFile.fromString(input)
+        expect(result.back).toBe(output.back)
+        expect(result.segments).toEqual(output.segments)
+      })
+  })
+
+  describe('Round-trip encoding (parse → encode)', () => {
+    // This is the main bug fix validation - ensure paths encode correctly
+    Test.describe('RelDir round-trip')
+      .inputType<string>()
+      .outputType<string>()
+      .cases(
+        // Forward paths
+        ['./', './'],
+        ['./src/', './src/'],
+        ['src/', './src/'],
+        ['src/lib/', './src/lib/'],
+        // Back paths - THE BUG FIX: these should NOT have ./ prefix
+        ['../', '../'],
+        ['../../', '../../'],
+        ['../src/', '../src/'],
+        ['../../lib/', '../../lib/'],
+        ['../../lib/utils/', '../../lib/utils/'],
+        // Normalized paths encode to canonical form
+        ['./a/../b/', './b/'],
+        ['a/../../../b/', '../../b/'],
+      )
+      .test(({ input, output }) => {
+        const parsed = Fs.Path.RelDir.fromString(input)
+        const encoded = Fs.Path.RelDir.toString(parsed)
+        expect(encoded).toBe(output)
+      })
+
+    Test.describe('RelFile round-trip')
+      .inputType<string>()
+      .outputType<string>()
+      .cases(
+        // Forward paths
+        ['file.txt', './file.txt'],
+        ['./file.txt', './file.txt'],
+        ['src/file.txt', './src/file.txt'],
+        ['./src/file.txt', './src/file.txt'],
+        // Back paths - THE BUG FIX: these should NOT have ./ prefix
+        ['../file.txt', '../file.txt'],
+        ['../../file.txt', '../../file.txt'],
+        ['../src/file.txt', '../src/file.txt'],
+        ['../../lib/file.txt', '../../lib/file.txt'],
+        // Normalized paths encode to canonical form
+        ['./a/../file.txt', './file.txt'],
+        ['a/../../../file.txt', '../../file.txt'],
+      )
+      .test(({ input, output }) => {
+        const parsed = Fs.Path.RelFile.fromString(input)
+        const encoded = Fs.Path.RelFile.toString(parsed)
+        expect(encoded).toBe(output)
+      })
   })
 })
 
@@ -258,11 +400,17 @@ describe('States', () => {
   describe('isRoot', () => {
     Test.on(Fs.Path.States.isRoot)
       .cases(
-        [[Fs.Path.AbsDir.fromString('/')], true],
-        [[Fs.Path.RelDir.fromString('./')], true],
-        [[Fs.Path.AbsDir.fromString('/home/')], false],
-        [[Fs.Path.RelDir.fromString('src/')], false],
-        [[Fs.Path.AbsDir.fromString('/home/user/')], false],
+        // True cases - at root/reference point
+        [[p('/')], true],
+        [[p('./')], true],
+        // False cases - has segments
+        [[p('/home/')], false],
+        [[p('src/')], false],
+        [[p('/home/user/')], false],
+        // False cases - back paths (above reference point, NOT at root)
+        [[p('../')], false],
+        [[p('../../')], false],
+        [[p('../src/')], false],
       )
       .test()
   })
@@ -270,11 +418,11 @@ describe('States', () => {
   describe('isTop', () => {
     Test.on(Fs.Path.States.isTop)
       .cases(
-        [[Fs.Path.AbsDir.fromString('/home/')], true],
-        [[Fs.Path.RelDir.fromString('src/')], true],
-        [[Fs.Path.AbsDir.fromString('/')], false],
-        [[Fs.Path.AbsDir.fromString('/home/user/')], false],
-        [[Fs.Path.RelDir.fromString('src/lib/')], false],
+        [[p('/home/')], true],
+        [[p('src/')], true],
+        [[p('/')], false],
+        [[p('/home/user/')], false],
+        [[p('src/lib/')], false],
       )
       .test()
   })
@@ -282,12 +430,12 @@ describe('States', () => {
   describe('isSub', () => {
     Test.on(Fs.Path.States.isSub)
       .cases(
-        [[Fs.Path.AbsDir.fromString('/home/user/')], true],
-        [[Fs.Path.RelDir.fromString('src/lib/')], true],
-        [[Fs.Path.AbsDir.fromString('/a/b/c/')], true],
-        [[Fs.Path.AbsDir.fromString('/')], false],
-        [[Fs.Path.AbsDir.fromString('/home/')], false],
-        [[Fs.Path.RelDir.fromString('src/')], false],
+        [[p('/home/user/')], true],
+        [[p('src/lib/')], true],
+        [[p('/a/b/c/')], true],
+        [[p('/')], false],
+        [[p('/home/')], false],
+        [[p('src/')], false],
       )
       .test()
   })
@@ -307,7 +455,7 @@ describe('Input System', () => {
     })
 
     test('passes through AbsFile instance', () => {
-      const input = Fs.Path.AbsFile.fromString('/home/file.txt')
+      const input = p('/home/file.txt')
       const result = normalizeAbsFile(input)
       expect(result).toBe(input)
     })
@@ -319,7 +467,7 @@ describe('Input System', () => {
     })
 
     test('passes through RelDir instance', () => {
-      const input = Fs.Path.RelDir.fromString('src/')
+      const input = p('src/')
       const result = normalizeRelDir(input)
       expect(result).toBe(input)
     })
@@ -335,7 +483,7 @@ describe('Input System', () => {
     })
 
     test('passes through AbsFile instance', () => {
-      const input = Fs.Path.AbsFile.fromString('/home/file.txt')
+      const input = p('/home/file.txt')
       const result = normalizeDynamicAbsFile(input)
       expect(result).toBe(input)
     })

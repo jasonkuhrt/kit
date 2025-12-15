@@ -203,7 +203,6 @@
     "./num": "./build/num/__.js",
     "./package-manager": "./build/package-manager/__.js",
     "./paka": "./build/paka/__.js",
-    "./pro": "./build/pro/__.js",
     "./prom": "./build/prom/__.js",
     "./prox": "./build/prox/__.js",
     "./ref": "./build/ref/__.js",

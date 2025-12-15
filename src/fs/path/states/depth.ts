@@ -1,5 +1,6 @@
 import type { Path } from '#fs/fs'
-import type { Guard, Input } from '../inputs.js'
+import { $Rel } from '../$Rel/_.js'
+import type { Input } from '../inputs.js'
 import { normalizeDynamic } from '../inputs.js'
 import { Schema } from '../Schema.js'
 
@@ -8,23 +9,28 @@ const normalizer = normalizeDynamic(Schema)
 export type PathWithEmptySegments<T extends Path> = T & { segments: readonly [] }
 
 /**
- * Type guard to check if a path is root (zero segments).
- * Narrows the type to have an empty segments array.
+ * Type guard to check if a path is at root/base level.
+ *
+ * For absolute paths: true if segments is empty (at filesystem root `/`).
+ * For relative paths: true if segments is empty AND back is 0 (at reference point `./`).
+ * Paths with back > 0 (like `../`) are not considered root.
  *
  * @param path - The path to check (absolute or relative)
- * @returns True if the path has zero segments
+ * @returns True if the path is at root/base level
  *
  * @example
  * ```ts
- * const absPath = FsLoc.Path.Abs.make({ segments: [] })
- * if (isRoot(absPath)) {
- *   // TypeScript knows: absPath.segments is readonly []
- * }
+ * isRoot('/') // true - at filesystem root
+ * isRoot('./') // true - at reference point
+ * isRoot('../') // false - above reference point
+ * isRoot('./src/') // false - has segments
  * ```
  */
 export function isRoot<$input extends Input>($input: $input): boolean {
   const path = normalizer($input) as Path
-  return path.segments.length === 0
+  // For relative paths, also check back is 0
+  const back = $Rel.is(path) ? path.back : 0
+  return path.segments.length === 0 && back === 0
 }
 
 /**

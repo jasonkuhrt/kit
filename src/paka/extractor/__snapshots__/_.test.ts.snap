@@ -2302,6 +2302,26 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                                                 propertySignatures: [
                                                   {
                                                     type: {
+                                                      from: {
+                                                        from: {
+                                                          annotations: {},
+                                                          _tag: 'NumberKeyword'
+                                                        },
+                                                        filter: [Function: filter],
+                                                        annotations: {},
+                                                        _tag: 'Refinement'
+                                                      },
+                                                      filter: [Function: filter],
+                                                      annotations: {},
+                                                      _tag: 'Refinement'
+                                                    },
+                                                    annotations: {},
+                                                    isOptional: false,
+                                                    name: 'back',
+                                                    isReadonly: true
+                                                  },
+                                                  {
+                                                    type: {
                                                       elements: [],
                                                       rest: [
                                                         {
@@ -2468,6 +2488,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                                                 annotations: '[Circular]',
                                                 _tag: 'TypeLiteral',
                                                 propertySignatures: [
+                                                  '[Circular]',
                                                   '[Circular]',
                                                   {
                                                     type: '[Circular]',
@@ -2653,6 +2674,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                           _tag: 'TypeLiteral',
                           propertySignatures: [
                             '[Circular]',
+                            '[Circular]',
                             {
                               type: '[Circular]',
                               annotations: {},
@@ -2676,10 +2698,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                     isReadonly: true
                   },
                   {
-                    type: {
-                      annotations: {},
-                      _tag: 'NumberKeyword'
-                    },
+                    type: '[Circular]',
                     annotations: {},
                     isOptional: false,
                     name: 'line',
@@ -4749,6 +4768,26 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                                                 propertySignatures: [
                                                   {
                                                     type: {
+                                                      from: {
+                                                        from: {
+                                                          annotations: {},
+                                                          _tag: 'NumberKeyword'
+                                                        },
+                                                        filter: [Function: filter],
+                                                        annotations: {},
+                                                        _tag: 'Refinement'
+                                                      },
+                                                      filter: [Function: filter],
+                                                      annotations: {},
+                                                      _tag: 'Refinement'
+                                                    },
+                                                    annotations: {},
+                                                    isOptional: false,
+                                                    name: 'back',
+                                                    isReadonly: true
+                                                  },
+                                                  {
+                                                    type: {
                                                       elements: [],
                                                       rest: [
                                                         {
@@ -4915,6 +4954,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                                                 annotations: '[Circular]',
                                                 _tag: 'TypeLiteral',
                                                 propertySignatures: [
+                                                  '[Circular]',
                                                   '[Circular]',
                                                   {
                                                     type: '[Circular]',
@@ -5100,6 +5140,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                           _tag: 'TypeLiteral',
                           propertySignatures: [
                             '[Circular]',
+                            '[Circular]',
                             {
                               type: '[Circular]',
                               annotations: {},
@@ -5123,10 +5164,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                     isReadonly: true
                   },
                   {
-                    type: {
-                      annotations: {},
-                      _tag: 'NumberKeyword'
-                    },
+                    type: '[Circular]',
                     annotations: {},
                     isOptional: false,
                     name: 'line',
@@ -7187,6 +7225,26 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                                                 propertySignatures: [
                                                   {
                                                     type: {
+                                                      from: {
+                                                        from: {
+                                                          annotations: {},
+                                                          _tag: 'NumberKeyword'
+                                                        },
+                                                        filter: [Function: filter],
+                                                        annotations: {},
+                                                        _tag: 'Refinement'
+                                                      },
+                                                      filter: [Function: filter],
+                                                      annotations: {},
+                                                      _tag: 'Refinement'
+                                                    },
+                                                    annotations: {},
+                                                    isOptional: false,
+                                                    name: 'back',
+                                                    isReadonly: true
+                                                  },
+                                                  {
+                                                    type: {
                                                       elements: [],
                                                       rest: [
                                                         {
@@ -7353,6 +7411,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                                                 annotations: '[Circular]',
                                                 _tag: 'TypeLiteral',
                                                 propertySignatures: [
+                                                  '[Circular]',
                                                   '[Circular]',
                                                   {
                                                     type: '[Circular]',
@@ -7538,6 +7597,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                           _tag: 'TypeLiteral',
                           propertySignatures: [
                             '[Circular]',
+                            '[Circular]',
                             {
                               type: '[Circular]',
                               annotations: {},
@@ -7561,10 +7621,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                     isReadonly: true
                   },
                   {
-                    type: {
-                      annotations: {},
-                      _tag: 'NumberKeyword'
-                    },
+                    type: '[Circular]',
                     annotations: {},
                     isOptional: false,
                     name: 'line',
@@ -9822,6 +9879,26 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                                                 propertySignatures: [
                                                   {
                                                     type: {
+                                                      from: {
+                                                        from: {
+                                                          annotations: {},
+                                                          _tag: 'NumberKeyword'
+                                                        },
+                                                        filter: [Function: filter],
+                                                        annotations: {},
+                                                        _tag: 'Refinement'
+                                                      },
+                                                      filter: [Function: filter],
+                                                      annotations: {},
+                                                      _tag: 'Refinement'
+                                                    },
+                                                    annotations: {},
+                                                    isOptional: false,
+                                                    name: 'back',
+                                                    isReadonly: true
+                                                  },
+                                                  {
+                                                    type: {
                                                       elements: [],
                                                       rest: [
                                                         {
@@ -9988,6 +10065,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                                                 annotations: '[Circular]',
                                                 _tag: 'TypeLiteral',
                                                 propertySignatures: [
+                                                  '[Circular]',
                                                   '[Circular]',
                                                   {
                                                     type: '[Circular]',
@@ -10173,6 +10251,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                           _tag: 'TypeLiteral',
                           propertySignatures: [
                             '[Circular]',
+                            '[Circular]',
                             {
                               type: '[Circular]',
                               annotations: {},
@@ -10196,10 +10275,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                     isReadonly: true
                   },
                   {
-                    type: {
-                      annotations: {},
-                      _tag: 'NumberKeyword'
-                    },
+                    type: '[Circular]',
                     annotations: {},
                     isOptional: false,
                     name: 'line',
@@ -12261,6 +12337,26 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                                                 propertySignatures: [
                                                   {
                                                     type: {
+                                                      from: {
+                                                        from: {
+                                                          annotations: {},
+                                                          _tag: 'NumberKeyword'
+                                                        },
+                                                        filter: [Function: filter],
+                                                        annotations: {},
+                                                        _tag: 'Refinement'
+                                                      },
+                                                      filter: [Function: filter],
+                                                      annotations: {},
+                                                      _tag: 'Refinement'
+                                                    },
+                                                    annotations: {},
+                                                    isOptional: false,
+                                                    name: 'back',
+                                                    isReadonly: true
+                                                  },
+                                                  {
+                                                    type: {
                                                       elements: [],
                                                       rest: [
                                                         {
@@ -12427,6 +12523,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                                                 annotations: '[Circular]',
                                                 _tag: 'TypeLiteral',
                                                 propertySignatures: [
+                                                  '[Circular]',
                                                   '[Circular]',
                                                   {
                                                     type: '[Circular]',
@@ -12612,6 +12709,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                           _tag: 'TypeLiteral',
                           propertySignatures: [
                             '[Circular]',
+                            '[Circular]',
                             {
                               type: '[Circular]',
                               annotations: {},
@@ -12635,10 +12733,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                     isReadonly: true
                   },
                   {
-                    type: {
-                      annotations: {},
-                      _tag: 'NumberKeyword'
-                    },
+                    type: '[Circular]',
                     annotations: {},
                     isOptional: false,
                     name: 'line',
@@ -14700,6 +14795,26 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                                                 propertySignatures: [
                                                   {
                                                     type: {
+                                                      from: {
+                                                        from: {
+                                                          annotations: {},
+                                                          _tag: 'NumberKeyword'
+                                                        },
+                                                        filter: [Function: filter],
+                                                        annotations: {},
+                                                        _tag: 'Refinement'
+                                                      },
+                                                      filter: [Function: filter],
+                                                      annotations: {},
+                                                      _tag: 'Refinement'
+                                                    },
+                                                    annotations: {},
+                                                    isOptional: false,
+                                                    name: 'back',
+                                                    isReadonly: true
+                                                  },
+                                                  {
+                                                    type: {
                                                       elements: [],
                                                       rest: [
                                                         {
@@ -14866,6 +14981,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                                                 annotations: '[Circular]',
                                                 _tag: 'TypeLiteral',
                                                 propertySignatures: [
+                                                  '[Circular]',
                                                   '[Circular]',
                                                   {
                                                     type: '[Circular]',
@@ -15051,6 +15167,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                           _tag: 'TypeLiteral',
                           propertySignatures: [
                             '[Circular]',
+                            '[Circular]',
                             {
                               type: '[Circular]',
                               annotations: {},
@@ -15074,10 +15191,7 @@ exports[`extractFromFiles({ files: { '/package.json': '{"name":"x","version":"0.
                     isReadonly: true
                   },
                   {
-                    type: {
-                      annotations: {},
-                      _tag: 'NumberKeyword'
-                    },
+                    type: '[Circular]',
                     annotations: {},
                     isOptional: false,
                     name: 'line',

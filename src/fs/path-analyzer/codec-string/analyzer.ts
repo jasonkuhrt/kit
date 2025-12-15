@@ -21,7 +21,9 @@ export interface AnalysisFile extends AnalysisNonRoot {
   _tag: 'file'
   /** Original input string */
   original: string
-  /** Path segments (excluding the filename) */
+  /** Count of unresolved parent directory traversals (..) */
+  back: number
+  /** Path segments (excluding the filename). Never contains '..' - always normalized. */
   path: string[]
   /** File metadata */
   file: {
@@ -34,9 +36,20 @@ export interface AnalysisDir extends AnalysisNonRoot {
   _tag: 'dir'
   /** Original input string */
   original: string
-  /** Path segments (including all directory names) */
+  /** Count of unresolved parent directory traversals (..) */
+  back: number
+  /** Path segments (including all directory names). Never contains '..' - always normalized. */
   path: string[]
 }
+
+// Path segment constants
+export const separator = '/'
+export const hereSegment = '.'
+export const backSegment = '..'
+
+// Derived prefix constants
+export const herePrefix = `${hereSegment}${separator}` // './'
+export const backPrefix = `${backSegment}${separator}` // '../'
 
 /**
  * Analyze a location string to extract its components.
@@ -52,20 +65,52 @@ export interface AnalysisDir extends AnalysisNonRoot {
  * analyze('../src/file.ts')  // { isAbsolute: false, parentRefs: 1, filename: 'file.ts', ... }
  * ```
  */
+
+/**
+ * Normalize segments by resolving '..' references.
+ * Returns the final back count and clean segments.
+ *
+ * @param initialBack - Parent refs counted before segments (leading ../)
+ * @param rawSegments - Raw segments that may contain '..'
+ */
+const normalizeWithBack = (
+  initialBack: number,
+  rawSegments: readonly string[],
+): { back: number; segments: string[] } => {
+  let back = initialBack
+  const segments: string[] = []
+
+  for (const segment of rawSegments) {
+    if (segment === backSegment) {
+      // Parent ref: either pop a segment or increment back
+      if (segments.length > 0) {
+        segments.pop()
+      } else {
+        back++
+      }
+    } else if (segment !== hereSegment && segment !== '') {
+      segments.push(segment)
+    }
+  }
+
+  return { back, segments }
+}
+
 export function analyze<const input extends string>(input: input): Analyze<input> {
   return analyze_(input) as Analyze<input>
 }
 
 export function analyze_(input: string): Analysis {
-  const isAbsolute = input.startsWith('/')
+  const isAbsolute = input.startsWith(separator)
 
   // Handle root case as an absolute directory with empty path
-  if (input === '/') {
+  if (input === separator) {
     return {
       _tag: 'dir',
       pathType: 'absolute',
       isPathAbsolute: true,
       isPathRelative: false,
+      back: 0,
       path: [],
       original: input,
     }
@@ -77,11 +122,14 @@ export function analyze_(input: string): Analysis {
   // 3. Otherwise = directory
   let isDirectory: boolean
 
-  if (input === '' || input === '.' || input === './' || input === '..' || input === '../' || input.endsWith('/')) {
+  if (
+    input === '' || input === hereSegment || input === herePrefix || input === backSegment || input === backPrefix
+    || input.endsWith(separator)
+  ) {
     isDirectory = true
   } else {
     // Check if last segment has an extension
-    const segments = input.split('/').filter(s => s !== '')
+    const segments = input.split(separator).filter(s => s !== '')
     const lastSegment = segments[segments.length - 1]
 
     if (lastSegment) {
@@ -103,35 +151,38 @@ export function analyze_(input: string): Analysis {
 
   // Remove leading slash for absolute paths
   if (isAbsolute) {
-    normalized = input.slice(1)
+    normalized = input.slice(separator.length)
   }
 
   // Count and remove parent directory references
-  while (normalized.startsWith('../')) {
+  while (normalized.startsWith(backPrefix)) {
     parentRefs++
-    normalized = normalized.slice(3)
+    normalized = normalized.slice(backPrefix.length)
   }
 
   // Handle current directory prefix
-  if (normalized.startsWith('./')) {
-    normalized = normalized.slice(2)
+  if (normalized.startsWith(herePrefix)) {
+    normalized = normalized.slice(herePrefix.length)
   }
 
   // Remove trailing slash for directories (except root)
-  if (isDirectory && normalized.endsWith('/')) {
+  if (isDirectory && normalized.endsWith(separator)) {
     normalized = normalized.slice(0, -1)
   }
 
-  // Extract all segments (not including parent refs)
+  // Extract all segments (may contain '..' for mid-path parent refs)
   const rawSegments = normalized
-    ? normalized.split('/').filter(s => s !== '' && s !== '.')
+    ? normalized.split(separator).filter(s => s !== '')
     : []
 
-  // Add parent refs as '..' segments at the beginning
-  const allSegments = [
-    ...Array(parentRefs).fill('..'),
-    ...rawSegments,
-  ]
+  // Normalize: resolve all '..' references
+  // For absolute paths, back is always 0 (can't go above root)
+  const { back, segments: normalizedSegments } = normalizeWithBack(
+    isAbsolute ? 0 : parentRefs,
+    rawSegments,
+  )
+  // For absolute paths, discard any computed back (can't escape root)
+  const finalBack = isAbsolute ? 0 : back
 
   const pathType: 'absolute' | 'relative' = isAbsolute ? 'absolute' : 'relative'
   const isPathAbsolute = isAbsolute
@@ -144,19 +195,21 @@ export function analyze_(input: string): Analysis {
       pathType,
       isPathAbsolute,
       isPathRelative,
-      path: allSegments,
+      back: finalBack,
+      path: normalizedSegments,
       original: input,
     }
   }
 
   // For files, the last segment is the filename
-  if (allSegments.length === 0) {
-    // Edge case: empty filename
+  if (normalizedSegments.length === 0) {
+    // Edge case: empty filename or only back refs
     return {
       _tag: 'file',
       pathType,
       isPathAbsolute,
       isPathRelative,
+      back: finalBack,
       path: [],
       file: {
         stem: '',
@@ -166,8 +219,9 @@ export function analyze_(input: string): Analysis {
     }
   }
 
-  const path = allSegments.slice(0, -1)
-  const filename = allSegments[allSegments.length - 1]
+  const path = normalizedSegments.slice(0, -1)
+  // We know normalizedSegments is non-empty here (empty case handled above)
+  const filename = normalizedSegments[normalizedSegments.length - 1]!
 
   // Extract extension
   const dotIndex = filename.lastIndexOf('.')
@@ -179,6 +233,7 @@ export function analyze_(input: string): Analysis {
     pathType,
     isPathAbsolute,
     isPathRelative,
+    back: finalBack,
     path,
     file: {
       stem,

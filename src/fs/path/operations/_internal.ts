@@ -1,5 +1,6 @@
 import type { Path } from '#fs/fs'
 import { Match } from 'effect'
+import { $Rel } from '../$Rel/_.js'
 import { AbsDir } from '../AbsDir/_.js'
 import { AbsFile } from '../AbsFile/_.js'
 import { RelDir } from '../RelDir/_.js'
@@ -8,16 +9,17 @@ import type { FileName } from '../types/fileName.js'
 
 /**
  * Internal unsafe setter for Path operations.
- * Updates segments and/or fileName properties while preserving the path's type structure.
+ * Updates segments, back, and/or fileName properties while preserving the path's type structure.
  *
  * @internal
  */
 export const set = (
   path: Path,
-  options: { segments?: readonly string[]; fileName?: FileName | null },
+  options: { segments?: readonly string[]; fileName?: FileName | null; back?: number },
 ): Path => {
   const segments = options.segments ?? path.segments
   const fileName = options.fileName !== undefined ? options.fileName : ('fileName' in path ? path.fileName : undefined)
+  const back = options.back ?? ($Rel.is(path) ? path.back : 0)
 
   return Match.value(path).pipe(
     Match.tagsExhaustive({
@@ -28,6 +30,7 @@ export const set = (
         }),
       FsPathRelFile: () =>
         RelFile.make({
+          back,
           segments,
           fileName: fileName!,
         }),
@@ -37,6 +40,7 @@ export const set = (
         }),
       FsPathRelDir: () =>
         RelDir.make({
+          back,
           segments,
         }),
     }),
