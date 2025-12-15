@@ -196,6 +196,34 @@ export interface DynamicImportFileOptions {
    * @default false
    */
   bustCache?: boolean
+
+  /**
+   * Custom import function to use instead of native `import()`.
+   *
+   * Useful for bundlers like Vite that provide their own module resolution
+   * which can handle features Node.js native ESM cannot, such as:
+   * - Resolving `.js` → `.ts` extensions
+   * - TypeScript path aliases
+   * - Virtual modules
+   *
+   * @example Vite 5 (ssrLoadModule)
+   * ```ts
+   * // In Vite plugin configureServer():
+   * Mod.dynamicImportFile(path, {
+   *   importFn: (url) => server.ssrLoadModule(url)
+   * })
+   * ```
+   *
+   * @example Vite 6+ (ModuleRunner)
+   * ```ts
+   * // In Vite plugin configureServer():
+   * const runner = createServerModuleRunner(server.environments.ssr)
+   * Mod.dynamicImportFile(path, {
+   *   importFn: (url) => runner.import(url)
+   * })
+   * ```
+   */
+  importFn?: (url: string) => Promise<unknown>
 }
 
 /**
@@ -255,8 +283,13 @@ export const dynamicImportFile = <
 ): DynamicImportFileResult<$Module, $Options> => {
   const importUrl = Fs.Path.toFileUrl(path)
 
+  // Use custom importFn if provided, otherwise native import()
+  const performImport = options?.importFn
+    ? () => options.importFn!(importUrl.href)
+    : () => import(importUrl.href)
+
   const doImport = Effect.tryPromise({
-    try: () => import(importUrl.href),
+    try: performImport,
     catch: (cause) => createImportError(path, cause instanceof Error ? cause : new Error(String(cause))),
   }) as Effect.Effect<$Module, ImportError>
 
