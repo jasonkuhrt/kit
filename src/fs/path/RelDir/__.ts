@@ -1,15 +1,26 @@
 import { ParseResult, Schema as S } from 'effect'
 import type { RefineSchemaId, TypeId } from 'effect/Schema'
-import { analyze } from '../../path-analyzer/codec-string/analyzer.js'
+import { analyze, backPrefix, herePrefix, separator } from '../../path-analyzer/codec-string/analyzer.js'
 import { Segments } from '../types/segments.js'
 
 type _ = RefineSchemaId
+
+/**
+ * Property signature for back field with default 0.
+ * Represents the count of unresolved parent directory traversals (..).
+ */
+const Back = S.Int.pipe(
+  S.nonNegative(),
+  S.propertySignature,
+  S.withConstructorDefault(() => 0),
+)
 
 /**
  * Relative directory location class.
  * Internal implementation - use via RelDir namespace.
  */
 class RelDirClass extends S.TaggedClass<RelDirClass>()('FsPathRelDir', {
+  back: Back,
   segments: Segments,
 }) {
   override toString() {
@@ -41,10 +52,23 @@ export const Schema: S.Schema<RelDirClass, string> = S.transformOrFail(
   {
     strict: true,
     encode: (decoded) => {
-      // Source of truth for string conversion
-      const pathString = decoded.segments.join('/')
-      // Always end directories with trailing slash to distinguish from files
-      return ParseResult.succeed(pathString.length > 0 ? `./${pathString}/` : './')
+      // Build the path string from back count and segments
+      const backPrefixStr = backPrefix.repeat(decoded.back)
+      const pathString = decoded.segments.join(separator)
+
+      // Determine the prefix: use back traversal or current directory marker
+      if (decoded.back > 0) {
+        // Back traversal: "../" repeated, then segments, then trailing slash
+        // e.g., back=2, segments=['lib'] -> '../../lib/'
+        // e.g., back=1, segments=[] -> '../'
+        return ParseResult.succeed(
+          pathString.length > 0 ? `${backPrefixStr}${pathString}${separator}` : backPrefixStr,
+        )
+      }
+      // Forward path: "./" prefix, then segments, then trailing slash
+      // e.g., back=0, segments=['src'] -> './src/'
+      // e.g., back=0, segments=[] -> './'
+      return ParseResult.succeed(pathString.length > 0 ? `${herePrefix}${pathString}${separator}` : herePrefix)
     },
     decode: (input, options, ast) => {
       // Analyze the input string
@@ -65,6 +89,7 @@ export const Schema: S.Schema<RelDirClass, string> = S.transformOrFail(
       // Valid - return as RelDir
       return ParseResult.succeed(
         RelDirClass.make({
+          back: analysis.back,
           segments: analysis.path,
         }),
       )

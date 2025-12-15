@@ -16,8 +16,7 @@ import type { toAbs } from './toAbs.js'
  * - RelDir → AbsDir
  * - RelFile → AbsFile
  */
-export type ensureAbsolute<$P extends Path> =
-  $P extends $Abs ? $P : $P extends $Rel ? toAbs<$P> : never
+export type ensureAbsolute<$P extends Path> = $P extends $Abs ? $P : $P extends $Rel ? toAbs<$P> : never
 
 /**
  * Ensure a location is absolute, converting relative locations to absolute.
@@ -80,8 +79,9 @@ export const ensureAbsoluteWith: <B extends AbsDir>(base: B) => <L extends Path>
 /**
  * Type-level ensureOptionalAbsolute operation.
  */
-export type ensureOptionalAbsolute<L extends Path | undefined> =
-  L extends undefined ? undefined : L extends Path ? ensureAbsolute<L> : never
+export type ensureOptionalAbsolute<L extends Path | undefined> = L extends undefined ? undefined
+  : L extends Path ? ensureAbsolute<L>
+  : never
 
 /**
  * Ensure an optional location is absolute.

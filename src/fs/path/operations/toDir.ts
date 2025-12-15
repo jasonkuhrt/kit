@@ -31,12 +31,11 @@ export type toDir<F extends $File> = F extends AbsFile ? AbsDir
 export const toDir = <$file extends $File>(file: $file): toDir<$file> => {
   // Use the file's existing segments which represent the parent directory
   const segments = [...file.segments]
-
   // Create the appropriate directory type based on whether file is absolute or relative
   return Match.value(file as $File).pipe(
     Match.tagsExhaustive({
       FsPathAbsFile: () => AbsDir.make({ segments }),
-      FsPathRelFile: () => RelDir.make({ segments }),
+      FsPathRelFile: (file) => RelDir.make({ back: file.back, segments }),
     }),
   ) as any
 }

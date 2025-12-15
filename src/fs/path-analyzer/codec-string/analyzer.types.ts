@@ -99,6 +99,8 @@ type ExtractPathSegments<$path extends string> = IsDirectory<$path> extends true
 
 /**
  * File analysis result matching runtime AnalysisFile.
+ * Note: `back` is typed as `number` for simplicity. Full type-level normalization
+ * is a potential future enhancement.
  */
 export type AnalysisFile<$path extends string = string> = {
   _tag: 'file'
@@ -106,6 +108,7 @@ export type AnalysisFile<$path extends string = string> = {
   pathType: IsAbsolute<$path> extends true ? 'absolute' : 'relative'
   isPathAbsolute: IsAbsolute<$path>
   isPathRelative: IsRelative<$path>
+  back: number
   path: ExtractPathSegments<$path>
   file: {
     stem: ExtractName<Str.LastSegment<$path>>
@@ -115,6 +118,8 @@ export type AnalysisFile<$path extends string = string> = {
 
 /**
  * Directory analysis result matching runtime AnalysisDir.
+ * Note: `back` is typed as `number` for simplicity. Full type-level normalization
+ * is a potential future enhancement.
  */
 export type AnalysisDir<$path extends string = string> = {
   _tag: 'dir'
@@ -122,6 +127,7 @@ export type AnalysisDir<$path extends string = string> = {
   pathType: IsAbsolute<$path> extends true ? 'absolute' : 'relative'
   isPathAbsolute: IsAbsolute<$path>
   isPathRelative: IsRelative<$path>
+  back: number
   path: ExtractPathSegments<$path>
 }
 
