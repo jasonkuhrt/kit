@@ -3,7 +3,6 @@ import { Tex } from './_.js'
 
 Test
   .on(Tex.render)
-  .only()
   .snapshots({ arguments: false })
   .describeInputs(`text`, [
     Tex.Tex().table($ =>
