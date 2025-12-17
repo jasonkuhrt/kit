@@ -586,7 +586,7 @@ export namespace Param {
   // Type-Level Analyzer (Recursive Parser)
   // ==========================================================================
 
-  interface SomeLimitsNone {
+  export interface SomeLimitsNone {
     reservedNames: undefined
     usedNames: undefined
   }
@@ -673,7 +673,7 @@ export namespace Param {
     $names extends Name = NameEmpty,
   > = _Analyze<$E, $limits, $names>
 
-  type _Analyze<$E extends string, $Limits extends SomeLimits, $Name extends Name> =
+  export type _Analyze<$E extends string, $Limits extends SomeLimits, $Name extends Name> =
     // Done!
     $E extends `` ? NameEmpty extends $Name ? Errors.Empty : addCanonical<$Name>
       // Trim leading and trailing whitespace

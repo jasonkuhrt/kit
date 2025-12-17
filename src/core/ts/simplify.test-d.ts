@@ -45,7 +45,7 @@ A.ofAs<{ created: Date; nested: { pattern: RegExp } }>() .onAs<Simplify.All<{ cr
 A.ofAs<{ err: Error; fn: Function }>()                   .onAs<Simplify.All<{ err: Error; fn: Function }>>()
 
 // Custom preserved type
-interface CustomBrand {
+export interface CustomBrand {
   readonly __brand: 'custom'
   value: string
 }
@@ -64,11 +64,11 @@ A.ofAs<CustomBrand>()                                     .onAs<Simplify.All<Cus
 A.ofAs<{ custom: CustomBrand; other: i1s }>()             .onAs<Simplify.All<{ custom: CustomBrand; other: i1 }>>()
 
 // HKT custom traverser
-interface Box<T> {
+export interface Box<T> {
   readonly value: T
 }
 
-interface BoxTraverser extends Fn.Kind.Kind {
+export interface BoxTraverser extends Fn.Kind.Kind {
   return: this['parameters'] extends [infer $T, infer $DN extends Num.Literal, infer $SN]
     ? $T extends Box<infer V> ? Box<Simplify.To<$DN, V, $SN>>
     : never

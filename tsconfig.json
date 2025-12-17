@@ -160,8 +160,8 @@
     // DX for Downstream
     "isolatedModules": true, // performance
     "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true
+    "declaration": false,
+    "declarationMap": false
   },
   "exclude": ["build", "articles", "src-new", "src-temp", "**/*.bench-d.ts"]
 }

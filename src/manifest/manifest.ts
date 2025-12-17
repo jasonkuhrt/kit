@@ -1,11 +1,8 @@
 import { Fs } from '#fs'
 import { createSchemaResource, type Resource } from '#resource/resource'
 import { Semver } from '#semver'
+import type { Ts } from '#ts'
 import { Effect, Option, Schema as S } from 'effect'
-import type { WritableDeep } from 'type-fest'
-
-// Re-export WritableDeep to avoid type portability issues
-export type { WritableDeep }
 
 const Author = S.Struct({
   name: S.optional(S.String),
@@ -101,7 +98,7 @@ export const ManifestSchemaImmutable = Manifest
 /**
  * Mutable type for runtime manipulation
  */
-export type ManifestMutable = WritableDeep<Manifest>
+export type ManifestMutable = Ts.WritableDeep<Manifest>
 
 /**
  * Type for bin property when normalized

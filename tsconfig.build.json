@@ -5,6 +5,8 @@
     "outDir": "./build",
     "rootDir": "./src",
     "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
     "rewriteRelativeImportExtensions": true
   },
   "include": ["./src"],
@@ -15,6 +17,7 @@
     "./src/**/*.test-d.*",
     "./src/**/*.spec.*",
     "./src/**/*.spec-d.*",
+    "./src/**/*.bench-d.*",
     "./src/**/__tests__",
     "./src/experimental"
   ]
