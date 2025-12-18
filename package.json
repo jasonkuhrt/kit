@@ -224,7 +224,7 @@
   "scripts": {
     "r": "libra refresh && pnpm fix:format",
     "z": "libra toggle-hiding && pnpm fix:format",
-    "build": "tsc --build tsconfig.build.json",
+    "build": "tsgo --build tsconfig.build.json",
     "dev": "pnpm run --silent build:watch:emit",
     "dev:source": "tsx",
     "build:watch:emit": "pnpm build:watch --noCheck",
