@@ -1,0 +1,24 @@
+{
+  "name": "@kouka/tree",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#tree": "./build/_.js",
+    "#tree/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check:types": "tsc --noEmit",
+    "dev": "tsc -p tsconfig.build.json --watch"
+  },
+  "dependencies": {
+    "fast-check": "^3.0.0"
+  }
+}

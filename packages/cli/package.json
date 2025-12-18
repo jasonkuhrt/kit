@@ -1,0 +1,24 @@
+{
+  "name": "@kouka/cli",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#cli": "./build/_.js",
+    "#cli/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*",
+    "@kouka/env": "workspace:*",
+    "@kouka/fs": "workspace:*",
+    "@kouka/mod": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "check:types": "tsc --noEmit"
+  }
+}

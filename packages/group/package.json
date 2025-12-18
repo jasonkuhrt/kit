@@ -1,0 +1,25 @@
+{
+  "name": "@kouka/group",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#group": "./build/_.js",
+    "#group/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "files": [
+    "build",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "check:types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*"
+  }
+}

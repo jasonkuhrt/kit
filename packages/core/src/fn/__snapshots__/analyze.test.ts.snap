@@ -1,0 +1,271 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`analyzeFunction > async functions > analyzeFunction(async (a) => { return a + 1; }) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+async (a) => {
+    return a + 1;
+  }
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  body: 'return a + 1;',
+  parameters: [
+    {
+      type: 'name',
+      value: 'a'
+    }
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`analyzeFunction > async functions > analyzeFunction(async (a) => a + 1) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+async (a) => a + 1
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  body: 'a + 1',
+  parameters: [
+    {
+      type: 'name',
+      value: 'a'
+    }
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`analyzeFunction > async functions > analyzeFunction(async function f2(a) { return a + 1; }) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+async function f2(a) {
+    return a + 1;
+  }
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  body: 'return a + 1;',
+  parameters: [
+    {
+      type: 'name',
+      value: 'a'
+    }
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`analyzeFunction > body extraction > analyzeFunction((a) => { const b = a + 1; const c = b * 2; return c; }) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+(a) => {
+    const b = a + 1;
+    const c = b * 2;
+    return c;
+  }
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  body: 'const b = a + 1;\\nconst c = b * 2;\\nreturn c;',
+  parameters: [
+    {
+      type: 'name',
+      value: 'a'
+    }
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`analyzeFunction > body extraction > analyzeFunction((a) => { return a + 1; }) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+(a) => {
+    return a + 1;
+  }
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  body: 'return a + 1;',
+  parameters: [
+    {
+      type: 'name',
+      value: 'a'
+    }
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`analyzeFunction > body extraction > analyzeFunction((a) => a + 1) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+(a) => a + 1
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  body: 'a + 1',
+  parameters: [
+    {
+      type: 'name',
+      value: 'a'
+    }
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`analyzeFunction > body extraction > analyzeFunction(function f(a) { return a + 1; }) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+function f(a) {
+    return a + 1;
+  }
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  body: 'return a + 1;',
+  parameters: [
+    {
+      type: 'name',
+      value: 'a'
+    }
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`analyzeFunction > error cases > analyzeFunction('not a function') 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+not a function
+╠══════════════════════════════════════════════════╣ THEN THROWS ERROR
+Error: Could not extract groups from function.
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`analyzeFunction > parameters - destructured > analyzeFunction(({ a, b }) => [a, b]) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+({ a, b }) => [a, b]
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  body: '[a, b]',
+  parameters: [
+    {
+      type: 'destructured',
+      names: [ 'a', 'b' ]
+    }
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`analyzeFunction > parameters - destructured > analyzeFunction((a, { b, c }) => [a, b, c]) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+(a, { b, c }) => [a, b, c]
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  body: '[a, b, c]',
+  parameters: [
+    {
+      type: 'name',
+      value: 'a'
+    },
+    {
+      type: 'destructured',
+      names: [ 'b', 'c' ]
+    }
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`analyzeFunction > parameters - named > analyzeFunction(() => 42) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+() => 42
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  body: '42',
+  parameters: []
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`analyzeFunction > parameters - named > analyzeFunction((...args) => args) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+(...args) => args
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  body: 'args',
+  parameters: [
+    {
+      type: 'name',
+      value: 'args'
+    }
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`analyzeFunction > parameters - named > analyzeFunction((_a, __b) => _a) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+(_a, __b) => _a
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  body: '_a',
+  parameters: [
+    {
+      type: 'name',
+      value: '_a'
+    },
+    {
+      type: 'name',
+      value: '__b'
+    }
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`analyzeFunction > parameters - named > analyzeFunction((a) => a) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+(a) => a
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  body: 'a',
+  parameters: [
+    {
+      type: 'name',
+      value: 'a'
+    }
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;
+
+exports[`analyzeFunction > parameters - named > analyzeFunction((a, b, c) => [a, b, c]) 1`] = `
+"
+╔══════════════════════════════════════════════════╗ GIVEN ARGUMENTS
+(a, b, c) => [a, b, c]
+╠══════════════════════════════════════════════════╣ THEN RETURNS OBJECT
+{
+  body: '[a, b, c]',
+  parameters: [
+    {
+      type: 'name',
+      value: 'a'
+    },
+    {
+      type: 'name',
+      value: 'b'
+    },
+    {
+      type: 'name',
+      value: 'c'
+    }
+  ]
+}
+╚══════════════════════════════════════════════════╝"
+`;

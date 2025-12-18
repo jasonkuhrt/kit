@@ -1,0 +1,25 @@
+{
+  "name": "@kouka/ware",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#ware": "./build/_.js",
+    "#ware/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@kouka/bldr": "workspace:*",
+    "@kouka/config-manager": "workspace:*",
+    "@kouka/configurator": "workspace:*",
+    "@kouka/core": "workspace:*",
+    "@kouka/log": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "check:types": "tsc --noEmit"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./build",
+    "tsBuildInfoFile": "./node_modules/.cache/.tsbuildinfo",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "#group": [
+        "./src/_.ts"
+      ],
+      "#group/*": [
+        "./src/*.ts"
+      ],
+      "#obj": [
+        "../core/src/obj/_.ts"
+      ],
+      "#obj/*": [
+        "../core/src/obj/*.ts"
+      ],
+      "#ts": [
+        "../core/src/ts/_.ts"
+      ],
+      "#ts/*": [
+        "../core/src/ts/*.ts"
+      ],
+      "#undefined": [
+        "../core/src/undefined/_.ts"
+      ],
+      "#undefined/*": [
+        "../core/src/undefined/*.ts"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "build",
+    "node_modules",
+    "**/*.bench-d.ts",
+    "**/*.test.ts",
+    "**/*.test-d.ts"
+  ]
+}

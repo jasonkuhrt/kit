@@ -1,0 +1,24 @@
+{
+  "name": "@kouka/fs",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#fs": "./build/_.js",
+    "#fs/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js",
+    "./path/types/fileName": "./build/path/types/fileName.js"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*",
+    "@kouka/json": "workspace:*",
+    "effect": "^3.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "check:types": "tsc --noEmit"
+  }
+}

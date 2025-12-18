@@ -1,0 +1,34 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./build",
+    "tsBuildInfoFile": "./node_modules/.cache/.tsbuildinfo",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "#mask": [
+        "./src/_.ts"
+      ],
+      "#mask/*": [
+        "./src/*.ts"
+      ],
+      "#lang": [
+        "../core/src/lang/_.ts"
+      ],
+      "#obj": [
+        "../core/src/obj/_.ts"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "build",
+    "node_modules",
+    "**/*.bench-d.ts",
+    "**/*.test.ts",
+    "**/*.test-d.ts"
+  ]
+}

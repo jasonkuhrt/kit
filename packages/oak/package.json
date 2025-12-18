@@ -1,0 +1,28 @@
+{
+  "name": "@kouka/oak",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#oak": "./build/_.js",
+    "#oak/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@kouka/assert": "workspace:*",
+    "@kouka/cli": "workspace:*",
+    "@kouka/core": "workspace:*",
+    "@kouka/group": "workspace:*",
+    "@kouka/tex": "workspace:*",
+    "@standard-schema/spec": "*",
+    "ansis": "*",
+    "effect": "^3.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "check:types": "tsc --noEmit"
+  }
+}

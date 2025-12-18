@@ -1,0 +1,44 @@
+import type { Fn } from '@kouka/core/fn'
+import { Optic } from '@kouka/core/optic'
+import type { Either } from 'effect'
+import type { AssertEquivKind, AssertExactKind, AssertSubKind } from '../../../asserts.js'
+import { builder } from '../../../builder-singleton.js'
+
+export * as equiv from './equiv.js'
+export * as exact from './exact.js'
+export * as sub from './sub.js'
+
+// Unary relators (negated)
+export const any = builder.not.parameter4.any
+export const unknown = builder.not.parameter4.unknown
+export const never = builder.not.parameter4.never
+export const empty = builder.not.parameter4.empty
+// dprint-ignore
+export type exact<
+  $Expected,
+  $Actual,
+  __$ActualExtracted = Optic.Parameter4.Get<$Actual>,
+> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertExactKind, [$Expected, __actual__, true]>
+                                                                         : never
+
+// dprint-ignore
+export type equiv<
+  $Expected,
+  $Actual,
+  __$ActualExtracted = Optic.Parameter4.Get<$Actual>,
+> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertEquivKind, [$Expected, __actual__, true]>
+                                                                         : never
+
+// dprint-ignore
+export type sub<
+  $Expected,
+  $Actual,
+  __$ActualExtracted = Optic.Parameter4.Get<$Actual>,
+> =
+  __$ActualExtracted extends Either.Left<infer __error__, infer _>      ? __error__ :
+  __$ActualExtracted extends Either.Right<infer _, infer __actual__>    ? Fn.Kind.Apply<AssertSubKind, [$Expected, __actual__, true]>
+                                                                         : never

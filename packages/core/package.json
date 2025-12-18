@@ -1,0 +1,95 @@
+{
+  "name": "@kouka/core",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#arr": "./build/arr/_.js",
+    "#arr/*": "./build/arr/*.js",
+    "#bool": "./build/bool/_.js",
+    "#bool/*": "./build/bool/*.js",
+    "#err": "./build/err/_.js",
+    "#err/err": "./build/err/__.js",
+    "#err/core": "./build/err/core/_.js",
+    "#fn": "./build/fn/_.js",
+    "#fn/fn": "./build/fn/__.js",
+    "#fn/core": "./build/fn/core/_.js",
+    "#lang": "./build/lang/_.js",
+    "#lang/lang": "./build/lang/__.js",
+    "#lang/core": "./build/lang/core/_.js",
+    "#null": "./build/null/_.js",
+    "#null/*": "./build/null/*.js",
+    "#num": "./build/num/_.js",
+    "#num/*": "./build/num/*.js",
+    "#obj": "./build/obj/_.js",
+    "#obj/*": "./build/obj/*.js",
+    "#optic": "./build/optic/_.js",
+    "#optic/*": "./build/optic/*.js",
+    "#pat": "./build/pat/_.js",
+    "#pat/*": "./build/pat/*.js",
+    "#rec": "./build/rec/_.js",
+    "#rec/*": "./build/rec/*.js",
+    "#str": "./build/str/_.js",
+    "#str/*": "./build/str/*.js",
+    "#ts": "./build/ts/_.js",
+    "#ts/ts": "./build/ts/__.js",
+    "#tup": "./build/tup/_.js",
+    "#tup/*": "./build/tup/*.js",
+    "#undefined": "./build/undefined/_.js",
+    "#undefined/*": "./build/undefined/*.js",
+    "#prom": "./build/prom/_.js",
+    "#prom/*": "./build/prom/*.js",
+    "#prox": "./build/prox/_.js",
+    "#prox/*": "./build/prox/*.js",
+    "#deps/*": "./build/deps/*.js",
+    "#platform:lang/*": {
+      "browser": "./build/lang/*.browser.js",
+      "default": "./build/lang/*.node.js"
+    }
+  },
+  "exports": {
+    ".": "./build/index.js",
+    "./arr": "./build/arr/_.js",
+    "./bool": "./build/bool/_.js",
+    "./err": "./build/err/_.js",
+    "./err/contextual": "./build/err/contextual.js",
+    "./fn": "./build/fn/_.js",
+    "./fn/core": "./build/fn/core/_.js",
+    "./lang": "./build/lang/_.js",
+    "./null": "./build/null/_.js",
+    "./num": "./build/num/_.js",
+    "./obj": "./build/obj/_.js",
+    "./obj/merge": "./build/obj/merge.js",
+    "./optic": "./build/optic/_.js",
+    "./pat": "./build/pat/_.js",
+    "./rec": "./build/rec/_.js",
+    "./str": "./build/str/_.js",
+    "./ts": "./build/ts/_.js",
+    "./ts/ts": "./build/ts/__.js",
+    "./tup": "./build/tup/_.js",
+    "./undefined": "./build/undefined/_.js",
+    "./prom": "./build/prom/_.js",
+    "./prox": "./build/prox/_.js"
+  },
+  "files": [
+    "build",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "check:types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "es-toolkit": "^1.43.0",
+    "type-fest": "^5.3.1"
+  },
+  "peerDependencies": {
+    "effect": "^3.17.0"
+  },
+  "peerDependenciesMeta": {
+    "effect": {
+      "optional": true
+    }
+  }
+}

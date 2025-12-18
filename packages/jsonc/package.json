@@ -1,0 +1,22 @@
+{
+  "name": "@kouka/jsonc",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#jsonc": "./build/_.js",
+    "#jsonc/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/__.js"
+  },
+  "dependencies": {
+    "effect": "^3.0.0",
+    "jsonc-parser": "^3.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "check:types": "tsc --noEmit"
+  }
+}

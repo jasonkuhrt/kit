@@ -1,0 +1,139 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./build",
+    "tsBuildInfoFile": "./node_modules/.cache/.tsbuildinfo",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "#arr": [
+        "./src/arr/_.ts"
+      ],
+      "#arr/*": [
+        "./src/arr/*.ts"
+      ],
+      "#bool": [
+        "./src/bool/_.ts"
+      ],
+      "#bool/*": [
+        "./src/bool/*.ts"
+      ],
+      "#err": [
+        "./src/err/_.ts"
+      ],
+      "#err/err": [
+        "./src/err/__.ts"
+      ],
+      "#err/core": [
+        "./src/err/core/_.ts"
+      ],
+      "#fn": [
+        "./src/fn/_.ts"
+      ],
+      "#fn/fn": [
+        "./src/fn/__.ts"
+      ],
+      "#fn/core": [
+        "./src/fn/core/_.ts"
+      ],
+      "#lang": [
+        "./src/lang/_.ts"
+      ],
+      "#lang/lang": [
+        "./src/lang/__.ts"
+      ],
+      "#lang/core": [
+        "./src/lang/core/_.ts"
+      ],
+      "#null": [
+        "./src/null/_.ts"
+      ],
+      "#null/*": [
+        "./src/null/*.ts"
+      ],
+      "#num": [
+        "./src/num/_.ts"
+      ],
+      "#num/*": [
+        "./src/num/*.ts"
+      ],
+      "#obj": [
+        "./src/obj/_.ts"
+      ],
+      "#obj/*": [
+        "./src/obj/*.ts"
+      ],
+      "#optic": [
+        "./src/optic/_.ts"
+      ],
+      "#optic/*": [
+        "./src/optic/*.ts"
+      ],
+      "#pat": [
+        "./src/pat/_.ts"
+      ],
+      "#pat/*": [
+        "./src/pat/*.ts"
+      ],
+      "#prom": [
+        "./src/prom/_.ts"
+      ],
+      "#prom/*": [
+        "./src/prom/*.ts"
+      ],
+      "#prox": [
+        "./src/prox/_.ts"
+      ],
+      "#prox/*": [
+        "./src/prox/*.ts"
+      ],
+      "#rec": [
+        "./src/rec/_.ts"
+      ],
+      "#rec/*": [
+        "./src/rec/*.ts"
+      ],
+      "#str": [
+        "./src/str/_.ts"
+      ],
+      "#str/*": [
+        "./src/str/*.ts"
+      ],
+      "#ts": [
+        "./src/ts/_.ts"
+      ],
+      "#ts/ts": [
+        "./src/ts/__.ts"
+      ],
+      "#tup": [
+        "./src/tup/_.ts"
+      ],
+      "#tup/*": [
+        "./src/tup/*.ts"
+      ],
+      "#undefined": [
+        "./src/undefined/_.ts"
+      ],
+      "#undefined/*": [
+        "./src/undefined/*.ts"
+      ],
+      "#deps/*": [
+        "./src/deps/*.ts"
+      ],
+      "#platform:lang/*": [
+        "./src/lang/*.node.ts"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "build",
+    "node_modules",
+    "**/*.bench-d.ts",
+    "**/*.test.ts",
+    "**/*.test-d.ts"
+  ]
+}

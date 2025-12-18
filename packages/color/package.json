@@ -1,0 +1,22 @@
+{
+  "name": "@kouka/color",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#color": "./build/_.js",
+    "#color/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/__.js"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*",
+    "effect": "^3.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "check:types": "tsc --noEmit"
+  }
+}
