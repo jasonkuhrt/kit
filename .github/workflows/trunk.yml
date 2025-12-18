@@ -3,6 +3,9 @@ concurrency: trunk
 on:
   push:
     branches: [main]
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 jobs:
   # Changesets handles versioning and publishing for monorepos
   # Run `pnpm changeset` locally to create a changeset
@@ -12,7 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - uses: dtinth/setup-github-actions-caching-for-turbo@v1
       - run: pnpm build:packages
       - name: Create Release Pull Request or Publish
         uses: changesets/action@v1

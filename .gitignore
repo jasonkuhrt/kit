@@ -24,3 +24,6 @@ docs/.vitepress/cache/
 # Claude local context (flo-generated)
 .claude/*.local.md
 CLAUDE.local.md
+
+# Turborepo
+.turbo
