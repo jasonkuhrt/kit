@@ -1,186 +1,81 @@
-import { Arr } from '#arr'
-import { Env } from '#env'
 import { Obj } from '#obj'
-import { Rec } from '#rec'
 import { Str } from '#str'
-import type { Ts } from '#ts'
 import { dim, red } from 'ansis'
+import { Config, Schema as S } from 'effect'
 import objectInspect from 'object-inspect'
 import { cleanStackWithStats } from './stack.js'
 import { is } from './type.js'
 import type { Context } from './types.js'
 
-interface EnvironmentConfigurableOptionSpec<$Name extends string = string, $Type = any> {
-  name: $Name
-  envVarNamePrefix: string
-  default: NoInfer<$Type>
-  description?: string
-  parse: (envVarValue: string) => $Type
-}
-
-const makeEnvVarName = (spec: EnvironmentConfigurableOptionSpec) => {
-  return Str.Case.capAll(
-    Str.Case.snake(`${spec.envVarNamePrefix}_${spec.name}`),
-  )
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// Options Schema
+// ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Type helper for inferring option types from environment configurable option specifications.
- * Transforms an array of option specs into a typed options object.
+ * Schema for error inspection options with constructor defaults.
  *
- * @template $EnvironmentConfigurableOptions - Array of option specifications
- * @internal
+ * @category Inspection
  */
-export type InferOptions<$EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[]> = Ts.Simplify.Top<
-  Arr.ReduceWithIntersection<_InferOptions<$EnvironmentConfigurableOptions>>
->
-
-export type _InferOptions<$EnvironmentConfigurableOptions extends EnvironmentConfigurableOptionSpec[]> = {
-  [i in keyof $EnvironmentConfigurableOptions]: {
-    [_ in $EnvironmentConfigurableOptions[i]['name']]?: ReturnType<$EnvironmentConfigurableOptions[i]['parse']>
-  }
-}
-
-const define = <const options extends EnvironmentConfigurableOptionSpec[]>(options: options): options => {
-  return options
-}
-
-interface EnvironmentConfigurableOptionInput<$Spec extends EnvironmentConfigurableOptionSpec> {
-  spec: $Spec
-  value: any
-  source: 'default' | 'environment'
-}
-
-type Resolve<$Specs extends EnvironmentConfigurableOptionSpec[]> = Ts.Simplify.Top<
-  Arr.ReduceWithIntersection<_Resovle<$Specs>>
->
-
-type _Resovle<$Specs extends EnvironmentConfigurableOptionSpec[]> = {
-  [i in keyof $Specs]: {
-    [_ in $Specs[i]['name']]: {
-      spec: $Specs[i]
-      value: ReturnType<$Specs[i]['parse']>
-      source: 'default' | 'environment'
-    }
-  }
-}
-
-const resolve = <const specs extends EnvironmentConfigurableOptionSpec[]>(
-  specs: specs,
-  input: InferOptions<specs>,
-): Resolve<specs> => {
-  const config = Rec.create<EnvironmentConfigurableOptionInput<specs[number]>>()
-  const input$ = input as Record<string, any>
-
-  for (const spec of specs) {
-    const envValue = Env.env.vars[makeEnvVarName(spec)]
-    if (envValue !== undefined) {
-      config[spec.name] = {
-        spec,
-        value: spec.parse(envValue),
-        source: 'environment',
-      }
-      continue
-    }
-    if (spec.name in input$ && input$[spec.name] !== undefined) {
-      config[spec.name] = {
-        spec,
-        value: input$[spec.name],
-        source: 'default',
-      }
-      continue
-    }
-    config[spec.name] = {
-      spec,
-      value: spec.default,
-      source: 'default',
-    }
-  }
-
-  return config as any
-}
-
-// ---------------
-
-const optionSpecs = define([
-  {
-    name: 'color',
-    envVarNamePrefix: 'errorDisplay',
-    description: 'Should output be colored for easier reading',
-    default: true,
-    parse: (envVarValue) => envVarValue === '0' || envVarValue === 'false' ? false : true,
-  },
-  {
-    name: 'stackTraceColumns',
-    envVarNamePrefix: 'errorDisplay',
-    description: 'The column count to display before truncation begins',
-    default: 120,
-    parse: (envVarValue) => parseInt(envVarValue, 10),
-  },
-  {
-    name: 'identColumns',
-    envVarNamePrefix: 'errorDisplay',
-    description: 'The column count to use for indentation',
-    default: 4,
-    parse: (envVarValue) => parseInt(envVarValue, 10),
-  },
-  {
-    name: 'maxFrames',
-    envVarNamePrefix: 'errorDisplay',
-    description: 'Maximum number of stack frames to show (0 to hide stack traces)',
-    default: 10,
-    parse: (envVarValue) => parseInt(envVarValue, 10),
-  },
-  {
-    name: 'showHelp',
-    envVarNamePrefix: 'errorDisplay',
-    description: 'Show environment variable help section',
-    default: true,
-    parse: (envVarValue) => envVarValue === '0' || envVarValue === 'false' ? false : true,
-  },
-])
+export class InspectOptions extends S.Class<InspectOptions>('InspectOptions')({
+  /** Whether to use ANSI color codes for better readability */
+  color: S.Boolean.pipe(S.propertySignature, S.withConstructorDefault(() => true)),
+  /** Maximum column width before truncating stack trace lines */
+  stackTraceColumns: S.Number.pipe(S.propertySignature, S.withConstructorDefault(() => 120)),
+  /** Number of spaces to use for indentation */
+  indentColumns: S.Number.pipe(S.propertySignature, S.withConstructorDefault(() => 4)),
+  /** Maximum number of stack frames to show; 0 to hide stack traces entirely */
+  maxFrames: S.Number.pipe(S.propertySignature, S.withConstructorDefault(() => 10)),
+  /** Whether to display the environment variable help section */
+  showHelp: S.Boolean.pipe(S.propertySignature, S.withConstructorDefault(() => true)),
+}) {}
 
 /**
- * Options for configuring error inspection output.
- * All options can be overridden via environment variables.
+ * Input type for partial inspect options.
  *
- * @property color - Whether to use ANSI color codes for better readability (default: true, env: ERROR_DISPLAY_COLOR)
- * @property stackTraceColumns - Maximum column width before truncating stack trace lines (default: 120, env: ERROR_DISPLAY_STACK_TRACE_COLUMNS)
- * @property identColumns - Number of spaces to use for indentation (default: 4, env: ERROR_DISPLAY_IDENT_COLUMNS)
- * @property maxFrames - Maximum number of stack frames to show; 0 to hide stack traces entirely (default: 10, env: ERROR_DISPLAY_MAX_FRAMES)
- * @property showHelp - Whether to display the environment variable help section (default: true, env: ERROR_DISPLAY_SHOW_HELP)
- *
- * @example
+ * @category Inspection
+ */
+export type InspectOptionsInput = Partial<typeof InspectOptions.Type>
+
+/**
+ * Effect Config spec for reading inspect options from environment variables.
+ * Users apply this at app startup via:
  * ```ts
- * // Use default options
- * Err.inspect(error)
- *
- * // Customize options
- * Err.inspect(error, {
- *   color: false,
- *   stackTraceColumns: 200,
- *   showHelp: false
- * })
- *
- * // Hide stack traces (useful for test snapshots)
- * Err.inspect(error, { maxFrames: 0, showHelp: false, color: false })
- *
- * // Set via environment variables
- * process.env.ERROR_DISPLAY_COLOR = 'false'
- * process.env.ERROR_DISPLAY_SHOW_HELP = 'false'
+ * Object.assign(Err.inspectDefaults, Effect.runSync(Effect.config(Err.inspectConfig)))
  * ```
  *
  * @category Inspection
  */
-export type InspectOptions = InferOptions<typeof optionSpecs>
+export const inspectConfig = Config.all({
+  color: Config.boolean('ERROR_DISPLAY_COLOR').pipe(Config.withDefault(true)),
+  stackTraceColumns: Config.number('ERROR_DISPLAY_STACK_TRACE_COLUMNS').pipe(Config.withDefault(120)),
+  indentColumns: Config.number('ERROR_DISPLAY_INDENT_COLUMNS').pipe(Config.withDefault(4)),
+  maxFrames: Config.number('ERROR_DISPLAY_MAX_FRAMES').pipe(Config.withDefault(10)),
+  showHelp: Config.boolean('ERROR_DISPLAY_SHOW_HELP').pipe(Config.withDefault(true)),
+})
 
 /**
- * Resolved configuration for error inspection with values and sources.
- * Contains the final values after merging defaults, user options, and environment variables.
+ * Mutable runtime defaults for error inspection.
+ * Users can override via `Object.assign(Err.inspectDefaults, ...)`.
  *
+ * @example
+ * ```ts
+ * // Apply env config at app startup
+ * Object.assign(Err.inspectDefaults, Effect.runSync(Effect.config(Err.inspectConfig)))
+ *
+ * // Or manually override
+ * Err.inspectDefaults.color = false
+ * Err.inspectDefaults.maxFrames = 5
+ * ```
+ *
+ * @category Inspection
+ */
+export const inspectDefaults = InspectOptions.make({})
+
+/**
+ * Resolved configuration for error inspection (internal use).
  * @internal
  */
-export type InspectConfig = Resolve<typeof optionSpecs>
+type InspectConfig = typeof InspectOptions.Type
 
 /**
  * Get the prefix letter for a section.
@@ -236,29 +131,33 @@ const getSectionPrefix = (section: 'type' | 'message' | 'stack' | 'context' | 'c
  *
  * @category Inspection
  */
-export const inspect = (error: Error, options?: InspectOptions): string => {
-  const config = resolve(optionSpecs, options ?? {})
+export const inspect = (error: Error, options?: InspectOptionsInput): string => {
+  const config: InspectConfig = { ...inspectDefaults, ...options }
 
   let inspection = _inspectResursively(error, '', config, { isRoot: true })
 
   // Only show help section if enabled
-  if (config.showHelp.value) {
+  if (config.showHelp) {
     inspection += '\n\n'
-    inspection += config.color.value ? dim('─'.repeat(40)) : '─'.repeat(40)
+    inspection += config.color ? dim('─'.repeat(40)) : '─'.repeat(40)
     inspection += '\n'
-    inspection += config.color.value
+    inspection += config.color
       ? dim('Environment Variable Configuration:')
       : 'Environment Variable Configuration:'
     inspection += '\n'
 
-    for (const [_, state] of Obj.entries(config)) {
-      const envVar = makeEnvVarName(state.spec)
-      const status = state.source === 'environment'
-        ? `= ${state.value}`
-        : `(default: ${state.value})`
+    const envVarNames = {
+      color: 'ERROR_DISPLAY_COLOR',
+      stackTraceColumns: 'ERROR_DISPLAY_STACK_TRACE_COLUMNS',
+      indentColumns: 'ERROR_DISPLAY_INDENT_COLUMNS',
+      maxFrames: 'ERROR_DISPLAY_MAX_FRAMES',
+      showHelp: 'ERROR_DISPLAY_SHOW_HELP',
+    } as const
 
-      const line = `  ${envVar} ${status}`
-      inspection += config.color.value ? dim(line) : line
+    for (const [key, envVar] of Obj.entries(envVarNames)) {
+      const value = config[key]
+      const line = `  ${envVar} (current: ${value})`
+      inspection += config.color ? dim(line) : line
       inspection += '\n'
     }
   }
@@ -392,22 +291,22 @@ const _inspectResursively = (
       contentIndent = parentIndent // Keep full indent for content alignment
     }
 
-    const indexPrefix = config.color.value ? dim(`${context.index} ${treeChar}`) : `${context.index} ${treeChar}`
-    const errorName = config.color.value ? red(error.name) : error.name
+    const indexPrefix = config.color ? dim(`${context.index} ${treeChar}`) : `${context.index} ${treeChar}`
+    const errorName = config.color ? red(error.name) : error.name
     const errorLine = error.message ? `${errorName}: ${error.message}` : errorName
     lines.push(`${numberIndent}${indexPrefix} ${errorLine}`)
 
     // The continuation aligns with the original indent
     // Always use │ for continuation since we're using ├─ for all items
     const continuation = '│  '
-    const contPrefix = config.color.value ? dim(continuation) : continuation
+    const contPrefix = config.color ? dim(continuation) : continuation
     const childIndent = contentIndent + contPrefix
 
     // Stack (compact)
-    if (config.maxFrames.value > 0 && error.stack) {
+    if (config.maxFrames > 0 && error.stack) {
       const cleanResult = cleanStackWithStats(error.stack, {
         removeInternal: true,
-        maxFrames: Math.min(config.maxFrames.value, 3),
+        maxFrames: Math.min(config.maxFrames, 3),
         filterPatterns: ['node_modules', 'node:internal'],
       })
       const stackLines = Str.Text.lines(cleanResult.stack).slice(1)
@@ -436,26 +335,26 @@ const _inspectResursively = (
       const aggregateError = error as AggregateError
       if (aggregateError.errors.length > 0) {
         // Add a visual separator
-        lines.push(`${childIndent}${config.color.value ? dim('↓') : '↓'}`)
+        lines.push(`${childIndent}${config.color ? dim('↓') : '↓'}`)
 
         // Render child errors
         aggregateError.errors.forEach((err, idx) => {
           const isLastChild = idx === aggregateError.errors.length - 1
           const childTreeChar = isLastChild ? '└─' : '├─'
-          const childPrefix = config.color.value ? dim(`  ${childTreeChar}`) : `  ${childTreeChar}`
+          const childPrefix = config.color ? dim(`  ${childTreeChar}`) : `  ${childTreeChar}`
 
-          const childErrorName = config.color.value ? red(err.name) : err.name
+          const childErrorName = config.color ? red(err.name) : err.name
           const childErrorLine = err.message ? `${childErrorName}: ${err.message}` : childErrorName
           lines.push(`${childIndent}${childPrefix} ${childErrorLine}`)
 
           // Need to account for "  " (indent) + tree char width
           const childCont = isLastChild ? '   ' : '  │'
-          const nestedIndent = childIndent + (config.color.value ? dim(childCont) : childCont)
+          const nestedIndent = childIndent + (config.color ? dim(childCont) : childCont)
 
-          if (config.maxFrames.value > 0 && err.stack) {
+          if (config.maxFrames > 0 && err.stack) {
             const cleanResult = cleanStackWithStats(err.stack, {
               removeInternal: true,
-              maxFrames: Math.min(config.maxFrames.value, 1),
+              maxFrames: Math.min(config.maxFrames, 1),
               filterPatterns: ['node_modules', 'node:internal'],
             })
             const stackLines = Str.Text.lines(cleanResult.stack).slice(1)
@@ -478,15 +377,15 @@ const _inspectResursively = (
 
   // Root or non-aggregate nested error
   // Type and Message on same line
-  const errorName = config.color.value ? red(error.name) : error.name
+  const errorName = config.color ? red(error.name) : error.name
   const errorLine = error.message ? `${errorName}: ${error.message}` : errorName
   lines.push(formatLine(errorLine, parentIndent, config))
 
   // Stack - no indentation
-  if (config.maxFrames.value > 0 && error.stack) {
+  if (config.maxFrames > 0 && error.stack) {
     const cleanResult = cleanStackWithStats(error.stack, {
       removeInternal: true,
-      maxFrames: config.maxFrames.value,
+      maxFrames: config.maxFrames,
       filterPatterns: ['node_modules', 'node:internal'],
     })
 
@@ -549,8 +448,8 @@ const _inspectResursively = (
     const aggregateError = error as AggregateError
     if (aggregateError.errors.length > 0) {
       // Visual separator - indented by 4 spaces to align with tree continuation
-      const separator1 = config.color.value ? dim('    ↓') : '    ↓'
-      const separator2 = config.color.value ? dim('    │') : '    │'
+      const separator1 = config.color ? dim('    ↓') : '    ↓'
+      const separator2 = config.color ? dim('    │') : '    │'
       lines.push(`${parentIndent}${separator1}`)
       lines.push(`${parentIndent}${separator2}`)
 
@@ -565,13 +464,13 @@ const _inspectResursively = (
         }))
         if (!isLastError) {
           // Separator aligns with the content, not the dedented number
-          const separator = config.color.value ? dim('│') : '│'
+          const separator = config.color ? dim('│') : '│'
           lines.push(`${childIndent}${separator}`)
         }
       })
 
       // Add closing tree character aligned with tree structure
-      const closingLine = config.color.value ? dim('    └') : '    └'
+      const closingLine = config.color ? dim('    └') : '    └'
       lines.push(`${closingLine}`)
     }
   }
