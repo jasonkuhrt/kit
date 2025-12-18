@@ -1,10 +1,46 @@
 name: pr
 on:
   pull_request: {}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
 jobs:
+  # Determine what checks to run based on conventional commit type in PR title
+  # docs: and ci: skip code checks (only format runs)
+  check-type:
+    runs-on: ubuntu-latest
+    outputs:
+      skip-code-checks: ${{ steps.check.outputs.skip-code-checks }}
+    steps:
+      - name: Check PR title for CC type
+        id: check
+        run: |
+          TITLE="${{ github.event.pull_request.title }}"
+          # Skip code checks for:
+          # - ci: or ci(...): - CI config changes
+          # - docs: - out-of-band docs (README, guides, etc.)
+          # - docs(readme): docs(site): etc. - non-package doc scopes
+          #
+          # DO NOT skip for docs(package-name): - code documentation needs checks
+          # Package scopes start with "kouka-" so we detect those
+          if [[ "$TITLE" =~ ^ci(\(|:) ]]; then
+            echo "skip-code-checks=true" >> $GITHUB_OUTPUT
+            echo "Skipping code checks (ci): $TITLE"
+          elif [[ "$TITLE" =~ ^docs: ]]; then
+            echo "skip-code-checks=true" >> $GITHUB_OUTPUT
+            echo "Skipping code checks (docs without scope): $TITLE"
+          elif [[ "$TITLE" =~ ^docs\( ]] && [[ ! "$TITLE" =~ ^docs\(kouka- ]]; then
+            echo "skip-code-checks=true" >> $GITHUB_OUTPUT
+            echo "Skipping code checks (docs with non-package scope): $TITLE"
+          else
+            echo "skip-code-checks=false" >> $GITHUB_OUTPUT
+            echo "Running full checks for: $TITLE"
+          fi
+
   format:
     runs-on: ubuntu-latest
     steps:
@@ -14,51 +50,79 @@ jobs:
 
   # Package jobs use affected-only filtering to skip unchanged packages
   # fetch-depth: 0 is required for Turborepo's git-based filtering
+  # Jobs skip actual work (but still pass) for docs:/ci: PRs
   packages-build:
+    needs: check-type
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        if: needs.check-type.outputs.skip-code-checks != 'true'
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup
+        if: needs.check-type.outputs.skip-code-checks != 'true'
       - run: pnpm build:packages:affected
+        if: needs.check-type.outputs.skip-code-checks != 'true'
+      - run: echo "Skipped for docs/ci commit"
+        if: needs.check-type.outputs.skip-code-checks == 'true'
 
+  # Turbo's dependsOn + Vercel Remote Cache handles build dependencies automatically
   packages-types:
+    needs: check-type
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        if: needs.check-type.outputs.skip-code-checks != 'true'
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup
-      - run: pnpm build:packages:affected
+        if: needs.check-type.outputs.skip-code-checks != 'true'
       - run: pnpm check:types:packages:affected
+        if: needs.check-type.outputs.skip-code-checks != 'true'
+      - run: echo "Skipped for docs/ci commit"
+        if: needs.check-type.outputs.skip-code-checks == 'true'
 
   packages-lint:
+    needs: check-type
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        if: needs.check-type.outputs.skip-code-checks != 'true'
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup
-      - run: pnpm build:packages:affected
+        if: needs.check-type.outputs.skip-code-checks != 'true'
       - run: pnpm check:lint:packages:affected
+        if: needs.check-type.outputs.skip-code-checks != 'true'
+      - run: echo "Skipped for docs/ci commit"
+        if: needs.check-type.outputs.skip-code-checks == 'true'
 
   publint:
+    needs: check-type
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        if: needs.check-type.outputs.skip-code-checks != 'true'
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup
-      - run: pnpm build:packages:affected
+        if: needs.check-type.outputs.skip-code-checks != 'true'
       - run: pnpm check:package:packages:affected
+        if: needs.check-type.outputs.skip-code-checks != 'true'
+      - run: echo "Skipped for docs/ci commit"
+        if: needs.check-type.outputs.skip-code-checks == 'true'
 
   packages-test:
+    needs: check-type
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        if: needs.check-type.outputs.skip-code-checks != 'true'
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup
-      - run: pnpm build:packages:affected
+        if: needs.check-type.outputs.skip-code-checks != 'true'
       - run: pnpm test:unit:packages:affected
+        if: needs.check-type.outputs.skip-code-checks != 'true'
+      - run: echo "Skipped for docs/ci commit"
+        if: needs.check-type.outputs.skip-code-checks == 'true'

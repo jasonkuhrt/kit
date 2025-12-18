@@ -341,6 +341,125 @@ export const is = (value: unknown): value is ModuleType => {
 }
 ```
 
+## Conventional Commits
+
+We use [Conventional Commits](https://www.conventionalcommits.org/) strictly. PR titles and commit messages must follow this format.
+
+### Format
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Types
+
+| Type       | Description                      | Version Bump | CI Behavior           |
+| ---------- | -------------------------------- | ------------ | --------------------- |
+| `feat`     | New feature                      | Minor        | Full checks           |
+| `fix`      | Bug fix                          | Patch        | Full checks           |
+| `docs`     | Documentation (see below)        | Depends      | Depends               |
+| `style`    | Formatting, whitespace           | None         | Full checks           |
+| `refactor` | Code change (no behavior change) | None         | Full checks           |
+| `perf`     | Performance improvement          | Patch        | Full checks           |
+| `test`     | Adding/updating tests            | None         | Full checks           |
+| `build`    | Build system, dependencies       | None         | Full checks           |
+| `ci`       | CI configuration                 | None         | **Skips code checks** |
+| `chore`    | Other maintenance                | None         | Full checks           |
+
+### Breaking Changes
+
+Add `!` after type/scope for breaking changes:
+
+```
+feat!: remove deprecated API
+feat(kouka-arr)!: change merge behavior
+```
+
+### Scopes
+
+Scope should match package name when the change affects a specific package:
+
+```
+feat(kouka-arr): add findLast method
+fix(kouka-str): handle empty string edge case
+```
+
+For cross-cutting or repo-level changes, omit scope or use `repo`:
+
+```
+chore: update dev dependencies
+ci: add Vercel Remote Cache
+docs: update README
+```
+
+### Documentation: Code vs Out-of-Band
+
+We distinguish between two types of documentation changes:
+
+#### Code Documentation (`docs(package):`)
+
+Changes to documentation **inside package source files**:
+
+- JSDoc comments
+- Inline code comments
+- Type documentation
+
+```
+docs(kouka-arr): improve JSDoc for merge function
+docs(kouka-str): add examples to split function
+```
+
+**Behavior:**
+
+- ✅ Triggers package release (docs are part of the published package)
+- ✅ Runs full code checks
+- ✅ Appears in package changelog
+
+#### Out-of-Band Documentation (`docs:`)
+
+Changes to documentation **outside packages**:
+
+- README files
+- Website/guides
+- Contributing docs
+- Architecture docs
+
+```
+docs: update README installation section
+docs: add architecture diagram
+docs(readme): fix typo
+```
+
+**Behavior:**
+
+- ❌ Does NOT trigger package release
+- ⏭️ Skips code checks (only format check runs)
+- ❌ Does NOT appear in package changelogs
+
+### CI Optimization by Type
+
+PR titles prefixed with these types skip code checks (only format runs):
+
+- `docs:` (without package scope)
+- `ci:`
+
+This saves ~5 minutes of CI time for documentation and CI-only changes.
+
+### Deprecated: `improve` Type
+
+Previously used `improve` for minor enhancements. Use standard types instead:
+
+| Instead of                    | Use                         |
+| ----------------------------- | --------------------------- |
+| `improve: update deps`        | `chore: update deps`        |
+| `improve(pkg): better output` | `feat(pkg): improve output` |
+| `improve!: rename X to Y`     | `refactor!: rename X to Y`  |
+| `improve(pkg): clarify JSDoc` | `docs(pkg): clarify JSDoc`  |
+
 ## Release Process
 
 1. Ensure all tests pass
