@@ -138,20 +138,4 @@ export const isSymbol = (value: unknown): value is symbol => {
 
 // Note: Use Fn.is(value) for function type checking
 
-/**
- * Type guard to check if a value is a Date instance.
- *
- * @param value - The value to check
- * @returns True if the value is a Date
- * @example
- * ```ts
- * isDate(new Date())  // true
- * isDate('2024-01-01')  // false
- * isDate(Date.now())  // false
- * ```
- *
- * @category Type Guards
- */
-export const isDate = (value: unknown): value is Date => {
-  return value instanceof Date
-}
+// Note: Use Predicate.isDate from Effect for Date type checking

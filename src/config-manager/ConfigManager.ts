@@ -1,8 +1,8 @@
 import { Obj } from '#obj'
 import type { Ts } from '#ts'
 import type { Undefined } from '#undefined'
+import { Predicate } from 'effect'
 import type { IsUnknown, PartialDeep } from 'type-fest'
-import { isDate } from '../value/value.js'
 import { type GuardedType, isAnyFunction, type Objekt } from './_prelude.js'
 
 // dprint-ignore
@@ -108,7 +108,7 @@ type CustomScalarGuard = (value: object) => boolean
 
 const isUrl = (value: object): value is URL => value instanceof URL
 
-export const mergeDefaults = createMerger([isAnyFunction, isDate, isUrl])
+export const mergeDefaults = createMerger([isAnyFunction, Predicate.isDate, isUrl])
 
 const mergeDefaults_: MergeDefaultsInnerFn = (
   defaults,
