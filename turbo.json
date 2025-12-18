@@ -15,6 +15,14 @@
       "dependsOn": ["^build"],
       "outputs": []
     },
+    "check:lint": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "check:package": {
+      "dependsOn": ["build"],
+      "outputs": []
+    },
     "test:unit": {
       "dependsOn": ["^build"],
       "outputs": []

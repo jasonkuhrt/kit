@@ -4,12 +4,21 @@ on:
   push:
     branches: [main]
 jobs:
-  release-canary:
+  # Changesets handles versioning and publishing for monorepos
+  # Run `pnpm changeset` locally to create a changeset
+  # This workflow will create a "Version Packages" PR when changesets exist
+  release:
     runs-on: ubuntu-latest
-    # Temporarily disabled - enable when ready for automated canary releases
-    if: false
     steps:
-      - uses: prisma-labs/dripip@master
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - uses: dtinth/setup-github-actions-caching-for-turbo@v1
+      - run: pnpm build:packages
+      - name: Create Release Pull Request or Publish
+        uses: changesets/action@v1
         with:
-          npmToken: ${{secrets.NPM_TOKEN}}
-          githubToken: ${{secrets.GITHUB_TOKEN}}
+          publish: pnpm changeset publish
+          version: pnpm changeset version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
