@@ -1,6 +1,6 @@
 import { FileSystem } from '@effect/platform'
-import { Effect, ParseResult, Schema } from 'effect'
 import { parseJsonc } from '@kouka/jsonc'
+import { Effect, ParseResult, Schema } from 'effect'
 import { type Codec, createResource, EncodeError, ParseError, type Resource } from './resource.js'
 
 export type { Resource } from './resource.js'

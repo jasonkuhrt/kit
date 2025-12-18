@@ -1,6 +1,6 @@
 import { Arr } from '@kouka/core/arr'
-import { Fs } from '@kouka/fs'
 import { Str } from '@kouka/core/str'
+import { Fs } from '@kouka/fs'
 import { Schema as S } from 'effect'
 
 // ============================================================================

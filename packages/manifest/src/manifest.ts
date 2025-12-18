@@ -1,7 +1,7 @@
+import type { Ts } from '@kouka/core/ts'
 import { Fs } from '@kouka/fs'
 import { createSchemaResource, type Resource } from '@kouka/resource'
 import { Semver } from '@kouka/semver'
-import type { Ts } from '@kouka/core/ts'
 import { Effect, Option, Schema as S } from 'effect'
 
 const Author = S.Struct({

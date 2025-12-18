@@ -1,5 +1,5 @@
-import { Schema as S } from 'effect'
 import { Version as VltVersion } from '@vltpkg/semver'
+import { Schema as S } from 'effect'
 
 export class OfficialRelease extends S.TaggedClass<OfficialRelease>('SemverOfficialRelease')('SemverOfficialRelease', {
   major: S.Number,

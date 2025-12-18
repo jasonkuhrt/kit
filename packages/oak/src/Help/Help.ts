@@ -1,6 +1,6 @@
-import { Group } from '@kouka/group'
 import { Obj } from '@kouka/core/obj'
 import { Str } from '@kouka/core/str'
+import { Group } from '@kouka/group'
 import { Tex } from '@kouka/tex'
 import ansis from 'ansis'
 import { Text } from '../lib/Text/_.js'

@@ -1,6 +1,6 @@
 import { Err } from '@kouka/core/err'
-import { Group } from '@kouka/group'
 import { Obj } from '@kouka/core/obj'
+import { Group } from '@kouka/group'
 import { Alge } from 'alge'
 import { Errors } from '../Errors/_.js'
 import type { ParameterExclusive } from '../Parameter/exclusive.js'

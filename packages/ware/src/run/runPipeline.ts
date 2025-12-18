@@ -1,6 +1,6 @@
 import { Lang } from '@kouka/core/lang'
-import { Log } from '@kouka/log'
 import { Prom } from '@kouka/core/prom'
+import { Log } from '@kouka/log'
 import { ContextualError } from '../_errors.js'
 import type { InterceptorGeneric } from '../Interceptor/Interceptor.js'
 import type { Pipeline } from '../Pipeline/Pipeline.js'

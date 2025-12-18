@@ -1,5 +1,5 @@
-import { Fn } from '@kouka/core/fn'
 import type { Path } from '#fs/__.js'
+import { Fn } from '@kouka/core/fn'
 import { Schema as S } from 'effect'
 import type { $Abs } from '../$Abs/_.js'
 import { $Abs as Abs } from '../$Abs/_.js'
