@@ -131,6 +131,8 @@
       "#syn/syn": ["./src/syn/__.ts"],
       "#test": ["./src/test/_.ts"],
       "#test/test": ["./src/test/__.ts"],
+      "#tex": ["./src/tex/_.ts"],
+      "#tex/tex": ["./src/tex/__.ts"],
       "#time": ["./src/time/_.ts"],
       "#time/time": ["./src/time/__.ts"],
       "#tree": ["./src/tree/_.ts"],

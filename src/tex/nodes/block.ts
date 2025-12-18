@@ -1,4 +1,5 @@
 import { Str } from '#str'
+import { Box } from '../box/_.js'
 import type { RenderContext } from './helpers.js'
 import { Leaf } from './leaf.js'
 import { Node } from './node.js'
@@ -37,7 +38,7 @@ export interface BlockParameters {
    * span: { main: 10, cross: 50n }
    * ```
    */
-  span?: Str.Box.Span.Input
+  span?: Box.Span.Input
 
   /**
    * Min/max size constraints along main and cross axes.
@@ -51,7 +52,7 @@ export interface BlockParameters {
    * spanRange: { main: { min: 5, max: 20 } }
    * ```
    */
-  spanRange?: Str.Box.SpanRange
+  spanRange?: Box.SpanRange
 
   /**
    * Space between child blocks (container property).
@@ -66,7 +67,7 @@ export interface BlockParameters {
    * gap: { main: 2, cross: 1 }
    * ```
    */
-  gap?: Str.Box.Gap.Input
+  gap?: Box.Gap.Input
 
   /**
    * Style applied to the entire rendered block.
@@ -83,7 +84,7 @@ export interface BlockParameters {
    * block({ style: { color: { foreground: 'red' }, bold: true } }, 'text')
    * ```
    */
-  style?: Str.Box.Style | Str.Box.Ansi.AnsiStyle
+  style?: Box.Style | Box.Ansi.AnsiStyle
 
   /**
    * Border configuration using Box's border system.
@@ -112,7 +113,7 @@ export interface BlockParameters {
    * }
    * ```
    */
-  border?: Str.Box.BorderInput
+  border?: Box.BorderInput
 
   /**
    * Padding space inside the block borders using logical properties.
@@ -133,7 +134,7 @@ export interface BlockParameters {
    * padding: 2
    * ```
    */
-  padding?: Str.Box.Padding.Input
+  padding?: Box.Padding.Input
 
   /**
    * Margin space outside the block borders using logical properties.
@@ -156,13 +157,13 @@ export interface BlockParameters {
    *   .block('Section 2')
    * ```
    */
-  margin?: Str.Box.Margin.Input
+  margin?: Box.Margin.Input
 }
 
 export class Block extends Node {
   children: Node[]
   parameters: BlockParameters
-  private box: Str.Box.Box | null = null
+  private box: Box.Box | null = null
 
   constructor(parameters: BlockParameters, node: Node)
   constructor(parameters: BlockParameters, nodes: Node[])
@@ -209,13 +210,13 @@ export class Block extends Node {
     // Calculate horizontal overhead to subtract from child maxWidth
     // Padding and margin are applied AFTER children render, so children must account for them
     const padding = this.parameters.padding
-      ? Str.Box.Padding.parse(this.parameters.padding)
+      ? Box.Padding.parse(this.parameters.padding)
       : null
     const margin = this.parameters.margin
-      ? Str.Box.Margin.parse(this.parameters.margin)
+      ? Box.Margin.parse(this.parameters.margin)
       : null
-    const horizontalPadding = padding ? Str.Box.getWidth(padding.crossStart) + Str.Box.getWidth(padding.crossEnd) : 0
-    const horizontalMargin = margin ? Str.Box.getWidth(margin.crossStart) + Str.Box.getWidth(margin.crossEnd) : 0
+    const horizontalPadding = padding ? Box.getWidth(padding.crossStart) + Box.getWidth(padding.crossEnd) : 0
+    const horizontalMargin = margin ? Box.getWidth(margin.crossStart) + Box.getWidth(margin.crossEnd) : 0
     const childMaxWidth = effectiveMaxWidth !== undefined
       ? effectiveMaxWidth - horizontalPadding - horizontalMargin
       : undefined
@@ -238,7 +239,7 @@ export class Block extends Node {
     }
 
     // Create Box with rendered children
-    this.box = Str.Box.Box.make({
+    this.box = Box.Box.make({
       content: renderedChildren.length === 0
         ? ``
         : renderedChildren.length === 1
@@ -249,15 +250,15 @@ export class Block extends Node {
 
     // Apply parameters to Box using static methods
     if (this.parameters.padding) {
-      this.box = Str.Box.pad(this.box, this.parameters.padding)
+      this.box = Box.pad(this.box, this.parameters.padding)
     }
 
     if (this.parameters.margin) {
-      this.box = Str.Box.margin(this.box, this.parameters.margin)
+      this.box = Box.margin(this.box, this.parameters.margin)
     }
 
     if (this.parameters.span) {
-      this.box = Str.Box.span(this.box, this.parameters.span)
+      this.box = Box.span(this.box, this.parameters.span)
     }
 
     // Apply spanRange but exclude cross.max since we already used it for wrapping via effectiveMaxWidth
@@ -268,27 +269,27 @@ export class Block extends Node {
       }
       // Only apply if there are constraints besides cross.max
       if (spanRangeForBox.main || spanRangeForBox.cross?.min) {
-        this.box = Str.Box.spanRange(this.box, spanRangeForBox as any)
+        this.box = Box.spanRange(this.box, spanRangeForBox as any)
       }
     }
 
     if (this.parameters.gap) {
-      this.box = Str.Box.gap(this.box, this.parameters.gap)
+      this.box = Box.gap(this.box, this.parameters.gap)
     }
 
     // Apply border using Box's border system (supports colors and dynamic hooks)
     if (this.parameters.border) {
-      this.box = Str.Box.border(this.box, this.parameters.border)
+      this.box = Box.border(this.box, this.parameters.border)
     }
 
     // Get Box rendering
-    let value = Str.Box.render(this.box)
+    let value = Box.render(this.box)
 
     // Apply style using ansis chain (handles nested color restoration automatically)
     if (this.parameters.style) {
-      const ansiChain = Str.Box.Ansi.isAnsiStyle(this.parameters.style)
+      const ansiChain = Box.Ansi.isAnsiStyle(this.parameters.style)
         ? this.parameters.style
-        : Str.Box.Ansi.buildAnsiChain(this.parameters.style)
+        : Box.Ansi.buildAnsiChain(this.parameters.style)
       value = ansiChain(value)
     }
 

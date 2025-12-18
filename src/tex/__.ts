@@ -111,3 +111,13 @@ export type { BlockParameters } from './nodes/block.js'
  * ```
  */
 export { Block } from './nodes/block.js'
+
+/**
+ * Box layout model for terminal text rendering.
+ *
+ * Provides a CSS-like box model for building terminal UIs with padding, margin,
+ * borders, and content. Supports both mutable and immutable APIs.
+ *
+ * @category Text Formatting
+ */
+export { Box } from './box/_.js'

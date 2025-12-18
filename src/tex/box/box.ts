@@ -1,6 +1,6 @@
 import { Obj } from '#obj'
+import { Str } from '#str'
 import { ParseResult, Schema as S } from 'effect'
-import * as Visual from '../visual.js'
 import { extractChar, extractStyle } from './ansi.js'
 import { Clockhand } from './clockhand/_.js'
 import * as PropBorder from './properties/border.ts'
@@ -27,7 +27,7 @@ export const getWidth = (value: number | string | bigint | undefined): number =>
   if (value === undefined) return 0
   if (typeof value === `number`) return value
   if (typeof value === `bigint`) return 0 // Percentage - can't resolve without context
-  return Visual.width(value)
+  return Str.Visual.width(value)
 }
 
 /**
@@ -44,22 +44,22 @@ export const getWidth = (value: number | string | bigint | undefined): number =>
  *
  * @example
  * ```typescript
- * import { Str } from '@wollybeard/kit'
+ * import { Tex } from '@wollybeard/kit'
  *
  * // Mutable API (instance methods with $)
- * const box = Str.Box.make({ content: 'Hello' })
+ * const box = Tex.Box.make({ content: 'Hello' })
  * box.pad$({ top: 1, left: 2 })
  * box.border$({ style: 'single' })
  * console.log(box.toString())
  *
  * // Immutable API (static methods)
- * const box2 = Str.Box.make({ content: 'Hello' })
- * const padded = Str.Box.pad(box2, { top: 1, left: 2 })
- * const bordered = Str.Box.border(padded, { style: 'single' })
+ * const box2 = Tex.Box.make({ content: 'Hello' })
+ * const padded = Tex.Box.pad(box2, { top: 1, left: 2 })
+ * const bordered = Tex.Box.border(padded, { style: 'single' })
  * console.log(bordered.toString())
  *
  * // Reuse styling with different content
- * const styledBox = Str.Box.make({ content: '' })
+ * const styledBox = Tex.Box.make({ content: '' })
  *   .pad$({ left: 2 })
  *   .border$({ style: 'double' })
  *

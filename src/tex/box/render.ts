@@ -1,7 +1,5 @@
+import { Str } from '#str'
 import { Schema as S } from 'effect'
-import { Char } from '../char/_.js'
-import { lines, unlines } from '../text.js'
-import * as Visual from '../visual.js'
 import { applyStyle } from './ansi.js'
 import type { Box } from './box.js'
 import * as PropBorder from './properties/border.js'
@@ -87,11 +85,11 @@ const resolveSidedToString = (
 ): string => {
   if (value === undefined) return ''
   if (typeof value === 'string') return value
-  if (typeof value === 'number') return Char.spaceRegular.repeat(value)
+  if (typeof value === 'number') return Str.Char.spaceRegular.repeat(value)
   if (typeof value === 'bigint') {
     if (availableSpan === undefined) return ''
     const resolved = Math.floor((availableSpan * Number(value)) / 100)
-    return Char.spaceRegular.repeat(resolved)
+    return Str.Char.spaceRegular.repeat(resolved)
   }
   return ''
 }
@@ -162,7 +160,7 @@ const enforceSpan = (
   const maxCrossSpan = box.spanRange?.cross?.max
 
   // Calculate final target spans (priority: exact span → range constraints)
-  const textLines = lines(result)
+  const textLines = Str.Text.lines(result)
   const intrinsicMainSpan = textLines.length
   const intrinsicCrossSpan = textLines.length === 0 ? 0 : Math.max(...textLines.map((line) => line.length))
 
@@ -178,7 +176,7 @@ const enforceSpan = (
 
   // Enforce cross span (affects line length)
   if (targetCrossSpan !== intrinsicCrossSpan) {
-    result = unlines(
+    result = Str.Text.unlines(
       textLines.map((line) => {
         if (line.length > targetCrossSpan) {
           // Truncate
@@ -194,15 +192,15 @@ const enforceSpan = (
 
   // Enforce main span (affects number of lines)
   if (targetMainSpan !== intrinsicMainSpan) {
-    const currentLines = lines(result)
+    const currentLines = Str.Text.lines(result)
     if (currentLines.length > targetMainSpan) {
       // Truncate lines
-      result = unlines(currentLines.slice(0, targetMainSpan))
+      result = Str.Text.unlines(currentLines.slice(0, targetMainSpan))
     } else if (currentLines.length < targetMainSpan) {
       // Add empty lines
       const linesToAdd = targetMainSpan - currentLines.length
       const emptyLine = ' '.repeat(targetCrossSpan)
-      result = result + Char.newline + Array(linesToAdd).fill(emptyLine).join(Char.newline)
+      result = result + Str.Char.newline + Array(linesToAdd).fill(emptyLine).join(Str.Char.newline)
     }
   }
 
@@ -223,7 +221,7 @@ const renderPadding = (
   context: RenderContext,
 ): string => {
   let result = text
-  const textLines = lines(text)
+  const textLines = Str.Text.lines(text)
   const mapping = getLogicalMapping(orientation)
 
   // Convert a padding value to its string representation with context-aware % resolution
@@ -261,10 +259,10 @@ const renderPadding = (
     if (beforeStr) {
       // For main axis, if it's a number/bigint resolved to spaces, convert to newlines
       if (typeof before === 'number') {
-        result = Char.newline.repeat(before) + result
+        result = Str.Char.newline.repeat(before) + result
       } else if (typeof before === 'bigint') {
         const resolved = resolveSidedToString(before, context.availableMainSpan)
-        result = Char.newline.repeat(resolved.length) + result
+        result = Str.Char.newline.repeat(resolved.length) + result
       } else {
         result = before + result
       }
@@ -275,8 +273,8 @@ const renderPadding = (
   const leftKey = mapping.spacesBeforeLines
   const leftHooks = (box as any).paddingHooks[leftKey]
   if (padding[leftKey] || (leftHooks && leftHooks.length > 0)) {
-    result = unlines(
-      lines(result).map((line, i) => {
+    result = Str.Text.unlines(
+      Str.Text.lines(result).map((line, i) => {
         const left = evaluateHooks(leftKey, padding[leftKey], i)
         const leftStr = toStr(left, leftKey)
         return leftStr ? leftStr + line : line
@@ -288,8 +286,8 @@ const renderPadding = (
   const rightKey = mapping.spacesAfterLines
   const rightHooks = (box as any).paddingHooks[rightKey]
   if (padding[rightKey] || (rightHooks && rightHooks.length > 0)) {
-    result = unlines(
-      lines(result).map((line, i) => {
+    result = Str.Text.unlines(
+      Str.Text.lines(result).map((line, i) => {
         const right = evaluateHooks(rightKey, padding[rightKey], i)
         const rightStr = toStr(right, rightKey)
         return rightStr ? line + rightStr : line
@@ -301,10 +299,10 @@ const renderPadding = (
   const after = evaluateHooks(mapping.newlinesAfter, padding[mapping.newlinesAfter])
   if (after) {
     if (typeof after === 'number') {
-      result = result + Char.newline.repeat(after)
+      result = result + Str.Char.newline.repeat(after)
     } else if (typeof after === 'bigint') {
       const resolved = resolveSidedToString(after, context.availableMainSpan)
-      result = result + Char.newline.repeat(resolved.length)
+      result = result + Str.Char.newline.repeat(resolved.length)
     } else {
       result = result + after
     }
@@ -327,7 +325,7 @@ const renderMargin = (
   context: RenderContext,
 ): string => {
   let result = text
-  const textLines = lines(text)
+  const textLines = Str.Text.lines(text)
   const mapping = getLogicalMapping(orientation)
 
   // Convert a margin value to its string representation with context-aware % resolution
@@ -362,10 +360,10 @@ const renderMargin = (
   const before = evaluateHooks(mapping.newlinesBefore, margin[mapping.newlinesBefore])
   if (before) {
     if (typeof before === 'number') {
-      result = Char.newline.repeat(before) + result
+      result = Str.Char.newline.repeat(before) + result
     } else if (typeof before === 'bigint') {
       const resolved = resolveSidedToString(before, context.availableMainSpan)
-      result = Char.newline.repeat(resolved.length) + result
+      result = Str.Char.newline.repeat(resolved.length) + result
     } else {
       result = before + result
     }
@@ -375,8 +373,8 @@ const renderMargin = (
   const leftKey = mapping.spacesBeforeLines
   const leftHooks = (box as any).marginHooks[leftKey]
   if (margin[leftKey] || (leftHooks && leftHooks.length > 0)) {
-    result = unlines(
-      lines(result).map((line, i) => {
+    result = Str.Text.unlines(
+      Str.Text.lines(result).map((line, i) => {
         const left = evaluateHooks(leftKey, margin[leftKey], i)
         const leftStr = toStr(left, leftKey)
         return leftStr ? leftStr + line : line
@@ -388,8 +386,8 @@ const renderMargin = (
   const rightKey = mapping.spacesAfterLines
   const rightHooks = (box as any).marginHooks[rightKey]
   if (margin[rightKey] || (rightHooks && rightHooks.length > 0)) {
-    result = unlines(
-      lines(result).map((line, i) => {
+    result = Str.Text.unlines(
+      Str.Text.lines(result).map((line, i) => {
         const right = evaluateHooks(rightKey, margin[rightKey], i)
         const rightStr = toStr(right, rightKey)
         return rightStr ? line + rightStr : line
@@ -401,10 +399,10 @@ const renderMargin = (
   const after = evaluateHooks(mapping.newlinesAfter, margin[mapping.newlinesAfter])
   if (after) {
     if (typeof after === 'number') {
-      result = result + Char.newline.repeat(after)
+      result = result + Str.Char.newline.repeat(after)
     } else if (typeof after === 'bigint') {
       const resolved = resolveSidedToString(after, context.availableMainSpan)
-      result = result + Char.newline.repeat(resolved.length)
+      result = result + Str.Char.newline.repeat(resolved.length)
     } else {
       result = result + after
     }
@@ -439,7 +437,7 @@ const renderBorder = (text: string, border: PropBorder.Border, box: Box): string
     corners = { ...corners, ...border.corners }
   }
 
-  const textLines = lines(text)
+  const textLines = Str.Text.lines(text)
   const maxWidth = textLines.length === 0 ? 0 : Math.max(...textLines.map((line) => line.length))
 
   // Helper to evaluate edge hooks
@@ -600,7 +598,7 @@ const renderBorder = (text: string, border: PropBorder.Border, box: Box): string
     })()
     : null
 
-  return [topBorder, ...contentLines, bottomBorder].filter((line) => line !== null).join(Char.newline)
+  return [topBorder, ...contentLines, bottomBorder].filter((line) => line !== null).join(Str.Char.newline)
 }
 
 /**
@@ -637,11 +635,11 @@ const renderContent = (
     const resolved = resolveGap(gap?.main, context.availableMainSpan)
     let separator: string
     if (!resolved) {
-      separator = Char.newline
+      separator = Str.Char.newline
     } else if (resolved.type === 'literal') {
       separator = resolved.value
     } else {
-      separator = Char.newline.repeat(1 + resolved.value)
+      separator = Str.Char.newline.repeat(1 + resolved.value)
     }
     return renderedItems.join(separator)
   } else {
@@ -654,14 +652,14 @@ const renderContent = (
     } else if (resolved.type === 'literal') {
       gapColumn = resolved.value
     } else {
-      gapColumn = Char.spaceRegular.repeat(resolved.value)
+      gapColumn = Str.Char.spaceRegular.repeat(resolved.value)
     }
 
     // For side-by-side rendering, we need to:
     // 1. Split each item into lines
     // 2. Pad lines to equal height
     // 3. Concatenate corresponding lines horizontally (with gap)
-    const itemLines = renderedItems.map((item) => lines(item))
+    const itemLines = renderedItems.map((item) => Str.Text.lines(item))
     const maxHeight = Math.max(...itemLines.map((lines) => lines.length), 0)
     const itemWidths = itemLines.map((lines) => Math.max(...lines.map((line) => line.length), 0))
 
@@ -678,7 +676,7 @@ const renderContent = (
       resultLines.push(lineParts.join(gapColumn))
     }
 
-    return unlines(resultLines)
+    return Str.Text.unlines(resultLines)
   }
 }
 
@@ -712,8 +710,8 @@ const renderWithContext = (box: Box, context: RenderContext): string => {
     // In horizontal mode: main=width (chars), cross=height (lines)
     if (orientation === 'vertical') {
       // Cross axis (width): left and right borders consume horizontal space
-      if (box.border.edges.left) borderCrossConsumption += Visual.width(box.border.edges.left)
-      if (box.border.edges.right) borderCrossConsumption += Visual.width(box.border.edges.right)
+      if (box.border.edges.left) borderCrossConsumption += Str.Visual.width(box.border.edges.left)
+      if (box.border.edges.right) borderCrossConsumption += Str.Visual.width(box.border.edges.right)
       // Main axis (lines): top and bottom each add 1 line
       if (box.border.edges.top) borderMainConsumption += 1
       if (box.border.edges.bottom) borderMainConsumption += 1
@@ -722,8 +720,8 @@ const renderWithContext = (box: Box, context: RenderContext): string => {
       if (box.border.edges.top) borderCrossConsumption += 1
       if (box.border.edges.bottom) borderCrossConsumption += 1
       // Main axis (width): left and right consume horizontal space
-      if (box.border.edges.left) borderMainConsumption += Visual.width(box.border.edges.left)
-      if (box.border.edges.right) borderMainConsumption += Visual.width(box.border.edges.right)
+      if (box.border.edges.left) borderMainConsumption += Str.Visual.width(box.border.edges.left)
+      if (box.border.edges.right) borderMainConsumption += Str.Visual.width(box.border.edges.right)
     }
   }
 

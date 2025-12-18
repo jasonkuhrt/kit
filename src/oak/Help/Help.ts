@@ -1,7 +1,7 @@
-import { Cli } from '#cli'
 import { Group } from '#group'
 import { Obj } from '#obj'
 import { Str } from '#str'
+import { Tex } from '#tex'
 import ansis from 'ansis'
 import { Text } from '../lib/Text/_.ts'
 import type { Parameter } from '../Parameter/types.js'
@@ -67,7 +67,7 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
     (_) => _![0]!.group,
   )
 
-  const noteItems: (Cli.Tex.Block | string | null)[] = []
+  const noteItems: (Tex.Block | string | null)[] = []
 
   if (isAcceptsAnyEnvironmentArgs) {
     noteItems.push(environmentNote(allParametersWithoutHelp, settings))
@@ -81,7 +81,7 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
 
   const styleHeader = (string: string) => ansis.underline(Term.colors.mute(string))
 
-  const output = Cli.Tex.Tex({ terminalWidth: settings.terminalWidth })
+  const output = Tex.Tex({ terminalWidth: settings.terminalWidth })
     .block(($) => {
       if (!settings.description) return null
       return $
@@ -103,8 +103,8 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
                 // BASIC
                 ...parametersBasicWithoutHelp.map((parameter) => [
                   parameterName(parameter),
-                  Cli.Tex.block({ padding: [[0, 1]] }, SchemaRuntime.help(parameter.type, settings)),
-                  Cli.Tex.block(parameterDefault(parameter)),
+                  Tex.block({ padding: [[0, 1]] }, SchemaRuntime.help(parameter.type, settings)),
+                  Tex.block(parameterDefault(parameter)),
                   parameterEnvironmentMaybe(parameter),
                 ]),
                 // EXCLUSIVE GROUPS
@@ -122,7 +122,7 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
                   return [
                     // OPENING ROW
                     [
-                      Cli.Tex.block(
+                      Tex.block(
                         { border: { edges: { left: Term.colors.dim(`┌`) } } },
                         Term.colors.dim(`─${parametersExclusive.label} ${`(2)`}`),
                       ),
@@ -133,7 +133,7 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
                     // PARAMETER ROWS
                     ...Obj.values(parametersExclusive.parameters).map((parameter) => {
                       return [
-                        Cli.Tex.block(
+                        Tex.block(
                           {
                             border: {
                               edges: {
@@ -147,14 +147,14 @@ export const render = (parameters_: Parameter[], settings: Settings.Output, _set
                           },
                           parameterName(parameter),
                         ),
-                        Cli.Tex.block({ padding: [[0, 1]] }, SchemaRuntime.help(parameter.type, settings)),
-                        Cli.Tex.block(parameterDefault(parameter)),
+                        Tex.block({ padding: [[0, 1]] }, SchemaRuntime.help(parameter.type, settings)),
+                        Tex.block(parameterDefault(parameter)),
                         parameterEnvironmentMaybe(parameter),
                       ]
                     }),
                     // CLOSING ROW
                     [
-                      Cli.Tex.block({ border: { edges: { left: Term.colors.dim(`└`) } } }, Term.colors.dim(`─`)),
+                      Tex.block({ border: { edges: { left: Term.colors.dim(`└`) } } }, Term.colors.dim(`─`)),
                       '',
                       '',
                       ...(isEnvironmentEnabled ? [``] : []),
@@ -241,7 +241,7 @@ const environmentNote = (parameters: Parameter[], settings: Settings.Output) => 
     )
     .map((_) => `${_}="..."`)
 
-  return Cli.Tex.block(($) =>
+  return Tex.block(($) =>
     $.text(content).list(
       {
         bullet: {
@@ -283,7 +283,7 @@ const parameterName = (parameter: Parameter) => {
     || (parameter._tag === `Exclusive` && parameter.group.optionality._tag === `required`)
   const nameColor = isRequired ? Term.colors.positiveBold : Term.colors.positive
 
-  return Cli.Tex.block(($) =>
+  return Tex.block(($) =>
     $
       .block({ style: nameColor }, parameter.name.canonical)
       .block(Term.colors.dim(parameter.name.aliases.long.join(`, `)) || null)

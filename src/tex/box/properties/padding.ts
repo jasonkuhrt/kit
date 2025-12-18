@@ -1,5 +1,5 @@
+import { Str } from '#str'
 import { Schema as S } from 'effect'
-import * as Visual from '../../visual.js'
 import { Sided } from '../property-factories/sided/_.js'
 
 /**
@@ -63,7 +63,7 @@ export const resolveValue = (
 ): number => {
   if (value === undefined) return 0
   if (typeof value === 'number') return value
-  if (typeof value === 'string') return Visual.width(value)
+  if (typeof value === 'string') return Str.Visual.width(value)
   if (typeof value === 'bigint') {
     return Math.round(Number(value) / 100 * availableSpan)
   }

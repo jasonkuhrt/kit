@@ -1,4 +1,3 @@
-export * from './box/_.js'
 export * from './builder.js'
 export * from './case/_.js'
 export * from './char/_.js'

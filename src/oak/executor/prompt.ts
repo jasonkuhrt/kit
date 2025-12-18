@@ -1,5 +1,5 @@
-import { Cli } from '#cli'
 import { Obj } from '#obj'
+import { Tex } from '#tex'
 import ansis from 'ansis'
 import { Effect } from 'effect'
 import type { Prompter } from '../lib/Prompter/_.ts'
@@ -29,7 +29,7 @@ export const prompt = (
     for (const parameter of parameters) {
       // Explicitly set terminal width for deterministic rendering (kit 0.87.0+)
       const PROMPT_TERMINAL_WIDTH = 120
-      const question = Cli.Tex.Tex({ orientation: `horizontal`, terminalWidth: PROMPT_TERMINAL_WIDTH })
+      const question = Tex.Tex({ orientation: `horizontal`, terminalWidth: PROMPT_TERMINAL_WIDTH })
         .block({ padding: { mainEnd: 2 } }, `${Term.colors.dim(`${indexCurrent}/${indexTotal}`)}`)
         .block((__) =>
           __.block(
