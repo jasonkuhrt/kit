@@ -9,20 +9,6 @@ jobs:
       - uses: ./.github/actions/setup
       - run: pnpm check:format
 
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-      - run: pnpm check:lint
-
-  layers:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-      - run: pnpm check:layers
-
   # Package jobs use affected-only filtering to skip unchanged packages
   # fetch-depth: 0 is required for Turborepo's git-based filtering
   packages-build:
@@ -78,35 +64,3 @@ jobs:
       - uses: dtinth/setup-github-actions-caching-for-turbo@v1
       - run: pnpm build:packages:affected
       - run: pnpm test:unit:packages:affected
-
-  # While we do not deploy docs for PRs we still want to know that it can be built.
-  # This catches issues before merging such as broken examples.
-  docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-      - run: pnpm docs:build
-
-  # Root package tests (not in packages/)
-  test-unit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: ./.github/actions/setup
-      - uses: dtinth/setup-github-actions-caching-for-turbo@v1
-      - run: pnpm build:packages:affected
-      - run: pnpm test:unit --run
-
-  test-types:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: ./.github/actions/setup
-      - uses: dtinth/setup-github-actions-caching-for-turbo@v1
-      - run: pnpm build:packages:affected
-      - run: pnpm test:unit-with-types

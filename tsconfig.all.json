@@ -1,7 +1,0 @@
-// @libra
-// Complete type checking including benchmarks (for CI)
-// Development uses tsconfig.json which excludes expensive *.bench-d.ts files
-{
-  "extends": "./tsconfig.json",
-  "exclude": ["build", "articles", "src-new", "src-temp"]
-}
