@@ -1,13 +1,10 @@
 import { CoreLang } from '#lang/core'
 import type { Prom } from '#prom'
+import type { Primitive, TypeGuardImplementation } from '#lang/core/lang'
 import * as fc from 'fast-check'
 
 // Re-export types from core namespace
-export type Primitive = CoreLang.Primitive
-export type TypeGuard<$Type> = CoreLang.TypeGuard<$Type>
-export type TypeGuardImplementation = CoreLang.TypeGuardImplementation
-export type TypeGuardImplementationInput = CoreLang.TypeGuardImplementationInput
-export type TypeofTypes = CoreLang.TypeofTypes
+export type { Primitive, TypeGuard, TypeGuardImplementation, TypeGuardImplementationInput, TypeofTypes } from '#lang/core/lang'
 
 // Re-export values from core namespace
 export const { typeGuard, TypeofTypesEnum } = CoreLang

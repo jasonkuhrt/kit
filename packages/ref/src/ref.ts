@@ -157,7 +157,7 @@ export const isReferenceEquality = (value: Lang.Value): value is object => {
  * Ref.isImmutable([]) // false
  * ```
  */
-export const isValueEquality: (value: Lang.Value) => value is Lang.Primitive = (value) => {
+export const isValueEquality = (value: Lang.Value): value is Lang.Primitive => {
   return !isReferenceEquality(value)
 }
 
