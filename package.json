@@ -26,6 +26,8 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
+    "@tsconfig/node-lts": "^24.0.0",
+    "@tsconfig/strictest": "^2.0.8",
     "dprint": "^0.50.2",
     "turbo": "^2.6.3"
   }
