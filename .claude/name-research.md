@@ -4,18 +4,18 @@ Date: 2025-12-19
 
 ## Effect-ish Names
 
-| Name | Unscoped | Scoped (@name/core) | Notes |
-|------|----------|---------------------|-------|
-| **kouka** | ✅ AVAILABLE | ✅ AVAILABLE | Current scope |
-| effectful | ❌ taken (v2.0.0) | ❌ taken (@effectful/core v2.0.8) | Active project |
-| effective | ❌ taken (v1.0.2) | ✅ AVAILABLE | Unscoped taken |
-| effected | ❌ taken (v0.1.1) | ✅ AVAILABLE | Unscoped taken |
-| effection | ❌ taken (v3.6.1) | ❌ taken (@effection/core v2.2.3) | Active project |
-| effector | ❌ taken (v23.4.4) | - | Popular state manager |
-| effex | ❌ taken (v4.0.2) | - | |
-| effekt | ❌ taken (v0.12.1) | - | |
-| **effectis** | ✅ AVAILABLE | ✅ AVAILABLE | Best candidate |
-| **efekt** | ✅ AVAILABLE | ✅ AVAILABLE | Short, available |
+| Name         | Unscoped           | Scoped (@name/core)               | Notes                 |
+| ------------ | ------------------ | --------------------------------- | --------------------- |
+| **kouka**    | ✅ AVAILABLE       | ✅ AVAILABLE                      | Current scope         |
+| effectful    | ❌ taken (v2.0.0)  | ❌ taken (@effectful/core v2.0.8) | Active project        |
+| effective    | ❌ taken (v1.0.2)  | ✅ AVAILABLE                      | Unscoped taken        |
+| effected     | ❌ taken (v0.1.1)  | ✅ AVAILABLE                      | Unscoped taken        |
+| effection    | ❌ taken (v3.6.1)  | ❌ taken (@effection/core v2.2.3) | Active project        |
+| effector     | ❌ taken (v23.4.4) | -                                 | Popular state manager |
+| effex        | ❌ taken (v4.0.2)  | -                                 |                       |
+| effekt       | ❌ taken (v0.12.1) | -                                 |                       |
+| **effectis** | ✅ AVAILABLE       | ✅ AVAILABLE                      | Best candidate        |
+| **efekt**    | ✅ AVAILABLE       | ✅ AVAILABLE                      | Short, available      |
 
 ## Best Available Options
 
