@@ -47,7 +47,7 @@ for (const pkg of packages) {
   try {
     const grepResult = execSync(
       `grep -rhoE "from ['\"][^'\"]+['\"]" "${srcDir}" 2>/dev/null || true`,
-      { encoding: 'utf-8' }
+      { encoding: 'utf-8' },
     )
     imports = grepResult
       .split('\n')
@@ -100,8 +100,10 @@ for (const pkg of packages) {
       const isTestOnly = (() => {
         try {
           const prodGrep = execSync(
-            `grep -rlE "from ['\"]${ext.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[/'\"]" "${srcDir}" 2>/dev/null | grep -v '\\.test\\.' | head -1 || true`,
-            { encoding: 'utf-8' }
+            `grep -rlE "from ['\"]${
+              ext.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+            }[/'\"]" "${srcDir}" 2>/dev/null | grep -v '\\.test\\.' | head -1 || true`,
+            { encoding: 'utf-8' },
           )
           return !prodGrep.trim()
         } catch {
