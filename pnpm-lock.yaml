@@ -150,12 +150,6 @@ importers:
         specifier: ^4.2.1
         version: 4.2.1
     devDependencies:
-      '@kouka/assert':
-        specifier: workspace:*
-        version: link:../assert
-      '@kouka/test':
-        specifier: workspace:*
-        version: link:../test
       '@types/node':
         specifier: ^25.0.3
         version: 25.0.3
