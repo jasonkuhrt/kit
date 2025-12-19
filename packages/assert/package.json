@@ -8,7 +8,8 @@
     "#assert/*": "./build/*.js"
   },
   "exports": {
-    ".": "./build/_.js"
+    ".": "./build/_.js",
+    "./assert": "./build/__.js"
   },
   "dependencies": {
     "@kouka/core": "workspace:*",

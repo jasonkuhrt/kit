@@ -25,11 +25,15 @@
     "fix": "pnpm fix:format"
   },
   "devDependencies": {
+    "@ark/attest": "^0.56.0",
+    "@ark/attest-ts-default": "npm:typescript@^5.9.3",
     "@changesets/cli": "^2.29.8",
     "@tsconfig/node-lts": "^24.0.0",
     "@tsconfig/strictest": "^2.0.8",
     "dprint": "^0.50.2",
     "tsx": "^4.21.0",
-    "turbo": "^2.6.3"
+    "turbo": "^2.6.3",
+    "vite-tsconfig-paths": "^6.0.3",
+    "vitest": "^4.0.16"
   }
 }

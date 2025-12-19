@@ -8,7 +8,8 @@
     "#test/*": "./build/*.js"
   },
   "exports": {
-    ".": "./build/_.js"
+    ".": "./build/_.js",
+    "./test": "./build/__.js"
   },
   "dependencies": {
     "@kouka/core": "workspace:*",

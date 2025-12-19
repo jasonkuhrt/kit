@@ -4,6 +4,10 @@
   "type": "module",
   "sideEffects": false,
   "imports": {
+    "#test": "@kouka/test",
+    "#test/*": "@kouka/test/*",
+    "#assert": "@kouka/assert",
+    "#assert/*": "@kouka/assert/*",
     "#arr": "./build/arr/_.js",
     "#arr/*": "./build/arr/*.js",
     "#bool": "./build/bool/_.js",
@@ -100,9 +104,11 @@
     }
   },
   "devDependencies": {
+    "@kouka/assert": "workspace:*",
+    "@kouka/test": "workspace:*",
     "@types/node": "^25.0.3",
     "@types/object-inspect": "^1.13.0",
-    "fast-check": "^3.23.2",
+    "fast-check": "^4.4.0",
     "vitest": "^4.0.16"
   }
 }
