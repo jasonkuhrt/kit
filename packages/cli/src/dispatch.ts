@@ -63,13 +63,13 @@ export type DiscoverCommandsDirNotFoundError = InstanceType<typeof DiscoverComma
  * // If argv is ['node', 'cli.js', 'build'], imports and executes build.js
  * // If argv is ['node', 'cli.js'], imports and executes $default.js
  */
-export const dispatch: (
+export const dispatch = (
   commandsDirPath: Fs.Path.AbsDir,
-) => Effect.Effect<
+): Effect.Effect<
   void,
   DiscoverCommandsDirNotFoundError | PlatformError | ParseResult.ParseError | Mod.ImportError,
   Env.Env | FileSystem.FileSystem
-> = (commandsDirPath) =>
+> =>
   Effect.gen(function*() {
     const env = yield* Env.Env
     const commandFiles = yield* discoverCommandPointers(commandsDirPath)
