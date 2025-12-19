@@ -4,10 +4,6 @@
   "type": "module",
   "sideEffects": false,
   "imports": {
-    "#test": "@kouka/test",
-    "#test/*": "@kouka/test/*",
-    "#assert": "@kouka/assert",
-    "#assert/*": "@kouka/assert/*",
     "#arr": "./build/arr/_.js",
     "#arr/*": "./build/arr/*.js",
     "#bool": "./build/bool/_.js",
