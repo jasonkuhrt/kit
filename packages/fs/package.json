@@ -12,13 +12,19 @@
     "./path/types/fileName": "./build/path/types/fileName.js"
   },
   "dependencies": {
+    "@effect/platform": "^0.94.0",
     "@kouka/core": "workspace:*",
     "@kouka/json": "workspace:*",
-    "effect": "^3.0.0"
+    "effect": "^3.0.0",
+    "tinyglobby": "^0.2.15"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "dev": "tsc -p tsconfig.build.json --watch",
     "check:types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "vitest": "^4.0.16"
   }
 }

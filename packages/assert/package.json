@@ -11,7 +11,8 @@
     ".": "./build/_.js"
   },
   "dependencies": {
-    "@kouka/core": "workspace:*"
+    "@kouka/core": "workspace:*",
+    "effect": "^3.19.11"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",

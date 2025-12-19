@@ -15,11 +15,15 @@
     "@kouka/config-manager": "workspace:*",
     "@kouka/configurator": "workspace:*",
     "@kouka/core": "workspace:*",
-    "@kouka/log": "workspace:*"
+    "@kouka/log": "workspace:*",
+    "type-fest": "^5.3.1"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "dev": "tsc -p tsconfig.build.json --watch",
     "check:types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.16"
   }
 }

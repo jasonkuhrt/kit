@@ -11,10 +11,12 @@
     ".": "./build/_.js"
   },
   "dependencies": {
+    "@effect/platform": "^0.94.0",
     "@kouka/core": "workspace:*",
     "@kouka/env": "workspace:*",
     "@kouka/fs": "workspace:*",
-    "@kouka/mod": "workspace:*"
+    "@kouka/mod": "workspace:*",
+    "effect": "^3.19.11"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",

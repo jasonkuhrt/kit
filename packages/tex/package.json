@@ -11,8 +11,11 @@
     ".": "./build/_.js"
   },
   "dependencies": {
+    "@kouka/color": "workspace:*",
     "@kouka/core": "workspace:*",
-    "@kouka/color": "workspace:*"
+    "@types/node": "^25.0.3",
+    "ansis": "^4.2.0",
+    "effect": "^3.19.11"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",

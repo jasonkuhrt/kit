@@ -11,9 +11,9 @@
     ".": "./build/__.js"
   },
   "dependencies": {
+    "@effect/platform": "^0.94.0",
     "@kouka/fs": "workspace:*",
     "@kouka/jsonc": "workspace:*",
-    "@effect/platform": "*",
     "effect": "^3.0.0"
   },
   "scripts": {

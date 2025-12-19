@@ -11,7 +11,12 @@
     ".": "./build/_.js"
   },
   "dependencies": {
-    "@kouka/core": "workspace:*"
+    "@kouka/core": "workspace:*",
+    "@types/object-inspect": "^1.13.0",
+    "effect": "^3.19.11",
+    "fast-check": "^4.4.0",
+    "object-inspect": "^1.13.4",
+    "type-fest": "^5.3.1"
   },
   "peerDependencies": {
     "vitest": ">=2.0.0"
