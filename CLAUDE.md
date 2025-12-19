@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Kit (`@wollybeard/kit`) is a TypeScript standard library providing data structures, utilities, primitives, and domains. The project emphasizes type safety, consistent APIs, and modular architecture.
+Kit is a TypeScript standard library providing data structures, utilities, primitives, and domains. The project is organized as a `@kouka` scoped monorepo with multiple packages. It emphasizes type safety, consistent APIs, and modular architecture.
 
 ## Backwards Compatibility
 
@@ -57,35 +57,40 @@ The project uses two TypeScript configurations for optimal development experienc
 
 ```bash
 # Building
-pnpm build          # Compile TypeScript
-pnpm dev            # Watch mode (no type checking)
-pnpm build:clean    # Clean build artifacts
+pnpm build          # Build all packages
 
-# Testing
-# CRITICAL: Always specify file path to avoid running entire suite (very slow/costly)
-pnpm test:unit src/path/to/file.test.ts --run  # Run single test file
-pnpm test:unit src/module/ --run               # Run tests in directory
-# NEVER use bare `pnpm test` or `pnpm test:unit` without a path!
+# Testing (run from root)
+# Uses vitest with root config - tests can import across packages via aliases
+pnpm vitest packages/core/src/path/to/file.test.ts --run  # Run single test file
+pnpm vitest packages/core/src/module/ --run               # Run tests in directory
 
 # Code Quality
-pnpm check:types        # TypeScript type checking (fast - excludes benchmarks)
-pnpm check:types:all    # Complete type checking (includes benchmarks - slower)
+pnpm check:types        # TypeScript type checking across all packages
 pnpm check:format       # Check formatting with dprint
 pnpm fix:format         # Auto-format with dprint
-pnpm check:package:circular  # Check circular dependencies
+pnpm check:lint         # Lint all packages
+pnpm check:publint      # Validate package.json exports
 
 # Combined Commands
 pnpm check          # Run all check:* commands
 pnpm fix            # Run all fix:* commands
-pnpm fixcheck       # Run fix then check
 
 # Release
-pnpm release        # Release stable version with dripip
+pnpm release        # Publish with changesets
 ```
 
 ## Architecture
 
-The project uses a highly modular architecture with 30+ specialized modules in `src/`. Each module follows these patterns:
+The project is a pnpm workspace monorepo with packages in `packages/`:
+
+- **`@kouka/core`** - Core utilities (30+ modules: arr, obj, str, fn, err, etc.)
+- **`@kouka/test`** - Test utilities (vitest helpers, property-based testing)
+- **`@kouka/assert`** - Assertion utilities
+- **`@kouka/oak`** - CLI argument parsing
+
+### Module Structure (within packages)
+
+Each module in `@kouka/core` follows these patterns:
 
 1. **File Structure**: `src/module-name/{_.ts, __.ts, *.ts, _.test.ts}`
    - `__.ts` - Barrel file exporting all functions/types
@@ -95,16 +100,14 @@ The project uses a highly modular architecture with 30+ specialized modules in `
 2. **Internal Imports**: Use `#` imports (e.g., `import { Fn } from '#fn'`)
 3. **Namespace Exports**: All modules export as PascalCase namespaces
 4. **Currying Pattern**: Functions support currying with `*On` and `*With` variants
-5. **Universal Operations**: Consistent operations across modules (merge, by, is)
 
-### Key Modules
+### Key Modules in @kouka/core
 
-- **Data Structures**: `arr`, `obj`, `str`, `rec`, `group`, `idx`, `tree`
-- **Functional Programming**: `fn`, `prom`, `cache`
-- **I/O & External**: `fs`, `fs-layout`, `fs-relative`, `http`, `cli`, `url`
-- **Type/Value**: `bool`, `null`, `undefined`, `value`
-- **Development**: `debug`, `ts`, `language`, `codec`, `json`
-- **Error Handling**: `err` (includes `try` utilities)
+- **Data Structures**: `arr`, `obj`, `str`, `rec`, `tup`
+- **Functional Programming**: `fn`, `prom`, `prox`
+- **Type/Value**: `bool`, `null`, `undefined`, `num`
+- **Development**: `ts`, `lang`, `pat`, `optic`
+- **Error Handling**: `err`
 
 ## Important Patterns
 
