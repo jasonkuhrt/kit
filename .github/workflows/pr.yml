@@ -143,6 +143,7 @@ jobs:
   # Package jobs use affected-only filtering to skip unchanged packages
   # fetch-depth: 0 is required for Turborepo's git-based filtering
   # Jobs skip actual work (but still pass) for chore.docs:/ci: PRs
+  # Fallback: if affected filter returns 0 packages, run all (handles new packages)
   packages-build:
     needs: check-type
     runs-on: ubuntu-latest
@@ -153,8 +154,18 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup
         if: needs.check-type.outputs.skip-code-checks != 'true'
-      - run: pnpm build:packages:affected
+      - name: Build packages (affected or all)
         if: needs.check-type.outputs.skip-code-checks != 'true'
+        run: |
+          FILTER="--filter='./packages/*...[origin/${{ github.event.pull_request.base.ref }}]'"
+          TASK_COUNT=$(pnpm turbo run build $FILTER --dry-run 2>&1 | grep "Tasks:" | grep -oE '[0-9]+ total' | grep -oE '[0-9]+' || echo "0")
+          if [[ "$TASK_COUNT" == "0" ]]; then
+            echo "No affected packages found, running all packages"
+            pnpm turbo run build --filter='./packages/*'
+          else
+            echo "Running $TASK_COUNT affected package(s)"
+            pnpm turbo run build $FILTER
+          fi
       - run: echo "Skipped for chore.docs/ci commit"
         if: needs.check-type.outputs.skip-code-checks == 'true'
 
@@ -169,8 +180,18 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup
         if: needs.check-type.outputs.skip-code-checks != 'true'
-      - run: pnpm check:types:packages:affected
+      - name: Type check packages (affected or all)
         if: needs.check-type.outputs.skip-code-checks != 'true'
+        run: |
+          FILTER="--filter='./packages/*...[origin/${{ github.event.pull_request.base.ref }}]'"
+          TASK_COUNT=$(pnpm turbo run check:types $FILTER --dry-run 2>&1 | grep "Tasks:" | grep -oE '[0-9]+ total' | grep -oE '[0-9]+' || echo "0")
+          if [[ "$TASK_COUNT" == "0" ]]; then
+            echo "No affected packages found, running all packages"
+            pnpm turbo run check:types --filter='./packages/*'
+          else
+            echo "Running $TASK_COUNT affected package(s)"
+            pnpm turbo run check:types $FILTER
+          fi
       - run: echo "Skipped for chore.docs/ci commit"
         if: needs.check-type.outputs.skip-code-checks == 'true'
 
@@ -184,8 +205,18 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup
         if: needs.check-type.outputs.skip-code-checks != 'true'
-      - run: pnpm check:lint:packages:affected
+      - name: Lint packages (affected or all)
         if: needs.check-type.outputs.skip-code-checks != 'true'
+        run: |
+          FILTER="--filter='./packages/*...[origin/${{ github.event.pull_request.base.ref }}]'"
+          TASK_COUNT=$(pnpm turbo run check:lint $FILTER --dry-run 2>&1 | grep "Tasks:" | grep -oE '[0-9]+ total' | grep -oE '[0-9]+' || echo "0")
+          if [[ "$TASK_COUNT" == "0" ]]; then
+            echo "No affected packages found, running all packages"
+            pnpm turbo run check:lint --filter='./packages/*'
+          else
+            echo "Running $TASK_COUNT affected package(s)"
+            pnpm turbo run check:lint $FILTER
+          fi
       - run: echo "Skipped for chore.docs/ci commit"
         if: needs.check-type.outputs.skip-code-checks == 'true'
 
@@ -199,8 +230,18 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup
         if: needs.check-type.outputs.skip-code-checks != 'true'
-      - run: pnpm check:package:packages:affected
+      - name: Publint packages (affected or all)
         if: needs.check-type.outputs.skip-code-checks != 'true'
+        run: |
+          FILTER="--filter='./packages/*...[origin/${{ github.event.pull_request.base.ref }}]'"
+          TASK_COUNT=$(pnpm turbo run check:package $FILTER --dry-run 2>&1 | grep "Tasks:" | grep -oE '[0-9]+ total' | grep -oE '[0-9]+' || echo "0")
+          if [[ "$TASK_COUNT" == "0" ]]; then
+            echo "No affected packages found, running all packages"
+            pnpm turbo run check:package --filter='./packages/*'
+          else
+            echo "Running $TASK_COUNT affected package(s)"
+            pnpm turbo run check:package $FILTER
+          fi
       - run: echo "Skipped for chore.docs/ci commit"
         if: needs.check-type.outputs.skip-code-checks == 'true'
 
@@ -214,7 +255,17 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup
         if: needs.check-type.outputs.skip-code-checks != 'true'
-      - run: pnpm test:unit:packages:affected
+      - name: Test packages (affected or all)
         if: needs.check-type.outputs.skip-code-checks != 'true'
+        run: |
+          FILTER="--filter='./packages/*...[origin/${{ github.event.pull_request.base.ref }}]'"
+          TASK_COUNT=$(pnpm turbo run test:unit $FILTER --dry-run 2>&1 | grep "Tasks:" | grep -oE '[0-9]+ total' | grep -oE '[0-9]+' || echo "0")
+          if [[ "$TASK_COUNT" == "0" ]]; then
+            echo "No affected packages found, running all packages"
+            pnpm turbo run test:unit --filter='./packages/*'
+          else
+            echo "Running $TASK_COUNT affected package(s)"
+            pnpm turbo run test:unit $FILTER
+          fi
       - run: echo "Skipped for chore.docs/ci commit"
         if: needs.check-type.outputs.skip-code-checks == 'true'
