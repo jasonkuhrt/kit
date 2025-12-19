@@ -18,9 +18,6 @@ docs/.vitepress/cache/
 # Serena MCP
 .serena/cache/
 
-# Local Netlify folder
-.netlify
-
 # Claude local context (flo-generated)
 .claude/*.local.md
 CLAUDE.local.md

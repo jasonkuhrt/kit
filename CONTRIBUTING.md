@@ -343,127 +343,66 @@ export const is = (value: unknown): value is ModuleType => {
 
 ## Conventional Commits
 
-We use [Conventional Commits](https://www.conventionalcommits.org/) strictly. PR titles and commit messages must follow this format.
+We use [Conventional Commits](https://www.conventionalcommits.org/) strictly. See [Appendix](#appendix-cc-reference) for standard types/format.
 
-### Format
+### How CC Works Here
 
-```
-<type>(<scope>): <description>
+- **PR title = squash commit** — PRs are squash-merged, so only the PR title matters for trunk/releases
+- **Scope ≠ CI filtering** — Scopes are for humans/changelogs. CI uses git diff via Turborepo to detect affected packages
+- **PR commits don't matter** — Use any CC type on individual PR commits; only the PR title affects CI behavior
 
-[optional body]
+### Our Customizations
 
-[optional footer(s)]
-```
-
-### Types
-
-| Type       | Description                      | Version Bump | CI Behavior           |
-| ---------- | -------------------------------- | ------------ | --------------------- |
-| `feat`     | New feature                      | Minor        | Full checks           |
-| `fix`      | Bug fix                          | Patch        | Full checks           |
-| `docs`     | Documentation (see below)        | Depends      | Depends               |
-| `style`    | Formatting, whitespace           | None         | Full checks           |
-| `refactor` | Code change (no behavior change) | None         | Full checks           |
-| `perf`     | Performance improvement          | Patch        | Full checks           |
-| `test`     | Adding/updating tests            | None         | Full checks           |
-| `build`    | Build system, dependencies       | None         | Full checks           |
-| `ci`       | CI configuration                 | None         | **Skips code checks** |
-| `chore`    | Other maintenance                | None         | Full checks           |
-
-### Breaking Changes
-
-Add `!` after type/scope for breaking changes:
+**Scopes:** Package name minus `@kouka/` prefix. Comma-separate for multiple packages. Omit for repo-level.
 
 ```
-feat!: remove deprecated API
-feat(kouka-arr)!: change merge behavior
+feat(core): add new utility          # @kouka/core
+fix(core, arr): update shared type   # Multiple packages
+ci: add Vercel Remote Cache          # Repo-level (no scope)
 ```
 
-### Scopes
+**`chore.docs` type:** Distinguishes out-of-band docs from code docs.
 
-Scope should match package name when the change affects a specific package:
+| Type         | What                    | Release? | CI      |
+| ------------ | ----------------------- | -------- | ------- |
+| `docs(pkg)`  | JSDoc, code comments    | ✅ Patch | Full    |
+| `chore.docs` | README, website, guides | ❌ None  | Skipped |
 
-```
-feat(kouka-arr): add findLast method
-fix(kouka-str): handle empty string edge case
-```
+**CI skips:** PR titles with `ci:` or `chore.docs:` skip code checks (only format runs).
 
-For cross-cutting or repo-level changes, omit scope or use `repo`:
+**CC validation:** CI fails if a "no-release" type (`chore`, `style`, `refactor`, `test`, `build`, `ci`, `chore.docs`) has `packages/*/src/` changes. Bypass with `<!-- cc-bypass -->` in PR body for edge cases.
 
-```
-chore: update dev dependencies
-ci: add Vercel Remote Cache
-docs: update README
-```
-
-### Documentation: Code vs Out-of-Band
-
-We distinguish between two types of documentation changes:
-
-#### Code Documentation (`docs(package):`)
-
-Changes to documentation **inside package source files**:
-
-- JSDoc comments
-- Inline code comments
-- Type documentation
-
-```
-docs(kouka-arr): improve JSDoc for merge function
-docs(kouka-str): add examples to split function
-```
-
-**Behavior:**
-
-- ✅ Triggers package release (docs are part of the published package)
-- ✅ Runs full code checks
-- ✅ Appears in package changelog
-
-#### Out-of-Band Documentation (`docs:`)
-
-Changes to documentation **outside packages**:
-
-- README files
-- Website/guides
-- Contributing docs
-- Architecture docs
-
-```
-docs: update README installation section
-docs: add architecture diagram
-docs(readme): fix typo
-```
-
-**Behavior:**
-
-- ❌ Does NOT trigger package release
-- ⏭️ Skips code checks (only format check runs)
-- ❌ Does NOT appear in package changelogs
-
-### CI Optimization by Type
-
-PR titles prefixed with these types skip code checks (only format runs):
-
-- `docs:` (without package scope)
-- `ci:`
-
-This saves ~5 minutes of CI time for documentation and CI-only changes.
-
-### Deprecated: `improve` Type
-
-Previously used `improve` for minor enhancements. Use standard types instead:
-
-| Instead of                    | Use                         |
-| ----------------------------- | --------------------------- |
-| `improve: update deps`        | `chore: update deps`        |
-| `improve(pkg): better output` | `feat(pkg): improve output` |
-| `improve!: rename X to Y`     | `refactor!: rename X to Y`  |
-| `improve(pkg): clarify JSDoc` | `docs(pkg): clarify JSDoc`  |
+**Changeset validation:** CI fails if a release-type PR (`feat`, `fix`, `perf`, `docs(pkg)`) lacks a changeset. Run `pnpm changeset` to create one. Bypass with `<!-- changeset-bypass -->` in PR body for edge cases.
 
 ## Release Process
 
-1. Ensure all tests pass
-2. Update version following semver
-3. Run `pnpm build` to verify build
-4. Commit changes
-5. Use `pnpm release` for automated release
+We use [Changesets](https://github.com/changesets/changesets) for versioning and publishing.
+
+1. **During PR development:** Run `pnpm changeset` to create a changeset describing your changes
+2. **On merge to main:** Changesets action creates a "Version Packages" PR (or updates existing one)
+3. **To release:** Merge the "Version Packages" PR — this publishes to npm automatically
+
+The [changeset bot](https://github.com/apps/changeset-bot) comments on PRs to remind about missing changesets.
+
+---
+
+## Appendix: CC Reference
+
+**Format:** `<type>(<scope>): <description>` (scope optional, `!` for breaking)
+
+**Types:**
+
+| Type       | Description                      | Version Bump |
+| ---------- | -------------------------------- | ------------ |
+| `feat`     | New feature                      | Minor        |
+| `fix`      | Bug fix                          | Patch        |
+| `docs`     | Documentation                    | Patch        |
+| `style`    | Formatting, whitespace           | None         |
+| `refactor` | Code change (no behavior change) | None         |
+| `perf`     | Performance improvement          | Patch        |
+| `test`     | Adding/updating tests            | None         |
+| `build`    | Build system, dependencies       | None         |
+| `ci`       | CI configuration                 | None         |
+| `chore`    | Other maintenance                | None         |
+
+**Semver rule of thumb:** `feat` = "new capability", `fix` = "works better".

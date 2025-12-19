@@ -10,7 +10,7 @@ env:
 
 jobs:
   # Determine what checks to run based on conventional commit type in PR title
-  # docs: and ci: skip code checks (only format runs)
+  # chore.docs: and ci: skip code checks (only format runs)
   check-type:
     runs-on: ubuntu-latest
     outputs:
@@ -20,22 +20,14 @@ jobs:
         id: check
         run: |
           TITLE="${{ github.event.pull_request.title }}"
-          # Skip code checks for:
-          # - ci: or ci(...): - CI config changes
-          # - docs: - out-of-band docs (README, guides, etc.)
-          # - docs(readme): docs(site): etc. - non-package doc scopes
-          #
-          # DO NOT skip for docs(package-name): - code documentation needs checks
-          # Package scopes start with "kouka-" so we detect those
+          # Skip code checks for ci: and chore.docs: (out-of-band docs)
+          # docs(pkg): runs full checks (JSDoc is code)
           if [[ "$TITLE" =~ ^ci(\(|:) ]]; then
             echo "skip-code-checks=true" >> $GITHUB_OUTPUT
             echo "Skipping code checks (ci): $TITLE"
-          elif [[ "$TITLE" =~ ^docs: ]]; then
+          elif [[ "$TITLE" =~ ^chore\.docs(\(|:) ]]; then
             echo "skip-code-checks=true" >> $GITHUB_OUTPUT
-            echo "Skipping code checks (docs without scope): $TITLE"
-          elif [[ "$TITLE" =~ ^docs\( ]] && [[ ! "$TITLE" =~ ^docs\(kouka- ]]; then
-            echo "skip-code-checks=true" >> $GITHUB_OUTPUT
-            echo "Skipping code checks (docs with non-package scope): $TITLE"
+            echo "Skipping code checks (chore.docs): $TITLE"
           else
             echo "skip-code-checks=false" >> $GITHUB_OUTPUT
             echo "Running full checks for: $TITLE"
@@ -48,9 +40,109 @@ jobs:
       - uses: ./.github/actions/setup
       - run: pnpm check:format
 
+  # Validate that "no-release" CC types don't have package src/ changes
+  # Bypass with "<!-- cc-bypass -->" in PR body for edge cases
+  validate-cc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.event.pull_request.base.ref }}
+      - name: Validate CC type matches diff
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          BODY: ${{ github.event.pull_request.body }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          # Check for bypass comment
+          if [[ "${BODY:-}" == *"<!-- cc-bypass -->"* ]]; then
+            echo "CC validation bypassed via PR comment"
+            exit 0
+          fi
+
+          # No-release types: chore, style, refactor, test, build, ci, chore.docs
+          NO_RELEASE_PATTERN="^(chore|style|refactor|test|build|ci|chore\.docs)(\(|:)"
+
+          if [[ "$TITLE" =~ $NO_RELEASE_PATTERN ]]; then
+            # Check for src/ changes in packages (compare against PR base)
+            SRC_CHANGES=$(git diff --name-only "origin/$BASE_REF"...HEAD | grep -E '^packages/[^/]+/src/' || true)
+
+            if [[ -n "$SRC_CHANGES" ]]; then
+              echo "::error::CC type mismatch: '$TITLE' won't trigger a release, but src/ files changed"
+              echo ""
+              echo "Changed files:"
+              echo "$SRC_CHANGES" | sed 's/^/  /'
+              echo ""
+              echo "Fix: Change PR title to a release type (feat:/fix:/perf:/docs:)"
+              echo ""
+              echo "Bypass: If intentional (e.g., true refactor with no behavior change),"
+              echo "add this HTML comment anywhere in the PR body:"
+              echo ""
+              echo "  <!-- cc-bypass -->"
+              echo ""
+              exit 1
+            fi
+          fi
+
+          echo "CC type validated: $TITLE"
+
+  # Validate that release-type PRs have a changeset
+  # Bypass with "<!-- changeset-bypass -->" in PR body for edge cases
+  validate-changeset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.event.pull_request.base.ref }}
+      - name: Validate changeset exists for release PR
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          BODY: ${{ github.event.pull_request.body }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          # Check for bypass comment
+          if [[ "${BODY:-}" == *"<!-- changeset-bypass -->"* ]]; then
+            echo "Changeset validation bypassed via PR comment"
+            exit 0
+          fi
+
+          # Release types: feat, fix, perf, docs (with scope = code docs)
+          # Note: docs: without scope is ambiguous, so we require scope for docs
+          RELEASE_PATTERN="^(feat|fix|perf)(\(|:)|^docs\("
+
+          if [[ "$TITLE" =~ $RELEASE_PATTERN ]]; then
+            # Check for new changeset files (exclude README.md)
+            CHANGESETS=$(git diff --name-only "origin/$BASE_REF"...HEAD | grep -E '^\.changeset/.*\.md$' | grep -v 'README.md' || true)
+
+            if [[ -z "$CHANGESETS" ]]; then
+              echo "::error::Release-type PR requires a changeset: '$TITLE'"
+              echo ""
+              echo "This PR type will trigger a release, but no changeset was found."
+              echo ""
+              echo "Fix: Run 'pnpm changeset' to create a changeset describing your changes."
+              echo ""
+              echo "Bypass: If this change truly doesn't need a release (rare),"
+              echo "add this HTML comment anywhere in the PR body:"
+              echo ""
+              echo "  <!-- changeset-bypass -->"
+              echo ""
+              exit 1
+            fi
+
+            echo "Changeset found: $CHANGESETS"
+          else
+            echo "Non-release PR type, changeset not required: $TITLE"
+          fi
+
   # Package jobs use affected-only filtering to skip unchanged packages
   # fetch-depth: 0 is required for Turborepo's git-based filtering
-  # Jobs skip actual work (but still pass) for docs:/ci: PRs
+  # Jobs skip actual work (but still pass) for chore.docs:/ci: PRs
   packages-build:
     needs: check-type
     runs-on: ubuntu-latest
@@ -63,7 +155,7 @@ jobs:
         if: needs.check-type.outputs.skip-code-checks != 'true'
       - run: pnpm build:packages:affected
         if: needs.check-type.outputs.skip-code-checks != 'true'
-      - run: echo "Skipped for docs/ci commit"
+      - run: echo "Skipped for chore.docs/ci commit"
         if: needs.check-type.outputs.skip-code-checks == 'true'
 
   # Turbo's dependsOn + Vercel Remote Cache handles build dependencies automatically
@@ -79,7 +171,7 @@ jobs:
         if: needs.check-type.outputs.skip-code-checks != 'true'
       - run: pnpm check:types:packages:affected
         if: needs.check-type.outputs.skip-code-checks != 'true'
-      - run: echo "Skipped for docs/ci commit"
+      - run: echo "Skipped for chore.docs/ci commit"
         if: needs.check-type.outputs.skip-code-checks == 'true'
 
   packages-lint:
@@ -94,7 +186,7 @@ jobs:
         if: needs.check-type.outputs.skip-code-checks != 'true'
       - run: pnpm check:lint:packages:affected
         if: needs.check-type.outputs.skip-code-checks != 'true'
-      - run: echo "Skipped for docs/ci commit"
+      - run: echo "Skipped for chore.docs/ci commit"
         if: needs.check-type.outputs.skip-code-checks == 'true'
 
   publint:
@@ -109,7 +201,7 @@ jobs:
         if: needs.check-type.outputs.skip-code-checks != 'true'
       - run: pnpm check:package:packages:affected
         if: needs.check-type.outputs.skip-code-checks != 'true'
-      - run: echo "Skipped for docs/ci commit"
+      - run: echo "Skipped for chore.docs/ci commit"
         if: needs.check-type.outputs.skip-code-checks == 'true'
 
   packages-test:
@@ -124,5 +216,5 @@ jobs:
         if: needs.check-type.outputs.skip-code-checks != 'true'
       - run: pnpm test:unit:packages:affected
         if: needs.check-type.outputs.skip-code-checks != 'true'
-      - run: echo "Skipped for docs/ci commit"
+      - run: echo "Skipped for chore.docs/ci commit"
         if: needs.check-type.outputs.skip-code-checks == 'true'
