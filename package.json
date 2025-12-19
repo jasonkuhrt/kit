@@ -18,8 +18,8 @@
     "check:types:affected": "turbo run check:types --filter='./packages/*...[origin/main]'",
     "check:publint": "turbo run check:package --filter='./packages/*'",
     "check:publint:affected": "turbo run check:package --filter='./packages/*...[origin/main]'",
-    "test:unit": "turbo run test:unit --filter='./packages/*'",
-    "test:unit:affected": "turbo run test:unit --filter='./packages/*...[origin/main]'",
+    "test": "turbo run test --filter='./packages/*'",
+    "test:affected": "turbo run test --filter='./packages/*...[origin/main]'",
     "release": "changeset publish",
     "check": "pnpm check:format && pnpm check:types && pnpm check:lint && pnpm check:publint",
     "fix": "pnpm fix:format"

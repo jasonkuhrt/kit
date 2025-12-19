@@ -259,13 +259,13 @@ jobs:
         if: needs.check-type.outputs.skip-code-checks != 'true'
         run: |
           FILTER="--filter='./packages/*...[origin/${{ github.event.pull_request.base.ref }}]'"
-          TASK_COUNT=$(pnpm turbo run test:unit $FILTER --dry-run 2>&1 | grep "Tasks:" | grep -oE '[0-9]+ total' | grep -oE '[0-9]+' || echo "0")
+          TASK_COUNT=$(pnpm turbo run test $FILTER --dry-run 2>&1 | grep "Tasks:" | grep -oE '[0-9]+ total' | grep -oE '[0-9]+' || echo "0")
           if [[ "$TASK_COUNT" == "0" ]]; then
             echo "No affected packages found, running all packages"
-            pnpm turbo run test:unit --filter='./packages/*'
+            pnpm turbo run test --filter='./packages/*'
           else
             echo "Running $TASK_COUNT affected package(s)"
-            pnpm turbo run test:unit $FILTER
+            pnpm turbo run test $FILTER
           fi
       - run: echo "Skipped for chore.docs/ci commit"
         if: needs.check-type.outputs.skip-code-checks == 'true'
