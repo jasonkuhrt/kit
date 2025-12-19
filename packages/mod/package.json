@@ -8,7 +8,8 @@
     "#mod/*": "./build/*.js"
   },
   "exports": {
-    ".": "./build/_.js"
+    ".": "./build/_.js",
+    "./import": "./build/import.js"
   },
   "dependencies": {
     "@effect/platform": "^0.94.0",

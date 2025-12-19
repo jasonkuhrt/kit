@@ -99,14 +99,11 @@ export const applyPartial = <
  * const result2 = applyExact(userWithExtra, mask) // Type error!
  * ```
  */
-export const applyExact = <
-  data,
-  mask extends Mask<any>,
->(
+export const applyExact: <data, mask extends Mask<any>>(
   data: Obj.NoExcess<data, GetDataType<mask>>,
   mask: mask,
-): Apply<data, mask> => {
-  return applyInternal(data, mask) as Apply<data, mask>
+) => Apply<data, mask> = (data, mask) => {
+  return applyInternal(data, mask) as any
 }
 
 // Internal implementation

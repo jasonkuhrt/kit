@@ -69,9 +69,9 @@ export interface Extension<
 /**
  * Create an extension with the given configuration.
  */
-export const createExtension = <
+export const createExtension: <
   $Type,
   $Guard extends Fn.Kind.Kind = Fn.Kind.Identity,
 >(
   config: Extension<$Type, $Guard>,
-): Extension<$Type, $Guard> => config
+) => Extension<$Type, $Guard> = (config) => config
