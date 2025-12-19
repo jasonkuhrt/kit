@@ -76,9 +76,9 @@
     "src"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "dev": "tsc -p tsconfig.build.json --watch",
-    "check:types": "tsc --noEmit"
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
   },
   "dependencies": {
     "ansis": "^4.2.0",
@@ -100,9 +100,6 @@
     }
   },
   "devDependencies": {
-    "@types/node": "^25.0.3",
-    "@types/object-inspect": "^1.13.0",
-    "fast-check": "^4.4.0",
-    "vitest": "^4.0.16"
+    "@types/object-inspect": "^1.13.0"
   }
 }

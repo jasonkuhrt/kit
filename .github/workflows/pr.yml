@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm check:format
+      - run: pnpm format:check
 
   # Validate that "no-release" CC types don't have package src/ changes
   # Bypass with "<!-- cc-bypass -->" in PR body for edge cases

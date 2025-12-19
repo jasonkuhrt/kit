@@ -17,12 +17,11 @@
     "object-inspect": "^1.13.4"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "dev": "tsc -p tsconfig.build.json --watch",
-    "check:types": "tsc --noEmit"
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
   },
   "devDependencies": {
-    "@types/node": "^25.0.3",
     "@types/object-inspect": "^1.13.0"
   }
 }

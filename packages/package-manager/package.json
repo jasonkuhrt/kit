@@ -17,11 +17,8 @@
     "effect": "^3.0.0"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "dev": "tsc -p tsconfig.build.json --watch",
-    "check:types": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "@types/node": "^25.0.3"
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
   }
 }

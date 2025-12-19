@@ -55,28 +55,28 @@ The project uses two TypeScript configurations for optimal development experienc
 
 ## Development Commands
 
+All tasks are run via turbo directly:
+
 ```bash
 # Building
-pnpm build          # Build all packages
+pnpm turbo run build                        # Build all packages
+pnpm turbo run build --filter=@kouka/core   # Build single package
 
-# Testing (run from root)
-# Uses vitest with root config - tests can import across packages via aliases
+# Testing (run from root with vitest)
 pnpm vitest packages/core/src/path/to/file.test.ts --run  # Run single test file
 pnpm vitest packages/core/src/module/ --run               # Run tests in directory
 
-# Code Quality
-pnpm check:types        # TypeScript type checking across all packages
-pnpm check:format       # Check formatting with dprint
-pnpm fix:format         # Auto-format with dprint
-pnpm check:lint         # Lint all packages
-pnpm check:publint      # Validate package.json exports
+# Code Quality (via turbo)
+pnpm turbo run check:types                  # TypeScript type checking
+pnpm turbo run check:lint                   # Lint packages
+pnpm turbo run check:package                # Validate package.json exports
 
-# Combined Commands
-pnpm check          # Run all check:* commands
-pnpm fix            # Run all fix:* commands
+# Formatting (dprint, not turbo)
+pnpm format:check       # Check formatting
+pnpm format             # Auto-format
 
 # Release
-pnpm release        # Publish with changesets
+pnpm release            # Publish with changesets
 ```
 
 ## Architecture

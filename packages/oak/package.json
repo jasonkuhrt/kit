@@ -23,12 +23,8 @@
     "zod": "^4.2.1"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "dev": "tsc -p tsconfig.build.json --watch",
-    "check:types": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "@types/node": "^25.0.3",
-    "vitest": "^4.0.16"
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
   }
 }

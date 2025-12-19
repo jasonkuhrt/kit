@@ -23,9 +23,15 @@ importers:
       '@tsconfig/strictest':
         specifier: ^2.0.8
         version: 2.0.8
+      '@types/node':
+        specifier: ^25.0.3
+        version: 25.0.3
       dprint:
         specifier: ^0.50.2
         version: 0.50.2
+      fast-check:
+        specifier: ^4.4.0
+        version: 4.4.0
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
@@ -150,18 +156,9 @@ importers:
         specifier: ^4.2.1
         version: 4.2.1
     devDependencies:
-      '@types/node':
-        specifier: ^25.0.3
-        version: 25.0.3
       '@types/object-inspect':
         specifier: ^1.13.0
         version: 1.13.0
-      fast-check:
-        specifier: ^4.4.0
-        version: 4.4.0
-      vitest:
-        specifier: ^4.0.16
-        version: 4.0.16(@types/node@25.0.3)(tsx@4.21.0)
 
   packages/env:
     dependencies:
@@ -171,10 +168,6 @@ importers:
       effect:
         specifier: ^3.0.0
         version: 3.19.13
-    devDependencies:
-      '@types/node':
-        specifier: ^25.0.3
-        version: 25.0.3
 
   packages/fs:
     dependencies:
@@ -193,13 +186,6 @@ importers:
       tinyglobby:
         specifier: ^0.2.15
         version: 0.2.15
-    devDependencies:
-      '@types/node':
-        specifier: ^25.0.3
-        version: 25.0.3
-      vitest:
-        specifier: ^4.0.16
-        version: 4.0.16(@types/node@25.0.3)(tsx@4.21.0)
 
   packages/group:
     dependencies:
@@ -253,9 +239,6 @@ importers:
         specifier: ^1.13.4
         version: 1.13.4
     devDependencies:
-      '@types/node':
-        specifier: ^25.0.3
-        version: 25.0.3
       '@types/object-inspect':
         specifier: ^1.13.0
         version: 1.13.0
@@ -346,13 +329,6 @@ importers:
       zod:
         specifier: ^4.2.1
         version: 4.2.1
-    devDependencies:
-      '@types/node':
-        specifier: ^25.0.3
-        version: 25.0.3
-      vitest:
-        specifier: ^4.0.16
-        version: 4.0.16(@types/node@25.0.3)(tsx@4.21.0)
 
   packages/package-manager:
     dependencies:
@@ -368,10 +344,6 @@ importers:
       effect:
         specifier: ^3.0.0
         version: 3.19.13
-    devDependencies:
-      '@types/node':
-        specifier: ^25.0.3
-        version: 25.0.3
 
   packages/paka:
     dependencies:
@@ -423,10 +395,6 @@ importers:
       unified:
         specifier: ^11.0.5
         version: 11.0.5
-    devDependencies:
-      '@types/node':
-        specifier: ^25.0.3
-        version: 25.0.3
 
   packages/prox: {}
 
@@ -547,10 +515,6 @@ importers:
       type-fest:
         specifier: ^5.3.1
         version: 5.3.1
-    devDependencies:
-      vitest:
-        specifier: ^4.0.16
-        version: 4.0.16(@types/node@25.0.3)(tsx@4.21.0)
 
 packages:
 
