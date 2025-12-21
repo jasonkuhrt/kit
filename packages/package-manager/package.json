@@ -1,0 +1,25 @@
+{
+  "name": "@kouka/package-manager",
+  "version": "0.0.0",
+  "description": "Package manager utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#package-manager": "./build/_.js",
+    "#package-manager/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@effect/platform": "^0.94.0",
+    "@kouka/env": "workspace:*",
+    "@kouka/fs": "workspace:*",
+    "effect": "^3.0.0"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

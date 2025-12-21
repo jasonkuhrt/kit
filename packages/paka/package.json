@@ -1,0 +1,36 @@
+{
+  "name": "@kouka/paka",
+  "version": "0.0.0",
+  "description": "Package utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#paka": "./build/_.js",
+    "#paka/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@dprint/formatter": "^0.4.1",
+    "@dprint/markdown": "^0.20.0",
+    "@kouka/core": "workspace:*",
+    "@kouka/fs": "workspace:*",
+    "@kouka/syn": "workspace:*",
+    "@microsoft/tsdoc": "^0.16.0",
+    "@types/mdast": "^4.0.4",
+    "effect": "^3.0.0",
+    "mdast": "^3.0.0",
+    "mdast-util-to-string": "^4.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
+    "ts-morph": "^27.0.2",
+    "unified": "^11.0.5"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

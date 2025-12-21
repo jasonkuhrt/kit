@@ -1,0 +1,26 @@
+{
+  "name": "@kouka/manifest",
+  "version": "0.0.0",
+  "description": "Manifest file utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#manifest": "./build/_.js",
+    "#manifest/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*",
+    "@kouka/fs": "workspace:*",
+    "@kouka/resource": "workspace:*",
+    "@kouka/semver": "workspace:*",
+    "effect": "^3.0.0"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

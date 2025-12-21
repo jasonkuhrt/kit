@@ -1,0 +1,24 @@
+{
+  "name": "@kouka/config-manager",
+  "version": "0.0.0",
+  "description": "Configuration file management",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#config-manager": "./build/_.js",
+    "#config-manager/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*",
+    "effect": "^3.0.0",
+    "type-fest": "*"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

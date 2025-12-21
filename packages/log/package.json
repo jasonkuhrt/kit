@@ -1,0 +1,28 @@
+{
+  "name": "@kouka/log",
+  "version": "0.0.0",
+  "description": "Logging utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#log": "./build/_.js",
+    "#log/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*",
+    "@kouka/time": "workspace:*",
+    "es-toolkit": "^1.43.0",
+    "object-inspect": "^1.13.4"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  },
+  "devDependencies": {
+    "@types/object-inspect": "^1.13.0"
+  }
+}

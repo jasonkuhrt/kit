@@ -1,0 +1,23 @@
+{
+  "name": "@kouka/semver",
+  "version": "0.0.0",
+  "description": "Semantic versioning utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#semver": "./build/_.js",
+    "#semver/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@vltpkg/semver": "^1.0.0-rc.12",
+    "effect": "^3.0.0"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

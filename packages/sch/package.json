@@ -1,0 +1,23 @@
+{
+  "name": "@kouka/sch",
+  "version": "0.0.0",
+  "description": "Schema utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#sch": "./build/_.js",
+    "#sch/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*",
+    "effect": "^3.19.11"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

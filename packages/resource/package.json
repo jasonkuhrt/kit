@@ -1,0 +1,25 @@
+{
+  "name": "@kouka/resource",
+  "version": "0.0.0",
+  "description": "Resource management utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#resource": "./build/_.js",
+    "#resource/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/__.js"
+  },
+  "dependencies": {
+    "@effect/platform": "^0.94.0",
+    "@kouka/fs": "workspace:*",
+    "@kouka/jsonc": "workspace:*",
+    "effect": "^3.0.0"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@kouka/ref",
+  "version": "0.0.0",
+  "description": "Reference utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#ref": "./build/_.js",
+    "#ref/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

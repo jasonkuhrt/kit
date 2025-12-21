@@ -1,0 +1,25 @@
+{
+  "name": "@kouka/mask",
+  "version": "0.0.0",
+  "description": "Data masking utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#mask": "./build/_.js",
+    "#mask/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*"
+  }
+}

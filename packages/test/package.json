@@ -1,0 +1,31 @@
+{
+  "name": "@kouka/test",
+  "version": "0.0.0",
+  "description": "Testing utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#test": "./build/_.js",
+    "#test/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js",
+    "./test": "./build/__.js"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*",
+    "@types/object-inspect": "^1.13.0",
+    "effect": "^3.19.11",
+    "fast-check": "^4.4.0",
+    "object-inspect": "^1.13.4",
+    "type-fest": "^5.3.1"
+  },
+  "peerDependencies": {
+    "vitest": ">=2.0.0"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

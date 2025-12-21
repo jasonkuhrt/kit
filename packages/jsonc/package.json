@@ -1,0 +1,23 @@
+{
+  "name": "@kouka/jsonc",
+  "version": "0.0.0",
+  "description": "JSON with comments utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#jsonc": "./build/_.js",
+    "#jsonc/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/__.js"
+  },
+  "dependencies": {
+    "effect": "^3.0.0",
+    "jsonc-parser": "^3.0.0"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

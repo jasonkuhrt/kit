@@ -1,0 +1,23 @@
+{
+  "name": "@kouka/num",
+  "version": "0.0.0",
+  "description": "Extended number utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#num": "./build/_.js",
+    "#num/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*",
+    "effect": "^3.0.0"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

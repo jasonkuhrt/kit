@@ -1,0 +1,25 @@
+{
+  "name": "@kouka/tree",
+  "version": "0.0.0",
+  "description": "Tree data structure utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#tree": "./build/_.js",
+    "#tree/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  },
+  "dependencies": {
+    "fast-check": "^3.0.0"
+  }
+}

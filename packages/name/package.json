@@ -1,0 +1,25 @@
+{
+  "name": "@kouka/name",
+  "version": "0.0.0",
+  "description": "Naming convention utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#name": "./build/_.js",
+    "#name/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*"
+  }
+}

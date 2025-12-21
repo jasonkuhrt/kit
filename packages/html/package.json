@@ -1,0 +1,19 @@
+{
+  "name": "@kouka/html",
+  "version": "0.0.0",
+  "description": "HTML utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#html": "./build/_.js",
+    "#html/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@kouka/tex",
+  "version": "0.0.0",
+  "description": "Text and box formatting utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#tex": "./build/_.js",
+    "#tex/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@kouka/color": "workspace:*",
+    "@kouka/core": "workspace:*",
+    "@types/node": "^25.0.3",
+    "ansis": "^4.2.0",
+    "effect": "^3.19.11"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

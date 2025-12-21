@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build",
+    "paths": {
+      "#log": [
+        "./src/_.js"
+      ],
+      "#log/*": [
+        "./src/*.js"
+      ]
+    }
+  },
+  "include": [
+    "src"
+  ]
+}

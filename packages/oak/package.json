@@ -1,0 +1,31 @@
+{
+  "name": "@kouka/oak",
+  "version": "0.0.0",
+  "description": "CLI argument parsing",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#oak": "./build/_.js",
+    "#oak/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@kouka/assert": "workspace:*",
+    "@kouka/cli": "workspace:*",
+    "@kouka/core": "workspace:*",
+    "@kouka/group": "workspace:*",
+    "@kouka/tex": "workspace:*",
+    "@standard-schema/spec": "*",
+    "alge": "^0.8.1",
+    "ansis": "*",
+    "effect": "^3.0.0",
+    "zod": "^4.2.1"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

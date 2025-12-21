@@ -1,0 +1,26 @@
+{
+  "name": "@kouka/mod",
+  "version": "0.0.0",
+  "description": "Module utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#mod": "./build/_.js",
+    "#mod/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js",
+    "./import": "./build/import.js"
+  },
+  "dependencies": {
+    "@effect/platform": "^0.94.0",
+    "@kouka/core": "workspace:*",
+    "@kouka/fs": "workspace:*",
+    "effect": "^3.19.11"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@kouka/configurator",
+  "version": "0.0.0",
+  "description": "Configurator pattern utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#configurator": "./build/_.js",
+    "#configurator/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*",
+    "type-fest": "*"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

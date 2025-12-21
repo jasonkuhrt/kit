@@ -1,0 +1,23 @@
+{
+  "name": "@kouka/json",
+  "version": "0.0.0",
+  "description": "JSON utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#json": "./build/_.js",
+    "#json/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@kouka/codec": "workspace:*",
+    "effect": "^3.0.0"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

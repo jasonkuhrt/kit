@@ -1,0 +1,19 @@
+{
+  "name": "@kouka/prox",
+  "version": "0.0.0",
+  "description": "Extended proxy utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#prox": "./build/_.js",
+    "#prox/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

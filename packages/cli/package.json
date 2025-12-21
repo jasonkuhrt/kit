@@ -1,0 +1,27 @@
+{
+  "name": "@kouka/cli",
+  "version": "0.0.0",
+  "description": "CLI framework",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#cli": "./build/_.js",
+    "#cli/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@effect/platform": "^0.94.0",
+    "@kouka/core": "workspace:*",
+    "@kouka/env": "workspace:*",
+    "@kouka/fs": "workspace:*",
+    "@kouka/mod": "workspace:*",
+    "effect": "^3.19.11"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

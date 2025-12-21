@@ -1,0 +1,26 @@
+{
+  "name": "@kouka/codec",
+  "version": "0.0.0",
+  "description": "Encoding and decoding utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#codec": "./build/_.js",
+    "#codec/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*",
+    "effect": "^3.0.0"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@kouka/idx",
+  "version": "0.0.0",
+  "description": "Index data structure",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#idx": "./build/_.js",
+    "#idx/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  },
+  "dependencies": {
+    "@kouka/core": "workspace:*",
+    "type-fest": "^4.0.0"
+  }
+}

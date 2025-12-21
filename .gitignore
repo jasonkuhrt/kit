@@ -1,6 +1,9 @@
 build
+**/build/
 **/node_modules/
 **/.dprint/
+**/.turbo/
+*.tsbuildinfo
 
 .DS_Store
 
@@ -15,9 +18,9 @@ docs/.vitepress/cache/
 # Serena MCP
 .serena/cache/
 
-# Local Netlify folder
-.netlify
-
 # Claude local context (flo-generated)
 .claude/*.local.md
 CLAUDE.local.md
+
+# Turborepo
+.turbo

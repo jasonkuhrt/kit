@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build",
+    "paths": {
+      "#oak": [
+        "./src/_.js"
+      ],
+      "#oak/*": [
+        "./src/*.js"
+      ]
+    }
+  },
+  "include": [
+    "src"
+  ]
+}

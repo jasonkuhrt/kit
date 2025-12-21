@@ -1,0 +1,22 @@
+{
+  "name": "@kouka/color",
+  "version": "0.0.0",
+  "description": "Color manipulation utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#color": "./build/_.js",
+    "#color/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/__.js"
+  },
+  "dependencies": {
+    "effect": "^3.0.0"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

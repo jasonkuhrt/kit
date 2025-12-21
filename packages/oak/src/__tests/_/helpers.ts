@@ -1,0 +1,50 @@
+import { Prom } from '@kouka/core/prom'
+import { z } from 'zod/v4'
+import * as Command from '../../_entrypoints/__.js'
+import { Zod } from '../../extensions/__.js'
+
+// todo enable throw on all tests
+export const $ = Command.create().use(Zod) // .settings({ onError: `throw` })
+
+export const assertAssignable = <T>(_: T): [T] => 0 as any
+export const as = <T>(): T => undefined as any
+export const n = z.number()
+export const s = z.string()
+export const b = z.boolean()
+export const l1 = z.literal(1)
+export const e = z.enum([`major`, `minor`, `patch`])
+export const tryCatch = <T, E extends Error = Error>(
+  fn: () => T,
+): T extends Promise<any> ? Promise<Awaited<T> | E> : T | E => {
+  try {
+    const result = fn() as any
+    if (Prom.isShape(result)) {
+      return result.catch((error) => {
+        return errorFromMaybeError(error)
+      }) as any
+    }
+    return result
+  } catch (error) {
+    return errorFromMaybeError(error) as any
+  }
+}
+
+/**
+ * Ensure that the given value is an error and return it. If it is not an error than
+ * wrap it in one, passing the given value as the error message.
+ */
+export const errorFromMaybeError = (maybeError: unknown): Error => {
+  if (maybeError instanceof Error) return maybeError
+
+  if (typeof maybeError === `object` && maybeError !== null) {
+    try {
+      // todo use isomorphic util inspect
+      // maybe https://www.npmjs.com/package/object-inspect?
+      return new Error(String(maybeError))
+    } catch {
+      // silently ignore
+    }
+  }
+
+  return new Error(String(maybeError))
+}

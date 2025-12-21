@@ -1,0 +1,27 @@
+{
+  "name": "@kouka/ware",
+  "version": "0.0.0",
+  "description": "Middleware utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#ware": "./build/_.js",
+    "#ware/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "dependencies": {
+    "@kouka/bldr": "workspace:*",
+    "@kouka/config-manager": "workspace:*",
+    "@kouka/configurator": "workspace:*",
+    "@kouka/core": "workspace:*",
+    "@kouka/log": "workspace:*",
+    "type-fest": "^5.3.1"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}

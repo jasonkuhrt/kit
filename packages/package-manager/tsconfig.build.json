@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "paths": {
+      "#package-manager": [
+        "./src/_.js"
+      ],
+      "#package-manager/*": [
+        "./src/*.js"
+      ]
+    }
+  }
+}

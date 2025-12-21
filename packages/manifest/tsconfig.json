@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build",
+    "paths": {
+      "#manifest": [
+        "./src/_.js"
+      ],
+      "#manifest/*": [
+        "./src/*.js"
+      ]
+    }
+  },
+  "include": [
+    "src"
+  ]
+}

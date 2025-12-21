@@ -1,0 +1,23 @@
+{
+  "name": "@kouka/time",
+  "version": "0.0.0",
+  "description": "Time utilities",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#time": "./build/_.js",
+    "#time/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js"
+  },
+  "files": [
+    "build",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit"
+  }
+}
