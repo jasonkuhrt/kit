@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@kouka/core": "workspace:*",
-    "@kouka/assert": "workspace:*",
     "effect": "^3.0.0",
     "type-fest": "*"
   },

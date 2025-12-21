@@ -17,7 +17,6 @@
     "@kouka/core": "workspace:*",
     "@kouka/fs": "workspace:*",
     "@kouka/syn": "workspace:*",
-    "@kouka/test": "workspace:*",
     "@microsoft/tsdoc": "^0.16.0",
     "@types/mdast": "^4.0.4",
     "effect": "^3.0.0",

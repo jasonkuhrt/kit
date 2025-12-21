@@ -95,18 +95,12 @@ importers:
 
   packages/color:
     dependencies:
-      '@kouka/core':
-        specifier: workspace:*
-        version: link:../core
       effect:
         specifier: ^3.0.0
         version: 3.19.13
 
   packages/config-manager:
     dependencies:
-      '@kouka/assert':
-        specifier: workspace:*
-        version: link:../assert
       '@kouka/core':
         specifier: workspace:*
         version: link:../core
@@ -473,9 +467,6 @@ importers:
       '@kouka/syn':
         specifier: workspace:*
         version: link:../syn
-      '@kouka/test':
-        specifier: workspace:*
-        version: link:../test
       '@microsoft/tsdoc':
         specifier: ^0.16.0
         version: 0.16.0
