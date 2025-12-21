@@ -1,6 +1,7 @@
 {
   "name": "@kouka/color",
   "version": "0.0.0",
+  "description": "Color manipulation utilities",
   "type": "module",
   "sideEffects": false,
   "imports": {

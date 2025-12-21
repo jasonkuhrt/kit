@@ -229,9 +229,111 @@ importers:
 
   packages/kouka:
     dependencies:
+      '@kouka/assert':
+        specifier: workspace:*
+        version: link:../assert
+      '@kouka/bldr':
+        specifier: workspace:*
+        version: link:../bldr
+      '@kouka/cli':
+        specifier: workspace:*
+        version: link:../cli
+      '@kouka/codec':
+        specifier: workspace:*
+        version: link:../codec
+      '@kouka/color':
+        specifier: workspace:*
+        version: link:../color
+      '@kouka/config-manager':
+        specifier: workspace:*
+        version: link:../config-manager
+      '@kouka/configurator':
+        specifier: workspace:*
+        version: link:../configurator
       '@kouka/core':
         specifier: workspace:*
         version: link:../core
+      '@kouka/env':
+        specifier: workspace:*
+        version: link:../env
+      '@kouka/fs':
+        specifier: workspace:*
+        version: link:../fs
+      '@kouka/group':
+        specifier: workspace:*
+        version: link:../group
+      '@kouka/html':
+        specifier: workspace:*
+        version: link:../html
+      '@kouka/http':
+        specifier: workspace:*
+        version: link:../http
+      '@kouka/idx':
+        specifier: workspace:*
+        version: link:../idx
+      '@kouka/json':
+        specifier: workspace:*
+        version: link:../json
+      '@kouka/jsonc':
+        specifier: workspace:*
+        version: link:../jsonc
+      '@kouka/log':
+        specifier: workspace:*
+        version: link:../log
+      '@kouka/manifest':
+        specifier: workspace:*
+        version: link:../manifest
+      '@kouka/mask':
+        specifier: workspace:*
+        version: link:../mask
+      '@kouka/mod':
+        specifier: workspace:*
+        version: link:../mod
+      '@kouka/name':
+        specifier: workspace:*
+        version: link:../name
+      '@kouka/oak':
+        specifier: workspace:*
+        version: link:../oak
+      '@kouka/package-manager':
+        specifier: workspace:*
+        version: link:../package-manager
+      '@kouka/paka':
+        specifier: workspace:*
+        version: link:../paka
+      '@kouka/ref':
+        specifier: workspace:*
+        version: link:../ref
+      '@kouka/resource':
+        specifier: workspace:*
+        version: link:../resource
+      '@kouka/sch':
+        specifier: workspace:*
+        version: link:../sch
+      '@kouka/semver':
+        specifier: workspace:*
+        version: link:../semver
+      '@kouka/syn':
+        specifier: workspace:*
+        version: link:../syn
+      '@kouka/test':
+        specifier: workspace:*
+        version: link:../test
+      '@kouka/tex':
+        specifier: workspace:*
+        version: link:../tex
+      '@kouka/time':
+        specifier: workspace:*
+        version: link:../time
+      '@kouka/tree':
+        specifier: workspace:*
+        version: link:../tree
+      '@kouka/url':
+        specifier: workspace:*
+        version: link:../url
+      '@kouka/ware':
+        specifier: workspace:*
+        version: link:../ware
 
   packages/log:
     dependencies:

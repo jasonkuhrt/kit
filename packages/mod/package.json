@@ -1,6 +1,7 @@
 {
   "name": "@kouka/mod",
   "version": "0.0.0",
+  "description": "Module utilities",
   "type": "module",
   "sideEffects": false,
   "imports": {

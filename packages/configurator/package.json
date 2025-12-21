@@ -1,6 +1,7 @@
 {
   "name": "@kouka/configurator",
   "version": "0.0.0",
+  "description": "Configurator pattern utilities",
   "type": "module",
   "sideEffects": false,
   "imports": {

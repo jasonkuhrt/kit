@@ -8,6 +8,8 @@
   },
   "packageManager": "pnpm@10.23.0",
   "scripts": {
+    "build:packages": "turbo build",
+    "docs:refresh": "tsx scripts/docs-refresh.ts",
     "format": "dprint fmt",
     "format:check": "dprint check",
     "release": "changeset publish",

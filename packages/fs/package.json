@@ -1,6 +1,7 @@
 {
   "name": "@kouka/fs",
   "version": "0.0.0",
+  "description": "Filesystem utilities",
   "type": "module",
   "sideEffects": false,
   "imports": {

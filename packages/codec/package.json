@@ -1,6 +1,7 @@
 {
   "name": "@kouka/codec",
   "version": "0.0.0",
+  "description": "Encoding and decoding utilities",
   "type": "module",
   "sideEffects": false,
   "imports": {

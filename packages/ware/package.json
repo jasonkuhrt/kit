@@ -1,6 +1,7 @@
 {
   "name": "@kouka/ware",
   "version": "0.0.0",
+  "description": "Middleware utilities",
   "type": "module",
   "sideEffects": false,
   "imports": {

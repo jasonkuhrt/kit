@@ -1,6 +1,7 @@
 {
   "name": "@kouka/package-manager",
   "version": "0.0.0",
+  "description": "Package manager utilities",
   "type": "module",
   "sideEffects": false,
   "imports": {
