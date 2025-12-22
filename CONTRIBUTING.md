@@ -41,12 +41,12 @@ error TS2742: The inferred type of 'X' cannot be named without a reference to
 '../node_modules/@kouka/core/build/optic/lenses/returned.js'.
 ```
 
-**Cause**: TypeScript cannot find a "portable" path to reference an inferred type during declaration emit. This happens when types are re-exported through ESM namespaces (`export * as X from`).
+**Cause**: TypeScript declaration emit cannot do novel module resolution - it only uses specifiers resolved during program creation. When types are re-exported through ESM namespaces (`export * as X from`), TypeScript cannot discover a portable path to reference those types.
 
-**Solution**: Add internal subpath exports to package.json and empty type imports in the library's public barrel:
+**Solution**: Library-side fix in `@kouka/core` (no consumer action needed):
 
+1. Add internal subpath exports to `package.json`:
 ```json
-// package.json
 {
   "exports": {
     "./_internal/optic-lenses/returned": "./build/optic/lenses/returned.js"
@@ -54,9 +54,18 @@ error TS2742: The inferred type of 'X' cannot be named without a reference to
 }
 ```
 
+2. In the library's barrel file, import and USE the internal modules in an exported type:
 ```typescript
-// In the library's source file
-import type {} from '@kouka/core/_internal/optic-lenses/returned'
+// In @kouka/core/src/optic/__.ts
+import type * as __returned from '@kouka/core/_internal/optic-lenses/returned'
+
+/**
+ * @internal DO NOT USE - Forces TypeScript to include internal module references
+ * in declaration output. Required for consumer type inference.
+ */
+export type __InternalLensResolution = __returned.Get<never> | ...
 ```
+
+**Key insight**: Empty imports (`import type {} from '...'`) and unused namespace imports get elided from `.d.ts` output. You must USE the imports in an exported type to preserve them in declarations.
 
 See [TypeScript Issue #61700](https://github.com/microsoft/TypeScript/issues/61700) for full explanation.

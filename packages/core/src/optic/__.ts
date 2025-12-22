@@ -16,15 +16,15 @@ import type * as __returned from '@kouka/core/_internal/optic-lenses/returned'
  * See: https://github.com/microsoft/TypeScript/issues/61700
  */
 export type __InternalLensResolution =
-  | __array.Get<never, never>
-  | __awaited.Get<never, never>
-  | __parameter1.Get<never, never>
-  | __parameter2.Get<never, never>
-  | __parameter3.Get<never, never>
-  | __parameter4.Get<never, never>
-  | __parameter5.Get<never, never>
-  | __parameters.Get<never, never>
-  | __returned.Get<never, never>
+  | __array.Get<never>
+  | __awaited.Get<never>
+  | __parameter1.Get<never>
+  | __parameter2.Get<never>
+  | __parameter3.Get<never>
+  | __parameter4.Get<never>
+  | __parameter5.Get<never>
+  | __parameters.Get<never>
+  | __returned.Get<never>
 
 // Core operations
 export type {
