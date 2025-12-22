@@ -1,4 +1,4 @@
-import type { Path } from '#fs/__.js'
+import type { Path } from '../_.js'
 import { Array, Equivalence, Match, Option } from 'effect'
 import type { $Abs } from '../$Abs/_.js'
 import type { $Dir } from '../$Dir/_.js'

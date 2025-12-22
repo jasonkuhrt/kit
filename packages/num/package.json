@@ -4,10 +4,6 @@
   "description": "Extended number utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#num": "./build/_.js",
-    "#num/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

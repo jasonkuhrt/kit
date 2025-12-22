@@ -4,10 +4,6 @@
   "description": "Builder pattern utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#bldr": "./build/_.js",
-    "#bldr/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

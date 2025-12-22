@@ -4,10 +4,6 @@
   "description": "Syntax utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#syn": "./build/_.js",
-    "#syn/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

@@ -4,10 +4,6 @@
   "description": "Assertion utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#assert": "./build/_.js",
-    "#assert/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js",

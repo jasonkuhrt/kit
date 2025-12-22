@@ -5,15 +5,7 @@
     "outDir": "./build",
     "tsBuildInfoFile": "./node_modules/.cache/.tsbuildinfo",
     "allowImportingTsExtensions": true,
-    "noEmit": true,
-    "paths": {
-      "#time": [
-        "./src/_.js"
-      ],
-      "#time/*": [
-        "./src/*.js"
-      ]
-    }
+    "noEmit": true
   },
   "include": [
     "src/**/*.ts"

@@ -1,6 +1,6 @@
 import { Ts } from '@kouka/core'
 import { Fs } from '@kouka/fs'
-import { createSchemaResource, type Resource } from '@kouka/resource'
+import { Resource } from '@kouka/resource'
 import { Semver } from '@kouka/semver'
 import { Effect, Option, Schema as S } from 'effect'
 
@@ -124,21 +124,21 @@ export const emptyManifest = Manifest.make()
 /**
  * Resource for reading/writing package.json with Schema validation
  */
-export const resource: Resource<Manifest> = {
+export const resource: Resource.Resource<Manifest> = {
   read: (dirPath: Fs.Path.AbsDir) =>
-    createSchemaResource(
+    Resource.createSchemaResource(
       'package.json',
       Manifest,
       emptyManifest,
     ).read(dirPath),
   write: (value: Manifest, dirPath: Fs.Path.AbsDir) =>
-    createSchemaResource(
+    Resource.createSchemaResource(
       'package.json',
       Manifest,
       emptyManifest,
     ).write(value, dirPath),
   readOrEmpty: (dirPath: Fs.Path.AbsDir) =>
-    createSchemaResource(
+    Resource.createSchemaResource(
       'package.json',
       Manifest,
       emptyManifest,
@@ -149,7 +149,7 @@ export const resource: Resource<Manifest> = {
  * Mutable resource for backward compatibility
  * @deprecated Use resource instead and call toMutable() on the result if needed
  */
-export const resourceMutable: Resource<ManifestMutable> = {
+export const resourceMutable: Resource.Resource<ManifestMutable> = {
   read: (dirPath: Fs.Path.AbsDir) =>
     resource.read(dirPath).pipe(
       Effect.map(Option.map((m) => m.toMutable())),

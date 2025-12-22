@@ -4,10 +4,6 @@
   "description": "HTTP utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#http": "./build/_.js",
-    "#http/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

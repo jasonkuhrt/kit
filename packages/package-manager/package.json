@@ -4,10 +4,6 @@
   "description": "Package manager utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#package-manager": "./build/_.js",
-    "#package-manager/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

@@ -4,10 +4,6 @@
   "description": "Testing utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#test": "./build/_.js",
-    "#test/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js",

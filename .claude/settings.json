@@ -21,6 +21,17 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-types.sh",
+            "timeout": 120
+          }
+        ]
+      }
     ]
   }
 }

@@ -4,10 +4,6 @@
   "description": "Filesystem utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#fs": "./build/_.js",
-    "#fs/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js",

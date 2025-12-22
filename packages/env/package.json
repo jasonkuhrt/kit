@@ -4,10 +4,6 @@
   "description": "Environment variable utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#env": "./build/_.js",
-    "#env/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

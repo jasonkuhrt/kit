@@ -299,6 +299,9 @@ importers:
       '@kouka/name':
         specifier: workspace:*
         version: link:../name
+      '@kouka/num':
+        specifier: workspace:*
+        version: link:../num
       '@kouka/oak':
         specifier: workspace:*
         version: link:../oak
@@ -308,6 +311,9 @@ importers:
       '@kouka/paka':
         specifier: workspace:*
         version: link:../paka
+      '@kouka/prox':
+        specifier: workspace:*
+        version: link:../prox
       '@kouka/ref':
         specifier: workspace:*
         version: link:../ref

@@ -1,4 +1,4 @@
-import type { Path } from '#fs/__.js'
+import type { Path } from '../_.js'
 import { $Rel } from '../$Rel/_.js'
 import type { Input } from '../inputs.js'
 import { normalizeDynamic } from '../inputs.js'

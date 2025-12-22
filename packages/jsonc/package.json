@@ -4,12 +4,8 @@
   "description": "JSON with comments utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#jsonc": "./build/_.js",
-    "#jsonc/*": "./build/*.js"
-  },
   "exports": {
-    ".": "./build/__.js",
+    ".": "./build/_.js",
     "./__": "./build/__.js"
   },
   "dependencies": {

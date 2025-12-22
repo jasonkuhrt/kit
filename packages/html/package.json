@@ -4,10 +4,6 @@
   "description": "HTML utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#html": "./build/_.js",
-    "#html/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

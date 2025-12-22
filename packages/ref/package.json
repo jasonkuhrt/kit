@@ -4,10 +4,6 @@
   "description": "Reference utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#ref": "./build/_.js",
-    "#ref/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

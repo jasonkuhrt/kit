@@ -4,10 +4,6 @@
   "description": "Naming convention utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#name": "./build/_.js",
-    "#name/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

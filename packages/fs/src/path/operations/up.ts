@@ -1,4 +1,4 @@
-import type { Path } from '#fs/__.js'
+import type { Path } from '../_.js'
 import { Match } from 'effect'
 import { AbsDir } from '../AbsDir/_.js'
 import { AbsFile } from '../AbsFile/_.js'

@@ -4,10 +4,6 @@
   "description": "Grouping utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#group": "./build/_.js",
-    "#group/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

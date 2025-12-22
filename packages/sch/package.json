@@ -4,10 +4,6 @@
   "description": "Schema utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#sch": "./build/_.js",
-    "#sch/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

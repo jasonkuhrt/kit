@@ -4,10 +4,6 @@
   "description": "Configuration file management",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#config-manager": "./build/_.js",
-    "#config-manager/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

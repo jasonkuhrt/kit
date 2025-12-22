@@ -4,10 +4,6 @@
   "description": "Extended proxy utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#prox": "./build/_.js",
-    "#prox/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

@@ -4,10 +4,6 @@
   "description": "Data masking utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#mask": "./build/_.js",
-    "#mask/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

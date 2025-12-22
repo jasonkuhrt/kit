@@ -4,10 +4,6 @@
   "description": "Index data structure",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#idx": "./build/_.js",
-    "#idx/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

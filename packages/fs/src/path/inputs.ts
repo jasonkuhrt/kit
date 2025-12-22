@@ -1,5 +1,5 @@
 import { Ts } from '@kouka/core'
-import type { Path } from '#fs/__.js'
+import type { Path } from './_.js'
 import { Schema as S } from 'effect'
 import type { Analyzer } from '../path-analyzer/codec-string/_.js'
 import type { $Abs } from './$Abs/_.js'

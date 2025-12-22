@@ -4,10 +4,6 @@
   "description": "URL utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#url": "./build/_.js",
-    "#url/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

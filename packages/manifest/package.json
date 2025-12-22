@@ -4,10 +4,6 @@
   "description": "Manifest file utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#manifest": "./build/_.js",
-    "#manifest/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

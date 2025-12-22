@@ -4,10 +4,6 @@
   "description": "Module utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#mod": "./build/_.js",
-    "#mod/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js",

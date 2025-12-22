@@ -4,10 +4,6 @@
   "description": "Text and box formatting utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#tex": "./build/_.js",
-    "#tex/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

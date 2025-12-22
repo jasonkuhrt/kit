@@ -4,10 +4,6 @@
   "description": "CLI argument parsing",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#oak": "./build/_.js",
-    "#oak/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

@@ -4,10 +4,6 @@
   "description": "Tree data structure utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#tree": "./build/_.js",
-    "#tree/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

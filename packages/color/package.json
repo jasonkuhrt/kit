@@ -4,10 +4,6 @@
   "description": "Color manipulation utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#color": "./build/_.js",
-    "#color/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/__.js",
     "./__": "./build/__.js"

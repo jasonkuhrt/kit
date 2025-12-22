@@ -4,10 +4,6 @@
   "description": "CLI framework",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#cli": "./build/_.js",
-    "#cli/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

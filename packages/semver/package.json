@@ -4,10 +4,6 @@
   "description": "Semantic versioning utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#semver": "./build/_.js",
-    "#semver/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

@@ -4,10 +4,6 @@
   "description": "Configurator pattern utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#configurator": "./build/_.js",
-    "#configurator/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

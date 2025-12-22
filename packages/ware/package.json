@@ -4,10 +4,6 @@
   "description": "Middleware utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#ware": "./build/_.js",
-    "#ware/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

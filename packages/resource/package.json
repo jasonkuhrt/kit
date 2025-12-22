@@ -4,12 +4,8 @@
   "description": "Resource management utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#resource": "./build/_.js",
-    "#resource/*": "./build/*.js"
-  },
   "exports": {
-    ".": "./build/__.js",
+    ".": "./build/_.js",
     "./__": "./build/__.js"
   },
   "dependencies": {

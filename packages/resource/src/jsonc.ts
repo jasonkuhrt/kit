@@ -1,5 +1,5 @@
 import { FileSystem } from '@effect/platform'
-import { parseJsonc } from '@kouka/jsonc'
+import { Jsonc } from '@kouka/jsonc'
 import { Effect, ParseResult, Schema } from 'effect'
 import { type Codec, createResource, EncodeError, ParseError, type Resource } from './resource.js'
 
@@ -11,7 +11,7 @@ export type { Resource } from './resource.js'
 export const jsoncCodec = <T>(): Codec<T> => ({
   decode: (content: string, resource: string, path: string) =>
     Effect.gen(function*() {
-      const parsed = yield* Schema.decodeUnknown(parseJsonc())(content).pipe(
+      const parsed = yield* Schema.decodeUnknown(Jsonc.parseJsonc())(content).pipe(
         Effect.mapError((error) =>
           new ParseError({
             path,
@@ -42,7 +42,7 @@ export const schemaJsoncCodec = <S extends Schema.Schema<any, any>>(
   decode: (content: string, resource: string, path: string) =>
     Effect.gen(function*() {
       // Compose parseJsonc with the provided schema
-      const jsoncSchema = Schema.compose(parseJsonc(), schema)
+      const jsoncSchema = Schema.compose(Jsonc.parseJsonc(), schema)
       return yield* Schema.decodeUnknown(jsoncSchema)(content).pipe(
         Effect.mapError((error) =>
           new ParseError({

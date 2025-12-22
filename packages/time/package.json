@@ -4,10 +4,6 @@
   "description": "Time utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#time": "./build/_.js",
-    "#time/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"

@@ -15,26 +15,46 @@ description: How to run scripts in this pnpm + turbo monorepo. Covers turbo task
 
 ```bash
 # Build all packages (respects dependency order)
-pnpm turbo run build
+pnpm turbo build
 
 # Build specific package
-pnpm turbo run build --filter=@kouka/core
+pnpm turbo build --filter=@kouka/core
 
 # Build package and its dependencies
-pnpm turbo run build --filter=@kouka/assert...
+pnpm turbo build --filter=@kouka/assert...
 
 # Force rebuild (bypass cache)
-pnpm turbo run build --filter=@kouka/core --force
+pnpm turbo build --filter=@kouka/core --force
 ```
 
 ### Type Checking
 
 ```bash
 # Type check all packages
-pnpm turbo run check:types
+pnpm turbo check:types
 
 # Type check specific package
-pnpm turbo run check:types --filter=@kouka/assert
+pnpm turbo check:types --filter=@kouka/assert
+```
+
+### Linting
+
+```bash
+# Lint all packages
+pnpm turbo check:lint
+
+# Lint specific package
+pnpm turbo check:lint --filter=@kouka/core
+```
+
+### Package Validation
+
+```bash
+# Validate package.json exports (publint + attw)
+pnpm turbo check:package
+
+# Validate specific package
+pnpm turbo check:package --filter=@kouka/core
 ```
 
 ### Testing
@@ -45,6 +65,9 @@ pnpm vitest packages/core/src/arr/_.test.ts --run
 
 # Run tests for a package directory
 pnpm vitest packages/core/src/arr/ --run
+
+# Run all tests via turbo
+pnpm turbo test
 
 # ALWAYS use --run to avoid watch mode
 ```
@@ -59,6 +82,20 @@ pnpm format
 pnpm format:check
 ```
 
+### Development Mode
+
+```bash
+# Watch mode for a package (rebuilds on changes)
+pnpm turbo dev --filter=@kouka/core
+```
+
+### Release
+
+```bash
+# Publish packages with changesets
+pnpm release
+```
+
 ## Turbo Cache
 
 Turbo caches task outputs. If you change source files, it rebuilds. If nothing changed, it replays cached output.
@@ -68,13 +105,13 @@ Turbo caches task outputs. If you change source files, it rebuilds. If nothing c
 To force fresh run:
 
 ```bash
-pnpm turbo run build --force
+pnpm turbo build --force
 ```
 
 Or delete the build folder:
 
 ```bash
-rm -rf packages/core/build && pnpm turbo run build --filter=@kouka/core
+rm -rf packages/core/build && pnpm turbo build --filter=@kouka/core
 ```
 
 ## Package-Local Scripts
@@ -94,9 +131,6 @@ tsx packages/assert/scripts/generate-builder.ts
 | Tests stuck in watch mode           | Always use `--run` flag with vitest            |
 | Build order wrong                   | Turbo handles this via `dependsOn: ["^build"]` |
 
-## Task Dependencies (turbo.json)
+## Notes
 
-- `build`: Depends on dependencies being built first (`^build`)
-- `check:types`: Depends on dependencies being built first
-- `check:package`: Depends on own build completing first
-- `test`: Depends on dependencies being built first
+- Task dependencies and caching are configured in `turbo.json` at project root

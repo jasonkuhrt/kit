@@ -4,10 +4,6 @@
   "description": "JSON utilities",
   "type": "module",
   "sideEffects": false,
-  "imports": {
-    "#json": "./build/_.js",
-    "#json/*": "./build/*.js"
-  },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js"
