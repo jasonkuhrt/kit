@@ -1,6 +1,4 @@
-import { Arr } from '@kouka/core/arr'
-import type { Lang } from '@kouka/core/lang'
-import type { Ts } from '@kouka/core/ts'
+import { Arr, Lang, Ts } from '@kouka/core'
 import type { IsAny } from 'type-fest'
 
 // todo: allow key to be given as a property name instead of a function.

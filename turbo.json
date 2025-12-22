@@ -16,7 +16,6 @@
       "outputs": []
     },
     "check:lint": {
-      "dependsOn": ["^build"],
       "outputs": []
     },
     "check:package": {

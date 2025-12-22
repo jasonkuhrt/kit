@@ -1,4 +1,4 @@
-import { Str } from '@kouka/core/str'
+import { Str } from '@kouka/core'
 import { Either } from 'effect'
 import { negateNamePattern, stripeDashPrefix } from '../helpers.js'
 import type { Parameter } from '../Parameter/types.js'

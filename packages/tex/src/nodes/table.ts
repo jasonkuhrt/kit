@@ -1,6 +1,4 @@
-import { Arr } from '@kouka/core/arr'
-import { Num } from '@kouka/core/num'
-import { Str } from '@kouka/core/str'
+import { Arr, Num, Str } from '@kouka/core'
 import type { Block } from './block.js'
 import { type GapParameters, parseGap } from './gap.js'
 import { MAX_COLUMN_WIDTH, type RenderContext } from './helpers.js'

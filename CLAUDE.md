@@ -12,6 +12,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Kit is a TypeScript standard library providing data structures, utilities, primitives, and domains. The project is organized as a `@kouka` scoped monorepo with multiple packages. It emphasizes type safety, consistent APIs, and modular architecture.
 
+## Skills
+
+This project has skills for common workflows:
+
+**Development:**
+- `creating-packages` - Create new packages with full scaffolding
+- `creating-modules` - Add modules to existing packages
+- `implementing-functions` - Function design with currying patterns
+- `writing-tests` - Test patterns and organization
+
+**Maintenance:**
+- `syncing-package-scripts` - Propagate `_:*` scripts from root to packages
+- `syncing-tsconfig-paths` - Keep tsconfig paths in sync with package.json imports
+- `refreshing-docs` - Update auto-generated README tables
+- `committing-changes` - Conventional commits and changesets
+
 ## Backwards Compatibility
 
 **Default stance: Breaking changes are acceptable.**
@@ -149,4 +165,20 @@ Each module in `@kouka/core` follows these patterns:
    ```
    Benefits: Cleaner API, better type inference, easier to maintain
 
-Refer to CONTRIBUTING.md for detailed architectural patterns and API design principles.
+## Naming Conventions
+
+- **Files**: kebab-case (`group-by.ts`)
+- **Directories**: kebab-case (`fs-layout/`)
+- **Exports**: PascalCase namespaces (`Group`, `Undefined`)
+- **Functions**: camelCase, no namespace prefix (`merge`, not `strMerge`)
+- **Types**: PascalCase for public types
+
+## API Design Principles
+
+1. **Functional first**: Prefer pure functions over mutations
+2. **Type safety**: Leverage TypeScript's type system fully
+3. **Consistency**: Similar operations should have similar names across modules
+4. **Discoverability**: Function names should be obvious within their namespace
+5. **Composability**: Support functional composition patterns
+
+Refer to [docs/contributing/](./docs/contributing/) for reference documentation on architecture.

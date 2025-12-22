@@ -1,1 +1,1 @@
-export * from '@kouka/config-manager'
+export * from '@kouka/config-manager/__'

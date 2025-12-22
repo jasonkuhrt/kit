@@ -1,6 +1,4 @@
-import type { Fn } from '@kouka/core/fn'
-import type { Ts } from '@kouka/core/ts'
-
+import { Fn, Ts } from '@kouka/core'
 /**
  * Assertion builder state tracking the current configuration and position in the API chain.
  *

@@ -1,6 +1,4 @@
-import type { Lang } from '@kouka/core/lang'
-import type { Ts } from '@kouka/core/ts'
-
+import { Lang, Ts } from '@kouka/core'
 /**
  * Check if two values are the same reference using the === operator.
  *

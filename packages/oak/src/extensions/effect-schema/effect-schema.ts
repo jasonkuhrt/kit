@@ -1,6 +1,4 @@
-import type { Fn } from '@kouka/core/fn'
-import { Fn as _ } from '@kouka/core/fn'
-import type { Ts } from '@kouka/core/ts'
+import { Fn, Fn as _, Ts } from '@kouka/core'
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 import { Option, Schema, SchemaAST } from 'effect'
 import { createExtension } from '../../extension.js'

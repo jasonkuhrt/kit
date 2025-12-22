@@ -1,4 +1,4 @@
-import { Fn } from '@kouka/core/fn'
+import { Fn } from '@kouka/core'
 import { ContextualError } from '../_errors.js'
 import type { NonRetryingInterceptorInput } from '../Interceptor/Interceptor.js'
 import type { Pipeline } from '../Pipeline/Pipeline.js'

@@ -8,28 +8,10 @@
     "noEmit": true,
     "paths": {
       "#group": [
-        "./src/_.ts"
+        "./src/_.js"
       ],
       "#group/*": [
-        "./src/*.ts"
-      ],
-      "#obj": [
-        "../core/src/obj/_.ts"
-      ],
-      "#obj/*": [
-        "../core/src/obj/*.ts"
-      ],
-      "#ts": [
-        "../core/src/ts/_.ts"
-      ],
-      "#ts/*": [
-        "../core/src/ts/*.ts"
-      ],
-      "#undefined": [
-        "../core/src/undefined/_.ts"
-      ],
-      "#undefined/*": [
-        "../core/src/undefined/*.ts"
+        "./src/*.js"
       ]
     }
   },

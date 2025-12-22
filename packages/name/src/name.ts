@@ -1,5 +1,4 @@
-import { Arr } from '@kouka/core/arr'
-
+import { Arr } from '@kouka/core'
 /**
  * Generates a random name in the format "adjective color animal".
  * The pool of possible names is 150 (adjectives) * 52 (colors) * 150 (animals) = 1,170,000.

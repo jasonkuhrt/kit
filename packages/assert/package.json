@@ -10,15 +10,21 @@
   },
   "exports": {
     ".": "./build/_.js",
+    "./__": "./build/__.js",
     "./assert": "./build/__.js"
   },
   "dependencies": {
     "@kouka/core": "workspace:*",
     "effect": "^3.19.11"
   },
+  "devDependencies": {
+    "ts-morph": "^25.0.1"
+  },
   "scripts": {
     "build": "tsgo -p tsconfig.build.json",
     "dev": "tsgo -p tsconfig.build.json --watch",
-    "check:types": "tsgo --noEmit"
+    "check:types": "tsgo --noEmit",
+    "check:lint": "oxlint --config ../../oxlint.json src/",
+    "check:package": "publint && attw --pack"
   }
 }

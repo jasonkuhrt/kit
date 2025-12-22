@@ -1,6 +1,7 @@
-import type { Fn } from '@kouka/core/fn'
-import type { AssertUnknownKind } from '../../asserts.js'
+import type { Fn } from '@kouka/core'
 import { builder } from '../../builder-singleton.js'
+import type { AssertUnknownKind } from '../../asserts.js'
+
 
 /**
  * Unary relator (negated) - asserts type is NOT `unknown`.

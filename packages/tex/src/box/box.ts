@@ -1,5 +1,4 @@
-import { Obj } from '@kouka/core/obj'
-import { Str } from '@kouka/core/str'
+import { Obj, Str } from '@kouka/core'
 import { ParseResult, Schema as S } from 'effect'
 import { extractChar, extractStyle } from './ansi.js'
 import { Clockhand } from './clockhand/_.js'

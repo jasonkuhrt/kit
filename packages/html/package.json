@@ -9,11 +9,14 @@
     "#html/*": "./build/*.js"
   },
   "exports": {
-    ".": "./build/_.js"
+    ".": "./build/_.js",
+    "./__": "./build/__.js"
   },
   "scripts": {
     "build": "tsgo -p tsconfig.build.json",
     "dev": "tsgo -p tsconfig.build.json --watch",
-    "check:types": "tsgo --noEmit"
+    "check:types": "tsgo --noEmit",
+    "check:lint": "oxlint --config ../../oxlint.json src/",
+    "check:package": "publint && attw --pack"
   }
 }

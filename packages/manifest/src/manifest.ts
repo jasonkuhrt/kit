@@ -1,4 +1,4 @@
-import type { Ts } from '@kouka/core/ts'
+import { Ts } from '@kouka/core'
 import { Fs } from '@kouka/fs'
 import { createSchemaResource, type Resource } from '@kouka/resource'
 import { Semver } from '@kouka/semver'

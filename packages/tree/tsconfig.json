@@ -8,10 +8,10 @@
     "noEmit": true,
     "paths": {
       "#tree": [
-        "./src/_.ts"
+        "./src/_.js"
       ],
       "#tree/*": [
-        "./src/*.ts"
+        "./src/*.js"
       ]
     }
   },

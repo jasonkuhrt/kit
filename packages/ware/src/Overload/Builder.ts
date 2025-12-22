@@ -1,7 +1,7 @@
+import { Tup } from '@kouka/core'
 import { Bldr } from '@kouka/bldr'
 import type { ConfigManager } from '@kouka/config-manager'
 import { Configurator } from '@kouka/configurator'
-import type { Tup } from '@kouka/core/tup'
 import type { Writable } from 'type-fest'
 // for resolving '... cannot be named ...' error
 export type { Writable } from 'type-fest'

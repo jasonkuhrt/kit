@@ -1,4 +1,4 @@
-import type { Str } from '@kouka/core/str'
+import { Str } from '@kouka/core'
 import type { Parsed } from './filter.js'
 import type * as Level from './level.js'
 

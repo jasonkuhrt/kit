@@ -1,6 +1,4 @@
-import type { Fn } from '@kouka/core/fn'
-import { Obj } from '@kouka/core/obj'
-import type { Ts } from '@kouka/core/ts'
+import { Fn, Obj, Ts } from '@kouka/core'
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 import type { z } from 'zod/v4'
 import { createExtension } from '../../extension.js'

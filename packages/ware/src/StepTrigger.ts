@@ -1,5 +1,4 @@
-import type { Fn } from '@kouka/core/fn'
-import type { Ts } from '@kouka/core/ts'
+import { Fn, Ts } from '@kouka/core'
 import type { Objekt } from './_prelude.js'
 import type { Step } from './Step.js'
 

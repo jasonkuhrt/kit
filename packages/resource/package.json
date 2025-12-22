@@ -9,7 +9,8 @@
     "#resource/*": "./build/*.js"
   },
   "exports": {
-    ".": "./build/__.js"
+    ".": "./build/__.js",
+    "./__": "./build/__.js"
   },
   "dependencies": {
     "@effect/platform": "^0.94.0",
@@ -20,6 +21,8 @@
   "scripts": {
     "build": "tsgo -p tsconfig.build.json",
     "dev": "tsgo -p tsconfig.build.json --watch",
-    "check:types": "tsgo --noEmit"
+    "check:types": "tsgo --noEmit",
+    "check:lint": "oxlint --config ../../oxlint.json src/",
+    "check:package": "publint && attw --pack"
   }
 }

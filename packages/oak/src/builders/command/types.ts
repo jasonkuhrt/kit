@@ -1,5 +1,4 @@
-import type { Fn } from '@kouka/core/fn'
-import type { Obj } from '@kouka/core/obj'
+import { Fn, Obj } from '@kouka/core'
 import type { Extension, SomeExtension } from '../../extension.js'
 import type { Prompter } from '../../lib/Prompter/__.js'
 import type { OpeningArgs } from '../../OpeningArgs/_.js'

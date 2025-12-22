@@ -1,5 +1,4 @@
-import { Obj } from '@kouka/core/obj'
-
+import { Obj } from '@kouka/core'
 /**
  * Create a mutable fluent builder.
  *

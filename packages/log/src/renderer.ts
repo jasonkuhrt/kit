@@ -1,5 +1,4 @@
-import { Lang } from '@kouka/core/lang'
-import { Str } from '@kouka/core/str'
+import { Lang, Str } from '@kouka/core'
 import { Time } from '@kouka/time'
 import * as Os from 'node:os'
 import objectInspect from 'object-inspect'

@@ -1,1 +1,1 @@
-export * from '@kouka/codec'
+export * from '@kouka/codec/__'

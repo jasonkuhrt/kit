@@ -1,6 +1,7 @@
-import type { Fn } from '@kouka/core/fn'
-import type { AssertEmptyKind } from '../asserts.js'
+import type { Fn } from '@kouka/core'
 import { builder } from '../builder-singleton.js'
+import type { AssertEmptyKind } from '../asserts.js'
+
 
 /**
  * Unary relator - asserts type is empty (`[]`, `''`, or `Record<PropertyKey, never>`).

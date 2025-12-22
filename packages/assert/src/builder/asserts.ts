@@ -1,6 +1,4 @@
-import type { Fn } from '@kouka/core/fn'
-import type { Optic } from '@kouka/core/optic'
-import type { Ts } from '@kouka/core/ts'
+import { Fn, Optic, Ts } from '@kouka/core'
 import type { Either } from 'effect'
 import type { StaticErrorAssertion } from '../assertion-error.js'
 import * as Asserts from '../asserts.js'

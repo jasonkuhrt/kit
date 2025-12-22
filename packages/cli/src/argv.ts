@@ -1,5 +1,4 @@
-import { Arr } from '@kouka/core/arr'
-import { Str } from '@kouka/core/str'
+import { Arr, Str } from '@kouka/core'
 import { Schema as S } from 'effect'
 
 // ============================================

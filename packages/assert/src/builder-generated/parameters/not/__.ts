@@ -1,11 +1,11 @@
-import type { Fn } from '@kouka/core/fn'
-import { Optic } from '@kouka/core/optic'
-import type { Either } from 'effect'
-import type { AssertEquivKind, AssertExactKind, AssertSubKind } from '../../../asserts.js'
+import type { Fn } from '@kouka/core'
 import { builder } from '../../../builder-singleton.js'
+import { Optic } from '@kouka/core'
+import type { Either } from 'effect'
+import type { AssertExactKind, AssertEquivKind, AssertSubKind } from '../../../asserts.js'
 
-export * as equiv from './equiv.js'
 export * as exact from './exact.js'
+export * as equiv from './equiv.js'
 export * as sub from './sub.js'
 
 // Unary relators (negated)

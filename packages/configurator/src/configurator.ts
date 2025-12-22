@@ -1,4 +1,4 @@
-import { Obj } from '@kouka/core/obj'
+import { Obj } from '@kouka/core'
 import type { HasRequiredKeys } from 'type-fest'
 
 // ----------------------------

@@ -1,5 +1,4 @@
-import { Obj } from '@kouka/core/obj'
-import { Str } from '@kouka/core/str'
+import { Obj, Str } from '@kouka/core'
 import { Group } from '@kouka/group'
 import { Tex } from '@kouka/tex'
 import ansis from 'ansis'

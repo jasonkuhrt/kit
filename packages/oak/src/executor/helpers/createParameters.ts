@@ -1,4 +1,4 @@
-import { Obj } from '@kouka/core/obj'
+import { Obj } from '@kouka/core'
 import { Alge } from 'alge'
 import { Either } from 'effect'
 import type { ParameterBasic, ParameterBasicInput } from '../../Parameter/basic.js'

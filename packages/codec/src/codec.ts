@@ -1,5 +1,4 @@
-import { Fn } from '@kouka/core/fn'
-
+import { Fn } from '@kouka/core'
 /**
  * A codec that can encode data to string and decode string back to data.
  * @template $Data - The type of data this codec handles

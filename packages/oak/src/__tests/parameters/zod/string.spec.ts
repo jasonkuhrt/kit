@@ -1,4 +1,4 @@
-import { Obj } from '@kouka/core/obj'
+import { Obj } from '@kouka/core'
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod/v4'
 import { $, s } from '../../_/helpers.js'

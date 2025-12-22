@@ -1,7 +1,6 @@
 // Utilities from Graffle prelude needed by ware
 
-import type { Prom } from '@kouka/core/prom'
-
+import { Prom } from '@kouka/core'
 export type SomeFunctionMaybeAsync = (...args: any[]) => Prom.Maybe<any>
 
 export type GuardedType<$T> = $T extends (x: any) => x is infer $U ? $U : never

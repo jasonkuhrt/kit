@@ -1,5 +1,5 @@
+import { Ts } from '@kouka/core'
 import type { Configurator } from '@kouka/configurator'
-import type { Ts } from '@kouka/core/ts'
 import type { StepDefinition } from '../StepDefinition.js'
 
 export interface Data<

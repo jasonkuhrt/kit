@@ -1,5 +1,4 @@
-import { Obj } from '@kouka/core/obj'
-import { Str } from '@kouka/core/str'
+import { Obj, Str } from '@kouka/core'
 import type { BuilderCommandState } from '../builders/command/state.js'
 import type { EventPatternsInput, EventPatternsInputAtLeastOne } from '../eventPatterns.js'
 import { eventPatterns } from '../eventPatterns.js'

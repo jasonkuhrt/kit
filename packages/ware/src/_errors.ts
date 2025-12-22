@@ -1,8 +1,7 @@
 // Error classes needed by ware module
 // Copied from Graffle to keep ware self-contained
 
-import { Arr } from '@kouka/core/arr'
-
+import { Arr } from '@kouka/core'
 export type Cause = Error | undefined
 export type Context = object
 

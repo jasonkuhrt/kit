@@ -1,6 +1,4 @@
-import { Obj } from '@kouka/core/obj'
-import type { Ts } from '@kouka/core/ts'
-
+import { Obj, Ts } from '@kouka/core'
 export const _ = `*`
 
 export type SomeData = SomeDataObject | SomeDataScalar

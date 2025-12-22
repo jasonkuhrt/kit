@@ -1,1 +1,1 @@
-export * from '@kouka/package-manager'
+export * from '@kouka/package-manager/__'

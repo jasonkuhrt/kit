@@ -1,7 +1,5 @@
-import type { Fn } from '@kouka/core/fn'
-import type { Obj } from '@kouka/core/obj'
-import type { Ts } from '@kouka/core/ts'
-import type { Inhabitance } from '@kouka/core/ts/ts'
+import { Fn, Obj, Ts } from '@kouka/core'
+import type { Inhabitance } from '@kouka/core/ts'
 import type { StaticErrorAssertion } from './assertion-error.js'
 
 /**

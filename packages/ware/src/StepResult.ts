@@ -1,4 +1,4 @@
-import type { Prom } from '@kouka/core/prom'
+import { Prom } from '@kouka/core'
 import type { ContextualError } from './_errors.js'
 import type { InterceptorGeneric } from './Interceptor/Interceptor.js'
 

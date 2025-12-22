@@ -1,5 +1,4 @@
-import type { Prom } from '@kouka/core/prom'
-import type { Ts } from '@kouka/core/ts'
+import { Prom, Ts } from '@kouka/core'
 import type { Pipeline } from '../__.js'
 import type { ResultSuccess } from '../Result.js'
 import type { Step } from '../Step.js'

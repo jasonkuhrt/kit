@@ -1,5 +1,4 @@
-import { Err } from '@kouka/core/err'
-import { Obj } from '@kouka/core/obj'
+import { Err, Obj } from '@kouka/core'
 import { Group } from '@kouka/group'
 import { Alge } from 'alge'
 import { Errors } from '../Errors/_.js'

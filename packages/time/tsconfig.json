@@ -8,10 +8,10 @@
     "noEmit": true,
     "paths": {
       "#time": [
-        "./src/_.ts"
+        "./src/_.js"
       ],
       "#time/*": [
-        "./src/*.ts"
+        "./src/*.js"
       ]
     }
   },

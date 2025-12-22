@@ -1,5 +1,4 @@
-import { Lang } from '@kouka/core/lang'
-import { Prom } from '@kouka/core/prom'
+import { Lang, Prom } from '@kouka/core'
 import { ContextualError, partitionAndAggregateErrors } from '../_errors.js'
 import {
   createRetryingInterceptor,

@@ -1,4 +1,4 @@
-import { CoreFn as Fn } from '@kouka/core/fn/core'
+import { Fn } from '@kouka/core'
 import type { Degrees } from './degrees/__.js'
 import type { Finite } from './finite/__.js'
 import type { InRange } from './in-range/__.js'

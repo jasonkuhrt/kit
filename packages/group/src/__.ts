@@ -1,7 +1,4 @@
-import { Obj } from '@kouka/core/obj'
-import { Ts } from '@kouka/core/ts'
-import type { Undefined } from '@kouka/core/undefined'
-
+import { Obj, Ts, Undefined } from '@kouka/core'
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Types - Immutable (default)
 
 /**

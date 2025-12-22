@@ -7,7 +7,7 @@
  * @module
  */
 
-import { Str } from '@kouka/core/str'
+import { Str } from '@kouka/core'
 import * as Md from '../md/_.js'
 
 const splitIntoLines = Str.Text.lines

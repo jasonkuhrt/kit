@@ -1,4 +1,4 @@
-import type { Fn } from '@kouka/core/fn'
+import { Fn } from '@kouka/core'
 import { Option } from 'effect'
 import * as Types from './builder-types.js'
 import * as Builder from './builder.js'

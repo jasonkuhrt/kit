@@ -1,7 +1,4 @@
-import type { Ts } from '@kouka/core/ts'
-import type { Tup } from '@kouka/core/tup'
-import type { Undefined } from '@kouka/core/undefined'
-
+import { Ts, Tup, Undefined } from '@kouka/core'
 // Utility type from Graffle prelude
 type IntersectionIgnoreNeverOrAny<$T> = Ts.Inhabitance.IsAny<$T> extends true ? unknown
   : $T extends never ? unknown

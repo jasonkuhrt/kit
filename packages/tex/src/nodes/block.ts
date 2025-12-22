@@ -1,4 +1,4 @@
-import { Str } from '@kouka/core/str'
+import { Str } from '@kouka/core'
 import { Box } from '../box/_.js'
 import type { RenderContext } from './helpers.js'
 import { Leaf } from './leaf.js'

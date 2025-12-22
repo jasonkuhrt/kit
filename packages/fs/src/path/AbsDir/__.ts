@@ -1,4 +1,4 @@
-import { Fn } from '@kouka/core/fn'
+import { Fn } from '@kouka/core'
 import { ParseResult, Schema as S } from 'effect'
 import type { RefineSchemaId, TypeId } from 'effect/Schema'
 import { analyze } from '../../path-analyzer/codec-string/analyzer.js'

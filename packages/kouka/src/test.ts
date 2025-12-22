@@ -1,1 +1,1 @@
-export * from '@kouka/test'
+export * from '@kouka/test/__'

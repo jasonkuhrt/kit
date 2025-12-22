@@ -1,4 +1,4 @@
-import { Obj } from '@kouka/core/obj'
+import { Obj } from '@kouka/core'
 import { Tex } from '@kouka/tex'
 import ansis from 'ansis'
 import { Effect } from 'effect'

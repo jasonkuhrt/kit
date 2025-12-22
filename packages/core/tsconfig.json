@@ -8,121 +8,121 @@
     "noEmit": true,
     "paths": {
       "#arr": [
-        "./src/arr/_.ts"
+        "./src/arr/_.js"
       ],
       "#arr/*": [
-        "./src/arr/*.ts"
+        "./src/arr/*.js"
       ],
       "#bool": [
-        "./src/bool/_.ts"
+        "./src/bool/_.js"
       ],
       "#bool/*": [
-        "./src/bool/*.ts"
+        "./src/bool/*.js"
       ],
       "#err": [
-        "./src/err/_.ts"
+        "./src/err/_.js"
       ],
       "#err/err": [
-        "./src/err/__.ts"
+        "./src/err/__.js"
       ],
       "#err/core": [
-        "./src/err/core/_.ts"
+        "./src/err/core/_.js"
       ],
       "#fn": [
-        "./src/fn/_.ts"
+        "./src/fn/_.js"
       ],
       "#fn/fn": [
-        "./src/fn/__.ts"
+        "./src/fn/__.js"
       ],
       "#fn/core": [
-        "./src/fn/core/_.ts"
+        "./src/fn/core/_.js"
       ],
       "#lang": [
-        "./src/lang/_.ts"
+        "./src/lang/_.js"
       ],
       "#lang/lang": [
-        "./src/lang/__.ts"
+        "./src/lang/__.js"
       ],
       "#lang/core": [
-        "./src/lang/core/_.ts"
+        "./src/lang/core/_.js"
+      ],
+      "#lang/core/lang": [
+        "./src/lang/core/lang.js"
       ],
       "#null": [
-        "./src/null/_.ts"
+        "./src/null/_.js"
       ],
       "#null/*": [
-        "./src/null/*.ts"
+        "./src/null/*.js"
       ],
       "#num": [
-        "./src/num/_.ts"
+        "./src/num/_.js"
       ],
       "#num/*": [
-        "./src/num/*.ts"
+        "./src/num/*.js"
       ],
       "#obj": [
-        "./src/obj/_.ts"
+        "./src/obj/_.js"
       ],
       "#obj/*": [
-        "./src/obj/*.ts"
+        "./src/obj/*.js"
       ],
       "#optic": [
-        "./src/optic/_.ts"
+        "./src/optic/_.js"
       ],
       "#optic/*": [
-        "./src/optic/*.ts"
+        "./src/optic/*.js"
       ],
       "#pat": [
-        "./src/pat/_.ts"
+        "./src/pat/_.js"
       ],
       "#pat/*": [
-        "./src/pat/*.ts"
-      ],
-      "#prom": [
-        "./src/prom/_.ts"
-      ],
-      "#prom/*": [
-        "./src/prom/*.ts"
-      ],
-      "#prox": [
-        "./src/prox/_.ts"
-      ],
-      "#prox/*": [
-        "./src/prox/*.ts"
+        "./src/pat/*.js"
       ],
       "#rec": [
-        "./src/rec/_.ts"
+        "./src/rec/_.js"
       ],
       "#rec/*": [
-        "./src/rec/*.ts"
+        "./src/rec/*.js"
       ],
       "#str": [
-        "./src/str/_.ts"
+        "./src/str/_.js"
       ],
       "#str/*": [
-        "./src/str/*.ts"
+        "./src/str/*.js"
       ],
       "#ts": [
-        "./src/ts/_.ts"
+        "./src/ts/_.js"
       ],
       "#ts/ts": [
-        "./src/ts/__.ts"
+        "./src/ts/__.js"
       ],
       "#tup": [
-        "./src/tup/_.ts"
+        "./src/tup/_.js"
       ],
       "#tup/*": [
-        "./src/tup/*.ts"
+        "./src/tup/*.js"
       ],
       "#undefined": [
-        "./src/undefined/_.ts"
+        "./src/undefined/_.js"
       ],
       "#undefined/*": [
-        "./src/undefined/*.ts"
+        "./src/undefined/*.js"
+      ],
+      "#prom": [
+        "./src/prom/_.js"
+      ],
+      "#prom/*": [
+        "./src/prom/*.js"
+      ],
+      "#prox": [
+        "./src/prox/_.js"
+      ],
+      "#prox/*": [
+        "./src/prox/*.js"
       ],
       "#deps/*": [
-        "./src/deps/*.ts"
-      ],
-      "#platform:lang/*": [
-        "./src/lang/*.node.ts"
+        "./src/deps/*.js"
       ]
     }
   },

@@ -1,6 +1,4 @@
-import { Obj } from '@kouka/core/obj'
-import type { Ts } from '@kouka/core/ts'
-import type { Undefined } from '@kouka/core/undefined'
+import { Obj, Ts, Undefined } from '@kouka/core'
 import { Predicate } from 'effect'
 import type { IsUnknown, PartialDeep } from 'type-fest'
 import { type GuardedType, isAnyFunction, type Objekt } from './_prelude.js'

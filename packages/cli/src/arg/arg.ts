@@ -1,5 +1,4 @@
-import { Str } from '@kouka/core/str'
-import type { Ts } from '@kouka/core/ts'
+import { Str, Ts } from '@kouka/core'
 import { ParseResult, Schema as S } from 'effect'
 
 /**

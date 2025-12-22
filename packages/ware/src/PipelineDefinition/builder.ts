@@ -1,5 +1,5 @@
+import { Tup } from '@kouka/core'
 import type { ConfigManager } from '@kouka/config-manager'
-import type { Tup } from '@kouka/core/tup'
 import type { Extension } from '../Extension/_.js'
 import { Overload } from '../Overload/_.js'
 import { Pipeline } from '../Pipeline/Pipeline.js'

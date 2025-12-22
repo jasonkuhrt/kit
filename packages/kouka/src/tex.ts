@@ -1,1 +1,1 @@
-export * from '@kouka/tex'
+export * from '@kouka/tex/__'

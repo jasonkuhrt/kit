@@ -1,5 +1,4 @@
-import { Obj } from '@kouka/core/obj'
-import { Str } from '@kouka/core/str'
+import { Obj, Str } from '@kouka/core'
 import { Either } from 'effect'
 
 export const BooleanLookup = {

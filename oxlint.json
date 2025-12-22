@@ -1,15 +1,13 @@
 {
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "env": {
-    "node": true,
-    "es2024": true
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxlint/main/npm/oxlint/configuration_schema.json",
+  "plugins": ["import", "vitest"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
   },
   "rules": {
-    "no-unused-vars": "error",
-    "no-console": "off",
-    "no-unused-expressions": "off",
-    "eqeqeq": ["error", "always"],
-    "prefer-const": "error"
+    "eslint/no-unused-vars": "off"
   },
-  "ignore": ["node_modules", "build", "*.test.ts", "*.test-d.ts"]
+  "ignorePatterns": ["**/build/**", "**/node_modules/**", "**/*.d.ts"]
 }

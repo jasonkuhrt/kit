@@ -1,5 +1,4 @@
-import type { Fn } from '@kouka/core/fn'
-import { Prom } from '@kouka/core/prom'
+import { Fn, Prom } from '@kouka/core'
 import { Array, Effect, Layer, Option } from 'effect'
 import objectInspect from 'object-inspect'
 import { expect, test } from 'vitest'

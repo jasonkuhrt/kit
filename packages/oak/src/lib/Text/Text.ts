@@ -1,5 +1,4 @@
-import { Str } from '@kouka/core/str'
-
+import { Str } from '@kouka/core'
 export type Line = string
 
 export type Column = Line[]

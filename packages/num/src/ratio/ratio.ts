@@ -3,7 +3,7 @@
  * A ratio represents a number that can be expressed as a fraction p/q where q ≠ 0.
  */
 
-import { CoreFn as Fn } from '@kouka/core/fn/core'
+import { Fn } from '@kouka/core'
 import type { Int } from '../int/__.js'
 import { gcd } from '../math.js'
 import type { NonZero } from '../non-zero/__.js'

@@ -1,7 +1,6 @@
+import { Err, Str } from '@kouka/core'
 import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
-import { Err } from '@kouka/core/err'
-import { Str } from '@kouka/core/str'
 import { Env } from '@kouka/env'
 import { Fs } from '@kouka/fs'
 import { Mod } from '@kouka/mod'

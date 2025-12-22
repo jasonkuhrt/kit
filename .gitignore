@@ -18,8 +18,9 @@ docs/.vitepress/cache/
 # Serena MCP
 .serena/cache/
 
-# Claude local context (flo-generated)
+# Claude local context (personal settings, flo-generated)
 .claude/*.local.md
+.claude/*.local.json
 CLAUDE.local.md
 
 # Turborepo
