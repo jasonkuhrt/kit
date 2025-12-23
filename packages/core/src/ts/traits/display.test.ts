@@ -120,7 +120,7 @@ interface Box<T> {
 // Register custom Handler via declaration merging
 // This demonstrates how users can extend Display for their own types
 declare global {
-  namespace KitTraits.Display {
+  namespace KITZ.Traits.Display {
     interface Handlers<$Type> {
       _testBox: $Type extends Box<infer __value__> ? `Box<${D<__value__>}>` : never
     }

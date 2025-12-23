@@ -187,7 +187,7 @@ export type ShowOrPassthrogh<$T> = $T extends StaticError ? Show<$T> : $T
  * When `renderErrors` is `true` (default), returns the full formatted error via {@link Show}.
  * When `false`, extracts just the error message string for cleaner IDE hovers.
  *
- * Uses the {@link KitLibrarySettings.Ts.Error.renderErrors} setting.
+ * Uses the {@link KITZ.Ts.Error.renderErrors} setting.
  *
  * @template $Error - The StaticError to render
  *
@@ -208,7 +208,7 @@ export type ShowOrPassthrogh<$T> = $T extends StaticError ? Show<$T> : $T
  */
 // dprint-ignore
 export type Render<$Error extends StaticError> =
-  KitLibrarySettings.Ts.Error['renderErrors'] extends false
+  KITZ.Ts.Error['renderErrors'] extends false
     ? $Error['CONTEXT_____'] extends { message: infer __message__ extends string }
       ? __message__
       : Show<$Error>

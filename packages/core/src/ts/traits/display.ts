@@ -8,8 +8,8 @@ import type * as Union from '../union.js'
  *
  * @internal
  */
-type HandlersResult<$Type> = [keyof KitTraits.Display.Handlers<$Type>] extends [never] ? never
-  : KitTraits.Display.Handlers<$Type>[keyof KitTraits.Display.Handlers<$Type>]
+type HandlersResult<$Type> = [keyof KITZ.Traits.Display.Handlers<$Type>] extends [never] ? never
+  : KITZ.Traits.Display.Handlers<$Type>[keyof KITZ.Traits.Display.Handlers<$Type>]
 
 /**
  * Display a type as a readable string representation.
@@ -17,12 +17,12 @@ type HandlersResult<$Type> = [keyof KitTraits.Display.Handlers<$Type>] extends [
  * @remarks
  * This type converts TypeScript types to human-readable string representations.
  * It handles special types (any, unknown, never), primitives, common objects,
- * and supports extensibility via {@link KitTraits.Display.Handlers}.
+ * and supports extensibility via {@link KITZ.Traits.Display.Handlers}.
  *
  * **Extensibility:** Add custom type display handlers by augmenting Handlers:
  * ```typescript
  * declare global {
- *   namespace KitTraits.Display {
+ *   namespace KITZ.Traits.Display {
  *     interface Handlers<$Type> {
  *       MyType: $Type extends MyType<infer A> ? `MyType<${Ts.Display<A>}>` : never
  *     }
@@ -87,7 +87,7 @@ export type _DisplayUnion<$Type extends Arr.Any> =
  * that can be extended via declaration merging.
  */
 declare global {
-  namespace KitTraits {
+  namespace KITZ.Traits {
     /**
      * Display trait for type-level string representation.
      *
@@ -114,7 +114,7 @@ declare global {
        * import type { Ts } from '@wollybeard/kit'
        *
        * declare global {
-       *   namespace KitTraits.Display {
+       *   namespace KITZ.Traits.Display {
        *     interface Handlers<$Type> {
        *       Effect: $Type extends Effect.Effect<infer A, infer E, infer R>
        *         ? `Effect<${Ts.Display<A>}, ${Ts.Display<E>}, ${Ts.Display<R>}>`

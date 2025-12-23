@@ -50,7 +50,7 @@ export * from './type-guards.js'
 export * as Simplify from './simplify.js'
 /**
  * Type simplification utilities for flattening and expanding types.
- * All functions automatically preserve globally registered types from {@link KitLibrarySettings.Ts.PreserveTypes}.
+ * All functions automatically preserve globally registered types from {@link KITZ.Ts.PreserveTypes}.
  *
  * @category Type Simplification
  */

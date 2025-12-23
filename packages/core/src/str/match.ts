@@ -408,7 +408,7 @@ export const isNotMatchAnyWith = Fn.flipCurried(isNotMatchAnyOn)
  * @internal
  */
 declare global {
-  namespace KitTraits.Display {
+  namespace KITZ.Traits.Display {
     interface Handlers<$Type> {
       _regExp: $Type extends RegExp ? 'RegExp' : never
     }

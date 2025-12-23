@@ -17,7 +17,7 @@ export * from './predicates.js'
  * @internal
  */
 declare global {
-  namespace KitTraits.Display {
+  namespace KITZ.Traits.Display {
     interface Handlers<$Type> {
       _function: $Type extends Function ? 'Function' : never
     }

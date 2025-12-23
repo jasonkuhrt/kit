@@ -51,7 +51,7 @@ export interface CustomBrand {
 }
 
 declare global {
-  namespace KitLibrarySettings {
+  namespace KITZ {
     namespace Ts {
       interface PreserveTypes {
         _custom: CustomBrand
@@ -76,7 +76,7 @@ export interface BoxTraverser extends Fn.Kind.Kind {
 }
 
 declare global {
-  namespace KitLibrarySettings {
+  namespace KITZ {
     namespace Simplify {
       interface Traversables {
         _box: { extends: Box<any>; traverse: BoxTraverser }

@@ -271,7 +271,7 @@ export function maybeAsync<T, R = T, E = unknown>(
  */
 import type { Display } from '#ts/ts'
 declare global {
-  namespace KitTraits.Display {
+  namespace KITZ.Traits.Display {
     interface Handlers<$Type> {
       _promise: $Type extends Promise<infer __value__> ? `Promise<${Display<__value__>}>` : never
     }

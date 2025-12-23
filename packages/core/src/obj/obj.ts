@@ -407,7 +407,7 @@ export type PropertyKeyToString<$Key extends PropertyKey> = $Key extends string 
  * @internal
  */
 declare global {
-  namespace KitTraits.Display {
+  namespace KITZ.Traits.Display {
     interface Handlers<$Type> {
       _symbol: $Type extends symbol ? 'symbol' : never
     }

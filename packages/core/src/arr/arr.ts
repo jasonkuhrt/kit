@@ -891,7 +891,7 @@ import { Optic } from '#optic'
 import type { Display } from '#ts/ts'
 
 declare global {
-  namespace KitTraits.Display {
+  namespace KITZ.Traits.Display {
     // dprint-ignore
     interface Handlers<$Type> {
       // Array (mutable)

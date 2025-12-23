@@ -89,7 +89,7 @@ export const format = (milliseconds: number): Formatted => {
  * @internal
  */
 declare global {
-  namespace KitTraits.Display {
+  namespace KITZ.Traits.Display {
     interface Handlers<$Type> {
       _date: $Type extends Date ? 'Date' : never
     }

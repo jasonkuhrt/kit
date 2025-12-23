@@ -169,7 +169,7 @@ export const empty = (): Empty => Object.freeze({}) as Empty
  * - Valid keys recursively validate their nested values
  * - Preserved types (Date, Error, RegExp, etc.) are not recursed into
  *
- * Preserved types are registered via {@link KitLibrarySettings.Ts.PreserveTypes} and include
+ * Preserved types are registered via {@link KITZ.Ts.PreserveTypes} and include
  * built-in types (Date, Error, RegExp, Function) and branded primitives (Effect types, etc.).
  *
  * When a property is typed as `never`, TypeScript requires that it either:

@@ -414,7 +414,7 @@ export type Primitive = null | undefined | string | number | boolean | symbol | 
  *
  * This type matches primitives that have been branded using Effect's {@link https://effect.website/docs/guides/schema/branded-types/ Brand system},
  * by structurally checking for the presence of the `BrandTypeId` symbol property. It's used in
- * {@link KitLibrarySettings.Ts.PreserveTypes} to prevent branded types from being expanded
+ * {@link KITZ.Ts.PreserveTypes} to prevent branded types from being expanded
  * in type displays and error messages.
  *
  * **How it works:**
@@ -446,7 +446,7 @@ export type Primitive = null | undefined | string | number | boolean | symbol | 
  * ```
  *
  * @category Type Utilities
- * @see {@link KitLibrarySettings.Ts.PreserveTypes}
+ * @see {@link KITZ.Ts.PreserveTypes}
  */
 export type PrimitiveBrandLike = { readonly [Brand.BrandTypeId]: any }
 
@@ -504,7 +504,7 @@ export type WritableDeep<$T> =
  * Strips `readonly` from objects, tuples, and arrays while recursing into nested structures.
  * Uses inline simplification (`& unknown`) to avoid wrapper type names in error messages.
  *
- * Automatically preserves types registered in {@link KitLibrarySettings.Ts.PreserveTypes}
+ * Automatically preserves types registered in {@link KITZ.Ts.PreserveTypes}
  * (including built-in types like Date, Error, Function, and branded primitives).
  *
  * **CRITICAL**: Handles tuples BEFORE arrays to preserve tuple structure.

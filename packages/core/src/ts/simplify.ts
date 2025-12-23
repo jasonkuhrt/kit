@@ -10,11 +10,11 @@ import type * as Union from './union.js'
  * Recursively flattens intersections and mapped types while preserving:
  * - Error types ({@link Ts.Err.StaticError})
  * - Built-in primitives (Date, Error, RegExp, Function)
- * - Globally registered types ({@link KitLibrarySettings.Ts.PreserveTypes})
+ * - Globally registered types ({@link KITZ.Ts.PreserveTypes})
  *
  * Includes circular reference detection to prevent infinite recursion.
  * Traverses into generic containers (Array, Map, Set, Promise, etc.).
- * Supports custom traversal via {@link KitLibrarySettings.Simplify.Traversables}.
+ * Supports custom traversal via {@link KITZ.Simplify.Traversables}.
  *
  * @template $DepthRemaining - How many levels deep to simplify (use -1 for infinite)
  * @template $T - The type to simplify
@@ -71,16 +71,16 @@ export type To<
   $T extends WeakMap<infer __key__, infer __value__>                                            ? WeakMap<To<DN, __key__, SN>, To<DN, __value__, SN>> :
   // Handle WeakSet - traverse element type
   $T extends WeakSet<infer __element__>                                                         ? WeakSet<To<DN, __element__, SN>> :
-  // Try custom types (user-registered via KitLibrarySettings.Simplify.Traversables)
+  // Try custom types (user-registered via KITZ.Simplify.Traversables)
   // Let-Style Binding
   {
-    [K in keyof KitLibrarySettings.Simplify.Traversables]:
-      KitLibrarySettings.Simplify.Traversables[K] extends { extends: infer __traverse_constraint__, traverse: infer __traverse_kind__ }
+    [K in keyof KITZ.Simplify.Traversables]:
+      KITZ.Simplify.Traversables[K] extends { extends: infer __traverse_constraint__, traverse: infer __traverse_kind__ }
         ? $T extends __traverse_constraint__
           ? [Ts.SENTINEL, Fn.Kind.Apply<__traverse_kind__, [$T, DN, SN]>]
           : never // pattern doesn't match
         : never // entry malformed
-  }[keyof KitLibrarySettings.Simplify.Traversables] extends infer __custom_registry_result__
+  }[keyof KITZ.Simplify.Traversables] extends infer __custom_registry_result__
     ? [__custom_registry_result__] extends [never]
       ? $T extends object
         ? { [k in keyof $T]: To<DN, $T[k], SN> } & {}
@@ -111,7 +111,7 @@ export type Top<$T> = To<1, $T>
 /**
  * Simplify using the configured default depth.
  *
- * Alias for {@link To}<{@link KitLibrarySettings.Perf.Settings.depth}, $T>.
+ * Alias for {@link To}<{@link KITZ.Perf.Settings.depth}, $T>.
  *
  * Default depth is 10, configurable via global settings.
  *
@@ -124,7 +124,7 @@ export type Top<$T> = To<1, $T>
  *
  * // Customize depth globally
  * declare global {
- *   namespace KitLibrarySettings {
+ *   namespace KITZ {
  *     namespace Perf {
  *       interface Settings {
  *         depth: 5
@@ -136,7 +136,7 @@ export type Top<$T> = To<1, $T>
  *
  * @category Type Simplification
  */
-export type Auto<$T> = To<KitLibrarySettings.Perf.Settings['depth'], $T>
+export type Auto<$T> = To<KITZ.Perf.Settings['depth'], $T>
 
 /**
  * Simplify all levels (infinite depth).

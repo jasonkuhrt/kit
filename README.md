@@ -152,3 +152,147 @@ You will also find these conventions:
 | `Undefined` | Undefined utilities for optional type handling.                             |
 
 <!-- CORE_NAMESPACE_INDEX_END -->
+
+## Global Settings
+
+Kitz provides extensible global namespaces that you can augment via TypeScript declaration merging. This allows you to customize library behavior and extend type-level features for your project.
+
+### How to Extend
+
+Create a `.d.ts` file in your project (e.g., `types/kitz-settings.d.ts`) and augment the global namespace:
+
+```typescript
+// types/kitz-settings.d.ts
+declare global {
+  namespace KITZ {
+    // Your augmentations here
+  }
+}
+export {}
+```
+
+### `KITZ`
+
+Library configuration settings.
+
+#### `KITZ.Assert`
+
+Type assertion behavior settings.
+
+| Setting                      | Type      | Default | Description                                       |
+| ---------------------------- | --------- | ------- | ------------------------------------------------- |
+| `lintBidForExactPossibility` | `boolean` | `false` | Error when `bid` is used where `exact` would work |
+| `showDiff`                   | `boolean` | `false` | Show detailed diff in type assertion errors       |
+
+```typescript
+declare global {
+  namespace KITZ {
+    interface Assert {
+      showDiff: true
+    }
+  }
+}
+```
+
+#### `KITZ.Perf.Settings`
+
+Performance trade-off settings for type-level operations.
+
+| Setting     | Type      | Default | Description                                                 |
+| ----------- | --------- | ------- | ----------------------------------------------------------- |
+| `allowSlow` | `boolean` | `false` | Enable slow type operations (e.g., `Str.Length` > 20 chars) |
+| `depth`     | `number`  | `10`    | Default depth for `Simplify.Auto` recursion                 |
+
+```typescript
+declare global {
+  namespace KITZ {
+    namespace Perf {
+      interface Settings {
+        allowSlow: true
+        depth: 5
+      }
+    }
+  }
+}
+```
+
+#### `KITZ.Simplify.Traversables`
+
+Register custom container types for `Simplify` traversal.
+
+```typescript
+import type { Effect } from 'effect'
+import type { Kind, Simplify } from 'kitz'
+
+interface EffectTraverser extends Kind.Kind {
+  return: this['parameters'] extends [infer $T, infer $DN, infer $SN]
+    ? $T extends Effect.Effect<infer S, infer E, infer R> ? Effect.Effect<
+        Simplify.To<$DN, S, $SN>,
+        Simplify.To<$DN, E, $SN>,
+        Simplify.To<$DN, R, $SN>
+      >
+    : never
+    : never
+}
+
+declare global {
+  namespace KITZ {
+    namespace Simplify {
+      interface Traversables {
+        _effect: {
+          extends: Effect.Effect<any, any, any>
+          traverse: EffectTraverser
+        }
+      }
+    }
+  }
+}
+```
+
+#### `KITZ.Ts.PreserveTypes`
+
+Types to preserve during simplification (not expanded in IDE hovers).
+
+```typescript
+import type { MyBrandedType } from './my-types'
+
+declare global {
+  namespace KITZ {
+    namespace Ts {
+      interface PreserveTypes {
+        _myBrand: MyBrandedType
+      }
+    }
+  }
+}
+```
+
+#### `KITZ.Ts.Error`
+
+Error rendering settings.
+
+| Setting          | Type      | Default | Description                                             |
+| ---------------- | --------- | ------- | ------------------------------------------------------- |
+| `errorKeyLength` | `number`  | `14`    | Min key length for error alignment (underscore padding) |
+| `renderErrors`   | `boolean` | `true`  | Show full error object vs. message string only          |
+
+### `KITZ.Traits.Display`
+
+Type-level string representation trait. Add custom display handlers for your types.
+
+```typescript
+import type { Effect } from 'effect'
+import type { Ts } from 'kitz'
+
+declare global {
+  namespace KITZ.Traits.Display {
+    interface Handlers<$Type> {
+      _effect: $Type extends Effect.Effect<infer A, infer E, infer R>
+        ? `Effect<${Ts.Display<A>}, ${Ts.Display<E>}, ${Ts.Display<R>}>`
+        : never
+    }
+  }
+}
+```
+
+Built-in handlers include: `Array`, `ReadonlyArray`, `Promise`, `Date`, `RegExp`, `Function`, `symbol`.

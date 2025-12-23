@@ -26,7 +26,7 @@ export interface ErrorLengthExceedsLimit<$S extends string> extends
     ['str', 'length', 'exceeds-limit'],
     {
       message: 'String length exceeds fast path limit (20 chars)'
-      hint: 'Pass true as second parameter or set KitLibrarySettings.Perf.Settings.allowSlow to true'
+      hint: 'Pass true as second parameter or set KITZ.Perf.Settings.allowSlow to true'
       limit: '0-20 chars (fast) | 21-4000 chars (slow, opt-in)'
       received: $S
     }
@@ -170,7 +170,7 @@ type LengthSlow<$S extends string, $Acc extends 0[] = []> =
  *
  * **Performance characteristics:**
  * - **0-20 chars**: Instant evaluation via pattern matching lookup table (6-362 instantiations)
- * - **21-4000 chars**: Requires {@link KitLibrarySettings.Perf.Settings.allowSlow} flag or local override
+ * - **21-4000 chars**: Requires {@link KITZ.Perf.Settings.allowSlow} flag or local override
  *   - When enabled: Uses tail-recursive 4x unrolling (597-2053 instantiations)
  *   - Limit: ~4000 chars (1000 tail recursion limit × 4 chars/recursion)
  *   - When disabled: Returns helpful error with instructions to enable
@@ -199,14 +199,14 @@ type LengthSlow<$S extends string, $Acc extends 0[] = []> =
  * // Exceeds fast path without flag
  * type L5 = Str.Length<'this string is over 20 chars long'>
  * // Error: String length exceeds fast path limit (20 chars)
- * //        Set KitLibrarySettings.Perf.Settings.allowSlow to true
+ * //        Set KITZ.Perf.Settings.allowSlow to true
  *
  * // Local override - no global setting needed
  * type L6 = Str.Length<'this string is over 20 chars long', true> // 38 (works, slower compilation)
  *
  * // With global allowSlow flag enabled
  * declare global {
- *   namespace KitLibrarySettings {
+ *   namespace KITZ {
  *     namespace Perf {
  *       interface Settings {
  *         allowSlow: true
@@ -220,7 +220,7 @@ type LengthSlow<$S extends string, $Acc extends 0[] = []> =
 // dprint-ignore
 export type Length<
   $S extends string,
-  $AllowSlow extends boolean = KitLibrarySettings.Perf.Settings['allowSlow']
+  $AllowSlow extends boolean = KITZ.Perf.Settings['allowSlow']
 > = {
   string: number
   literal: LengthFast<$S> extends never

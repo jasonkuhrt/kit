@@ -9,7 +9,7 @@ import * as Err from './err.js'
  * ```typescript
  * // In your project: types/kit-settings.d.ts
  * declare global {
- *   namespace KitLibrarySettings {
+ *   namespace KITZ {
  *     namespace Ts {
  *       namespace Test {
  *         interface Settings {
@@ -24,12 +24,12 @@ import * as Err from './err.js'
  */
 
 declare global {
-  namespace KitLibrarySettings {
+  namespace KITZ {
     /**
      * Configuration for type test assertions.
      *
      * Augment this interface in your project to customize behavior.
-     * Inherits error rendering settings from {@link KitLibrarySettings.Ts.Error}.
+     * Inherits error rendering settings from {@link KITZ.Ts.Error}.
      */
     interface Assert {
       /**
@@ -92,7 +92,7 @@ declare global {
        *
        * // Opt-in to detailed diff
        * declare global {
-       *   namespace KitLibrarySettings {
+       *   namespace KITZ {
        *     namespace Ts {
        *       interface Assert {
        *         showDiff: true
@@ -172,7 +172,7 @@ declare global {
          *
          * // With allowSlow: true
          * declare global {
-         *   namespace KitLibrarySettings {
+         *   namespace KITZ {
          *     namespace Perf {
          *       interface Settings {
          *         allowSlow: true
@@ -210,7 +210,7 @@ declare global {
          *
          * // Customize depth
          * declare global {
-         *   namespace KitLibrarySettings {
+         *   namespace KITZ {
          *     namespace Perf {
          *       interface Settings {
          *         depth: 5  // Shallower for faster compilation
@@ -278,7 +278,7 @@ declare global {
        *
        * // Register Effect traversal
        * declare global {
-       *   namespace KitLibrarySettings {
+       *   namespace KITZ {
        *     namespace Simplify {
        *       interface Traversables {
        *         _effect: {
@@ -317,7 +317,7 @@ declare global {
        * import type { MySpecialClass, AnotherClass } from './my-classes'
        *
        * declare global {
-       *   namespace KitLibrarySettings {
+       *   namespace KITZ {
        *     namespace Ts {
        *       interface PreserveTypes {
        *         mySpecial: MySpecialClass
@@ -352,7 +352,7 @@ declare global {
          * ```typescript
          * // In your project: types/kit-settings.d.ts
          * declare global {
-         *   namespace KitLibrarySettings {
+         *   namespace KITZ {
          *     namespace Ts {
          *       interface Error {
          *         errorKeyLength: 16
@@ -403,7 +403,7 @@ import type { Num } from '#num'
 import type { PrimitiveBrandLike } from './ts.ts'
 
 declare global {
-  namespace KitLibrarySettings {
+  namespace KITZ {
     namespace Ts {
       interface PreserveTypes {
         // Primitives
@@ -435,7 +435,7 @@ declare global {
  *
  * @internal
  */
-export type GetErrorSetting<K extends keyof KitLibrarySettings.Ts.Error> = KitLibrarySettings.Ts.Error[K]
+export type GetErrorSetting<K extends keyof KITZ.Ts.Error> = KITZ.Ts.Error[K]
 
 /**
  * Get the renderErrors setting with proper default handling.
@@ -455,7 +455,7 @@ export type GetRenderErrors<$Value = GetErrorSetting<'renderErrors'>> = boolean 
  *
  * @internal
  */
-export type GetShowDiff<$Value = KitLibrarySettings.Assert['showDiff']> = boolean extends $Value ? false : $Value
+export type GetShowDiff<$Value = KITZ.Assert['showDiff']> = boolean extends $Value ? false : $Value
 
 /**
  * Extract all preserved types from the Ts.PreserveTypes registry.
@@ -468,6 +468,6 @@ export type GetShowDiff<$Value = KitLibrarySettings.Assert['showDiff']> = boolea
  */
 // dprint-ignore
 export type GetPreservedTypes =
-  [keyof KitLibrarySettings.Ts.PreserveTypes] extends [never]
+  [keyof KITZ.Ts.PreserveTypes] extends [never]
     ? never
-    : KitLibrarySettings.Ts.PreserveTypes[keyof KitLibrarySettings.Ts.PreserveTypes]
+    : KITZ.Ts.PreserveTypes[keyof KITZ.Ts.PreserveTypes]
