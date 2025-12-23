@@ -1,4 +1,4 @@
-import { Arr, Fn, Obj, Rec, Ts } from '@kouka/core'
+import { Arr, Fn, Obj, Rec, Ts } from '@kitz/core'
 import type { Effect, Layer } from 'effect'
 import type { IsAny, IsNever, IsUnknown } from 'type-fest'
 import type { TestContext } from 'vitest'

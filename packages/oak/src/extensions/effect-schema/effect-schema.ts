@@ -1,4 +1,4 @@
-import { Fn, Fn as _, Ts } from '@kouka/core'
+import { Fn, Fn as _, Ts } from '@kitz/core'
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 import { Option, Schema, SchemaAST } from 'effect'
 import { createExtension } from '../../extension.js'

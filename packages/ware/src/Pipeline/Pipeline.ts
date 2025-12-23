@@ -1,4 +1,4 @@
-import { Ts, Tup, Undefined } from '@kouka/core'
+import { Ts, Tup, Undefined } from '@kitz/core'
 // Utility type from Graffle prelude
 type IntersectionIgnoreNeverOrAny<$T> = Ts.Inhabitance.IsAny<$T> extends true ? unknown
   : $T extends never ? unknown

@@ -1,4 +1,4 @@
-import { Fs } from '@kouka/fs'
+import { Fs } from '@kitz/fs'
 import { Match, Schema as S } from 'effect'
 import { type ExportedDeclarations, Node } from 'ts-morph'
 import {

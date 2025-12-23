@@ -5,8 +5,8 @@
  * Usage: tsx .claude/skills/creating-packages/scripts/create-package.ts <name>
  *
  * Example:
- *   tsx .claude/skills/creating-packages/scripts/create-package.ts foo     # Creates @kouka/foo
- *   tsx .claude/skills/creating-packages/scripts/create-package.ts foo-bar # Creates @kouka/foo-bar
+ *   tsx .claude/skills/creating-packages/scripts/create-package.ts foo     # Creates @kitz/foo
+ *   tsx .claude/skills/creating-packages/scripts/create-package.ts foo-bar # Creates @kitz/foo-bar
  */
 
 import * as fs from 'node:fs'
@@ -37,7 +37,7 @@ const createPackage = (name: string) => {
 
   // package.json
   const packageJson = {
-    name: `@kouka/${name}`,
+    name: `@kitz/${name}`,
     version: '0.0.0',
     type: 'module',
     sideEffects: false,
@@ -58,7 +58,7 @@ const createPackage = (name: string) => {
       'check:package': 'publint && attw --pack',
     },
     dependencies: {
-      '@kouka/core': 'workspace:*',
+      '@kitz/core': 'workspace:*',
     },
   }
   fs.writeFileSync(
@@ -118,11 +118,11 @@ const createPackage = (name: string) => {
     `// Export functions and types here\n`,
   )
 
-  console.log(`Created @kouka/${name}`)
+  console.log(`Created @kitz/${name}`)
   console.log(`\nNext steps:`)
   console.log(`  1. Run: pnpm install`)
   console.log(`  2. Add exports to: packages/${name}/src/__.ts`)
-  console.log(`  3. Build: pnpm turbo run build --filter=@kouka/${name}`)
+  console.log(`  3. Build: pnpm turbo run build --filter=@kitz/${name}`)
 }
 
 const showHelp = () => {
@@ -136,8 +136,8 @@ Arguments:
   name    Package name (lowercase, letters/numbers/hyphens)
 
 Examples:
-  tsx .claude/skills/creating-packages/scripts/create-package.ts foo       # Creates @kouka/foo
-  tsx .claude/skills/creating-packages/scripts/create-package.ts foo-bar   # Creates @kouka/foo-bar
+  tsx .claude/skills/creating-packages/scripts/create-package.ts foo       # Creates @kitz/foo
+  tsx .claude/skills/creating-packages/scripts/create-package.ts foo-bar   # Creates @kitz/foo-bar
 
 Creates:
   packages/<name>/

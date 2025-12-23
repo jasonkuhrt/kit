@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/fs",
+  "name": "@kitz/fs",
   "version": "0.0.0",
   "description": "Filesystem utilities",
   "type": "module",
@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@effect/platform": "^0.94.0",
-    "@kouka/core": "workspace:*",
-    "@kouka/json": "workspace:*",
+    "@kitz/core": "workspace:*",
+    "@kitz/json": "workspace:*",
     "effect": "^3.0.0",
     "tinyglobby": "^0.2.15"
   },

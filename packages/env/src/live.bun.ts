@@ -6,7 +6,7 @@ declare const Bun: {
   env: Record<string, string | undefined>
 }
 
-import { Fs } from '@kouka/fs'
+import { Fs } from '@kitz/fs'
 import { Layer } from 'effect'
 import process from 'node:process'
 import { Env } from './env.js'

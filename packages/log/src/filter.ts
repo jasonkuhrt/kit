@@ -1,4 +1,4 @@
-import { Arr, Err, Lang, Str } from '@kouka/core'
+import { Arr, Err, Lang, Str } from '@kitz/core'
 import type * as FilterTypes from './filter.types.js'
 import { validPathSegmentNameRegex } from './internal.js'
 import * as Level from './level.js'

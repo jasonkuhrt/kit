@@ -1,4 +1,4 @@
-import { Err, Fn, Lang, Obj, Prom, Str } from '@kouka/core'
+import { Err, Fn, Lang, Obj, Prom, Str } from '@kitz/core'
 import { Equal, Schema as S } from 'effect'
 import objectInspect from 'object-inspect'
 import { describe as vitestDescribe, expect } from 'vitest'

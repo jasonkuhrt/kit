@@ -202,7 +202,7 @@ function loadExtractorRegistry(): Record<string, string> {
     tsConfigFilePath: path.join(PACKAGE_DIR, 'tsconfig.json'),
   })
 
-  // Registry is in @kouka/core package
+  // Registry is in @kitz/core package
   const registryFilePath = path.join(CORE_PACKAGE_DIR, 'src/optic/registry.ts')
   const sourceFile = project.addSourceFileAtPath(registryFilePath)
 
@@ -307,7 +307,7 @@ function generateFileHeader(combo: Combination): string {
   const { relatorsPath, builderPath } = calculateImportPaths(combo)
 
   const extractorImports = combo.extractors.length > 0
-    ? `import { Optic } from '@kouka/core'\n`
+    ? `import { Optic } from '@kitz/core'\n`
     : ''
 
   const eitherImport = combo.extractors.length > 0
@@ -322,7 +322,7 @@ function generateFileHeader(combo: Combination): string {
     relatorKinds.push('AssertEquivNoExcessKind')
   }
 
-  return `import type { Fn } from '@kouka/core'
+  return `import type { Fn } from '@kitz/core'
 ${extractorImports}${eitherImport}import type { ${relatorKinds.join(', ')} } from '${relatorsPath}'
 import { builder } from '${builderPath}'
 `
@@ -585,7 +585,7 @@ function generateBarrelFile(dirPath: string, exports: string[]): string {
 
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
 
-  const imports = `import type { Fn } from '@kouka/core'
+  const imports = `import type { Fn } from '@kitz/core'
 import { builder } from '${builderPath}'
 import type { ${relatorKinds} } from '${relatorsPath}'`
 
@@ -646,9 +646,9 @@ export const empty = builder.${extractorName}.empty`
   const extractor = EXTRACTORS[extractorName]!
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
 
-  const imports = `import type { Fn } from '@kouka/core'
+  const imports = `import type { Fn } from '@kitz/core'
 import { builder } from '${builderPath}'
-import { Optic } from '@kouka/core'
+import { Optic } from '@kitz/core'
 import type { Either } from 'effect'
 import type { ${relatorKinds} } from '${relatorsPath}'`
 
@@ -703,11 +703,11 @@ export const empty = ${builderPrefix}.empty`
 
   // Add type-level shorthand for negated relators
   const extractorImports = extractors.length > 0
-    ? `import { Optic } from '@kouka/core'\nimport type { Either } from 'effect'\n`
+    ? `import { Optic } from '@kitz/core'\nimport type { Either } from 'effect'\n`
     : ''
   const relatorKinds = Object.keys(RELATORS).map((r) => RELATORS[r]!.kindName).join(', ')
 
-  const imports = `import type { Fn } from '@kouka/core'
+  const imports = `import type { Fn } from '@kitz/core'
 import { builder } from '${builderPath}'
 ${extractorImports}import type { ${relatorKinds} } from '${relatorsPath}'`
 
@@ -751,7 +751,7 @@ function generateUnaryRelatorFile(unaryRelator: UnaryRelator, negated: boolean):
   const relatorsPath = getRelativePath(outputPath, path.join(srcDir, 'asserts.js'))
   const builderPath = getRelativePath(outputPath, path.join(srcDir, 'builder-singleton.js'))
 
-  const imports = `import type { Fn } from '@kouka/core'
+  const imports = `import type { Fn } from '@kitz/core'
 import { builder } from '${builderPath}'
 import type { ${unaryRelator.kindName} } from '${relatorsPath}'`
 

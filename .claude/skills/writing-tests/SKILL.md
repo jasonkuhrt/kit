@@ -25,7 +25,7 @@ description: Writes tests following project conventions. Handles test file organ
 Use Kit's `Test` module for table-driven tests:
 
 ```typescript
-import { Test } from '@kouka/test'
+import { Test } from '@kitz/test'
 
 // Function mode - types inferred from function
 Test.on(add)
@@ -50,7 +50,7 @@ Test.describe('Transform')
 Use value-level `Assert` API (reports ALL errors, not just first):
 
 ```typescript
-import { Assert } from '@kouka/assert'
+import { Assert } from '@kitz/assert'
 
 // Preferred - value-level
 Assert.exact.ofAs<string>().on(value)

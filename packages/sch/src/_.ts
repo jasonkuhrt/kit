@@ -9,7 +9,7 @@
  *
  * @example
  * ```ts
- * import { Sch } from '@kouka/sch'
+ * import { Sch } from '@kitz/sch'
  * import { Schema } from 'effect'
  *
  * // Create a discriminated union with factory

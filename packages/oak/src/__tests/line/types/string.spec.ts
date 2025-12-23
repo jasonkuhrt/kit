@@ -1,4 +1,4 @@
-import { Assert } from '@kouka/assert'
+import { Assert } from '@kitz/assert'
 import { describe, expect, it } from 'vitest'
 import { $, n, s } from '../../_/helpers.js'
 

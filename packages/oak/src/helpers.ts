@@ -1,4 +1,4 @@
-import { Obj, Str } from '@kouka/core'
+import { Obj, Str } from '@kitz/core'
 import { Either } from 'effect'
 
 export const BooleanLookup = {

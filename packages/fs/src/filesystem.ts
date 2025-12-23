@@ -9,7 +9,7 @@
 
 import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
-import type { Json } from '@kouka/json'
+import type { Json } from '@kitz/json'
 import { Effect, Schema as S, Scope, Sink, Stream } from 'effect'
 import { Path } from './path/_.js'
 
@@ -820,7 +820,7 @@ export type MakeTempOptions = TempFileOptions | TempDirectoryOptions
  *
  * @example
  * ```ts
- * import { Fs } from '@kouka/fs'
+ * import { Fs } from '@kitz/fs'
  *
  * // Create a temporary directory with default options
  * const tempDir = yield* Fs.makeTempDirectory()
@@ -855,7 +855,7 @@ export const makeTempDirectory = (
  *
  * @example
  * ```ts
- * import { Fs } from '@kouka/fs'
+ * import { Fs } from '@kitz/fs'
  * import { Effect, Scope } from 'effect'
  *
  * Effect.gen(function*() {

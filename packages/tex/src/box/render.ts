@@ -1,4 +1,4 @@
-import { Str } from '@kouka/core'
+import { Str } from '@kitz/core'
 import { Schema as S } from 'effect'
 import { applyStyle } from './ansi.js'
 import type { Box } from './box.js'

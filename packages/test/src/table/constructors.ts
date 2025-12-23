@@ -1,4 +1,4 @@
-import { Fn } from '@kouka/core'
+import { Fn } from '@kitz/core'
 import { Option } from 'effect'
 import * as Types from './builder-types.js'
 import * as Builder from './builder.js'

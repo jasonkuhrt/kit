@@ -24,8 +24,8 @@ type InferReturnType<T extends Path.$Rel> = T extends Path.RelFile ? Path.AbsFil
  *
  * @example
  * ```ts
- * import { Fs } from '@kouka/fs'
- * import { Fs } from '@kouka/fs'
+ * import { Fs } from '@kitz/fs'
+ * import { Fs } from '@kitz/fs'
  *
  * const dir = Path.AbsDir.decodeStringSync('/project/')
  * const paths = [

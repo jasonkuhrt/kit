@@ -1,4 +1,4 @@
-import { Str } from '@kouka/core'
+import { Str } from '@kitz/core'
 import { Errors } from '../../Errors/_.js'
 import { stripeNegatePrefixLoose } from '../../helpers.js'
 import type { Index } from '../../lib/prelude.js'

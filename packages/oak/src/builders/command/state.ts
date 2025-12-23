@@ -1,5 +1,5 @@
-import { Obj, Ts } from '@kouka/core'
-import type { Cli } from '@kouka/cli'
+import { Obj, Ts } from '@kitz/core'
+import type { Cli } from '@kitz/cli'
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 import type { SomeExtension } from '../../extension.js'
 import type { Values } from '../../helpers.js'

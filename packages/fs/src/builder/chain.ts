@@ -1,5 +1,5 @@
 import { Error as PlatformError, FileSystem } from '@effect/platform'
-import type { Json } from '@kouka/json'
+import type { Json } from '@kitz/json'
 import { Effect } from 'effect'
 import type { InferFileContent } from '../filesystem.js'
 import { Path } from '../path/_.js'

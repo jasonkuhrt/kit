@@ -1,4 +1,4 @@
-import type { Json } from '@kouka/json'
+import type { Json } from '@kitz/json'
 import { Schema as S } from 'effect'
 import { join } from 'node:path'
 import type { InferFileContent } from '../filesystem.js'

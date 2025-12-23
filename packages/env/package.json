@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/env",
+  "name": "@kitz/env",
   "version": "0.0.0",
   "description": "Environment variable utilities",
   "type": "module",
@@ -9,7 +9,7 @@
     "./__": "./build/__.js"
   },
   "dependencies": {
-    "@kouka/fs": "workspace:*",
+    "@kitz/fs": "workspace:*",
     "effect": "^3.0.0"
   },
   "scripts": {

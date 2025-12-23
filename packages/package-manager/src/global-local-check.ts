@@ -1,6 +1,6 @@
 import { FileSystem } from '@effect/platform'
-import { Env } from '@kouka/env'
-import { Fs } from '@kouka/fs'
+import { Env } from '@kitz/env'
+import { Fs } from '@kitz/fs'
 import { Effect, Schema as S } from 'effect'
 
 interface GlobalLocalCheckOptions {

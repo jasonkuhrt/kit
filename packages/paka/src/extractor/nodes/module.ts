@@ -1,4 +1,4 @@
-import { Fs } from '@kouka/fs'
+import { Fs } from '@kitz/fs'
 import { Schema as S } from 'effect'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, dirname, extname, join } from 'node:path'

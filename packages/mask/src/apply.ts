@@ -1,4 +1,4 @@
-import { Lang, Obj } from '@kouka/core'
+import { Lang, Obj } from '@kitz/core'
 import type { GetDataType, Mask } from './mask.js'
 
 /**

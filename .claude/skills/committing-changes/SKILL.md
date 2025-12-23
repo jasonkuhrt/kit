@@ -23,10 +23,10 @@ description: Creates commits following project conventions. Handles Conventional
 
 ### Scopes
 
-Package name minus `@kouka/` prefix. Comma-separate for multiple packages. Omit for repo-level.
+Package name minus `@kitz/` prefix. Comma-separate for multiple packages. Omit for repo-level.
 
 ```
-feat(core): add new utility          # @kouka/core
+feat(core): add new utility          # @kitz/core
 fix(core, arr): update shared type   # Multiple packages
 ci: add Vercel Remote Cache          # Repo-level (no scope)
 ```

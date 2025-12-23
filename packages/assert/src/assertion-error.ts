@@ -1,4 +1,4 @@
-import { Ts } from '@kouka/core'
+import { Ts } from '@kitz/core'
 /**
  * Represents a static assertion error at the type level, optimized for type testing.
  *

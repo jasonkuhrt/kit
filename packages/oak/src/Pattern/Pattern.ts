@@ -1,4 +1,4 @@
-import { Obj, Ts } from '@kouka/core'
+import { Obj, Ts } from '@kitz/core'
 export const _ = `*`
 
 export type SomeData = SomeDataObject | SomeDataScalar

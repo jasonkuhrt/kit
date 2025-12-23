@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/sch",
+  "name": "@kitz/sch",
   "version": "0.0.0",
   "description": "Schema utilities",
   "type": "module",
@@ -9,7 +9,7 @@
     "./__": "./build/__.js"
   },
   "dependencies": {
-    "@kouka/core": "workspace:*",
+    "@kitz/core": "workspace:*",
     "effect": "^3.19.11"
   },
   "scripts": {

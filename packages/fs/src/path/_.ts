@@ -15,7 +15,7 @@
  *
  * @example
  * ```ts
- * import { Path } from '@kouka/fs'
+ * import { Path } from '@kitz/fs'
  *
  * // Data - Union of all members
  * type AnyPath = typeof Path.Any.Type

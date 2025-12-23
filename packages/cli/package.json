@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/cli",
+  "name": "@kitz/cli",
   "version": "0.0.0",
   "description": "CLI framework",
   "type": "module",
@@ -10,10 +10,10 @@
   },
   "dependencies": {
     "@effect/platform": "^0.94.0",
-    "@kouka/core": "workspace:*",
-    "@kouka/env": "workspace:*",
-    "@kouka/fs": "workspace:*",
-    "@kouka/mod": "workspace:*",
+    "@kitz/core": "workspace:*",
+    "@kitz/env": "workspace:*",
+    "@kitz/fs": "workspace:*",
+    "@kitz/mod": "workspace:*",
     "effect": "^3.19.11"
   },
   "scripts": {

@@ -1,4 +1,4 @@
-import { Arr, Num, Str } from '@kouka/core'
+import { Arr, Num, Str } from '@kitz/core'
 import type { Block } from './block.js'
 import { type GapParameters, parseGap } from './gap.js'
 import { MAX_COLUMN_WIDTH, type RenderContext } from './helpers.js'

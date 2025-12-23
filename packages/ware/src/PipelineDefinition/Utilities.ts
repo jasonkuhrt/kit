@@ -1,4 +1,4 @@
-import { Tup } from '@kouka/core'
+import { Tup } from '@kitz/core'
 import type { Result } from '../Result.js'
 import type { PipelineDefinition } from './_.js'
 

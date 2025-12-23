@@ -17,7 +17,7 @@ declare namespace Deno {
   export function exit(code?: number): never
 }
 
-import { Fs } from '@kouka/fs'
+import { Fs } from '@kitz/fs'
 import { Layer } from 'effect'
 import { Env } from './env.js'
 import type { Arch, Os } from './types.js'

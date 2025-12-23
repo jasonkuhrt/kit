@@ -1,4 +1,4 @@
-import { Fs } from '@kouka/fs'
+import { Fs } from '@kitz/fs'
 import { Context, Layer } from 'effect'
 import type { Arch, Os, Platform } from './types.js'
 

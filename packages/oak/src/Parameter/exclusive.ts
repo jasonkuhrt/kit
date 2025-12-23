@@ -1,4 +1,4 @@
-import { Cli } from '@kouka/cli'
+import { Cli } from '@kitz/cli'
 import { Alge } from 'alge'
 import type { BuilderCommandState } from '../builders/command/state.js'
 import { S } from '../deps/effect.js'

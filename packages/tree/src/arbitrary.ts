@@ -45,7 +45,7 @@ export interface ArbitraryOptions {
  * @example
  * ```ts
  * import fc from 'fast-check'
- * import { arbitrary, Tree } from '@kouka/tree'
+ * import { arbitrary, Tree } from '@kitz/tree'
  *
  * // Generate trees of strings
  * const stringTreeArb = arbitrary(fc.string())

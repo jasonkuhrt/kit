@@ -1,4 +1,4 @@
-import { Ts } from '@kouka/core'
+import { Ts } from '@kitz/core'
 import type { Path } from './_.js'
 import { Schema as S } from 'effect'
 import type { Analyzer } from '../path-analyzer/codec-string/_.js'

@@ -1,4 +1,4 @@
-import { Arr, Str } from '@kouka/core'
+import { Arr, Str } from '@kitz/core'
 import type { BlockParameters } from './block.js'
 import { Block } from './block.js'
 import type { RenderContext } from './helpers.js'

@@ -1,4 +1,4 @@
-import { Fn, Ts } from '@kouka/core'
+import { Fn, Ts } from '@kitz/core'
 /**
  * Assertion builder state tracking the current configuration and position in the API chain.
  *

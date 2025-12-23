@@ -1,4 +1,4 @@
-import { Prom } from '@kouka/core'
+import { Prom } from '@kitz/core'
 import { z } from 'zod/v4'
 import * as Command from '../../_entrypoints/__.js'
 import { Zod } from '../../extensions/__.js'

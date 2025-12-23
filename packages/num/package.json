@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/num",
+  "name": "@kitz/num",
   "version": "0.0.0",
   "description": "Extended number utilities",
   "type": "module",
@@ -9,7 +9,7 @@
     "./__": "./build/__.js"
   },
   "dependencies": {
-    "@kouka/core": "workspace:*",
+    "@kitz/core": "workspace:*",
     "effect": "^3.0.0"
   },
   "scripts": {

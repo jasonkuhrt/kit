@@ -1,5 +1,5 @@
-import { Pat, Str } from '@kouka/core'
-import { Fs } from '@kouka/fs'
+import { Pat, Str } from '@kitz/core'
+import { Fs } from '@kitz/fs'
 import { Schema as S } from 'effect'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'

@@ -1,4 +1,4 @@
-import { Str } from '@kouka/core'
+import { Str } from '@kitz/core'
 import { Schema as S } from 'effect'
 import { Sided } from '../property-factories/sided/_.js'
 

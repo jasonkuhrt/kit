@@ -24,7 +24,7 @@ Sections are marked with HTML comments:
 <!-- PACKAGES_TABLE_START -->
 | Package | Description |
 | ------- | ----------- |
-| [`@kouka/core`](./packages/core) | Core utilities |
+| [`@kitz/core`](./packages/core) | Core utilities |
 ...
 <!-- PACKAGES_TABLE_END -->
 

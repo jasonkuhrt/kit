@@ -1,4 +1,4 @@
-import type { Fn } from '@kouka/core'
+import type { Fn } from '@kitz/core'
 import { builder } from '../builder-singleton.js'
 import type { AssertUnknownKind } from '../asserts.js'
 

@@ -1,4 +1,4 @@
-import { Prox } from '@kouka/core'
+import { Prox } from '@kitz/core'
 import type { Builder } from './builder/builders.js'
 import type { State } from './builder/state.js'
 

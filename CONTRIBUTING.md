@@ -21,13 +21,13 @@ Just describe what you need and Claude Code will handle it.
 
 ## Architecture
 
-Kit is a pnpm workspace monorepo with packages under `packages/`. All packages are scoped under `@kouka/` except the `kouka` aggregator-package.
+Kitz is a pnpm workspace monorepo with packages under `packages/`. All packages are scoped under `@kitz/` except the `kitz` aggregator-package.
 
 **Build system**: Turbo + tsgo (TypeScript Go port)
 
 ```bash
 pnpm turbo run build                        # All packages
-pnpm turbo run build --filter=@kouka/core   # Single package
+pnpm turbo run build --filter=@kitz/core   # Single package
 ```
 
 **Cross-package dependencies**: Use `workspace:*` and import by package name. Note that `#` imports are scoped per-package - cross-package `#` imports are not valid.
@@ -38,12 +38,12 @@ pnpm turbo run build --filter=@kouka/core   # Single package
 
 ```
 error TS2742: The inferred type of 'X' cannot be named without a reference to
-'../node_modules/@kouka/core/build/optic/lenses/returned.js'.
+'../node_modules/@kitz/core/build/optic/lenses/returned.js'.
 ```
 
 **Cause**: TypeScript declaration emit cannot do novel module resolution - it only uses specifiers resolved during program creation. When types are re-exported through ESM namespaces (`export * as X from`), TypeScript cannot discover a portable path to reference those types.
 
-**Solution**: Library-side fix in `@kouka/core` (no consumer action needed):
+**Solution**: Library-side fix in `@kitz/core` (no consumer action needed):
 
 1. Add internal subpath exports to `package.json`:
 
@@ -58,8 +58,8 @@ error TS2742: The inferred type of 'X' cannot be named without a reference to
 2. In the library's barrel file, import and USE the internal modules in an exported type:
 
 ```typescript
-// In @kouka/core/src/optic/__.ts
-import type * as __returned from '@kouka/core/_internal/optic-lenses/returned'
+// In @kitz/core/src/optic/__.ts
+import type * as __returned from '@kitz/core/_internal/optic-lenses/returned'
 
 /**
  * @internal DO NOT USE - Forces TypeScript to include internal module references

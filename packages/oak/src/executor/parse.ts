@@ -1,4 +1,4 @@
-import { Obj } from '@kouka/core'
+import { Obj } from '@kitz/core'
 import { Effect } from 'effect'
 import type { RawArgInputs } from '../builders/command/types.js'
 import { createEvent } from '../eventPatterns.js'

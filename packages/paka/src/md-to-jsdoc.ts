@@ -1,5 +1,5 @@
-import { Fs } from '@kouka/fs'
-import { Syn } from '@kouka/syn'
+import { Fs } from '@kitz/fs'
+import { Syn } from '@kitz/syn'
 
 export interface MarkdownToJsDocMetadata {
   moduleName: string

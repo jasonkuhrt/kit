@@ -1,5 +1,5 @@
-import { Lang, Prom } from '@kouka/core'
-import { Log } from '@kouka/log'
+import { Lang, Prom } from '@kitz/core'
+import { Log } from '@kitz/log'
 import { ContextualError } from '../_errors.js'
 import type { InterceptorGeneric } from '../Interceptor/Interceptor.js'
 import type { Pipeline } from '../Pipeline/Pipeline.js'

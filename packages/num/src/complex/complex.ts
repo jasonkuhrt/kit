@@ -3,7 +3,7 @@
  * A complex number is a number that can be expressed as a + bi where a and b are real numbers and i is the imaginary unit.
  */
 
-import { Fn } from '@kouka/core'
+import { Fn } from '@kitz/core'
 
 import type { Brand } from 'effect'
 

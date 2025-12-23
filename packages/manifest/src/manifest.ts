@@ -1,7 +1,7 @@
-import { Ts } from '@kouka/core'
-import { Fs } from '@kouka/fs'
-import { Resource } from '@kouka/resource'
-import { Semver } from '@kouka/semver'
+import { Ts } from '@kitz/core'
+import { Fs } from '@kitz/fs'
+import { Resource } from '@kitz/resource'
+import { Semver } from '@kitz/semver'
 import { Effect, Option, Schema as S } from 'effect'
 
 const Author = S.Struct({

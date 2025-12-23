@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/idx",
+  "name": "@kitz/idx",
   "version": "0.0.0",
   "description": "Index data structure",
   "type": "module",
@@ -19,7 +19,7 @@
     "check:package": "publint && attw --pack"
   },
   "dependencies": {
-    "@kouka/core": "workspace:*",
+    "@kitz/core": "workspace:*",
     "type-fest": "^4.0.0"
   }
 }

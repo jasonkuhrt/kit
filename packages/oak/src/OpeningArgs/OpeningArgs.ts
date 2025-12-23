@@ -1,5 +1,5 @@
-import { Err, Obj } from '@kouka/core'
-import { Group } from '@kouka/group'
+import { Err, Obj } from '@kitz/core'
+import { Group } from '@kitz/group'
 import { Alge } from 'alge'
 import { Errors } from '../Errors/_.js'
 import type { ParameterExclusive } from '../Parameter/exclusive.js'

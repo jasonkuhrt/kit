@@ -1,5 +1,5 @@
-import { Lang, Str } from '@kouka/core'
-import { Time } from '@kouka/time'
+import { Lang, Str } from '@kitz/core'
+import { Time } from '@kitz/time'
 import * as Os from 'node:os'
 import objectInspect from 'object-inspect'
 import * as Level from './level.js'

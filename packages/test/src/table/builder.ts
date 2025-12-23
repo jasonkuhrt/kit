@@ -1,4 +1,4 @@
-import { Fn, Prom } from '@kouka/core'
+import { Fn, Prom } from '@kitz/core'
 import { Array, Effect, Layer, Option } from 'effect'
 import objectInspect from 'object-inspect'
 import { expect, test } from 'vitest'

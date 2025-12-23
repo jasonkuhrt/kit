@@ -1,4 +1,4 @@
-import { Ts } from '@kouka/core'
+import { Ts } from '@kitz/core'
 import type { AssertActual, AssertExpected } from './asserts.js'
 import type { State } from './state.js'
 

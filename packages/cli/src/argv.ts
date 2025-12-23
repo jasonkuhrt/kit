@@ -1,4 +1,4 @@
-import { Arr, Str } from '@kouka/core'
+import { Arr, Str } from '@kitz/core'
 import { Schema as S } from 'effect'
 
 // ============================================

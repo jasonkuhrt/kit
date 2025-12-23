@@ -3,7 +3,7 @@
  * A fraction represents a positive proper fraction where 0 < numerator < denominator.
  */
 
-import { Fn } from '@kouka/core'
+import { Fn } from '@kitz/core'
 import type { Int } from '../int/__.js'
 import type { Natural } from '../natural/__.js'
 import type { NonZero } from '../non-zero/__.js'

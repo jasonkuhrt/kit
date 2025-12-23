@@ -71,7 +71,7 @@ import { Obj } from '#obj'
 
 // Incorrect - don't use relative or package imports internally
 import { Fn } from '../fn/_.js'
-import { Obj } from '@kouka/core/obj'
+import { Obj } from '@kitz/core/obj'
 ```
 
 ### Naming

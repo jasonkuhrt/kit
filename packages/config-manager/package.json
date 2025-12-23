@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/config-manager",
+  "name": "@kitz/config-manager",
   "version": "0.0.0",
   "description": "Configuration file management",
   "type": "module",
@@ -9,7 +9,7 @@
     "./__": "./build/__.js"
   },
   "dependencies": {
-    "@kouka/core": "workspace:*",
+    "@kitz/core": "workspace:*",
     "effect": "^3.0.0",
     "type-fest": "*"
   },

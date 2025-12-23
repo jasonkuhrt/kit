@@ -1,4 +1,4 @@
-import { Str } from '@kouka/core'
+import { Str } from '@kitz/core'
 import { MAX_COLUMN_WIDTH, type RenderContext } from './helpers.js'
 import { Node } from './node.js'
 

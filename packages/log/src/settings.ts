@@ -1,4 +1,4 @@
-import { Lang, Obj } from '@kouka/core'
+import { Lang, Obj } from '@kitz/core'
 import * as Filter from './filter.js'
 import { parseFromEnvironment } from './internal.js'
 import * as Level from './level.js'

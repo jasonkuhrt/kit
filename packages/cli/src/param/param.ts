@@ -1,4 +1,4 @@
-import { Str, Ts } from '@kouka/core'
+import { Str, Ts } from '@kitz/core'
 import { ParseResult, Schema as S } from 'effect'
 
 /**

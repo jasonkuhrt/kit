@@ -1,5 +1,5 @@
 import { FileSystem } from '@effect/platform'
-import { Fs } from '@kouka/fs'
+import { Fs } from '@kitz/fs'
 import { Effect, Option, ParseResult, Schema, Schema as S } from 'effect'
 
 /**

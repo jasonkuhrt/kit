@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/paka",
+  "name": "@kitz/paka",
   "version": "0.0.0",
   "description": "Package utilities",
   "type": "module",
@@ -11,9 +11,9 @@
   "dependencies": {
     "@dprint/formatter": "^0.4.1",
     "@dprint/markdown": "^0.20.0",
-    "@kouka/core": "workspace:*",
-    "@kouka/fs": "workspace:*",
-    "@kouka/syn": "workspace:*",
+    "@kitz/core": "workspace:*",
+    "@kitz/fs": "workspace:*",
+    "@kitz/syn": "workspace:*",
     "@microsoft/tsdoc": "^0.16.0",
     "@types/mdast": "^4.0.4",
     "effect": "^3.0.0",

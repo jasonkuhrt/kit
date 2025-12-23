@@ -1,4 +1,4 @@
-import { Obj } from '@kouka/core'
+import { Obj } from '@kitz/core'
 import { StateSymbol } from './state.js'
 import type { State } from './state.js'
 

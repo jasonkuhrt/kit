@@ -1,5 +1,5 @@
-import { Arr, Str } from '@kouka/core'
-import { Fs } from '@kouka/fs'
+import { Arr, Str } from '@kitz/core'
+import { Fs } from '@kitz/fs'
 import { Schema as S } from 'effect'
 
 // ============================================================================

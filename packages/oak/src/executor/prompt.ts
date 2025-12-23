@@ -1,5 +1,5 @@
-import { Obj } from '@kouka/core'
-import { Tex } from '@kouka/tex'
+import { Obj } from '@kitz/core'
+import { Tex } from '@kitz/tex'
 import ansis from 'ansis'
 import { Effect } from 'effect'
 import type { Prompter } from '../lib/Prompter/_.js'

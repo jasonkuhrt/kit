@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/test",
+  "name": "@kitz/test",
   "version": "0.0.0",
   "description": "Testing utilities",
   "type": "module",
@@ -10,7 +10,7 @@
     "./test": "./build/__.js"
   },
   "dependencies": {
-    "@kouka/core": "workspace:*",
+    "@kitz/core": "workspace:*",
     "@types/object-inspect": "^1.13.0",
     "effect": "^3.19.11",
     "fast-check": "^4.4.0",

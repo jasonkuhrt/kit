@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/tex",
+  "name": "@kitz/tex",
   "version": "0.0.0",
   "description": "Text and box formatting utilities",
   "type": "module",
@@ -9,8 +9,8 @@
     "./__": "./build/__.js"
   },
   "dependencies": {
-    "@kouka/color": "workspace:*",
-    "@kouka/core": "workspace:*",
+    "@kitz/color": "workspace:*",
+    "@kitz/core": "workspace:*",
     "@types/node": "^25.0.3",
     "ansis": "^4.2.0",
     "effect": "^3.19.11"

@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/semver",
+  "name": "@kitz/semver",
   "version": "0.0.0",
   "description": "Semantic versioning utilities",
   "type": "module",

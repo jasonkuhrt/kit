@@ -1,14 +1,14 @@
 // Force TS to resolve internal lens paths for consumer type inference discovery
 // See: https://github.com/microsoft/TypeScript/issues/61700
-import type * as __array from '@kouka/core/_internal/optic-lenses/array'
-import type * as __awaited from '@kouka/core/_internal/optic-lenses/awaited'
-import type * as __parameter1 from '@kouka/core/_internal/optic-lenses/parameter1'
-import type * as __parameter2 from '@kouka/core/_internal/optic-lenses/parameter2'
-import type * as __parameter3 from '@kouka/core/_internal/optic-lenses/parameter3'
-import type * as __parameter4 from '@kouka/core/_internal/optic-lenses/parameter4'
-import type * as __parameter5 from '@kouka/core/_internal/optic-lenses/parameter5'
-import type * as __parameters from '@kouka/core/_internal/optic-lenses/parameters'
-import type * as __returned from '@kouka/core/_internal/optic-lenses/returned'
+import type * as __array from '@kitz/core/_internal/optic-lenses/array'
+import type * as __awaited from '@kitz/core/_internal/optic-lenses/awaited'
+import type * as __parameter1 from '@kitz/core/_internal/optic-lenses/parameter1'
+import type * as __parameter2 from '@kitz/core/_internal/optic-lenses/parameter2'
+import type * as __parameter3 from '@kitz/core/_internal/optic-lenses/parameter3'
+import type * as __parameter4 from '@kitz/core/_internal/optic-lenses/parameter4'
+import type * as __parameter5 from '@kitz/core/_internal/optic-lenses/parameter5'
+import type * as __parameters from '@kitz/core/_internal/optic-lenses/parameters'
+import type * as __returned from '@kitz/core/_internal/optic-lenses/returned'
 
 /**
  * @internal DO NOT USE - Forces TypeScript to include internal lens module references

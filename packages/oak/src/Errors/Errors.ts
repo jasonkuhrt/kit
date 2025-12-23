@@ -1,4 +1,4 @@
-import { Err } from '@kouka/core'
+import { Err } from '@kitz/core'
 import type { OpeningArgs } from '../OpeningArgs/_.js'
 import type { ParameterExclusive, ParameterExclusiveGroup } from '../Parameter/exclusive.js'
 import type { Parameter } from '../Parameter/types.js'

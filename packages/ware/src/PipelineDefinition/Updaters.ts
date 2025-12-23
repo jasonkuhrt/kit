@@ -1,4 +1,4 @@
-import type { ConfigManager } from '@kouka/config-manager'
+import type { ConfigManager } from '@kitz/config-manager'
 import type { Overload } from '../Overload/_.js'
 import type { StepDefinition } from '../StepDefinition.js'
 import type { PipelineDefinition } from './_.js'

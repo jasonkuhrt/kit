@@ -1,6 +1,6 @@
 // Force TS to resolve internal paths for consumer type inference discovery
 // See: https://github.com/microsoft/TypeScript/issues/61700
-import type * as __kind from '@kouka/core/_internal/fn/kind'
+import type * as __kind from '@kitz/core/_internal/fn/kind'
 
 /**
  * @internal DO NOT USE - Forces TypeScript to include internal module references

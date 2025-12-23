@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/codec",
+  "name": "@kitz/codec",
   "version": "0.0.0",
   "description": "Encoding and decoding utilities",
   "type": "module",
@@ -19,7 +19,7 @@
     "check:package": "publint && attw --pack"
   },
   "dependencies": {
-    "@kouka/core": "workspace:*",
+    "@kitz/core": "workspace:*",
     "effect": "^3.0.0"
   }
 }

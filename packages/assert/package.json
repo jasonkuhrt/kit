@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/assert",
+  "name": "@kitz/assert",
   "version": "0.0.0",
   "description": "Assertion utilities",
   "type": "module",
@@ -10,7 +10,7 @@
     "./assert": "./build/__.js"
   },
   "dependencies": {
-    "@kouka/core": "workspace:*",
+    "@kitz/core": "workspace:*",
     "effect": "^3.19.11"
   },
   "devDependencies": {

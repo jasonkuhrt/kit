@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/jsonc",
+  "name": "@kitz/jsonc",
   "version": "0.0.0",
   "description": "JSON with comments utilities",
   "type": "module",

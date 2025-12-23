@@ -1,5 +1,5 @@
-import type { Fn } from '@kouka/core'
-import { Optic } from '@kouka/core'
+import type { Fn } from '@kitz/core'
+import { Optic } from '@kitz/core'
 import type { Either } from 'effect'
 import type { AssertSubKind, AssertSubNoExcessKind } from '../../asserts.js'
 import { builder } from '../../builder-singleton.js'

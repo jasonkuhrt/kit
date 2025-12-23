@@ -1,5 +1,5 @@
-import { Fs } from '@kouka/fs'
-import { Syn } from '@kouka/syn'
+import { Fs } from '@kitz/fs'
+import { Syn } from '@kitz/syn'
 import { Match } from 'effect'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { mkdirSync } from 'node:fs'
@@ -168,7 +168,7 @@ const getDrillableModules = (model: InterfaceModel): Set<string> => {
   try {
     const content = readFileSync(mainExportPath, 'utf-8')
 
-    // Match export statements like: export * from '@kouka/core/arr'
+    // Match export statements like: export * from '@kitz/core/arr'
     const exportPattern = /export\s+\*\s+from\s+['"]#([^'"]+)['"]/g
     let match
 

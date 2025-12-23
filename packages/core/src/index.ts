@@ -1,5 +1,5 @@
 /**
- * @kouka/core - Core utilities for the Kouka ecosystem.
+ * @kitz/core - Core utilities for the Kitz ecosystem.
  *
  * Provides foundational data structures and utilities:
  * - Array, Object, String manipulation

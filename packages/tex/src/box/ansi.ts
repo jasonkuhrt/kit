@@ -9,7 +9,7 @@
  * @internal
  */
 
-import { Color } from '@kouka/color'
+import { Color } from '@kitz/color'
 import ansis from 'ansis'
 import type { Style } from './style.js'
 

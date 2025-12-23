@@ -1,4 +1,4 @@
-import { Str } from '@kouka/core'
+import { Str } from '@kitz/core'
 import type { Parsed } from './filter.js'
 import type * as Level from './level.js'
 

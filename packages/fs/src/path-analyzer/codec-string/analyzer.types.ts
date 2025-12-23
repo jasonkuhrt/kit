@@ -1,4 +1,4 @@
-import { Str } from '@kouka/core'
+import { Str } from '@kitz/core'
 import type { Analysis } from './analyzer.js'
 
 /**

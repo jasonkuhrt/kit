@@ -59,7 +59,7 @@ importers:
 
   packages/assert:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
       effect:
@@ -72,7 +72,7 @@ importers:
 
   packages/bldr:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
 
@@ -81,16 +81,16 @@ importers:
       '@effect/platform':
         specifier: ^0.94.0
         version: 0.94.0(effect@3.19.13)
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
-      '@kouka/env':
+      '@kitz/env':
         specifier: workspace:*
         version: link:../env
-      '@kouka/fs':
+      '@kitz/fs':
         specifier: workspace:*
         version: link:../fs
-      '@kouka/mod':
+      '@kitz/mod':
         specifier: workspace:*
         version: link:../mod
       effect:
@@ -99,7 +99,7 @@ importers:
 
   packages/codec:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
       effect:
@@ -114,7 +114,7 @@ importers:
 
   packages/config-manager:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
       effect:
@@ -126,7 +126,7 @@ importers:
 
   packages/configurator:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
       type-fest:
@@ -172,7 +172,7 @@ importers:
 
   packages/env:
     dependencies:
-      '@kouka/fs':
+      '@kitz/fs':
         specifier: workspace:*
         version: link:../fs
       effect:
@@ -184,10 +184,10 @@ importers:
       '@effect/platform':
         specifier: ^0.94.0
         version: 0.94.0(effect@3.19.13)
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
-      '@kouka/json':
+      '@kitz/json':
         specifier: workspace:*
         version: link:../json
       effect:
@@ -199,7 +199,7 @@ importers:
 
   packages/group:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
 
@@ -209,7 +209,7 @@ importers:
 
   packages/idx:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
       type-fest:
@@ -218,7 +218,7 @@ importers:
 
   packages/json:
     dependencies:
-      '@kouka/codec':
+      '@kitz/codec':
         specifier: workspace:*
         version: link:../codec
       effect:
@@ -234,126 +234,126 @@ importers:
         specifier: ^3.0.0
         version: 3.3.1
 
-  packages/kouka:
+  packages/kitz:
     dependencies:
-      '@kouka/assert':
+      '@kitz/assert':
         specifier: workspace:*
         version: link:../assert
-      '@kouka/bldr':
+      '@kitz/bldr':
         specifier: workspace:*
         version: link:../bldr
-      '@kouka/cli':
+      '@kitz/cli':
         specifier: workspace:*
         version: link:../cli
-      '@kouka/codec':
+      '@kitz/codec':
         specifier: workspace:*
         version: link:../codec
-      '@kouka/color':
+      '@kitz/color':
         specifier: workspace:*
         version: link:../color
-      '@kouka/config-manager':
+      '@kitz/config-manager':
         specifier: workspace:*
         version: link:../config-manager
-      '@kouka/configurator':
+      '@kitz/configurator':
         specifier: workspace:*
         version: link:../configurator
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
-      '@kouka/env':
+      '@kitz/env':
         specifier: workspace:*
         version: link:../env
-      '@kouka/fs':
+      '@kitz/fs':
         specifier: workspace:*
         version: link:../fs
-      '@kouka/group':
+      '@kitz/group':
         specifier: workspace:*
         version: link:../group
-      '@kouka/html':
+      '@kitz/html':
         specifier: workspace:*
         version: link:../html
-      '@kouka/http':
+      '@kitz/http':
         specifier: workspace:*
         version: link:../http
-      '@kouka/idx':
+      '@kitz/idx':
         specifier: workspace:*
         version: link:../idx
-      '@kouka/json':
+      '@kitz/json':
         specifier: workspace:*
         version: link:../json
-      '@kouka/jsonc':
+      '@kitz/jsonc':
         specifier: workspace:*
         version: link:../jsonc
-      '@kouka/log':
+      '@kitz/log':
         specifier: workspace:*
         version: link:../log
-      '@kouka/manifest':
+      '@kitz/manifest':
         specifier: workspace:*
         version: link:../manifest
-      '@kouka/mask':
+      '@kitz/mask':
         specifier: workspace:*
         version: link:../mask
-      '@kouka/mod':
+      '@kitz/mod':
         specifier: workspace:*
         version: link:../mod
-      '@kouka/name':
+      '@kitz/name':
         specifier: workspace:*
         version: link:../name
-      '@kouka/num':
+      '@kitz/num':
         specifier: workspace:*
         version: link:../num
-      '@kouka/oak':
+      '@kitz/oak':
         specifier: workspace:*
         version: link:../oak
-      '@kouka/package-manager':
+      '@kitz/package-manager':
         specifier: workspace:*
         version: link:../package-manager
-      '@kouka/paka':
+      '@kitz/paka':
         specifier: workspace:*
         version: link:../paka
-      '@kouka/prox':
+      '@kitz/prox':
         specifier: workspace:*
         version: link:../prox
-      '@kouka/ref':
+      '@kitz/ref':
         specifier: workspace:*
         version: link:../ref
-      '@kouka/resource':
+      '@kitz/resource':
         specifier: workspace:*
         version: link:../resource
-      '@kouka/sch':
+      '@kitz/sch':
         specifier: workspace:*
         version: link:../sch
-      '@kouka/semver':
+      '@kitz/semver':
         specifier: workspace:*
         version: link:../semver
-      '@kouka/syn':
+      '@kitz/syn':
         specifier: workspace:*
         version: link:../syn
-      '@kouka/test':
+      '@kitz/test':
         specifier: workspace:*
         version: link:../test
-      '@kouka/tex':
+      '@kitz/tex':
         specifier: workspace:*
         version: link:../tex
-      '@kouka/time':
+      '@kitz/time':
         specifier: workspace:*
         version: link:../time
-      '@kouka/tree':
+      '@kitz/tree':
         specifier: workspace:*
         version: link:../tree
-      '@kouka/url':
+      '@kitz/url':
         specifier: workspace:*
         version: link:../url
-      '@kouka/ware':
+      '@kitz/ware':
         specifier: workspace:*
         version: link:../ware
 
   packages/log:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
-      '@kouka/time':
+      '@kitz/time':
         specifier: workspace:*
         version: link:../time
       es-toolkit:
@@ -369,16 +369,16 @@ importers:
 
   packages/manifest:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
-      '@kouka/fs':
+      '@kitz/fs':
         specifier: workspace:*
         version: link:../fs
-      '@kouka/resource':
+      '@kitz/resource':
         specifier: workspace:*
         version: link:../resource
-      '@kouka/semver':
+      '@kitz/semver':
         specifier: workspace:*
         version: link:../semver
       effect:
@@ -387,7 +387,7 @@ importers:
 
   packages/mask:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
 
@@ -396,10 +396,10 @@ importers:
       '@effect/platform':
         specifier: ^0.94.0
         version: 0.94.0(effect@3.19.13)
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
-      '@kouka/fs':
+      '@kitz/fs':
         specifier: workspace:*
         version: link:../fs
       effect:
@@ -408,13 +408,13 @@ importers:
 
   packages/name:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
 
   packages/num:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
       effect:
@@ -423,19 +423,19 @@ importers:
 
   packages/oak:
     dependencies:
-      '@kouka/assert':
+      '@kitz/assert':
         specifier: workspace:*
         version: link:../assert
-      '@kouka/cli':
+      '@kitz/cli':
         specifier: workspace:*
         version: link:../cli
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
-      '@kouka/group':
+      '@kitz/group':
         specifier: workspace:*
         version: link:../group
-      '@kouka/tex':
+      '@kitz/tex':
         specifier: workspace:*
         version: link:../tex
       '@standard-schema/spec':
@@ -459,10 +459,10 @@ importers:
       '@effect/platform':
         specifier: ^0.94.0
         version: 0.94.0(effect@3.19.13)
-      '@kouka/env':
+      '@kitz/env':
         specifier: workspace:*
         version: link:../env
-      '@kouka/fs':
+      '@kitz/fs':
         specifier: workspace:*
         version: link:../fs
       effect:
@@ -477,13 +477,13 @@ importers:
       '@dprint/markdown':
         specifier: ^0.20.0
         version: 0.20.0
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
-      '@kouka/fs':
+      '@kitz/fs':
         specifier: workspace:*
         version: link:../fs
-      '@kouka/syn':
+      '@kitz/syn':
         specifier: workspace:*
         version: link:../syn
       '@microsoft/tsdoc':
@@ -521,7 +521,7 @@ importers:
 
   packages/ref:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
 
@@ -530,10 +530,10 @@ importers:
       '@effect/platform':
         specifier: ^0.94.0
         version: 0.94.0(effect@3.19.13)
-      '@kouka/fs':
+      '@kitz/fs':
         specifier: workspace:*
         version: link:../fs
-      '@kouka/jsonc':
+      '@kitz/jsonc':
         specifier: workspace:*
         version: link:../jsonc
       effect:
@@ -542,7 +542,7 @@ importers:
 
   packages/sch:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
       effect:
@@ -560,13 +560,13 @@ importers:
 
   packages/syn:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
 
   packages/test:
     dependencies:
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
       '@types/object-inspect':
@@ -590,10 +590,10 @@ importers:
 
   packages/tex:
     dependencies:
-      '@kouka/color':
+      '@kitz/color':
         specifier: workspace:*
         version: link:../color
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
       '@types/node':
@@ -618,19 +618,19 @@ importers:
 
   packages/ware:
     dependencies:
-      '@kouka/bldr':
+      '@kitz/bldr':
         specifier: workspace:*
         version: link:../bldr
-      '@kouka/config-manager':
+      '@kitz/config-manager':
         specifier: workspace:*
         version: link:../config-manager
-      '@kouka/configurator':
+      '@kitz/configurator':
         specifier: workspace:*
         version: link:../configurator
-      '@kouka/core':
+      '@kitz/core':
         specifier: workspace:*
         version: link:../core
-      '@kouka/log':
+      '@kitz/log':
         specifier: workspace:*
         version: link:../log
       type-fest:

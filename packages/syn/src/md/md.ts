@@ -7,7 +7,7 @@
  * @module
  */
 
-import { Str } from '@kouka/core'
+import { Str } from '@kitz/core'
 const splitIntoLines = Str.Text.lines
 const joinLines = Str.Text.unlines
 

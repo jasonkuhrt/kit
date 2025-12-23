@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/mask",
+  "name": "@kitz/mask",
   "version": "0.0.0",
   "description": "Data masking utilities",
   "type": "module",
@@ -19,6 +19,6 @@
     "check:package": "publint && attw --pack"
   },
   "dependencies": {
-    "@kouka/core": "workspace:*"
+    "@kitz/core": "workspace:*"
   }
 }

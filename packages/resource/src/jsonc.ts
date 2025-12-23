@@ -1,5 +1,5 @@
 import { FileSystem } from '@effect/platform'
-import { Jsonc } from '@kouka/jsonc'
+import { Jsonc } from '@kitz/jsonc'
 import { Effect, ParseResult, Schema } from 'effect'
 import { type Codec, createResource, EncodeError, ParseError, type Resource } from './resource.js'
 

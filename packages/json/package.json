@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/json",
+  "name": "@kitz/json",
   "version": "0.0.0",
   "description": "JSON utilities",
   "type": "module",
@@ -9,7 +9,7 @@
     "./__": "./build/__.js"
   },
   "dependencies": {
-    "@kouka/codec": "workspace:*",
+    "@kitz/codec": "workspace:*",
     "effect": "^3.0.0"
   },
   "scripts": {

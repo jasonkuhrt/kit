@@ -1,4 +1,4 @@
-import { Obj, Ts, Undefined } from '@kouka/core'
+import { Obj, Ts, Undefined } from '@kitz/core'
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Types - Immutable (default)
 
 /**

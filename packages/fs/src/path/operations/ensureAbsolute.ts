@@ -1,4 +1,4 @@
-import { Fn } from '@kouka/core'
+import { Fn } from '@kitz/core'
 import type { Path } from '../_.js'
 import { Schema as S } from 'effect'
 import type { $Abs } from '../$Abs/_.js'

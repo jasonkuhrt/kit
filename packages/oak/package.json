@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/oak",
+  "name": "@kitz/oak",
   "version": "0.0.0",
   "description": "CLI argument parsing",
   "type": "module",
@@ -9,11 +9,11 @@
     "./__": "./build/__.js"
   },
   "dependencies": {
-    "@kouka/assert": "workspace:*",
-    "@kouka/cli": "workspace:*",
-    "@kouka/core": "workspace:*",
-    "@kouka/group": "workspace:*",
-    "@kouka/tex": "workspace:*",
+    "@kitz/assert": "workspace:*",
+    "@kitz/cli": "workspace:*",
+    "@kitz/core": "workspace:*",
+    "@kitz/group": "workspace:*",
+    "@kitz/tex": "workspace:*",
     "@standard-schema/spec": "*",
     "alge": "^0.8.1",
     "ansis": "*",

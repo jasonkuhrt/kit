@@ -7,7 +7,7 @@
  * @module
  */
 
-import { Str } from '@kouka/core'
+import { Str } from '@kitz/core'
 const Text = Str.Text
 
 // ============================================================================

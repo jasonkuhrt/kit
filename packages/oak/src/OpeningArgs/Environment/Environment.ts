@@ -1,4 +1,4 @@
-import { Obj, Str } from '@kouka/core'
+import { Obj, Str } from '@kitz/core'
 import { Errors } from '../../Errors/_.js'
 import type { Index, RequireField } from '../../lib/prelude.js'
 import { getNames } from '../../Parameter/helpers/CommandParameter.js'

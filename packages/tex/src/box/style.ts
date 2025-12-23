@@ -9,7 +9,7 @@
  * @category Text Formatting
  */
 
-import { ColorInput as ColorInputSchema } from '@kouka/color'
+import { ColorInput as ColorInputSchema } from '@kitz/color'
 
 /**
  * Color input type - string (named, hex, rgb, hsl) or RGB object.

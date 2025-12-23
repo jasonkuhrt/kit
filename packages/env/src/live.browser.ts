@@ -1,4 +1,4 @@
-import { Fs } from '@kouka/fs'
+import { Fs } from '@kitz/fs'
 import { Layer } from 'effect'
 import { Env } from './env.js'
 

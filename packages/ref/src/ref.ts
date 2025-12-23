@@ -1,4 +1,4 @@
-import { Lang, Ts } from '@kouka/core'
+import { Lang, Ts } from '@kitz/core'
 /**
  * Check if two values are the same reference using the === operator.
  *

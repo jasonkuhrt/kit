@@ -1,4 +1,4 @@
-import { Fn, Ts } from '@kouka/core'
+import { Fn, Ts } from '@kitz/core'
 import type { Objekt } from './_prelude.js'
 import type { Step } from './Step.js'
 

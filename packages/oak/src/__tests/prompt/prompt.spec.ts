@@ -1,4 +1,4 @@
-import { Assert } from '@kouka/assert'
+import { Assert } from '@kitz/assert'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { z } from 'zod/v4'
 import type { BuilderCommandState } from '../../builders/command/state.js'

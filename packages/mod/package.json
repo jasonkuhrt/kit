@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/mod",
+  "name": "@kitz/mod",
   "version": "0.0.0",
   "description": "Module utilities",
   "type": "module",
@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@effect/platform": "^0.94.0",
-    "@kouka/core": "workspace:*",
-    "@kouka/fs": "workspace:*",
+    "@kitz/core": "workspace:*",
+    "@kitz/fs": "workspace:*",
     "effect": "^3.19.11"
   },
   "scripts": {

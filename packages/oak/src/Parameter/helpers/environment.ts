@@ -1,5 +1,5 @@
-import { Str } from '@kouka/core'
-import type { Cli } from '@kouka/cli'
+import { Str } from '@kitz/core'
+import type { Cli } from '@kitz/cli'
 import type { Settings } from '../../Settings/_.js'
 import type { Environment } from './types.js'
 

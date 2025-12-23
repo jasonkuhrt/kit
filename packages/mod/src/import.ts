@@ -1,7 +1,7 @@
-import { Err } from '@kouka/core'
+import { Err } from '@kitz/core'
 import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
-import { Fs } from '@kouka/fs'
+import { Fs } from '@kitz/fs'
 import { Effect, Option, pipe } from 'effect'
 
 /**

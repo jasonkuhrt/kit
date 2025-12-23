@@ -1,4 +1,4 @@
-import { Fn } from '@kouka/core'
+import { Fn } from '@kitz/core'
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 import type { OakSchema } from './schema/oak-schema.js'
 

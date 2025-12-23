@@ -1,4 +1,4 @@
-import type { Cli } from '@kouka/cli'
+import type { Cli } from '@kitz/cli'
 import type { OakSchema } from '../../schema/oak-schema.js'
 
 export interface Parameter<$Schema extends OakSchema = OakSchema> {

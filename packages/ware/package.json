@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/ware",
+  "name": "@kitz/ware",
   "version": "0.0.0",
   "description": "Middleware utilities",
   "type": "module",
@@ -9,11 +9,11 @@
     "./__": "./build/__.js"
   },
   "dependencies": {
-    "@kouka/bldr": "workspace:*",
-    "@kouka/config-manager": "workspace:*",
-    "@kouka/configurator": "workspace:*",
-    "@kouka/core": "workspace:*",
-    "@kouka/log": "workspace:*",
+    "@kitz/bldr": "workspace:*",
+    "@kitz/config-manager": "workspace:*",
+    "@kitz/configurator": "workspace:*",
+    "@kitz/core": "workspace:*",
+    "@kitz/log": "workspace:*",
     "type-fest": "^5.3.1"
   },
   "scripts": {

@@ -11,7 +11,7 @@
  * @module
  */
 
-import { Obj, Str } from '@kouka/core'
+import { Obj, Str } from '@kitz/core'
 import * as TSDoc from '../tsdoc/_.js'
 import * as TS from './ts.js'
 

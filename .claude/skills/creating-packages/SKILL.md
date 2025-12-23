@@ -1,6 +1,6 @@
 ---
 name: creating-packages
-description: Creates new packages in the @kouka monorepo with proper structure, configuration, and workspace integration. Handles package.json, tsconfigs, source files, and runs necessary sync scripts.
+description: Creates new packages in the @kitz monorepo with proper structure, configuration, and workspace integration. Handles package.json, tsconfigs, source files, and runs necessary sync scripts.
 ---
 
 # Creating Packages
@@ -23,17 +23,18 @@ packages/<name>/
 │   ├── _.ts              # Namespace file
 │   ├── __.ts             # Barrel file
 │   └── <name>.ts         # Main implementation
-├── package.json          # @kouka/<name> with workspace deps
+├── package.json          # @kitz/<name> with workspace deps
 ├── tsconfig.json         # Development config
 └── tsconfig.build.json   # Build config
 ```
 
 Package naming:
-- Input: `foo-bar` → Package: `@kouka/foo-bar`
-- Input: `core` → Package: `@kouka/core`
+
+- Input: `foo-bar` → Package: `@kitz/foo-bar`
+- Input: `core` → Package: `@kitz/core`
 
 ## Notes
 
-- The `kouka` aggregator package is separate and exports from all other packages
-- After creating, you may want to add the new package to `kouka/src/` exports
+- The `kitz` aggregator package is separate and exports from all other packages
+- After creating, you may want to add the new package to `kitz/src/` exports
 - Run `syncing-package-scripts` skill if the new package needs updated scripts

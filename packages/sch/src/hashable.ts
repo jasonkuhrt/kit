@@ -1,4 +1,4 @@
-import { Obj } from '@kouka/core'
+import { Obj } from '@kitz/core'
 import { Data, DateTime, Hash, HashMap, HashSet, Option, Schema as S } from 'effect'
 import { PropertySignatureTransformation } from 'effect/Schema'
 import * as AST from 'effect/SchemaAST'

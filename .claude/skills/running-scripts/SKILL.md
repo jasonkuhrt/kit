@@ -18,13 +18,13 @@ description: How to run scripts in this pnpm + turbo monorepo. Covers turbo task
 pnpm turbo build
 
 # Build specific package
-pnpm turbo build --filter=@kouka/core
+pnpm turbo build --filter=@kitz/core
 
 # Build package and its dependencies
-pnpm turbo build --filter=@kouka/assert...
+pnpm turbo build --filter=@kitz/assert...
 
 # Force rebuild (bypass cache)
-pnpm turbo build --filter=@kouka/core --force
+pnpm turbo build --filter=@kitz/core --force
 ```
 
 ### Type Checking
@@ -34,7 +34,7 @@ pnpm turbo build --filter=@kouka/core --force
 pnpm turbo check:types
 
 # Type check specific package
-pnpm turbo check:types --filter=@kouka/assert
+pnpm turbo check:types --filter=@kitz/assert
 ```
 
 ### Linting
@@ -44,7 +44,7 @@ pnpm turbo check:types --filter=@kouka/assert
 pnpm turbo check:lint
 
 # Lint specific package
-pnpm turbo check:lint --filter=@kouka/core
+pnpm turbo check:lint --filter=@kitz/core
 ```
 
 ### Package Validation
@@ -54,7 +54,7 @@ pnpm turbo check:lint --filter=@kouka/core
 pnpm turbo check:package
 
 # Validate specific package
-pnpm turbo check:package --filter=@kouka/core
+pnpm turbo check:package --filter=@kitz/core
 ```
 
 ### Testing
@@ -86,7 +86,7 @@ pnpm format:check
 
 ```bash
 # Watch mode for a package (rebuilds on changes)
-pnpm turbo dev --filter=@kouka/core
+pnpm turbo dev --filter=@kitz/core
 ```
 
 ### Release
@@ -111,7 +111,7 @@ pnpm turbo build --force
 Or delete the build folder:
 
 ```bash
-rm -rf packages/core/build && pnpm turbo build --filter=@kouka/core
+rm -rf packages/core/build && pnpm turbo build --filter=@kitz/core
 ```
 
 ## Package-Local Scripts

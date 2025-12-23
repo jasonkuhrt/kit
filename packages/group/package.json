@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/group",
+  "name": "@kitz/group",
   "version": "0.0.0",
   "description": "Grouping utilities",
   "type": "module",
@@ -20,6 +20,6 @@
     "check:package": "publint && attw --pack"
   },
   "dependencies": {
-    "@kouka/core": "workspace:*"
+    "@kitz/core": "workspace:*"
   }
 }

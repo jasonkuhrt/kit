@@ -1,4 +1,4 @@
-import { Obj } from '@kouka/core'
+import { Obj } from '@kitz/core'
 import { Schema as S } from 'effect'
 import type * as EAST from 'effect/SchemaAST'
 import { isLiteral, isSuspend, isTransformation, isTypeLiteral } from 'effect/SchemaAST'

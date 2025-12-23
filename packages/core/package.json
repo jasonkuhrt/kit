@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/core",
+  "name": "@kitz/core",
   "version": "0.0.0",
   "description": "Core data structures and utilities",
   "type": "module",

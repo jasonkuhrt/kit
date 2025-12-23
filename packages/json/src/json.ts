@@ -1,4 +1,4 @@
-import { Codec } from '@kouka/codec'
+import { Codec } from '@kitz/codec'
 import { Schema } from 'effect'
 
 //

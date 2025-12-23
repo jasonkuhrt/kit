@@ -3,7 +3,7 @@
  * Wraps JavaScript's native BigInt with branded type safety and functional operations.
  */
 
-import { Fn } from '@kouka/core'
+import { Fn } from '@kitz/core'
 
 import type { Brand } from 'effect'
 

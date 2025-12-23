@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/manifest",
+  "name": "@kitz/manifest",
   "version": "0.0.0",
   "description": "Manifest file utilities",
   "type": "module",
@@ -9,10 +9,10 @@
     "./__": "./build/__.js"
   },
   "dependencies": {
-    "@kouka/core": "workspace:*",
-    "@kouka/fs": "workspace:*",
-    "@kouka/resource": "workspace:*",
-    "@kouka/semver": "workspace:*",
+    "@kitz/core": "workspace:*",
+    "@kitz/fs": "workspace:*",
+    "@kitz/resource": "workspace:*",
+    "@kitz/semver": "workspace:*",
     "effect": "^3.0.0"
   },
   "scripts": {

@@ -50,8 +50,8 @@ type InferGlobReturn<O extends GlobOptions | undefined> = O extends undefined ? 
  *
  * @example
  * ```ts
- * import { Fs } from '@kouka/fs'
- * import { Fs } from '@kouka/fs'
+ * import { Fs } from '@kitz/fs'
+ * import { Fs } from '@kitz/fs'
  * import { Effect } from 'effect'
  *
  * const program = Effect.gen(function* () {
@@ -120,8 +120,8 @@ export const glob = <O extends GlobOptions | undefined = undefined>(
  *
  * @example
  * ```ts
- * import { Fs } from '@kouka/fs'
- * import { Fs } from '@kouka/fs'
+ * import { Fs } from '@kitz/fs'
+ * import { Fs } from '@kitz/fs'
  * import { Effect } from 'effect'
  *
  * const program = Effect.gen(function* () {

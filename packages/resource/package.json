@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/resource",
+  "name": "@kitz/resource",
   "version": "0.0.0",
   "description": "Resource management utilities",
   "type": "module",
@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@effect/platform": "^0.94.0",
-    "@kouka/fs": "workspace:*",
-    "@kouka/jsonc": "workspace:*",
+    "@kitz/fs": "workspace:*",
+    "@kitz/jsonc": "workspace:*",
     "effect": "^3.0.0"
   },
   "scripts": {

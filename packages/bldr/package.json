@@ -1,5 +1,5 @@
 {
-  "name": "@kouka/bldr",
+  "name": "@kitz/bldr",
   "version": "0.0.0",
   "description": "Builder pattern utilities",
   "type": "module",
@@ -9,7 +9,7 @@
     "./__": "./build/__.js"
   },
   "dependencies": {
-    "@kouka/core": "workspace:*"
+    "@kitz/core": "workspace:*"
   },
   "scripts": {
     "build": "tsgo -p tsconfig.build.json",

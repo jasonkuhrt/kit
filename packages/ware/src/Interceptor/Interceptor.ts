@@ -1,4 +1,4 @@
-import { Prom, Ts } from '@kouka/core'
+import { Prom, Ts } from '@kitz/core'
 import type { Pipeline } from '../__.js'
 import type { ResultSuccess } from '../Result.js'
 import type { Step } from '../Step.js'
