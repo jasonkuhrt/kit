@@ -120,7 +120,6 @@ You will also find these conventions:
 | [`@kitz/syn`](./packages/syn)                         | Syntax utilities                   |
 | [`@kitz/test`](./packages/test)                       | Testing utilities                  |
 | [`@kitz/tex`](./packages/tex)                         | Text and box formatting utilities  |
-| [`@kitz/time`](./packages/time)                       | Time utilities                     |
 | [`@kitz/tree`](./packages/tree)                       | Tree data structure utilities      |
 | [`@kitz/url`](./packages/url)                         | URL utilities                      |
 | [`@kitz/ware`](./packages/ware)                       | Middleware utilities               |

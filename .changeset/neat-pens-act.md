@@ -1,6 +1,5 @@
 ---
 "@kitz/core": major
-"@kitz/time": major
 ---
 
 Rename global namespace to KITZ

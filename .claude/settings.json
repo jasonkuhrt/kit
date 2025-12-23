@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/format-markdown.sh",
+            "command": "bash -c 'cd $(git rev-parse --show-toplevel) && .claude/hooks/format.sh'",
             "timeout": 10
           }
         ]
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/format-markdown.sh",
+            "command": "bash -c 'cd $(git rev-parse --show-toplevel) && .claude/hooks/format.sh'",
             "timeout": 10
           }
         ]
@@ -27,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/check-types.sh",
+            "command": "bash -c 'cd $(git rev-parse --show-toplevel) && .claude/hooks/check-types.sh'",
             "timeout": 120
           }
         ]

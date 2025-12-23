@@ -1,7 +1,6 @@
-import { Tup } from '@kitz/core'
+import { Obj, Tup } from '@kitz/core'
 import { Bldr } from '@kitz/bldr'
-import type { ConfigManager } from '@kitz/config-manager'
-import { Configurator } from '@kitz/configurator'
+import { Conf } from '@kitz/conf'
 import type { Writable } from 'type-fest'
 // for resolving '... cannot be named ...' error
 export type { Writable } from 'type-fest'
@@ -12,7 +11,7 @@ import type { Data, DataEmpty } from './Data.js'
 export const create: Create = (parameters) => {
   const data: Writable<Data> = {
     discriminant: parameters.discriminant,
-    configurator: Configurator.empty,
+    configurator: Conf.Configurator.empty,
     steps: {},
     configurationMount: undefined,
   }
@@ -26,7 +25,7 @@ export const create: Create = (parameters) => {
     data,
     builder: {
       configurator(configuratorTypeInput) {
-        data.configurator = Configurator.normalizeDataInput(configuratorTypeInput)
+        data.configurator = Conf.Configurator.normalizeDataInput(configuratorTypeInput)
       },
       step,
       stepWithExtendedInput() {
@@ -60,11 +59,11 @@ export interface Builder<
   /**
    * TODO
    */
-  configurator: <$Configurator extends Configurator.Configurator>(
+  configurator: <$Configurator extends Conf.Configurator.Configurator>(
     configurator:
       | $Configurator
-      | Configurator.Builder<$Configurator>
-      | Configurator.BuilderProviderCallback<$Configurator>,
+      | Conf.Configurator.Builder<$Configurator>
+      | Conf.Configurator.BuilderProviderCallback<$Configurator>,
   ) => Builder<
     $Pipeline,
     {
@@ -118,7 +117,7 @@ interface MethodStep<
               name: $Name
               input: $Input
               output: Awaited<$Output>
-              slots: ConfigManager.OrDefault2<$Slots, {}>
+              slots: Obj.OrDefault<$Slots, {}>
             }
           }
         : $Data[_]

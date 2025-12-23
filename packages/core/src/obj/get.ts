@@ -297,3 +297,66 @@ export type PrimitiveFieldKeys<$T> = {
     : $T[K] extends Date ? K
     : never
 }[keyof $T]
+
+/**
+ * Get a value at a path in an object type, returning undefined if the path doesn't exist.
+ * Safely traverses nested objects without throwing type errors.
+ *
+ * @category Type Utilities
+ *
+ * @example
+ * ```ts
+ * type User = { profile: { name: string; age: number } }
+ * type Name = GetAtPath<User, ['profile', 'name']>  // string
+ * type Missing = GetAtPath<User, ['profile', 'email']>  // undefined
+ * type Deep = GetAtPath<User, ['profile']>  // { name: string; age: number }
+ * ```
+ */
+// dprint-ignore
+export type GetAtPath<$Value, $Path extends readonly string[]> =
+  $Value extends undefined                                              ? undefined :
+  $Path extends [infer __p1__ extends string, ...infer __pn__ extends string[]] ? $Value extends object
+                                                                          ? __p1__ extends keyof $Value
+                                                                            ? GetAtPath<$Value[__p1__], __pn__>
+                                                                            : undefined
+                                                                          : undefined
+                                                                        : $Value
+
+/**
+ * Get a value at a path in an object type, returning a default if the path doesn't exist.
+ * Combines path traversal with default value fallback.
+ *
+ * @category Type Utilities
+ *
+ * @example
+ * ```ts
+ * type User = { profile?: { name: string } }
+ * type Name = GetAtPathOrDefault<User, ['profile', 'name'], 'anonymous'>
+ * // If profile.name exists: string
+ * // If path doesn't exist: 'anonymous'
+ * ```
+ */
+// dprint-ignore
+export type GetAtPathOrDefault<$Obj, $Path extends readonly string[], $Default> =
+  OrDefault<GetAtPath<$Obj, $Path>, $Default>
+
+/**
+ * Return the value if defined, otherwise return the default.
+ * Handles both `undefined` values and `unknown` types (from optional properties).
+ *
+ * @category Type Utilities
+ *
+ * @example
+ * ```ts
+ * type T1 = OrDefault<string, 'fallback'>  // string
+ * type T2 = OrDefault<undefined, 'fallback'>  // 'fallback'
+ * type T3 = OrDefault<string | undefined, 'fallback'>  // 'fallback'
+ * ```
+ */
+// dprint-ignore
+export type OrDefault<$Value, $Default> =
+  // When no value has been passed in because the property is optional,
+  // then the inferred type is unknown.
+  unknown extends $Value         ? $Default :
+  undefined extends $Value       ? $Default :
+                                   Exclude<$Value, undefined>

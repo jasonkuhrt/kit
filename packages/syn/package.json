@@ -9,6 +9,7 @@
     "./__": "./build/__.js"
   },
   "dependencies": {
+    "@kitz/bldr": "workspace:*",
     "@kitz/core": "workspace:*"
   },
   "scripts": {

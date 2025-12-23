@@ -1,0 +1,40 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./build",
+    "tsBuildInfoFile": "./node_modules/.cache/.tsbuildinfo",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "#pkg": [
+        "./src/_.js"
+      ],
+      "#pkg/*": [
+        "./src/*.js"
+      ],
+      "#manifest": [
+        "./src/manifest/_.js"
+      ],
+      "#manifest/*": [
+        "./src/manifest/*.js"
+      ],
+      "#manager": [
+        "./src/manager/_.js"
+      ],
+      "#manager/*": [
+        "./src/manager/*.js"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "build",
+    "node_modules",
+    "**/*.bench-d.ts",
+    "**/*.test.ts",
+    "**/*.test-d.ts"
+  ]
+}

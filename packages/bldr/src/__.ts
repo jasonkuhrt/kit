@@ -1,3 +1,4 @@
+export * from './callable.js'
 export * from './constructor.js'
 export * from './mutable.js'
 export * from './state.js'

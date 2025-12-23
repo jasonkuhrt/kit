@@ -11,13 +11,15 @@ Keep tsconfig paths in sync with package.json subpath imports.
 
 ### Syncing
 
-Run the script at `.claude/skills/syncing-tsconfig-paths/scripts/sync-tsconfig-paths.ts`
+```bash
+pnpm exec tsx .claude/skills/syncing-tsconfig-paths/scripts/sync-tsconfig-paths.ts
+```
 
 ### Auditing
 
 Run with `--check` flag to verify without modifying:
-```
-tsx .claude/skills/syncing-tsconfig-paths/scripts/sync-tsconfig-paths.ts --check
+```bash
+pnpm exec tsx .claude/skills/syncing-tsconfig-paths/scripts/sync-tsconfig-paths.ts --check
 ```
 
 ## Reference

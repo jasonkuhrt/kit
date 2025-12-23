@@ -19,6 +19,12 @@
       "#bool/*": [
         "./src/bool/*.js"
       ],
+      "#date": [
+        "./src/date/_.js"
+      ],
+      "#date/*": [
+        "./src/date/*.js"
+      ],
       "#err": [
         "./src/err/_.js"
       ],

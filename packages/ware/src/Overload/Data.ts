@@ -1,10 +1,10 @@
 import { Ts } from '@kitz/core'
-import type { Configurator } from '@kitz/configurator'
+import type { Conf } from '@kitz/conf'
 import type { StepDefinition } from '../StepDefinition.js'
 
 export interface Data<
   $Discriminant extends Discriminant = Discriminant,
-  $Configurator extends Configurator.Configurator = Configurator.Configurator,
+  $Configurator extends Conf.Configurator.Configurator = Conf.Configurator.Configurator,
   $Steps extends Record<string, StepDefinition> = Record<string, StepDefinition>,
   $ConfigurationMount extends string | undefined = string | undefined,
 > {
@@ -20,7 +20,7 @@ export interface Discriminant {
 }
 
 export interface DataEmpty extends Data {
-  readonly configurator: Configurator.States.Empty
+  readonly configurator: Conf.Configurator.States.Empty
   readonly steps: {}
   readonly configurationMount: undefined
 }

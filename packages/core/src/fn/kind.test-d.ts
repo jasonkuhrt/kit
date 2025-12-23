@@ -4,7 +4,7 @@
  * Tests that removing readonly from Kind.Kind fixes type inference
  * in complex HKT scenarios where conditional types depend on parameter details.
  *
- * See: https://github.com/jasonkuhrt/kit/issues/52
+ * See: https://github.com/jasonkuhrt/kitz/issues/52
  */
 
 import type * as Kind from './kind.js'

@@ -116,7 +116,7 @@ const generateDocs = async () => {
   const docsDir = join(projectRoot, 'docs')
   generate(model, {
     outputDir: docsDir,
-    githubUrl: 'https://github.com/jasonkuhrt/kit',
+    githubUrl: 'https://github.com/jasonkuhrt/kitz',
   })
 
   // Format and post-process markdown files

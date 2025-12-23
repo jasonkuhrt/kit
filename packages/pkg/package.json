@@ -1,0 +1,41 @@
+{
+  "name": "@kitz/pkg",
+  "version": "0.0.0",
+  "description": "Package utilities (manifest schema, manager helpers)",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#pkg": "./build/_.js",
+    "#pkg/*": "./build/*.js",
+    "#manifest": "./build/manifest/_.js",
+    "#manifest/*": "./build/manifest/*.js",
+    "#manager": "./build/manager/_.js",
+    "#manager/*": "./build/manager/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js",
+    "./__": "./build/__.js",
+    "./manifest": "./build/manifest/__.js",
+    "./manager": "./build/manager/__.js"
+  },
+  "files": [
+    "build",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit",
+    "check:lint": "oxlint --config ../../oxlint.json src/",
+    "check:package": "publint && attw --pack"
+  },
+  "dependencies": {
+    "@effect/platform": "^0.94.0",
+    "@kitz/core": "workspace:*",
+    "@kitz/env": "workspace:*",
+    "@kitz/fs": "workspace:*",
+    "@kitz/resource": "workspace:*",
+    "@kitz/semver": "workspace:*",
+    "effect": "^3.0.0"
+  }
+}

@@ -1,5 +1,4 @@
-import { Tup } from '@kitz/core'
-import type { ConfigManager } from '@kitz/config-manager'
+import { Obj, Tup } from '@kitz/core'
 import type { Extension } from '../Extension/_.js'
 import { Overload } from '../Overload/_.js'
 import { Pipeline } from '../Pipeline/Pipeline.js'
@@ -46,8 +45,8 @@ export interface Builder<$PipelineDef extends PipelineDefinition = PipelineDefin
     PipelineDefinition.Updaters.AddStep<$PipelineDef, {
       name: $Name
       input: Parameters<$Runner>[0]
-      output: ConfigManager.OrDefault2<ReturnType<$Runner>, {}>
-      slots: ConfigManager.OrDefault2<$Slots, {}>
+      output: Obj.OrDefault<ReturnType<$Runner>, {}>
+      slots: Obj.OrDefault<$Slots, {}>
       run: $Runner
     }>
   >
@@ -93,8 +92,8 @@ interface StepMethod<$Context extends PipelineDefinition> {
     PipelineDefinition.Updaters.AddStep<$Context, {
       name: $Name
       input: $Input
-      output: ConfigManager.OrDefault2<$Output, {}>
-      slots: ConfigManager.OrDefault2<$Slots, {}>
+      output: Obj.OrDefault<$Output, {}>
+      slots: Obj.OrDefault<$Slots, {}>
     }>
   >
   <
@@ -114,8 +113,8 @@ interface StepMethod<$Context extends PipelineDefinition> {
     PipelineDefinition.Updaters.AddStep<$Context, {
       name: $Name
       input: $Input
-      output: ConfigManager.OrDefault2<$Output, {}>
-      slots: ConfigManager.OrDefault2<$Slots, {}>
+      output: Obj.OrDefault<$Output, {}>
+      slots: Obj.OrDefault<$Slots, {}>
     }>
   >
 }

@@ -112,19 +112,7 @@ importers:
         specifier: ^3.0.0
         version: 3.19.13
 
-  packages/config-manager:
-    dependencies:
-      '@kitz/core':
-        specifier: workspace:*
-        version: link:../core
-      effect:
-        specifier: ^3.0.0
-        version: 3.19.13
-      type-fest:
-        specifier: '*'
-        version: 5.3.1
-
-  packages/configurator:
+  packages/conf:
     dependencies:
       '@kitz/core':
         specifier: workspace:*
@@ -251,12 +239,9 @@ importers:
       '@kitz/color':
         specifier: workspace:*
         version: link:../color
-      '@kitz/config-manager':
+      '@kitz/conf':
         specifier: workspace:*
-        version: link:../config-manager
-      '@kitz/configurator':
-        specifier: workspace:*
-        version: link:../configurator
+        version: link:../conf
       '@kitz/core':
         specifier: workspace:*
         version: link:../core
@@ -287,12 +272,6 @@ importers:
       '@kitz/log':
         specifier: workspace:*
         version: link:../log
-      '@kitz/manifest':
-        specifier: workspace:*
-        version: link:../manifest
-      '@kitz/mask':
-        specifier: workspace:*
-        version: link:../mask
       '@kitz/mod':
         specifier: workspace:*
         version: link:../mod
@@ -305,18 +284,12 @@ importers:
       '@kitz/oak':
         specifier: workspace:*
         version: link:../oak
-      '@kitz/package-manager':
-        specifier: workspace:*
-        version: link:../package-manager
       '@kitz/paka':
         specifier: workspace:*
         version: link:../paka
-      '@kitz/prox':
+      '@kitz/pkg':
         specifier: workspace:*
-        version: link:../prox
-      '@kitz/ref':
-        specifier: workspace:*
-        version: link:../ref
+        version: link:../pkg
       '@kitz/resource':
         specifier: workspace:*
         version: link:../resource
@@ -335,9 +308,6 @@ importers:
       '@kitz/tex':
         specifier: workspace:*
         version: link:../tex
-      '@kitz/time':
-        specifier: workspace:*
-        version: link:../time
       '@kitz/tree':
         specifier: workspace:*
         version: link:../tree
@@ -353,9 +323,6 @@ importers:
       '@kitz/core':
         specifier: workspace:*
         version: link:../core
-      '@kitz/time':
-        specifier: workspace:*
-        version: link:../time
       es-toolkit:
         specifier: ^1.43.0
         version: 1.43.0
@@ -366,30 +333,6 @@ importers:
       '@types/object-inspect':
         specifier: ^1.13.0
         version: 1.13.0
-
-  packages/manifest:
-    dependencies:
-      '@kitz/core':
-        specifier: workspace:*
-        version: link:../core
-      '@kitz/fs':
-        specifier: workspace:*
-        version: link:../fs
-      '@kitz/resource':
-        specifier: workspace:*
-        version: link:../resource
-      '@kitz/semver':
-        specifier: workspace:*
-        version: link:../semver
-      effect:
-        specifier: ^3.0.0
-        version: 3.19.13
-
-  packages/mask:
-    dependencies:
-      '@kitz/core':
-        specifier: workspace:*
-        version: link:../core
 
   packages/mod:
     dependencies:
@@ -454,21 +397,6 @@ importers:
         specifier: ^4.2.1
         version: 4.2.1
 
-  packages/package-manager:
-    dependencies:
-      '@effect/platform':
-        specifier: ^0.94.0
-        version: 0.94.0(effect@3.19.13)
-      '@kitz/env':
-        specifier: workspace:*
-        version: link:../env
-      '@kitz/fs':
-        specifier: workspace:*
-        version: link:../fs
-      effect:
-        specifier: ^3.0.0
-        version: 3.19.13
-
   packages/paka:
     dependencies:
       '@dprint/formatter':
@@ -517,13 +445,29 @@ importers:
         specifier: ^11.0.5
         version: 11.0.5
 
-  packages/prox: {}
-
-  packages/ref:
+  packages/pkg:
     dependencies:
+      '@effect/platform':
+        specifier: ^0.94.0
+        version: 0.94.0(effect@3.19.13)
       '@kitz/core':
         specifier: workspace:*
         version: link:../core
+      '@kitz/env':
+        specifier: workspace:*
+        version: link:../env
+      '@kitz/fs':
+        specifier: workspace:*
+        version: link:../fs
+      '@kitz/resource':
+        specifier: workspace:*
+        version: link:../resource
+      '@kitz/semver':
+        specifier: workspace:*
+        version: link:../semver
+      effect:
+        specifier: ^3.0.0
+        version: 3.19.13
 
   packages/resource:
     dependencies:
@@ -560,6 +504,9 @@ importers:
 
   packages/syn:
     dependencies:
+      '@kitz/bldr':
+        specifier: workspace:*
+        version: link:../bldr
       '@kitz/core':
         specifier: workspace:*
         version: link:../core
@@ -606,8 +553,6 @@ importers:
         specifier: ^3.19.11
         version: 3.19.13
 
-  packages/time: {}
-
   packages/tree:
     dependencies:
       fast-check:
@@ -621,12 +566,9 @@ importers:
       '@kitz/bldr':
         specifier: workspace:*
         version: link:../bldr
-      '@kitz/config-manager':
+      '@kitz/conf':
         specifier: workspace:*
-        version: link:../config-manager
-      '@kitz/configurator':
-        specifier: workspace:*
-        version: link:../configurator
+        version: link:../conf
       '@kitz/core':
         specifier: workspace:*
         version: link:../core

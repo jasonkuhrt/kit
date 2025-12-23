@@ -1,4 +1,4 @@
-import type { ConfigManager } from '@kitz/config-manager'
+import type { Obj } from '@kitz/core'
 import type { Overload } from '../Overload/_.js'
 import type { StepDefinition } from '../StepDefinition.js'
 import type { PipelineDefinition } from './_.js'
@@ -7,20 +7,20 @@ export namespace Updaters {
   export type SetInput<
     $PipelineDef extends PipelineDefinition,
     $Input extends object,
-  > = ConfigManager.SetKey<$PipelineDef, 'input', $Input>
+  > = Obj.SetKey<$PipelineDef, 'input', $Input>
 
   export type AddStep<
     $PipelineDef extends PipelineDefinition,
     $Step extends StepDefinition,
-  > = ConfigManager.UpdateKeyWithAppendOne<$PipelineDef, 'steps', $Step>
+  > = Obj.UpdateKeyWithAppendOne<$PipelineDef, 'steps', $Step>
 
   export type AddOverload<
     $PipelineDef extends PipelineDefinition,
     $Overload extends Overload.Data,
-  > = ConfigManager.UpdateKeyWithAppendOne<$PipelineDef, 'overloads', $Overload>
+  > = Obj.UpdateKeyWithAppendOne<$PipelineDef, 'overloads', $Overload>
 
   export type AddOverloadMany<
     $PipelineDef extends PipelineDefinition,
     $Overloads extends readonly Overload.Data[],
-  > = ConfigManager.UpdateKeyWithAppendMany<$PipelineDef, 'overloads', $Overloads>
+  > = Obj.UpdateKeyWithAppendMany<$PipelineDef, 'overloads', $Overloads>
 }

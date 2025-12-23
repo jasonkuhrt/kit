@@ -1,3 +1,5 @@
+import type { SetKey } from './set.js'
+
 /**
  * Create a new object with the same keys but with values transformed by a function.
  *
@@ -30,3 +32,78 @@ export const mapValues = <rec extends Record<PropertyKey, any>, newValue>(
     Object.entries(obj).map(([k, v]) => [k, fn(v, k as keyof rec)]),
   ) as Record<keyof rec, newValue>
 }
+
+/**
+ * Update an array-typed key by appending a single element.
+ * Useful for builder patterns that accumulate values.
+ *
+ * @category Type Utilities
+ *
+ * @example
+ * ```ts
+ * type Pipeline = { steps: ['init'] }
+ * type Updated = UpdateKeyWithAppendOne<Pipeline, 'steps', 'validate'>
+ * // Result: { steps: ['init', 'validate'] }
+ * ```
+ */
+// dprint-ignore
+export type UpdateKeyWithAppendOne<
+  $Obj extends object,
+  $Prop extends keyof $Obj,
+  $Type,
+> =
+  SetKey<
+    $Obj,
+    $Prop,
+    // @ts-expect-error - We know $Obj[$Prop] is an array
+    [...$Obj[$Prop], $Type]
+  >
+
+/**
+ * Update an array-typed key by appending multiple elements.
+ * Spreads all elements from the second array into the first.
+ *
+ * @category Type Utilities
+ *
+ * @example
+ * ```ts
+ * type Pipeline = { steps: ['init'] }
+ * type Updated = UpdateKeyWithAppendMany<Pipeline, 'steps', ['validate', 'execute']>
+ * // Result: { steps: ['init', 'validate', 'execute'] }
+ * ```
+ */
+// dprint-ignore
+export type UpdateKeyWithAppendMany<
+  $Obj extends object,
+  $Prop extends keyof $Obj,
+  $Type extends readonly any[],
+> =
+  SetKey<
+    $Obj,
+    $Prop,
+    // @ts-expect-error - We know $Obj[$Prop] is an array
+    [...$Obj[$Prop], ...$Type]
+  >
+
+/**
+ * Update a key by intersecting its type with a new type.
+ * The resulting type has all properties from both types.
+ *
+ * @category Type Utilities
+ *
+ * @example
+ * ```ts
+ * type User = { profile: { name: string } }
+ * type Updated = UpdateKeyWithIntersection<User, 'profile', { age: number }>
+ * // Result: { profile: { name: string } & { age: number } }
+ * ```
+ */
+export type UpdateKeyWithIntersection<
+  $Obj extends object,
+  $PropertyName extends keyof $Obj,
+  $Type extends object,
+> =
+  & $Obj
+  & {
+    [k in $PropertyName]: $Type
+  }

@@ -1,5 +1,4 @@
-import { Lang, Str } from '@kitz/core'
-import { Time } from '@kitz/time'
+import { Date, Lang, Str } from '@kitz/core'
 import * as Os from 'node:os'
 import objectInspect from 'object-inspect'
 import * as Level from './level.js'
@@ -10,10 +9,10 @@ import * as Logger from './logger.js'
  * invocation of `lap`.
  */
 const createStopWatch = () => {
-  let prev = Date.now()
+  let prev = globalThis.Date.now()
   return {
     lap: (): number => {
-      const curr = Date.now()
+      const curr = globalThis.Date.now()
       const elapsed = curr - prev
       prev = curr
       return elapsed
@@ -107,7 +106,7 @@ export const render = (opts: Options, logRecord: Logger.LogRecord): string => {
   let timeDiff = ``
   let timeDiffRendered = ``
   if (opts.timeDiff) {
-    const elapsed = Time.format(stopWatch.lap())
+    const elapsed = Date.format(stopWatch.lap())
 
     if (elapsed.unit === `ms`) {
       timeDiff = `${Str.Text.fit(String(elapsed.value), 4, 'right')} `

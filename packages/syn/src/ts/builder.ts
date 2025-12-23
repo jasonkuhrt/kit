@@ -10,10 +10,21 @@
  * @module
  */
 
+import { Bldr } from '@kitz/bldr'
 import type { TermObject } from './term-object.js'
 import * as TermObjectModule from './term-object.js'
-import type { FieldOptions, FunctionDeclOptions, InterfaceOptions, TypeAliasOptions } from './ts.js'
+import type { FunctionDeclOptions, InterfaceOptions, TypeAliasOptions } from './ts.js'
 import * as TS from './ts.js'
+
+// ============================================================================
+// Builder State
+// ============================================================================
+
+interface Data {
+  lines: string[]
+}
+
+const dataEmpty: Data = { lines: [] }
 
 // ============================================================================
 // Raw Type
@@ -149,55 +160,50 @@ export interface Builder {
  * code.build()
  * ```
  */
-export const builder = (): Builder => {
-  const lines: string[] = []
+export const builder = Bldr.fromInterface<Builder>()(dataEmpty, (data) => ({
+  call: (code) => {
+    data.lines.push(code)
+  },
 
-  const builderFn = ((stringsOrCode: TemplateStringsArray | string, ...values: unknown[]) => {
-    if (typeof stringsOrCode === 'string') {
-      lines.push(stringsOrCode)
-    } else {
-      // Tagged template literal
-      const result = stringsOrCode.reduce((acc, str, i) => {
-        return acc + str + (i < values.length ? String(expand(values[i]!)) : '')
-      }, '')
-      lines.push(result)
-    }
-  }) as Builder
+  templateTag: (strings, ...values) => {
+    const result = strings.reduce((acc, str, i) => {
+      return acc + str + (i < values.length ? String(expand(values[i]!)) : '')
+    }, '')
+    data.lines.push(result)
+  },
 
-  builderFn.interface = (options) => {
-    lines.push(TS.interfaceDecl(options))
-  }
+  interface: (options) => {
+    data.lines.push(TS.interfaceDecl(options))
+  },
 
-  builderFn.type = (options) => {
-    lines.push(TS.typeAliasWithOptions(options))
-  }
+  type: (options) => {
+    data.lines.push(TS.typeAliasWithOptions(options))
+  },
 
-  builderFn.const = (name, value, options) => {
+  const: (name, value, options) => {
     const value_ = expand(value)
     const decl = TS.constDecl(name, value_)
-    lines.push(options?.export ? TS.exportDecl(decl) : decl)
-  }
+    data.lines.push(options?.export ? TS.exportDecl(decl) : decl)
+  },
 
-  builderFn.constTyped = (name, type, value, options) => {
+  constTyped: (name, type, value, options) => {
     const value_ = expand(value)
     const decl = TS.constDeclTyped(name, type, value_)
-    lines.push(options?.export ? TS.exportDecl(decl) : decl)
-  }
+    data.lines.push(options?.export ? TS.exportDecl(decl) : decl)
+  },
 
-  builderFn.function = (options) => {
-    lines.push(TS.functionDecl(options))
-  }
+  function: (options) => {
+    data.lines.push(TS.functionDecl(options))
+  },
 
-  builderFn.namespace = (name, callback, options) => {
+  namespace: (name, callback, options) => {
     const nested = builder()
     callback(nested)
-    lines.push(TS.namespace(name, nested.build(), options?.export ? { export: options.export } : undefined))
-  }
+    data.lines.push(TS.namespace(name, nested.build(), options?.export ? { export: options.export } : undefined))
+  },
 
-  builderFn.build = () => lines.join('\n')
-
-  return builderFn
-}
+  build: () => data.lines.join('\n'),
+}))
 
 // ============================================================================
 // Template Function
