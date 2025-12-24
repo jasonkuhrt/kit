@@ -2,8 +2,8 @@ import { Option } from 'effect'
 import { describe, expect, test } from 'vitest'
 import { Footer } from './footer.js'
 import { MultiTargetCommit } from './multi-target-commit.js'
-import { Target } from './target.js'
 import { TargetSection } from './target-section.js'
+import { Target } from './target.js'
 
 describe('MultiTargetCommit', () => {
   test('make creates valid multi-target commit', () => {

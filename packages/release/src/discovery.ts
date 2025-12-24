@@ -56,7 +56,7 @@ export const discover: Effect.Effect<
   Package[],
   DiscoveryError | PlatformError,
   FileSystem.FileSystem | Env.Env
-> = Effect.gen(function* () {
+> = Effect.gen(function*() {
   const fs = yield* FileSystem.FileSystem
   const env = yield* Env.Env
 
@@ -136,7 +136,7 @@ export const toPackageMap = (packages: Package[]): PackageMap => {
 export const resolvePackages = (
   configPackages: PackageMap,
 ): Effect.Effect<Package[], DiscoveryError | PlatformError, FileSystem.FileSystem | Env.Env> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     // If config explicitly provides packages, use those
     if (Object.keys(configPackages).length > 0) {
       const env = yield* Env.Env

@@ -1,6 +1,6 @@
 export {
-  getVersions,
   getLatestVersion,
+  getVersions,
   NpmRegistryError,
   type PackageVersion,
   type RegistryOptions,

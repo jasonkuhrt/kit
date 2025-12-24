@@ -1,1 +1,1 @@
-export { generate, type GenerateOptions, type CommitEntry, type Changelog } from './changelog.js'
+export { type Changelog, type CommitEntry, generate, type GenerateOptions } from './changelog.js'

@@ -1,63 +1,47 @@
 // Config
-export {
-  ReleaseConfig,
-  ConfigError,
-  defineConfig,
-  load as loadConfig,
-} from './config.js'
+export { ConfigError, defineConfig, load as loadConfig, ReleaseConfig } from './config.js'
 
 // Discovery
-export {
-  DiscoveryError,
-  discover,
-  toPackageMap,
-  resolvePackages,
-  type Package,
-  type PackageMap,
-} from './discovery.js'
+export { discover, DiscoveryError, type Package, type PackageMap, resolvePackages, toPackageMap } from './discovery.js'
 
 // Version
 export {
-  bumpFromType,
-  maxBump,
-  extractImpacts,
   aggregateByPackage,
-  calculateNextVersion,
-  findLatestTagVersion,
+  bumpFromType,
   type BumpType,
+  calculateNextVersion,
   type CommitImpact,
+  extractImpacts,
+  findLatestTagVersion,
+  maxBump,
 } from './version.js'
 
 // Cascade
-export {
-  buildDependencyGraph,
-  detectCascades,
-  type DependencyGraph,
-} from './cascade.js'
+export { buildDependencyGraph, type DependencyGraph, detectCascades } from './cascade.js'
 
 // Publish
 export {
-  PublishError,
   injectVersion,
-  restoreVersion,
   npmPublish,
-  publishPackage,
   publishAll,
-  type ReleaseInfo,
+  PublishError,
   type PublishOptions,
+  publishPackage,
+  type ReleaseInfo,
+  restoreVersion,
 } from './publish.js'
 
 // Release
 export {
-  ReleaseError,
-  planStable,
-  planPreview,
-  planPr,
   apply,
   type ApplyOptions,
   type PlanContext,
-  type ReleaseOptions,
   type PlannedRelease,
+  planPr,
+  planPreview,
+  planStable,
+  ReleaseError,
+  type ReleaseOptions,
   type ReleasePlan,
   type ReleaseResult,
 } from './release.js'

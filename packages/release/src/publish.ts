@@ -49,7 +49,7 @@ export interface PublishOptions {
 const readPackageJson = (
   pkgDir: Fs.Path.AbsDir,
 ): Effect.Effect<Record<string, unknown>, PublishError, FileSystem.FileSystem> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
 
     const filePath = Fs.Path.join(pkgDir, packageJsonRelFile)
@@ -81,7 +81,7 @@ const writePackageJson = (
   pkgDir: Fs.Path.AbsDir,
   content: Record<string, unknown>,
 ): Effect.Effect<void, PublishError, FileSystem.FileSystem> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
 
     const filePath = Fs.Path.join(pkgDir, packageJsonRelFile)
@@ -105,7 +105,7 @@ export const injectVersion = (
   pkgDir: Fs.Path.AbsDir,
   version: string,
 ): Effect.Effect<string, PublishError, FileSystem.FileSystem> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const pkg = yield* readPackageJson(pkgDir)
     const originalVersion = pkg['version'] as string
 
@@ -126,7 +126,7 @@ export const restoreVersion = (
   pkgDir: Fs.Path.AbsDir,
   originalVersion: string,
 ): Effect.Effect<void, PublishError, FileSystem.FileSystem> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const pkg = yield* readPackageJson(pkgDir)
     pkg['version'] = originalVersion
     yield* writePackageJson(pkgDir, pkg)
@@ -139,7 +139,7 @@ export const npmPublish = (
   pkgDir: Fs.Path.AbsDir,
   options?: PublishOptions,
 ): Effect.Effect<void, PublishError> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const pkgPath = Fs.Path.toString(pkgDir)
 
     if (options?.dryRun) {
@@ -178,7 +178,7 @@ export const publishPackage = (
   release: ReleaseInfo,
   options?: PublishOptions,
 ): Effect.Effect<void, PublishError, FileSystem.FileSystem> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const pkgDir = release.package.path
 
     // 1. Inject the new version
@@ -201,7 +201,7 @@ export const publishAll = (
   releases: ReleaseInfo[],
   options?: PublishOptions,
 ): Effect.Effect<void, PublishError, FileSystem.FileSystem> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     for (const release of releases) {
       yield* publishPackage(release, options)
     }

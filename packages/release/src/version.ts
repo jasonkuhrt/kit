@@ -1,11 +1,6 @@
-import { Effect, Option } from 'effect'
-import {
-  parseTitle,
-  type ConventionalCommitType,
-  isSingleTarget,
-  isMultiTarget,
-} from '@kitz/conventional-commits/__'
+import { type ConventionalCommitType, isMultiTarget, isSingleTarget, parseTitle } from '@kitz/conventional-commits/__'
 import * as Semver from '@kitz/semver/__'
+import { Effect, Option } from 'effect'
 
 /**
  * Version bump type.
@@ -47,7 +42,7 @@ export const maxBump = (a: BumpType, b: BumpType): BumpType => {
 export const extractImpacts = (
   message: string,
 ): Effect.Effect<CommitImpact[], never> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     // Parse the commit title (first line)
     const title = message.split('\n')[0] ?? message
     const parsed = yield* Effect.either(parseTitle(title))

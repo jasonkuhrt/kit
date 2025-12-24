@@ -70,8 +70,8 @@ import { Fn } from '#fn'
 import { Obj } from '#obj'
 
 // Incorrect - don't use relative or package imports internally
-import { Fn } from '../fn/_.js'
 import { Obj } from '@kitz/core/obj'
+import { Fn } from '../fn/_.js'
 ```
 
 ### Naming

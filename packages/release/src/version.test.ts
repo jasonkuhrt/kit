@@ -1,12 +1,12 @@
 import { Effect } from 'effect'
 import { describe, expect, test } from 'vitest'
 import {
-  bumpFromType,
-  maxBump,
-  extractImpacts,
   aggregateByPackage,
+  bumpFromType,
   calculateNextVersion,
+  extractImpacts,
   findLatestTagVersion,
+  maxBump,
 } from './version.js'
 
 describe('bumpFromType', () => {

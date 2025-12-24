@@ -59,7 +59,7 @@ export const defineConfig = (config: Partial<typeof ReleaseConfig.Type>): typeof
  * Load configuration from release.config.ts or use defaults.
  */
 export const load = (cwd: string): Effect.Effect<typeof ReleaseConfig.Type, ConfigError> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const configPath = Path.join(cwd, 'release.config.ts')
 
     if (!Fs.existsSync(configPath)) {

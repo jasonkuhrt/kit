@@ -1,6 +1,6 @@
-import { Err } from '@kitz/core'
 import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
+import { Err } from '@kitz/core'
 import { Fs } from '@kitz/fs'
 import { Effect, Option, pipe } from 'effect'
 

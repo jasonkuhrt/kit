@@ -15,10 +15,10 @@ description: Writes tests following project conventions. Handles test file organ
 
 ### Test Categories
 
-| Category | File | Purpose |
-|----------|------|---------|
-| Runtime | `.test.ts` | Test runtime behavior |
-| Type | `.test-d.ts` | Validate TypeScript types via `tsc` |
+| Category | File         | Purpose                             |
+| -------- | ------------ | ----------------------------------- |
+| Runtime  | `.test.ts`   | Test runtime behavior               |
+| Type     | `.test-d.ts` | Validate TypeScript types via `tsc` |
 
 ### Table-Driven Tests (Preferred)
 
@@ -31,7 +31,7 @@ import { Test } from '@kitz/test'
 Test.on(add)
   .cases(
     [[2, 3], 5],
-    [[-1, 1], 0]
+    [[-1, 1], 0],
   )
   .test()
 

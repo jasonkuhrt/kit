@@ -15,20 +15,24 @@ Unifies library globals under a single `KITZ` namespace:
 // Before
 declare global {
   namespace KitLibrarySettings {
-    interface Assert { showDiff: true }
+    interface Assert {
+      showDiff: true
+    }
   }
   namespace KitTraits.Display {
-    interface Handlers<$Type> { /* ... */ }
+    interface Handlers<$Type> {/* ... */}
   }
 }
 
 // After
 declare global {
   namespace KITZ {
-    interface Assert { showDiff: true }
+    interface Assert {
+      showDiff: true
+    }
   }
   namespace KITZ.Traits.Display {
-    interface Handlers<$Type> { /* ... */ }
+    interface Handlers<$Type> {/* ... */}
   }
 }
 ```

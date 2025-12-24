@@ -1,5 +1,5 @@
 import { Context, Data, Effect, Layer } from 'effect'
-import { simpleGit, type SimpleGit } from 'simple-git'
+import { type SimpleGit, simpleGit } from 'simple-git'
 
 /**
  * Git operation error.
@@ -133,5 +133,4 @@ export const GitLive = Layer.sync(Git, () => makeGitService(simpleGit()))
 /**
  * Create a Git service for a specific directory.
  */
-export const makeGitLive = (cwd: string) =>
-  Layer.sync(Git, () => makeGitService(simpleGit(cwd)))
+export const makeGitLive = (cwd: string) => Layer.sync(Git, () => makeGitService(simpleGit(cwd)))
