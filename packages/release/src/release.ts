@@ -1,5 +1,6 @@
 import { Data, Effect } from 'effect'
 import { Git, type GitError } from '@kitz/git/__'
+import { buildDependencyGraph, detectCascades } from './cascade.js'
 import type { Package } from './discovery.js'
 import {
   extractImpacts,
@@ -153,8 +154,9 @@ export const planStable = (
       })
     }
 
-    // TODO: Detect cascade releases (packages that depend on released packages)
-    const cascades: PlannedRelease[] = []
+    // 7. Detect cascade releases (packages that depend on released packages)
+    const dependencyGraph = yield* buildDependencyGraph(ctx.packages)
+    const cascades = detectCascades(ctx.packages, releases, dependencyGraph, tags)
 
     return { releases, cascades }
   })
