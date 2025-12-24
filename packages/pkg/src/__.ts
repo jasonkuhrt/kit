@@ -1,2 +1,2 @@
-export * from './manifest/_.js'
 export * from './manager/_.js'
+export * from './manifest/_.js'

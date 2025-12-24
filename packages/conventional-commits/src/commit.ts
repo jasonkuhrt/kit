@@ -21,5 +21,4 @@ export const isSingleTarget = (commit: ConventionalCommit): commit is SingleTarg
 /**
  * Type guard for MultiTargetCommit.
  */
-export const isMultiTarget = (commit: ConventionalCommit): commit is MultiTargetCommit =>
-  commit._tag === 'MultiTarget'
+export const isMultiTarget = (commit: ConventionalCommit): commit is MultiTargetCommit => commit._tag === 'MultiTarget'

@@ -8,15 +8,15 @@ import { buildDependencyGraph, detectCascades } from './cascade.js'
 import type { Package } from './discovery.js'
 import { publishAll, PublishError } from './publish.js'
 import {
-  extractImpacts,
   aggregateByPackage,
+  type BumpType,
   calculateNextVersion,
   calculatePreviewVersion,
   calculatePrVersion,
-  findLatestTagVersion,
+  extractImpacts,
   findLatestPreviewNumber,
   findLatestPrNumber,
-  type BumpType,
+  findLatestTagVersion,
 } from './version.js'
 
 /**
@@ -119,7 +119,7 @@ export const planStable = (
   ctx: PlanContext,
   options?: ReleaseOptions,
 ): Effect.Effect<ReleasePlan, ReleaseError | GitError | PlatformError, Git | FileSystem.FileSystem> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const git = yield* Git
 
     // 1. Get all tags and find the last release tag
@@ -244,7 +244,7 @@ export const planPreview = (
   ctx: PlanContext,
   options?: ReleaseOptions,
 ): Effect.Effect<ReleasePlan, ReleaseError | GitError | PlatformError, Git | FileSystem.FileSystem> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const git = yield* Git
 
     // 1. Get all tags and find the last release tag
@@ -336,7 +336,7 @@ export const planPr = (
   ctx: PlanContext,
   options?: PrReleaseOptions,
 ): Effect.Effect<ReleasePlan, ReleaseError | GitError | PlatformError, Git | FileSystem.FileSystem | Env.Env> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const git = yield* Git
     const env = yield* Env.Env
 
@@ -347,7 +347,8 @@ export const planPr = (
         new ReleaseError({
           context: {
             operation: 'plan',
-            detail: 'Could not detect PR number. Set PR_NUMBER or GITHUB_PR_NUMBER environment variable, or pass prNumber option.',
+            detail:
+              'Could not detect PR number. Set PR_NUMBER or GITHUB_PR_NUMBER environment variable, or pass prNumber option.',
           },
         }),
       )
@@ -468,7 +469,7 @@ export const apply = (
   plan: ReleasePlan,
   options?: ApplyOptions,
 ): Effect.Effect<ReleaseResult, ReleaseError | GitError | PublishError, Git | FileSystem.FileSystem> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const git = yield* Git
 
     // Combine primary releases and cascades

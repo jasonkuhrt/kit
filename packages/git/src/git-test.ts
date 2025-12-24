@@ -1,5 +1,5 @@
 import { Effect, Layer, Ref } from 'effect'
-import { Git, GitError, type Commit, type GitService } from './git.js'
+import { type Commit, Git, GitError, type GitService } from './git.js'
 
 /**
  * Configuration for the test Git service.
@@ -67,7 +67,7 @@ const makeGitTestService = (state: GitTestState): GitService => ({
   getCurrentBranch: () => Ref.get(state.branch),
 
   getCommitsSince: (tag) =>
-    Effect.gen(function* () {
+    Effect.gen(function*() {
       const commits = yield* Ref.get(state.commits)
       const tags = yield* Ref.get(state.tags)
 
@@ -105,8 +105,8 @@ const makeGitTestService = (state: GitTestState): GitService => ({
 
       // More sophisticated: find commit index by matching version in message
       const tagCommitIndex = commits.findIndex((c) =>
-        c.message.includes(`(${packageName.split('/').pop()})`) &&
-        c.message.includes(versionInTag),
+        c.message.includes(`(${packageName.split('/').pop()})`)
+        && c.message.includes(versionInTag)
       )
 
       if (tagCommitIndex === -1) {
@@ -121,7 +121,7 @@ const makeGitTestService = (state: GitTestState): GitService => ({
   isClean: () => Ref.get(state.isClean),
 
   createTag: (tag, message) =>
-    Effect.gen(function* () {
+    Effect.gen(function*() {
       yield* Ref.update(state.tags, (tags) => [...tags, tag])
       yield* Ref.update(state.createdTags, (created) => [...created, { tag, message }])
     }),
@@ -151,7 +151,7 @@ const makeGitTestService = (state: GitTestState): GitService => ({
 export const make = (config: GitTestConfig = {}): Layer.Layer<Git> =>
   Layer.effect(
     Git,
-    Effect.gen(function* () {
+    Effect.gen(function*() {
       const state = yield* makeGitTestState(config)
       return makeGitTestService(state)
     }),
@@ -180,7 +180,7 @@ export const make = (config: GitTestConfig = {}): Layer.Layer<Git> =>
 export const makeWithState = (
   config: GitTestConfig = {},
 ): Effect.Effect<{ layer: Layer.Layer<Git>; state: GitTestState }> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const state = yield* makeGitTestState(config)
     const layer = Layer.succeed(Git, makeGitTestService(state))
     return { layer, state }

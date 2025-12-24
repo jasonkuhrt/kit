@@ -1,10 +1,10 @@
-import { Effect, Layer } from 'effect'
-import { describe, expect, test } from 'vitest'
 import { Env } from '@kitz/env'
 import { Memory, Path } from '@kitz/fs/__'
 import { GitTest } from '@kitz/git/__'
-import { planStable, planPreview, planPr, apply, type ReleasePlan } from './release.js'
+import { Effect, Layer } from 'effect'
+import { describe, expect, test } from 'vitest'
 import type { Package } from './discovery.js'
+import { apply, planPr, planPreview, planStable, type ReleasePlan } from './release.js'
 
 /**
  * Integration tests for the release pipeline.

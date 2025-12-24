@@ -33,7 +33,7 @@ const TYPE_SCOPE_PATTERN = /^([a-z]+)(?:\(([^)]+)\))?(!)?$/
 export const parseTitle = (
   title: string,
 ): Effect.Effect<ParsedTitle, ParseTitleError> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const trimmed = title.trim()
 
     // Split on `: ` to get header and message

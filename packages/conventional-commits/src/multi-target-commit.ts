@@ -1,6 +1,6 @@
 import { Schema } from 'effect'
-import { Target } from './target.js'
 import { TargetSection } from './target-section.js'
+import { Target } from './target.js'
 
 /**
  * An extended conventional commit for monorepos where each target can have

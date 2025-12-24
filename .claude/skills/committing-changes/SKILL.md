@@ -33,23 +33,24 @@ ci: add Vercel Remote Cache          # Repo-level (no scope)
 
 ### Types
 
-| Type | Description | Version Bump |
-|------|-------------|--------------|
-| `feat` | New feature | Minor |
-| `fix` | Bug fix | Patch |
-| `docs` | Documentation | Patch |
-| `perf` | Performance improvement | Patch |
-| `style` | Formatting, whitespace | None |
-| `refactor` | Code change (no behavior change) | None |
-| `test` | Adding/updating tests | None |
-| `build` | Build system, dependencies | None |
-| `ci` | CI configuration | None |
-| `chore` | Other maintenance | None |
-| `chore.docs` | README, guides (not code docs) | None |
+| Type         | Description                      | Version Bump |
+| ------------ | -------------------------------- | ------------ |
+| `feat`       | New feature                      | Minor        |
+| `fix`        | Bug fix                          | Patch        |
+| `docs`       | Documentation                    | Patch        |
+| `perf`       | Performance improvement          | Patch        |
+| `style`      | Formatting, whitespace           | None         |
+| `refactor`   | Code change (no behavior change) | None         |
+| `test`       | Adding/updating tests            | None         |
+| `build`      | Build system, dependencies       | None         |
+| `ci`         | CI configuration                 | None         |
+| `chore`      | Other maintenance                | None         |
+| `chore.docs` | README, guides (not code docs)   | None         |
 
 ### Special Rules
 
 **`chore.docs` vs `docs`:**
+
 - `docs(pkg)`: JSDoc, code comments → Patch release, full CI
 - `chore.docs`: README, guides → No release, CI skipped
 

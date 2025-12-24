@@ -23,7 +23,7 @@ const packageJsonRelFile = Fs.Path.RelFile.fromString('./package.json')
 export const buildDependencyGraph = (
   packages: Package[],
 ): Effect.Effect<DependencyGraph, PlatformError, FileSystem.FileSystem> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const fs = yield* FileSystem.FileSystem
     const graph: DependencyGraph = new Map()
     const packageNames = new Set(packages.map((p) => p.name))
