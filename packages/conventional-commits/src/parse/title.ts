@@ -63,7 +63,13 @@ export const parseTitle = (
 
     if (groups.length === 1) {
       // Potentially SingleTarget
-      const parsed = parseTypeScopeGroup(groups[0])
+      const firstGroup = groups[0]
+      if (!firstGroup) {
+        return yield* Effect.fail(
+          new ParseTitleError({ message: 'Invalid type-scope format', input: title }),
+        )
+      }
+      const parsed = parseTypeScopeGroup(firstGroup)
       if (!parsed) {
         return yield* Effect.fail(
           new ParseTitleError({ message: 'Invalid type-scope format', input: title }),
@@ -108,10 +114,12 @@ export const parseTitle = (
       }
 
       for (let i = 0; i < scopes.length; i++) {
+        const scope = scopes[i]
+        if (!scope) continue
         targets.push(
           Target.make({
             type,
-            scope: scopes[i],
+            scope,
             breaking: globalBreaking || perScopeBreaking[i] || false,
           }),
         )
@@ -175,6 +183,7 @@ const parseTypeScopeGroup = (group: string): ParsedGroup | null => {
   if (!match) return null
 
   const [, type, scopesPart, groupBreaking] = match
+  if (!type) return null
 
   if (!scopesPart) {
     // No scopes: "feat" or "feat!"
