@@ -41,6 +41,9 @@ export interface GitService {
 
   /** Get the repository root path */
   readonly getRoot: () => Effect.Effect<string, GitError>
+
+  /** Get the short SHA of HEAD commit */
+  readonly getHeadSha: () => Effect.Effect<string, GitError>
 }
 
 /**
@@ -110,6 +113,15 @@ const makeGitService = (git: SimpleGit): GitService => ({
         return root.trim()
       },
       catch: (error) => new GitError({ message: 'Failed to get repository root', cause: error }),
+    }),
+
+  getHeadSha: () =>
+    Effect.tryPromise({
+      try: async () => {
+        const sha = await git.revparse(['--short', 'HEAD'])
+        return sha.trim()
+      },
+      catch: (error) => new GitError({ message: 'Failed to get HEAD SHA', cause: error }),
     }),
 })
 

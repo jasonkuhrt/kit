@@ -161,3 +161,82 @@ export const findLatestTagVersion = (
   versions.sort((a, b) => -Semver.order(a, b)) // Descending
   return versions[0]!.version.toString()
 }
+
+/**
+ * Find the highest preview release number for a package.
+ *
+ * Preview versions follow the pattern: `${base}-next.${n}`
+ * Returns the highest `n` found, or 0 if no preview releases exist.
+ */
+export const findLatestPreviewNumber = (
+  packageName: string,
+  baseVersion: string,
+  tags: string[],
+): number => {
+  const prefix = `${packageName}@${baseVersion}-next.`
+  let highest = 0
+
+  for (const tag of tags) {
+    if (tag.startsWith(prefix)) {
+      const numPart = tag.slice(prefix.length)
+      const num = parseInt(numPart, 10)
+      if (!isNaN(num) && num > highest) {
+        highest = num
+      }
+    }
+  }
+
+  return highest
+}
+
+/**
+ * Calculate the next preview version.
+ *
+ * Format: `${nextStableVersion}-next.${n}`
+ */
+export const calculatePreviewVersion = (
+  nextStableVersion: string,
+  existingPreviewNumber: number,
+): string => `${nextStableVersion}-next.${existingPreviewNumber + 1}`
+
+/**
+ * Find the highest PR release number for a package and PR.
+ *
+ * PR versions follow the pattern: `0.0.0-pr.${prNum}.${n}.${sha}`
+ * Returns the highest `n` found, or 0 if no PR releases exist.
+ */
+export const findLatestPrNumber = (
+  packageName: string,
+  prNumber: number,
+  tags: string[],
+): number => {
+  const prefix = `${packageName}@0.0.0-pr.${prNumber}.`
+  let highest = 0
+
+  for (const tag of tags) {
+    if (tag.startsWith(prefix)) {
+      // Extract the number from: 0.0.0-pr.PR.N.SHA
+      const afterPrefix = tag.slice(prefix.length)
+      const parts = afterPrefix.split('.')
+      if (parts.length >= 1) {
+        const num = parseInt(parts[0]!, 10)
+        if (!isNaN(num) && num > highest) {
+          highest = num
+        }
+      }
+    }
+  }
+
+  return highest
+}
+
+/**
+ * Calculate the next PR version.
+ *
+ * Format: `0.0.0-pr.${prNumber}.${n}.${sha}`
+ */
+export const calculatePrVersion = (
+  prNumber: number,
+  existingPrNumber: number,
+  sha: string,
+): string => `0.0.0-pr.${prNumber}.${existingPrNumber + 1}.${sha}`

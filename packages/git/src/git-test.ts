@@ -15,6 +15,8 @@ export interface GitTestConfig {
   readonly isClean?: boolean
   /** Repository root path */
   readonly root?: string
+  /** HEAD commit SHA (short form) */
+  readonly headSha?: string
 }
 
 /**
@@ -34,6 +36,8 @@ export interface GitTestState {
   readonly isClean: Ref.Ref<boolean>
   /** Repository root */
   readonly root: Ref.Ref<string>
+  /** HEAD commit SHA */
+  readonly headSha: Ref.Ref<string>
   /** Tags created during test (for verification) */
   readonly createdTags: Ref.Ref<Array<{ tag: string; message: string | undefined }>>
 }
@@ -50,6 +54,7 @@ export const makeGitTestState = (
     branch: Ref.make(config.branch ?? 'main'),
     isClean: Ref.make(config.isClean ?? true),
     root: Ref.make(config.root ?? '/test/repo'),
+    headSha: Ref.make(config.headSha ?? 'abc1234'),
     createdTags: Ref.make<Array<{ tag: string; message: string | undefined }>>([]),
   })
 
@@ -122,6 +127,8 @@ const makeGitTestService = (state: GitTestState): GitService => ({
     }),
 
   getRoot: () => Ref.get(state.root),
+
+  getHeadSha: () => Ref.get(state.headSha),
 })
 
 /**
