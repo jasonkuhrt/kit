@@ -35,6 +35,18 @@ export {
   type DependencyGraph,
 } from './cascade.js'
 
+// Publish
+export {
+  PublishError,
+  injectVersion,
+  restoreVersion,
+  npmPublish,
+  publishPackage,
+  publishAll,
+  type ReleaseInfo,
+  type PublishOptions,
+} from './publish.js'
+
 // Release
 export {
   ReleaseError,
@@ -42,6 +54,7 @@ export {
   planPreview,
   planPr,
   apply,
+  type ApplyOptions,
   type PlanContext,
   type ReleaseOptions,
   type PlannedRelease,
