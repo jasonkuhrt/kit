@@ -70,23 +70,106 @@ Effect-wrapped git operations. Built on `simple-git` or `isomorphic-git`.
 
 Schema classes and type-level parser for the [Conventional Commits](https://www.conventionalcommits.org/) specification, extended for monorepos.
 
-```typescript
-// Schema class with .make() taking struct
-const commit = CC.ConventionalCommit.make({
-  type: 'feat',
-  scope: 'cli',
-  message: 'add dry-run flag',
-  breaking: false,
-})
+#### Schema Design
 
-// Parse from string (runtime)
+Two commit types form a tagged union:
+
+- **SingleTargetCommit**: Standard CC — all scopes get uniform treatment (same type, same breaking)
+- **MultiTargetCommit**: Extended CC — each target can have its own type and breaking indicator
+
+```typescript
+import { Schema } from 'effect'
+
+// === Shared Types ===
+
+class Footer extends Schema.Class<Footer>('Footer')({
+  token: Schema.String, // "BREAKING CHANGE", "Fixes", etc.
+  value: Schema.String,
+}) {}
+
+// === Single-Target Commit (standard CC) ===
+// Example: "feat(core, utils): add helper functions"
+// All scopes treated uniformly — same type, same breaking indicator
+
+class SingleTargetCommit
+  extends Schema.TaggedClass<SingleTargetCommit>()('SingleTarget', {
+    type: Schema.String, // "feat", "fix", etc.
+    scopes: Schema.Array(Schema.String), // can be multiple, but uniform treatment
+    breaking: Schema.Boolean, // applies to ALL scopes
+    message: Schema.String,
+    body: Schema.OptionFromNullOr(Schema.String),
+    footers: Schema.Array(Footer),
+  })
+{}
+
+// === Multi-Target Commit (extended CC for monorepos) ===
+// Example: "feat(core!), fix(arr): breaking core change with arr fix"
+// Each target has independent type and breaking indicator
+
+class Target extends Schema.Class<Target>('Target')({
+  type: Schema.String, // "feat", "fix", etc.
+  scope: Schema.String, // "core", "arr", etc.
+  breaking: Schema.Boolean, // per-target breaking indicator
+}) {}
+
+class TargetSection extends Schema.Class<TargetSection>('TargetSection')({
+  body: Schema.String,
+  footers: Schema.Array(Footer), // including BREAKING CHANGE
+}) {}
+
+class MultiTargetCommit
+  extends Schema.TaggedClass<MultiTargetCommit>()('MultiTarget', {
+    targets: Schema.NonEmptyArray(Target),
+    message: Schema.String,
+    summary: Schema.OptionFromNullOr(Schema.String), // text before any ## heading
+    sections: Schema.Record({ // keyed by scope name
+      key: Schema.String,
+      value: TargetSection,
+    }),
+  })
+{}
+
+// === Union ===
+const ConventionalCommit = Schema.Union(SingleTargetCommit, MultiTargetCommit)
+type ConventionalCommit = Schema.Schema.Type<typeof ConventionalCommit>
+```
+
+#### API
+
+```typescript
+// Parse from string (runtime) — auto-detects single vs multi-target
 const parsed = CC.parse('feat(cli): add dry-run flag')
 //    ^? Effect<ConventionalCommit, ParseError>
 
+// Construct directly
+const commit = SingleTargetCommit.make({
+  type: 'feat',
+  scopes: ['cli'],
+  breaking: false,
+  message: 'add dry-run flag',
+  body: Option.none(),
+  footers: [],
+})
+
 // Type-level parse (compile-time)
 type Parsed = CC.Parse<'feat(cli): add dry-run flag'>
-//   ^? { type: 'feat'; scope: 'cli'; message: 'add dry-run flag'; breaking: false }
+//   ^? SingleTargetCommit
+
+type ParsedMulti = CC.Parse<'feat(core!), fix(arr): description'>
+//   ^? MultiTargetCommit
 ```
+
+#### Parsing Rules
+
+| Input                         | Result                                                                             |
+| ----------------------------- | ---------------------------------------------------------------------------------- |
+| `feat: msg`                   | `SingleTarget` (no scope)                                                          |
+| `feat(core): msg`             | `SingleTarget` (one scope)                                                         |
+| `feat(core, arr): msg`        | `SingleTarget` (multiple scopes, uniform)                                          |
+| `feat(core!): msg`            | `SingleTarget` (breaking)                                                          |
+| `feat(core), fix(arr): msg`   | `MultiTarget` (different types)                                                    |
+| `feat(core!), feat(arr): msg` | `MultiTarget` (different breaking)                                                 |
+| `feat(core!, arr): msg`       | `SingleTarget` — syntactic sugar for `feat(core!), feat(arr!): msg`? Or error? TBD |
 
 ### @kitz/changelog
 
