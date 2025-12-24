@@ -1,6 +1,13 @@
 import { Data, Effect } from 'effect'
-import { Git } from '@kitz/git/__'
+import { Git, type GitError } from '@kitz/git/__'
 import type { Package } from './discovery.js'
+import {
+  extractImpacts,
+  aggregateByPackage,
+  calculateNextVersion,
+  findLatestTagVersion,
+  type BumpType,
+} from './version.js'
 
 /**
  * Error during release process.
@@ -29,7 +36,7 @@ export interface PlannedRelease {
   readonly package: Package
   readonly currentVersion: string | null
   readonly nextVersion: string
-  readonly bump: 'major' | 'minor' | 'patch'
+  readonly bump: BumpType
   readonly commits: readonly string[]
 }
 
@@ -50,6 +57,38 @@ export interface ReleaseResult {
 }
 
 /**
+ * Context required for planning releases.
+ */
+export interface PlanContext {
+  readonly packages: Package[]
+}
+
+/**
+ * Find the most recent release tag across all packages.
+ * Used to determine which commits to analyze.
+ */
+const findLastReleaseTag = (
+  packages: Package[],
+  tags: string[],
+): string | undefined => {
+  // Find tags that match our package pattern: @scope/name@version
+  const releaseTagPattern = /^(@[^@]+\/[^@]+|[^@]+)@\d+\.\d+\.\d+/
+  const releaseTags = tags.filter((t) => releaseTagPattern.test(t))
+
+  // Filter to only tags for our packages
+  const packageNames = new Set(packages.map((p) => p.name))
+  const ourTags = releaseTags.filter((tag) => {
+    const atIndex = tag.lastIndexOf('@')
+    if (atIndex <= 0) return false
+    const name = tag.slice(0, atIndex)
+    return packageNames.has(name)
+  })
+
+  // Return the most recent one (last in array, assuming git returns in order)
+  return ourTags[ourTags.length - 1]
+}
+
+/**
  * Plan a stable release.
  *
  * Analyzes commits since last release and determines version bumps.
@@ -57,26 +96,67 @@ export interface ReleaseResult {
  * @example
  * ```ts
  * const plan = await Effect.runPromise(
- *   Effect.provide(planStable({ dryRun: true }), GitLive)
+ *   Effect.provide(planStable(ctx, { dryRun: true }), GitLive)
  * )
  * ```
  */
 export const planStable = (
-  _options?: ReleaseOptions,
-): Effect.Effect<ReleasePlan, ReleaseError, Git> =>
+  ctx: PlanContext,
+  options?: ReleaseOptions,
+): Effect.Effect<ReleasePlan, ReleaseError | GitError, Git> =>
   Effect.gen(function* () {
-    const _git = yield* Git
+    const git = yield* Git
 
-    // TODO: Implement stable release planning
-    // 1. Get commits since last release tag
-    // 2. Parse conventional commits
-    // 3. Determine version bumps
-    // 4. Detect cascade releases
+    // 1. Get all tags and find the last release tag
+    const tags = yield* git.getTags()
+    const lastReleaseTag = findLastReleaseTag(ctx.packages, tags)
 
-    return {
-      releases: [],
-      cascades: [],
+    // 2. Get commits since last release (or all commits if no releases yet)
+    const commits = yield* git.getCommitsSince(lastReleaseTag)
+
+    // 3. Parse commits and extract package impacts
+    const allImpacts = yield* Effect.all(
+      commits.map((c) => extractImpacts(c.message)),
+      { concurrency: 'unbounded' },
+    )
+    const impacts = allImpacts.flat()
+
+    // 4. Aggregate by package to get highest bump per package
+    const aggregated = aggregateByPackage(impacts)
+
+    // 5. Build scope-to-package map for lookup
+    const scopeToPackage = new Map(ctx.packages.map((p) => [p.scope, p]))
+
+    // 6. Build release plan
+    const releases: PlannedRelease[] = []
+
+    for (const [scope, { bump, commits: commitMessages }] of aggregated) {
+      const pkg = scopeToPackage.get(scope)
+      if (!pkg) continue // Scope doesn't match any known package
+
+      // Apply package filters
+      if (options?.packages && !options.packages.includes(pkg.name)) continue
+      if (options?.exclude?.includes(pkg.name)) continue
+
+      // Find current version from tags
+      const currentVersion = findLatestTagVersion(pkg.name, tags)
+
+      // Calculate next version
+      const nextVersion = calculateNextVersion(currentVersion, bump)
+
+      releases.push({
+        package: pkg,
+        currentVersion,
+        nextVersion,
+        bump,
+        commits: commitMessages,
+      })
     }
+
+    // TODO: Detect cascade releases (packages that depend on released packages)
+    const cascades: PlannedRelease[] = []
+
+    return { releases, cascades }
   })
 
 /**
@@ -87,13 +167,14 @@ export const planStable = (
  * @example
  * ```ts
  * const plan = await Effect.runPromise(
- *   Effect.provide(planPreview({ dryRun: true }), GitLive)
+ *   Effect.provide(planPreview(ctx, { dryRun: true }), GitLive)
  * )
  * ```
  */
 export const planPreview = (
+  _ctx: PlanContext,
   _options?: ReleaseOptions,
-): Effect.Effect<ReleasePlan, ReleaseError, Git> =>
+): Effect.Effect<ReleasePlan, ReleaseError | GitError, Git> =>
   Effect.gen(function* () {
     const _git = yield* Git
 
@@ -115,13 +196,14 @@ export const planPreview = (
  * @example
  * ```ts
  * const plan = await Effect.runPromise(
- *   Effect.provide(planPr({ dryRun: true }), GitLive)
+ *   Effect.provide(planPr(ctx, { dryRun: true }), GitLive)
  * )
  * ```
  */
 export const planPr = (
+  _ctx: PlanContext,
   _options?: ReleaseOptions,
-): Effect.Effect<ReleasePlan, ReleaseError, Git> =>
+): Effect.Effect<ReleasePlan, ReleaseError | GitError, Git> =>
   Effect.gen(function* () {
     const _git = yield* Git
 
