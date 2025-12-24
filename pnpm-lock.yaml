@@ -76,6 +76,15 @@ importers:
         specifier: workspace:*
         version: link:../core
 
+  packages/changelog:
+    dependencies:
+      '@kitz/core':
+        specifier: workspace:*
+        version: link:../core
+      effect:
+        specifier: ^3.19.13
+        version: 3.19.13
+
   packages/cli:
     dependencies:
       '@effect/platform':
