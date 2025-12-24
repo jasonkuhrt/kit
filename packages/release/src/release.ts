@@ -1,3 +1,5 @@
+import { FileSystem } from '@effect/platform'
+import type { PlatformError } from '@effect/platform/Error'
 import { Data, Effect } from 'effect'
 import { Git, type GitError } from '@kitz/git/__'
 import { buildDependencyGraph, detectCascades } from './cascade.js'
@@ -105,7 +107,7 @@ const findLastReleaseTag = (
 export const planStable = (
   ctx: PlanContext,
   options?: ReleaseOptions,
-): Effect.Effect<ReleasePlan, ReleaseError | GitError, Git> =>
+): Effect.Effect<ReleasePlan, ReleaseError | GitError | PlatformError, Git | FileSystem.FileSystem> =>
   Effect.gen(function* () {
     const git = yield* Git
 
@@ -247,7 +249,7 @@ export interface ApplyOptions {
 export const apply = (
   plan: ReleasePlan,
   options?: ApplyOptions,
-): Effect.Effect<ReleaseResult, ReleaseError | GitError | PublishError, Git> =>
+): Effect.Effect<ReleaseResult, ReleaseError | GitError | PublishError, Git | FileSystem.FileSystem> =>
   Effect.gen(function* () {
     const git = yield* Git
 

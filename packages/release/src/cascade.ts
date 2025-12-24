@@ -1,5 +1,6 @@
+import { FileSystem } from '@effect/platform'
+import type { PlatformError } from '@effect/platform/Error'
 import { Effect } from 'effect'
-import * as Fs from 'node:fs'
 import * as Path from 'node:path'
 import type { Package } from './discovery.js'
 import type { PlannedRelease } from './release.js'
@@ -14,11 +15,13 @@ export type DependencyGraph = Map<string, string[]>
  * Build a reverse dependency graph from package.json files.
  *
  * Maps each package name to the list of packages that depend on it.
+ * Uses Effect's FileSystem service for testability.
  */
 export const buildDependencyGraph = (
   packages: Package[],
-): Effect.Effect<DependencyGraph, never> =>
-  Effect.sync(() => {
+): Effect.Effect<DependencyGraph, PlatformError, FileSystem.FileSystem> =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem
     const graph: DependencyGraph = new Map()
     const packageNames = new Set(packages.map((p) => p.name))
 
@@ -29,32 +32,45 @@ export const buildDependencyGraph = (
 
     for (const pkg of packages) {
       const packageJsonPath = Path.join(pkg.path, 'package.json')
-      if (!Fs.existsSync(packageJsonPath)) continue
 
-      try {
-        const content = JSON.parse(Fs.readFileSync(packageJsonPath, 'utf-8')) as {
-          dependencies?: Record<string, string>
-          devDependencies?: Record<string, string>
-          peerDependencies?: Record<string, string>
-        }
+      // Check if file exists
+      const exists = yield* fs.exists(packageJsonPath)
+      if (!exists) continue
 
-        // Check all dependency types
-        const allDeps = {
-          ...content.dependencies,
-          ...content.devDependencies,
-          ...content.peerDependencies,
-        }
+      // Read and parse package.json
+      const contentResult = yield* Effect.either(
+        fs.readFileString(packageJsonPath).pipe(
+          Effect.map((content) =>
+            JSON.parse(content) as {
+              dependencies?: Record<string, string>
+              devDependencies?: Record<string, string>
+              peerDependencies?: Record<string, string>
+            }
+          ),
+        ),
+      )
 
-        for (const depName of Object.keys(allDeps)) {
-          // Only track workspace dependencies
-          if (!packageNames.has(depName)) continue
-
-          const dependents = graph.get(depName) ?? []
-          dependents.push(pkg.name)
-          graph.set(depName, dependents)
-        }
-      } catch {
+      if (contentResult._tag === 'Left') {
         // Skip packages with invalid package.json
+        continue
+      }
+
+      const content = contentResult.right
+
+      // Check all dependency types
+      const allDeps = {
+        ...content.dependencies,
+        ...content.devDependencies,
+        ...content.peerDependencies,
+      }
+
+      for (const depName of Object.keys(allDeps)) {
+        // Only track workspace dependencies
+        if (!packageNames.has(depName)) continue
+
+        const dependents = graph.get(depName) ?? []
+        dependents.push(pkg.name)
+        graph.set(depName, dependents)
       }
     }
 

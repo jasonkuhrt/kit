@@ -1,5 +1,5 @@
+import { FileSystem } from '@effect/platform'
 import { Data, Effect } from 'effect'
-import * as Fs from 'node:fs'
 import * as Path from 'node:path'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
@@ -37,44 +37,57 @@ export interface PublishOptions {
 }
 
 /**
- * Read a package.json file.
+ * Read a package.json file using Effect's FileSystem service.
  */
 const readPackageJson = (
   pkgPath: string,
-): Effect.Effect<Record<string, unknown>, PublishError> =>
-  Effect.try({
-    try: () => {
-      const content = Fs.readFileSync(Path.join(pkgPath, 'package.json'), 'utf-8')
-      return JSON.parse(content) as Record<string, unknown>
-    },
-    catch: (error) =>
-      new PublishError({
-        message: 'Failed to read package.json',
-        package: pkgPath,
-        cause: error,
-      }),
+): Effect.Effect<Record<string, unknown>, PublishError, FileSystem.FileSystem> =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem
+    const filePath = Path.join(pkgPath, 'package.json')
+
+    const content = yield* fs.readFileString(filePath).pipe(
+      Effect.mapError((error) =>
+        new PublishError({
+          message: 'Failed to read package.json',
+          package: pkgPath,
+          cause: error,
+        })
+      ),
+    )
+
+    return yield* Effect.try({
+      try: () => JSON.parse(content) as Record<string, unknown>,
+      catch: (error) =>
+        new PublishError({
+          message: 'Failed to parse package.json',
+          package: pkgPath,
+          cause: error,
+        }),
+    })
   })
 
 /**
- * Write a package.json file.
+ * Write a package.json file using Effect's FileSystem service.
  */
 const writePackageJson = (
   pkgPath: string,
   content: Record<string, unknown>,
-): Effect.Effect<void, PublishError> =>
-  Effect.try({
-    try: () => {
-      Fs.writeFileSync(
-        Path.join(pkgPath, 'package.json'),
-        JSON.stringify(content, null, 2) + '\n',
-      )
-    },
-    catch: (error) =>
-      new PublishError({
-        message: 'Failed to write package.json',
-        package: pkgPath,
-        cause: error,
-      }),
+): Effect.Effect<void, PublishError, FileSystem.FileSystem> =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem
+    const filePath = Path.join(pkgPath, 'package.json')
+    const jsonContent = JSON.stringify(content, null, 2) + '\n'
+
+    yield* fs.writeFileString(filePath, jsonContent).pipe(
+      Effect.mapError((error) =>
+        new PublishError({
+          message: 'Failed to write package.json',
+          package: pkgPath,
+          cause: error,
+        })
+      ),
+    )
   })
 
 /**
@@ -83,7 +96,7 @@ const writePackageJson = (
 export const injectVersion = (
   pkgPath: string,
   version: string,
-): Effect.Effect<string, PublishError> =>
+): Effect.Effect<string, PublishError, FileSystem.FileSystem> =>
   Effect.gen(function* () {
     const pkg = yield* readPackageJson(pkgPath)
     const originalVersion = pkg['version'] as string
@@ -104,7 +117,7 @@ export const injectVersion = (
 export const restoreVersion = (
   pkgPath: string,
   originalVersion: string,
-): Effect.Effect<void, PublishError> =>
+): Effect.Effect<void, PublishError, FileSystem.FileSystem> =>
   Effect.gen(function* () {
     const pkg = yield* readPackageJson(pkgPath)
     pkg['version'] = originalVersion
@@ -155,7 +168,7 @@ export const npmPublish = (
 export const publishPackage = (
   release: ReleaseInfo,
   options?: PublishOptions,
-): Effect.Effect<void, PublishError> =>
+): Effect.Effect<void, PublishError, FileSystem.FileSystem> =>
   Effect.gen(function* () {
     const pkgPath = release.package.path
 
@@ -178,7 +191,7 @@ export const publishPackage = (
 export const publishAll = (
   releases: ReleaseInfo[],
   options?: PublishOptions,
-): Effect.Effect<void, PublishError> =>
+): Effect.Effect<void, PublishError, FileSystem.FileSystem> =>
   Effect.gen(function* () {
     for (const release of releases) {
       yield* publishPackage(release, options)

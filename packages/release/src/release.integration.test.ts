@@ -1,6 +1,7 @@
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
 import { describe, expect, test } from 'vitest'
 import { GitTest } from '@kitz/git/__'
+import { Memory } from '@kitz/fs/__'
 import { planStable, apply, type ReleasePlan } from './release.js'
 import type { Package } from './discovery.js'
 
@@ -8,7 +9,7 @@ import type { Package } from './discovery.js'
  * Integration tests for the release pipeline.
  *
  * These tests verify the complete flow from commit analysis to release
- * execution using an in-memory Git implementation.
+ * execution using in-memory Git and FileSystem implementations.
  */
 
 const mockPackages: Package[] = [
@@ -17,9 +18,35 @@ const mockPackages: Package[] = [
   { name: '@kitz/utils', scope: 'utils', path: '/repo/packages/utils' },
 ]
 
+/**
+ * Create a combined layer with GitTest and Memory FileSystem.
+ */
+const makeTestLayer = (
+  gitConfig: Parameters<typeof GitTest.make>[0],
+  diskLayout: Memory.DiskLayout = {},
+) => Layer.merge(GitTest.make(gitConfig), Memory.layer(diskLayout))
+
+/**
+ * Create package.json content with dependencies.
+ */
+const makePackageJson = (
+  name: string,
+  version: string,
+  dependencies?: Record<string, string>,
+) =>
+  JSON.stringify(
+    {
+      name,
+      version,
+      ...(dependencies && { dependencies }),
+    },
+    null,
+    2,
+  )
+
 describe('planStable integration', () => {
   test('no releases when no commits since last tag', async () => {
-    const layer = GitTest.make({
+    const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
       commits: [], // No new commits
     })
@@ -36,7 +63,7 @@ describe('planStable integration', () => {
   })
 
   test('detects minor bump from feat commit', async () => {
-    const layer = GitTest.make({
+    const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
       commits: [
         GitTest.commit('feat(core): add new feature'),
@@ -58,7 +85,7 @@ describe('planStable integration', () => {
   })
 
   test('detects major bump from breaking change', async () => {
-    const layer = GitTest.make({
+    const layer = makeTestLayer({
       tags: ['@kitz/cli@2.0.0'],
       commits: [
         GitTest.commit('feat(cli)!: breaking API change'),
@@ -79,7 +106,7 @@ describe('planStable integration', () => {
   })
 
   test('aggregates multiple commits to highest bump', async () => {
-    const layer = GitTest.make({
+    const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
       commits: [
         GitTest.commit('fix(core): bug fix 1'),
@@ -103,7 +130,7 @@ describe('planStable integration', () => {
   })
 
   test('handles multiple packages in single plan', async () => {
-    const layer = GitTest.make({
+    const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0', '@kitz/cli@2.0.0'],
       commits: [
         GitTest.commit('feat(core): core feature'),
@@ -131,7 +158,7 @@ describe('planStable integration', () => {
   })
 
   test('first release starts at 0.1.0 for feat', async () => {
-    const layer = GitTest.make({
+    const layer = makeTestLayer({
       tags: [], // No existing tags
       commits: [
         GitTest.commit('feat(utils): initial feature'),
@@ -151,7 +178,7 @@ describe('planStable integration', () => {
   })
 
   test('respects package filter option', async () => {
-    const layer = GitTest.make({
+    const layer = makeTestLayer({
       tags: [],
       commits: [
         GitTest.commit('feat(core): core feature'),
@@ -171,7 +198,7 @@ describe('planStable integration', () => {
   })
 
   test('respects exclude filter option', async () => {
-    const layer = GitTest.make({
+    const layer = makeTestLayer({
       tags: [],
       commits: [
         GitTest.commit('feat(core): core feature'),
@@ -192,19 +219,66 @@ describe('planStable integration', () => {
 })
 
 describe('apply integration (dry-run)', () => {
-  // Note: Tests that call apply() with packages that have real paths would need
-  // a fixture monorepo because apply() calls publishPackage which reads/writes
-  // package.json files. These tests are skipped for pure in-memory testing.
+  test('creates git tags for each release', async () => {
+    const diskLayout: Memory.DiskLayout = {
+      '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
+    }
 
-  test.skip('creates git tags for each release - requires fixture monorepo', async () => {
-    // This test requires actual package.json files to exist
-    // because apply -> publishAll -> publishPackage reads package.json
-    // See E2E fixture tests for comprehensive apply testing
+    const { layer: gitLayer, state } = await Effect.runPromise(
+      GitTest.makeWithState({
+        tags: ['@kitz/core@1.0.0'],
+        commits: [GitTest.commit('feat(core): new feature')],
+      }),
+    )
+
+    const layer = Layer.merge(gitLayer, Memory.layer(diskLayout))
+
+    const plan = await Effect.runPromise(
+      Effect.provide(planStable({ packages: mockPackages }), layer),
+    )
+
+    const result = await Effect.runPromise(
+      Effect.provide(
+        apply(plan, { dryRun: true }),
+        layer,
+      ),
+    )
+
+    expect(result.released).toHaveLength(1)
+    expect(result.tags).toHaveLength(1)
+    expect(result.tags[0]).toBe('@kitz/core@1.1.0')
   })
 
-  test.skip('includes cascades in result - requires fixture monorepo', async () => {
-    // This test requires actual package.json files to exist
-    // See E2E fixture tests for comprehensive apply testing
+  test('includes cascades in result', async () => {
+    // Set up a dependency: cli depends on core
+    const diskLayout: Memory.DiskLayout = {
+      '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
+      '/repo/packages/cli/package.json': makePackageJson('@kitz/cli', '1.0.0', {
+        '@kitz/core': 'workspace:*',
+      }),
+    }
+
+    const { layer: gitLayer, state } = await Effect.runPromise(
+      GitTest.makeWithState({
+        tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0'],
+        commits: [GitTest.commit('feat(core): new API')],
+      }),
+    )
+
+    const layer = Layer.merge(gitLayer, Memory.layer(diskLayout))
+
+    const plan = await Effect.runPromise(
+      Effect.provide(planStable({ packages: mockPackages }), layer),
+    )
+
+    // Primary release should be core
+    expect(plan.releases).toHaveLength(1)
+    expect(plan.releases[0]?.package.name).toBe('@kitz/core')
+
+    // Cascade should include cli (depends on core)
+    expect(plan.cascades).toHaveLength(1)
+    expect(plan.cascades[0]?.package.name).toBe('@kitz/cli')
+    expect(plan.cascades[0]?.bump).toBe('patch')
   })
 
   test('returns empty result for empty plan', async () => {
@@ -213,7 +287,7 @@ describe('apply integration (dry-run)', () => {
       cascades: [],
     }
 
-    const layer = GitTest.make({})
+    const layer = makeTestLayer({})
 
     const result = await Effect.runPromise(
       Effect.provide(
@@ -228,8 +302,12 @@ describe('apply integration (dry-run)', () => {
 })
 
 describe('end-to-end pipeline', () => {
-  test('plan workflow (apply requires fixture monorepo)', async () => {
-    const { layer } = await Effect.runPromise(
+  test('complete plan and apply workflow', async () => {
+    const diskLayout: Memory.DiskLayout = {
+      '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
+    }
+
+    const { layer: gitLayer, state } = await Effect.runPromise(
       GitTest.makeWithState({
         tags: ['@kitz/core@1.0.0'],
         commits: [
@@ -238,7 +316,9 @@ describe('end-to-end pipeline', () => {
       }),
     )
 
-    // Step 1: Plan - this is fully testable in-memory
+    const layer = Layer.merge(gitLayer, Memory.layer(diskLayout))
+
+    // Step 1: Plan
     const plan = await Effect.runPromise(
       Effect.provide(
         planStable({ packages: mockPackages }),
@@ -251,27 +331,40 @@ describe('end-to-end pipeline', () => {
     expect(plan.releases[0]?.bump).toBe('minor')
     expect(plan.releases[0]?.package.name).toBe('@kitz/core')
 
-    // Step 2: Apply would require a fixture monorepo with real package.json files
-    // because publishPackage reads/writes package.json during version injection.
-    // The apply() function is tested in E2E fixture tests.
+    // Step 2: Apply (dry-run)
+    const result = await Effect.runPromise(
+      Effect.provide(
+        apply(plan, { dryRun: true }),
+        layer,
+      ),
+    )
+
+    expect(result.released).toHaveLength(1)
+    expect(result.tags).toContain('@kitz/core@1.1.0')
   })
 
   test('full cascade scenario', async () => {
-    // This test would need proper dependency graph setup
-    // For now, just verify the flow works
-    const { layer } = await Effect.runPromise(
+    // Set up dependency graph: cli -> core, utils -> core
+    const diskLayout: Memory.DiskLayout = {
+      '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
+      '/repo/packages/cli/package.json': makePackageJson('@kitz/cli', '1.0.0', {
+        '@kitz/core': 'workspace:*',
+      }),
+      '/repo/packages/utils/package.json': makePackageJson('@kitz/utils', '1.0.0', {
+        '@kitz/core': 'workspace:*',
+      }),
+    }
+
+    const { layer: gitLayer, state } = await Effect.runPromise(
       GitTest.makeWithState({
-        tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0'],
+        tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0', '@kitz/utils@1.0.0'],
         commits: [
           GitTest.commit('feat(core): new API'),
         ],
       }),
     )
 
-    // Note: cascades depend on buildDependencyGraph reading actual package.json files
-    // In integration tests with GitTest, the cascade detection still works
-    // but requires the package.json files to exist (which they don't in this mock)
-    // This is a limitation - for true E2E testing, we'd need a fixture monorepo
+    const layer = Layer.merge(gitLayer, Memory.layer(diskLayout))
 
     const plan = await Effect.runPromise(
       Effect.provide(
@@ -280,10 +373,28 @@ describe('end-to-end pipeline', () => {
       ),
     )
 
-    // Just verify the primary release is detected
+    // Primary release
     expect(plan.releases).toHaveLength(1)
     expect(plan.releases[0]?.package.name).toBe('@kitz/core')
-    // Cascades would be empty because package.json files don't exist
-    // This is expected behavior for pure in-memory testing
+    expect(plan.releases[0]?.bump).toBe('minor')
+
+    // Cascade releases (cli and utils both depend on core)
+    expect(plan.cascades).toHaveLength(2)
+    const cascadeNames = plan.cascades.map((c) => c.package.name)
+    expect(cascadeNames).toContain('@kitz/cli')
+    expect(cascadeNames).toContain('@kitz/utils')
+
+    // Apply and verify
+    const result = await Effect.runPromise(
+      Effect.provide(
+        apply(plan, { dryRun: true }),
+        layer,
+      ),
+    )
+
+    expect(result.released).toHaveLength(3)
+    expect(result.tags).toContain('@kitz/core@1.1.0')
+    expect(result.tags).toContain('@kitz/cli@1.0.1')
+    expect(result.tags).toContain('@kitz/utils@1.0.1')
   })
 })

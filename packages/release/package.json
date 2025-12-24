@@ -23,9 +23,11 @@
     "check:package": "publint && attw --pack"
   },
   "dependencies": {
+    "@effect/platform": "^0.82.8",
     "@kitz/changelog": "workspace:*",
     "@kitz/conventional-commits": "workspace:*",
     "@kitz/core": "workspace:*",
+    "@kitz/fs": "workspace:*",
     "@kitz/git": "workspace:*",
     "@kitz/npm-registry": "workspace:*",
     "@kitz/semver": "workspace:*",
