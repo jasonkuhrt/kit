@@ -28,6 +28,13 @@ export {
   type CommitImpact,
 } from './version.js'
 
+// Cascade
+export {
+  buildDependencyGraph,
+  detectCascades,
+  type DependencyGraph,
+} from './cascade.js'
+
 // Release
 export {
   ReleaseError,
