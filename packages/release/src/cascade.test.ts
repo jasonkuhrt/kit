@@ -1,6 +1,5 @@
-import { Effect } from 'effect'
 import { describe, expect, test } from 'vitest'
-import { buildDependencyGraph, detectCascades } from './cascade.js'
+import { detectCascades } from './cascade.js'
 import type { Package } from './discovery.js'
 import type { PlannedRelease } from './release.js'
 

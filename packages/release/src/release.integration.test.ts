@@ -228,7 +228,7 @@ describe('apply integration (dry-run)', () => {
       '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
     }
 
-    const { layer: gitLayer, state } = await Effect.runPromise(
+    const { layer: gitLayer } = await Effect.runPromise(
       GitTest.makeWithState({
         tags: ['@kitz/core@1.0.0'],
         commits: [GitTest.commit('feat(core): new feature')],
@@ -262,7 +262,7 @@ describe('apply integration (dry-run)', () => {
       }),
     }
 
-    const { layer: gitLayer, state } = await Effect.runPromise(
+    const { layer: gitLayer } = await Effect.runPromise(
       GitTest.makeWithState({
         tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0'],
         commits: [GitTest.commit('feat(core): new API')],
@@ -311,7 +311,7 @@ describe('end-to-end pipeline', () => {
       '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
     }
 
-    const { layer: gitLayer, state } = await Effect.runPromise(
+    const { layer: gitLayer } = await Effect.runPromise(
       GitTest.makeWithState({
         tags: ['@kitz/core@1.0.0'],
         commits: [
@@ -359,7 +359,7 @@ describe('end-to-end pipeline', () => {
       }),
     }
 
-    const { layer: gitLayer, state } = await Effect.runPromise(
+    const { layer: gitLayer } = await Effect.runPromise(
       GitTest.makeWithState({
         tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0', '@kitz/utils@1.0.0'],
         commits: [

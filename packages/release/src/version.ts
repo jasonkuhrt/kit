@@ -1,6 +1,6 @@
 import { type ConventionalCommitType, isMultiTarget, isSingleTarget, parseTitle } from '@kitz/conventional-commits/__'
 import * as Semver from '@kitz/semver/__'
-import { Effect, Option } from 'effect'
+import { Effect } from 'effect'
 
 /**
  * Version bump type.
