@@ -525,6 +525,9 @@ importers:
       '@kitz/npm-registry':
         specifier: workspace:*
         version: link:../npm-registry
+      '@kitz/semver':
+        specifier: workspace:*
+        version: link:../semver
       effect:
         specifier: ^3.19.13
         version: 3.19.13

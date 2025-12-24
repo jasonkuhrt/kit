@@ -16,6 +16,18 @@ export {
   type PackageMap,
 } from './discovery.js'
 
+// Version
+export {
+  bumpFromType,
+  maxBump,
+  extractImpacts,
+  aggregateByPackage,
+  calculateNextVersion,
+  findLatestTagVersion,
+  type BumpType,
+  type CommitImpact,
+} from './version.js'
+
 // Release
 export {
   ReleaseError,
@@ -23,6 +35,7 @@ export {
   planPreview,
   planPr,
   apply,
+  type PlanContext,
   type ReleaseOptions,
   type PlannedRelease,
   type ReleasePlan,

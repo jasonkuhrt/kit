@@ -28,6 +28,7 @@
     "@kitz/core": "workspace:*",
     "@kitz/git": "workspace:*",
     "@kitz/npm-registry": "workspace:*",
+    "@kitz/semver": "workspace:*",
     "effect": "^3.19.13"
   }
 }
