@@ -495,6 +495,9 @@ importers:
 
   packages/release:
     dependencies:
+      '@effect/platform':
+        specifier: ^0.82.8
+        version: 0.82.8(effect@3.19.13)
       '@kitz/changelog':
         specifier: workspace:*
         version: link:../changelog
@@ -504,6 +507,9 @@ importers:
       '@kitz/core':
         specifier: workspace:*
         version: link:../core
+      '@kitz/fs':
+        specifier: workspace:*
+        version: link:../fs
       '@kitz/git':
         specifier: workspace:*
         version: link:../git
@@ -772,6 +778,11 @@ packages:
     resolution: {integrity: sha512-N3l9k31c3IMfVXqL0L6ygIhJFvCIrfQ+Z5Jph6RnCcBO6oDYWeYhAv/qBk1vLsF2y/e79TKsR1tvaEwnrQ03XA==}
     cpu: [x64]
     os: [win32]
+
+  '@effect/platform@0.82.8':
+    resolution: {integrity: sha512-JEnIACWM2CfyKbf31dPzC903iF11SfiAk74Xs43Ez+n1ieQz2Ew2S/99KBbuesIKkDScLtn8PI23EBFMQiL0Ow==}
+    peerDependencies:
+      effect: ^3.15.4
 
   '@effect/platform@0.94.0':
     resolution: {integrity: sha512-oIATd3M+RUe2q+bu0Qpgt4/qSbXBM9OEGBrRW7SvtwXGOWkCYkN+LfOPnmPrbMB7jYjpIb7808T1bONM1Nwgfg==}
@@ -2671,6 +2682,13 @@ snapshots:
 
   '@dprint/win32-x64@0.50.2':
     optional: true
+
+  '@effect/platform@0.82.8(effect@3.19.13)':
+    dependencies:
+      effect: 3.19.13
+      find-my-way-ts: 0.1.6
+      msgpackr: 1.11.8
+      multipasta: 0.2.7
 
   '@effect/platform@0.94.0(effect@3.19.13)':
     dependencies:
