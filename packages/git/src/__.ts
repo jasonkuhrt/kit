@@ -1,1 +1,1 @@
-// Export functions and types here
+export { Git, GitLive, makeGitLive, GitError, type Commit, type GitService } from './git.js'
