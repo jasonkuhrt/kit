@@ -370,6 +370,15 @@ importers:
         specifier: workspace:*
         version: link:../core
 
+  packages/npm-registry:
+    dependencies:
+      '@kitz/core':
+        specifier: workspace:*
+        version: link:../core
+      effect:
+        specifier: ^3.19.13
+        version: 3.19.13
+
   packages/num:
     dependencies:
       '@kitz/core':
