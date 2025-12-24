@@ -1,0 +1,33 @@
+{
+  "name": "@kitz/release",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#release": "./build/_.js",
+    "#release/*": "./build/*.js"
+  },
+  "exports": {
+    ".": "./build/_.js",
+    "./__": "./build/__.js"
+  },
+  "files": [
+    "build",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "dev": "tsgo -p tsconfig.build.json --watch",
+    "check:types": "tsgo --noEmit",
+    "check:lint": "oxlint --config ../../oxlint.json src/",
+    "check:package": "publint && attw --pack"
+  },
+  "dependencies": {
+    "@kitz/changelog": "workspace:*",
+    "@kitz/conventional-commits": "workspace:*",
+    "@kitz/core": "workspace:*",
+    "@kitz/git": "workspace:*",
+    "@kitz/npm-registry": "workspace:*",
+    "effect": "^3.19.13"
+  }
+}
