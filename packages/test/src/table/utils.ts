@@ -1,3 +1,4 @@
+/* eslint-disable eslint-plugin-jest/valid-describe-callback, eslint-plugin-vitest/no-conditional-tests -- Test framework implementation */
 import { Err, Fn, Lang, Obj, Prom, Str } from '@kitz/core'
 import { Equal, Schema as S } from 'effect'
 import objectInspect from 'object-inspect'

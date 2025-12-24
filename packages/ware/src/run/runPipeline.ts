@@ -87,7 +87,6 @@ export const runPipeline = async (
     }
     case `error`: {
       debug.trace(`signal: error`)
-      signal
 
       if (pipeline.config.passthroughErrorWith?.(signal)) {
         return signal.error as any // todo change return type to be unknown since this function could permit anything?

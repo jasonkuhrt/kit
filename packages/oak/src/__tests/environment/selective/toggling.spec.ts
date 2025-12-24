@@ -73,7 +73,7 @@ describe(`when configuring parameters, environment becomes opt-in`, () => {
       .parse({ line: [], environment: { moo_foo: `foo_env`, moo_bar: `bar_env`, moo_qux: `qux_env` } })
     expect(args).toMatchObject({ foo: `foo_env`, bar: `bar`, qux: `qux` })
   })
-  describe(` unless...`, () => {
+  describe(`unless...`, () => {
     it(`default is shorthand true`, () => {
       environmentManager.set({ moo_foo: `moo_foo_env`, cli_param_bar: `bar_env`, cli_param_qux: `qux_env` })
       const args = $.parameter(`--foo`, s.default(`foo`))

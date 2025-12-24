@@ -153,7 +153,7 @@ const addHomePageIfExists = (
   } catch (error) {
     // Re-throw with context about which namespace failed
     if (error instanceof Error) {
-      throw new Error(`Failed to parse home page for namespace '${nsName}':\n${error.message}`)
+      throw new Error(`Failed to parse home page for namespace '${nsName}':\n${error.message}`, { cause: error })
     }
     throw error
   }

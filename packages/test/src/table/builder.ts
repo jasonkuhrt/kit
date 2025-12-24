@@ -1,3 +1,4 @@
+/* eslint-disable eslint-plugin-jest/valid-expect -- Dynamic matcher access pattern */
 import { Fn, Prom } from '@kitz/core'
 import { Array, Effect, Layer, Option } from 'effect'
 import objectInspect from 'object-inspect'

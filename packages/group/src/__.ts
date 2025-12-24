@@ -444,9 +444,11 @@ export const merge = <$groupSet extends Any>(
   // Merge group2
   for (const k in group2) {
     if (result[k]) {
-      isMut
-        ? (result[k] as any[]).push(...(group2[k] as any[]))
-        : (result[k] = [...result[k], ...(group2[k] as any[])])
+      if (isMut) {
+        ;(result[k] as any[]).push(...(group2[k] as any[]))
+      } else {
+        result[k] = [...result[k], ...(group2[k] as any[])]
+      }
     } else {
       result[k] = [...(group2[k] as any[])]
     }

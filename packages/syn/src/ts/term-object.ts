@@ -239,7 +239,6 @@ export const termObject = (object: TermObjectLike): string => {
 export const termObjectFields = (object: TermObject | DirectiveTermObject): string =>
   Obj.entries(object)
     .map(([key, value]: [string, any]): [string, DirectiveField] => {
-      value
       if (value === null) return [key, { $VALUE: null, $OPTIONAL: false, $TS_DOC: null }]
       if (isDirectiveTermObject(value)) {
         return [key, { $VALUE: directiveTermObject(value), $OPTIONAL: false, $TS_DOC: null }]
