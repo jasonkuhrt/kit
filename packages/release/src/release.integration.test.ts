@@ -1,8 +1,9 @@
 import { Effect, Layer } from 'effect'
 import { describe, expect, test } from 'vitest'
+import { Env } from '@kitz/env'
+import { Memory, Path } from '@kitz/fs/__'
 import { GitTest } from '@kitz/git/__'
-import { Memory } from '@kitz/fs/__'
-import { planStable, apply, type ReleasePlan } from './release.js'
+import { planStable, planPreview, planPr, apply, type ReleasePlan } from './release.js'
 import type { Package } from './discovery.js'
 
 /**
@@ -13,18 +14,21 @@ import type { Package } from './discovery.js'
  */
 
 const mockPackages: Package[] = [
-  { name: '@kitz/core', scope: 'core', path: '/repo/packages/core' },
-  { name: '@kitz/cli', scope: 'cli', path: '/repo/packages/cli' },
-  { name: '@kitz/utils', scope: 'utils', path: '/repo/packages/utils' },
+  { name: '@kitz/core', scope: 'core', path: Path.AbsDir.fromString('/repo/packages/core/') },
+  { name: '@kitz/cli', scope: 'cli', path: Path.AbsDir.fromString('/repo/packages/cli/') },
+  { name: '@kitz/utils', scope: 'utils', path: Path.AbsDir.fromString('/repo/packages/utils/') },
 ]
 
+// Test env layer with /repo/ as cwd
+const testEnv = Env.Test({ cwd: Path.AbsDir.fromString('/repo/') })
+
 /**
- * Create a combined layer with GitTest and Memory FileSystem.
+ * Create a combined layer with GitTest, Memory FileSystem, and Env.
  */
 const makeTestLayer = (
   gitConfig: Parameters<typeof GitTest.make>[0],
   diskLayout: Memory.DiskLayout = {},
-) => Layer.merge(GitTest.make(gitConfig), Memory.layer(diskLayout))
+) => Layer.mergeAll(GitTest.make(gitConfig), Memory.layer(diskLayout), testEnv)
 
 /**
  * Create package.json content with dependencies.
@@ -231,7 +235,7 @@ describe('apply integration (dry-run)', () => {
       }),
     )
 
-    const layer = Layer.merge(gitLayer, Memory.layer(diskLayout))
+    const layer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
 
     const plan = await Effect.runPromise(
       Effect.provide(planStable({ packages: mockPackages }), layer),
@@ -265,7 +269,7 @@ describe('apply integration (dry-run)', () => {
       }),
     )
 
-    const layer = Layer.merge(gitLayer, Memory.layer(diskLayout))
+    const layer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
 
     const plan = await Effect.runPromise(
       Effect.provide(planStable({ packages: mockPackages }), layer),
@@ -316,7 +320,7 @@ describe('end-to-end pipeline', () => {
       }),
     )
 
-    const layer = Layer.merge(gitLayer, Memory.layer(diskLayout))
+    const layer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
 
     // Step 1: Plan
     const plan = await Effect.runPromise(
@@ -364,7 +368,7 @@ describe('end-to-end pipeline', () => {
       }),
     )
 
-    const layer = Layer.merge(gitLayer, Memory.layer(diskLayout))
+    const layer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
 
     const plan = await Effect.runPromise(
       Effect.provide(
@@ -396,5 +400,266 @@ describe('end-to-end pipeline', () => {
     expect(result.tags).toContain('@kitz/core@1.1.0')
     expect(result.tags).toContain('@kitz/cli@1.0.1')
     expect(result.tags).toContain('@kitz/utils@1.0.1')
+  })
+})
+
+describe('planPreview integration', () => {
+  test('generates preview version from feat commit', async () => {
+    const layer = makeTestLayer({
+      tags: ['@kitz/core@1.0.0'],
+      commits: [
+        GitTest.commit('feat(core): add new feature'),
+      ],
+    })
+
+    const result = await Effect.runPromise(
+      Effect.provide(
+        planPreview({ packages: mockPackages }),
+        layer,
+      ),
+    )
+
+    expect(result.releases).toHaveLength(1)
+    expect(result.releases[0]?.package.name).toBe('@kitz/core')
+    expect(result.releases[0]?.bump).toBe('minor')
+    // Preview version: nextStable-next.N
+    expect(result.releases[0]?.nextVersion).toBe('1.1.0-next.1')
+  })
+
+  test('increments preview number for existing previews', async () => {
+    const layer = makeTestLayer({
+      tags: [
+        '@kitz/core@1.0.0',
+        '@kitz/core@1.1.0-next.1',
+        '@kitz/core@1.1.0-next.2',
+      ],
+      commits: [
+        GitTest.commit('feat(core): add new feature'),
+      ],
+    })
+
+    const result = await Effect.runPromise(
+      Effect.provide(
+        planPreview({ packages: mockPackages }),
+        layer,
+      ),
+    )
+
+    expect(result.releases).toHaveLength(1)
+    // Should be next.3 since next.1 and next.2 already exist
+    expect(result.releases[0]?.nextVersion).toBe('1.1.0-next.3')
+  })
+
+  test('first preview release starts at next.1', async () => {
+    const layer = makeTestLayer({
+      tags: [], // No existing tags
+      commits: [
+        GitTest.commit('feat(core): initial feature'),
+      ],
+    })
+
+    const result = await Effect.runPromise(
+      Effect.provide(
+        planPreview({ packages: mockPackages }),
+        layer,
+      ),
+    )
+
+    expect(result.releases).toHaveLength(1)
+    // First release at 0.1.0, preview version 0.1.0-next.1
+    expect(result.releases[0]?.nextVersion).toBe('0.1.0-next.1')
+  })
+
+  test('generates preview cascades with preview versions', async () => {
+    const diskLayout: Memory.DiskLayout = {
+      '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
+      '/repo/packages/cli/package.json': makePackageJson('@kitz/cli', '1.0.0', {
+        '@kitz/core': 'workspace:*',
+      }),
+    }
+
+    const layer = Layer.mergeAll(
+      GitTest.make({
+        tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0'],
+        commits: [GitTest.commit('feat(core): new API')],
+      }),
+      Memory.layer(diskLayout),
+      testEnv,
+    )
+
+    const result = await Effect.runPromise(
+      Effect.provide(
+        planPreview({ packages: mockPackages }),
+        layer,
+      ),
+    )
+
+    expect(result.releases).toHaveLength(1)
+    expect(result.releases[0]?.nextVersion).toBe('1.1.0-next.1')
+
+    expect(result.cascades).toHaveLength(1)
+    expect(result.cascades[0]?.package.name).toBe('@kitz/cli')
+    // Cascade gets preview version too
+    expect(result.cascades[0]?.nextVersion).toBe('1.0.1-next.1')
+  })
+})
+
+describe('planPr integration', () => {
+  test('generates PR version with explicit prNumber', async () => {
+    const layer = makeTestLayer({
+      tags: ['@kitz/core@1.0.0'],
+      commits: [
+        GitTest.commit('feat(core): add new feature'),
+      ],
+      headSha: 'abc1234',
+    })
+
+    const result = await Effect.runPromise(
+      Effect.provide(
+        planPr({ packages: mockPackages }, { prNumber: 42 }),
+        layer,
+      ),
+    )
+
+    expect(result.releases).toHaveLength(1)
+    expect(result.releases[0]?.package.name).toBe('@kitz/core')
+    // PR version: 0.0.0-pr.PR.N.SHA
+    expect(result.releases[0]?.nextVersion).toBe('0.0.0-pr.42.1.abc1234')
+  })
+
+  test('increments PR release number for existing PR releases', async () => {
+    const layer = makeTestLayer({
+      tags: [
+        '@kitz/core@1.0.0',
+        '@kitz/core@0.0.0-pr.42.1.def5678',
+        '@kitz/core@0.0.0-pr.42.2.ghi9012',
+      ],
+      commits: [
+        GitTest.commit('feat(core): add new feature'),
+      ],
+      headSha: 'abc1234',
+    })
+
+    const result = await Effect.runPromise(
+      Effect.provide(
+        planPr({ packages: mockPackages }, { prNumber: 42 }),
+        layer,
+      ),
+    )
+
+    expect(result.releases).toHaveLength(1)
+    // Should be .3 since .1 and .2 already exist for this PR
+    expect(result.releases[0]?.nextVersion).toBe('0.0.0-pr.42.3.abc1234')
+  })
+
+  test('different PRs have independent numbering', async () => {
+    const layer = makeTestLayer({
+      tags: [
+        '@kitz/core@1.0.0',
+        '@kitz/core@0.0.0-pr.42.1.def5678',
+        '@kitz/core@0.0.0-pr.42.2.ghi9012',
+      ],
+      commits: [
+        GitTest.commit('feat(core): add new feature'),
+      ],
+      headSha: 'abc1234',
+    })
+
+    const result = await Effect.runPromise(
+      Effect.provide(
+        planPr({ packages: mockPackages }, { prNumber: 99 }), // Different PR
+        layer,
+      ),
+    )
+
+    expect(result.releases).toHaveLength(1)
+    // Should be .1 since PR 99 has no existing releases
+    expect(result.releases[0]?.nextVersion).toBe('0.0.0-pr.99.1.abc1234')
+  })
+
+  test('detects PR number from environment', async () => {
+    const envWithPr = Env.Test({
+      cwd: Path.AbsDir.fromString('/repo/'),
+      vars: { PR_NUMBER: '123' },
+    })
+
+    const layer = Layer.mergeAll(
+      GitTest.make({
+        tags: ['@kitz/core@1.0.0'],
+        commits: [GitTest.commit('feat(core): add new feature')],
+        headSha: 'xyz7890',
+      }),
+      Memory.layer({}),
+      envWithPr,
+    )
+
+    const result = await Effect.runPromise(
+      Effect.provide(
+        planPr({ packages: mockPackages }),
+        layer,
+      ),
+    )
+
+    expect(result.releases).toHaveLength(1)
+    expect(result.releases[0]?.nextVersion).toBe('0.0.0-pr.123.1.xyz7890')
+  })
+
+  test('fails when PR number cannot be detected', async () => {
+    const envWithoutPr = Env.Test({
+      cwd: Path.AbsDir.fromString('/repo/'),
+      vars: {}, // No PR env vars
+    })
+
+    const layer = Layer.mergeAll(
+      GitTest.make({
+        tags: ['@kitz/core@1.0.0'],
+        commits: [GitTest.commit('feat(core): add new feature')],
+      }),
+      Memory.layer({}),
+      envWithoutPr,
+    )
+
+    await expect(
+      Effect.runPromise(
+        Effect.provide(
+          planPr({ packages: mockPackages }),
+          layer,
+        ),
+      ),
+    ).rejects.toThrow('Could not detect PR number')
+  })
+
+  test('generates PR cascades with PR versions', async () => {
+    const diskLayout: Memory.DiskLayout = {
+      '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
+      '/repo/packages/cli/package.json': makePackageJson('@kitz/cli', '1.0.0', {
+        '@kitz/core': 'workspace:*',
+      }),
+    }
+
+    const layer = Layer.mergeAll(
+      GitTest.make({
+        tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0'],
+        commits: [GitTest.commit('feat(core): new API')],
+        headSha: 'sha1234',
+      }),
+      Memory.layer(diskLayout),
+      testEnv,
+    )
+
+    const result = await Effect.runPromise(
+      Effect.provide(
+        planPr({ packages: mockPackages }, { prNumber: 55 }),
+        layer,
+      ),
+    )
+
+    expect(result.releases).toHaveLength(1)
+    expect(result.releases[0]?.nextVersion).toBe('0.0.0-pr.55.1.sha1234')
+
+    expect(result.cascades).toHaveLength(1)
+    expect(result.cascades[0]?.package.name).toBe('@kitz/cli')
+    // Cascade gets PR version too
+    expect(result.cascades[0]?.nextVersion).toBe('0.0.0-pr.55.1.sha1234')
   })
 })

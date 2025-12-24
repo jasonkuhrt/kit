@@ -1,7 +1,7 @@
 import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
+import { Fs } from '@kitz/fs'
 import { Effect } from 'effect'
-import * as Path from 'node:path'
 import type { Package } from './discovery.js'
 import type { PlannedRelease } from './release.js'
 import { calculateNextVersion, findLatestTagVersion } from './version.js'
@@ -17,6 +17,9 @@ export type DependencyGraph = Map<string, string[]>
  * Maps each package name to the list of packages that depend on it.
  * Uses Effect's FileSystem service for testability.
  */
+// Shared typed path for package.json
+const packageJsonRelFile = Fs.Path.RelFile.fromString('./package.json')
+
 export const buildDependencyGraph = (
   packages: Package[],
 ): Effect.Effect<DependencyGraph, PlatformError, FileSystem.FileSystem> =>
@@ -31,15 +34,16 @@ export const buildDependencyGraph = (
     }
 
     for (const pkg of packages) {
-      const packageJsonPath = Path.join(pkg.path, 'package.json')
+      const packageJsonPath = Fs.Path.join(pkg.path, packageJsonRelFile)
+      const packageJsonPathStr = Fs.Path.toString(packageJsonPath)
 
       // Check if file exists
-      const exists = yield* fs.exists(packageJsonPath)
+      const exists = yield* fs.exists(packageJsonPathStr)
       if (!exists) continue
 
       // Read and parse package.json
       const contentResult = yield* Effect.either(
-        fs.readFileString(packageJsonPath).pipe(
+        fs.readFileString(packageJsonPathStr).pipe(
           Effect.map((content) =>
             JSON.parse(content) as {
               dependencies?: Record<string, string>

@@ -27,6 +27,7 @@
     "@kitz/changelog": "workspace:*",
     "@kitz/conventional-commits": "workspace:*",
     "@kitz/core": "workspace:*",
+    "@kitz/env": "workspace:*",
     "@kitz/fs": "workspace:*",
     "@kitz/git": "workspace:*",
     "@kitz/npm-registry": "workspace:*",

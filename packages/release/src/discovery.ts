@@ -1,14 +1,21 @@
-import { Data, Effect } from 'effect'
-import * as Fs from 'node:fs'
-import * as Path from 'node:path'
+import { FileSystem } from '@effect/platform'
+import type { PlatformError } from '@effect/platform/Error'
+import { Err } from '@kitz/core'
+import { Env } from '@kitz/env'
+import { Fs } from '@kitz/fs'
+import { Effect } from 'effect'
 
 /**
  * Error discovering packages.
  */
-export class DiscoveryError extends Data.TaggedError('DiscoveryError')<{
-  readonly message: string
-  readonly cause?: unknown
-}> {}
+export const DiscoveryError = Err.TaggedContextualError('DiscoveryError').constrain<{
+  readonly file: Fs.Path.AbsFile
+  readonly operation: 'parse'
+}>({
+  message: (ctx) => `Failed to ${ctx.operation} ${Fs.Path.toString(ctx.file)}`,
+})
+
+export type DiscoveryError = InstanceType<typeof DiscoveryError>
 
 /**
  * A discovered package in the monorepo.
@@ -19,13 +26,17 @@ export interface Package {
   /** Full package name from package.json */
   readonly name: string
   /** Absolute path to package directory */
-  readonly path: string
+  readonly path: Fs.Path.AbsDir
 }
 
 /**
  * Scope to package name mapping.
  */
 export type PackageMap = Record<string, string>
+
+// Shared typed paths for reuse
+const packagesRelDir = Fs.Path.RelDir.fromString('./packages/')
+const packageJsonRelFile = Fs.Path.RelFile.fromString('./package.json')
 
 /**
  * Discover packages in the monorepo.
@@ -35,55 +46,69 @@ export type PackageMap = Record<string, string>
  *
  * @example
  * ```ts
- * const packages = await Effect.runPromise(discover('/path/to/repo'))
- * // [{ scope: 'core', name: '@kitz/core', path: '/path/to/repo/packages/core' }]
+ * const packages = await Effect.runPromise(
+ *   Effect.provide(discover, Layer.mergeAll(Env.Live, NodeFileSystem.layer))
+ * )
+ * // [{ scope: 'core', name: '@kitz/core', path: AbsDir('/path/to/repo/packages/core/') }]
  * ```
  */
-export const discover = (cwd: string): Effect.Effect<Package[], DiscoveryError> =>
-  Effect.gen(function* () {
-    const packagesDir = Path.join(cwd, 'packages')
+export const discover: Effect.Effect<
+  Package[],
+  DiscoveryError | PlatformError,
+  FileSystem.FileSystem | Env.Env
+> = Effect.gen(function* () {
+  const fs = yield* FileSystem.FileSystem
+  const env = yield* Env.Env
 
-    if (!Fs.existsSync(packagesDir)) {
-      return []
-    }
+  // Get cwd from Env service (already typed as AbsDir), join with packages/
+  const packagesDir = Fs.Path.join(env.cwd, packagesRelDir)
 
-    const entries = yield* Effect.try({
-      try: () => Fs.readdirSync(packagesDir, { withFileTypes: true }),
-      catch: (error) =>
+  const exists = yield* fs.exists(Fs.Path.toString(packagesDir))
+  if (!exists) {
+    return []
+  }
+
+  const entries = yield* fs.readDirectory(Fs.Path.toString(packagesDir))
+
+  const packages: Package[] = []
+
+  for (const entry of entries) {
+    // Create a RelDir for the package scope and join with packagesDir
+    const scope = entry.replace(/\/$/, '') // Normalize: remove trailing slash if present
+    const scopeRelDir = Fs.Path.RelDir.fromString(`./${scope}/`)
+    const entryDir = Fs.Path.join(packagesDir, scopeRelDir)
+
+    const info = yield* fs.stat(Fs.Path.toString(entryDir))
+    if (info.type !== 'Directory') continue
+
+    // Join with package.json RelFile to get absolute path
+    const packageJsonPath = Fs.Path.join(entryDir, packageJsonRelFile)
+    const packageJsonPathStr = Fs.Path.toString(packageJsonPath)
+
+    const packageJsonExists = yield* fs.exists(packageJsonPathStr)
+    if (!packageJsonExists) continue
+
+    const content = yield* fs.readFileString(packageJsonPathStr)
+    const packageJson = yield* Effect.try({
+      try: () => JSON.parse(content) as { name?: string },
+      catch: (cause) =>
         new DiscoveryError({
-          message: `Failed to read packages directory`,
-          cause: error,
+          context: { file: packageJsonPath, operation: 'parse' },
+          cause: cause instanceof Error ? cause : new Error(String(cause)),
         }),
     })
 
-    const packages: Package[] = []
+    if (!packageJson.name) continue
 
-    for (const entry of entries) {
-      if (!entry.isDirectory()) continue
+    packages.push({
+      scope,
+      name: packageJson.name,
+      path: entryDir,
+    })
+  }
 
-      const packageJsonPath = Path.join(packagesDir, entry.name, 'package.json')
-      if (!Fs.existsSync(packageJsonPath)) continue
-
-      const packageJson = yield* Effect.try({
-        try: () => JSON.parse(Fs.readFileSync(packageJsonPath, 'utf-8')) as { name?: string },
-        catch: (error) =>
-          new DiscoveryError({
-            message: `Failed to parse ${packageJsonPath}`,
-            cause: error,
-          }),
-      })
-
-      if (!packageJson.name) continue
-
-      packages.push({
-        scope: entry.name,
-        name: packageJson.name,
-        path: Path.join(packagesDir, entry.name),
-      })
-    }
-
-    return packages
-  })
+  return packages
+})
 
 /**
  * Build a scope-to-package-name map from discovered packages.
@@ -109,19 +134,25 @@ export const toPackageMap = (packages: Package[]): PackageMap => {
  * Otherwise uses the config values directly.
  */
 export const resolvePackages = (
-  cwd: string,
   configPackages: PackageMap,
-): Effect.Effect<Package[], DiscoveryError> =>
+): Effect.Effect<Package[], DiscoveryError | PlatformError, FileSystem.FileSystem | Env.Env> =>
   Effect.gen(function* () {
     // If config explicitly provides packages, use those
     if (Object.keys(configPackages).length > 0) {
-      return Object.entries(configPackages).map(([scope, name]) => ({
-        scope,
-        name,
-        path: Path.join(cwd, 'packages', scope),
-      }))
+      const env = yield* Env.Env
+      const packagesDir = Fs.Path.join(env.cwd, packagesRelDir)
+
+      return Object.entries(configPackages).map(([scope, name]) => {
+        const scopeRelDir = Fs.Path.RelDir.fromString(`./${scope}/`)
+        const scopeDir = Fs.Path.join(packagesDir, scopeRelDir)
+        return {
+          scope,
+          name,
+          path: scopeDir,
+        }
+      })
     }
 
     // Otherwise discover from filesystem
-    return yield* discover(cwd)
+    return yield* discover
   })

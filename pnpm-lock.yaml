@@ -522,6 +522,9 @@ importers:
       '@kitz/core':
         specifier: workspace:*
         version: link:../core
+      '@kitz/env':
+        specifier: workspace:*
+        version: link:../env
       '@kitz/fs':
         specifier: workspace:*
         version: link:../fs

@@ -1,11 +1,15 @@
 import { FileSystem } from '@effect/platform'
-import { Data, Effect } from 'effect'
-import * as Path from 'node:path'
+import { Err } from '@kitz/core'
+import { Fs } from '@kitz/fs'
+import { Effect } from 'effect'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import type { Package } from './discovery.js'
 
 const execAsync = promisify(exec)
+
+// Shared typed path for package.json
+const packageJsonRelFile = Fs.Path.RelFile.fromString('./package.json')
 
 /**
  * Minimal release info needed for publishing.
@@ -18,11 +22,14 @@ export interface ReleaseInfo {
 /**
  * Error during publish process.
  */
-export class PublishError extends Data.TaggedError('PublishError')<{
-  readonly message: string
-  readonly package: string
-  readonly cause?: unknown
-}> {}
+export const PublishError = Err.TaggedContextualError('PublishError').constrain<{
+  readonly package: Fs.Path.AbsDir
+  readonly operation: 'read' | 'write' | 'parse' | 'publish'
+}>({
+  message: (ctx) => `Failed to ${ctx.operation} package at ${Fs.Path.toString(ctx.package)}`,
+})
+
+export type PublishError = InstanceType<typeof PublishError>
 
 /**
  * Options for publishing.
@@ -40,29 +47,29 @@ export interface PublishOptions {
  * Read a package.json file using Effect's FileSystem service.
  */
 const readPackageJson = (
-  pkgPath: string,
+  pkgDir: Fs.Path.AbsDir,
 ): Effect.Effect<Record<string, unknown>, PublishError, FileSystem.FileSystem> =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem
-    const filePath = Path.join(pkgPath, 'package.json')
 
-    const content = yield* fs.readFileString(filePath).pipe(
-      Effect.mapError((error) =>
+    const filePath = Fs.Path.join(pkgDir, packageJsonRelFile)
+    const filePathStr = Fs.Path.toString(filePath)
+
+    const content = yield* fs.readFileString(filePathStr).pipe(
+      Effect.mapError((cause) =>
         new PublishError({
-          message: 'Failed to read package.json',
-          package: pkgPath,
-          cause: error,
+          context: { package: pkgDir, operation: 'read' },
+          cause: cause as any,
         })
       ),
     )
 
     return yield* Effect.try({
       try: () => JSON.parse(content) as Record<string, unknown>,
-      catch: (error) =>
+      catch: (cause) =>
         new PublishError({
-          message: 'Failed to parse package.json',
-          package: pkgPath,
-          cause: error,
+          context: { package: pkgDir, operation: 'parse' },
+          cause: cause instanceof Error ? cause : new Error(String(cause)),
         }),
     })
   })
@@ -71,20 +78,21 @@ const readPackageJson = (
  * Write a package.json file using Effect's FileSystem service.
  */
 const writePackageJson = (
-  pkgPath: string,
+  pkgDir: Fs.Path.AbsDir,
   content: Record<string, unknown>,
 ): Effect.Effect<void, PublishError, FileSystem.FileSystem> =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem
-    const filePath = Path.join(pkgPath, 'package.json')
+
+    const filePath = Fs.Path.join(pkgDir, packageJsonRelFile)
+    const filePathStr = Fs.Path.toString(filePath)
     const jsonContent = JSON.stringify(content, null, 2) + '\n'
 
-    yield* fs.writeFileString(filePath, jsonContent).pipe(
-      Effect.mapError((error) =>
+    yield* fs.writeFileString(filePathStr, jsonContent).pipe(
+      Effect.mapError((cause) =>
         new PublishError({
-          message: 'Failed to write package.json',
-          package: pkgPath,
-          cause: error,
+          context: { package: pkgDir, operation: 'write' },
+          cause: cause as any,
         })
       ),
     )
@@ -94,11 +102,11 @@ const writePackageJson = (
  * Inject version into package.json, returning the original version.
  */
 export const injectVersion = (
-  pkgPath: string,
+  pkgDir: Fs.Path.AbsDir,
   version: string,
 ): Effect.Effect<string, PublishError, FileSystem.FileSystem> =>
   Effect.gen(function* () {
-    const pkg = yield* readPackageJson(pkgPath)
+    const pkg = yield* readPackageJson(pkgDir)
     const originalVersion = pkg['version'] as string
 
     // Update version
@@ -106,7 +114,7 @@ export const injectVersion = (
 
     // Also update workspace dependency versions to real versions
     // This is needed for packages to correctly reference each other
-    yield* writePackageJson(pkgPath, pkg)
+    yield* writePackageJson(pkgDir, pkg)
 
     return originalVersion
   })
@@ -115,23 +123,25 @@ export const injectVersion = (
  * Restore package.json to its original version.
  */
 export const restoreVersion = (
-  pkgPath: string,
+  pkgDir: Fs.Path.AbsDir,
   originalVersion: string,
 ): Effect.Effect<void, PublishError, FileSystem.FileSystem> =>
   Effect.gen(function* () {
-    const pkg = yield* readPackageJson(pkgPath)
+    const pkg = yield* readPackageJson(pkgDir)
     pkg['version'] = originalVersion
-    yield* writePackageJson(pkgPath, pkg)
+    yield* writePackageJson(pkgDir, pkg)
   })
 
 /**
  * Run npm publish for a package.
  */
 export const npmPublish = (
-  pkgPath: string,
+  pkgDir: Fs.Path.AbsDir,
   options?: PublishOptions,
 ): Effect.Effect<void, PublishError> =>
   Effect.gen(function* () {
+    const pkgPath = Fs.Path.toString(pkgDir)
+
     if (options?.dryRun) {
       yield* Effect.log(`[dry-run] Would publish ${pkgPath}`)
       return
@@ -153,11 +163,10 @@ export const npmPublish = (
       try: async () => {
         await execAsync(command, { cwd: pkgPath })
       },
-      catch: (error) =>
+      catch: (cause) =>
         new PublishError({
-          message: `npm publish failed: ${error}`,
-          package: pkgPath,
-          cause: error,
+          context: { package: pkgDir, operation: 'publish' },
+          cause: cause instanceof Error ? cause : new Error(String(cause)),
         }),
     })
   })
@@ -170,16 +179,16 @@ export const publishPackage = (
   options?: PublishOptions,
 ): Effect.Effect<void, PublishError, FileSystem.FileSystem> =>
   Effect.gen(function* () {
-    const pkgPath = release.package.path
+    const pkgDir = release.package.path
 
     // 1. Inject the new version
-    const originalVersion = yield* injectVersion(pkgPath, release.nextVersion)
+    const originalVersion = yield* injectVersion(pkgDir, release.nextVersion)
 
     // 2. Publish (with guaranteed cleanup)
     yield* Effect.ensuring(
-      npmPublish(pkgPath, options),
+      npmPublish(pkgDir, options),
       // Always restore version, even on failure
-      Effect.catchAll(restoreVersion(pkgPath, originalVersion), () => Effect.void),
+      Effect.catchAll(restoreVersion(pkgDir, originalVersion), () => Effect.void),
     )
   })
 
