@@ -23,6 +23,7 @@
     "check:package": "publint && attw --pack"
   },
   "dependencies": {
-    "@kitz/core": "workspace:*"
+    "@kitz/core": "workspace:*",
+    "effect": "^3.19.13"
   }
 }
