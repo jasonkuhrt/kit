@@ -2,6 +2,7 @@ import { Data, Effect } from 'effect'
 import { Git, type GitError } from '@kitz/git/__'
 import { buildDependencyGraph, detectCascades } from './cascade.js'
 import type { Package } from './discovery.js'
+import { publishAll, PublishError } from './publish.js'
 import {
   extractImpacts,
   aggregateByPackage,
@@ -220,6 +221,18 @@ export const planPr = (
   })
 
 /**
+ * Options for applying a release plan.
+ */
+export interface ApplyOptions {
+  /** Skip npm publish */
+  readonly dryRun?: boolean
+  /** npm dist-tag (default: 'latest') */
+  readonly tag?: string
+  /** npm registry URL */
+  readonly registry?: string
+}
+
+/**
  * Apply a release plan.
  *
  * Publishes packages and creates git tags.
@@ -232,21 +245,34 @@ export const planPr = (
  * ```
  */
 export const apply = (
-  _plan: ReleasePlan,
-  _options?: { dryRun?: boolean },
-): Effect.Effect<ReleaseResult, ReleaseError, Git> =>
+  plan: ReleasePlan,
+  options?: ApplyOptions,
+): Effect.Effect<ReleaseResult, ReleaseError | GitError | PublishError, Git> =>
   Effect.gen(function* () {
-    const _git = yield* Git
+    const git = yield* Git
 
-    // TODO: Implement release apply
-    // 1. Inject versions into package.json
-    // 2. Run npm publish
-    // 3. Create git tags
-    // 4. Create GitHub releases
-    // 5. Restore package.json
+    // Combine primary releases and cascades
+    const allReleases = [...plan.releases, ...plan.cascades]
 
-    return {
-      released: [],
-      tags: [],
+    if (allReleases.length === 0) {
+      return { released: [], tags: [] }
     }
+
+    // 1. Publish all packages (version injection/restoration handled internally)
+    yield* publishAll(allReleases, options)
+
+    // 2. Create git tags for each release
+    const tags: string[] = []
+    for (const release of allReleases) {
+      const tag = `${release.package.name}@${release.nextVersion}`
+      tags.push(tag)
+
+      if (options?.dryRun) {
+        yield* Effect.log(`[dry-run] Would create tag: ${tag}`)
+      } else {
+        yield* git.createTag(tag, `Release ${release.package.name}@${release.nextVersion}`)
+      }
+    }
+
+    return { released: allReleases, tags }
   })
