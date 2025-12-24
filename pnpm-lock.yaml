@@ -493,6 +493,27 @@ importers:
         specifier: ^3.0.0
         version: 3.19.13
 
+  packages/release:
+    dependencies:
+      '@kitz/changelog':
+        specifier: workspace:*
+        version: link:../changelog
+      '@kitz/conventional-commits':
+        specifier: workspace:*
+        version: link:../conventional-commits
+      '@kitz/core':
+        specifier: workspace:*
+        version: link:../core
+      '@kitz/git':
+        specifier: workspace:*
+        version: link:../git
+      '@kitz/npm-registry':
+        specifier: workspace:*
+        version: link:../npm-registry
+      effect:
+        specifier: ^3.19.13
+        version: 3.19.13
+
   packages/resource:
     dependencies:
       '@effect/platform':
