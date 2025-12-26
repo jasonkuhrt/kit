@@ -39,6 +39,9 @@ export interface GitService {
   /** Create a new tag */
   readonly createTag: (tag: string, message?: string) => Effect.Effect<void, GitError>
 
+  /** Push tags to remote */
+  readonly pushTags: (remote?: string) => Effect.Effect<void, GitError>
+
   /** Get the repository root path */
   readonly getRoot: () => Effect.Effect<string, GitError>
 
@@ -104,6 +107,14 @@ const makeGitService = (git: SimpleGit): GitService => ({
         }
       },
       catch: (error) => new GitError({ message: `Failed to create tag ${tag}`, cause: error }),
+    }),
+
+  pushTags: (remote = 'origin') =>
+    Effect.tryPromise({
+      try: async () => {
+        await git.pushTags(remote)
+      },
+      catch: (error) => new GitError({ message: `Failed to push tags to ${remote}`, cause: error }),
     }),
 
   getRoot: () =>

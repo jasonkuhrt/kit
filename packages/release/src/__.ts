@@ -31,6 +31,40 @@ export {
   restoreVersion,
 } from './publish.js'
 
+// Preflight
+export {
+  checkGitClean,
+  checkGitRemote,
+  checkNpmAuth,
+  checkTagsNotExist,
+  PreflightError,
+  type PreflightOptions,
+  type PreflightResult,
+  runPreflight,
+} from './preflight.js'
+
+// State
+export {
+  type ApplyState,
+  type ApplyStep,
+  canResume,
+  createInitialState,
+  DEFAULT_STATE_FILE,
+  deleteState,
+  getPendingSteps,
+  hasFailed,
+  isComplete,
+  markCompleted,
+  markFailed,
+  markPartial,
+  readState,
+  StateError,
+  type StepStatus,
+  summarizeState,
+  updateStep,
+  writeState,
+} from './state.js'
+
 // Release
 export {
   apply,

@@ -2,11 +2,30 @@ import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
 import { Err } from '@kitz/core'
 import { Env } from '@kitz/env'
-import { Git, type GitError } from '@kitz/git/__'
+import { Fs } from '@kitz/fs'
+import { Git, type GitError, type GitService } from '@kitz/git/__'
 import { Effect } from 'effect'
 import { buildDependencyGraph, detectCascades } from './cascade.js'
 import type { Package } from './discovery.js'
-import { publishAll, PublishError } from './publish.js'
+import { type PreflightError, runPreflight } from './preflight.js'
+import { npmPublish, PublishError } from './publish.js'
+import {
+  canResume,
+  createInitialState,
+  DEFAULT_STATE_FILE,
+  deleteState,
+  getPendingSteps,
+  hasFailed,
+  isComplete,
+  markCompleted,
+  markFailed,
+  markPartial,
+  readState,
+  type StateError,
+  summarizeState,
+  updateStep,
+  writeState,
+} from './state.js'
 import {
   aggregateByPackage,
   type BumpType,
@@ -445,32 +464,61 @@ const detectPrNumber = (vars: Record<string, string | undefined>): number | null
  * Options for applying a release plan.
  */
 export interface ApplyOptions {
-  /** Skip npm publish */
+  /** Skip npm publish and git operations */
   readonly dryRun?: boolean
   /** npm dist-tag (default: 'latest') */
   readonly tag?: string
   /** npm registry URL */
   readonly registry?: string
+  /** Skip preflight checks */
+  readonly skipPreflight?: boolean
+  /** Path to state file (default: apply.state.json in cwd) */
+  readonly stateFile?: Fs.Path.AbsFile
+  /** Resume from existing state file if present */
+  readonly resume?: boolean
+  /** Force overwrite of existing state file */
+  readonly force?: boolean
 }
 
 /**
  * Apply a release plan.
  *
- * Publishes packages and creates git tags.
+ * Publishes packages and creates git tags with full state tracking
+ * for resumable operations. On partial failure, the state file records
+ * what succeeded so retries can skip completed steps.
+ *
+ * **Execution order:**
+ * 1. Preflight checks (npm auth, git clean, tags don't exist)
+ * 2. Load or create state file
+ * 3. Publish all packages (with version injection/restoration)
+ * 4. Create git tags locally
+ * 5. Push all tags to remote
+ * 6. Clean up state file on success
  *
  * @example
  * ```ts
+ * // First attempt
  * const result = await Effect.runPromise(
- *   Effect.provide(apply(plan, { dryRun: false }), GitLive)
+ *   Effect.provide(apply(plan), GitLive)
+ * )
+ *
+ * // Retry after partial failure
+ * const retryResult = await Effect.runPromise(
+ *   Effect.provide(apply(plan, { resume: true }), GitLive)
  * )
  * ```
  */
 export const apply = (
   plan: ReleasePlan,
   options?: ApplyOptions,
-): Effect.Effect<ReleaseResult, ReleaseError | GitError | PublishError, Git | FileSystem.FileSystem> =>
+): Effect.Effect<
+  ReleaseResult,
+  ReleaseError | GitError | PublishError | PreflightError | StateError,
+  Git | FileSystem.FileSystem | Env.Env
+> =>
   Effect.gen(function*() {
     const git = yield* Git
+    const env = yield* Env.Env
 
     // Combine primary releases and cascades
     const allReleases = [...plan.releases, ...plan.cascades]
@@ -479,21 +527,194 @@ export const apply = (
       return { released: [], tags: [] }
     }
 
-    // 1. Publish all packages (version injection/restoration handled internally)
-    yield* publishAll(allReleases, options)
+    // Resolve state file path
+    const stateFile = options?.stateFile ?? Fs.Path.join(
+      env.cwd,
+      Fs.Path.RelFile.fromString(DEFAULT_STATE_FILE),
+    )
 
-    // 2. Create git tags for each release
-    const tags: string[] = []
-    for (const release of allReleases) {
-      const tag = `${release.package.name}@${release.nextVersion}`
-      tags.push(tag)
+    // 1. Check for existing state (resume logic)
+    const existingState = yield* readState(stateFile)
 
-      if (options?.dryRun) {
-        yield* Effect.log(`[dry-run] Would create tag: ${tag}`)
-      } else {
-        yield* git.createTag(tag, `Release ${release.package.name}@${release.nextVersion}`)
+    if (existingState) {
+      if (existingState.status === 'completed') {
+        yield* Effect.log(`Previous run completed successfully. Use --force to start fresh.`)
+        if (!options?.force) {
+          return yield* Effect.fail(
+            new ReleaseError({
+              context: {
+                operation: 'apply',
+                detail: 'Previous run already completed. Delete state file or use --force.',
+              },
+            }),
+          )
+        }
+      } else if (!options?.resume && !options?.force) {
+        yield* Effect.log(`Found incomplete state: ${summarizeState(existingState)}`)
+        return yield* Effect.fail(
+          new ReleaseError({
+            context: {
+              operation: 'apply',
+              detail: `Incomplete run exists. Use --resume to continue or --force to restart.`,
+            },
+          }),
+        )
+      } else if (options?.resume && !canResume(existingState, allReleases)) {
+        return yield* Effect.fail(
+          new ReleaseError({
+            context: {
+              operation: 'apply',
+              detail: 'Cannot resume: plan has changed since last run. Use --force to restart.',
+            },
+          }),
+        )
       }
     }
 
+    // 2. Run preflight checks (skip in dry-run or if explicitly disabled)
+    if (!options?.dryRun && !options?.skipPreflight) {
+      yield* runPreflight(allReleases, {
+        ...(options?.registry && { registry: options.registry }),
+        ...(options?.dryRun && { skipNpmAuth: true }),
+      })
+    }
+
+    // 3. Create or resume state
+    let state = options?.resume && existingState && canResume(existingState, allReleases)
+      ? existingState
+      : createInitialState(allReleases)
+
+    // Save initial state
+    if (!options?.dryRun) {
+      yield* writeState(stateFile, state)
+      yield* Effect.log(`State file: ${Fs.Path.toString(stateFile)}`)
+    }
+
+    // Build lookup maps
+    const releaseByName = new Map(allReleases.map((r) => [r.package.name, r]))
+
+    // 4. Execute pending steps
+    const pendingSteps = getPendingSteps(state)
+    yield* Effect.log(`Executing ${pendingSteps.length} steps...`)
+
+    for (const step of pendingSteps) {
+      const now = new Date().toISOString()
+
+      // Mark step as in-progress
+      state = updateStep(state, step.id, { status: 'in-progress', startedAt: now })
+      if (!options?.dryRun) {
+        yield* writeState(stateFile, state)
+      }
+
+      const result = yield* Effect.either(
+        executeStep(step, releaseByName, git, options),
+      )
+
+      if (result._tag === 'Left') {
+        // Step failed
+        const error = result.left
+        state = updateStep(state, step.id, {
+          status: 'failed',
+          error: error instanceof Error ? error.message : String(error),
+          completedAt: new Date().toISOString(),
+        })
+        state = markFailed(state)
+
+        if (!options?.dryRun) {
+          yield* writeState(stateFile, state)
+        }
+
+        // Re-throw the error
+        return yield* Effect.fail(error as any)
+      }
+
+      // Step succeeded
+      state = updateStep(state, step.id, {
+        status: 'completed',
+        completedAt: new Date().toISOString(),
+      })
+
+      if (!options?.dryRun) {
+        yield* writeState(stateFile, state)
+      }
+    }
+
+    // 5. Determine final status
+    if (isComplete(state)) {
+      state = markCompleted(state)
+      yield* Effect.log('All steps completed successfully')
+
+      // Clean up state file on complete success
+      if (!options?.dryRun) {
+        yield* deleteState(stateFile)
+        yield* Effect.log('State file cleaned up')
+      }
+    } else if (hasFailed(state)) {
+      state = markPartial(state)
+      if (!options?.dryRun) {
+        yield* writeState(stateFile, state)
+      }
+    }
+
+    // Build result
+    const tags = allReleases.map((r) => `${r.package.name}@${r.nextVersion}`)
     return { released: allReleases, tags }
+  })
+
+/**
+ * Execute a single step in the apply process.
+ */
+const executeStep = (
+  step: ReturnType<typeof getPendingSteps>[number],
+  releaseByName: Map<string, PlannedRelease>,
+  git: GitService,
+  options?: ApplyOptions,
+): Effect.Effect<void, ReleaseError | GitError | PublishError, FileSystem.FileSystem> =>
+  Effect.gen(function*() {
+    switch (step.type) {
+      case 'publish': {
+        const release = releaseByName.get(step.packageName!)
+        if (!release) {
+          return yield* Effect.fail(
+            new ReleaseError({
+              context: {
+                operation: 'apply',
+                detail: `Package not found in plan: ${step.packageName}`,
+              },
+            }),
+          )
+        }
+
+        if (options?.dryRun) {
+          yield* Effect.log(`[dry-run] Would publish ${step.packageName}@${step.version}`)
+        } else {
+          yield* Effect.log(`Publishing ${step.packageName}@${step.version}...`)
+          yield* npmPublish(release.package.path, {
+            ...(options?.tag && { tag: options.tag }),
+            ...(options?.registry && { registry: options.registry }),
+          })
+        }
+        break
+      }
+
+      case 'create-tag': {
+        if (options?.dryRun) {
+          yield* Effect.log(`[dry-run] Would create tag: ${step.tag}`)
+        } else {
+          yield* Effect.log(`Creating tag: ${step.tag}`)
+          yield* git.createTag(step.tag!, `Release ${step.tag}`)
+        }
+        break
+      }
+
+      case 'push-tags': {
+        if (options?.dryRun) {
+          yield* Effect.log(`[dry-run] Would push tags to origin`)
+        } else {
+          yield* Effect.log('Pushing tags to origin...')
+          yield* git.pushTags()
+        }
+        break
+      }
+    }
   })

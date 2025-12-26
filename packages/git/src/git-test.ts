@@ -40,6 +40,8 @@ export interface GitTestState {
   readonly headSha: Ref.Ref<string>
   /** Tags created during test (for verification) */
   readonly createdTags: Ref.Ref<Array<{ tag: string; message: string | undefined }>>
+  /** Tag push operations (for verification) */
+  readonly pushedTags: Ref.Ref<Array<{ remote: string }>>
 }
 
 /**
@@ -56,6 +58,7 @@ export const makeGitTestState = (
     root: Ref.make(config.root ?? '/test/repo'),
     headSha: Ref.make(config.headSha ?? 'abc1234'),
     createdTags: Ref.make<Array<{ tag: string; message: string | undefined }>>([]),
+    pushedTags: Ref.make<Array<{ remote: string }>>([]),
   })
 
 /**
@@ -125,6 +128,8 @@ const makeGitTestService = (state: GitTestState): GitService => ({
       yield* Ref.update(state.tags, (tags) => [...tags, tag])
       yield* Ref.update(state.createdTags, (created) => [...created, { tag, message }])
     }),
+
+  pushTags: (remote = 'origin') => Ref.update(state.pushedTags, (pushed) => [...pushed, { remote }]),
 
   getRoot: () => Ref.get(state.root),
 
