@@ -1,6 +1,6 @@
 ---
 name: committing-changes
-description: Creates commits following project conventions. Handles Conventional Commits with project-specific scopes, PR title requirements, changesets for releases, and CI validation rules.
+description: Creates commits following project conventions. Handles Conventional Commits with project-specific scopes, PR title requirements, and CI validation rules.
 ---
 
 # Committing Changes
@@ -11,13 +11,11 @@ description: Creates commits following project conventions. Handles Conventional
 
 1. Stage changes with `git add`
 2. Commit using Conventional Commits format: `<type>(<scope>): <description>`
-3. If this is a release-worthy change (`feat`, `fix`, `perf`, `docs`), run `pnpm changeset`
 
 ### For PRs
 
 1. The **PR title** is what matters - PRs are squash-merged
 2. PR title must follow CC format
-3. Include changeset if release-worthy
 
 ## Reference
 
@@ -56,12 +54,11 @@ ci: add Vercel Remote Cache          # Repo-level (no scope)
 
 **CI Skips:** `ci:` or `chore.docs:` PR titles skip code checks (only format runs)
 
-**Changesets:** Required for `feat`, `fix`, `perf`, `docs(pkg)`. Run `pnpm changeset` to create.
+**Releases:** Handled automatically by @kitz/release based on conventional commits. No manual steps required.
 
 ### Bypasses (edge cases only)
 
 - `<!-- cc-bypass -->` in PR body: Skip CC validation
-- `<!-- changeset-bypass -->` in PR body: Skip changeset validation
 
 ## Notes
 

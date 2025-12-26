@@ -89,13 +89,6 @@ pnpm format:check
 pnpm turbo dev --filter=@kitz/core
 ```
 
-### Release
-
-```bash
-# Publish packages with changesets
-pnpm release
-```
-
 ## Turbo Cache
 
 Turbo caches task outputs. If you change source files, it rebuilds. If nothing changed, it replays cached output.
