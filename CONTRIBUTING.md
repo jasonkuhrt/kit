@@ -11,7 +11,7 @@ This project is designed for Claude Code-assisted development. Common workflows 
 | `creating-modules`         | Add modules to existing packages            |
 | `implementing-functions`   | Function design with currying patterns      |
 | `writing-tests`            | Test patterns and organization              |
-| `committing-changes`       | Conventional commits and changesets         |
+| `committing-changes`       | Conventional commits and CI validation      |
 | `authoring-global-scripts` | Manage `_:*` template scripts               |
 | `syncing-tsconfig-paths`   | Keep tsconfig paths in sync with imports    |
 | `refreshing-docs`          | Update README tables                        |
