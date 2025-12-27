@@ -17,6 +17,9 @@ importers:
       '@ark/attest-ts-default':
         specifier: npm:typescript@^5.9.3
         version: typescript@5.9.3
+      '@effect/vitest':
+        specifier: ^0.27.0
+        version: 0.27.0(effect@3.19.13)(vitest@4.0.16(@types/node@25.0.3)(tsx@4.21.0))
       '@tsconfig/node-lts':
         specifier: ^24.0.0
         version: 24.0.0
@@ -829,6 +832,12 @@ packages:
       '@effect/experimental': ^0.58.0
       '@effect/platform': ^0.94.0
       effect: ^3.19.13
+
+  '@effect/vitest@0.27.0':
+    resolution: {integrity: sha512-8bM7n9xlMUYw9GqPIVgXFwFm2jf27m/R7psI64PGpwU5+26iwyxp9eAXEsfT5S6lqztYfpQQ1Ubp5o6HfNYzJQ==}
+    peerDependencies:
+      effect: ^3.19.0
+      vitest: ^3.2.0
 
   '@effect/workflow@0.16.0':
     resolution: {integrity: sha512-MiAdlxx3TixkgHdbw+Yf1Z3tHAAE0rOQga12kIydJqj05Fnod+W/I+kQGRMY/XWRg+QUsVxhmh1qTr7Ype6lrw==}
@@ -2651,6 +2660,11 @@ snapshots:
       '@effect/platform': 0.94.0(effect@3.19.13)
       effect: 3.19.13
       uuid: 11.1.0
+
+  '@effect/vitest@0.27.0(effect@3.19.13)(vitest@4.0.16(@types/node@25.0.3)(tsx@4.21.0))':
+    dependencies:
+      effect: 3.19.13
+      vitest: 4.0.16(@types/node@25.0.3)(tsx@4.21.0)
 
   '@effect/workflow@0.16.0(@effect/experimental@0.58.0(@effect/platform@0.94.0(effect@3.19.13))(effect@3.19.13))(@effect/platform@0.94.0(effect@3.19.13))(@effect/rpc@0.73.0(@effect/platform@0.94.0(effect@3.19.13))(effect@3.19.13))(effect@3.19.13)':
     dependencies:

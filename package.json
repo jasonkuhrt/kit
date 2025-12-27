@@ -18,12 +18,15 @@
     "_:check:package": "publint && attw --pack --ignore-rules no-resolution cjs-resolves-to-esm internal-resolution-error"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["better-sqlite3"]
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ]
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
     "@ark/attest": "^0.56.0",
     "@ark/attest-ts-default": "npm:typescript@^5.9.3",
+    "@effect/vitest": "^0.27.0",
     "@tsconfig/node-lts": "^24.0.0",
     "@tsconfig/strictest": "^2.0.8",
     "@types/node": "^25.0.3",

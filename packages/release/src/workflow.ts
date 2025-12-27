@@ -97,6 +97,16 @@ export type ReleaseWorkflowError =
 // ============================================================================
 
 /**
+ * Schema for a structured commit entry.
+ */
+const CommitEntrySchema = Schema.Struct({
+  type: Schema.String,
+  message: Schema.String,
+  hash: Schema.String,
+  breaking: Schema.Boolean,
+})
+
+/**
  * Schema for a single release in the payload.
  */
 const ReleaseSchema = Schema.Struct({
@@ -105,6 +115,7 @@ const ReleaseSchema = Schema.Struct({
   currentVersion: Schema.NullOr(Schema.String),
   nextVersion: Schema.String,
   bump: Schema.Literal('major', 'minor', 'patch'),
+  commits: Schema.Array(CommitEntrySchema),
 })
 
 /**
@@ -141,7 +152,7 @@ const toPlannedRelease = (
   currentVersion: release.currentVersion ? Semver.fromString(release.currentVersion) : null,
   nextVersion: Semver.fromString(release.nextVersion),
   bump: release.bump,
-  commits: [],
+  commits: release.commits,
 })
 
 // ============================================================================
@@ -305,7 +316,7 @@ export const ReleaseWorkflow = Flo.Workflow.make({
           // Generate changelog for release body
           const changelog = yield* Changelog.generate({
             scope: release.packageName,
-            commits: [], // TODO: Pass commits through payload when available
+            commits: release.commits,
             newVersion: release.nextVersion,
           })
 
@@ -423,6 +434,12 @@ export const toWorkflowPayload = (
     currentVersion: r.currentVersion?.version.toString() ?? null,
     nextVersion: r.nextVersion.version.toString(),
     bump: r.bump,
+    commits: r.commits.map((c) => ({
+      type: c.type,
+      message: c.message,
+      hash: c.hash,
+      breaking: c.breaking,
+    })),
   })),
   options: {
     dryRun: options.dryRun ?? false,

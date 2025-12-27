@@ -81,3 +81,28 @@ export class Custom extends Schema.TaggedClass<Custom>()('Custom', {
  */
 export const Type = Schema.Union(Standard, Custom)
 export type Type = typeof Type.Type
+
+// ─── Type Guards ────────────────────────────────────────────────
+
+/**
+ * Check if a Type is a standard type.
+ */
+export const isStandard = (type: Type): type is Standard => type._tag === 'Standard'
+
+/**
+ * Check if a Type is a custom type.
+ */
+export const isCustom = (type: Type): type is Custom => type._tag === 'Custom'
+
+// ─── Accessors ──────────────────────────────────────────────────
+
+/**
+ * Extract the raw string value from any Type.
+ */
+export const value = (type: Type): string => type.value
+
+/**
+ * Get impact for a Standard type.
+ * For Custom types, use release config lookup instead.
+ */
+export const impact = (type: Standard): Impact => StandardImpact[type.value]

@@ -8,7 +8,6 @@ import { Semver } from '@kitz/semver'
 import { Effect } from 'effect'
 import { buildDependencyGraph, detectCascades } from './cascade.js'
 import type { Package } from './discovery.js'
-import { executeWorkflow, makeWorkflowRuntime } from './workflow.js'
 import {
   aggregateByPackage,
   type BumpType,
@@ -19,7 +18,9 @@ import {
   findLatestPreviewNumber,
   findLatestPrNumber,
   findLatestTagVersion,
+  type StructuredCommit,
 } from './version.js'
+import { executeWorkflow, makeWorkflowRuntime } from './workflow.js'
 
 /**
  * Error during release process.
@@ -54,7 +55,7 @@ export interface PlannedRelease {
   readonly currentVersion: Semver.Semver | null
   readonly nextVersion: Semver.Semver
   readonly bump: BumpType
-  readonly commits: readonly string[]
+  readonly commits: readonly StructuredCommit[]
 }
 
 /**
@@ -133,7 +134,7 @@ export const planStable = (
 
     // 3. Parse commits and extract package impacts
     const allImpacts = yield* Effect.all(
-      commits.map((c) => extractImpacts(c.message)),
+      commits.map((c) => extractImpacts({ hash: c.hash, message: c.message })),
       { concurrency: 'unbounded' },
     )
     const impacts = allImpacts.flat()
@@ -147,7 +148,7 @@ export const planStable = (
     // 6. Build release plan
     const releases: PlannedRelease[] = []
 
-    for (const [scope, { bump, commits: commitMessages }] of aggregated) {
+    for (const [scope, { bump, commits: structuredCommits }] of aggregated) {
       const pkg = scopeToPackage.get(scope)
       if (!pkg) continue // Scope doesn't match any known package
 
@@ -166,7 +167,7 @@ export const planStable = (
         currentVersion,
         nextVersion,
         bump,
-        commits: commitMessages,
+        commits: structuredCommits,
       })
     }
 
@@ -258,7 +259,7 @@ export const planPreview = (
 
     // 3. Parse commits and extract package impacts
     const allImpacts = yield* Effect.all(
-      commits.map((c) => extractImpacts(c.message)),
+      commits.map((c) => extractImpacts({ hash: c.hash, message: c.message })),
       { concurrency: 'unbounded' },
     )
     const impacts = allImpacts.flat()
@@ -272,7 +273,7 @@ export const planPreview = (
     // 6. Build release plan with preview versions
     const releases: PlannedRelease[] = []
 
-    for (const [scope, { bump, commits: commitMessages }] of aggregated) {
+    for (const [scope, { bump, commits: structuredCommits }] of aggregated) {
       const pkg = scopeToPackage.get(scope)
       if (!pkg) continue
 
@@ -297,7 +298,7 @@ export const planPreview = (
         currentVersion,
         nextVersion,
         bump,
-        commits: commitMessages,
+        commits: structuredCommits,
       })
     }
 
@@ -368,7 +369,7 @@ export const planPr = (
 
     // 5. Parse commits and extract package impacts
     const allImpacts = yield* Effect.all(
-      commits.map((c) => extractImpacts(c.message)),
+      commits.map((c) => extractImpacts({ hash: c.hash, message: c.message })),
       { concurrency: 'unbounded' },
     )
     const impacts = allImpacts.flat()
@@ -382,7 +383,7 @@ export const planPr = (
     // 8. Build release plan with PR versions
     const releases: PlannedRelease[] = []
 
-    for (const [scope, { bump, commits: commitMessages }] of aggregated) {
+    for (const [scope, { bump, commits: structuredCommits }] of aggregated) {
       const pkg = scopeToPackage.get(scope)
       if (!pkg) continue
 
@@ -404,7 +405,7 @@ export const planPr = (
         currentVersion,
         nextVersion,
         bump,
-        commits: commitMessages,
+        commits: structuredCommits,
       })
     }
 
@@ -510,9 +511,7 @@ export const apply = (
     })
 
     // Build result from workflow output
-    const released = allReleases.filter((r) =>
-      workflowResult.releasedPackages.includes(r.package.name)
-    )
+    const released = allReleases.filter((r) => workflowResult.releasedPackages.includes(r.package.name))
 
     return {
       released,

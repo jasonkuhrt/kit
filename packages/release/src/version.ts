@@ -8,12 +8,22 @@ import { Effect, Either } from 'effect'
 export type BumpType = 'major' | 'minor' | 'patch'
 
 /**
+ * Structured commit information for changelog generation.
+ */
+export interface StructuredCommit {
+  readonly type: string
+  readonly message: string
+  readonly hash: string
+  readonly breaking: boolean
+}
+
+/**
  * Information about a commit's effect on a package.
  */
 export interface CommitImpact {
   readonly scope: string
   readonly bump: BumpType
-  readonly commitMessage: string
+  readonly commit: StructuredCommit
 }
 
 /**
@@ -34,17 +44,26 @@ export const maxBump = (a: BumpType, b: BumpType): BumpType => {
 }
 
 /**
- * Extract package impacts from a commit message.
+ * Input for extracting commit impacts.
+ */
+export interface CommitInput {
+  readonly hash: string
+  readonly message: string
+}
+
+/**
+ * Extract package impacts from a commit.
  *
  * Parses the commit title and returns which packages are affected
- * and what bump type each needs.
+ * and what bump type each needs. Preserves structured commit info
+ * for changelog generation.
  */
 export const extractImpacts = (
-  message: string,
+  commitInput: CommitInput,
 ): Effect.Effect<CommitImpact[], never> =>
   Effect.gen(function*() {
     // Parse the commit title (first line)
-    const title = message.split('\n')[0] ?? message
+    const title = commitInput.message.split('\n')[0] ?? commitInput.message
     const parsed = yield* Effect.either(ConventionalCommits.parseTitle(title))
 
     if (Either.isLeft(parsed)) {
@@ -52,24 +71,43 @@ export const extractImpacts = (
       return []
     }
 
-    const commit = parsed.right
+    const parsedCommit = parsed.right
     const impacts: CommitImpact[] = []
 
-    if (ConventionalCommits.isSingleTarget(commit)) {
-      const bump = bumpFromType(commit.type, commit.breaking)
+    if (ConventionalCommits.SingleTargetCommit.is(parsedCommit)) {
+      const bump = bumpFromType(parsedCommit.type, parsedCommit.breaking)
 
-      if (commit.scopes.length === 0) {
+      if (parsedCommit.scopes.length === 0) {
         // Scopeless commit - affects all packages (handled by caller)
         return []
       }
 
-      for (const scope of commit.scopes) {
-        impacts.push({ scope, bump, commitMessage: message })
+      for (const scope of parsedCommit.scopes) {
+        impacts.push({
+          scope,
+          bump,
+          commit: {
+            type: parsedCommit.type,
+            message: parsedCommit.message,
+            hash: commitInput.hash,
+            breaking: parsedCommit.breaking,
+          },
+        })
       }
-    } else if (ConventionalCommits.isMultiTarget(commit)) {
-      for (const target of commit.targets) {
+    } else if (ConventionalCommits.MultiTargetCommit.is(parsedCommit)) {
+      // MultiTargetCommit has a shared message at the parent level
+      for (const target of parsedCommit.targets) {
         const bump = bumpFromType(target.type, target.breaking)
-        impacts.push({ scope: target.scope, bump, commitMessage: message })
+        impacts.push({
+          scope: target.scope,
+          bump,
+          commit: {
+            type: target.type,
+            message: parsedCommit.message,
+            hash: commitInput.hash,
+            breaking: target.breaking,
+          },
+        })
       }
     }
 
@@ -81,20 +119,20 @@ export const extractImpacts = (
  */
 export const aggregateByPackage = (
   impacts: CommitImpact[],
-): Map<string, { bump: BumpType; commits: string[] }> => {
-  const result = new Map<string, { bump: BumpType; commits: string[] }>()
+): Map<string, { bump: BumpType; commits: StructuredCommit[] }> => {
+  const result = new Map<string, { bump: BumpType; commits: StructuredCommit[] }>()
 
   for (const impact of impacts) {
     const existing = result.get(impact.scope)
     if (existing) {
       result.set(impact.scope, {
         bump: maxBump(existing.bump, impact.bump),
-        commits: [...existing.commits, impact.commitMessage],
+        commits: [...existing.commits, impact.commit],
       })
     } else {
       result.set(impact.scope, {
         bump: impact.bump,
-        commits: [impact.commitMessage],
+        commits: [impact.commit],
       })
     }
   }
@@ -190,8 +228,7 @@ export const findLatestPreviewNumber = (
 export const calculatePreviewVersion = (
   nextStableVersion: Semver.Semver,
   existingPreviewNumber: number,
-): Semver.Semver =>
-  Semver.fromString(`${nextStableVersion.version}-next.${existingPreviewNumber + 1}`)
+): Semver.Semver => Semver.fromString(`${nextStableVersion.version}-next.${existingPreviewNumber + 1}`)
 
 /**
  * Find the highest PR release number for a package and PR.
@@ -233,5 +270,4 @@ export const calculatePrVersion = (
   prNumber: number,
   existingPrNumber: number,
   sha: string,
-): Semver.Semver =>
-  Semver.fromString(`0.0.0-pr.${prNumber}.${existingPrNumber + 1}.${sha}`)
+): Semver.Semver => Semver.fromString(`0.0.0-pr.${prNumber}.${existingPrNumber + 1}.${sha}`)

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { Custom, Impact, ImpactValues, Standard, StandardImpact, StandardValue, StandardValues, Type } from './type.js'
+import { Custom, impact, Impact, ImpactValues, isCustom, isStandard, Standard, StandardImpact, StandardValue, StandardValues, Type, value } from './type.js'
 import { Schema } from 'effect'
 
 describe('Impact', () => {
@@ -97,5 +97,43 @@ describe('Type', () => {
     const custom = Schema.decodeUnknownSync(Type)({ _tag: 'Custom', value: 'wip' })
     expect(standard._tag).toBe('Standard')
     expect(custom._tag).toBe('Custom')
+  })
+})
+
+describe('isStandard', () => {
+  test('returns true for Standard', () => {
+    expect(isStandard(new Standard({ value: 'feat' }))).toBe(true)
+  })
+
+  test('returns false for Custom', () => {
+    expect(isStandard(new Custom({ value: 'wip' }))).toBe(false)
+  })
+})
+
+describe('isCustom', () => {
+  test('returns true for Custom', () => {
+    expect(isCustom(new Custom({ value: 'wip' }))).toBe(true)
+  })
+
+  test('returns false for Standard', () => {
+    expect(isCustom(new Standard({ value: 'feat' }))).toBe(false)
+  })
+})
+
+describe('value', () => {
+  test('extracts value from Standard', () => {
+    expect(value(new Standard({ value: 'feat' }))).toBe('feat')
+  })
+
+  test('extracts value from Custom', () => {
+    expect(value(new Custom({ value: 'wip' }))).toBe('wip')
+  })
+})
+
+describe('impact', () => {
+  test('returns impact for Standard', () => {
+    expect(impact(new Standard({ value: 'feat' }))).toBe('minor')
+    expect(impact(new Standard({ value: 'fix' }))).toBe('patch')
+    expect(impact(new Standard({ value: 'chore' }))).toBe('none')
   })
 })

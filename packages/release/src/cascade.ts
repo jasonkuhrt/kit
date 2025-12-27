@@ -131,14 +131,30 @@ export const detectCascades = (
     const nextVersion = calculateNextVersion(currentVersion, 'patch')
 
     // Find which primary release(s) triggered this cascade
-    const triggers: string[] = []
+    // Create synthetic commit entries for changelog generation
+    const cascadeCommits: PlannedRelease['commits'][number][] = []
     const deps = dependencyGraph.get(name)
     if (deps) {
       for (const primary of primaryReleases) {
         if (deps.includes(primary.package.name)) {
-          triggers.push(`Depends on ${primary.package.name}@${primary.nextVersion}`)
+          cascadeCommits.push({
+            type: 'chore',
+            message: `Depends on ${primary.package.name}@${primary.nextVersion.version}`,
+            hash: 'cascade',
+            breaking: false,
+          })
         }
       }
+    }
+
+    // If no triggers found, add a generic cascade commit
+    if (cascadeCommits.length === 0) {
+      cascadeCommits.push({
+        type: 'chore',
+        message: 'Cascade release',
+        hash: 'cascade',
+        breaking: false,
+      })
     }
 
     cascades.push({
@@ -146,7 +162,7 @@ export const detectCascades = (
       currentVersion,
       nextVersion,
       bump: 'patch',
-      commits: triggers.length > 0 ? triggers : ['Cascade release'],
+      commits: cascadeCommits,
     })
   }
 

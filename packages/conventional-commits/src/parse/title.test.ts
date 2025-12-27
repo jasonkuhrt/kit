@@ -99,7 +99,7 @@ describe('parseTitle > MultiTarget', () => {
   test('parses per-scope breaking: "feat(core!), fix(cli): message"', async () => {
     const result = await Effect.runPromiseExit(parseTitle('feat(core!), fix(cli): change'))
     expect(Exit.isSuccess(result)).toBe(true)
-    if (Exit.isSuccess(result) && isMultiTarget(result.value)) {
+    if (Exit.isSuccess(result) && MultiTargetCommit.is(result.value)) {
       expect(result.value.targets[0].breaking).toBe(true)
       expect(result.value.targets[1].breaking).toBe(false)
     }
@@ -108,7 +108,7 @@ describe('parseTitle > MultiTarget', () => {
   test('parses global breaking: "feat(core), fix(cli)!: message"', async () => {
     const result = await Effect.runPromiseExit(parseTitle('feat(core), fix(cli)!: change'))
     expect(Exit.isSuccess(result)).toBe(true)
-    if (Exit.isSuccess(result) && isMultiTarget(result.value)) {
+    if (Exit.isSuccess(result) && MultiTargetCommit.is(result.value)) {
       expect(result.value.targets[0].breaking).toBe(true)
       expect(result.value.targets[1].breaking).toBe(true)
     }

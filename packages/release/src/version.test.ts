@@ -1,11 +1,14 @@
+import { it } from '@effect/vitest'
 import { Semver } from '@kitz/semver'
 import { Test } from '@kitz/test'
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
 import { describe, expect, test } from 'vitest'
 import {
   aggregateByPackage,
   bumpFromType,
   calculateNextVersion,
+  type CommitImpact,
+  type CommitInput,
   extractImpacts,
   findLatestTagVersion,
   maxBump,
@@ -43,65 +46,88 @@ Test.describe('maxBump')
   )
   .test()
 
+Test.describe('extractImpacts')
+  .inputType<CommitInput>()
+  .outputType<CommitImpact[]>()
+  .layer(Layer.empty)
+  .cases(
+    [
+      { hash: 'abc123', message: 'feat(core): add feature' },
+      [{ scope: 'core', bump: 'minor', commit: { type: 'feat', message: 'add feature', hash: 'abc123', breaking: false } }],
+      { comment: 'single scope feat' },
+    ],
+    [
+      { hash: 'def456', message: 'feat(core)!: breaking' },
+      [{ scope: 'core', bump: 'major', commit: { type: 'feat', message: 'breaking', hash: 'def456', breaking: true } }],
+      { comment: 'single scope breaking' },
+    ],
+    [
+      { hash: 'jkl012', message: 'feat: no scope' },
+      [],
+      { comment: 'scopeless returns empty' },
+    ],
+    [
+      { hash: 'mno345', message: 'random commit message' },
+      [],
+      { comment: 'non-conventional returns empty' },
+    ],
+  )
+  .testEffect(({ input, output }) =>
+    Effect.gen(function*() {
+      const impacts = yield* extractImpacts(input)
+      expect(impacts).toEqual(output)
+    })
+  )
+
 describe('extractImpacts', () => {
-  test('single scope feat', async () => {
-    const impacts = await Effect.runPromise(extractImpacts('feat(core): add feature'))
-    expect(impacts).toEqual([
-      { scope: 'core', bump: 'minor', commitMessage: 'feat(core): add feature' },
-    ])
-  })
-
-  test('single scope breaking', async () => {
-    const impacts = await Effect.runPromise(extractImpacts('feat(core)!: breaking'))
-    expect(impacts).toEqual([
-      { scope: 'core', bump: 'major', commitMessage: 'feat(core)!: breaking' },
-    ])
-  })
-
-  test('multi-target commit', async () => {
-    const impacts = await Effect.runPromise(extractImpacts('feat(core!), fix(cli): mixed'))
-    expect(impacts).toHaveLength(2)
-    expect(impacts).toContainEqual({
-      scope: 'core',
-      bump: 'major',
-      commitMessage: 'feat(core!), fix(cli): mixed',
+  it.effect('multi-target commit', () =>
+    Effect.gen(function*() {
+      const impacts = yield* extractImpacts({ hash: 'ghi789', message: 'feat(core!), fix(cli): mixed' })
+      expect(impacts).toHaveLength(2)
+      expect(impacts).toContainEqual({
+        scope: 'core',
+        bump: 'major',
+        commit: { type: 'feat', message: 'mixed', hash: 'ghi789', breaking: true },
+      })
+      expect(impacts).toContainEqual({
+        scope: 'cli',
+        bump: 'patch',
+        commit: { type: 'fix', message: 'mixed', hash: 'ghi789', breaking: false },
+      })
     })
-    expect(impacts).toContainEqual({
-      scope: 'cli',
-      bump: 'patch',
-      commitMessage: 'feat(core!), fix(cli): mixed',
-    })
-  })
-
-  test('scopeless returns empty', async () => {
-    const impacts = await Effect.runPromise(extractImpacts('feat: no scope'))
-    expect(impacts).toEqual([])
-  })
-
-  test('non-conventional returns empty', async () => {
-    const impacts = await Effect.runPromise(extractImpacts('random commit message'))
-    expect(impacts).toEqual([])
-  })
+  )
 })
 
 describe('aggregateByPackage', () => {
   test('keeps highest bump', () => {
     const impacts = [
-      { scope: 'core', bump: 'patch' as const, commitMessage: 'fix(core): bug' },
-      { scope: 'core', bump: 'minor' as const, commitMessage: 'feat(core): feature' },
-      { scope: 'core', bump: 'patch' as const, commitMessage: 'fix(core): another' },
+      { scope: 'core', bump: 'patch' as const, commit: { type: 'fix', message: 'bug', hash: 'a1', breaking: false } },
+      {
+        scope: 'core',
+        bump: 'minor' as const,
+        commit: { type: 'feat', message: 'feature', hash: 'a2', breaking: false },
+      },
+      {
+        scope: 'core',
+        bump: 'patch' as const,
+        commit: { type: 'fix', message: 'another', hash: 'a3', breaking: false },
+      },
     ]
     const result = aggregateByPackage(impacts)
     expect(result.get('core')).toEqual({
       bump: 'minor',
-      commits: ['fix(core): bug', 'feat(core): feature', 'fix(core): another'],
+      commits: [
+        { type: 'fix', message: 'bug', hash: 'a1', breaking: false },
+        { type: 'feat', message: 'feature', hash: 'a2', breaking: false },
+        { type: 'fix', message: 'another', hash: 'a3', breaking: false },
+      ],
     })
   })
 
   test('separates packages', () => {
     const impacts = [
-      { scope: 'core', bump: 'minor' as const, commitMessage: 'feat(core): a' },
-      { scope: 'cli', bump: 'patch' as const, commitMessage: 'fix(cli): b' },
+      { scope: 'core', bump: 'minor' as const, commit: { type: 'feat', message: 'a', hash: 'b1', breaking: false } },
+      { scope: 'cli', bump: 'patch' as const, commit: { type: 'fix', message: 'b', hash: 'b2', breaking: false } },
     ]
     const result = aggregateByPackage(impacts)
     expect(result.size).toBe(2)
