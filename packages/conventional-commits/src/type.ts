@@ -55,3 +55,29 @@ export const StandardImpact: Record<StandardValue, Impact> = {
   chore: 'none',
   revert: 'none',
 }
+
+// ─── Standard Type ──────────────────────────────────────────────
+
+/**
+ * A known conventional commit type.
+ */
+export class Standard extends Schema.TaggedClass<Standard>()('Standard', {
+  value: StandardValue,
+}) {}
+
+// ─── Custom Type ────────────────────────────────────────────────
+
+/**
+ * A custom/unknown commit type.
+ */
+export class Custom extends Schema.TaggedClass<Custom>()('Custom', {
+  value: Schema.String,
+}) {}
+
+// ─── Type Union ─────────────────────────────────────────────────
+
+/**
+ * Commit type: either a standard type or a custom extension.
+ */
+export const Type = Schema.Union(Standard, Custom)
+export type Type = typeof Type.Type

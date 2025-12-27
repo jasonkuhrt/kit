@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { Impact, ImpactValues, StandardImpact, StandardValue, StandardValues } from './type.js'
+import { Custom, Impact, ImpactValues, Standard, StandardImpact, StandardValue, StandardValues, Type } from './type.js'
+import { Schema } from 'effect'
 
 describe('Impact', () => {
   test('has runtime enum values', () => {
@@ -61,5 +62,40 @@ describe('StandardImpact', () => {
     for (const key of Object.keys(StandardValues)) {
       expect(StandardImpact[key as StandardValue]).toBeDefined()
     }
+  })
+})
+
+describe('Standard', () => {
+  test('creates with valid value', () => {
+    const s = new Standard({ value: 'feat' })
+    expect(s._tag).toBe('Standard')
+    expect(s.value).toBe('feat')
+  })
+
+  test('decodes from object', () => {
+    const result = Schema.decodeUnknownSync(Standard)({ _tag: 'Standard', value: 'fix' })
+    expect(result.value).toBe('fix')
+  })
+})
+
+describe('Custom', () => {
+  test('creates with any string value', () => {
+    const c = new Custom({ value: 'wip' })
+    expect(c._tag).toBe('Custom')
+    expect(c.value).toBe('wip')
+  })
+
+  test('decodes from object', () => {
+    const result = Schema.decodeUnknownSync(Custom)({ _tag: 'Custom', value: 'experimental' })
+    expect(result.value).toBe('experimental')
+  })
+})
+
+describe('Type', () => {
+  test('is union of Standard and Custom', () => {
+    const standard = Schema.decodeUnknownSync(Type)({ _tag: 'Standard', value: 'feat' })
+    const custom = Schema.decodeUnknownSync(Type)({ _tag: 'Custom', value: 'wip' })
+    expect(standard._tag).toBe('Standard')
+    expect(custom._tag).toBe('Custom')
   })
 })
