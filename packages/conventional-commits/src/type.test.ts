@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest'
-import { Custom, impact, Impact, ImpactValues, isCustom, isStandard, Standard, StandardImpact, StandardValue, StandardValues, Type, value } from './type.js'
+import { Custom, from, impact, Impact, ImpactValues, isCustom, isStandard, Standard, StandardImpact, StandardValue, StandardValues, Type, value } from './type.js'
 import { Schema } from 'effect'
+import { Assert } from '@kitz/assert'
 
 describe('Impact', () => {
   test('has runtime enum values', () => {
@@ -137,3 +138,36 @@ describe('impact', () => {
     expect(impact(new Standard({ value: 'chore' }))).toBe('none')
   })
 })
+
+describe('from', () => {
+  test('creates Standard for known types', () => {
+    const t = from('feat')
+    expect(t._tag).toBe('Standard')
+    expect(t.value).toBe('feat')
+  })
+
+  test('creates Custom for unknown types', () => {
+    const t = from('wip')
+    expect(t._tag).toBe('Custom')
+    expect(t.value).toBe('wip')
+  })
+
+  test('works with all standard types', () => {
+    for (const key of Object.keys(StandardValues)) {
+      const t = from(key)
+      expect(t._tag).toBe('Standard')
+    }
+  })
+})
+
+// ─── Type-Level Tests ───────────────────────────────────────────
+
+// Type-level tests for from()
+Assert.exact.ofAs<Standard>().on(from('feat'))
+Assert.exact.ofAs<Standard>().on(from('fix'))
+Assert.exact.ofAs<Custom>().on(from('wip'))
+Assert.exact.ofAs<Custom>().on(from('experimental'))
+
+// Dynamic string returns union
+const dynamic: string = 'unknown'
+Assert.exact.ofAs<Type>().on(from(dynamic))

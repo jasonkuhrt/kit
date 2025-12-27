@@ -106,3 +106,22 @@ export const value = (type: Type): string => type.value
  * For Custom types, use release config lookup instead.
  */
 export const impact = (type: Standard): Impact => StandardImpact[type.value]
+
+// ─── Smart Constructor ──────────────────────────────────────────
+
+/**
+ * Type-level narrowing: returns Standard for known types, Custom otherwise.
+ */
+type From<$value extends string> = $value extends StandardValue ? Standard : Custom
+
+/**
+ * Create a Type from a raw string.
+ * Known types become Standard, unknown become Custom.
+ * Return type narrows based on input literal.
+ */
+export const from = <$value extends string>(value: $value): From<$value> => {
+  if (value in StandardValues) {
+    return new Standard({ value: value as StandardValue }) as From<$value>
+  }
+  return new Custom({ value }) as From<$value>
+}

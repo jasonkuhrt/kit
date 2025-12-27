@@ -130,6 +130,9 @@ importers:
         specifier: ^3.19.13
         version: 3.19.13
     devDependencies:
+      '@kitz/assert':
+        specifier: workspace:*
+        version: link:../assert
       '@kitz/test':
         specifier: workspace:*
         version: link:../test

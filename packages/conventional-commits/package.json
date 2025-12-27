@@ -27,6 +27,7 @@
     "effect": "^3.19.13"
   },
   "devDependencies": {
+    "@kitz/assert": "workspace:*",
     "@kitz/test": "workspace:*"
   }
 }
