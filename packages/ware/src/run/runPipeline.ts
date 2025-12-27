@@ -108,15 +108,23 @@ export const runPipeline = async (
             ? `There was an error in the interceptor "${signal.interceptorName}"${nameTip}.`
             : `There was an error in the interceptor "${signal.interceptorName}"${nameTip} while running hook "${signal.hookName}".`
 
-          return new ContextualError(message, {
-            hookName: signal.hookName,
-            source: signal.source,
-            interceptorName: signal.interceptorName,
-          }, signal.error)
+          return new ContextualError({
+            message,
+            context: {
+              hookName: signal.hookName,
+              source: signal.source,
+              interceptorName: signal.interceptorName,
+            },
+            cause: signal.error,
+          })
         }
         case `implementation`: {
           const message = `There was an error in the core implementation of hook "${signal.hookName}".`
-          return new ContextualError(message, { hookName: signal.hookName, source: signal.source }, signal.error)
+          return new ContextualError({
+            message,
+            context: { hookName: signal.hookName, source: signal.source },
+            cause: signal.error,
+          })
         }
         case `user`: {
           return signal.error
