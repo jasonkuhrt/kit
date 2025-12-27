@@ -1,6 +1,6 @@
 {
   "name": "@kitz/core",
-  "version": "0.0.0",
+  "version": "0.0.0-kitz-release",
   "description": "Core data structures and utilities",
   "type": "module",
   "sideEffects": false,

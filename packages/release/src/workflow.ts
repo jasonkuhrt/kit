@@ -1,0 +1,465 @@
+/**
+ * @module workflow
+ *
+ * Durable workflow implementation for release operations using @kitz/flo.
+ *
+ * This module provides resumable, persistent execution for the release process:
+ * - Preflight checks
+ * - Package publishing (concurrent, with version injection/restoration)
+ * - Git tag creation (concurrent, each after its package publishes)
+ * - Tag pushing (after all tags created)
+ *
+ * Uses SQLite for durability, allowing resume from partial failures.
+ * The declarative DAG structure enables concurrent execution where dependencies allow.
+ */
+
+import { SingleRunner } from '@effect/cluster'
+import { NodeFileSystem, NodePath } from '@effect/platform-node'
+import { SqliteClient } from '@effect/sql-sqlite-node'
+import { WorkflowEngine } from '@effect/workflow'
+import { Flo } from '@kitz/flo'
+import { Fs } from '@kitz/fs'
+import { Git } from '@kitz/git/__'
+import { Semver } from '@kitz/semver'
+import { Effect, Layer, Schema, Stream } from 'effect'
+import { type PreflightError, runPreflight } from './preflight.js'
+import { publishPackage } from './publish.js'
+import type { PlannedRelease, ReleasePlan } from './release.js'
+
+// ============================================================================
+// Error Schemas
+// ============================================================================
+
+/**
+ * Workflow-level publish error.
+ */
+export class WorkflowPublishError extends Schema.TaggedError<WorkflowPublishError>('WorkflowPublishError')(
+  'WorkflowPublishError',
+  {
+    packageName: Schema.String,
+    message: Schema.String,
+  },
+) {}
+
+/**
+ * Workflow-level tag error.
+ */
+export class WorkflowTagError extends Schema.TaggedError<WorkflowTagError>('WorkflowTagError')(
+  'WorkflowTagError',
+  {
+    tag: Schema.String,
+    message: Schema.String,
+  },
+) {}
+
+/**
+ * Workflow-level preflight error.
+ */
+export class WorkflowPreflightError extends Schema.TaggedError<WorkflowPreflightError>('WorkflowPreflightError')(
+  'WorkflowPreflightError',
+  {
+    check: Schema.String,
+    message: Schema.String,
+  },
+) {}
+
+/**
+ * Union of all workflow errors.
+ */
+export const ReleaseWorkflowError = Schema.Union(
+  WorkflowPublishError,
+  WorkflowTagError,
+  WorkflowPreflightError,
+)
+
+export type ReleaseWorkflowError = WorkflowPublishError | WorkflowTagError | WorkflowPreflightError
+
+// ============================================================================
+// Payload Schema
+// ============================================================================
+
+/**
+ * Schema for a single release in the payload.
+ */
+const ReleaseSchema = Schema.Struct({
+  packageName: Schema.String,
+  packagePath: Schema.String,
+  currentVersion: Schema.NullOr(Schema.String),
+  nextVersion: Schema.String,
+  bump: Schema.Literal('major', 'minor', 'patch'),
+})
+
+/**
+ * Payload for the release workflow.
+ */
+const ReleasePayload = Schema.Struct({
+  releases: Schema.Array(ReleaseSchema),
+  options: Schema.Struct({
+    dryRun: Schema.Boolean,
+    tag: Schema.optional(Schema.String),
+    registry: Schema.optional(Schema.String),
+  }),
+})
+
+type ReleasePayloadType = Schema.Schema.Type<typeof ReleasePayload>
+
+// ============================================================================
+// Activity Helpers
+// ============================================================================
+
+/**
+ * Convert a workflow release to a domain PlannedRelease.
+ */
+const toPlannedRelease = (
+  release: ReleasePayloadType['releases'][number],
+): PlannedRelease => ({
+  package: {
+    name: release.packageName,
+    path: Fs.Path.AbsDir.fromString(release.packagePath),
+    scope: release.packageName.startsWith('@')
+      ? release.packageName.split('/')[1]!
+      : release.packageName,
+  },
+  currentVersion: release.currentVersion ? Semver.fromString(release.currentVersion) : null,
+  nextVersion: Semver.fromString(release.nextVersion),
+  bump: release.bump,
+  commits: [],
+})
+
+// ============================================================================
+// Workflow Definition (Declarative DAG)
+// ============================================================================
+
+/**
+ * Result type for the workflow.
+ */
+interface WorkflowResult {
+  releasedPackages: string[]
+  createdTags: string[]
+}
+
+/**
+ * The main release workflow using declarative DAG execution.
+ *
+ * Graph structure:
+ * ```
+ * Preflight ─┬─→ Publish:A ─→ CreateTag:A ─┬─→ PushTags
+ *            ├─→ Publish:B ─→ CreateTag:B ─┤
+ *            └─→ Publish:C ─→ CreateTag:C ─┘
+ * ```
+ *
+ * - Preflight runs first (if not dry-run)
+ * - All Publish activities run concurrently after Preflight
+ * - Each CreateTag runs after its corresponding Publish
+ * - PushTags runs after all CreateTag activities complete
+ */
+export const ReleaseWorkflow = Flo.Workflow.make({
+  name: 'ReleaseWorkflow',
+  payload: ReleasePayload,
+  error: ReleaseWorkflowError,
+
+  graph: (payload, node) => {
+    const plannedReleases = payload.releases.map(toPlannedRelease)
+
+    // Layer 0: Preflight checks (skip in dry-run mode)
+    const preflight = payload.options.dryRun
+      ? null
+      : node(
+          'Preflight',
+          runPreflight(plannedReleases, {
+            ...(payload.options.registry && { registry: payload.options.registry }),
+          }).pipe(
+            Effect.mapError((e) =>
+              new WorkflowPreflightError({
+                check: 'check' in e ? (e as PreflightError).context.check : 'unknown',
+                message: e.message,
+              })
+            ),
+            Effect.asVoid,
+          ),
+        )
+
+    // Layer 1: Publish each package (concurrent)
+    const publishes = payload.releases.map((release) =>
+      node(
+        `Publish:${release.packageName}`,
+        Effect.gen(function* () {
+          const plannedRelease = toPlannedRelease(release)
+
+          if (payload.options.dryRun) {
+            yield* Effect.log(`[dry-run] Would publish ${release.packageName}@${release.nextVersion}`)
+          } else {
+            yield* Effect.log(`Publishing ${release.packageName}@${release.nextVersion}...`)
+            yield* publishPackage(plannedRelease, {
+              ...(payload.options.tag && { tag: payload.options.tag }),
+              ...(payload.options.registry && { registry: payload.options.registry }),
+            })
+          }
+
+          return release.packageName
+        }).pipe(
+          Effect.mapError((e) =>
+            new WorkflowPublishError({
+              packageName: release.packageName,
+              message: e instanceof Error ? e.message : String(e),
+            })
+          ),
+        ),
+        {
+          ...(preflight && { after: preflight }),
+          retry: { times: 2 },
+        },
+      )
+    )
+
+    // Layer 2: Create git tags (each depends on its corresponding publish)
+    const createTags = payload.releases.map((release, i) => {
+      const tag = `${release.packageName}@${release.nextVersion}`
+      return node(
+        `CreateTag:${tag}`,
+        Effect.gen(function* () {
+          if (payload.options.dryRun) {
+            yield* Effect.log(`[dry-run] Would create tag: ${tag}`)
+          } else {
+            yield* Effect.log(`Creating tag: ${tag}`)
+            const gitService = yield* Git
+            yield* gitService.createTag(tag, `Release ${tag}`)
+          }
+          return tag
+        }).pipe(
+          Effect.mapError((e) =>
+            new WorkflowTagError({
+              tag,
+              message: e instanceof Error ? e.message : String(e),
+            })
+          ),
+        ),
+        { after: publishes[i]! },
+      )
+    })
+
+    // Layer 3: Push all tags (after all tags created)
+    const pushTags = node(
+      'PushTags',
+      Effect.gen(function* () {
+        const tags = payload.releases.map((r) => `${r.packageName}@${r.nextVersion}`)
+        if (payload.options.dryRun) {
+          yield* Effect.log(`[dry-run] Would push ${tags.length} tags to origin`)
+        } else {
+          yield* Effect.log(`Pushing ${tags.length} tags to origin...`)
+          const gitService = yield* Git
+          yield* gitService.pushTags()
+        }
+      }).pipe(
+        Effect.mapError((e) =>
+          new WorkflowTagError({
+            tag: 'push',
+            message: e instanceof Error ? e.message : String(e),
+          })
+        ),
+      ),
+      {
+        after: createTags,
+        retry: { times: 2 },
+      },
+    )
+
+    // Return handles for result collection
+    return {
+      publishes,
+      createTags,
+      pushTags,
+    }
+  },
+})
+
+// ============================================================================
+// Layer Composition
+// ============================================================================
+
+/**
+ * Default database path for workflow state.
+ */
+export const DEFAULT_WORKFLOW_DB = '.release/workflow.db'
+
+/**
+ * Create the full workflow runtime layer with SQLite persistence.
+ *
+ * @param dbPath - Path to SQLite database file (relative to cwd or absolute)
+ */
+export const makeWorkflowRuntime = (dbPath: string = DEFAULT_WORKFLOW_DB) =>
+  Layer.mergeAll(
+    SqliteClient.layer({ filename: dbPath }),
+    NodeFileSystem.layer,
+    NodePath.layer,
+  ).pipe(
+    Layer.provideMerge(SingleRunner.layer({ runnerStorage: 'sql' })),
+  )
+
+/**
+ * Create a test-friendly workflow runtime using in-memory engine.
+ */
+export const makeTestWorkflowRuntime = () => WorkflowEngine.layerMemory
+
+// ============================================================================
+// Execution API
+// ============================================================================
+
+/**
+ * Convert a ReleasePlan to workflow payload.
+ */
+export const toWorkflowPayload = (
+  plan: ReleasePlan,
+  options: { dryRun?: boolean; tag?: string; registry?: string } = {},
+): ReleasePayloadType => ({
+  releases: [...plan.releases, ...plan.cascades].map((r) => ({
+    packageName: r.package.name,
+    packagePath: Fs.Path.toString(r.package.path),
+    currentVersion: r.currentVersion?.version.toString() ?? null,
+    nextVersion: r.nextVersion.version.toString(),
+    bump: r.bump,
+  })),
+  options: {
+    dryRun: options.dryRun ?? false,
+    ...(options.tag && { tag: options.tag }),
+    ...(options.registry && { registry: options.registry }),
+  },
+})
+
+/**
+ * Execute the release workflow.
+ *
+ * The workflow is durable - if it fails partway through, calling execute
+ * again with the same payload will resume from where it left off.
+ *
+ * Activities execute concurrently where dependencies allow:
+ * - All package publishes run in parallel
+ * - Each tag creation runs after its package publishes
+ * - Tag push runs after all tags are created
+ *
+ * @example
+ * ```ts
+ * const result = await Effect.runPromise(
+ *   executeWorkflow(plan, { dryRun: false }).pipe(
+ *     Effect.provide(makeWorkflowRuntime()),
+ *     Effect.provide(GitLive),
+ *   )
+ * )
+ * ```
+ */
+export const executeWorkflow = (
+  plan: ReleasePlan,
+  options: { dryRun?: boolean; tag?: string; registry?: string } = {},
+) =>
+  Effect.gen(function* () {
+    const payload = toWorkflowPayload(plan, options)
+
+    yield* Effect.log(`Starting release workflow for ${payload.releases.length} packages...`)
+
+    const result = yield* ReleaseWorkflow.execute(payload)
+
+    // Extract results from NodeHandle unwrapping
+    const releasedPackages = result.publishes as string[]
+    const createdTags = result.createTags as string[]
+
+    yield* Effect.log(`Workflow complete: ${releasedPackages.length} packages released`)
+
+    return {
+      releasedPackages,
+      createdTags,
+    } satisfies WorkflowResult
+  })
+
+/**
+ * Result of observable workflow execution.
+ */
+export interface ObservableWorkflowResult {
+  /** Stream of activity lifecycle events */
+  readonly events: Stream.Stream<Flo.ActivityEvent>
+  /** Effect that executes the workflow and returns the result */
+  readonly execute: Effect.Effect<WorkflowResult, ReleaseWorkflowError, WorkflowEngine.WorkflowEngine>
+  /** Graph information for visualization */
+  readonly graph: {
+    readonly layers: readonly (readonly string[])[]
+    readonly nodes: ReadonlyMap<string, { dependencies: readonly string[] }>
+  }
+}
+
+/**
+ * Execute the release workflow with observable events and graph info.
+ *
+ * Returns a Stream of activity events, the execution Effect, and graph structure
+ * for visualization. The stream emits events as activities start, complete, or fail.
+ *
+ * **Concurrent execution**: Activities in the same layer run in parallel.
+ * Use `graph.layers` to show the execution structure in the UI.
+ *
+ * **Resume handling**: When resuming from a checkpoint, already-completed
+ * activities emit events with `resumed: true` and very short durations.
+ *
+ * @example
+ * ```ts
+ * const { events, execute, graph } = yield* executeWorkflowObservable(plan)
+ *
+ * // Create renderer from graph
+ * const renderer = Flo.TerminalRenderer.make({
+ *   mode: 'dag',
+ *   layers: graph.layers,
+ * })
+ *
+ * // Fork event consumer
+ * const eventFiber = yield* events.pipe(
+ *   Stream.tap((e) => Effect.sync(() => {
+ *     renderer.update(e)
+ *     console.clear()
+ *     console.log(renderer.render())
+ *   })),
+ *   Stream.runDrain,
+ *   Effect.fork,
+ * )
+ *
+ * // Run workflow
+ * const result = yield* execute
+ *
+ * // Wait for events to flush
+ * yield* Fiber.join(eventFiber)
+ * ```
+ */
+export const executeWorkflowObservable = (
+  plan: ReleasePlan,
+  options: { dryRun?: boolean; tag?: string; registry?: string } = {},
+): Effect.Effect<ObservableWorkflowResult, never, never> =>
+  Effect.gen(function* () {
+    const payload = toWorkflowPayload(plan, options)
+
+    // Get graph structure for visualization
+    const { layers, nodes } = ReleaseWorkflow.toGraph(payload)
+
+    // Build edges for renderer
+    const graphInfo = {
+      layers,
+      nodes: new Map(
+        Array.from(nodes.entries()).map(([name, def]) => [
+          name,
+          { dependencies: def.dependencies },
+        ]),
+      ),
+    }
+
+    // Get observable execution
+    const { events, execute: workflowExecute } = yield* ReleaseWorkflow.observable(payload)
+
+    // Wrap execute to extract results
+    const execute = workflowExecute.pipe(
+      Effect.map((result) => ({
+        releasedPackages: result.publishes as string[],
+        createdTags: result.createTags as string[],
+      })),
+    )
+
+    return {
+      events,
+      execute,
+      graph: graphInfo,
+    }
+  })

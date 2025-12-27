@@ -47,6 +47,27 @@ export interface GitService {
 
   /** Get the short SHA of HEAD commit */
   readonly getHeadSha: () => Effect.Effect<string, GitError>
+
+  /** Get the commit SHA that a tag points to */
+  readonly getTagSha: (tag: string) => Effect.Effect<string, GitError>
+
+  /** Check if sha1 is an ancestor of sha2 */
+  readonly isAncestor: (sha1: string, sha2: string) => Effect.Effect<boolean, GitError>
+
+  /** Create a tag at a specific commit SHA */
+  readonly createTagAt: (tag: string, sha: string, message?: string) => Effect.Effect<void, GitError>
+
+  /** Delete a tag locally */
+  readonly deleteTag: (tag: string) => Effect.Effect<void, GitError>
+
+  /** Check if a commit SHA exists in the repository */
+  readonly commitExists: (sha: string) => Effect.Effect<boolean, GitError>
+
+  /** Push a specific tag to remote */
+  readonly pushTag: (tag: string, remote?: string, force?: boolean) => Effect.Effect<void, GitError>
+
+  /** Delete a tag from remote */
+  readonly deleteRemoteTag: (tag: string, remote?: string) => Effect.Effect<void, GitError>
 }
 
 /**
@@ -133,6 +154,78 @@ const makeGitService = (git: SimpleGit): GitService => ({
         return sha.trim()
       },
       catch: (error) => new GitError({ message: 'Failed to get HEAD SHA', cause: error }),
+    }),
+
+  getTagSha: (tag) =>
+    Effect.tryPromise({
+      try: async () => {
+        const sha = await git.raw(['rev-list', '-1', tag])
+        return sha.trim()
+      },
+      catch: (error) => new GitError({ message: `Failed to get SHA for tag ${tag}`, cause: error }),
+    }),
+
+  isAncestor: (sha1, sha2) =>
+    Effect.tryPromise({
+      try: async () => {
+        try {
+          await git.raw(['merge-base', '--is-ancestor', sha1, sha2])
+          return true // Exit code 0 = is ancestor
+        } catch {
+          return false // Exit code 1 = not ancestor
+        }
+      },
+      catch: (error) => new GitError({ message: `Failed to check ancestry ${sha1} -> ${sha2}`, cause: error }),
+    }),
+
+  createTagAt: (tag, sha, message) =>
+    Effect.tryPromise({
+      try: async () => {
+        if (message) {
+          await git.tag(['-a', tag, sha, '-m', message])
+        } else {
+          await git.tag([tag, sha])
+        }
+      },
+      catch: (error) => new GitError({ message: `Failed to create tag ${tag} at ${sha}`, cause: error }),
+    }),
+
+  deleteTag: (tag) =>
+    Effect.tryPromise({
+      try: async () => {
+        await git.tag(['-d', tag])
+      },
+      catch: (error) => new GitError({ message: `Failed to delete tag ${tag}`, cause: error }),
+    }),
+
+  commitExists: (sha) =>
+    Effect.tryPromise({
+      try: async () => {
+        try {
+          await git.raw(['cat-file', '-t', sha])
+          return true
+        } catch {
+          return false
+        }
+      },
+      catch: (error) => new GitError({ message: `Failed to check if commit ${sha} exists`, cause: error }),
+    }),
+
+  pushTag: (tag, remote = 'origin', force = false) =>
+    Effect.tryPromise({
+      try: async () => {
+        const args = force ? ['push', '--force', remote, `refs/tags/${tag}`] : ['push', remote, `refs/tags/${tag}`]
+        await git.raw(args)
+      },
+      catch: (error) => new GitError({ message: `Failed to push tag ${tag} to ${remote}`, cause: error }),
+    }),
+
+  deleteRemoteTag: (tag, remote = 'origin') =>
+    Effect.tryPromise({
+      try: async () => {
+        await git.raw(['push', remote, `:refs/tags/${tag}`])
+      },
+      catch: (error) => new GitError({ message: `Failed to delete tag ${tag} from ${remote}`, cause: error }),
     }),
 })
 

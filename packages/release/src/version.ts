@@ -106,24 +106,22 @@ export const aggregateByPackage = (
  * Calculate the next version given a current version and bump type.
  */
 export const calculateNextVersion = (
-  current: string | null,
+  current: Semver.Semver | null,
   bump: BumpType,
-): string => {
+): Semver.Semver => {
   if (current === null) {
     // First release - start at appropriate version
     switch (bump) {
       case 'major':
-        return '1.0.0'
+        return Semver.make(1, 0, 0)
       case 'minor':
-        return '0.1.0'
+        return Semver.make(0, 1, 0)
       case 'patch':
-        return '0.0.1'
+        return Semver.make(0, 0, 1)
     }
   }
 
-  const semver = Semver.fromString(current)
-  const next = Semver.increment(semver, bump)
-  return next.version.toString()
+  return Semver.increment(current, bump)
 }
 
 /**
@@ -134,7 +132,7 @@ export const calculateNextVersion = (
 export const findLatestTagVersion = (
   packageName: string,
   tags: string[],
-): string | null => {
+): Semver.Semver | null => {
   // Match tags like @kitz/core@1.0.0 or kitz@1.0.0
   const prefix = `${packageName}@`
   const versions: Semver.Semver[] = []
@@ -154,7 +152,7 @@ export const findLatestTagVersion = (
 
   // Sort and get the highest version
   versions.sort((a, b) => -Semver.order(a, b)) // Descending
-  return versions[0]!.version.toString()
+  return versions[0]!
 }
 
 /**
@@ -165,10 +163,10 @@ export const findLatestTagVersion = (
  */
 export const findLatestPreviewNumber = (
   packageName: string,
-  baseVersion: string,
+  baseVersion: Semver.Semver,
   tags: string[],
 ): number => {
-  const prefix = `${packageName}@${baseVersion}-next.`
+  const prefix = `${packageName}@${baseVersion.version}-next.`
   let highest = 0
 
   for (const tag of tags) {
@@ -190,9 +188,10 @@ export const findLatestPreviewNumber = (
  * Format: `${nextStableVersion}-next.${n}`
  */
 export const calculatePreviewVersion = (
-  nextStableVersion: string,
+  nextStableVersion: Semver.Semver,
   existingPreviewNumber: number,
-): string => `${nextStableVersion}-next.${existingPreviewNumber + 1}`
+): Semver.Semver =>
+  Semver.fromString(`${nextStableVersion.version}-next.${existingPreviewNumber + 1}`)
 
 /**
  * Find the highest PR release number for a package and PR.
@@ -234,4 +233,5 @@ export const calculatePrVersion = (
   prNumber: number,
   existingPrNumber: number,
   sha: string,
-): string => `0.0.0-pr.${prNumber}.${existingPrNumber + 1}.${sha}`
+): Semver.Semver =>
+  Semver.fromString(`0.0.0-pr.${prNumber}.${existingPrNumber + 1}.${sha}`)

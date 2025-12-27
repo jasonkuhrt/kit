@@ -1,6 +1,6 @@
 {
   "name": "@kitz/num",
-  "version": "0.0.0",
+  "version": "0.0.0-kitz-release",
   "description": "Extended number utilities",
   "type": "module",
   "sideEffects": false,

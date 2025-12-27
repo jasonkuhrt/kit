@@ -1,6 +1,6 @@
 {
   "name": "@kitz/oak",
-  "version": "0.0.0",
+  "version": "0.0.0-kitz-release",
   "description": "CLI argument parsing",
   "type": "module",
   "sideEffects": false,

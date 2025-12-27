@@ -42,6 +42,14 @@ export interface GitTestState {
   readonly createdTags: Ref.Ref<Array<{ tag: string; message: string | undefined }>>
   /** Tag push operations (for verification) */
   readonly pushedTags: Ref.Ref<Array<{ remote: string }>>
+  /** Map of tag -> SHA for testing getTagSha */
+  readonly tagShas: Ref.Ref<Record<string, string>>
+  /** Map of sha -> parent SHAs for testing ancestry */
+  readonly commitParents: Ref.Ref<Record<string, string[]>>
+  /** Tags deleted during test */
+  readonly deletedTags: Ref.Ref<string[]>
+  /** Tags deleted from remote during test */
+  readonly deletedRemoteTags: Ref.Ref<Array<{ tag: string; remote: string }>>
 }
 
 /**
@@ -59,6 +67,10 @@ export const makeGitTestState = (
     headSha: Ref.make(config.headSha ?? 'abc1234'),
     createdTags: Ref.make<Array<{ tag: string; message: string | undefined }>>([]),
     pushedTags: Ref.make<Array<{ remote: string }>>([]),
+    tagShas: Ref.make<Record<string, string>>({}),
+    commitParents: Ref.make<Record<string, string[]>>({}),
+    deletedTags: Ref.make<string[]>([]),
+    deletedRemoteTags: Ref.make<Array<{ tag: string; remote: string }>>([]),
   })
 
 /**
@@ -134,6 +146,67 @@ const makeGitTestService = (state: GitTestState): GitService => ({
   getRoot: () => Ref.get(state.root),
 
   getHeadSha: () => Ref.get(state.headSha),
+
+  getTagSha: (tag) =>
+    Effect.gen(function*() {
+      const tagShas = yield* Ref.get(state.tagShas)
+      const sha = tagShas[tag]
+      if (!sha) {
+        return Effect.fail(new GitError({ message: `Tag not found: ${tag}` })) as never
+      }
+      return sha
+    }),
+
+  isAncestor: (sha1, sha2) =>
+    Effect.gen(function*() {
+      // Simple ancestry check for testing
+      // In real git, this traverses the commit graph
+      const parents = yield* Ref.get(state.commitParents)
+
+      // BFS to find if sha1 is reachable from sha2
+      const visited = new Set<string>()
+      const queue = [sha2]
+      while (queue.length > 0) {
+        const current = queue.shift()!
+        if (current === sha1) return true
+        if (visited.has(current)) continue
+        visited.add(current)
+        const currentParents = parents[current] ?? []
+        queue.push(...currentParents)
+      }
+      return false
+    }),
+
+  createTagAt: (tag, sha, message) =>
+    Effect.gen(function*() {
+      yield* Ref.update(state.tags, (tags) => [...tags, tag])
+      yield* Ref.update(state.tagShas, (shas) => ({ ...shas, [tag]: sha }))
+      yield* Ref.update(state.createdTags, (created) => [...created, { tag, message }])
+    }),
+
+  deleteTag: (tag) =>
+    Effect.gen(function*() {
+      yield* Ref.update(state.tags, (tags) => tags.filter((t) => t !== tag))
+      yield* Ref.update(state.tagShas, (shas) => {
+        const { [tag]: _, ...rest } = shas
+        return rest
+      })
+      yield* Ref.update(state.deletedTags, (deleted) => [...deleted, tag])
+    }),
+
+  commitExists: (sha) =>
+    Effect.gen(function*() {
+      const commits = yield* Ref.get(state.commits)
+      const parents = yield* Ref.get(state.commitParents)
+      // Check if SHA exists in commits or parent map
+      return commits.some((c) => c.hash === sha || c.hash.startsWith(sha)) || sha in parents
+    }),
+
+  pushTag: (tag, remote = 'origin', _force = false) =>
+    Ref.update(state.pushedTags, (pushed) => [...pushed, { remote }]),
+
+  deleteRemoteTag: (tag, remote = 'origin') =>
+    Ref.update(state.deletedRemoteTags, (deleted) => [...deleted, { tag, remote }]),
 })
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "@kitz/changelog",
-  "version": "0.0.0",
+  "version": "0.0.0-kitz-release",
   "type": "module",
   "sideEffects": false,
   "imports": {

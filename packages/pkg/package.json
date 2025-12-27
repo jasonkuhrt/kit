@@ -1,6 +1,6 @@
 {
   "name": "@kitz/pkg",
-  "version": "0.0.0",
+  "version": "0.0.0-kitz-release",
   "description": "Package utilities (manifest schema, manager helpers)",
   "type": "module",
   "sideEffects": false,

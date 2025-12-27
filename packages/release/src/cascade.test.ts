@@ -1,3 +1,5 @@
+import { Semver } from '@kitz/semver'
+import { Equal } from 'effect'
 import { describe, expect, test } from 'vitest'
 import { detectCascades } from './cascade.js'
 import type { Package } from './discovery.js'
@@ -19,8 +21,8 @@ describe('detectCascades', () => {
     const releases: PlannedRelease[] = [
       {
         package: mockPackages[0]!,
-        currentVersion: '1.0.0',
-        nextVersion: '1.1.0',
+        currentVersion: Semver.fromString('1.0.0'),
+        nextVersion: Semver.fromString('1.1.0'),
         bump: 'minor',
         commits: ['feat(core): new feature'],
       },
@@ -40,8 +42,8 @@ describe('detectCascades', () => {
     const releases: PlannedRelease[] = [
       {
         package: mockPackages[0]!,
-        currentVersion: '1.0.0',
-        nextVersion: '1.1.0',
+        currentVersion: Semver.fromString('1.0.0'),
+        nextVersion: Semver.fromString('1.1.0'),
         bump: 'minor',
         commits: ['feat(core): new feature'],
       },
@@ -64,8 +66,8 @@ describe('detectCascades', () => {
     const releases: PlannedRelease[] = [
       {
         package: mockPackages[0]!,
-        currentVersion: '1.0.0',
-        nextVersion: '1.1.0',
+        currentVersion: Semver.fromString('1.0.0'),
+        nextVersion: Semver.fromString('1.1.0'),
         bump: 'minor',
         commits: ['feat(core): new feature'],
       },
@@ -88,15 +90,15 @@ describe('detectCascades', () => {
     const releases: PlannedRelease[] = [
       {
         package: mockPackages[0]!,
-        currentVersion: '1.0.0',
-        nextVersion: '1.1.0',
+        currentVersion: Semver.fromString('1.0.0'),
+        nextVersion: Semver.fromString('1.1.0'),
         bump: 'minor',
         commits: ['feat(core): a'],
       },
       {
         package: mockPackages[1]!,
-        currentVersion: '0.5.0',
-        nextVersion: '0.6.0',
+        currentVersion: Semver.fromString('0.5.0'),
+        nextVersion: Semver.fromString('0.6.0'),
         bump: 'minor',
         commits: ['feat(cli): b'],
       },
@@ -115,8 +117,8 @@ describe('detectCascades', () => {
     const releases: PlannedRelease[] = [
       {
         package: mockPackages[0]!,
-        currentVersion: '1.0.0',
-        nextVersion: '1.1.0',
+        currentVersion: Semver.fromString('1.0.0'),
+        nextVersion: Semver.fromString('1.1.0'),
         bump: 'minor',
         commits: ['feat(core): new feature'],
       },
@@ -126,7 +128,7 @@ describe('detectCascades', () => {
     const cascades = detectCascades(mockPackages, releases, graph, tags)
 
     expect(cascades).toHaveLength(1)
-    expect(cascades[0]?.currentVersion).toBe('2.0.0')
-    expect(cascades[0]?.nextVersion).toBe('2.0.1')
+    expect(Equal.equals(cascades[0]?.currentVersion, Semver.fromString('2.0.0'))).toBe(true)
+    expect(Equal.equals(cascades[0]?.nextVersion, Semver.fromString('2.0.1'))).toBe(true)
   })
 })

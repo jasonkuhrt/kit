@@ -1,6 +1,6 @@
 {
   "name": "@kitz/paka",
-  "version": "0.0.0",
+  "version": "0.0.0-kitz-release",
   "description": "Package utilities",
   "type": "module",
   "sideEffects": false,

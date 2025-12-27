@@ -1,0 +1,211 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TerminalRenderer DAG mode (compact) > all completed 1`] = `
+"Workflow Progress
+
+  Layer 0: ✓ Preflight
+  Layer 1:
+    ✓ Publish:A
+    ✓ Publish:B
+  Layer 2: ✓ CreateTag
+
+4/4 completed (0.0s)"
+`;
+
+exports[`TerminalRenderer DAG mode (compact) > first layer done, second layer concurrent 1`] = `
+"Workflow Progress
+
+  Layer 0: ✓ Preflight
+  Layer 1:
+    ● Publish:A
+    ● Publish:B
+  Layer 2: ○ CreateTag
+
+1/4 completed (0.0s)"
+`;
+
+exports[`TerminalRenderer DAG mode (compact) > first layer running 1`] = `
+"Workflow Progress
+
+  Layer 0: ● Preflight
+  Layer 1:
+    ○ Publish:A
+    ○ Publish:B
+  Layer 2: ○ CreateTag
+
+0/4 completed (0.0s)"
+`;
+
+exports[`TerminalRenderer DAG mode (compact) > initial state (all pending) 1`] = `
+"Workflow Progress
+
+  Layer 0: ○ Preflight
+  Layer 1:
+    ○ Publish:A
+    ○ Publish:B
+  Layer 2: ○ CreateTag
+
+0/4 completed (0.0s)"
+`;
+
+exports[`TerminalRenderer DAG mode (compact) > with colors enabled 1`] = `
+"[1m[36mWorkflow Progress[0m
+
+  [2mLayer 0:[0m [32m✓ Preflight[0m
+  [2mLayer 1:[0m
+    [33m● Publish:A[0m
+    [90m○ Publish:B[0m
+  [2mLayer 2:[0m [90m○ CreateTag[0m
+
+[2m1/4 completed (0.0s)[0m"
+`;
+
+exports[`TerminalRenderer DAG mode (compact) > with failure in concurrent layer 1`] = `
+"Workflow Progress
+
+  Layer 0: ✓ Preflight
+  Layer 1:
+    ✓ Publish:A
+    ✗ Publish:B
+  Layer 2: ○ CreateTag
+
+2/4 completed (0.0s)"
+`;
+
+exports[`TerminalRenderer DAG mode (full) > full render initial state 1`] = `
+"┌──────────┐    ┌──────────┐    ┌──────────┐
+│○  StepA   │──→ │○  StepB   │──→ │○  StepD   │
+└──────────┘    └──────────┘    └──────────┘
+      │               │                     
+                ┌──────────┐                
+                │○  StepC   │──→             
+                └──────────┘                
+
+0/4 completed (0.0s)"
+`;
+
+exports[`TerminalRenderer DAG mode (full) > full render with colors 1`] = `
+"[32m┌──────────┐[0m    [33m┌──────────┐[0m    [90m┌──────────┐[0m
+[32m│[0m✓  StepA   [32m│[0m──→ [33m│[0m●  StepB   [33m│[0m──→ [90m│[0m○  StepD   [90m│[0m
+[32m└──────────┘[0m    [33m└──────────┘[0m    [90m└──────────┘[0m
+      │               │                     
+                [90m┌──────────┐[0m                
+                [90m│[0m○  StepC   [90m│[0m──→             
+                [90m└──────────┘[0m                
+
+[2m1/4 completed (0.0s)[0m"
+`;
+
+exports[`TerminalRenderer DAG mode (full) > full render with progress 1`] = `
+"┌──────────┐    ┌──────────┐    ┌──────────┐
+│✓  StepA   │──→ │●  StepB   │──→ │○  StepD   │
+└──────────┘    └──────────┘    └──────────┘
+      │               │                     
+                ┌──────────┐                
+                │●  StepC   │──→             
+                └──────────┘                
+
+1/4 completed (0.0s)"
+`;
+
+exports[`TerminalRenderer complex DAG > complex DAG full render 1`] = `
+"┌────────────────────┐    ┌────────────────────┐    ┌────────────────────┐    ┌────────────────────┐
+│○     Preflight      │    │○ Publish:@kitz/core │    │○     CreateTag      │    │○      PushTags      │
+└────────────────────┘    └────────────────────┘    └────────────────────┘    └────────────────────┘
+                                     │                                                              
+                          ┌────────────────────┐                                                    
+                          │○ Publish:@kitz/flo  │                                                    
+                          └────────────────────┘                                                    
+                                     │                                                              
+                          ┌────────────────────┐                                                    
+                          │○ Publish:@kitz/syn  │                                                    
+                          └────────────────────┘                                                    
+
+0/6 completed (0.0s)"
+`;
+
+exports[`TerminalRenderer complex DAG > complex DAG initial state 1`] = `
+"Workflow Progress
+
+  Layer 0: ○ Preflight
+  Layer 1:
+    ○ Publish:@kitz/core
+    ○ Publish:@kitz/flo
+    ○ Publish:@kitz/syn
+  Layer 2: ○ CreateTag
+  Layer 3: ○ PushTags
+
+0/6 completed (0.0s)"
+`;
+
+exports[`TerminalRenderer complex DAG > complex DAG mid-execution 1`] = `
+"Workflow Progress
+
+  Layer 0: ✓ Preflight
+  Layer 1:
+    ✓ Publish:@kitz/core
+    ● Publish:@kitz/flo
+    ● Publish:@kitz/syn
+  Layer 2: ○ CreateTag
+  Layer 3: ○ PushTags
+
+2/6 completed (0.0s)"
+`;
+
+exports[`TerminalRenderer list mode > all completed 1`] = `
+"✓ Preflight
+✓ Publish:core
+✓ Publish:flo
+✓ CreateTag
+✓ PushTags
+
+5/5 completed (0.0s)"
+`;
+
+exports[`TerminalRenderer list mode > first completed, second running 1`] = `
+"✓ Preflight
+● Publish:core
+○ Publish:flo
+○ CreateTag
+○ PushTags
+
+1/5 completed (0.0s)"
+`;
+
+exports[`TerminalRenderer list mode > initial state (all pending) 1`] = `
+"○ Preflight
+○ Publish:core
+○ Publish:flo
+○ CreateTag
+○ PushTags
+
+0/5 completed (0.0s)"
+`;
+
+exports[`TerminalRenderer list mode > one activity running 1`] = `
+"● Preflight
+○ Publish:core
+○ Publish:flo
+○ CreateTag
+○ PushTags
+
+0/5 completed (0.0s)"
+`;
+
+exports[`TerminalRenderer list mode > with colors enabled 1`] = `
+"[32m✓[0m Step1
+[33m●[0m Step2
+[90m○[0m Step3
+
+[2m1/3 completed (0.0s)[0m"
+`;
+
+exports[`TerminalRenderer list mode > with failure 1`] = `
+"✓ Preflight
+✗ Publish:core
+○ Publish:flo
+○ CreateTag
+○ PushTags
+
+1/5 completed (0.0s)"
+`;

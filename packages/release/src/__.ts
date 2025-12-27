@@ -43,27 +43,20 @@ export {
   runPreflight,
 } from './preflight.js'
 
-// State
+// Workflow
 export {
-  type ApplyState,
-  type ApplyStep,
-  canResume,
-  createInitialState,
-  DEFAULT_STATE_FILE,
-  deleteState,
-  getPendingSteps,
-  hasFailed,
-  isComplete,
-  markCompleted,
-  markFailed,
-  markPartial,
-  readState,
-  StateError,
-  type StepStatus,
-  summarizeState,
-  updateStep,
-  writeState,
-} from './state.js'
+  DEFAULT_WORKFLOW_DB,
+  executeWorkflow,
+  executeWorkflowObservable,
+  makeWorkflowRuntime,
+  type ObservableWorkflowResult,
+  ReleaseWorkflow,
+  ReleaseWorkflowError,
+  toWorkflowPayload,
+  WorkflowPreflightError,
+  WorkflowPublishError,
+  WorkflowTagError,
+} from './workflow.js'
 
 // Release
 export {
@@ -79,3 +72,34 @@ export {
   type ReleasePlan,
   type ReleaseResult,
 } from './release.js'
+
+// Monotonic Validation
+export {
+  type AuditResult,
+  type AuditViolation,
+  auditPackageHistory,
+  getPackageTagInfos,
+  getTagSha,
+  isAncestor,
+  type TagInfo,
+  validateAdjacent,
+  type ValidationResult,
+  type Violation,
+} from './monotonic.js'
+
+// History Commands
+export {
+  audit as historyAudit,
+  type AuditOptions as HistoryAuditOptions,
+  formatAuditResult,
+  formatAuditResults,
+  formatMonotonicViolationError,
+  formatSetResult,
+  formatTagExistsError,
+  HistoryError,
+  MonotonicViolationError,
+  set as historySet,
+  type SetOptions as HistorySetOptions,
+  type SetResult as HistorySetResult,
+  TagExistsError,
+} from './history.js'

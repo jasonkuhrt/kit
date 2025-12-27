@@ -1,6 +1,6 @@
 {
   "name": "@kitz/tex",
-  "version": "0.0.0",
+  "version": "0.0.0-kitz-release",
   "description": "Text and box formatting utilities",
   "type": "module",
   "sideEffects": false,

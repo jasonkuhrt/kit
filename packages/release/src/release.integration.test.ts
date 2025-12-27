@@ -1,10 +1,21 @@
 import { Env } from '@kitz/env'
 import { Memory, Path } from '@kitz/fs/__'
 import { GitTest } from '@kitz/git/__'
-import { Effect, Layer } from 'effect'
+import { Semver } from '@kitz/semver'
+import { Effect, Equal, Layer } from 'effect'
 import { describe, expect, test } from 'vitest'
 import type { Package } from './discovery.js'
 import { apply, planPr, planPreview, planStable, type ReleasePlan } from './release.js'
+import { makeTestWorkflowRuntime } from './workflow.js'
+
+/** Helper to compare Semver values */
+const expectVersion = (actual: Semver.Semver | null | undefined, expected: string) => {
+  if (actual === null || actual === undefined) {
+    expect(actual).toBe(expected)
+  } else {
+    expect(Equal.equals(actual, Semver.fromString(expected))).toBe(true)
+  }
+}
 
 /**
  * Integration tests for the release pipeline.
@@ -22,6 +33,9 @@ const mockPackages: Package[] = [
 // Test env layer with /repo/ as cwd
 const testEnv = Env.Test({ cwd: Path.AbsDir.fromString('/repo/') })
 
+// In-memory workflow runtime for tests
+const testWorkflowRuntime = makeTestWorkflowRuntime()
+
 /**
  * Create a combined layer with GitTest, Memory FileSystem, and Env.
  */
@@ -29,6 +43,18 @@ const makeTestLayer = (
   gitConfig: Parameters<typeof GitTest.make>[0],
   diskLayout: Memory.DiskLayout = {},
 ) => Layer.mergeAll(GitTest.make(gitConfig), Memory.layer(diskLayout), testEnv)
+
+/**
+ * Create a test layer that includes workflow runtime for apply() tests.
+ */
+const makeApplyTestLayer = (
+  gitConfig: Parameters<typeof GitTest.make>[0],
+  diskLayout: Memory.DiskLayout = {},
+) =>
+  Layer.provideMerge(
+    makeTestLayer(gitConfig, diskLayout),
+    testWorkflowRuntime,
+  )
 
 /**
  * Create package.json content with dependencies.
@@ -84,8 +110,8 @@ describe('planStable integration', () => {
     expect(result.releases).toHaveLength(1)
     expect(result.releases[0]?.package.name).toBe('@kitz/core')
     expect(result.releases[0]?.bump).toBe('minor')
-    expect(result.releases[0]?.currentVersion).toBe('1.0.0')
-    expect(result.releases[0]?.nextVersion).toBe('1.1.0')
+    expectVersion(result.releases[0]?.currentVersion, '1.0.0')
+    expectVersion(result.releases[0]?.nextVersion, '1.1.0')
   })
 
   test('detects major bump from breaking change', async () => {
@@ -106,7 +132,7 @@ describe('planStable integration', () => {
     expect(result.releases).toHaveLength(1)
     expect(result.releases[0]?.package.name).toBe('@kitz/cli')
     expect(result.releases[0]?.bump).toBe('major')
-    expect(result.releases[0]?.nextVersion).toBe('3.0.0')
+    expectVersion(result.releases[0]?.nextVersion, '3.0.0')
   })
 
   test('aggregates multiple commits to highest bump', async () => {
@@ -155,10 +181,10 @@ describe('planStable integration', () => {
     const cliRelease = result.releases.find((r) => r.package.name === '@kitz/cli')
 
     expect(coreRelease?.bump).toBe('minor')
-    expect(coreRelease?.nextVersion).toBe('1.1.0')
+    expectVersion(coreRelease?.nextVersion, '1.1.0')
 
     expect(cliRelease?.bump).toBe('patch')
-    expect(cliRelease?.nextVersion).toBe('2.0.1')
+    expectVersion(cliRelease?.nextVersion, '2.0.1')
   })
 
   test('first release starts at 0.1.0 for feat', async () => {
@@ -178,7 +204,7 @@ describe('planStable integration', () => {
 
     const utilsRelease = result.releases.find((r) => r.package.name === '@kitz/utils')
     expect(utilsRelease?.currentVersion).toBeNull()
-    expect(utilsRelease?.nextVersion).toBe('0.1.0')
+    expectVersion(utilsRelease?.nextVersion, '0.1.0')
   })
 
   test('respects package filter option', async () => {
@@ -235,10 +261,11 @@ describe('apply integration (dry-run)', () => {
       }),
     )
 
-    const layer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
+    const baseLayer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
+    const layer = Layer.provideMerge(testWorkflowRuntime, baseLayer)
 
     const plan = await Effect.runPromise(
-      Effect.provide(planStable({ packages: mockPackages }), layer),
+      Effect.provide(planStable({ packages: mockPackages }), baseLayer),
     )
 
     const result = await Effect.runPromise(
@@ -305,6 +332,94 @@ describe('apply integration (dry-run)', () => {
   })
 })
 
+describe('workflow durability', () => {
+  test('idempotent execution returns same result', async () => {
+    // The workflow uses an idempotency key based on releases.
+    // Executing the same workflow twice should return consistent results.
+    const diskLayout: Memory.DiskLayout = {
+      '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
+    }
+
+    const { layer: gitLayer } = await Effect.runPromise(
+      GitTest.makeWithState({
+        tags: ['@kitz/core@1.0.0'],
+        commits: [GitTest.commit('feat(core): new feature')],
+      }),
+    )
+
+    const baseLayer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
+    const layer = Layer.provideMerge(testWorkflowRuntime, baseLayer)
+
+    const plan = await Effect.runPromise(
+      Effect.provide(planStable({ packages: mockPackages }), baseLayer),
+    )
+
+    // First execution
+    const result1 = await Effect.runPromise(
+      Effect.provide(
+        apply(plan, { dryRun: true }),
+        layer,
+      ),
+    )
+
+    // Second execution with same plan (same idempotency key)
+    const result2 = await Effect.runPromise(
+      Effect.provide(
+        apply(plan, { dryRun: true }),
+        layer,
+      ),
+    )
+
+    // Both should return the same result
+    expect(result1.released).toHaveLength(1)
+    expect(result2.released).toHaveLength(1)
+    expect(result1.tags).toEqual(result2.tags)
+    expect(result1.released.map((r) => r.package.name)).toEqual(
+      result2.released.map((r) => r.package.name),
+    )
+  })
+
+  test('workflow with multiple packages tracks all activities', async () => {
+    // This verifies the workflow engine properly tracks completion
+    // of multiple activities (one per package)
+    const diskLayout: Memory.DiskLayout = {
+      '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
+      '/repo/packages/cli/package.json': makePackageJson('@kitz/cli', '1.0.0'),
+    }
+
+    const { layer: gitLayer } = await Effect.runPromise(
+      GitTest.makeWithState({
+        tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0'],
+        commits: [
+          GitTest.commit('feat(core): core feature'),
+          GitTest.commit('fix(cli): cli fix'),
+        ],
+      }),
+    )
+
+    const baseLayer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
+    const layer = Layer.provideMerge(testWorkflowRuntime, baseLayer)
+
+    const plan = await Effect.runPromise(
+      Effect.provide(planStable({ packages: mockPackages }), baseLayer),
+    )
+
+    expect(plan.releases).toHaveLength(2)
+
+    const result = await Effect.runPromise(
+      Effect.provide(
+        apply(plan, { dryRun: true }),
+        layer,
+      ),
+    )
+
+    // All packages should be released with their own tags
+    expect(result.released).toHaveLength(2)
+    expect(result.tags).toContain('@kitz/core@1.1.0')
+    expect(result.tags).toContain('@kitz/cli@1.0.1')
+  })
+})
+
 describe('end-to-end pipeline', () => {
   test('complete plan and apply workflow', async () => {
     const diskLayout: Memory.DiskLayout = {
@@ -320,18 +435,19 @@ describe('end-to-end pipeline', () => {
       }),
     )
 
-    const layer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
+    const baseLayer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
+    const layer = Layer.provideMerge(testWorkflowRuntime, baseLayer)
 
     // Step 1: Plan
     const plan = await Effect.runPromise(
       Effect.provide(
         planStable({ packages: mockPackages }),
-        layer,
+        baseLayer,
       ),
     )
 
     expect(plan.releases).toHaveLength(1)
-    expect(plan.releases[0]?.nextVersion).toBe('1.1.0')
+    expectVersion(plan.releases[0]?.nextVersion, '1.1.0')
     expect(plan.releases[0]?.bump).toBe('minor')
     expect(plan.releases[0]?.package.name).toBe('@kitz/core')
 
@@ -368,12 +484,13 @@ describe('end-to-end pipeline', () => {
       }),
     )
 
-    const layer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
+    const baseLayer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
+    const layer = Layer.provideMerge(testWorkflowRuntime, baseLayer)
 
     const plan = await Effect.runPromise(
       Effect.provide(
         planStable({ packages: mockPackages }),
-        layer,
+        baseLayer,
       ),
     )
 
@@ -423,7 +540,7 @@ describe('planPreview integration', () => {
     expect(result.releases[0]?.package.name).toBe('@kitz/core')
     expect(result.releases[0]?.bump).toBe('minor')
     // Preview version: nextStable-next.N
-    expect(result.releases[0]?.nextVersion).toBe('1.1.0-next.1')
+    expectVersion(result.releases[0]?.nextVersion, '1.1.0-next.1')
   })
 
   test('increments preview number for existing previews', async () => {
@@ -447,7 +564,7 @@ describe('planPreview integration', () => {
 
     expect(result.releases).toHaveLength(1)
     // Should be next.3 since next.1 and next.2 already exist
-    expect(result.releases[0]?.nextVersion).toBe('1.1.0-next.3')
+    expectVersion(result.releases[0]?.nextVersion, '1.1.0-next.3')
   })
 
   test('first preview release starts at next.1', async () => {
@@ -467,7 +584,7 @@ describe('planPreview integration', () => {
 
     expect(result.releases).toHaveLength(1)
     // First release at 0.1.0, preview version 0.1.0-next.1
-    expect(result.releases[0]?.nextVersion).toBe('0.1.0-next.1')
+    expectVersion(result.releases[0]?.nextVersion, '0.1.0-next.1')
   })
 
   test('generates preview cascades with preview versions', async () => {
@@ -495,12 +612,12 @@ describe('planPreview integration', () => {
     )
 
     expect(result.releases).toHaveLength(1)
-    expect(result.releases[0]?.nextVersion).toBe('1.1.0-next.1')
+    expectVersion(result.releases[0]?.nextVersion, '1.1.0-next.1')
 
     expect(result.cascades).toHaveLength(1)
     expect(result.cascades[0]?.package.name).toBe('@kitz/cli')
     // Cascade gets preview version too
-    expect(result.cascades[0]?.nextVersion).toBe('1.0.1-next.1')
+    expectVersion(result.cascades[0]?.nextVersion, '1.0.1-next.1')
   })
 })
 
@@ -524,7 +641,7 @@ describe('planPr integration', () => {
     expect(result.releases).toHaveLength(1)
     expect(result.releases[0]?.package.name).toBe('@kitz/core')
     // PR version: 0.0.0-pr.PR.N.SHA
-    expect(result.releases[0]?.nextVersion).toBe('0.0.0-pr.42.1.abc1234')
+    expectVersion(result.releases[0]?.nextVersion, '0.0.0-pr.42.1.abc1234')
   })
 
   test('increments PR release number for existing PR releases', async () => {
@@ -549,7 +666,7 @@ describe('planPr integration', () => {
 
     expect(result.releases).toHaveLength(1)
     // Should be .3 since .1 and .2 already exist for this PR
-    expect(result.releases[0]?.nextVersion).toBe('0.0.0-pr.42.3.abc1234')
+    expectVersion(result.releases[0]?.nextVersion, '0.0.0-pr.42.3.abc1234')
   })
 
   test('different PRs have independent numbering', async () => {
@@ -574,7 +691,7 @@ describe('planPr integration', () => {
 
     expect(result.releases).toHaveLength(1)
     // Should be .1 since PR 99 has no existing releases
-    expect(result.releases[0]?.nextVersion).toBe('0.0.0-pr.99.1.abc1234')
+    expectVersion(result.releases[0]?.nextVersion, '0.0.0-pr.99.1.abc1234')
   })
 
   test('detects PR number from environment', async () => {
@@ -601,7 +718,7 @@ describe('planPr integration', () => {
     )
 
     expect(result.releases).toHaveLength(1)
-    expect(result.releases[0]?.nextVersion).toBe('0.0.0-pr.123.1.xyz7890')
+    expectVersion(result.releases[0]?.nextVersion, '0.0.0-pr.123.1.xyz7890')
   })
 
   test('fails when PR number cannot be detected', async () => {
@@ -655,11 +772,11 @@ describe('planPr integration', () => {
     )
 
     expect(result.releases).toHaveLength(1)
-    expect(result.releases[0]?.nextVersion).toBe('0.0.0-pr.55.1.sha1234')
+    expectVersion(result.releases[0]?.nextVersion, '0.0.0-pr.55.1.sha1234')
 
     expect(result.cascades).toHaveLength(1)
     expect(result.cascades[0]?.package.name).toBe('@kitz/cli')
     // Cascade gets PR version too
-    expect(result.cascades[0]?.nextVersion).toBe('0.0.0-pr.55.1.sha1234')
+    expectVersion(result.cascades[0]?.nextVersion, '0.0.0-pr.55.1.sha1234')
   })
 })

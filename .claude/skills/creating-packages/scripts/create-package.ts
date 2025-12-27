@@ -38,7 +38,7 @@ const createPackage = (name: string) => {
   // package.json
   const packageJson = {
     name: `@kitz/${name}`,
-    version: '0.0.0',
+    version: '0.0.0-kitz-release',
     type: 'module',
     sideEffects: false,
     imports: {

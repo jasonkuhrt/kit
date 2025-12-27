@@ -1,6 +1,6 @@
 {
   "name": "@kitz/log",
-  "version": "0.0.0",
+  "version": "0.0.0-kitz-release",
   "description": "Logging utilities",
   "type": "module",
   "sideEffects": false,

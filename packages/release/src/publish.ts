@@ -1,6 +1,7 @@
 import { FileSystem } from '@effect/platform'
 import { Err } from '@kitz/core'
 import { Fs } from '@kitz/fs'
+import { Semver } from '@kitz/semver'
 import { Effect } from 'effect'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
@@ -16,7 +17,7 @@ const packageJsonRelFile = Fs.Path.RelFile.fromString('./package.json')
  */
 export interface ReleaseInfo {
   readonly package: Package
-  readonly nextVersion: string
+  readonly nextVersion: Semver.Semver
 }
 
 /**
@@ -182,7 +183,7 @@ export const publishPackage = (
     const pkgDir = release.package.path
 
     // 1. Inject the new version
-    const originalVersion = yield* injectVersion(pkgDir, release.nextVersion)
+    const originalVersion = yield* injectVersion(pkgDir, release.nextVersion.version.toString())
 
     // 2. Publish (with guaranteed cleanup)
     yield* Effect.ensuring(

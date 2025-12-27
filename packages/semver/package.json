@@ -1,6 +1,6 @@
 {
   "name": "@kitz/semver",
-  "version": "0.0.0",
+  "version": "0.0.0-kitz-release",
   "description": "Semantic versioning utilities",
   "type": "module",
   "sideEffects": false,

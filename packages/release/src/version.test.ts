@@ -1,3 +1,4 @@
+import * as Semver from '@kitz/semver/__'
 import { Effect } from 'effect'
 import { describe, expect, test } from 'vitest'
 import {
@@ -114,28 +115,28 @@ describe('aggregateByPackage', () => {
 
 describe('calculateNextVersion', () => {
   test('first release', () => {
-    expect(calculateNextVersion(null, 'major')).toBe('1.0.0')
-    expect(calculateNextVersion(null, 'minor')).toBe('0.1.0')
-    expect(calculateNextVersion(null, 'patch')).toBe('0.0.1')
+    expect(calculateNextVersion(null, 'major').version.toString()).toBe('1.0.0')
+    expect(calculateNextVersion(null, 'minor').version.toString()).toBe('0.1.0')
+    expect(calculateNextVersion(null, 'patch').version.toString()).toBe('0.0.1')
   })
 
   test('major bump', () => {
-    expect(calculateNextVersion('1.2.3', 'major')).toBe('2.0.0')
+    expect(calculateNextVersion(Semver.fromString('1.2.3'), 'major').version.toString()).toBe('2.0.0')
   })
 
   test('minor bump', () => {
-    expect(calculateNextVersion('1.2.3', 'minor')).toBe('1.3.0')
+    expect(calculateNextVersion(Semver.fromString('1.2.3'), 'minor').version.toString()).toBe('1.3.0')
   })
 
   test('patch bump', () => {
-    expect(calculateNextVersion('1.2.3', 'patch')).toBe('1.2.4')
+    expect(calculateNextVersion(Semver.fromString('1.2.3'), 'patch').version.toString()).toBe('1.2.4')
   })
 })
 
 describe('findLatestTagVersion', () => {
   test('finds matching tag', () => {
     const tags = ['@kitz/core@1.0.0', '@kitz/core@1.1.0', '@kitz/cli@0.5.0']
-    expect(findLatestTagVersion('@kitz/core', tags)).toBe('1.1.0')
+    expect(findLatestTagVersion('@kitz/core', tags)?.version.toString()).toBe('1.1.0')
   })
 
   test('returns null when no match', () => {
@@ -149,6 +150,6 @@ describe('findLatestTagVersion', () => {
 
   test('ignores invalid versions', () => {
     const tags = ['@kitz/core@1.0.0', '@kitz/core@invalid', '@kitz/core@2.0.0']
-    expect(findLatestTagVersion('@kitz/core', tags)).toBe('2.0.0')
+    expect(findLatestTagVersion('@kitz/core', tags)?.version.toString()).toBe('2.0.0')
   })
 })

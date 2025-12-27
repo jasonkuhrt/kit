@@ -1,6 +1,6 @@
 {
   "name": "@kitz/sch",
-  "version": "0.0.0",
+  "version": "0.0.0-kitz-release",
   "description": "Schema utilities",
   "type": "module",
   "sideEffects": false,
