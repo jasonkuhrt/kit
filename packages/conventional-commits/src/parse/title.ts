@@ -2,6 +2,7 @@ import { Data, Effect, Option } from 'effect'
 import { MultiTargetCommit } from '../multi-target-commit.js'
 import { SingleTargetCommit } from '../single-target-commit.js'
 import { Target } from '../target.js'
+import { Type, from as typeFrom } from '../type.js'
 
 /**
  * Error parsing a conventional commit title.
@@ -141,7 +142,7 @@ export const parseTitle = (
   })
 
 interface ParsedGroup {
-  type: string
+  type: Type
   scopes: string[]
   perScopeBreaking: boolean[]
 }
@@ -182,8 +183,10 @@ const parseTypeScopeGroup = (group: string): ParsedGroup | null => {
   const match = group.match(TYPE_SCOPE_PATTERN)
   if (!match) return null
 
-  const [, type, scopesPart, groupBreaking] = match
-  if (!type) return null
+  const [, typeString, scopesPart, groupBreaking] = match
+  if (!typeString) return null
+
+  const type = typeFrom(typeString)
 
   if (!scopesPart) {
     // No scopes: "feat" or "feat!"

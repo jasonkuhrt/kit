@@ -2,11 +2,12 @@ import { Option } from 'effect'
 import { describe, expect, test } from 'vitest'
 import { Footer } from './footer.js'
 import { SingleTargetCommit } from './single-target-commit.js'
+import { Standard, Custom } from './type.js'
 
 describe('SingleTargetCommit', () => {
   test('make creates valid commit with scope', () => {
     const commit = SingleTargetCommit.make({
-      type: 'feat',
+      type: Standard.make({ value: 'feat' }),
       scopes: ['core'],
       breaking: false,
       message: 'add new feature',
@@ -14,7 +15,8 @@ describe('SingleTargetCommit', () => {
       footers: [],
     })
     expect(commit._tag).toBe('SingleTarget')
-    expect(commit.type).toBe('feat')
+    expect(commit.type._tag).toBe('Standard')
+    expect(commit.type.value).toBe('feat')
     expect(commit.scopes).toEqual(['core'])
     expect(commit.breaking).toBe(false)
     expect(commit.message).toBe('add new feature')
@@ -22,7 +24,7 @@ describe('SingleTargetCommit', () => {
 
   test('make creates commit with multiple scopes (uniform treatment)', () => {
     const commit = SingleTargetCommit.make({
-      type: 'feat',
+      type: Standard.make({ value: 'feat' }),
       scopes: ['core', 'cli'],
       breaking: true,
       message: 'breaking change across packages',
@@ -36,7 +38,7 @@ describe('SingleTargetCommit', () => {
 
   test('make creates commit without scope', () => {
     const commit = SingleTargetCommit.make({
-      type: 'chore',
+      type: Standard.make({ value: 'chore' }),
       scopes: [],
       breaking: false,
       message: 'update deps',

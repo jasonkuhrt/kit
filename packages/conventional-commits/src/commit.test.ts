@@ -4,11 +4,12 @@ import { ConventionalCommit } from './commit.js'
 import { MultiTargetCommit } from './multi-target-commit.js'
 import { SingleTargetCommit } from './single-target-commit.js'
 import { Target } from './target.js'
+import { Standard } from './type.js'
 
 describe('ConventionalCommit', () => {
   test('union accepts SingleTargetCommit', () => {
     const single = SingleTargetCommit.make({
-      type: 'feat',
+      type: Standard.make({ value: 'feat' }),
       scopes: ['core'],
       breaking: false,
       message: 'add feature',
@@ -20,7 +21,7 @@ describe('ConventionalCommit', () => {
 
   test('union accepts MultiTargetCommit', () => {
     const multi = MultiTargetCommit.make({
-      targets: [Target.make({ type: 'feat', scope: 'core', breaking: true })],
+      targets: [Target.make({ type: Standard.make({ value: 'feat' }), scope: 'core', breaking: true })],
       message: 'breaking change',
       summary: Option.none(),
       sections: {},
@@ -30,7 +31,7 @@ describe('ConventionalCommit', () => {
 
   test('SingleTargetCommit.is type guard works', () => {
     const single = SingleTargetCommit.make({
-      type: 'feat',
+      type: Standard.make({ value: 'feat' }),
       scopes: [],
       breaking: false,
       message: 'msg',
@@ -43,7 +44,7 @@ describe('ConventionalCommit', () => {
 
   test('MultiTargetCommit.is type guard works', () => {
     const multi = MultiTargetCommit.make({
-      targets: [Target.make({ type: 'fix', scope: 'cli', breaking: false })],
+      targets: [Target.make({ type: Standard.make({ value: 'fix' }), scope: 'cli', breaking: false })],
       message: 'msg',
       summary: Option.none(),
       sections: {},

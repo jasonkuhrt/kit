@@ -1,5 +1,6 @@
 import { Schema } from 'effect'
 import { Footer } from './footer.js'
+import { Type } from './type.js'
 
 /**
  * A standard conventional commit where all scopes receive uniform treatment.
@@ -11,8 +12,8 @@ import { Footer } from './footer.js'
  * - `feat(core)!: breaking change` (breaking applies to all scopes)
  */
 export class SingleTargetCommit extends Schema.TaggedClass<SingleTargetCommit>()('SingleTarget', {
-  /** Commit type (e.g., "feat", "fix", "chore") */
-  type: Schema.String,
+  /** Commit type */
+  type: Type,
   /** Package scopes (can be empty, one, or multiple—all get same treatment) */
   scopes: Schema.Array(Schema.String),
   /** Whether this is a breaking change (applies to ALL scopes) */

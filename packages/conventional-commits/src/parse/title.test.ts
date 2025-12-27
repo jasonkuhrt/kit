@@ -3,6 +3,7 @@ import { Effect, Exit, Option } from 'effect'
 import { describe, expect, test } from 'vitest'
 import { MultiTargetCommit } from '../multi-target-commit.js'
 import { SingleTargetCommit } from '../single-target-commit.js'
+import { Standard } from '../type.js'
 import { parseTitle } from './title.js'
 
 // Helper that runs Effect and returns the parsed commit (or null on failure)
@@ -21,7 +22,7 @@ Test.describe('parseTitle > SingleTarget')
     [
       ['feat: add feature'],
       SingleTargetCommit.make({
-        type: 'feat',
+        type: Standard.make({ value: 'feat' }),
         message: 'add feature',
         scopes: [],
         breaking: false,
@@ -33,7 +34,7 @@ Test.describe('parseTitle > SingleTarget')
     [
       ['feat(core): add feature'],
       SingleTargetCommit.make({
-        type: 'feat',
+        type: Standard.make({ value: 'feat' }),
         message: 'add feature',
         scopes: ['core'],
         breaking: false,
@@ -45,7 +46,7 @@ Test.describe('parseTitle > SingleTarget')
     [
       ['feat(core, cli): add feature'],
       SingleTargetCommit.make({
-        type: 'feat',
+        type: Standard.make({ value: 'feat' }),
         message: 'add feature',
         scopes: ['core', 'cli'],
         breaking: false,
@@ -57,7 +58,7 @@ Test.describe('parseTitle > SingleTarget')
     [
       ['feat(core)!: breaking change'],
       SingleTargetCommit.make({
-        type: 'feat',
+        type: Standard.make({ value: 'feat' }),
         message: 'breaking change',
         scopes: ['core'],
         breaking: true,
@@ -69,7 +70,7 @@ Test.describe('parseTitle > SingleTarget')
     [
       ['feat(core!): breaking change'],
       SingleTargetCommit.make({
-        type: 'feat',
+        type: Standard.make({ value: 'feat' }),
         message: 'breaking change',
         scopes: ['core'],
         breaking: true,
@@ -88,9 +89,9 @@ describe('parseTitle > MultiTarget', () => {
       expect(result.value._tag).toBe('MultiTarget')
       if (MultiTargetCommit.is(result.value)) {
         expect(result.value.targets).toHaveLength(2)
-        expect(result.value.targets[0].type).toBe('feat')
+        expect(result.value.targets[0].type.value).toBe('feat')
         expect(result.value.targets[0].scope).toBe('core')
-        expect(result.value.targets[1].type).toBe('fix')
+        expect(result.value.targets[1].type.value).toBe('fix')
         expect(result.value.targets[1].scope).toBe('cli')
       }
     }

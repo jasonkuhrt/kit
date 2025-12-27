@@ -4,13 +4,14 @@ import { Footer } from './footer.js'
 import { MultiTargetCommit } from './multi-target-commit.js'
 import { TargetSection } from './target-section.js'
 import { Target } from './target.js'
+import { Standard } from './type.js'
 
 describe('MultiTargetCommit', () => {
   test('make creates valid multi-target commit', () => {
     const commit = MultiTargetCommit.make({
       targets: [
-        Target.make({ type: 'feat', scope: 'core', breaking: true }),
-        Target.make({ type: 'fix', scope: 'cli', breaking: false }),
+        Target.make({ type: Standard.make({ value: 'feat' }), scope: 'core', breaking: true }),
+        Target.make({ type: Standard.make({ value: 'fix' }), scope: 'cli', breaking: false }),
       ],
       message: 'breaking core change with cli fix',
       summary: Option.none(),
@@ -18,17 +19,17 @@ describe('MultiTargetCommit', () => {
     })
     expect(commit._tag).toBe('MultiTarget')
     expect(commit.targets).toHaveLength(2)
-    expect(commit.targets[0].type).toBe('feat')
+    expect(commit.targets[0].type.value).toBe('feat')
     expect(commit.targets[0].breaking).toBe(true)
-    expect(commit.targets[1].type).toBe('fix')
+    expect(commit.targets[1].type.value).toBe('fix')
     expect(commit.targets[1].breaking).toBe(false)
   })
 
   test('make creates commit with summary and sections', () => {
     const commit = MultiTargetCommit.make({
       targets: [
-        Target.make({ type: 'feat', scope: 'core', breaking: true }),
-        Target.make({ type: 'fix', scope: 'arr', breaking: false }),
+        Target.make({ type: Standard.make({ value: 'feat' }), scope: 'core', breaking: true }),
+        Target.make({ type: Standard.make({ value: 'fix' }), scope: 'arr', breaking: false }),
       ],
       message: 'major refactor',
       summary: Option.some('This affects multiple packages.'),
