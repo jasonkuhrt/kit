@@ -62,17 +62,35 @@ src/module-name/
 
 ### Import System
 
-Use `#` imports for internal module references within a package:
+**Within a package** - use `#` imports:
 
 ```typescript
-// Correct - use # imports
+// ✅ Correct - use # imports internally
 import { Fn } from '#fn'
 import { Obj } from '#obj'
 
-// Incorrect - don't use relative or package imports internally
+// ❌ Incorrect - don't use relative or package imports internally
 import { Obj } from '@kitz/core/obj'
 import { Fn } from '../fn/_.js'
 ```
+
+**Cross-package imports** - ALWAYS use namespace (root path), never barrel (`/__`):
+
+```typescript
+// ✅ Correct - namespace import from root
+import { Git } from '@kitz/git'
+import { Semver } from '@kitz/semver'
+import { Fs } from '@kitz/fs'
+
+// ❌ Incorrect - barrel imports
+import { Git } from '@kitz/git/__'
+import * as Semver from '@kitz/semver/__'
+import { Path } from '@kitz/fs/__'
+```
+
+Access members via the namespace (e.g., `Git.Git`, `Git.GitError`, `Semver.fromString()`).
+
+**Exception**: The `kitz` aggregator package re-exports barrels to compose the umbrella package.
 
 ### Naming
 

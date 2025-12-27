@@ -1,5 +1,5 @@
-import { Git, GitError } from '@kitz/git/__'
-import * as Semver from '@kitz/semver/__'
+import { Git } from '@kitz/git'
+import { Semver } from '@kitz/semver'
 import { Effect } from 'effect'
 
 /**
@@ -34,9 +34,9 @@ export interface TagInfo {
 /**
  * Get the SHA for a git tag.
  */
-export const getTagSha = (tag: string): Effect.Effect<string, GitError, Git> =>
+export const getTagSha = (tag: string): Effect.Effect<string, Git.GitError, Git.Git> =>
   Effect.gen(function*() {
-    const git = yield* Git
+    const git = yield* Git.Git
     return yield* git.getTagSha(tag)
   })
 
@@ -45,9 +45,9 @@ export const getTagSha = (tag: string): Effect.Effect<string, GitError, Git> =>
  *
  * Returns true if sha1 is reachable from sha2 following parent links.
  */
-export const isAncestor = (sha1: string, sha2: string): Effect.Effect<boolean, GitError, Git> =>
+export const isAncestor = (sha1: string, sha2: string): Effect.Effect<boolean, Git.GitError, Git.Git> =>
   Effect.gen(function*() {
-    const git = yield* Git
+    const git = yield* Git.Git
     return yield* git.isAncestor(sha1, sha2)
   })
 
@@ -59,7 +59,7 @@ export const isAncestor = (sha1: string, sha2: string): Effect.Effect<boolean, G
 export const getPackageTagInfos = (
   packageName: string,
   tags: string[],
-): Effect.Effect<TagInfo[], GitError, Git> =>
+): Effect.Effect<TagInfo[], Git.GitError, Git.Git> =>
   Effect.gen(function*() {
     const prefix = `${packageName}@`
     const tagInfos: TagInfo[] = []
@@ -97,7 +97,7 @@ export const validateAdjacent = (
   packageName: string,
   newVersion: Semver.Semver,
   tags: string[],
-): Effect.Effect<ValidationResult, GitError, Git> =>
+): Effect.Effect<ValidationResult, Git.GitError, Git.Git> =>
   Effect.gen(function*() {
     const tagInfos = yield* getPackageTagInfos(packageName, tags)
 
@@ -182,7 +182,7 @@ export interface AuditViolation {
 export const auditPackageHistory = (
   packageName: string,
   tags: string[],
-): Effect.Effect<AuditResult, GitError, Git> =>
+): Effect.Effect<AuditResult, Git.GitError, Git.Git> =>
   Effect.gen(function*() {
     const tagInfos = yield* getPackageTagInfos(packageName, tags)
     const violations: AuditViolation[] = []

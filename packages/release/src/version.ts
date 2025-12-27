@@ -1,5 +1,5 @@
-import { type ConventionalCommitType, isMultiTarget, isSingleTarget, parseTitle } from '@kitz/conventional-commits/__'
-import * as Semver from '@kitz/semver/__'
+import { ConventionalCommits } from '@kitz/conventional-commits'
+import { Semver } from '@kitz/semver'
 import { Effect } from 'effect'
 
 /**
@@ -45,7 +45,7 @@ export const extractImpacts = (
   Effect.gen(function*() {
     // Parse the commit title (first line)
     const title = message.split('\n')[0] ?? message
-    const parsed = yield* Effect.either(parseTitle(title))
+    const parsed = yield* Effect.either(ConventionalCommits.parseTitle(title))
 
     if (parsed._tag === 'Left') {
       // Not a conventional commit - no impacts
@@ -55,7 +55,7 @@ export const extractImpacts = (
     const commit = parsed.right
     const impacts: CommitImpact[] = []
 
-    if (isSingleTarget(commit)) {
+    if (ConventionalCommits.isSingleTarget(commit)) {
       const bump = bumpFromType(commit.type, commit.breaking)
 
       if (commit.scopes.length === 0) {
@@ -66,7 +66,7 @@ export const extractImpacts = (
       for (const scope of commit.scopes) {
         impacts.push({ scope, bump, commitMessage: message })
       }
-    } else if (isMultiTarget(commit)) {
+    } else if (ConventionalCommits.isMultiTarget(commit)) {
       for (const target of commit.targets) {
         const bump = bumpFromType(target.type, target.breaking)
         impacts.push({ scope: target.scope, bump, commitMessage: message })

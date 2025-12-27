@@ -1,5 +1,5 @@
-import { Git, GitError } from '@kitz/git/__'
-import * as Semver from '@kitz/semver/__'
+import { Git } from '@kitz/git'
+import { Semver } from '@kitz/semver'
 import { Data, Effect } from 'effect'
 import { auditPackageHistory, type AuditResult, validateAdjacent, type ValidationResult } from './monotonic.js'
 
@@ -96,9 +96,9 @@ const makeTagName = (packageName: string, version: Semver.Semver): string =>
  */
 export const set = (
   options: SetOptions,
-): Effect.Effect<SetResult, HistoryError | TagExistsError | MonotonicViolationError | GitError, Git> =>
+): Effect.Effect<SetResult, HistoryError | TagExistsError | MonotonicViolationError | Git.GitError, Git.Git> =>
   Effect.gen(function*() {
-    const git = yield* Git
+    const git = yield* Git.Git
     const packageName = normalizePackageName(options.pkg)
     const version = options.ver
     const versionString = version.version.toString()
@@ -186,9 +186,9 @@ export interface AuditOptions {
  */
 export const audit = (
   options: AuditOptions = {},
-): Effect.Effect<AuditResult[], GitError, Git> =>
+): Effect.Effect<AuditResult[], Git.GitError, Git.Git> =>
   Effect.gen(function*() {
-    const git = yield* Git
+    const git = yield* Git.Git
     const tags = yield* git.getTags()
 
     // Find all packages with release tags

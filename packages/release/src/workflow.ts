@@ -19,7 +19,7 @@ import { SqliteClient } from '@effect/sql-sqlite-node'
 import { WorkflowEngine } from '@effect/workflow'
 import { Flo } from '@kitz/flo'
 import { Fs } from '@kitz/fs'
-import { Git } from '@kitz/git/__'
+import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
 import { Effect, Layer, Schema, Stream } from 'effect'
 import { type PreflightError, runPreflight } from './preflight.js'
@@ -222,7 +222,7 @@ export const ReleaseWorkflow = Flo.Workflow.make({
             yield* Effect.log(`[dry-run] Would create tag: ${tag}`)
           } else {
             yield* Effect.log(`Creating tag: ${tag}`)
-            const gitService = yield* Git
+            const gitService = yield* Git.Git
             yield* gitService.createTag(tag, `Release ${tag}`)
           }
           return tag
@@ -247,7 +247,7 @@ export const ReleaseWorkflow = Flo.Workflow.make({
           yield* Effect.log(`[dry-run] Would push ${tags.length} tags to origin`)
         } else {
           yield* Effect.log(`Pushing ${tags.length} tags to origin...`)
-          const gitService = yield* Git
+          const gitService = yield* Git.Git
           yield* gitService.pushTags()
         }
       }).pipe(

@@ -17,6 +17,9 @@
     "_:check:lint": "oxlint --config ../../oxlint.json src/",
     "_:check:package": "publint && attw --pack --ignore-rules no-resolution cjs-resolves-to-esm internal-resolution-error"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": ["better-sqlite3"]
+  },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
     "@ark/attest": "^0.56.0",

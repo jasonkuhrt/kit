@@ -1,5 +1,5 @@
 import { Err } from '@kitz/core'
-import { Git, type GitError } from '@kitz/git/__'
+import { Git } from '@kitz/git'
 import { Effect } from 'effect'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
@@ -141,9 +141,9 @@ export const checkGitRemote = (
  */
 export const checkTagsNotExist = (
   releases: PlannedRelease[],
-): Effect.Effect<string[], PreflightError, Git> =>
+): Effect.Effect<string[], PreflightError, Git.Git> =>
   Effect.gen(function*() {
-    const git = yield* Git
+    const git = yield* Git.Git
 
     const existingTags = yield* git.getTags().pipe(
       Effect.mapError((e) =>
@@ -210,7 +210,7 @@ export interface PreflightOptions {
 export const runPreflight = (
   releases: PlannedRelease[],
   options?: PreflightOptions,
-): Effect.Effect<PreflightResult, PreflightError | GitError, Git> =>
+): Effect.Effect<PreflightResult, PreflightError | Git.GitError, Git.Git> =>
   Effect.gen(function*() {
     yield* Effect.log('Running preflight checks...')
 

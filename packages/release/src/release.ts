@@ -3,7 +3,7 @@ import type { PlatformError } from '@effect/platform/Error'
 import { Err } from '@kitz/core'
 import { Env } from '@kitz/env'
 import { Fs } from '@kitz/fs'
-import { Git, type GitError } from '@kitz/git/__'
+import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
 import { Effect } from 'effect'
 import { buildDependencyGraph, detectCascades } from './cascade.js'
@@ -120,9 +120,9 @@ const findLastReleaseTag = (
 export const planStable = (
   ctx: PlanContext,
   options?: ReleaseOptions,
-): Effect.Effect<ReleasePlan, ReleaseError | GitError | PlatformError, Git | FileSystem.FileSystem> =>
+): Effect.Effect<ReleasePlan, ReleaseError | Git.GitError | PlatformError, Git.Git | FileSystem.FileSystem> =>
   Effect.gen(function*() {
-    const git = yield* Git
+    const git = yield* Git.Git
 
     // 1. Get all tags and find the last release tag
     const tags = yield* git.getTags()
@@ -245,9 +245,9 @@ const detectCascadesForPr = (
 export const planPreview = (
   ctx: PlanContext,
   options?: ReleaseOptions,
-): Effect.Effect<ReleasePlan, ReleaseError | GitError | PlatformError, Git | FileSystem.FileSystem> =>
+): Effect.Effect<ReleasePlan, ReleaseError | Git.GitError | PlatformError, Git.Git | FileSystem.FileSystem> =>
   Effect.gen(function*() {
-    const git = yield* Git
+    const git = yield* Git.Git
 
     // 1. Get all tags and find the last release tag
     const tags = yield* git.getTags()
@@ -337,9 +337,9 @@ export interface PrReleaseOptions extends ReleaseOptions {
 export const planPr = (
   ctx: PlanContext,
   options?: PrReleaseOptions,
-): Effect.Effect<ReleasePlan, ReleaseError | GitError | PlatformError, Git | FileSystem.FileSystem | Env.Env> =>
+): Effect.Effect<ReleasePlan, ReleaseError | Git.GitError | PlatformError, Git.Git | FileSystem.FileSystem | Env.Env> =>
   Effect.gen(function*() {
-    const git = yield* Git
+    const git = yield* Git.Git
     const env = yield* Env.Env
 
     // 1. Detect PR number

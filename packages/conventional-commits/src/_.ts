@@ -1,1 +1,1 @@
-export * as CC from './__.js'
+export * as ConventionalCommits from './__.js'
