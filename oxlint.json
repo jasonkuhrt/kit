@@ -14,7 +14,26 @@
     "eslint-plugin-jest/no-standalone-expect": "off",
     "eslint-plugin-jest/no-conditional-expect": "off",
     "eslint-plugin-jest/valid-title": "off",
-    "eslint-plugin-import/no-unassigned-import": "off"
+    "eslint-plugin-import/no-unassigned-import": "off",
+    "eslint/no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["@kitz/*/__"],
+            "message": "Use namespace import from root (e.g., '@kitz/git' not '@kitz/git/__'). See CLAUDE.md for import conventions."
+          }
+        ]
+      }
+    ]
   },
+  "overrides": [
+    {
+      "files": ["packages/kitz/src/**/*.ts"],
+      "rules": {
+        "eslint/no-restricted-imports": "off"
+      }
+    }
+  ],
   "ignorePatterns": ["**/build/**", "**/node_modules/**", "**/*.d.ts", "**/__examples/**"]
 }

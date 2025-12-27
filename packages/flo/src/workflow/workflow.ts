@@ -35,9 +35,16 @@
 
 import { Activity } from '@effect/workflow'
 import { WorkflowEngine } from '@effect/workflow'
-import { Effect, Graph, PubSub, Schema, Stream } from 'effect'
+import { Effect, Graph, Option, PubSub, Schema, Stream } from 'effect'
 import type { ActivityEvent } from '../observable/__.js'
-import { WorkflowEvents } from '../observable/__.js'
+import {
+  ActivityCompleted,
+  ActivityFailed,
+  ActivityStarted,
+  WorkflowCompleted,
+  WorkflowEvents,
+  WorkflowFailed,
+} from '../observable/__.js'
 
 // ============================================================================
 // Node Handle
@@ -67,10 +74,10 @@ export interface NodeHandle<out A> {
  * Check if a value is a NodeHandle.
  */
 const isNodeHandle = (value: unknown): value is NodeHandle<unknown> =>
-  typeof value === 'object' &&
-  value !== null &&
-  NodeHandleTypeId in value &&
-  value[NodeHandleTypeId] === NodeHandleTypeId
+  typeof value === 'object'
+  && value !== null
+  && NodeHandleTypeId in value
+  && value[NodeHandleTypeId] === NodeHandleTypeId
 
 /**
  * Create a NodeHandle.
@@ -253,11 +260,10 @@ const unwrapResult = <T>(value: T, results: Map<string, unknown>): UnwrapHandles
 /**
  * Type-level unwrapping of NodeHandles.
  */
-export type UnwrapHandles<T> =
-  T extends NodeHandle<infer A> ? A
-    : T extends readonly (infer U)[] ? UnwrapHandles<U>[]
-    : T extends Record<string, unknown> ? { [K in keyof T]: UnwrapHandles<T[K]> }
-    : T
+export type UnwrapHandles<T> = T extends NodeHandle<infer A> ? A
+  : T extends readonly (infer U)[] ? UnwrapHandles<U>[]
+  : T extends Record<string, unknown> ? { [K in keyof T]: UnwrapHandles<T[K]> }
+  : T
 
 // ============================================================================
 // Workflow Definition
@@ -408,7 +414,7 @@ export const make = <
     payload: Payload,
     emitEvents: boolean,
   ): Effect.Effect<UnwrapHandles<Result>, Error, WorkflowEngine.WorkflowEngine> =>
-    Effect.gen(function* () {
+    Effect.gen(function*() {
       // Build graph
       const builder = makeGraphBuilder()
       const resultTemplate = config.graph(payload, builder.node)
@@ -420,24 +426,25 @@ export const make = <
       // Get optional event pubsub
       const maybePubsub = emitEvents
         ? yield* Effect.serviceOption(WorkflowEvents)
-        : { _tag: 'None' as const }
+        : Option.none()
 
       // Execute layers sequentially, nodes within layer concurrently
       for (const layer of layers) {
         const layerEffects = layer.map((nodeName) => {
           const nodeDef = builder.state.nodes.get(nodeName)!
 
-          return Effect.gen(function* () {
+          return Effect.gen(function*() {
             const startTime = Date.now()
 
             // Emit start event
-            if (maybePubsub._tag === 'Some') {
-              yield* maybePubsub.value.publish({
-                _tag: 'ActivityStarted',
-                activity: nodeName,
-                timestamp: new Date(),
-                resumed: false,
-              })
+            if (Option.isSome(maybePubsub)) {
+              yield* maybePubsub.value.publish(
+                ActivityStarted.make({
+                  activity: nodeName,
+                  timestamp: new Date(),
+                  resumed: false,
+                }),
+              )
             }
 
             // Create activity with durability
@@ -459,30 +466,31 @@ export const make = <
               results.set(nodeName, result)
 
               // Emit completion event
-              if (maybePubsub._tag === 'Some') {
+              if (Option.isSome(maybePubsub)) {
                 const durationMs = Date.now() - startTime
-                yield* maybePubsub.value.publish({
-                  _tag: 'ActivityCompleted',
-                  activity: nodeName,
-                  timestamp: new Date(),
-                  durationMs,
-                  resumed: durationMs < RESUME_THRESHOLD_MS,
-                })
+                yield* maybePubsub.value.publish(
+                  ActivityCompleted.make({
+                    activity: nodeName,
+                    timestamp: new Date(),
+                    durationMs,
+                    resumed: durationMs < RESUME_THRESHOLD_MS,
+                  }),
+                )
               }
 
               return result
             } catch (error) {
               // Emit failure event
-              if (maybePubsub._tag === 'Some') {
-                yield* maybePubsub.value.publish({
-                  _tag: 'ActivityFailed',
-                  activity: nodeName,
-                  timestamp: new Date(),
-                  error:
-                    typeof error === 'object' && error !== null && 'message' in error
+              if (Option.isSome(maybePubsub)) {
+                yield* maybePubsub.value.publish(
+                  ActivityFailed.make({
+                    activity: nodeName,
+                    timestamp: new Date(),
+                    error: typeof error === 'object' && error !== null && 'message' in error
                       ? String((error as { message: unknown }).message)
                       : String(error),
-                })
+                  }),
+                )
               }
               throw error
             }
@@ -500,27 +508,29 @@ export const make = <
   const execute = (payload: Payload) => executeInternal(payload, false)
 
   const observable = (payload: Payload) =>
-    Effect.gen(function* () {
+    Effect.gen(function*() {
       const pubsub = yield* PubSub.unbounded<ActivityEvent>()
       const events = Stream.fromPubSub(pubsub)
 
       const executeEffect = executeInternal(payload, true).pipe(
         Effect.tap(() =>
-          pubsub.publish({
-            _tag: 'WorkflowCompleted',
-            timestamp: new Date(),
-            durationMs: 0,
-          }),
+          pubsub.publish(
+            WorkflowCompleted.make({
+              timestamp: new Date(),
+              durationMs: 0,
+            }),
+          )
         ),
         Effect.tapErrorCause((cause) =>
-          Effect.gen(function* () {
-            yield* pubsub.publish({
-              _tag: 'WorkflowFailed',
-              timestamp: new Date(),
-              error: String(cause),
-            })
+          Effect.gen(function*() {
+            yield* pubsub.publish(
+              WorkflowFailed.make({
+                timestamp: new Date(),
+                error: String(cause),
+              }),
+            )
             yield* PubSub.shutdown(pubsub)
-          }),
+          })
         ),
         Effect.ensuring(PubSub.shutdown(pubsub)),
         Effect.provideService(WorkflowEvents, pubsub),

@@ -9,10 +9,7 @@
   },
   "exports": {
     ".": "./build/_.js",
-    "./__": "./build/__.js",
-    "./observable": "./build/observable/__.js",
-    "./visualization": "./build/visualization/__.js",
-    "./workflow": "./build/workflow/__.js"
+    "./__": "./build/__.js"
   },
   "files": [
     "build",

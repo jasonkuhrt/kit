@@ -41,5 +41,8 @@
     "@kitz/npm-registry": "workspace:*",
     "@kitz/semver": "workspace:*",
     "effect": "^3.19.13"
+  },
+  "devDependencies": {
+    "@kitz/test": "workspace:*"
   }
 }

@@ -126,6 +126,10 @@ importers:
       effect:
         specifier: ^3.19.13
         version: 3.19.13
+    devDependencies:
+      '@kitz/test':
+        specifier: workspace:*
+        version: link:../test
 
   packages/core:
     dependencies:
@@ -558,6 +562,10 @@ importers:
       effect:
         specifier: ^3.19.13
         version: 3.19.13
+    devDependencies:
+      '@kitz/test':
+        specifier: workspace:*
+        version: link:../test
 
   packages/resource:
     dependencies:

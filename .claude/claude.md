@@ -3,27 +3,6 @@
 @issue.md
 @../CONTRIBUTING.md
 
-## Import Convention (CRITICAL)
-
-**Cross-package imports MUST use namespace (root path), never barrel (`/__`):**
-
-```typescript
-// ✅ Correct - namespace import from root
-import { Git } from '@kitz/git'
-import { Semver } from '@kitz/semver'
-
-// ❌ Incorrect - barrel imports
-import { Git } from '@kitz/git/__'
-import * as Semver from '@kitz/semver/__'
-```
-
-When using namespace imports, access members via the namespace:
-- Service tag: `Git.Git`
-- Error type: `Git.GitError`
-- Functions: `Semver.fromString()`
-
-**Exception**: The `kitz` aggregator package re-exports barrels to compose the umbrella.
-
 ## Backwards Compatibility
 
 **Default stance: Breaking changes are acceptable.**

@@ -1,7 +1,7 @@
 import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
 import { Fs } from '@kitz/fs'
-import { Effect } from 'effect'
+import { Effect, Either } from 'effect'
 import type { Package } from './discovery.js'
 import type { PlannedRelease } from './release.js'
 import { calculateNextVersion, findLatestTagVersion } from './version.js'
@@ -54,7 +54,7 @@ export const buildDependencyGraph = (
         ),
       )
 
-      if (contentResult._tag === 'Left') {
+      if (Either.isLeft(contentResult)) {
         // Skip packages with invalid package.json
         continue
       }

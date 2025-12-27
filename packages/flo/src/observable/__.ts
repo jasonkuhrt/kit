@@ -1,10 +1,10 @@
 export {
-  type ActivityCompleted,
-  type ActivityEvent,
-  type ActivityFailed,
-  type ActivityStarted,
+  ActivityCompleted,
+  ActivityEvent,
+  ActivityFailed,
+  ActivityStarted,
   ObservableActivity,
-  type WorkflowCompleted,
+  WorkflowCompleted,
   WorkflowEvents,
-  type WorkflowFailed,
+  WorkflowFailed,
 } from './observable.js'

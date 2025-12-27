@@ -18,11 +18,58 @@
  */
 
 import { Activity } from '@effect/workflow'
-import { Context, Effect, PubSub, Schema } from 'effect'
+import { Context, Effect, Option, PubSub, Schema } from 'effect'
 
 // ============================================================================
 // Event Types
 // ============================================================================
+
+/**
+ * Activity started executing.
+ */
+export class ActivityStarted extends Schema.TaggedClass<ActivityStarted>()('ActivityStarted', {
+  activity: Schema.String,
+  timestamp: Schema.Date,
+  /** True if this activity was already completed (resumed from checkpoint) */
+  resumed: Schema.Boolean,
+}) {}
+
+/**
+ * Activity completed successfully.
+ */
+export class ActivityCompleted extends Schema.TaggedClass<ActivityCompleted>()('ActivityCompleted', {
+  activity: Schema.String,
+  timestamp: Schema.Date,
+  /** True if this activity was already completed (resumed from checkpoint) */
+  resumed: Schema.Boolean,
+  /** Duration in milliseconds (very short if resumed) */
+  durationMs: Schema.Number,
+}) {}
+
+/**
+ * Activity failed.
+ */
+export class ActivityFailed extends Schema.TaggedClass<ActivityFailed>()('ActivityFailed', {
+  activity: Schema.String,
+  timestamp: Schema.Date,
+  error: Schema.String,
+}) {}
+
+/**
+ * Workflow completed successfully.
+ */
+export class WorkflowCompleted extends Schema.TaggedClass<WorkflowCompleted>()('WorkflowCompleted', {
+  timestamp: Schema.Date,
+  durationMs: Schema.Number,
+}) {}
+
+/**
+ * Workflow failed.
+ */
+export class WorkflowFailed extends Schema.TaggedClass<WorkflowFailed>()('WorkflowFailed', {
+  timestamp: Schema.Date,
+  error: Schema.String,
+}) {}
 
 /**
  * Activity lifecycle event.
@@ -35,56 +82,15 @@ export type ActivityEvent =
   | WorkflowFailed
 
 /**
- * Activity started executing.
+ * Schema for activity lifecycle events.
  */
-export interface ActivityStarted {
-  readonly _tag: 'ActivityStarted'
-  readonly activity: string
-  readonly timestamp: Date
-  /** True if this activity was already completed (resumed from checkpoint) */
-  readonly resumed: boolean
-}
-
-/**
- * Activity completed successfully.
- */
-export interface ActivityCompleted {
-  readonly _tag: 'ActivityCompleted'
-  readonly activity: string
-  readonly timestamp: Date
-  /** True if this activity was already completed (resumed from checkpoint) */
-  readonly resumed: boolean
-  /** Duration in milliseconds (very short if resumed) */
-  readonly durationMs: number
-}
-
-/**
- * Activity failed.
- */
-export interface ActivityFailed {
-  readonly _tag: 'ActivityFailed'
-  readonly activity: string
-  readonly timestamp: Date
-  readonly error: string
-}
-
-/**
- * Workflow completed successfully.
- */
-export interface WorkflowCompleted {
-  readonly _tag: 'WorkflowCompleted'
-  readonly timestamp: Date
-  readonly durationMs: number
-}
-
-/**
- * Workflow failed.
- */
-export interface WorkflowFailed {
-  readonly _tag: 'WorkflowFailed'
-  readonly timestamp: Date
-  readonly error: string
-}
+export const ActivityEvent = Schema.Union(
+  ActivityStarted,
+  ActivityCompleted,
+  ActivityFailed,
+  WorkflowCompleted,
+  WorkflowFailed,
+)
 
 // ============================================================================
 // Event PubSub Service
@@ -167,7 +173,7 @@ export const ObservableActivity = {
       }
 
       // No event service - just run the activity
-      if (maybePubsub._tag === 'None') {
+      if (Option.isNone(maybePubsub)) {
         return yield* activity
       }
 
@@ -175,12 +181,13 @@ export const ObservableActivity = {
       const startTime = new Date()
 
       // Emit started
-      yield* pubsub.publish({
-        _tag: 'ActivityStarted',
-        activity: config.name,
-        timestamp: startTime,
-        resumed: false,
-      }).pipe(Effect.ignore)
+      yield* pubsub.publish(
+        ActivityStarted.make({
+          activity: config.name,
+          timestamp: startTime,
+          resumed: false,
+        }),
+      ).pipe(Effect.ignore)
 
       // Run the actual activity
       const result = yield* activity.pipe(
@@ -188,25 +195,27 @@ export const ObservableActivity = {
           const errorMessage = typeof error === 'object' && error !== null && 'message' in error
             ? String((error as { message: unknown }).message)
             : String(error)
-          return pubsub.publish({
-            _tag: 'ActivityFailed',
-            activity: config.name,
-            timestamp: new Date(),
-            error: errorMessage,
-          }).pipe(Effect.ignore)
+          return pubsub.publish(
+            ActivityFailed.make({
+              activity: config.name,
+              timestamp: new Date(),
+              error: errorMessage,
+            }),
+          ).pipe(Effect.ignore)
         }),
       )
 
       // Emit completed
       const now = new Date()
       const durationMs = now.getTime() - startTime.getTime()
-      yield* pubsub.publish({
-        _tag: 'ActivityCompleted',
-        activity: config.name,
-        timestamp: now,
-        resumed: durationMs < RESUME_THRESHOLD_MS,
-        durationMs,
-      }).pipe(Effect.ignore)
+      yield* pubsub.publish(
+        ActivityCompleted.make({
+          activity: config.name,
+          timestamp: now,
+          resumed: durationMs < RESUME_THRESHOLD_MS,
+          durationMs,
+        }),
+      ).pipe(Effect.ignore)
 
       return result
     }) as any, // Cast needed because serviceOption changes R

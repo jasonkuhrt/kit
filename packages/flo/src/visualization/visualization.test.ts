@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import type { ActivityEvent } from '../observable/__.js'
+import { ActivityCompleted, ActivityFailed, ActivityStarted, WorkflowCompleted } from '../observable/__.js'
 import { TerminalRenderer } from './visualization.js'
 
 // ============================================================================
@@ -22,7 +22,7 @@ describe('TerminalRenderer list mode', () => {
       activities,
       colors: false,
     })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Preflight', timestamp: new Date(), resumed: false })
+    renderer.update(ActivityStarted.make({ activity: 'Preflight', timestamp: new Date(), resumed: false }))
     expect(renderer.render()).toMatchSnapshot()
   })
 
@@ -31,9 +31,9 @@ describe('TerminalRenderer list mode', () => {
       activities,
       colors: false,
     })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Preflight', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityCompleted', activity: 'Preflight', timestamp: new Date(), durationMs: 100, resumed: false })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Publish:core', timestamp: new Date(), resumed: false })
+    renderer.update(ActivityStarted.make({ activity: 'Preflight', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityCompleted.make({ activity: 'Preflight', timestamp: new Date(), durationMs: 100, resumed: false }))
+    renderer.update(ActivityStarted.make({ activity: 'Publish:core', timestamp: new Date(), resumed: false }))
     expect(renderer.render()).toMatchSnapshot()
   })
 
@@ -43,8 +43,8 @@ describe('TerminalRenderer list mode', () => {
       colors: false,
     })
     for (const activity of activities) {
-      renderer.update({ _tag: 'ActivityStarted', activity, timestamp: new Date(), resumed: false })
-      renderer.update({ _tag: 'ActivityCompleted', activity, timestamp: new Date(), durationMs: 100, resumed: false })
+      renderer.update(ActivityStarted.make({ activity, timestamp: new Date(), resumed: false }))
+      renderer.update(ActivityCompleted.make({ activity, timestamp: new Date(), durationMs: 100, resumed: false }))
     }
     expect(renderer.render()).toMatchSnapshot()
   })
@@ -54,10 +54,10 @@ describe('TerminalRenderer list mode', () => {
       activities,
       colors: false,
     })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Preflight', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityCompleted', activity: 'Preflight', timestamp: new Date(), durationMs: 100, resumed: false })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Publish:core', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityFailed', activity: 'Publish:core', timestamp: new Date(), error: 'npm publish failed' })
+    renderer.update(ActivityStarted.make({ activity: 'Preflight', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityCompleted.make({ activity: 'Preflight', timestamp: new Date(), durationMs: 100, resumed: false }))
+    renderer.update(ActivityStarted.make({ activity: 'Publish:core', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityFailed.make({ activity: 'Publish:core', timestamp: new Date(), error: 'npm publish failed' }))
     expect(renderer.render()).toMatchSnapshot()
   })
 
@@ -66,9 +66,9 @@ describe('TerminalRenderer list mode', () => {
       activities: ['Step1', 'Step2', 'Step3'],
       colors: true,
     })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Step1', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityCompleted', activity: 'Step1', timestamp: new Date(), durationMs: 50, resumed: false })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Step2', timestamp: new Date(), resumed: false })
+    renderer.update(ActivityStarted.make({ activity: 'Step1', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityCompleted.make({ activity: 'Step1', timestamp: new Date(), durationMs: 50, resumed: false }))
+    renderer.update(ActivityStarted.make({ activity: 'Step2', timestamp: new Date(), resumed: false }))
     expect(renderer.render()).toMatchSnapshot()
   })
 })
@@ -111,7 +111,7 @@ describe('TerminalRenderer DAG mode (compact)', () => {
       edges,
       colors: false,
     })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Preflight', timestamp: new Date(), resumed: false })
+    renderer.update(ActivityStarted.make({ activity: 'Preflight', timestamp: new Date(), resumed: false }))
     expect(renderer.render()).toMatchSnapshot()
   })
 
@@ -122,10 +122,10 @@ describe('TerminalRenderer DAG mode (compact)', () => {
       edges,
       colors: false,
     })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Preflight', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityCompleted', activity: 'Preflight', timestamp: new Date(), durationMs: 100, resumed: false })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Publish:A', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Publish:B', timestamp: new Date(), resumed: false })
+    renderer.update(ActivityStarted.make({ activity: 'Preflight', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityCompleted.make({ activity: 'Preflight', timestamp: new Date(), durationMs: 100, resumed: false }))
+    renderer.update(ActivityStarted.make({ activity: 'Publish:A', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityStarted.make({ activity: 'Publish:B', timestamp: new Date(), resumed: false }))
     expect(renderer.render()).toMatchSnapshot()
   })
 
@@ -138,8 +138,8 @@ describe('TerminalRenderer DAG mode (compact)', () => {
     })
     const allActivities = layers.flat()
     for (const activity of allActivities) {
-      renderer.update({ _tag: 'ActivityStarted', activity, timestamp: new Date(), resumed: false })
-      renderer.update({ _tag: 'ActivityCompleted', activity, timestamp: new Date(), durationMs: 100, resumed: false })
+      renderer.update(ActivityStarted.make({ activity, timestamp: new Date(), resumed: false }))
+      renderer.update(ActivityCompleted.make({ activity, timestamp: new Date(), durationMs: 100, resumed: false }))
     }
     expect(renderer.render()).toMatchSnapshot()
   })
@@ -151,12 +151,12 @@ describe('TerminalRenderer DAG mode (compact)', () => {
       edges,
       colors: false,
     })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Preflight', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityCompleted', activity: 'Preflight', timestamp: new Date(), durationMs: 100, resumed: false })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Publish:A', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Publish:B', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityCompleted', activity: 'Publish:A', timestamp: new Date(), durationMs: 100, resumed: false })
-    renderer.update({ _tag: 'ActivityFailed', activity: 'Publish:B', timestamp: new Date(), error: 'publish failed' })
+    renderer.update(ActivityStarted.make({ activity: 'Preflight', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityCompleted.make({ activity: 'Preflight', timestamp: new Date(), durationMs: 100, resumed: false }))
+    renderer.update(ActivityStarted.make({ activity: 'Publish:A', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityStarted.make({ activity: 'Publish:B', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityCompleted.make({ activity: 'Publish:A', timestamp: new Date(), durationMs: 100, resumed: false }))
+    renderer.update(ActivityFailed.make({ activity: 'Publish:B', timestamp: new Date(), error: 'publish failed' }))
     expect(renderer.render()).toMatchSnapshot()
   })
 
@@ -167,9 +167,9 @@ describe('TerminalRenderer DAG mode (compact)', () => {
       edges,
       colors: true,
     })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Preflight', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityCompleted', activity: 'Preflight', timestamp: new Date(), durationMs: 100, resumed: false })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Publish:A', timestamp: new Date(), resumed: false })
+    renderer.update(ActivityStarted.make({ activity: 'Preflight', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityCompleted.make({ activity: 'Preflight', timestamp: new Date(), durationMs: 100, resumed: false }))
+    renderer.update(ActivityStarted.make({ activity: 'Publish:A', timestamp: new Date(), resumed: false }))
     expect(renderer.render()).toMatchSnapshot()
   })
 })
@@ -209,10 +209,10 @@ describe('TerminalRenderer DAG mode (full)', () => {
       edges,
       colors: false,
     })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'StepA', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityCompleted', activity: 'StepA', timestamp: new Date(), durationMs: 100, resumed: false })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'StepB', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'StepC', timestamp: new Date(), resumed: false })
+    renderer.update(ActivityStarted.make({ activity: 'StepA', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityCompleted.make({ activity: 'StepA', timestamp: new Date(), durationMs: 100, resumed: false }))
+    renderer.update(ActivityStarted.make({ activity: 'StepB', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityStarted.make({ activity: 'StepC', timestamp: new Date(), resumed: false }))
     expect(renderer.renderFull()).toMatchSnapshot()
   })
 
@@ -223,9 +223,9 @@ describe('TerminalRenderer DAG mode (full)', () => {
       edges,
       colors: true,
     })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'StepA', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityCompleted', activity: 'StepA', timestamp: new Date(), durationMs: 100, resumed: false })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'StepB', timestamp: new Date(), resumed: false })
+    renderer.update(ActivityStarted.make({ activity: 'StepA', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityCompleted.make({ activity: 'StepA', timestamp: new Date(), durationMs: 100, resumed: false }))
+    renderer.update(ActivityStarted.make({ activity: 'StepB', timestamp: new Date(), resumed: false }))
     expect(renderer.renderFull()).toMatchSnapshot()
   })
 })
@@ -247,12 +247,12 @@ describe('TerminalRenderer state', () => {
     expect(state.currentActivity).toBeNull()
     expect(state.activities.get('A')).toBe('pending')
 
-    renderer.update({ _tag: 'ActivityStarted', activity: 'A', timestamp: new Date(), resumed: false })
+    renderer.update(ActivityStarted.make({ activity: 'A', timestamp: new Date(), resumed: false }))
     state = renderer.getState()
     expect(state.currentActivity).toBe('A')
     expect(state.activities.get('A')).toBe('running')
 
-    renderer.update({ _tag: 'ActivityCompleted', activity: 'A', timestamp: new Date(), durationMs: 100, resumed: false })
+    renderer.update(ActivityCompleted.make({ activity: 'A', timestamp: new Date(), durationMs: 100, resumed: false }))
     state = renderer.getState()
     expect(state.completedCount).toBe(1)
     expect(state.activities.get('A')).toBe('completed')
@@ -264,10 +264,10 @@ describe('TerminalRenderer state', () => {
       colors: false,
     })
 
-    renderer.update({ _tag: 'ActivityStarted', activity: 'A', timestamp: new Date(), resumed: false })
+    renderer.update(ActivityStarted.make({ activity: 'A', timestamp: new Date(), resumed: false }))
     expect(renderer.getState().currentActivity).toBe('A')
 
-    renderer.update({ _tag: 'WorkflowCompleted', timestamp: new Date(), durationMs: 1000 })
+    renderer.update(WorkflowCompleted.make({ timestamp: new Date(), durationMs: 1000 }))
     expect(renderer.getState().currentActivity).toBeNull()
   })
 })
@@ -312,12 +312,12 @@ describe('TerminalRenderer complex DAG', () => {
       layers,
       colors: false,
     })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Preflight', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityCompleted', activity: 'Preflight', timestamp: new Date(), durationMs: 50, resumed: false })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Publish:@kitz/core', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Publish:@kitz/flo', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityStarted', activity: 'Publish:@kitz/syn', timestamp: new Date(), resumed: false })
-    renderer.update({ _tag: 'ActivityCompleted', activity: 'Publish:@kitz/core', timestamp: new Date(), durationMs: 200, resumed: false })
+    renderer.update(ActivityStarted.make({ activity: 'Preflight', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityCompleted.make({ activity: 'Preflight', timestamp: new Date(), durationMs: 50, resumed: false }))
+    renderer.update(ActivityStarted.make({ activity: 'Publish:@kitz/core', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityStarted.make({ activity: 'Publish:@kitz/flo', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityStarted.make({ activity: 'Publish:@kitz/syn', timestamp: new Date(), resumed: false }))
+    renderer.update(ActivityCompleted.make({ activity: 'Publish:@kitz/core', timestamp: new Date(), durationMs: 200, resumed: false }))
     expect(renderer.render()).toMatchSnapshot()
   })
 })

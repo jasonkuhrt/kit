@@ -1,6 +1,6 @@
 import { Env } from '@kitz/env'
-import { Memory, Path } from '@kitz/fs/__'
-import { GitTest } from '@kitz/git/__'
+import { Fs } from '@kitz/fs'
+import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
 import { Effect, Equal, Layer } from 'effect'
 import { describe, expect, test } from 'vitest'
@@ -25,13 +25,13 @@ const expectVersion = (actual: Semver.Semver | null | undefined, expected: strin
  */
 
 const mockPackages: Package[] = [
-  { name: '@kitz/core', scope: 'core', path: Path.AbsDir.fromString('/repo/packages/core/') },
-  { name: '@kitz/cli', scope: 'cli', path: Path.AbsDir.fromString('/repo/packages/cli/') },
-  { name: '@kitz/utils', scope: 'utils', path: Path.AbsDir.fromString('/repo/packages/utils/') },
+  { name: '@kitz/core', scope: 'core', path: Fs.Path.AbsDir.fromString('/repo/packages/core/') },
+  { name: '@kitz/cli', scope: 'cli', path: Fs.Path.AbsDir.fromString('/repo/packages/cli/') },
+  { name: '@kitz/utils', scope: 'utils', path: Fs.Path.AbsDir.fromString('/repo/packages/utils/') },
 ]
 
 // Test env layer with /repo/ as cwd
-const testEnv = Env.Test({ cwd: Path.AbsDir.fromString('/repo/') })
+const testEnv = Env.Test({ cwd: Fs.Path.AbsDir.fromString('/repo/') })
 
 // In-memory workflow runtime for tests
 const testWorkflowRuntime = makeTestWorkflowRuntime()
@@ -40,16 +40,16 @@ const testWorkflowRuntime = makeTestWorkflowRuntime()
  * Create a combined layer with GitTest, Memory FileSystem, and Env.
  */
 const makeTestLayer = (
-  gitConfig: Parameters<typeof GitTest.make>[0],
-  diskLayout: Memory.DiskLayout = {},
-) => Layer.mergeAll(GitTest.make(gitConfig), Memory.layer(diskLayout), testEnv)
+  gitConfig: Parameters<typeof Git.GitTest.make>[0],
+  diskLayout: Fs.Memory.DiskLayout = {},
+) => Layer.mergeAll(Git.GitTest.make(gitConfig), Fs.Memory.layer(diskLayout), testEnv)
 
 /**
  * Create a test layer that includes workflow runtime for apply() tests.
  */
 const makeApplyTestLayer = (
-  gitConfig: Parameters<typeof GitTest.make>[0],
-  diskLayout: Memory.DiskLayout = {},
+  gitConfig: Parameters<typeof Git.GitTest.make>[0],
+  diskLayout: Fs.Memory.DiskLayout = {},
 ) =>
   Layer.provideMerge(
     makeTestLayer(gitConfig, diskLayout),
@@ -96,7 +96,7 @@ describe('planStable integration', () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
       commits: [
-        GitTest.commit('feat(core): add new feature'),
+        Git.GitTest.commit('feat(core): add new feature'),
       ],
     })
 
@@ -118,7 +118,7 @@ describe('planStable integration', () => {
     const layer = makeTestLayer({
       tags: ['@kitz/cli@2.0.0'],
       commits: [
-        GitTest.commit('feat(cli)!: breaking API change'),
+        Git.GitTest.commit('feat(cli)!: breaking API change'),
       ],
     })
 
@@ -139,10 +139,10 @@ describe('planStable integration', () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
       commits: [
-        GitTest.commit('fix(core): bug fix 1'),
-        GitTest.commit('fix(core): bug fix 2'),
-        GitTest.commit('feat(core): new feature'),
-        GitTest.commit('fix(core): bug fix 3'),
+        Git.GitTest.commit('fix(core): bug fix 1'),
+        Git.GitTest.commit('fix(core): bug fix 2'),
+        Git.GitTest.commit('feat(core): new feature'),
+        Git.GitTest.commit('fix(core): bug fix 3'),
       ],
     })
 
@@ -163,8 +163,8 @@ describe('planStable integration', () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0', '@kitz/cli@2.0.0'],
       commits: [
-        GitTest.commit('feat(core): core feature'),
-        GitTest.commit('fix(cli): cli fix'),
+        Git.GitTest.commit('feat(core): core feature'),
+        Git.GitTest.commit('fix(cli): cli fix'),
       ],
     })
 
@@ -191,7 +191,7 @@ describe('planStable integration', () => {
     const layer = makeTestLayer({
       tags: [], // No existing tags
       commits: [
-        GitTest.commit('feat(utils): initial feature'),
+        Git.GitTest.commit('feat(utils): initial feature'),
       ],
     })
 
@@ -211,8 +211,8 @@ describe('planStable integration', () => {
     const layer = makeTestLayer({
       tags: [],
       commits: [
-        GitTest.commit('feat(core): core feature'),
-        GitTest.commit('feat(cli): cli feature'),
+        Git.GitTest.commit('feat(core): core feature'),
+        Git.GitTest.commit('feat(cli): cli feature'),
       ],
     })
 
@@ -231,8 +231,8 @@ describe('planStable integration', () => {
     const layer = makeTestLayer({
       tags: [],
       commits: [
-        GitTest.commit('feat(core): core feature'),
-        GitTest.commit('feat(cli): cli feature'),
+        Git.GitTest.commit('feat(core): core feature'),
+        Git.GitTest.commit('feat(cli): cli feature'),
       ],
     })
 
@@ -250,18 +250,18 @@ describe('planStable integration', () => {
 
 describe('apply integration (dry-run)', () => {
   test('creates git tags for each release', async () => {
-    const diskLayout: Memory.DiskLayout = {
+    const diskLayout: Fs.Memory.DiskLayout = {
       '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
     }
 
     const { layer: gitLayer } = await Effect.runPromise(
-      GitTest.makeWithState({
+      Git.GitTest.makeWithState({
         tags: ['@kitz/core@1.0.0'],
-        commits: [GitTest.commit('feat(core): new feature')],
+        commits: [Git.GitTest.commit('feat(core): new feature')],
       }),
     )
 
-    const baseLayer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
+    const baseLayer = Layer.mergeAll(gitLayer, Fs.Memory.layer(diskLayout), testEnv)
     const layer = Layer.provideMerge(testWorkflowRuntime, baseLayer)
 
     const plan = await Effect.runPromise(
@@ -282,7 +282,7 @@ describe('apply integration (dry-run)', () => {
 
   test('includes cascades in result', async () => {
     // Set up a dependency: cli depends on core
-    const diskLayout: Memory.DiskLayout = {
+    const diskLayout: Fs.Memory.DiskLayout = {
       '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
       '/repo/packages/cli/package.json': makePackageJson('@kitz/cli', '1.0.0', {
         '@kitz/core': 'workspace:*',
@@ -290,13 +290,13 @@ describe('apply integration (dry-run)', () => {
     }
 
     const { layer: gitLayer } = await Effect.runPromise(
-      GitTest.makeWithState({
+      Git.GitTest.makeWithState({
         tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0'],
-        commits: [GitTest.commit('feat(core): new API')],
+        commits: [Git.GitTest.commit('feat(core): new API')],
       }),
     )
 
-    const layer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
+    const layer = Layer.mergeAll(gitLayer, Fs.Memory.layer(diskLayout), testEnv)
 
     const plan = await Effect.runPromise(
       Effect.provide(planStable({ packages: mockPackages }), layer),
@@ -336,18 +336,18 @@ describe('workflow durability', () => {
   test('idempotent execution returns same result', async () => {
     // The workflow uses an idempotency key based on releases.
     // Executing the same workflow twice should return consistent results.
-    const diskLayout: Memory.DiskLayout = {
+    const diskLayout: Fs.Memory.DiskLayout = {
       '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
     }
 
     const { layer: gitLayer } = await Effect.runPromise(
-      GitTest.makeWithState({
+      Git.GitTest.makeWithState({
         tags: ['@kitz/core@1.0.0'],
-        commits: [GitTest.commit('feat(core): new feature')],
+        commits: [Git.GitTest.commit('feat(core): new feature')],
       }),
     )
 
-    const baseLayer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
+    const baseLayer = Layer.mergeAll(gitLayer, Fs.Memory.layer(diskLayout), testEnv)
     const layer = Layer.provideMerge(testWorkflowRuntime, baseLayer)
 
     const plan = await Effect.runPromise(
@@ -382,22 +382,22 @@ describe('workflow durability', () => {
   test('workflow with multiple packages tracks all activities', async () => {
     // This verifies the workflow engine properly tracks completion
     // of multiple activities (one per package)
-    const diskLayout: Memory.DiskLayout = {
+    const diskLayout: Fs.Memory.DiskLayout = {
       '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
       '/repo/packages/cli/package.json': makePackageJson('@kitz/cli', '1.0.0'),
     }
 
     const { layer: gitLayer } = await Effect.runPromise(
-      GitTest.makeWithState({
+      Git.GitTest.makeWithState({
         tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0'],
         commits: [
-          GitTest.commit('feat(core): core feature'),
-          GitTest.commit('fix(cli): cli fix'),
+          Git.GitTest.commit('feat(core): core feature'),
+          Git.GitTest.commit('fix(cli): cli fix'),
         ],
       }),
     )
 
-    const baseLayer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
+    const baseLayer = Layer.mergeAll(gitLayer, Fs.Memory.layer(diskLayout), testEnv)
     const layer = Layer.provideMerge(testWorkflowRuntime, baseLayer)
 
     const plan = await Effect.runPromise(
@@ -422,20 +422,20 @@ describe('workflow durability', () => {
 
 describe('end-to-end pipeline', () => {
   test('complete plan and apply workflow', async () => {
-    const diskLayout: Memory.DiskLayout = {
+    const diskLayout: Fs.Memory.DiskLayout = {
       '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
     }
 
     const { layer: gitLayer } = await Effect.runPromise(
-      GitTest.makeWithState({
+      Git.GitTest.makeWithState({
         tags: ['@kitz/core@1.0.0'],
         commits: [
-          GitTest.commit('feat(core): awesome new feature'),
+          Git.GitTest.commit('feat(core): awesome new feature'),
         ],
       }),
     )
 
-    const baseLayer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
+    const baseLayer = Layer.mergeAll(gitLayer, Fs.Memory.layer(diskLayout), testEnv)
     const layer = Layer.provideMerge(testWorkflowRuntime, baseLayer)
 
     // Step 1: Plan
@@ -465,7 +465,7 @@ describe('end-to-end pipeline', () => {
 
   test('full cascade scenario', async () => {
     // Set up dependency graph: cli -> core, utils -> core
-    const diskLayout: Memory.DiskLayout = {
+    const diskLayout: Fs.Memory.DiskLayout = {
       '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
       '/repo/packages/cli/package.json': makePackageJson('@kitz/cli', '1.0.0', {
         '@kitz/core': 'workspace:*',
@@ -476,15 +476,15 @@ describe('end-to-end pipeline', () => {
     }
 
     const { layer: gitLayer } = await Effect.runPromise(
-      GitTest.makeWithState({
+      Git.GitTest.makeWithState({
         tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0', '@kitz/utils@1.0.0'],
         commits: [
-          GitTest.commit('feat(core): new API'),
+          Git.GitTest.commit('feat(core): new API'),
         ],
       }),
     )
 
-    const baseLayer = Layer.mergeAll(gitLayer, Memory.layer(diskLayout), testEnv)
+    const baseLayer = Layer.mergeAll(gitLayer, Fs.Memory.layer(diskLayout), testEnv)
     const layer = Layer.provideMerge(testWorkflowRuntime, baseLayer)
 
     const plan = await Effect.runPromise(
@@ -525,7 +525,7 @@ describe('planPreview integration', () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
       commits: [
-        GitTest.commit('feat(core): add new feature'),
+        Git.GitTest.commit('feat(core): add new feature'),
       ],
     })
 
@@ -551,7 +551,7 @@ describe('planPreview integration', () => {
         '@kitz/core@1.1.0-next.2',
       ],
       commits: [
-        GitTest.commit('feat(core): add new feature'),
+        Git.GitTest.commit('feat(core): add new feature'),
       ],
     })
 
@@ -571,7 +571,7 @@ describe('planPreview integration', () => {
     const layer = makeTestLayer({
       tags: [], // No existing tags
       commits: [
-        GitTest.commit('feat(core): initial feature'),
+        Git.GitTest.commit('feat(core): initial feature'),
       ],
     })
 
@@ -588,7 +588,7 @@ describe('planPreview integration', () => {
   })
 
   test('generates preview cascades with preview versions', async () => {
-    const diskLayout: Memory.DiskLayout = {
+    const diskLayout: Fs.Memory.DiskLayout = {
       '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
       '/repo/packages/cli/package.json': makePackageJson('@kitz/cli', '1.0.0', {
         '@kitz/core': 'workspace:*',
@@ -596,11 +596,11 @@ describe('planPreview integration', () => {
     }
 
     const layer = Layer.mergeAll(
-      GitTest.make({
+      Git.GitTest.make({
         tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0'],
-        commits: [GitTest.commit('feat(core): new API')],
+        commits: [Git.GitTest.commit('feat(core): new API')],
       }),
-      Memory.layer(diskLayout),
+      Fs.Memory.layer(diskLayout),
       testEnv,
     )
 
@@ -626,7 +626,7 @@ describe('planPr integration', () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
       commits: [
-        GitTest.commit('feat(core): add new feature'),
+        Git.GitTest.commit('feat(core): add new feature'),
       ],
       headSha: 'abc1234',
     })
@@ -652,7 +652,7 @@ describe('planPr integration', () => {
         '@kitz/core@0.0.0-pr.42.2.ghi9012',
       ],
       commits: [
-        GitTest.commit('feat(core): add new feature'),
+        Git.GitTest.commit('feat(core): add new feature'),
       ],
       headSha: 'abc1234',
     })
@@ -677,7 +677,7 @@ describe('planPr integration', () => {
         '@kitz/core@0.0.0-pr.42.2.ghi9012',
       ],
       commits: [
-        GitTest.commit('feat(core): add new feature'),
+        Git.GitTest.commit('feat(core): add new feature'),
       ],
       headSha: 'abc1234',
     })
@@ -696,17 +696,17 @@ describe('planPr integration', () => {
 
   test('detects PR number from environment', async () => {
     const envWithPr = Env.Test({
-      cwd: Path.AbsDir.fromString('/repo/'),
+      cwd: Fs.Path.AbsDir.fromString('/repo/'),
       vars: { PR_NUMBER: '123' },
     })
 
     const layer = Layer.mergeAll(
-      GitTest.make({
+      Git.GitTest.make({
         tags: ['@kitz/core@1.0.0'],
-        commits: [GitTest.commit('feat(core): add new feature')],
+        commits: [Git.GitTest.commit('feat(core): add new feature')],
         headSha: 'xyz7890',
       }),
-      Memory.layer({}),
+      Fs.Memory.layer({}),
       envWithPr,
     )
 
@@ -723,16 +723,16 @@ describe('planPr integration', () => {
 
   test('fails when PR number cannot be detected', async () => {
     const envWithoutPr = Env.Test({
-      cwd: Path.AbsDir.fromString('/repo/'),
+      cwd: Fs.Path.AbsDir.fromString('/repo/'),
       vars: {}, // No PR env vars
     })
 
     const layer = Layer.mergeAll(
-      GitTest.make({
+      Git.GitTest.make({
         tags: ['@kitz/core@1.0.0'],
-        commits: [GitTest.commit('feat(core): add new feature')],
+        commits: [Git.GitTest.commit('feat(core): add new feature')],
       }),
-      Memory.layer({}),
+      Fs.Memory.layer({}),
       envWithoutPr,
     )
 
@@ -747,7 +747,7 @@ describe('planPr integration', () => {
   })
 
   test('generates PR cascades with PR versions', async () => {
-    const diskLayout: Memory.DiskLayout = {
+    const diskLayout: Fs.Memory.DiskLayout = {
       '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
       '/repo/packages/cli/package.json': makePackageJson('@kitz/cli', '1.0.0', {
         '@kitz/core': 'workspace:*',
@@ -755,12 +755,12 @@ describe('planPr integration', () => {
     }
 
     const layer = Layer.mergeAll(
-      GitTest.make({
+      Git.GitTest.make({
         tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0'],
-        commits: [GitTest.commit('feat(core): new API')],
+        commits: [Git.GitTest.commit('feat(core): new API')],
         headSha: 'sha1234',
       }),
-      Memory.layer(diskLayout),
+      Fs.Memory.layer(diskLayout),
       testEnv,
     )
 

@@ -1,4 +1,5 @@
-import * as Semver from '@kitz/semver/__'
+import { Semver } from '@kitz/semver'
+import { Test } from '@kitz/test'
 import { Effect } from 'effect'
 import { describe, expect, test } from 'vitest'
 import {
@@ -10,41 +11,37 @@ import {
   maxBump,
 } from './version.js'
 
-describe('bumpFromType', () => {
-  test('breaking = major', () => {
-    expect(bumpFromType('feat', true)).toBe('major')
-    expect(bumpFromType('fix', true)).toBe('major')
-    expect(bumpFromType('chore', true)).toBe('major')
-  })
+Test.describe('bumpFromType')
+  .on(bumpFromType)
+  .cases(
+    // Breaking changes → major
+    [['feat', true], 'major', { comment: 'breaking feat' }],
+    [['fix', true], 'major', { comment: 'breaking fix' }],
+    [['chore', true], 'major', { comment: 'breaking chore' }],
+    // feat → minor
+    [['feat', false], 'minor'],
+    // Other types → patch
+    [['fix', false], 'patch'],
+    [['chore', false], 'patch'],
+    [['docs', false], 'patch'],
+  )
+  .test()
 
-  test('feat = minor', () => {
-    expect(bumpFromType('feat', false)).toBe('minor')
-  })
-
-  test('other = patch', () => {
-    expect(bumpFromType('fix', false)).toBe('patch')
-    expect(bumpFromType('chore', false)).toBe('patch')
-    expect(bumpFromType('docs', false)).toBe('patch')
-  })
-})
-
-describe('maxBump', () => {
-  test('major wins', () => {
-    expect(maxBump('major', 'minor')).toBe('major')
-    expect(maxBump('minor', 'major')).toBe('major')
-    expect(maxBump('major', 'patch')).toBe('major')
-  })
-
-  test('minor beats patch', () => {
-    expect(maxBump('minor', 'patch')).toBe('minor')
-    expect(maxBump('patch', 'minor')).toBe('minor')
-  })
-
-  test('same returns same', () => {
-    expect(maxBump('patch', 'patch')).toBe('patch')
-    expect(maxBump('minor', 'minor')).toBe('minor')
-  })
-})
+Test.describe('maxBump')
+  .on(maxBump)
+  .cases(
+    // major wins
+    [['major', 'minor'], 'major'],
+    [['minor', 'major'], 'major'],
+    [['major', 'patch'], 'major'],
+    // minor beats patch
+    [['minor', 'patch'], 'minor'],
+    [['patch', 'minor'], 'minor'],
+    // same returns same
+    [['patch', 'patch'], 'patch'],
+    [['minor', 'minor'], 'minor'],
+  )
+  .test()
 
 describe('extractImpacts', () => {
   test('single scope feat', async () => {
@@ -113,43 +110,38 @@ describe('aggregateByPackage', () => {
   })
 })
 
-describe('calculateNextVersion', () => {
-  test('first release', () => {
-    expect(calculateNextVersion(null, 'major').version.toString()).toBe('1.0.0')
-    expect(calculateNextVersion(null, 'minor').version.toString()).toBe('0.1.0')
-    expect(calculateNextVersion(null, 'patch').version.toString()).toBe('0.0.1')
-  })
+// Helper to extract version string for cleaner table assertions
+const calcNextVersionStr = (current: string | null, bump: 'major' | 'minor' | 'patch') =>
+  calculateNextVersion(current ? Semver.fromString(current) : null, bump).version.toString()
 
-  test('major bump', () => {
-    expect(calculateNextVersion(Semver.fromString('1.2.3'), 'major').version.toString()).toBe('2.0.0')
-  })
+Test.describe('calculateNextVersion')
+  .on(calcNextVersionStr)
+  .cases(
+    // First release (null current version)
+    [[null, 'major'], '1.0.0'],
+    [[null, 'minor'], '0.1.0'],
+    [[null, 'patch'], '0.0.1'],
+    // Version bumps
+    [['1.2.3', 'major'], '2.0.0'],
+    [['1.2.3', 'minor'], '1.3.0'],
+    [['1.2.3', 'patch'], '1.2.4'],
+  )
+  .test()
 
-  test('minor bump', () => {
-    expect(calculateNextVersion(Semver.fromString('1.2.3'), 'minor').version.toString()).toBe('1.3.0')
-  })
+// Helper to extract version string for cleaner table assertions
+const findLatestVersionStr = (name: string, tags: string[]) =>
+  findLatestTagVersion(name, tags)?.version.toString() ?? null
 
-  test('patch bump', () => {
-    expect(calculateNextVersion(Semver.fromString('1.2.3'), 'patch').version.toString()).toBe('1.2.4')
-  })
-})
-
-describe('findLatestTagVersion', () => {
-  test('finds matching tag', () => {
-    const tags = ['@kitz/core@1.0.0', '@kitz/core@1.1.0', '@kitz/cli@0.5.0']
-    expect(findLatestTagVersion('@kitz/core', tags)?.version.toString()).toBe('1.1.0')
-  })
-
-  test('returns null when no match', () => {
-    const tags = ['@kitz/cli@1.0.0']
-    expect(findLatestTagVersion('@kitz/core', tags)).toBeNull()
-  })
-
-  test('returns null for empty tags', () => {
-    expect(findLatestTagVersion('@kitz/core', [])).toBeNull()
-  })
-
-  test('ignores invalid versions', () => {
-    const tags = ['@kitz/core@1.0.0', '@kitz/core@invalid', '@kitz/core@2.0.0']
-    expect(findLatestTagVersion('@kitz/core', tags)?.version.toString()).toBe('2.0.0')
-  })
-})
+Test.describe('findLatestTagVersion')
+  .on(findLatestVersionStr)
+  .cases(
+    // Finds matching tag - highest version
+    [['@kitz/core', ['@kitz/core@1.0.0', '@kitz/core@1.1.0', '@kitz/cli@0.5.0']], '1.1.0'],
+    // Returns null when no match
+    [['@kitz/core', ['@kitz/cli@1.0.0']], null],
+    // Returns null for empty tags
+    [['@kitz/core', []], null],
+    // Ignores invalid versions, finds highest valid
+    [['@kitz/core', ['@kitz/core@1.0.0', '@kitz/core@invalid', '@kitz/core@2.0.0']], '2.0.0'],
+  )
+  .test()

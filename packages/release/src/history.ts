@@ -79,7 +79,7 @@ const makeTagName = (packageName: string, version: Semver.Semver): string =>
  *
  * @example
  * ```ts
- * import * as Semver from '@kitz/semver/__'
+ * import { Semver } from '@kitz/semver'
  *
  * // Set a release tag
  * const result = await Effect.runPromise(

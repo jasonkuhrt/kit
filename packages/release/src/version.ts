@@ -1,6 +1,6 @@
 import { ConventionalCommits } from '@kitz/conventional-commits'
 import { Semver } from '@kitz/semver'
-import { Effect } from 'effect'
+import { Effect, Either } from 'effect'
 
 /**
  * Version bump type.
@@ -47,7 +47,7 @@ export const extractImpacts = (
     const title = message.split('\n')[0] ?? message
     const parsed = yield* Effect.either(ConventionalCommits.parseTitle(title))
 
-    if (parsed._tag === 'Left') {
+    if (Either.isLeft(parsed)) {
       // Not a conventional commit - no impacts
       return []
     }

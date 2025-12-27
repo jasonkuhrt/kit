@@ -15,10 +15,9 @@ export type ConventionalCommit = typeof ConventionalCommit.Type
 /**
  * Type guard for SingleTargetCommit.
  */
-export const isSingleTarget = (commit: ConventionalCommit): commit is SingleTargetCommit =>
-  commit._tag === 'SingleTarget'
+export const isSingleTarget = Schema.is(SingleTargetCommit)
 
 /**
  * Type guard for MultiTargetCommit.
  */
-export const isMultiTarget = (commit: ConventionalCommit): commit is MultiTargetCommit => commit._tag === 'MultiTarget'
+export const isMultiTarget = Schema.is(MultiTargetCommit)
