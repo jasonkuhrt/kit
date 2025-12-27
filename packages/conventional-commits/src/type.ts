@@ -36,3 +36,22 @@ export const StandardValues = {
 
 export const StandardValue = Schema.Enums(StandardValues)
 export type StandardValue = typeof StandardValue.Type
+
+// ─── Standard Impact Mapping ────────────────────────────────────
+
+/**
+ * Static impact mapping for standard types.
+ */
+export const StandardImpact: Record<StandardValue, Impact> = {
+  feat: 'minor',
+  fix: 'patch',
+  docs: 'patch',
+  perf: 'patch',
+  style: 'none',
+  refactor: 'none',
+  test: 'none',
+  build: 'none',
+  ci: 'none',
+  chore: 'none',
+  revert: 'none',
+}

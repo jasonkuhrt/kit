@@ -1,8 +1,6 @@
 export {
   ConventionalCommit,
   type ConventionalCommit as ConventionalCommitType,
-  isMultiTarget,
-  isSingleTarget,
 } from './commit.js'
 export { Footer } from './footer.js'
 export { MultiTargetCommit } from './multi-target-commit.js'

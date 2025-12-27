@@ -14,9 +14,11 @@
  */
 
 import { SingleRunner } from '@effect/cluster'
+import { Command } from '@effect/platform'
 import { NodeFileSystem, NodePath } from '@effect/platform-node'
 import { SqliteClient } from '@effect/sql-sqlite-node'
 import { WorkflowEngine } from '@effect/workflow'
+import { Changelog } from '@kitz/changelog'
 import { Flo } from '@kitz/flo'
 import { Fs } from '@kitz/fs'
 import { Git } from '@kitz/git'
@@ -64,15 +66,31 @@ export class WorkflowPreflightError extends Schema.TaggedError<WorkflowPreflight
 ) {}
 
 /**
+ * Workflow-level GitHub release error.
+ */
+export class WorkflowGHReleaseError extends Schema.TaggedError<WorkflowGHReleaseError>('WorkflowGHReleaseError')(
+  'WorkflowGHReleaseError',
+  {
+    tag: Schema.String,
+    message: Schema.String,
+  },
+) {}
+
+/**
  * Union of all workflow errors.
  */
 export const ReleaseWorkflowError = Schema.Union(
   WorkflowPublishError,
   WorkflowTagError,
   WorkflowPreflightError,
+  WorkflowGHReleaseError,
 )
 
-export type ReleaseWorkflowError = WorkflowPublishError | WorkflowTagError | WorkflowPreflightError
+export type ReleaseWorkflowError =
+  | WorkflowPublishError
+  | WorkflowTagError
+  | WorkflowPreflightError
+  | WorkflowGHReleaseError
 
 // ============================================================================
 // Payload Schema
@@ -136,6 +154,7 @@ const toPlannedRelease = (
 interface WorkflowResult {
   releasedPackages: string[]
   createdTags: string[]
+  createdGHReleases: string[]
 }
 
 /**
@@ -143,15 +162,16 @@ interface WorkflowResult {
  *
  * Graph structure:
  * ```
- * Preflight ─┬─→ Publish:A ─→ CreateTag:A ─┬─→ PushTags
- *            ├─→ Publish:B ─→ CreateTag:B ─┤
- *            └─→ Publish:C ─→ CreateTag:C ─┘
+ * Preflight ─┬─→ Publish:A ─→ CreateTag:A ─→ PushTag:A ─→ CreateGHRelease:A
+ *            ├─→ Publish:B ─→ CreateTag:B ─→ PushTag:B ─→ CreateGHRelease:B
+ *            └─→ Publish:C ─→ CreateTag:C ─→ PushTag:C ─→ CreateGHRelease:C
  * ```
  *
  * - Preflight runs first (if not dry-run)
  * - All Publish activities run concurrently after Preflight
  * - Each CreateTag runs after its corresponding Publish
- * - PushTags runs after all CreateTag activities complete
+ * - Each PushTag runs after its corresponding CreateTag
+ * - Each CreateGHRelease runs after its corresponding PushTag
  */
 export const ReleaseWorkflow = Flo.Workflow.make({
   name: 'ReleaseWorkflow',
@@ -165,25 +185,25 @@ export const ReleaseWorkflow = Flo.Workflow.make({
     const preflight = payload.options.dryRun
       ? null
       : node(
-          'Preflight',
-          runPreflight(plannedReleases, {
-            ...(payload.options.registry && { registry: payload.options.registry }),
-          }).pipe(
-            Effect.mapError((e) =>
-              new WorkflowPreflightError({
-                check: 'check' in e ? (e as PreflightError).context.check : 'unknown',
-                message: e.message,
-              })
-            ),
-            Effect.asVoid,
+        'Preflight',
+        runPreflight(plannedReleases, {
+          ...(payload.options.registry && { registry: payload.options.registry }),
+        }).pipe(
+          Effect.mapError((e) =>
+            new WorkflowPreflightError({
+              check: 'check' in e ? (e as PreflightError).context.check : 'unknown',
+              message: e.message,
+            })
           ),
-        )
+          Effect.asVoid,
+        ),
+      )
 
     // Layer 1: Publish each package (concurrent)
     const publishes = payload.releases.map((release) =>
       node(
         `Publish:${release.packageName}`,
-        Effect.gen(function* () {
+        Effect.gen(function*() {
           const plannedRelease = toPlannedRelease(release)
 
           if (payload.options.dryRun) {
@@ -217,7 +237,7 @@ export const ReleaseWorkflow = Flo.Workflow.make({
       const tag = `${release.packageName}@${release.nextVersion}`
       return node(
         `CreateTag:${tag}`,
-        Effect.gen(function* () {
+        Effect.gen(function*() {
           if (payload.options.dryRun) {
             yield* Effect.log(`[dry-run] Would create tag: ${tag}`)
           } else {
@@ -238,37 +258,122 @@ export const ReleaseWorkflow = Flo.Workflow.make({
       )
     })
 
-    // Layer 3: Push all tags (after all tags created)
-    const pushTags = node(
-      'PushTags',
-      Effect.gen(function* () {
-        const tags = payload.releases.map((r) => `${r.packageName}@${r.nextVersion}`)
-        if (payload.options.dryRun) {
-          yield* Effect.log(`[dry-run] Would push ${tags.length} tags to origin`)
-        } else {
-          yield* Effect.log(`Pushing ${tags.length} tags to origin...`)
-          const gitService = yield* Git.Git
-          yield* gitService.pushTags()
-        }
-      }).pipe(
-        Effect.mapError((e) =>
-          new WorkflowTagError({
-            tag: 'push',
-            message: e instanceof Error ? e.message : String(e),
-          })
+    // Layer 3: Push each tag (each depends on its corresponding createTag)
+    const pushTags = payload.releases.map((release, i) => {
+      const tag = `${release.packageName}@${release.nextVersion}`
+      const isPreview = payload.options.tag === 'next' || tag.endsWith('@next')
+      return node(
+        `PushTag:${tag}`,
+        Effect.gen(function*() {
+          if (payload.options.dryRun) {
+            yield* Effect.log(`[dry-run] Would push tag: ${tag}`)
+          } else {
+            yield* Effect.log(`Pushing tag: ${tag}`)
+            const gitService = yield* Git.Git
+            yield* gitService.pushTag(tag, 'origin', isPreview)
+          }
+          return tag
+        }).pipe(
+          Effect.mapError((e) =>
+            new WorkflowTagError({
+              tag,
+              message: e instanceof Error ? e.message : String(e),
+            })
+          ),
         ),
-      ),
-      {
-        after: createTags,
-        retry: { times: 2 },
-      },
-    )
+        {
+          after: createTags[i]!,
+          retry: { times: 2 },
+        },
+      )
+    })
+
+    // Layer 4: Create GitHub releases (each depends on its corresponding pushTag)
+    const createGHReleases = payload.releases.map((release, i) => {
+      const tag = `${release.packageName}@${release.nextVersion}`
+      const isPreview = payload.options.tag === 'next' || tag.endsWith('@next')
+      return node(
+        `CreateGHRelease:${tag}`,
+        Effect.gen(function*() {
+          if (payload.options.dryRun) {
+            yield* Effect.log(`[dry-run] Would create GH release: ${tag}`)
+            return tag
+          }
+
+          yield* Effect.log(`Creating GH release: ${tag}`)
+
+          // Generate changelog for release body
+          const changelog = yield* Changelog.generate({
+            scope: release.packageName,
+            commits: [], // TODO: Pass commits through payload when available
+            newVersion: release.nextVersion,
+          })
+
+          // Check if preview release already exists
+          if (isPreview) {
+            const existsCmd = Command.make('gh', 'release', 'view', tag)
+            const exists = yield* Command.exitCode(existsCmd).pipe(
+              Effect.map((code) => code === 0),
+              Effect.catchAll(() => Effect.succeed(false)),
+            )
+
+            if (exists) {
+              // Update existing preview release
+              yield* Effect.log(`Updating existing preview release: ${tag}`)
+              const updateCmd = Command.make('gh', 'release', 'edit', tag, '--notes', changelog.markdown)
+              yield* Command.exitCode(updateCmd)
+            } else {
+              // Create new preview release
+              const createCmd = Command.make(
+                'gh',
+                'release',
+                'create',
+                tag,
+                '--title',
+                `${release.packageName} @next`,
+                '--notes',
+                changelog.markdown,
+                '--prerelease',
+              )
+              yield* Command.exitCode(createCmd)
+            }
+          } else {
+            // Create stable release
+            const createCmd = Command.make(
+              'gh',
+              'release',
+              'create',
+              tag,
+              '--title',
+              `${release.packageName} v${release.nextVersion}`,
+              '--notes',
+              changelog.markdown,
+            )
+            yield* Command.exitCode(createCmd)
+          }
+
+          return tag
+        }).pipe(
+          Effect.mapError((e) =>
+            new WorkflowGHReleaseError({
+              tag,
+              message: e instanceof Error ? e.message : String(e),
+            })
+          ),
+        ),
+        {
+          after: pushTags[i]!,
+          retry: { times: 2 },
+        },
+      )
+    })
 
     // Return handles for result collection
     return {
       publishes,
       createTags,
       pushTags,
+      createGHReleases,
     }
   },
 })
@@ -335,7 +440,8 @@ export const toWorkflowPayload = (
  * Activities execute concurrently where dependencies allow:
  * - All package publishes run in parallel
  * - Each tag creation runs after its package publishes
- * - Tag push runs after all tags are created
+ * - Each tag push runs after its tag is created
+ * - Each GitHub release runs after its tag is pushed
  *
  * @example
  * ```ts
@@ -351,7 +457,7 @@ export const executeWorkflow = (
   plan: ReleasePlan,
   options: { dryRun?: boolean; tag?: string; registry?: string } = {},
 ) =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const payload = toWorkflowPayload(plan, options)
 
     yield* Effect.log(`Starting release workflow for ${payload.releases.length} packages...`)
@@ -361,12 +467,14 @@ export const executeWorkflow = (
     // Extract results from NodeHandle unwrapping
     const releasedPackages = result.publishes as string[]
     const createdTags = result.createTags as string[]
+    const createdGHReleases = result.createGHReleases as string[]
 
     yield* Effect.log(`Workflow complete: ${releasedPackages.length} packages released`)
 
     return {
       releasedPackages,
       createdTags,
+      createdGHReleases,
     } satisfies WorkflowResult
   })
 
@@ -429,7 +537,7 @@ export const executeWorkflowObservable = (
   plan: ReleasePlan,
   options: { dryRun?: boolean; tag?: string; registry?: string } = {},
 ): Effect.Effect<ObservableWorkflowResult, never, never> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const payload = toWorkflowPayload(plan, options)
 
     // Get graph structure for visualization
@@ -454,6 +562,7 @@ export const executeWorkflowObservable = (
       Effect.map((result) => ({
         releasedPackages: result.publishes as string[],
         createdTags: result.createTags as string[],
+        createdGHReleases: result.createGHReleases as string[],
       })),
     )
 

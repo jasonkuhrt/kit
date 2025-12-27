@@ -34,4 +34,6 @@ export class MultiTargetCommit extends Schema.TaggedClass<MultiTargetCommit>()('
   summary: Schema.OptionFromNullOr(Schema.String),
   /** Per-package sections keyed by scope name */
   sections: Schema.Record({ key: Schema.String, value: TargetSection }),
-}) {}
+}) {
+  static is = Schema.is(MultiTargetCommit)
+}

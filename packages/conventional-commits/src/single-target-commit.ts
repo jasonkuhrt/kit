@@ -23,4 +23,6 @@ export class SingleTargetCommit extends Schema.TaggedClass<SingleTargetCommit>()
   body: Schema.OptionFromNullOr(Schema.String),
   /** Commit footers */
   footers: Schema.Array(Footer),
-}) {}
+}) {
+  static is = Schema.is(SingleTargetCommit)
+}

@@ -1,7 +1,7 @@
 import { Test } from '@kitz/test'
 import { Effect, Exit, Option } from 'effect'
 import { describe, expect, test } from 'vitest'
-import { isMultiTarget } from '../commit.js'
+import { MultiTargetCommit } from '../multi-target-commit.js'
 import { SingleTargetCommit } from '../single-target-commit.js'
 import { parseTitle } from './title.js'
 
@@ -86,7 +86,7 @@ describe('parseTitle > MultiTarget', () => {
     expect(Exit.isSuccess(result)).toBe(true)
     if (Exit.isSuccess(result)) {
       expect(result.value._tag).toBe('MultiTarget')
-      if (isMultiTarget(result.value)) {
+      if (MultiTargetCommit.is(result.value)) {
         expect(result.value.targets).toHaveLength(2)
         expect(result.value.targets[0].type).toBe('feat')
         expect(result.value.targets[0].scope).toBe('core')

@@ -11,13 +11,3 @@ export const ConventionalCommit = Schema.Union(SingleTargetCommit, MultiTargetCo
  * Type alias for the ConventionalCommit union.
  */
 export type ConventionalCommit = typeof ConventionalCommit.Type
-
-/**
- * Type guard for SingleTargetCommit.
- */
-export const isSingleTarget = Schema.is(SingleTargetCommit)
-
-/**
- * Type guard for MultiTargetCommit.
- */
-export const isMultiTarget = Schema.is(MultiTargetCommit)

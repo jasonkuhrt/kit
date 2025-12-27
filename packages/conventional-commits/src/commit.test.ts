@@ -1,6 +1,6 @@
 import { Option, Schema } from 'effect'
 import { describe, expect, test } from 'vitest'
-import { ConventionalCommit, isMultiTarget, isSingleTarget } from './commit.js'
+import { ConventionalCommit } from './commit.js'
 import { MultiTargetCommit } from './multi-target-commit.js'
 import { SingleTargetCommit } from './single-target-commit.js'
 import { Target } from './target.js'
@@ -28,7 +28,7 @@ describe('ConventionalCommit', () => {
     expect(Schema.is(ConventionalCommit)(multi)).toBe(true)
   })
 
-  test('isSingleTarget type guard works', () => {
+  test('SingleTargetCommit.is type guard works', () => {
     const single = SingleTargetCommit.make({
       type: 'feat',
       scopes: [],
@@ -37,18 +37,18 @@ describe('ConventionalCommit', () => {
       body: Option.none(),
       footers: [],
     })
-    expect(isSingleTarget(single)).toBe(true)
-    expect(isMultiTarget(single)).toBe(false)
+    expect(SingleTargetCommit.is(single)).toBe(true)
+    expect(MultiTargetCommit.is(single)).toBe(false)
   })
 
-  test('isMultiTarget type guard works', () => {
+  test('MultiTargetCommit.is type guard works', () => {
     const multi = MultiTargetCommit.make({
       targets: [Target.make({ type: 'fix', scope: 'cli', breaking: false })],
       message: 'msg',
       summary: Option.none(),
       sections: {},
     })
-    expect(isMultiTarget(multi)).toBe(true)
-    expect(isSingleTarget(multi)).toBe(false)
+    expect(MultiTargetCommit.is(multi)).toBe(true)
+    expect(SingleTargetCommit.is(multi)).toBe(false)
   })
 })

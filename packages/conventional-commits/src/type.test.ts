@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { Impact, ImpactValues, StandardValue, StandardValues } from './type.js'
+import { Impact, ImpactValues, StandardImpact, StandardValue, StandardValues } from './type.js'
 
 describe('Impact', () => {
   test('has runtime enum values', () => {
@@ -33,5 +33,33 @@ describe('StandardValue', () => {
 
   test('schema exposes enums', () => {
     expect(StandardValue.enums.feat).toBe('feat')
+  })
+})
+
+describe('StandardImpact', () => {
+  test('feat is minor', () => {
+    expect(StandardImpact.feat).toBe('minor')
+  })
+
+  test('fix is patch', () => {
+    expect(StandardImpact.fix).toBe('patch')
+  })
+
+  test('docs is patch', () => {
+    expect(StandardImpact.docs).toBe('patch')
+  })
+
+  test('perf is patch', () => {
+    expect(StandardImpact.perf).toBe('patch')
+  })
+
+  test('chore is none', () => {
+    expect(StandardImpact.chore).toBe('none')
+  })
+
+  test('all standard types have impact mappings', () => {
+    for (const key of Object.keys(StandardValues)) {
+      expect(StandardImpact[key as StandardValue]).toBeDefined()
+    }
   })
 })
