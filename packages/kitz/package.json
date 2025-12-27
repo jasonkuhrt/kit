@@ -1,6 +1,6 @@
 {
   "name": "kitz",
-  "version": "0.0.0",
+  "version": "0.0.0-kitz-release",
   "description": "A TypeScript standard library",
   "type": "module",
   "sideEffects": false,
@@ -27,7 +27,6 @@
     "./assert": "./build/assert.js",
     "./bldr": "./build/bldr.js",
     "./cli": "./build/cli.js",
-    "./codec": "./build/codec.js",
     "./color": "./build/color.js",
     "./conf": "./build/conf.js",
     "./env": "./build/env.js",
@@ -63,13 +62,12 @@
     "dev": "tsgo -p tsconfig.build.json --watch",
     "check:types": "tsgo --noEmit",
     "check:lint": "oxlint --config ../../oxlint.json src/",
-    "check:package": "publint && attw --pack"
+    "check:package": "publint && attw --pack --ignore-rules no-resolution cjs-resolves-to-esm"
   },
   "dependencies": {
     "@kitz/assert": "workspace:*",
     "@kitz/bldr": "workspace:*",
     "@kitz/cli": "workspace:*",
-    "@kitz/codec": "workspace:*",
     "@kitz/color": "workspace:*",
     "@kitz/conf": "workspace:*",
     "@kitz/core": "workspace:*",

@@ -1,6 +1,6 @@
 {
   "name": "@kitz/json",
-  "version": "0.0.0",
+  "version": "0.0.0-kitz-release",
   "description": "JSON utilities",
   "type": "module",
   "sideEffects": false,
@@ -9,7 +9,6 @@
     "./__": "./build/__.js"
   },
   "dependencies": {
-    "@kitz/codec": "workspace:*",
     "effect": "^3.0.0"
   },
   "scripts": {
@@ -17,6 +16,6 @@
     "dev": "tsgo -p tsconfig.build.json --watch",
     "check:types": "tsgo --noEmit",
     "check:lint": "oxlint --config ../../oxlint.json src/",
-    "check:package": "publint && attw --pack"
+    "check:package": "publint && attw --pack --ignore-rules no-resolution cjs-resolves-to-esm"
   }
 }

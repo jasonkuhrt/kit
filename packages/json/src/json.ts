@@ -1,5 +1,4 @@
-import { Codec } from '@kitz/codec'
-import { Schema } from 'effect'
+import { Schema as S } from 'effect'
 
 //
 //
@@ -39,64 +38,6 @@ export { type Obj as Object }
 //
 //
 //
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Type Guards
-//
-//
-
-/**
- * Type guard to check if a value is a JSON primitive.
- *
- * @category Type Guards
- */
-export const isPrimitive = (value: unknown): value is Primitive => {
-  return (
-    typeof value === 'string'
-    || typeof value === 'number'
-    || typeof value === 'boolean'
-    || value === null
-  )
-}
-
-/**
- * Type guard to check if a value is a valid JSON value.
- *
- * @category Type Guards
- */
-export const isValue = (value: unknown): value is Value => {
-  // Recursive implementation for JSON value checking
-  if (isPrimitive(value)) return true
-  if (Array.isArray(value)) {
-    return value.every(isValue)
-  }
-  if (typeof value === 'object' && value !== null) {
-    // Reject non-plain objects (Date, RegExp, etc.)
-    const proto = Object.getPrototypeOf(value)
-    if (proto !== Object.prototype && proto !== null) {
-      return false
-    }
-    return Object.values(value).every(isValue)
-  }
-  return false
-}
-
-/**
- * Type guard to check if a value is a JSON object.
- *
- * @category Type Guards
- */
-export const isObject = (value: unknown): value is Obj => {
-  return (
-    typeof value === 'object'
-    && value !== null
-    && !Array.isArray(value)
-    && isValue(value)
-  )
-}
-
-//
-//
-//
-//
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Schemas
 //
 //
@@ -107,11 +48,11 @@ export const isObject = (value: unknown): value is Obj => {
  *
  * @category Schemas
  */
-export const PrimitiveSchema = Schema.Union(
-  Schema.String,
-  Schema.Number,
-  Schema.Boolean,
-  Schema.Null,
+export const PrimitiveSchema = S.Union(
+  S.String,
+  S.Number,
+  S.Boolean,
+  S.Null,
 )
 
 /**
@@ -121,11 +62,11 @@ export const PrimitiveSchema = Schema.Union(
  * @category Schemas
  */
 // @ts-expect-error - Recursive type inference limitation
-export const ValueSchema: Schema.Schema<Value> = Schema.suspend(() =>
-  Schema.Union(
+export const ValueSchema: S.Schema<Value> = S.suspend(() =>
+  S.Union(
     PrimitiveSchema,
-    Schema.Array(ValueSchema),
-    Schema.Record({ key: Schema.String, value: ValueSchema }),
+    S.Array(ValueSchema),
+    S.Record({ key: S.String, value: ValueSchema }),
   )
 )
 
@@ -135,41 +76,58 @@ export const ValueSchema: Schema.Schema<Value> = Schema.suspend(() =>
  *
  * @category Schemas
  */
-export const ObjectSchema = Schema.Record({ key: Schema.String, value: ValueSchema })
+export const ObjectSchema = S.Record({ key: S.String, value: ValueSchema })
 
 /**
- * Schema for parsing JSON strings to unknown values.
- * Uses Effect's parseJson for better error handling.
+ * Primary schema for JSON string parsing/serialization.
+ * Transforms between string representation and typed JSON values.
+ * Uses 2-space indentation for pretty-printing.
+ *
+ * @example
+ * ```ts
+ * // Decode from string
+ * const value = S.decodeSync(Json.Schema)('{"foo": 1}')
+ *
+ * // Encode to string
+ * const str = S.encodeSync(Json.Schema)(value)
+ * ```
  *
  * @category Schemas
  */
-export const parseJsonSchema = Schema.parseJson()
-
-/**
- * Schema for parsing JSON with type validation.
- *
- * @category Schemas
- */
-export const parseJsonAs = <A>(schema: Schema.Schema<A>) => Schema.parseJson(schema)
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Codec
-//
-//
-
-/**
- * Codec for JSON values with pretty-printing.
- * Uses Effect's parseJson for decoding.
- *
- * @category Codec
- */
-export const codec = Codec.create<Value>({
-  encode: (json) => JSON.stringify(json, null, 2),
-  decode: (str) => Schema.decodeUnknownSync(parseJsonSchema)(str) as Value,
+export const Schema = S.parseJson(ValueSchema, { space: 2 }).annotations({
+  identifier: 'Json',
+  title: 'JSON Value',
+  description: 'A valid JSON value parsed from/serialized to a string',
 })
+
+//
+//
+//
+//
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Type Guards
+//
+//
+
+/**
+ * Type guard to check if a value is a valid JSON value.
+ *
+ * @category Type Guards
+ */
+export const is = S.is(ValueSchema)
+
+/**
+ * Type guard to check if a value is a JSON primitive.
+ *
+ * @category Type Guards
+ */
+export const isPrimitive = S.is(PrimitiveSchema)
+
+/**
+ * Type guard to check if a value is a JSON object.
+ *
+ * @category Type Guards
+ */
+export const isObject = S.is(ObjectSchema)
 
 //
 //
@@ -180,48 +138,16 @@ export const codec = Codec.create<Value>({
 //
 
 /**
- * Encode a JSON value to a pretty-printed string.
- *
- * @category Codec
- */
-export const encode = codec.encode
-
-/**
  * Parse a JSON string to a typed value.
- * Uses Effect's parseJson for better error messages.
+ * Throws on invalid JSON.
  *
- * @category Codec
+ * @category Parsing
  */
-export const decode = codec.decode
-
-//
-//
-//
-//
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ • Schema Exports for Tests
-//
-//
+export const fromString = S.decodeSync(Schema)
 
 /**
- * Exported schemas for parsing JSON types.
- * These are used in tests and provide parse methods.
+ * Serialize a JSON value to a pretty-printed string.
  *
- * @category Schemas
+ * @category Serialization
  */
-export const Primitive = {
-  parse: (value: unknown) => Schema.decodeUnknownSync(PrimitiveSchema)(value),
-}
-
-/**
- * @category Schemas
- */
-export const Value = {
-  parse: (value: unknown) => Schema.decodeUnknownSync(ValueSchema)(value),
-}
-
-/**
- * @category Schemas
- */
-export const ObjectParser = {
-  parse: (value: unknown) => Schema.decodeUnknownSync(ObjectSchema)(value),
-}
+export const toString = S.encodeSync(Schema)

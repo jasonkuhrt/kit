@@ -89,7 +89,6 @@ You will also find these conventions:
 | [`@kitz/assert`](./packages/assert)                   | Assertion utilities                |
 | [`@kitz/bldr`](./packages/bldr)                       | Builder pattern utilities          |
 | [`@kitz/cli`](./packages/cli)                         | CLI framework                      |
-| [`@kitz/codec`](./packages/codec)                     | Encoding and decoding utilities    |
 | [`@kitz/color`](./packages/color)                     | Color manipulation utilities       |
 | [`@kitz/config-manager`](./packages/config-manager)   | Configuration file management      |
 | [`@kitz/configurator`](./packages/configurator)       | Configurator pattern utilities     |
