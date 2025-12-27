@@ -1,6 +1,10 @@
 import { Context, Data, Effect, Layer } from 'effect'
 import { type SimpleGit, simpleGit } from 'simple-git'
 
+// ============================================================================
+// Errors
+// ============================================================================
+
 /**
  * Git operation error.
  */

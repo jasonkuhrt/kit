@@ -8,7 +8,7 @@ import { auditPackageHistory, type AuditResult, validateAdjacent, type Validatio
  */
 export interface SetOptions {
   /** Git commit SHA to tag */
-  readonly sha: string
+  readonly sha: Git.Sha
   /** Package name (e.g., '@kitz/core' or 'core') */
   readonly pkg: string
   /** Semver version */
@@ -26,7 +26,7 @@ export interface SetOptions {
  */
 export interface SetResult {
   readonly tag: string
-  readonly sha: string
+  readonly sha: Git.Sha
   readonly version: Semver.Semver
   readonly action: 'created' | 'moved' | 'unchanged'
   readonly pushed: boolean

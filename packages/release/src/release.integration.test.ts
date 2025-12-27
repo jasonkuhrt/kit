@@ -2,7 +2,7 @@ import { Env } from '@kitz/env'
 import { Fs } from '@kitz/fs'
 import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
-import { Effect, Equal, Layer } from 'effect'
+import { Effect, Layer } from 'effect'
 import { describe, expect, test } from 'vitest'
 import type { Package } from './discovery.js'
 import { apply, planPr, planPreview, planStable, type ReleasePlan } from './release.js'
@@ -13,7 +13,7 @@ const expectVersion = (actual: Semver.Semver | null | undefined, expected: strin
   if (actual === null || actual === undefined) {
     expect(actual).toBe(expected)
   } else {
-    expect(Equal.equals(actual, Semver.fromString(expected))).toBe(true)
+    expect(Semver.equivalence(actual, Semver.fromString(expected))).toBe(true)
   }
 }
 

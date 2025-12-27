@@ -17,7 +17,7 @@ import { SingleRunner } from '@effect/cluster'
 import { Command } from '@effect/platform'
 import { NodeFileSystem, NodePath } from '@effect/platform-node'
 import { SqliteClient } from '@effect/sql-sqlite-node'
-import { WorkflowEngine } from '@effect/workflow'
+import { Workflow as EffectWorkflow, WorkflowEngine } from '@effect/workflow'
 import { Changelog } from '@kitz/changelog'
 import { Flo } from '@kitz/flo'
 import { Fs } from '@kitz/fs'
@@ -413,9 +413,29 @@ export const makeWorkflowRuntime = (dbPath: string = DEFAULT_WORKFLOW_DB) =>
   )
 
 /**
- * Create a test-friendly workflow runtime using in-memory engine.
+ * A minimal workflow definition for test mocking.
  */
-export const makeTestWorkflowRuntime = () => WorkflowEngine.layerMemory
+const TestWorkflowDef = EffectWorkflow.make({
+  name: 'TestWorkflow',
+  payload: Schema.Struct({ id: Schema.String }),
+  idempotencyKey: (payload) => payload.id,
+  success: Schema.Void,
+})
+
+/**
+ * Create a test-friendly workflow runtime using in-memory engine.
+ *
+ * Provides both WorkflowEngine and a mock WorkflowInstance for testing
+ * activities without going through the full workflow execution flow.
+ */
+export const makeTestWorkflowRuntime = () =>
+  Layer.mergeAll(
+    WorkflowEngine.layerMemory,
+    Layer.succeed(
+      WorkflowEngine.WorkflowInstance,
+      WorkflowEngine.WorkflowInstance.initial(TestWorkflowDef, 'test-execution-id'),
+    ),
+  )
 
 // ============================================================================
 // Execution API

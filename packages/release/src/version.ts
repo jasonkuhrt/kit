@@ -75,7 +75,8 @@ export const extractImpacts = (
     const impacts: CommitImpact[] = []
 
     if (ConventionalCommits.SingleTargetCommit.is(parsedCommit)) {
-      const bump = bumpFromType(parsedCommit.type, parsedCommit.breaking)
+      const typeValue = parsedCommit.type.value
+      const bump = bumpFromType(typeValue, parsedCommit.breaking)
 
       if (parsedCommit.scopes.length === 0) {
         // Scopeless commit - affects all packages (handled by caller)
@@ -87,7 +88,7 @@ export const extractImpacts = (
           scope,
           bump,
           commit: {
-            type: parsedCommit.type,
+            type: typeValue,
             message: parsedCommit.message,
             hash: commitInput.hash,
             breaking: parsedCommit.breaking,
@@ -97,12 +98,13 @@ export const extractImpacts = (
     } else if (ConventionalCommits.MultiTargetCommit.is(parsedCommit)) {
       // MultiTargetCommit has a shared message at the parent level
       for (const target of parsedCommit.targets) {
-        const bump = bumpFromType(target.type, target.breaking)
+        const typeValue = target.type.value
+        const bump = bumpFromType(typeValue, target.breaking)
         impacts.push({
           scope: target.scope,
           bump,
           commit: {
-            type: target.type,
+            type: typeValue,
             message: parsedCommit.message,
             hash: commitInput.hash,
             breaking: target.breaking,

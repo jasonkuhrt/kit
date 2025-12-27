@@ -1,5 +1,5 @@
 import { Version as VltVersion } from '@vltpkg/semver'
-import { Equal, Hash, Schema as S } from 'effect'
+import { Schema as S } from 'effect'
 
 export class PreRelease extends S.TaggedClass<PreRelease>('SemverPreRelease')('SemverPreRelease', {
   major: S.Number,
@@ -13,13 +13,5 @@ export class PreRelease extends S.TaggedClass<PreRelease>('SemverPreRelease')('S
   title: 'Pre-Release',
   description: 'A semantic version with pre-release identifiers',
 }) {
-  static is = S.is(PreRelease);
-
-  [Equal.symbol](that: Equal.Equal): boolean {
-    return that instanceof PreRelease && this.version.compare(that.version) === 0
-  }
-
-  [Hash.symbol](): number {
-    return Hash.string(this.version.toString())
-  }
+  static is = S.is(PreRelease)
 }
