@@ -25,8 +25,8 @@ import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
 import { Effect, Layer, Option, Schema, Stream } from 'effect'
 import { type PreflightError, run as runPreflight } from './preflight.js'
-import { publishPackage } from './publish.js'
-import type { PlannedRelease, ReleasePlan } from './release.js'
+import { publishPackage, type ReleaseInfo } from './publish.js'
+import { getBumpType, getCurrentVersion, getNextVersion, type PlannedRelease, type ReleasePlan } from './release.js'
 
 // ============================================================================
 // Error Schemas
@@ -114,7 +114,7 @@ const ReleaseSchema = Schema.Struct({
   packagePath: Schema.String,
   currentVersion: Schema.OptionFromNullOr(Schema.String),
   nextVersion: Schema.String,
-  bump: Schema.Literal('major', 'minor', 'patch'),
+  bump: Schema.UndefinedOr(Schema.Literal('major', 'minor', 'patch')),
   commits: Schema.Array(CommitEntrySchema),
 })
 
@@ -137,11 +137,11 @@ type ReleasePayloadType = Schema.Schema.Type<typeof ReleasePayload>
 // ============================================================================
 
 /**
- * Convert a workflow release to a domain PlannedRelease.
+ * Convert a workflow release payload to ReleaseInfo for publishing.
  */
-const toPlannedRelease = (
+const toReleaseInfo = (
   release: ReleasePayloadType['releases'][number],
-): PlannedRelease => ({
+): ReleaseInfo => ({
   package: {
     name: release.packageName,
     path: Fs.Path.AbsDir.fromString(release.packagePath),
@@ -149,10 +149,7 @@ const toPlannedRelease = (
       ? release.packageName.split('/')[1]!
       : release.packageName,
   },
-  currentVersion: release.currentVersion.pipe(Option.map(Semver.fromString)),
   nextVersion: Semver.fromString(release.nextVersion),
-  bump: release.bump,
-  commits: release.commits,
 })
 
 // ============================================================================
@@ -190,7 +187,7 @@ export const ReleaseWorkflow = Flo.Workflow.make({
   error: ReleaseWorkflowError,
 
   graph: (payload, node) => {
-    const plannedReleases = payload.releases.map(toPlannedRelease)
+    const plannedReleases = payload.releases.map(toReleaseInfo)
 
     // Layer 0: Preflight checks (skip in dry-run mode)
     const preflight = payload.options.dryRun
@@ -215,13 +212,13 @@ export const ReleaseWorkflow = Flo.Workflow.make({
       node(
         `Publish:${release.packageName}`,
         Effect.gen(function*() {
-          const plannedRelease = toPlannedRelease(release)
+          const releaseInfo = toReleaseInfo(release)
 
           if (payload.options.dryRun) {
             yield* Effect.log(`[dry-run] Would publish ${release.packageName}@${release.nextVersion}`)
           } else {
             yield* Effect.log(`Publishing ${release.packageName}@${release.nextVersion}...`)
-            yield* publishPackage(plannedRelease, {
+            yield* publishPackage(releaseInfo, {
               ...(payload.options.tag && { tag: payload.options.tag }),
               ...(payload.options.registry && { registry: payload.options.registry }),
             })
@@ -452,9 +449,9 @@ export const toWorkflowPayload = (
   releases: [...plan.releases, ...plan.cascades].map((r) => ({
     packageName: r.package.name,
     packagePath: Fs.Path.toString(r.package.path),
-    currentVersion: r.currentVersion.pipe(Option.map((v) => v.version.toString())),
-    nextVersion: r.nextVersion.version.toString(),
-    bump: r.bump,
+    currentVersion: getCurrentVersion(r).pipe(Option.map((v) => v.version.toString())),
+    nextVersion: getNextVersion(r).version.toString(),
+    bump: getBumpType(r),
     commits: r.commits.map((c) => ({
       type: c.type,
       message: c.message,

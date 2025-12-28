@@ -12,6 +12,9 @@
     "@vltpkg/semver": "^1.0.0-rc.12",
     "effect": "^3.0.0"
   },
+  "devDependencies": {
+    "@kitz/test": "workspace:*"
+  },
   "scripts": {
     "build": "tsgo -p tsconfig.build.json",
     "dev": "tsgo -p tsconfig.build.json --watch",

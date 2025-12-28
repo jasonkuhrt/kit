@@ -63,6 +63,14 @@ export const Semver = S.transformOrFail(
 
 export type Semver = typeof Semver.Type
 
+/**
+ * Schema alias for Effect S.Class usage.
+ *
+ * Note: This is a transform schema, which has limitations when used inside
+ * S.Class (no `fields` property). May need refactoring to a proper Struct.
+ */
+export const SemverSchema = Semver
+
 // ============================================================================
 // Constructors
 // ============================================================================
@@ -171,3 +179,40 @@ export const match = <$A>(
   onPreRelease: (preRelease: PreRelease) => $A,
 ) =>
 (semver: Semver): $A => semver._tag === 'SemverOfficialRelease' ? onOfficialRelease(semver) : onPreRelease(semver)
+
+// ============================================================================
+// Phase Detection
+// ============================================================================
+
+/**
+ * Check if version is in initial development phase (0.x.x).
+ *
+ * During initial development, breaking changes are expected and
+ * bump minor instead of major. See {@link mapBumpForPhase}.
+ */
+export const isPhaseInitial = (version: Semver): boolean => version.major === 0
+
+/**
+ * Check if version has public API guarantee (1.x.x+).
+ *
+ * Public API versions follow standard semver semantics where
+ * breaking changes bump major.
+ */
+export const isPhasePublic = (version: Semver): boolean => version.major >= 1
+
+/**
+ * Map a bump type to the appropriate increment for the version's phase.
+ *
+ * - Initial phase (0.x.x): major/minor → minor, patch → patch
+ * - Public phase (1.x.x+): standard semver semantics
+ */
+export const mapBumpForPhase = (
+  version: Semver,
+  bump: BumpType,
+): BumpType => {
+  if (isPhasePublic(version)) {
+    return bump // Standard semantics
+  }
+  // Initial phase: breaking/features → minor, fixes → patch
+  return bump === 'patch' ? 'patch' : 'minor'
+}

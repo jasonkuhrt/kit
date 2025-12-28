@@ -10,13 +10,15 @@ import { Cascade, Config, Plan, Workspace } from '../__.js'
  * Format a planned release for display.
  */
 const formatRelease = (release: Plan.PlannedRelease): string => {
-  const { package: pkg, currentVersion, nextVersion, bump, commits } = release
+  const currentVersion = Plan.getCurrentVersion(release)
+  const nextVersion = Plan.getNextVersion(release)
+  const bump = Plan.getBumpType(release)
   const current = currentVersion.pipe(Option.map((v) => v.version), Option.getOrElse(() => '(none)'))
   const next = nextVersion.version
-  const commitCount = commits.length
+  const commitCount = release.commits.length
 
   return [
-    `${pkg.name} (${current} → ${next}) [${bump}]`,
+    `${release.package.name} (${current} → ${next}) [${bump ?? 'cascade'}]`,
     `  ${commitCount} commit${commitCount === 1 ? '' : 's'}`,
   ].join(Str.Char.newline)
 }
@@ -34,7 +36,7 @@ const formatCascade = (
 
   const lines = [`${pkg}:`]
   for (const dep of dependents) {
-    const ver = dep.currentVersion.pipe(Option.map((v) => v.version), Option.getOrElse(() => '0.0.0'))
+    const ver = Plan.getCurrentVersion(dep).pipe(Option.map((v) => v.version), Option.getOrElse(() => '0.0.0'))
     lines.push(`  ├── ${dep.package.name} depends (workspace:* → ^${ver})`)
   }
   return lines.join(Str.Char.newline)

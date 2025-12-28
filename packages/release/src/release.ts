@@ -5,9 +5,10 @@ import { Env } from '@kitz/env'
 import { Fs } from '@kitz/fs'
 import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
-import { Effect, Option } from 'effect'
+import { Effect, Option, Schema as S } from 'effect'
 import { buildDependencyGraph, detect as detectCascades } from './cascade.js'
 import type { Package } from './discovery.js'
+import { PreviewPrerelease, PrPrerelease } from './prerelease.js'
 import {
   aggregateByPackage,
   type BumpType,
@@ -47,16 +48,142 @@ export interface ReleaseOptions {
   readonly exclude?: readonly string[]
 }
 
+// ============================================================================
+// Stable Version (First | Increment)
+// ============================================================================
+
 /**
- * A planned package release.
+ * First release of a package - no previous version exists.
  */
-export interface PlannedRelease {
-  readonly package: Package
-  readonly currentVersion: Option.Option<Semver.Semver>
-  readonly nextVersion: Semver.Semver
-  readonly bump: BumpType
-  readonly commits: readonly StructuredCommit[]
+export class StableVersionFirst extends S.Class<StableVersionFirst>('First')({
+  version: Semver.SemverSchema,
+}) {
+  static is = S.is(StableVersionFirst)
 }
+
+/**
+ * Increment from an existing version.
+ */
+export class StableVersionIncrement extends S.Class<StableVersionIncrement>('Increment')({
+  from: Semver.SemverSchema,
+  to: Semver.SemverSchema,
+  bump: S.Literal('major', 'minor', 'patch'),
+}) {
+  static is = S.is(StableVersionIncrement)
+}
+
+/**
+ * A stable version is either the first release or an increment.
+ */
+export type StableVersion = StableVersionFirst | StableVersionIncrement
+
+// ============================================================================
+// Planned Release (Stable | Preview | Pr)
+// ============================================================================
+
+/**
+ * Common schema properties for all planned releases.
+ * Note: `package` and `commits` are not Schema-encoded as they contain
+ * complex runtime types (Package, StructuredCommit).
+ */
+const PlannedReleaseBaseFields = {
+  package: S.Any as S.Schema<Package>,
+  commits: S.Array(S.Any) as S.Schema<readonly StructuredCommit[]>,
+}
+
+/**
+ * A stable release to npm.
+ */
+export class StablePlannedRelease extends S.Class<StablePlannedRelease>('Stable')({
+  ...PlannedReleaseBaseFields,
+  version: S.Union(StableVersionFirst, StableVersionIncrement),
+}) {
+  static is = S.is(StablePlannedRelease)
+}
+
+/**
+ * A preview (canary) release.
+ * Version format: `${baseVersion}-next.${iteration}`
+ */
+export class PreviewPlannedRelease extends S.Class<PreviewPlannedRelease>('Preview')({
+  ...PlannedReleaseBaseFields,
+  baseVersion: Semver.SemverSchema,
+  prerelease: PreviewPrerelease,
+}) {
+  static is = S.is(PreviewPlannedRelease)
+}
+
+/**
+ * A PR-specific release for testing.
+ * Version format: `0.0.0-pr.${prNumber}.${iteration}.${sha}`
+ */
+export class PrPlannedRelease extends S.Class<PrPlannedRelease>('Pr')({
+  ...PlannedReleaseBaseFields,
+  prerelease: PrPrerelease,
+}) {
+  static is = S.is(PrPlannedRelease)
+}
+
+/**
+ * A planned package release - discriminated union of release types.
+ */
+export type PlannedRelease = StablePlannedRelease | PreviewPlannedRelease | PrPlannedRelease
+
+// ============================================================================
+// Helpers
+// ============================================================================
+
+/**
+ * Get the next version from a stable version.
+ */
+const getStableVersionNext = (version: StableVersion): Semver.Semver =>
+  StableVersionFirst.is(version) ? version.version : version.to
+
+/**
+ * Get the next version from a planned release.
+ */
+export const getNextVersion = (release: PlannedRelease): Semver.Semver => {
+  if (StablePlannedRelease.is(release)) {
+    return getStableVersionNext(release.version)
+  }
+  if (PreviewPlannedRelease.is(release)) {
+    return Semver.fromString(`${release.baseVersion.version}-next.${release.prerelease.iteration}`)
+  }
+  return Semver.fromString(
+    `0.0.0-pr.${release.prerelease.prNumber}.${release.prerelease.iteration}.${release.prerelease.sha}`,
+  )
+}
+
+/**
+ * Get the current version from a stable version.
+ */
+const getStableVersionCurrent = (version: StableVersion): Option.Option<Semver.Semver> =>
+  StableVersionFirst.is(version) ? Option.none() : Option.some(version.from)
+
+/**
+ * Get the current version from a planned release (if any).
+ */
+export const getCurrentVersion = (release: PlannedRelease): Option.Option<Semver.Semver> => {
+  if (StablePlannedRelease.is(release)) {
+    return getStableVersionCurrent(release.version)
+  }
+  if (PreviewPlannedRelease.is(release)) {
+    return Option.some(release.baseVersion)
+  }
+  return Option.none()
+}
+
+/**
+ * Get the bump type for a stable version.
+ */
+const getStableVersionBump = (version: StableVersion): BumpType =>
+  StableVersionFirst.is(version) ? 'minor' : version.bump
+
+/**
+ * Get the bump type for a release.
+ */
+export const getBumpType = (release: PlannedRelease): BumpType | undefined =>
+  StablePlannedRelease.is(release) ? getStableVersionBump(release.version) : undefined
 
 /**
  * Release plan result.
@@ -146,7 +273,7 @@ export const stable = (
     const scopeToPackage = new Map(ctx.packages.map((p) => [p.scope, p]))
 
     // 6. Build release plan
-    const releases: PlannedRelease[] = []
+    const releases: StablePlannedRelease[] = []
 
     for (const [scope, { bump, commits: structuredCommits }] of aggregated) {
       const pkg = scopeToPackage.get(scope)
@@ -162,13 +289,16 @@ export const stable = (
       // Calculate next version
       const nextVersion = calculateNextVersion(currentVersion, bump)
 
-      releases.push({
+      // Build version union
+      const version: StableVersion = Option.isSome(currentVersion)
+        ? StableVersionIncrement.make({ from: currentVersion.value, to: nextVersion, bump })
+        : StableVersionFirst.make({ version: nextVersion })
+
+      releases.push(StablePlannedRelease.make({
         package: pkg,
-        currentVersion,
-        nextVersion,
-        bump,
+        version,
         commits: structuredCommits,
-      })
+      }))
     }
 
     // 7. Detect cascade releases (packages that depend on released packages)
@@ -186,21 +316,24 @@ const detectCascadesForPreview = (
   primaryReleases: PlannedRelease[],
   dependencyGraph: Map<string, string[]>,
   tags: string[],
-): PlannedRelease[] => {
-  // Get standard cascades
+): PreviewPlannedRelease[] => {
+  // Get standard cascades (as stable releases)
   const baseCascades = detectCascades(packages, primaryReleases, dependencyGraph, tags)
 
-  // Convert to preview versions
+  // Convert to preview releases
   return baseCascades.map((cascade) => {
-    // The nextVersion from detectCascades is a stable version (e.g., 1.0.1)
-    // We need to convert it to a preview version
-    const previewNumber = findLatestPreviewNumber(cascade.package.name, cascade.nextVersion, tags)
-    const previewVersion = calculatePreviewVersion(cascade.nextVersion, previewNumber)
+    // Get the stable version from the cascade
+    const baseVersion = getNextVersion(cascade)
 
-    return {
-      ...cascade,
-      nextVersion: previewVersion,
-    }
+    // Find existing preview releases for this version
+    const previewNumber = findLatestPreviewNumber(cascade.package.name, baseVersion, tags)
+
+    return PreviewPlannedRelease.make({
+      package: cascade.package,
+      baseVersion,
+      prerelease: PreviewPrerelease.make({ iteration: previewNumber + 1 }),
+      commits: cascade.commits,
+    })
   })
 }
 
@@ -214,19 +347,19 @@ const detectCascadesForPr = (
   tags: string[],
   prNumber: number,
   sha: Git.Sha.Sha,
-): PlannedRelease[] => {
-  // Get standard cascades
+): PrPlannedRelease[] => {
+  // Get standard cascades (as stable releases)
   const baseCascades = detectCascades(packages, primaryReleases, dependencyGraph, tags)
 
-  // Convert to PR versions
+  // Convert to PR releases
   return baseCascades.map((cascade) => {
     const prReleaseNumber = findLatestPrNumber(cascade.package.name, prNumber, tags)
-    const prVersion = calculatePrVersion(prNumber, prReleaseNumber, sha)
 
-    return {
-      ...cascade,
-      nextVersion: prVersion,
-    }
+    return PrPlannedRelease.make({
+      package: cascade.package,
+      prerelease: PrPrerelease.make({ prNumber, iteration: prReleaseNumber + 1, sha }),
+      commits: cascade.commits,
+    })
   })
 }
 
@@ -271,7 +404,7 @@ export const preview = (
     const scopeToPackage = new Map(ctx.packages.map((p) => [p.scope, p]))
 
     // 6. Build release plan with preview versions
-    const releases: PlannedRelease[] = []
+    const releases: PreviewPlannedRelease[] = []
 
     for (const [scope, { bump, commits: structuredCommits }] of aggregated) {
       const pkg = scopeToPackage.get(scope)
@@ -285,21 +418,17 @@ export const preview = (
       const currentVersion = findLatestTagVersion(pkg.name, tags)
 
       // Calculate what the next stable version would be
-      const nextStableVersion = calculateNextVersion(currentVersion, bump)
+      const baseVersion = calculateNextVersion(currentVersion, bump)
 
       // Find existing preview releases for this version
-      const previewNumber = findLatestPreviewNumber(pkg.name, nextStableVersion, tags)
+      const previewNumber = findLatestPreviewNumber(pkg.name, baseVersion, tags)
 
-      // Calculate preview version
-      const nextVersion = calculatePreviewVersion(nextStableVersion, previewNumber)
-
-      releases.push({
+      releases.push(PreviewPlannedRelease.make({
         package: pkg,
-        currentVersion,
-        nextVersion,
-        bump,
+        baseVersion,
+        prerelease: PreviewPrerelease.make({ iteration: previewNumber + 1 }),
         commits: structuredCommits,
-      })
+      }))
     }
 
     // 7. Detect cascade releases
@@ -382,9 +511,9 @@ export const pr = (
     const scopeToPackage = new Map(ctx.packages.map((p) => [p.scope, p]))
 
     // 8. Build release plan with PR versions
-    const releases: PlannedRelease[] = []
+    const releases: PrPlannedRelease[] = []
 
-    for (const [scope, { bump, commits: structuredCommits }] of aggregated) {
+    for (const [scope, { commits: structuredCommits }] of aggregated) {
       const pkg = scopeToPackage.get(scope)
       if (!pkg) continue
 
@@ -392,22 +521,14 @@ export const pr = (
       if (options?.packages && !options.packages.includes(pkg.name)) continue
       if (options?.exclude?.includes(pkg.name)) continue
 
-      // Find current stable version from tags
-      const currentVersion = findLatestTagVersion(pkg.name, tags)
-
       // Find existing PR releases for this PR
       const prReleaseNumber = findLatestPrNumber(pkg.name, prNumber, tags)
 
-      // Calculate PR version
-      const nextVersion = calculatePrVersion(prNumber, prReleaseNumber, sha)
-
-      releases.push({
+      releases.push(PrPlannedRelease.make({
         package: pkg,
-        currentVersion,
-        nextVersion,
-        bump,
+        prerelease: PrPrerelease.make({ prNumber, iteration: prReleaseNumber + 1, sha }),
         commits: structuredCommits,
-      })
+      }))
     }
 
     // 9. Detect cascade releases

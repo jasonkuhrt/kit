@@ -148,6 +148,10 @@ export const aggregateByPackage = (
 
 /**
  * Calculate the next version given a current version and bump type.
+ *
+ * Applies phase-aware bump mapping:
+ * - Initial phase (0.x.x): major/minor → minor, patch → patch
+ * - Public phase (1.x.x+): standard semver semantics
  */
 export const calculateNextVersion = (
   current: Option.Option<Semver.Semver>,
@@ -155,18 +159,29 @@ export const calculateNextVersion = (
 ): Semver.Semver =>
   Option.match(current, {
     onNone: () => {
-      // First release - start at appropriate version
+      // First release - ALWAYS start in initial phase (0.x.x)
       switch (bump) {
         case 'major':
-          return Semver.make(1, 0, 0)
         case 'minor':
           return Semver.make(0, 1, 0)
         case 'patch':
           return Semver.make(0, 0, 1)
       }
     },
-    onSome: (version) => Semver.increment(version, bump),
+    onSome: (version) => {
+      // Apply phase-aware bump mapping
+      const effectiveBump = Semver.mapBumpForPhase(version, bump)
+      return Semver.increment(version, effectiveBump)
+    },
   })
+
+/**
+ * Graduate from initial phase to public phase (1.0.0).
+ *
+ * This is a one-way operation that declares "the API is now stable".
+ * Should only be called explicitly, never automatically from commits.
+ */
+export const graduatePhase = (): Semver.Semver => Semver.make(1, 0, 0)
 
 /**
  * Find the latest version for a package from git tags.

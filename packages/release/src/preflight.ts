@@ -3,7 +3,7 @@ import { Git } from '@kitz/git'
 import { Effect } from 'effect'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
-import type { PlannedRelease } from './release.js'
+import type { ReleaseInfo } from './publish.js'
 
 const execAsync = promisify(exec)
 
@@ -140,7 +140,7 @@ export const checkGitRemote = (
  * Check that planned tags don't already exist.
  */
 export const checkTagsNotExist = (
-  releases: PlannedRelease[],
+  releases: ReleaseInfo[],
 ): Effect.Effect<string[], PreflightError, Git.Git> =>
   Effect.gen(function*() {
     const git = yield* Git.Git
@@ -158,7 +158,7 @@ export const checkTagsNotExist = (
     )
 
     const existingTagSet = new Set(existingTags)
-    const plannedTags = releases.map((r) => `${r.package.name}@${r.nextVersion}`)
+    const plannedTags = releases.map((r) => `${r.package.name}@${r.nextVersion.version}`)
     const conflicts = plannedTags.filter((tag) => existingTagSet.has(tag))
 
     if (conflicts.length > 0) {
@@ -208,7 +208,7 @@ export interface PreflightOptions {
  * ```
  */
 export const run = (
-  releases: PlannedRelease[],
+  releases: ReleaseInfo[],
   options?: PreflightOptions,
 ): Effect.Effect<PreflightResult, PreflightError | Git.GitError, Git.Git> =>
   Effect.gen(function*() {

@@ -7,7 +7,14 @@ import { Semver } from '@kitz/semver'
 import { Effect, Fiber, Layer, Option, Schema, Stream } from 'effect'
 import { load } from '../config.js'
 import { discover, type Package } from '../discovery.js'
-import { type PlannedRelease, type ReleasePlan } from '../release.js'
+import {
+  getNextVersion,
+  type PlannedRelease,
+  type ReleasePlan,
+  StablePlannedRelease,
+  StableVersionFirst,
+  StableVersionIncrement,
+} from '../release.js'
 import type { BumpType, StructuredCommit } from '../version.js'
 import { executeWorkflowObservable } from '../workflow.js'
 
@@ -63,12 +70,28 @@ const deserializePlan = (
       breaking: c.breaking,
     }))
 
-    return {
-      package: pkg,
-      currentVersion: Option.fromNullable(r.currentVersion).pipe(Option.map(Semver.fromString)),
-      nextVersion: Semver.fromString(r.nextVersion),
-      bump: r.bump,
-      commits,
+    // Currently only stable releases are supported in the plan file format
+    // For stable releases, determine if this is a first release or an increment
+    const nextVersion = Semver.fromString(r.nextVersion)
+
+    if (r.currentVersion === null) {
+      // First release - no previous version
+      return StablePlannedRelease.make({
+        package: pkg,
+        version: StableVersionFirst.make({ version: nextVersion }),
+        commits,
+      })
+    } else {
+      // Increment release - has previous version
+      return StablePlannedRelease.make({
+        package: pkg,
+        version: StableVersionIncrement.make({
+          from: Semver.fromString(r.currentVersion),
+          to: nextVersion,
+          bump: r.bump,
+        }),
+        commits,
+      })
     }
   }
 
@@ -157,10 +180,10 @@ const program = Effect.gen(function*() {
   if (!args.yes && !args.dryRun) {
     console.log('Releases:')
     for (const r of plan.releases) {
-      console.log(`  ${r.package.name}@${r.nextVersion.version}`)
+      console.log(`  ${r.package.name}@${getNextVersion(r).version}`)
     }
     for (const r of plan.cascades) {
-      console.log(`  ${r.package.name}@${r.nextVersion.version} (cascade)`)
+      console.log(`  ${r.package.name}@${getNextVersion(r).version} (cascade)`)
     }
     console.log()
     console.log('This will:')
@@ -176,7 +199,7 @@ const program = Effect.gen(function*() {
   if (args.dryRun) {
     console.log('[DRY RUN] Would execute:')
     for (const r of [...plan.releases, ...plan.cascades]) {
-      console.log(`  - Publish ${r.package.name}@${r.nextVersion.version}`)
+      console.log(`  - Publish ${r.package.name}@${getNextVersion(r).version}`)
     }
     console.log(`  - Create ${totalReleases} git tag${totalReleases === 1 ? '' : 's'}`)
     console.log(`  - Push tags to origin`)

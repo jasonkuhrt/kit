@@ -14,14 +14,16 @@ const PLAN_FILE = 'plan.json'
  * Format a planned release for display.
  */
 const formatRelease = (release: Plan.PlannedRelease, prefix: string = ''): string => {
-  const { package: pkg, currentVersion, nextVersion, bump, commits } = release
+  const currentVersion = Plan.getCurrentVersion(release)
+  const nextVersion = Plan.getNextVersion(release)
+  const bump = Plan.getBumpType(release)
   const current = currentVersion.pipe(Option.map((v) => v.version), Option.getOrElse(() => '(none)'))
   const next = nextVersion.version
-  const commitCount = commits.length
+  const commitCount = release.commits.length
 
   return [
-    `${prefix}${pkg.name}`,
-    `${prefix}  ${current} → ${next} (${bump})`,
+    `${prefix}${release.package.name}`,
+    `${prefix}  ${current} → ${next} (${bump ?? 'cascade'})`,
     `${prefix}  ${commitCount} commit${commitCount === 1 ? '' : 's'}`,
   ].join(Str.Char.newline)
 }
@@ -30,29 +32,25 @@ const formatRelease = (release: Plan.PlannedRelease, prefix: string = ''): strin
  * Serialize plan to JSON for storage.
  */
 const serializePlan = (plan: Plan.ReleasePlan, type: string): string => {
+  const serializeRelease = (r: Plan.PlannedRelease) => ({
+    package: r.package.name,
+    path: r.package.path,
+    currentVersion: Plan.getCurrentVersion(r).pipe(Option.map((v) => v.version), Option.getOrNull),
+    nextVersion: Plan.getNextVersion(r).version,
+    bump: Plan.getBumpType(r),
+    commits: r.commits.map((c) => ({
+      hash: c.hash,
+      type: c.type,
+      message: c.message,
+      breaking: c.breaking,
+    })),
+  })
+
   const serialized = {
     type,
     timestamp: new Date().toISOString(),
-    releases: plan.releases.map((r) => ({
-      package: r.package.name,
-      path: r.package.path,
-      currentVersion: r.currentVersion.pipe(Option.map((v) => v.version), Option.getOrNull),
-      nextVersion: r.nextVersion.version,
-      bump: r.bump,
-      commits: r.commits.map((c) => ({
-        hash: c.hash,
-        type: c.type,
-        message: c.message,
-        breaking: c.breaking,
-      })),
-    })),
-    cascades: plan.cascades.map((r) => ({
-      package: r.package.name,
-      path: r.package.path,
-      currentVersion: r.currentVersion.pipe(Option.map((v) => v.version), Option.getOrNull),
-      nextVersion: r.nextVersion.version,
-      bump: r.bump,
-    })),
+    releases: plan.releases.map(serializeRelease),
+    cascades: plan.cascades.map(serializeRelease),
   }
   return JSON.stringify(serialized, null, 2)
 }

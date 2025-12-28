@@ -2,9 +2,9 @@ import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
 import { Fs } from '@kitz/fs'
 import { Git } from '@kitz/git'
-import { Effect, Either } from 'effect'
+import { Effect, Either, Option } from 'effect'
 import type { Package } from './discovery.js'
-import type { PlannedRelease } from './release.js'
+import * as Release from './release.js'
 import { calculateNextVersion, findLatestTagVersion } from './version.js'
 
 /**
@@ -99,10 +99,10 @@ export const buildDependencyGraph = (
  */
 export const detect = (
   packages: Package[],
-  primaryReleases: PlannedRelease[],
+  primaryReleases: Release.PlannedRelease[],
   dependencyGraph: DependencyGraph,
   tags: string[],
-): PlannedRelease[] => {
+): Release.StablePlannedRelease[] => {
   // Set of packages already getting released
   const releasing = new Set(primaryReleases.map((r) => r.package.name))
 
@@ -127,7 +127,7 @@ export const detect = (
 
   // Build cascade releases
   const nameToPackage = new Map(packages.map((p) => [p.name, p]))
-  const cascades: PlannedRelease[] = []
+  const cascades: Release.StablePlannedRelease[] = []
 
   for (const name of needsCascade) {
     const pkg = nameToPackage.get(name)
@@ -138,14 +138,14 @@ export const detect = (
 
     // Find which primary release(s) triggered this cascade
     // Create synthetic commit entries for changelog generation
-    const cascadeCommits: PlannedRelease['commits'][number][] = []
+    const cascadeCommits: Release.PlannedRelease['commits'][number][] = []
     const deps = dependencyGraph.get(name)
     if (deps) {
       for (const primary of primaryReleases) {
         if (deps.includes(primary.package.name)) {
           cascadeCommits.push({
             type: 'chore',
-            message: `Depends on ${primary.package.name}@${primary.nextVersion.version}`,
+            message: `Depends on ${primary.package.name}@${Release.getNextVersion(primary).version}`,
             hash: CASCADE_SHA,
             breaking: false,
           })
@@ -163,13 +163,16 @@ export const detect = (
       })
     }
 
-    cascades.push({
+    // Build version union
+    const version: Release.StableVersion = Option.isSome(currentVersion)
+      ? Release.StableVersionIncrement.make({ from: currentVersion.value, to: nextVersion, bump: 'patch' })
+      : Release.StableVersionFirst.make({ version: nextVersion })
+
+    cascades.push(Release.StablePlannedRelease.make({
       package: pkg,
-      currentVersion,
-      nextVersion,
-      bump: 'patch',
+      version,
       commits: cascadeCommits,
-    })
+    }))
   }
 
   return cascades

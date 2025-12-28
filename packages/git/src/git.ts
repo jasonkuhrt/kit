@@ -40,6 +40,18 @@ export const GitError = Err.TaggedContextualError('GitError').constrain<{
 export type GitError = InstanceType<typeof GitError>
 
 /**
+ * Error parsing/transforming git output.
+ */
+export const GitParseError = Err.TaggedContextualError('GitParseError').constrain<{
+  readonly operation: GitOperation
+  readonly detail?: string
+}>({
+  message: (ctx) => `Git ${ctx.operation} parse failed${ctx.detail ? `: ${ctx.detail}` : ''}`,
+}).constrainCause<Error>()
+
+export type GitParseError = InstanceType<typeof GitParseError>
+
+/**
  * A git commit author.
  */
 export class Author extends Schema.TaggedClass<Author>()('Author', {
@@ -69,7 +81,7 @@ export interface GitService {
   readonly getCurrentBranch: () => Effect.Effect<string, GitError>
 
   /** Get commits since a tag (or all commits if tag is undefined) */
-  readonly getCommitsSince: (tag: string | undefined) => Effect.Effect<Commit[], GitError>
+  readonly getCommitsSince: (tag: string | undefined) => Effect.Effect<Commit[], GitError | GitParseError>
 
   /** Check if the working tree is clean */
   readonly isClean: () => Effect.Effect<boolean, GitError>
@@ -84,10 +96,10 @@ export interface GitService {
   readonly getRoot: () => Effect.Effect<string, GitError>
 
   /** Get the short SHA of HEAD commit */
-  readonly getHeadSha: () => Effect.Effect<Sha.Sha, GitError>
+  readonly getHeadSha: () => Effect.Effect<Sha.Sha, GitError | GitParseError>
 
   /** Get the commit SHA that a tag points to */
-  readonly getTagSha: (tag: string) => Effect.Effect<Sha.Sha, GitError>
+  readonly getTagSha: (tag: string) => Effect.Effect<Sha.Sha, GitError | GitParseError>
 
   /** Check if sha1 is an ancestor of sha2 */
   readonly isAncestor: (sha1: string, sha2: string) => Effect.Effect<boolean, GitError>
@@ -113,30 +125,82 @@ export interface GitService {
  */
 export class Git extends Context.Tag('Git')<Git, GitService>() {}
 
-const makeGitService = (git: SimpleGit): GitService => ({
-  getTags: () =>
-    Effect.tryPromise({
-      try: async () => {
-        const result = await git.tags()
-        return result.all
-      },
-      catch: (error) => new GitError({ context: { operation: 'getTags' }, cause: Err.ensure(error) }),
-    }),
+/**
+ * Options for gitEffect helper with map transform.
+ */
+interface GitEffectOptionsWithMap<$raw, $value> {
+  readonly detail?: string | undefined
+  readonly map: (raw: $raw) => $value
+}
 
-  getCurrentBranch: () =>
-    Effect.tryPromise({
-      try: async () => {
-        const result = await git.branch()
-        return result.current
-      },
-      catch: (error) => new GitError({ context: { operation: 'getCurrentBranch' }, cause: Err.ensure(error) }),
-    }),
+/**
+ * Options for gitEffect helper without map transform.
+ */
+interface GitEffectOptionsWithoutMap {
+  readonly detail?: string
+}
+
+/**
+ * Helper to wrap simple-git calls in Effect with standardized error handling.
+ */
+function gitEffect<$value>(
+  operation: GitOperation,
+  fn: () => Promise<$value>,
+  options?: string | GitEffectOptionsWithoutMap,
+): Effect.Effect<$value, GitError>
+
+function gitEffect<$raw, $value>(
+  operation: GitOperation,
+  fn: () => Promise<$raw>,
+  options: GitEffectOptionsWithMap<$raw, $value>,
+): Effect.Effect<$value, GitError | GitParseError>
+
+function gitEffect<$raw, $value = $raw>(
+  operation: GitOperation,
+  fn: () => Promise<$raw>,
+  options?: string | GitEffectOptionsWithoutMap | GitEffectOptionsWithMap<$raw, $value>,
+): Effect.Effect<$value, GitError | GitParseError> {
+  const opts = typeof options === 'string' ? { detail: options } : options
+  const detail = opts?.detail
+
+  const base = Effect.tryPromise({
+    try: fn,
+    catch: (error) =>
+      new GitError({
+        context: { operation, ...(detail ? { detail } : {}) },
+        cause: Err.ensure(error),
+      }),
+  })
+
+  if (opts && 'map' in opts && typeof opts.map === 'function') {
+    const mapFn = opts.map as (raw: $raw) => $value
+    return base.pipe(
+      Effect.flatMap((raw) =>
+        Effect.try({
+          try: () => mapFn(raw),
+          catch: (error) =>
+            new GitParseError({
+              context: { operation, ...(detail ? { detail } : {}) },
+              cause: Err.ensure(error),
+            }),
+        })
+      ),
+    )
+  }
+
+  return base as any
+}
+
+const makeGitService = (git: SimpleGit): GitService => ({
+  getTags: () => gitEffect('getTags', async () => (await git.tags()).all),
+
+  getCurrentBranch: () => gitEffect('getCurrentBranch', async () => (await git.branch()).current),
 
   getCommitsSince: (tag) =>
-    Effect.tryPromise({
-      try: async () => {
-        const log = await git.log(tag ? { from: tag, to: 'HEAD' } : undefined)
-        return log.all.map((entry) =>
+    gitEffect('getCommitsSince', () => git.log(tag ? { from: tag, to: 'HEAD' } : undefined), {
+      detail: tag ? `since ${tag}` : undefined,
+      map: (log) =>
+        log.all.map((entry) =>
           Commit.make({
             hash: Sha.make(entry.hash),
             message: entry.message,
@@ -147,75 +211,43 @@ const makeGitService = (git: SimpleGit): GitService => ({
             }),
             date: new Date(entry.date),
           })
-        )
-      },
-      catch: (error) =>
-        new GitError({
-          context: { operation: 'getCommitsSince', ...(tag ? { detail: `since ${tag}` } : {}) },
-          cause: Err.ensure(error),
-        }),
+        ),
     }),
 
-  isClean: () =>
-    Effect.tryPromise({
-      try: async () => {
-        const status = await git.status()
-        return status.isClean()
-      },
-      catch: (error) => new GitError({ context: { operation: 'isClean' }, cause: Err.ensure(error) }),
-    }),
+  isClean: () => gitEffect('isClean', async () => (await git.status()).isClean()),
 
   createTag: (tag, message) =>
-    Effect.tryPromise({
-      try: async () => {
+    gitEffect(
+      'createTag',
+      async () => {
         if (message) {
           await git.tag(['-a', tag, '-m', message])
         } else {
           await git.tag([tag])
         }
       },
-      catch: (error) => new GitError({ context: { operation: 'createTag', detail: tag }, cause: Err.ensure(error) }),
-    }),
+      tag,
+    ),
 
-  pushTags: (remote = 'origin') =>
-    Effect.tryPromise({
-      try: async () => {
-        await git.pushTags(remote)
-      },
-      catch: (error) =>
-        new GitError({ context: { operation: 'pushTags', detail: `to ${remote}` }, cause: Err.ensure(error) }),
-    }),
+  pushTags: (remote = 'origin') => gitEffect('pushTags', () => git.pushTags(remote), `to ${remote}`),
 
-  getRoot: () =>
-    Effect.tryPromise({
-      try: async () => {
-        const root = await git.revparse(['--show-toplevel'])
-        return root.trim()
-      },
-      catch: (error) => new GitError({ context: { operation: 'getRoot' }, cause: Err.ensure(error) }),
-    }),
+  getRoot: () => gitEffect('getRoot', async () => (await git.revparse(['--show-toplevel'])).trim()),
 
   getHeadSha: () =>
-    Effect.tryPromise({
-      try: async () => {
-        const sha = await git.revparse(['--short', 'HEAD'])
-        return Sha.make(sha.trim())
-      },
-      catch: (error) => new GitError({ context: { operation: 'getHeadSha' }, cause: Err.ensure(error) }),
+    gitEffect('getHeadSha', () => git.revparse(['--short', 'HEAD']), {
+      map: (sha) => Sha.make(sha.trim()),
     }),
 
   getTagSha: (tag) =>
-    Effect.tryPromise({
-      try: async () => {
-        const sha = await git.raw(['rev-list', '-1', tag])
-        return Sha.make(sha.trim())
-      },
-      catch: (error) => new GitError({ context: { operation: 'getTagSha', detail: tag }, cause: Err.ensure(error) }),
+    gitEffect('getTagSha', () => git.raw(['rev-list', '-1', tag]), {
+      detail: tag,
+      map: (sha: string) => Sha.make(sha.trim()),
     }),
 
   isAncestor: (sha1, sha2) =>
-    Effect.tryPromise({
-      try: async () => {
+    gitEffect(
+      'isAncestor',
+      async () => {
         try {
           await git.raw(['merge-base', '--is-ancestor', sha1, sha2])
           return true // Exit code 0 = is ancestor
@@ -223,40 +255,28 @@ const makeGitService = (git: SimpleGit): GitService => ({
           return false // Exit code 1 = not ancestor
         }
       },
-      catch: (error) =>
-        new GitError({
-          context: { operation: 'isAncestor', detail: `${sha1} -> ${sha2}` },
-          cause: Err.ensure(error),
-        }),
-    }),
+      `${sha1} -> ${sha2}`,
+    ),
 
   createTagAt: (tag, sha, message) =>
-    Effect.tryPromise({
-      try: async () => {
+    gitEffect(
+      'createTagAt',
+      async () => {
         if (message) {
           await git.tag(['-a', tag, sha, '-m', message])
         } else {
           await git.tag([tag, sha])
         }
       },
-      catch: (error) =>
-        new GitError({
-          context: { operation: 'createTagAt', detail: `${tag} at ${sha}` },
-          cause: Err.ensure(error),
-        }),
-    }),
+      `${tag} at ${sha}`,
+    ),
 
-  deleteTag: (tag) =>
-    Effect.tryPromise({
-      try: async () => {
-        await git.tag(['-d', tag])
-      },
-      catch: (error) => new GitError({ context: { operation: 'deleteTag', detail: tag }, cause: Err.ensure(error) }),
-    }),
+  deleteTag: (tag) => gitEffect('deleteTag', () => git.tag(['-d', tag]), tag),
 
   commitExists: (sha) =>
-    Effect.tryPromise({
-      try: async () => {
+    gitEffect(
+      'commitExists',
+      async () => {
         try {
           await git.raw(['cat-file', '-t', sha])
           return true
@@ -264,33 +284,21 @@ const makeGitService = (git: SimpleGit): GitService => ({
           return false
         }
       },
-      catch: (error) => new GitError({ context: { operation: 'commitExists', detail: sha }, cause: Err.ensure(error) }),
-    }),
+      sha,
+    ),
 
   pushTag: (tag, remote = 'origin', force = false) =>
-    Effect.tryPromise({
-      try: async () => {
+    gitEffect(
+      'pushTag',
+      async () => {
         const args = force ? ['push', '--force', remote, `refs/tags/${tag}`] : ['push', remote, `refs/tags/${tag}`]
         await git.raw(args)
       },
-      catch: (error) =>
-        new GitError({
-          context: { operation: 'pushTag', detail: `${tag} to ${remote}${force ? ' (force)' : ''}` },
-          cause: Err.ensure(error),
-        }),
-    }),
+      `${tag} to ${remote}${force ? ' (force)' : ''}`,
+    ),
 
   deleteRemoteTag: (tag, remote = 'origin') =>
-    Effect.tryPromise({
-      try: async () => {
-        await git.raw(['push', remote, `:refs/tags/${tag}`])
-      },
-      catch: (error) =>
-        new GitError({
-          context: { operation: 'deleteRemoteTag', detail: `${tag} from ${remote}` },
-          cause: Err.ensure(error),
-        }),
-    }),
+    gitEffect('deleteRemoteTag', () => git.raw(['push', remote, `:refs/tags/${tag}`]), `${tag} from ${remote}`),
 })
 
 /**
