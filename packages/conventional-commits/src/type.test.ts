@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { Custom, from, impact, Impact, ImpactValues, isCustom, isStandard, Standard, StandardImpact, StandardValue, StandardValues, Type, value } from './type.js'
+import { Custom, from, impact, Impact, ImpactValues, Standard, StandardImpact, StandardValue, StandardValues, Type, value } from './type.js'
 import { Schema } from 'effect'
 import { Assert } from '@kitz/assert'
 
@@ -101,23 +101,23 @@ describe('Type', () => {
   })
 })
 
-describe('isStandard', () => {
+describe('Standard.is', () => {
   test('returns true for Standard', () => {
-    expect(isStandard(new Standard({ value: 'feat' }))).toBe(true)
+    expect(Standard.is(new Standard({ value: 'feat' }))).toBe(true)
   })
 
   test('returns false for Custom', () => {
-    expect(isStandard(new Custom({ value: 'wip' }))).toBe(false)
+    expect(Standard.is(new Custom({ value: 'wip' }))).toBe(false)
   })
 })
 
-describe('isCustom', () => {
+describe('Custom.is', () => {
   test('returns true for Custom', () => {
-    expect(isCustom(new Custom({ value: 'wip' }))).toBe(true)
+    expect(Custom.is(new Custom({ value: 'wip' }))).toBe(true)
   })
 
   test('returns false for Standard', () => {
-    expect(isCustom(new Standard({ value: 'feat' }))).toBe(false)
+    expect(Custom.is(new Standard({ value: 'feat' }))).toBe(false)
   })
 })
 
