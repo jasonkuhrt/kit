@@ -95,7 +95,9 @@ const makeGitTestService = (state: GitTestState): GitService => ({
       // For testing, we'll find commits after the tagged one
       const tagIndex = tags.indexOf(tag)
       if (tagIndex === -1) {
-        return new GitError({ message: `Tag not found: ${tag}` }) as never
+        return Effect.fail(new GitError({
+          context: { operation: 'getCommitsSince', detail: `tag not found: ${tag}` },
+        })) as never
       }
 
       // Parse tag to find package@version pattern
@@ -152,7 +154,9 @@ const makeGitTestService = (state: GitTestState): GitService => ({
       const tagShas = yield* Ref.get(state.tagShas)
       const sha = tagShas[tag]
       if (!sha) {
-        return Effect.fail(new GitError({ message: `Tag not found: ${tag}` })) as never
+        return Effect.fail(new GitError({
+          context: { operation: 'getTagSha', detail: `tag not found: ${tag}` },
+        })) as never
       }
       return sha
     }),
@@ -214,7 +218,7 @@ const makeGitTestService = (state: GitTestState): GitService => ({
  *
  * @example
  * ```ts
- * const testGit = GitTest.make({
+ * const testGit = Test.make({
  *   tags: ['@kitz/core@1.0.0'],
  *   commits: [
  *     { hash: 'abc123', message: 'feat(core): new feature', ... }
@@ -245,7 +249,7 @@ export const make = (config: GitTestConfig = {}): Layer.Layer<Git> =>
  *
  * @example
  * ```ts
- * const { layer, state } = await Effect.runPromise(GitTest.makeWithState({
+ * const { layer, state } = await Effect.runPromise(Test.makeWithState({
  *   commits: [...]
  * }))
  *

@@ -7,7 +7,7 @@ import { auditPackageHistory, getPackageTagInfos, validateAdjacent } from './mon
 describe('getPackageTagInfos', () => {
   test('parses package tags and returns sorted by version descending', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@1.0.0', '@kitz/core@2.0.0', '@kitz/core@1.5.0'],
       }),
     )
@@ -36,7 +36,7 @@ describe('getPackageTagInfos', () => {
 
   test('filters out prerelease versions', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@1.0.0', '@kitz/core@2.0.0-next.1', '@kitz/core@1.5.0'],
       }),
     )
@@ -60,7 +60,7 @@ describe('getPackageTagInfos', () => {
 
   test('ignores tags for other packages', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@1.0.0', '@kitz/cli@2.0.0'],
       }),
     )
@@ -84,7 +84,7 @@ describe('getPackageTagInfos', () => {
 
 describe('validateAdjacent', () => {
   test('valid when no existing tags', async () => {
-    const layer = Git.GitTest.make({ tags: [] })
+    const layer = Git.Test.make({ tags: [] })
     const newVersion = Semver.fromString('1.0.0')
 
     const result = await Effect.runPromise(Effect.provide(validateAdjacent('sha123', '@kitz/core', newVersion, []), layer))
@@ -95,7 +95,7 @@ describe('validateAdjacent', () => {
 
   test('valid when new version is greater than ancestor', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@1.0.0'],
       }),
     )
@@ -122,7 +122,7 @@ describe('validateAdjacent', () => {
 
   test('invalid when new version is less than ancestor', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@2.0.0'],
       }),
     )
@@ -151,7 +151,7 @@ describe('validateAdjacent', () => {
 
   test('invalid when new version is greater than descendant', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@1.0.0'],
       }),
     )
@@ -180,7 +180,7 @@ describe('validateAdjacent', () => {
 
   test('valid when version fits between ancestor and descendant', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@1.0.0', '@kitz/core@3.0.0'],
       }),
     )
@@ -218,7 +218,7 @@ describe('validateAdjacent', () => {
 describe('auditPackageHistory', () => {
   test('valid when all versions are monotonically increasing', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@1.0.0', '@kitz/core@2.0.0', '@kitz/core@3.0.0'],
       }),
     )
@@ -255,7 +255,7 @@ describe('auditPackageHistory', () => {
 
   test('invalid when versions decrease in history', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@2.0.0', '@kitz/core@1.0.0'],
       }),
     )
@@ -287,7 +287,7 @@ describe('auditPackageHistory', () => {
 
   test('no violation for parallel branches', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@1.0.0', '@kitz/core@2.0.0'],
       }),
     )

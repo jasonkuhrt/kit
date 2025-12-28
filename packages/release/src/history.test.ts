@@ -17,7 +17,7 @@ import {
 describe('set', () => {
   test('creates tag at specified SHA', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: [],
         commits: [{ hash: 'abc1234', message: 'initial', body: '', author: 'test', date: '' }],
       }),
@@ -54,7 +54,7 @@ describe('set', () => {
 
   test('accepts scope shorthand', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: [],
         commits: [{ hash: 'abc1234', message: 'initial', body: '', author: 'test', date: '' }],
       }),
@@ -82,7 +82,7 @@ describe('set', () => {
 
   test('idempotent when tag exists at same SHA', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@1.0.0'],
         commits: [{ hash: 'abc1234', message: 'initial', body: '', author: 'test', date: '' }],
       }),
@@ -116,7 +116,7 @@ describe('set', () => {
 
   test('errors when tag exists at different SHA without --move', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@1.0.0'],
         commits: [
           { hash: 'def5678', message: 'new', body: '', author: 'test', date: '' },
@@ -162,7 +162,7 @@ describe('set', () => {
 
   test('moves tag when --move is specified', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@1.0.0'],
         commits: [
           { hash: 'def5678', message: 'new', body: '', author: 'test', date: '' },
@@ -202,7 +202,7 @@ describe('set', () => {
   })
 
   test('errors when SHA does not exist', async () => {
-    const layer = Git.GitTest.make({
+    const layer = Git.Test.make({
       tags: [],
       commits: [],
     })
@@ -229,7 +229,7 @@ describe('set', () => {
 
   test('validates monotonic versioning', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@2.0.0'],
         commits: [
           { hash: 'def5678', message: 'new', body: '', author: 'test', date: '' },
@@ -274,7 +274,7 @@ describe('set', () => {
 describe('audit', () => {
   test('returns valid for package with monotonic history', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@1.0.0', '@kitz/core@2.0.0'],
       }),
     )
@@ -304,7 +304,7 @@ describe('audit', () => {
 
   test('audits all packages when no pkg specified', async () => {
     const { layer, state } = await Effect.runPromise(
-      Git.GitTest.makeWithState({
+      Git.Test.makeWithState({
         tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0'],
       }),
     )
