@@ -34,7 +34,7 @@ export interface TagInfo {
 /**
  * Get the SHA for a git tag.
  */
-export const getTagSha = (tag: string): Effect.Effect<string, Git.GitError, Git.Git> =>
+export const getTagSha = (tag: string): Effect.Effect<string, Git.GitError | Git.GitParseError, Git.Git> =>
   Effect.gen(function*() {
     const git = yield* Git.Git
     return yield* git.getTagSha(tag)
@@ -59,7 +59,7 @@ export const isAncestor = (sha1: string, sha2: string): Effect.Effect<boolean, G
 export const getPackageTagInfos = (
   packageName: string,
   tags: string[],
-): Effect.Effect<TagInfo[], Git.GitError, Git.Git> =>
+): Effect.Effect<TagInfo[], Git.GitError | Git.GitParseError, Git.Git> =>
   Effect.gen(function*() {
     const prefix = `${packageName}@`
     const tagInfos: TagInfo[] = []
@@ -97,7 +97,7 @@ export const validateAdjacent = (
   packageName: string,
   newVersion: Semver.Semver,
   tags: string[],
-): Effect.Effect<ValidationResult, Git.GitError, Git.Git> =>
+): Effect.Effect<ValidationResult, Git.GitError | Git.GitParseError, Git.Git> =>
   Effect.gen(function*() {
     const tagInfos = yield* getPackageTagInfos(packageName, tags)
 
@@ -133,7 +133,9 @@ export const validateAdjacent = (
         existingVersion: highestAncestor.version,
         existingSha: highestAncestor.sha,
         relationship: 'ancestor',
-        message: `Version ${highestAncestor.version.version} at ${highestAncestor.sha.slice(0, 7)} is on an EARLIER commit but has version >= ${newVersion.version}`,
+        message: `Version ${highestAncestor.version.version} at ${
+          highestAncestor.sha.slice(0, 7)
+        } is on an EARLIER commit but has version >= ${newVersion.version}`,
       })
     }
 
@@ -143,7 +145,9 @@ export const validateAdjacent = (
         existingVersion: lowestDescendant.version,
         existingSha: lowestDescendant.sha,
         relationship: 'descendant',
-        message: `Version ${lowestDescendant.version.version} at ${lowestDescendant.sha.slice(0, 7)} is on a LATER commit but has version <= ${newVersion.version}`,
+        message: `Version ${lowestDescendant.version.version} at ${
+          lowestDescendant.sha.slice(0, 7)
+        } is on a LATER commit but has version <= ${newVersion.version}`,
       })
     }
 
@@ -182,7 +186,7 @@ export interface AuditViolation {
 export const auditPackageHistory = (
   packageName: string,
   tags: string[],
-): Effect.Effect<AuditResult, Git.GitError, Git.Git> =>
+): Effect.Effect<AuditResult, Git.GitError | Git.GitParseError, Git.Git> =>
   Effect.gen(function*() {
     const tagInfos = yield* getPackageTagInfos(packageName, tags)
     const violations: AuditViolation[] = []
@@ -204,7 +208,9 @@ export const auditPackageHistory = (
             violations.push({
               earlier: a,
               later: b,
-              message: `${a.version.version} at ${a.sha.slice(0, 7)} comes BEFORE ${b.version.version} at ${b.sha.slice(0, 7)}, but has higher/equal version`,
+              message: `${a.version.version} at ${a.sha.slice(0, 7)} comes BEFORE ${b.version.version} at ${
+                b.sha.slice(0, 7)
+              }, but has higher/equal version`,
             })
           }
         } else if (bIsAncestorOfA) {
@@ -213,7 +219,9 @@ export const auditPackageHistory = (
             violations.push({
               earlier: b,
               later: a,
-              message: `${b.version.version} at ${b.sha.slice(0, 7)} comes BEFORE ${a.version.version} at ${a.sha.slice(0, 7)}, but has higher/equal version`,
+              message: `${b.version.version} at ${b.sha.slice(0, 7)} comes BEFORE ${a.version.version} at ${
+                a.sha.slice(0, 7)
+              }, but has higher/equal version`,
             })
           }
         }

@@ -248,7 +248,11 @@ const findLastReleaseTag = (
 export const stable = (
   ctx: PlanContext,
   options?: ReleaseOptions,
-): Effect.Effect<ReleasePlan, ReleaseError | Git.GitError | PlatformError, Git.Git | FileSystem.FileSystem> =>
+): Effect.Effect<
+  ReleasePlan,
+  ReleaseError | Git.GitError | Git.GitParseError | PlatformError,
+  Git.Git | FileSystem.FileSystem
+> =>
   Effect.gen(function*() {
     const git = yield* Git.Git
 
@@ -379,7 +383,11 @@ const detectCascadesForPr = (
 export const preview = (
   ctx: PlanContext,
   options?: ReleaseOptions,
-): Effect.Effect<ReleasePlan, ReleaseError | Git.GitError | PlatformError, Git.Git | FileSystem.FileSystem> =>
+): Effect.Effect<
+  ReleasePlan,
+  ReleaseError | Git.GitError | Git.GitParseError | PlatformError,
+  Git.Git | FileSystem.FileSystem
+> =>
   Effect.gen(function*() {
     const git = yield* Git.Git
 
@@ -467,7 +475,11 @@ export interface PrReleaseOptions extends ReleaseOptions {
 export const pr = (
   ctx: PlanContext,
   options?: PrReleaseOptions,
-): Effect.Effect<ReleasePlan, ReleaseError | Git.GitError | PlatformError, Git.Git | FileSystem.FileSystem | Env.Env> =>
+): Effect.Effect<
+  ReleasePlan,
+  ReleaseError | Git.GitError | Git.GitParseError | PlatformError,
+  Git.Git | FileSystem.FileSystem | Env.Env
+> =>
   Effect.gen(function*() {
     const git = yield* Git.Git
     const env = yield* Env.Env

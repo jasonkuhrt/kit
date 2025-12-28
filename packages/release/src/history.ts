@@ -96,7 +96,11 @@ const makeTagName = (packageName: string, version: Semver.Semver): string =>
  */
 export const set = (
   options: SetOptions,
-): Effect.Effect<SetResult, HistoryError | TagExistsError | MonotonicViolationError | Git.GitError, Git.Git> =>
+): Effect.Effect<
+  SetResult,
+  HistoryError | TagExistsError | MonotonicViolationError | Git.GitError | Git.GitParseError,
+  Git.Git
+> =>
   Effect.gen(function*() {
     const git = yield* Git.Git
     const packageName = normalizePackageName(options.pkg)
@@ -186,7 +190,7 @@ export interface AuditOptions {
  */
 export const audit = (
   options: AuditOptions = {},
-): Effect.Effect<AuditResult[], Git.GitError, Git.Git> =>
+): Effect.Effect<AuditResult[], Git.GitError | Git.GitParseError, Git.Git> =>
   Effect.gen(function*() {
     const git = yield* Git.Git
     const tags = yield* git.getTags()
