@@ -1,15 +1,5 @@
 import { Schema } from 'effect'
 
-const Sha_ = Schema.String.pipe(
-  Schema.pattern(/^[0-9a-f]{7,40}$/i),
-  Schema.brand('Sha'),
-  Schema.annotations({
-    identifier: 'Sha',
-    title: 'Git SHA',
-    description: 'A git commit SHA in short (7-12 chars) or full (40 chars) form',
-  }),
-)
-
 /**
  * Git commit SHA (short or full form).
  *
@@ -24,15 +14,23 @@ const Sha_ = Schema.String.pipe(
  * const full = Git.Sha.make('abc1234567890abcdef1234567890abcdef123456')
  * ```
  */
-export const Sha = Object.assign(Sha_, {
-  /** Create a SHA from a string, throwing on invalid input. */
-  make: Schema.decodeSync(Sha_),
+export const Sha = Schema.String.pipe(
+  Schema.pattern(/^[0-9a-f]{7,40}$/i),
+  Schema.brand('Sha'),
+  Schema.annotations({
+    identifier: 'Sha',
+    title: 'Git SHA',
+    description: 'A git commit SHA in short (7-12 chars) or full (40 chars) form',
+  }),
+)
 
-  /** Check if a value is a valid SHA. */
-  is: Schema.is(Sha_),
+export type Sha = typeof Sha.Type
 
-  /** Decode a SHA, returning an Effect. */
-  decode: Schema.decode(Sha_),
-})
+/** Create a SHA from a string, throwing on invalid input. */
+export const make = Schema.decodeSync(Sha)
 
-export type Sha = typeof Sha_.Type
+/** Check if a value is a valid SHA. */
+export const is = Schema.is(Sha)
+
+/** Decode a SHA, returning an Effect. */
+export const decode = Schema.decode(Sha)

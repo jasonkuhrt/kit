@@ -1,7 +1,1 @@
-export {
-  getLatestVersion,
-  getVersions,
-  NpmRegistryError,
-  type PackageVersion,
-  type RegistryOptions,
-} from './npm-registry.js'
+export * from './npm-registry.js'

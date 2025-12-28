@@ -280,5 +280,5 @@ export const commit = (
     message,
     body: overrides.body ?? '',
     author: overrides.author ?? 'Test Author',
-    date: overrides.date ?? new Date().toISOString(),
+    date: overrides.date ?? new Date(),
   })
