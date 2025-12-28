@@ -1,5 +1,6 @@
 import { Effect, Layer, Ref } from 'effect'
-import { Commit, Git, GitError, type GitService } from './git.js'
+import { Author, Commit, Git, GitError, type GitService } from './git.js'
+import * as Sha from './sha.js'
 
 /**
  * Configuration for the test Git service.
@@ -16,7 +17,7 @@ export interface GitTestConfig {
   /** Repository root path */
   readonly root?: string
   /** HEAD commit SHA (short form) */
-  readonly headSha?: string
+  readonly headSha?: Sha.Sha
 }
 
 /**
@@ -37,13 +38,13 @@ export interface GitTestState {
   /** Repository root */
   readonly root: Ref.Ref<string>
   /** HEAD commit SHA */
-  readonly headSha: Ref.Ref<string>
+  readonly headSha: Ref.Ref<Sha.Sha>
   /** Tags created during test (for verification) */
   readonly createdTags: Ref.Ref<Array<{ tag: string; message: string | undefined }>>
   /** Tag push operations (for verification) */
   readonly pushedTags: Ref.Ref<Array<{ remote: string }>>
   /** Map of tag -> SHA for testing getTagSha */
-  readonly tagShas: Ref.Ref<Record<string, string>>
+  readonly tagShas: Ref.Ref<Record<string, Sha.Sha>>
   /** Map of sha -> parent SHAs for testing ancestry */
   readonly commitParents: Ref.Ref<Record<string, string[]>>
   /** Tags deleted during test */
@@ -64,10 +65,10 @@ export const makeGitTestState = (
     branch: Ref.make(config.branch ?? 'main'),
     isClean: Ref.make(config.isClean ?? true),
     root: Ref.make(config.root ?? '/test/repo'),
-    headSha: Ref.make(config.headSha ?? 'abc1234'),
+    headSha: Ref.make(config.headSha ?? Sha.make('abc1234')),
     createdTags: Ref.make<Array<{ tag: string; message: string | undefined }>>([]),
     pushedTags: Ref.make<Array<{ remote: string }>>([]),
-    tagShas: Ref.make<Record<string, string>>({}),
+    tagShas: Ref.make<Record<string, Sha.Sha>>({}),
     commitParents: Ref.make<Record<string, string[]>>({}),
     deletedTags: Ref.make<string[]>([]),
     deletedRemoteTags: Ref.make<Array<{ tag: string; remote: string }>>([]),
@@ -95,9 +96,11 @@ const makeGitTestService = (state: GitTestState): GitService => ({
       // For testing, we'll find commits after the tagged one
       const tagIndex = tags.indexOf(tag)
       if (tagIndex === -1) {
-        return Effect.fail(new GitError({
-          context: { operation: 'getCommitsSince', detail: `tag not found: ${tag}` },
-        })) as never
+        return Effect.fail(
+          new GitError({
+            context: { operation: 'getCommitsSince', detail: `tag not found: ${tag}` },
+          }),
+        ) as never
       }
 
       // Parse tag to find package@version pattern
@@ -154,9 +157,11 @@ const makeGitTestService = (state: GitTestState): GitService => ({
       const tagShas = yield* Ref.get(state.tagShas)
       const sha = tagShas[tag]
       if (!sha) {
-        return Effect.fail(new GitError({
-          context: { operation: 'getTagSha', detail: `tag not found: ${tag}` },
-        })) as never
+        return Effect.fail(
+          new GitError({
+            context: { operation: 'getTagSha', detail: `tag not found: ${tag}` },
+          }),
+        ) as never
       }
       return sha
     }),
@@ -184,7 +189,7 @@ const makeGitTestService = (state: GitTestState): GitService => ({
   createTagAt: (tag, sha, message) =>
     Effect.gen(function*() {
       yield* Ref.update(state.tags, (tags) => [...tags, tag])
-      yield* Ref.update(state.tagShas, (shas) => ({ ...shas, [tag]: sha }))
+      yield* Ref.update(state.tagShas, (shas) => ({ ...shas, [tag]: Sha.make(sha) }))
       yield* Ref.update(state.createdTags, (created) => [...created, { tag, message }])
     }),
 
@@ -269,6 +274,18 @@ export const makeWithState = (
   })
 
 /**
+ * Generate a random valid hex SHA for testing.
+ */
+const randomSha = (): string => {
+  const hex = '0123456789abcdef'
+  let result = ''
+  for (let i = 0; i < 7; i++) {
+    result += hex[Math.floor(Math.random() * 16)]
+  }
+  return result
+}
+
+/**
  * Helper to create a commit for testing.
  */
 export const commit = (
@@ -276,9 +293,9 @@ export const commit = (
   overrides: Partial<Commit> = {},
 ): Commit =>
   Commit.make({
-    hash: overrides.hash ?? Math.random().toString(36).slice(2, 10),
+    hash: overrides.hash ?? Sha.make(randomSha()),
     message,
     body: overrides.body ?? '',
-    author: overrides.author ?? 'Test Author',
+    author: overrides.author ?? Author.make({ name: 'Test Author', email: 'test@example.com' }),
     date: overrides.date ?? new Date(),
   })

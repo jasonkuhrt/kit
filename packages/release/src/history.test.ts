@@ -284,11 +284,11 @@ describe('audit', () => {
       Effect.provide(
         Effect.all([
           Ref.set(state.tagShas, {
-            '@kitz/core@1.0.0': 'sha100',
-            '@kitz/core@2.0.0': 'sha200',
+            '@kitz/core@1.0.0': 'aaa0100',
+            '@kitz/core@2.0.0': 'bbb0200',
           }),
           Ref.set(state.commitParents, {
-            sha200: ['sha100'],
+            bbb0200: ['aaa0100'],
           }),
         ]),
         layer,
@@ -313,8 +313,8 @@ describe('audit', () => {
       Effect.provide(
         Effect.all([
           Ref.set(state.tagShas, {
-            '@kitz/core@1.0.0': 'sha100',
-            '@kitz/cli@1.0.0': 'sha200',
+            '@kitz/core@1.0.0': 'aaa0100',
+            '@kitz/cli@1.0.0': 'bbb0200',
           }),
           Ref.set(state.commitParents, {}),
         ]),

@@ -213,7 +213,7 @@ const detectCascadesForPr = (
   dependencyGraph: Map<string, string[]>,
   tags: string[],
   prNumber: number,
-  sha: string,
+  sha: Git.Sha.Sha,
 ): PlannedRelease[] => {
   // Get standard cascades
   const baseCascades = detectCascades(packages, primaryReleases, dependencyGraph, tags)
@@ -358,7 +358,8 @@ export const pr = (
     }
 
     // 2. Get HEAD SHA
-    const sha = yield* git.getHeadSha()
+    const shaString = yield* git.getHeadSha()
+    const sha = Git.Sha.make(shaString)
 
     // 3. Get all tags
     const tags = yield* git.getTags()

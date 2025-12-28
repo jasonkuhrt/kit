@@ -1,10 +1,16 @@
 import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
 import { Fs } from '@kitz/fs'
+import { Git } from '@kitz/git'
 import { Effect, Either } from 'effect'
 import type { Package } from './discovery.js'
 import type { PlannedRelease } from './release.js'
 import { calculateNextVersion, findLatestTagVersion } from './version.js'
+
+/**
+ * Placeholder SHA for synthetic cascade commits (no real git commit).
+ */
+const CASCADE_SHA = Git.Sha.make('0000000')
 
 /**
  * Dependency graph: package name -> list of packages that depend on it.
@@ -140,7 +146,7 @@ export const detect = (
           cascadeCommits.push({
             type: 'chore',
             message: `Depends on ${primary.package.name}@${primary.nextVersion.version}`,
-            hash: 'cascade',
+            hash: CASCADE_SHA,
             breaking: false,
           })
         }
@@ -152,7 +158,7 @@ export const detect = (
       cascadeCommits.push({
         type: 'chore',
         message: 'Cascade release',
-        hash: 'cascade',
+        hash: CASCADE_SHA,
         breaking: false,
       })
     }

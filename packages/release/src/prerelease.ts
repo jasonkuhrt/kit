@@ -23,7 +23,7 @@ import { ParseResult, Schema as S } from 'effect'
 export class PrPrerelease extends S.Class<PrPrerelease>('PrPrerelease')({
   prNumber: S.Number.pipe(S.positive(), S.int()),
   iteration: S.Number.pipe(S.positive(), S.int()),
-  sha: Git.Sha,
+  sha: Git.Sha.Sha,
 }) {
   static is = S.is(PrPrerelease)
 }
@@ -63,7 +63,7 @@ export const PrPrereleaseSchema = S.transformOrFail(
 /**
  * Create a PrPrerelease from parts.
  */
-export const makePrPrerelease = (prNumber: number, iteration: number, sha: Git.Sha): PrPrerelease =>
+export const makePrPrerelease = (prNumber: number, iteration: number, sha: Git.Sha.Sha): PrPrerelease =>
   new PrPrerelease({ prNumber, iteration, sha })
 
 /**
@@ -79,7 +79,7 @@ export const encodePrPrerelease = (pr: PrPrerelease): string => S.encodeSync(PrP
 /**
  * Calculate the next iteration for a PR prerelease.
  */
-export const nextPrPrerelease = (pr: PrPrerelease, sha: Git.Sha): PrPrerelease =>
+export const nextPrPrerelease = (pr: PrPrerelease, sha: Git.Sha.Sha): PrPrerelease =>
   new PrPrerelease({ prNumber: pr.prNumber, iteration: pr.iteration + 1, sha })
 
 // ============================================================================

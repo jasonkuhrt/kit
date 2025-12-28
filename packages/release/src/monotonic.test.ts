@@ -16,9 +16,9 @@ describe('getPackageTagInfos', () => {
     await Effect.runPromise(
       Effect.provide(
         Ref.set(state.tagShas, {
-          '@kitz/core@1.0.0': 'sha100',
-          '@kitz/core@2.0.0': 'sha200',
-          '@kitz/core@1.5.0': 'sha150',
+          '@kitz/core@1.0.0': 'aaa0100',
+          '@kitz/core@2.0.0': 'bbb0200',
+          '@kitz/core@1.5.0': 'aab0150',
         }),
         layer,
       ),
@@ -44,8 +44,8 @@ describe('getPackageTagInfos', () => {
     await Effect.runPromise(
       Effect.provide(
         Ref.set(state.tagShas, {
-          '@kitz/core@1.0.0': 'sha100',
-          '@kitz/core@1.5.0': 'sha150',
+          '@kitz/core@1.0.0': 'aaa0100',
+          '@kitz/core@1.5.0': 'aab0150',
         }),
         layer,
       ),
@@ -68,7 +68,7 @@ describe('getPackageTagInfos', () => {
     await Effect.runPromise(
       Effect.provide(
         Ref.set(state.tagShas, {
-          '@kitz/core@1.0.0': 'sha100',
+          '@kitz/core@1.0.0': 'aaa0100',
         }),
         layer,
       ),
@@ -87,7 +87,9 @@ describe('validateAdjacent', () => {
     const layer = Git.Test.make({ tags: [] })
     const newVersion = Semver.fromString('1.0.0')
 
-    const result = await Effect.runPromise(Effect.provide(validateAdjacent('sha123', '@kitz/core', newVersion, []), layer))
+    const result = await Effect.runPromise(
+      Effect.provide(validateAdjacent('abc0123', '@kitz/core', newVersion, []), layer),
+    )
 
     expect(result.valid).toBe(true)
     expect(result.violations).toHaveLength(0)
@@ -100,12 +102,12 @@ describe('validateAdjacent', () => {
       }),
     )
 
-    // Set up: sha100 is ancestor of sha200
+    // Set up: aaa0100 is ancestor of bbb0200
     await Effect.runPromise(
       Effect.provide(
         Effect.all([
-          Ref.set(state.tagShas, { '@kitz/core@1.0.0': 'sha100' }),
-          Ref.set(state.commitParents, { sha200: ['sha100'] }),
+          Ref.set(state.tagShas, { '@kitz/core@1.0.0': 'aaa0100' }),
+          Ref.set(state.commitParents, { bbb0200: ['aaa0100'] }),
         ]),
         layer,
       ),
@@ -113,7 +115,7 @@ describe('validateAdjacent', () => {
 
     const newVersion = Semver.fromString('2.0.0')
     const result = await Effect.runPromise(
-      Effect.provide(validateAdjacent('sha200', '@kitz/core', newVersion, ['@kitz/core@1.0.0']), layer),
+      Effect.provide(validateAdjacent('bbb0200', '@kitz/core', newVersion, ['@kitz/core@1.0.0']), layer),
     )
 
     expect(result.valid).toBe(true)
@@ -127,12 +129,12 @@ describe('validateAdjacent', () => {
       }),
     )
 
-    // Set up: sha200 is ancestor of sha100 (new commit)
+    // Set up: bbb0200 is ancestor of aaa0100 (new commit)
     await Effect.runPromise(
       Effect.provide(
         Effect.all([
-          Ref.set(state.tagShas, { '@kitz/core@2.0.0': 'sha200' }),
-          Ref.set(state.commitParents, { sha100: ['sha200'] }),
+          Ref.set(state.tagShas, { '@kitz/core@2.0.0': 'bbb0200' }),
+          Ref.set(state.commitParents, { aaa0100: ['bbb0200'] }),
         ]),
         layer,
       ),
@@ -140,7 +142,7 @@ describe('validateAdjacent', () => {
 
     const newVersion = Semver.fromString('1.0.0')
     const result = await Effect.runPromise(
-      Effect.provide(validateAdjacent('sha100', '@kitz/core', newVersion, ['@kitz/core@2.0.0']), layer),
+      Effect.provide(validateAdjacent('aaa0100', '@kitz/core', newVersion, ['@kitz/core@2.0.0']), layer),
     )
 
     expect(result.valid).toBe(false)
@@ -156,12 +158,12 @@ describe('validateAdjacent', () => {
       }),
     )
 
-    // Set up: sha100 (new commit) is ancestor of sha200 (existing tag)
+    // Set up: aaa0100 (new commit) is ancestor of bbb0200 (existing tag)
     await Effect.runPromise(
       Effect.provide(
         Effect.all([
-          Ref.set(state.tagShas, { '@kitz/core@1.0.0': 'sha200' }),
-          Ref.set(state.commitParents, { sha200: ['sha100'] }),
+          Ref.set(state.tagShas, { '@kitz/core@1.0.0': 'bbb0200' }),
+          Ref.set(state.commitParents, { bbb0200: ['aaa0100'] }),
         ]),
         layer,
       ),
@@ -169,7 +171,7 @@ describe('validateAdjacent', () => {
 
     const newVersion = Semver.fromString('2.0.0')
     const result = await Effect.runPromise(
-      Effect.provide(validateAdjacent('sha100', '@kitz/core', newVersion, ['@kitz/core@1.0.0']), layer),
+      Effect.provide(validateAdjacent('aaa0100', '@kitz/core', newVersion, ['@kitz/core@1.0.0']), layer),
     )
 
     expect(result.valid).toBe(false)
@@ -185,17 +187,17 @@ describe('validateAdjacent', () => {
       }),
     )
 
-    // Set up: sha100 -> sha200 (new) -> sha300
+    // Set up: aaa0100 -> bbb0200 (new) -> ccc0300
     await Effect.runPromise(
       Effect.provide(
         Effect.all([
           Ref.set(state.tagShas, {
-            '@kitz/core@1.0.0': 'sha100',
-            '@kitz/core@3.0.0': 'sha300',
+            '@kitz/core@1.0.0': 'aaa0100',
+            '@kitz/core@3.0.0': 'ccc0300',
           }),
           Ref.set(state.commitParents, {
-            sha200: ['sha100'],
-            sha300: ['sha200'],
+            bbb0200: ['aaa0100'],
+            ccc0300: ['bbb0200'],
           }),
         ]),
         layer,
@@ -205,7 +207,7 @@ describe('validateAdjacent', () => {
     const newVersion = Semver.fromString('2.0.0')
     const result = await Effect.runPromise(
       Effect.provide(
-        validateAdjacent('sha200', '@kitz/core', newVersion, ['@kitz/core@1.0.0', '@kitz/core@3.0.0']),
+        validateAdjacent('bbb0200', '@kitz/core', newVersion, ['@kitz/core@1.0.0', '@kitz/core@3.0.0']),
         layer,
       ),
     )
@@ -223,18 +225,18 @@ describe('auditPackageHistory', () => {
       }),
     )
 
-    // Set up linear history: sha100 -> sha200 -> sha300
+    // Set up linear history: aaa0100 -> bbb0200 -> ccc0300
     await Effect.runPromise(
       Effect.provide(
         Effect.all([
           Ref.set(state.tagShas, {
-            '@kitz/core@1.0.0': 'sha100',
-            '@kitz/core@2.0.0': 'sha200',
-            '@kitz/core@3.0.0': 'sha300',
+            '@kitz/core@1.0.0': 'aaa0100',
+            '@kitz/core@2.0.0': 'bbb0200',
+            '@kitz/core@3.0.0': 'ccc0300',
           }),
           Ref.set(state.commitParents, {
-            sha200: ['sha100'],
-            sha300: ['sha200'],
+            bbb0200: ['aaa0100'],
+            ccc0300: ['bbb0200'],
           }),
         ]),
         layer,
@@ -260,16 +262,16 @@ describe('auditPackageHistory', () => {
       }),
     )
 
-    // Set up: 2.0.0 at sha100 comes BEFORE 1.0.0 at sha200 (wrong!)
+    // Set up: 2.0.0 at aaa0100 comes BEFORE 1.0.0 at bbb0200 (wrong!)
     await Effect.runPromise(
       Effect.provide(
         Effect.all([
           Ref.set(state.tagShas, {
-            '@kitz/core@2.0.0': 'sha100',
-            '@kitz/core@1.0.0': 'sha200',
+            '@kitz/core@2.0.0': 'aaa0100',
+            '@kitz/core@1.0.0': 'bbb0200',
           }),
           Ref.set(state.commitParents, {
-            sha200: ['sha100'],
+            bbb0200: ['aaa0100'],
           }),
         ]),
         layer,
@@ -292,15 +294,15 @@ describe('auditPackageHistory', () => {
       }),
     )
 
-    // Set up: sha100 and sha200 are NOT ancestors of each other (parallel branches)
+    // Set up: aaa0100 and bbb0200 are NOT ancestors of each other (parallel branches)
     await Effect.runPromise(
       Effect.provide(
         Effect.all([
           Ref.set(state.tagShas, {
-            '@kitz/core@1.0.0': 'sha100',
-            '@kitz/core@2.0.0': 'sha200',
+            '@kitz/core@1.0.0': 'aaa0100',
+            '@kitz/core@2.0.0': 'bbb0200',
           }),
-          // No parent relationship between sha100 and sha200
+          // No parent relationship between aaa0100 and bbb0200
           Ref.set(state.commitParents, {}),
         ]),
         layer,

@@ -57,7 +57,7 @@ const deserializePlan = (
     }
 
     const commits: StructuredCommit[] = (r.commits ?? []).map((c) => ({
-      hash: c.hash,
+      hash: Git.Sha.make(c.hash),
       type: c.type,
       message: c.message,
       breaking: c.breaking,

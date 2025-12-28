@@ -47,11 +47,11 @@ describe('PrPrerelease', () => {
   })
 
   test('next', () => {
-    const current = makePrPrerelease(123, 5, Git.Sha.make('old1234'))
-    const next = nextPrPrerelease(current, Git.Sha.make('new4567'))
+    const current = makePrPrerelease(123, 5, Git.Sha.make('0001234'))
+    const next = nextPrPrerelease(current, Git.Sha.make('0004567'))
     expect(next.prNumber).toBe(123)
     expect(next.iteration).toBe(6)
-    expect(next.sha).toBe('new4567')
+    expect(next.sha).toBe('0004567')
   })
 
   test('serialization', () => {

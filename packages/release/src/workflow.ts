@@ -102,7 +102,7 @@ export type ReleaseWorkflowError =
 const CommitEntrySchema = Schema.Struct({
   type: Schema.String,
   message: Schema.String,
-  hash: Schema.String,
+  hash: Git.Sha.Sha,
   breaking: Schema.Boolean,
 })
 

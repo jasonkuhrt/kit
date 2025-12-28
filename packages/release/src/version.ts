@@ -1,4 +1,5 @@
 import { ConventionalCommits } from '@kitz/conventional-commits'
+import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
 import { Effect, Either, Option, Schema as S } from 'effect'
 import {
@@ -21,7 +22,7 @@ export type BumpType = Semver.BumpType
 export interface StructuredCommit {
   readonly type: string
   readonly message: string
-  readonly hash: string
+  readonly hash: Git.Sha.Sha
   readonly breaking: boolean
 }
 
@@ -46,7 +47,7 @@ export const maxBump = (a: BumpType, b: BumpType): BumpType => {
  * Input for extracting commit impacts.
  */
 export interface CommitInput {
-  readonly hash: string
+  readonly hash: Git.Sha.Sha
   readonly message: string
 }
 
@@ -273,7 +274,7 @@ export const findLatestPrNumber = (
 export const calculatePrVersion = (
   prNumber: number,
   existingPrNumber: number,
-  sha: Git.Sha,
+  sha: Git.Sha.Sha,
 ): Semver.Semver => {
   const prerelease = makePrPrerelease(prNumber, existingPrNumber + 1, sha)
   return Semver.fromString(`0.0.0-${encodePrPrerelease(prerelease)}`)

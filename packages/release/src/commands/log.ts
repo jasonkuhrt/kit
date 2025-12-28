@@ -49,7 +49,7 @@ const args = await Oak.Command.create()
 const generatePackageChangelog = (
   pkg: Package,
   tags: string[],
-  commits: Array<{ hash: string; message: string }>,
+  commits: Array<{ hash: Git.Sha.Sha; message: string }>,
 ) =>
   Effect.gen(function*() {
     // Find current version

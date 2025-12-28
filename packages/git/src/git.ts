@@ -1,6 +1,7 @@
 import { Err } from '@kitz/core'
 import { Context, Effect, Layer, Schema } from 'effect'
 import { type SimpleGit, simpleGit } from 'simple-git'
+import * as Sha from './sha.js'
 
 // ============================================================================
 // Errors
@@ -39,13 +40,21 @@ export const GitError = Err.TaggedContextualError('GitError').constrain<{
 export type GitError = InstanceType<typeof GitError>
 
 /**
+ * A git commit author.
+ */
+export class Author extends Schema.TaggedClass<Author>()('Author', {
+  name: Schema.String,
+  email: Schema.String,
+}) {}
+
+/**
  * A commit from git log.
  */
 export class Commit extends Schema.TaggedClass<Commit>()('Commit', {
-  hash: Schema.String,
+  hash: Sha.Sha,
   message: Schema.String,
   body: Schema.String,
-  author: Schema.String,
+  author: Author,
   date: Schema.Date,
 }) {}
 
@@ -75,10 +84,10 @@ export interface GitService {
   readonly getRoot: () => Effect.Effect<string, GitError>
 
   /** Get the short SHA of HEAD commit */
-  readonly getHeadSha: () => Effect.Effect<string, GitError>
+  readonly getHeadSha: () => Effect.Effect<Sha.Sha, GitError>
 
   /** Get the commit SHA that a tag points to */
-  readonly getTagSha: (tag: string) => Effect.Effect<string, GitError>
+  readonly getTagSha: (tag: string) => Effect.Effect<Sha.Sha, GitError>
 
   /** Check if sha1 is an ancestor of sha2 */
   readonly isAncestor: (sha1: string, sha2: string) => Effect.Effect<boolean, GitError>
@@ -111,8 +120,7 @@ const makeGitService = (git: SimpleGit): GitService => ({
         const result = await git.tags()
         return result.all
       },
-      catch: (error) =>
-        new GitError({ context: { operation: 'getTags' }, cause: Err.ensure(error) }),
+      catch: (error) => new GitError({ context: { operation: 'getTags' }, cause: Err.ensure(error) }),
     }),
 
   getCurrentBranch: () =>
@@ -121,8 +129,7 @@ const makeGitService = (git: SimpleGit): GitService => ({
         const result = await git.branch()
         return result.current
       },
-      catch: (error) =>
-        new GitError({ context: { operation: 'getCurrentBranch' }, cause: Err.ensure(error) }),
+      catch: (error) => new GitError({ context: { operation: 'getCurrentBranch' }, cause: Err.ensure(error) }),
     }),
 
   getCommitsSince: (tag) =>
@@ -131,10 +138,13 @@ const makeGitService = (git: SimpleGit): GitService => ({
         const log = await git.log(tag ? { from: tag, to: 'HEAD' } : undefined)
         return log.all.map((entry) =>
           Commit.make({
-            hash: entry.hash,
+            hash: Sha.make(entry.hash),
             message: entry.message,
             body: entry.body,
-            author: entry.author_name,
+            author: Author.make({
+              name: entry.author_name,
+              email: entry.author_email,
+            }),
             date: new Date(entry.date),
           })
         )
@@ -152,8 +162,7 @@ const makeGitService = (git: SimpleGit): GitService => ({
         const status = await git.status()
         return status.isClean()
       },
-      catch: (error) =>
-        new GitError({ context: { operation: 'isClean' }, cause: Err.ensure(error) }),
+      catch: (error) => new GitError({ context: { operation: 'isClean' }, cause: Err.ensure(error) }),
     }),
 
   createTag: (tag, message) =>
@@ -165,8 +174,7 @@ const makeGitService = (git: SimpleGit): GitService => ({
           await git.tag([tag])
         }
       },
-      catch: (error) =>
-        new GitError({ context: { operation: 'createTag', detail: tag }, cause: Err.ensure(error) }),
+      catch: (error) => new GitError({ context: { operation: 'createTag', detail: tag }, cause: Err.ensure(error) }),
     }),
 
   pushTags: (remote = 'origin') =>
@@ -184,28 +192,25 @@ const makeGitService = (git: SimpleGit): GitService => ({
         const root = await git.revparse(['--show-toplevel'])
         return root.trim()
       },
-      catch: (error) =>
-        new GitError({ context: { operation: 'getRoot' }, cause: Err.ensure(error) }),
+      catch: (error) => new GitError({ context: { operation: 'getRoot' }, cause: Err.ensure(error) }),
     }),
 
   getHeadSha: () =>
     Effect.tryPromise({
       try: async () => {
         const sha = await git.revparse(['--short', 'HEAD'])
-        return sha.trim()
+        return Sha.make(sha.trim())
       },
-      catch: (error) =>
-        new GitError({ context: { operation: 'getHeadSha' }, cause: Err.ensure(error) }),
+      catch: (error) => new GitError({ context: { operation: 'getHeadSha' }, cause: Err.ensure(error) }),
     }),
 
   getTagSha: (tag) =>
     Effect.tryPromise({
       try: async () => {
         const sha = await git.raw(['rev-list', '-1', tag])
-        return sha.trim()
+        return Sha.make(sha.trim())
       },
-      catch: (error) =>
-        new GitError({ context: { operation: 'getTagSha', detail: tag }, cause: Err.ensure(error) }),
+      catch: (error) => new GitError({ context: { operation: 'getTagSha', detail: tag }, cause: Err.ensure(error) }),
     }),
 
   isAncestor: (sha1, sha2) =>
@@ -246,8 +251,7 @@ const makeGitService = (git: SimpleGit): GitService => ({
       try: async () => {
         await git.tag(['-d', tag])
       },
-      catch: (error) =>
-        new GitError({ context: { operation: 'deleteTag', detail: tag }, cause: Err.ensure(error) }),
+      catch: (error) => new GitError({ context: { operation: 'deleteTag', detail: tag }, cause: Err.ensure(error) }),
     }),
 
   commitExists: (sha) =>
@@ -260,8 +264,7 @@ const makeGitService = (git: SimpleGit): GitService => ({
           return false
         }
       },
-      catch: (error) =>
-        new GitError({ context: { operation: 'commitExists', detail: sha }, cause: Err.ensure(error) }),
+      catch: (error) => new GitError({ context: { operation: 'commitExists', detail: sha }, cause: Err.ensure(error) }),
     }),
 
   pushTag: (tag, remote = 'origin', force = false) =>

@@ -2,7 +2,7 @@ import { Env } from '@kitz/env'
 import { Fs } from '@kitz/fs'
 import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
-import { Effect, Layer } from 'effect'
+import { Effect, Layer, Option } from 'effect'
 import { describe, expect, test } from 'vitest'
 import { Plan, type Workspace } from './__.js'
 import { makeTestWorkflowRuntime } from './workflow.js'
@@ -13,6 +13,17 @@ const expectVersion = (actual: Semver.Semver | null | undefined, expected: strin
     expect(actual).toBe(expected)
   } else {
     expect(Semver.equivalence(actual, Semver.fromString(expected))).toBe(true)
+  }
+}
+
+/** Helper to compare Option<Semver> values */
+const expectOptionVersion = (actual: Option.Option<Semver.Semver> | undefined, expected: string) => {
+  if (actual === undefined) {
+    expect(actual).toBe(expected)
+  } else if (Option.isNone(actual)) {
+    expect.fail(`Expected version ${expected} but got Option.None`)
+  } else {
+    expect(Semver.equivalence(actual.value, Semver.fromString(expected))).toBe(true)
   }
 }
 
@@ -109,7 +120,7 @@ describe('planStable integration', () => {
     expect(result.releases).toHaveLength(1)
     expect(result.releases[0]?.package.name).toBe('@kitz/core')
     expect(result.releases[0]?.bump).toBe('minor')
-    expectVersion(result.releases[0]?.currentVersion, '1.0.0')
+    expectOptionVersion(result.releases[0]?.currentVersion, '1.0.0')
     expectVersion(result.releases[0]?.nextVersion, '1.1.0')
   })
 
@@ -202,7 +213,8 @@ describe('planStable integration', () => {
     )
 
     const utilsRelease = result.releases.find((r) => r.package.name === '@kitz/utils')
-    expect(utilsRelease?.currentVersion).toBeNull()
+    expect(utilsRelease?.currentVersion).toBeDefined()
+    expect(Option.isNone(utilsRelease!.currentVersion)).toBe(true)
     expectVersion(utilsRelease?.nextVersion, '0.1.0')
   })
 
@@ -648,7 +660,7 @@ describe('planPr integration', () => {
       tags: [
         '@kitz/core@1.0.0',
         '@kitz/core@0.0.0-pr.42.1.def5678',
-        '@kitz/core@0.0.0-pr.42.2.ghi9012',
+        '@kitz/core@0.0.0-pr.42.2.abc9012',
       ],
       commits: [
         Git.Test.commit('feat(core): add new feature'),
@@ -673,7 +685,7 @@ describe('planPr integration', () => {
       tags: [
         '@kitz/core@1.0.0',
         '@kitz/core@0.0.0-pr.42.1.def5678',
-        '@kitz/core@0.0.0-pr.42.2.ghi9012',
+        '@kitz/core@0.0.0-pr.42.2.abc9012',
       ],
       commits: [
         Git.Test.commit('feat(core): add new feature'),
@@ -703,7 +715,7 @@ describe('planPr integration', () => {
       Git.Test.make({
         tags: ['@kitz/core@1.0.0'],
         commits: [Git.Test.commit('feat(core): add new feature')],
-        headSha: 'xyz7890',
+        headSha: 'def7890',
       }),
       Fs.Memory.layer({}),
       envWithPr,
@@ -717,7 +729,7 @@ describe('planPr integration', () => {
     )
 
     expect(result.releases).toHaveLength(1)
-    expectVersion(result.releases[0]?.nextVersion, '0.0.0-pr.123.1.xyz7890')
+    expectVersion(result.releases[0]?.nextVersion, '0.0.0-pr.123.1.def7890')
   })
 
   test('fails when PR number cannot be detected', async () => {
@@ -757,7 +769,7 @@ describe('planPr integration', () => {
       Git.Test.make({
         tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0'],
         commits: [Git.Test.commit('feat(core): new API')],
-        headSha: 'sha1234',
+        headSha: 'aaa1234',
       }),
       Fs.Memory.layer(diskLayout),
       testEnv,
@@ -771,11 +783,11 @@ describe('planPr integration', () => {
     )
 
     expect(result.releases).toHaveLength(1)
-    expectVersion(result.releases[0]?.nextVersion, '0.0.0-pr.55.1.sha1234')
+    expectVersion(result.releases[0]?.nextVersion, '0.0.0-pr.55.1.aaa1234')
 
     expect(result.cascades).toHaveLength(1)
     expect(result.cascades[0]?.package.name).toBe('@kitz/cli')
     // Cascade gets PR version too
-    expectVersion(result.cascades[0]?.nextVersion, '0.0.0-pr.55.1.sha1234')
+    expectVersion(result.cascades[0]?.nextVersion, '0.0.0-pr.55.1.aaa1234')
   })
 })
