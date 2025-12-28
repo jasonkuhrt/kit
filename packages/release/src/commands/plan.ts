@@ -4,7 +4,7 @@ import { Str } from '@kitz/core'
 import { Env } from '@kitz/env'
 import { Git } from '@kitz/git'
 import { Oak } from '@kitz/oak'
-import { Effect, Layer, Schema } from 'effect'
+import { Effect, Layer, Option, Schema } from 'effect'
 import { Config, Plan, Workspace } from '../__.js'
 
 const PLAN_DIR = '.release'
@@ -15,7 +15,7 @@ const PLAN_FILE = 'plan.json'
  */
 const formatRelease = (release: Plan.PlannedRelease, prefix: string = ''): string => {
   const { package: pkg, currentVersion, nextVersion, bump, commits } = release
-  const current = currentVersion?.version ?? '(none)'
+  const current = currentVersion.pipe(Option.map((v) => v.version), Option.getOrElse(() => '(none)'))
   const next = nextVersion.version
   const commitCount = commits.length
 
@@ -36,7 +36,7 @@ const serializePlan = (plan: Plan.ReleasePlan, type: string): string => {
     releases: plan.releases.map((r) => ({
       package: r.package.name,
       path: r.package.path,
-      currentVersion: r.currentVersion?.version ?? null,
+      currentVersion: r.currentVersion.pipe(Option.map((v) => v.version), Option.getOrNull),
       nextVersion: r.nextVersion.version,
       bump: r.bump,
       commits: r.commits.map((c) => ({
@@ -49,7 +49,7 @@ const serializePlan = (plan: Plan.ReleasePlan, type: string): string => {
     cascades: plan.cascades.map((r) => ({
       package: r.package.name,
       path: r.package.path,
-      currentVersion: r.currentVersion?.version ?? null,
+      currentVersion: r.currentVersion.pipe(Option.map((v) => v.version), Option.getOrNull),
       nextVersion: r.nextVersion.version,
       bump: r.bump,
     })),

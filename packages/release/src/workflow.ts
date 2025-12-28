@@ -23,7 +23,7 @@ import { Flo } from '@kitz/flo'
 import { Fs } from '@kitz/fs'
 import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
-import { Effect, Layer, Schema, Stream } from 'effect'
+import { Effect, Layer, Option, Schema, Stream } from 'effect'
 import { type PreflightError, run as runPreflight } from './preflight.js'
 import { publishPackage } from './publish.js'
 import type { PlannedRelease, ReleasePlan } from './release.js'
@@ -112,7 +112,7 @@ const CommitEntrySchema = Schema.Struct({
 const ReleaseSchema = Schema.Struct({
   packageName: Schema.String,
   packagePath: Schema.String,
-  currentVersion: Schema.NullOr(Schema.String),
+  currentVersion: Schema.OptionFromNullOr(Schema.String),
   nextVersion: Schema.String,
   bump: Schema.Literal('major', 'minor', 'patch'),
   commits: Schema.Array(CommitEntrySchema),
@@ -149,7 +149,7 @@ const toPlannedRelease = (
       ? release.packageName.split('/')[1]!
       : release.packageName,
   },
-  currentVersion: release.currentVersion ? Semver.fromString(release.currentVersion) : null,
+  currentVersion: release.currentVersion.pipe(Option.map(Semver.fromString)),
   nextVersion: Semver.fromString(release.nextVersion),
   bump: release.bump,
   commits: release.commits,
@@ -452,7 +452,7 @@ export const toWorkflowPayload = (
   releases: [...plan.releases, ...plan.cascades].map((r) => ({
     packageName: r.package.name,
     packagePath: Fs.Path.toString(r.package.path),
-    currentVersion: r.currentVersion?.version.toString() ?? null,
+    currentVersion: r.currentVersion.pipe(Option.map((v) => v.version.toString())),
     nextVersion: r.nextVersion.version.toString(),
     bump: r.bump,
     commits: r.commits.map((c) => ({
@@ -541,7 +541,7 @@ export interface ObservableWorkflowResult {
  * Use `graph.layers` to show the execution structure in the UI.
  *
  * **Resume handling**: When resuming from a checkpoint, already-completed
- * activities emit events with `resumed: true` and very short durations.
+ * activities emit events with very short `durationMs` values.
  *
  * @example
  * ```ts

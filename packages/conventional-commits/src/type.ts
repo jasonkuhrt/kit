@@ -1,17 +1,10 @@
-import { Schema } from 'effect'
-
-// ─── Impact ─────────────────────────────────────────────────────
+import { Semver } from '@kitz/semver'
+import { Option, Schema } from 'effect'
 
 /**
- * Semantic version impact levels.
- * Note: `major` comes from breaking change flags, not from the type itself.
+ * Re-export BumpType from @kitz/semver for convenience.
  */
-export const Impact = Schema.Enums({
-  none: 'none',
-  patch: 'patch',
-  minor: 'minor',
-})
-export type Impact = typeof Impact.Type
+export type BumpType = Semver.BumpType
 
 // ─── Standard Value ─────────────────────────────────────────────
 
@@ -37,19 +30,21 @@ export type StandardValue = typeof StandardValue.Type
 
 /**
  * Static impact mapping for standard types.
+ *
+ * Returns `Option.none()` for types that don't trigger a release (style, refactor, etc.)
  */
-export const StandardImpact: Record<StandardValue, Impact> = {
-  feat: 'minor',
-  fix: 'patch',
-  docs: 'patch',
-  perf: 'patch',
-  style: 'none',
-  refactor: 'none',
-  test: 'none',
-  build: 'none',
-  ci: 'none',
-  chore: 'none',
-  revert: 'none',
+export const StandardImpact: Record<StandardValue, Option.Option<BumpType>> = {
+  feat: Option.some('minor'),
+  fix: Option.some('patch'),
+  docs: Option.some('patch'),
+  perf: Option.some('patch'),
+  style: Option.none(),
+  refactor: Option.none(),
+  test: Option.none(),
+  build: Option.none(),
+  ci: Option.none(),
+  chore: Option.none(),
+  revert: Option.none(),
 }
 
 // ─── Standard Type ──────────────────────────────────────────────
@@ -91,9 +86,13 @@ export const value = (type: Type): string => type.value
 
 /**
  * Get impact for a Standard type.
+ *
+ * Returns `Option.some(BumpType)` for types that trigger a release,
+ * or `Option.none()` for types that don't (style, refactor, etc.)
+ *
  * For Custom types, use release config lookup instead.
  */
-export const impact = (type: Standard): Impact => StandardImpact[type.value]!
+export const impact = (type: Standard): Option.Option<BumpType> => StandardImpact[type.value]!
 
 // ─── Smart Constructor ──────────────────────────────────────────
 

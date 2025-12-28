@@ -27,5 +27,8 @@
     "@kitz/core": "workspace:*",
     "effect": "^3.19.13",
     "simple-git": "^3.30.0"
+  },
+  "devDependencies": {
+    "@effect/vitest": "^0.27.0"
   }
 }

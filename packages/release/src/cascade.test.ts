@@ -1,4 +1,5 @@
 import { Semver } from '@kitz/semver'
+import { Option } from 'effect'
 import { describe, expect, test } from 'vitest'
 import { Cascade, type Plan, type Workspace } from './__.js'
 
@@ -18,7 +19,7 @@ describe('Cascade.detect', () => {
     const releases: Plan.PlannedRelease[] = [
       {
         package: mockPackages[0]!,
-        currentVersion: Semver.fromString('1.0.0'),
+        currentVersion: Option.some(Semver.fromString('1.0.0')),
         nextVersion: Semver.fromString('1.1.0'),
         bump: 'minor',
         commits: ['feat(core): new feature'],
@@ -39,7 +40,7 @@ describe('Cascade.detect', () => {
     const releases: Plan.PlannedRelease[] = [
       {
         package: mockPackages[0]!,
-        currentVersion: Semver.fromString('1.0.0'),
+        currentVersion: Option.some(Semver.fromString('1.0.0')),
         nextVersion: Semver.fromString('1.1.0'),
         bump: 'minor',
         commits: ['feat(core): new feature'],
@@ -63,7 +64,7 @@ describe('Cascade.detect', () => {
     const releases: Plan.PlannedRelease[] = [
       {
         package: mockPackages[0]!,
-        currentVersion: Semver.fromString('1.0.0'),
+        currentVersion: Option.some(Semver.fromString('1.0.0')),
         nextVersion: Semver.fromString('1.1.0'),
         bump: 'minor',
         commits: ['feat(core): new feature'],
@@ -87,14 +88,14 @@ describe('Cascade.detect', () => {
     const releases: Plan.PlannedRelease[] = [
       {
         package: mockPackages[0]!,
-        currentVersion: Semver.fromString('1.0.0'),
+        currentVersion: Option.some(Semver.fromString('1.0.0')),
         nextVersion: Semver.fromString('1.1.0'),
         bump: 'minor',
         commits: ['feat(core): a'],
       },
       {
         package: mockPackages[1]!,
-        currentVersion: Semver.fromString('0.5.0'),
+        currentVersion: Option.some(Semver.fromString('0.5.0')),
         nextVersion: Semver.fromString('0.6.0'),
         bump: 'minor',
         commits: ['feat(cli): b'],
@@ -114,7 +115,7 @@ describe('Cascade.detect', () => {
     const releases: Plan.PlannedRelease[] = [
       {
         package: mockPackages[0]!,
-        currentVersion: Semver.fromString('1.0.0'),
+        currentVersion: Option.some(Semver.fromString('1.0.0')),
         nextVersion: Semver.fromString('1.1.0'),
         bump: 'minor',
         commits: ['feat(core): new feature'],
@@ -125,7 +126,7 @@ describe('Cascade.detect', () => {
     const cascades = Cascade.detect(mockPackages, releases, graph, tags)
 
     expect(cascades).toHaveLength(1)
-    expect(Semver.equivalence(cascades[0]!.currentVersion!, Semver.fromString('2.0.0'))).toBe(true)
+    expect(Semver.equivalence(Option.getOrThrow(cascades[0]!.currentVersion), Semver.fromString('2.0.0'))).toBe(true)
     expect(Semver.equivalence(cascades[0]!.nextVersion, Semver.fromString('2.0.1'))).toBe(true)
   })
 })

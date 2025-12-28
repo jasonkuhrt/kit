@@ -31,6 +31,3 @@ export const make = Schema.decodeSync(Sha)
 
 /** Check if a value is a valid SHA. */
 export const is = Schema.is(Sha)
-
-/** Decode a SHA, returning an Effect. */
-export const decode = Schema.decode(Sha)

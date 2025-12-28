@@ -23,6 +23,7 @@
     "check:package": "publint && attw --pack --ignore-rules no-resolution cjs-resolves-to-esm internal-resolution-error"
   },
   "dependencies": {
+    "@effect/platform": "^0.94.0",
     "@kitz/core": "workspace:*",
     "@kitz/pkg": "workspace:*",
     "@kitz/semver": "workspace:*",

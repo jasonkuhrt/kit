@@ -40,23 +40,23 @@ const defaultActivities = ['Preflight', 'Publish:core', 'Publish:flo', 'CreateTa
 Test.describe('TerminalRenderer > list mode')
   .on(renderList)
   .snapshots({ arguments: false })
-  .cases(
+  .casesInput(
     // Initial state
-    [[{ activities: defaultActivities }]],
+    { activities: defaultActivities },
     // One running
-    [[{ activities: defaultActivities, events: [started('Preflight')] }]],
+    { activities: defaultActivities, events: [started('Preflight')] },
     // First completed, second running
-    [[{
+    {
       activities: defaultActivities,
       events: [started('Preflight'), completed('Preflight'), started('Publish:core')],
-    }]],
+    },
     // All completed
-    [[{
+    {
       activities: defaultActivities,
       events: defaultActivities.flatMap((a) => [started(a), completed(a)]),
-    }]],
+    },
     // With failure
-    [[{
+    {
       activities: defaultActivities,
       events: [
         started('Preflight'),
@@ -64,13 +64,13 @@ Test.describe('TerminalRenderer > list mode')
         started('Publish:core'),
         failed('Publish:core', 'npm publish failed'),
       ],
-    }]],
+    },
     // With colors
-    [[{
+    {
       activities: ['Step1', 'Step2', 'Step3'],
       colors: true,
       events: [started('Step1'), completed('Step1'), started('Step2')],
-    }]],
+    },
   )
   .test()
 
@@ -112,13 +112,13 @@ const diamondEdges: readonly (readonly [string, string])[] = [
 Test.describe('TerminalRenderer > DAG mode > compact')
   .on(renderDag)
   .snapshots({ arguments: false })
-  .cases(
+  .casesInput(
     // Initial state
-    [[{ layers: diamondLayers, edges: diamondEdges }]],
+    { layers: diamondLayers, edges: diamondEdges },
     // First layer running
-    [[{ layers: diamondLayers, edges: diamondEdges, events: [started('Preflight')] }]],
+    { layers: diamondLayers, edges: diamondEdges, events: [started('Preflight')] },
     // First done, second concurrent
-    [[{
+    {
       layers: diamondLayers,
       edges: diamondEdges,
       events: [
@@ -127,15 +127,15 @@ Test.describe('TerminalRenderer > DAG mode > compact')
         started('Publish:A'),
         started('Publish:B'),
       ],
-    }]],
+    },
     // All completed
-    [[{
+    {
       layers: diamondLayers,
       edges: diamondEdges,
       events: diamondLayers.flat().flatMap((a) => [started(a), completed(a)]),
-    }]],
+    },
     // With failure in concurrent layer
-    [[{
+    {
       layers: diamondLayers,
       edges: diamondEdges,
       events: [
@@ -146,14 +146,14 @@ Test.describe('TerminalRenderer > DAG mode > compact')
         completed('Publish:A'),
         failed('Publish:B', 'publish failed'),
       ],
-    }]],
+    },
     // With colors
-    [[{
+    {
       layers: diamondLayers,
       edges: diamondEdges,
       colors: true,
       events: [started('Preflight'), completed('Preflight'), started('Publish:A')],
-    }]],
+    },
   )
   .test()
 
@@ -188,22 +188,22 @@ const boxEdges: readonly (readonly [string, string])[] = [
 Test.describe('TerminalRenderer > DAG mode > full')
   .on(renderDagFull)
   .snapshots({ arguments: false })
-  .cases(
+  .casesInput(
     // Initial state
-    [[{ layers: boxLayers, edges: boxEdges }]],
+    { layers: boxLayers, edges: boxEdges },
     // With progress
-    [[{
+    {
       layers: boxLayers,
       edges: boxEdges,
       events: [started('StepA'), completed('StepA'), started('StepB'), started('StepC')],
-    }]],
+    },
     // With colors
-    [[{
+    {
       layers: boxLayers,
       edges: boxEdges,
       colors: true,
       events: [started('StepA'), completed('StepA'), started('StepB')],
-    }]],
+    },
   )
   .test()
 
@@ -219,11 +219,11 @@ const complexLayers: readonly (readonly string[])[] = [
 Test.describe('TerminalRenderer > complex DAG')
   .on(renderDag)
   .snapshots({ arguments: false })
-  .cases(
+  .casesInput(
     // Initial state
-    [[{ layers: complexLayers }]],
+    { layers: complexLayers },
     // Mid-execution
-    [[{
+    {
       layers: complexLayers,
       events: [
         started('Preflight'),
@@ -233,14 +233,14 @@ Test.describe('TerminalRenderer > complex DAG')
         started('Publish:@kitz/syn'),
         completed('Publish:@kitz/core'),
       ],
-    }]],
+    },
   )
   .test()
 
 Test.describe('TerminalRenderer > complex DAG > full')
   .on(renderDagFull)
   .snapshots({ arguments: false })
-  .cases([[{ layers: complexLayers }]])
+  .casesInput({ layers: complexLayers })
   .test()
 
 // ─── State Management ──────────────────────────────────────────

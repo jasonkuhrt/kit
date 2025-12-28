@@ -4,7 +4,7 @@ import { Env } from '@kitz/env'
 import { Git } from '@kitz/git'
 import { Oak } from '@kitz/oak'
 import { Semver } from '@kitz/semver'
-import { Effect, Fiber, Layer, Schema, Stream } from 'effect'
+import { Effect, Fiber, Layer, Option, Schema, Stream } from 'effect'
 import { load } from '../config.js'
 import { discover, type Package } from '../discovery.js'
 import { type PlannedRelease, type ReleasePlan } from '../release.js'
@@ -65,7 +65,7 @@ const deserializePlan = (
 
     return {
       package: pkg,
-      currentVersion: r.currentVersion ? Semver.fromString(r.currentVersion) : null,
+      currentVersion: Option.fromNullable(r.currentVersion).pipe(Option.map(Semver.fromString)),
       nextVersion: Semver.fromString(r.nextVersion),
       bump: r.bump,
       commits,

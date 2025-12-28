@@ -3,7 +3,7 @@ import { Str } from '@kitz/core'
 import { Env } from '@kitz/env'
 import { Git } from '@kitz/git'
 import { Oak } from '@kitz/oak'
-import { Effect, Layer, Schema } from 'effect'
+import { Effect, Layer, Option, Schema } from 'effect'
 import { Cascade, Config, Plan, Workspace } from '../__.js'
 
 /**
@@ -11,7 +11,7 @@ import { Cascade, Config, Plan, Workspace } from '../__.js'
  */
 const formatRelease = (release: Plan.PlannedRelease): string => {
   const { package: pkg, currentVersion, nextVersion, bump, commits } = release
-  const current = currentVersion?.version ?? '(none)'
+  const current = currentVersion.pipe(Option.map((v) => v.version), Option.getOrElse(() => '(none)'))
   const next = nextVersion.version
   const commitCount = commits.length
 
@@ -34,7 +34,8 @@ const formatCascade = (
 
   const lines = [`${pkg}:`]
   for (const dep of dependents) {
-    lines.push(`  ├── ${dep.package.name} depends (workspace:* → ^${dep.currentVersion?.version ?? '0.0.0'})`)
+    const ver = dep.currentVersion.pipe(Option.map((v) => v.version), Option.getOrElse(() => '0.0.0'))
+    lines.push(`  ├── ${dep.package.name} depends (workspace:* → ^${ver})`)
   }
   return lines.join(Str.Char.newline)
 }

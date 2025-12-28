@@ -1,11 +1,19 @@
 import { ConventionalCommits } from '@kitz/conventional-commits'
 import { Semver } from '@kitz/semver'
-import { Effect, Either } from 'effect'
+import { Effect, Either, Option, Schema as S } from 'effect'
+import {
+  encodePreviewPrerelease,
+  encodePrPrerelease,
+  makePreviewPrerelease,
+  makePrPrerelease,
+  PreviewPrereleaseSchema,
+  PrPrereleaseSchema,
+} from './prerelease.js'
 
 /**
- * Version bump type.
+ * Version bump type (re-exported from @kitz/semver).
  */
-export type BumpType = 'major' | 'minor' | 'patch'
+export type BumpType = Semver.BumpType
 
 /**
  * Structured commit information for changelog generation.
@@ -27,20 +35,11 @@ export interface CommitImpact {
 }
 
 /**
- * Determine the bump type from a commit type.
- */
-export const bumpFromType = (type: string, breaking: boolean): BumpType => {
-  if (breaking) return 'major'
-  if (type === 'feat') return 'minor'
-  return 'patch'
-}
-
-/**
  * Reduce multiple bump types to the highest one.
  */
 export const maxBump = (a: BumpType, b: BumpType): BumpType => {
   const priority: Record<BumpType, number> = { major: 3, minor: 2, patch: 1 }
-  return priority[a] >= priority[b] ? a : b
+  return priority[a]! >= priority[b]! ? a : b
 }
 
 /**
@@ -74,21 +73,25 @@ export const extractImpacts = (
     const parsedCommit = parsed.right
     const impacts: CommitImpact[] = []
 
-    if (ConventionalCommits.CommitSingle.is(parsedCommit)) {
-      const typeValue = parsedCommit.type.value
-      const bump = bumpFromType(typeValue, parsedCommit.breaking)
+    // Get bump from CC type, returns null for no-impact types
+    const getBump = (type: ConventionalCommits.Type.Type, breaking: boolean): BumpType | null => {
+      if (breaking) return 'major'
+      if (!ConventionalCommits.Type.Standard.is(type)) return 'patch'
+      return Option.getOrNull(ConventionalCommits.Type.impact(type))
+    }
 
-      if (parsedCommit.scopes.length === 0) {
-        // Scopeless commit - affects all packages (handled by caller)
-        return []
-      }
+    if (ConventionalCommits.CommitSingle.is(parsedCommit)) {
+      if (parsedCommit.scopes.length === 0) return [] // Scopeless - handled by caller
+
+      const bump = getBump(parsedCommit.type, parsedCommit.breaking)
+      if (bump === null) return []
 
       for (const scope of parsedCommit.scopes) {
         impacts.push({
           scope,
           bump,
           commit: {
-            type: typeValue,
+            type: parsedCommit.type.value,
             message: parsedCommit.message,
             hash: commitInput.hash,
             breaking: parsedCommit.breaking,
@@ -96,15 +99,15 @@ export const extractImpacts = (
         })
       }
     } else if (ConventionalCommits.CommitMulti.is(parsedCommit)) {
-      // MultiTargetCommit has a shared message at the parent level
       for (const target of parsedCommit.targets) {
-        const typeValue = target.type.value
-        const bump = bumpFromType(typeValue, target.breaking)
+        const bump = getBump(target.type, target.breaking)
+        if (bump === null) continue
+
         impacts.push({
           scope: target.scope,
           bump,
           commit: {
-            type: typeValue,
+            type: target.type.value,
             message: parsedCommit.message,
             hash: commitInput.hash,
             breaking: target.breaking,
@@ -146,23 +149,23 @@ export const aggregateByPackage = (
  * Calculate the next version given a current version and bump type.
  */
 export const calculateNextVersion = (
-  current: Semver.Semver | null,
+  current: Option.Option<Semver.Semver>,
   bump: BumpType,
-): Semver.Semver => {
-  if (current === null) {
-    // First release - start at appropriate version
-    switch (bump) {
-      case 'major':
-        return Semver.make(1, 0, 0)
-      case 'minor':
-        return Semver.make(0, 1, 0)
-      case 'patch':
-        return Semver.make(0, 0, 1)
-    }
-  }
-
-  return Semver.increment(current, bump)
-}
+): Semver.Semver =>
+  Option.match(current, {
+    onNone: () => {
+      // First release - start at appropriate version
+      switch (bump) {
+        case 'major':
+          return Semver.make(1, 0, 0)
+        case 'minor':
+          return Semver.make(0, 1, 0)
+        case 'patch':
+          return Semver.make(0, 0, 1)
+      }
+    },
+    onSome: (version) => Semver.increment(version, bump),
+  })
 
 /**
  * Find the latest version for a package from git tags.
@@ -172,7 +175,7 @@ export const calculateNextVersion = (
 export const findLatestTagVersion = (
   packageName: string,
   tags: string[],
-): Semver.Semver | null => {
+): Option.Option<Semver.Semver> => {
   // Match tags like @kitz/core@1.0.0 or kitz@1.0.0
   const prefix = `${packageName}@`
   const versions: Semver.Semver[] = []
@@ -188,11 +191,11 @@ export const findLatestTagVersion = (
     }
   }
 
-  if (versions.length === 0) return null
+  if (versions.length === 0) return Option.none()
 
   // Sort and get the highest version
   versions.sort((a, b) => -Semver.order(a, b)) // Descending
-  return versions[0]!
+  return Option.some(versions[0]!)
 }
 
 /**
@@ -206,15 +209,15 @@ export const findLatestPreviewNumber = (
   baseVersion: Semver.Semver,
   tags: string[],
 ): number => {
-  const prefix = `${packageName}@${baseVersion.version}-next.`
+  const prefix = `${packageName}@${baseVersion.version}-`
   let highest = 0
 
   for (const tag of tags) {
     if (tag.startsWith(prefix)) {
-      const numPart = tag.slice(prefix.length)
-      const num = parseInt(numPart, 10)
-      if (!isNaN(num) && num > highest) {
-        highest = num
+      const prereleasePart = tag.slice(prefix.length)
+      const decoded = S.decodeUnknownOption(PreviewPrereleaseSchema)(prereleasePart)
+      if (Option.isSome(decoded) && decoded.value.iteration > highest) {
+        highest = decoded.value.iteration
       }
     }
   }
@@ -230,7 +233,10 @@ export const findLatestPreviewNumber = (
 export const calculatePreviewVersion = (
   nextStableVersion: Semver.Semver,
   existingPreviewNumber: number,
-): Semver.Semver => Semver.fromString(`${nextStableVersion.version}-next.${existingPreviewNumber + 1}`)
+): Semver.Semver => {
+  const prerelease = makePreviewPrerelease(existingPreviewNumber + 1)
+  return Semver.fromString(`${nextStableVersion.version}-${encodePreviewPrerelease(prerelease)}`)
+}
 
 /**
  * Find the highest PR release number for a package and PR.
@@ -243,19 +249,15 @@ export const findLatestPrNumber = (
   prNumber: number,
   tags: string[],
 ): number => {
-  const prefix = `${packageName}@0.0.0-pr.${prNumber}.`
+  const prefix = `${packageName}@0.0.0-`
   let highest = 0
 
   for (const tag of tags) {
     if (tag.startsWith(prefix)) {
-      // Extract the number from: 0.0.0-pr.PR.N.SHA
-      const afterPrefix = tag.slice(prefix.length)
-      const parts = afterPrefix.split('.')
-      if (parts.length >= 1) {
-        const num = parseInt(parts[0]!, 10)
-        if (!isNaN(num) && num > highest) {
-          highest = num
-        }
+      const prereleasePart = tag.slice(prefix.length)
+      const decoded = S.decodeUnknownOption(PrPrereleaseSchema)(prereleasePart)
+      if (Option.isSome(decoded) && decoded.value.prNumber === prNumber && decoded.value.iteration > highest) {
+        highest = decoded.value.iteration
       }
     }
   }
@@ -271,5 +273,8 @@ export const findLatestPrNumber = (
 export const calculatePrVersion = (
   prNumber: number,
   existingPrNumber: number,
-  sha: string,
-): Semver.Semver => Semver.fromString(`0.0.0-pr.${prNumber}.${existingPrNumber + 1}.${sha}`)
+  sha: Git.Sha,
+): Semver.Semver => {
+  const prerelease = makePrPrerelease(prNumber, existingPrNumber + 1, sha)
+  return Semver.fromString(`0.0.0-${encodePrPrerelease(prerelease)}`)
+}

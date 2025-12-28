@@ -7,10 +7,12 @@ import { Schema as S } from 'effect'
 /**
  * Scoped package name (e.g., "\@kitz/core").
  */
-export class Scoped extends S.Class<Scoped>('Scoped')({
+export class Scoped extends S.TaggedClass<Scoped>()('Scoped', {
   scope: S.String,
   name: S.String,
 }) {
+  static is = S.is(Scoped)
+
   /**
    * Full package name string (e.g., "\@kitz/core").
    */
@@ -49,9 +51,11 @@ export const ScopedFromString: S.Schema<Scoped, string> = S.transform(
 /**
  * Unscoped package name (e.g., "lodash").
  */
-export class Unscoped extends S.Class<Unscoped>('Unscoped')({
+export class Unscoped extends S.TaggedClass<Unscoped>()('Unscoped', {
   name: S.String,
 }) {
+  static is = S.is(Unscoped)
+
   /**
    * Full package name string.
    */
@@ -114,9 +118,9 @@ export const parse = S.decodeSync(FromString)
 /**
  * Check if a moniker is scoped.
  */
-export const isScoped = (moniker: Moniker): moniker is Scoped => moniker instanceof Scoped
+export const isScoped = (moniker: Moniker): moniker is Scoped => Scoped.is(moniker)
 
 /**
  * Check if a moniker is unscoped.
  */
-export const isUnscoped = (moniker: Moniker): moniker is Unscoped => moniker instanceof Unscoped
+export const isUnscoped = (moniker: Moniker): moniker is Unscoped => Unscoped.is(moniker)

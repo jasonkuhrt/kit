@@ -5,7 +5,7 @@ import { Env } from '@kitz/env'
 import { Fs } from '@kitz/fs'
 import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
-import { Effect } from 'effect'
+import { Effect, Option } from 'effect'
 import { buildDependencyGraph, detect as detectCascades } from './cascade.js'
 import type { Package } from './discovery.js'
 import {
@@ -52,7 +52,7 @@ export interface ReleaseOptions {
  */
 export interface PlannedRelease {
   readonly package: Package
-  readonly currentVersion: Semver.Semver | null
+  readonly currentVersion: Option.Option<Semver.Semver>
   readonly nextVersion: Semver.Semver
   readonly bump: BumpType
   readonly commits: readonly StructuredCommit[]

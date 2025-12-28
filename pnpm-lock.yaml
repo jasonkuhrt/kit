@@ -126,6 +126,9 @@ importers:
       '@kitz/core':
         specifier: workspace:*
         version: link:../core
+      '@kitz/semver':
+        specifier: workspace:*
+        version: link:../semver
       effect:
         specifier: ^3.19.13
         version: 3.19.13
@@ -228,6 +231,10 @@ importers:
       simple-git:
         specifier: ^3.30.0
         version: 3.30.0
+    devDependencies:
+      '@effect/vitest':
+        specifier: ^0.27.0
+        version: 0.27.0(effect@3.19.13)(vitest@4.0.16(@types/node@25.0.3)(tsx@4.21.0))
 
   packages/group:
     dependencies:
@@ -395,6 +402,9 @@ importers:
 
   packages/npm-registry:
     dependencies:
+      '@effect/platform':
+        specifier: ^0.94.0
+        version: 0.94.0(effect@3.19.13)
       '@kitz/core':
         specifier: workspace:*
         version: link:../core

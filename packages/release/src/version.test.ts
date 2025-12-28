@@ -1,11 +1,10 @@
 import { it } from '@effect/vitest'
 import { Semver } from '@kitz/semver'
 import { Test } from '@kitz/test'
-import { Effect, Layer } from 'effect'
+import { Effect, Layer, Option } from 'effect'
 import { describe, expect, test } from 'vitest'
 import {
   aggregateByPackage,
-  bumpFromType,
   calculateNextVersion,
   type CommitImpact,
   type CommitInput,
@@ -13,22 +12,6 @@ import {
   findLatestTagVersion,
   maxBump,
 } from './version.js'
-
-Test.describe('bumpFromType')
-  .on(bumpFromType)
-  .cases(
-    // Breaking changes → major
-    [['feat', true], 'major', { comment: 'breaking feat' }],
-    [['fix', true], 'major', { comment: 'breaking fix' }],
-    [['chore', true], 'major', { comment: 'breaking chore' }],
-    // feat → minor
-    [['feat', false], 'minor'],
-    // Other types → patch
-    [['fix', false], 'patch'],
-    [['chore', false], 'patch'],
-    [['docs', false], 'patch'],
-  )
-  .test()
 
 Test.describe('maxBump')
   .on(maxBump)
@@ -53,7 +36,11 @@ Test.describe('extractImpacts')
   .cases(
     [
       { hash: 'abc123', message: 'feat(core): add feature' },
-      [{ scope: 'core', bump: 'minor', commit: { type: 'feat', message: 'add feature', hash: 'abc123', breaking: false } }],
+      [{
+        scope: 'core',
+        bump: 'minor',
+        commit: { type: 'feat', message: 'add feature', hash: 'abc123', breaking: false },
+      }],
       { comment: 'single scope feat' },
     ],
     [
@@ -70,6 +57,27 @@ Test.describe('extractImpacts')
       { hash: 'mno345', message: 'random commit message' },
       [],
       { comment: 'non-conventional returns empty' },
+    ],
+    // 'none' impact types (chore, ci, style, etc.) return empty
+    [
+      { hash: 'pqr678', message: 'chore(core): update deps' },
+      [],
+      { comment: 'chore has no semantic impact' },
+    ],
+    [
+      { hash: 'stu901', message: 'ci(core): fix workflow' },
+      [],
+      { comment: 'ci has no semantic impact' },
+    ],
+    // But breaking 'none' types still get major
+    [
+      { hash: 'vwx234', message: 'chore(core)!: breaking internal change' },
+      [{
+        scope: 'core',
+        bump: 'major',
+        commit: { type: 'chore', message: 'breaking internal change', hash: 'vwx234', breaking: true },
+      }],
+      { comment: 'breaking chore gets major' },
     ],
   )
   .testEffect(({ input, output }) =>
@@ -94,8 +102,7 @@ describe('extractImpacts', () => {
         bump: 'patch',
         commit: { type: 'fix', message: 'mixed', hash: 'ghi789', breaking: false },
       })
-    })
-  )
+    }))
 })
 
 describe('aggregateByPackage', () => {
@@ -138,7 +145,7 @@ describe('aggregateByPackage', () => {
 
 // Helper to extract version string for cleaner table assertions
 const calcNextVersionStr = (current: string | null, bump: 'major' | 'minor' | 'patch') =>
-  calculateNextVersion(current ? Semver.fromString(current) : null, bump).version.toString()
+  calculateNextVersion(Option.fromNullable(current).pipe(Option.map(Semver.fromString)), bump).version.toString()
 
 Test.describe('calculateNextVersion')
   .on(calcNextVersionStr)
@@ -156,7 +163,7 @@ Test.describe('calculateNextVersion')
 
 // Helper to extract version string for cleaner table assertions
 const findLatestVersionStr = (name: string, tags: string[]) =>
-  findLatestTagVersion(name, tags)?.version.toString() ?? null
+  findLatestTagVersion(name, tags).pipe(Option.map((v) => v.version.toString()), Option.getOrNull)
 
 Test.describe('findLatestTagVersion')
   .on(findLatestVersionStr)

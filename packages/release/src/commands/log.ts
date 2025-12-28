@@ -3,7 +3,7 @@ import { Changelog } from '@kitz/changelog'
 import { Env } from '@kitz/env'
 import { Git } from '@kitz/git'
 import { Oak } from '@kitz/oak'
-import { Effect, Layer, Schema } from 'effect'
+import { Effect, Layer, Option, Schema } from 'effect'
 import { load } from '../config.js'
 import { discover, type Package } from '../discovery.js'
 import { extractImpacts, findLatestTagVersion } from '../version.js'
@@ -69,8 +69,8 @@ const generatePackageChangelog = (
     }
 
     // Calculate next version (for display)
-    const nextVersion = currentVersion
-      ? `${currentVersion.version.toString()}+unreleased`
+    const nextVersion = Option.isSome(currentVersion)
+      ? `${currentVersion.value.version.toString()}+unreleased`
       : '0.0.1'
 
     // Build commits array for changelog
@@ -83,11 +83,11 @@ const generatePackageChangelog = (
 
     // Generate changelog - use ternary to get proper type inference
     const changelog = yield* Changelog.generate(
-      currentVersion
+      Option.isSome(currentVersion)
         ? {
           scope: pkg.name,
           commits: changelogCommits,
-          previousVersion: currentVersion.version.toString(),
+          previousVersion: currentVersion.value.version.toString(),
           newVersion: nextVersion,
         }
         : { scope: pkg.name, commits: changelogCommits, newVersion: nextVersion },
@@ -131,8 +131,8 @@ const program = Effect.gen(function*() {
   if (!sinceTag && targetPackages.length === 1) {
     // For single package, use its latest tag
     const latest = findLatestTagVersion(targetPackages[0]!.name, tags)
-    if (latest) {
-      sinceTag = `${targetPackages[0]!.name}@${latest.version}`
+    if (Option.isSome(latest)) {
+      sinceTag = `${targetPackages[0]!.name}@${latest.value.version}`
     }
   }
 

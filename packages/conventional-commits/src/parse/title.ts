@@ -1,4 +1,5 @@
-import { Data, Effect, Option } from 'effect'
+import { Err } from '@kitz/core'
+import { Effect, Option } from 'effect'
 import { CommitMulti } from '../commit-multi.js'
 import { CommitSingle } from '../commit-single.js'
 import { Target } from '../target.js'
@@ -7,10 +8,14 @@ import { Type, from as typeFrom } from '../type.js'
 /**
  * Error parsing a conventional commit title.
  */
-export class ParseTitleError extends Data.TaggedError('ParseTitleError')<{
-  readonly message: string
+export const ParseTitleError = Err.TaggedContextualError('ParseTitleError').constrain<{
+  readonly reason: string
   readonly input: string
-}> {}
+}>({
+  message: (ctx) => `${ctx.reason}: "${ctx.input}"`,
+})
+
+export type ParseTitleError = InstanceType<typeof ParseTitleError>
 
 /**
  * Parsed title result—either CommitSingle or CommitMulti (without body/footers yet).
@@ -41,7 +46,7 @@ export const parseTitle = (
     const colonIndex = trimmed.indexOf(':')
     if (colonIndex === -1) {
       return yield* Effect.fail(
-        new ParseTitleError({ message: 'Missing colon separator', input: title }),
+        new ParseTitleError({ context: { reason: 'Missing colon separator', input: title } }),
       )
     }
 
@@ -50,7 +55,7 @@ export const parseTitle = (
 
     if (!message) {
       return yield* Effect.fail(
-        new ParseTitleError({ message: 'Empty message', input: title }),
+        new ParseTitleError({ context: { reason: 'Empty message', input: title } }),
       )
     }
 
@@ -67,13 +72,13 @@ export const parseTitle = (
       const firstGroup = groups[0]
       if (!firstGroup) {
         return yield* Effect.fail(
-          new ParseTitleError({ message: 'Invalid type-scope format', input: title }),
+          new ParseTitleError({ context: { reason: 'Invalid type-scope format', input: title } }),
         )
       }
       const parsed = parseTypeScopeGroup(firstGroup)
       if (!parsed) {
         return yield* Effect.fail(
-          new ParseTitleError({ message: 'Invalid type-scope format', input: title }),
+          new ParseTitleError({ context: { reason: 'Invalid type-scope format', input: title } }),
         )
       }
 
@@ -98,7 +103,7 @@ export const parseTitle = (
       const parsed = parseTypeScopeGroup(group)
       if (!parsed) {
         return yield* Effect.fail(
-          new ParseTitleError({ message: `Invalid type-scope group: ${group}`, input: title }),
+          new ParseTitleError({ context: { reason: `Invalid type-scope group: ${group}`, input: title } }),
         )
       }
 
@@ -108,8 +113,7 @@ export const parseTitle = (
       if (scopes.length === 0) {
         return yield* Effect.fail(
           new ParseTitleError({
-            message: 'CommitMulti commits require scopes',
-            input: title,
+            context: { reason: 'CommitMulti commits require scopes', input: title },
           }),
         )
       }
@@ -129,7 +133,7 @@ export const parseTitle = (
 
     if (targets.length === 0) {
       return yield* Effect.fail(
-        new ParseTitleError({ message: 'No targets found', input: title }),
+        new ParseTitleError({ context: { reason: 'No targets found', input: title } }),
       )
     }
 

@@ -30,8 +30,6 @@ import { Context, Effect, Option, PubSub, Schema } from 'effect'
 export class ActivityStarted extends Schema.TaggedClass<ActivityStarted>()('ActivityStarted', {
   activity: Schema.String,
   timestamp: Schema.Date,
-  /** True if this activity was already completed (resumed from checkpoint) */
-  resumed: Schema.Boolean,
 }) {}
 
 /**
@@ -40,9 +38,7 @@ export class ActivityStarted extends Schema.TaggedClass<ActivityStarted>()('Acti
 export class ActivityCompleted extends Schema.TaggedClass<ActivityCompleted>()('ActivityCompleted', {
   activity: Schema.String,
   timestamp: Schema.Date,
-  /** True if this activity was already completed (resumed from checkpoint) */
-  resumed: Schema.Boolean,
-  /** Duration in milliseconds (very short if resumed) */
+  /** Duration in milliseconds. Very short durations indicate cached/replayed activities. */
   durationMs: Schema.Number,
 }) {}
 
@@ -72,16 +68,6 @@ export class WorkflowFailed extends Schema.TaggedClass<WorkflowFailed>()('Workfl
 }) {}
 
 /**
- * Activity lifecycle event.
- */
-export type ActivityEvent =
-  | ActivityStarted
-  | ActivityCompleted
-  | ActivityFailed
-  | WorkflowCompleted
-  | WorkflowFailed
-
-/**
  * Schema for activity lifecycle events.
  */
 export const ActivityEvent = Schema.Union(
@@ -91,6 +77,11 @@ export const ActivityEvent = Schema.Union(
   WorkflowCompleted,
   WorkflowFailed,
 )
+
+/**
+ * Activity lifecycle event.
+ */
+export type ActivityEvent = typeof ActivityEvent.Type
 
 // ============================================================================
 // Event PubSub Service
@@ -111,21 +102,15 @@ export class WorkflowEvents extends Context.Tag('WorkflowEvents')<
 // Observable Activity
 // ============================================================================
 
-/** Threshold in ms - activities completing faster than this are considered resumed */
-const RESUME_THRESHOLD_MS = 50
-
 /**
  * Observable drop-in replacement for `Activity.make()`.
  *
  * When {@link WorkflowEvents} service is provided, emits lifecycle events:
  * - `ActivityStarted` when activity begins
- * - `ActivityCompleted` when activity succeeds
+ * - `ActivityCompleted` when activity succeeds (includes `durationMs`)
  * - `ActivityFailed` when activity fails
  *
  * When WorkflowEvents is not provided, behaves exactly like `Activity.make()`.
- *
- * **Resume detection**: Activities completing in <50ms are flagged with `resumed: true`,
- * indicating they were replayed from a checkpoint rather than freshly executed.
  *
  * @example
  * ```ts
@@ -185,7 +170,6 @@ export const ObservableActivity = {
         ActivityStarted.make({
           activity: config.name,
           timestamp: startTime,
-          resumed: false,
         }),
       ).pipe(Effect.ignore)
 
@@ -212,7 +196,6 @@ export const ObservableActivity = {
         ActivityCompleted.make({
           activity: config.name,
           timestamp: now,
-          resumed: durationMs < RESUME_THRESHOLD_MS,
           durationMs,
         }),
       ).pipe(Effect.ignore)
