@@ -1,12 +1,29 @@
-import { Data, Effect } from 'effect'
+import { Err } from '@kitz/core'
+import { Semver } from '@kitz/semver'
+import { Effect } from 'effect'
+
+// ============================================================================
+// Errors
+// ============================================================================
 
 /**
- * Error fetching from npm registry.
+ * Npm registry operation names for structured error context.
  */
-export class NpmRegistryError extends Data.TaggedError('NpmRegistryError')<{
-  readonly message: string
-  readonly cause?: unknown
-}> {}
+export type NpmRegistryOperation = 'getVersions' | 'getLatestVersion'
+
+/**
+ * Npm registry operation error.
+ */
+export const NpmRegistryError = Err.TaggedContextualError('NpmRegistryError').constrain<{
+  readonly operation: NpmRegistryOperation
+  readonly packageName: string
+  readonly detail?: string
+}>({
+  message: (ctx) =>
+    `npm registry ${ctx.operation} for ${ctx.packageName} failed${ctx.detail ? `: ${ctx.detail}` : ''}`,
+}).constrainCause<Error>()
+
+export type NpmRegistryError = InstanceType<typeof NpmRegistryError>
 
 /**
  * Package version info from npm.
@@ -56,10 +73,10 @@ export const getVersions = (
       const data = (await response.json()) as { versions?: Record<string, unknown> }
       return Object.keys(data.versions ?? {})
     },
-    catch: (error) =>
+    catch: (cause) =>
       new NpmRegistryError({
-        message: `Failed to fetch versions for ${packageName}`,
-        cause: error,
+        context: { operation: 'getVersions', packageName },
+        cause: cause instanceof Error ? cause : new Error(String(cause)),
       }),
   })
 
@@ -69,13 +86,13 @@ export const getVersions = (
  * @example
  * ```ts
  * const latest = await Effect.runPromise(getLatestVersion('@kitz/core'))
- * // Option.some('0.1.0') or Option.none() if not published
+ * // Semver.Semver or null if not published
  * ```
  */
 export const getLatestVersion = (
   packageName: string,
   options?: RegistryOptions,
-): Effect.Effect<string | null, NpmRegistryError> =>
+): Effect.Effect<Semver.Semver | null, NpmRegistryError> =>
   Effect.tryPromise({
     try: async () => {
       const registry = options?.registry ?? DEFAULT_REGISTRY
@@ -91,11 +108,12 @@ export const getLatestVersion = (
       }
 
       const data = (await response.json()) as { 'dist-tags'?: { latest?: string } }
-      return data['dist-tags']?.latest ?? null
+      const latest = data['dist-tags']?.latest
+      return latest ? Semver.fromString(latest) : null
     },
-    catch: (error) =>
+    catch: (cause) =>
       new NpmRegistryError({
-        message: `Failed to fetch latest version for ${packageName}`,
-        cause: error,
+        context: { operation: 'getLatestVersion', packageName },
+        cause: cause instanceof Error ? cause : new Error(String(cause)),
       }),
   })

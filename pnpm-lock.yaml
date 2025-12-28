@@ -398,6 +398,9 @@ importers:
       '@kitz/core':
         specifier: workspace:*
         version: link:../core
+      '@kitz/semver':
+        specifier: workspace:*
+        version: link:../semver
       effect:
         specifier: ^3.19.13
         version: 3.19.13
