@@ -1,5 +1,5 @@
 import { Effect, Layer, Ref } from 'effect'
-import { type Commit, Git, GitError, type GitService } from './git.js'
+import { Commit, Git, GitError, type GitService } from './git.js'
 
 /**
  * Configuration for the test Git service.
@@ -274,10 +274,11 @@ export const makeWithState = (
 export const commit = (
   message: string,
   overrides: Partial<Commit> = {},
-): Commit => ({
-  hash: overrides.hash ?? Math.random().toString(36).slice(2, 10),
-  message,
-  body: overrides.body ?? '',
-  author: overrides.author ?? 'Test Author',
-  date: overrides.date ?? new Date().toISOString(),
-})
+): Commit =>
+  Commit.make({
+    hash: overrides.hash ?? Math.random().toString(36).slice(2, 10),
+    message,
+    body: overrides.body ?? '',
+    author: overrides.author ?? 'Test Author',
+    date: overrides.date ?? new Date().toISOString(),
+  })

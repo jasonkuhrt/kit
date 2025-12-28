@@ -26,5 +26,8 @@
     "@effect/workflow": "^0.16.0",
     "@kitz/core": "workspace:*",
     "effect": "^3.19.13"
+  },
+  "devDependencies": {
+    "@kitz/test": "workspace:*"
   }
 }

@@ -1,4 +1,5 @@
-import { Context, Data, Effect, Layer } from 'effect'
+import { Err } from '@kitz/core'
+import { Context, Effect, Layer, Schema } from 'effect'
 import { type SimpleGit, simpleGit } from 'simple-git'
 
 // ============================================================================
@@ -6,23 +7,47 @@ import { type SimpleGit, simpleGit } from 'simple-git'
 // ============================================================================
 
 /**
+ * Git operation names for structured error context.
+ */
+export type GitOperation =
+  | 'getTags'
+  | 'getCurrentBranch'
+  | 'getCommitsSince'
+  | 'isClean'
+  | 'createTag'
+  | 'pushTags'
+  | 'getRoot'
+  | 'getHeadSha'
+  | 'getTagSha'
+  | 'isAncestor'
+  | 'createTagAt'
+  | 'deleteTag'
+  | 'commitExists'
+  | 'pushTag'
+  | 'deleteRemoteTag'
+
+/**
  * Git operation error.
  */
-export class GitError extends Data.TaggedError('GitError')<{
-  readonly message: string
-  readonly cause?: unknown
-}> {}
+export const GitError = Err.TaggedContextualError('GitError').constrain<{
+  readonly operation: GitOperation
+  readonly detail?: string
+}>({
+  message: (ctx) => `Git ${ctx.operation} failed${ctx.detail ? `: ${ctx.detail}` : ''}`,
+}).constrainCause<Error>()
+
+export type GitError = InstanceType<typeof GitError>
 
 /**
  * A commit from git log.
  */
-export interface Commit {
-  readonly hash: string
-  readonly message: string
-  readonly body: string
-  readonly author: string
-  readonly date: string
-}
+export class Commit extends Schema.TaggedClass<Commit>()('Commit', {
+  hash: Schema.String,
+  message: Schema.String,
+  body: Schema.String,
+  author: Schema.String,
+  date: Schema.Date,
+}) {}
 
 /**
  * Git service interface.
@@ -86,7 +111,8 @@ const makeGitService = (git: SimpleGit): GitService => ({
         const result = await git.tags()
         return result.all
       },
-      catch: (error) => new GitError({ message: 'Failed to get tags', cause: error }),
+      catch: (error) =>
+        new GitError({ context: { operation: 'getTags' }, cause: Err.ensure(error) }),
     }),
 
   getCurrentBranch: () =>
@@ -95,22 +121,29 @@ const makeGitService = (git: SimpleGit): GitService => ({
         const result = await git.branch()
         return result.current
       },
-      catch: (error) => new GitError({ message: 'Failed to get current branch', cause: error }),
+      catch: (error) =>
+        new GitError({ context: { operation: 'getCurrentBranch' }, cause: Err.ensure(error) }),
     }),
 
   getCommitsSince: (tag) =>
     Effect.tryPromise({
       try: async () => {
         const log = await git.log(tag ? { from: tag, to: 'HEAD' } : undefined)
-        return log.all.map((entry) => ({
-          hash: entry.hash,
-          message: entry.message,
-          body: entry.body,
-          author: entry.author_name,
-          date: entry.date,
-        }))
+        return log.all.map((entry) =>
+          Commit.make({
+            hash: entry.hash,
+            message: entry.message,
+            body: entry.body,
+            author: entry.author_name,
+            date: new Date(entry.date),
+          })
+        )
       },
-      catch: (error) => new GitError({ message: 'Failed to get commits', cause: error }),
+      catch: (error) =>
+        new GitError({
+          context: { operation: 'getCommitsSince', ...(tag ? { detail: `since ${tag}` } : {}) },
+          cause: Err.ensure(error),
+        }),
     }),
 
   isClean: () =>
@@ -119,7 +152,8 @@ const makeGitService = (git: SimpleGit): GitService => ({
         const status = await git.status()
         return status.isClean()
       },
-      catch: (error) => new GitError({ message: 'Failed to check status', cause: error }),
+      catch: (error) =>
+        new GitError({ context: { operation: 'isClean' }, cause: Err.ensure(error) }),
     }),
 
   createTag: (tag, message) =>
@@ -131,7 +165,8 @@ const makeGitService = (git: SimpleGit): GitService => ({
           await git.tag([tag])
         }
       },
-      catch: (error) => new GitError({ message: `Failed to create tag ${tag}`, cause: error }),
+      catch: (error) =>
+        new GitError({ context: { operation: 'createTag', detail: tag }, cause: Err.ensure(error) }),
     }),
 
   pushTags: (remote = 'origin') =>
@@ -139,7 +174,8 @@ const makeGitService = (git: SimpleGit): GitService => ({
       try: async () => {
         await git.pushTags(remote)
       },
-      catch: (error) => new GitError({ message: `Failed to push tags to ${remote}`, cause: error }),
+      catch: (error) =>
+        new GitError({ context: { operation: 'pushTags', detail: `to ${remote}` }, cause: Err.ensure(error) }),
     }),
 
   getRoot: () =>
@@ -148,7 +184,8 @@ const makeGitService = (git: SimpleGit): GitService => ({
         const root = await git.revparse(['--show-toplevel'])
         return root.trim()
       },
-      catch: (error) => new GitError({ message: 'Failed to get repository root', cause: error }),
+      catch: (error) =>
+        new GitError({ context: { operation: 'getRoot' }, cause: Err.ensure(error) }),
     }),
 
   getHeadSha: () =>
@@ -157,7 +194,8 @@ const makeGitService = (git: SimpleGit): GitService => ({
         const sha = await git.revparse(['--short', 'HEAD'])
         return sha.trim()
       },
-      catch: (error) => new GitError({ message: 'Failed to get HEAD SHA', cause: error }),
+      catch: (error) =>
+        new GitError({ context: { operation: 'getHeadSha' }, cause: Err.ensure(error) }),
     }),
 
   getTagSha: (tag) =>
@@ -166,7 +204,8 @@ const makeGitService = (git: SimpleGit): GitService => ({
         const sha = await git.raw(['rev-list', '-1', tag])
         return sha.trim()
       },
-      catch: (error) => new GitError({ message: `Failed to get SHA for tag ${tag}`, cause: error }),
+      catch: (error) =>
+        new GitError({ context: { operation: 'getTagSha', detail: tag }, cause: Err.ensure(error) }),
     }),
 
   isAncestor: (sha1, sha2) =>
@@ -179,7 +218,11 @@ const makeGitService = (git: SimpleGit): GitService => ({
           return false // Exit code 1 = not ancestor
         }
       },
-      catch: (error) => new GitError({ message: `Failed to check ancestry ${sha1} -> ${sha2}`, cause: error }),
+      catch: (error) =>
+        new GitError({
+          context: { operation: 'isAncestor', detail: `${sha1} -> ${sha2}` },
+          cause: Err.ensure(error),
+        }),
     }),
 
   createTagAt: (tag, sha, message) =>
@@ -191,7 +234,11 @@ const makeGitService = (git: SimpleGit): GitService => ({
           await git.tag([tag, sha])
         }
       },
-      catch: (error) => new GitError({ message: `Failed to create tag ${tag} at ${sha}`, cause: error }),
+      catch: (error) =>
+        new GitError({
+          context: { operation: 'createTagAt', detail: `${tag} at ${sha}` },
+          cause: Err.ensure(error),
+        }),
     }),
 
   deleteTag: (tag) =>
@@ -199,7 +246,8 @@ const makeGitService = (git: SimpleGit): GitService => ({
       try: async () => {
         await git.tag(['-d', tag])
       },
-      catch: (error) => new GitError({ message: `Failed to delete tag ${tag}`, cause: error }),
+      catch: (error) =>
+        new GitError({ context: { operation: 'deleteTag', detail: tag }, cause: Err.ensure(error) }),
     }),
 
   commitExists: (sha) =>
@@ -212,7 +260,8 @@ const makeGitService = (git: SimpleGit): GitService => ({
           return false
         }
       },
-      catch: (error) => new GitError({ message: `Failed to check if commit ${sha} exists`, cause: error }),
+      catch: (error) =>
+        new GitError({ context: { operation: 'commitExists', detail: sha }, cause: Err.ensure(error) }),
     }),
 
   pushTag: (tag, remote = 'origin', force = false) =>
@@ -221,7 +270,11 @@ const makeGitService = (git: SimpleGit): GitService => ({
         const args = force ? ['push', '--force', remote, `refs/tags/${tag}`] : ['push', remote, `refs/tags/${tag}`]
         await git.raw(args)
       },
-      catch: (error) => new GitError({ message: `Failed to push tag ${tag} to ${remote}`, cause: error }),
+      catch: (error) =>
+        new GitError({
+          context: { operation: 'pushTag', detail: `${tag} to ${remote}${force ? ' (force)' : ''}` },
+          cause: Err.ensure(error),
+        }),
     }),
 
   deleteRemoteTag: (tag, remote = 'origin') =>
@@ -229,7 +282,11 @@ const makeGitService = (git: SimpleGit): GitService => ({
       try: async () => {
         await git.raw(['push', remote, `:refs/tags/${tag}`])
       },
-      catch: (error) => new GitError({ message: `Failed to delete tag ${tag} from ${remote}`, cause: error }),
+      catch: (error) =>
+        new GitError({
+          context: { operation: 'deleteRemoteTag', detail: `${tag} from ${remote}` },
+          cause: Err.ensure(error),
+        }),
     }),
 })
 

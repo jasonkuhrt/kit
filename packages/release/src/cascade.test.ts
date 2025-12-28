@@ -1,5 +1,4 @@
 import { Semver } from '@kitz/semver'
-import { Equal } from 'effect'
 import { describe, expect, test } from 'vitest'
 import { detectCascades } from './cascade.js'
 import type { Package } from './discovery.js'
@@ -128,7 +127,7 @@ describe('detectCascades', () => {
     const cascades = detectCascades(mockPackages, releases, graph, tags)
 
     expect(cascades).toHaveLength(1)
-    expect(Equal.equals(cascades[0]?.currentVersion, Semver.fromString('2.0.0'))).toBe(true)
-    expect(Equal.equals(cascades[0]?.nextVersion, Semver.fromString('2.0.1'))).toBe(true)
+    expect(Semver.equivalence(cascades[0]!.currentVersion!, Semver.fromString('2.0.0'))).toBe(true)
+    expect(Semver.equivalence(cascades[0]!.nextVersion, Semver.fromString('2.0.1'))).toBe(true)
   })
 })

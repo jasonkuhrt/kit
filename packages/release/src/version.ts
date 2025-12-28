@@ -74,7 +74,7 @@ export const extractImpacts = (
     const parsedCommit = parsed.right
     const impacts: CommitImpact[] = []
 
-    if (ConventionalCommits.SingleTargetCommit.is(parsedCommit)) {
+    if (ConventionalCommits.CommitSingle.is(parsedCommit)) {
       const typeValue = parsedCommit.type.value
       const bump = bumpFromType(typeValue, parsedCommit.breaking)
 
@@ -95,7 +95,7 @@ export const extractImpacts = (
           },
         })
       }
-    } else if (ConventionalCommits.MultiTargetCommit.is(parsedCommit)) {
+    } else if (ConventionalCommits.CommitMulti.is(parsedCommit)) {
       // MultiTargetCommit has a shared message at the parent level
       for (const target of parsedCommit.targets) {
         const typeValue = target.type.value
