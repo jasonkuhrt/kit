@@ -60,7 +60,7 @@ export const value = (footer: Footer): string => footer.value
  * Check if a footer indicates a breaking change.
  * Standard footers are always breaking changes (that's what they represent).
  */
-export const isBreakingChange = (footer: Footer): boolean => footer._tag === 'Standard'
+export const isBreakingChange = (footer: Footer): boolean => Standard.is(footer)
 
 // ─── Smart Constructor ─────────────────────────────────────────
 

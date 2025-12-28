@@ -11,7 +11,7 @@ const parseTitleSync = (title: string): CommitSingle | null => {
   const exit = Effect.runSyncExit(parseTitle(title))
   if (Exit.isFailure(exit)) return null
   const value = exit.value
-  if (value._tag === 'CommitSingle') return value
+  if (CommitSingle.is(value)) return value
   return null
 }
 

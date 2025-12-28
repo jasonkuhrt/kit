@@ -408,6 +408,7 @@ export const makeWorkflowRuntime = (dbPath: string = DEFAULT_WORKFLOW_DB) =>
     SqliteClient.layer({ filename: dbPath }),
     NodeFileSystem.layer,
     NodePath.layer,
+    WorkflowEngine.layerMemory,
   ).pipe(
     Layer.provideMerge(SingleRunner.layer({ runnerStorage: 'sql' })),
   )
