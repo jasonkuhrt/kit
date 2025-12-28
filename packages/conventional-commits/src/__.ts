@@ -1,11 +1,8 @@
-export {
-  ConventionalCommit,
-  type ConventionalCommit as ConventionalCommitType,
-} from './commit.js'
-export { Footer } from './footer.js'
-export { MultiTargetCommit } from './multi-target-commit.js'
-export { parseTitle, ParseTitleError } from './parse/title.js'
-export { SingleTargetCommit } from './single-target-commit.js'
-export { TargetSection } from './target-section.js'
-export { Target } from './target.js'
+export * from './commit-multi.js'
+export * from './commit-single.js'
+export * from './commit.js'
+export * from './footer.js'
+export * from './parse/title.js'
+export * from './target-section.js'
+export * from './target.js'
 export * as Type from './type.js'

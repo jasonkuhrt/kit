@@ -1,12 +1,12 @@
 import { Option } from 'effect'
 import { describe, expect, test } from 'vitest'
+import { CommitSingle } from './commit-single.js'
 import { Footer } from './footer.js'
-import { SingleTargetCommit } from './single-target-commit.js'
-import { Standard, Custom } from './type.js'
+import { Standard } from './type.js'
 
-describe('SingleTargetCommit', () => {
+describe('CommitSingle', () => {
   test('make creates valid commit with scope', () => {
-    const commit = SingleTargetCommit.make({
+    const commit = CommitSingle.make({
       type: Standard.make({ value: 'feat' }),
       scopes: ['core'],
       breaking: false,
@@ -14,7 +14,7 @@ describe('SingleTargetCommit', () => {
       body: Option.none(),
       footers: [],
     })
-    expect(commit._tag).toBe('SingleTarget')
+    expect(commit._tag).toBe('CommitSingle')
     expect(commit.type._tag).toBe('Standard')
     expect(commit.type.value).toBe('feat')
     expect(commit.scopes).toEqual(['core'])
@@ -23,7 +23,7 @@ describe('SingleTargetCommit', () => {
   })
 
   test('make creates commit with multiple scopes (uniform treatment)', () => {
-    const commit = SingleTargetCommit.make({
+    const commit = CommitSingle.make({
       type: Standard.make({ value: 'feat' }),
       scopes: ['core', 'cli'],
       breaking: true,
@@ -37,7 +37,7 @@ describe('SingleTargetCommit', () => {
   })
 
   test('make creates commit without scope', () => {
-    const commit = SingleTargetCommit.make({
+    const commit = CommitSingle.make({
       type: Standard.make({ value: 'chore' }),
       scopes: [],
       breaking: false,

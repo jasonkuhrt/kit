@@ -1,6 +1,6 @@
 import { Data, Effect, Option } from 'effect'
-import { MultiTargetCommit } from '../multi-target-commit.js'
-import { SingleTargetCommit } from '../single-target-commit.js'
+import { CommitMulti } from '../commit-multi.js'
+import { CommitSingle } from '../commit-single.js'
 import { Target } from '../target.js'
 import { Type, from as typeFrom } from '../type.js'
 
@@ -13,9 +13,9 @@ export class ParseTitleError extends Data.TaggedError('ParseTitleError')<{
 }> {}
 
 /**
- * Parsed title result—either SingleTarget or MultiTarget (without body/footers yet).
+ * Parsed title result—either CommitSingle or CommitMulti (without body/footers yet).
  */
-export type ParsedTitle = SingleTargetCommit | MultiTargetCommit
+export type ParsedTitle = CommitSingle | CommitMulti
 
 // Regex for a single type-scope group: type(scope!, scope2)?!?
 const TYPE_SCOPE_PATTERN = /^([a-z]+)(?:\(([^)]+)\))?(!)?$/
@@ -23,11 +23,11 @@ const TYPE_SCOPE_PATTERN = /^([a-z]+)(?:\(([^)]+)\))?(!)?$/
 /**
  * Parse a conventional commit title line.
  *
- * SingleTarget when:
+ * CommitSingle when:
  * - Single type with zero or more scopes
  * - All scopes get same type and breaking
  *
- * MultiTarget when:
+ * CommitMulti when:
  * - Multiple comma-separated type(scope) groups
  * - OR same type but different breaking per scope
  */
@@ -63,7 +63,7 @@ export const parseTitle = (
     const groups = splitTypeScopeGroups(headerWithoutGlobalBreaking)
 
     if (groups.length === 1) {
-      // Potentially SingleTarget
+      // Potentially CommitSingle
       const firstGroup = groups[0]
       if (!firstGroup) {
         return yield* Effect.fail(
@@ -80,9 +80,9 @@ export const parseTitle = (
       const { type, scopes, perScopeBreaking } = parsed
       const breaking = globalBreaking || perScopeBreaking.some(Boolean)
 
-      // If we have per-scope breaking markers on individual scopes, it's still SingleTarget
+      // If we have per-scope breaking markers on individual scopes, it's still CommitSingle
       // because they all share the same type
-      return SingleTargetCommit.make({
+      return CommitSingle.make({
         type,
         scopes,
         breaking,
@@ -92,7 +92,7 @@ export const parseTitle = (
       })
     }
 
-    // Multiple groups = MultiTarget
+    // Multiple groups = CommitMulti
     const targets: Target[] = []
     for (const group of groups) {
       const parsed = parseTypeScopeGroup(group)
@@ -108,7 +108,7 @@ export const parseTitle = (
       if (scopes.length === 0) {
         return yield* Effect.fail(
           new ParseTitleError({
-            message: 'MultiTarget commits require scopes',
+            message: 'CommitMulti commits require scopes',
             input: title,
           }),
         )
@@ -133,7 +133,7 @@ export const parseTitle = (
       )
     }
 
-    return MultiTargetCommit.make({
+    return CommitMulti.make({
       targets: targets as [Target, ...Target[]],
       message,
       summary: Option.none(),

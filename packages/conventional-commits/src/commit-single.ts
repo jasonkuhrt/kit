@@ -11,7 +11,7 @@ import { Type } from './type.js'
  * - `feat(core, cli): add feature` (multiple scopes, same type/breaking for all)
  * - `feat(core)!: breaking change` (breaking applies to all scopes)
  */
-export class SingleTargetCommit extends Schema.TaggedClass<SingleTargetCommit>()('SingleTarget', {
+export class CommitSingle extends Schema.TaggedClass<CommitSingle>()('CommitSingle', {
   /** Commit type */
   type: Type,
   /** Package scopes (can be empty, one, or multiple—all get same treatment) */
@@ -25,5 +25,5 @@ export class SingleTargetCommit extends Schema.TaggedClass<SingleTargetCommit>()
   /** Commit footers */
   footers: Schema.Array(Footer),
 }) {
-  static is = Schema.is(SingleTargetCommit)
+  static is = Schema.is(CommitSingle)
 }

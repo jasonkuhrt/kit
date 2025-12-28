@@ -3,7 +3,7 @@ import { Type } from './type.js'
 
 /**
  * A release target representing a type-scope-breaking tuple for one package.
- * Used in MultiTargetCommit where each scope can have its own type and breaking indicator.
+ * Used in CommitMulti where each scope can have its own type and breaking indicator.
  */
 export class Target extends Schema.TaggedClass<Target>()('Target', {
   /** Commit type */

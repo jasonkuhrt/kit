@@ -1,13 +1,13 @@
 import { Schema } from 'effect'
-import { MultiTargetCommit } from './multi-target-commit.js'
-import { SingleTargetCommit } from './single-target-commit.js'
+import { CommitMulti } from './commit-multi.js'
+import { CommitSingle } from './commit-single.js'
 
 /**
- * A conventional commit—either single-target (standard CC) or multi-target (extended for monorepos).
+ * A conventional commit—either single (standard CC) or multi (extended for monorepos).
  */
-export const ConventionalCommit = Schema.Union(SingleTargetCommit, MultiTargetCommit)
+export const Commit = Schema.Union(CommitSingle, CommitMulti)
 
 /**
- * Type alias for the ConventionalCommit union.
+ * Type alias for the Commit union.
  */
-export type ConventionalCommit = typeof ConventionalCommit.Type
+export type Commit = typeof Commit.Type

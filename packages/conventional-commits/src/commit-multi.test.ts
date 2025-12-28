@@ -1,14 +1,14 @@
 import { Option } from 'effect'
 import { describe, expect, test } from 'vitest'
+import { CommitMulti } from './commit-multi.js'
 import { Footer } from './footer.js'
-import { MultiTargetCommit } from './multi-target-commit.js'
 import { TargetSection } from './target-section.js'
 import { Target } from './target.js'
 import { Standard } from './type.js'
 
-describe('MultiTargetCommit', () => {
+describe('CommitMulti', () => {
   test('make creates valid multi-target commit', () => {
-    const commit = MultiTargetCommit.make({
+    const commit = CommitMulti.make({
       targets: [
         Target.make({ type: Standard.make({ value: 'feat' }), scope: 'core', breaking: true }),
         Target.make({ type: Standard.make({ value: 'fix' }), scope: 'cli', breaking: false }),
@@ -17,7 +17,7 @@ describe('MultiTargetCommit', () => {
       summary: Option.none(),
       sections: {},
     })
-    expect(commit._tag).toBe('MultiTarget')
+    expect(commit._tag).toBe('CommitMulti')
     expect(commit.targets).toHaveLength(2)
     expect(commit.targets[0].type.value).toBe('feat')
     expect(commit.targets[0].breaking).toBe(true)
@@ -26,7 +26,7 @@ describe('MultiTargetCommit', () => {
   })
 
   test('make creates commit with summary and sections', () => {
-    const commit = MultiTargetCommit.make({
+    const commit = CommitMulti.make({
       targets: [
         Target.make({ type: Standard.make({ value: 'feat' }), scope: 'core', breaking: true }),
         Target.make({ type: Standard.make({ value: 'fix' }), scope: 'arr', breaking: false }),
