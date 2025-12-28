@@ -1,7 +1,7 @@
 import { Option } from 'effect'
 import { describe, expect, test } from 'vitest'
 import { CommitSingle } from './commit-single.js'
-import { Footer } from './footer.js'
+import { from as footerFrom } from './footer.js'
 import { Standard } from './type.js'
 
 describe('CommitSingle', () => {
@@ -29,7 +29,7 @@ describe('CommitSingle', () => {
       breaking: true,
       message: 'breaking change across packages',
       body: Option.some('Detailed body'),
-      footers: [Footer.make({ token: 'BREAKING CHANGE', value: 'removed API' })],
+      footers: [footerFrom('BREAKING CHANGE', 'removed API')],
     })
     expect(commit.scopes).toEqual(['core', 'cli'])
     expect(commit.breaking).toBe(true)

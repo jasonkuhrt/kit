@@ -1,4 +1,5 @@
 import { Err } from '@kitz/core'
+import { Pkg } from '@kitz/pkg'
 import { Semver } from '@kitz/semver'
 import { Effect } from 'effect'
 
@@ -19,19 +20,26 @@ export const NpmRegistryError = Err.TaggedContextualError('NpmRegistryError').co
   readonly packageName: string
   readonly detail?: string
 }>({
-  message: (ctx) =>
-    `npm registry ${ctx.operation} for ${ctx.packageName} failed${ctx.detail ? `: ${ctx.detail}` : ''}`,
+  message: (ctx) => `npm registry ${ctx.operation} for ${ctx.packageName} failed${ctx.detail ? `: ${ctx.detail}` : ''}`,
 }).constrainCause<Error>()
 
 export type NpmRegistryError = InstanceType<typeof NpmRegistryError>
 
 /**
- * Package version info from npm.
+ * Error parsing a version string from the registry.
  */
-export interface PackageVersion {
+export const SemverParseError = Err.TaggedContextualError('SemverParseError').constrain<{
   readonly version: string
-  readonly publishedAt: string
-}
+  readonly packageName: string
+}>({
+  message: (ctx) => `invalid semver "${ctx.version}" from package ${ctx.packageName}`,
+}).constrainCause<Error>()
+
+export type SemverParseError = InstanceType<typeof SemverParseError>
+
+// ============================================================================
+// Options & Helpers
+// ============================================================================
 
 /**
  * Options for registry queries.
@@ -44,41 +52,75 @@ export interface RegistryOptions {
 const DEFAULT_REGISTRY = 'https://registry.npmjs.org'
 
 /**
- * Get all published versions of a package.
- *
- * @example
- * ```ts
- * const versions = await Effect.runPromise(getVersions('@kitz/core'))
- * // ['0.0.1', '0.0.2', '0.1.0']
- * ```
+ * Fetch package metadata from npm registry.
  */
-export const getVersions = (
-  packageName: string,
-  options?: RegistryOptions,
-): Effect.Effect<string[], NpmRegistryError> =>
+const fetchPackageMetadata = <$data>(
+  moniker: Pkg.Moniker.Moniker,
+  operation: NpmRegistryOperation,
+  options: RegistryOptions | undefined,
+): Effect.Effect<$data | null, NpmRegistryError> =>
   Effect.tryPromise({
     try: async () => {
       const registry = options?.registry ?? DEFAULT_REGISTRY
-      const encodedName = packageName.replace('/', '%2f')
-      const response = await fetch(`${registry}/${encodedName}`)
+      const response = await fetch(`${registry}/${moniker.encoded}`)
 
       if (response.status === 404) {
-        return [] // Package not published yet
+        return null
       }
 
       if (!response.ok) {
         throw new Error(`Registry returned ${response.status}`)
       }
 
-      const data = (await response.json()) as { versions?: Record<string, unknown> }
-      return Object.keys(data.versions ?? {})
+      return (await response.json()) as $data
     },
     catch: (cause) =>
       new NpmRegistryError({
-        context: { operation: 'getVersions', packageName },
+        context: { operation, packageName: moniker.moniker },
         cause: cause instanceof Error ? cause : new Error(String(cause)),
       }),
   })
+
+/**
+ * Parse a version string, returning an Effect that fails with SemverParseError.
+ */
+const parseVersion = (version: string, packageName: string): Effect.Effect<Semver.Semver, SemverParseError> =>
+  Effect.try({
+    try: () => Semver.fromString(version),
+    catch: (cause) =>
+      new SemverParseError({
+        context: { version, packageName },
+        cause: cause instanceof Error ? cause : new Error(String(cause)),
+      }),
+  })
+
+// ============================================================================
+// Public API
+// ============================================================================
+
+/**
+ * Get all published versions of a package.
+ *
+ * @example
+ * ```ts
+ * const versions = await Effect.runPromise(getVersions('@kitz/core'))
+ * // [Semver.Semver, Semver.Semver, ...]
+ * ```
+ */
+export const getVersions = (
+  packageName: string,
+  options?: RegistryOptions,
+): Effect.Effect<Semver.Semver[], NpmRegistryError | SemverParseError> => {
+  const moniker = Pkg.Moniker.parse(packageName)
+
+  return fetchPackageMetadata<{ versions?: Record<string, unknown> }>(moniker, 'getVersions', options).pipe(
+    Effect.flatMap((data) => {
+      if (data === null) return Effect.succeed([])
+      const versionStrings = Object.keys(data.versions ?? {})
+      return Effect.all(versionStrings.map((v) => parseVersion(v, packageName)))
+    }),
+  )
+}
 
 /**
  * Get the latest published version of a package.
@@ -92,28 +134,14 @@ export const getVersions = (
 export const getLatestVersion = (
   packageName: string,
   options?: RegistryOptions,
-): Effect.Effect<Semver.Semver | null, NpmRegistryError> =>
-  Effect.tryPromise({
-    try: async () => {
-      const registry = options?.registry ?? DEFAULT_REGISTRY
-      const encodedName = packageName.replace('/', '%2f')
-      const response = await fetch(`${registry}/${encodedName}`)
+): Effect.Effect<Semver.Semver | null, NpmRegistryError | SemverParseError> => {
+  const moniker = Pkg.Moniker.parse(packageName)
 
-      if (response.status === 404) {
-        return null // Package not published yet
-      }
-
-      if (!response.ok) {
-        throw new Error(`Registry returned ${response.status}`)
-      }
-
-      const data = (await response.json()) as { 'dist-tags'?: { latest?: string } }
-      const latest = data['dist-tags']?.latest
-      return latest ? Semver.fromString(latest) : null
-    },
-    catch: (cause) =>
-      new NpmRegistryError({
-        context: { operation: 'getLatestVersion', packageName },
-        cause: cause instanceof Error ? cause : new Error(String(cause)),
-      }),
-  })
+  return fetchPackageMetadata<{ 'dist-tags'?: { latest?: string } }>(moniker, 'getLatestVersion', options).pipe(
+    Effect.flatMap((data) => {
+      const latest = data?.['dist-tags']?.latest
+      if (!latest) return Effect.succeed(null)
+      return parseVersion(latest, packageName)
+    }),
+  )
+}

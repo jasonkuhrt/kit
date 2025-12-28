@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@kitz/core": "workspace:*",
+    "@kitz/pkg": "workspace:*",
     "@kitz/semver": "workspace:*",
     "effect": "^3.19.13"
   }

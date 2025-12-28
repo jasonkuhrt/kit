@@ -1,16 +1,10 @@
-import { describe, expect, test } from 'vitest'
-import { Custom, from, impact, Impact, ImpactValues, Standard, StandardImpact, StandardValue, StandardValues, Type, value } from './type.js'
-import { Schema } from 'effect'
 import { Assert } from '@kitz/assert'
+import { Schema } from 'effect'
+import { describe, expect, test } from 'vitest'
+import { Custom, from, Impact, impact, Standard, StandardImpact, StandardValue, Type, value } from './type.js'
 
 describe('Impact', () => {
-  test('has runtime enum values', () => {
-    expect(ImpactValues.none).toBe('none')
-    expect(ImpactValues.patch).toBe('patch')
-    expect(ImpactValues.minor).toBe('minor')
-  })
-
-  test('schema exposes enums', () => {
+  test('exposes runtime enum values via .enums', () => {
     expect(Impact.enums.none).toBe('none')
     expect(Impact.enums.patch).toBe('patch')
     expect(Impact.enums.minor).toBe('minor')
@@ -18,23 +12,19 @@ describe('Impact', () => {
 })
 
 describe('StandardValue', () => {
-  test('has all 11 standard types', () => {
-    expect(Object.keys(StandardValues)).toHaveLength(11)
-    expect(StandardValues.feat).toBe('feat')
-    expect(StandardValues.fix).toBe('fix')
-    expect(StandardValues.docs).toBe('docs')
-    expect(StandardValues.style).toBe('style')
-    expect(StandardValues.refactor).toBe('refactor')
-    expect(StandardValues.perf).toBe('perf')
-    expect(StandardValues.test).toBe('test')
-    expect(StandardValues.build).toBe('build')
-    expect(StandardValues.ci).toBe('ci')
-    expect(StandardValues.chore).toBe('chore')
-    expect(StandardValues.revert).toBe('revert')
-  })
-
-  test('schema exposes enums', () => {
+  test('has all 11 standard types via .enums', () => {
+    expect(Object.keys(StandardValue.enums)).toHaveLength(11)
     expect(StandardValue.enums.feat).toBe('feat')
+    expect(StandardValue.enums.fix).toBe('fix')
+    expect(StandardValue.enums.docs).toBe('docs')
+    expect(StandardValue.enums.style).toBe('style')
+    expect(StandardValue.enums.refactor).toBe('refactor')
+    expect(StandardValue.enums.perf).toBe('perf')
+    expect(StandardValue.enums.test).toBe('test')
+    expect(StandardValue.enums.build).toBe('build')
+    expect(StandardValue.enums.ci).toBe('ci')
+    expect(StandardValue.enums.chore).toBe('chore')
+    expect(StandardValue.enums.revert).toBe('revert')
   })
 })
 
@@ -60,7 +50,7 @@ describe('StandardImpact', () => {
   })
 
   test('all standard types have impact mappings', () => {
-    for (const key of Object.keys(StandardValues)) {
+    for (const key of Object.keys(StandardValue.enums)) {
       expect(StandardImpact[key as StandardValue]).toBeDefined()
     }
   })
@@ -153,7 +143,7 @@ describe('from', () => {
   })
 
   test('works with all standard types', () => {
-    for (const key of Object.keys(StandardValues)) {
+    for (const key of Object.keys(StandardValue.enums)) {
       const t = from(key)
       expect(t._tag).toBe('Standard')
     }

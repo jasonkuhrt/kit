@@ -1,7 +1,7 @@
 import { Option } from 'effect'
 import { describe, expect, test } from 'vitest'
 import { CommitMulti } from './commit-multi.js'
-import { Footer } from './footer.js'
+import { from as footerFrom } from './footer.js'
 import { TargetSection } from './target-section.js'
 import { Target } from './target.js'
 import { Standard } from './type.js'
@@ -36,7 +36,7 @@ describe('CommitMulti', () => {
       sections: {
         core: TargetSection.make({
           body: 'Core changes here.',
-          footers: [Footer.make({ token: 'BREAKING CHANGE', value: 'removed X' })],
+          footers: [footerFrom('BREAKING CHANGE', 'removed X')],
         }),
         arr: TargetSection.make({
           body: 'Arr changes here.',

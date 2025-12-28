@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'vitest'
-import { Footer } from './footer.js'
+import { from } from './footer.js'
 import { TargetSection } from './target-section.js'
 
 describe('TargetSection', () => {
   test('make creates valid section with footers', () => {
     const section = TargetSection.make({
       body: 'Detailed description of changes.',
-      footers: [Footer.make({ token: 'BREAKING CHANGE', value: 'removed X' })],
+      footers: [from('BREAKING CHANGE', 'removed X')],
     })
     expect(section.body).toBe('Detailed description of changes.')
     expect(section.footers).toHaveLength(1)

@@ -6,13 +6,11 @@ import { Schema } from 'effect'
  * Semantic version impact levels.
  * Note: `major` comes from breaking change flags, not from the type itself.
  */
-export const ImpactValues = {
+export const Impact = Schema.Enums({
   none: 'none',
   patch: 'patch',
   minor: 'minor',
-} as const
-
-export const Impact = Schema.Enums(ImpactValues)
+})
 export type Impact = typeof Impact.Type
 
 // ─── Standard Value ─────────────────────────────────────────────
@@ -20,7 +18,7 @@ export type Impact = typeof Impact.Type
 /**
  * The 11 standard conventional commit types (Angular convention).
  */
-export const StandardValues = {
+export const StandardValue = Schema.Enums({
   feat: 'feat',
   fix: 'fix',
   docs: 'docs',
@@ -32,9 +30,7 @@ export const StandardValues = {
   ci: 'ci',
   chore: 'chore',
   revert: 'revert',
-} as const
-
-export const StandardValue = Schema.Enums(StandardValues)
+})
 export type StandardValue = typeof StandardValue.Type
 
 // ─── Standard Impact Mapping ────────────────────────────────────
@@ -97,7 +93,7 @@ export const value = (type: Type): string => type.value
  * Get impact for a Standard type.
  * For Custom types, use release config lookup instead.
  */
-export const impact = (type: Standard): Impact => StandardImpact[type.value]
+export const impact = (type: Standard): Impact => StandardImpact[type.value]!
 
 // ─── Smart Constructor ──────────────────────────────────────────
 
@@ -112,7 +108,7 @@ type From<$value extends string> = $value extends StandardValue ? Standard : Cus
  * Return type narrows based on input literal.
  */
 export const from = <$value extends string>(value: $value): From<$value> => {
-  if (value in StandardValues) {
+  if (value in StandardValue.enums) {
     return new Standard({ value: value as StandardValue }) as From<$value>
   }
   return new Custom({ value }) as From<$value>

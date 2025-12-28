@@ -398,6 +398,9 @@ importers:
       '@kitz/core':
         specifier: workspace:*
         version: link:../core
+      '@kitz/pkg':
+        specifier: workspace:*
+        version: link:../pkg
       '@kitz/semver':
         specifier: workspace:*
         version: link:../semver
@@ -548,6 +551,9 @@ importers:
       '@kitz/changelog':
         specifier: workspace:*
         version: link:../changelog
+      '@kitz/cli':
+        specifier: workspace:*
+        version: link:../cli
       '@kitz/conventional-commits':
         specifier: workspace:*
         version: link:../conventional-commits
@@ -566,9 +572,15 @@ importers:
       '@kitz/git':
         specifier: workspace:*
         version: link:../git
+      '@kitz/mod':
+        specifier: workspace:*
+        version: link:../mod
       '@kitz/npm-registry':
         specifier: workspace:*
         version: link:../npm-registry
+      '@kitz/oak':
+        specifier: workspace:*
+        version: link:../oak
       '@kitz/semver':
         specifier: workspace:*
         version: link:../semver

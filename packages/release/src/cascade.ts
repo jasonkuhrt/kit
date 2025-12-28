@@ -91,7 +91,7 @@ export const buildDependencyGraph = (
  * Cascade releases propagate recursively - if A depends on B and B depends on C,
  * and C is released, both B and A get cascade releases.
  */
-export const detectCascades = (
+export const detect = (
   packages: Package[],
   primaryReleases: PlannedRelease[],
   dependencyGraph: DependencyGraph,

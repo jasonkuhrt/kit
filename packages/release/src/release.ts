@@ -6,7 +6,7 @@ import { Fs } from '@kitz/fs'
 import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
 import { Effect } from 'effect'
-import { buildDependencyGraph, detectCascades } from './cascade.js'
+import { buildDependencyGraph, detect as detectCascades } from './cascade.js'
 import type { Package } from './discovery.js'
 import {
   aggregateByPackage,
@@ -42,9 +42,9 @@ export interface ReleaseOptions {
   /** Skip npm publish */
   readonly dryRun?: boolean
   /** Only include specific packages */
-  readonly packages?: string[]
+  readonly packages?: readonly string[]
   /** Exclude specific packages */
-  readonly exclude?: string[]
+  readonly exclude?: readonly string[]
 }
 
 /**
@@ -114,11 +114,11 @@ const findLastReleaseTag = (
  * @example
  * ```ts
  * const plan = await Effect.runPromise(
- *   Effect.provide(planStable(ctx, { dryRun: true }), GitLive)
+ *   Effect.provide(Plan.stable(ctx, { dryRun: true }), GitLive)
  * )
  * ```
  */
-export const planStable = (
+export const stable = (
   ctx: PlanContext,
   options?: ReleaseOptions,
 ): Effect.Effect<ReleasePlan, ReleaseError | Git.GitError | PlatformError, Git.Git | FileSystem.FileSystem> =>
@@ -239,11 +239,11 @@ const detectCascadesForPr = (
  * @example
  * ```ts
  * const plan = await Effect.runPromise(
- *   Effect.provide(planPreview(ctx, { dryRun: true }), GitLive)
+ *   Effect.provide(Plan.preview(ctx, { dryRun: true }), GitLive)
  * )
  * ```
  */
-export const planPreview = (
+export const preview = (
   ctx: PlanContext,
   options?: ReleaseOptions,
 ): Effect.Effect<ReleasePlan, ReleaseError | Git.GitError | PlatformError, Git.Git | FileSystem.FileSystem> =>
@@ -331,11 +331,11 @@ export interface PrReleaseOptions extends ReleaseOptions {
  * @example
  * ```ts
  * const plan = await Effect.runPromise(
- *   Effect.provide(planPr(ctx, { prNumber: 123 }), layer)
+ *   Effect.provide(Plan.pr(ctx, { prNumber: 123 }), layer)
  * )
  * ```
  */
-export const planPr = (
+export const pr = (
   ctx: PlanContext,
   options?: PrReleaseOptions,
 ): Effect.Effect<ReleasePlan, ReleaseError | Git.GitError | PlatformError, Git.Git | FileSystem.FileSystem | Env.Env> =>

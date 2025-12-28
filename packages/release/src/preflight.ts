@@ -202,12 +202,12 @@ export interface PreflightOptions {
  * @example
  * ```ts
  * const preflight = await Effect.runPromise(
- *   Effect.provide(runPreflight(plan.releases), GitLive)
+ *   Effect.provide(Preflight.run(plan.releases), GitLive)
  * )
  * console.log(`Publishing as ${preflight.npmUser}`)
  * ```
  */
-export const runPreflight = (
+export const run = (
   releases: PlannedRelease[],
   options?: PreflightOptions,
 ): Effect.Effect<PreflightResult, PreflightError | Git.GitError, Git.Git> =>

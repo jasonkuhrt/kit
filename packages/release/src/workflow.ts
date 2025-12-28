@@ -24,7 +24,7 @@ import { Fs } from '@kitz/fs'
 import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
 import { Effect, Layer, Schema, Stream } from 'effect'
-import { type PreflightError, runPreflight } from './preflight.js'
+import { type PreflightError, run as runPreflight } from './preflight.js'
 import { publishPackage } from './publish.js'
 import type { PlannedRelease, ReleasePlan } from './release.js'
 
@@ -521,8 +521,8 @@ export const executeWorkflow = (
 export interface ObservableWorkflowResult {
   /** Stream of activity lifecycle events */
   readonly events: Stream.Stream<Flo.ActivityEvent>
-  /** Effect that executes the workflow and returns the result */
-  readonly execute: Effect.Effect<WorkflowResult, ReleaseWorkflowError, WorkflowEngine.WorkflowEngine>
+  /** Effect that executes the workflow and returns the result (runtime layer pre-provided) */
+  readonly execute: Effect.Effect<WorkflowResult, ReleaseWorkflowError>
   /** Graph information for visualization */
   readonly graph: {
     readonly layers: readonly (readonly string[])[]
@@ -572,7 +572,7 @@ export interface ObservableWorkflowResult {
  */
 export const executeWorkflowObservable = (
   plan: ReleasePlan,
-  options: { dryRun?: boolean; tag?: string; registry?: string } = {},
+  options: { dryRun?: boolean; tag?: string; registry?: string; dbPath?: string } = {},
 ): Effect.Effect<ObservableWorkflowResult, never, never> =>
   Effect.gen(function*() {
     const payload = toWorkflowPayload(plan, options)
@@ -594,14 +594,15 @@ export const executeWorkflowObservable = (
     // Get observable execution
     const { events, execute: workflowExecute } = yield* ReleaseWorkflow.observable(payload)
 
-    // Wrap execute to extract results
+    // Wrap execute to extract results and provide workflow runtime
     const execute = workflowExecute.pipe(
       Effect.map((result) => ({
         releasedPackages: result.publishes as string[],
         createdTags: result.createTags as string[],
         createdGHReleases: result.createGHReleases as string[],
       })),
-    )
+      Effect.provide(makeWorkflowRuntime(options.dbPath)),
+    ) as Effect.Effect<WorkflowResult, ReleaseWorkflowError>
 
     return {
       events,

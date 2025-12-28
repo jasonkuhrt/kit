@@ -4,8 +4,7 @@ import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
 import { Effect, Layer } from 'effect'
 import { describe, expect, test } from 'vitest'
-import type { Package } from './discovery.js'
-import { apply, planPr, planPreview, planStable, type ReleasePlan } from './release.js'
+import { Plan, type Workspace } from './__.js'
 import { makeTestWorkflowRuntime } from './workflow.js'
 
 /** Helper to compare Semver values */
@@ -24,7 +23,7 @@ const expectVersion = (actual: Semver.Semver | null | undefined, expected: strin
  * execution using in-memory Git and FileSystem implementations.
  */
 
-const mockPackages: Package[] = [
+const mockPackages: Workspace.Package[] = [
   { name: '@kitz/core', scope: 'core', path: Fs.Path.AbsDir.fromString('/repo/packages/core/') },
   { name: '@kitz/cli', scope: 'cli', path: Fs.Path.AbsDir.fromString('/repo/packages/cli/') },
   { name: '@kitz/utils', scope: 'utils', path: Fs.Path.AbsDir.fromString('/repo/packages/utils/') },
@@ -83,7 +82,7 @@ describe('planStable integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planStable({ packages: mockPackages }),
+        Plan.stable({ packages: mockPackages }),
         layer,
       ),
     )
@@ -102,7 +101,7 @@ describe('planStable integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planStable({ packages: mockPackages }),
+        Plan.stable({ packages: mockPackages }),
         layer,
       ),
     )
@@ -124,7 +123,7 @@ describe('planStable integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planStable({ packages: mockPackages }),
+        Plan.stable({ packages: mockPackages }),
         layer,
       ),
     )
@@ -148,7 +147,7 @@ describe('planStable integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planStable({ packages: mockPackages }),
+        Plan.stable({ packages: mockPackages }),
         layer,
       ),
     )
@@ -170,7 +169,7 @@ describe('planStable integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planStable({ packages: mockPackages }),
+        Plan.stable({ packages: mockPackages }),
         layer,
       ),
     )
@@ -197,7 +196,7 @@ describe('planStable integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planStable({ packages: mockPackages }),
+        Plan.stable({ packages: mockPackages }),
         layer,
       ),
     )
@@ -218,7 +217,7 @@ describe('planStable integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planStable({ packages: mockPackages }, { packages: ['@kitz/core'] }),
+        Plan.stable({ packages: mockPackages }, { packages: ['@kitz/core'] }),
         layer,
       ),
     )
@@ -238,7 +237,7 @@ describe('planStable integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planStable({ packages: mockPackages }, { exclude: ['@kitz/cli'] }),
+        Plan.stable({ packages: mockPackages }, { exclude: ['@kitz/cli'] }),
         layer,
       ),
     )
@@ -265,12 +264,12 @@ describe('apply integration (dry-run)', () => {
     const layer = Layer.provideMerge(testWorkflowRuntime, baseLayer)
 
     const plan = await Effect.runPromise(
-      Effect.provide(planStable({ packages: mockPackages }), baseLayer),
+      Effect.provide(Plan.stable({ packages: mockPackages }), baseLayer),
     )
 
     const result = await Effect.runPromise(
       Effect.provide(
-        apply(plan, { dryRun: true }),
+        Plan.apply(plan, { dryRun: true }),
         layer,
       ),
     )
@@ -299,7 +298,7 @@ describe('apply integration (dry-run)', () => {
     const layer = Layer.mergeAll(gitLayer, Fs.Memory.layer(diskLayout), testEnv)
 
     const plan = await Effect.runPromise(
-      Effect.provide(planStable({ packages: mockPackages }), layer),
+      Effect.provide(Plan.stable({ packages: mockPackages }), layer),
     )
 
     // Primary release should be core
@@ -313,7 +312,7 @@ describe('apply integration (dry-run)', () => {
   })
 
   test('returns empty result for empty plan', async () => {
-    const plan: ReleasePlan = {
+    const plan: Plan.ReleasePlan = {
       releases: [],
       cascades: [],
     }
@@ -322,7 +321,7 @@ describe('apply integration (dry-run)', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        apply(plan, { dryRun: true }),
+        Plan.apply(plan, { dryRun: true }),
         layer,
       ),
     )
@@ -351,13 +350,13 @@ describe('workflow durability', () => {
     const layer = Layer.provideMerge(testWorkflowRuntime, baseLayer)
 
     const plan = await Effect.runPromise(
-      Effect.provide(planStable({ packages: mockPackages }), baseLayer),
+      Effect.provide(Plan.stable({ packages: mockPackages }), baseLayer),
     )
 
     // First execution
     const result1 = await Effect.runPromise(
       Effect.provide(
-        apply(plan, { dryRun: true }),
+        Plan.apply(plan, { dryRun: true }),
         layer,
       ),
     )
@@ -365,7 +364,7 @@ describe('workflow durability', () => {
     // Second execution with same plan (same idempotency key)
     const result2 = await Effect.runPromise(
       Effect.provide(
-        apply(plan, { dryRun: true }),
+        Plan.apply(plan, { dryRun: true }),
         layer,
       ),
     )
@@ -401,14 +400,14 @@ describe('workflow durability', () => {
     const layer = Layer.provideMerge(testWorkflowRuntime, baseLayer)
 
     const plan = await Effect.runPromise(
-      Effect.provide(planStable({ packages: mockPackages }), baseLayer),
+      Effect.provide(Plan.stable({ packages: mockPackages }), baseLayer),
     )
 
     expect(plan.releases).toHaveLength(2)
 
     const result = await Effect.runPromise(
       Effect.provide(
-        apply(plan, { dryRun: true }),
+        Plan.apply(plan, { dryRun: true }),
         layer,
       ),
     )
@@ -441,7 +440,7 @@ describe('end-to-end pipeline', () => {
     // Step 1: Plan
     const plan = await Effect.runPromise(
       Effect.provide(
-        planStable({ packages: mockPackages }),
+        Plan.stable({ packages: mockPackages }),
         baseLayer,
       ),
     )
@@ -454,7 +453,7 @@ describe('end-to-end pipeline', () => {
     // Step 2: Apply (dry-run)
     const result = await Effect.runPromise(
       Effect.provide(
-        apply(plan, { dryRun: true }),
+        Plan.apply(plan, { dryRun: true }),
         layer,
       ),
     )
@@ -489,7 +488,7 @@ describe('end-to-end pipeline', () => {
 
     const plan = await Effect.runPromise(
       Effect.provide(
-        planStable({ packages: mockPackages }),
+        Plan.stable({ packages: mockPackages }),
         baseLayer,
       ),
     )
@@ -508,7 +507,7 @@ describe('end-to-end pipeline', () => {
     // Apply and verify
     const result = await Effect.runPromise(
       Effect.provide(
-        apply(plan, { dryRun: true }),
+        Plan.apply(plan, { dryRun: true }),
         layer,
       ),
     )
@@ -531,7 +530,7 @@ describe('planPreview integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planPreview({ packages: mockPackages }),
+        Plan.preview({ packages: mockPackages }),
         layer,
       ),
     )
@@ -557,7 +556,7 @@ describe('planPreview integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planPreview({ packages: mockPackages }),
+        Plan.preview({ packages: mockPackages }),
         layer,
       ),
     )
@@ -577,7 +576,7 @@ describe('planPreview integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planPreview({ packages: mockPackages }),
+        Plan.preview({ packages: mockPackages }),
         layer,
       ),
     )
@@ -606,7 +605,7 @@ describe('planPreview integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planPreview({ packages: mockPackages }),
+        Plan.preview({ packages: mockPackages }),
         layer,
       ),
     )
@@ -633,7 +632,7 @@ describe('planPr integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planPr({ packages: mockPackages }, { prNumber: 42 }),
+        Plan.pr({ packages: mockPackages }, { prNumber: 42 }),
         layer,
       ),
     )
@@ -659,7 +658,7 @@ describe('planPr integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planPr({ packages: mockPackages }, { prNumber: 42 }),
+        Plan.pr({ packages: mockPackages }, { prNumber: 42 }),
         layer,
       ),
     )
@@ -684,7 +683,7 @@ describe('planPr integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planPr({ packages: mockPackages }, { prNumber: 99 }), // Different PR
+        Plan.pr({ packages: mockPackages }, { prNumber: 99 }), // Different PR
         layer,
       ),
     )
@@ -712,7 +711,7 @@ describe('planPr integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planPr({ packages: mockPackages }),
+        Plan.pr({ packages: mockPackages }),
         layer,
       ),
     )
@@ -739,7 +738,7 @@ describe('planPr integration', () => {
     await expect(
       Effect.runPromise(
         Effect.provide(
-          planPr({ packages: mockPackages }),
+          Plan.pr({ packages: mockPackages }),
           layer,
         ),
       ),
@@ -766,7 +765,7 @@ describe('planPr integration', () => {
 
     const result = await Effect.runPromise(
       Effect.provide(
-        planPr({ packages: mockPackages }, { prNumber: 55 }),
+        Plan.pr({ packages: mockPackages }, { prNumber: 55 }),
         layer,
       ),
     )
