@@ -119,7 +119,7 @@ const toInternalInterceptor = (pipeline: PipelineDefinition.Pipeline, intercepto
 const createPassthrough = (hookName: string) => async (hookEnvelope: StepTriggerEnvelope) => {
   const hook = hookEnvelope[hookName]
   if (!hook) {
-    throw new ContextualError({ message: `Hook not found in hook envelope`, context: { hookName } })
+    throw new ContextualError(`Hook not found in hook envelope`, { hookName })
   }
   return await hook({ input: hook.input })
 }

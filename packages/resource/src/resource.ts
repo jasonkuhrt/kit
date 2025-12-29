@@ -1,82 +1,38 @@
 import { FileSystem } from '@effect/platform'
-import { Err } from '@kitz/core'
 import { Fs } from '@kitz/fs'
 import { Effect, Option, ParseResult, Schema, Schema as S } from 'effect'
 
-const baseTags = ['resource'] as const
-
 /**
- * Error when a resource file is not found
+ * Errors that can occur during resource operations
  */
-export const FileNotFound = Err.TaggedContextualError(
-  'FileNotFound',
-  [...baseTags, 'io'],
-).constrain<{
-  path: string
-  resource: string
-}>({
-  message: (ctx) => `Resource "${ctx.resource}" not found at path: ${ctx.path}`,
-})
-export type FileNotFound = InstanceType<typeof FileNotFound>
+export class FileNotFound extends Schema.TaggedError<FileNotFound>()('FileNotFound', {
+  path: Schema.String,
+  resource: Schema.String,
+  message: Schema.String,
+}) {}
 
-/**
- * Error when reading a resource file fails
- */
-export const ReadError = Err.TaggedContextualError(
-  'ReadError',
-  [...baseTags, 'io'],
-).constrain<{
-  path: string
-  resource: string
-  reason: string
-}>({
-  message: (ctx) => `Failed to read resource "${ctx.resource}" at path: ${ctx.path}. ${ctx.reason}`,
-})
-export type ReadError = InstanceType<typeof ReadError>
+export class ReadError extends Schema.TaggedError<ReadError>()('ReadError', {
+  path: Schema.String,
+  resource: Schema.String,
+  message: Schema.String,
+}) {}
 
-/**
- * Error when writing a resource file fails
- */
-export const WriteError = Err.TaggedContextualError(
-  'WriteError',
-  [...baseTags, 'io'],
-).constrain<{
-  path: string
-  resource: string
-  reason: string
-}>({
-  message: (ctx) => `Failed to write resource "${ctx.resource}" at path: ${ctx.path}. ${ctx.reason}`,
-})
-export type WriteError = InstanceType<typeof WriteError>
+export class WriteError extends Schema.TaggedError<WriteError>()('WriteError', {
+  path: Schema.String,
+  resource: Schema.String,
+  message: Schema.String,
+}) {}
 
-/**
- * Error when parsing resource content fails
- */
-export const ParseError = Err.TaggedContextualError(
-  'ParseError',
-  [...baseTags, 'parse'],
-).constrain<{
-  path: string
-  resource: string
-  reason: string
-}>({
-  message: (ctx) => `Failed to parse resource "${ctx.resource}" at path: ${ctx.path}. ${ctx.reason}`,
-})
-export type ParseError = InstanceType<typeof ParseError>
+export class ParseError extends Schema.TaggedError<ParseError>()('ParseError', {
+  path: Schema.String,
+  resource: Schema.String,
+  message: Schema.String,
+}) {}
 
-/**
- * Error when encoding resource content fails
- */
-export const EncodeError = Err.TaggedContextualError(
-  'EncodeError',
-  [...baseTags, 'encode'],
-).constrain<{
-  resource: string
-  reason: string
-}>({
-  message: (ctx) => `Failed to encode resource "${ctx.resource}". ${ctx.reason}`,
-})
-export type EncodeError = InstanceType<typeof EncodeError>
+export class EncodeError extends Schema.TaggedError<EncodeError>()('EncodeError', {
+  resource: Schema.String,
+  message: Schema.String,
+}) {}
 
 export type ResourceError = FileNotFound | ReadError | WriteError | ParseError | EncodeError
 
@@ -118,11 +74,9 @@ export const jsonCodec = <T>(): Codec<T> => ({
       try: () => JSON.parse(content) as T,
       catch: (error) =>
         new ParseError({
-          context: {
-            path,
-            resource,
-            reason: error instanceof Error ? error.message : String(error),
-          },
+          path,
+          resource,
+          message: `Failed to parse JSON: ${error instanceof Error ? error.message : String(error)}`,
         }),
     }),
   encode: (value: T, resource: string) =>
@@ -130,10 +84,8 @@ export const jsonCodec = <T>(): Codec<T> => ({
       try: () => JSON.stringify(value, null, 2),
       catch: (error) =>
         new EncodeError({
-          context: {
-            resource,
-            reason: error instanceof Error ? error.message : String(error),
-          },
+          resource,
+          message: `Failed to stringify JSON: ${error instanceof Error ? error.message : String(error)}`,
         }),
     }),
 })
@@ -164,11 +116,9 @@ export const createResource = <T, R = never>(
       const exists = yield* fs.exists(filePath).pipe(
         Effect.mapError((error) =>
           new ReadError({
-            context: {
-              path: filePath,
-              resource: filename,
-              reason: `Failed to check if resource exists: ${(error as any).message || String(error)}`,
-            },
+            path: filePath,
+            resource: filename,
+            message: `Failed to check if resource exists: ${(error as any).message || String(error)}`,
           })
         ),
       )
@@ -178,11 +128,9 @@ export const createResource = <T, R = never>(
       const content = yield* fs.readFileString(filePath).pipe(
         Effect.mapError((error) =>
           new ReadError({
-            context: {
-              path: filePath,
-              resource: filename,
-              reason: `Failed to read file: ${(error as any).message || String(error)}`,
-            },
+            path: filePath,
+            resource: filename,
+            message: `Failed to read file: ${(error as any).message || String(error)}`,
           })
         ),
       )
@@ -206,11 +154,9 @@ export const createResource = <T, R = never>(
       yield* fs.makeDirectory(parentDir, { recursive: true }).pipe(
         Effect.mapError((error) =>
           new WriteError({
-            context: {
-              path: filePath,
-              resource: filename,
-              reason: `Failed to create directory: ${(error as any).message || String(error)}`,
-            },
+            path: filePath,
+            resource: filename,
+            message: `Failed to create directory: ${(error as any).message || String(error)}`,
           })
         ),
       )
@@ -218,11 +164,9 @@ export const createResource = <T, R = never>(
       yield* fs.writeFileString(filePath, content).pipe(
         Effect.mapError((error) =>
           new WriteError({
-            context: {
-              path: filePath,
-              resource: filename,
-              reason: `Failed to write file: ${(error as any).message || String(error)}`,
-            },
+            path: filePath,
+            resource: filename,
+            message: `Failed to write file: ${(error as any).message || String(error)}`,
           })
         ),
       )
@@ -238,11 +182,9 @@ export const createResource = <T, R = never>(
       const exists = yield* fs.exists(filePath).pipe(
         Effect.mapError((error) =>
           new ReadError({
-            context: {
-              path: filePath,
-              resource: filename,
-              reason: `Failed to check if resource exists: ${(error as any).message || String(error)}`,
-            },
+            path: filePath,
+            resource: filename,
+            message: `Failed to check if resource exists: ${(error as any).message || String(error)}`,
           })
         ),
       )
@@ -281,22 +223,18 @@ export const schemaCodec = <S extends Schema.Schema<any, any>>(
         try: () => JSON.parse(content),
         catch: (error) =>
           new ParseError({
-            context: {
-              path,
-              resource,
-              reason: error instanceof Error ? error.message : String(error),
-            },
+            path,
+            resource,
+            message: `Failed to parse JSON: ${error instanceof Error ? error.message : String(error)}`,
           }),
       })
 
       return yield* Schema.decodeUnknown(schema)(parsed).pipe(
         Effect.mapError((error) =>
           new ParseError({
-            context: {
-              path,
-              resource,
-              reason: `Schema validation failed: ${ParseResult.TreeFormatter.formatErrorSync(error)}`,
-            },
+            path,
+            resource,
+            message: `Schema validation failed: ${ParseResult.TreeFormatter.formatErrorSync(error)}`,
           })
         ),
       )
@@ -307,10 +245,8 @@ export const schemaCodec = <S extends Schema.Schema<any, any>>(
       const encoded = yield* Schema.encode(schema)(value).pipe(
         Effect.mapError((error) =>
           new EncodeError({
-            context: {
-              resource,
-              reason: `Schema encoding failed: ${ParseResult.TreeFormatter.formatErrorSync(error)}`,
-            },
+            resource,
+            message: `Schema encoding failed: ${ParseResult.TreeFormatter.formatErrorSync(error)}`,
           })
         ),
       )
@@ -319,10 +255,8 @@ export const schemaCodec = <S extends Schema.Schema<any, any>>(
         try: () => JSON.stringify(encoded, null, 2),
         catch: (error) =>
           new EncodeError({
-            context: {
-              resource,
-              reason: error instanceof Error ? error.message : String(error),
-            },
+            resource,
+            message: `Failed to stringify JSON: ${error instanceof Error ? error.message : String(error)}`,
           }),
       })
     }),

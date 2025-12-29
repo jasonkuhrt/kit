@@ -38,7 +38,7 @@ const createPackage = (name: string) => {
   // package.json
   const packageJson = {
     name: `@kitz/${name}`,
-    version: '0.0.0-kitz-release',
+    version: '0.0.0',
     type: 'module',
     sideEffects: false,
     imports: {
@@ -55,7 +55,7 @@ const createPackage = (name: string) => {
       'dev': 'tsgo -p tsconfig.build.json --watch',
       'check:types': 'tsgo --noEmit',
       'check:lint': 'oxlint --config ../../oxlint.json src/',
-      'check:package': 'publint && attw --pack --ignore-rules no-resolution cjs-resolves-to-esm',
+      'check:package': 'publint && attw --pack',
     },
     dependencies: {
       '@kitz/core': 'workspace:*',
@@ -164,9 +164,7 @@ const main = () => {
   const name = arg
 
   if (!/^[a-z][a-z0-9-]*$/.test(name)) {
-    console.error(
-      'Error: Package name must be lowercase, start with a letter, and contain only letters, numbers, and hyphens',
-    )
+    console.error('Error: Package name must be lowercase, start with a letter, and contain only letters, numbers, and hyphens')
     process.exit(1)
   }
 

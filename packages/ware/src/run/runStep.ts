@@ -68,10 +68,7 @@ export const runStep = async (
       extensionName: extension.name, // must be defined because is NOT last extension
       hookName: name,
       // dprint-ignore
-      error: new ContextualError({
-        message: `Only the last extension can retry hooks.`,
-        context: { extensionsAfter: extensionsStackRest.map(_ => ({ name: _.name })) },
-      }),
+      error: new ContextualError(`Only the last extension can retry hooks.`, { extensionsAfter: extensionsStackRest.map(_=>({ name: _.name })) }),
     })
   }
 
@@ -108,12 +105,9 @@ export const runStep = async (
             source: `extension`,
             interceptorName: extension.name,
             hookName: name,
-            error: new ContextualError({
-              message: `Only a retrying extension can retry hooks.`,
-              context: {
-                hookName: name,
-                extensionsAfter: extensionsStackRest.map(_ => ({ name: _.name })),
-              },
+            error: new ContextualError(`Only a retrying extension can retry hooks.`, {
+              hookName: name,
+              extensionsAfter: extensionsStackRest.map(_ => ({ name: _.name })),
             }),
           })
           return Prom.createDeferred().promise // [1]
@@ -123,13 +117,13 @@ export const runStep = async (
             source: `extension`,
             interceptorName: extension.name,
             hookName: name,
-            error: new ContextualError({
-              message: `Only after failure can a hook be called again by a retrying extension.`,
-              context: {
+            error: new ContextualError(
+              `Only after failure can a hook be called again by a retrying extension.`,
+              {
                 hookName: name,
                 extensionName: extension.name,
               },
-            }),
+            ),
           })
           return Prom.createDeferred().promise // [1]
         } else {
@@ -261,10 +255,7 @@ export const runStep = async (
 
     const implementation = pipeline.stepsIndex.get(name)
     if (!implementation) {
-      throw new ContextualError({
-        message: `Implementation not found for step name ${name}`,
-        context: { hookName: name },
-      })
+      throw new ContextualError(`Implementation not found for step name ${name}`, { hookName: name })
     }
 
     let result

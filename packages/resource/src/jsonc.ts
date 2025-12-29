@@ -14,11 +14,9 @@ export const jsoncCodec = <T>(): Codec<T> => ({
       const parsed = yield* Schema.decodeUnknown(Jsonc.parseJsonc())(content).pipe(
         Effect.mapError((error) =>
           new ParseError({
-            context: {
-              path,
-              resource,
-              reason: `Failed to parse JSONC: ${ParseResult.TreeFormatter.formatErrorSync(error)}`,
-            },
+            path,
+            resource,
+            message: `Failed to parse JSONC: ${ParseResult.TreeFormatter.formatErrorSync(error)}`,
           })
         ),
       )
@@ -29,10 +27,8 @@ export const jsoncCodec = <T>(): Codec<T> => ({
       try: () => JSON.stringify(value, null, 2),
       catch: (error) =>
         new EncodeError({
-          context: {
-            resource,
-            reason: error instanceof Error ? error.message : String(error),
-          },
+          resource,
+          message: `Failed to stringify JSON: ${error instanceof Error ? error.message : String(error)}`,
         }),
     }),
 })
@@ -50,11 +46,9 @@ export const schemaJsoncCodec = <S extends Schema.Schema<any, any>>(
       return yield* Schema.decodeUnknown(jsoncSchema)(content).pipe(
         Effect.mapError((error) =>
           new ParseError({
-            context: {
-              path,
-              resource,
-              reason: `Schema validation failed: ${ParseResult.TreeFormatter.formatErrorSync(error)}`,
-            },
+            path,
+            resource,
+            message: `Schema validation failed: ${ParseResult.TreeFormatter.formatErrorSync(error)}`,
           })
         ),
       )
@@ -64,10 +58,8 @@ export const schemaJsoncCodec = <S extends Schema.Schema<any, any>>(
       const encoded = yield* Schema.encode(schema)(value).pipe(
         Effect.mapError((error) =>
           new EncodeError({
-            context: {
-              resource,
-              reason: `Schema encoding failed: ${ParseResult.TreeFormatter.formatErrorSync(error)}`,
-            },
+            resource,
+            message: `Schema encoding failed: ${ParseResult.TreeFormatter.formatErrorSync(error)}`,
           })
         ),
       )

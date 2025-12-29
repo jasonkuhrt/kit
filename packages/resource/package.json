@@ -1,6 +1,6 @@
 {
   "name": "@kitz/resource",
-  "version": "0.0.0-kitz-release",
+  "version": "0.0.0",
   "description": "Resource management utilities",
   "type": "module",
   "sideEffects": false,
@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@effect/platform": "^0.94.0",
-    "@kitz/core": "workspace:*",
     "@kitz/fs": "workspace:*",
     "@kitz/jsonc": "workspace:*",
     "effect": "^3.0.0"
@@ -20,6 +19,6 @@
     "dev": "tsgo -p tsconfig.build.json --watch",
     "check:types": "tsgo --noEmit",
     "check:lint": "oxlint --config ../../oxlint.json src/",
-    "check:package": "publint && attw --pack --ignore-rules no-resolution cjs-resolves-to-esm"
+    "check:package": "publint && attw --pack"
   }
 }

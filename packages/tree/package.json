@@ -1,6 +1,6 @@
 {
   "name": "@kitz/tree",
-  "version": "0.0.0-kitz-release",
+  "version": "0.0.0",
   "description": "Tree data structure utilities",
   "type": "module",
   "sideEffects": false,
@@ -16,7 +16,7 @@
     "dev": "tsgo -p tsconfig.build.json --watch",
     "check:types": "tsgo --noEmit",
     "check:lint": "oxlint --config ../../oxlint.json src/",
-    "check:package": "publint && attw --pack --ignore-rules no-resolution cjs-resolves-to-esm"
+    "check:package": "publint && attw --pack"
   },
   "dependencies": {
     "fast-check": "^3.0.0"
