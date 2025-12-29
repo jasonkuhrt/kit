@@ -4,15 +4,15 @@ import { Env } from '@kitz/env'
 import { Git } from '@kitz/git'
 import { Oak } from '@kitz/oak'
 import { Effect, Layer, Option, Schema } from 'effect'
-import { Cascade, Config, Plan, Workspace } from '../__.js'
+import * as Api from '../../api/__.js'
 
 /**
  * Format a planned release for display.
  */
-const formatRelease = (release: Plan.PlannedRelease): string => {
-  const currentVersion = Plan.getCurrentVersion(release)
-  const nextVersion = Plan.getNextVersion(release)
-  const bump = Plan.getBumpType(release)
+const formatRelease = (release: Api.Plan.PlannedRelease): string => {
+  const currentVersion = Api.Plan.getCurrentVersion(release)
+  const nextVersion = Api.Plan.getNextVersion(release)
+  const bump = Api.Plan.getBumpType(release)
   const current = currentVersion.pipe(Option.map((v) => v.version), Option.getOrElse(() => '(none)'))
   const next = nextVersion.version
   const commitCount = release.commits.length
@@ -28,7 +28,7 @@ const formatRelease = (release: Plan.PlannedRelease): string => {
  */
 const formatCascade = (
   pkg: string,
-  dependents: readonly Plan.PlannedRelease[],
+  dependents: readonly Api.Plan.PlannedRelease[],
 ): string => {
   if (dependents.length === 0) {
     return `${pkg}: No cascades needed`
@@ -36,7 +36,7 @@ const formatCascade = (
 
   const lines = [`${pkg}:`]
   for (const dep of dependents) {
-    const ver = Plan.getCurrentVersion(dep).pipe(Option.map((v) => v.version), Option.getOrElse(() => '0.0.0'))
+    const ver = Api.Plan.getCurrentVersion(dep).pipe(Option.map((v) => v.version), Option.getOrElse(() => '0.0.0'))
     lines.push(`  ├── ${dep.package.name} depends (workspace:* → ^${ver})`)
   }
   return lines.join(Str.Char.newline)
@@ -61,8 +61,8 @@ const program = Effect.gen(function*() {
   const env = yield* Env.Env
 
   // Load config and discover packages
-  const config = yield* Config.load(process.cwd()).pipe(Effect.orElseSucceed(() => undefined))
-  const packages = yield* Workspace.discover
+  const config = yield* Api.Config.load(process.cwd()).pipe(Effect.orElseSucceed(() => undefined))
+  const packages = yield* Api.Workspace.discover
 
   if (packages.length === 0) {
     console.log('No packages found.')
@@ -70,7 +70,7 @@ const program = Effect.gen(function*() {
   }
 
   // Plan what would be released
-  const plan = yield* Plan.stable({ packages })
+  const plan = yield* Api.Plan.stable({ packages })
 
   if (plan.releases.length === 0) {
     console.log('No unreleased changes.')
@@ -87,7 +87,7 @@ const program = Effect.gen(function*() {
   // If specific packages requested, show cascade analysis
   if (args.packages && args.packages.length > 0) {
     const tags = yield* Git.Git.pipe(Effect.flatMap((git) => git.getTags()))
-    const dependencyGraph = yield* Cascade.buildDependencyGraph(packages)
+    const dependencyGraph = yield* Api.Cascade.buildDependencyGraph(packages)
 
     console.log('\nCascade analysis:\n')
     for (const pkgName of args.packages) {
@@ -99,7 +99,7 @@ const program = Effect.gen(function*() {
 
       // Find releases for this package
       const pkgReleases = plan.releases.filter((r) => r.package.name === pkg.name)
-      const cascades = Cascade.detect(packages, pkgReleases, dependencyGraph, tags)
+      const cascades = Api.Cascade.detect(packages, pkgReleases, dependencyGraph, tags)
       console.log(formatCascade(pkg.name, cascades))
     }
   }

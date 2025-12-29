@@ -6,7 +6,7 @@ import { Test } from '@kitz/test'
 import { Effect, Layer, Option } from 'effect'
 import { describe, expect, test } from 'vitest'
 import { Cascade, Plan, type Workspace } from './__.js'
-import { makeTestWorkflowRuntime } from './workflow.js'
+import { makeTestWorkflowRuntime } from './api/workflow.js'
 
 // ─── Test Helpers ───────────────────────────────────────────────────
 
@@ -20,12 +20,12 @@ const testEnv = Env.Test({ cwd: Fs.Path.AbsDir.fromString('/repo/') })
 const testWorkflowRuntime = makeTestWorkflowRuntime()
 
 const makeTestLayer = (
-  gitConfig: Parameters<typeof Git.Test.make>[0],
+  gitConfig: Parameters<typeof Git.Memory.make>[0],
   diskLayout: Fs.Memory.DiskLayout = {},
-) => Layer.mergeAll(Git.Test.make(gitConfig), Fs.Memory.layer(diskLayout), testEnv)
+) => Layer.mergeAll(Git.Memory.make(gitConfig), Fs.Memory.layer(diskLayout), testEnv)
 
 const makeApplyTestLayer = (
-  gitConfig: Parameters<typeof Git.Test.make>[0],
+  gitConfig: Parameters<typeof Git.Memory.make>[0],
   diskLayout: Fs.Memory.DiskLayout = {},
 ) =>
   Layer.provideMerge(
@@ -90,7 +90,7 @@ describe('Plan.stable', () => {
     .test(async ({ input, output }) => {
       const layer = makeTestLayer({
         tags: input.tags,
-        commits: [Git.Test.commit(input.commit)],
+        commits: [Git.Memory.commit(input.commit)],
       })
 
       const result = await Effect.runPromise(
@@ -106,9 +106,9 @@ describe('Plan.stable', () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
       commits: [
-        Git.Test.commit('fix(core): bug fix 1'),
-        Git.Test.commit('feat(core): new feature'),
-        Git.Test.commit('fix(core): bug fix 2'),
+        Git.Memory.commit('fix(core): bug fix 1'),
+        Git.Memory.commit('feat(core): new feature'),
+        Git.Memory.commit('fix(core): bug fix 2'),
       ],
     })
 
@@ -125,8 +125,8 @@ describe('Plan.stable', () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0', '@kitz/cli@2.0.0'],
       commits: [
-        Git.Test.commit('feat(core): core feature'),
-        Git.Test.commit('fix(cli): cli fix'),
+        Git.Memory.commit('feat(core): core feature'),
+        Git.Memory.commit('fix(cli): cli fix'),
       ],
     })
 
@@ -150,8 +150,8 @@ describe('Plan.stable', () => {
     const layer = makeTestLayer({
       tags: [],
       commits: [
-        Git.Test.commit('feat(core): core'),
-        Git.Test.commit('feat(cli): cli'),
+        Git.Memory.commit('feat(core): core'),
+        Git.Memory.commit('feat(cli): cli'),
       ],
     })
 
@@ -173,7 +173,7 @@ describe('Plan.preview', () => {
   test('generates preview version', async () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
-      commits: [Git.Test.commit('feat(core): new feature')],
+      commits: [Git.Memory.commit('feat(core): new feature')],
     })
 
     const result = await Effect.runPromise(
@@ -187,7 +187,7 @@ describe('Plan.preview', () => {
   test('increments preview number', async () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0', '@kitz/core@1.1.0-next.1', '@kitz/core@1.1.0-next.2'],
-      commits: [Git.Test.commit('feat(core): new feature')],
+      commits: [Git.Memory.commit('feat(core): new feature')],
     })
 
     const result = await Effect.runPromise(
@@ -205,7 +205,7 @@ describe('Plan.pr', () => {
   test('generates PR version with explicit prNumber', async () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
-      commits: [Git.Test.commit('feat(core): new feature')],
+      commits: [Git.Memory.commit('feat(core): new feature')],
       headSha: 'abc1234',
     })
 
@@ -223,7 +223,7 @@ describe('Plan.pr', () => {
   test('increments PR iteration', async () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0', '@kitz/core@0.0.0-pr.42.1.def5678'],
-      commits: [Git.Test.commit('feat(core): new feature')],
+      commits: [Git.Memory.commit('feat(core): new feature')],
       headSha: 'abc1234',
     })
 
@@ -245,9 +245,9 @@ describe('Plan.pr', () => {
     })
 
     const layer = Layer.mergeAll(
-      Git.Test.make({
+      Git.Memory.make({
         tags: ['@kitz/core@1.0.0'],
-        commits: [Git.Test.commit('feat(core): feature')],
+        commits: [Git.Memory.commit('feat(core): feature')],
         headSha: 'def7890',
       }),
       Fs.Memory.layer({}),
@@ -275,9 +275,9 @@ describe('Cascade', () => {
     }
 
     const layer = Layer.mergeAll(
-      Git.Test.make({
+      Git.Memory.make({
         tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0'],
-        commits: [Git.Test.commit('feat(core): new API')],
+        commits: [Git.Memory.commit('feat(core): new API')],
       }),
       Fs.Memory.layer(diskLayout),
       testEnv,
@@ -307,9 +307,9 @@ describe('Cascade', () => {
     }
 
     const layer = Layer.mergeAll(
-      Git.Test.make({
+      Git.Memory.make({
         tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0', '@kitz/utils@1.0.0'],
-        commits: [Git.Test.commit('feat(core): new API')],
+        commits: [Git.Memory.commit('feat(core): new API')],
       }),
       Fs.Memory.layer(diskLayout),
       testEnv,
@@ -335,9 +335,9 @@ describe('Plan.apply', () => {
     }
 
     const { layer: gitLayer } = await Effect.runPromise(
-      Git.Test.makeWithState({
+      Git.Memory.makeWithState({
         tags: ['@kitz/core@1.0.0'],
-        commits: [Git.Test.commit('feat(core): new feature')],
+        commits: [Git.Memory.commit('feat(core): new feature')],
       }),
     )
 
@@ -365,9 +365,9 @@ describe('Plan.apply', () => {
     }
 
     const { layer: gitLayer } = await Effect.runPromise(
-      Git.Test.makeWithState({
+      Git.Memory.makeWithState({
         tags: ['@kitz/core@1.0.0', '@kitz/cli@1.0.0'],
-        commits: [Git.Test.commit('feat(core): new API')],
+        commits: [Git.Memory.commit('feat(core): new API')],
       }),
     )
 
@@ -393,9 +393,9 @@ describe('Plan.apply', () => {
     }
 
     const { layer: gitLayer } = await Effect.runPromise(
-      Git.Test.makeWithState({
+      Git.Memory.makeWithState({
         tags: ['@kitz/core@1.0.0'],
-        commits: [Git.Test.commit('feat(core): new feature')],
+        commits: [Git.Memory.commit('feat(core): new feature')],
       }),
     )
 
@@ -424,7 +424,7 @@ describe('Plan helpers', () => {
   test('getNextVersion returns correct version', async () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
-      commits: [Git.Test.commit('feat(core): feature')],
+      commits: [Git.Memory.commit('feat(core): feature')],
     })
 
     const result = await Effect.runPromise(
@@ -440,7 +440,7 @@ describe('Plan helpers', () => {
   test('getCurrentVersion returns Option for existing version', async () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
-      commits: [Git.Test.commit('feat(core): feature')],
+      commits: [Git.Memory.commit('feat(core): feature')],
     })
 
     const result = await Effect.runPromise(
@@ -457,7 +457,7 @@ describe('Plan helpers', () => {
   test('getCurrentVersion returns None for first release', async () => {
     const layer = makeTestLayer({
       tags: [],
-      commits: [Git.Test.commit('feat(core): initial')],
+      commits: [Git.Memory.commit('feat(core): initial')],
     })
 
     const result = await Effect.runPromise(
@@ -473,7 +473,7 @@ describe('Plan helpers', () => {
   test('getBumpType returns bump type for stable releases', async () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
-      commits: [Git.Test.commit('feat(core): feature')],
+      commits: [Git.Memory.commit('feat(core): feature')],
     })
 
     const result = await Effect.runPromise(

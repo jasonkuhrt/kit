@@ -4,9 +4,7 @@ import { Env } from '@kitz/env'
 import { Git } from '@kitz/git'
 import { Oak } from '@kitz/oak'
 import { Effect, Layer, Option, Schema } from 'effect'
-import { load } from '../config.js'
-import { discover, type Package } from '../discovery.js'
-import { extractImpacts, findLatestTagVersion } from '../version.js'
+import * as Api from '../../api/__.js'
 
 /**
  * release log [pkg]
@@ -47,17 +45,17 @@ const args = await Oak.Command.create()
  * Generate changelog for a package.
  */
 const generatePackageChangelog = (
-  pkg: Package,
+  pkg: Api.Workspace.Package,
   tags: string[],
   commits: Array<{ hash: Git.Sha.Sha; message: string }>,
 ) =>
   Effect.gen(function*() {
     // Find current version
-    const currentVersion = findLatestTagVersion(pkg.name, tags)
+    const currentVersion = Api.Version.findLatestTagVersion(pkg.name, tags)
 
     // Extract impacts for this package
     const allImpacts = yield* Effect.all(
-      commits.map((c) => extractImpacts({ hash: c.hash, message: c.message })),
+      commits.map((c) => Api.Version.extractImpacts({ hash: c.hash, message: c.message })),
       { concurrency: 'unbounded' },
     )
 
@@ -104,8 +102,8 @@ const program = Effect.gen(function*() {
   const git = yield* Git.Git
 
   // Load config and discover packages
-  const _config = yield* load(process.cwd()).pipe(Effect.orElseSucceed(() => undefined))
-  const packages = yield* discover
+  const _config = yield* Api.Config.load(process.cwd()).pipe(Effect.orElseSucceed(() => undefined))
+  const packages = yield* Api.Workspace.discover
 
   if (packages.length === 0) {
     console.log('No packages found.')
@@ -130,7 +128,7 @@ const program = Effect.gen(function*() {
 
   if (!sinceTag && targetPackages.length === 1) {
     // For single package, use its latest tag
-    const latest = findLatestTagVersion(targetPackages[0]!.name, tags)
+    const latest = Api.Version.findLatestTagVersion(targetPackages[0]!.name, tags)
     if (Option.isSome(latest)) {
       sinceTag = `${targetPackages[0]!.name}@${latest.value.version}`
     }

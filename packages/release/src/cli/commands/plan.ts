@@ -5,7 +5,7 @@ import { Env } from '@kitz/env'
 import { Git } from '@kitz/git'
 import { Oak } from '@kitz/oak'
 import { Effect, Layer, Option, Schema } from 'effect'
-import { Config, Plan, Workspace } from '../__.js'
+import * as Api from '../../api/__.js'
 
 const PLAN_DIR = '.release'
 const PLAN_FILE = 'plan.json'
@@ -13,10 +13,10 @@ const PLAN_FILE = 'plan.json'
 /**
  * Format a planned release for display.
  */
-const formatRelease = (release: Plan.PlannedRelease, prefix: string = ''): string => {
-  const currentVersion = Plan.getCurrentVersion(release)
-  const nextVersion = Plan.getNextVersion(release)
-  const bump = Plan.getBumpType(release)
+const formatRelease = (release: Api.Plan.PlannedRelease, prefix: string = ''): string => {
+  const currentVersion = Api.Plan.getCurrentVersion(release)
+  const nextVersion = Api.Plan.getNextVersion(release)
+  const bump = Api.Plan.getBumpType(release)
   const current = currentVersion.pipe(Option.map((v) => v.version), Option.getOrElse(() => '(none)'))
   const next = nextVersion.version
   const commitCount = release.commits.length
@@ -31,13 +31,13 @@ const formatRelease = (release: Plan.PlannedRelease, prefix: string = ''): strin
 /**
  * Serialize plan to JSON for storage.
  */
-const serializePlan = (plan: Plan.ReleasePlan, type: string): string => {
-  const serializeRelease = (r: Plan.PlannedRelease) => ({
+const serializePlan = (plan: Api.Plan.ReleasePlan, type: string): string => {
+  const serializeRelease = (r: Api.Plan.PlannedRelease) => ({
     package: r.package.name,
     path: r.package.path,
-    currentVersion: Plan.getCurrentVersion(r).pipe(Option.map((v) => v.version), Option.getOrNull),
-    nextVersion: Plan.getNextVersion(r).version,
-    bump: Plan.getBumpType(r),
+    currentVersion: Api.Plan.getCurrentVersion(r).pipe(Option.map((v) => v.version), Option.getOrNull),
+    nextVersion: Api.Plan.getNextVersion(r).version,
+    bump: Api.Plan.getBumpType(r),
     commits: r.commits.map((c) => ({
       hash: c.hash,
       type: c.type,
@@ -98,8 +98,8 @@ const program = Effect.gen(function*() {
   const path = yield* Path.Path
 
   // Load config and discover packages
-  const _config = yield* Config.load(process.cwd()).pipe(Effect.orElseSucceed(() => undefined))
-  const packages = yield* Workspace.discover
+  const _config = yield* Api.Config.load(process.cwd()).pipe(Effect.orElseSucceed(() => undefined))
+  const packages = yield* Api.Workspace.discover
 
   if (packages.length === 0) {
     console.log('No packages found.')
@@ -116,17 +116,17 @@ const program = Effect.gen(function*() {
   console.log(`Generating ${args.type} release plan...`)
   console.log()
 
-  let plan: Plan.ReleasePlan
+  let plan: Api.Plan.ReleasePlan
 
   switch (args.type) {
     case 'stable':
-      plan = yield* Plan.stable({ packages }, options)
+      plan = yield* Api.Plan.stable({ packages }, options)
       break
     case 'preview':
-      plan = yield* Plan.preview({ packages }, options)
+      plan = yield* Api.Plan.preview({ packages }, options)
       break
     case 'pr':
-      plan = yield* Plan.pr({ packages }, options)
+      plan = yield* Api.Plan.pr({ packages }, options)
       break
   }
 

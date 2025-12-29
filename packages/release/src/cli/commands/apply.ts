@@ -5,18 +5,7 @@ import { Git } from '@kitz/git'
 import { Oak } from '@kitz/oak'
 import { Semver } from '@kitz/semver'
 import { Effect, Fiber, Layer, Option, Schema, Stream } from 'effect'
-import { load } from '../config.js'
-import { discover, type Package } from '../discovery.js'
-import {
-  getNextVersion,
-  type PlannedRelease,
-  type ReleasePlan,
-  StablePlannedRelease,
-  StableVersionFirst,
-  StableVersionIncrement,
-} from '../release.js'
-import type { BumpType, StructuredCommit } from '../version.js'
-import { executeWorkflowObservable } from '../workflow.js'
+import * as Api from '../../api/__.js'
 
 const PLAN_DIR = '.release'
 const PLAN_FILE = 'plan.json'
@@ -26,8 +15,8 @@ const PLAN_FILE = 'plan.json'
  */
 const deserializePlan = (
   json: string,
-  packages: Package[],
-): { type: string; plan: ReleasePlan } => {
+  packages: Api.Workspace.Package[],
+): { type: string; plan: Api.Plan.ReleasePlan } => {
   const data = JSON.parse(json) as {
     type: string
     timestamp: string
@@ -36,7 +25,7 @@ const deserializePlan = (
       path: string
       currentVersion: string | null
       nextVersion: string
-      bump: BumpType
+      bump: Api.Version.BumpType
       commits?: Array<{
         hash: string
         type: string
@@ -50,20 +39,20 @@ const deserializePlan = (
       path: string
       currentVersion: string | null
       nextVersion: string
-      bump: BumpType
+      bump: Api.Version.BumpType
     }>
   }
 
   // Reconstruct full Package objects
   const packageByName = new Map(packages.map((p) => [p.name, p]))
 
-  const reconstructRelease = (r: typeof data.releases[number]): PlannedRelease => {
+  const reconstructRelease = (r: typeof data.releases[number]): Api.Plan.PlannedRelease => {
     const pkg = packageByName.get(r.package)
     if (!pkg) {
       throw new Error(`Package ${r.package} not found in workspace`)
     }
 
-    const commits: StructuredCommit[] = (r.commits ?? []).map((c) => ({
+    const commits: Api.Version.StructuredCommit[] = (r.commits ?? []).map((c) => ({
       hash: Git.Sha.make(c.hash),
       type: c.type,
       message: c.message,
@@ -76,16 +65,16 @@ const deserializePlan = (
 
     if (r.currentVersion === null) {
       // First release - no previous version
-      return StablePlannedRelease.make({
+      return Api.Plan.StablePlannedRelease.make({
         package: pkg,
-        version: StableVersionFirst.make({ version: nextVersion }),
+        version: Api.Plan.StableVersionFirst.make({ version: nextVersion }),
         commits,
       })
     } else {
       // Increment release - has previous version
-      return StablePlannedRelease.make({
+      return Api.Plan.StablePlannedRelease.make({
         package: pkg,
-        version: StableVersionIncrement.make({
+        version: Api.Plan.StableVersionIncrement.make({
           from: Semver.fromString(r.currentVersion),
           to: nextVersion,
           bump: r.bump,
@@ -163,8 +152,8 @@ const program = Effect.gen(function*() {
   }
 
   // Load config and discover packages
-  const _config = yield* load(process.cwd()).pipe(Effect.orElseSucceed(() => undefined))
-  const packages = yield* discover
+  const _config = yield* Api.Config.load(process.cwd()).pipe(Effect.orElseSucceed(() => undefined))
+  const packages = yield* Api.Workspace.discover
 
   // Deserialize plan
   const planJson = yield* fs.readFileString(planPath)
@@ -180,10 +169,10 @@ const program = Effect.gen(function*() {
   if (!args.yes && !args.dryRun) {
     console.log('Releases:')
     for (const r of plan.releases) {
-      console.log(`  ${r.package.name}@${getNextVersion(r).version}`)
+      console.log(`  ${r.package.name}@${Api.Plan.getNextVersion(r).version}`)
     }
     for (const r of plan.cascades) {
-      console.log(`  ${r.package.name}@${getNextVersion(r).version} (cascade)`)
+      console.log(`  ${r.package.name}@${Api.Plan.getNextVersion(r).version} (cascade)`)
     }
     console.log()
     console.log('This will:')
@@ -199,7 +188,7 @@ const program = Effect.gen(function*() {
   if (args.dryRun) {
     console.log('[DRY RUN] Would execute:')
     for (const r of [...plan.releases, ...plan.cascades]) {
-      console.log(`  - Publish ${r.package.name}@${getNextVersion(r).version}`)
+      console.log(`  - Publish ${r.package.name}@${Api.Plan.getNextVersion(r).version}`)
     }
     console.log(`  - Create ${totalReleases} git tag${totalReleases === 1 ? '' : 's'}`)
     console.log(`  - Push tags to origin`)
@@ -207,7 +196,7 @@ const program = Effect.gen(function*() {
   }
 
   // Execute with observable workflow
-  const { events, execute } = yield* executeWorkflowObservable(plan, {
+  const { events, execute } = yield* Api.Workflow.executeWorkflowObservable(plan, {
     dryRun: args.dryRun,
     ...(args.tag && { tag: args.tag }),
   })

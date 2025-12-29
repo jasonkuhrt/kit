@@ -1,16 +1,15 @@
 {
-  "name": "@kitz/git",
+  "name": "@kitz/github",
   "version": "0.0.0-kitz-release",
   "type": "module",
   "sideEffects": false,
   "imports": {
-    "#git": "./build/_.js",
-    "#git/*": "./build/*.js"
+    "#github": "./build/_.js",
+    "#github/*": "./build/*.js"
   },
   "exports": {
     ".": "./build/_.js",
-    "./__": "./build/__.js",
-    "./git-test": "./build/git-test.js"
+    "./__": "./build/__.js"
   },
   "files": [
     "build",
@@ -21,12 +20,13 @@
     "dev": "tsgo -p tsconfig.build.json --watch",
     "check:types": "tsgo --noEmit",
     "check:lint": "oxlint --config ../../oxlint.json src/",
-    "check:package": "publint && attw --pack --ignore-rules no-resolution cjs-resolves-to-esm internal-resolution-error"
+    "check:package": "publint && attw --pack"
   },
   "dependencies": {
     "@kitz/core": "workspace:*",
-    "effect": "^3.19.13",
-    "simple-git": "^3.30.0"
+    "@effect/platform": "^0.81.0",
+    "@octokit/types": "^13.10.0",
+    "effect": "^3.19.13"
   },
   "devDependencies": {
     "@effect/vitest": "^0.27.0",

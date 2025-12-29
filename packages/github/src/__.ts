@@ -1,4 +1,3 @@
-export * from './service.js'
 export * from './live.js'
 export * as Memory from './memory.js'
-export * as Sha from './sha.js'
+export * from './service.js'

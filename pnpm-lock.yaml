@@ -235,6 +235,31 @@ importers:
       '@effect/vitest':
         specifier: ^0.27.0
         version: 0.27.0(effect@3.19.13)(vitest@4.0.16(@types/node@25.0.3)(tsx@4.21.0))
+      '@kitz/test':
+        specifier: workspace:*
+        version: link:../test
+
+  packages/github:
+    dependencies:
+      '@effect/platform':
+        specifier: ^0.81.0
+        version: 0.81.1(effect@3.19.13)
+      '@kitz/core':
+        specifier: workspace:*
+        version: link:../core
+      '@octokit/types':
+        specifier: ^13.10.0
+        version: 13.10.0
+      effect:
+        specifier: ^3.19.13
+        version: 3.19.13
+    devDependencies:
+      '@effect/vitest':
+        specifier: ^0.27.0
+        version: 0.27.0(effect@3.19.13)(vitest@4.0.16(@types/node@25.0.3)(tsx@4.21.0))
+      '@kitz/test':
+        specifier: workspace:*
+        version: link:../test
 
   packages/group:
     dependencies:
@@ -582,6 +607,9 @@ importers:
       '@kitz/git':
         specifier: workspace:*
         version: link:../git
+      '@kitz/github':
+        specifier: workspace:*
+        version: link:../github
       '@kitz/mod':
         specifier: workspace:*
         version: link:../mod
@@ -843,6 +871,11 @@ packages:
       '@effect/sql': ^0.49.0
       effect: ^3.19.13
 
+  '@effect/platform@0.81.1':
+    resolution: {integrity: sha512-TdhF7kqIrnk9sJD2w99sK1BEPWWNflCU/PdEXJlqdtOiLPLxYQbg/l+2fZ8F3+xF2lCMX6ynO0ifQkOzgD0/9Q==}
+    peerDependencies:
+      effect: ^3.14.22
+
   '@effect/platform@0.94.0':
     resolution: {integrity: sha512-oIATd3M+RUe2q+bu0Qpgt4/qSbXBM9OEGBrRW7SvtwXGOWkCYkN+LfOPnmPrbMB7jYjpIb7808T1bONM1Nwgfg==}
     peerDependencies:
@@ -1103,6 +1136,12 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
+
+  '@octokit/openapi-types@24.2.0':
+    resolution: {integrity: sha512-9sIH3nSUttelJSXUrmGzl7QUBFul0/mB8HRYl3fOlgHbIWG+WnYDXU3v/2zMtAvuzZ/ed00Ei6on975FhBfzrg==}
+
+  '@octokit/types@13.10.0':
+    resolution: {integrity: sha512-ifLaO34EbbPj0Xgro4G5lP5asESjwHracYJvVaPIyXMuiuXLlhic3S47cBdTb+jfODkTE5YtGCLt3Ay3+J97sA==}
 
   '@oxlint/darwin-arm64@1.34.0':
     resolution: {integrity: sha512-euz3Dtp5/UE9axFkQnllOWp3gOwoqaxfZPUUwiW8HBelqhI9PRMVIfQ/akmwl+G5XixQZIgXkXQ5SJxnb1+Qww==}
@@ -2669,6 +2708,13 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
+  '@effect/platform@0.81.1(effect@3.19.13)':
+    dependencies:
+      effect: 3.19.13
+      find-my-way-ts: 0.1.6
+      msgpackr: 1.11.8
+      multipasta: 0.2.7
+
   '@effect/platform@0.94.0(effect@3.19.13)':
     dependencies:
       effect: 3.19.13
@@ -2838,6 +2884,12 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
+
+  '@octokit/openapi-types@24.2.0': {}
+
+  '@octokit/types@13.10.0':
+    dependencies:
+      '@octokit/openapi-types': 24.2.0
 
   '@oxlint/darwin-arm64@1.34.0':
     optional: true

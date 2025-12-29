@@ -3,7 +3,7 @@ import { NodeFileSystem, NodePath } from '@effect/platform-node'
 import { Env } from '@kitz/env'
 import { Oak } from '@kitz/oak'
 import { Effect, Layer, Schema } from 'effect'
-import { discover } from '../discovery.js'
+import * as Api from '../../api/__.js'
 
 const CONFIG_FILE = 'release.config.ts'
 const GITIGNORE_ENTRY = '.release/'
@@ -77,7 +77,7 @@ const program = Effect.gen(function*() {
   }
 
   // Discover packages
-  const packages = yield* discover
+  const packages = yield* Api.Workspace.discover
   console.log(`✓ Detected ${packages.length} package${packages.length === 1 ? '' : 's'}`)
 
   // Add .release/ to .gitignore

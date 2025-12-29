@@ -14,7 +14,6 @@
  */
 
 import { SingleRunner } from '@effect/cluster'
-import { Command } from '@effect/platform'
 import { NodeFileSystem, NodePath } from '@effect/platform-node'
 import { SqliteClient } from '@effect/sql-sqlite-node'
 import { Workflow as EffectWorkflow, WorkflowEngine } from '@effect/workflow'
@@ -22,6 +21,7 @@ import { Changelog } from '@kitz/changelog'
 import { Flo } from '@kitz/flo'
 import { Fs } from '@kitz/fs'
 import { Git } from '@kitz/git'
+import { Github } from '@kitz/github'
 import { Semver } from '@kitz/semver'
 import { Effect, Layer, Option, Schema, Stream } from 'effect'
 import { type PreflightError, run as runPreflight } from './preflight.js'
@@ -317,47 +317,32 @@ export const ReleaseWorkflow = Flo.Workflow.make({
             newVersion: release.nextVersion,
           })
 
+          const gh = yield* Github.Github
+
           // Check if preview release already exists
           if (isPreview) {
-            const existsCmd = Command.make('gh', 'release', 'view', tag)
-            const exists = yield* Command.exitCode(existsCmd).pipe(
-              Effect.map((code) => code === 0),
-              Effect.catchAll(() => Effect.succeed(false)),
-            )
+            const exists = yield* gh.releaseExists(tag)
 
             if (exists) {
               // Update existing preview release
               yield* Effect.log(`Updating existing preview release: ${tag}`)
-              const updateCmd = Command.make('gh', 'release', 'edit', tag, '--notes', changelog.markdown)
-              yield* Command.exitCode(updateCmd)
+              yield* gh.updateRelease(tag, { body: changelog.markdown })
             } else {
               // Create new preview release
-              const createCmd = Command.make(
-                'gh',
-                'release',
-                'create',
+              yield* gh.createRelease({
                 tag,
-                '--title',
-                `${release.packageName} @next`,
-                '--notes',
-                changelog.markdown,
-                '--prerelease',
-              )
-              yield* Command.exitCode(createCmd)
+                title: `${release.packageName} @next`,
+                body: changelog.markdown,
+                prerelease: true,
+              })
             }
           } else {
             // Create stable release
-            const createCmd = Command.make(
-              'gh',
-              'release',
-              'create',
+            yield* gh.createRelease({
               tag,
-              '--title',
-              `${release.packageName} v${release.nextVersion}`,
-              '--notes',
-              changelog.markdown,
-            )
-            yield* Command.exitCode(createCmd)
+              title: `${release.packageName} v${release.nextVersion}`,
+              body: changelog.markdown,
+            })
           }
 
           return tag
@@ -387,6 +372,28 @@ export const ReleaseWorkflow = Flo.Workflow.make({
 })
 
 // ============================================================================
+// GitHub URL Parsing
+// ============================================================================
+
+/**
+ * Parse GitHub owner and repo from a git remote URL.
+ *
+ * Supports both HTTPS and SSH formats:
+ * - https://github.com/owner/repo.git
+ * - git@github.com:owner/repo.git
+ * - github.com/owner/repo
+ */
+export const parseGithubRemote = (
+  url: string,
+): { owner: string; repo: string } | null => {
+  // Match patterns like:
+  // github.com/owner/repo or github.com:owner/repo (with optional .git suffix)
+  const match = url.match(/github\.com[/:]([^/]+)\/([^/]+?)(?:\.git)?$/)
+  if (!match) return null
+  return { owner: match[1]!, repo: match[2]! }
+}
+
+// ============================================================================
 // Layer Composition
 // ============================================================================
 
@@ -396,16 +403,38 @@ export const ReleaseWorkflow = Flo.Workflow.make({
 export const DEFAULT_WORKFLOW_DB = '.release/workflow.db'
 
 /**
+ * Configuration for the workflow runtime.
+ */
+export interface WorkflowRuntimeConfig {
+  /** Path to SQLite database file */
+  readonly dbPath?: string
+  /** GitHub configuration for release creation */
+  readonly github?: {
+    readonly owner: string
+    readonly repo: string
+    readonly token?: string
+  }
+}
+
+/**
  * Create the full workflow runtime layer with SQLite persistence.
  *
- * @param dbPath - Path to SQLite database file (relative to cwd or absolute)
+ * @param config - Runtime configuration
  */
-export const makeWorkflowRuntime = (dbPath: string = DEFAULT_WORKFLOW_DB) =>
+export const makeWorkflowRuntime = (config: WorkflowRuntimeConfig = {}) =>
   Layer.mergeAll(
-    SqliteClient.layer({ filename: dbPath }),
+    SqliteClient.layer({ filename: config.dbPath ?? DEFAULT_WORKFLOW_DB }),
     NodeFileSystem.layer,
     NodePath.layer,
     WorkflowEngine.layerMemory,
+    config.github
+      ? Github.LiveFetch(config.github)
+      : Layer.succeed(Github.Github, {
+        // Stub implementation when no github config provided
+        releaseExists: () => Effect.succeed(false),
+        createRelease: () => Effect.die('GitHub not configured'),
+        updateRelease: () => Effect.die('GitHub not configured'),
+      }),
   ).pipe(
     Layer.provideMerge(SingleRunner.layer({ runnerStorage: 'sql' })),
   )
@@ -599,7 +628,7 @@ export const executeWorkflowObservable = (
         createdTags: result.createTags as string[],
         createdGHReleases: result.createGHReleases as string[],
       })),
-      Effect.provide(makeWorkflowRuntime(options.dbPath)),
+      Effect.provide(makeWorkflowRuntime(options.dbPath ? { dbPath: options.dbPath } : {})),
     ) as Effect.Effect<WorkflowResult, ReleaseWorkflowError>
 
     return {

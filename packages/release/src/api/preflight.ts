@@ -79,29 +79,17 @@ export const checkNpmAuth = (
 /**
  * Check that git working directory is clean.
  */
-export const checkGitClean = (): Effect.Effect<void, PreflightError> =>
+export const checkGitClean = (): Effect.Effect<void, PreflightError | Git.GitError, Git.Git> =>
   Effect.gen(function*() {
-    const result = yield* Effect.tryPromise({
-      try: async () => {
-        const { stdout } = await execAsync('git status --porcelain')
-        return stdout.trim()
-      },
-      catch: (cause) =>
-        new PreflightError({
-          context: {
-            check: 'git-clean',
-            detail: `Failed to check git status: ${cause instanceof Error ? cause.message : String(cause)}`,
-          },
-          ...(cause instanceof Error && { cause }),
-        }),
-    })
+    const git = yield* Git.Git
+    const isClean = yield* git.isClean()
 
-    if (result) {
+    if (!isClean) {
       return yield* Effect.fail(
         new PreflightError({
           context: {
             check: 'git-clean',
-            detail: `Working directory has uncommitted changes:\n${result}`,
+            detail: 'Working directory has uncommitted changes',
           },
         }),
       )
@@ -115,25 +103,13 @@ export const checkGitClean = (): Effect.Effect<void, PreflightError> =>
  */
 export const checkGitRemote = (
   remote = 'origin',
-): Effect.Effect<string, PreflightError> =>
+): Effect.Effect<string, PreflightError | Git.GitError, Git.Git> =>
   Effect.gen(function*() {
-    const result = yield* Effect.tryPromise({
-      try: async () => {
-        const { stdout } = await execAsync(`git ls-remote --get-url ${remote}`)
-        return stdout.trim()
-      },
-      catch: (cause) =>
-        new PreflightError({
-          context: {
-            check: 'git-remote',
-            detail: `Cannot reach git remote '${remote}': ${cause instanceof Error ? cause.message : String(cause)}`,
-          },
-          ...(cause instanceof Error && { cause }),
-        }),
-    })
+    const git = yield* Git.Git
+    const url = yield* git.getRemoteUrl(remote)
 
-    yield* Effect.log(`Preflight: git remote '${remote}' is reachable at ${result}`)
-    return result
+    yield* Effect.log(`Preflight: git remote '${remote}' is reachable at ${url}`)
+    return url
   })
 
 /**

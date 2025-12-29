@@ -42,6 +42,7 @@
     "@kitz/flo": "workspace:*",
     "@kitz/fs": "workspace:*",
     "@kitz/git": "workspace:*",
+    "@kitz/github": "workspace:*",
     "@kitz/mod": "workspace:*",
     "@kitz/npm-registry": "workspace:*",
     "@kitz/oak": "workspace:*",

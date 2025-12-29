@@ -1,11 +1,13 @@
 import { Effect, Layer, Ref } from 'effect'
-import { Author, Commit, Git, GitError, type GitService } from './git.js'
+import { Author } from './author.js'
+import { Commit } from './commit.js'
+import { Git, GitError, type GitService } from './service.js'
 import * as Sha from './sha.js'
 
 /**
- * Configuration for the test Git service.
+ * Configuration for the in-memory Git service.
  */
-export interface GitTestConfig {
+export interface GitMemoryConfig {
   /** Initial tags in the repository */
   readonly tags?: string[]
   /** Initial commits (newest first) */
@@ -18,15 +20,19 @@ export interface GitTestConfig {
   readonly root?: string
   /** HEAD commit SHA (short form) */
   readonly headSha?: Sha.Sha
+  /** Remote URL */
+  readonly remoteUrl?: string
 }
 
 /**
- * Mutable state for the test Git service.
+ * Mutable state for the in-memory Git service.
  *
- * This allows tests to verify what operations were performed
- * and to dynamically update state during test execution.
+ * Useful for:
+ * - Verifying what operations were performed
+ * - Dynamically updating state during execution
+ * - Inspecting final state after operations
  */
-export interface GitTestState {
+export interface GitMemoryState {
   /** All tags (including created ones) */
   readonly tags: Ref.Ref<string[]>
   /** All commits */
@@ -39,32 +45,34 @@ export interface GitTestState {
   readonly root: Ref.Ref<string>
   /** HEAD commit SHA */
   readonly headSha: Ref.Ref<Sha.Sha>
-  /** Tags created during test (for verification) */
+  /** Tags created (for verification) */
   readonly createdTags: Ref.Ref<Array<{ tag: string; message: string | undefined }>>
   /** Tag push operations (for verification) */
   readonly pushedTags: Ref.Ref<Array<{ remote: string }>>
-  /** Map of tag -> SHA for testing getTagSha */
+  /** Map of tag -> SHA */
   readonly tagShas: Ref.Ref<Record<string, Sha.Sha>>
-  /** Map of sha -> parent SHAs for testing ancestry */
+  /** Map of sha -> parent SHAs for ancestry */
   readonly commitParents: Ref.Ref<Record<string, string[]>>
-  /** Tags deleted during test */
+  /** Tags deleted locally */
   readonly deletedTags: Ref.Ref<string[]>
-  /** Tags deleted from remote during test */
+  /** Tags deleted from remote */
   readonly deletedRemoteTags: Ref.Ref<Array<{ tag: string; remote: string }>>
+  /** Remote URL */
+  readonly remoteUrl: Ref.Ref<string>
 }
 
 /**
- * Create the initial test state from config.
+ * Create the initial state from config.
  */
-export const makeGitTestState = (
-  config: GitTestConfig = {},
-): Effect.Effect<GitTestState> =>
+export const makeState = (
+  config: GitMemoryConfig = {},
+): Effect.Effect<GitMemoryState> =>
   Effect.all({
     tags: Ref.make(config.tags ?? []),
     commits: Ref.make(config.commits ?? []),
     branch: Ref.make(config.branch ?? 'main'),
     isClean: Ref.make(config.isClean ?? true),
-    root: Ref.make(config.root ?? '/test/repo'),
+    root: Ref.make(config.root ?? '/repo'),
     headSha: Ref.make(config.headSha ?? Sha.make('abc1234')),
     createdTags: Ref.make<Array<{ tag: string; message: string | undefined }>>([]),
     pushedTags: Ref.make<Array<{ remote: string }>>([]),
@@ -72,12 +80,13 @@ export const makeGitTestState = (
     commitParents: Ref.make<Record<string, string[]>>({}),
     deletedTags: Ref.make<string[]>([]),
     deletedRemoteTags: Ref.make<Array<{ tag: string; remote: string }>>([]),
+    remoteUrl: Ref.make(config.remoteUrl ?? 'git@github.com:example/repo.git'),
   })
 
 /**
- * Create a Git service implementation backed by test state.
+ * Create a Git service implementation backed by in-memory state.
  */
-const makeGitTestService = (state: GitTestState): GitService => ({
+const makeService = (state: GitMemoryState): GitService => ({
   getTags: () => Ref.get(state.tags),
 
   getCurrentBranch: () => Ref.get(state.branch),
@@ -92,8 +101,6 @@ const makeGitTestService = (state: GitTestState): GitService => ({
       }
 
       // Find the index where the tag points to
-      // In real git, tags point to commits by hash
-      // For testing, we'll find commits after the tagged one
       const tagIndex = tags.indexOf(tag)
       if (tagIndex === -1) {
         return Effect.fail(
@@ -110,27 +117,19 @@ const makeGitTestService = (state: GitTestState): GitService => ({
         return commits
       }
 
-      // For simplicity in tests, we assume commits are ordered newest-first
-      // and the tag represents a point in history. Return commits before the tag.
-      // In a real scenario, we'd match by hash.
-
-      // For test purposes: if tag exists, simulate returning commits "since" that tag
-      // We'll use a simple heuristic: find a commit that mentions the package
+      // For simplicity, assume commits are ordered newest-first
+      // and the tag represents a point in history
       const packageName = tag.slice(0, atIndex)
       const versionInTag = tag.slice(atIndex + 1)
 
-      // Find the first commit that would correspond to this tag
-      // For testing, we return all commits (simulating fresh start after tag)
-      // Tests should set up commits appropriately
-
-      // More sophisticated: find commit index by matching version in message
+      // Find commit index by matching version in message
       const tagCommitIndex = commits.findIndex((c) =>
         c.message.includes(`(${packageName.split('/').pop()})`)
         && c.message.includes(versionInTag)
       )
 
       if (tagCommitIndex === -1) {
-        // Tag exists but no matching commit found - return all (fresh tag scenario)
+        // Tag exists but no matching commit found - return all
         return commits
       }
 
@@ -168,8 +167,6 @@ const makeGitTestService = (state: GitTestState): GitService => ({
 
   isAncestor: (sha1, sha2) =>
     Effect.gen(function*() {
-      // Simple ancestry check for testing
-      // In real git, this traverses the commit graph
       const parents = yield* Ref.get(state.commitParents)
 
       // BFS to find if sha1 is reachable from sha2
@@ -207,7 +204,6 @@ const makeGitTestService = (state: GitTestState): GitService => ({
     Effect.gen(function*() {
       const commits = yield* Ref.get(state.commits)
       const parents = yield* Ref.get(state.commitParents)
-      // Check if SHA exists in commits or parent map
       return commits.some((c) => c.hash === sha || c.hash.startsWith(sha)) || sha in parents
     }),
 
@@ -216,65 +212,62 @@ const makeGitTestService = (state: GitTestState): GitService => ({
 
   deleteRemoteTag: (tag, remote = 'origin') =>
     Ref.update(state.deletedRemoteTags, (deleted) => [...deleted, { tag, remote }]),
+
+  getRemoteUrl: (_remote = 'origin') => Ref.get(state.remoteUrl),
 })
 
 /**
- * Create a test Git layer with the given configuration.
+ * Create an in-memory Git layer with the given configuration.
  *
  * @example
  * ```ts
- * const testGit = Test.make({
+ * const memoryGit = Memory.make({
  *   tags: ['@kitz/core@1.0.0'],
- *   commits: [
- *     { hash: 'abc123', message: 'feat(core): new feature', ... }
- *   ]
+ *   commits: [...]
  * })
  *
  * const result = await Effect.runPromise(
- *   Effect.provide(planStable(ctx), testGit)
+ *   Effect.provide(myEffect, memoryGit)
  * )
  * ```
  */
-export const make = (config: GitTestConfig = {}): Layer.Layer<Git> =>
+export const make = (config: GitMemoryConfig = {}): Layer.Layer<Git> =>
   Layer.effect(
     Git,
     Effect.gen(function*() {
-      const state = yield* makeGitTestState(config)
-      return makeGitTestService(state)
+      const state = yield* makeState(config)
+      return makeService(state)
     }),
   )
 
 /**
- * Create a test Git layer with access to mutable state.
+ * Create an in-memory Git layer with access to mutable state.
  *
- * This allows tests to:
- * - Verify what tags were created
- * - Dynamically update state during tests
- * - Inspect final state after operations
+ * Useful for verifying operations, dynamically updating state,
+ * or inspecting final state after execution.
  *
  * @example
  * ```ts
- * const { layer, state } = await Effect.runPromise(Test.makeWithState({
+ * const { layer, state } = await Effect.runPromise(Memory.makeWithState({
  *   commits: [...]
  * }))
  *
- * await Effect.runPromise(Effect.provide(apply(plan), layer))
+ * await Effect.runPromise(Effect.provide(myEffect, layer))
  *
  * const createdTags = await Effect.runPromise(Ref.get(state.createdTags))
- * expect(createdTags).toHaveLength(2)
  * ```
  */
 export const makeWithState = (
-  config: GitTestConfig = {},
-): Effect.Effect<{ layer: Layer.Layer<Git>; state: GitTestState }> =>
+  config: GitMemoryConfig = {},
+): Effect.Effect<{ layer: Layer.Layer<Git>; state: GitMemoryState }> =>
   Effect.gen(function*() {
-    const state = yield* makeGitTestState(config)
-    const layer = Layer.succeed(Git, makeGitTestService(state))
+    const state = yield* makeState(config)
+    const layer = Layer.succeed(Git, makeService(state))
     return { layer, state }
   })
 
 /**
- * Generate a random valid hex SHA for testing.
+ * Generate a random valid hex SHA.
  */
 const randomSha = (): string => {
   const hex = '0123456789abcdef'
@@ -286,7 +279,7 @@ const randomSha = (): string => {
 }
 
 /**
- * Helper to create a commit for testing.
+ * Helper to create a commit.
  */
 export const commit = (
   message: string,
