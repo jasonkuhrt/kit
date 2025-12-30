@@ -78,14 +78,14 @@ import { Fn } from '../fn/_.js'
 
 ```typescript
 // ✅ Correct - namespace import from root
+import { Fs } from '@kitz/fs'
 import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
-import { Fs } from '@kitz/fs'
 
 // ❌ Incorrect - barrel imports
+import { Path } from '@kitz/fs/__'
 import { Git } from '@kitz/git/__'
 import * as Semver from '@kitz/semver/__'
-import { Path } from '@kitz/fs/__'
 ```
 
 Access members via the namespace (e.g., `Git.Git`, `Git.GitError`, `Semver.fromString()`).

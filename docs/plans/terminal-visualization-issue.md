@@ -32,26 +32,31 @@ Wrap the storage layer to emit events when activities complete:
 
 ```typescript
 import { MessageStorage } from '@effect/cluster'
-import { PubSub, Layer } from 'effect'
+import { Layer, PubSub } from 'effect'
 
 const makeObservableStorage = (baseStorage: MessageStorage) =>
-  Layer.effect(MessageStorage, Effect.gen(function*() {
-    const pubsub = yield* PubSub.unbounded<WorkflowEvent>()
+  Layer.effect(
+    MessageStorage,
+    Effect.gen(function*() {
+      const pubsub = yield* PubSub.unbounded<WorkflowEvent>()
 
-    return {
-      ...baseStorage,
-      saveReply: (envelope) =>
-        baseStorage.saveReply(envelope).pipe(
-          Effect.tap(() => pubsub.publish({
-            _tag: 'ActivityCompleted',
-            activity: envelope.activity,
-            // ...
-          }))
-        ),
-      // Subscribe to events
-      events: PubSub.subscribe(pubsub),
-    }
-  }))
+      return {
+        ...baseStorage,
+        saveReply: (envelope) =>
+          baseStorage.saveReply(envelope).pipe(
+            Effect.tap(() =>
+              pubsub.publish({
+                _tag: 'ActivityCompleted',
+                activity: envelope.activity,
+                // ...
+              })
+            ),
+          ),
+        // Subscribe to events
+        events: PubSub.subscribe(pubsub),
+      }
+    }),
+  )
 ```
 
 **Pros**: Works today, no upstream changes needed
@@ -65,7 +70,7 @@ Poll SQLite database directly for workflow state changes:
 const pollProgress = (dbPath: string, executionId: string) =>
   Stream.repeatEffectWithSchedule(
     readWorkflowState(dbPath, executionId),
-    Schedule.spaced('100 millis')
+    Schedule.spaced('100 millis'),
   ).pipe(
     Stream.changes, // Only emit when state changes
   )

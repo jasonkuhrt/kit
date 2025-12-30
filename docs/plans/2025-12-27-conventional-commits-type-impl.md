@@ -13,6 +13,7 @@
 ## Task 1: Create Type Module with Impact and StandardValue
 
 **Files:**
+
 - Create: `packages/conventional-commits/src/type.ts`
 - Test: `packages/conventional-commits/src/type.test.ts`
 
@@ -143,6 +144,7 @@ git commit -m "feat(conventional-commits): add Impact and StandardValue enums"
 ## Task 2: Add StandardImpact Mapping
 
 **Files:**
+
 - Modify: `packages/conventional-commits/src/type.ts`
 - Test: `packages/conventional-commits/src/type.test.ts`
 
@@ -228,6 +230,7 @@ git commit -m "feat(conventional-commits): add StandardImpact mapping"
 ## Task 3: Add Standard and Custom Tagged Classes
 
 **Files:**
+
 - Modify: `packages/conventional-commits/src/type.ts`
 - Test: `packages/conventional-commits/src/type.test.ts`
 
@@ -235,8 +238,8 @@ git commit -m "feat(conventional-commits): add StandardImpact mapping"
 
 ```typescript
 // Add to type.test.ts
-import { Standard, Custom, Type } from './type.js'
 import { Schema } from 'effect'
+import { Custom, Standard, Type } from './type.js'
 
 describe('Standard', () => {
   test('creates with valid value', () => {
@@ -246,7 +249,10 @@ describe('Standard', () => {
   })
 
   test('decodes from object', () => {
-    const result = Schema.decodeUnknownSync(Standard)({ _tag: 'Standard', value: 'fix' })
+    const result = Schema.decodeUnknownSync(Standard)({
+      _tag: 'Standard',
+      value: 'fix',
+    })
     expect(result.value).toBe('fix')
   })
 })
@@ -259,15 +265,24 @@ describe('Custom', () => {
   })
 
   test('decodes from object', () => {
-    const result = Schema.decodeUnknownSync(Custom)({ _tag: 'Custom', value: 'experimental' })
+    const result = Schema.decodeUnknownSync(Custom)({
+      _tag: 'Custom',
+      value: 'experimental',
+    })
     expect(result.value).toBe('experimental')
   })
 })
 
 describe('Type', () => {
   test('is union of Standard and Custom', () => {
-    const standard = Schema.decodeUnknownSync(Type)({ _tag: 'Standard', value: 'feat' })
-    const custom = Schema.decodeUnknownSync(Type)({ _tag: 'Custom', value: 'wip' })
+    const standard = Schema.decodeUnknownSync(Type)({
+      _tag: 'Standard',
+      value: 'feat',
+    })
+    const custom = Schema.decodeUnknownSync(Type)({
+      _tag: 'Custom',
+      value: 'wip',
+    })
     expect(standard._tag).toBe('Standard')
     expect(custom._tag).toBe('Custom')
   })
@@ -328,6 +343,7 @@ git commit -m "feat(conventional-commits): add Standard, Custom, and Type union"
 ## Task 4: Add Type Guards and Accessors
 
 **Files:**
+
 - Modify: `packages/conventional-commits/src/type.ts`
 - Test: `packages/conventional-commits/src/type.test.ts`
 
@@ -335,7 +351,7 @@ git commit -m "feat(conventional-commits): add Standard, Custom, and Type union"
 
 ```typescript
 // Add to type.test.ts
-import { isStandard, isCustom, value, impact } from './type.js'
+import { impact, isCustom, isStandard, value } from './type.js'
 
 describe('isStandard', () => {
   test('returns true for Standard', () => {
@@ -391,7 +407,8 @@ Expected: FAIL
 /**
  * Check if a Type is a standard type.
  */
-export const isStandard = (type: Type): type is Standard => type._tag === 'Standard'
+export const isStandard = (type: Type): type is Standard =>
+  type._tag === 'Standard'
 
 /**
  * Check if a Type is a custom type.
@@ -429,6 +446,7 @@ git commit -m "feat(conventional-commits): add type guards and accessors"
 ## Task 5: Add Type-Level Smart Constructor
 
 **Files:**
+
 - Modify: `packages/conventional-commits/src/type.ts`
 - Test: `packages/conventional-commits/src/type.test.ts`
 
@@ -475,7 +493,8 @@ Expected: FAIL
 /**
  * Type-level narrowing: returns Standard for known types, Custom otherwise.
  */
-type From<$value extends string> = $value extends StandardValue ? Standard : Custom
+type From<$value extends string> = $value extends StandardValue ? Standard
+  : Custom
 
 /**
  * Create a Type from a raw string.
@@ -529,6 +548,7 @@ git commit -m "feat(conventional-commits): add type-level smart constructor from
 ## Task 6: Update SingleTargetCommit to Use Type
 
 **Files:**
+
 - Modify: `packages/conventional-commits/src/single-target-commit.ts`
 - Test: `packages/conventional-commits/src/single-target-commit.test.ts`
 
@@ -544,20 +564,22 @@ import { Schema } from 'effect'
 import { Footer } from './footer.js'
 import { Type } from './type.js'
 
-export class SingleTargetCommit extends Schema.TaggedClass<SingleTargetCommit>()('SingleTarget', {
-  /** Commit type */
-  type: Type,  // Changed from Schema.String
-  /** Package scopes (can be empty, one, or multiple—all get same treatment) */
-  scopes: Schema.Array(Schema.String),
-  /** Whether this is a breaking change (applies to ALL scopes) */
-  breaking: Schema.Boolean,
-  /** Commit message (first line after type/scope) */
-  message: Schema.String,
-  /** Optional commit body */
-  body: Schema.OptionFromNullOr(Schema.String),
-  /** Commit footers */
-  footers: Schema.Array(Footer),
-}) {}
+export class SingleTargetCommit
+  extends Schema.TaggedClass<SingleTargetCommit>()('SingleTarget', {
+    /** Commit type */
+    type: Type, // Changed from Schema.String
+    /** Package scopes (can be empty, one, or multiple—all get same treatment) */
+    scopes: Schema.Array(Schema.String),
+    /** Whether this is a breaking change (applies to ALL scopes) */
+    breaking: Schema.Boolean,
+    /** Commit message (first line after type/scope) */
+    message: Schema.String,
+    /** Optional commit body */
+    body: Schema.OptionFromNullOr(Schema.String),
+    /** Commit footers */
+    footers: Schema.Array(Footer),
+  })
+{}
 ```
 
 **Step 3: Update existing tests to use Type**
@@ -581,6 +603,7 @@ git commit -m "refactor(conventional-commits)!: SingleTargetCommit uses Type uni
 ## Task 7: Update Target to Use Type
 
 **Files:**
+
 - Modify: `packages/conventional-commits/src/target.ts`
 - Test: `packages/conventional-commits/src/target.test.ts`
 
@@ -593,7 +616,7 @@ import { Type } from './type.js'
 
 export class Target extends Schema.TaggedClass<Target>()('Target', {
   /** Commit type */
-  type: Type,  // Changed from Schema.String
+  type: Type, // Changed from Schema.String
   /** Package scope (e.g., "core", "cli") */
   scope: Schema.String,
   /** Whether this target represents a breaking change */
@@ -620,6 +643,7 @@ git commit -m "refactor(conventional-commits)!: Target uses Type union"
 ## Task 8: Update Parser to Use Type.from()
 
 **Files:**
+
 - Modify: `packages/conventional-commits/src/parse/title.ts`
 - Test: `packages/conventional-commits/src/parse/title.test.ts`
 
@@ -634,6 +658,7 @@ import * as Type from '../type.js'
 ```
 
 Key changes:
+
 - Line 84-85: `type: Type.from(type),` instead of `type,`
 - Line 119-121: `type: Type.from(type),` instead of `type,`
 
@@ -658,6 +683,7 @@ git commit -m "refactor(conventional-commits): parser uses Type.from()"
 ## Task 9: Export Type Module
 
 **Files:**
+
 - Modify: `packages/conventional-commits/src/__.ts`
 
 **Step 1: Add Type export**

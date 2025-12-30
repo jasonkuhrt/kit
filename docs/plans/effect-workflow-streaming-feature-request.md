@@ -12,7 +12,7 @@ Add `Workflow.observe(executionId): Stream<WorkflowEvent>` to observe activity l
 
 ```typescript
 // Stream of workflow events - dogfoods Effect's Stream
-const events: Stream<WorkflowEvent> = yield* Workflow.observe(executionId)
+const events: Stream<WorkflowEvent> = yield * Workflow.observe(executionId)
 
 type WorkflowEvent =
   | { _tag: 'ActivityStarted'; activity: string }

@@ -134,11 +134,13 @@ export const make = (
 /**
  * Version bump type for stable releases.
  */
-export const BumpType = S.Enums({
-  major: 'major',
-  minor: 'minor',
-  patch: 'patch',
-} as const)
+export const BumpType = S.Enums(
+  {
+    major: 'major',
+    minor: 'minor',
+    patch: 'patch',
+  } as const,
+)
 export type BumpType = typeof BumpType.Type
 
 /**
