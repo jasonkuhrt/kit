@@ -99,7 +99,7 @@
   "scripts": {
     "build": "tsgo -p tsconfig.build.json",
     "dev": "tsgo -p tsconfig.build.json --watch",
-    "check:types": "tsgo --noEmit",
+    "check:types": "tsgo -p tsconfig.check.json --noEmit",
     "check:lint": "oxlint src/",
     "check:package": "publint && attw --pack --ignore-rules no-resolution cjs-resolves-to-esm internal-resolution-error"
   },
