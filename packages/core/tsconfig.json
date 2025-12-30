@@ -8,22 +8,22 @@
     "noEmit": true,
     "paths": {
       "#test": [
-        "../test/src/_.js"
+        "../test/src/_.ts"
       ],
       "#test/test": [
-        "../test/src/__.js"
+        "../test/src/__.ts"
       ],
       "#test/*": [
-        "../test/src/*.js"
+        "../test/src/*.ts"
       ],
       "#assert": [
-        "../assert/src/_.js"
+        "../assert/src/_.ts"
       ],
       "#assert/assert": [
-        "../assert/src/__.js"
+        "../assert/src/__.ts"
       ],
       "#assert/*": [
-        "../assert/src/*.js"
+        "../assert/src/*.ts"
       ],
       "#arr": [
         "./src/arr/_.js"
