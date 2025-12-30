@@ -25,7 +25,7 @@ import { Target } from './target.js'
  * Per-package body for arr.
  * ```
  */
-export class CommitMulti extends Schema.TaggedClass<CommitMulti>()('CommitMulti', {
+export class Multi extends Schema.TaggedClass<Multi>()('Multi', {
   /** Targets with independent type/scope/breaking */
   targets: Schema.NonEmptyArray(Target),
   /** Commit message (first line after type-scope groups) */
@@ -35,5 +35,5 @@ export class CommitMulti extends Schema.TaggedClass<CommitMulti>()('CommitMulti'
   /** Per-package sections keyed by scope name */
   sections: Schema.Record({ key: Schema.String, value: TargetSection }),
 }) {
-  static is = Schema.is(CommitMulti)
+  static is = Schema.is(Multi)
 }

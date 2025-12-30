@@ -151,9 +151,9 @@ const program = Effect.gen(function*() {
     return env.exit(1)
   }
 
-  // Load config and discover packages
+  // Load config and scan packages
   const _config = yield* Api.Config.load(process.cwd()).pipe(Effect.orElseSucceed(() => undefined))
-  const packages = yield* Api.Workspace.discover
+  const packages = yield* Api.Workspace.scan
 
   // Deserialize plan
   const planJson = yield* fs.readFileString(planPath)

@@ -1,9 +1,9 @@
 import { Err } from '@kitz/core'
 import { Effect, Option } from 'effect'
-import { CommitMulti } from '../commit-multi.js'
-import { CommitSingle } from '../commit-single.js'
+import { Multi } from '../commit-multi.js'
+import { Single } from '../commit-single.js'
 import { Target } from '../target.js'
-import { Type, from as typeFrom } from '../type.js'
+import { parse as parseType, Type } from '../type.js'
 
 /**
  * Error parsing a conventional commit title.
@@ -20,7 +20,7 @@ export type ParseTitleError = InstanceType<typeof ParseTitleError>
 /**
  * Parsed title result—either CommitSingle or CommitMulti (without body/footers yet).
  */
-export type ParsedTitle = CommitSingle | CommitMulti
+export type ParsedTitle = Single | Multi
 
 // Regex for a single type-scope group: type(scope!, scope2)?!?
 const TYPE_SCOPE_PATTERN = /^([a-z]+)(?:\(([^)]+)\))?(!)?$/
@@ -36,7 +36,7 @@ const TYPE_SCOPE_PATTERN = /^([a-z]+)(?:\(([^)]+)\))?(!)?$/
  * - Multiple comma-separated type(scope) groups
  * - OR same type but different breaking per scope
  */
-export const parseTitle = (
+export const parse = (
   title: string,
 ): Effect.Effect<ParsedTitle, ParseTitleError> =>
   Effect.gen(function*() {
@@ -87,7 +87,7 @@ export const parseTitle = (
 
       // If we have per-scope breaking markers on individual scopes, it's still CommitSingle
       // because they all share the same type
-      return CommitSingle.make({
+      return Single.make({
         type,
         scopes,
         breaking,
@@ -137,7 +137,7 @@ export const parseTitle = (
       )
     }
 
-    return CommitMulti.make({
+    return Multi.make({
       targets: targets as [Target, ...Target[]],
       message,
       summary: Option.none(),
@@ -190,7 +190,7 @@ const parseTypeScopeGroup = (group: string): ParsedGroup | null => {
   const [, typeString, scopesPart, groupBreaking] = match
   if (!typeString) return null
 
-  const type = typeFrom(typeString)
+  const type = parseType(typeString)
 
   if (!scopesPart) {
     // No scopes: "feat" or "feat!"

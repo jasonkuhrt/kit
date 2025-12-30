@@ -5,7 +5,7 @@ import { Semver } from '@kitz/semver'
 import { Effect } from 'effect'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
-import type { Package } from './discovery.js'
+import type { Package } from './scanner.js'
 
 const execAsync = promisify(exec)
 

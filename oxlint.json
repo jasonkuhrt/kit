@@ -15,6 +15,7 @@
     "eslint-plugin-jest/no-conditional-expect": "off",
     "eslint-plugin-jest/valid-title": "off",
     "eslint-plugin-import/no-unassigned-import": "off",
+    "no-unused-expressions": "off",
     "eslint/no-restricted-imports": [
       "error",
       {
@@ -35,5 +36,10 @@
       }
     }
   ],
-  "ignorePatterns": ["**/build/**", "**/node_modules/**", "**/*.d.ts", "**/__examples/**"]
+  "ignorePatterns": [
+    "**/build/**",
+    "**/node_modules/**",
+    "**/*.d.ts",
+    "**/__examples/**"
+  ]
 }

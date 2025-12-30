@@ -25,6 +25,8 @@
   "dependencies": {
     "@effect/workflow": "^0.16.0",
     "@kitz/core": "workspace:*",
+    "@kitz/tex": "workspace:*",
+    "ansis": "^4.0.0",
     "effect": "^3.19.13"
   },
   "devDependencies": {

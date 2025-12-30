@@ -1,73 +1,12 @@
-import { Semver } from '@kitz/semver'
 import { Option, Schema } from 'effect'
+import { Custom } from './type-custom.js'
+import { type BumpType, Standard, StandardImpact, StandardValue } from './type-standard.js'
 
-/**
- * Re-export BumpType from @kitz/semver for convenience.
- */
-export type BumpType = Semver.BumpType
+// ─── Re-exports ─────────────────────────────────────────────────
 
-// ─── Standard Value ─────────────────────────────────────────────
-
-/**
- * The 11 standard conventional commit types (Angular convention).
- */
-export const StandardValue = Schema.Enums({
-  feat: 'feat',
-  fix: 'fix',
-  docs: 'docs',
-  style: 'style',
-  refactor: 'refactor',
-  perf: 'perf',
-  test: 'test',
-  build: 'build',
-  ci: 'ci',
-  chore: 'chore',
-  revert: 'revert',
-})
-export type StandardValue = typeof StandardValue.Type
-
-// ─── Standard Impact Mapping ────────────────────────────────────
-
-/**
- * Static impact mapping for standard types.
- *
- * Returns `Option.none()` for types that don't trigger a release (style, refactor, etc.)
- */
-export const StandardImpact: Record<StandardValue, Option.Option<BumpType>> = {
-  feat: Option.some('minor'),
-  fix: Option.some('patch'),
-  docs: Option.some('patch'),
-  perf: Option.some('patch'),
-  style: Option.none(),
-  refactor: Option.none(),
-  test: Option.none(),
-  build: Option.none(),
-  ci: Option.none(),
-  chore: Option.none(),
-  revert: Option.none(),
-}
-
-// ─── Standard Type ──────────────────────────────────────────────
-
-/**
- * A known conventional commit type.
- */
-export class Standard extends Schema.TaggedClass<Standard>()('Standard', {
-  value: StandardValue,
-}) {
-  static is = Schema.is(Standard)
-}
-
-// ─── Custom Type ────────────────────────────────────────────────
-
-/**
- * A custom/unknown commit type.
- */
-export class Custom extends Schema.TaggedClass<Custom>()('Custom', {
-  value: Schema.String,
-}) {
-  static is = Schema.is(Custom)
-}
+export { Custom } from './type-custom.js'
+export type { BumpType } from './type-standard.js'
+export { Standard, StandardImpact, StandardValue } from './type-standard.js'
 
 // ─── Type Union ─────────────────────────────────────────────────
 
@@ -77,12 +16,26 @@ export class Custom extends Schema.TaggedClass<Custom>()('Custom', {
 export const Type = Schema.Union(Standard, Custom)
 export type Type = typeof Type.Type
 
-// ─── Accessors ──────────────────────────────────────────────────
+// ─── Parse ──────────────────────────────────────────────────────
 
 /**
- * Extract the raw string value from any Type.
+ * Type-level narrowing: returns Standard for known types, Custom otherwise.
  */
-export const value = (type: Type): string => type.value
+type Parse<$value extends string> = $value extends StandardValue ? Standard : Custom
+
+/**
+ * Create a Type from a raw string.
+ * Known types become Standard, unknown become Custom.
+ * Return type narrows based on input literal.
+ */
+export const parse = <$value extends string>(value: $value): Parse<$value> => {
+  if (value in StandardValue.enums) {
+    return Standard.make({ value: value as StandardValue }) as Parse<$value>
+  }
+  return Custom.make({ value }) as Parse<$value>
+}
+
+// ─── Accessors ──────────────────────────────────────────────────
 
 /**
  * Get impact for a Standard type.
@@ -93,22 +46,3 @@ export const value = (type: Type): string => type.value
  * For Custom types, use release config lookup instead.
  */
 export const impact = (type: Standard): Option.Option<BumpType> => StandardImpact[type.value]!
-
-// ─── Smart Constructor ──────────────────────────────────────────
-
-/**
- * Type-level narrowing: returns Standard for known types, Custom otherwise.
- */
-type From<$value extends string> = $value extends StandardValue ? Standard : Custom
-
-/**
- * Create a Type from a raw string.
- * Known types become Standard, unknown become Custom.
- * Return type narrows based on input literal.
- */
-export const from = <$value extends string>(value: $value): From<$value> => {
-  if (value in StandardValue.enums) {
-    return new Standard({ value: value as StandardValue }) as From<$value>
-  }
-  return new Custom({ value }) as From<$value>
-}

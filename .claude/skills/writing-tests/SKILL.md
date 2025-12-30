@@ -1,79 +1,127 @@
 ---
 name: writing-tests
-description: Writes tests following project conventions. Handles test file organization, runtime vs type tests, table-driven tests with Test module, and type assertions with Assert API.
+description: Writes tests following project conventions. Covers @kitz/test table-driven tests, snapshot mode, type assertions, and file organization.
 ---
 
 # Writing Tests
 
-## Steps
+## Preferences
 
-1. **Create test file** colocated with module: `_.test.ts` for module tests, `<file>.test.ts` for complex parts
-2. **Import the namespace**: `import { ModuleName } from './_.js'`
-3. **Write tests** using appropriate patterns below
+| Scenario              | Use                             | Why                                 |
+| --------------------- | ------------------------------- | ----------------------------------- |
+| Testing a function    | `Test.on(fn)`                   | Types inferred, minimal boilerplate |
+| Need grouping/nesting | `Test.describe('name')`         | Creates describe blocks             |
+| Snapshot-only tests   | `.casesInput(a, b, c)`          | Cleaner than `[[a]], [[b]], [[c]]`  |
+| With expected output  | `.cases([[input], output])`     | Tuple format, concise               |
+| Need skip/todo/tags   | `.cases({ input, skip: true })` | Object format for metadata          |
 
-## Reference
+## Quick Reference
 
-### Test Categories
-
-| Category | File         | Purpose                             |
-| -------- | ------------ | ----------------------------------- |
-| Runtime  | `.test.ts`   | Test runtime behavior               |
-| Type     | `.test-d.ts` | Validate TypeScript types via `tsc` |
-
-### Table-Driven Tests (Preferred)
-
-Use Kit's `Test` module for table-driven tests:
+### Function Mode (preferred)
 
 ```typescript
 import { Test } from '@kitz/test'
 
-// Function mode - types inferred from function
-Test.on(add)
-  .cases(
-    [[2, 3], 5],
-    [[-1, 1], 0],
-  )
-  .test()
+// With expected outputs
+Test.on(add).cases([[2, 3], 5], [[0, 0], 0]).test()
 
-// Describe mode - with custom types
-Test.describe('Transform')
-  .inputType<string>()
-  .outputType<string>()
-  .cases(['hello', 'HELLO'])
-  .test(({ input, output }) => {
-    expect(input.toUpperCase()).toBe(output)
-  })
+// Snapshot mode - use .casesInput() for cleaner syntax
+Test.on(Positive.from).casesInput(1, 10, 0, -1).test()
 ```
 
-### Type Assertions
+### Describe Mode
 
-Use value-level `Assert` API (reports ALL errors, not just first):
+```typescript
+// For grouping or custom types
+Test.describe('Parser > decode')
+  .on(decode)
+  .casesInput('1.2.3', 'invalid', '1.0.0-beta')
+  .test()
+
+// Chain describes for multiple groups
+Test
+  .describe('basic', [[['1.2.3']], [['invalid']]])
+  .describe('prerelease', [[['1.0.0-beta']]])
+  .test()
+```
+
+### Case Formats
+
+<!-- dprint-ignore -->
+```typescript
+// Tuple (preferred)
+[[arg1, arg2], expected]                  // With output
+[[arg1, arg2], expected, { comment: 'name' }]  // Named
+[[arg1, arg2]]                            // Snapshot
+
+// Object (when need metadata)
+{ input: [a, b], output: x, skip: true }
+{ todo: 'Not implemented' }
+```
+
+### Snapshot Mode
+
+Omit expected output → automatic snapshots. Errors captured automatically:
+
+```
+╔═══════════════════════════╗ GIVEN ARGUMENTS
+-1
+╠═══════════════════════════╣ THEN THROWS ERROR
+Error: Must be positive
+╚═══════════════════════════╝
+```
+
+Hide arguments when redundant: `.snapshots({ arguments: false })`
+
+### Advanced
+
+```typescript
+// Matrix - run cases across combinations
+Test.describe('transform')
+  .matrix({ upper: [true, false], prefix: ['', 'x_'] })
+  .casesInput('hello', 'world')
+  .test(({ input, matrix }) => {/* 8 tests total */})
+
+// Output transformation - partial expectations
+Test.on(createUser)
+  .onOutput((partial) => ({ ...defaults, ...partial }))
+  .cases([['Alice'], { role: 'admin' }])
+  .test()
+
+// Custom assertion
+Test.on(divide)
+  .cases([[10, 3], 3.33])
+  .test(({ result, output }) => expect(result).toBeCloseTo(output))
+```
+
+### Config Methods
+
+`.only()` · `.skip()` · `.skip('reason')` · `.skipIf(() => bool)` · `.concurrent()`
+
+## Type Assertions
 
 ```typescript
 import { Assert } from '@kitz/assert'
 
-// Preferred - value-level
-Assert.exact.ofAs<string>().on(value)
+Assert.exact.ofAs<string>().on(value) // Value-level (preferred)
 
-// In .test-d.ts - flat type aliases (no test blocks)
-type _pass1 = Assert.exact.of<string, string>
-
-// @ts-expect-error - testing that types fail
-type _fail1 = Assert.exact.of<string, number>
+// In .test-d.ts files
+type _pass = Assert.exact.of<string, string>
+// @ts-expect-error
+type _fail = Assert.exact.of<string, number>
 ```
 
-### File Organization
+## File Organization
 
-```
-src/foo/
-├── _.test.ts              # Module tests (simple interface)
-└── complex-part.test.ts   # Dedicated tests for complex parts
-```
+| File          | Purpose              |
+| ------------- | -------------------- |
+| `_.test.ts`   | Module runtime tests |
+| `foo.test.ts` | Complex part tests   |
+| `_.test-d.ts` | Type-level tests     |
 
-## Notes
+## Don'ts
 
-- **Don't use top-level describe** blocks repeating module name - file path provides context
-- **Don't wrap Test.on()** inside Vitest `describe` - Test module creates its own
-- **Don't use Assert.Cases<>** - it short-circuits on first error
-- **Prefer fast-check** for property-based testing when applicable
-- **Be concise** - don't write sprawling test code
+- Don't wrap `Test.on()` in vitest `describe` - it creates its own
+- Don't use `Assert.Cases<>` - short-circuits on first error
+- Don't use `[[x]], [[y]], [[z]]` when `.casesInput(x, y, z)` works
+- Don't use `dprint-ignore` with `.casesInput()` - single column doesn't need alignment

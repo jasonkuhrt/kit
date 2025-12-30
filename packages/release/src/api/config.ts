@@ -22,7 +22,7 @@ export class ReleaseConfig extends Schema.Class<ReleaseConfig>('ReleaseConfig')(
   previewTag: Schema.optionalWith(Schema.String, { default: () => 'next' }),
   /** Skip npm publish (dry run) */
   skipNpm: Schema.optionalWith(Schema.Boolean, { default: () => false }),
-  /** Scope to package name mapping (auto-discovered if not provided) */
+  /** Scope to package name mapping (auto-scanned if not provided) */
   packages: Schema.optionalWith(
     Schema.Record({ key: Schema.String, value: Schema.String }),
     { default: () => ({}) },

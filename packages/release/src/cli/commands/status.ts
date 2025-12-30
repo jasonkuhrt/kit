@@ -60,9 +60,9 @@ const args = await Oak.Command.create()
 const program = Effect.gen(function*() {
   const env = yield* Env.Env
 
-  // Load config and discover packages
+  // Load config and scan packages
   const config = yield* Api.Config.load(process.cwd()).pipe(Effect.orElseSucceed(() => undefined))
-  const packages = yield* Api.Workspace.discover
+  const packages = yield* Api.Workspace.scan
 
   if (packages.length === 0) {
     console.log('No packages found.')

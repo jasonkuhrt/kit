@@ -26,7 +26,7 @@ export default defineConfig({
   // Skip npm publish (for testing)
   // skipNpm: false,
 
-  // Scope to package mapping (auto-discovered by default)
+  // Scope to package mapping (auto-scanned by default)
   // packages: {
   //   core: '@kitz/core',
   //   kitz: 'kitz',
@@ -76,8 +76,8 @@ const program = Effect.gen(function*() {
     console.log(`✓ Created ${CONFIG_FILE}`)
   }
 
-  // Discover packages
-  const packages = yield* Api.Workspace.discover
+  // Scan packages
+  const packages = yield* Api.Workspace.scan
   console.log(`✓ Detected ${packages.length} package${packages.length === 1 ? '' : 's'}`)
 
   // Add .release/ to .gitignore

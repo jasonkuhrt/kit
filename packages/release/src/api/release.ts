@@ -7,8 +7,8 @@ import { Git } from '@kitz/git'
 import { Semver } from '@kitz/semver'
 import { Effect, Option, Schema as S } from 'effect'
 import { buildDependencyGraph, detect as detectCascades } from './cascade.js'
-import type { Package } from './discovery.js'
 import { PreviewPrerelease, PrPrerelease } from './prerelease.js'
+import type { Package } from './scanner.js'
 import {
   aggregateByPackage,
   type BumpType,

@@ -50,6 +50,7 @@ src/
 ### File Contents
 
 **service.ts** - Service definition:
+
 ```typescript
 import { Context, Effect } from 'effect'
 
@@ -67,6 +68,7 @@ export class MyService extends Context.Tag('MyService')<MyService, MyServiceImpl
 ```
 
 **live.ts** - Live implementation:
+
 ```typescript
 import { Layer } from 'effect'
 import { MyService, type MyServiceImpl } from './service.js'
@@ -79,28 +81,32 @@ export const MyServiceLive = Layer.sync(MyService, () => makeService(createDeps(
 ```
 
 **memory.ts** - Test implementation:
+
 ```typescript
 import { Effect, Layer, Ref } from 'effect'
 import { MyService, type MyServiceImpl } from './service.js'
 
-export interface MyServiceMemoryConfig { /* initial state */ }
-export interface MyServiceMemoryState { /* refs for verification */ }
+export interface MyServiceMemoryConfig {/* initial state */}
+export interface MyServiceMemoryState {/* refs for verification */}
 
 export const make = (config?: MyServiceMemoryConfig): Layer.Layer<MyService> =>
-  Layer.effect(MyService, Effect.gen(function*() {
-    const state = yield* makeState(config)
-    return makeService(state)
-  }))
+  Layer.effect(
+    MyService,
+    Effect.gen(function*() {
+      const state = yield* makeState(config)
+      return makeService(state)
+    }),
+  )
 ```
 
 ### Naming Convention
 
-| File | Contains |
-|------|----------|
-| `service.ts` | Tag, interface, errors |
-| `live.ts` | Production implementation |
-| `memory.ts` | In-memory test implementation |
-| `{model}.ts` | Domain models/data types |
+| File         | Contains                      |
+| ------------ | ----------------------------- |
+| `service.ts` | Tag, interface, errors        |
+| `live.ts`    | Production implementation     |
+| `memory.ts`  | In-memory test implementation |
+| `{model}.ts` | Domain models/data types      |
 
 ## Notes
 

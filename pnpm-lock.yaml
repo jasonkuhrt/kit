@@ -194,6 +194,12 @@ importers:
       '@kitz/core':
         specifier: workspace:*
         version: link:../core
+      '@kitz/tex':
+        specifier: workspace:*
+        version: link:../tex
+      ansis:
+        specifier: ^4.0.0
+        version: 4.2.0
       effect:
         specifier: ^3.19.13
         version: 3.19.13

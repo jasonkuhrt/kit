@@ -4,18 +4,23 @@ This project is designed for Claude Code-assisted development. Common workflows 
 
 ## Skills
 
-| Skill                      | Purpose                                     |
-| -------------------------- | ------------------------------------------- |
-| `running-scripts`          | Turbo commands, caching, and test execution |
-| `creating-packages`        | Create new packages with full scaffolding   |
-| `creating-modules`         | Add modules to existing packages            |
-| `implementing-functions`   | Function design with currying patterns      |
-| `writing-tests`            | Test patterns and organization              |
-| `committing-changes`       | Conventional commits and CI validation      |
-| `authoring-global-scripts` | Manage `_:*` template scripts               |
-| `syncing-tsconfig-paths`   | Keep tsconfig paths in sync with imports    |
-| `refreshing-docs`          | Update README tables                        |
-| `auditing-project`         | Check for out-of-band inconsistencies       |
+| Skill                      | Purpose                                         |
+| -------------------------- | ----------------------------------------------- |
+| `running-scripts`          | Turbo commands, caching, and test execution     |
+| `creating-packages`        | Create new packages with full scaffolding       |
+| `creating-modules`         | Add modules to existing packages                |
+| `implementing-functions`   | Function design with currying patterns          |
+| `writing-tests`            | Test patterns and organization                  |
+| `committing-changes`       | Conventional commits and CI validation          |
+| `authoring-global-scripts` | Manage `_:*` template scripts                   |
+| `syncing-tsconfig-paths`   | Keep tsconfig paths in sync with imports        |
+| `refreshing-docs`          | Update README tables                            |
+| `auditing-project`         | Check for out-of-band inconsistencies           |
+| `using-effect-schema`      | Effect Schema classes and conventions           |
+| `using-effect-match`       | Pattern matching with Effect Match              |
+| `using-lookup-tables`      | Type-safe lookup tables for tag-to-value maps   |
+| `using-string-builder`     | Multi-line string construction with Str.Builder |
+| `organizing-services`      | Effect services with multiple implementations   |
 
 Just describe what you need and Claude Code will handle it.
 

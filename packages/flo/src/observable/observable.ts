@@ -8,8 +8,8 @@
  *
  * @example
  * ```ts
- * // Instead of Activity.make, use ObservableActivity.make
- * yield* ObservableActivity.make({
+ * // Instead of Activity.make, use ObservableActivity.create
+ * yield* ObservableActivity.create({
  *   name: 'SendEmail',
  *   error: SendEmailError,
  *   execute: sendEmail(to, subject, body),
@@ -18,83 +18,28 @@
  */
 
 import { Activity } from '@effect/workflow'
-import { Context, Effect, Option, PubSub, Schema } from 'effect'
+import { Context, Duration, Effect, Option, PubSub, Schema } from 'effect'
+import * as ActivityTypes from '../models/activity.js'
+import * as WorkflowTypes from '../models/workflow.js'
 
-// ============================================================================
-// Event Types
-// ============================================================================
-
-/**
- * Activity started executing.
- */
-export class ActivityStarted extends Schema.TaggedClass<ActivityStarted>()('ActivityStarted', {
-  activity: Schema.String,
-  timestamp: Schema.Date,
-  /** True if this activity was already completed (resumed from checkpoint) */
-  resumed: Schema.Boolean,
-}) {}
+// ─── Combined Event Type ─────────────────────────────────────────────────────
 
 /**
- * Activity completed successfully.
+ * Any workflow or activity lifecycle event.
  */
-export class ActivityCompleted extends Schema.TaggedClass<ActivityCompleted>()('ActivityCompleted', {
-  activity: Schema.String,
-  timestamp: Schema.Date,
-  /** True if this activity was already completed (resumed from checkpoint) */
-  resumed: Schema.Boolean,
-  /** Duration in milliseconds (very short if resumed) */
-  durationMs: Schema.Number,
-}) {}
+export type LifecycleEvent =
+  | ActivityTypes.Event
+  | WorkflowTypes.Event
 
 /**
- * Activity failed.
+ * Schema for all lifecycle events.
  */
-export class ActivityFailed extends Schema.TaggedClass<ActivityFailed>()('ActivityFailed', {
-  activity: Schema.String,
-  timestamp: Schema.Date,
-  error: Schema.String,
-}) {}
-
-/**
- * Workflow completed successfully.
- */
-export class WorkflowCompleted extends Schema.TaggedClass<WorkflowCompleted>()('WorkflowCompleted', {
-  timestamp: Schema.Date,
-  durationMs: Schema.Number,
-}) {}
-
-/**
- * Workflow failed.
- */
-export class WorkflowFailed extends Schema.TaggedClass<WorkflowFailed>()('WorkflowFailed', {
-  timestamp: Schema.Date,
-  error: Schema.String,
-}) {}
-
-/**
- * Activity lifecycle event.
- */
-export type ActivityEvent =
-  | ActivityStarted
-  | ActivityCompleted
-  | ActivityFailed
-  | WorkflowCompleted
-  | WorkflowFailed
-
-/**
- * Schema for activity lifecycle events.
- */
-export const ActivityEvent = Schema.Union(
-  ActivityStarted,
-  ActivityCompleted,
-  ActivityFailed,
-  WorkflowCompleted,
-  WorkflowFailed,
+export const LifecycleEvent = Schema.Union(
+  ActivityTypes.Event,
+  WorkflowTypes.Event,
 )
 
-// ============================================================================
-// Event PubSub Service
-// ============================================================================
+// ─── Event PubSub Service ────────────────────────────────────────────────────
 
 /**
  * Service for publishing workflow events.
@@ -104,15 +49,13 @@ export const ActivityEvent = Schema.Union(
  */
 export class WorkflowEvents extends Context.Tag('@kitz/flo/WorkflowEvents')<
   WorkflowEvents,
-  PubSub.PubSub<ActivityEvent>
+  PubSub.PubSub<LifecycleEvent>
 >() {}
 
-// ============================================================================
-// Observable Activity
-// ============================================================================
+// ─── Observable Activity ─────────────────────────────────────────────────────
 
-/** Threshold in ms - activities completing faster than this are considered resumed */
-const RESUME_THRESHOLD_MS = 50
+/** Threshold - activities completing faster than this are considered resumed */
+const RESUME_THRESHOLD = Duration.millis(50)
 
 /**
  * Observable drop-in replacement for `Activity.make()`.
@@ -130,14 +73,14 @@ const RESUME_THRESHOLD_MS = 50
  * @example
  * ```ts
  * // Basic usage - same as Activity.make
- * yield* ObservableActivity.make({
+ * yield* ObservableActivity.create({
  *   name: 'PublishPackage',
  *   error: PublishError,
  *   execute: publishToNpm(packageName, version),
  * })
  *
  * // With retry
- * yield* ObservableActivity.make({
+ * yield* ObservableActivity.create({
  *   name: 'PushTags',
  *   error: GitError,
  *   execute: git.pushTags(),
@@ -153,7 +96,7 @@ export const ObservableActivity = {
    *
    * @param config.retry - Optional retry configuration (mirrors Activity.retry)
    */
-  make: <R, E extends Schema.Schema.All = typeof Schema.Never>(config: {
+  create: <R, E extends Schema.Schema.All = typeof Schema.Never>(config: {
     readonly name: string
     readonly error?: E | undefined
     readonly execute: Effect.Effect<void, E['Type'], R>
@@ -182,38 +125,37 @@ export const ObservableActivity = {
 
       // Emit started
       yield* pubsub.publish(
-        ActivityStarted.make({
+        ActivityTypes.Started.make({
           activity: config.name,
           timestamp: startTime,
           resumed: false,
         }),
       ).pipe(Effect.ignore)
 
-      // Run the actual activity
-      const result = yield* activity.pipe(
+      // Run the actual activity with timing
+      const [duration, result] = yield* activity.pipe(
         Effect.tapError((error) => {
           const errorMessage = typeof error === 'object' && error !== null && 'message' in error
             ? String((error as { message: unknown }).message)
             : String(error)
           return pubsub.publish(
-            ActivityFailed.make({
+            ActivityTypes.Failed.make({
               activity: config.name,
               timestamp: new Date(),
               error: errorMessage,
             }),
           ).pipe(Effect.ignore)
         }),
+        Effect.timed,
       )
 
       // Emit completed
-      const now = new Date()
-      const durationMs = now.getTime() - startTime.getTime()
       yield* pubsub.publish(
-        ActivityCompleted.make({
+        ActivityTypes.Completed.make({
           activity: config.name,
-          timestamp: now,
-          resumed: durationMs < RESUME_THRESHOLD_MS,
-          durationMs,
+          timestamp: new Date(),
+          resumed: Duration.lessThan(duration, RESUME_THRESHOLD),
+          durationMs: Duration.toMillis(duration),
         }),
       ).pipe(Effect.ignore)
 

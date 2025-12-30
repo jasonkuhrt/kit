@@ -9,72 +9,72 @@ import { ConventionalCommits } from './_.js'
 const fixtures = {
   type: {
     standard: {
-      feat: ConventionalCommits.Type.Standard.make({ value: 'feat' }),
-      fix: ConventionalCommits.Type.Standard.make({ value: 'fix' }),
-      chore: ConventionalCommits.Type.Standard.make({ value: 'chore' }),
+      feat: ConventionalCommits.Type.Standard.parse('feat'),
+      fix: ConventionalCommits.Type.Standard.parse('fix'),
+      chore: ConventionalCommits.Type.Standard.parse('chore'),
     },
     custom: {
-      wip: ConventionalCommits.Type.Custom.make({ value: 'wip' }),
+      wip: ConventionalCommits.Type.Custom.parse('wip'),
     },
   },
   footer: {
     standard: {
-      breaking: ConventionalCommits.from('BREAKING CHANGE', 'removed X'),
-      breakingHyphen: ConventionalCommits.from('BREAKING-CHANGE', 'removed Y'),
+      breaking: ConventionalCommits.Footer.from('BREAKING CHANGE', 'removed X'),
+      breakingHyphen: ConventionalCommits.Footer.from('BREAKING-CHANGE', 'removed Y'),
     },
     custom: {
-      fixes: ConventionalCommits.from('Fixes', '#123'),
-      reviewedBy: ConventionalCommits.from('Reviewed-by', 'alice'),
+      fixes: ConventionalCommits.Footer.from('Fixes', '#123'),
+      reviewedBy: ConventionalCommits.Footer.from('Reviewed-by', 'alice'),
     },
   },
   target: {
     featCore: ConventionalCommits.Target.make({
-      type: ConventionalCommits.Type.Standard.make({ value: 'feat' }),
+      type: ConventionalCommits.Type.Standard.parse('feat'),
       scope: 'core',
       breaking: false,
     }),
     fixCliBreaking: ConventionalCommits.Target.make({
-      type: ConventionalCommits.Type.Standard.make({ value: 'fix' }),
+      type: ConventionalCommits.Type.Standard.parse('fix'),
       scope: 'cli',
       breaking: true,
     }),
   },
   commitSingle: {
-    simple: ConventionalCommits.CommitSingle.make({
-      type: ConventionalCommits.Type.Standard.make({ value: 'feat' }),
+    simple: ConventionalCommits.Commit.Single.make({
+      type: ConventionalCommits.Type.Standard.parse('feat'),
       scopes: [],
       breaking: false,
       message: 'add feature',
       body: Option.none(),
       footers: [],
     }),
-    withScope: ConventionalCommits.CommitSingle.make({
-      type: ConventionalCommits.Type.Standard.make({ value: 'feat' }),
+    withScope: ConventionalCommits.Commit.Single.make({
+      type: ConventionalCommits.Type.Standard.parse('feat'),
       scopes: ['core'],
       breaking: false,
       message: 'add feature',
       body: Option.none(),
       footers: [],
     }),
-    multiScope: ConventionalCommits.CommitSingle.make({
-      type: ConventionalCommits.Type.Standard.make({ value: 'feat' }),
+    multiScope: ConventionalCommits.Commit.Single.make({
+      type: ConventionalCommits.Type.Standard.parse('feat'),
       scopes: ['core', 'cli'],
       breaking: true,
       message: 'breaking change',
       body: Option.some('Detailed body'),
-      footers: [ConventionalCommits.from('BREAKING CHANGE', 'removed API')],
+      footers: [ConventionalCommits.Footer.from('BREAKING CHANGE', 'removed API')],
     }),
   },
   commitMulti: {
-    simple: ConventionalCommits.CommitMulti.make({
+    simple: ConventionalCommits.Commit.Multi.make({
       targets: [
         ConventionalCommits.Target.make({
-          type: ConventionalCommits.Type.Standard.make({ value: 'feat' }),
+          type: ConventionalCommits.Type.Standard.parse('feat'),
           scope: 'core',
           breaking: true,
         }),
         ConventionalCommits.Target.make({
-          type: ConventionalCommits.Type.Standard.make({ value: 'fix' }),
+          type: ConventionalCommits.Type.Standard.parse('fix'),
           scope: 'cli',
           breaking: false,
         }),
@@ -115,25 +115,15 @@ test('Type > Custom > serialization', () => {
     `)
 })
 
-// ─── Type.from() ─────────────────────────────────────────────────
+// ─── Type.parse() ────────────────────────────────────────────────
 
-Test.describe('Type.from')
-  .on(ConventionalCommits.Type.from)
+Test.describe('Type.parse')
+  .on(ConventionalCommits.Type.parse)
   .cases(
     [['feat'], fixtures.type.standard.feat],
     [['fix'], fixtures.type.standard.fix],
     [['chore'], fixtures.type.standard.chore],
     [['wip'], fixtures.type.custom.wip],
-  )
-  .test()
-
-// ─── Type.value() ────────────────────────────────────────────────
-
-Test.describe('Type.value')
-  .on(ConventionalCommits.Type.value)
-  .cases(
-    [[fixtures.type.standard.feat], 'feat'],
-    [[fixtures.type.custom.wip], 'wip'],
   )
   .test()
 
@@ -147,20 +137,20 @@ Test.describe('Type.impact')
     [[fixtures.type.standard.chore], Option.none()],
   )
   .test(({ output, result }) => {
-    expect(Option.getOrNull(result)).toEqual(Option.getOrNull(output))
+    expect(Option.getOrNull(result)).toEqual(Option.getOrNull(output!))
   })
 
-// ─── Type-level tests for Type.from() ────────────────────────────
+// ─── Type-level tests for Type.parse() ──────────────────────────
 
-Assert.exact.ofAs<ConventionalCommits.Type.Standard>().on(ConventionalCommits.Type.from('feat'))
-Assert.exact.ofAs<ConventionalCommits.Type.Custom>().on(ConventionalCommits.Type.from('wip'))
+Assert.exact.ofAs<ConventionalCommits.Type.Standard>().on(ConventionalCommits.Type.parse('feat'))
+Assert.exact.ofAs<ConventionalCommits.Type.Custom>().on(ConventionalCommits.Type.parse('wip'))
 const dynamicType: string = 'unknown'
-Assert.exact.ofAs<ConventionalCommits.Type.Type>().on(ConventionalCommits.Type.from(dynamicType))
+Assert.exact.ofAs<ConventionalCommits.Type.Type>().on(ConventionalCommits.Type.parse(dynamicType))
 
 // ─── Footer Serialization Snapshots ──────────────────────────────
 
 test('Footer > serialization', () => {
-  expect(Schema.encodeSync(ConventionalCommits.Footer)(fixtures.footer.standard.breaking))
+  expect(Schema.encodeSync(ConventionalCommits.Footer.Footer)(fixtures.footer.standard.breaking))
     .toMatchInlineSnapshot(`
       {
         "_tag": "Standard",
@@ -168,7 +158,7 @@ test('Footer > serialization', () => {
         "value": "removed X",
       }
     `)
-  expect(Schema.encodeSync(ConventionalCommits.Footer)(fixtures.footer.custom.fixes))
+  expect(Schema.encodeSync(ConventionalCommits.Footer.Footer)(fixtures.footer.custom.fixes))
     .toMatchInlineSnapshot(`
       {
         "_tag": "Custom",
@@ -181,7 +171,7 @@ test('Footer > serialization', () => {
 // ─── Footer.isBreakingChange() ───────────────────────────────────
 
 Test.describe('Footer.isBreakingChange')
-  .on(ConventionalCommits.isBreakingChange)
+  .on(ConventionalCommits.Footer.isBreakingChange)
   .cases(
     [[fixtures.footer.standard.breaking], true],
     [[fixtures.footer.standard.breakingHyphen], true],
@@ -189,13 +179,13 @@ Test.describe('Footer.isBreakingChange')
   )
   .test()
 
-// ─── CommitSingle Serialization Snapshots ────────────────────────
+// ─── Commit.Single Serialization Snapshots ────────────────────────
 
-test('CommitSingle > serialization', () => {
-  expect(Schema.encodeSync(ConventionalCommits.CommitSingle)(fixtures.commitSingle.simple))
+test('Commit.Single > serialization', () => {
+  expect(Schema.encodeSync(ConventionalCommits.Commit.Single)(fixtures.commitSingle.simple))
     .toMatchInlineSnapshot(`
       {
-        "_tag": "CommitSingle",
+        "_tag": "Single",
         "body": null,
         "breaking": false,
         "footers": [],
@@ -207,10 +197,10 @@ test('CommitSingle > serialization', () => {
         },
       }
     `)
-  expect(Schema.encodeSync(ConventionalCommits.CommitSingle)(fixtures.commitSingle.withScope))
+  expect(Schema.encodeSync(ConventionalCommits.Commit.Single)(fixtures.commitSingle.withScope))
     .toMatchInlineSnapshot(`
       {
-        "_tag": "CommitSingle",
+        "_tag": "Single",
         "body": null,
         "breaking": false,
         "footers": [],
@@ -224,10 +214,10 @@ test('CommitSingle > serialization', () => {
         },
       }
     `)
-  expect(Schema.encodeSync(ConventionalCommits.CommitSingle)(fixtures.commitSingle.multiScope))
+  expect(Schema.encodeSync(ConventionalCommits.Commit.Single)(fixtures.commitSingle.multiScope))
     .toMatchInlineSnapshot(`
       {
-        "_tag": "CommitSingle",
+        "_tag": "Single",
         "body": "Detailed body",
         "breaking": true,
         "footers": [
@@ -250,13 +240,13 @@ test('CommitSingle > serialization', () => {
     `)
 })
 
-// ─── CommitMulti Serialization Snapshots ─────────────────────────
+// ─── Commit.Multi Serialization Snapshots ─────────────────────────
 
-test('CommitMulti > serialization', () => {
-  expect(Schema.encodeSync(ConventionalCommits.CommitMulti)(fixtures.commitMulti.simple))
+test('Commit.Multi > serialization', () => {
+  expect(Schema.encodeSync(ConventionalCommits.Commit.Multi)(fixtures.commitMulti.simple))
     .toMatchInlineSnapshot(`
       {
-        "_tag": "CommitMulti",
+        "_tag": "Multi",
         "message": "multi change",
         "sections": {},
         "summary": null,
@@ -286,7 +276,7 @@ test('CommitMulti > serialization', () => {
 
 // ─── Commit Union ────────────────────────────────────────────────
 
-const isCommit = Schema.is(ConventionalCommits.Commit)
+const isCommit = Schema.is(ConventionalCommits.Commit.Commit)
 
 Test.describe('Commit > union accepts')
   .on(isCommit)
@@ -296,16 +286,16 @@ Test.describe('Commit > union accepts')
   )
   .test()
 
-Test.describe('CommitSingle.is')
-  .on(ConventionalCommits.CommitSingle.is)
+Test.describe('Commit.Single.is')
+  .on(ConventionalCommits.Commit.Single.is)
   .cases(
     [[fixtures.commitSingle.simple], true],
     [[fixtures.commitMulti.simple], false],
   )
   .test()
 
-Test.describe('CommitMulti.is')
-  .on(ConventionalCommits.CommitMulti.is)
+Test.describe('Commit.Multi.is')
+  .on(ConventionalCommits.Commit.Multi.is)
   .cases(
     [[fixtures.commitSingle.simple], false],
     [[fixtures.commitMulti.simple], true],
@@ -314,23 +304,23 @@ Test.describe('CommitMulti.is')
 
 // ─── parseTitle ──────────────────────────────────────────────────
 
-const parseTitleSync = (title: string): ConventionalCommits.CommitSingle | null => {
-  const exit = Effect.runSyncExit(ConventionalCommits.parseTitle(title))
+const parseTitleSync = (title: string): ConventionalCommits.Commit.Single | null => {
+  const exit = Effect.runSyncExit(ConventionalCommits.Title.parse(title))
   if (Exit.isFailure(exit)) return null
   const value = exit.value
-  if (ConventionalCommits.CommitSingle.is(value)) return value
+  if (ConventionalCommits.Commit.Single.is(value)) return value
   return null
 }
 
-Test.describe('parseTitle > CommitSingle')
+Test.describe('parseTitle > Commit.Single')
   .on(parseTitleSync)
   .cases(
     [['feat: add feature'], fixtures.commitSingle.simple],
     [['feat(core): add feature'], fixtures.commitSingle.withScope],
     [
       ['feat(core, cli): breaking change'],
-      ConventionalCommits.CommitSingle.make({
-        type: ConventionalCommits.Type.Standard.make({ value: 'feat' }),
+      ConventionalCommits.Commit.Single.make({
+        type: ConventionalCommits.Type.parse('feat'),
         scopes: ['core', 'cli'],
         breaking: false,
         message: 'breaking change',
@@ -340,8 +330,8 @@ Test.describe('parseTitle > CommitSingle')
     ],
     [
       ['feat(core)!: breaking change'],
-      ConventionalCommits.CommitSingle.make({
-        type: ConventionalCommits.Type.Standard.make({ value: 'feat' }),
+      ConventionalCommits.Commit.Single.make({
+        type: ConventionalCommits.Type.parse('feat'),
         scopes: ['core'],
         breaking: true,
         message: 'breaking change',
@@ -360,17 +350,17 @@ Test.describe('parseTitle > errors')
   )
   .test()
 
-// ─── parseTitle > CommitMulti ────────────────────────────────────
+// ─── parseTitle > Commit.Multi ────────────────────────────────────
 
-test('parseTitle > CommitMulti', async () => {
+test('parseTitle > Commit.Multi', async () => {
   const result = await Effect.runPromiseExit(
-    ConventionalCommits.parseTitle('feat(core), fix(cli): multi change'),
+    ConventionalCommits.Title.parse('feat(core), fix(cli): multi change'),
   )
   expect(Exit.isSuccess(result)).toBe(true)
-  if (Exit.isSuccess(result) && ConventionalCommits.CommitMulti.is(result.value)) {
-    expect(Schema.encodeSync(ConventionalCommits.CommitMulti)(result.value)).toMatchInlineSnapshot(`
+  if (Exit.isSuccess(result) && ConventionalCommits.Commit.Multi.is(result.value)) {
+    expect(Schema.encodeSync(ConventionalCommits.Commit.Multi)(result.value)).toMatchInlineSnapshot(`
       {
-        "_tag": "CommitMulti",
+        "_tag": "Multi",
         "message": "multi change",
         "sections": {},
         "summary": null,
@@ -399,23 +389,23 @@ test('parseTitle > CommitMulti', async () => {
   }
 })
 
-test('parseTitle > CommitMulti > per-scope breaking', async () => {
+test('parseTitle > Commit.Multi > per-scope breaking', async () => {
   const result = await Effect.runPromiseExit(
-    ConventionalCommits.parseTitle('feat(core!), fix(cli): change'),
+    ConventionalCommits.Title.parse('feat(core!), fix(cli): change'),
   )
   expect(Exit.isSuccess(result)).toBe(true)
-  if (Exit.isSuccess(result) && ConventionalCommits.CommitMulti.is(result.value)) {
+  if (Exit.isSuccess(result) && ConventionalCommits.Commit.Multi.is(result.value)) {
     expect(result.value.targets[0]?.breaking).toBe(true)
     expect(result.value.targets[1]?.breaking).toBe(false)
   }
 })
 
-test('parseTitle > CommitMulti > global breaking', async () => {
+test('parseTitle > Commit.Multi > global breaking', async () => {
   const result = await Effect.runPromiseExit(
-    ConventionalCommits.parseTitle('feat(core), fix(cli)!: change'),
+    ConventionalCommits.Title.parse('feat(core), fix(cli)!: change'),
   )
   expect(Exit.isSuccess(result)).toBe(true)
-  if (Exit.isSuccess(result) && ConventionalCommits.CommitMulti.is(result.value)) {
+  if (Exit.isSuccess(result) && ConventionalCommits.Commit.Multi.is(result.value)) {
     expect(result.value.targets[0]?.breaking).toBe(true)
     expect(result.value.targets[1]?.breaking).toBe(true)
   }

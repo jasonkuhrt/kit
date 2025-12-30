@@ -20,9 +20,6 @@
   ],
   "exclude": [
     "build",
-    "node_modules",
-    "**/*.bench-d.ts",
-    "**/*.test.ts",
-    "**/*.test-d.ts"
+    "node_modules"
   ]
 }

@@ -64,7 +64,7 @@ export const extractImpacts = (
   Effect.gen(function*() {
     // Parse the commit title (first line)
     const title = commitInput.message.split('\n')[0] ?? commitInput.message
-    const parsed = yield* Effect.either(ConventionalCommits.parseTitle(title))
+    const parsed = yield* Effect.either(ConventionalCommits.Title.parse(title))
 
     if (Either.isLeft(parsed)) {
       // Not a conventional commit - no impacts
@@ -81,7 +81,7 @@ export const extractImpacts = (
       return Option.getOrNull(ConventionalCommits.Type.impact(type))
     }
 
-    if (ConventionalCommits.CommitSingle.is(parsedCommit)) {
+    if (ConventionalCommits.Commit.Single.is(parsedCommit)) {
       if (parsedCommit.scopes.length === 0) return [] // Scopeless - handled by caller
 
       const bump = getBump(parsedCommit.type, parsedCommit.breaking)
@@ -99,7 +99,7 @@ export const extractImpacts = (
           },
         })
       }
-    } else if (ConventionalCommits.CommitMulti.is(parsedCommit)) {
+    } else if (ConventionalCommits.Commit.Multi.is(parsedCommit)) {
       for (const target of parsedCommit.targets) {
         const bump = getBump(target.type, target.breaking)
         if (bump === null) continue

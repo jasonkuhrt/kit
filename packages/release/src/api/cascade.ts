@@ -3,8 +3,8 @@ import type { PlatformError } from '@effect/platform/Error'
 import { Fs } from '@kitz/fs'
 import { Git } from '@kitz/git'
 import { Effect, Either, Option } from 'effect'
-import type { Package } from './discovery.js'
 import * as Release from './release.js'
+import type { Package } from './scanner.js'
 import { calculateNextVersion, findLatestTagVersion } from './version.js'
 
 /**

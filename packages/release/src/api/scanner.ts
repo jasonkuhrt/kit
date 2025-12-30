@@ -6,19 +6,19 @@ import { Fs } from '@kitz/fs'
 import { Effect } from 'effect'
 
 /**
- * Error discovering packages.
+ * Error scanning packages.
  */
-export const DiscoveryError = Err.TaggedContextualError('DiscoveryError').constrain<{
+export const ScanError = Err.TaggedContextualError('ScanError').constrain<{
   readonly file: Fs.Path.AbsFile
   readonly operation: 'parse'
 }>({
   message: (ctx) => `Failed to ${ctx.operation} ${Fs.Path.toString(ctx.file)}`,
 })
 
-export type DiscoveryError = InstanceType<typeof DiscoveryError>
+export type ScanError = InstanceType<typeof ScanError>
 
 /**
- * A discovered package in the monorepo.
+ * A scanned package in the monorepo.
  */
 export interface Package {
   /** Directory name (used as scope in commits) */
@@ -39,7 +39,7 @@ const packagesRelDir = Fs.Path.RelDir.fromString('./packages/')
 const packageJsonRelFile = Fs.Path.RelFile.fromString('./package.json')
 
 /**
- * Discover packages in the monorepo.
+ * Scan packages in the monorepo.
  *
  * Scans `packages/` directory for package.json files and builds
  * a scope-to-package mapping.
@@ -47,14 +47,14 @@ const packageJsonRelFile = Fs.Path.RelFile.fromString('./package.json')
  * @example
  * ```ts
  * const packages = await Effect.runPromise(
- *   Effect.provide(discover, Layer.mergeAll(Env.Live, NodeFileSystem.layer))
+ *   Effect.provide(scan, Layer.mergeAll(Env.Live, NodeFileSystem.layer))
  * )
  * // [{ scope: 'core', name: '@kitz/core', path: AbsDir('/path/to/repo/packages/core/') }]
  * ```
  */
-export const discover: Effect.Effect<
+export const scan: Effect.Effect<
   Package[],
-  DiscoveryError | PlatformError,
+  ScanError | PlatformError,
   FileSystem.FileSystem | Env.Env
 > = Effect.gen(function*() {
   const fs = yield* FileSystem.FileSystem
@@ -92,7 +92,7 @@ export const discover: Effect.Effect<
     const packageJson = yield* Effect.try({
       try: () => JSON.parse(content) as { name?: string },
       catch: (cause) =>
-        new DiscoveryError({
+        new ScanError({
           context: { file: packageJsonPath, operation: 'parse' },
           cause: cause instanceof Error ? cause : new Error(String(cause)),
         }),
@@ -111,7 +111,7 @@ export const discover: Effect.Effect<
 })
 
 /**
- * Build a scope-to-package-name map from discovered packages.
+ * Build a scope-to-package-name map from scanned packages.
  *
  * @example
  * ```ts
@@ -128,14 +128,14 @@ export const toPackageMap = (packages: Package[]): PackageMap => {
 }
 
 /**
- * Resolve config packages with discovery fallback.
+ * Resolve config packages with scan fallback.
  *
- * If config.packages is empty, auto-discovers packages.
+ * If config.packages is empty, auto-scans packages.
  * Otherwise uses the config values directly.
  */
 export const resolvePackages = (
   configPackages: PackageMap,
-): Effect.Effect<Package[], DiscoveryError | PlatformError, FileSystem.FileSystem | Env.Env> =>
+): Effect.Effect<Package[], ScanError | PlatformError, FileSystem.FileSystem | Env.Env> =>
   Effect.gen(function*() {
     // If config explicitly provides packages, use those
     if (Object.keys(configPackages).length > 0) {
@@ -153,6 +153,6 @@ export const resolvePackages = (
       })
     }
 
-    // Otherwise discover from filesystem
-    return yield* discover
+    // Otherwise scan from filesystem
+    return yield* scan
   })

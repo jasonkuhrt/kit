@@ -36,15 +36,8 @@
 import { Activity } from '@effect/workflow'
 import { WorkflowEngine } from '@effect/workflow'
 import { Effect, Graph, Option, PubSub, Schema, Stream } from 'effect'
-import type { ActivityEvent } from '../observable/__.js'
-import {
-  ActivityCompleted,
-  ActivityFailed,
-  ActivityStarted,
-  WorkflowCompleted,
-  WorkflowEvents,
-  WorkflowFailed,
-} from '../observable/__.js'
+import { Activity as ActivityModel, Workflow as WorkflowModel } from '../models/__.js'
+import { type LifecycleEvent, WorkflowEvents } from '../observable/__.js'
 
 // ============================================================================
 // Node Handle
@@ -348,7 +341,7 @@ export interface WorkflowInstance<
     payload: Payload,
   ) => Effect.Effect<
     {
-      readonly events: Stream.Stream<ActivityEvent>
+      readonly events: Stream.Stream<LifecycleEvent>
       readonly execute: Effect.Effect<UnwrapHandles<Result>, Error, WorkflowEngine.WorkflowEngine>
     },
     never,
@@ -439,7 +432,7 @@ export const make = <
             // Emit start event
             if (Option.isSome(maybePubsub)) {
               yield* maybePubsub.value.publish(
-                ActivityStarted.make({
+                ActivityModel.Started.make({
                   activity: nodeName,
                   timestamp: new Date(),
                   resumed: false,
@@ -469,7 +462,7 @@ export const make = <
               if (Option.isSome(maybePubsub)) {
                 const durationMs = Date.now() - startTime
                 yield* maybePubsub.value.publish(
-                  ActivityCompleted.make({
+                  ActivityModel.Completed.make({
                     activity: nodeName,
                     timestamp: new Date(),
                     durationMs,
@@ -483,7 +476,7 @@ export const make = <
               // Emit failure event
               if (Option.isSome(maybePubsub)) {
                 yield* maybePubsub.value.publish(
-                  ActivityFailed.make({
+                  ActivityModel.Failed.make({
                     activity: nodeName,
                     timestamp: new Date(),
                     error: typeof error === 'object' && error !== null && 'message' in error
@@ -509,13 +502,13 @@ export const make = <
 
   const observable = (payload: Payload) =>
     Effect.gen(function*() {
-      const pubsub = yield* PubSub.unbounded<ActivityEvent>()
+      const pubsub = yield* PubSub.unbounded<LifecycleEvent>()
       const events = Stream.fromPubSub(pubsub)
 
       const executeEffect = executeInternal(payload, true).pipe(
         Effect.tap(() =>
           pubsub.publish(
-            WorkflowCompleted.make({
+            WorkflowModel.Completed.make({
               timestamp: new Date(),
               durationMs: 0,
             }),
@@ -524,7 +517,7 @@ export const make = <
         Effect.tapErrorCause((cause) =>
           Effect.gen(function*() {
             yield* pubsub.publish(
-              WorkflowFailed.make({
+              WorkflowModel.Failed.make({
                 timestamp: new Date(),
                 error: String(cause),
               }),

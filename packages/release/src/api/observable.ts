@@ -18,7 +18,7 @@
  */
 
 import { Activity } from '@effect/workflow'
-import { Context, Effect, Option, PubSub, Schema } from 'effect'
+import { Context, Duration, Effect, Option, PubSub, Schema } from 'effect'
 
 // ============================================================================
 // Event Types
@@ -173,8 +173,8 @@ export const ObservableActivity = {
         }),
       ).pipe(Effect.ignore)
 
-      // Run the actual activity
-      const result = yield* activity.pipe(
+      // Run the actual activity with timing
+      const [duration, result] = yield* activity.pipe(
         Effect.tapError((error) => {
           const errorMessage = typeof error === 'object' && error !== null && 'message' in error
             ? String((error as { message: unknown }).message)
@@ -187,16 +187,15 @@ export const ObservableActivity = {
             }),
           ).pipe(Effect.ignore)
         }),
+        Effect.timed,
       )
 
       // Emit completed
-      const now = new Date()
-      const durationMs = now.getTime() - startTime.getTime()
       yield* pubsub.publish(
         ActivityCompleted.make({
           activity: config.name,
-          timestamp: now,
-          durationMs,
+          timestamp: new Date(),
+          durationMs: Duration.toMillis(duration),
         }),
       ).pipe(Effect.ignore)
 

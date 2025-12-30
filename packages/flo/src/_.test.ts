@@ -1,20 +1,24 @@
-import { describe, expect, test } from 'vitest'
 import { Test } from '@kitz/test'
-import { ActivityCompleted, ActivityFailed, ActivityStarted, WorkflowCompleted } from '../observable/__.js'
-import { TerminalRenderer } from './visualization.js'
+import { MutableHashMap, Option } from 'effect'
+import { describe, expect, test } from 'vitest'
+import * as Flo from './__.js'
 
 // ─── Event Helpers ─────────────────────────────────────────────
 
-type Event = ActivityStarted | ActivityCompleted | ActivityFailed | WorkflowCompleted
+type Event =
+  | Flo.Activity.Started
+  | Flo.Activity.Completed
+  | Flo.Activity.Failed
+  | Flo.WorkflowEvent.Completed
 
-const started = (activity: string): ActivityStarted =>
-  ActivityStarted.make({ activity, timestamp: new Date(), resumed: false })
+const started = (activity: string): Flo.Activity.Started =>
+  Flo.Activity.Started.make({ activity, timestamp: new Date(), resumed: false })
 
-const completed = (activity: string): ActivityCompleted =>
-  ActivityCompleted.make({ activity, timestamp: new Date(), durationMs: 100, resumed: false })
+const completed = (activity: string): Flo.Activity.Completed =>
+  Flo.Activity.Completed.make({ activity, timestamp: new Date(), durationMs: 100, resumed: false })
 
-const failed = (activity: string, error: string): ActivityFailed =>
-  ActivityFailed.make({ activity, timestamp: new Date(), error })
+const failed = (activity: string, error: string): Flo.Activity.Failed =>
+  Flo.Activity.Failed.make({ activity, timestamp: new Date(), error })
 
 // ─── List Mode ─────────────────────────────────────────────────
 
@@ -25,7 +29,7 @@ type ListConfig = {
 }
 
 const renderList = (config: ListConfig): string => {
-  const renderer = TerminalRenderer.make({
+  const renderer = Flo.Viz.Renderer.create({
     activities: config.activities,
     colors: config.colors ?? false,
   })
@@ -37,7 +41,7 @@ const renderList = (config: ListConfig): string => {
 
 const defaultActivities = ['Preflight', 'Publish:core', 'Publish:flo', 'CreateTag', 'PushTags']
 
-Test.describe('TerminalRenderer > list mode')
+Test.describe('Renderer > list mode')
   .on(renderList)
   .snapshots({ arguments: false })
   .casesInput(
@@ -84,7 +88,7 @@ type DagConfig = {
 }
 
 const renderDag = (config: DagConfig): string => {
-  const renderer = TerminalRenderer.make({
+  const renderer = Flo.Viz.Renderer.create({
     mode: 'dag',
     layers: config.layers,
     edges: config.edges,
@@ -109,7 +113,7 @@ const diamondEdges: readonly (readonly [string, string])[] = [
   ['Publish:B', 'CreateTag'],
 ]
 
-Test.describe('TerminalRenderer > DAG mode > compact')
+Test.describe('Renderer > DAG mode > compact')
   .on(renderDag)
   .snapshots({ arguments: false })
   .casesInput(
@@ -160,7 +164,7 @@ Test.describe('TerminalRenderer > DAG mode > compact')
 // ─── DAG Mode (Full Box Drawing) ───────────────────────────────
 
 const renderDagFull = (config: DagConfig): string => {
-  const renderer = TerminalRenderer.make({
+  const renderer = Flo.Viz.Renderer.create({
     mode: 'dag',
     layers: config.layers,
     edges: config.edges,
@@ -185,7 +189,7 @@ const boxEdges: readonly (readonly [string, string])[] = [
   ['StepC', 'StepD'],
 ]
 
-Test.describe('TerminalRenderer > DAG mode > full')
+Test.describe('Renderer > DAG mode > full')
   .on(renderDagFull)
   .snapshots({ arguments: false })
   .casesInput(
@@ -216,7 +220,7 @@ const complexLayers: readonly (readonly string[])[] = [
   ['PushTags'],
 ]
 
-Test.describe('TerminalRenderer > complex DAG')
+Test.describe('Renderer > complex DAG')
   .on(renderDag)
   .snapshots({ arguments: false })
   .casesInput(
@@ -237,7 +241,7 @@ Test.describe('TerminalRenderer > complex DAG')
   )
   .test()
 
-Test.describe('TerminalRenderer > complex DAG > full')
+Test.describe('Renderer > complex DAG > full')
   .on(renderDagFull)
   .snapshots({ arguments: false })
   .casesInput({ layers: complexLayers })
@@ -245,9 +249,9 @@ Test.describe('TerminalRenderer > complex DAG > full')
 
 // ─── State Management ──────────────────────────────────────────
 
-describe('TerminalRenderer state', () => {
+describe('Renderer state', () => {
   test('getState returns current state', () => {
-    const renderer = TerminalRenderer.make({
+    const renderer = Flo.Viz.Renderer.create({
       activities: ['A', 'B', 'C'],
       colors: false,
     })
@@ -256,21 +260,21 @@ describe('TerminalRenderer state', () => {
     expect(state.completedCount).toBe(0)
     expect(state.totalCount).toBe(3)
     expect(state.currentActivity).toBeNull()
-    expect(state.activities.get('A')).toBe('pending')
+    expect(Option.getOrNull(MutableHashMap.get(state.activities, 'A'))).toBe('pending')
 
     renderer.update(started('A'))
     state = renderer.getState()
     expect(state.currentActivity).toBe('A')
-    expect(state.activities.get('A')).toBe('running')
+    expect(Option.getOrNull(MutableHashMap.get(state.activities, 'A'))).toBe('running')
 
     renderer.update(completed('A'))
     state = renderer.getState()
     expect(state.completedCount).toBe(1)
-    expect(state.activities.get('A')).toBe('completed')
+    expect(Option.getOrNull(MutableHashMap.get(state.activities, 'A'))).toBe('completed')
   })
 
   test('workflow events clear current activity', () => {
-    const renderer = TerminalRenderer.make({
+    const renderer = Flo.Viz.Renderer.create({
       activities: ['A'],
       colors: false,
     })
@@ -278,7 +282,7 @@ describe('TerminalRenderer state', () => {
     renderer.update(started('A'))
     expect(renderer.getState().currentActivity).toBe('A')
 
-    renderer.update(WorkflowCompleted.make({ timestamp: new Date(), durationMs: 1000 }))
+    renderer.update(Flo.WorkflowEvent.Completed.make({ timestamp: new Date(), durationMs: 1000 }))
     expect(renderer.getState().currentActivity).toBeNull()
   })
 })
