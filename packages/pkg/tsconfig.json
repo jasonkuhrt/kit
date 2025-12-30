@@ -24,6 +24,12 @@
       ],
       "#manager/*": [
         "./src/manager/*.js"
+      ],
+      "#pin": [
+        "./src/pin/_.js"
+      ],
+      "#pin/*": [
+        "./src/pin/*.js"
       ]
     }
   },

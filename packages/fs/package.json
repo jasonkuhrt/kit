@@ -16,6 +16,10 @@
     "effect": "^3.0.0",
     "tinyglobby": "^0.2.15"
   },
+  "devDependencies": {
+    "@kitz/assert": "workspace:*",
+    "@kitz/test": "workspace:*"
+  },
   "scripts": {
     "build": "tsgo -p tsconfig.build.json",
     "dev": "tsgo -p tsconfig.build.json --watch",

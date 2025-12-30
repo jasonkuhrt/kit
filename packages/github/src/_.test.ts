@@ -190,6 +190,7 @@ describe('Error types', () => {
   test('GithubError has correct tag', () => {
     const error = new Github.GithubError({
       context: { operation: 'createRelease', status: 500, detail: 'Server error' },
+      cause: new Error('Underlying API error'),
     })
 
     expect(error._tag).toBe('GithubError')

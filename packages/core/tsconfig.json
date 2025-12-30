@@ -7,24 +7,6 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "paths": {
-      "#test": [
-        "../test/src/_.ts"
-      ],
-      "#test/test": [
-        "../test/src/__.ts"
-      ],
-      "#test/*": [
-        "../test/src/*.ts"
-      ],
-      "#assert": [
-        "../assert/src/_.ts"
-      ],
-      "#assert/assert": [
-        "../assert/src/__.ts"
-      ],
-      "#assert/*": [
-        "../assert/src/*.ts"
-      ],
       "#arr": [
         "./src/arr/_.js"
       ],
@@ -147,6 +129,24 @@
       ],
       "#deps/*": [
         "./src/deps/*.js"
+      ],
+      "#kitz/test": [
+        "../test/src/_.ts"
+      ],
+      "#kitz/test/test": [
+        "../test/src/__.ts"
+      ],
+      "#kitz/test/*": [
+        "../test/src/*.ts"
+      ],
+      "#kitz/assert": [
+        "../assert/src/_.ts"
+      ],
+      "#kitz/assert/assert": [
+        "../assert/src/__.ts"
+      ],
+      "#kitz/assert/*": [
+        "../assert/src/*.ts"
       ]
     }
   },

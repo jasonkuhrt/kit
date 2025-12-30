@@ -8,10 +8,10 @@
     "noEmit": true,
     "paths": {
       "#release": [
-        "./src/_.ts"
+        "./src/_.js"
       ],
       "#release/*": [
-        "./src/*.ts"
+        "./src/*.js"
       ]
     }
   },

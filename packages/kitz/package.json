@@ -51,7 +51,8 @@
     "./tex": "./build/tex.js",
     "./tree": "./build/tree.js",
     "./url": "./build/url.js",
-    "./ware": "./build/ware.js"
+    "./ware": "./build/ware.js",
+    "./monorepo": "./build/monorepo.js"
   },
   "files": [
     "build",
@@ -81,6 +82,7 @@
     "@kitz/jsonc": "workspace:*",
     "@kitz/log": "workspace:*",
     "@kitz/mod": "workspace:*",
+    "@kitz/monorepo": "workspace:*",
     "@kitz/name": "workspace:*",
     "@kitz/num": "workspace:*",
     "@kitz/oak": "workspace:*",

@@ -12,6 +12,10 @@
     "@kitz/core": "workspace:*",
     "effect": "^3.19.11"
   },
+  "devDependencies": {
+    "@kitz/assert": "workspace:*",
+    "@kitz/test": "workspace:*"
+  },
   "scripts": {
     "build": "tsgo -p tsconfig.build.json",
     "dev": "tsgo -p tsconfig.build.json --watch",

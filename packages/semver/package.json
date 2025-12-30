@@ -9,7 +9,6 @@
     "./__": "./build/__.js"
   },
   "dependencies": {
-    "@vltpkg/semver": "^1.0.0-rc.12",
     "effect": "^3.0.0"
   },
   "devDependencies": {

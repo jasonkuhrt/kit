@@ -1,21 +1,11 @@
 import { FileSystem } from '@effect/platform'
 import type { PlatformError } from '@effect/platform/Error'
-import { Err } from '@kitz/core'
 import { Env } from '@kitz/env'
 import { Fs } from '@kitz/fs'
+import { Monorepo } from '@kitz/monorepo'
+import { Pkg } from '@kitz/pkg'
+import { Resource } from '@kitz/resource'
 import { Effect } from 'effect'
-
-/**
- * Error scanning packages.
- */
-export const ScanError = Err.TaggedContextualError('ScanError').constrain<{
-  readonly file: Fs.Path.AbsFile
-  readonly operation: 'parse'
-}>({
-  message: (ctx) => `Failed to ${ctx.operation} ${Fs.Path.toString(ctx.file)}`,
-})
-
-export type ScanError = InstanceType<typeof ScanError>
 
 /**
  * A scanned package in the monorepo.
@@ -24,7 +14,7 @@ export interface Package {
   /** Directory name (used as scope in commits) */
   readonly scope: string
   /** Full package name from package.json */
-  readonly name: string
+  readonly name: Pkg.Moniker.Moniker
   /** Absolute path to package directory */
   readonly path: Fs.Path.AbsDir
 }
@@ -34,15 +24,25 @@ export interface Package {
  */
 export type PackageMap = Record<string, string>
 
-// Shared typed paths for reuse
+// Shared typed path for packages directory
 const packagesRelDir = Fs.Path.RelDir.fromString('./packages/')
-const packageJsonRelFile = Fs.Path.RelFile.fromString('./package.json')
 
 /**
- * Scan packages in the monorepo.
+ * Error type for scan operation.
+ */
+export type ScanError =
+  | Monorepo.Pnpm.Errors.ConfigNotFoundError
+  | Monorepo.Pnpm.Errors.YamlParseError
+  | Monorepo.Pnpm.Errors.ConfigValidationError
+  | Monorepo.Pnpm.Errors.GlobError
+  | PlatformError
+  | Resource.ResourceError
+
+/**
+ * Scan packages in the monorepo using pnpm-workspace.yaml.
  *
- * Scans `packages/` directory for package.json files and builds
- * a scope-to-package mapping.
+ * Uses {@link Monorepo.Pnpm.read} to discover packages from the workspace
+ * configuration and builds a scope-to-package mapping.
  *
  * @example
  * ```ts
@@ -54,60 +54,22 @@ const packageJsonRelFile = Fs.Path.RelFile.fromString('./package.json')
  */
 export const scan: Effect.Effect<
   Package[],
-  ScanError | PlatformError,
+  ScanError,
   FileSystem.FileSystem | Env.Env
 > = Effect.gen(function*() {
-  const fs = yield* FileSystem.FileSystem
-  const env = yield* Env.Env
+  const discovered = yield* Monorepo.Pnpm.read({ expand: true, manifests: true })
 
-  // Get cwd from Env service (already typed as AbsDir), join with packages/
-  const packagesDir = Fs.Path.join(env.cwd, packagesRelDir)
-
-  const exists = yield* fs.exists(Fs.Path.toString(packagesDir))
-  if (!exists) {
-    return []
-  }
-
-  const entries = yield* fs.readDirectory(Fs.Path.toString(packagesDir))
-
-  const packages: Package[] = []
-
-  for (const entry of entries) {
-    // Create a RelDir for the package scope and join with packagesDir
-    const scope = entry.replace(/\/$/, '') // Normalize: remove trailing slash if present
-    const scopeRelDir = Fs.Path.RelDir.fromString(`./${scope}/`)
-    const entryDir = Fs.Path.join(packagesDir, scopeRelDir)
-
-    const info = yield* fs.stat(Fs.Path.toString(entryDir))
-    if (info.type !== 'Directory') continue
-
-    // Join with package.json RelFile to get absolute path
-    const packageJsonPath = Fs.Path.join(entryDir, packageJsonRelFile)
-    const packageJsonPathStr = Fs.Path.toString(packageJsonPath)
-
-    const packageJsonExists = yield* fs.exists(packageJsonPathStr)
-    if (!packageJsonExists) continue
-
-    const content = yield* fs.readFileString(packageJsonPathStr)
-    const packageJson = yield* Effect.try({
-      try: () => JSON.parse(content) as { name?: string },
-      catch: (cause) =>
-        new ScanError({
-          context: { file: packageJsonPath, operation: 'parse' },
-          cause: cause instanceof Error ? cause : new Error(String(cause)),
-        }),
+  return discovered.packages
+    .filter((pkg) => {
+      // Exclude packages without a proper name
+      const name = pkg.manifest.name
+      return !(Pkg.Moniker.isUnscoped(name) && name.name === 'unnamed')
     })
-
-    if (!packageJson.name) continue
-
-    packages.push({
-      scope,
-      name: packageJson.name,
-      path: entryDir,
-    })
-  }
-
-  return packages
+    .map((pkg) => ({
+      scope: Fs.Path.name(pkg.path),
+      name: pkg.manifest.name,
+      path: pkg.path,
+    }))
 })
 
 /**
@@ -122,7 +84,7 @@ export const scan: Effect.Effect<
 export const toPackageMap = (packages: Package[]): PackageMap => {
   const map: PackageMap = {}
   for (const pkg of packages) {
-    map[pkg.scope] = pkg.name
+    map[pkg.scope] = pkg.name.moniker
   }
   return map
 }
@@ -135,7 +97,7 @@ export const toPackageMap = (packages: Package[]): PackageMap => {
  */
 export const resolvePackages = (
   configPackages: PackageMap,
-): Effect.Effect<Package[], ScanError | PlatformError, FileSystem.FileSystem | Env.Env> =>
+): Effect.Effect<Package[], ScanError, FileSystem.FileSystem | Env.Env> =>
   Effect.gen(function*() {
     // If config explicitly provides packages, use those
     if (Object.keys(configPackages).length > 0) {
@@ -147,7 +109,7 @@ export const resolvePackages = (
         const scopeDir = Fs.Path.join(packagesDir, scopeRelDir)
         return {
           scope,
-          name,
+          name: Pkg.Moniker.parse(name),
           path: scopeDir,
         }
       })

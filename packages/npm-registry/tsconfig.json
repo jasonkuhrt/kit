@@ -8,10 +8,10 @@
     "noEmit": true,
     "paths": {
       "#npm-registry": [
-        "./src/_.ts"
+        "./src/_.js"
       ],
       "#npm-registry/*": [
-        "./src/*.ts"
+        "./src/*.js"
       ]
     }
   },

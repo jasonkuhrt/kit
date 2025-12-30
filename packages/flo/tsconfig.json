@@ -8,10 +8,10 @@
     "noEmit": true,
     "paths": {
       "#flo": [
-        "./src/_.ts"
+        "./src/_.js"
       ],
       "#flo/*": [
-        "./src/*.ts"
+        "./src/*.js"
       ]
     }
   },

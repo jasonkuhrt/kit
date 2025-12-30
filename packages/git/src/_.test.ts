@@ -1,5 +1,5 @@
 import { Test } from '@kitz/test'
-import { Effect, Ref } from 'effect'
+import { Effect, Ref, Schema } from 'effect'
 import { describe, expect, test } from 'vitest'
 import { Git } from './_.js'
 
@@ -201,15 +201,13 @@ describe('Commit', () => {
   test('creates valid commit with all fields', () => {
     const commit = Git.Commit.make({
       hash: Git.Sha.make('abc1234'),
-      message: 'feat(core): add feature',
-      body: 'Detailed description',
+      message: 'feat(core): add feature\n\nDetailed description',
       author: Git.Author.make({ name: 'Jane Doe', email: 'jane@example.com' }),
       date: new Date('2024-01-15'),
     })
 
     expect(commit.hash).toBe('abc1234')
-    expect(commit.message).toBe('feat(core): add feature')
-    expect(commit.body).toBe('Detailed description')
+    expect(commit.message).toBe('feat(core): add feature\n\nDetailed description')
     expect(commit.author.name).toBe('Jane Doe')
     expect(commit.author.email).toBe('jane@example.com')
   })
@@ -230,10 +228,10 @@ describe('Memory utilities', () => {
 
   test('commit helper accepts overrides', () => {
     const sha = Git.Sha.make('abcd1234')
-    const commit = Git.Memory.commit('feat: new', { hash: sha, body: 'Custom body' })
+    const commit = Git.Memory.commit('feat: new\n\nCustom body', { hash: sha })
 
     expect(commit.hash).toBe(sha)
-    expect(commit.body).toBe('Custom body')
+    expect(commit.message).toBe('feat: new\n\nCustom body')
   })
 
   test('makeWithState provides mutable state access', async () => {
@@ -321,4 +319,119 @@ describe('GitLive', () => {
     expect(result[0]).toHaveProperty('author')
     expect(result[0]).toHaveProperty('date')
   })
+})
+
+// ============================================================================
+// Gitignore
+// ============================================================================
+
+describe('Gitignore', () => {
+  const { Gitignore } = Git
+
+  // ─── Round-trip (fromString → toString) ────────────────────────────────────
+
+  Test.describe('round-trip')
+    .on((content: string) => Gitignore.toString(Gitignore.fromString(content)))
+    .casesInput(
+      'node_modules/\n*.log\n',
+      '# Dependencies\nnode_modules/\n\n# Build\ndist/\n',
+      '*.log\n!important.log\n',
+      '',
+    )
+    .test()
+
+  // ─── patterns ──────────────────────────────────────────────────────────────
+
+  Test.describe('patterns')
+    .on((content: string) => Gitignore.fromString(content).patterns)
+    .cases(
+      [['node_modules/\n*.log\n'], ['node_modules/', '*.log']],
+      [['*.log\n!important.log\n'], ['*.log', '!important.log']],
+    )
+    .test()
+
+  // ─── hasPattern ────────────────────────────────────────────────────────────
+
+  const gi = Gitignore.fromString('node_modules/\n!keep/\n')
+
+  // dprint-ignore
+  Test.describe('hasPattern')
+    .on((pattern: string) => gi.hasPattern(pattern))
+    .cases(
+      [['node_modules/'],      true],
+      [['dist/'],              false],
+      [['./node_modules/'],    true],   // normalization
+      [['  node_modules/  '],  true],   // trimming
+      [['keep/'],              false],  // negated ignored by default
+    )
+    .test()
+
+  Test.describe('hasPattern > matchNegated')
+    .on((pattern: string) => Gitignore.hasPattern(gi, pattern, { matchNegated: true }))
+    .cases([['keep/'], true])
+    .test()
+
+  // ─── addPattern ────────────────────────────────────────────────────────────
+
+  // dprint-ignore
+  Test.describe('addPattern')
+    .on((pattern: string) => Gitignore.addPattern(Gitignore.empty, pattern).patterns)
+    .cases(
+      [['node_modules/'],    ['node_modules/']],
+      [['./node_modules/'],  ['node_modules/']],  // normalization
+      [['  foo  '],          ['foo']],            // trimming
+    )
+    .test()
+
+  Test.describe('addPattern > to existing')
+    .on((pattern: string) => Gitignore.fromString('foo/\n').addPattern(pattern).patterns)
+    .cases([['bar/'], ['foo/', 'bar/']])
+    .test()
+
+  test('addPattern > no duplicate', () => {
+    const g = Gitignore.fromString('foo/\n')
+    expect(Gitignore.addPattern(g, 'foo/')).toBe(g)
+  })
+
+  Test.describe('addPattern > section')
+    .on(() =>
+      Gitignore.toString(
+        Gitignore.addPattern(Gitignore.fromString('# Dependencies\nnode_modules/\n'), 'vendor/', {
+          section: 'Dependencies',
+        }),
+      )
+    )
+    .cases({ input: [] })
+    .test()
+
+  Test.describe('addPattern > new section')
+    .on(() =>
+      Gitignore.toString(Gitignore.addPattern(Gitignore.fromString('foo/\n'), 'bar/', { section: 'New Section' }))
+    )
+    .cases({ input: [] })
+    .test()
+
+  Test.describe('addPattern > negated')
+    .on(() => Gitignore.toString(Gitignore.addPattern(Gitignore.empty, 'keep/', { negated: true })))
+    .cases([[], '!keep/\n'])
+    .test()
+
+  // ─── removePattern ─────────────────────────────────────────────────────────
+
+  // dprint-ignore
+  Test.describe('removePattern')
+    .on((pattern: string) => Gitignore.fromString('foo/\nbar/\n').removePattern(pattern).patterns)
+    .cases(
+      [['foo/'],    ['bar/']],
+      [['./foo/'],  ['bar/']],       // normalization
+      [['baz/'],    ['foo/', 'bar/']], // not found
+    )
+    .test()
+
+  // ─── empty ─────────────────────────────────────────────────────────────────
+
+  Test.describe('empty')
+    .on(() => ({ patterns: Gitignore.empty.patterns, encoded: Gitignore.toString(Gitignore.empty) }))
+    .cases([[], { patterns: [], encoded: '' }])
+    .test()
 })

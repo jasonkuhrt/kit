@@ -46,10 +46,6 @@
     "#prox": "./build/prox/_.js",
     "#prox/*": "./build/prox/*.js",
     "#deps/*": "./build/deps/*.js",
-    "#test": "@kitz/test",
-    "#test/*": "@kitz/test/*",
-    "#assert": "@kitz/assert",
-    "#assert/*": "@kitz/assert/*",
     "#platform:lang/*": {
       "browser": "./build/lang/*.browser.js",
       "default": "./build/lang/*.node.js"
@@ -99,7 +95,7 @@
   "scripts": {
     "build": "tsgo -p tsconfig.build.json",
     "dev": "tsgo -p tsconfig.build.json --watch",
-    "check:types": "tsgo -p tsconfig.check.json --noEmit",
+    "check:types": "tsgo --noEmit",
     "check:lint": "oxlint src/",
     "check:package": "publint && attw --pack --ignore-rules no-resolution cjs-resolves-to-esm internal-resolution-error"
   },

@@ -1,1 +1,1 @@
-export * as Moniker from './__.js'
+export * as Moniker from './moniker.js'

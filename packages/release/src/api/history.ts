@@ -1,7 +1,9 @@
+import { Str } from '@kitz/core'
 import { Git } from '@kitz/git'
+import { Pkg } from '@kitz/pkg'
 import { Semver } from '@kitz/semver'
 import { Data, Effect } from 'effect'
-import { auditPackageHistory, type AuditResult, validateAdjacent, type ValidationResult } from './monotonic.js'
+import { auditPackageHistory, type AuditResult, validateAdjacent, type ValidationResult } from './lint/ops/monotonic.js'
 
 /**
  * Options for setting a release tag.
@@ -9,7 +11,7 @@ import { auditPackageHistory, type AuditResult, validateAdjacent, type Validatio
 export interface SetOptions {
   /** Git commit SHA to tag */
   readonly sha: Git.Sha.Sha
-  /** Package name (e.g., '@kitz/core' or 'core') */
+  /** Full package name (e.g., '@kitz/core') */
   readonly pkg: string
   /** Semver version */
   readonly ver: Semver.Semver
@@ -57,22 +59,6 @@ export class MonotonicViolationError extends Data.TaggedError('MonotonicViolatio
 }> {}
 
 /**
- * Normalize package name to full form.
- *
- * Accepts either full name ('@kitz/core') or scope ('core').
- */
-const normalizePackageName = (pkg: string): string => {
-  if (pkg.startsWith('@')) return pkg
-  return `@kitz/${pkg}`
-}
-
-/**
- * Create the tag name for a package version.
- */
-const makeTagName = (packageName: string, version: Semver.Semver): string =>
-  `${packageName}@${version.version.toString()}`
-
-/**
  * Set a release tag at a specific commit.
  *
  * Validates monotonic versioning before creating the tag.
@@ -103,10 +89,10 @@ export const set = (
 > =>
   Effect.gen(function*() {
     const git = yield* Git.Git
-    const packageName = normalizePackageName(options.pkg)
+    const moniker = Pkg.Moniker.parse(options.pkg)
     const version = options.ver
     const versionString = version.version.toString()
-    const tag = makeTagName(packageName, version)
+    const tag = Pkg.Pin.toString(Pkg.Pin.Exact.make({ name: moniker, version }))
     const push = options.push ?? true
     const move = options.move ?? false
     const remote = options.remote ?? 'origin'
@@ -147,13 +133,13 @@ export const set = (
     }
 
     // Validate monotonic versioning (adjacent check)
-    const validation = yield* validateAdjacent(options.sha, packageName, version, tags)
+    const validation = yield* validateAdjacent(options.sha, options.pkg, version, tags)
     if (!validation.valid) {
       return yield* Effect.fail(new MonotonicViolationError({ validation }))
     }
 
     // Create the tag
-    yield* git.createTagAt(tag, options.sha, `Release ${packageName}@${versionString}`)
+    yield* git.createTagAt(tag, options.sha, `Release ${options.pkg}@${versionString}`)
 
     // Push if requested
     if (push) {
@@ -208,7 +194,7 @@ export const audit = (
 
     // Filter to specific package if requested
     const packagesToAudit = options.pkg
-      ? [normalizePackageName(options.pkg)]
+      ? [options.pkg]
       : Array.from(packageNames)
 
     // Audit each package
@@ -225,40 +211,39 @@ export const audit = (
  * Format a SetResult for display.
  */
 export const formatSetResult = (result: SetResult): string => {
-  const lines: string[] = []
+  const b = Str.Builder()
 
   switch (result.action) {
     case 'created':
-      lines.push(`✓ Created tag ${result.tag} at ${result.sha.slice(0, 7)}`)
+      b`✓ Created tag ${result.tag} at ${result.sha.slice(0, 7)}`
       break
     case 'moved':
-      lines.push(`✓ Moved tag ${result.tag} to ${result.sha.slice(0, 7)}`)
+      b`✓ Moved tag ${result.tag} to ${result.sha.slice(0, 7)}`
       break
     case 'unchanged':
-      lines.push(`○ Tag ${result.tag} already exists at ${result.sha.slice(0, 7)}`)
+      b`○ Tag ${result.tag} already exists at ${result.sha.slice(0, 7)}`
       break
   }
 
   if (result.pushed) {
-    lines.push(`  Pushed to remote`)
+    b`  Pushed to remote`
   }
 
-  return lines.join('\n')
+  return b.render()
 }
 
 /**
  * Format a TagExistsError for display.
  */
 export const formatTagExistsError = (error: TagExistsError): string => {
-  const lines = [
-    `Error: Tag ${error.tag} already exists at ${error.existingSha.slice(0, 7)}`,
-    ``,
-    `  You requested to set it at ${error.requestedSha.slice(0, 7)}.`,
-    `  Use --move to relocate the tag.`,
-    ``,
-    `  ⚠️  Moving tags may break GitHub releases if immutable releases are enabled.`,
-  ]
-  return lines.join('\n')
+  const b = Str.Builder()
+  b`Error: Tag ${error.tag} already exists at ${error.existingSha.slice(0, 7)}`
+  b``
+  b`  You requested to set it at ${error.requestedSha.slice(0, 7)}.`
+  b`  Use --move to relocate the tag.`
+  b``
+  b`  ⚠️  Moving tags may break GitHub releases if immutable releases are enabled.`
+  return b.render()
 }
 
 /**
@@ -266,61 +251,60 @@ export const formatTagExistsError = (error: TagExistsError): string => {
  */
 export const formatMonotonicViolationError = (error: MonotonicViolationError): string => {
   const { validation } = error
-  const lines = [
-    `Error: Cannot set ${validation.version.version} at ${validation.sha.slice(0, 7)}`,
-    ``,
-  ]
+  const b = Str.Builder()
+  b`Error: Cannot set ${validation.version.version.toString()} at ${validation.sha.slice(0, 7)}`
+  b``
 
   for (const violation of validation.violations) {
-    lines.push(`  ${violation.message}`)
+    b`  ${violation.message}`
   }
 
-  lines.push(``)
-  lines.push(`  Hint: Versions must increase with commit order (monotonic versioning).`)
+  b``
+  b`  Hint: Versions must increase with commit order (monotonic versioning).`
 
-  return lines.join('\n')
+  return b.render()
 }
 
 /**
  * Format AuditResult for display.
  */
 export const formatAuditResult = (result: AuditResult): string => {
-  const lines: string[] = []
+  const b = Str.Builder()
 
-  lines.push(`${result.packageName}:`)
+  b`${result.packageName}:`
 
   if (result.valid) {
-    lines.push(`  ✓ All ${result.releases.length} releases in valid order`)
+    b`  ✓ All ${String(result.releases.length)} releases in valid order`
   } else {
     for (const violation of result.violations) {
-      lines.push(`  ✗ ${violation.message}`)
+      b`  ✗ ${violation.message}`
     }
   }
 
-  return lines.join('\n')
+  return b.render()
 }
 
 /**
  * Format multiple AuditResults for display.
  */
 export const formatAuditResults = (results: AuditResult[]): string => {
-  const lines: string[] = []
+  const b = Str.Builder()
 
-  lines.push(`Auditing release history...`)
-  lines.push(``)
+  b`Auditing release history...`
+  b``
 
   for (const result of results) {
-    lines.push(formatAuditResult(result))
+    b(formatAuditResult(result))
   }
 
   const invalidCount = results.filter((r) => !r.valid).length
   if (invalidCount > 0) {
-    lines.push(``)
-    lines.push(`${invalidCount} package(s) with violations`)
+    b``
+    b`${String(invalidCount)} package(s) with violations`
   } else {
-    lines.push(``)
-    lines.push(`All packages have valid release history`)
+    b``
+    b`All packages have valid release history`
   }
 
-  return lines.join('\n')
+  return b.render()
 }

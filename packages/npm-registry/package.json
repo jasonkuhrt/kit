@@ -25,6 +25,7 @@
   "dependencies": {
     "@effect/platform": "^0.94.0",
     "@kitz/core": "workspace:*",
+    "@kitz/fs": "workspace:*",
     "@kitz/pkg": "workspace:*",
     "@kitz/semver": "workspace:*",
     "effect": "^3.19.13"

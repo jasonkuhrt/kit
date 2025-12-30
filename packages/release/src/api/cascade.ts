@@ -1,16 +1,11 @@
 import { FileSystem } from '@effect/platform'
-import type { PlatformError } from '@effect/platform/Error'
-import { Fs } from '@kitz/fs'
-import { Git } from '@kitz/git'
-import { Effect, Either, Option } from 'effect'
-import * as Release from './release.js'
+import { Pkg } from '@kitz/pkg'
+import { Resource } from '@kitz/resource'
+import { Effect, Option } from 'effect'
+import * as PlanModels from './plan/models/__.js'
+import { makeCascadeCommit, type ReleaseCommit } from './release-commit.js'
 import type { Package } from './scanner.js'
 import { calculateNextVersion, findLatestTagVersion } from './version.js'
-
-/**
- * Placeholder SHA for synthetic cascade commits (no real git commit).
- */
-const CASCADE_SHA = Git.Sha.make('0000000')
 
 /**
  * Dependency graph: package name -> list of packages that depend on it.
@@ -23,16 +18,12 @@ export type DependencyGraph = Map<string, string[]>
  * Maps each package name to the list of packages that depend on it.
  * Uses Effect's FileSystem service for testability.
  */
-// Shared typed path for package.json
-const packageJsonRelFile = Fs.Path.RelFile.fromString('./package.json')
-
 export const buildDependencyGraph = (
   packages: Package[],
-): Effect.Effect<DependencyGraph, PlatformError, FileSystem.FileSystem> =>
+): Effect.Effect<DependencyGraph, Resource.ResourceError, FileSystem.FileSystem> =>
   Effect.gen(function*() {
-    const fs = yield* FileSystem.FileSystem
     const graph: DependencyGraph = new Map()
-    const packageNames = new Set(packages.map((p) => p.name))
+    const packageNames = new Set(packages.map((p) => p.name.moniker))
 
     // Initialize all packages with empty dependents
     for (const name of packageNames) {
@@ -40,38 +31,17 @@ export const buildDependencyGraph = (
     }
 
     for (const pkg of packages) {
-      const packageJsonPath = Fs.Path.join(pkg.path, packageJsonRelFile)
-      const packageJsonPathStr = Fs.Path.toString(packageJsonPath)
+      // Read manifest using typed resource
+      const manifestOption = yield* Pkg.Manifest.resource.read(pkg.path)
+      if (Option.isNone(manifestOption)) continue
 
-      // Check if file exists
-      const exists = yield* fs.exists(packageJsonPathStr)
-      if (!exists) continue
-
-      // Read and parse package.json
-      const contentResult = yield* Effect.either(
-        fs.readFileString(packageJsonPathStr).pipe(
-          Effect.map((content) =>
-            JSON.parse(content) as {
-              dependencies?: Record<string, string>
-              devDependencies?: Record<string, string>
-              peerDependencies?: Record<string, string>
-            }
-          ),
-        ),
-      )
-
-      if (Either.isLeft(contentResult)) {
-        // Skip packages with invalid package.json
-        continue
-      }
-
-      const content = contentResult.right
+      const manifest = manifestOption.value
 
       // Check all dependency types
       const allDeps = {
-        ...content.dependencies,
-        ...content.devDependencies,
-        ...content.peerDependencies,
+        ...manifest.dependencies,
+        ...manifest.devDependencies,
+        ...manifest.peerDependencies,
       }
 
       for (const depName of Object.keys(allDeps)) {
@@ -79,7 +49,7 @@ export const buildDependencyGraph = (
         if (!packageNames.has(depName)) continue
 
         const dependents = graph.get(depName) ?? []
-        dependents.push(pkg.name)
+        dependents.push(pkg.name.moniker)
         graph.set(depName, dependents)
       }
     }
@@ -99,12 +69,12 @@ export const buildDependencyGraph = (
  */
 export const detect = (
   packages: Package[],
-  primaryReleases: Release.PlannedRelease[],
+  primaryReleases: PlanModels.Item[],
   dependencyGraph: DependencyGraph,
   tags: string[],
-): Release.StablePlannedRelease[] => {
-  // Set of packages already getting released
-  const releasing = new Set(primaryReleases.map((r) => r.package.name))
+): PlanModels.Stable[] => {
+  // Set of packages already getting released (use string form for Set/Map operations)
+  const releasing = new Set(primaryReleases.map((r) => r.package.name.moniker))
 
   // Set of packages that need cascade releases
   const needsCascade = new Set<string>()
@@ -125,50 +95,45 @@ export const detect = (
     }
   }
 
-  // Build cascade releases
-  const nameToPackage = new Map(packages.map((p) => [p.name, p]))
-  const cascades: Release.StablePlannedRelease[] = []
+  // Build cascade releases (use string keys for Map lookup)
+  const nameToPackage = new Map(packages.map((p) => [p.name.moniker, p]))
+  const cascades: PlanModels.Stable[] = []
 
   for (const name of needsCascade) {
     const pkg = nameToPackage.get(name)
     if (!pkg) continue
 
-    const currentVersion = findLatestTagVersion(name, tags)
+    const currentVersion = findLatestTagVersion(pkg.name, tags)
     const nextVersion = calculateNextVersion(currentVersion, 'patch')
 
     // Find which primary release(s) triggered this cascade
     // Create synthetic commit entries for changelog generation
-    const cascadeCommits: Release.PlannedRelease['commits'][number][] = []
+    const cascadeCommits: ReleaseCommit[] = []
     const deps = dependencyGraph.get(name)
     if (deps) {
       for (const primary of primaryReleases) {
-        if (deps.includes(primary.package.name)) {
-          cascadeCommits.push({
-            type: 'chore',
-            message: `Depends on ${primary.package.name}@${Release.getNextVersion(primary).version}`,
-            hash: CASCADE_SHA,
-            breaking: false,
-          })
+        if (deps.includes(primary.package.name.moniker)) {
+          cascadeCommits.push(
+            makeCascadeCommit(
+              pkg.scope,
+              `Depends on ${primary.package.name.moniker}@${primary.nextVersion.version}`,
+            ),
+          )
         }
       }
     }
 
     // If no triggers found, add a generic cascade commit
     if (cascadeCommits.length === 0) {
-      cascadeCommits.push({
-        type: 'chore',
-        message: 'Cascade release',
-        hash: CASCADE_SHA,
-        breaking: false,
-      })
+      cascadeCommits.push(makeCascadeCommit(pkg.scope, 'Cascade release'))
     }
 
     // Build version union
-    const version: Release.StableVersion = Option.isSome(currentVersion)
-      ? Release.StableVersionIncrement.make({ from: currentVersion.value, to: nextVersion, bump: 'patch' })
-      : Release.StableVersionFirst.make({ version: nextVersion })
+    const version: PlanModels.StableVersion = Option.isSome(currentVersion)
+      ? PlanModels.StableVersionIncrement.make({ from: currentVersion.value, to: nextVersion, bump: 'patch' })
+      : PlanModels.StableVersionFirst.make({ version: nextVersion })
 
-    cascades.push(Release.StablePlannedRelease.make({
+    cascades.push(PlanModels.Stable.make({
       package: pkg,
       version,
       commits: cascadeCommits,

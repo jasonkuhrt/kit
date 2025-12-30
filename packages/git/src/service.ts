@@ -1,5 +1,5 @@
 import { Err } from '@kitz/core'
-import { Context, Effect } from 'effect'
+import { Context, Effect, Schema as S } from 'effect'
 import { Commit } from './commit.js'
 import * as Sha from './sha.js'
 
@@ -31,27 +31,52 @@ export type GitOperation =
   | 'deleteRemoteTag'
   | 'getRemoteUrl'
 
+const GitOperationSchema = S.Literal(
+  'getTags',
+  'getCurrentBranch',
+  'getCommitsSince',
+  'isClean',
+  'createTag',
+  'pushTags',
+  'getRoot',
+  'getHeadSha',
+  'getTagSha',
+  'isAncestor',
+  'createTagAt',
+  'deleteTag',
+  'commitExists',
+  'pushTag',
+  'deleteRemoteTag',
+  'getRemoteUrl',
+)
+
+const baseTags = ['kit', 'git'] as const
+
 /**
  * Git operation error.
  */
-export const GitError = Err.TaggedContextualError('GitError').constrain<{
-  readonly operation: GitOperation
-  readonly detail?: string
-}>({
+export const GitError = Err.TaggedContextualError('GitError', baseTags, {
+  context: S.Struct({
+    operation: GitOperationSchema,
+    detail: S.optional(S.String),
+  }),
   message: (ctx) => `Git ${ctx.operation} failed${ctx.detail ? `: ${ctx.detail}` : ''}`,
-}).constrainCause<Error>()
+  cause: S.instanceOf(Error),
+})
 
 export type GitError = InstanceType<typeof GitError>
 
 /**
  * Error parsing/transforming git output.
  */
-export const GitParseError = Err.TaggedContextualError('GitParseError').constrain<{
-  readonly operation: GitOperation
-  readonly detail?: string
-}>({
+export const GitParseError = Err.TaggedContextualError('GitParseError', baseTags, {
+  context: S.Struct({
+    operation: GitOperationSchema,
+    detail: S.optional(S.String),
+  }),
   message: (ctx) => `Git ${ctx.operation} parse failed${ctx.detail ? `: ${ctx.detail}` : ''}`,
-}).constrainCause<Error>()
+  cause: S.instanceOf(Error),
+})
 
 export type GitParseError = InstanceType<typeof GitParseError>
 

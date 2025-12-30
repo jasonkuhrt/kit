@@ -1,121 +1,88 @@
-import { FileSystem, Path } from '@effect/platform'
-import { NodeFileSystem, NodePath } from '@effect/platform-node'
+import { NodeFileSystem } from '@effect/platform-node'
+import { Cli } from '@kitz/cli'
+import { Str } from '@kitz/core'
 import { Env } from '@kitz/env'
+import { Fs } from '@kitz/fs'
+import { Git } from '@kitz/git'
 import { Oak } from '@kitz/oak'
-import { Effect, Layer, Schema } from 'effect'
+import { Console, Effect, Layer, Match, Schema as S } from 'effect'
 import * as Api from '../../api/__.js'
 
-const CONFIG_FILE = 'release.config.ts'
-const GITIGNORE_ENTRY = '.release/'
-
-/**
- * Default config template.
- */
-const configTemplate = `import { defineConfig } from '@kitz/release'
-
-export default defineConfig({
-  // Trunk branch name (default: 'main')
-  // trunk: 'main',
-
-  // Default npm dist-tag for stable releases (default: 'latest')
-  // npmTag: 'latest',
-
-  // Dist-tag for preview releases (default: 'next')
-  // previewTag: 'next',
-
-  // Skip npm publish (for testing)
-  // skipNpm: false,
-
-  // Scope to package mapping (auto-scanned by default)
-  // packages: {
-  //   core: '@kitz/core',
-  //   kitz: 'kitz',
-  // },
-})
-`
+const RELEASE_DIR_PATTERN = '.release/'
 
 /**
  * release init
  *
  * Initialize release in a project.
  */
-await Oak.Command.create()
+Oak.Command.create()
   .description('Initialize release configuration')
   .parameter(
     'force f',
-    Schema.transform(
-      Schema.UndefinedOr(Schema.Boolean),
-      Schema.Boolean,
+    S.transform(
+      S.UndefinedOr(S.Boolean),
+      S.Boolean,
       {
         strict: true,
         decode: (v) => v ?? false,
         encode: (v) => v,
       },
     ).pipe(
-      Schema.annotations({ description: 'Overwrite existing config', default: false }),
+      S.annotations({ description: 'Overwrite existing config', default: false }),
     ),
   )
   .parse()
 
-const program = Effect.gen(function*() {
-  const fs = yield* FileSystem.FileSystem
-  const path = yield* Path.Path
-  const cwd = process.cwd()
+Cli.run(Layer.mergeAll(Env.Live, NodeFileSystem.layer))(
+  Effect.gen(function*() {
+    const env = yield* Env.Env
 
-  console.log('Initializing release...')
-  console.log()
+    const header = Str.Builder()
+    header`Initializing release...`
+    header``
+    yield* Console.log(header.render())
 
-  // Check for existing config
-  const configPath = path.join(cwd, CONFIG_FILE)
-  const configExists = yield* fs.exists(configPath)
+    // Initialize config file
+    const configResult = yield* Api.Config.init()
+    yield* Match.value(configResult).pipe(
+      Match.tagsExhaustive({
+        Created: (r) => Console.log(`✓ Created ${r.path.name}`),
+        AlreadyExists: () => Console.log(`✓ Config already exists`),
+      }),
+    )
 
-  if (configExists) {
-    console.log(`✓ Config already exists: ${CONFIG_FILE}`)
-  } else {
-    yield* fs.writeFileString(configPath, configTemplate)
-    console.log(`✓ Created ${CONFIG_FILE}`)
-  }
+    // Scan packages
+    const packages = yield* Api.Workspace.scan
+    yield* Console.log(`✓ Detected ${packages.length} package${packages.length === 1 ? '' : 's'}`)
 
-  // Scan packages
-  const packages = yield* Api.Workspace.scan
-  console.log(`✓ Detected ${packages.length} package${packages.length === 1 ? '' : 's'}`)
+    // Add .release/ to .gitignore
+    const gitignorePath = Fs.Path.join(env.cwd, Git.Paths.GITIGNORE)
+    const existingContent = yield* Fs.readString(gitignorePath).pipe(
+      Effect.catchTag('SystemError', () => Effect.succeed('')),
+    )
 
-  // Add .release/ to .gitignore
-  const gitignorePath = path.join(cwd, '.gitignore')
-  const gitignoreExists = yield* fs.exists(gitignorePath)
+    const gitignore = existingContent === ''
+      ? Git.Gitignore.empty
+      : Git.Gitignore.fromString(existingContent)
 
-  if (gitignoreExists) {
-    const content = yield* fs.readFileString(gitignorePath)
-    if (!content.includes(GITIGNORE_ENTRY)) {
-      const newContent = content.endsWith('\n')
-        ? content + GITIGNORE_ENTRY + '\n'
-        : content + '\n' + GITIGNORE_ENTRY + '\n'
-      yield* fs.writeFileString(gitignorePath, newContent)
-      console.log(`✓ Added ${GITIGNORE_ENTRY} to .gitignore`)
+    if (gitignore.hasPattern(RELEASE_DIR_PATTERN)) {
+      yield* Console.log(`✓ ${RELEASE_DIR_PATTERN} already in .gitignore`)
     } else {
-      console.log(`✓ ${GITIGNORE_ENTRY} already in .gitignore`)
+      const updated = gitignore.addPattern(RELEASE_DIR_PATTERN)
+      yield* Fs.write(gitignorePath, Git.Gitignore.toString(updated))
+
+      const action = existingContent === '' ? 'Created .gitignore with' : 'Added'
+      yield* Console.log(`✓ ${action} ${RELEASE_DIR_PATTERN} to .gitignore`)
     }
-  } else {
-    yield* fs.writeFileString(gitignorePath, GITIGNORE_ENTRY + '\n')
-    console.log(`✓ Created .gitignore with ${GITIGNORE_ENTRY}`)
-  }
 
-  console.log()
-  console.log('Done! Release is ready.')
-  console.log()
-  console.log('Next steps:')
-  console.log('  1. Review release.config.ts')
-  console.log('  2. Run `release status` to see pending changes')
-  console.log('  3. Run `release plan stable` to generate a release plan')
-})
+    yield* Console.log(Str.Tpl.dedent`
 
-const layer = Layer.mergeAll(
-  Env.Live,
-  NodeFileSystem.layer,
-  NodePath.layer,
+      Done! Release is ready.
+
+      Next steps:
+        1. Review release.config.ts
+        2. Run \`release status\` to see pending changes
+        3. Run \`release plan stable\` to generate a release plan
+    `)
+  }),
 )
-
-Effect.runPromise(Effect.provide(program, layer)).catch((error) => {
-  console.error('Error:', error.message ?? error)
-  process.exit(1)
-})

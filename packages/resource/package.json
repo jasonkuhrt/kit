@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@effect/platform": "^0.94.0",
+    "@kitz/core": "workspace:*",
     "@kitz/fs": "workspace:*",
     "@kitz/jsonc": "workspace:*",
     "effect": "^3.0.0"

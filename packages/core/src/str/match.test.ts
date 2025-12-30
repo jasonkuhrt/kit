@@ -1,4 +1,4 @@
-import { Assert } from '#assert'
+import { Assert } from '#kitz/assert'
 import { Str } from '#str'
 import { Option } from 'effect'
 import { describe, expect, test } from 'vitest'

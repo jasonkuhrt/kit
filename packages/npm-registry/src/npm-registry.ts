@@ -2,39 +2,56 @@ import { HttpClient, HttpClientError } from '@effect/platform'
 import { Err } from '@kitz/core'
 import { Pkg } from '@kitz/pkg'
 import { Semver } from '@kitz/semver'
-import { Effect, Option } from 'effect'
+import { Effect, Option, Schema as S } from 'effect'
 
 // ============================================================================
 // Errors
 // ============================================================================
 
+const baseTags = ['kit', 'npm-registry'] as const
+
+const NpmRegistryOperationSchema = S.Literal('getVersions', 'getLatestVersion')
+
 /**
  * Npm registry operation names for structured error context.
  */
-export type NpmRegistryOperation = 'getVersions' | 'getLatestVersion'
+export type NpmRegistryOperation = S.Schema.Type<typeof NpmRegistryOperationSchema>
 
 /**
  * Npm registry operation error.
  */
-export const NpmRegistryError = Err.TaggedContextualError('NpmRegistryError').constrain<{
-  readonly operation: NpmRegistryOperation
-  readonly packageName: string
-  readonly detail?: string
-}>({
-  message: (ctx) => `npm registry ${ctx.operation} for ${ctx.packageName} failed${ctx.detail ? `: ${ctx.detail}` : ''}`,
-}).constrainCause<Error | HttpClientError.HttpClientError>()
+export const NpmRegistryError = Err.TaggedContextualError(
+  'NpmRegistryError',
+  baseTags,
+  {
+    context: S.Struct({
+      operation: NpmRegistryOperationSchema,
+      packageName: S.String,
+      detail: S.optional(S.String),
+    }),
+    message: (ctx) =>
+      `npm registry ${ctx.operation} for ${ctx.packageName} failed${ctx.detail ? `: ${ctx.detail}` : ''}`,
+    cause: S.instanceOf(Error),
+  },
+)
 
 export type NpmRegistryError = InstanceType<typeof NpmRegistryError>
 
 /**
  * Error parsing a version string from the registry.
  */
-export const SemverParseError = Err.TaggedContextualError('SemverParseError').constrain<{
-  readonly version: string
-  readonly packageName: string
-}>({
-  message: (ctx) => `invalid semver "${ctx.version}" from package ${ctx.packageName}`,
-}).constrainCause<Error>()
+export const SemverParseError = Err.TaggedContextualError(
+  'SemverParseError',
+  baseTags,
+  {
+    context: S.Struct({
+      version: S.String,
+      packageName: S.String,
+    }),
+    message: (ctx) => `invalid semver "${ctx.version}" from package ${ctx.packageName}`,
+    cause: S.instanceOf(Error),
+  },
+)
 
 export type SemverParseError = InstanceType<typeof SemverParseError>
 

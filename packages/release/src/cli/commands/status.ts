@@ -1,24 +1,22 @@
 import { NodeFileSystem } from '@effect/platform-node'
+import { Cli } from '@kitz/cli'
 import { Str } from '@kitz/core'
 import { Env } from '@kitz/env'
 import { Git } from '@kitz/git'
 import { Oak } from '@kitz/oak'
-import { Effect, Layer, Option, Schema } from 'effect'
+import { Console, Effect, Layer, Option, Schema } from 'effect'
 import * as Api from '../../api/__.js'
 
 /**
  * Format a planned release for display.
  */
-const formatRelease = (release: Api.Plan.PlannedRelease): string => {
-  const currentVersion = Api.Plan.getCurrentVersion(release)
-  const nextVersion = Api.Plan.getNextVersion(release)
-  const bump = Api.Plan.getBumpType(release)
-  const current = currentVersion.pipe(Option.map((v) => v.version), Option.getOrElse(() => '(none)'))
-  const next = nextVersion.version
+const formatRelease = (release: Api.Plan.Item): string => {
+  const current = release.currentVersion.pipe(Option.map((v) => v.version), Option.getOrElse(() => '(none)'))
+  const next = release.nextVersion.version
   const commitCount = release.commits.length
 
   return [
-    `${release.package.name} (${current} → ${next}) [${bump ?? 'cascade'}]`,
+    `${release.package.name} (${current} → ${next}) [${release.bumpType ?? 'cascade'}]`,
     `  ${commitCount} commit${commitCount === 1 ? '' : 's'}`,
   ].join(Str.Char.newline)
 }
@@ -28,7 +26,7 @@ const formatRelease = (release: Api.Plan.PlannedRelease): string => {
  */
 const formatCascade = (
   pkg: string,
-  dependents: readonly Api.Plan.PlannedRelease[],
+  dependents: readonly Api.Plan.Item[],
 ): string => {
   if (dependents.length === 0) {
     return `${pkg}: No cascades needed`
@@ -36,7 +34,10 @@ const formatCascade = (
 
   const lines = [`${pkg}:`]
   for (const dep of dependents) {
-    const ver = Api.Plan.getCurrentVersion(dep).pipe(Option.map((v) => v.version), Option.getOrElse(() => '0.0.0'))
+    const ver = dep.currentVersion.pipe(
+      Option.map((v) => v.version),
+      Option.getOrElse(() => '0.0.0'),
+    )
     lines.push(`  ├── ${dep.package.name} depends (workspace:* → ^${ver})`)
   }
   return lines.join(Str.Char.newline)
@@ -47,7 +48,7 @@ const formatCascade = (
  *
  * Show unreleased changes. If packages specified, also shows cascade analysis.
  */
-const args = await Oak.Command.create()
+const args = Oak.Command.create()
   .description('Show unreleased changes and cascade analysis')
   .parameter(
     'packages',
@@ -57,57 +58,59 @@ const args = await Oak.Command.create()
   )
   .parse()
 
-const program = Effect.gen(function*() {
-  const env = yield* Env.Env
+Cli.run(Layer.mergeAll(Env.Live, NodeFileSystem.layer, Git.GitLive))(
+  Effect.gen(function*() {
+    const env = yield* Env.Env
 
-  // Load config and scan packages
-  const config = yield* Api.Config.load(process.cwd()).pipe(Effect.orElseSucceed(() => undefined))
-  const packages = yield* Api.Workspace.scan
+    // Load config and scan packages
+    const config = yield* Api.Config.load()
+    const packages = yield* Api.Workspace.scan
 
-  if (packages.length === 0) {
-    console.log('No packages found.')
-    return
-  }
-
-  // Plan what would be released
-  const plan = yield* Api.Plan.stable({ packages })
-
-  if (plan.releases.length === 0) {
-    console.log('No unreleased changes.')
-    return
-  }
-
-  // Display all pending releases
-  console.log('Unreleased changes:\n')
-  for (const release of plan.releases) {
-    console.log(formatRelease(release))
-    console.log()
-  }
-
-  // If specific packages requested, show cascade analysis
-  if (args.packages && args.packages.length > 0) {
-    const tags = yield* Git.Git.pipe(Effect.flatMap((git) => git.getTags()))
-    const dependencyGraph = yield* Api.Cascade.buildDependencyGraph(packages)
-
-    console.log('\nCascade analysis:\n')
-    for (const pkgName of args.packages) {
-      const pkg = packages.find((p) => p.name === pkgName || p.scope === pkgName)
-      if (!pkg) {
-        console.log(`${pkgName}: Not found`)
-        continue
-      }
-
-      // Find releases for this package
-      const pkgReleases = plan.releases.filter((r) => r.package.name === pkg.name)
-      const cascades = Api.Cascade.detect(packages, pkgReleases, dependencyGraph, tags)
-      console.log(formatCascade(pkg.name, cascades))
+    if (packages.length === 0) {
+      yield* Console.log('No packages found.')
+      return
     }
-  }
-})
 
-const layer = Layer.mergeAll(Env.Live, NodeFileSystem.layer, Git.GitLive)
+    // Plan what would be released
+    const plan = yield* Api.Plan.stable({ packages })
 
-Effect.runPromise(Effect.provide(program, layer)).catch((error) => {
-  console.error('Error:', error.message ?? error)
-  process.exit(1)
-})
+    if (plan.releases.length === 0) {
+      yield* Console.log('No unreleased changes.')
+      return
+    }
+
+    // Display all pending releases
+    const output = Str.Builder()
+    output`Unreleased changes:`
+    output``
+    for (const release of plan.releases) {
+      output(formatRelease(release))
+      output``
+    }
+    yield* Console.log(output.render())
+
+    // If specific packages requested, show cascade analysis
+    if (args.packages && args.packages.length > 0) {
+      const tags = yield* Git.Git.pipe(Effect.flatMap((git) => git.getTags()))
+      const dependencyGraph = yield* Api.Cascade.buildDependencyGraph(packages)
+
+      const cascade = Str.Builder()
+      cascade``
+      cascade`Cascade analysis:`
+      cascade``
+      for (const pkgName of args.packages) {
+        const pkg = packages.find((p) => p.name.moniker === pkgName || p.scope === pkgName)
+        if (!pkg) {
+          cascade`${pkgName}: Not found`
+          continue
+        }
+
+        // Find releases for this package
+        const pkgReleases = plan.releases.filter((r) => r.package.name.moniker === pkg.name.moniker)
+        const cascades = Api.Cascade.detect(packages, pkgReleases, dependencyGraph, tags)
+        cascade(formatCascade(pkg.name.moniker, cascades))
+      }
+      yield* Console.log(cascade.render())
+    }
+  }),
+)

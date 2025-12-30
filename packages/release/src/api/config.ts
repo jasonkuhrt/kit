@@ -1,19 +1,15 @@
-import { Data, Effect, Schema } from 'effect'
-import * as Fs from 'node:fs'
-import * as Path from 'node:path'
+import { FileSystem } from '@effect/platform'
+import type { PlatformError } from '@effect/platform/Error'
+import { Conf } from '@kitz/conf'
+import { Env } from '@kitz/env'
+import { Fs } from '@kitz/fs'
+import { Effect, Schema } from 'effect'
+import * as LintConfig from './lint/models/config.js'
 
 /**
- * Error loading release configuration.
+ * Release configuration schema (input from file).
  */
-export class ConfigError extends Data.TaggedError('ConfigError')<{
-  readonly message: string
-  readonly cause?: unknown
-}> {}
-
-/**
- * Release configuration schema.
- */
-export class ReleaseConfig extends Schema.Class<ReleaseConfig>('ReleaseConfig')({
+export class Config extends Schema.Class<Config>('Config')({
   /** Main branch name (default: 'main') */
   trunk: Schema.optionalWith(Schema.String, { default: () => 'main' }),
   /** Dist-tag for stable releases (default: 'latest') */
@@ -27,7 +23,29 @@ export class ReleaseConfig extends Schema.Class<ReleaseConfig>('ReleaseConfig')(
     Schema.Record({ key: Schema.String, value: Schema.String }),
     { default: () => ({}) },
   ),
+  /** Lint configuration */
+  lint: Schema.optional(LintConfig.Config),
 }) {}
+
+/**
+ * Resolved release configuration schema (after merging and resolution).
+ */
+export class ResolvedConfig extends Schema.Class<ResolvedConfig>('ResolvedConfig')({
+  trunk: Schema.String,
+  npmTag: Schema.String,
+  previewTag: Schema.String,
+  skipNpm: Schema.Boolean,
+  packages: Schema.Record({ key: Schema.String, value: Schema.String }),
+  lint: LintConfig.ResolvedConfig,
+}) {}
+
+/**
+ * Config file definition for @kitz/release.
+ */
+const ConfigFile = Conf.File.define({
+  name: 'release',
+  schema: Config,
+})
 
 /**
  * Define release configuration with type safety.
@@ -35,7 +53,7 @@ export class ReleaseConfig extends Schema.Class<ReleaseConfig>('ReleaseConfig')(
  * @example
  * ```ts
  * // release.config.ts
- * import { defineConfig } from '@kitz/release'
+ * import { defineConfig, Severity } from '@kitz/release'
  *
  * export default defineConfig({
  *   trunk: 'main',
@@ -43,41 +61,87 @@ export class ReleaseConfig extends Schema.Class<ReleaseConfig>('ReleaseConfig')(
  *     core: '@kitz/core',
  *     kitz: 'kitz',
  *   },
+ *   lint: {
+ *     rules: {
+ *       'pr.scope.require': Severity.Warn,
+ *     },
+ *   },
  * })
  * ```
  */
-export const defineConfig = (config: Partial<typeof ReleaseConfig.Type>): typeof ReleaseConfig.Type =>
-  ReleaseConfig.make({
-    trunk: config.trunk ?? 'main',
-    npmTag: config.npmTag ?? 'latest',
-    previewTag: config.previewTag ?? 'next',
-    skipNpm: config.skipNpm ?? false,
-    packages: config.packages ?? {},
+export const defineConfig = Conf.File.createDefineConfig(ConfigFile)
+
+/**
+ * Error types from config loading.
+ */
+export type ConfigError = Conf.File.LoadError
+
+/**
+ * CLI overrides for config loading.
+ * Derived from schema types - any field can be overridden.
+ */
+export type LoadOptions =
+  & Partial<Omit<typeof Config.Type, 'lint'>>
+  & { readonly lint?: Partial<typeof LintConfig.Config.Type> }
+
+/**
+ * Load and resolve configuration from release.config.ts.
+ *
+ * Loads file config, merges CLI overrides, and resolves all sections.
+ * Returns fully resolved config ready for use.
+ *
+ * @param options - Optional CLI overrides per field
+ */
+export const load = (
+  options?: LoadOptions,
+): Effect.Effect<
+  ResolvedConfig,
+  ConfigError,
+  FileSystem.FileSystem | Env.Env
+> =>
+  Effect.gen(function*() {
+    const env = yield* Env.Env
+    const fileConfig = yield* Conf.File.load(ConfigFile, Fs.Path.toString(env.cwd))
+
+    // Merge CLI overrides with file config (CLI replaces per-field)
+    return ResolvedConfig.make({
+      trunk: options?.trunk ?? fileConfig.trunk,
+      npmTag: options?.npmTag ?? fileConfig.npmTag,
+      previewTag: options?.previewTag ?? fileConfig.previewTag,
+      skipNpm: options?.skipNpm ?? fileConfig.skipNpm,
+      packages: options?.packages ?? fileConfig.packages,
+      lint: LintConfig.resolveConfig({
+        defaults: options?.lint?.defaults ?? fileConfig.lint?.defaults,
+        rules: options?.lint?.rules ?? fileConfig.lint?.rules,
+        onlyRules: options?.lint?.onlyRules ?? fileConfig.lint?.onlyRules,
+        skipRules: options?.lint?.skipRules ?? fileConfig.lint?.skipRules,
+      }),
+    })
   })
 
 /**
- * Load configuration from release.config.ts or use defaults.
+ * Result of config initialization.
  */
-export const load = (cwd: string): Effect.Effect<typeof ReleaseConfig.Type, ConfigError> =>
-  Effect.gen(function*() {
-    const configPath = Path.join(cwd, 'release.config.ts')
+export type InitResult = Conf.File.InitResult
 
-    if (!Fs.existsSync(configPath)) {
-      return ReleaseConfig.make({})
-    }
-
-    // Dynamic import for config file
-    const imported = yield* Effect.tryPromise({
-      try: async () => {
-        const module = await import(configPath)
-        return module.default as typeof ReleaseConfig.Type
-      },
-      catch: (error) =>
-        new ConfigError({
-          message: `Failed to load config from ${configPath}`,
-          cause: error,
-        }),
-    })
-
-    return imported
+/**
+ * Initialize a release.config.ts file in the target directory.
+ *
+ * Creates a minimal config file that imports defineConfig and exports
+ * an empty config object. Since all fields have defaults, the generated
+ * file is valid as-is.
+ *
+ * Returns a tagged union indicating whether the file was created or already existed.
+ *
+ * @param directory - Target directory (defaults to Env.cwd)
+ */
+export const init = (
+  directory?: Fs.Path.AbsDir,
+): Effect.Effect<InitResult, PlatformError, FileSystem.FileSystem | Env.Env> =>
+  Conf.File.init(ConfigFile, {
+    defineConfigImport: {
+      specifier: '@kitz/release',
+      namedExport: 'defineConfig',
+    },
+    ...(directory && { directory }),
   })

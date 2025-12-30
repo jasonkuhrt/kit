@@ -1,19 +1,20 @@
 import { Env } from '@kitz/env'
 import { Fs } from '@kitz/fs'
 import { Git } from '@kitz/git'
+import { Pkg } from '@kitz/pkg'
 import { Semver } from '@kitz/semver'
 import { Test } from '@kitz/test'
 import { Effect, Layer, Option } from 'effect'
 import { describe, expect, test } from 'vitest'
-import { Cascade, Plan, type Workspace } from './__.js'
+import { Cascade, Plan, Release, type Workspace } from './__.js'
 import { makeTestWorkflowRuntime } from './api/workflow.js'
 
 // ─── Test Helpers ───────────────────────────────────────────────────
 
 const mockPackages: Workspace.Package[] = [
-  { name: '@kitz/core', scope: 'core', path: Fs.Path.AbsDir.fromString('/repo/packages/core/') },
-  { name: '@kitz/cli', scope: 'cli', path: Fs.Path.AbsDir.fromString('/repo/packages/cli/') },
-  { name: '@kitz/utils', scope: 'utils', path: Fs.Path.AbsDir.fromString('/repo/packages/utils/') },
+  { name: Pkg.Moniker.parse('@kitz/core'), scope: 'core', path: Fs.Path.AbsDir.fromString('/repo/packages/core/') },
+  { name: Pkg.Moniker.parse('@kitz/cli'), scope: 'cli', path: Fs.Path.AbsDir.fromString('/repo/packages/cli/') },
+  { name: Pkg.Moniker.parse('@kitz/utils'), scope: 'utils', path: Fs.Path.AbsDir.fromString('/repo/packages/utils/') },
 ]
 
 const testEnv = Env.Test({ cwd: Fs.Path.AbsDir.fromString('/repo/') })
@@ -98,8 +99,8 @@ describe('Plan.stable', () => {
       )
 
       expect(result.releases).toHaveLength(1)
-      expect(Plan.getBumpType(result.releases[0]!)).toBe(output.bump)
-      expectVersion(Plan.getNextVersion(result.releases[0]!), output.version)
+      expect(result.releases[0]!.bumpType).toBe(output.bump)
+      expectVersion(result.releases[0]!.nextVersion, output.version)
     })
 
   test('aggregates multiple commits to highest bump', async () => {
@@ -117,7 +118,7 @@ describe('Plan.stable', () => {
     )
 
     expect(result.releases).toHaveLength(1)
-    expect(Plan.getBumpType(result.releases[0]!)).toBe('minor')
+    expect(result.releases[0]!.bumpType).toBe('minor')
     expect(result.releases[0]!.commits).toHaveLength(3)
   })
 
@@ -136,14 +137,14 @@ describe('Plan.stable', () => {
 
     expect(result.releases).toHaveLength(2)
 
-    const core = result.releases.find((r) => r.package.name === '@kitz/core')
-    const cli = result.releases.find((r) => r.package.name === '@kitz/cli')
+    const core = result.releases.find((r) => r.package.name.moniker === '@kitz/core')
+    const cli = result.releases.find((r) => r.package.name.moniker === '@kitz/cli')
 
-    expect(Plan.getBumpType(core!)).toBe('minor')
-    expectVersion(Plan.getNextVersion(core!), '1.1.0')
+    expect(core!.bumpType).toBe('minor')
+    expectVersion(core!.nextVersion, '1.1.0')
 
-    expect(Plan.getBumpType(cli!)).toBe('patch')
-    expectVersion(Plan.getNextVersion(cli!), '2.0.1')
+    expect(cli!.bumpType).toBe('patch')
+    expectVersion(cli!.nextVersion, '2.0.1')
   })
 
   test('respects package filter', async () => {
@@ -163,7 +164,7 @@ describe('Plan.stable', () => {
     )
 
     expect(result.releases).toHaveLength(1)
-    expect(result.releases[0]!.package.name).toBe('@kitz/core')
+    expect(result.releases[0]!.package.name.moniker).toBe('@kitz/core')
   })
 })
 
@@ -181,7 +182,7 @@ describe('Plan.preview', () => {
     )
 
     expect(result.releases).toHaveLength(1)
-    expectVersion(Plan.getNextVersion(result.releases[0]!), '1.1.0-next.1')
+    expectVersion(result.releases[0]!.nextVersion, '1.1.0-next.1')
   })
 
   test('increments preview number', async () => {
@@ -195,7 +196,7 @@ describe('Plan.preview', () => {
     )
 
     expect(result.releases).toHaveLength(1)
-    expectVersion(Plan.getNextVersion(result.releases[0]!), '1.1.0-next.3')
+    expectVersion(result.releases[0]!.nextVersion, '1.1.0-next.3')
   })
 })
 
@@ -217,7 +218,7 @@ describe('Plan.pr', () => {
     )
 
     expect(result.releases).toHaveLength(1)
-    expectVersion(Plan.getNextVersion(result.releases[0]!), '0.0.0-pr.42.1.abc1234')
+    expectVersion(result.releases[0]!.nextVersion, '0.0.0-pr.42.1.abc1234')
   })
 
   test('increments PR iteration', async () => {
@@ -235,7 +236,7 @@ describe('Plan.pr', () => {
     )
 
     expect(result.releases).toHaveLength(1)
-    expectVersion(Plan.getNextVersion(result.releases[0]!), '0.0.0-pr.42.2.abc1234')
+    expectVersion(result.releases[0]!.nextVersion, '0.0.0-pr.42.2.abc1234')
   })
 
   test('detects PR number from environment', async () => {
@@ -259,7 +260,7 @@ describe('Plan.pr', () => {
     )
 
     expect(result.releases).toHaveLength(1)
-    expectVersion(Plan.getNextVersion(result.releases[0]!), '0.0.0-pr.123.1.def7890')
+    expectVersion(result.releases[0]!.nextVersion, '0.0.0-pr.123.1.def7890')
   })
 })
 
@@ -288,11 +289,11 @@ describe('Cascade', () => {
     )
 
     expect(result.releases).toHaveLength(1)
-    expect(result.releases[0]!.package.name).toBe('@kitz/core')
+    expect(result.releases[0]!.package.name.moniker).toBe('@kitz/core')
 
     expect(result.cascades).toHaveLength(1)
-    expect(result.cascades[0]!.package.name).toBe('@kitz/cli')
-    expect(Plan.getBumpType(result.cascades[0]!)).toBe('patch')
+    expect(result.cascades[0]!.package.name.moniker).toBe('@kitz/cli')
+    expect(result.cascades[0]!.bumpType).toBe('patch')
   })
 
   test('detects transitive cascades', async () => {
@@ -320,15 +321,15 @@ describe('Cascade', () => {
     )
 
     expect(result.cascades).toHaveLength(2)
-    const cascadeNames = result.cascades.map((c) => c.package.name)
+    const cascadeNames = result.cascades.map((c) => c.package.name.moniker)
     expect(cascadeNames).toContain('@kitz/cli')
     expect(cascadeNames).toContain('@kitz/utils')
   })
 })
 
-// ─── Plan.apply ─────────────────────────────────────────────────────
+// ─── Release.apply ─────────────────────────────────────────────────────
 
-describe('Plan.apply', () => {
+describe('Release.apply', () => {
   test('creates git tags for releases', async () => {
     const diskLayout: Fs.Memory.DiskLayout = {
       '/repo/packages/core/package.json': makePackageJson('@kitz/core', '1.0.0'),
@@ -349,7 +350,7 @@ describe('Plan.apply', () => {
     )
 
     const result = await Effect.runPromise(
-      Effect.provide(Plan.apply(plan, { dryRun: true }), layer),
+      Effect.provide(Release.apply(plan, { dryRun: true }), layer),
     )
 
     expect(result.released).toHaveLength(1)
@@ -379,7 +380,7 @@ describe('Plan.apply', () => {
     )
 
     const result = await Effect.runPromise(
-      Effect.provide(Plan.apply(plan, { dryRun: true }), layer),
+      Effect.provide(Release.apply(plan, { dryRun: true }), layer),
     )
 
     expect(result.released).toHaveLength(2)
@@ -407,21 +408,21 @@ describe('Plan.apply', () => {
     )
 
     const result1 = await Effect.runPromise(
-      Effect.provide(Plan.apply(plan, { dryRun: true }), layer),
+      Effect.provide(Release.apply(plan, { dryRun: true }), layer),
     )
 
     const result2 = await Effect.runPromise(
-      Effect.provide(Plan.apply(plan, { dryRun: true }), layer),
+      Effect.provide(Release.apply(plan, { dryRun: true }), layer),
     )
 
     expect(result1.tags).toEqual(result2.tags)
   })
 })
 
-// ─── Helper Functions ───────────────────────────────────────────────
+// ─── Getter Methods ───────────────────────────────────────────────
 
-describe('Plan helpers', () => {
-  test('getNextVersion returns correct version', async () => {
+describe('PlannedRelease getters', () => {
+  test('nextVersion returns correct version', async () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
       commits: [Git.Memory.commit('feat(core): feature')],
@@ -432,12 +433,11 @@ describe('Plan helpers', () => {
     )
 
     const release = result.releases[0]!
-    const nextVersion = Plan.getNextVersion(release)
 
-    expect(Semver.equivalence(nextVersion, Semver.fromString('1.1.0'))).toBe(true)
+    expect(Semver.equivalence(release.nextVersion, Semver.fromString('1.1.0'))).toBe(true)
   })
 
-  test('getCurrentVersion returns Option for existing version', async () => {
+  test('currentVersion returns Option for existing version', async () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
       commits: [Git.Memory.commit('feat(core): feature')],
@@ -448,13 +448,12 @@ describe('Plan helpers', () => {
     )
 
     const release = result.releases[0]!
-    const currentVersion = Plan.getCurrentVersion(release)
 
-    expect(Option.isSome(currentVersion)).toBe(true)
-    expect(Semver.equivalence(Option.getOrThrow(currentVersion), Semver.fromString('1.0.0'))).toBe(true)
+    expect(Option.isSome(release.currentVersion)).toBe(true)
+    expect(Semver.equivalence(Option.getOrThrow(release.currentVersion), Semver.fromString('1.0.0'))).toBe(true)
   })
 
-  test('getCurrentVersion returns None for first release', async () => {
+  test('currentVersion returns None for first release', async () => {
     const layer = makeTestLayer({
       tags: [],
       commits: [Git.Memory.commit('feat(core): initial')],
@@ -465,12 +464,11 @@ describe('Plan helpers', () => {
     )
 
     const release = result.releases[0]!
-    const currentVersion = Plan.getCurrentVersion(release)
 
-    expect(Option.isNone(currentVersion)).toBe(true)
+    expect(Option.isNone(release.currentVersion)).toBe(true)
   })
 
-  test('getBumpType returns bump type for stable releases', async () => {
+  test('bumpType returns bump type for stable releases', async () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
       commits: [Git.Memory.commit('feat(core): feature')],
@@ -481,8 +479,7 @@ describe('Plan helpers', () => {
     )
 
     const release = result.releases[0]!
-    const bump = Plan.getBumpType(release)
 
-    expect(bump).toBe('minor')
+    expect(release.bumpType).toBe('minor')
   })
 })

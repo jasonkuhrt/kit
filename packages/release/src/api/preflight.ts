@@ -1,21 +1,27 @@
+import { CommandExecutor } from '@effect/platform'
 import { Err } from '@kitz/core'
 import { Git } from '@kitz/git'
-import { Effect } from 'effect'
-import { exec } from 'node:child_process'
-import { promisify } from 'node:util'
+import { Effect, Layer, Schema as S } from 'effect'
+import * as Lint from './lint/__.js'
+import { Finished } from './lint/models/report.js'
 import type { ReleaseInfo } from './publish.js'
 
-const execAsync = promisify(exec)
+const baseTags = ['kit', 'release', 'preflight'] as const
 
 /**
  * Error during preflight checks.
  */
-export const PreflightError = Err.TaggedContextualError('PreflightError').constrain<{
-  readonly check: 'npm-auth' | 'git-clean' | 'git-remote' | 'tag-exists'
-  readonly detail: string
-}>({
-  message: (ctx) => `Preflight check failed (${ctx.check}): ${ctx.detail}`,
-})
+export const PreflightError = Err.TaggedContextualError(
+  'PreflightError',
+  baseTags,
+  {
+    context: S.Struct({
+      check: S.String,
+      detail: S.String,
+    }),
+    message: (ctx) => `Preflight check failed (${ctx.check}): ${ctx.detail}`,
+  },
+)
 
 export type PreflightError = InstanceType<typeof PreflightError>
 
@@ -25,132 +31,7 @@ export type PreflightError = InstanceType<typeof PreflightError>
 export interface PreflightResult {
   readonly npmUser: string
   readonly gitRemote: string
-  readonly existingTags: string[]
 }
-
-/**
- * Check npm authentication.
- *
- * Runs `npm whoami` to verify that npm auth is configured.
- */
-export const checkNpmAuth = (
-  registry?: string,
-): Effect.Effect<string, PreflightError> =>
-  Effect.gen(function*() {
-    const args = ['whoami']
-    if (registry) {
-      args.push('--registry', registry)
-    }
-
-    const command = `npm ${args.join(' ')}`
-
-    const result = yield* Effect.tryPromise({
-      try: async () => {
-        const { stdout } = await execAsync(command)
-        return stdout.trim()
-      },
-      catch: (cause) =>
-        new PreflightError({
-          context: {
-            check: 'npm-auth',
-            detail: `npm auth failed. Run 'npm login' to authenticate. ${
-              cause instanceof Error ? cause.message : String(cause)
-            }`,
-          },
-          ...(cause instanceof Error && { cause }),
-        }),
-    })
-
-    if (!result) {
-      return yield* Effect.fail(
-        new PreflightError({
-          context: {
-            check: 'npm-auth',
-            detail: 'npm whoami returned empty - check your npm authentication',
-          },
-        }),
-      )
-    }
-
-    yield* Effect.log(`Preflight: npm authenticated as '${result}'`)
-    return result
-  })
-
-/**
- * Check that git working directory is clean.
- */
-export const checkGitClean = (): Effect.Effect<void, PreflightError | Git.GitError, Git.Git> =>
-  Effect.gen(function*() {
-    const git = yield* Git.Git
-    const isClean = yield* git.isClean()
-
-    if (!isClean) {
-      return yield* Effect.fail(
-        new PreflightError({
-          context: {
-            check: 'git-clean',
-            detail: 'Working directory has uncommitted changes',
-          },
-        }),
-      )
-    }
-
-    yield* Effect.log('Preflight: git working directory is clean')
-  })
-
-/**
- * Check that git remote is reachable.
- */
-export const checkGitRemote = (
-  remote = 'origin',
-): Effect.Effect<string, PreflightError | Git.GitError, Git.Git> =>
-  Effect.gen(function*() {
-    const git = yield* Git.Git
-    const url = yield* git.getRemoteUrl(remote)
-
-    yield* Effect.log(`Preflight: git remote '${remote}' is reachable at ${url}`)
-    return url
-  })
-
-/**
- * Check that planned tags don't already exist.
- */
-export const checkTagsNotExist = (
-  releases: ReleaseInfo[],
-): Effect.Effect<string[], PreflightError, Git.Git> =>
-  Effect.gen(function*() {
-    const git = yield* Git.Git
-
-    const existingTags = yield* git.getTags().pipe(
-      Effect.mapError((e) =>
-        new PreflightError({
-          context: {
-            check: 'tag-exists',
-            detail: `Failed to get existing tags: ${e.message}`,
-          },
-          cause: e,
-        })
-      ),
-    )
-
-    const existingTagSet = new Set(existingTags)
-    const plannedTags = releases.map((r) => `${r.package.name}@${r.nextVersion.version}`)
-    const conflicts = plannedTags.filter((tag) => existingTagSet.has(tag))
-
-    if (conflicts.length > 0) {
-      return yield* Effect.fail(
-        new PreflightError({
-          context: {
-            check: 'tag-exists',
-            detail: `Tags already exist: ${conflicts.join(', ')}. Use a different version or delete the existing tags.`,
-          },
-        }),
-      )
-    }
-
-    yield* Effect.log(`Preflight: ${plannedTags.length} tags verified not to exist`)
-    return existingTags
-  })
 
 /**
  * Options for preflight checks.
@@ -167,13 +48,13 @@ export interface PreflightOptions {
 }
 
 /**
- * Run all preflight checks.
+ * Run all preflight checks using the lint system.
  *
  * Validates that the environment is ready for a release:
- * - npm authentication works
- * - git working directory is clean
- * - git remote is reachable
- * - planned tags don't already exist
+ * - npm authentication works (env.npm-authenticated)
+ * - git working directory is clean (env.git-clean)
+ * - git remote is reachable (env.git-remote)
+ * - planned tags don't already exist (plan.tags-unique)
  *
  * @example
  * ```ts
@@ -186,25 +67,89 @@ export interface PreflightOptions {
 export const run = (
   releases: ReleaseInfo[],
   options?: PreflightOptions,
-): Effect.Effect<PreflightResult, PreflightError | Git.GitError, Git.Git> =>
+): Effect.Effect<PreflightResult, PreflightError, Git.Git | CommandExecutor.CommandExecutor> =>
   Effect.gen(function*() {
     yield* Effect.log('Running preflight checks...')
 
-    // Run checks in parallel where possible
-    const [npmUser, gitRemote, existingTags] = yield* Effect.all(
-      [
-        options?.skipNpmAuth
-          ? Effect.succeed('(skipped)')
-          : checkNpmAuth(options?.registry),
-        checkGitRemote(options?.remote),
-        checkTagsNotExist(releases),
-      ],
-      { concurrency: 'unbounded' },
+    // Build skip rules based on options
+    const skipRules: string[] = []
+    if (options?.skipNpmAuth) skipRules.push('env.npm-authenticated')
+    if (options?.skipGitClean) skipRules.push('env.git-clean')
+
+    // Configure lint to run preflight-related rules
+    const config = Lint.resolveConfig({
+      onlyRules: ['env.*', 'plan.*'],
+      skipRules: skipRules.length > 0 ? skipRules : undefined,
+      rules: {
+        'env.git-remote': {
+          options: { remote: options?.remote ?? 'origin' },
+        },
+      },
+    })
+
+    // Prepare layers for lint
+    const plannedReleases = releases.map((r) => ({
+      packageName: r.package.name,
+      version: r.nextVersion,
+    }))
+
+    const preconditionsLayer = Lint.Preconditions.make({
+      hasReleasePlan: plannedReleases.length > 0,
+    })
+
+    const releasePlanLayer = Lint.ReleasePlan.make(plannedReleases)
+
+    // Run lint check, mapping any errors to PreflightError
+    const report = yield* Lint.check({ config }).pipe(
+      Effect.provide(Layer.merge(preconditionsLayer, releasePlanLayer)),
+      Effect.catchAll((error) =>
+        Effect.fail(
+          new PreflightError({
+            context: {
+              check: 'lint-execution',
+              detail: error.message ?? String(error),
+            },
+          }),
+        )
+      ),
     )
 
-    // Git clean check runs separately (doesn't need to be parallel)
-    if (!options?.skipGitClean) {
-      yield* checkGitClean()
+    // Extract metadata and check for violations
+    let npmUser = '(unknown)'
+    let gitRemote = '(unknown)'
+    const violations: Array<{ ruleId: string; message: string }> = []
+
+    for (const result of report.results) {
+      if (!Finished.is(result)) continue
+
+      // Extract metadata from successful checks
+      if (result.rule.id === 'env.npm-authenticated' && result.metadata) {
+        npmUser = (result.metadata as { username: string }).username
+      }
+      if (result.rule.id === 'env.git-remote' && result.metadata) {
+        gitRemote = (result.metadata as { url: string }).url
+      }
+
+      // Collect violations
+      if (result.violation) {
+        const message = result.violation.location._tag === 'ViolationLocationEnvironment'
+          ? result.violation.location.message
+          : 'Check failed'
+        violations.push({ ruleId: result.rule.id, message })
+      }
+    }
+
+    // Fail if any violations
+    if (violations.length > 0) {
+      const first = violations[0]!
+      return yield* Effect.fail(
+        new PreflightError({
+          context: {
+            check: first.ruleId,
+            detail: first.message,
+          },
+        }),
+      )
     }
 
     yield* Effect.log('All preflight checks passed')
@@ -212,6 +157,5 @@ export const run = (
     return {
       npmUser,
       gitRemote,
-      existingTags,
     }
   })

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@kitz/core": "workspace:*",
+    "effect": "^3.17.4",
     "es-toolkit": "^1.43.0",
     "object-inspect": "^1.13.4"
   },

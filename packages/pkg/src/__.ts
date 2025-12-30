@@ -1,3 +1,5 @@
 export * from './manager/_.js'
 export * from './manifest/_.js'
 export * from './moniker/_.js'
+export * from './pin/_.js'
+export * from './range/_.js'

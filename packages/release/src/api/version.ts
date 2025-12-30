@@ -1,5 +1,6 @@
 import { ConventionalCommits } from '@kitz/conventional-commits'
 import { Git } from '@kitz/git'
+import { Pkg } from '@kitz/pkg'
 import { Semver } from '@kitz/semver'
 import { Effect, Either, Option, Schema as S } from 'effect'
 import {
@@ -10,110 +11,70 @@ import {
   PreviewPrereleaseSchema,
   PrPrereleaseSchema,
 } from './prerelease.js'
-
-/**
- * Version bump type (re-exported from @kitz/semver).
- */
-export type BumpType = Semver.BumpType
-
-/**
- * Structured commit information for changelog generation.
- */
-export interface StructuredCommit {
-  readonly type: string
-  readonly message: string
-  readonly hash: Git.Sha.Sha
-  readonly breaking: boolean
-}
+import { ReleaseCommit } from './release-commit.js'
 
 /**
  * Information about a commit's effect on a package.
+ * References the full ReleaseCommit (not flattened).
  */
 export interface CommitImpact {
   readonly scope: string
-  readonly bump: BumpType
-  readonly commit: StructuredCommit
+  readonly bump: Semver.BumpType
+  readonly commit: ReleaseCommit
 }
 
 /**
- * Reduce multiple bump types to the highest one.
+ * Get bump type from CC type, returns null for no-impact types.
  */
-export const maxBump = (a: BumpType, b: BumpType): BumpType => {
-  const priority: Record<BumpType, number> = { major: 3, minor: 2, patch: 1 }
-  return priority[a]! >= priority[b]! ? a : b
+const getBump = (type: ConventionalCommits.Type.Type, breaking: boolean): Semver.BumpType | null => {
+  if (breaking) return 'major'
+  if (!ConventionalCommits.Type.Standard.is(type)) return 'patch'
+  return Option.getOrNull(ConventionalCommits.Type.impact(type))
 }
 
 /**
- * Input for extracting commit impacts.
- */
-export interface CommitInput {
-  readonly hash: Git.Sha.Sha
-  readonly message: string
-}
-
-/**
- * Extract package impacts from a commit.
+ * Extract package impacts from a git commit.
  *
- * Parses the commit title and returns which packages are affected
- * and what bump type each needs. Preserves structured commit info
- * for changelog generation.
+ * Parses the commit message as conventional commit and returns
+ * which packages are affected and what bump type each needs.
+ * Stores the full ReleaseCommit (not flattened per-scope).
  */
 export const extractImpacts = (
-  commitInput: CommitInput,
+  gitCommit: Git.Commit,
 ): Effect.Effect<CommitImpact[], never> =>
   Effect.gen(function*() {
     // Parse the commit title (first line)
-    const title = commitInput.message.split('\n')[0] ?? commitInput.message
-    const parsed = yield* Effect.either(ConventionalCommits.Title.parse(title))
+    const title = gitCommit.message.split('\n')[0] ?? gitCommit.message
+    const parseResult = yield* Effect.either(ConventionalCommits.Title.parse(title))
 
-    if (Either.isLeft(parsed)) {
+    if (Either.isLeft(parseResult)) {
       // Not a conventional commit - no impacts
       return []
     }
 
-    const parsedCommit = parsed.right
+    const parsedCC = parseResult.right
+    const releaseCommit = ReleaseCommit.make({
+      hash: gitCommit.hash,
+      author: gitCommit.author,
+      date: gitCommit.date,
+      message: parsedCC,
+    })
     const impacts: CommitImpact[] = []
 
-    // Get bump from CC type, returns null for no-impact types
-    const getBump = (type: ConventionalCommits.Type.Type, breaking: boolean): BumpType | null => {
-      if (breaking) return 'major'
-      if (!ConventionalCommits.Type.Standard.is(type)) return 'patch'
-      return Option.getOrNull(ConventionalCommits.Type.impact(type))
-    }
+    if (ConventionalCommits.Commit.Single.is(parsedCC)) {
+      if (parsedCC.scopes.length === 0) return [] // Scopeless - handled by caller
 
-    if (ConventionalCommits.Commit.Single.is(parsedCommit)) {
-      if (parsedCommit.scopes.length === 0) return [] // Scopeless - handled by caller
-
-      const bump = getBump(parsedCommit.type, parsedCommit.breaking)
+      const bump = getBump(parsedCC.type, parsedCC.breaking)
       if (bump === null) return []
 
-      for (const scope of parsedCommit.scopes) {
-        impacts.push({
-          scope,
-          bump,
-          commit: {
-            type: parsedCommit.type.value,
-            message: parsedCommit.message,
-            hash: commitInput.hash,
-            breaking: parsedCommit.breaking,
-          },
-        })
+      for (const scope of parsedCC.scopes) {
+        impacts.push({ scope, bump, commit: releaseCommit })
       }
-    } else if (ConventionalCommits.Commit.Multi.is(parsedCommit)) {
-      for (const target of parsedCommit.targets) {
+    } else if (ConventionalCommits.Commit.Multi.is(parsedCC)) {
+      for (const target of parsedCC.targets) {
         const bump = getBump(target.type, target.breaking)
         if (bump === null) continue
-
-        impacts.push({
-          scope: target.scope,
-          bump,
-          commit: {
-            type: target.type.value,
-            message: parsedCommit.message,
-            hash: commitInput.hash,
-            breaking: target.breaking,
-          },
-        })
+        impacts.push({ scope: target.scope, bump, commit: releaseCommit })
       }
     }
 
@@ -122,17 +83,20 @@ export const extractImpacts = (
 
 /**
  * Aggregate impacts by package, keeping the highest bump for each.
+ * Returns Map<scope, { bump, commits: ReleaseCommit[] }>.
+ *
+ * Note: Same commit may appear in multiple scopes if it affects multiple packages.
  */
 export const aggregateByPackage = (
   impacts: CommitImpact[],
-): Map<string, { bump: BumpType; commits: StructuredCommit[] }> => {
-  const result = new Map<string, { bump: BumpType; commits: StructuredCommit[] }>()
+): Map<string, { bump: Semver.BumpType; commits: ReleaseCommit[] }> => {
+  const result = new Map<string, { bump: Semver.BumpType; commits: ReleaseCommit[] }>()
 
   for (const impact of impacts) {
     const existing = result.get(impact.scope)
     if (existing) {
       result.set(impact.scope, {
-        bump: maxBump(existing.bump, impact.bump),
+        bump: Semver.maxBump(existing.bump, impact.bump),
         commits: [...existing.commits, impact.commit],
       })
     } else {
@@ -155,7 +119,7 @@ export const aggregateByPackage = (
  */
 export const calculateNextVersion = (
   current: Option.Option<Semver.Semver>,
-  bump: BumpType,
+  bump: Semver.BumpType,
 ): Semver.Semver =>
   Option.match(current, {
     onNone: () => {
@@ -180,8 +144,10 @@ export const calculateNextVersion = (
  *
  * This is a one-way operation that declares "the API is now stable".
  * Should only be called explicitly, never automatically from commits.
+ *
+ * @deprecated Use {@link Semver.one} directly instead.
  */
-export const graduatePhase = (): Semver.Semver => Semver.make(1, 0, 0)
+export const graduatePhase = (): Semver.Semver => Semver.one
 
 /**
  * Find the latest version for a package from git tags.
@@ -189,11 +155,11 @@ export const graduatePhase = (): Semver.Semver => Semver.make(1, 0, 0)
  * Tags follow the pattern: @scope/package@version or package@version
  */
 export const findLatestTagVersion = (
-  packageName: string,
+  packageName: Pkg.Moniker.Moniker,
   tags: string[],
 ): Option.Option<Semver.Semver> => {
   // Match tags like @kitz/core@1.0.0 or kitz@1.0.0
-  const prefix = `${packageName}@`
+  const prefix = `${packageName.moniker}@`
   const versions: Semver.Semver[] = []
 
   for (const tag of tags) {
@@ -221,11 +187,11 @@ export const findLatestTagVersion = (
  * Returns the highest `n` found, or 0 if no preview releases exist.
  */
 export const findLatestPreviewNumber = (
-  packageName: string,
+  packageName: Pkg.Moniker.Moniker,
   baseVersion: Semver.Semver,
   tags: string[],
 ): number => {
-  const prefix = `${packageName}@${baseVersion.version}-`
+  const prefix = `${packageName.moniker}@${baseVersion.version}-`
   let highest = 0
 
   for (const tag of tags) {
@@ -261,11 +227,11 @@ export const calculatePreviewVersion = (
  * Returns the highest `n` found, or 0 if no PR releases exist.
  */
 export const findLatestPrNumber = (
-  packageName: string,
+  packageName: Pkg.Moniker.Moniker,
   prNumber: number,
   tags: string[],
 ): number => {
-  const prefix = `${packageName}@0.0.0-`
+  const prefix = `${packageName.moniker}@${Semver.zero.version}-`
   let highest = 0
 
   for (const tag of tags) {
@@ -292,5 +258,5 @@ export const calculatePrVersion = (
   sha: Git.Sha.Sha,
 ): Semver.Semver => {
   const prerelease = makePrPrerelease(prNumber, existingPrNumber + 1, sha)
-  return Semver.fromString(`0.0.0-${encodePrPrerelease(prerelease)}`)
+  return Semver.fromString(`${Semver.zero.version}-${encodePrPrerelease(prerelease)}`)
 }

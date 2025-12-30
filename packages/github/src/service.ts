@@ -1,6 +1,6 @@
 import { Err } from '@kitz/core'
 import type { Endpoints } from '@octokit/types'
-import { Context, Effect } from 'effect'
+import { Context, Effect, Schema as S } from 'effect'
 
 // ============================================================================
 // Types from @octokit/types
@@ -31,31 +31,38 @@ export interface UpdateReleaseParams {
  */
 export type GithubOperation = 'releaseExists' | 'createRelease' | 'updateRelease' | 'getRelease'
 
+const GithubOperationSchema = S.Literal('releaseExists', 'createRelease', 'updateRelease', 'getRelease')
+
 // ============================================================================
 // Errors
 // ============================================================================
 
+const baseTags = ['kit', 'github'] as const
+
 /**
  * Generic GitHub API error.
  */
-export const GithubError = Err.TaggedContextualError('GithubError').constrain<{
-  readonly operation: GithubOperation
-  readonly status?: number
-  readonly detail?: string
-}>({
+export const GithubError = Err.TaggedContextualError('GithubError', baseTags, {
+  context: S.Struct({
+    operation: GithubOperationSchema,
+    status: S.optional(S.Number),
+    detail: S.optional(S.String),
+  }),
   message: (ctx) =>
     `GitHub ${ctx.operation} failed${ctx.status ? ` (${ctx.status})` : ''}${ctx.detail ? `: ${ctx.detail}` : ''}`,
-}).constrainCause<Error>()
+  cause: S.instanceOf(Error),
+})
 
 export type GithubError = InstanceType<typeof GithubError>
 
 /**
  * GitHub resource not found (404).
  */
-export const GithubNotFoundError = Err.TaggedContextualError('GithubNotFoundError').constrain<{
-  readonly operation: GithubOperation
-  readonly resource: string
-}>({
+export const GithubNotFoundError = Err.TaggedContextualError('GithubNotFoundError', baseTags, {
+  context: S.Struct({
+    operation: GithubOperationSchema,
+    resource: S.String,
+  }),
   message: (ctx) => `GitHub ${ctx.operation}: ${ctx.resource} not found`,
 })
 
@@ -64,10 +71,11 @@ export type GithubNotFoundError = InstanceType<typeof GithubNotFoundError>
 /**
  * GitHub rate limit exceeded (403 with rate limit headers).
  */
-export const GithubRateLimitError = Err.TaggedContextualError('GithubRateLimitError').constrain<{
-  readonly operation: GithubOperation
-  readonly resetAt: Date
-}>({
+export const GithubRateLimitError = Err.TaggedContextualError('GithubRateLimitError', baseTags, {
+  context: S.Struct({
+    operation: GithubOperationSchema,
+    resetAt: S.Date,
+  }),
   message: (ctx) => `GitHub ${ctx.operation}: rate limit exceeded, resets at ${ctx.resetAt.toISOString()}`,
 })
 
@@ -76,9 +84,10 @@ export type GithubRateLimitError = InstanceType<typeof GithubRateLimitError>
 /**
  * GitHub authentication error (401).
  */
-export const GithubAuthError = Err.TaggedContextualError('GithubAuthError').constrain<{
-  readonly operation: GithubOperation
-}>({
+export const GithubAuthError = Err.TaggedContextualError('GithubAuthError', baseTags, {
+  context: S.Struct({
+    operation: GithubOperationSchema,
+  }),
   message: (ctx) => `GitHub ${ctx.operation}: authentication failed, check GITHUB_TOKEN`,
 })
 
@@ -87,9 +96,10 @@ export type GithubAuthError = InstanceType<typeof GithubAuthError>
 /**
  * Configuration error (missing token, invalid config).
  */
-export const GithubConfigError = Err.TaggedContextualError('GithubConfigError').constrain<{
-  readonly detail: string
-}>({
+export const GithubConfigError = Err.TaggedContextualError('GithubConfigError', baseTags, {
+  context: S.Struct({
+    detail: S.String,
+  }),
   message: (ctx) => `GitHub configuration error: ${ctx.detail}`,
 })
 

@@ -10,13 +10,16 @@
     "#manifest": "./build/manifest/_.js",
     "#manifest/*": "./build/manifest/*.js",
     "#manager": "./build/manager/_.js",
-    "#manager/*": "./build/manager/*.js"
+    "#manager/*": "./build/manager/*.js",
+    "#pin": "./build/pin/_.js",
+    "#pin/*": "./build/pin/*.js"
   },
   "exports": {
     ".": "./build/_.js",
     "./__": "./build/__.js",
     "./manifest": "./build/manifest/__.js",
-    "./manager": "./build/manager/__.js"
+    "./manager": "./build/manager/__.js",
+    "./pin": "./build/pin/__.js"
   },
   "files": [
     "build",
@@ -36,6 +39,11 @@
     "@kitz/fs": "workspace:*",
     "@kitz/resource": "workspace:*",
     "@kitz/semver": "workspace:*",
+    "@vltpkg/semver": "1.0.0-rc.12",
     "effect": "^3.0.0"
+  },
+  "devDependencies": {
+    "@kitz/assert": "workspace:*",
+    "@kitz/test": "workspace:*"
   }
 }

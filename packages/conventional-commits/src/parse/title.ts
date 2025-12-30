@@ -1,19 +1,26 @@
 import { Err } from '@kitz/core'
-import { Effect, Option } from 'effect'
+import { Effect, Option, Schema as S } from 'effect'
 import { Multi } from '../commit-multi.js'
 import { Single } from '../commit-single.js'
 import { Target } from '../target.js'
 import { parse as parseType, Type } from '../type.js'
 
+const baseTags = ['kit', 'conventional-commits'] as const
+
 /**
  * Error parsing a conventional commit title.
  */
-export const ParseTitleError = Err.TaggedContextualError('ParseTitleError').constrain<{
-  readonly reason: string
-  readonly input: string
-}>({
-  message: (ctx) => `${ctx.reason}: "${ctx.input}"`,
-})
+export const ParseTitleError = Err.TaggedContextualError(
+  'ParseTitleError',
+  baseTags,
+  {
+    context: S.Struct({
+      reason: S.String,
+      input: S.String,
+    }),
+    message: (ctx) => `${ctx.reason}: "${ctx.input}"`,
+  },
+)
 
 export type ParseTitleError = InstanceType<typeof ParseTitleError>
 

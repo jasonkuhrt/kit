@@ -288,7 +288,6 @@ export const commit = (
   Commit.make({
     hash: overrides.hash ?? Sha.make(randomSha()),
     message,
-    body: overrides.body ?? '',
     author: overrides.author ?? Author.make({ name: 'Test Author', email: 'test@example.com' }),
     date: overrides.date ?? new Date(),
   })

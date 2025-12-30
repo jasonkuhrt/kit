@@ -17,80 +17,41 @@ import { SingleRunner } from '@effect/cluster'
 import { NodeFileSystem, NodePath } from '@effect/platform-node'
 import { SqliteClient } from '@effect/sql-sqlite-node'
 import { Workflow as EffectWorkflow, WorkflowEngine } from '@effect/workflow'
-import { Changelog } from '@kitz/changelog'
 import { Flo } from '@kitz/flo'
 import { Fs } from '@kitz/fs'
 import { Git } from '@kitz/git'
 import { Github } from '@kitz/github'
+import { Pkg } from '@kitz/pkg'
 import { Semver } from '@kitz/semver'
 import { Effect, Layer, Option, Schema, Stream } from 'effect'
+import * as Log from './log/__.js'
+import type { Item, Plan } from './plan/models/__.js'
 import { type PreflightError, run as runPreflight } from './preflight.js'
 import { publishPackage, type ReleaseInfo } from './publish.js'
-import { getBumpType, getCurrentVersion, getNextVersion, type PlannedRelease, type ReleasePlan } from './release.js'
+
+/** Format a release tag from package name and version. */
+const formatTag = (name: Pkg.Moniker.Moniker, version: Semver.Semver): string =>
+  Pkg.Pin.toString(Pkg.Pin.Exact.make({ name, version }))
 
 // ============================================================================
 // Error Schemas
 // ============================================================================
 
-/**
- * Workflow-level publish error.
- */
-export class WorkflowPublishError extends Schema.TaggedError<WorkflowPublishError>('WorkflowPublishError')(
-  'WorkflowPublishError',
-  {
-    packageName: Schema.String,
-    message: Schema.String,
-  },
-) {}
-
-/**
- * Workflow-level tag error.
- */
-export class WorkflowTagError extends Schema.TaggedError<WorkflowTagError>('WorkflowTagError')(
-  'WorkflowTagError',
-  {
-    tag: Schema.String,
-    message: Schema.String,
-  },
-) {}
-
-/**
- * Workflow-level preflight error.
- */
-export class WorkflowPreflightError extends Schema.TaggedError<WorkflowPreflightError>('WorkflowPreflightError')(
-  'WorkflowPreflightError',
-  {
-    check: Schema.String,
-    message: Schema.String,
-  },
-) {}
-
-/**
- * Workflow-level GitHub release error.
- */
-export class WorkflowGHReleaseError extends Schema.TaggedError<WorkflowGHReleaseError>('WorkflowGHReleaseError')(
-  'WorkflowGHReleaseError',
-  {
-    tag: Schema.String,
-    message: Schema.String,
-  },
-) {}
-
-/**
- * Union of all workflow errors.
- */
-export const ReleaseWorkflowError = Schema.Union(
+export {
+  ReleaseWorkflowError,
+  WorkflowGHReleaseError,
+  WorkflowPreflightError,
   WorkflowPublishError,
   WorkflowTagError,
-  WorkflowPreflightError,
+} from './workflow-errors.js'
+import type { ReleaseWorkflowError } from './workflow-errors.js'
+import {
+  ReleaseWorkflowError as ReleaseWorkflowErrorSchema,
   WorkflowGHReleaseError,
-)
-
-export type ReleaseWorkflowError =
-  | WorkflowPublishError
-  | WorkflowTagError
-  | WorkflowPreflightError
-  | WorkflowGHReleaseError
+  WorkflowPreflightError,
+  WorkflowPublishError,
+  WorkflowTagError,
+} from './workflow-errors.js'
 
 // ============================================================================
 // Payload Schema
@@ -143,7 +104,7 @@ const toReleaseInfo = (
   release: ReleasePayloadType['releases'][number],
 ): ReleaseInfo => ({
   package: {
-    name: release.packageName,
+    name: Pkg.Moniker.parse(release.packageName),
     path: Fs.Path.AbsDir.fromString(release.packagePath),
     scope: release.packageName.startsWith('@')
       ? release.packageName.split('/')[1]!
@@ -184,7 +145,7 @@ interface WorkflowResult {
 export const ReleaseWorkflow = Flo.Workflow.make({
   name: 'ReleaseWorkflow',
   payload: ReleasePayload,
-  error: ReleaseWorkflowError,
+  error: ReleaseWorkflowErrorSchema,
 
   graph: (payload, node) => {
     const plannedReleases = payload.releases.map(toReleaseInfo)
@@ -199,8 +160,10 @@ export const ReleaseWorkflow = Flo.Workflow.make({
         }).pipe(
           Effect.mapError((e) =>
             new WorkflowPreflightError({
-              check: 'check' in e ? (e as PreflightError).context.check : 'unknown',
-              message: e.message,
+              context: {
+                check: 'check' in e ? (e as PreflightError).context.check : 'unknown',
+                detail: e.message,
+              },
             })
           ),
           Effect.asVoid,
@@ -214,10 +177,11 @@ export const ReleaseWorkflow = Flo.Workflow.make({
         Effect.gen(function*() {
           const releaseInfo = toReleaseInfo(release)
 
+          const tag = formatTag(releaseInfo.package.name, releaseInfo.nextVersion)
           if (payload.options.dryRun) {
-            yield* Effect.log(`[dry-run] Would publish ${release.packageName}@${release.nextVersion}`)
+            yield* Effect.log(`[dry-run] Would publish ${tag}`)
           } else {
-            yield* Effect.log(`Publishing ${release.packageName}@${release.nextVersion}...`)
+            yield* Effect.log(`Publishing ${tag}...`)
             yield* publishPackage(releaseInfo, {
               ...(payload.options.tag && { tag: payload.options.tag }),
               ...(payload.options.registry && { registry: payload.options.registry }),
@@ -228,8 +192,10 @@ export const ReleaseWorkflow = Flo.Workflow.make({
         }).pipe(
           Effect.mapError((e) =>
             new WorkflowPublishError({
-              packageName: release.packageName,
-              message: e instanceof Error ? e.message : String(e),
+              context: {
+                packageName: release.packageName,
+                detail: e instanceof Error ? e.message : String(e),
+              },
             })
           ),
         ),
@@ -242,7 +208,7 @@ export const ReleaseWorkflow = Flo.Workflow.make({
 
     // Layer 2: Create git tags (each depends on its corresponding publish)
     const createTags = payload.releases.map((release, i) => {
-      const tag = `${release.packageName}@${release.nextVersion}`
+      const tag = formatTag(Pkg.Moniker.parse(release.packageName), Semver.fromString(release.nextVersion))
       return node(
         `CreateTag:${tag}`,
         Effect.gen(function*() {
@@ -257,8 +223,10 @@ export const ReleaseWorkflow = Flo.Workflow.make({
         }).pipe(
           Effect.mapError((e) =>
             new WorkflowTagError({
-              tag,
-              message: e instanceof Error ? e.message : String(e),
+              context: {
+                tag,
+                detail: e instanceof Error ? e.message : String(e),
+              },
             })
           ),
         ),
@@ -268,7 +236,7 @@ export const ReleaseWorkflow = Flo.Workflow.make({
 
     // Layer 3: Push each tag (each depends on its corresponding createTag)
     const pushTags = payload.releases.map((release, i) => {
-      const tag = `${release.packageName}@${release.nextVersion}`
+      const tag = formatTag(Pkg.Moniker.parse(release.packageName), Semver.fromString(release.nextVersion))
       const isPreview = payload.options.tag === 'next' || tag.endsWith('@next')
       return node(
         `PushTag:${tag}`,
@@ -284,8 +252,10 @@ export const ReleaseWorkflow = Flo.Workflow.make({
         }).pipe(
           Effect.mapError((e) =>
             new WorkflowTagError({
-              tag,
-              message: e instanceof Error ? e.message : String(e),
+              context: {
+                tag,
+                detail: e instanceof Error ? e.message : String(e),
+              },
             })
           ),
         ),
@@ -298,7 +268,7 @@ export const ReleaseWorkflow = Flo.Workflow.make({
 
     // Layer 4: Create GitHub releases (each depends on its corresponding pushTag)
     const createGHReleases = payload.releases.map((release, i) => {
-      const tag = `${release.packageName}@${release.nextVersion}`
+      const tag = formatTag(Pkg.Moniker.parse(release.packageName), Semver.fromString(release.nextVersion))
       const isPreview = payload.options.tag === 'next' || tag.endsWith('@next')
       return node(
         `CreateGHRelease:${tag}`,
@@ -311,7 +281,7 @@ export const ReleaseWorkflow = Flo.Workflow.make({
           yield* Effect.log(`Creating GH release: ${tag}`)
 
           // Generate changelog for release body
-          const changelog = yield* Changelog.generate({
+          const changelog = yield* Log.format({
             scope: release.packageName,
             commits: release.commits,
             newVersion: release.nextVersion,
@@ -349,8 +319,10 @@ export const ReleaseWorkflow = Flo.Workflow.make({
         }).pipe(
           Effect.mapError((e) =>
             new WorkflowGHReleaseError({
-              tag,
-              message: e instanceof Error ? e.message : String(e),
+              context: {
+                tag,
+                detail: e instanceof Error ? e.message : String(e),
+              },
             })
           ),
         ),
@@ -469,24 +441,27 @@ export const makeTestWorkflowRuntime = () =>
 // ============================================================================
 
 /**
- * Convert a ReleasePlan to workflow payload.
+ * Convert a Plan to workflow payload.
  */
 export const toWorkflowPayload = (
-  plan: ReleasePlan,
+  plan: Plan,
   options: { dryRun?: boolean; tag?: string; registry?: string } = {},
 ): ReleasePayloadType => ({
   releases: [...plan.releases, ...plan.cascades].map((r) => ({
-    packageName: r.package.name,
+    packageName: r.package.name.moniker,
     packagePath: Fs.Path.toString(r.package.path),
-    currentVersion: getCurrentVersion(r).pipe(Option.map((v) => v.version.toString())),
-    nextVersion: getNextVersion(r).version.toString(),
-    bump: getBumpType(r),
-    commits: r.commits.map((c) => ({
-      type: c.type,
-      message: c.message,
-      hash: c.hash,
-      breaking: c.breaking,
-    })),
+    currentVersion: r.currentVersion.pipe(Option.map((v) => v.version.toString())),
+    nextVersion: r.nextVersion.version.toString(),
+    bump: r.bumpType,
+    commits: r.commits.map((c) => {
+      const info = c.forScope(r.package.scope)
+      return {
+        type: info.type,
+        message: info.description,
+        hash: info.hash,
+        breaking: info.breaking,
+      }
+    }),
   })),
   options: {
     dryRun: options.dryRun ?? false,
@@ -518,7 +493,7 @@ export const toWorkflowPayload = (
  * ```
  */
 export const executeWorkflow = (
-  plan: ReleasePlan,
+  plan: Plan,
   options: { dryRun?: boolean; tag?: string; registry?: string } = {},
 ) =>
   Effect.gen(function*() {
@@ -598,7 +573,7 @@ export interface ObservableWorkflowResult {
  * ```
  */
 export const executeWorkflowObservable = (
-  plan: ReleasePlan,
+  plan: Plan,
   options: { dryRun?: boolean; tag?: string; registry?: string; dbPath?: string } = {},
 ): Effect.Effect<ObservableWorkflowResult, never, never> =>
   Effect.gen(function*() {

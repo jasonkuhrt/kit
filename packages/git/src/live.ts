@@ -92,8 +92,8 @@ const makeGitService = (git: SimpleGit): GitService => ({
         log.all.map((entry) =>
           Commit.make({
             hash: Sha.make(entry.hash),
-            message: entry.message,
-            body: entry.body,
+            // Combine subject + body into single message
+            message: entry.body ? `${entry.message}\n\n${entry.body}` : entry.message,
             author: Author.make({
               name: entry.author_name,
               email: entry.author_email,
