@@ -62,7 +62,7 @@ Test.on((obj: Record<string, number>) => Obj.pick(obj, () => true))
   .test()
 
 // dprint-ignore
-Test.on(Obj.partition)
+Test.on((obj: Record<string, number>, keys: readonly string[]) => Obj.partition(obj, keys))
   .cases(
     [[{ a: 1, b: 2, c: 3, d: 4 }, ['a', 'c']], { picked: { a: 1, c: 3 }, omitted: { b: 2, d: 4 } }],
     [[{ a: 1, b: 2 }, []],                     { picked: {}, omitted: { a: 1, b: 2 } }],

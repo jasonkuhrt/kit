@@ -31,29 +31,31 @@ export const splitWith = Fn.flipCurried(Fn.curry(split))
 ### When to Use Each Variant
 
 **`*On`** - When you have data and want to try different operations:
+
 ```typescript
 const data = 'name,age,city'
 const splitData = Str.splitOn(data)
-splitData(',')  // ['name', 'age', 'city']
-splitData('')   // individual chars
+splitData(',') // ['name', 'age', 'city']
+splitData('') // individual chars
 ```
 
 **`*With`** - When you have an operation and want to apply to different data:
+
 ```typescript
 const splitByComma = Str.splitWith(',')
-splitByComma('john,25')     // ['john', '25']
-splitByComma('laptop,999')  // ['laptop', '999']
+splitByComma('john,25') // ['john', '25']
+splitByComma('laptop,999') // ['laptop', '999']
 ```
 
 ### Universal Operations
 
 Maintain consistent names across data structures:
 
-| Operation | Purpose | Examples |
-|-----------|---------|----------|
-| `merge` | Combine two instances | `Arr.merge`, `Obj.merge`, `Str.merge` |
-| `by` | Group/index by key | `Group.by(array, 'field')` |
-| `is` | Type predicate | `Arr.is`, `Obj.is`, `Undefined.is` |
+| Operation | Purpose               | Examples                              |
+| --------- | --------------------- | ------------------------------------- |
+| `merge`   | Combine two instances | `Arr.merge`, `Obj.merge`, `Str.merge` |
+| `by`      | Group/index by key    | `Group.by(array, 'field')`            |
+| `is`      | Type predicate        | `Arr.is`, `Obj.is`, `Undefined.is`    |
 
 ### Namespace Name Elision
 

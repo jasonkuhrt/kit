@@ -1,0 +1,44 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/refs/heads/main/npm/oxlint/configuration_schema.json",
+  "plugins": ["import", "vitest"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "rules": {
+    "eslint/no-unused-vars": "off",
+    "eslint/no-unused-expressions": "off",
+    "eslint/no-control-regex": "off",
+    "eslint-plugin-jest/expect-expect": "off",
+    "eslint-plugin-jest/no-standalone-expect": "off",
+    "eslint-plugin-jest/no-conditional-expect": "off",
+    "eslint-plugin-jest/valid-title": "off",
+    "eslint-plugin-import/no-unassigned-import": "off",
+    "eslint/no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["@kitz/*/__"],
+            "message": "Use namespace import from root (e.g., '@kitz/git' not '@kitz/git/__'). See CLAUDE.md for import conventions."
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["packages/kitz/src/**/*.ts"],
+      "rules": {
+        "eslint/no-restricted-imports": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "**/build/**",
+    "**/node_modules/**",
+    "**/*.d.ts",
+    "**/__examples/**"
+  ]
+}

@@ -7,6 +7,24 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "paths": {
+      "#test": [
+        "../test/src/_.ts"
+      ],
+      "#test/test": [
+        "../test/src/__.ts"
+      ],
+      "#test/*": [
+        "../test/src/*.ts"
+      ],
+      "#assert": [
+        "../assert/src/_.ts"
+      ],
+      "#assert/assert": [
+        "../assert/src/__.ts"
+      ],
+      "#assert/*": [
+        "../assert/src/*.ts"
+      ],
       "#arr": [
         "./src/arr/_.js"
       ],
@@ -137,9 +155,6 @@
   ],
   "exclude": [
     "build",
-    "node_modules",
-    "**/*.bench-d.ts",
-    "**/*.test.ts",
-    "**/*.test-d.ts"
+    "node_modules"
   ]
 }

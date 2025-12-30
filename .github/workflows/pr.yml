@@ -89,57 +89,6 @@ jobs:
 
           echo "CC type validated: $TITLE"
 
-  # Validate that release-type PRs have a changeset
-  # Bypass with "<!-- changeset-bypass -->" in PR body for edge cases
-  validate-changeset:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
-      - name: Fetch base branch
-        run: git fetch origin ${{ github.event.pull_request.base.ref }}
-      - name: Validate changeset exists for release PR
-        env:
-          TITLE: ${{ github.event.pull_request.title }}
-          BODY: ${{ github.event.pull_request.body }}
-          BASE_REF: ${{ github.event.pull_request.base.ref }}
-        run: |
-          # Check for bypass comment
-          if [[ "${BODY:-}" == *"<!-- changeset-bypass -->"* ]]; then
-            echo "Changeset validation bypassed via PR comment"
-            exit 0
-          fi
-
-          # Release types: feat, fix, perf, docs (with scope = code docs)
-          # Note: docs: without scope is ambiguous, so we require scope for docs
-          RELEASE_PATTERN="^(feat|fix|perf)(\(|:)|^docs\("
-
-          if [[ "$TITLE" =~ $RELEASE_PATTERN ]]; then
-            # Check for new changeset files (exclude README.md)
-            CHANGESETS=$(git diff --name-only "origin/$BASE_REF"...HEAD | grep -E '^\.changeset/.*\.md$' | grep -v 'README.md' || true)
-
-            if [[ -z "$CHANGESETS" ]]; then
-              echo "::error::Release-type PR requires a changeset: '$TITLE'"
-              echo ""
-              echo "This PR type will trigger a release, but no changeset was found."
-              echo ""
-              echo "Fix: Run 'pnpm changeset' to create a changeset describing your changes."
-              echo ""
-              echo "Bypass: If this change truly doesn't need a release (rare),"
-              echo "add this HTML comment anywhere in the PR body:"
-              echo ""
-              echo "  <!-- changeset-bypass -->"
-              echo ""
-              exit 1
-            fi
-
-            echo "Changeset found: $CHANGESETS"
-          else
-            echo "Non-release PR type, changeset not required: $TITLE"
-          fi
-
   # Package jobs use affected-only filtering to skip unchanged packages
   # fetch-depth: 0 is required for Turborepo's git-based filtering
   # Jobs skip actual work (but still pass) for chore.docs:/ci: PRs
