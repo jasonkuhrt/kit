@@ -46,6 +46,10 @@
     "#prox": "./build/prox/_.js",
     "#prox/*": "./build/prox/*.js",
     "#deps/*": "./build/deps/*.js",
+    "#test": "@kitz/test",
+    "#test/*": "@kitz/test/*",
+    "#assert": "@kitz/assert",
+    "#assert/*": "@kitz/assert/*",
     "#platform:lang/*": {
       "browser": "./build/lang/*.browser.js",
       "default": "./build/lang/*.node.js"

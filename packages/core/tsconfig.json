@@ -7,6 +7,24 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "paths": {
+      "#test": [
+        "../test/src/_.js"
+      ],
+      "#test/test": [
+        "../test/src/__.js"
+      ],
+      "#test/*": [
+        "../test/src/*.js"
+      ],
+      "#assert": [
+        "../assert/src/_.js"
+      ],
+      "#assert/assert": [
+        "../assert/src/__.js"
+      ],
+      "#assert/*": [
+        "../assert/src/*.js"
+      ],
       "#arr": [
         "./src/arr/_.js"
       ],
