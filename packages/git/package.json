@@ -9,8 +9,7 @@
   },
   "exports": {
     ".": "./build/_.js",
-    "./__": "./build/__.js",
-    "./git-test": "./build/git-test.js"
+    "./__": "./build/__.js"
   },
   "files": [
     "build",
