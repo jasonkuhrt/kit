@@ -12,14 +12,14 @@ describe('Sha', () => {
     .inputType<string>()
     .outputType<Git.Sha.Sha>()
     .cases(
-      ['abc1234', Git.Sha.make('abc1234'), { comment: 'short form (7 chars)' }],
-      ['abcdef1234', Git.Sha.make('abcdef1234'), { comment: 'medium form (10 chars)' }],
-      [
-        'abc1234567890abcdef1234567890abcdef12345',
-        Git.Sha.make('abc1234567890abcdef1234567890abcdef12345'),
-        { comment: 'full form (40 chars)' },
-      ],
-      ['ABCDEF1', Git.Sha.make('ABCDEF1'), { comment: 'uppercase hex' }],
+      { input: 'abc1234', output: Git.Sha.make('abc1234'), comment: 'short form (7 chars)' },
+      { input: 'abcdef1234', output: Git.Sha.make('abcdef1234'), comment: 'medium form (10 chars)' },
+      {
+        input: 'abc1234567890abcdef1234567890abcdef12345',
+        output: Git.Sha.make('abc1234567890abcdef1234567890abcdef12345'),
+        comment: 'full form (40 chars)',
+      },
+      { input: 'ABCDEF1', output: Git.Sha.make('ABCDEF1'), comment: 'uppercase hex' },
     )
     .test(({ input, output }) => {
       expect(Git.Sha.make(input)).toBe(output)
@@ -29,23 +29,23 @@ describe('Sha', () => {
     .inputType<string>()
     .outputType<string>()
     .cases(
-      ['abc123', 'too short', { comment: '6 chars' }],
-      ['abc12345678901234567890123456789012345678901', 'too long', { comment: '41 chars' }],
-      ['abc123g', 'invalid hex', { comment: 'non-hex character' }],
-      ['', 'empty', { comment: 'empty string' }],
+      { input: 'abc123', output: 'too short', comment: '6 chars' },
+      { input: 'abc12345678901234567890123456789012345678901', output: 'too long', comment: '41 chars' },
+      { input: 'abc123g', output: 'invalid hex', comment: 'non-hex character' },
+      { input: '', output: 'empty', comment: 'empty string' },
     )
     .test(({ input }) => {
-      expect(() => Git.Sha.make(input)).toThrow()
+      expect(() => Git.Sha.make(input)).toThrow(/Sha/)
     })
 
   Test.describe('Sha.is')
     .inputType<unknown>()
     .outputType<boolean>()
     .cases(
-      [Git.Sha.make('abc1234'), true, { comment: 'branded SHA' }],
-      ['abc1234', true, { comment: 'valid pattern string' }],
-      ['abc123g', false, { comment: 'invalid hex char' }],
-      [123, false, { comment: 'number' }],
+      { input: Git.Sha.make('abc1234'), output: true, comment: 'branded SHA' },
+      { input: 'abc1234', output: true, comment: 'valid pattern string' },
+      { input: 'abc123g', output: false, comment: 'invalid hex char' },
+      { input: 123, output: false, comment: 'number' },
     )
     .test(({ input, output }) => {
       expect(Git.Sha.is(input)).toBe(output)

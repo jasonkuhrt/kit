@@ -547,7 +547,7 @@ export const executeWorkflow = (
  */
 export interface ObservableWorkflowResult {
   /** Stream of activity lifecycle events */
-  readonly events: Stream.Stream<Flo.ActivityEvent>
+  readonly events: Stream.Stream<Flo.LifecycleEvent>
   /** Effect that executes the workflow and returns the result (runtime layer pre-provided) */
   readonly execute: Effect.Effect<WorkflowResult, ReleaseWorkflowError>
   /** Graph information for visualization */

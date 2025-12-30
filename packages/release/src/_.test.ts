@@ -66,26 +66,26 @@ describe('Plan.stable', () => {
     .inputType<{ tags: string[]; commit: string }>()
     .outputType<{ bump: Semver.BumpType; version: string }>()
     .cases(
-      [
-        { tags: ['@kitz/core@1.0.0'], commit: 'fix(core): bug fix' },
-        { bump: 'patch', version: '1.0.1' },
-        { comment: 'fix → patch' },
-      ],
-      [
-        { tags: ['@kitz/core@1.0.0'], commit: 'feat(core): new feature' },
-        { bump: 'minor', version: '1.1.0' },
-        { comment: 'feat → minor' },
-      ],
-      [
-        { tags: ['@kitz/core@1.0.0'], commit: 'feat(core)!: breaking change' },
-        { bump: 'major', version: '2.0.0' },
-        { comment: 'breaking → major' },
-      ],
-      [
-        { tags: [], commit: 'feat(core): initial' },
-        { bump: 'minor', version: '0.1.0' },
-        { comment: 'first release starts at 0.x.x' },
-      ],
+      {
+        input: { tags: ['@kitz/core@1.0.0'], commit: 'fix(core): bug fix' },
+        output: { bump: 'patch', version: '1.0.1' },
+        comment: 'fix → patch',
+      },
+      {
+        input: { tags: ['@kitz/core@1.0.0'], commit: 'feat(core): new feature' },
+        output: { bump: 'minor', version: '1.1.0' },
+        comment: 'feat → minor',
+      },
+      {
+        input: { tags: ['@kitz/core@1.0.0'], commit: 'feat(core)!: breaking change' },
+        output: { bump: 'major', version: '2.0.0' },
+        comment: 'breaking → major',
+      },
+      {
+        input: { tags: [], commit: 'feat(core): initial' },
+        output: { bump: 'minor', version: '0.1.0' },
+        comment: 'first release starts at 0.x.x',
+      },
     )
     .test(async ({ input, output }) => {
       const layer = makeTestLayer({
@@ -206,7 +206,7 @@ describe('Plan.pr', () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0'],
       commits: [Git.Memory.commit('feat(core): new feature')],
-      headSha: 'abc1234',
+      headSha: Git.Sha.make('abc1234'),
     })
 
     const result = await Effect.runPromise(
@@ -224,7 +224,7 @@ describe('Plan.pr', () => {
     const layer = makeTestLayer({
       tags: ['@kitz/core@1.0.0', '@kitz/core@0.0.0-pr.42.1.def5678'],
       commits: [Git.Memory.commit('feat(core): new feature')],
-      headSha: 'abc1234',
+      headSha: Git.Sha.make('abc1234'),
     })
 
     const result = await Effect.runPromise(
@@ -248,7 +248,7 @@ describe('Plan.pr', () => {
       Git.Memory.make({
         tags: ['@kitz/core@1.0.0'],
         commits: [Git.Memory.commit('feat(core): feature')],
-        headSha: 'def7890',
+        headSha: Git.Sha.make('def7890'),
       }),
       Fs.Memory.layer({}),
       envWithPr,
