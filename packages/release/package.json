@@ -23,7 +23,7 @@
     "check:package": "publint && attw --pack --ignore-rules no-resolution cjs-resolves-to-esm internal-resolution-error"
   },
   "bin": {
-    "release": "./build/cli.js"
+    "release": "./build/cli/cli.js"
   },
   "dependencies": {
     "@effect/cluster": "^0.56.0",
